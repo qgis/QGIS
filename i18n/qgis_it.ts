@@ -32,12 +32,12 @@
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="117"/>
         <source>Click to select the CRS to use for coordinate display</source>
-        <translation>Clicca per scegliere il CRS da usare durante la visualizzazione delle coordinate</translation>
+        <translation>Clicca per scegliere il SR da usare durante la visualizzazione delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="125"/>
         <source>Coordinate in your selected CRS</source>
-        <translation>Coordinate nel CRS selezionato</translation>
+        <translation>Coordinate nel SR selezionato</translation>
     </message>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="129"/>
@@ -995,7 +995,7 @@ Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation>Nessun CRS valido selezionato</translation>
+        <translation>Nessun SR valido selezionato</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
@@ -1205,12 +1205,12 @@ Vuoi aggiungerlo alla legenda?</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation>Avviso CRS!</translation>
+        <translation>Avviso SR!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation>Attenzione: i layers di input hanno CRS non coincidenti.
+        <translation>Attenzione: i layers di input hanno SR non coincidenti.
 Questo può provocare risultati inattesi.</translation>
     </message>
     <message>
@@ -1257,7 +1257,7 @@ Sicuro di voler proseguire?</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation>Le informazioni sul CRS del layer saranno aggiornate al CRS selezionato.</translation>
+        <translation>Le informazioni sul SR del layer saranno aggiornate al SR selezionato.</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
@@ -3256,7 +3256,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="120"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="131"/>
         <source>&amp;Target SRS</source>
-        <translation>&amp;SRS di destinazione</translation>
+        <translation>&amp;SR di destinazione</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="157"/>
@@ -3391,7 +3391,7 @@ Il valore &apos;grigio&apos; (a partire da GDAL 1.7.0) consente di espandere un 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="103"/>
         <source>&amp;Source SRS</source>
-        <translation>SRS &amp;Sorgente</translation>
+        <translation>SR &amp;Sorgente</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="159"/>
@@ -3770,12 +3770,12 @@ Vuoi aggiungere il nuovo layer alla legenda?</translation>
     <message>
         <source>
 Input CRS error: Different input coordinate reference systems detected, results may not be as expected.</source>
-        <translation>Errore CRS di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
+        <translation>Errore SR di input: individuato un errore nelle coordinate del sistema di riferimento, i risultati potrebbero non essere quelli attesi.</translation>
     </message>
     <message>
         <source>
 Input CRS error: One or more input layers missing coordinate reference information, results may not be as expected.</source>
-        <translation>Errore CRS: uno o più layer di input non hanno informazioni sul sistema di riferimento, il risultato potrebbe non essere quello atteso.</translation>
+        <translation>Errore SR: uno o più layer di input non hanno informazioni sul sistema di riferimento, il risultato potrebbe non essere quello atteso.</translation>
     </message>
     <message>
         <source>
@@ -4461,7 +4461,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1206"/>
         <source>Set CRS of Layer(s)</source>
-        <translation>Configura il CRS del Layer(s)</translation>
+        <translation>Imposta SR del/i layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1209"/>
@@ -4471,7 +4471,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1214"/>
         <source>Set project CRS from layer</source>
-        <translation>Configura il CRS del progetto da layer</translation>
+        <translation>Imposta SR progetto dal layer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1219"/>
@@ -4511,7 +4511,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Remove All From Overview</source>
-        <translation>Rimuovi tutto dalla vista panoramica</translation>
+        <translation>Rimuovi tutto dalla panoramica</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1273"/>
@@ -4541,7 +4541,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1302"/>
         <source>Toggle Full Screen Mode</source>
-        <translation>Attiva/Disattiva modalità schermo Intero</translation>
+        <translation>Schermo Intero</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1305"/>
@@ -4566,7 +4566,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1338"/>
         <source>Custom CRS...</source>
-        <translation>CRS personalizzato...</translation>
+        <translation>SR personalizzato...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1347"/>
@@ -6223,7 +6223,7 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/plugins/coordinate_capture/coordinatecapture.cpp" line="54"/>
         <source>Capture mouse coordinates in different CRS</source>
-        <translation>Cattura le coordinate del mouse usando un CRS diverso</translation>
+        <translation>Cattura le coordinate del mouse usando un SR diverso</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="39"/>
@@ -6463,14 +6463,14 @@ Vuoi specificare il percorso (GISBASE) dove è installato GRASS?</translation>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1209"/>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
-        <translation>Impossibile aprire il database CRS %1&lt;br&gt;Errore(%2): %3</translation>
+        <translation>Impossibile aprire il database dei sistemi di riferimento %1&lt;br&gt;Errore(%2): %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1273"/>
         <source>Generated CRS</source>
         <comment>A CRS automatically generated from layer info get this prefix for description</comment>
         <translatorcomment>Un CRS generato automaticamente dal layer ottiene questo prefisso per la descrizione</translatorcomment>
-        <translation>CRS generato</translation>
+        <translation>SR generato</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="31"/>
@@ -6847,13 +6847,13 @@ Soltanto %1 di %2 elementi sono stati scritti.</translation>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="358"/>
         <source>CRS undefined - defaulting to project CRS</source>
-        <translation>CRS non definito - Verrà utilizzato il CRS del progetto</translation>
+        <translation>SR non definito - Verrà utilizzato il SR del progetto</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="365"/>
         <source>CRS undefined - defaulting to default CRS: %1</source>
-        <translatorcomment>CRS traduciamo SRS?</translatorcomment>
-        <translation>CRS non definito - Verrà utilizzato il CRS predefinito: %1</translation>
+        <translatorcomment>CRS traduciamo SRS? No: SR (sistema di riferimento)</translatorcomment>
+        <translation>SR non definito - Verrà utilizzato il SR predefinito: %1</translation>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS</source>
@@ -7025,7 +7025,7 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="119"/>
         <source>CRS Exception</source>
-        <translation>Eccezione CRS</translation>
+        <translation>Eccezione SR</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolselectutils.cpp" line="120"/>
@@ -7940,12 +7940,12 @@ Stai vedendo questo messaggio perché probabilmente non hai settato la variabile
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5430"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
-        <translation>CRS attuale: %1 (riproiezione abilitata)</translation>
+        <translation>SR attuale: %1 (riproiezione abilitata)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5437"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
-        <translation>CRS attuale: %1 (riproiezione disabilitata)</translation>
+        <translation>SR attuale: %1 (riproiezione disabilitata)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6409"/>
@@ -8363,7 +8363,7 @@ Si prega di contattare gli sviluppatori.
     </message>
     <message>
         <source>Toggle Full Screen Mode</source>
-        <translation type="obsolete">Attiva/Disattiva modalità schermo Intero</translation>
+        <translation type="obsolete">Schermo Intero</translation>
     </message>
     <message>
         <source>Ctrl+F</source>
@@ -8463,7 +8463,7 @@ Si prega di contattare gli sviluppatori.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1279"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation>Stato CRS - clicca per aprire la finestra delle coordinate di riferimento spaziale</translation>
+        <translation>Stato SR - clicca per aprire la finestra delle coordinate di riferimento spaziale</translation>
     </message>
     <message>
         <source>
@@ -8904,32 +8904,32 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1986"/>
         <source>CRS Handling</source>
-        <translation>Gestione CRS</translation>
+        <translation>Gestione SR</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1988"/>
         <source>Show active crs in status bar.</source>
-        <translation>Visualizza CRS attualmente in uso nella barra di stato.</translation>
+        <translation>Visualizza nella barra di stato il SR attualmente in uso.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1989"/>
         <source>Assign layer CRS to project (in the legend context menu).</source>
-        <translation>Attribusci CRS dei layer al progetto (nel menu contestuale della legenda).</translation>
+        <translation>Attribusci SR dei layer al progetto (nel menu contestuale della legenda).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1990"/>
         <source>Select default CRS for new projects.</source>
-        <translation>Assegna CRS predefinito al prossimo nuovo progetto.</translation>
+        <translation>Assegna SR predefinito al prossimo progetto.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1991"/>
         <source>Allow setting CRS for multiple layers at once.</source>
-        <translation>Possibilità di configurare i CRS per layer multipli in una sola volta.</translation>
+        <translation>Possibilità di configurare i SR per più layer in una sola volta.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1992"/>
         <source>Default to last selection when prompting for CRS.</source>
-        <translation>Proposta di scelta all&apos;ultima selezione fatta nella richiesta di CRS.</translation>
+        <translation>Propone l&apos;ultima selezione fatta quando richiede un SR.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1994"/>
@@ -12517,17 +12517,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="65"/>
         <source>Empty composer</source>
-        <translation>Composer vuoto</translation>
+        <translation>Modello vuoto</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="135"/>
         <source>Remove composer</source>
-        <translation>Elimina il composer</translation>
+        <translation>Elimina il modello</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="135"/>
         <source>Do you really want to remove the map composer &apos;%1&apos;?</source>
-        <translation>Vuoi veramente rimuovere il composer &apos;%1&apos;?</translation>
+        <translation>Vuoi veramente rimuovere il modello &apos;%1&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermanager.cpp" line="237"/>
@@ -14127,7 +14127,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="414"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>Il sistema di riferimento spaziale (CRS) di origine non è valido. </translation>
+        <translation>Il sistema di riferimento (SR) di origine non è valido. </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="453"/>
@@ -14152,13 +14152,13 @@ fallito con errore: %3</translation>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="422"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>Il sistema di riferimento spaziale (CRS) di destinazione non è valido. </translation>
+        <translation>Il sistema di riferimento (SR) di destinazione non è valido. </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="415"/>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="423"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation>Le coordinate non possono essere riproiettate. Il CRS è %1</translation>
+        <translation>Le coordinate non possono essere riproiettate. Il SR è %1</translation>
     </message>
 </context>
 <context>
@@ -14497,17 +14497,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="31"/>
         <source>You can define your own custom Coordinate Reference System (CRS) here. The definition must conform to the proj4 format for specifying a CRS.</source>
-        <translation>Qui si può personalizzare il Sistema di Riferimento Spaziale (CRS). La definizione deve essere conforme al formato proj4.</translation>
+        <translation>Qui si può personalizzare il Sistema di Riferimento (SR). La definizione deve essere conforme al formato proj4.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="167"/>
         <source>Use the text boxes below to test the CRS definition you are creating. Enter a coordinate where both the lat/long and the transformed result are known (for example by reading off a map). Then press the calculate button to see if the CRS definition you are creating is accurate.</source>
-        <translation>Usa i riquadri di testo sottostanti per provare la definizione del CRS che stai creando. Inserisci una coordinata laddove siano note sia lat/long che il risultato trasformato (ad esempio leggendolo da una mappa). Poi premi il bottone calcola per vedere se la definizione del CRS che stai creando è accurata.</translation>
+        <translation>Usa i riquadri di testo sottostanti per provare la definizione del SR che stai creando. Inserisci una coordinata laddove siano note sia lat/long che il risultato trasformato (ad esempio leggendolo da una mappa). Poi premi il bottone calcola per vedere se la definizione del SR che stai creando è accurata.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscustomprojectiondialogbase.ui" line="197"/>
         <source>Destination CRS        </source>
-        <translation>CRS di destinazione</translation>
+        <translation>SR di destinazione</translation>
     </message>
 </context>
 <context>
@@ -16409,7 +16409,7 @@ Scegli un file valido.</translation>
     <message>
         <location filename="../src/ui/qgsgenericprojectionselectorbase.ui" line="14"/>
         <source>Coordinate Reference System Selector</source>
-        <translation>Selettore Coordinate di Riferimento Spaziale (CRS)</translation>
+        <translation>Selettore sistema di riferimento (SR)</translation>
     </message>
 </context>
 <context>
@@ -20007,7 +20007,7 @@ alla linea %2 colonna %3</translation>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="31"/>
         <source>Provider</source>
-        <translation type="unfinished">Fornitore</translation>
+        <translation>Fornitore</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="36"/>
@@ -21387,7 +21387,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="571"/>
         <source>&amp;Set group CRS</source>
-        <translation>Impo&amp;sta il CRS di gruppo</translation>
+        <translation>Impo&amp;sta il SR di gruppo</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="576"/>
@@ -21440,12 +21440,12 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="435"/>
         <source>&amp;Set layer CRS</source>
-        <translation>Impo&amp;sta il CRS del layer</translation>
+        <translation>Impo&amp;sta il SR del layer</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="438"/>
         <source>Set &amp;project CRS from layer</source>
-        <translation>Imposta il CRS del &amp;progetto dal layer</translation>
+        <translation>Imposta il SR del &amp;progetto dal layer</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="447"/>
@@ -21470,7 +21470,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="475"/>
         <source>Show feature count</source>
-        <translation>Mostra il conteggio degli elementi</translation>
+        <translation>Mostra totale oggetti</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="485"/>
@@ -21810,7 +21810,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="208"/>
         <source>Specify CRS for layer %1</source>
-        <translation>Specifica il CRS per il layer %1</translation>
+        <translation>Specifica il SR per il layer %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="634"/>
@@ -23448,7 +23448,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="274"/>
         <source>CRS ID</source>
-        <translation>ID del CRS</translation>
+        <translation>ID del SR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="291"/>
@@ -23459,7 +23459,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="297"/>
         <source>Specify CRS</source>
-        <translation>Specifica CRS</translation>
+        <translation>Specifica SR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="141"/>
@@ -24260,17 +24260,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1450"/>
         <source>Prompt for &amp;CRS</source>
-        <translation>Richiedi &amp;CRS</translation>
+        <translation>Richiedi &amp;SR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1457"/>
         <source>Use &amp;project CRS</source>
-        <translation>Usa il CRS del &amp;progetto</translation>
+        <translation>Usa il SR del &amp;progetto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1464"/>
         <source>Use default CRS displa&amp;yed below</source>
-        <translation>Utilizza come predefinito il CRS &amp;visualizzato sotto</translation>
+        <translation>Utilizza come predefinito il SR &amp;visualizzato sotto</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1513"/>
@@ -24515,7 +24515,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="1388"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
         <translatorcomment>volevo mantenere la stessa shortcut</translatorcomment>
-        <translation>Effettua sempre la riproiezione al volo</translation>
+        <translation>E&amp;ffettua sempre la riproiezione al volo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1395"/>
@@ -24526,7 +24526,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1415"/>
         <source>Always start new projects with this CRS</source>
-        <translation>Inizia un nuovo progetto sempre con questo CRS</translation>
+        <translation>Inizia un nuovo progetto sempre con questo SR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1434"/>
@@ -24536,7 +24536,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1440"/>
         <source>When a new layer is created, or when a layer is loaded that has no Coordinate Reference System (CRS)</source>
-        <translation>Quando viene creato un nuovo layer, o quando viene caricato un layer che non ha un sistema di riferimento (CRS)</translation>
+        <translation>Quando viene creato un nuovo layer, o quando viene caricato un layer che non ha un sistema di riferimento (SR)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1604"/>
@@ -24773,7 +24773,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1345"/>
         <source>CRS</source>
-        <translation>CRS</translation>
+        <translation>SR</translation>
     </message>
     <message>
         <source>Prompt for CRS</source>
@@ -26989,7 +26989,7 @@ Cercare i layer mancanti?</translation>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="533"/>
         <source>CRS %1 was already selected</source>
-        <translation>Il CRS %1 è già stato selezionato</translation>
+        <translation>Il SR %1 è già stato selezionato</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="551"/>
@@ -27267,7 +27267,7 @@ Procedere?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="306"/>
         <source>Coordinate Reference System (CRS)</source>
-        <translation>Coordinate di Riferimento Spaziale (CRS)</translation>
+        <translation>Sistema di riferimento (SR)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="324"/>
@@ -27346,13 +27346,13 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="20"/>
         <source>Coordinate Reference System Selector</source>
-        <translation>Selettore Coordinate di Riferimento Spaziale (CRS)</translation>
+        <translation>Selettore sistema di riferimento (SR)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="81"/>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="230"/>
         <source>Coordinate Reference System</source>
-        <translation>Coordinate di Riferimento Spaziale</translation>
+        <translation>Sistema di Riferimento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="91"/>
@@ -27374,7 +27374,7 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="157"/>
         <source>Hide deprecated CRSs</source>
-        <translation>Nascondi i CRS sconsigliati</translation>
+        <translation>Nascondi i SR sconsigliati</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="192"/>
@@ -28017,7 +28017,7 @@ p, li { white-space: pre-wrap; }(new line)
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2335"/>
         <source>Specify CRS for layer %1</source>
-        <translation>Specifica il CRS per il layer %1</translation>
+        <translation>Specifica il SR per il layer %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1777"/>
@@ -30727,7 +30727,7 @@ L´errore era:
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="286"/>
         <source>Using the field &quot;%1&quot; for subset</source>
         <translatorcomment>Forse è meglio &quot;Uso del campo...&quot;</translatorcomment>
-        <translation type="unfinished">Usando il campo &quot;%1&quot; come sotto insieme</translation>
+        <translation>Usando il campo &quot;%1&quot; come sotto insieme</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="289"/>
@@ -30800,8 +30800,8 @@ L´errore era:
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="708"/>
         <source>Coordinate reference system(CRS) of
 &quot;%1&quot; is invalid(see CRS of provider).</source>
-        <translation type="unfinished">Il sistema di riferimento (CRS) di 
-&quot;%1&quot; non è valido (vedi il CRS del provider).</translation>
+        <translation>Il sistema di riferimento (SR) di 
+&quot;%1&quot; non è valido (vedi il SR del provider).</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialog.cpp" line="709"/>
@@ -30811,7 +30811,7 @@ CRS of map is %1.
 %2.</source>
         <translation>
 
-Il CRS della mappa è %1.
+Il SR della mappa è %1.
 %2.</translation>
     </message>
     <message>
@@ -31655,31 +31655,31 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="89"/>
         <source>Failed to connect to database</source>
-        <translation type="unfinished">Collegamento al database fallito</translation>
+        <translation>Collegamento al database fallito</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="90"/>
         <source>A connection to the SQL Anywhere database cannot be established.</source>
-        <translation type="unfinished">Non è possibile stabilire un collegamente con un database SQL Anywhere.</translation>
+        <translation>Non è possibile stabilire un collegamente con il database SQL Anywhere.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="135"/>
         <source>No suitable key column</source>
-        <translation type="unfinished">Nessuna colonna utilizzabile come chiave</translation>
+        <translation>Nessuna colonna utilizzabile come chiave</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="136"/>
         <source>The source relation %1 has no column suitable for use as a unique key.
 
 Quantum GIS requires that the relation has an integer column no larger than 32 bits containing unique values. </source>
-        <translation type="unfinished">La sorgente della relazione %1 non ha una colonna utilizzabile come chiave univoca.
+        <translation>La sorgente della relazione %1 non ha una colonna utilizzabile come chiave univoca.
 
-Quantum GIS richiede che la relazione abbia una colonna di tipo intero non superiore ai 32 bit che contenga valore univoci.</translation>
+Quantum GIS richiede che la relazione abbia una colonna di tipo intero non superiore ai 32 bit che contenga valori univoci.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="221"/>
         <source>Error loading attributes</source>
-        <translation type="unfinished">Errore nel caricamento degli attributi</translation>
+        <translation>Errore nel caricamento degli attributi</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="247"/>
@@ -31696,52 +31696,52 @@ Quantum GIS richiede che la relazione abbia una colonna di tipo intero non super
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="839"/>
         <source>Error describing bind parameters</source>
-        <translation type="unfinished">Errore nella descrizione dei parametri di associazione</translation>
+        <translation>Errore nella descrizione dei parametri di associazione</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="863"/>
         <source>Error binding parameters</source>
-        <translation type="unfinished">Errore nei parametri di associazione</translation>
+        <translation>Errore nei parametri di associazione</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1152"/>
         <source>Error inserting features</source>
-        <translation type="unfinished">Errore nell&apos;inserimento di geometrie</translation>
+        <translation>Errore nell&apos;inserimento di geometrie</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1215"/>
         <source>Error deleting features</source>
-        <translation type="unfinished">Errore durante l&apos;eliminazione delle geometrie</translation>
+        <translation>Errore durante l&apos;eliminazione delle geometrie</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1314"/>
         <source>Error adding attributes</source>
-        <translation type="unfinished">Errore durante l&apos;aggiunta degli attributi</translation>
+        <translation>Errore durante l&apos;aggiunta degli attributi</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1382"/>
         <source>Error deleting attributes</source>
-        <translation type="unfinished">Errore durante la rimozione degli attributi</translation>
+        <translation>Errore durante la rimozione degli attributi</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1454"/>
         <source>Attribute not found</source>
-        <translation type="unfinished">Attributo non trovato</translation>
+        <translation>Attributo non trovato</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1471"/>
         <source>Error updating attributes</source>
-        <translation type="unfinished">Errore nell&apos;aggiornamento degli attributi</translation>
+        <translation>Errore nell&apos;aggiornamento degli attributi</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1577"/>
         <source>Error updating features</source>
-        <translation type="unfinished">Errore nell&apos;aggiornamento delle geometrie</translation>
+        <translation>Errore nell&apos;aggiornamento delle geometrie</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1740"/>
         <source>Error verifying geometry column %1</source>
-        <translation type="unfinished">Errore nella verifica della colonna geometrica %1</translation>
+        <translation>Errore nella verifica della colonna geometrica %1</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1813"/>
@@ -31751,42 +31751,42 @@ Quantum GIS richiede che la relazione abbia una colonna di tipo intero non super
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1814"/>
         <source>Column %1 has a geometry type of %2, which Quantum GIS does not currently support.</source>
-        <translation type="unfinished">La colonna %1 ha un tipo di geometria (%2) che attualmente non è supportato da Quantum GIS.</translation>
+        <translation>La colonna %1 ha un tipo di geometria (%2) che attualmente non è supportato da Quantum GIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1822"/>
         <source>Mixed Spatial Reference Systems</source>
-        <translation type="unfinished">Sistemi di Riferimento Spaziale misti</translation>
+        <translation>Sistemi di Riferimento misti</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1823"/>
         <source>Column %1 is not restricted to a single SRID, which Quantum GIS requires.</source>
-        <translation type="unfinished">La colonna %1 non è vincolata ad un solo SRID, come richiesto da Quantum GIS.</translation>
+        <translation>La colonna %1 non è vincolata ad un solo SRID, come richiesto da Quantum GIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="1854"/>
         <source>Error checking database ReadOnly property</source>
-        <translation type="unfinished">Errore nel controllo della proprietà SolaLettura del database</translation>
+        <translation>Errore nel controllo della proprietà SolaLettura del database</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2075"/>
         <source>Error loading SRS definition</source>
-        <translation type="unfinished">Errore durante il caricamento della definizione SRS</translation>
+        <translation>Errore durante il caricamento della definizione SR</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2120"/>
         <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished">Dato che Quantum GIS supporta soltanto dati planari, il driver di SQL Anywhere trasformerà i dati con la proiezione (SRD= %1) planare compatibile.</translation>
+        <translation>Dato che Quantum GIS supporta soltanto dati planari, il driver di SQL Anywhere trasformerà i dati con la proiezione (SRD= %1) planare compatibile.</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2137"/>
         <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished">Dato che Quantum GIS supporta solamente dati planari e non compatibili con la proiezione planare trovata, il driver di conversione tenterà di trasformare i dati a WGS 84 planare (SRID =%1).</translation>
+        <translation>Dato che Quantum GIS supporta solamente dati planari e non compatibili con la proiezione planare trovata, il driver di conversione tenterà di trasformare i dati a WGS 84 planare (SRID =%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2145"/>
         <source>Limited Support of Round Earth SRS</source>
-        <translation type="unfinished">Supporto limitato del SRS di tipo sferico</translation>
+        <translation>Supporto limitato del SR di tipo sferico</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2146"/>
@@ -31794,7 +31794,7 @@ Quantum GIS richiede che la relazione abbia una colonna di tipo intero non super
 
 Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
         <translatorcomment>Libera traduzione: verificare</translatorcomment>
-        <translation type="unfinished">La colonna %1 (%2) contiene geometrie che appartengono ad un sistema di rifermento spaziale sferico (SRID=%3). %4.
+        <translation>La colonna %1 (%2) contiene geometrie che appartengono ad un sistema di rifermento spaziale sferico (SRID=%3). %4.
 
 Gli aggiornamenti dei valori geometrici saranno disabilitati, e le prestazioni delle interrogazioni potrebbero essere scarse perché non verranno utilizzati gli indici spaziali. Per migliorare le prestazioni si consiglia di creare un indice spaziale in una nuova colonna (meglio se calcolata) che contenga una proiezione planare per queste geometrie. Per maggiori informazione leggere la documentazione relativa ai metodi ST_RID(INT) e ST_Transform(INT) di SQL Anywhere.</translation>
     </message>
@@ -32350,7 +32350,7 @@ Sovrascrivere?</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="36"/>
         <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available to the Quantum GIS project, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation type="unfinished">Quantum GIS è un software libero.Questo vuol dire che il suo codice sorgente può essere visto e modificato liberamente. La Licenza GPL pone la restrizione che qualsisasi modifica debba essere resa disponibile al progetto Quantum GIS, e che non si possa creare una nuova versione di Quantum GIS sotto una licenza a &apos;codice chiuso&apos;. Visita il sito &lt;a href=&quot;http://qgis.org&quot;&gt; del progetto Quantum GIS (http://qgis.org)&lt;/a&gt; per maggiori informazioni.</translation>
+        <translation>Quantum GIS è un software libero.Questo vuol dire che il suo codice sorgente può essere visto e modificato liberamente. La Licenza GPL pone la restrizione che qualsiasi modifica debba essere resa disponibile al progetto Quantum GIS, e che non si possa creare una nuova versione di Quantum GIS sotto una licenza a &apos;codice chiuso&apos;. Visita il sito &lt;a href=&quot;http://qgis.org&quot;&gt;del progetto Quantum GIS (http://qgis.org)&lt;/a&gt; per maggiori informazioni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="46"/>
@@ -32360,147 +32360,147 @@ Sovrascrivere?</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="47"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation type="unfinished">Se stai scrivendo una pubblicazione scientifica o qualsiasi altro articolo che si riferisce a QGIS ci piacerebbe includere il tuo lavoro nella &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;sezione casi di studio&lt;/a&gt;della home page di Quantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
+        <translation>Se stai scrivendo una pubblicazione scientifica o qualsiasi altro articolo che si riferisce a QGIS ci piacerebbe includere il tuo lavoro nella &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;sezione casi di studio&lt;/a&gt; della home page di Quantum GIS (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="53"/>
         <source>Become an QGIS translator</source>
-        <translation type="unfinished">Diventa un traduttore di QGIS</translation>
+        <translation>Diventa un traduttore di QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="54"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page (http://www.qgis.org/wiki/GUI_Translation).&lt;/a&gt;</source>
-        <translation type="unfinished">Ti piacerebbe vedere QGIS nella tua lingua? Stiamo cercando altri traduttori e apprezzeremo il tuo aiuto! Il processo di traduzione è abbastanza semplice - le istruzioni sono disponibili nella pagina wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;dei traduttori di QGIS(http://www.qgis.org/wiki/GUI_Translation).&lt;/a&gt;</translation>
+        <translation>Ti piacerebbe vedere QGIS tradotto nella tua lingua? Stiamo cercando altri traduttori e apprezzeremo il tuo aiuto! Il processo di traduzione è abbastanza semplice - le istruzioni sono disponibili nella pagina wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;dei traduttori di QGIS(http://www.qgis.org/wiki/GUI_Translation).&lt;/a&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="62"/>
         <source>QGIS Mailing lists</source>
-        <translation type="unfinished">QGIS Mailing lists</translation>
+        <translation>Mailing lists di QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="63"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating the the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html).</source>
-        <translation type="unfinished">Se hai bisogno di aiuto per utilizzare QGIS abbiamo una mailing list &apos;utenti&apos; in cui essi si aiutano a vicenda per questioni attinenti all&apos; uso del nostro software. Abbiamo anche una mailing list &apos;sviluppatori&apos;. per coloro che vogliono collaborare e discutere di argomenti riguardanti il codice sorgente di  QGIS. Dettagli su come iscriversi sono nella sezione &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt; comunità &lt;/a&gt; della home page QGIS (http:// www.qgis.org / it / community / mailing-lists.html).</translation>
+        <translation>Se hai bisogno di aiuto per utilizzare QGIS abbiamo una mailing list &apos;utenti&apos; in cui si aiutano a vicenda per questioni attinenti all&apos; uso del nostro software. Abbiamo anche una mailing list &apos;sviluppatori&apos;. per coloro che vogliono collaborare e discutere di argomenti riguardanti il codice sorgente di QGIS. Dettagli su come iscriversi sono nella sezione &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;comunità&lt;/a&gt; della home page QGIS (http:// www.qgis.org / it / community / mailing-lists.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="71"/>
         <source>Is it &apos;QGIS&apos; or &apos;Quantum GIS&apos;?</source>
-        <translation type="unfinished">Si dice &apos;QGIS&apos;or &apos;Quantum GIS&apos;?</translation>
+        <translation>Si dice &apos;QGIS&apos;o &apos;Quantum GIS&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="72"/>
         <source>Both are correct. For articles we suggest you write &apos;Quantum GIS (QGIS) is ....&apos; and then refer to it as QGIS thereafter.</source>
-        <translation type="unfinished">Sono entrabi corretti. Per gli articoli suggeriamo di scrivere &apos;Quantum GIS (QGIS) è ....&apos; e nel seguito riferirsi sempre all&apos;acronimo QGIS.</translation>
+        <translation>Sono entrambi corretti. Per gli articoli suggeriamo di scrivere &apos;Quantum GIS (QGIS) è ....&apos; e nel seguito riferirsi sempre all&apos;acronimo QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="76"/>
         <source>How do I refer to Quantum GIS?</source>
-        <translation type="unfinished">Come mi devo riferire a Quantum GIS?</translation>
+        <translation>Come chiamare Quantum GIS?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="77"/>
         <source>QGIS is spelled in all caps. We have various subprojects of the QGIS project and it will help to avoid confusion if you refer to each by its name:&lt;ul&gt;&lt;li&gt;QGIS Library - this is the C++ library that contains the core logic that is used to build the QGIS user interface and other applications.&lt;/li&gt;&lt;li&gt;QGIS Application - this is the desktop application that you know and love so much :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - this is a server-side application based on the QGIS Library that will serve up your .qgs projects using the WMS protocol.&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished">QGIS è scritto tutto maiuscolo. Abbiamo vari sottoprogetti del progetto QGIS e questo aiuterà ad evitare confusione se ci si riferisce a ognuno con il suo nome: &lt;li&gt; QGIS Library - questa è la libreria C + + che contiene la logica di base che viene utilizzata per compilare l&apos;interfaccia utente e le altre applicazioni di QGIS&lt;/li&gt;&lt;li&gt;.QGIS Application - Questa è l&apos;applicazione desktop che conoscete e amate così tanto :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - questa è una applicazione server-side basata sulla QGIS Library che pubblicherà il vostro progetto .qgs attraverso il protocollo WMS.&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>QGIS è scritto tutto maiuscolo. Abbiamo vari sottoprogetti del progetto QGIS e chiamare ognuno con il suo nome aiuterà ad evitare confusione: &lt;li&gt;QGIS Library - questa è la libreria C + + che contiene la logica di base che viene utilizzata per compilare l&apos;interfaccia utente e le altre applicazioni di QGIS&lt;/li&gt;&lt;li&gt;.QGIS Application - Questa è l&apos;applicazione desktop che conoscete e amate così tanto :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - questa è una applicazione server-side basata sulla QGIS Library che pubblicherà il vostro progetto .qgs attraverso il protocollo WMS.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="91"/>
         <source>Add the current date to a map layout</source>
-        <translation type="unfinished">Aggiungi la data corrente al layout</translation>
+        <translation>Aggiungi la data corrente al layout</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="92"/>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
-        <translation type="unfinished">È possibile aggiungere una variabile data corrente al vostro layout. Create un&apos;etichetta di testonormale  e aggiungete la stringa $CURRENT_DATE (yyyy-MM-dd) alla casella di testo. Vedere la &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt; documentazionie relativa al formato QDate:: toString &lt;/a&gt; per i formati di data possibile.</translation>
+        <translation>È possibile aggiungere una variabile data corrente al vostro layout. Create un&apos;etichetta di testo normale e aggiungete la stringa $CURRENT_DATE (yyyy-MM-dd) alla casella di testo. Vedere la &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;documentazionie relativa al formato QDate:: toString&lt;/a&gt; per i formati di data utilizzabili.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="99"/>
         <source>Moving Elements and Maps in the Print Composer</source>
-        <translation type="unfinished">Sposta gli elementi e le mappe nel Print Composer</translation>
+        <translation>Sposta gli elementi e le mappe nel gestore di stampe</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
-        <translation type="unfinished">Nella barra degli strumenti del print composer si trovano due pulsanti per lo spostamento degli elementi. Quello di sinistra (un cursore di selezione con il simbolo della mano) seleziona e sposta elementi del layout. Dopo aver selezionato l&apos;elemento con questo strumento è possibile muoversi anche con le frecce direzionali. Per un posizionamento preciso usare le opzioni &lt;strong&gt;Posizione e Dimensione&lt;/strong&gt;, che si trovano nella scheda &lt;strong&gt; oggetto → General Options → Posizione e dimensione &lt;/strong&gt;. Per facilitare il posizionamento è possibile anche impostare specifici punti di ancoraggio degli elementi all&apos;interno di questo finestra. Lo&apos;altro strumento di spostamento (la cui icona è la combinazione di  globo con l&apos;icona della mano) permette di spostare il contenuto della mappa all&apos;interno di un riquadro.</translation>
+        <translation>Nella barra degli strumenti del gestore di stampe si trovano due pulsanti per lo spostamento degli elementi. Quello di sinistra (un cursore di selezione con il simbolo della mano) seleziona e sposta elementi del layout. Dopo aver selezionato l&apos;elemento con questo strumento è possibile muoversi anche con le frecce direzionali. Per un posizionamento preciso usare le opzioni &lt;strong&gt;Posizione e Dimensione&lt;/strong&gt;, che si trovano nella scheda &lt;strong&gt;Oggetto → General Options → Posizione e dimensione&lt;/strong&gt;. Per facilitare il posizionamento è possibile anche impostare specifici punti di ancoraggio degli elementi all&apos;interno di questo finestra. L&apos;altro strumento di spostamento (la cui icona è la combinazione di un globo con l&apos;icona della mano) permette di spostare il contenuto della mappa all&apos;interno di un riquadro.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="114"/>
         <source>Lock an element in the layout view</source>
-        <translation type="unfinished">Aggancia un elemento nella vista del layout</translation>
+        <translation>Aggancia un elemento nella vista del layout</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="115"/>
         <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
-        <translation type="unfinished">Premendo il pulsante sinistro del mouse su un elemento nella vista layout è possibile selezionarlo, con il pulsante destro è possibile bloccarlo: il simbolo del lucchetto apparirà nell&apos;angolo in alto a sinistra dell&apos;elemento selezionato. Questo impedisce qualsisasi spostamento accidentale provocato dal mouse. In questo stato è ancora possibile muovere l&apos;elemento con le frecce direzionali o con il posizionamento assoluto, impostando la sua &lt;strong&gt;posizione e dimensione&lt;/strong&gt;.</translation>
+        <translation>Premendo il pulsante sinistro del mouse su un elemento nella vista layout è possibile selezionarlo, con il pulsante destro è possibile bloccarlo: il simbolo del lucchetto apparirà nell&apos;angolo in alto a sinistra dell&apos;elemento selezionato. Questo impedisce qualsisasi spostamento accidentale provocato dal mouse. In questo stato è ancora possibile muovere l&apos;elemento con le frecce direzionali o con il posizionamento assoluto, impostando la sua &lt;strong&gt;posizione e dimensione&lt;/strong&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="125"/>
         <source>Rotating a map and linking a north arrow</source>
-        <translation type="unfinished">Rotazione di una mappa e collegamento alla freccia del nord</translation>
+        <translation>Rotazione di una mappa e collegamento alla freccia del nord</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="126"/>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item tab &amp;rarr; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool, the button with the little camera icon. QGIS comes with a selection of north arrows. After the placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished">È possibile ruotare la mappa impostando il suo valore di rotazione nel punto&lt;strong&gt; scheda elemento → Mappa &lt;/strong&gt;. Per inserire una freccia/direzione del nord del layout è possibile utilizzare il comando&lt;strong&gt; Aggiungi immagine &lt;/strong&gt;: il pulsante con l&apos;icona piccola macchina fotografica. QGIS fornisce un ampia scelta di simboli e di frecce/direzioni del nord. Dopo il posizionamento della freccia nord nel layout si può collegare con una cornice mappa specifica attivando la sincronizzazione  selezionando l&apos;opzione  &lt;strong&gt;sincronizza mappa &lt;/strong&gt; e selezionando mappa. Ogni volta che si cambia il valore di rotazione di una mappa collegato, la freccia a nord si adeguerà conseguentemente.</translation>
+        <translation>È possibile ruotare la mappa impostando il suo valore di rotazione nel punto&lt;strong&gt;Scheda elemento → Mappa&lt;/strong&gt;. Per inserire una freccia/direzione del nord del layout è possibile utilizzare il comando &lt;strong&gt;Aggiungi immagine&lt;/strong&gt;: il pulsante con l&apos;icona piccola macchina fotografica. QGIS fornisce un ampia scelta di simboli e di frecce/direzioni del nord. Dopo il posizionamento della freccia nord nel layout si può collegare con una cornice mappa specifica attivando la sincronizzazione selezionando l&apos;opzione &lt;strong&gt;sincronizza mappa&lt;/strong&gt; e selezionando la mappa. Ogni volta che si cambia il valore di rotazione di una mappa collegato, la freccia a nord si adeguerà conseguentemente.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="138"/>
         <source>Numeric scale value in map layout linked to map frame</source>
-        <translation type="unfinished">Valore numerico della scala nel layout collegato alla mappa</translation>
+        <translation>Valore numerico della scala nel layout collegato alla mappa</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="139"/>
         <source>If you want to place a text label as a placeholder for the current scale, linked to a map frame, you need to place a scalebar and set the style to &apos;Numeric&apos;. You also need to select the map frame, if there is more than one.</source>
-        <translation type="unfinished">Se si desidera inserire un&apos;etichetta di testo per evidenziare la scala corrente, sincronizzata con l&apos;inquadramento di una mappa, è necessario inserire l&apos;oggetto barra di scala e impostare lo stile a &apos;numerica&apos;. È inoltre necessario selezionare la mappa, se c&apos;è più di una.</translation>
+        <translation>Se si desidera inserire un&apos;etichetta di testo per evidenziare la scala corrente, sincronizzata con l&apos;inquadramento di una mappa, è necessario inserire l&apos;oggetto barra di scala e impostare lo stile a &apos;numerica&apos;. È inoltre necessario selezionare la mappa, se c&apos;è più di una.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
         <source>Using the mouse scroll wheel</source>
-        <translation type="unfinished">Usare la rotellina del mouse</translation>
+        <translation>Usare la rotellina del mouse</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="147"/>
         <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
-        <translation type="unfinished">È possibile utilizzare la rotellina del mouse come comandi di &apos;zoom in &apos; e &apos;zoom out&apos; e per spostarsi sulla mappa:scorrere in avanti per ingrandire, al contrario per ridurre; tenere premuto la rotella di scorrimento verso il basso per navigare la mappa. È possibile configurare le opzioni per il comportamento della ruota di scorrimento nel pannello Opzioni.</translation>
+        <translation>È possibile utilizzare la rotellina del mouse come comandi di &apos;zoom in &apos; e &apos;zoom out&apos; e per spostarsi sulla mappa: scorrere in avanti per ingrandire, al contrario per ridurre; tenere premuta la rotella di scorrimento verso il basso per navigare nella mappa. È possibile configurare le opzioni per il comportamento della rotella di scorrimento nel pannello Opzioni.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="154"/>
         <source>Stopping rendering</source>
-        <translation type="unfinished">Interrompere il rendering</translation>
+        <translation>Interrompere la visualizzazione</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="155"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished">Può capitare di avere un set di dati di grosse dimensioni per la cui visualizzazione è richiesto molto tempo.Per fermare il rendering in qualsiasi momento è possibile premere &apos;Esc&apos; (il tasto Esc) oppure la piccola icona rossa &apos;X&apos; nella barra di stato in basso a destra. Se si devono eseguire azioni diverse (ad esempio modificare le opzioni di simbologia), e si desidera disabilitare temporaneamente il rendering della mappa mentre si esegue queste operazioni, è possibile deselezionare la casella &apos;Render&apos; in basso a destra della barra di stato. É importante ripristinarlo per visualizzare completamente la mappa!</translation>
+        <translation>Può capitare di avere un set di dati di grosse dimensioni per la cui visualizzazione è richiesto molto tempo. Per interrompere la visualizzazione in qualsiasi momento è possibile premere &apos;Esc&apos; (il tasto Esc) oppure la piccola icona rossa &apos;X&apos; nella barra di stato in basso a destra. Se si devono eseguire azioni diverse (ad esempio modificare le opzioni di simbologia), e si desidera disabilitare temporaneamente la visualizzazione della mappa mentre si esegue queste operazioni, è possibile deselezionare la casella &apos;Aggiorna&apos; in basso a destra della barra di stato. È importante ripristinarlo per visualizzare completamente la mappa!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="166"/>
         <source>Join intersected polylines when rendering</source>
-        <translation type="unfinished">Unisci le intersezioni di polilinee durante il rendering</translation>
+        <translation>Unisci le intersezioni di polilinee durante lavisualizzazione</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="167"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
-        <translation type="unfinished">Quando si applicano diversi livelli di stile ad layer polilinea, è possibile unirele  linee che si intersecano insieme semplicemente abilitando i livelli di simbolo. L&apos;immagine qui sotto mostra prima (a sinistra) e dopo (a destra) vista di un&apos;intersezione  quando i livelli di simbolo sono abilitati.</translation>
+        <translation>Quando si applicano diversi livelli di stile ad layer polilinea, è possibile unire le linee che si intersecano, semplicemente abilitando i livelli di simbolo. L&apos;immagine qui sotto mostra un&apos;intersezione, prima (a sinistra) e dopo (a destra) dell&apos;abilitazione dei livelli di simbolo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>Auto-enable on the fly projection</source>
-        <translation type="unfinished">Proizione al volo automatica</translation>
+        <translation>Proiezione al volo automatica</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="176"/>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
-        <translation type="unfinished">Nella finestra Opzioni della scheda CRS è possibile impostare automaticamente la &apos;proiezione al volo. In questo modo quando si crea un nuovo progetto ogni layer caricato viene (eventualmente) riproiettato nel sistema di riferimento del progetto.</translation>
+        <translation>Nella finestra Opzioni della scheda SR è possibile impostare automaticamente la &apos;proiezione al volo&apos;. In questo modo, quando si crea un nuovo progetto ogni layer caricato viene (eventualmente) riproiettato nel sistema di riferimento del progetto.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="183"/>
         <source>Sponsor QGIS</source>
-        <translation type="unfinished">QGIS Sponsor</translation>
+        <translation>Sponsorizza QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="184"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished">Se QGIS ti fa risparmiare denaro, ti piace il nostro lavoro e hai la possibilità di contribuire finanziariamente, considera l&apos;opportunità sponsorizzare lo sviluppo di Quantum GIS. Usiamo le donazioni degli sponsor per pagare i viaggi e i costi relativi al nostro  bi-annuale hackfests, e in generale, perseguire gli obiettivi del nostro progetto. Si prega di consultare la pagina Web&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt; QGIS Sponsorizzazioni&lt;/a&gt; per ulteriori dettagli.</translation>
+        <translation>Se QGIS ti fa risparmiare denaro, ti piace il nostro lavoro e hai la possibilità di contribuire finanziariamente, considera l&apos;opportunità sponsorizzare lo sviluppo di Quantum GIS. Usiamo le donazioni degli sponsor per pagare i viaggi e i costi relativi al nostro meeting bi-annuale degli sviluppatori, e in generale, per perseguire gli obiettivi del nostro progetto. Si prega di consultare la pagina Web&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Sponsorizzazioni QGIS&lt;/a&gt; per ulteriori dettagli.</translation>
     </message>
 </context>
 <context>
@@ -32741,7 +32741,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
         <source>Target SRS:</source>
-        <translation>SRS di destinazione:</translation>
+        <translation>SR di destinazione:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
@@ -33138,7 +33138,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="4317"/>
         <source>Specify CRS for layer %1</source>
-        <translation>Specifica il CRS per il layer %1</translation>
+        <translation>Specifica il SR per il layer %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2892"/>
@@ -33720,7 +33720,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="463"/>
         <source>Specify CRS</source>
-        <translation>Specifica CRS</translation>
+        <translation>Specifica SR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
@@ -33982,7 +33982,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="58"/>
         <source>Original CRS</source>
-        <translation>CRS originale</translation>
+        <translation>SR originale</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsvectorlayersaveasdialog.cpp" line="103"/>
@@ -34005,7 +34005,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="27"/>
         <source>CRS</source>
-        <translation>CRS</translation>
+        <translation>Sist rif</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="54"/>
@@ -34351,7 +34351,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="397"/>
         <source>CRS %1 not supported.</source>
-        <translation>CRS %1 non supportato.</translation>
+        <translation>SR %1 non supportato.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="436"/>
@@ -34436,8 +34436,8 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
         <translation>
-            <numerusform>Coordinate di Riferimento Spaziale (%n disponbile)</numerusform>
-            <numerusform>Coordinate di Riferimento Spaziale (%n disponbili)</numerusform>
+            <numerusform>Sistema di Riferimento (%n disponbile)</numerusform>
+            <numerusform>Sistemi di Riferimento (%n disponbili)</numerusform>
         </translation>
     </message>
     <message>
@@ -34467,12 +34467,12 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="874"/>
         <source>No common CRS for selected layers.</source>
-        <translation>Nessun CRS comune ai layer selezionati.</translation>
+        <translation>Nessun SR comune ai layer selezionati.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="879"/>
         <source>No CRS selected</source>
-        <translation>Nessun CRS selezionato</translation>
+        <translation>Nessun SR selezionato</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="884"/>
@@ -34666,7 +34666,7 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="343"/>
         <source>CRS</source>
-        <translation>CRS</translation>
+        <translation>SR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="352"/>
@@ -34747,12 +34747,12 @@ Questo potrebbe essere un errore di configurazione del server. Utilizzare comunq
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1967"/>
         <source>Request contains a CRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>La richiesta contiene un CRS non disponibile sul server per uno o più dei layer scelti.</translation>
+        <translation>La richiesta contiene un SR non disponibile sul server per uno o più dei layer scelti.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1971"/>
         <source>Request contains a SRS not offered by the server for one or more of the Layers in the request.</source>
-        <translation>La richiesta contiene un CRS non disponibile sul server per uno o più dei layer scelti.</translation>
+        <translation>La richiesta contiene un SR non disponibile sul server per uno o più dei layer scelti.</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1975"/>
@@ -35013,7 +35013,7 @@ La risposta è stata:
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2324"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2334"/>
         <source>Available in CRS</source>
-        <translation>Disponibile in CRS</translation>
+        <translation>Disponibile in SR</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2345"/>
@@ -35033,7 +35033,7 @@ La risposta è stata:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2634"/>
         <source>CRS</source>
-        <translation>CRS</translation>
+        <translation>SR</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2641"/>
@@ -35363,7 +35363,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="46"/>
         <source>Transportation layer</source>
-        <translation type="unfinished">Layer trasporti</translation>
+        <translation>Layer trasporti</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="48"/>
@@ -35378,7 +35378,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="102"/>
         <source>Reverse direction</source>
-        <translation type="unfinished">Direzione inversa</translation>
+        <translation>Direzione inversa</translation>
     </message>
     <message>
         <source>Both direction</source>
@@ -35392,7 +35392,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="70"/>
         <source>Value for reverse direction</source>
-        <translation type="unfinished">Valore di direzione indietro</translation>
+        <translation>Valore di direzione inversa</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="76"/>
@@ -35417,7 +35417,7 @@ URL provata: %1</translation>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="100"/>
         <source>Two-way direction</source>
-        <translation>nei due sensi a doppio senso</translation>
+        <translation>a doppio senso</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="101"/>
