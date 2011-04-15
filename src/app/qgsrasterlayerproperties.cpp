@@ -521,8 +521,16 @@ void QgsRasterLayerProperties::sync()
 
   if ( mRasterLayer->dataProvider()->dataType( 1 ) == QgsRasterDataProvider::ARGBDataType )
   {
-    delete tabPageSymbology;
-    delete tabPageColormap;
+    if ( tabPageSymbology != NULL )
+    {
+      delete tabPageSymbology;
+      tabPageSymbology = NULL;
+    }
+    if ( tabPageColormap != NULL )
+    {
+      delete tabPageColormap;
+      tabPageColormap = NULL;
+    }
     gboxNoDataValue->setEnabled( false );
     gboxCustomTransparency->setEnabled( false );
     tabBar->setCurrentWidget( tabPageMetadata );
@@ -530,12 +538,20 @@ void QgsRasterLayerProperties::sync()
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::BuildPyramids ) )
   {
-    delete tabPagePyramids;
+    if ( tabPagePyramids != NULL )
+    {
+      delete tabPagePyramids;
+      tabPagePyramids = NULL;
+    }
   }
 
   if ( !( mRasterLayer->dataProvider()->capabilities() & QgsRasterDataProvider::Histogram ) )
   {
-    delete tabPageHistogram;
+    if ( tabPageHistogram != NULL )
+    {
+      delete tabPageHistogram;
+      tabPageHistogram = NULL;
+    }
   }
 
 #if 0
