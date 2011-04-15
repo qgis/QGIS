@@ -17,28 +17,28 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_contour")
 
+      gdalVersion = Utils.GdalConfig.version()
+      self.useDirAsOutput = gdalVersion < "1.7.0"
+
+      self.outSelector.setType( self.outSelector.FILE )
+
       # set the default QSpinBoxes value
       self.intervalDSpinBox.setValue(10.0)
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputDirEdit, SIGNAL("textChanged(const QString &)")),
+          (self.inSelector, SIGNAL("filenameChanged()") ),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.intervalDSpinBox, SIGNAL("valueChanged(double)")),
           (self.attributeEdit, SIGNAL("textChanged(const QString &)"), self.attributeCheck)
         ]
       )
 
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
-      self.connect(self.selectOutputDirButton, SIGNAL("clicked()"), self.fillOutputDirEdit)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo( self ):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -47,15 +47,22 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText(inputFile)
+      self.inSelector.setFilename(inputFile)
 
-  def fillOutputDirEdit(self):
-      outputDir, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Contour output" ), True)
-      if outputDir.isEmpty():
+  def fillOutputFileEdit(self):
+      if not self.useDirAsOutput:
+        lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
+        outputFile, encoding = Utils.FileDialog.getOpenFileName(self, self.tr( "Select where to save the Contour output" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter, True)
+      else:
+        outputFile, encoding = Utils.FileDialog.getExistingDirectory(self, self.tr( "Select where to save the Contour output" ), True)
+
+      if outputFile.isEmpty():
         return
 
-      self.outputDirEdit.setText(outputDir)
+      if not self.useDirAsOutput:
+        Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
+
+      self.outSelector.setFilename(outputFile)
       self.lastEncoding = encoding
 
   def getArguments(self):
@@ -66,20 +73,21 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if True: # XXX in this moment the -i argument is not optional
         arguments << "-i"
         arguments << QString(str(self.intervalDSpinBox.value()))
-      if self.inputLayerCombo.currentIndex() >= 0:
-        arguments << self.layers[ self.inputLayerCombo.currentIndex() ].source()
-      else:
-        arguments << self.inputLayerCombo.currentText()
-      arguments << self.outputDirEdit.text()
+      arguments << self.getInputFileName()
+      arguments << self.outSelector.filename()
       return arguments
 
+  def getInputFileName(self):
+      return self.inSelector.filename()
+
   def getOutputFileName(self):
-      if self.outputDirEdit.text().isEmpty():
-        return ""
-      return self.outputDirEdit.text() + QDir.separator() + "contour.shp"
+      if self.useDirAsOutput:
+        fn = self.outSelector.filename()
+        return fn if fn.isEmpty() else fn + QDir.separator() + "contour.shp"
+      return self.outSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
-      vl = self.iface.addVectorLayer(fileInfo.filePath(), "contour", "ogr")
+      vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
       if vl != None and vl.isValid():
         if hasattr(self, 'lastEncoding'):
           vl.setProviderEncoding(self.lastEncoding)

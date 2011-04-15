@@ -18,6 +18,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_rasterize")
 
+      self.outSelector.setType( self.outSelector.FILE )
+
       # set the default QSpinBoxes and QProgressBar value
       self.widthSpin.setValue(3000)
       self.heightSpin.setValue(3000)
@@ -26,31 +28,24 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.attributeComboBox, SIGNAL("currentIndexChanged(int)")),
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox, "1.8.0" ),
         ]
       )
 
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
-      self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillFieldsCombo)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+      self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillFieldsCombo)
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo( self ):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getVectorLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getVectorLayers() )
 
   def fillFieldsCombo(self):
-      index = self.inputLayerCombo.currentIndex()
-      if index < 0:
+      if self.inSelector.layer() == None:
         return
-
-      self.lastEncoding = self.layers[index].dataProvider().encoding()
+      self.lastEncoding = self.inSelector.layer().dataProvider().encoding()
       self.loadFields( self.getInputFileName() )
 
   def fillInputFileEdit(self):
@@ -60,8 +55,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText(inputFile)
+      self.inSelector.setFilename(inputFile)
       self.lastEncoding = encoding
 
       self.loadFields( inputFile )
@@ -71,15 +65,17 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       # rasterize supports output file creation for GDAL 1.8
       gdalVersion = Utils.GdalConfig.version()
-      fileDialogFunc = Utils.FileDialog.getSaveFileName
-      if gdalVersion < "1.8.0":
+      if gdalVersion >= "1.8.0":
+        fileDialogFunc = Utils.FileDialog.getSaveFileName
+      else:
         fileDialogFunc = Utils.FileDialog.getOpenFileName
+
       outputFile = fileDialogFunc(self, self.tr( "Select the raster file to save the results to" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter)
       if outputFile.isEmpty():
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
 
       # required either -ts or -tr to create the output file 
       if gdalVersion >= "1.8.0":
@@ -96,23 +92,19 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << "-ts"
         arguments << str( self.widthSpin.value() )
         arguments << str( self.heightSpin.value() )
-      if self.inputLayerCombo.currentIndex() >= 0:
-        arguments << "-l"
-        arguments << QFileInfo(self.layers[ self.inputLayerCombo.currentIndex() ].source()).baseName()
-      elif not self.inputLayerCombo.currentText().isEmpty():
-        arguments << "-l"
-        arguments << QFileInfo(self.inputLayerCombo.currentText()).baseName()
-      arguments << self.getInputFileName()
-      arguments << self.outputFileEdit.text()
+      inputFn = self.getInputFileName()
+      if not inputFn.isEmpty():
+        arguments << "-l" 
+        arguments << QFileInfo( inputFn ).baseName()
+      arguments << inputFn
+      arguments << self.getOutputFileName()
       return arguments
 
   def getInputFileName(self):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[self.inputLayerCombo.currentIndex()].source()
-      return self.inputLayerCombo.currentText()
+      return self.inSelector.filename()
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
@@ -127,9 +119,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         (fields, names) = Utils.getVectorFields(vectorFile)
       except Utils.UnsupportedOGRFormat, e:
         QErrorMessage(self).showMessage( e.args[0] )
-
-        self.inputLayerCombo.clearEditText()
-        self.inputLayerCombo.setCurrentIndex(-1)
+        self.inSelector.setLayer( None )
         return
 
       ncodec = QTextCodec.codecForName(self.lastEncoding)

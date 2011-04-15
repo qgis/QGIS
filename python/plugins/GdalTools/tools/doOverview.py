@@ -30,53 +30,43 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
+          (self.inSelector, SIGNAL("filenameChanged()")),
           ( self.algorithmCombo, SIGNAL( "currentIndexChanged( int )" ), self.algorithmCheck ),
           ( self.levelsEdit, SIGNAL( "textChanged( const QString & )" ) ),
-          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ) ),
+          ( self.roModeCheck, SIGNAL( "stateChanged( int )" ), None, "1.6.0" ),
           ( self.rrdCheck, SIGNAL( "stateChanged(int)" ) ),
           ( self.jpegQualitySpin, SIGNAL( "valueChanged (int)" ) ),
           ( self.jpegQualityContainer, None, self.tiffjpegCheck),
-          ( self.jpegQualityContainer, None, None, "1.7.0"),          #only show for GDAL >=1.7.0
-          ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, "1.7.0" )         #only show for GDAL >=1.7.0
+          ( self.jpegQualityContainer, None, None, "1.7.0"),
+          ( self.cleanCheck, SIGNAL( "stateChanged(int)" ), None, "1.7.0" )
         ]
       )
 
-      self.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
+      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
 
   # switch to batch or normal mode
   def switchToolMode( self ):
       self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
+      self.progressBar.setVisible( self.batchCheck.isChecked() )
 
-      self.inputLayerCombo.clear()
-      self.inputLayerCombo.clearEditText()
-      self.inputLayerCombo.setCurrentIndex(-1)
+      self.inSelector.setType( self.inSelector.FILE if self.batchCheck.isChecked() else self.inSelector.FILE_LAYER )
+
       if self.batchCheck.isChecked():
         self.inFileLabel = self.label.text()
         self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
 
-        self.progressBar.show()
-
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
       else:
         self.label.setText( self.inFileLabel )
-        self.fillInputLayerCombo()
 
-        self.progressBar.hide()
-
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo( self ):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFile( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -85,16 +75,14 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputFile )
+      self.inSelector.setFilename( inputFile )
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files" ))
       if inputDir.isEmpty():
         return
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputDir )
+      self.inSelector.setFilename( inputDir )
 
   def getArguments( self ):
       arguments = QStringList()
@@ -122,12 +110,10 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       return arguments
 
   def getInputFileName( self ):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[ self.inputLayerCombo.currentIndex() ].source()
-      return self.inputLayerCombo.currentText()
+      return self.inSelector.filename()
 
   def getOutputFileName( self ):
-      return self.getInputFileName()
+      return self.inSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())

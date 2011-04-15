@@ -18,6 +18,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdaldem")
 
+      self.outSelector.setType( self.outSelector.FILE )
+      self.configSelector.setType( self.configSelector.FILE )
+
       # set the default QSpinBoxes and QProgressBar value
       self.bandSpin.setValue(1)
 
@@ -30,14 +33,14 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       # set the default color configuration file to terrain
       import os.path
       colorConfigFile = os.path.join(os.path.dirname(__file__), "terrain.txt")
-      self.colorConfigFileEdit.setText(colorConfigFile)
+      self.configSelector.setFilename(colorConfigFile)
 
       self.outputFormat = Utils.fillRasterOutputFormat()
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ), 
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
+          (self.inSelector, SIGNAL("filenameChanged()")), 
+          (self.outSelector, SIGNAL("filenameChanged()")), 
           (self.computeEdgesCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"), 
           (self.bandSpin, SIGNAL("valueChanged(int)"), self.bandCheck), 
           (self.algorithmCheck, SIGNAL("stateChanged(int)"), None, "1.8.0"), 
@@ -47,15 +50,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.slopeScaleSpin, SIGNAL("valueChanged(double)")), 
           (self.slopePercentCheck, SIGNAL("stateChanged(int)")), 
           ([self.aspectTrigonometricCheck, self.aspectZeroForFlatCheck], SIGNAL("stateChanged(int)")), 
-          (self.colorConfigFileEdit, SIGNAL("textChanged(const QString &)")), 
+          (self.configSelector, SIGNAL("filenameChanged()")), 
           ([self.colorExactRadio, self.colorNearestRadio], SIGNAL("toggled(bool)"), self.colorMatchGroupBox), 
           (self.colorAlphaCheck, SIGNAL("stateChanged(int)"))
         ]
       )
 
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
-      self.connect(self.colorSelectConfigFileButton, SIGNAL("clicked()"), self.fillColorConfigFileEdit)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+      self.connect(self.configSelector, SIGNAL("selectClicked()"), self.fillColorConfigFileEdit)
       self.connect(self.modeCombo, SIGNAL("currentIndexChanged(int)"), self.showModeParams)
 
   def showModeParams(self, index):
@@ -65,12 +68,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         self.algorithmCheck.setChecked( False )
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo(self):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -79,8 +77,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText(inputFile)
+      self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -90,14 +87,13 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
 
   def fillColorConfigFileEdit(self):
       configFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the color configuration file" ))
       if configFile.isEmpty():
         return
-
-      self.colorConfigFileEdit.setText(configFile)
+      self.configSelector.setFilename(configFile)
 
   def getArguments(self):
       mode = self.modes[ self.modeCombo.currentIndex() ]
@@ -105,8 +101,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       arguments << mode
       arguments << self.getInputFileName()
       if mode == "color-relief":
-        arguments << self.colorConfigFileEdit.text()
-      arguments << self.outputFileEdit.text()
+        arguments << self.configSelector.filename()
+      outputFn = self.getOutputFileName()
+      arguments << outputFn
       if mode == "hillshade":
         arguments << "-z" << str(self.hillshadeZFactorSpin.value())
         arguments << "-s" << str(self.hillshadeScaleSpin.value())
@@ -135,7 +132,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << "-compute_edges"
       if self.bandCheck.isChecked():
         arguments << "-b" << str(self.bandSpin.value())
-      if not self.outputFileEdit.text().isEmpty():
+      if not outputFn.isEmpty():
         arguments << "-of" << self.outputFormat
       if self.creationGroupBox.isChecked():
         for opt in self.creationOptionsTable.options():
@@ -143,12 +140,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       return arguments
 
   def getInputFileName(self):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[self.inputLayerCombo.currentIndex()].source()
-      return self.inputLayerCombo.currentText()
+      return self.inSelector.filename()
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())

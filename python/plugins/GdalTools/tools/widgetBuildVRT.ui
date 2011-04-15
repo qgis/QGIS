@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>240</height>
+    <height>216</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -38,30 +38,9 @@
         <string>&amp;Input files</string>
        </property>
        <property name="buddy">
-        <cstring>selectInputFilesButton</cstring>
+        <cstring>inSelector</cstring>
        </property>
       </widget>
-     </item>
-     <item row="1" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QLineEdit" name="inputFilesEdit">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectInputFilesButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="2" column="1">
       <widget class="QCheckBox" name="recurseCheck">
@@ -76,30 +55,9 @@
         <string>&amp;Output file</string>
        </property>
        <property name="buddy">
-        <cstring>selectOutputFileButton</cstring>
+        <cstring>outSelector</cstring>
        </property>
       </widget>
-     </item>
-     <item row="3" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QLineEdit" name="outputFileEdit">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectOutputFileButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="4" column="0">
       <widget class="QCheckBox" name="resolutionCheck">
@@ -157,10 +115,24 @@
        </property>
       </widget>
      </item>
+     <item row="1" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+     <item row="3" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
+     </item>
     </layout>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -9,7 +9,7 @@ import GdalTools_utils as Utils
 
 class GdalToolsBasePluginWidget:
 
-  def __init__(self, iface, commandName, helpFileBaseName = None, parent = None):
+  def __init__(self, iface, commandName, parent = None):
       self.iface = iface
       self.initialized = False
       self.base = BaseDialog(parent, iface, self, self.windowTitle(), commandName)
@@ -146,7 +146,7 @@ class GdalToolsBasePluginWidget:
         if not isinstance(ver, Utils.Version):
           ver = Utils.Version(ver)
         gdalVer = Utils.GdalConfig.version()
-        if gdalVer != None and ver > gdalVer:
+        if ver < "0" or ( gdalVer != None and ver > gdalVer ):
           wdgt.setVisible(False)
           if isinstance(chk, QWidget):
             chk.setVisible(False)

@@ -19,6 +19,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.setupUi(self)
       BaseBatchWidget.__init__(self, self.iface, "gdalwarp")
 
+      self.outSelector.setType( self.outSelector.FILE )
+
       # set the default QSpinBoxes and QProgressBar value
       self.widthSpin.setValue(3000)
       self.heightSpin.setValue(3000)
@@ -30,8 +32,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.sourceSRSEdit, SIGNAL("textChanged(const QString &)"), self.sourceSRSCheck),
           (self.selectSourceSRSButton, None, self.sourceSRSCheck),
           (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
@@ -41,28 +43,26 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
           ( [self.widthSpin, self.heightSpin], SIGNAL( "valueChanged(int)" ), self.resizeGroupBox ),
           (self.multithreadCheck, SIGNAL("stateChanged(int)")),
           (self.noDataEdit, SIGNAL( "textChanged( const QString & )" ), self.noDataCheck), 
-          (self.cutlineLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")], self.cutlineCheck, "1.6.0"), 
-          (self.selectCutlineFileButton, None, self.cutlineCheck, "1.6.0")
+          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck, "1.6.0"), 
         ]
       )
 
-      self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillSourceSRSEditDefault)
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFile)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillSourceSRSEditDefault)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFile)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect(self.selectSourceSRSButton, SIGNAL("clicked()"), self.fillSourceSRSEdit)
       self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
-      self.connect(self.selectCutlineFileButton, SIGNAL("clicked()"), self.fillCutlineFile)
+      self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFile)
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
 
   # switch to batch or normal mode
   def switchToolMode( self ):
       self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
+      self.progressBar.setVisible( self.batchCheck.isChecked() )
 
-      self.inputLayerCombo.clear()
-      self.inputLayerCombo.clearEditText()
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.outputFileEdit.clear()
+      self.inSelector.setType( self.inSelector.FILE if self.batchCheck.isChecked() else self.inSelector.FILE_LAYER )
+      self.outSelector.clear()
 
       if self.batchCheck.isChecked():
         self.inFileLabel = self.label.text()
@@ -70,41 +70,24 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
         self.label_2.setText( QCoreApplication.translate( "GdalTools", "&Output directory" ) )
 
-        self.progressBar.show()
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
+        QObject.disconnect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFileEdit )
 
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
-        QObject.disconnect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputFileEdit )
-
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
-        QObject.connect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputDir )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
+        QObject.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputDir )
       else:
         self.label.setText( self.inFileLabel )
         self.label_2.setText( self.outFileLabel )
 
-        self.fillInputLayerCombo()
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
+        QObject.disconnect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputDir )
 
-        self.progressBar.hide()
-
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
-        QObject.disconnect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputDir )
-
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
-        QObject.connect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputFileEdit )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
+        QObject.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFileEdit )
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-      self.fillCutlineLayerCombo()
-
-  def fillInputLayerCombo(self):
-      self.inputLayerCombo.clear()
-      ( self.inputLayers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
-
-  def fillCutlineLayerCombo(self):
-      self.cutlineLayerCombo.clear()
-      ( self.cutlineLayers, names ) = Utils.LayerRegistry.instance().getVectorLayers()
-      self.cutlineLayerCombo.addItems( names )
-
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+      self.maskSelector.setLayers( filter( lambda x: x.geometryType() == QGis.Polygon, Utils.LayerRegistry.instance().getVectorLayers() ) )
 
   def fillInputFile(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -112,9 +95,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if inputFile.isEmpty():
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
-
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText(inputFile)
+      self.inSelector.setFilename(inputFile)
 
       # get SRS for source file if necessary and possible
       self.refreshSourceSRS()
@@ -127,17 +108,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
 
-  def fillCutlineFile(self):
+  def fillMaskFile(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
-      cutlineFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the cutline file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
-      if cutlineFile.isEmpty():
+      maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the mask file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
+      if maskFile.isEmpty():
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
-
-      self.cutlineLayerCombo.setCurrentIndex(-1)
-      self.cutlineLayerCombo.setEditText(cutlineFile)
+      self.maskSelector.setFilename(maskFile)
 
 
   def fillInputDir( self ):
@@ -145,8 +124,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if inputDir.isEmpty():
         return
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputDir )
+      self.inSelector.setFilename( inputDir )
 
       filter = Utils.getRasterExtensions()
       workDir = QDir( inputDir )
@@ -160,16 +138,15 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ))
       if outputDir.isEmpty():
         return
-
-      self.outputFileEdit.setText( outputDir )
+      self.outSelector.setFilename( outputDir )
 
   def fillSourceSRSEdit(self):
       dialog = SRSDialog( "Select the source SRS" )
       if dialog.exec_():
         self.sourceSRSEdit.setText(dialog.getProjection())
 
-  def fillSourceSRSEditDefault(self, index):
-      if index < 0:
+  def fillSourceSRSEditDefault(self):
+      if self.inSelector.layer() == None:
         return
       self.refreshSourceSRS()
 
@@ -208,35 +185,32 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         if not nodata.isEmpty():
           arguments << "-dstnodata"
           arguments << nodata
-      if self.cutlineCheck.isChecked():
-        cutline = self.getCutlineFileName()
-        if not cutline.isEmpty():
+      if self.maskCheck.isChecked():
+        mask = self.getMaskFileName()
+        if not mask.isEmpty():
           arguments << "-q"
-          arguments << "-cutline"
-          arguments << cutline
+          arguments << "-mask"
+          arguments << mask
           arguments << "-dstalpha"
       if self.isBatchEnabled():
         return arguments
 
-      if not self.outputFileEdit.text().isEmpty():
+      outputFn = self.getOutputFileName()
+      if not outputFn.isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
       arguments << self.getInputFileName()
-      arguments << self.getOutputFileName()
+      arguments << outputFn
       return arguments
 
   def getInputFileName(self):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.inputLayers[self.inputLayerCombo.currentIndex()].source()
-      return self.inputLayerCombo.currentText()
+      return self.inSelector.filename()
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
 
-  def getCutlineFileName(self):
-      if self.cutlineLayerCombo.currentIndex() >= 0:
-        return self.cutlineLayers[self.cutlineLayerCombo.currentIndex()].source()
-      return self.cutlineLayerCombo.currentText()
+  def getMaskFileName(self):
+      return self.maskSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
@@ -252,3 +226,4 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.progressBar.setValue( index + 1 )
       else:
         self.progressBar.setValue( 0 )
+

@@ -16,27 +16,26 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.canvas = self.iface.mapCanvas()
 
       self.setupUi(self)
-      BasePluginWidget.__init__(self, self.iface, "gdal_translate", None, self.iface.mainWindow())
+      BasePluginWidget.__init__(self, self.iface, "gdal_translate", self.iface.mainWindow())
 
+      self.outSelector.setType( self.outSelector.FILE )
       self.extentSelector.setCanvas(self.canvas)
       self.outputFormat = Utils.fillRasterOutputFormat()
-      self.layers = []
-      self.maskLayers = []
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
+          (self.inSelector, SIGNAL("filenameChanged()") ),
+          (self.outSelector, SIGNAL("filenameChanged()") ),
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, "1.7.0"),
-          (self.maskLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")], self.maskModeRadio, "1.6.0"),
-          ( self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")] ), 
+          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, "1.6.0"),
+          (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio), 
           (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ]
       )
 
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
-      self.connect(self.selectMaskFileButton, SIGNAL("clicked()"), self.fillMaskFileEdit)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+      self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
       self.connect(self.extentSelector, SIGNAL("newExtentDefined()"), self.checkRun)
       self.connect(self.extentSelector, SIGNAL("selectionStarted()"), self.checkRun)
 
@@ -64,27 +63,22 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.extentModeRadio.isChecked():
         enabler = self.extentSelector.isCoordsValid()
       else:
-        enabler = not self.getMaskFileName().isEmpty()
+        enabler = not self.maskSelector.filename().isEmpty()
       self.base.enableRun( enabler )
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-      self.fillMaskLayerCombo()
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+      self.maskSelector.setLayers( filter( lambda x: x.geometryType() == QGis.Polygon, Utils.LayerRegistry.instance().getVectorLayers() ) )
+      self.checkRun()
 
-  def fillInputLayerCombo(self):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
-
-  def fillInputFileEdit( self ):
+  def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
-      inputFile = Utils.FileDialog.getOpenFileName( self, self.tr( "Select the input file for Translate" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
+      inputFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
       if inputFile.isEmpty():
         return
-      Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputFile )
+      self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -94,23 +88,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
 
-  def fillMaskLayerCombo(self):
-      self.maskLayerCombo.clear()
-      self.maskLayers = filter( lambda x: x.geometryType() == QGis.Polygon, Utils.LayerRegistry.instance().getVectorLayers()[0] )
-      self.maskLayerCombo.addItems( map( lambda x: x.name(), self.maskLayers ) )
-      self.checkRun()
-
-  def fillMaskFileEdit( self ):
+  def fillMaskFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
       maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the mask file" ), Utils.FileFilter.allVectorsFilter(), lastUsedFilter )
       if maskFile.isEmpty():
         return
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
-      self.maskLayerCombo.setCurrentIndex(-1)
-      self.maskLayerCombo.setEditText( maskFile )
+      self.maskSelector.setFilename(maskFile)
       self.checkRun()
 
   def getArguments(self):
@@ -132,8 +119,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           arguments << str(rect.yMaximum())
           arguments << str(rect.xMaximum())
           arguments << str(rect.yMinimum())
-      if Utils.GdalConfig.version() >= "1.7.0":
-        arguments << "-q"
       if not self.getOutputFileName().isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
@@ -148,7 +133,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         arguments << "-dstnodata"
         arguments << str(self.noDataSpin.value())
       if self.maskModeRadio.isChecked():
-        mask = self.getMaskFileName()
+        mask = self.maskSelector.filename()
         if not mask.isEmpty():
           arguments << "-q"
           arguments << "-cutline"
@@ -164,17 +149,10 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       return arguments
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
 
   def getInputFileName(self):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[self.inputLayerCombo.currentIndex()].source()
-      return self.inputLayerCombo.currentText()
-
-  def getMaskFileName(self):
-      if self.maskLayerCombo.currentIndex() >= 0:
-        return self.maskLayers[self.maskLayerCombo.currentIndex()].source()
-      return self.maskLayerCombo.currentText()
+      return self.inSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())

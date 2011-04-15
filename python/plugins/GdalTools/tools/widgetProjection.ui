@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>369</width>
-    <height>256</height>
+    <height>244</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -42,30 +42,9 @@
         <string>&amp;Input file</string>
        </property>
        <property name="buddy">
-        <cstring>selectInputFileButton</cstring>
+        <cstring>inSelector</cstring>
        </property>
       </widget>
-     </item>
-     <item row="0" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLineEdit" name="inputFileEdit">
-         <property name="minimumSize">
-          <size>
-           <width>100</width>
-           <height>0</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="selectInputFileButton">
-         <property name="text">
-          <string>Select...</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </item>
      <item row="1" column="1">
       <widget class="QCheckBox" name="recurseCheck">
@@ -81,6 +60,21 @@
        </property>
       </widget>
      </item>
+     <item row="3" column="1">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Output will be:
+- new GeoTiff if input file is not GeoTiff
+- overwritten if input is GeoTiff</string>
+       </property>
+       <property name="textFormat">
+        <enum>Qt::AutoText</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
      <item row="2" column="1">
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
@@ -95,18 +89,6 @@
        </item>
       </layout>
      </item>
-     <item row="3" column="1">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Output will be:
-- new GeoTiff if input file is not GeoTiff
-- overwritten if input is GeoTiff</string>
-       </property>
-       <property name="textFormat">
-        <enum>Qt::AutoText</enum>
-       </property>
-      </widget>
-     </item>
     </layout>
    </item>
    <item>
@@ -114,6 +96,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

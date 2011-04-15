@@ -18,26 +18,22 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_polygonize.py")
 
+      self.outSelector.setType( self.outSelector.FILE )
       self.outputFormat = Utils.fillVectorOutputFormat()
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.fieldEdit, SIGNAL("textChanged(const QString &)"), self.fieldCheck)
         ]
       )
 
-      self.connect(self.selectInputFileButton, SIGNAL("clicked()"), self.fillInputFileEdit)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo( self ):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -46,8 +42,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText(inputFile)
+      self.inSelector.setFilename(inputFile)
 
   def fillOutputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedVectorFilter()
@@ -57,30 +52,32 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedVectorFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillVectorOutputFormat( lastUsedFilter, outputFile )
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
       self.lastEncoding = encoding
 
   def getArguments(self):
       arguments = QStringList()
-      if self.inputLayerCombo.currentIndex() >= 0:
-        arguments << self.layers[ self.inputLayerCombo.currentIndex() ].source()
-      else:
-        arguments << self.inputLayerCombo.currentText()
-      if not self.outputFileEdit.text().isEmpty():
+      arguments << self.getInputFileName()
+      outputFn = self.getOutputFileName()
+      if not outputFn.isEmpty():
         arguments << "-f"
         arguments << self.outputFormat
-      arguments << self.outputFileEdit.text()
-      if not self.outputFileEdit.text().isEmpty():
-        arguments << QFileInfo(self.outputFileEdit.text()).baseName()
+      arguments << outputFn
+      if not outputFn.isEmpty():
+        arguments << QFileInfo( outputFn ).baseName()
       if self.fieldCheck.isChecked() and not self.fieldEdit.text().isEmpty():
         arguments << self.fieldEdit.text()
       return arguments
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
+
+  def getInputFileName(self):
+      return self.inSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
       if vl != None and vl.isValid():
         if hasattr(self, 'lastEncoding'):
           vl.setProviderEncoding(self.lastEncoding)
+

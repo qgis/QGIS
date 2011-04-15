@@ -1,0 +1,239 @@
+# -*- coding: utf-8 -*-
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+
+from qgis.core import QgsMapLayerRegistry, QgsMapLayer
+
+from ui_inOutSelector import Ui_GdalToolsInOutSelector
+import GdalTools_utils as Utils
+
+class GdalToolsInOutSelector(QWidget, Ui_GdalToolsInOutSelector):
+  FILE = 0x1
+  LAYER = 0x2
+  MULTIFILE = 0x4    # NOT IMPLEMENTED YET
+
+  FILE_LAYER = 0x1|0x2
+  FILES = 0x1|0x4    # NOT IMPLEMENTED YET
+  FILES_LAYER = 0x3|0x4    # NOT IMPLEMENTED YET
+
+  __pyqtSignals__ = ("selectClicked()", "filenameChanged(), layerChanged()")
+
+
+  def __init__(self, parent = None, type=None):
+      QWidget.__init__(self, parent)
+
+      self.setupUi(self)
+      self.setFocusPolicy(Qt.StrongFocus)
+      self.combo.setInsertPolicy(QComboBox.NoInsert)
+
+      self.clear()
+
+      self.typ = None
+      if type == None:
+        self.resetType()
+      else:
+        self.setType(type)
+
+      self.connect(self.selectBtn, SIGNAL("clicked()"), self.selectButtonClicked)
+      self.connect(self.fileEdit, SIGNAL("textChanged(const QString &)"), self.textChanged)
+      self.connect(self.combo, SIGNAL("editTextChanged(const QString &)"), self.textChanged)
+      self.connect(self.combo, SIGNAL("currentIndexChanged(int)"), self.indexChanged)
+
+  def clear(self):
+      self.filenames = QStringList()
+      self.fileEdit.clear()
+      self.clearComboState()
+      self.combo.clear()
+
+  def textChanged(self):
+      if self.getType() & self.MULTIFILE:
+        self.filenames = QStringList() << self.fileEdit.text().split(",")
+      if self.getType() & self.LAYER:
+        index = self.combo.currentIndex()
+        if index >= 0:
+          text = self.combo.currentText()
+          if text != self.combo.itemText( index ):
+            return self.setFilename( text )
+      self.filenameChanged()
+
+  def indexChanged(self):
+      self.layerChanged()
+      self.filenameChanged()
+
+  def selectButtonClicked(self):
+      self.emit(SIGNAL("selectClicked()"))
+
+  def filenameChanged(self):
+      self.emit(SIGNAL("filenameChanged()"))
+
+  def layerChanged(self):
+      self.emit(SIGNAL("layerChanged()"))
+
+  def setType(self, type):
+      if type == self.typ:
+        return
+
+      if type & self.MULTIFILE:    # MULTITYPE IS NOT IMPLEMENTED YET
+        type = type & ~self.MULTIFILE
+
+      self.typ = type
+
+      self.selectBtn.setVisible( self.getType() & self.FILE )
+      self.combo.setVisible( self.getType() & self.LAYER )
+      self.fileEdit.setVisible( not (self.getType() & self.LAYER) )
+      self.combo.setEditable( self.getType() & self.FILE )
+
+      if self.getType() & self.FILE:
+        self.setFocusProxy(self.selectBtn)
+      else:
+        self.setFocusProxy(self.combo)
+
+      # send signals to refresh connected widgets
+      self.filenameChanged()
+      self.layerChanged()
+
+  def getType(self):
+      return self.typ
+
+  def resetType(self):
+      self.setType( self.FILE_LAYER )
+
+  selectorType = pyqtProperty("int", getType, setType, resetType)
+
+
+  def setFilename(self, fn=None):
+      self.blockSignals( True )
+      prevFn, prevLayer = self.filename(), self.layer()
+
+      if isinstance(fn, QgsMapLayer):
+        fn = fn.source()
+
+      elif isinstance(fn, str) or isinstance(fn, unicode) or isinstance(fn, QString):
+        fn = QString( fn )
+
+      elif hasattr(fn, '__iter__') or isinstance(fn, QStringList):
+        if len( fn ) > 0:
+          fn = QStringList() << fn
+          if self.getType() & self.MULTIFILE:
+            self.filenames = fn
+          fn = fn.join( "," )
+        else:
+          fn = QString()
+          
+      else:
+        fn = QString()
+
+      if not (self.getType() & self.LAYER):
+        self.fileEdit.setText( fn )
+      else:
+        self.combo.setCurrentIndex(-1)
+        self.combo.setEditText( fn )
+
+      self.blockSignals( False )
+      if self.filename() != prevFn:
+        self.filenameChanged()
+      if self.layer() != prevLayer:
+        self.layerChanged()
+
+  def setLayer(self, layer=None):
+      if not (self.getType() & self.LAYER):
+        return self.setFilename( layer )
+
+      self.blockSignals( True )
+      prevFn, prevLayer = self.filename(), self.layer()
+
+      if isinstance(layer, QgsMapLayer):
+        if self.combo.findData(layer.getLayerID()) >= 0:
+          index = self.combo.findData( layer.getLayerID() )
+          self.combo.setCurrentIndex( index )
+        else:
+          self.combo.setCurrentIndex( -1 )
+          self.combo.setEditText( layer.source() )
+
+      elif isinstance(layer, int) and layer >= 0 and layer < self.combo.count():
+        self.combo.setCurrentIndex( layer )
+
+      else:
+        self.combo.clearEditText()
+        self.combo.setCurrentIndex(-1)
+
+      self.blockSignals( False )
+      if self.filename() != prevFn:
+        self.filenameChanged()
+      if self.layer() != prevLayer:
+        self.layerChanged()
+
+
+  def setLayers(self, layers=None):
+      if layers == None or not hasattr(layers, '__iter__') or len(layers) <= 0:
+        self.combo.clear()
+        return
+
+      self.blockSignals( True )
+      prevFn, prevLayer = self.filename(), self.layer()
+      self.saveComboState()
+
+      self.combo.clear()
+      for l in layers:
+        self.combo.addItem( l.name(), l.getLayerID() )
+
+      self.restoreComboState()
+      self.blockSignals( False )
+      if self.filename() != prevFn:
+        self.filenameChanged()
+      if self.layer() != prevLayer:
+        self.layerChanged()
+      
+
+  def clearComboState(self):
+      self.prevState = None
+
+  def saveComboState(self):
+      index = self.combo.currentIndex()
+      text = self.combo.currentText()
+      layerID = self.combo.itemData(index).toString() if index >= 0 else ""
+      self.prevState = ( index, text, layerID )
+
+  def restoreComboState(self):
+      if self.prevState == None:
+        return
+      index, text, layerID = self.prevState
+
+      if index < 0:
+        if text.isEmpty() and self.combo.count() > 0:
+          index = 0
+
+      elif self.combo.findData( layerID ) < 0:
+        index = -1
+        text = ""
+
+      else:
+        index = self.combo.findData( layerID )
+
+      self.combo.setCurrentIndex( index )
+      if index >= 0:
+        text = self.combo.itemText( index )
+      self.combo.setEditText( text )
+
+  def layer(self):
+      if self.getType() != self.FILE and self.combo.currentIndex() >= 0:
+        layerID = self.combo.itemData(self.combo.currentIndex()).toString()
+        return QgsMapLayerRegistry.instance().mapLayer( layerID )
+      return None
+
+  def filename(self):
+      if not (self.getType() & self.LAYER):
+        if self.getType() & self.MULTIFILE:
+          return self.filenames
+        return self.fileEdit.text()
+
+      if self.combo.currentIndex() < 0:
+        if self.getType() & self.MULTIFILE:
+          return self.filenames
+        return self.combo.currentText()
+      layer = self.layer()
+      if layer != None:
+        return layer.source()
+
+      return QString()
+

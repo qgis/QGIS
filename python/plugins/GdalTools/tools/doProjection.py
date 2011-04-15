@@ -21,6 +21,8 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.setupUi( self )
       BaseBatchWidget.__init__( self, self.iface, "gdalwarp" )
 
+      self.inSelector.setType( self.inSelector.FILE )
+
       # set the default QSpinBoxes and QProgressBar value
       self.progressBar.setValue(0)
 
@@ -29,12 +31,12 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
       self.setParamsStatus(
         [
-          ( self.inputFileEdit, SIGNAL( "textChanged( const QString & )" ) ),
+          ( self.inSelector, SIGNAL( "filenameChanged()" ) ),
           ( self.desiredSRSEdit, SIGNAL( "textChanged( const QString & )" ) )
         ]
       )
 
-      self.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFileEdit )
+      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
       self.connect( self.selectDesiredSRSButton, SIGNAL( "clicked()" ), self.fillDesiredSRSEdit )
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
       self.connect( self.recurseCheck, SIGNAL( "stateChanged( int )" ), self.enableRecurse )
@@ -44,29 +46,22 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
 
   def switchToolMode( self ):
       self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
-      self.inputFileEdit.clear()
+      self.progressBar.setVisible( self.batchCheck.isChecked() )
+      self.recurseCheck.setVisible( self.batchCheck.isChecked() )
+
+      self.inSelector.clear()
 
       if self.batchCheck.isChecked():
         self.inFileLabel = self.label.text()
         self.label.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
 
-        self.progressBar.show()
-        self.recurseCheck.show()
-
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFileEdit )
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
-
-        #QObject.disconnect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
       else:
         self.label.setText( self.inFileLabel )
 
-        self.progressBar.hide()
-        self.recurseCheck.hide()
-
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFileEdit )
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
-
-        #QObject.connect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFileEdit )
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
 
   def enableRecurse( self ):
     if self.recurseCheck.isChecked():
@@ -83,15 +78,13 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       if inputFile.isEmpty():
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
-      #self.outputFormat = Utils.fillOutputFormat( lastUsedFilter, file )
-      self.inputFileEdit.setText( inputFile )
+      self.inSelector.setFilename( inputFile )
 
   def fillInputDir( self ):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Assign projection" ))
       if inputDir.isEmpty():
         return
-
-      self.inputFileEdit.setText( inputDir )
+      self.inSelector.setFilename( inputDir )
 
   def fillDesiredSRSEdit( self ):
       dialog = SRSDialog( "Select desired SRS" )
@@ -103,21 +96,22 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       if not self.desiredSRSEdit.text().isEmpty():
         arguments << "-t_srs"
         arguments << self.desiredSRSEdit.text()
-      #if not self.inputFileEdit.text().isEmpty():
-      #  arguments << "-of"
-      #  arguments << self.outputFormat
       if self.batchCheck.isChecked():
         return arguments
-      arguments << self.inputFileEdit.text()
-      self.tempFile = self.inputFileEdit.text().replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" ).append( ".tmp" )
+
+      inputFn = self.getInputFileName()
+      arguments << inputFn
+      self.tempFile = QString( inputFn )
+      if not self.tempFile.isEmpty():
+        self.tempFile = self.tempFile.replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" ).append( ".tmp" )
       arguments << self.tempFile
       return arguments
 
   def getInputFileName(self):
-      return self.inputFileEdit.text()
+      return self.inSelector.filename()
 
   def getOutputFileName( self ):
-      return self.inputFileEdit.text()
+      return self.inSelector.filename()
 
   def getBatchOutputFileName(self, fn):
       # get GeoTiff
@@ -157,8 +151,8 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         self.progressBar.setValue(0)
 
   def finished( self ):
-      oldFile = QFile( self.inputFileEdit.text() )
+      oldFile = QFile( self.getInputFileName() )
       newFile = QFile( self.tempFile )
       if oldFile.remove():
-        newFile.rename( self.inputFileEdit.text() )
+        newFile.rename( self.getInputFileName() )
 

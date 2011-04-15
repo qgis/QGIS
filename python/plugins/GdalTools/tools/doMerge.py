@@ -17,13 +17,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.setupUi(self)
       BasePluginWidget.__init__(self, self.iface, "gdal_merge.py")
 
+      self.inSelector.setType( self.inSelector.FILE )
+      self.outSelector.setType( self.outSelector.FILE )
+
       self.outputFormat = Utils.fillRasterOutputFormat()
       self.extent = None
 
       self.setParamsStatus(
         [
-          (self.inputFilesEdit, SIGNAL("textChanged(const QString &)")), 
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")), 
+          (self.inSelector, SIGNAL("filenameChanged()")), 
+          (self.outSelector, SIGNAL("filenameChanged()")), 
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck),
 	      ( self.separateCheck, SIGNAL( "stateChanged( int )" ) ),
           ( self.pctCheck, SIGNAL( "stateChanged( int )" ) ),
@@ -32,8 +35,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         ]
       )
 
-      self.connect(self.selectInputFilesButton, SIGNAL("clicked()"), self.fillInputFilesEdit)
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFilesEdit)
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect(self.intersectCheck, SIGNAL("stateChanged(int)"), self.refreshExtent)
 
   def fillInputFilesEdit(self):
@@ -43,12 +46,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
-      self.inputFilesEdit.setText(files.join(","))
+      self.inSelector.setFilename(files.join(","))
       self.intersectCheck.setEnabled( files.count() > 1 )
       self.refreshExtent()
 
   def refreshExtent(self):
-      files = self.inputFilesEdit.text().split( "," )
+      files = self.getInputFileName()
       if files.count() < 2:
         self.intersectCheck.setChecked( False )
         self.extent = None
@@ -74,7 +77,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat( lastUsedFilter, outputFile )
-      self.outputFileEdit.setText( outputFile )
+      self.outSelector.setFilename( outputFile )
 
   def getArguments(self):
       arguments = QStringList()
@@ -96,22 +99,26 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         for opt in self.creationOptionsTable.options():
           arguments << "-co"
           arguments << opt
-      if not self.outputFileEdit.text().isEmpty():
+      outputFn = self.getOutputFileName()
+      if not outputFn.isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
         arguments << "-o"
-        arguments << self.outputFileEdit.text()
-      arguments << self.inputFilesEdit.text().split(",")
+        arguments << outputFn
+      arguments << self.getInputFileName()
       return arguments
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
+
+  def getInputFileName(self):
+      return self.inSelector.filename().split( "," )
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
 
   def getExtent( self ):
-    files = self.inputFilesEdit.text().split( "," )
+    files = self.getInputFileName()
 
     i = 0
     res = rect2 = None

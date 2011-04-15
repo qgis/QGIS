@@ -20,6 +20,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.setupUi(self)
       BaseBatchWidget.__init__(self, self.iface, "gdal_translate")
 
+      self.outSelector.setType( self.outSelector.FILE )
+
       # set the default QSpinBoxes and QProgressBar value
       self.outsizeSpin.setValue(25)
       self.progressBar.setValue(0)
@@ -37,8 +39,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
       self.setParamsStatus(
         [
-          (self.inputLayerCombo, [SIGNAL("currentIndexChanged(int)"), SIGNAL("editTextChanged(const QString &)")] ),
-          (self.outputFileEdit, SIGNAL("textChanged(const QString &)")),
+          (self.inSelector, SIGNAL("filenameChanged()")),
+          (self.outSelector, SIGNAL("filenameChanged()")),
           (self.targetSRSEdit, SIGNAL("textChanged(const QString &)"), self.targetSRSCheck),
           (self.selectTargetSRSButton, None, self.targetSRSCheck),
           (self.creationOptionsTable, [SIGNAL("cellValueChanged(int, int)"), SIGNAL("rowRemoved()")], self.creationGroupBox),
@@ -52,9 +54,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       )
 
       #self.connect(self.canvas, SIGNAL("layersChanged()"), self.fillInputLayerCombo)
-      self.connect(self.inputLayerCombo, SIGNAL("currentIndexChanged(int)"), self.fillTargetSRSEditDefault)
-      self.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
-      self.connect(self.selectOutputFileButton, SIGNAL("clicked()"), self.fillOutputFileEdit)
+      self.connect(self.inSelector, SIGNAL("layerChanged()"), self.fillTargetSRSEditDefault)
+      self.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
+      self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
       self.connect(self.selectTargetSRSButton, SIGNAL("clicked()"), self.fillTargetSRSEdit)
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
 
@@ -64,11 +66,12 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
 
   def switchToolMode( self ):
       self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
+      self.progressBar.setVisible( self.batchCheck.isChecked() )
+      self.formatLabel.setVisible( self.batchCheck.isChecked() )
+      self.formatCombo.setVisible( self.batchCheck.isChecked() )
 
-      self.inputLayerCombo.clear()
-      self.inputLayerCombo.clearEditText()
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.outputFileEdit.clear()
+      self.inSelector.setType( self.inSelector.FILE if self.batchCheck.isChecked() else self.inSelector.FILE_LAYER )
+      self.outSelector.clear()
 
       if self.batchCheck.isChecked():
         self.inFileLabel = self.label_3.text()
@@ -76,38 +79,23 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         self.label_3.setText( QCoreApplication.translate( "GdalTools", "&Input directory" ) )
         self.label_2.setText( QCoreApplication.translate( "GdalTools", "&Output directory" ) )
 
-        self.progressBar.show()
-        self.formatLabel.show()
-        self.formatCombo.show()
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
+        QObject.disconnect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFileEdit )
 
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
-        QObject.disconnect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputFileEdit )
-
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self. fillInputDir )
-        QObject.connect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputDir )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self. fillInputDir )
+        QObject.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputDir )
       else:
         self.label_3.setText( self.inFileLabel )
         self.label_2.setText( self.outFileLabel )
-        self.base.textEditCommand.setEnabled( True )
-        self.fillInputLayerCombo()
 
-        self.progressBar.hide()
-        self.formatLabel.hide()
-        self.formatCombo.hide()
+        QObject.disconnect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputDir )
+        QObject.disconnect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputDir )
 
-        QObject.disconnect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputDir )
-        QObject.disconnect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputDir )
-
-        QObject.connect( self.selectInputFileButton, SIGNAL( "clicked()" ), self.fillInputFile )
-        QObject.connect( self.selectOutputFileButton, SIGNAL( "clicked()" ), self.fillOutputFileEdit )
+        QObject.connect( self.inSelector, SIGNAL( "selectClicked()" ), self.fillInputFile )
+        QObject.connect( self.outSelector, SIGNAL( "selectClicked()" ), self.fillOutputFileEdit )
 
   def onLayersChanged(self):
-      self.fillInputLayerCombo()
-
-  def fillInputLayerCombo(self):
-      self.inputLayerCombo.clear()
-      ( self.layers, names ) = Utils.LayerRegistry.instance().getRasterLayers()
-      self.inputLayerCombo.addItems( names )
+      self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFile( self ):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -116,8 +104,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         return
       Utils.FileFilter.setLastUsedRasterFilter( lastUsedFilter )
 
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputFile )
+      self.inSelector.setFilename( inputFile )
 
       # get SRS for target file if necessary and possible
       self.refreshTargetSRS()
@@ -126,9 +113,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       inputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the input directory with files to Translate" ))
       if inputDir.isEmpty():
         return
-
-      self.inputLayerCombo.setCurrentIndex(-1)
-      self.inputLayerCombo.setEditText( inputDir )
+      self.inSelector.setFilename( inputDir )
 
       filter = Utils.getRasterExtensions()
       workDir = QDir( inputDir )
@@ -153,17 +138,16 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
 
       self.outputFormat = Utils.fillRasterOutputFormat(lastUsedFilter, outputFile)
-      self.outputFileEdit.setText(outputFile)
+      self.outSelector.setFilename(outputFile)
 
   def fillOutputDir( self ):
       outputDir = Utils.FileDialog.getExistingDirectory( self, self.tr( "Select the output directory to save the results to" ) )
       if outputDir.isEmpty():
         return
+      self.outSelector.setFilename( outputDir )
 
-      self.outputFileEdit.setText( outputDir )
-
-  def fillTargetSRSEditDefault(self, index):
-      if index < 0:
+  def fillTargetSRSEditDefault(self):
+      if self.inSelector.layer() == None:
         return
       self.refreshTargetSRS()
 
@@ -197,7 +181,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       if self.sdsCheck.isChecked():
           arguments << "-sds"
       if self.srcwinCheck.isChecked() and not self.srcwinEdit.text().isEmpty():
-          #coordList = []
           coordList = self.srcwinEdit.text().split( ' ', QString.SkipEmptyParts )
           if len(coordList) == 4 and not coordList[3].isEmpty():
               try:
@@ -211,7 +194,6 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
                   for x in coordList:
                       arguments << x
       if self.prjwinCheck.isChecked() and not self.prjwinEdit.text().isEmpty():
-          #coordList = []
           coordList = self.prjwinEdit.text().split( ' ', QString.SkipEmptyParts )
           if len(coordList) == 4 and not coordList[3].isEmpty():
               try:
@@ -232,20 +214,19 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         else:
           return arguments
 
-      if not self.outputFileEdit.text().isEmpty():
+      outputFn = self.getOutputFileName()
+      if not outputFn.isEmpty():
         arguments << "-of"
         arguments << self.outputFormat
       arguments << self.getInputFileName()
-      arguments << self.getOutputFileName()
+      arguments << outputFn
       return arguments
 
   def getInputFileName(self):
-      if self.inputLayerCombo.currentIndex() >= 0:
-        return self.layers[self.inputLayerCombo.currentIndex()].source()
-      return self.inputLayerCombo.currentText()
+      return self.inSelector.filename()
 
   def getOutputFileName(self):
-      return self.outputFileEdit.text()
+      return self.outSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       self.iface.addRasterLayer(fileInfo.filePath())
