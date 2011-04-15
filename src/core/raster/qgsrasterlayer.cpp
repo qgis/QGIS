@@ -3648,7 +3648,8 @@ void QgsRasterLayer::drawSingleBandColorData( QPainter * theQPainter, QgsRasterV
       for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
       {
         QRgb c( *p++ );
-        imageScanLine[ i ] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), mTransparencyLevel );
+
+        imageScanLine[ i ] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), qAlpha( c )  * mTransparencyLevel  / 255 );
       }
     }
   }
