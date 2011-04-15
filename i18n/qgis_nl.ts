@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0" language="en_US">
+<TS version="2.0" language="nl_NL" sourcelanguage="en">
 <context>
     <name>CharacterWidget</name>
     <message>
@@ -1974,7 +1974,9 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Exposeren van een dataset met 1 band met een kleurentabel als een dataset met 3 (RGB) of 4 (RGBA) banden.
+Nuttig voor de output drivers zoals JPEG, JPEG2000, MrSID, ECW die geen kleur-geïndexeerde datasets ondersteunen.
+De &apos;grijze&apos; waarde (van GDAL 1.7.0) maakt het mogelijk om een dataset uit te breiden met een kleurentabel die alleen grijswaarden bevat tot een grijs geïndexeerde dataset.</translation>
     </message>
     <message>
         <source>&amp;Input Layer</source>
@@ -1986,11 +1988,11 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Outsize</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Outsize&apos;</translation>
     </message>
     <message>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Uitklappen</translation>
     </message>
     <message>
         <source>Gray</source>
@@ -2006,27 +2008,27 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished">Selecteerd een deelvenster van de afbeelding </translation>
+        <translation>Selecteert een deelvenster van de afbeelding voor het kopieren gebaseerd op pixel/lijn plaats (Voer in: Xoff Yoff Xsize Ysize)</translation>
     </message>
     <message>
         <source>Srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Srcwin</translation>
     </message>
     <message>
         <source>Prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Prjwin</translation>
     </message>
     <message>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
-        <translation type="unfinished"></translation>
+        <translation>Selecteert een subvenster van de bronafbeelding om te kopiëren (zoals -srcwin), maar met de hoeken in door georeferentie verkregen coördinaten. (Voer in: ulx uly lrx lry)</translation>
     </message>
     <message>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kopieer alle subdatasets van dit bestand naar individuele uitvoerbestanden. Gebruik dit voor formaten zoals HDF of OGDI die subdatasets hebben.</translation>
     </message>
     <message>
         <source>Sds</source>
-        <translation type="unfinished"></translation>
+        <translation>Sds</translation>
     </message>
     <message>
         <source>Output format</source>
@@ -2038,31 +2040,31 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;Values</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Waarden</translation>
     </message>
     <message>
         <source>&amp;Dist units</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Afstandseenheden</translation>
     </message>
     <message>
         <source>GEO</source>
-        <translation type="unfinished"></translation>
+        <translation>GEO</translation>
     </message>
     <message>
         <source>PIXEL</source>
-        <translation type="unfinished"></translation>
+        <translation>PIXEL</translation>
     </message>
     <message>
         <source>&amp;Max dist</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Maximale afstand</translation>
     </message>
     <message>
         <source>&amp;No data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geen data</translation>
     </message>
     <message>
         <source>&amp;Fixed buf val</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Vaste bufferwaarde</translation>
     </message>
     <message>
         <source>Info</source>
@@ -2070,27 +2072,27 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Raster info</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster info</translation>
     </message>
     <message>
         <source>Suppress GCP printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderdruk printen van GCP</translation>
     </message>
     <message>
         <source>Suppress metadata printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Onderdruk printen van metadata</translation>
     </message>
     <message>
         <source>Convert RGB image to paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB omzetten naar palet-afbeelding</translation>
     </message>
     <message>
         <source>&amp;Input file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invoerbestand</translation>
     </message>
     <message>
         <source>Number of colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Aantal kleuren</translation>
     </message>
     <message>
         <source>Warp</source>
@@ -2098,11 +2100,11 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Near</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Near&apos;</translation>
     </message>
     <message>
         <source>Bilinear</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilineair</translation>
     </message>
     <message>
         <source>Cubic</source>
@@ -2110,7 +2112,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Cubic spline</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Cubic spline&apos;</translation>
     </message>
     <message>
         <source>Lanczos</source>
@@ -2118,27 +2120,27 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>MB</source>
-        <translation type="unfinished"></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <source>&amp;Source SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bron SRS</translation>
     </message>
     <message>
         <source>&amp;Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;&amp;Resample&apos;-methode</translation>
     </message>
     <message>
         <source>&amp;Memory used for caching</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Geheugengebruik voor cache</translation>
     </message>
     <message>
         <source>Resize</source>
-        <translation type="unfinished"></translation>
+        <translation>Formaat wijzigen</translation>
     </message>
     <message>
         <source>Use m&amp;ultithreaded warping implementation</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak gebruik van m&amp;ultithreaded warping</translation>
     </message>
     <message>
         <source>Polygonize</source>
@@ -2146,27 +2148,27 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;Output file for polygons (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uitvoerbestand voor polygonen (shape)</translation>
     </message>
     <message>
         <source>&amp;Field name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Veldnaam</translation>
     </message>
     <message>
         <source>DN</source>
-        <translation type="unfinished"></translation>
+        <translation>DN</translation>
     </message>
     <message>
         <source>Near Black</source>
-        <translation type="unfinished"></translation>
+        <translation>Bijna zwart (near black)</translation>
     </message>
     <message>
         <source>How &amp;far from black (or white)</source>
-        <translation type="unfinished"></translation>
+        <translation>Afstand vanaf &amp;zwart (of wit)</translation>
     </message>
     <message>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek naar bijna &amp;witte (255) pixels in plaats van zwarte</translation>
     </message>
     <message>
         <source>Clipper</source>
@@ -2174,7 +2176,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Waarde voor &apos;geen data&apos;</translation>
     </message>
     <message>
         <source>1</source>
@@ -2202,7 +2204,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Grab pseudocolor table from the first image</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik pseudokleurentabel uit het eerste beeldbestand</translation>
     </message>
     <message>
         <source>Contour</source>
@@ -2210,43 +2212,43 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;Input file (raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invoerbestand (raster)</translation>
     </message>
     <message>
         <source>&amp;Output directory for contour lines (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Map voor contourlijnen (shape)</translation>
     </message>
     <message>
         <source>I&amp;nterval between contour lines</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;nterval voor contourlijnen</translation>
     </message>
     <message>
         <source>&amp;Attribute name</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Attribuutnaam</translation>
     </message>
     <message>
         <source>If not provided, no elevation attribute is attached.</source>
-        <translation type="unfinished"></translation>
+        <translation>Indien niet aanwezig, wordt geen hoogteattribuut aangehecht.</translation>
     </message>
     <message>
         <source>ELEV</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;ELEV&apos;</translation>
     </message>
     <message>
         <source>&amp;Input files</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invoerbestanden</translation>
     </message>
     <message>
         <source>&amp;Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uitvoerbestand</translation>
     </message>
     <message>
         <source>&amp;Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resolutie</translation>
     </message>
     <message>
         <source>Highest</source>
-        <translation type="unfinished"></translation>
+        <translation>Hoogste</translation>
     </message>
     <message>
         <source>Average</source>
@@ -2254,11 +2256,11 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Lowest</source>
-        <translation type="unfinished"></translation>
+        <translation>Laagste</translation>
     </message>
     <message>
         <source>&amp;Source No Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bron Geen Data</translation>
     </message>
     <message>
         <source>Merge</source>
@@ -2266,7 +2268,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Layer stack</source>
-        <translation type="unfinished"></translation>
+        <translation>Laagstack</translation>
     </message>
     <message>
         <source>Use intersected extent</source>
@@ -2274,7 +2276,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;Creation Options</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Aanmaken Opties</translation>
     </message>
     <message>
         <source>Grid</source>
@@ -2282,43 +2284,43 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;Z Field</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Z veld</translation>
     </message>
     <message>
         <source>&amp;Algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Algoritme</translation>
     </message>
     <message>
         <source>Inverse distance to a power</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverse afstandweging</translation>
     </message>
     <message>
         <source>Moving average</source>
-        <translation type="unfinished"></translation>
+        <translation>Voortschrijdend gemiddelde</translation>
     </message>
     <message>
         <source>Nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Nearest neighbour&apos;</translation>
     </message>
     <message>
         <source>Data metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Data &apos;metrics&apos;</translation>
     </message>
     <message>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Macht</translation>
     </message>
     <message>
         <source>Smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Afvlakken</translation>
     </message>
     <message>
         <source>Radius1</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius1</translation>
     </message>
     <message>
         <source>Radius2</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius2</translation>
     </message>
     <message>
         <source>Angle</source>
@@ -2326,19 +2328,19 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Max points</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Max&apos; punten</translation>
     </message>
     <message>
         <source>Min points</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Min&apos; punten</translation>
     </message>
     <message>
         <source>No data</source>
-        <translation type="unfinished"></translation>
+        <translation>Geen Data</translation>
     </message>
     <message>
         <source>Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Metrieken</translation>
     </message>
     <message>
         <source>Angle:</source>
@@ -2362,11 +2364,11 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>&amp;Input file (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invoerbestand (shape)</translation>
     </message>
     <message>
         <source>&amp;Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Attribuutveld</translation>
     </message>
     <message>
         <source>Resampling method</source>
@@ -2386,23 +2388,23 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>average_mp</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;average_mp&apos;</translation>
     </message>
     <message>
         <source>average_magphase</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;average_magphase&apos;</translation>
     </message>
     <message>
         <source>mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus</translation>
     </message>
     <message>
         <source>Levels (space delimited)</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Levels&apos; (gescheiden door een spatie)</translation>
     </message>
     <message>
         <source>Remove all overviews.</source>
-        <translation type="unfinished"></translation>
+        <translation>Verwijder alle overzichtskaarten.</translation>
     </message>
     <message>
         <source>Clean</source>
@@ -2410,7 +2412,7 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>In order to generate external overview (for GeoTIFF especially).</source>
-        <translation type="unfinished"></translation>
+        <translation>Om een extern overzicht te genereren (vooral voor GeoTIFF).</translation>
     </message>
     <message>
         <source>Open in read-only mode</source>
@@ -2418,16 +2420,17 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     </message>
     <message>
         <source>Create external overviews in TIFF format, compressed using JPEG.</source>
-        <translation type="unfinished"></translation>
+        <translation>Genereer externe overzichten in TIFF formaat met JPEG compressie.</translation>
     </message>
     <message>
         <source>Overviews in TIFF format with JPEG compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Overzichten in TIFF formaat met JPEG compressie</translation>
     </message>
     <message>
         <source>For JPEG compressed external overviews, 
 the JPEG quality can be set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Voor externe overzichten met JPEG compressie
+ kan de JPEG-kwaliteit worden ingesteld.</translation>
     </message>
     <message>
         <source>JPEG Quality (1-100)</source>
@@ -2437,11 +2440,11 @@ the JPEG quality can be set.</source>
         <source>Alternate overview format using Erdas Imagine format, 
 placing the overviews in an associated .aux file 
 suitable for direct use with Imagine,ArcGIS, GDAL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ander overzichtformaat waarbij het &apos;Erdas Imagine&apos;-formaat wordt gebruikt voor het plaatsen van de overzichten in een geassocieerd aux-bestand, geschikt voor direct gebruik met Imagine, ArcGIS, GDAL.</translation>
     </message>
     <message>
         <source>Use Imagine format (.aux file)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik &apos;Image&apos; (.aux bestand) bestand</translation>
     </message>
     <message>
         <source>0</source>
@@ -2453,19 +2456,19 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>No data values</source>
-        <translation type="unfinished"></translation>
+        <translation>Waarde voor &apos;geen data&apos;</translation>
     </message>
     <message>
         <source>Choose input directory instead of files</source>
-        <translation type="unfinished"></translation>
+        <translation>Kies map in plaats van bestanden</translation>
     </message>
     <message>
         <source>Se&amp;parate</source>
-        <translation type="unfinished"></translation>
+        <translation>A&amp;part</translation>
     </message>
     <message>
         <source>Raster tile index</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster tile index</translation>
     </message>
     <message>
         <source>Input directory</source>
@@ -2477,99 +2480,103 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Tile index field</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile indexveld</translation>
     </message>
     <message>
         <source>location</source>
-        <translation type="unfinished"></translation>
+        <translation>Locatie</translation>
     </message>
     <message>
         <source>Write absolute path</source>
-        <translation type="unfinished"></translation>
+        <translation>Schrijf absoluut pad</translation>
     </message>
     <message>
         <source>Skip files with different projection ref</source>
-        <translation type="unfinished"></translation>
+        <translation>Sla bestanden met een andere projectiereferentie over</translation>
     </message>
     <message>
         <source>Width</source>
-        <translation type="unfinished">Breedte</translation>
+        <translation>Breedte</translation>
     </message>
     <message>
         <source>Height</source>
-        <translation type="unfinished">Hoogte</translation>
+        <translation>Hoogte</translation>
     </message>
     <message>
         <source>&amp;Output file for rasterized vectors (raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Uitvoerbestand voor &apos;rasterized&apos; vectors</translation>
     </message>
     <message>
         <source>New size (required if output file doens&apos;t exist)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nieuwe grootte (verplicht als uitvoerbestand niet bestaat)</translation>
     </message>
     <message>
         <source>Cutline</source>
-        <translation type="unfinished"></translation>
+        <translation>Bijschrift</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation type="unfinished">Virtueel Raster Aanmaken (Catalogus)</translation>
+        <translation>Maak Virtueel Raster (catalog) aan</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation type="unfinished">DEM (Hoogtemodellen)</translation>
+        <translation>DEM (terreinmodellen)</translation>
     </message>
     <message>
         <source>&amp;Input file (DEM raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Invoerbestand (DEM raster)</translation>
     </message>
     <message>
         <source>&amp;Band</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Band</translation>
     </message>
     <message>
         <source>Compute &amp;edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Bereken &apos;&amp;edges&apos;</translation>
     </message>
     <message>
         <source>&amp;Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modus</translation>
     </message>
     <message>
         <source>Hillshade</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Hillshade&apos;</translation>
+    </message>
+    <message>
+        <source>Slop</source>
+        <translation>&apos;Slop&apos;</translation>
     </message>
     <message>
         <source>Aspect</source>
-        <translation type="unfinished"></translation>
+        <translation>Aspect</translation>
     </message>
     <message>
         <source>Color relief</source>
-        <translation type="unfinished"></translation>
+        <translation>Kleurreliëf</translation>
     </message>
     <message>
         <source>TRI (Terrain Ruggedness Index)</source>
-        <translation type="unfinished"></translation>
+        <translation>TRI (&apos;Terrain Ruggedness Index&apos;)</translation>
     </message>
     <message>
         <source>TPI (Topographic Position Index)</source>
-        <translation type="unfinished"></translation>
+        <translation>TPI (&apos;Topographic Position Index&apos;)</translation>
     </message>
     <message>
         <source>Roughness</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Roughness&apos;</translation>
     </message>
     <message>
         <source>Use Zevenbergen&amp;&amp;Thorne formula (instead of the Horn&apos;s one)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik Zevenbergen&amp;&amp;Thorne formule (i.p.v. &apos;Horn&apos;)</translation>
     </message>
     <message>
         <source>Z factor (vertical exaggeration)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zfactor (&apos;vertical exaggeration&apos;)</translation>
     </message>
     <message>
         <source>Scale (ratio of vert. units to horiz.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Schaal (ratio van vericale eenheden naar horizontale)</translation>
     </message>
     <message>
         <source>Azimuth of the light</source>
@@ -2597,7 +2604,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Matching mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Overeenkomst modus</translation>
     </message>
     <message>
         <source>Exact color (otherwise &quot;0,0,0,0&quot; RGBA)</source>
@@ -2617,7 +2624,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation type="unfinished">Overzichten aanmaken (Pyramiden)</translation>
+        <translation>Overzichten aanmaken (Pyramiden)</translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
@@ -2638,10 +2645,6 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <source>Warp (Reproject)</source>
         <translation>Warp (herprojecteren)</translation>
-    </message>
-    <message>
-        <source>Slope</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5109,12 +5112,10 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>Estimating normal derivatives...</source>
         <translation>Schatten normaal afgeleiden...</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n geometry error(s) found.</source>
         <comment>number of geometry errors</comment>
-        <translation>
-            <numerusform>%n geometrie-fout gevonden.</numerusform>
-            <numerusform>%n geometrie-fouten gevonden.</numerusform>
+        <translation>%n geometrie-fouten gevonden.
         </translation>
     </message>
     <message>
@@ -5141,12 +5142,10 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>line %1 with less than two points</source>
         <translation>lijn %1 heeft minder dan twee punten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation>
-            <numerusform>lijn %1 bevat %n dubbele hoekpunt bij %2</numerusform>
-            <numerusform>lijn %1 bevat %n dubbele hoekpunten bij %2</numerusform>
+        <translation>lijn %1 bevat %n dubbele hoekpunten bij %2
         </translation>
     </message>
     <message>
@@ -7184,12 +7183,10 @@ Fouten:  %2
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Laag %1 is geen geldige laag en kan niet worden toegevoegd</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation>
-            <numerusform>%n object geselecteerd in laag %1.</numerusform>
-            <numerusform>%n objectg geselecteerd in laag %1.</numerusform>
+        <translation>%n features geselecteerd in laag %1.
         </translation>
     </message>
     <message>
@@ -7228,12 +7225,10 @@ Fouten negeren?</translation>
         <source>Delete features</source>
         <translation>Kaartobjecten verwijderen</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation>
-            <numerusform>%n kaartobject verwijderen?</numerusform>
-            <numerusform>%n kaartobjecten verwijderen?</numerusform>
+        <translation>%n kaartobjecten verwijderen?
         </translation>
     </message>
     <message>
@@ -7372,12 +7367,10 @@ This copy of QGIS writes debugging output.</source>
 Always ignore these errors?</source>
         <translation>Deze fouten altijd negeren?</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation>
-            <numerusform>%n SSL-fout vond plaats</numerusform>
-            <numerusform>%n SSL-fouten vonden plaats</numerusform>
+        <translation>%n SSL-fouten vonden plaats
         </translation>
     </message>
     <message>
@@ -8277,28 +8270,22 @@ p, li { white-space: pre-wrap; }
         <source>Error during search</source>
         <translation>Fout tijdens zoekactie</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation>
-            <numerusform>Attribuut tabel - %1 (%n Objecten)</numerusform>
-            <numerusform>Attribuut tabel - %1 (%n Object)</numerusform>
+        <translation>Attribuut tabel - %1 (%n Objecten)
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation>
-            <numerusform>Attribuut tabel - %1 :: %n / %2 object geselecteerd</numerusform>
-            <numerusform>Attribuut tabel - %1 :: %n / %2 objecten geselecteerd</numerusform>
+        <translation>Attribuut tabel - %1 :: %n / %2 objecten geselecteerd
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation>
-            <numerusform>Attribuut tabel - %1 (%n gevonden object)</numerusform>
-            <numerusform>Attribuut tabel - %1 (%n gevonden objecten)</numerusform>
+        <translation>Attribuut tabel - %1 (%n gevonden objecten)
         </translation>
     </message>
     <message>
@@ -10404,7 +10391,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Rotation </source>
         <comment>Rotation</comment>
-        <extracomment>Rotation</extracomment>
         <translation>Rotatie</translation>
     </message>
 </context>
@@ -13669,12 +13655,10 @@ p, li { white-space: pre-wrap; }
         <source>Question</source>
         <translation>Vraag</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation>
-            <numerusform>Weet u zeker dat u de %n geselecteerde laag wilt verwijderen?</numerusform>
-            <numerusform>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?</numerusform>
+        <translation>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?
         </translation>
     </message>
     <message>
@@ -15557,12 +15541,10 @@ in regel %2 kolom %3</translation>
         <source>Unhandled layer will be lost.</source>
         <translation>Niet verwerkte bestanden gaan verloren.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation>
-            <numerusform>Er is nog %n niet verwerkte laag, die gaat verloren als u nu afsluit.</numerusform>
-            <numerusform>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.</numerusform>
+        <translation>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.
         </translation>
     </message>
 </context>
@@ -15727,15 +15709,12 @@ in regel %2 kolom %3</translation>
         <source>Closing down connection</source>
         <translation>Verbinding wordt afgesloten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation>
-            <numerusform>Netwerkverbinding verbroken na %n seconde van inaktiviteit.
-Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numerusform>
-            <numerusform>Netwerkverbinding verbroken na %n seconde van inaktiviteit.
-Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.</numerusform>
+        <translation>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
+Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.
         </translation>
     </message>
 </context>
@@ -18983,7 +18962,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
-        <translation type="obsolete">Dit selecteren zal &apos;maak lijnen minder rafelig&apos; deselecteren</translation>
+        <translation>Dit selecteren zal &apos;maak lijnen minder rafelig&apos; deselecteren</translation>
     </message>
     <message>
         <source>Snapping</source>
@@ -20957,23 +20936,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No PostGIS Support!</source>
-        <translation type="obsolete">Geen ondersteuning voor PostGIS!</translation>
+        <translation>Geen ondersteuning voor PostGIS!</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation type="obsolete">Uw database ondersteunt/bevat geen PostGIS-ondersteuning.
+        <translation>Uw database ondersteunt/bevat geen PostGIS-ondersteuning.
 </translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation type="obsolete">Geen GEOS Ondersteuning!</translation>
+        <translation>Geen GEOS Ondersteuning!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="obsolete">Uw PostGIS installatie biedt geen GEOS ondersteuning. 
+        <translation>Uw PostGIS installatie biedt geen GEOS ondersteuning. 
 Selecteren en identificeren van objecten zal niet werken.
 Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</translation>
     </message>
@@ -21073,13 +21052,13 @@ De geselecteerde view heeft de volgende kolommen, die niet voldoet aan bovenstaa
     </message>
     <message>
         <source>Query failed</source>
-        <translation type="obsolete">Query mislukt</translation>
+        <translation>Query mislukt</translation>
     </message>
     <message>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
-        <translation type="obsolete">%1 cursorprobleem.
+        <translation>%1 cursorprobleem.
 SQL: %2
 Resultaat: %3 (%4)</translation>
     </message>
@@ -21177,35 +21156,35 @@ Schrijfakties zullen niet worden toegestaan.</translation>
     <name>QgsPostgresProvider::Conn</name>
     <message>
         <source>No PostGIS Support!</source>
-        <translation>Geen ondersteuning voor PostGIS!</translation>
+        <translation type="obsolete">Geen ondersteuning voor PostGIS!</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation>Uw database ondersteunt/bevat geen PostGIS ondersteuning.
+        <translation type="obsolete">Uw database ondersteunt/bevat geen PostGIS ondersteuning.
 </translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation>Geen GEOS Ondersteuning!</translation>
+        <translation type="obsolete">Geen GEOS Ondersteuning!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation>Uw PostGIS installatie biedt geen GEOS ondersteuning. 
+        <translation type="obsolete">Uw PostGIS installatie biedt geen GEOS ondersteuning. 
 Selecteren en identificeren van objecten zal niet werken.
 Installeer PostGIS met GEOS-ondersteuning (http://geos.refractions.net)</translation>
     </message>
     <message>
         <source>Query failed</source>
-        <translation>Query Mislukt</translation>
+        <translation type="obsolete">Query Mislukt</translation>
     </message>
     <message>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
-        <translation>%1 cursorprobleem.
+        <translation type="obsolete">%1 cursorprobleem.
 SQL: %2
 Resultaat: %3 (%4)</translation>
     </message>
@@ -21648,12 +21627,10 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>
-            <numerusform>Het &apos;where&apos;-filter levert %n rij op.</numerusform>
-            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.</numerusform>
+        <translation>Het &apos;where&apos;-filter levert %n rijen op.
         </translation>
     </message>
     <message>
@@ -23161,12 +23138,10 @@ p, li { white-space: pre-wrap; }
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation>
-            <numerusform>Filter levert %n object</numerusform>
-            <numerusform>Filter levert %n objecten</numerusform>
+        <translation>Filter levert %n objecten
         </translation>
     </message>
     <message>
@@ -23711,12 +23686,10 @@ p, li { white-space: pre-wrap; }
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
         <translation>Er is geen attribuut &apos;%1&apos; in de huidige vectorlaag. Selecteer een aanwezig attribuut</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation>
-            <numerusform>%n passende object gevonden.</numerusform>
-            <numerusform>%n passende objecten gevonden.</numerusform>
+        <translation>%n passende objecten gevonden.
         </translation>
     </message>
     <message>
@@ -24137,12 +24110,10 @@ De foutmelding was:
         <source>Insufficient number of layers</source>
         <translation type="obsolete">Onvoldoende kaartlagen</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation>
-            <numerusform>%n geselecteerde geometrie</numerusform>
-            <numerusform>%n geselecteerde geometrieën</numerusform>
+        <translation>%n geselecteerde geometrieën
         </translation>
     </message>
     <message>
@@ -24263,7 +24234,7 @@ De foutmelding was:
     </message>
     <message>
         <source>Invalid reference</source>
-        <translation>Ongerldige referentie</translation>
+        <translation>Ongeldige referentie</translation>
     </message>
     <message>
         <source>%1 of %2 selected by &quot;%3&quot;</source>
@@ -26076,100 +26047,76 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>no renderer</source>
         <translation>geen &apos;renderer&apos;</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n attribuut verwijderd.</numerusform>
-            <numerusform>GESLAAGD: %n attributen verwijderd.</numerusform>
+        <translation>GESLAAGD: %n attributen verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation>
-            <numerusform>FOUT: %n attribuut niet verwijderd.</numerusform>
-            <numerusform>FOUT: %n attributen niet verwijderd.</numerusform>
+        <translation>FOUT: %n attributen niet verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n attribuut toegevoegd.</numerusform>
-            <numerusform>GESLAAGD: %n attributen toegevoegd.</numerusform>
+        <translation>GESLAAGD: %n attributen toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation>
-            <numerusform>FOUT: %n nieuw attribuut niet toegevoegd</numerusform>
-            <numerusform>FOUT: %n nieuwe attributen niet toegevoegd</numerusform>
+        <translation>FOUT: %n nieuwe attributen niet toegevoegd
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n attribuutwaarde aangepast.</numerusform>
-            <numerusform>GESLAAGD: %n attribuutwaarden aangepast.</numerusform>
+        <translation>GESLAAGD: %n attribuutwaarden aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation>
-            <numerusform>FOUT: %n attribuutwaarde is niet aangepast.</numerusform>
-            <numerusform>FOUT: %n attribuutwaarden zijn niet aangepast.</numerusform>
+        <translation>FOUT: %n attribuutwaarden zijn niet aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n object toegevoegd.</numerusform>
-            <numerusform>GESLAAGD: %n objecten toegevoegd.</numerusform>
+        <translation>GESLAAGD: %n objecten toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation>
-            <numerusform>FOUT: %n object niet toegevoegd.</numerusform>
-            <numerusform>FOUT: %n objecten niet toegevoegd.</numerusform>
+        <translation>FOUT: %n objecten niet toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n geometrie is aangepast.</numerusform>
-            <numerusform>GESLAAGD: %n geometrieën zijn aangepast.</numerusform>
+        <translation>GESLAAGD: %n geometrieën zijn aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation>
-            <numerusform>FOUT: %n geometrie niet aangepast.</numerusform>
-            <numerusform>FOUT: %n geometrieën niet aangepast.</numerusform>
+        <translation>FOUT: %n geometrieën niet aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation>
-            <numerusform>GESLAAGD: %n object verwijderd.</numerusform>
-            <numerusform>GESLAAGD: %n objecten verwijderd.</numerusform>
+        <translation>GESLAAGD: %n objecten verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation>
-            <numerusform>FOUT: %n object niet verwijderd.</numerusform>
-            <numerusform>FOUT: %n objecten niet verwijderd.</numerusform>
+        <translation>FOUT: %n objecten niet verwijderd.
         </translation>
     </message>
     <message>
@@ -26812,7 +26759,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Date defined position</source>
-        <translation type="obsolete">Datum-bepaalde positie</translation>
+        <translation>Datum-bepaalde positie</translation>
     </message>
     <message>
         <source>x</source>
@@ -26825,10 +26772,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Color</source>
         <translation>Kleur</translation>
-    </message>
-    <message>
-        <source>Data defined position</source>
-        <translation>Data-bepaalde positie</translation>
     </message>
 </context>
 <context>
@@ -27196,12 +27139,10 @@ verschilt van de GetCapabilities URL
 
 Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation>
-            <numerusform>Ruimtelijke Referentie Systeem (%n beschikbaar)</numerusform>
-            <numerusform>Ruimtelijke Referentie Systemen (%n beschikbaar)</numerusform>
+        <translation>Ruimtelijke Referentie Systemen (%n beschikbaar)
         </translation>
     </message>
     <message>
@@ -27228,12 +27169,10 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>No image encoding selected</source>
         <translation>Geen image-encoding geselecteerd</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation>
-            <numerusform>%n Laag geselecteerd</numerusform>
-            <numerusform>%n Lagen geselecteerd</numerusform>
+        <translation>%n Lagen geselecteerd
         </translation>
     </message>
     <message>
@@ -27289,12 +27228,10 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>XML files (*.xml *XML)</source>
         <translation>XML bestanden (*.xml *.XML)</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation>
-            <numerusform>Opties (%n ruimtelijke referentie systeem beschikbaar)</numerusform>
-            <numerusform>Opties (%n ruimtelijke referentie systemen beschikbaar)</numerusform>
+        <translation>Opties (%n ruimtelijke referentie systemen beschikbaar)
         </translation>
     </message>
 </context>
@@ -27719,12 +27656,10 @@ Antwoord was:
         <source>Dom Exception</source>
         <translation>DOM-fout</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation>
-            <numerusform>%n tile-aanvraag op de achtergrond</numerusform>
-            <numerusform>%n tile-aanvragen op de achtergrond</numerusform>
+        <translation>%n tile-aanvragen op de achtergrond
         </translation>
     </message>
     <message>
@@ -27735,28 +27670,22 @@ Antwoord was:
         <source>Getting tiles via WMS.</source>
         <translation>Tiles via WMS ophalen.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation>
-            <numerusform>, %n cache hit</numerusform>
-            <numerusform>, %n cache hits</numerusform>
+        <translation>, %n cache hits
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation>
-            <numerusform>, %n cache misses.</numerusform>
-            <numerusform>, %n cache misses.</numerusform>
+        <translation>, %n cache misses.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation>
-            <numerusform>, %n fout.</numerusform>
-            <numerusform>, %n fouten.</numerusform>
+        <translation>, %n fouten.
         </translation>
     </message>
     <message>
@@ -27816,12 +27745,10 @@ Tried URL: %1</source>
         <source>(Unknown error code)</source>
         <translation>(Onbekende foutcode)</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation>
-            <numerusform>(en %n meer)</numerusform>
-            <numerusform>(en %n meer)</numerusform>
+        <translation>(en %n meer)
         </translation>
     </message>
     <message>
@@ -28426,12 +28353,10 @@ Omschrijving: %2</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation>
-            <numerusform>Het &apos;where&apos;-filter levert %n rij op.</numerusform>
-            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.</numerusform>
+        <translation>Het &apos;where&apos;-filter levert %n rijen op.
         </translation>
     </message>
     <message>
