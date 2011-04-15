@@ -439,6 +439,7 @@ SET(QGIS_CORE_HDRS
   raster/qgslinearminmaxenhancement.h
   raster/qgslinearminmaxenhancementwithclip.h
   raster/qgspseudocolorshader.h
+  raster/qgsrasterpyramid.h
   raster/qgsrasterbandstats.h
   raster/qgsrasterlayer.h
   raster/qgsrastertransparency.h
