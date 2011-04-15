@@ -6040,15 +6040,23 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
   else if ( layer->type() == QgsMapLayer::RasterLayer )
   {
     const QgsRasterLayer *rlayer = qobject_cast<const QgsRasterLayer *>( layer );
-    if ( rlayer->providerKey() == "wms" )
+    if ( rlayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
     {
-      mActionLocalHistogramStretch->setEnabled( false );
-      mActionFullHistogramStretch->setEnabled( false );
+      if ( rlayer->dataProvider()->capabilities() & QgsRasterDataProvider::Size )
+      {
+        mActionFullHistogramStretch->setEnabled( true );
+      }
+      else
+      {
+        // it would hang up reading the data for WMS for example
+        mActionFullHistogramStretch->setEnabled( false );
+      }
+      mActionLocalHistogramStretch->setEnabled( true );
     }
     else
     {
-      mActionLocalHistogramStretch->setEnabled( true );
-      mActionFullHistogramStretch->setEnabled( true );
+      mActionLocalHistogramStretch->setEnabled( false );
+      mActionFullHistogramStretch->setEnabled( false );
     }
     mActionLayerSubsetString->setEnabled( false );
     mActionSelect->setEnabled( false );

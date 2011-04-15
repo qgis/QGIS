@@ -1126,8 +1126,14 @@ int QgsGdalProvider::capabilities() const
                    | QgsRasterDataProvider::ExactResolution
                    | QgsRasterDataProvider::EstimatedMinimumMaximum
                    | QgsRasterDataProvider::BuildPyramids
-                   | QgsRasterDataProvider::Histogram
-                   | QgsRasterDataProvider::Size;
+                   | QgsRasterDataProvider::Histogram;
+  GDALDriverH myDriver = GDALGetDatasetDriver( mGdalDataset );
+  QString name = GDALGetDriverShortName( myDriver );
+  QgsDebugMsg( "driver short name = " + name );
+  if ( name != "WMS" )
+  {
+    capability |= QgsRasterDataProvider::Size;
+  }
   return capability;
 }
 
