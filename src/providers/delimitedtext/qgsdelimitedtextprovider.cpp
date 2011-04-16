@@ -28,7 +28,6 @@
 #include <QRegExp>
 #include <QUrl>
 
-
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
@@ -143,7 +142,7 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     , mWktCrdRegexp( "(\\-?\\d+(?:\\.\\d*)?\\s+\\-?\\d+(?:\\.\\d*)?)\\s[\\s\\d\\.\\-]+" )
     , mSkipLines( 0 )
     , mFirstDataLine( 0 )
-    , mShowInvalidLines( true )
+    , mShowInvalidLines( false )
     , mCrs()
     , mWkbType( QGis::WKBUnknown )
 {
@@ -455,7 +454,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     QString line = readLine( mStream ); // Default local 8 bit encoding
     if ( line.isEmpty() )
       continue;
-
+    
     // lex the tokens from the current data line
     QStringList tokens = splitLine( line );
 
@@ -559,7 +558,6 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
 
   // End of the file. If there are any lines that couldn't be
   // loaded, display them now.
-
   if ( mShowInvalidLines && !mInvalidLines.isEmpty() )
   {
     mShowInvalidLines = false;
@@ -577,7 +575,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     output->showMessage();
 
     // We no longer need these lines.
-    mInvalidLines.empty();
+    mInvalidLines.clear();
   }
 
   return false;
