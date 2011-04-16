@@ -180,7 +180,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
   {
     QUrl urlSource = QUrl::fromEncoded( mDataSource.toAscii() );
 
-    if ( !mDataSource.startsWith( "file://" ) )
+    if ( !mDataSource.startsWith( "file:" ) )
     {
       QUrl file = QUrl::fromLocalFile( mDataSource.left( mDataSource.indexOf( "?" ) ) );
       urlSource.setScheme( "file" );

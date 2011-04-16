@@ -1438,7 +1438,7 @@ QString QgsProject::readPath( QString src ) const
 // return the absolute or relative path to write it to the project file
 QString QgsProject::writePath( QString src ) const
 {
-  if ( readBoolEntry( "Paths", "/Absolute", true ) )
+  if ( readBoolEntry( "Paths", "/Absolute", true ) || src.isEmpty() )
   {
     return src;
   }
