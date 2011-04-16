@@ -119,18 +119,7 @@ bool QgsAppLegendInterface::isLayerVisible( QgsMapLayer * ml )
 
 QList< QgsMapLayer * > QgsAppLegendInterface::layers() const
 {
-  QList< QgsMapLayer * > items;
-  QTreeWidgetItemIterator it( mLegend );
-  while ( *it )
-  {
-    QgsLegendLayer *llayer = dynamic_cast<QgsLegendLayer *>( *it );
-    if ( llayer )
-      items.append( llayer->layer() );
-
-    ++it;
-  }
-
-  return items;
+  return mLegend->layers();
 }
 
 void QgsAppLegendInterface::refreshLayerSymbology( QgsMapLayer *ml )

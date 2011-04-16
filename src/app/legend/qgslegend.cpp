@@ -649,7 +649,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   updateMapCanvasLayerSet();
 
   // first layer?
-  if ( QgsMapLayerRegistry::instance()->count() == 1 )
+  if ( layers().count() == 1 )
   {
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
@@ -714,6 +714,22 @@ QList<QgsMapLayer *> QgsLegend::selectedLayers()
   }
 
   return layers;
+}
+
+QList<QgsMapLayer *> QgsLegend::layers()
+{
+  QList< QgsMapLayer * > items;
+  QTreeWidgetItemIterator it( this );
+  while ( *it )
+  {
+    QgsLegendLayer *llayer = dynamic_cast<QgsLegendLayer *>( *it );
+    if ( llayer )
+      items.append( llayer->layer() );
+
+    ++it;
+  }
+
+  return items;
 }
 
 bool QgsLegend::setCurrentLayer( QgsMapLayer *layer )
