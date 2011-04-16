@@ -244,7 +244,8 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
                             bool theThoroughBandScanFlag = false
                           );
 
-
+    int changed( );
+    bool reload( );
   private:
 
     /**

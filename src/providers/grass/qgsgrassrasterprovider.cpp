@@ -275,6 +275,7 @@ double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
 
 QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int bandNo )const
 {
+  QgsDebugMsg( "Entered" );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
   // TODO: check if color can be realy discontinuous in GRASS,
@@ -484,6 +485,18 @@ QString  QgsGrassRasterProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
+int QgsGrassRasterProvider::changed()
+{
+  QgsDebugMsg( "Entered" );
+  // TODO
+  return  ValuesChange | ExtentChange | CrsChange | DataTypeChange | ColorTableChange | SizeChange;
+}
+
+bool QgsGrassRasterProvider::reload()
+{
+  QgsDebugMsg( "Entered" );
+  return true;
+}
 //void QgsGrassRasterProvider::buildSupportedRasterFileFilter( QString & theFileFiltersString )
 //{
 //}

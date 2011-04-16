@@ -2479,7 +2479,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0  ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toInt() );
     }
   }
   // Debug
@@ -4414,18 +4414,41 @@ double QgsRasterLayer::readValue( void *data, int type, int index )
 bool QgsRasterLayer::update()
 {
   QgsDebugMsg( "entered." );
-
-  if ( mLastModified < QgsRasterLayer::lastModified( source() ) )
+  // Check if data changed
+  //if ( mLastModified < QgsRasterLayer::lastModified( source() ) )
+  //{
+  // TODO: lastModified to provider -> outdated
+  // TODO: check what has to be cleard, rebuild
+  int change = mDataProvider->changed();
+  if ( change != QgsRasterDataProvider::NoChange )
   {
-    // TODO: lastModified to provider -> outdated
-    // TODO: check what has to be cleard, rebuild
-    mHasPyramids = false;
-    mPyramidList.clear();
+    QgsDebugMsg( "reload data" );
+    //mHasPyramids = false;
+    //mPyramidList.clear();
 
-    mRasterStatsList.clear();
+    //mRasterStatsList.clear();
     mValid = mDataProvider->reload();
+
+    for ( int i = 1; i <= mBandCount; i++ )
+    {
+      // TODO : refresh all data, move to separate method from constructor
+      // Reload color table
+      if ( i - 1 < mRasterStatsList.size() )
+      {
+        QList<QgsColorRampShader::ColorRampItem> ct;
+        ct = mDataProvider->colorTable( i );
+
+        mRasterStatsList[i-1].colorTable = ct;
+        if ( mRasterType == Palette )
+        {
+          QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
+          myColorRampShader->setColorRampItemList( *colorTable( 1 ) );
+        }
+      }
+    }
+    emit dataChanged( change );
   }
-  return true;
+  return mValid;
 }
 
 bool QgsRasterLayer::usesProvider()

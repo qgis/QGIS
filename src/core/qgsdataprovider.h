@@ -17,7 +17,7 @@
 #ifndef QQGSDATAPROVIDER_H
 #define QQGSDATAPROVIDER_H
 
-
+#include <QDateTime>
 #include <QObject>
 #include <QString>
 #include <QStringList>
@@ -271,6 +271,15 @@ class CORE_EXPORT QgsDataProvider : public QObject
       synchronize with changes in the data source*/
     virtual void reloadData() {}
 
+    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    virtual QDateTime timestamp() const { return mTimestamp; }
+
+    /** Current time stamp of data source */
+    virtual QDateTime dataTimestamp() const { return QDateTime(); }
+
+    /** test if at least one of specified data/metadata changed since provider was loaded */
+    virtual bool changed( int change ) { return false; }
+
   signals:
 
     /**
@@ -287,6 +296,13 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     void dataChanged();
 
+    /**
+     *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
+     *   @param changed binary combination of changes
+     *   @note added in 1.7
+     */
+    void dataChanged( int change );
+
   private:
 
     /**
@@ -295,6 +311,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     QString mDataSourceURI;
 
+    /**
+     * Timestamp of data in the moment when the data were loaded by provider.
+     */
+    QDateTime mTimestamp;
 };
 
 
