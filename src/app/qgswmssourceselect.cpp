@@ -351,6 +351,8 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
   wmsProvider->supportedTileSets( tilesets );
 
   tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), tilesets.size() > 0 );
+  if( tabServers->isTabEnabled( tabServers->indexOf( tabTilesets ) ) )
+    tabServers->setCurrentWidget( tabTilesets );
 
   if ( tilesets.size() > 0 )
   {
