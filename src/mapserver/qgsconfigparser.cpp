@@ -122,41 +122,31 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
 QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) const
 {
   QStringList crsNumbers;
-  QgsVectorLayer* theVectorLayer = dynamic_cast<QgsVectorLayer*>( theMapLayer );
+  QString myDatabaseFileName = QgsApplication::srsDbFilePath();
+  sqlite3      *myDatabase;
+  const char   *myTail;
+  sqlite3_stmt *myPreparedStatement;
+  int           myResult;
 
-  if ( theVectorLayer ) //append the source SRS. In future, all systems supported by proj4 should be appended
+  //check the db is available
+  myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
+  if ( myResult )
   {
-    QString myDatabaseFileName = QgsApplication::srsDbFilePath();
-    sqlite3      *myDatabase;
-    const char   *myTail;
-    sqlite3_stmt *myPreparedStatement;
-    int           myResult;
-
-    //check the db is available
-    myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
-    if ( myResult )
-    {
-      //if the database cannot be opened, add at least the epsg number of the source coordinate system
-      crsNumbers.push_back( theMapLayer->crs().authid() );
-      return crsNumbers;
-    };
-    QString mySql = "select upper(auth_name||':'||auth_id) from tbl_srs";
-    myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
-    if ( myResult == SQLITE_OK )
-    {
-      while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
-      {
-        crsNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) );
-      }
-    }
-    sqlite3_finalize( myPreparedStatement );
-    sqlite3_close( myDatabase );
-  }
-  else //rasters cannot be reprojected. Use the epsg number of the layers native CRS
-  {
+    //if the database cannot be opened, add at least the epsg number of the source coordinate system
     crsNumbers.push_back( theMapLayer->crs().authid() );
+    return crsNumbers;
+  };
+  QString mySql = "select upper(auth_name||':'||auth_id) from tbl_srs";
+  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.length(), &myPreparedStatement, &myTail );
+  if ( myResult == SQLITE_OK )
+  {
+    while ( sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    {
+      crsNumbers.push_back( QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) ) );
+    }
   }
-  return crsNumbers;
+  sqlite3_finalize( myPreparedStatement );
+  sqlite3_close( myDatabase );
 }
 
 bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const
