@@ -3771,7 +3771,6 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      //myRedValue   = readValue( redRasterScanLine, ( GDALDataType )myRedType, i );
       myRedValue   = readValue( redRasterScanLine, myRedType, i );
       myGreenValue = readValue( greenRasterScanLine, myGreenType, i );
       myBlueValue  = readValue( blueRasterScanLine, myBlueType, i );
@@ -3788,9 +3787,10 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
         continue;
       }
 
-      if ( !myRedContrastEnhancement->isValueInDisplayableRange( myRedValue ) ||
-           !myGreenContrastEnhancement->isValueInDisplayableRange( myGreenValue ) ||
-           !myBlueContrastEnhancement->isValueInDisplayableRange( myBlueValue ) )
+      if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() &&
+           ( !myRedContrastEnhancement->isValueInDisplayableRange( myRedValue ) ||
+             !myGreenContrastEnhancement->isValueInDisplayableRange( myGreenValue ) ||
+             !myBlueContrastEnhancement->isValueInDisplayableRange( myBlueValue ) ) )
       {
         redImageScanLine[ i ] = myDefaultColor;
         continue;
@@ -3803,9 +3803,18 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
         continue;
       }
 
-      myStretchedRedValue = myRedContrastEnhancement->enhanceContrast( myRedValue );
-      myStretchedGreenValue = myGreenContrastEnhancement->enhanceContrast( myGreenValue );
-      myStretchedBlueValue = myBlueContrastEnhancement->enhanceContrast( myBlueValue );
+      if ( QgsContrastEnhancement::NoEnhancement == contrastEnhancementAlgorithm() )
+      {
+        myStretchedRedValue = myRedValue;
+        myStretchedGreenValue = myGreenValue;
+        myStretchedBlueValue = myBlueValue;
+      }
+      else
+      {
+        myStretchedRedValue = myRedContrastEnhancement->enhanceContrast( myRedValue );
+        myStretchedGreenValue = myGreenContrastEnhancement->enhanceContrast( myGreenValue );
+        myStretchedBlueValue = myBlueContrastEnhancement->enhanceContrast( myBlueValue );
+      }
 
       if ( mInvertColor )
       {
