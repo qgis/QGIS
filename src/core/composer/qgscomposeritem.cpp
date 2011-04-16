@@ -803,6 +803,13 @@ double QgsComposerItem::textWidthMillimeters( const QFont& font, const QString& 
   return ( fontMetrics.width( text ) / FONT_WORKAROUND_SCALE );
 }
 
+double QgsComposerItem::fontHeightCharacterMM( const QFont& font, const QChar& c ) const
+{
+  QFont metricsFont = scaledFontPixelSize( font );
+  QFontMetricsF fontMetrics( metricsFont );
+  return ( fontMetrics.boundingRect( c ).height() / FONT_WORKAROUND_SCALE );
+}
+
 double QgsComposerItem::fontAscentMillimeters( const QFont& font ) const
 {
   QFont metricsFont = scaledFontPixelSize( font );
