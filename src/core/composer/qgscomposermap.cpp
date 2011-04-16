@@ -947,7 +947,8 @@ void QgsComposerMap::drawCoordinateAnnotation( QPainter* p, const QPointF& pos, 
 {
   Border frameBorder = borderForLineCoord( pos );
   double textWidth = textWidthMillimeters( mGridAnnotationFont, annotationString );
-  double textHeight = fontAscentMillimeters( mGridAnnotationFont );
+  //relevant for annotations is the height of digits
+  double textHeight = fontHeightCharacterMM( mGridAnnotationFont, QChar( '0' ) );
   double xpos = pos.x();
   double ypos = pos.y();
   int rotation = 0;

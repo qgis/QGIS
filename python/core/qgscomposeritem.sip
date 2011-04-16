@@ -226,6 +226,10 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Returns the font width in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double textWidthMillimeters( const QFont& font, const QString& text ) const;
 
+    /**Returns the font height of a character in millimeters
+      @note this method was added in version 1.7*/
+    double fontHeightCharacterMM( const QFont& font, const QChar& c ) const;
+
     /**Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE*/
     double fontAscentMillimeters( const QFont& font ) const;
 
