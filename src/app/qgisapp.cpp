@@ -4558,6 +4558,7 @@ void QgisApp::setLayerCRS()
   }
 
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setSelectedCrsId( mMapLegend->currentLayer()->crs().srsid() );
   mySelector->setMessage();
   if ( mySelector->exec() )
   {
