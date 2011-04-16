@@ -1179,11 +1179,6 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
       theMapLayer = layerList.at( listIndex );
       if ( theMapLayer )
       {
-        if ( theMapLayer->type() == QgsMapLayer::RasterLayer )
-        {
-          //set the sourceSRS to the same as the destSRS
-          theMapLayer->setCrs( destCRS );
-        }
         layerKeys.push_front( theMapLayer->id() );
         QgsMapLayerRegistry::instance()->addMapLayer( theMapLayer, false );
       }
