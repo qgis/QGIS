@@ -267,11 +267,13 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
 
   def insertFromMimeData(self, source):
         self.cursor = self.textCursor()
-        self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor, 1)
-        self.setTextCursor(self.cursor)
         if source.hasText():
             pasteList = QStringList()
             pasteList = source.text().split("\n")
+            # move the cursor to the end only if the text is multi-line or is going to be pasted not into the last line
+            if (len(pasteList) > 1) or (not self.isCursorInEditionZone()):
+              self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor, 1)
+            self.setTextCursor(self.cursor)
             # with multi-line text also run the commands
             for line in pasteList[:-1]:
               self.insertPlainText(line)
