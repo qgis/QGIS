@@ -49,8 +49,10 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
     mFileFormatComboBox->setVisible( false );
     mFileFormatLabel->setVisible( false );
   }
+
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
-  mOkButton->setEnabled( false );
+
+  mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << "id" << "Integer" << "10" << "" ) );
 
   QgsCoordinateReferenceSystem srs;
   srs.validate();
