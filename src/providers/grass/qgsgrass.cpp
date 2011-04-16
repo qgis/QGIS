@@ -1039,7 +1039,7 @@ bool GRASS_EXPORT QgsGrass::mapRegion( int type, QString gisbase,
   return true;
 }
 
-QProcess * GRASS_EXPORT QgsGrass::startModule( QString gisdbase, QString location,
+QProcess GRASS_EXPORT *QgsGrass::startModule( QString gisdbase, QString location,
     QString module, QStringList arguments, QTemporaryFile &gisrcFile )
 {
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
