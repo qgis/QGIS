@@ -29,7 +29,7 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExt
   QgsDebugMsg( "Entered" );
   QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
 
-  if ( ! theSrcCRS.isValid() || ! theDestCRS.isValid() )
+  if ( ! theSrcCRS.isValid() || ! theDestCRS.isValid() || theSrcCRS == theDestCRS )
   {
     readBlock( bandNo, viewExtent, width, height, data );
     return;
