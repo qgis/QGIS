@@ -649,7 +649,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   updateMapCanvasLayerSet();
 
   // first layer?
-  if ( mMapCanvas->layerCount() == 1 )
+  if ( QgsMapLayerRegistry::instance()->count() == 1 )
   {
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
