@@ -112,6 +112,10 @@ class QgsLegend : public QTreeWidget
     Else, an empty list is returned.*/
     QList<QgsMapLayer *> selectedLayers();
 
+    /*!Returns all layers loaded in QgsMapCanvas.
+    Else, an empty list is returned.*/
+    QList<QgsMapLayer *> layers();
+
     /*!set the current layer
     returns true if the layer exists, false otherwise*/
     bool setCurrentLayer( QgsMapLayer *layer );
@@ -410,7 +414,7 @@ class QgsLegend : public QTreeWidget
 
     /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
     QgsMapCanvas* mMapCanvas;
-
+    
     /**Stores the width values of the LegendSymbologyItem pixmaps. The purpose of this is that the legend may automatically change
      the global IconWidth when items are added or removed*/
     std::multiset<int> mPixmapWidthValues;
