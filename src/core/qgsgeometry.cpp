@@ -3233,125 +3233,126 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 /**Replaces a part of this geometry with another line*/
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
-  if ( reshapeWithLine.size() < 2 )
-  {
-    return 1;
-  }
-  if ( type() == QGis::Point )
-  {
-    return 1; //cannot reshape points
-  }
-
-  GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
-
-  //make sure this geos geometry is up-to-date
-  if ( !mGeos || mDirtyGeos )
-  {
-    exportWkbToGeos();
-  }
-
-  //single or multi?
-  int numGeoms = GEOSGetNumGeometries( mGeos );
-  if ( numGeoms == -1 )
-  {
-    return 1;
-  }
-
-  bool isMultiGeom = false;
-  int geosTypeId = GEOSGeomTypeId( mGeos );
-  if ( geosTypeId == GEOS_MULTILINESTRING || geosTypeId == GEOS_MULTIPOLYGON )
-  {
-    isMultiGeom = true;
-  }
-
-  bool isLine = ( type() == QGis::Line );
-
-  //polygon or multipolygon?
-  if ( !isMultiGeom )
-  {
-    GEOSGeometry* reshapedGeometry;
-    if ( isLine )
-    {
-      reshapedGeometry = reshapeLine( mGeos, reshapeLineGeos );
-    }
-    else
-    {
-      reshapedGeometry = reshapePolygon( mGeos, reshapeLineGeos );
-    }
-
-    GEOSGeom_destroy( reshapeLineGeos );
-    if ( reshapedGeometry )
-    {
-      GEOSGeom_destroy( mGeos );
-      mGeos = reshapedGeometry;
-      mDirtyWkb = true;
-      return 0;
-    }
-    else
+    if ( reshapeWithLine.size() < 2 )
     {
       return 1;
     }
-  }
-  else
-  {
-    //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
-    bool reshapeTookPlace = false;
 
-    GEOSGeometry* currentReshapeGeometry = 0;
-    GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
-
-    for ( int i = 0; i < numGeoms; ++i )
+    if ( type() == QGis::Point )
     {
+      return 1; //cannot reshape points
+    }
+
+    GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
+
+    //make sure this geos geometry is up-to-date
+    if ( !mGeos || mDirtyGeos )
+    {
+      exportWkbToGeos();
+    }
+
+    //single or multi?
+    int numGeoms = GEOSGetNumGeometries( mGeos );
+    if ( numGeoms == -1 )
+    {
+      return 1;
+    }
+
+    bool isMultiGeom = false;
+    int geosTypeId = GEOSGeomTypeId( mGeos );
+    if ( geosTypeId == GEOS_MULTILINESTRING || geosTypeId == GEOS_MULTIPOLYGON )
+    {
+      isMultiGeom = true;
+    }
+
+    bool isLine = ( type() == QGis::Line );
+
+    //polygon or multipolygon?
+    if ( !isMultiGeom )
+    {
+      GEOSGeometry* reshapedGeometry;
       if ( isLine )
       {
-        currentReshapeGeometry = reshapeLine( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
+        reshapedGeometry = reshapeLine( mGeos, reshapeLineGeos );
       }
       else
       {
-        currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
+        reshapedGeometry = reshapePolygon( mGeos, reshapeLineGeos );
       }
 
-      if ( currentReshapeGeometry )
+      GEOSGeom_destroy( reshapeLineGeos );
+      if ( reshapedGeometry )
       {
-        newGeoms[i] = currentReshapeGeometry;
-        reshapeTookPlace = true;
+        GEOSGeom_destroy( mGeos );
+        mGeos = reshapedGeometry;
+        mDirtyWkb = true;
+        return 0;
       }
       else
       {
-        newGeoms[i] = GEOSGeom_clone( GEOSGetGeometryN( mGeos, i ) );
+        return 1;
       }
-    }
-    GEOSGeom_destroy( reshapeLineGeos );
-
-    GEOSGeometry* newMultiGeom = 0;
-    if ( isLine )
-    {
-      newMultiGeom = GEOSGeom_createCollection( GEOS_MULTILINESTRING, newGeoms, numGeoms );
-    }
-    else //multipolygon
-    {
-      newMultiGeom = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, newGeoms, numGeoms );
-    }
-
-    delete[] newGeoms;
-    if ( ! newMultiGeom )
-    {
-      return 3;
-    }
-
-    if ( reshapeTookPlace )
-    {
-      GEOSGeom_destroy( mGeos );
-      mGeos = newMultiGeom;
-      mDirtyWkb = true;
-      return 0;
     }
     else
     {
-      GEOSGeom_destroy( newMultiGeom );
-      return 1;
+      //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
+      bool reshapeTookPlace = false;
+
+      GEOSGeometry* currentReshapeGeometry = 0;
+      GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
+
+      for ( int i = 0; i < numGeoms; ++i )
+      {
+        if ( isLine )
+        {
+          currentReshapeGeometry = reshapeLine( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
+        }
+        else
+        {
+          currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
+        }
+
+        if ( currentReshapeGeometry )
+        {
+          newGeoms[i] = currentReshapeGeometry;
+          reshapeTookPlace = true;
+        }
+        else
+        {
+          newGeoms[i] = GEOSGeom_clone( GEOSGetGeometryN( mGeos, i ) );
+        }
+      }
+      GEOSGeom_destroy( reshapeLineGeos );
+
+      GEOSGeometry* newMultiGeom = 0;
+      if ( isLine )
+      {
+        newMultiGeom = GEOSGeom_createCollection( GEOS_MULTILINESTRING, newGeoms, numGeoms );
+      }
+      else //multipolygon
+      {
+        newMultiGeom = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, newGeoms, numGeoms );
+      }
+
+      delete[] newGeoms;
+      if ( ! newMultiGeom )
+      {
+        return 3;
+      }
+
+      if ( reshapeTookPlace )
+      {
+        GEOSGeom_destroy( mGeos );
+        mGeos = newMultiGeom;
+        mDirtyWkb = true;
+        return 0;
+      }
+      else
+      {
+        GEOSGeom_destroy( newMultiGeom );
+        return 1;
+      }
     }
-  }
 }
 
 int QgsGeometry::makeDifference( QgsGeometry* other )
@@ -5065,15 +5066,24 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
 
   //do inner rings intersect?
   const GEOSGeometry **innerRings = new const GEOSGeometry*[nRings];
-  for ( int i = 0; i < nRings; ++i )
+
+  try
   {
-    innerRings[i] = GEOSGetInteriorRingN( polygon, i );
-    if ( GEOSIntersects( innerRings[i], reshapeLineGeos ) == 1 )
+    for ( int i = 0; i < nRings; ++i )
     {
-      ++nIntersections;
-      lastIntersectingRing = i;
-      lastIntersectingGeom = innerRings[i];
+      innerRings[i] = GEOSGetInteriorRingN( polygon, i );
+      if ( GEOSIntersects( innerRings[i], reshapeLineGeos ) == 1 )
+      {
+        ++nIntersections;
+        lastIntersectingRing = i;
+        lastIntersectingGeom = innerRings[i];
+      }
     }
+  }
+  catch ( GEOSException &e )
+  {
+    Q_UNUSED( e );
+    nIntersections = 0;
   }
 
   if ( nIntersections != 1 ) //reshape line is only allowed to intersect one ring
@@ -5173,10 +5183,21 @@ GEOSGeometry* QgsGeometry::reshapeLine( const GEOSGeometry* line, const GEOSGeom
     return 0;
   }
 
-  //make sure there are at least two intersection between line and reshape geometry
-  GEOSGeometry* intersectGeom = GEOSIntersection( line, reshapeLineGeos );
-  bool atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
-  GEOSGeom_destroy( intersectGeom );
+  bool atLeastTwoIntersections;
+
+  try
+  {
+    //make sure there are at least two intersection between line and reshape geometry
+    GEOSGeometry* intersectGeom = GEOSIntersection( line, reshapeLineGeos );
+    atLeastTwoIntersections = ( GEOSGeomTypeId( intersectGeom ) == GEOS_MULTIPOINT && GEOSGetNumGeometries( intersectGeom ) > 1 );
+    GEOSGeom_destroy( intersectGeom );
+  }
+  catch ( GEOSException &e )
+  {
+    Q_UNUSED( e );
+    atLeastTwoIntersections = false;
+  }
+
   if ( !atLeastTwoIntersections )
   {
     return 0;
