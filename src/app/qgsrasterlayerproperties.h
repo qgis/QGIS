@@ -99,6 +99,9 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     /** \brief this slot sets StdDev switch box to 0.00 when user enters min max values */
     void userDefinedMinMax_textEdited( QString );
 
+    /** \brief data changed reciever */
+    void dataChanged( int change );
+
   private slots:
     /** This slow handles necessary interface modifications (i.e. loading min max values) */
     void on_cboBlue_currentIndexChanged( const QString& );

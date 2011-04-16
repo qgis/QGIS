@@ -92,6 +92,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( leBlueMax, SIGNAL( textEdited( QString ) ), this, SLOT( userDefinedMinMax_textEdited( QString ) ) );
   connect( mColormapTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleColormapTreeWidgetDoubleClick( QTreeWidgetItem*, int ) ) );
 
+  connect( mRasterLayer, SIGNAL( dataChanged( int ) ), this, SLOT( dataChanged( int ) ) );
+
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   leMinimumScale->setText( QString::number( lyr->minimumScale(), 'f' ) );
@@ -3032,4 +3034,9 @@ void QgsRasterLayerProperties::on_btnResetNull_clicked( )
   {
     leNoDataValue->clear();
   }
+}
+
+void QgsRasterLayerProperties::dataChanged( int change )
+{
+  QgsDebugMsg( "entered." );
 }
