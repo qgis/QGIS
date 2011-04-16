@@ -123,14 +123,7 @@
        </widget>
       </item>
       <item row="2" column="4">
-       <widget class="QLineEdit" name="mPrecision">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="mPrecision"/>
       </item>
      </layout>
     </widget>
