@@ -389,6 +389,8 @@ void QgsMapRenderer::render( QPainter* painter )
         split = splitLayersExtent( ml, r1, r2 );
         ct = new QgsCoordinateTransform( ml->crs(), *mDestCRS );
         mRenderContext.setExtent( r1 );
+        QgsDebugMsg( "  extent 1: " + r1.toString() );
+        QgsDebugMsg( "  extent 2: " + r2.toString() );
         if ( !r1.isFinite() || !r2.isFinite() ) //there was a problem transforming the extent. Skip the layer
         {
           continue;
@@ -715,15 +717,14 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
         QgsPoint ur = tr.transform( extent.xMaximum(), extent.yMaximum(),
                                     QgsCoordinateTransform::ReverseTransform );
 
+        extent = tr.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+
         if ( ll.x() > ur.x() )
         {
-          extent.set( ll, QgsPoint( splitCoord, ur.y() ) );
-          r2.set( QgsPoint( -splitCoord, ll.y() ), ur );
+          r2 = extent;
+          extent.setXMinimum( splitCoord );
+          r2.setXMaximum( splitCoord );
           split = true;
-        }
-        else // no need to split
-        {
-          extent = tr.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
         }
       }
       else // can't cross 180
