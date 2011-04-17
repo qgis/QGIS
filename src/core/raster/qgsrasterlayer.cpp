@@ -3257,9 +3257,8 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
   QDomNode rpNode = layer_node.namedItem( "rasterproperties" );
 
   // Collect sublayer names and styles
-  QStringList layers;
-  QStringList styles;
-  QString format;
+  mLayers.clear();
+  mStyles.clear();
 
   if ( mProviderKey == "wms" )
   {
@@ -3269,20 +3268,21 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
       // TODO: sublayer visibility - post-0.8 release timeframe
 
       // collect name for the sublayer
-      layers += layerElement.namedItem( "name" ).toElement().text();
+      mLayers += layerElement.namedItem( "name" ).toElement().text();
 
       // collect style for the sublayer
-      styles += layerElement.namedItem( "style" ).toElement().text();
+      mStyles += layerElement.namedItem( "style" ).toElement().text();
 
       layerElement = layerElement.nextSiblingElement( "wmsSublayer" );
     }
 
     // Collect format
-    format = rpNode.namedItem( "wmsFormat" ).toElement().text();
+    mFormat = rpNode.namedItem( "wmsFormat" ).toElement().text();
   }
 
+  mCrs = crs().authid();
   // Collect CRS
-  setDataProvider( mProviderKey, layers, styles, format, crs().authid() );
+  setDataProvider( mProviderKey, mLayers, mStyles, mFormat, mCrs );
 
   QString theError;
   bool res = readSymbology( layer_node, theError );
@@ -3297,6 +3297,21 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
   {
     mDrawingStyle = SingleBandColorDataStyle;
     mGrayBandName = bandName( 1 );
+  }
+
+  // Check timestamp
+  QDomNode stampNode = layer_node.namedItem( "timestamp" );
+  if ( !stampNode.isNull() )
+  {
+    QDateTime stamp = QDateTime::fromString( stampNode.toElement().text(), Qt::ISODate );
+    // TODO: very bad, we have to load twice!!! Make QgsDataProvider::timestamp() static?
+    if ( stamp < mDataProvider->dataTimestamp() )
+    {
+      QgsDebugMsg( "data changed, reload provider" );
+      closeDataProvider();
+      init();
+      setDataProvider( mProviderKey, mLayers, mStyles, mFormat, mCrs );
+    }
   }
 
   return res;
