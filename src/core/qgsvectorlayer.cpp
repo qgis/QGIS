@@ -785,6 +785,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     ++featureCount;
 #endif //Q_WS_MAC
   }
+
+  QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
@@ -1106,6 +1108,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
                    .arg( fet.typeName() ).arg( cse.what() ) );
       return false;
     }
+
+    QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
   }
   else
   {

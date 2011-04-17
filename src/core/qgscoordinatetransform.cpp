@@ -398,7 +398,8 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
 
   for ( int i = 0; i < numP * numP; i++ )
   {
-    bb_rect.combineExtentWith( x[i], y[i] );
+    if ( qIsFinite( x[i] ) && qIsFinite( y[i] ) )
+      bb_rect.combineExtentWith( x[i], y[i] );
   }
 
   QgsDebugMsg( "Projected extent: " + QString(( bb_rect.toString() ).toLocal8Bit().data() ) );
@@ -488,7 +489,7 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
 
     QgsDebugMsg( "throwing exception" );
 
-    throw  QgsCsException( msg );
+    throw QgsCsException( msg );
   }
 
   // if the result is lat/long, convert the results from radians back
@@ -529,13 +530,13 @@ bool QgsCoordinateTransform::readXML( QDomNode & theNode )
 bool QgsCoordinateTransform::writeXML( QDomNode & theNode, QDomDocument & theDoc )
 {
   QDomElement myNodeElement = theNode.toElement();
-  QDomElement myTransformElement  = theDoc.createElement( "coordinatetransform" );
+  QDomElement myTransformElement = theDoc.createElement( "coordinatetransform" );
 
-  QDomElement mySourceElement  = theDoc.createElement( "sourcesrs" );
+  QDomElement mySourceElement = theDoc.createElement( "sourcesrs" );
   mSourceCRS.writeXML( mySourceElement, theDoc );
   myTransformElement.appendChild( mySourceElement );
 
-  QDomElement myDestElement  = theDoc.createElement( "destinationsrs" );
+  QDomElement myDestElement = theDoc.createElement( "destinationsrs" );
   mDestCRS.writeXML( myDestElement, theDoc );
   myTransformElement.appendChild( myDestElement );
 
