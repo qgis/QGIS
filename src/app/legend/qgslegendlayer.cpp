@@ -444,7 +444,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( lyr );
 
     // attribute table
-    theMenu.addAction( tr( "&Open attribute table" ),
+    theMenu.addAction( QgisApp::getThemeIcon( "/mActionOpenTable.png" ), tr( "&Open attribute table" ),
                        QgisApp::instance(), SLOT( attributeTable() ) );
 
     // allow editing
