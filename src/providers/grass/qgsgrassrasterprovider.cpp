@@ -74,6 +74,8 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const & uri )
   QgsDebugMsg( QString( "mapset: %1" ).arg( mMapset ) );
   QgsDebugMsg( QString( "mapName: %1" ).arg( mMapName ) );
 
+  mTimestamp = dataTimestamp();
+
   mRasterValue.start( mGisdbase, mLocation, mMapset, mMapName );
   mValidNoDataValue = true;
 
@@ -485,21 +487,24 @@ QString  QgsGrassRasterProvider::description() const
   return PROVIDER_DESCRIPTION;
 }
 
-int QgsGrassRasterProvider::changed()
+QDateTime QgsGrassRasterProvider::dataTimestamp() const
 {
-  QgsDebugMsg( "Entered" );
-  // TODO
-  return  ValuesChange | ExtentChange | CrsChange | DataTypeChange | ColorTableChange | SizeChange;
+  QDateTime time;
+  QString mapset = mGisdbase + "/" + mLocation + "/" + mMapset;
+  QStringList dirs;
+  dirs << "cell" << "colr";
+  foreach( QString dir, dirs )
+  {
+    QString path = mapset + "/" + dir + "/" + mMapName;
+    QFileInfo fi( path );
+    if ( fi.exists() && fi.lastModified() > time )
+    {
+      time = fi.lastModified();
+    }
+  }
+  QgsDebugMsg( "timestamp = " + time.toString() );
+  return time;
 }
-
-bool QgsGrassRasterProvider::reload()
-{
-  QgsDebugMsg( "Entered" );
-  return true;
-}
-//void QgsGrassRasterProvider::buildSupportedRasterFileFilter( QString & theFileFiltersString )
-//{
-//}
 
 /**
  * Class factory to return a pointer to a newly created
@@ -552,7 +557,14 @@ void QgsGrassRasterValue::start( QString gisdbase, QString location,
 }
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {
-  if ( mProcess ) delete mProcess;
+  if ( mProcess )
+  {
+    QgsDebugMsg( "closing process" );
+    mProcess->closeWriteChannel();
+    mProcess->waitForFinished();
+    QgsDebugMsg( "process finished" );
+    delete mProcess;
+  }
 }
 
 QString QgsGrassRasterValue::value( double x, double y )

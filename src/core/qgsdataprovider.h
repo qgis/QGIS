@@ -287,9 +287,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
 
-    /** test if at least one of specified data/metadata changed since provider was loaded */
-    virtual bool changed( int change ) { return false; }
-
   signals:
 
     /**
@@ -313,6 +310,11 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     void dataChanged( int change );
 
+  protected:
+    /**
+    * Timestamp of data in the moment when the data were loaded by provider.
+    */
+    QDateTime mTimestamp;
   private:
 
     /**
@@ -320,11 +322,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      * This could be a file, database, or server address.
      */
     QString mDataSourceURI;
-
-    /**
-     * Timestamp of data in the moment when the data were loaded by provider.
-     */
-    QDateTime mTimestamp;
 };
 
 

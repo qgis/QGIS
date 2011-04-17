@@ -685,10 +685,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /**
      *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     *   @param changed binary combination of changes, defined in QgsRasterDataProvider
      *   @note added in 1.7
      */
-    void dataChanged( int change );
+    void dataChanged();
 
   protected:
 
@@ -767,8 +766,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                                     const QgsMapToPixel* theQgsMapToPixel,
                                     int theBandNoInt );
 
-    /** \brief Close data set and release related data */
-    void closeDataset();
+    /** \brief Close data provider and clear related members */
+    void closeDataProvider();
 
     /** \brief helper function to create zero padded band names */
     QString  generateBandName( int );
@@ -913,6 +912,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Flag indicating if the nodatavalue is valid*/
     bool mValidNoDataValue;
+
+    /** WMS parameters */
+    /* TODO: put everything to URI */
+    QStringList mLayers;
+    QStringList mStyles;
+    QString mFormat;
+    QString mCrs;
 };
 
 /*#include <QColor>
