@@ -91,6 +91,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   connect( leBlueMin, SIGNAL( textEdited( QString ) ), this, SLOT( userDefinedMinMax_textEdited( QString ) ) );
   connect( leBlueMax, SIGNAL( textEdited( QString ) ), this, SLOT( userDefinedMinMax_textEdited( QString ) ) );
   connect( mColormapTreeWidget, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( handleColormapTreeWidgetDoubleClick( QTreeWidgetItem*, int ) ) );
+  // enable or disable Build Pyramids button depending on selection in pyramid list
+  connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
   connect( mRasterLayer, SIGNAL( dataChanged( int ) ), this, SLOT( dataChanged( int ) ) );
 
@@ -1544,6 +1546,8 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
                   cboResamplingMethod->currentText(),
                   myBuildInternalFlag );
   QApplication::restoreOverrideCursor();
+  mPyramidProgress->setValue( 0 );
+  buttonBuildPyramids->setEnabled( false );
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mPyramidProgress, SLOT( setValue( int ) ) );
   if ( !res.isNull() )
   {
@@ -3040,3 +3044,16 @@ void QgsRasterLayerProperties::dataChanged( int change )
 {
   QgsDebugMsg( "entered." );
 }
+
+void QgsRasterLayerProperties::toggleBuildPyramidsButton()
+{
+  if ( lbxPyramidResolutions->selectedItems().empty() )
+  {
+    buttonBuildPyramids->setEnabled( false );
+  }
+  else
+  {
+    buttonBuildPyramids->setEnabled( true );
+  }
+}
+
