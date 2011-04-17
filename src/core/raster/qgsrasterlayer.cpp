@@ -127,6 +127,10 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     , mInvertColor( false )
     , mModified( false )
     , mProviderKey( providerKey )
+    , mLayers( layers )
+    , mStyles( styles )
+    , mFormat( format )
+    , mCrs( crs )
 {
   QgsDebugMsg( "(8 arguments) starting. with layer list of " +
                layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
@@ -2531,6 +2535,21 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   QgsDebugMsg( "exiting." );
 } // QgsRasterLayer::setDataProvider
 
+void QgsRasterLayer::closeDataProvider()
+{
+  mValid = false;
+  delete mRasterShader;
+  mRasterShader = 0;
+  delete mDataProvider;
+  mDataProvider = 0;
+
+  mRasterStatsList.clear();
+  mContrastEnhancementList.clear();
+
+  mHasPyramids = false;
+  mPyramidList.clear();
+}
+
 void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingAlgorithm )
 {
   QgsDebugMsg( "called with [" + QString::number( theShadingAlgorithm ) + "]" );
@@ -4436,38 +4455,13 @@ bool QgsRasterLayer::update()
   QgsDebugMsg( "entered." );
 
   // Check if data changed
-  //if ( mLastModified < QgsRasterLayer::lastModified( source() ) )
-  //{
-  // TODO: lastModified to provider -> outdated
-  // TODO: check what has to be cleard, rebuild
-  int change = mDataProvider->changed();
-  if ( change != QgsRasterDataProvider::NoChange )
+  if ( mDataProvider->dataTimestamp() > mDataProvider->timestamp() )
   {
     QgsDebugMsg( "reload data" );
-    //mHasPyramids = false;
-    //mPyramidList.clear();
-
-    //mRasterStatsList.clear();
-    mValid = mDataProvider->reload();
-
-    for ( int i = 1; i <= mBandCount; i++ )
-    {
-      // TODO : refresh all data, move to separate method from constructor
-      // Reload color table
-      if ( i - 1 < mRasterStatsList.size() )
-      {
-        QList<QgsColorRampShader::ColorRampItem> ct;
-        ct = mDataProvider->colorTable( i );
-
-        mRasterStatsList[i-1].colorTable = ct;
-        if ( mRasterType == Palette )
-        {
-          QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
-          myColorRampShader->setColorRampItemList( *colorTable( 1 ) );
-        }
-      }
-    }
-    emit dataChanged( change );
+    closeDataProvider();
+    init();
+    setDataProvider( mProviderKey, mLayers, mStyles, mFormat, mCrs );
+    emit dataChanged();
   }
   return mValid;
 }

@@ -116,17 +116,6 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
       ProgressPyramids  = 1
     };
 
-    enum Change
-    {
-      NoChange   =  0,
-      ValuesChange      =  1,
-      ExtentChange    = 1 << 1,
-      CrsChange    = 1 << 2,
-      DataTypeChange    = 1 << 3,
-      ColorTableChange  = 1 << 4,
-      SizeChange  = 1 << 5
-    };
-
     QgsRasterDataProvider();
 
     QgsRasterDataProvider( QString const & uri );
@@ -480,23 +469,16 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /** \brief Set null value in char */
     QByteArray noValueBytes( int theBandNo );
 
+    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    virtual QDateTime timestamp() const { return mTimestamp; }
+
     /** Current time stamp of data source */
     virtual QDateTime dataTimestamp() const { return QDateTime(); }
-
-    /** Give list of changed data/metadata since provider was loaded */
-    virtual int changed( ) { return NoChange; }
 
   signals:
     /** Emit a signal to notify of the progress event.
       * Emited theProgress is in percents (0.0-100.0) */
     void progress( int theType, double theProgress, QString theMessage );
-
-    /**
-     *   This is emitted whenever data or metadata (e.g. color table, extent) has changed
-     *   @param changed binary combination of changes
-     *   @note added in 1.7
-     */
-    void dataChanged( int change );
 
   protected:
     /**Dots per intch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore

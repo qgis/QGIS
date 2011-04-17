@@ -94,8 +94,6 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   // enable or disable Build Pyramids button depending on selection in pyramid list
   connect( lbxPyramidResolutions, SIGNAL( itemSelectionChanged() ), this, SLOT( toggleBuildPyramidsButton() ) );
 
-  connect( mRasterLayer, SIGNAL( dataChanged( int ) ), this, SLOT( dataChanged( int ) ) );
-
   // set up the scale based layer visibility stuff....
   chkUseScaleDependentRendering->setChecked( lyr->hasScaleBasedVisibility() );
   leMinimumScale->setText( QString::number( lyr->minimumScale(), 'f' ) );
@@ -3038,11 +3036,6 @@ void QgsRasterLayerProperties::on_btnResetNull_clicked( )
   {
     leNoDataValue->clear();
   }
-}
-
-void QgsRasterLayerProperties::dataChanged( int change )
-{
-  QgsDebugMsg( "entered." );
 }
 
 void QgsRasterLayerProperties::toggleBuildPyramidsButton()
