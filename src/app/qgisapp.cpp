@@ -6278,7 +6278,8 @@ QgsRasterLayer* QgisApp::addRasterLayer(
   QStringList const & layers,
   QStringList const & styles,
   QString const &format,
-  QString const &crs )
+  QString const &crs,
+  QgsRectangle extent )
 {
   QgsDebugMsg( "about to get library for " + providerKey );
 
@@ -6307,7 +6308,7 @@ QgsRasterLayer* QgisApp::addRasterLayer(
                + " and CRS of " + crs );
 
   // TODO: Remove the 0 when the raster layer becomes a full provider gateway.
-  layer = new QgsRasterLayer( 0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs );
+  layer = new QgsRasterLayer( 0, rasterLayerPath, baseName, providerKey, layers, styles, format, crs, extent );
 
   QgsDebugMsg( "Constructed new layer." );
 

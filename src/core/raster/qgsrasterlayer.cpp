@@ -99,7 +99,7 @@ QgsRasterLayer::QgsRasterLayer(
 
   // TODO, call constructor with provider key for now
   init();
-  setDataProvider( "gdal", QStringList(), QStringList(), QString(), QString(), loadDefaultStyleFlag );
+  setDataProvider( "gdal", QStringList(), QStringList(), QString(), QString(), loadDefaultStyleFlag, QgsRectangle() );
   return;
 
 
@@ -116,7 +116,8 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
                                 QStringList const & layers,
                                 QStringList const & styles,
                                 QString const & format,
-                                QString const & crs )
+                                QString const & crs,
+                                QgsRectangle extent )
     : QgsMapLayer( RasterLayer, baseName, rasterLayerPath )
     , mStandardDeviations( 0 )
     , mDataProvider( 0 )
@@ -135,7 +136,7 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
   init();
   // if we're given a provider type, try to create and bind one to this layer
   bool loadDefaultStyleFlag = false ; // ???
-  setDataProvider( providerKey, layers, styles, format, crs, loadDefaultStyleFlag );
+  setDataProvider( providerKey, layers, styles, format, crs, loadDefaultStyleFlag, extent );
 
   // Default for the popup menu
   // TODO: popMenu = 0;
@@ -2246,7 +2247,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QString const & format,
                                       QString const & crs )
 {
-  setDataProvider( provider, layers, styles, format, crs, false );
+  setDataProvider( provider, layers, styles, format, crs, false, QgsRectangle() );
 }
 
 /** Copied from QgsVectorLayer::setDataProvider
@@ -2257,7 +2258,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QStringList const & styles,
                                       QString const & format,
                                       QString const & crs,
-                                      bool loadDefaultStyleFlag )
+                                      bool loadDefaultStyleFlag,
+                                      QgsRectangle extent )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -2281,7 +2283,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     return;
   }
 
-
   QgsDebugMsg( "Instantiated the data provider plugin"
                + QString( " with layer list of " ) + layers.join( ", " )
                + " and style list of " + styles.join( ", " )
@@ -2298,8 +2299,18 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   setNoDataValue( mDataProvider->noDataValue() );
 
-  // get the extent
-  QgsRectangle mbr = mDataProvider->extent();
+  QgsRectangle mbr;
+  if ( mDataProvider && !extent.isEmpty() )
+  {
+    // set the extent
+    mDataProvider->setExtent( extent );
+    mbr = extent;
+  }
+  else
+  {
+    // get the extent
+    mbr = mDataProvider->extent();
+  }
 
   // show the extent
   QString s = mbr.toString();
@@ -4423,6 +4434,7 @@ double QgsRasterLayer::readValue( void *data, int type, int index )
 bool QgsRasterLayer::update()
 {
   QgsDebugMsg( "entered." );
+
   // Check if data changed
   //if ( mLastModified < QgsRasterLayer::lastModified( source() ) )
   //{
