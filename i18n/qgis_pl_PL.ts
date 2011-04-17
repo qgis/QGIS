@@ -91,96 +91,6 @@
         <translation>Przeglądaj</translation>
     </message>
     <message>
-        <source>OGR Converter</source>
-        <translation type="obsolete">Konwerter OGR</translation>
-    </message>
-    <message>
-        <source>Open OGR file</source>
-        <translation type="obsolete">Otwórz plik OGR</translation>
-    </message>
-    <message>
-        <source>OGR File Data Source (*.*)</source>
-        <translation type="obsolete">Plik OGR (*.*)</translation>
-    </message>
-    <message>
-        <source>Open Directory</source>
-        <translation type="obsolete">Otwórz katalog</translation>
-    </message>
-    <message>
-        <source>OGR Layer Converter</source>
-        <translation type="obsolete">Konwerter warstw OGR</translation>
-    </message>
-    <message>
-        <source>Input OGR dataset is missing!</source>
-        <translation type="obsolete">Brak wejściowego zbioru danych OGR!</translation>
-    </message>
-    <message>
-        <source>Input OGR layer name is missing!</source>
-        <translation type="obsolete">Brak wejściowej nazwy warstwy OGR!</translation>
-    </message>
-    <message>
-        <source>Target OGR format not selected!</source>
-        <translation type="obsolete">Nie wybrano docelowego formatu OGR!</translation>
-    </message>
-    <message>
-        <source>Output OGR dataset is missing!</source>
-        <translation type="obsolete">Brak wyjściowego zbioru danych OGR!</translation>
-    </message>
-    <message>
-        <source>Output OGR layer name is missing!</source>
-        <translation type="obsolete">Brak wyjściowej nazwy warstwy OGR!</translation>
-    </message>
-    <message>
-        <source>Choose a file name to save to</source>
-        <translation type="obsolete">Podaj nazwę pliku do którego należy zapisać</translation>
-    </message>
-    <message>
-        <source>Could not establish connection to: &apos;%1&apos;</source>
-        <translation type="obsolete">Nie można ustanowić połączenia do: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Successfully translated layer &apos;%1&apos;</source>
-        <translation type="obsolete">Pomyślnie przekonwertowano warstwę &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Failed to translate layer &apos;%1&apos;</source>
-        <translation type="obsolete">Nie udało się przekonwertować warstwy &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>Successfully connected to: &apos;%1&apos;</source>
-        <translation type="obsolete">Pomyślnie połączono z: &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>fTools About</source>
-        <translation type="obsolete">O fTools</translation>
-    </message>
-    <message>
-        <source>fTools</source>
-        <translation type="obsolete">fTools</translation>
-    </message>
-    <message>
-        <source>Version x.x-xxxxxx</source>
-        <translation type="obsolete">Wersja x.x-xxxxxx</translation>
-    </message>
-    <message>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="obsolete">&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <source>Help</source>
-        <translation type="obsolete">Pomoc</translation>
-    </message>
-    <message>
-        <source>Web</source>
-        <translation type="obsolete">Sieć</translation>
-    </message>
-    <message>
         <source>Close</source>
         <translation>Zamknij</translation>
     </message>
@@ -3819,7 +3729,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="131"/>
         <source>New</source>
-        <translation>Nowy</translation>
+        <translation>Utwórz nową warstwę</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="165"/>
@@ -4630,64 +4540,6 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
         <location filename="../src/ui/qgisapp.ui" line="1479"/>
         <source>Stretch histogram to full dataset</source>
         <translation>Rozciągnij histogram do pełnego zakresu danych</translation>
-    </message>
-</context>
-<context>
-    <name>OgrConverterGuiBase</name>
-    <message>
-        <source>OGR Layer Converter</source>
-        <translation type="obsolete">Konwerter warstw OGR</translation>
-    </message>
-    <message>
-        <source>Source</source>
-        <translation type="obsolete">Źródło</translation>
-    </message>
-    <message>
-        <source>Format</source>
-        <translation type="obsolete">Format</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Plik</translation>
-    </message>
-    <message>
-        <source>Directory</source>
-        <translation type="obsolete">Katalog</translation>
-    </message>
-    <message>
-        <source>Remote source</source>
-        <translation type="obsolete">Źródło zdalne</translation>
-    </message>
-    <message>
-        <source>Dataset</source>
-        <translation type="obsolete">Dataset</translation>
-    </message>
-    <message>
-        <source>Browse</source>
-        <translation type="obsolete">Przeglądaj</translation>
-    </message>
-    <message>
-        <source>Layer</source>
-        <translation type="obsolete">Warstwa</translation>
-    </message>
-    <message>
-        <source>Target</source>
-        <translation type="obsolete">Cel</translation>
-    </message>
-</context>
-<context>
-    <name>OgrPlugin</name>
-    <message>
-        <source>Run OGR Layer Converter</source>
-        <translation type="obsolete">Uruchom konwerter warstw OGR</translation>
-    </message>
-    <message>
-        <source>OG&amp;R Converter</source>
-        <translation type="obsolete">OG&amp;R konwerter</translation>
-    </message>
-    <message>
-        <source>Translates vector layers between formats supported by OGR library</source>
-        <translation type="obsolete">Konwertuje warstwy wektorowe pomiędzy formatami wspieranymi przez bibliotekę OGR</translation>
     </message>
 </context>
 <context>
@@ -8852,7 +8704,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1950"/>
         <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished">To wydanie likwiduje ponad 277 błędów oraz dodaje wiele nowych funkcji i udoskonaleń. Niemożliwe jest udokumentowanie tutaj wszystkich wprowadzonych zmian, dlatego przedstawione zostaną jedynie najważniejsze usprawnienia.</translation>
+        <translation>To wydanie likwiduje ponad 277 błędów oraz dodaje wiele nowych funkcji i udoskonaleń. Niemożliwe jest udokumentowanie tutaj wszystkich wprowadzonych zmian, dlatego przedstawione zostaną jedynie najważniejsze usprawnienia.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1953"/>
@@ -8862,12 +8714,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1955"/>
         <source>New symbology now used by default!</source>
-        <translation type="unfinished">Style nowej generacji są włączone jako domyślne!</translation>
+        <translation>Style nowej generacji są włączone jako domyślne!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1956"/>
         <source>Diagram system that uses the same smart placement system as labeling-ng</source>
-        <translation type="unfinished">System wykresów wykorzystuje te same, zaawansowane mechanizmy lokalizacji, co nowy system etykietowania.</translation>
+        <translation>Systemy wykresów i etykiet wykorzystują wspólny mechanizm unikania kolizji.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1957"/>
@@ -8887,7 +8739,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Rotation for svg fills.</source>
-        <translation>Dodano możliwość obrotu wypełnień SVG.</translation>
+        <translation>Dodano możliwość obracania wypełnień SVG.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1961"/>
@@ -8977,7 +8829,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1982"/>
         <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
-        <translation type="unfinished">Dodano możliwość wyświetlania w legendzie liczby obiektów. Dostępne przez menu kontekstowe (prawy klawisz myszy).</translation>
+        <translation>Dodano możliwość wyświetlania w legendzie liczby obiektów. Dostępne przez menu kontekstowe (prawy klawisz myszy).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1984"/>
@@ -9022,7 +8874,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1996"/>
         <source>Added AND and OR operator for raster calculator</source>
-        <translation>Dodano operatory AND oraz OR dla kalkulatora rastrów.</translation>
+        <translation>Dodano operatory AND oraz OR do kalkulatora rastrów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1997"/>
@@ -9057,7 +8909,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2005"/>
         <source>Feature form updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Usprawnienia formularzy edycyjnych</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2007"/>
@@ -9067,17 +8919,17 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2008"/>
         <source>Fix feature updates in feature form from attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprawiona aktualizacja wartości zmienionych w tabeli atryubutów.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2009"/>
         <source>Add support for NULL values in value maps (comboboxes).</source>
-        <translation type="unfinished"></translation>
+        <translation>Obsługa wartości NULL w mapach wartości.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2010"/>
         <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
-        <translation type="unfinished">Na listach rozwijalnych zmiana identyfikatorów na nazwy warstw podczas wczytywania map z wartościami.</translation>
+        <translation>Warstwa do wczytania mapy wartości wybierana jest teraz według nazwy, a nie identyfikatora.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2011"/>
@@ -9107,7 +8959,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2017"/>
         <source>Fixed attribute undo/redo.</source>
-        <translation type="unfinished"></translation>
+        <translation>Poprawione cofanie i przywracanie zmian.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2018"/>
@@ -9177,7 +9029,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2044"/>
         <source>Support for icons of plugins in the plugin manager dialog.</source>
-        <translation>Obsługa ikon wtyczek w oknie dialogowym zarządzania wtyczkami.</translation>
+        <translation>Ikony wtyczek w oknie dialogowym zarządzania wtyczkami.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2045"/>
@@ -25524,53 +25376,6 @@ Sprawdź czy masz uprawnienia SELECT do tabeli zawierającej geometrię PostGIS.
     </message>
 </context>
 <context>
-    <name>QgsPgSourceSelectBase</name>
-    <message>
-        <source>Add PostGIS Table(s)</source>
-        <translation type="obsolete">Dodaj tabelę PostGIS</translation>
-    </message>
-    <message>
-        <source>PostgreSQL Connections</source>
-        <translation type="obsolete">Połączenia PostgreSQL</translation>
-    </message>
-    <message>
-        <source>Delete</source>
-        <translation type="obsolete">Usuń</translation>
-    </message>
-    <message>
-        <source>Edit</source>
-        <translation type="obsolete">Edytuj</translation>
-    </message>
-    <message>
-        <source>New</source>
-        <translation type="obsolete">Nowy</translation>
-    </message>
-    <message>
-        <source>Connect</source>
-        <translation type="obsolete">Połącz</translation>
-    </message>
-    <message>
-        <source>Search options</source>
-        <translation type="obsolete">Opcje poszukiwań</translation>
-    </message>
-    <message>
-        <source>Search</source>
-        <translation type="obsolete">Szukaj</translation>
-    </message>
-    <message>
-        <source>Search mode</source>
-        <translation type="obsolete">Try&amp;b poszukiwań</translation>
-    </message>
-    <message>
-        <source>Search in columns</source>
-        <translation type="obsolete">Szukaj w &amp;kolumnach</translation>
-    </message>
-    <message>
-        <source>Build query</source>
-        <translation type="obsolete">Stwórz zapytanie</translation>
-    </message>
-</context>
-<context>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
@@ -35223,79 +35028,6 @@ Tried URL: %1</source>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2665"/>
         <source>Cache stats</source>
         <translation>Statystyki cache</translation>
-    </message>
-</context>
-<context>
-    <name>QuickPrintGui</name>
-    <message>
-        <source>Portable Document Format (*.pdf)</source>
-        <translation type="obsolete">Portable Document Format (*.pdf)</translation>
-    </message>
-    <message>
-        <source>quickprint</source>
-        <translation type="obsolete">quickprint</translation>
-    </message>
-    <message>
-        <source>Unknown format: %1</source>
-        <translation type="obsolete">Nieznany format: %1</translation>
-    </message>
-</context>
-<context>
-    <name>QuickPrintGuiBase</name>
-    <message>
-        <source>QGIS Quick Print Plugin</source>
-        <translation type="obsolete">Wtyczka szybki wydruk</translation>
-    </message>
-    <message>
-        <source>Map title</source>
-        <translation type="obsolete">Tytuł mapy</translation>
-    </message>
-    <message>
-        <source>Map name</source>
-        <translation type="obsolete">Nazwa mapy</translation>
-    </message>
-    <message>
-        <source>Copyright</source>
-        <translation type="obsolete">Prawa autorskie</translation>
-    </message>
-    <message>
-        <source>Page size</source>
-        <translation type="obsolete">Rozmiar strony</translation>
-    </message>
-    <message>
-        <source>Output</source>
-        <translation type="obsolete">Wyjście</translation>
-    </message>
-    <message>
-        <source>Use last filename but incremented.</source>
-        <translation type="obsolete">Użyj ostatniej nazwy z autonumerowaniem.</translation>
-    </message>
-    <message>
-        <source>last used filename but incremented will be shown here</source>
-        <translation type="obsolete">Ostatnio użyta nazwa z podglądem numeracji</translation>
-    </message>
-    <message>
-        <source>Prompt for file name</source>
-        <translation type="obsolete">Nazwa pliku</translation>
-    </message>
-    <message>
-        <source>Note: If you want more control over the map layout please use the map composer function in QGIS.</source>
-        <translation type="obsolete">Uwaga: Jeśli chcesz mieć większą kontrolę nad kompozycją mapy wykorzystaj funkcję wydruku QGIS.</translation>
-    </message>
-</context>
-<context>
-    <name>QuickPrintPlugin</name>
-    <message>
-        <source>Quick Print</source>
-        <translation type="obsolete">Szybki wydruk</translation>
-    </message>
-    <message>
-        <source>&amp;Quick Print</source>
-        <translation type="obsolete">Szybki Wy&amp;druk</translation>
-    </message>
-    <message>
-        <source>Provides a way to quickly produce a map with minimal user input.</source>
-        <translation type="obsolete">Umożliwia szybkie wygenerowanie mapy w formacie pdf.</translation>
     </message>
 </context>
 <context>
