@@ -829,20 +829,20 @@ class geometryThread( QThread ):
       plp = "Poly"
       ( found, index1 ) = self.checkForField( nameList, "AREA" )
       if not found:
-        field = QgsField( "AREA", QVariant.Double, "double", 10, 6, self.tr("Polygon area") )
+        field = QgsField( "AREA", QVariant.Double, "double", 21, 6, self.tr("Polygon area") )
         index1 = len( fieldList.keys() )
         fieldList[ index1 ] = field
       ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
 
       if not found:
-        field = QgsField( "PERIMETER", QVariant.Double, "double", 10, 6, self.tr("Polygon perimeter") )
+        field = QgsField( "PERIMETER", QVariant.Double, "double", 21, 6, self.tr("Polygon perimeter") )
         index2 = len( fieldList.keys() )
         fieldList[ index2 ] = field
     elif geomType == QGis.Line:
       plp = "Line"
       (found, index1) = self.checkForField(nameList, "LENGTH")
       if not found:
-        field = QgsField("LENGTH", QVariant.Double, "double", 10, 6, self.tr("Line length") )
+        field = QgsField("LENGTH", QVariant.Double, "double", 21, 6, self.tr("Line length") )
         index1 = len(fieldList.keys())
         fieldList[index1] = field
       index2 = index1
@@ -850,12 +850,12 @@ class geometryThread( QThread ):
       plp = "Point"
       (found, index1) = self.checkForField(nameList, "XCOORD")
       if not found:
-        field = QgsField("XCOORD", QVariant.Double, "double", 10, 6, self.tr("Point x coordinate") )
+        field = QgsField("XCOORD", QVariant.Double, "double", 21, 6, self.tr("Point x coordinate") )
         index1 = len(fieldList.keys())
         fieldList[index1] = field
       (found, index2) = self.checkForField(nameList, "YCOORD")
       if not found:
-        field = QgsField("YCOORD", QVariant.Double, "double", 10, 6, self.tr("Point y coordinate") )
+        field = QgsField("YCOORD", QVariant.Double, "double", 21, 6, self.tr("Point y coordinate") )
         index2 = len(fieldList.keys())
         fieldList[index2] = field
     return (fieldList, index1, index2)
