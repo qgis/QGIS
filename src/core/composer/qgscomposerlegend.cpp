@@ -31,7 +31,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mTitle( tr( "Legend" ) )
     , mBoxSpace( 2 )
-    , mLayerSpace( 3 )
+    , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
     , mIconLabelSpace( 2 )
 {
@@ -217,7 +217,7 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
   else //layer title omited
   {
     //symbol space will be added before the item later
-    currentYCoord += (mLayerSpace - mSymbolSpace);
+    currentYCoord += ( mLayerSpace - mSymbolSpace );
   }
 
   //and child items
