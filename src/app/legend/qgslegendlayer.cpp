@@ -94,6 +94,10 @@ QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
     connect( layer, SIGNAL( editingStopped() ), this, SLOT( updateIcon() ) );
     connect( layer, SIGNAL( layerModified( bool ) ), this, SLOT( updateAfterLayerModification( bool ) ) );
   }
+  if ( qobject_cast<QgsRasterLayer *>( layer ) )
+  {
+    connect( layer, SIGNAL( dataChanged() ), this, SLOT( updateAfterLayerModification() ) );
+  }
   connect( layer, SIGNAL( layerNameChanged() ), this, SLOT( layerNameChanged() ) );
 
   updateIcon();
@@ -545,6 +549,10 @@ void QgsLegendLayer::layerNameChanged()
   setText( 0, name );
 }
 
+void QgsLegendLayer::updateAfterLayerModification()
+{
+  updateAfterLayerModification( false );
+}
 void QgsLegendLayer::updateAfterLayerModification( bool onlyGeomChanged )
 {
   if ( onlyGeomChanged )

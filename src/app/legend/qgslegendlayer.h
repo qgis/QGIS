@@ -90,6 +90,7 @@ class QgsLegendLayer : public QgsLegendItem
 
     /**Update symbology (e.g. to update feature count in the legend after editing operations)*/
     void updateAfterLayerModification( bool onlyGeomChanged );
+    void updateAfterLayerModification();
 
     void setShowFeatureCount( bool show, bool update = true );
     bool showFeatureCount() const { return mShowFeatureCount; }
