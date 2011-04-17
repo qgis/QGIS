@@ -149,6 +149,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     /** This slot lets you save the histogram as an image to disk */
     void on_mSaveAsImageButton_clicked();
+    /**Enable or disable Build pyramids button depending on selection in pyramids list*/
+    void toggleBuildPyramidsButton();
 
   signals:
 
