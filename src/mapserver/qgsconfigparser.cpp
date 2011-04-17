@@ -147,6 +147,7 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
   }
   sqlite3_finalize( myPreparedStatement );
   sqlite3_close( myDatabase );
+  return crsNumbers;
 }
 
 bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const
