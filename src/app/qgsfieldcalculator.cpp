@@ -198,9 +198,9 @@ void QgsFieldCalculator::accept()
 
         if ( f.type() == QVariant::Double && f.precision() > 0 )
         {
-          v = QString::number( value.number(), 'g', f.precision() );
+          v = QString::number( value.number(), 'f', f.precision() );
         }
-        else if ( f.type() == QVariant::Double && f.precision() > 0 && f.precision() == 0 )
+        else if ( f.type() == QVariant::Double && f.precision() == 0 )
         {
           v = QString::number( qRound( value.number() ) );
         }
