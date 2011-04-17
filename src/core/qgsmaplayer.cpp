@@ -340,6 +340,17 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
   maplayer.appendChild( layerName );
 
+  // timestamp if supported
+  if ( timestamp() > QDateTime() )
+  {
+    QDomElement stamp = document.createElement( "timestamp" );
+    QDomText stampText = document.createTextNode( timestamp().toString( Qt::ISODate ) );
+    stamp.appendChild( stampText );
+    maplayer.appendChild( stamp );
+  }
+
+  maplayer.appendChild( layerName );
+
   // zorder
   // This is no longer stored in the project file. It is superfluous since the layers
   // are written and read in the proper order.

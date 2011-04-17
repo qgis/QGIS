@@ -19,7 +19,7 @@
 #ifndef QGSMAPLAYER_H
 #define QGSMAPLAYER_H
 
-
+#include <QDateTime>
 #include <QObject>
 #include <QUndoStack>
 #include <QVariant>
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** This is the method that does the actual work of
      * drawing the layer onto a paint device.
      * @param rendererContext describes the extents,
-     * resolution etc. that should be used when rendering the
+     * resolumon etc. that should be used when rendering the
      * layer.
      */
     virtual bool draw( QgsRenderContext& rendererContext );
@@ -331,6 +331,9 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Clear cached image
      * added in 1.5 */
     void clearCacheImage();
+
+    /** Time stamp of data source in the moment when data/metadata were loaded by provider */
+    virtual QDateTime timestamp() const { return QDateTime() ; }
 
   signals:
 
