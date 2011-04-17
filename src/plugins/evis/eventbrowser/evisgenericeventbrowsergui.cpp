@@ -258,8 +258,7 @@ bool eVisGenericEventBrowserGui::initBrowser( )
    */
   if ( 0 == mVectorLayer->selectedFeatureCount( ) ) //if nothing is selected select everything
   {
-    QgsRectangle myRect;
-    mVectorLayer->select( myRect, true );
+    mVectorLayer->invertSelection();
     mFeatureIds = mVectorLayer->selectedFeaturesIds( ).toList( );
   }
   else //use selected features
