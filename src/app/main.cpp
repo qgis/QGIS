@@ -730,5 +730,7 @@ int main( int argc, char *argv[] )
 
   qgis->completeInitialization();
 
-  return myApp.exec();
+  int retval = myApp.exec();
+  delete qgis;
+  return retval;
 }
