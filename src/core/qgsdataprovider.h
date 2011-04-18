@@ -22,8 +22,7 @@
 #include <QString>
 #include <QStringList>
 
-#include <qgsrectangle.h>
-
+class QgsRectangle;
 class QgsCoordinateReferenceSystem;
 
 
@@ -91,15 +90,6 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual QgsRectangle extent() = 0;
 
-    /**
-     * Set the extent of the layer
-     * @param extent the layer extent
-     * @note added in 1.8
-     */
-    virtual void setExtent( QgsRectangle extent )
-    {
-      // NOP by default
-    }
 
     /**
      * Returns true if this is a valid layer. It is up to individual providers

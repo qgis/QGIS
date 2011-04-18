@@ -123,8 +123,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                     QStringList const & layers,
                                     QStringList const & styles,
                                     QString const & format,
-                                    QString const & crs,
-                                    QgsRectangle extent );
+                                    QString const & crs );
 
     /** open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
