@@ -17,6 +17,8 @@
 #define QGSGRASSREGION_H
 
 #include "ui_qgsgrassregionbase.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmaptool.h"
 #include "qgsrubberband.h"
 #include "qgspoint.h"
@@ -152,6 +154,12 @@ class QgsGrassRegionEdit : public QgsMapTool
 
     //! refresh the rectangle displayed in canvas
     void setRegion( const QgsPoint&, const QgsPoint& );
+    void setSrcRegion( const QgsRectangle &rect );
+
+    void setTransform();
+    static void drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform *coordinateTransform = 0 );
+    void calcSrcRegion();
+    static void transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction = QgsCoordinateTransform::ForwardTransform );
 
   signals:
     void captureStarted();
@@ -161,6 +169,7 @@ class QgsGrassRegionEdit : public QgsMapTool
   private:
     //! Rubber band for selecting grass region
     QgsRubberBand* mRubberBand;
+    QgsRubberBand* mSrcRubberBand;
 
     //! Status of input from canvas
     bool mDraw;
@@ -170,6 +179,11 @@ class QgsGrassRegionEdit : public QgsMapTool
     //! Last rectangle point
     QgsPoint mEndPoint;
 
+    //! Region rectangle in source CRS
+    QgsRectangle mSrcRectangle;
+
+    QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateTransform mCoordinateTransform;
 };
 
 #endif // QGSGRASSREGION_H

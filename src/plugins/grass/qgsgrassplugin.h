@@ -17,8 +17,11 @@
 #ifndef QGSGRASSPLUGIN_H
 #define QGSGRASSPLUGIN_H
 #include "../qgisplugin.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include <QObject>
 #include <QPen>
+
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
@@ -125,6 +128,7 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     void cleanUp();
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
+    void setTransform();
   private:
     //! Name of the plugin
     QString pluginNameQString;
@@ -154,6 +158,9 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
     //! Pointer to QgsGrassNewMapset
     QgsGrassNewMapset *mNewMapset;
     QgsGrassEdit *mEdit;
+
+    QgsCoordinateReferenceSystem mCrs;
+    QgsCoordinateTransform mCoordinateTransform;
 
     // Actions
     QAction *mOpenMapsetAction;
