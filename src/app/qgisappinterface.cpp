@@ -111,7 +111,7 @@ QgsRasterLayer* QgisAppInterface::addRasterLayer( QString rasterLayerPath, QStri
 QgsRasterLayer* QgisAppInterface::addRasterLayer( const QString& url, const QString& baseName, const QString& providerKey,
     const QStringList& layers, const QStringList& styles, const QString& format, const QString& crs )
 {
-  return qgis->addRasterLayer( url, baseName, providerKey, layers, styles, format, crs, QgsRectangle() );
+  return qgis->addRasterLayer( url, baseName, providerKey, layers, styles, format, crs );
 }
 
 

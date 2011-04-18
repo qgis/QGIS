@@ -207,8 +207,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                     const QStringList & layers = QStringList(),
                     const QStringList & styles = QStringList(),
                     const QString & format = QString(),
-                    const QString & crs = QString(),
-                    const QgsRectangle extent = QgsRectangle() );
+                    const QString & crs = QString() );
 
 
     /** \brief The destructor */
@@ -313,8 +312,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                           const QStringList & styles,
                           const QString & format,
                           const QString & crs,
-                          bool loadDefaultStyleFlag,
-                          QgsRectangle extent );
+                          bool loadDefaultStyleFlag );
 
     static QLibrary* loadProviderLibrary( QString theProviderKey );
     static QgsRasterDataProvider* loadProvider( QString theProviderKey, QString theDataSource = 0 );

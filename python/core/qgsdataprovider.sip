@@ -60,12 +60,6 @@ class QgsDataProvider : QObject
       */
       virtual QgsRectangle extent() = 0;
 
-      /**
-       * Set the extent of the layer
-       * @param extent the layer extent
-       * @note added in 1.8
-       */
-      virtual void setExtent( QgsRectangle extent );
       
       /**
        * Returns true if this is a valid layer. It is up to individual providers

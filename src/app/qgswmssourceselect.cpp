@@ -53,7 +53,6 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
     : QDialog( parent, fl )
-    , mWmsProvider( 0 )
     , mCurrentTileset( 0 )
 {
   setupUi( this );
@@ -164,9 +163,8 @@ QgsWMSSourceSelect::~QgsWMSSourceSelect()
   QSettings settings;
   QgsDebugMsg( "saving geometry" );
   settings.setValue( "/Windows/WMSSourceSelect/geometry", saveGeometry() );
-
-  delete mWmsProvider;
 }
+
 
 void QgsWMSSourceSelect::populateConnectionList()
 {
@@ -283,12 +281,12 @@ QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   return item;
 }
 
-bool QgsWMSSourceSelect::populateLayerList()
+bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 {
   mCRSs.clear();
 
   QVector<QgsWmsLayerProperty> layers;
-  if ( !mWmsProvider->supportedLayers( layers ) )
+  if ( !wmsProvider->supportedLayers( layers ) )
     return false;
 
   foreach( QAbstractButton *b, mImageFormatGroup->buttons() )
@@ -296,7 +294,7 @@ bool QgsWMSSourceSelect::populateLayerList()
     b->setHidden( true );
   }
 
-  foreach( QString encoding, mWmsProvider->supportedImageEncodings() )
+  foreach( QString encoding, wmsProvider->supportedImageEncodings() )
   {
     int id = mMimeMap.value( encoding, -1 );
     if ( id < 0 )
@@ -313,7 +311,7 @@ bool QgsWMSSourceSelect::populateLayerList()
   QMap<int, QgsNumericSortTreeWidgetItem *> items;
   QMap<int, int> layerParents;
   QMap<int, QStringList> layerParentNames;
-  mWmsProvider->layerParents( layerParents, layerParentNames );
+  wmsProvider->layerParents( layerParents, layerParentNames );
 
   lstLayers->clear();
   lstLayers->setSortingEnabled( true );
@@ -350,7 +348,7 @@ bool QgsWMSSourceSelect::populateLayerList()
   lstLayers->sortByColumn( 0, Qt::AscendingOrder );
 
   QVector<QgsWmsTileSetProfile> tilesets;
-  mWmsProvider->supportedTileSets( tilesets );
+  wmsProvider->supportedTileSets( tilesets );
 
   tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), tilesets.size() > 0 );
   if ( tabServers->isTabEnabled( tabServers->indexOf( tabTilesets ) ) )
@@ -474,22 +472,23 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
   // load the server data provider plugin
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
-  delete mWmsProvider;
+  QgsWmsProvider *wmsProvider =
+    ( QgsWmsProvider* ) pReg->getProvider( "wms", mConnectionInfo );
 
-  mWmsProvider = static_cast< QgsWmsProvider * >( pReg->getProvider( "wms", mConnectionInfo ) );
-
-  if ( mWmsProvider )
+  if ( wmsProvider )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    connect( mWmsProvider, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+    connect( wmsProvider, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
 
     // WMS Provider all set up; let's get some layers
 
-    if ( !populateLayerList() )
+    if ( !populateLayerList( wmsProvider ) )
     {
-      showError();
+      showError( wmsProvider );
     }
+
+    delete wmsProvider;
 
     QApplication::restoreOverrideCursor();
   }
@@ -541,14 +540,9 @@ void QgsWMSSourceSelect::addClicked()
     }
   }
 
-  // set the layers to retrieve the correct extent
-  mWmsProvider->addLayers( layers, styles );
-  mWmsProvider->setImageEncoding( format );
-  mWmsProvider->setImageCrs( crs );
-
   QgisApp::instance()->addRasterLayer( connInfo,
                                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
-                                       "wms", layers, styles, format, crs, mWmsProvider->extent() );
+                                       "wms", layers, styles, format, crs );
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
@@ -1001,18 +995,18 @@ void QgsWMSSourceSelect::showStatusMessage( QString const &theMessage )
 }
 
 
-void QgsWMSSourceSelect::showError()
+void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
 {
   QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( mWmsProvider->lastErrorTitle() );
+  mv->setWindowTitle( wms->lastErrorTitle() );
 
-  if ( mWmsProvider->lastErrorFormat() == "text/html" )
+  if ( wms->lastErrorFormat() == "text/html" )
   {
-    mv->setMessageAsHtml( mWmsProvider->lastError() );
+    mv->setMessageAsHtml( wms->lastError() );
   }
   else
   {
-    mv->setMessageAsPlainText( tr( "Could not understand the response.  The %1 provider said:\n%2" ).arg( mWmsProvider->name() ).arg( mWmsProvider->lastError() ) );
+    mv->setMessageAsPlainText( tr( "Could not understand the response.  The %1 provider said:\n%2" ).arg( wms->name() ).arg( wms->lastError() ) );
   }
   mv->showMessage( true ); // Is deleted when closed
 }

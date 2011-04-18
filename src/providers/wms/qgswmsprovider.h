@@ -464,11 +464,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
 
-    /**
-     *  preset the extent to prevent and extra GetCapabilities request
-     */
-    virtual void setExtent( QgsRectangle extent );
-
     /** Return the extent for this data layer
     */
     virtual QgsRectangle extent();

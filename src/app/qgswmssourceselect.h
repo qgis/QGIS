@@ -21,7 +21,6 @@
 #include "ui_qgswmssourceselectbase.h"
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
-#include "qgsrectangle.h"
 
 #include <QStringList>
 #include <QPushButton>
@@ -85,7 +84,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     void showStatusMessage( QString const &theMessage );
 
     //! show whatever error is exposed by the QgsWmsProvider.
-    void showError();
+    void showError( QgsWmsProvider *wms );
 
     //! Stores the selected datasource whenerver it is changed
     void on_cmbConnections_activated( int );
@@ -144,7 +143,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
      * \retval false if the layers could not be retrieved or parsed -
      *         see mWmsProvider->errorString() for more info
      */
-    bool populateLayerList();
+    bool populateLayerList( QgsWmsProvider *wmsProvider );
 
     //! create an item including possible parents
     QgsNumericSortTreeWidgetItem *createItem( int id,
@@ -187,7 +186,6 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QString selectedImageEncoding();
 
     QList<QTreeWidgetItem*> mCurrentSelection;
-    QgsWmsProvider *mWmsProvider;
     QTableWidgetItem* mCurrentTileset;
 
   private slots:

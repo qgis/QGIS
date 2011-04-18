@@ -899,7 +899,7 @@ bool QgsWmsProvider::retrieveServerCapabilities( bool forceRefresh )
 
     QNetworkRequest request( url );
     setAuthorization( request );
-    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, forceRefresh ? QNetworkRequest::PreferNetwork : QNetworkRequest::PreferCache );
+    request.setAttribute( QNetworkRequest::CacheLoadControlAttribute, QNetworkRequest::PreferNetwork );
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
 
     QgsDebugMsg( QString( "getcapabilities: %1" ).arg( url ) );
@@ -977,9 +977,6 @@ void QgsWmsProvider::capabilitiesReplyFinished()
       connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ) );
       return;
     }
-
-    QgsDebugMsg( QString( "getcapabilities from cache: %1" )
-                 .arg( mCapabilitiesReply->attribute( QNetworkRequest::SourceIsFromCacheAttribute ).toBool() ? "yes" : "no" ) );
 
     httpcapabilitiesresponse = mCapabilitiesReply->readAll();
 
@@ -2031,11 +2028,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
   QgsDebugMsg( "exiting." );
 }
 
-void QgsWmsProvider::setExtent( QgsRectangle extent )
-{
-  layerExtent = extent;
-  extentDirty = false;
-}
+
 
 QgsRectangle QgsWmsProvider::extent()
 {
@@ -2177,6 +2170,7 @@ bool QgsWmsProvider::calculateExtent()
   QgsDebugMsg( "exiting with '"  + layerExtent.toString() + "'." );
 
   return true;
+
 }
 
 
