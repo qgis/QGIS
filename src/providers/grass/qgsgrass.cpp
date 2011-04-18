@@ -38,6 +38,7 @@ extern "C"
 #ifndef _MSC_VER
 #include <unistd.h>
 #endif
+#include <grass/gprojects.h>
 #include <grass/Vect.h>
 #include <grass/version.h>
 }
@@ -1158,6 +1159,47 @@ QgsCoordinateReferenceSystem GRASS_EXPORT QgsGrass::crs( QString gisdbase, QStri
   }
 
   return crs;
+}
+
+QgsCoordinateReferenceSystem GRASS_EXPORT QgsGrass::crsDirect( QString gisdbase, QString location )
+{
+  QString Wkt;
+
+  struct Cell_head cellhd;
+
+  QgsGrass::resetError();
+  QgsGrass::setLocation( gisdbase, location );
+
+  const char *oldlocale = setlocale( LC_NUMERIC, NULL );
+  setlocale( LC_NUMERIC, "C" );
+
+  try
+  {
+    G_get_default_window( &cellhd );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    setlocale( LC_NUMERIC, oldlocale );
+    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
+    return QgsCoordinateReferenceSystem();
+  }
+
+  if ( cellhd.proj != PROJECTION_XY )
+  {
+    struct Key_Value *projinfo = G_get_projinfo();
+    struct Key_Value *projunits = G_get_projunits();
+    char *wkt = GPJ_grass_to_wkt( projinfo, projunits,  0, 0 );
+    Wkt = QString( wkt );
+    G_free( wkt );
+  }
+
+  setlocale( LC_NUMERIC, oldlocale );
+
+  QgsCoordinateReferenceSystem srs;
+  srs.createFromWkt( Wkt );
+
+  return srs;
 }
 
 QgsRectangle GRASS_EXPORT QgsGrass::extent( QString gisdbase, QString location, QString mapset, QString map, MapType type )

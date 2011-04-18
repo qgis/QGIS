@@ -115,6 +115,8 @@ void QgsGrassPlugin::initGui()
   mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 
+  connect( mCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
+
   // Connect project
   connect( qgis, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( qgis, SIGNAL( newProject() ), this, SLOT( newProject() ) );
@@ -244,6 +246,20 @@ void QgsGrassPlugin::mapsetChanged()
     {
       mTools->mapsetChanged();
     }
+    QString gisdbase = QgsGrass::getDefaultGisdbase();
+    QString location = QgsGrass::getDefaultLocation();
+    try
+    {
+      mCrs = QgsGrass::crsDirect( gisdbase, location );
+    }
+    catch ( QgsGrass::Exception &e )
+    {
+      QgsDebugMsg( "Cannot read GRASS CRS : " + QString( e.what() ) );
+      mCrs = QgsCoordinateReferenceSystem();
+    }
+    QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
+    setTransform();
+    redrawRegion();
   }
 }
 
@@ -590,15 +606,6 @@ void QgsGrassPlugin::displayRegion()
 
   QgsGrass::setLocation( gisdbase, location );
 
-  // TODO: check better if we have to init + maybe the location can change -> mCrs must be reloaded
-  if ( !mCrs.isValid() )
-  {
-    mCrs = QgsGrass::crs( gisdbase, location );
-    QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
-    setTransform();
-    connect( mCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
-  }
-
   struct Cell_head window;
   char *err = G__get_window( &window, ( char * ) "", ( char * ) "WIND", mapset.toLatin1().data() );
 
@@ -877,6 +884,8 @@ void QgsGrassPlugin::setTransform()
 {
   if ( mCrs.isValid() && mCanvas->mapRenderer()->destinationCrs().isValid() )
   {
+    QgsDebugMsg( "srcCrs: " + mCrs.toWkt() );
+    QgsDebugMsg( "destCrs " + mCanvas->mapRenderer()->destinationCrs().toWkt() );
     mCoordinateTransform.setSourceCrs( mCrs );
     mCoordinateTransform.setDestCRS( mCanvas->mapRenderer()->destinationCrs() );
   }
