@@ -1316,43 +1316,7 @@ struct Map_info *QgsGrassProvider::layerMap( int layerId )
 
 QgsCoordinateReferenceSystem QgsGrassProvider::crs()
 {
-  QString Wkt;
-
-  struct Cell_head cellhd;
-
-  QgsGrass::resetError();
-  QgsGrass::setLocation( mGisdbase, mLocation );
-
-  const char *oldlocale = setlocale( LC_NUMERIC, NULL );
-  setlocale( LC_NUMERIC, "C" );
-
-  try
-  {
-    G_get_default_window( &cellhd );
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    setlocale( LC_NUMERIC, oldlocale );
-    QgsDebugMsg( QString( "Cannot get default window: %1" ).arg( e.what() ) );
-    return QgsCoordinateReferenceSystem();
-  }
-
-  if ( cellhd.proj != PROJECTION_XY )
-  {
-    struct Key_Value *projinfo = G_get_projinfo();
-    struct Key_Value *projunits = G_get_projunits();
-    char *wkt = GPJ_grass_to_wkt( projinfo, projunits,  0, 0 );
-    Wkt = QString( wkt );
-    G_free( wkt );
-  }
-
-  setlocale( LC_NUMERIC, oldlocale );
-
-  QgsCoordinateReferenceSystem srs;
-  srs.createFromWkt( Wkt );
-
-  return srs;
+  return QgsGrass::crs( mGisdbase, mLocation );
 }
 
 int QgsGrassProvider::grassLayer()

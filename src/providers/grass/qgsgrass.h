@@ -196,6 +196,9 @@ class QgsGrass
     // ! Get location projection
     static GRASS_EXPORT QgsCoordinateReferenceSystem crs( QString gisdbase, QString location );
 
+    // ! Get location projection calling directly GRASS library
+    static GRASS_EXPORT QgsCoordinateReferenceSystem crsDirect( QString gisdbase, QString location );
+
     // ! Get map extent
     static GRASS_EXPORT QgsRectangle extent( QString gisdbase, QString location,
         QString mapset, QString map, MapType type = None );
