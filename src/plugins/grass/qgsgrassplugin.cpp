@@ -65,6 +65,13 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
   pluginNameQString = tr( "GrassVector" );
   pluginVersionQString = tr( "0.1" );
   pluginDescriptionQString = tr( "GRASS layer" );
+  QString gisdbase = QgsGrass::getDefaultGisdbase();
+  QString location = QgsGrass::getDefaultLocation();
+  mCanvas = qGisInterface->mapCanvas();
+  mCrs = QgsGrass::crs( gisdbase, location );
+  QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
+  setTransform();
+  connect( qGisInterface->mapCanvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
 }
 
 QgsGrassPlugin::~QgsGrassPlugin()
@@ -114,7 +121,6 @@ void QgsGrassPlugin::initGui()
 
   QgsGrass::init();
 
-  mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 
   // Connect project
@@ -565,6 +571,8 @@ void QgsGrassPlugin::newVector()
 
 void QgsGrassPlugin::postRender( QPainter *painter )
 {
+  // We have to redraw rectangle, because canvas->mapRenderer()->destinationCrs is set after GRASS plugin constructor! This way it is redrawn also if canvas CRS has changed.
+  displayRegion();
 // QgsDebugMsg("entered.");
 }
 
@@ -599,19 +607,9 @@ void QgsGrassPlugin::displayRegion()
     return;
   }
 
-  std::vector<QgsPoint> points;
-  points.resize( 5 );
+  QgsRectangle rect( QgsPoint( window.west, window.north ), QgsPoint( window.east, window.south ) );
 
-  points[0].setX( window.west ); points[0].setY( window.south );
-  points[1].setX( window.east ); points[1].setY( window.south );
-  points[2].setX( window.east ); points[2].setY( window.north );
-  points[3].setX( window.west ); points[3].setY( window.north );
-  points[4].setX( window.west ); points[4].setY( window.south );
-
-  for ( int i = 0; i < 5; i++ )
-  {
-    mRegionBand->addPoint( points[i] );
-  }
+  QgsGrassRegionEdit::drawRegion( mCanvas, mRegionBand, rect, &mCoordinateTransform );
 }
 
 void QgsGrassPlugin::switchRegion( bool on )
@@ -871,6 +869,15 @@ QIcon QgsGrassPlugin::getThemeIcon( const QString theName )
   else
   {
     return QIcon();
+  }
+}
+
+void QgsGrassPlugin::setTransform()
+{
+  if ( mCrs.isValid() && mCanvas->mapRenderer()->destinationCrs().isValid() )
+  {
+    mCoordinateTransform.setSourceCrs( mCrs );
+    mCoordinateTransform.setDestCRS( mCanvas->mapRenderer()->destinationCrs() );
   }
 }
 

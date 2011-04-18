@@ -22,6 +22,7 @@
 #include "qgisinterface.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaprenderer.h"
 #include "qgsmaptool.h"
 
 #include <QButtonGroup>
@@ -38,11 +39,19 @@ QgsGrassRegionEdit::QgsGrassRegionEdit( QgsMapCanvas* canvas )
 {
   mDraw = false;
   mRubberBand = new QgsRubberBand( mCanvas, true );
+  mSrcRubberBand = new QgsRubberBand( mCanvas, true );
+  QString gisdbase = QgsGrass::getDefaultGisdbase();
+  QString location = QgsGrass::getDefaultLocation();
+  mCrs = QgsGrass::crs( gisdbase, location );
+  QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
+  setTransform();
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
 }
 
 QgsGrassRegionEdit::~QgsGrassRegionEdit()
 {
   delete mRubberBand;
+  delete mSrcRubberBand;
 }
 
 //! mouse pressed in map canvas
@@ -51,6 +60,7 @@ void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
   QgsDebugMsg( "entered." );
   mDraw = true;
   mRubberBand->reset( true );
+  mSrcRubberBand->reset( true );
   emit captureStarted();
 
   mStartPoint = toMapCoordinates( event->pos() );
@@ -82,6 +92,7 @@ void QgsGrassRegionEdit::canvasReleaseEvent( QMouseEvent * event )
 void QgsGrassRegionEdit::deactivate()
 {
   mRubberBand->reset( true );
+  mSrcRubberBand->reset( true );
   QgsMapTool::deactivate();
 }
 
@@ -89,21 +100,80 @@ void QgsGrassRegionEdit::setRegion( const QgsPoint& ul, const QgsPoint& lr )
 {
   mStartPoint = ul;
   mEndPoint = lr;
+  calcSrcRegion();
+  drawRegion( canvas(), mRubberBand, mSrcRectangle, &mCoordinateTransform );
+  drawRegion( canvas(), mSrcRubberBand, QgsRectangle( mStartPoint, mEndPoint ) );
+}
 
-  mRubberBand->reset( true );
-  mRubberBand->addPoint( ul, false );
-  mRubberBand->addPoint( QgsPoint( ul.x(), lr.y() ), false );
-  mRubberBand->addPoint( lr, false );
-  mRubberBand->addPoint( QgsPoint( lr.x(), ul.y() ), true ); // true to update canvas
+void QgsGrassRegionEdit::calcSrcRegion()
+{
+  mSrcRectangle.set( mStartPoint, mEndPoint );
 
-  mRubberBand->show();
+  if ( mCanvas->mapRenderer()->hasCrsTransformEnabled() && mCrs.isValid() && mCanvas->mapRenderer()->destinationCrs().isValid() )
+  {
+    QgsCoordinateTransform coordinateTransform;
+    coordinateTransform.setSourceCrs( mCanvas->mapRenderer()->destinationCrs() );
+    coordinateTransform.setDestCRS( mCrs );
+    mSrcRectangle = coordinateTransform.transformBoundingBox( mSrcRectangle );
+  }
+}
+
+void QgsGrassRegionEdit::setTransform()
+{
+  if ( mCrs.isValid() && canvas()->mapRenderer()->destinationCrs().isValid() )
+  {
+    mCoordinateTransform.setSourceCrs( mCrs );
+    mCoordinateTransform.setDestCRS( canvas()->mapRenderer()->destinationCrs() );
+  }
+}
+
+void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &points, QgsCoordinateTransform *coordinateTransform, QgsCoordinateTransform::TransformDirection direction )
+{
+  QgsDebugMsg( "Entered" );
+  /** Coordinate transform */
+  if ( canvas->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    //QgsDebugMsg ( "srcCrs = " +  coordinateTransform->sourceCrs().toWkt() );
+    //QgsDebugMsg ( "destCrs = " +  coordinateTransform->destCRS().toWkt() );
+    for ( int i = 0; i < points.size(); i++ )
+    {
+      points[i] = coordinateTransform->transform( points[i], direction );
+    }
+  }
+}
+
+void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform * coordinateTransform )
+{
+  QVector<QgsPoint> points;
+  points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  points.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
+  points.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
+  points.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
+
+  if ( coordinateTransform )
+  {
+    transform( canvas, points, coordinateTransform );
+  }
+  rubberBand->reset( true );
+  for ( int i = 0; i < points.size(); i++ )
+  {
+    bool update = false; // true to update canvas
+    if ( i == points.size() - 1 ) update = true;
+    rubberBand->addPoint( points[i], update );
+  }
+  rubberBand->show();
 }
 
 QgsRectangle QgsGrassRegionEdit::getRegion()
 {
-  return QgsRectangle( mStartPoint, mEndPoint );
+  //return QgsRectangle( mStartPoint, mEndPoint );
+  return mSrcRectangle;
 }
 
+void QgsGrassRegionEdit::setSrcRegion( const QgsRectangle &rect )
+{
+  mSrcRectangle = rect;
+}
 
 QgsGrassRegion::QgsGrassRegion( QgsGrassPlugin *plugin,  QgisInterface *iface,
                                 QWidget * parent, Qt::WFlags f )
@@ -397,7 +467,8 @@ void QgsGrassRegion::displayRegion()
   QgsPoint ul( mWindow.west, mWindow.north );
   QgsPoint lr( mWindow.east, mWindow.south );
 
-  mRegionEdit->setRegion( ul, lr );
+  //mRegionEdit->setRegion( ul, lr );
+  mRegionEdit->setSrcRegion( QgsRectangle( ul, lr ) );
 }
 
 void QgsGrassRegion::accept()
