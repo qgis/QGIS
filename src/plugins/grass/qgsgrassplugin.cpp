@@ -589,6 +589,7 @@ void QgsGrassPlugin::displayRegion()
 // QgsDebugMsg("entered.");
 
   mRegionBand->reset();
+  if ( !mRegionAction->isChecked() ) { return; }
 
   // Display region of current mapset if in active mode
   if ( !QgsGrass::activeMode() ) return;
@@ -641,10 +642,7 @@ void QgsGrassPlugin::redrawRegion()
 {
 // QgsDebugMsg("entered.");
 
-  if ( mRegionAction->isChecked() )
-  {
-    displayRegion();
-  }
+  displayRegion();
 }
 
 void QgsGrassPlugin::changeRegion( void )
