@@ -65,13 +65,6 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
   pluginNameQString = tr( "GrassVector" );
   pluginVersionQString = tr( "0.1" );
   pluginDescriptionQString = tr( "GRASS layer" );
-  QString gisdbase = QgsGrass::getDefaultGisdbase();
-  QString location = QgsGrass::getDefaultLocation();
-  mCanvas = qGisInterface->mapCanvas();
-  mCrs = QgsGrass::crs( gisdbase, location );
-  QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
-  setTransform();
-  connect( qGisInterface->mapCanvas()->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
 }
 
 QgsGrassPlugin::~QgsGrassPlugin()
@@ -118,9 +111,8 @@ void QgsGrassPlugin::initGui()
   mRegion = 0;
 
   QSettings settings;
-
   QgsGrass::init();
-
+  mCanvas = qGisInterface->mapCanvas();
   QWidget* qgis = qGisInterface->mainWindow();
 
   // Connect project
@@ -597,6 +589,15 @@ void QgsGrassPlugin::displayRegion()
   }
 
   QgsGrass::setLocation( gisdbase, location );
+
+  // TODO: check better if we have to init + maybe the location can change -> mCrs must be reloaded
+  if ( !mCrs.isValid() )
+  {
+    mCrs = QgsGrass::crs( gisdbase, location );
+    QgsDebugMsg( "mCrs: " + mCrs.toWkt() );
+    setTransform();
+    connect( mCanvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( setTransform() ) );
+  }
 
   struct Cell_head window;
   char *err = G__get_window( &window, ( char * ) "", ( char * ) "WIND", mapset.toLatin1().data() );
