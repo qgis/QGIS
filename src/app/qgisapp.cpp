@@ -330,7 +330,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector();
     mySelector->setMessage( srs->validationHint() ); //shows a generic message, if not specified
     if ( authid.isNull() )
-      authid = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
+      authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
     QgsCoordinateReferenceSystem defaultCrs;
     if ( defaultCrs.createFromOgcWmsCrs( authid ) )
     {
@@ -353,7 +353,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
   else if ( myDefaultProjectionOption == "useProject" )
   {
     // XXX TODO: Change project to store selected CS as 'projectCRS' not 'selectedWkt'
-    authid = QgsProject::instance()->readEntry( "SpatialRefSys", "/ProjectCrs", GEO_EPSG_CRS_AUTHID );
+    authid = QgisApp::instance()->mapCanvas()->mapRenderer()->destinationCrs().authid();
     QgsDebugMsg( "Layer srs set from project: " + authid );
     QgisApp::instance()->statusBar()->showMessage( QObject::tr( "CRS undefined - defaulting to project CRS" ) );
     srs->createFromOgcWmsCrs( authid );
