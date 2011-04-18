@@ -211,6 +211,8 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
 
+  if ( pixelWidth <= 0 || pixelHeight <= 0 ) return;
+
   QStringList arguments;
   arguments.append( "map=" +  mMapName + "@" + mMapset );
 
