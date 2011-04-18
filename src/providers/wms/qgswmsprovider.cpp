@@ -32,6 +32,7 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkaccessmanager.h"
+#include <qgsmessageoutput.h>
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -772,9 +773,28 @@ void QgsWmsProvider::tileReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = reply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-      mErrorFormat = "text/plain";
-      mError = tr( "tile request err %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
-      emit statusChanged( mError );
+
+      showMessageBox( tr( "Tile request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
+
+      tileReplies.removeOne( reply );
+      reply->deleteLater();
+
+      return;
+    }
+
+    QString contentType = reply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    QgsDebugMsg( "contentType: " + contentType );
+    if ( !contentType.startsWith( "image/" ) )
+    {
+      QByteArray text = reply->readAll();
+      if ( contentType == "text/xml" && parseServiceExceptionReportDom( text ) )
+      {
+        showMessageBox( mErrorCaption, mError );
+      }
+      else
+      {
+        showMessageBox( "Tile request error", tr( "response: %1" ).arg( QString::fromUtf8( text ) ) );
+      }
 
       tileReplies.removeOne( reply );
       reply->deleteLater();
@@ -854,9 +874,8 @@ void QgsWmsProvider::cacheReplyFinished()
     if ( !status.isNull() && status.toInt() >= 400 )
     {
       QVariant phrase = cacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
-      mErrorFormat = "text/plain";
-      mError = tr( "map request error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
-      emit statusChanged( mError );
+
+      showMessageBox( tr( "Map request error" ), tr( "Status: %1\nReason phrase: %2" ).arg( status.toInt() ).arg( phrase.toString() ) );
 
       cacheReply->deleteLater();
       cacheReply = 0;
@@ -864,10 +883,30 @@ void QgsWmsProvider::cacheReplyFinished()
       return;
     }
 
+    QString contentType = cacheReply->header( QNetworkRequest::ContentTypeHeader ).toString();
+    QgsDebugMsg( "contentType: " + contentType );
+    if ( contentType.startsWith( "image/" ) )
     {
       QImage myLocalImage = QImage::fromData( cacheReply->readAll() );
       QPainter p( cachedImage );
       p.drawImage( 0, 0, myLocalImage );
+    }
+    else
+    {
+      QByteArray text = cacheReply->readAll();
+      if ( contentType == "text/xml" && parseServiceExceptionReportDom( text ) )
+      {
+        showMessageBox( mErrorCaption, mError );
+      }
+      else
+      {
+        showMessageBox( tr( "Map request error" ), tr( "Response: %1" ).arg( QString::fromUtf8( text ) ) );
+      }
+
+      cacheReply->deleteLater();
+      cacheReply = 0;
+
+      return;
     }
 
     cacheReply->deleteLater();
@@ -1015,12 +1054,16 @@ int QgsWmsProvider::bandCount() const
 
 void QgsWmsProvider::capabilitiesReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  emit statusChanged( tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
+  QString msg = tr( "%1 of %2 bytes of capabilities downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
 }
 
 void QgsWmsProvider::cacheReplyProgress( qint64 bytesReceived, qint64 bytesTotal )
 {
-  emit statusChanged( tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) ) );
+  QString msg = tr( "%1 of %2 bytes of map downloaded." ).arg( bytesReceived ).arg( bytesTotal < 0 ? QString( "unknown number of" ) : QString::number( bytesTotal ) );
+  QgsDebugMsg( msg );
+  emit statusChanged( msg );
 }
 
 bool QgsWmsProvider::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapabilitiesProperty& capabilitiesProperty )
@@ -2812,7 +2855,7 @@ void QgsWmsProvider::identifyReplyFinished()
     QVariant redirect = mIdentifyReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
     if ( !redirect.isNull() )
     {
-      emit statusChanged( QString( "identify request redirected to %1" ).arg( redirect.toString() ) );
+      QgsDebugMsg( QString( "identify request redirected to %1" ).arg( redirect.toString() ) );
       emit statusChanged( tr( "identify request redirected." ) );
 
       mIdentifyReply->deleteLater();
@@ -2829,7 +2872,7 @@ void QgsWmsProvider::identifyReplyFinished()
     {
       QVariant phrase = mIdentifyReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
       mErrorFormat = "text/plain";
-      mError = tr( "map request error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
+      mError = tr( "Map request error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
 
       mIdentifyResult = "";
@@ -2893,6 +2936,14 @@ void QgsWmsProvider::setAuthorization( QNetworkRequest &request ) const
   {
     request.setRawHeader( "Authorization", "Basic " + QString( "%1:%2" ).arg( mUserName ).arg( mPassword ).toAscii().toBase64() );
   }
+}
+
+void QgsWmsProvider::showMessageBox( const QString& title, const QString& text )
+{
+  QgsMessageOutput *message = QgsMessageOutput::createMessageOutput();
+  message->setTitle( title );
+  message->setMessage( text, QgsMessageOutput::MessageText );
+  message->showMessage();
 }
 
 /**

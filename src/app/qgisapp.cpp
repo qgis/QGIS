@@ -5522,7 +5522,15 @@ void QgisApp::layerWasAdded( QgsMapLayer *layer )
 
   QgsRasterLayer *rlayer = qobject_cast<QgsRasterLayer *>( layer );
   if ( rlayer )
+  {
+    // connect up any request the raster may make to update the app progress
+    connect( rlayer, SIGNAL( drawingProgress( int, int ) ), this, SLOT( showProgress( int, int ) ) );
+
+    // connect up any request the raster may make to update the statusbar message
+    connect( rlayer, SIGNAL( statusChanged( QString ) ), this, SLOT( showStatusMessage( QString ) ) );
+
     provider = rlayer->dataProvider();
+  }
 
   if ( provider )
   {
@@ -6195,14 +6203,6 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *theRasterLayer )
 
   // register this layer with the central layers registry
   QgsMapLayerRegistry::instance()->addMapLayer( theRasterLayer );
-
-  // connect up any request the raster may make to update the app progress
-  connect( theRasterLayer, SIGNAL( drawingProgress( int, int ) ),
-           this, SLOT( showProgress( int, int ) ) );
-
-  // connect up any request the raster may make to update the statusbar message
-  connect( theRasterLayer, SIGNAL( statusChanged( QString ) ),
-           this, SLOT( showStatusMessage( QString ) ) );
 
   return true;
 }

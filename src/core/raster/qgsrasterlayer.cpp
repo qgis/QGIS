@@ -155,13 +155,6 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
 
   // TODO: Connect signals from the dataprovider to the qgisapp
 
-  // Do a passthrough for the status bar text
-#if 0
-  connect(
-    mDataProvider, SIGNAL( statusChanged( QString ) ),
-    this,           SLOT( showStatusMessage( QString ) )
-  );
-#endif
   QgsDebugMsg( "(8 arguments) exiting." );
 
   emit statusChanged( tr( "QgsRasterLayer created" ) );
@@ -2199,7 +2192,7 @@ QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
 
   if ( !loaded )
   {
-    QgsLogger::warning( "QgsRasterLayer::setDataProvider: Failed to load " );
+    QgsLogger::warning( "QgsRasterLayer::loadProviderLibrary: Failed to load " );
     return NULL;
   }
   QgsDebugMsg( "Loaded data provider library" );
@@ -2223,7 +2216,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !classFactory )
   {
-    QgsLogger::warning( "QgsRasterLayer::setDataProvider: Cannot resolve the classFactory function" );
+    QgsLogger::warning( "QgsRasterLayer::loadProvider: Cannot resolve the classFactory function" );
     return NULL;
   }
   QgsDebugMsg( "Getting pointer to a mDataProvider object from the library" );
@@ -2237,7 +2230,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !myDataProvider )
   {
-    QgsLogger::warning( "QgsRasterLayer::setDataProvider: Unable to instantiate the data provider plugin" );
+    QgsLogger::warning( "QgsRasterLayer::loadProvider: Unable to instantiate the data provider plugin" );
     return NULL;
   }
   QgsDebugMsg( "Data driver created" );
@@ -2504,6 +2497,12 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   connect(
     mDataProvider, SIGNAL( progress( int, double, QString ) ),
     this,          SLOT( onProgress( int, double, QString ) )
+  );
+
+  // Do a passthrough for the status bar text
+  connect(
+    mDataProvider, SIGNAL( statusChanged( QString ) ),
+    this,          SIGNAL( statusChanged( QString ) )
   );
 
   //mark the layer as valid
@@ -2894,6 +2893,7 @@ QStringList QgsRasterLayer::subLayers() const
 {
   return mDataProvider->subLayers();
 }
+
 
 void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
 {

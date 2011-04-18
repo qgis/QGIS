@@ -63,9 +63,15 @@ void QgsMessageViewer::setMessage( const QString& message, MessageType msgType )
 void QgsMessageViewer::showMessage( bool blocking )
 {
   if ( blocking )
+  {
+    QApplication::setOverrideCursor( Qt::ArrowCursor );
     exec();
+    QApplication::restoreOverrideCursor();
+  }
   else
+  {
     show();
+  }
 }
 
 void QgsMessageViewer::setTitle( const QString& title )

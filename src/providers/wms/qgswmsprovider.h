@@ -650,6 +650,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
     void tileReplyFinished();
 
   private:
+    void showMessageBox( const QString& title, const QString& text );
+
     /**
      * \brief Retrieve and parse the (cached) Capabilities document from the server
      *
