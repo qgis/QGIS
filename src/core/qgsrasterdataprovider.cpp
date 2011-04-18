@@ -53,6 +53,9 @@ void QgsRasterDataProvider::readBlock( int bandNo, QgsRectangle  const & viewExt
 
   // TODO: init data by nulls
 
+  // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
+  if ( myProjector.srcRows() <= 0 || myProjector.srcCols() <= 0 ) return;
+
   // Allocate memory for not projected source data
   int mySize = dataTypeSize( bandNo ) / 8;
   void *mySrcData = malloc( mySize * myProjector.srcRows() * myProjector.srcCols() );
