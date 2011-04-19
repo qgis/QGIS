@@ -58,11 +58,6 @@ QgsOfflineEditing::QgsOfflineEditing( QgsOfflineEditingProgressDialog* progressD
 
 QgsOfflineEditing::~QgsOfflineEditing()
 {
-  if ( mProgressDialog != NULL )
-  {
-    delete mProgressDialog;
-  }
-  disconnect( QgsMapLayerRegistry::instance(), SIGNAL( layerWasAdded( QgsMapLayer* ) ), this, SLOT( layerAdded( QgsMapLayer* ) ) );
 }
 
 /**

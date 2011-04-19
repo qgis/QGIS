@@ -298,7 +298,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *   @param changed binary combination of changes
      *   @note added in 1.7
      */
-    void dataChanged( int change );
+    void dataChanged( int changed );
 
   protected:
     /**
