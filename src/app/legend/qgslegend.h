@@ -220,10 +220,20 @@ class QgsLegend : public QTreeWidget
 
     /*!
      * Slot called when user wishes to add a new empty layer group to the legend.
+     * If a the legend has a currentItem() then the new group will be nested into it
      * The user will be prompted for the name of the newly added group.
      * @param name name of the new group
      * @param expand expand the group
-     * @return void
+     * @return index of inserted group
+     */
+    int addGroupToCurrentItem( QString name = QString(), bool expand = true );
+
+    /*!
+     * Slot called when user wishes to add a new empty layer group to the legend.
+     * The user will be prompted for the name of the newly added group.
+     * @param name name of the new group
+     * @param expand expand the group
+     * @return index of inserted group
      */
     int addGroup( QString name = QString(), bool expand = true, QTreeWidgetItem* parent = 0 );
 
@@ -414,7 +424,7 @@ class QgsLegend : public QTreeWidget
 
     /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
     QgsMapCanvas* mMapCanvas;
-    
+
     /**Stores the width values of the LegendSymbologyItem pixmaps. The purpose of this is that the legend may automatically change
      the global IconWidth when items are added or removed*/
     std::multiset<int> mPixmapWidthValues;
