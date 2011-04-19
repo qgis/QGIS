@@ -32,30 +32,43 @@ extern "C"
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
 
-QgsCoordinateTransform::QgsCoordinateTransform( ) : QObject(), mSourceCRS(), mDestCRS()
+QgsCoordinateTransform::QgsCoordinateTransform()
+    : QObject()
+    , mInitialisedFlag( false )
+    , mSourceProjection( 0 )
+    , mDestinationProjection( 0 )
 {
   setFinder();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source,
-    const QgsCoordinateReferenceSystem& dest )
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem& source, const QgsCoordinateReferenceSystem& dest )
+    : QObject()
+    , mInitialisedFlag( false )
+    , mSourceProjection( 0 )
+    , mDestinationProjection( 0 )
 {
   setFinder();
-
   mSourceCRS = source;
   mDestCRS = dest;
   initialise();
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrsId, long theDestSrsId )
-    : mSourceCRS( theSourceSrsId, QgsCoordinateReferenceSystem::InternalCrsId ),
-    mDestCRS( theDestSrsId, QgsCoordinateReferenceSystem::InternalCrsId )
+    : QObject()
+    , mInitialisedFlag( false )
+    , mSourceCRS( theSourceSrsId, QgsCoordinateReferenceSystem::InternalCrsId )
+    , mDestCRS( theDestSrsId, QgsCoordinateReferenceSystem::InternalCrsId )
+    , mSourceProjection( 0 )
+    , mDestinationProjection( 0 )
 {
   initialise();
 }
 
-QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString theDestCRS ) : QObject()
-
+QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString theDestCRS )
+    : QObject()
+    , mInitialisedFlag( false )
+    , mSourceProjection( 0 )
+    , mDestinationProjection( 0 )
 {
   setFinder();
   mSourceCRS.createFromWkt( theSourceCRS );
@@ -69,7 +82,11 @@ QgsCoordinateTransform::QgsCoordinateTransform( QString theSourceCRS, QString th
 
 QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
     QString theDestWkt,
-    QgsCoordinateReferenceSystem::CrsType theSourceCRSType ): QObject()
+    QgsCoordinateReferenceSystem::CrsType theSourceCRSType )
+    : QObject()
+    , mInitialisedFlag( false )
+    , mSourceProjection( 0 )
+    , mDestinationProjection( 0 )
 {
   setFinder();
 
@@ -85,11 +102,11 @@ QgsCoordinateTransform::QgsCoordinateTransform( long theSourceSrid,
 QgsCoordinateTransform::~QgsCoordinateTransform()
 {
   // free the proj objects
-  if ( mSourceProjection != 0 )
+  if ( mSourceProjection )
   {
     pj_free( mSourceProjection );
   }
-  if ( mDestinationProjection != 0 )
+  if ( mDestinationProjection )
   {
     pj_free( mDestinationProjection );
   }
@@ -106,7 +123,6 @@ void QgsCoordinateTransform::setDestCRS( const QgsCoordinateReferenceSystem& the
   initialise();
 }
 
-
 void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 {
   //!todo Add some logic here to determine if the srsid is a system or user one
@@ -118,11 +134,6 @@ void QgsCoordinateTransform::setDestCRSID( long theCRSID )
 // And probably shouldn't be a void
 void QgsCoordinateTransform::initialise()
 {
-
-  mInitialisedFlag = false; //guilty until proven innocent...
-  mSourceProjection = NULL;
-  mDestinationProjection = NULL;
-
   // XXX Warning - multiple return paths in this block!!
   if ( !mSourceCRS.isValid() )
   {
@@ -152,11 +163,11 @@ void QgsCoordinateTransform::initialise()
 #endif
 
   mInitialisedFlag = true;
-  if ( mDestinationProjection == NULL )
+  if ( !mDestinationProjection )
   {
     mInitialisedFlag = false;
   }
-  if ( mSourceProjection == NULL )
+  if ( !mSourceProjection )
   {
     mInitialisedFlag = false;
   }

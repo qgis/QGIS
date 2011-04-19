@@ -59,18 +59,17 @@ static const QString icon_ = ":/icons/spatialquery.png";
 * @parma mIface Pointer to the QGIS interface object
 */
 QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, version_, type_ ),
-    mIface( iface )
+    : QgisPlugin( name_, description_, version_, type_ )
+    , mDialog( 0 )
+    , mIface( iface )
+    , mSpatialQueryAction( 0 )
 {
-  mDialog = NULL;
 }
 
 QgsSpatialQueryPlugin::~QgsSpatialQueryPlugin()
 {
-  mIface = NULL;
-  delete mSpatialQueryAction;
-  delete mDialog;
 }
+
 /*
 * Initialize the GUI interface for the plugin
 */

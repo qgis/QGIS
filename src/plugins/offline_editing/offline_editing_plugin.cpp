@@ -35,20 +35,17 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/offline_editing/offline_editing_copy.png";
 
 QgsOfflineEditingPlugin::QgsOfflineEditingPlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface ),
-    mActionConvertProject( NULL ),
-    mActionSynchronize( NULL ),
-    mOfflineEditing( NULL )
+    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
+    , mActionConvertProject( NULL )
+    , mActionSynchronize( NULL )
+    , mOfflineEditing( NULL )
 {
 }
 
 QgsOfflineEditingPlugin::~QgsOfflineEditingPlugin()
 {
-  if ( mOfflineEditing != NULL )
-  {
-    delete mOfflineEditing;
-  }
+  delete mOfflineEditing;
 }
 
 void QgsOfflineEditingPlugin::initGui()
