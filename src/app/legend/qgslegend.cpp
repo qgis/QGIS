@@ -151,14 +151,20 @@ void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetI
   emit currentLayerChanged( layer );
 }
 
+int QgsLegend::addGroupToCurrentItem( QString name, bool expand )
+{
+  QTreeWidgetItem *parent = currentItem();
+  return addGroup( name, expand, parent );
+}
+
 int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
 {
   if ( name.isEmpty() )
     name = tr( "group" ); // some default name if none specified
 
   QgsLegendGroup *parentGroup = dynamic_cast<QgsLegendGroup *>( parent );
-
   QgsLegendGroup *group;
+
   if ( parentGroup )
     group = new QgsLegendGroup( parentGroup, name );
   else
@@ -577,7 +583,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     }
   }
 
-  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add group" ), this, SLOT( addGroup() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add group" ), this, SLOT( addGroupToCurrentItem() ) );
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand all" ), this, SLOT( expandAll() ) );
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse all" ), this, SLOT( collapseAll() ) );
 
