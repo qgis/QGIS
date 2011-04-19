@@ -568,8 +568,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     double ymax = qMin( viewExtent.yMaximum(), layerExtent.yMaximum() );
 
     // snap to tile coordinates
-    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum(); // + mTileWidth * tres * 0.001;
-    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum(); // + mTileHeight * tres * 0.001;
+    double x0 = floor(( xmin - layerExtent.xMinimum() ) / mTileWidth / tres ) * mTileWidth * tres + layerExtent.xMinimum() + mTileWidth * tres * 0.001;
+    double y0 = floor(( ymin - layerExtent.yMinimum() ) / mTileHeight / tres ) * mTileHeight * tres + layerExtent.yMinimum() + mTileHeight * tres * 0.001;
 
 #ifdef QGISDEBUG
     // calculate number of tiles
@@ -724,6 +724,14 @@ void QgsWmsProvider::tileReplyFinished()
     mCacheHits++;
   else
     mCacheMisses++;
+
+  QgsDebugMsgLevel( "headers:", 3 );
+  foreach( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
+  {
+    QgsDebugMsgLevel( QString( " %1:%2" )
+                      .arg( QString::fromUtf8( pair.first ) )
+                      .arg( QString::fromUtf8( pair.second ) ), 3 );
+  }
 #endif
   int tileReqNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 0 ) ).toInt();
   int tileNo = reply->request().attribute( static_cast<QNetworkRequest::Attribute>( QNetworkRequest::User + 1 ) ).toInt();
