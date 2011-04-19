@@ -83,6 +83,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mNewSize( QSize() )
     , mPainting( false )
 {
+  //disable the update that leads to the resize crash
+  if( viewport() )
+  {
+    viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+  }
+
   mScene = new QGraphicsScene();
   setScene( mScene );
   setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -122,7 +128,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
            this, SLOT( readProject( const QDomDocument & ) ) );
   connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ),
            this, SLOT( writeProject( QDomDocument & ) ) );
-
+  mMap->resize( size() );
 } // QgsMapCanvas ctor
 
 
