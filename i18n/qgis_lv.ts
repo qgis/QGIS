@@ -1649,7 +1649,7 @@ Vai vēlaties to apturēt?</translation>
     </message>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation>Nav aktīvu rastra slāņu. Pievienojiet vismaz vienu rastra slāni, lai turpinātu.</translation>
+        <translation type="obsolete">Nav aktīvu rastra slāņu. Pievienojiet vismaz vienu rastra slāni, lai turpinātu.</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
@@ -1665,7 +1665,7 @@ Vai vēlaties to apturēt?</translation>
     </message>
     <message>
         <source>Band to convert:</source>
-        <translation>Konvertēšanas kanāls:</translation>
+        <translation type="obsolete">Konvertēšanas kanāls:</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
@@ -1753,7 +1753,15 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     </message>
     <message>
         <source>Select the cutline file</source>
-        <translation>Izvēlēties griezuma līnijas failu</translation>
+        <translation type="obsolete">Izvēlēties griezuma līnijas failu</translation>
+    </message>
+    <message>
+        <source>Select the mask file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select the input directory with files for convert</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1785,6 +1793,13 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <source>Re-Enable</source>
         <translation>Reaktivizēt</translation>
+    </message>
+</context>
+<context>
+    <name>GdalToolsInOutSelector</name>
+    <message>
+        <source>Select...</source>
+        <translation type="unfinished">Izvēlēties...</translation>
     </message>
 </context>
 <context>
@@ -2558,7 +2573,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Cutline</source>
-        <translation>Griezuma līnija</translation>
+        <translation type="obsolete">Griezuma līnija</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
@@ -2598,6 +2613,18 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Warp (Reproject)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clipping mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Mask layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Band to convert</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5574,6 +5601,18 @@ Only %1 of %2 features written.</source>
     </message>
     <message>
         <source>CRS undefined - defaulting to default CRS: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot open GISRC file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>command: %1 %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot run module</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -15182,6 +15221,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>GRASS vector map %1 does not have topology. Build topology?</source>
         <translation>GRASS vektoru kartei %1 nav topoloģijas. Veidot topoloģiju?</translation>
+    </message>
+</context>
+<context>
+    <name>QgsGrassRasterProvider</name>
+    <message>
+        <source>Out of extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>null (no data)</source>
+        <translation type="unfinished">null (nav datu)</translation>
     </message>
 </context>
 <context>
@@ -27562,11 +27612,11 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     </message>
     <message>
         <source>tile request err %1: %2</source>
-        <translation>daļas pieprasījuma kļūda %1: %2</translation>
+        <translation type="obsolete">daļas pieprasījuma kļūda %1: %2</translation>
     </message>
     <message>
         <source>map request error %1: %2</source>
-        <translation>kartes pieprasījuma kļūda %1: %2</translation>
+        <translation type="obsolete">kartes pieprasījuma kļūda %1: %2</translation>
     </message>
     <message>
         <source>
@@ -27697,6 +27747,31 @@ Response was:
     <message>
         <source>Request contains a format not offered by the server.</source>
         <translation>Vaicājums satur formātu, kādu nepiedāvā serveris.</translation>
+    </message>
+    <message>
+        <source>Tile request error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Status: %1
+Reason phrase: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>response: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Response: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map request error %1: %2</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
