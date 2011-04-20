@@ -28,6 +28,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
                                   QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
     , mLayer( layer )
+    , mPreviousFieldRow( -1 )
 {
   setupUi( this );
 
