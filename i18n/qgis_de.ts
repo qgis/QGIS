@@ -1603,7 +1603,7 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
     </message>
     <message>
         <source>Select the mask file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maskendatei wählen</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
@@ -1739,7 +1739,7 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     </message>
     <message>
         <source>Select the input directory with files for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Eingabeverzeichnis der zu konvertierenden Dateien wählen</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
@@ -1831,7 +1831,7 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     <message>
         <location filename="../python/plugins/GdalTools/tools/inOutSelector.ui" line="46"/>
         <source>Select...</source>
-        <translation type="unfinished">Wählen...</translation>
+        <translation>Wählen...</translation>
     </message>
 </context>
 <context>
@@ -1992,7 +1992,7 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="70"/>
         <source>Clipping mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Ausschnittsmodus</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="76"/>
@@ -2005,7 +2005,7 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="126"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="181"/>
         <source>Mask layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Maskenlayer</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="87"/>
@@ -2084,7 +2084,7 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="82"/>
         <source>Band to convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Umzuwandelnder Kanal</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="38"/>
@@ -5650,7 +5650,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1056"/>
         <source>Cannot open GISRC file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann GISRC-Datei nicht öffnen</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1076"/>
@@ -5660,12 +5660,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1077"/>
         <source>command: %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehl: %1 %2</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1096"/>
         <source>Cannot run module</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Modul nicht ausführen</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1097"/>
@@ -17185,12 +17185,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="352"/>
         <source>Out of extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Außerhalb der Grenzen</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="356"/>
         <source>null (no data)</source>
-        <translation type="unfinished">Null (keine Daten)</translation>
+        <translation>Null (keine Daten)</translation>
     </message>
 </context>
 <context>
@@ -31820,30 +31820,31 @@ URL %1 versucht</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="786"/>
         <source>Tile request error</source>
-        <translation type="unfinished"></translation>
+        <translation>Tile-Anfragefehler</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="786"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="887"/>
         <source>Status: %1
 Reason phrase: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Status: %1
+Grund: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="805"/>
         <source>response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Antwort: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="887"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="912"/>
         <source>Map request error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartenanfragefehler</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="912"/>
         <source>Response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Antwort: %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="969"/>
@@ -31969,7 +31970,7 @@ Antwort war:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2884"/>
         <source>Map request error %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Kartenanfragefehler %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2334"/>
@@ -36157,7 +36158,7 @@ Erweiterung wird nicht aktiviert.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Rebuild topology of a vector in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologie eines Vektors des Mapsets neuberechnen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
