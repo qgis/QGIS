@@ -724,8 +724,9 @@ void QgsWmsProvider::tileReplyFinished()
     mCacheHits++;
   else
     mCacheMisses++;
-
-  QgsDebugMsgLevel( "headers:", 3 );
+#endif
+#if defined(QGISDEBUG) && (QT_VERSION >= 0x40700)
+  QgsDebugMsgLevel( "raw headers:", 3 );
   foreach( const QNetworkReply::RawHeaderPair &pair, reply->rawHeaderPairs() )
   {
     QgsDebugMsgLevel( QString( " %1:%2" )
