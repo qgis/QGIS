@@ -165,6 +165,7 @@ class Dialog( QDialog, Ui_Dialog ):
       self.mergeThread = None
 
   def restoreGui( self ):
+    self.progressFeatures.setRange( 0, 100 )
     self.progressFeatures.setValue( 0 )
     self.progressFiles.setValue( 0 )
     QApplication.restoreOverrideCursor()
