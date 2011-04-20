@@ -295,8 +295,8 @@ void QgsRasterProjector::nextHelper()
 
 void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
-  if ( mApproximate ) approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol);
-  else preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol);
+  if ( mApproximate ) approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+  else preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
 }
 
 void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
@@ -305,9 +305,9 @@ void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *
   double x = mDestExtent.xMinimum() + ( theDestCol + 0.5 ) * mDestXRes;
   double y = mDestExtent.yMaximum() - ( theDestRow + 0.5 ) * mDestYRes;
   double z = 0;
-  
+
   mCoordinateTransform.transformInPlace( x, y, z );
-  
+
   // Get source row col
   *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcXRes );
   *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcYRes );
@@ -370,7 +370,7 @@ void QgsRasterProjector::insertRows()
     {
       myRow.append( QgsPoint() );
     }
-    QgsDebugMsg( QString( "insert new row at %1" ).arg( 1 + r*2 ) );
+    QgsDebugMsgLevel( QString( "insert new row at %1" ).arg( 1 + r*2 ), 3 );
     mCPMatrix.insert( 1 + r*2,  myRow );
   }
   mCPRows += mCPRows - 1;
@@ -409,7 +409,7 @@ void QgsRasterProjector::calcCP( int theRow, int theCol )
 
 bool QgsRasterProjector::calcRow( int theRow )
 {
-  QgsDebugMsg( QString( "theRow = %1" ).arg( theRow ) );
+  QgsDebugMsgLevel( QString( "theRow = %1" ).arg( theRow ), 3 );
   for ( int i = 0; i < mCPCols; i++ )
   {
     calcCP( theRow, i );
