@@ -106,7 +106,14 @@ QStringList QgsSimpleBabelFormat::importCommand( const QString& babel,
     const QString& output )const
 {
   QStringList args;
-  args << babel << featuretype << "-i" << mFormat << "-o" << "gpx" << input << output;
+  args
+  << QString( "\"%1\"" ).arg( babel )
+  << featuretype
+  << "-i"
+  << mFormat
+  << "-o" << "gpx"
+  << QString( "\"%1\"" ).arg( input )
+  << QString( "\"%1\"" ).arg( output );
   return args;
 }
 
