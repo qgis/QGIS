@@ -5,5 +5,5 @@ call "%OSGEO4W_ROOT%"\bin\o4w_env.bat
 call "%OSGEO4W_ROOT%"\bin\grass-env.bat
 @echo off
 SET GDAL_DRIVER_PATH=%OSGEO4W_ROOT%\bin\gdalplugins\1.8
-path %PATH%;%GISBASE%\bin
+path %PATH%;%OSGEO4W_ROOT%\apps\@package@\bin;%GISBASE%\bin
 start "Quantum GIS" /B "%OSGEO4W_ROOT%"\apps\@package@\bin\qgis.exe %*
