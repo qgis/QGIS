@@ -13,9 +13,41 @@
 # Download OSGeo4W packages
 #
 
+use strict;
+use warnings;
+use Getopt::Long;
+use Pod::Usage;
+
+my $keep = 0;
+my $verbose = 0;
+
+my $packagename;
+my $releasename;
+my $shortname;
+my $version;
+my $revision;
+my $help;
+
+my $result = GetOptions(
+		"verbose+" => \$verbose,
+		"keep" => \$keep,
+		"releasename=s" => \$releasename,
+		"version=s" => \$version,
+		"revision=s" => \$revision,
+		"packagename=s" => \$packagename,
+		"shortname=s" => \$shortname,
+		"help" => \$help
+	);
+
+if( $help ) {
+	pod2usage(1);
+}
+
+my $wgetopt = $verbose ? "" : "-q";
+
 unless(-f "nsis/System.dll") {
 	mkdir "nsis", 0755 unless -d "nsis";
-	system "wget -q -Onsis/System.dll http://qgis.org/downloads/System.dll";
+	system "wget $wgetopt -Onsis/System.dll http://qgis.org/downloads/System.dll";
 }
 
 mkdir "packages", 0755 unless -d "packages";
@@ -23,13 +55,14 @@ chdir "packages";
 
 my $root = "http://download.osgeo.org/osgeo4w";
 
-system "wget -q -c http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
-system "wget -q -c http://www.nirsoft.net/utils/nircmd.zip" unless -f "nircmd.zip";
+system "wget $wgetopt -c http://nsis.sourceforge.net/mediawiki/images/9/9d/Untgz.zip" unless -f "Untgz.zip";
+system "wget $wgetopt -c http://www.nirsoft.net/utils/nircmd.zip" unless -f "nircmd.zip";
 
 my %dep;
 my %file;
+my $package;
 
-system "wget -q -c $root/setup.ini";
+system "wget $wgetopt -c $root/setup.ini";
 open F, "setup.ini" || die "setup.ini not found";
 while(<F>) {
 	chop;
@@ -50,6 +83,7 @@ sub getDeps {
 
 	return if exists $pkgs{$pkg};
 
+	print " Including package $pkg" if $verbose;
 	$pkgs{$pkg} = 1;
 
 	foreach my $p ( @{ $dep{$pkg} } ) {
@@ -57,29 +91,33 @@ sub getDeps {
 	}
 }
 
-getDeps("qgis-full");
+unless(@ARGV) {
+	print "Defaulting to qgis-full package...\n" if $verbose;
+	push @ARGV, "qgis-full";
+}
+
+getDeps($_) for @ARGV;
 
 if(-f "../addons/bin/NCSEcw4_RO.dll") {
-	print "Enabling ECW support...\n";
+	print "Enabling ECW support...\n" if $verbose;
 	getDeps("gdal17-ecw")
 }
 
 if(-f "../addons/bin/lti_dsdk_dll.dll") {
-	print "Enabling MrSID support...\n";
+	print "Enabling MrSID support...\n" if $verbose;
 	getDeps("gdal17-mrsid")
 }
 
-
 foreach my $p ( keys %pkgs ) {
-	$f = "$root/$file{$p}";
+	my $f = "$root/$file{$p}";
 	$f =~ s/\/\.\//\//g;
 
 	my($file) = $f =~ /([^\/]+)$/;
 
 	next if -f $file;
 	
-	print "Downloading $file [$f]...\n";
-	system "wget -q -c $f";
+	print "Downloading $file [$f]...\n" if $verbose;
+	system "wget $wgetopt -c $f";
 }
 
 chdir "..";
@@ -90,15 +128,24 @@ chdir "..";
 # Add addons
 #
 
+if( -d "unpacked" ) {
+	unless( $keep ) {
+		print "Removing unpacked directory\n" if $verbose;
+		system "rm -rf unpacked";
+	} else {
+		print "Keeping unpacked directory\n" if $verbose;
+	}
+}
 
-system "rm -rf unpacked" if -d "unpacked" && !grep(/^-k$/, @ARGV);
+my $taropt = "v" x $verbose;
 
 unless(-d "unpacked") {
 	mkdir "unpacked", 0755;
 
 	for my $p (<packages/*.tar.bz2>) {
-		print "Unpacking $p...\n";
-		system "tar -C unpacked -xjf $p";
+
+		print "Unpacking $p...\n" if $verbose;
+		system "tar $taropt -C unpacked -xjf $p";
 	}
 
 	chdir "unpacked";
@@ -109,7 +156,10 @@ unless(-d "unpacked") {
 
 	system "cd apps/nircmd; unzip ../../../packages/nircmd.zip && mv nircmd.exe ../../bin";
 
-	system "tar -C ../addons -cf - . | tar -xf -" if -d "../addons";
+	if( -d "../addons" ) {
+		print " Including addons..." if $verbose;
+		system "tar -C ../addons -cf - . | tar $taropt -xf -";
+	}
 
 	chdir "..";
 }
@@ -172,7 +222,7 @@ print F "ren preremove.bat preremove.bat.done\r\n";
 
 close F;
 
-my($major, $minor, $patch, $release, $revision);
+my($major, $minor, $patch);
 
 open F, "../../CMakeLists.txt";
 while(<F>) {
@@ -184,15 +234,19 @@ while(<F>) {
 	} elsif(/SET\(CPACK_PACKAGE_VERSION_PATCH "(\d+)"\)/) {
 		$patch = $1;
 	} elsif(/SET\(RELEASE_NAME "(.+)"\)/) {
-		$release = $1;
+		$releasename = $1 unless defined $releasename;
 	}
 }
 close F;
 
-open F, "svnversion|";
-$revision = <F>;
-$revision =~ s/\D+$//g;
-close F;
+$version = "$major.$minor.$patch" unless defined $version;
+
+unless( defined $revision ) {
+	open F, "svnversion|";
+	$revision = <F>;
+	$revision =~ s/\D+$//g;
+	close F;
+}
 
 $revision = 14615 unless $revision =~ /^\d+$/;
 
@@ -200,16 +254,46 @@ system "unzip packages/Untgz.zip" unless -d "untgz";
 
 chdir "..";
 
+$packagename = "Quantum GIS" unless defined $packagename;
+$shortname = "qgis" unless defined $shortname;
+
 my $cmd = "makensis";
-$cmd .= " -DVERSION_NUMBER='$major.$minor.$patch'";
-$cmd .= " -DVERSION_NAME='$release'";
+$cmd .= " -V$verbose";
+$cmd .= " -DVERSION_NUMBER='$version'";
+$cmd .= " -DVERSION_NAME='$releasename'";
 $cmd .= " -DSVN_REVISION='$revision'";
-$cmd .= " -DQGIS_BASE='Quantum GIS $release'";
-$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$major.$minor.$patch-$revision-Setup.exe'";
-$cmd .= " -DDISPLAYED_NAME='Quantum GIS \'$release\' ($major.$minor.$patch)'";
+$cmd .= " -DQGIS_BASE='$packagename $releasename'";
+$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$version-$revision-Setup.exe'";
+$cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
 $cmd .= " -DBINARY_REVISION=1";
+$cmd .= " -DSHORTNAME='$shortname'";
 $cmd .= " -DINSTALLER_TYPE=OSGeo4W";
 $cmd .= " -DPACKAGE_FOLDER=osgeo4w/unpacked";
 $cmd .= " QGIS-Installer.nsi";
 
 system $cmd;
+
+__END__
+
+=head1 NAME
+
+creatensis.pl - create NSIS package from OSGeo4W packages
+
+=head1 SYNOPSIS
+
+creatensis.pl [options] [packages...]
+
+  Options:
+    -verbose		increase verbosity
+    -releasename=name	name of release (defaults to CMakeLists.txt setting)
+    -keep		don't start with a fresh unpacked directory
+    -version=m.m.p	package version (defaults to CMakeLists.txt setting)
+    -revision=rNNNNN	svn revision of package (determined by svnversion if not given)
+    -packagename=s	name of package (defaults to 'Quantum GIS'
+    -shortname=s	shortname used for batch file (defaults to 'qgis')
+    -help		this help
+
+  If no packages are given 'qgis-full' an it's dependencies will be retrieved
+  and packaged.
+
+=cut
