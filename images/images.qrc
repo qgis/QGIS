@@ -241,9 +241,9 @@
         <file>themes/gis/mActionCaptureLine.png</file>
         <file>themes/gis/mActionCapturePoint.png</file>
         <file>themes/gis/mActionCapturePolygon.png</file>
+        <file>themes/gis/mActionChangeLabelProperties.png</file>
         <file>themes/gis/mActionComposerManager.png</file>
         <file>themes/gis/mActionCopySelected.png</file>
-        <file>themes/gis/mActionChangeLabelProperties.png</file>
         <file>themes/gis/mActionDeleteAttribute.png</file>
         <file>themes/gis/mActionDeletePart.png</file>
         <file>themes/gis/mActionDeleteRing.png</file>
@@ -267,8 +267,8 @@
         <file>themes/gis/mActionIdentify.png</file>
         <file>themes/gis/mActionInOverview.png</file>
         <file>themes/gis/mActionInvertSelection.png</file>
-        <file>themes/gis/mActionLabel.png</file>
         <file>themes/gis/mActionLabeling.png</file>
+        <file>themes/gis/mActionLabel.png</file>
         <file>themes/gis/mActionLowerItems.png</file>
         <file>themes/gis/mActionMapTips.png</file>
         <file>themes/gis/mActionMeasureAngle.png</file>
@@ -300,8 +300,12 @@
         <file>themes/gis/mActionSaveMapAsImage.png</file>
         <file>themes/gis/mActionScaleBar.png</file>
         <file>themes/gis/mActionSelectedToTop.png</file>
+        <file>themes/gis/mActionSelectFreehand.png</file>
         <file>themes/gis/mActionSelectPan.png</file>
         <file>themes/gis/mActionSelect.png</file>
+        <file>themes/gis/mActionSelectPolygon.png</file>
+        <file>themes/gis/mActionSelectRadius.png</file>
+        <file>themes/gis/mActionSelectRectangle.png</file>
         <file>themes/gis/mActionShowAllLayers.png</file>
         <file>themes/gis/mActionShowBookmarks.png</file>
         <file>themes/gis/mActionSimplify.png</file>
