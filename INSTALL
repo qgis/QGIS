@@ -1,10 +1,8 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
 
-
-Last update: 20110404
-Last change: 20110404
-
+Last update: 20110421
+Last change: 20110307
 
   1. Introduction
   2. Overview
@@ -31,6 +29,7 @@ Last change: 20110404
     5.6. Configure the build
     5.7. Building
   6. Authors and Acknowledgments
+
 
 
   1. Introduction
@@ -85,6 +84,7 @@ Required build tools:
 - Flex
 - Bison
 
+
 Required build deps:
 
 - Qt >= 4.4.0
@@ -93,6 +93,7 @@ Required build deps:
 - Sqlite3 >= 3.0.0
 - GDAL/OGR >= 1.4.x
 - Qwt >= 5.0
+
 
 Optional dependencies:
 
@@ -103,6 +104,7 @@ Optional dependencies:
 - for mapserver export and PyQGIS - Python >= 2.3 (2.5+ preferred)
 - for python support - SIP >= 4.8, PyQt >= must match Qt version
 - for qgis mapserver - FastCGI
+
 
 
   3. Building on GNU/Linux
@@ -128,7 +130,7 @@ These instructions should work fine if this is a system that has already been
 in use for a while, you may need to just skip those steps which are irrelevant
 to you.
 
-/!\ Note: Refer to the section Building Debian packages for building 
+/!\ Note: Refer to the section ''Building Debian packages'' for building 
 debian packages.  Unless you plan to develop on QGIS, that is probably the
 easiest option to compile and install QGIS.
 
@@ -147,11 +149,14 @@ all dependencies to be met.
 
 Now update your local sources database:
 
+
   sudo apt-get update 
+
 
 
   3.3. Install build dependencies
   ===============================
+
 
   || Distribution | install command for packages |
   | lenny | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-dev libqwt5-qt4-dev libsqlite3-dev pkg-config proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4-dev sip4 txt2tags`` |
@@ -170,9 +175,11 @@ point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
 designed to live alongside each other. This means that for example if you
 have them both installed you will have three qmake exe's:
 
+
   /usr/bin/qmake -> /etc/alternatives/qmake 
   /usr/bin/qmake-qt3
   /usr/bin/qmake-qt4 
+
 
 The same applies to all other Qt binaries. You will notice above that the
 canonical 'qmake' is managed by apt alternatives, so before we start to
@@ -181,6 +188,7 @@ you can use this same process.
 
 You can use apt alternatives to correct this so that the Qt4 version of
 applications is used in all cases:
+
 
   sudo update-alternatives --config qmake
   sudo update-alternatives --config uic 
@@ -191,6 +199,7 @@ applications is used in all cases:
   sudo update-alternatives --config lupdate 
   sudo update-alternatives --config lrelease 
   sudo update-alternatives --config linguist 
+
 
 Use the simple command line dialog that appears after running each of the
 above commands to select the Qt4 version of the relevant applications.
@@ -205,9 +214,11 @@ language bindings you may need to build and install those packages from source.
 
 You should also setup ccache to speed up compile times:
 
+
   cd /usr/local/bin 
   sudo ln -s /usr/bin/ccache gcc 
   sudo ln -s /usr/bin/ccache g++ 
+
 
 
   3.5. Prepare your development environment
@@ -217,8 +228,10 @@ As a convention I do all my development work in $HOME/dev/<language>, so in
 this case we will create a work environment for C++ development work like
 this:
 
+
   mkdir -p ${HOME}/dev/cpp 
   cd ${HOME}/dev/cpp 
+
 
 This directory path will be assumed for all instructions that follow.
 
@@ -233,16 +246,21 @@ if you do not have edit privaleges for the QGIS source repository, or use
 
 1. Anonymous Checkout
 
+
   cd ${HOME}/dev/cpp 
   svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
 
+
 2. Developer Checkout
+
 
   cd ${HOME}/dev/cpp 
   svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
 
+
 The first time you check out the source you will be prompted to accept the
 qgis.org certificate. Press 'p' to accept it permanently:
+
 
   Error validating server certificate for 'https://svn.qgis.org:443':
      - The certificate is not issued by a trusted authority. Use the
@@ -256,6 +274,7 @@ qgis.org certificate. Press 'p' to accept it permanently:
        accept (t)emporarily or accept (p)ermanently?  
 
 
+
   3.7. Starting the compile
   =========================
 
@@ -264,14 +283,18 @@ conflicts with Ubuntu packages that may be under /usr. This way for example
 you can use the binary packages of QGIS on your system along side with your
 development version. I suggest you do something similar:
 
+
   mkdir -p ${HOME}/apps 
 
+
 Now we create a build directory and run ccmake:
+
 
   cd qgis
   mkdir build
   cd build
   ccmake ..
+
 
 When you run ccmake (note the .. is required!), a menu will appear where 
 you can configure various aspects of the build. If you do not have root
@@ -286,14 +309,18 @@ interactive dialog.
 
 Now on with the build:
 
+
   make
   make install
+
 
 It may take a little while to build depending on your platform.
 
 After that you can try to run QGIS:
 
+
   $HOME/apps/bin/qgis
+
 
 If all has worked properly the QGIS application should start up and appear
 on your screen.
@@ -308,15 +335,21 @@ you'll find a debian directory.
 
 First you need to install the debian packaging tools once:
 
+
   apt-get install build-essential
+
 
 First you need to create an changelog entry for your distribution. For example for Ubuntu Lucid:
 
+
   dch -l ~lucid  --force-distribution --distribution lucid "lucid build"
+
 
 The QGIS packages will be created with:
 
+
   dpkg-buildpackage -us -uc -b
+
 
 /!\ Note: If dpkg-buildpackage complains about unmet build dependencies
 you can install them using apt-get and re-run the command.
@@ -328,7 +361,9 @@ build conflict.
 The packages are created in the parent directory (ie. one level up).
 Install them using dpkg.  E.g.:
 
+
   sudo debi
+
 
 
   3.9. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support
@@ -346,46 +381,58 @@ installed any previous version of gdal, grass and qgis.
 First you need to install the necessary packages required to download the source 
 code and compile it. Open the terminal and issue the following command:
 
+
   sudo apt-get install build-essential g++ subversion
+
 
 
     3.9.2. Step 2: compile and install the ecw libraries
     ====================================================
 
 Go to the ERDAS web site http://www.erdas.com/ and follow the links
-"'products --> ECW JPEG2000 Codec SDK --> downloads'" 
-then download the "'Image Compression SDK Source Code 3.3'" (you'll need to make a registration 
+"'''products --> ECW JPEG2000 Codec SDK --> downloads'''" 
+then download the "'''Image Compression SDK Source Code 3.3'''" (you'll need to make a registration 
 and accept a license).
 
 Uncompress the arquive in a proper location (this guide assumes 
 that all the downloaded source code will be placed in the user home) 
 and the enter the newly created folder
 
+
   cd /libecwj2-3.3
+
 
 Compile the code with the standard commands
 
+
   ./configure
 
+
 then
+
 
   make
 
+
 then
+
 
   sudo make install
 
+
 leave the folder 
 
+
   cd ..
+
 
 
     3.9.3. Step 3: download the MrSID binaries
     ==========================================
 
 Go to the LIZARDTECH web site http://www.lizardtech.com/ and follow the links
-"'download --> Developer SDKs'", 
-then download the "'GeoExpress SDK for Linux (x86) - gcc 4.1 32-bit'"
+"'''download --> Developer SDKs'''", 
+then download the "'''GeoExpress SDK for Linux (x86) - gcc 4.1 32-bit'''"
 (you'll need to make a registration and accept a license).
 
 Uncompress the downloaded file. The resulting directory name should be similar to "Geo_DSDK-7.0.0.2167"
@@ -396,22 +443,31 @@ Uncompress the downloaded file. The resulting directory name should be similar t
 
 Download the latest gdal source code
 
+
   svn checkout https://svn.osgeo.org/gdal/trunk/gdal gdal
 
+
 then copy a few files from the MrSID binaries folder to the folder with the gdal source code
-('replace "USERNAME" with your actual account username')
+('''replace "USERNAME" with your actual account username''')
+
 
   cp /home/USERNAME/Geo_DSDK-7.0.0.2167/include/*.* /home/USERNAME/gdal/frmts/mrsid/
 
+
 enter the gdal source code folder
+
 
   cd /gdal
 
+
 and run configure with a few specific parameters
+
 
   ./configure --without-grass --with-mrsid=../Geo_DSDK-7.0.0.2167 --without-jp2mrsid
 
+
 at the end of the configuration process you should read something like
+
 
   ...
   GRASS support:             no
@@ -422,28 +478,41 @@ at the end of the configuration process you should read something like
   MrSID support              yes      
   ...
 
+
 then compile normally
+
 
   make
 
+
 and
+
 
   sudo make install
 
+
 finish the process by creating the necessary links to the most recent shared libraries
 
+
   sudo ldconfig
+
 
 at this point you may want to check if gdal was compiled correctly with MrSID and ECW
 support by issuing one (or both) of the following commands
 
+
   gdalinfo --formats | grep 'ECW'
+
+
 
   gdalinfo --formats | grep 'SID'
 
+
 leave the folder 
 
+
   cd ..
+
 
 
     3.9.5. Step 5: compile and install GRASS
@@ -452,6 +521,7 @@ leave the folder
 Before downloading and compile GRASS source code you need to install a few
 other libraries and programs. We can do this trough apt
 
+
   sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
   tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
   libgdal1-dev proj libjpeg62-dev libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake \
@@ -459,33 +529,44 @@ other libraries and programs. We can do this trough apt
   libqt4-dev libgsl0-dev python-qt4 swig python-wxversion python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev \
   tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
 
+
 At this point we can get the GRASS source code: you may want to download it
 trough svn or maybe you want just to download the latest available source code arquive.
 For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
 
 Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
 
+
   CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
   --with-python=/usr/bin/python2.5-config
+
 
 The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also http://trac.osgeo.org/grass/ticket/869
 
 Then as usual (it will take a while)
 
+
   make
+
 
 and
 
+
   sudo make install
+
 
 leave the folder 
 
+
   cd ..
+
 
 you have now compiled and installed GRASS (also with the new wxpyhton interface) so you
 may want to give it a try
 
+
   grass64 -wxpython
+
 
 
     3.9.6. Step 6: compile and install QGIS
@@ -499,17 +580,23 @@ For example download the QGIS 1.1.0 source code here http://download.osgeo.org/q
 
 uncompress the arquive and enter the newly created folder
 
+
   cd /qgis_1.1.0
+
 
 then run ccmake
 
+
   ccmake .
+
 
 press the "c" key, then when the option list will appear we need to manually
 configure the "GRASS_PREFIX" parameter. Scroll down until the "GRASS_PREFIX" will appear, 
 press enter and manually set it to
 
+
   /usr/local/grass-6.4.0RC4
+
 
 then press enter again.
 
@@ -518,18 +605,24 @@ Press the "g" key to generate and exit.
 
 then as usual (it will take a while)
 
+
   make
+
 
 and
 
+
   sudo make install
+
 
 At the end of the process you should have QGIS and GRASS working with MrSID and ECW
 raster format support.
 
 To run QGIS just use this command 
 
+
   qgis
+
 
 
   4. Building on Windows
@@ -569,6 +662,7 @@ You only need Microsoft Windows Core SDK / Build Environment (x86 32-Bit).
 
 Download and install following packages:
 
+
   || Tool | Website |
   | CMake | http://www.cmake.org/files/v2.8/cmake-2.8.4-win32-x86.exe |
   | Flex | http://gnuwin32.sourceforge.net/downlinks/flex.php |
@@ -595,6 +689,7 @@ Advanced Installation):
 - qwt5-devel-qt4
 - sip
 
+
 This will also select packages the above packages depend on.
 
 Additionally QGIS also needs the include file unistd.h, which normally
@@ -613,6 +708,7 @@ or the SVN repository.
 To start a command prompt with an environment that both has the VC++ and the OSGeo4W
 variables create the following batch file (assuming the above packages were
 installed in the default locations):
+
 
   @echo off
   path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin;%PROGRAMFILES%\subversion\bin;%PROGRAMFILES%\GnuWin32\bin
@@ -633,14 +729,19 @@ installed in the default locations):
   
   @cmd
 
+
 Start the batch file and on the command prompt checkout the QGIS source from
 svn to the source directory qgis-trunk:
 
+
   svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
+
 
 or using git-svn (from the git shell):
 
+
   git svn clone --username $USER --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+
 
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
@@ -653,6 +754,9 @@ created.
 
 Adjust the path to bison and flex so that the shortened C:/Progra~1 is used 
 rather than C:/Program Files.
+
+Untick the 'BINDINGS_GLOBAL_INSTALL' option so that python bindings are placed 
+into the output directory when you run the INSTALL target.
 
 Hit Configure to start the configuration and select Visual Studio 9 2008
 and keep native compilers and click Finish.
@@ -681,18 +785,24 @@ directory or add their respective directories to your PATH.
     4.1.4. Packaging
     ================
 
-To create a windows 'all in one' standalone  package under ubuntu (yes you
+To create a windows 'all in one' standalone  package ''under ubuntu'' (yes you
 read correctly) do the following:
+
 
   sudo apt-get install nsis
 
+
 Now 
+
 
   cd qgis/ms-windows/osgeo4w
 
+
 And run the nsis creation script:
 
+
   creatensis.pl
+
 
 When the script completes, it should have created a QGIS installer executable
 in the ms-windows directory (using the QGIS binaries from OSGEO4W). 
@@ -706,10 +816,17 @@ your own hand built QGIS executables, you need to copy them in from your
 windows installation into the ms-windows file tree created by the creatensis
 script.
 
+
   cd ms-windows/
   rm -rf osgeo4w/unpacked/apps/qgis/*
   cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
+
+
+Now create a package.
+
+
   ./quickpackage.sh
+
 
 After this you should now have a nsis installer containing your own build 
 of QGIS and all dependencies needed to run it on a windows machine.
@@ -770,8 +887,10 @@ When Qt installation is complete:
 
 Edit C:\Qt\4.7.0\bin\qtvars.bat and add the following lines:
 
+
   set PATH=%PATH%;C:\msys\local\bin;c:\msys\local\lib 
   set PATH=%PATH%;"C:\Program Files\Subversion\bin" 
+
 
 I suggest you also add C:\Qt\4.7.0\bin\ to your Environment Variables Path in
 the windows system preferences.
@@ -784,7 +903,9 @@ this message  "mingw32-make: *** No rule to make target `debug'.  Stop.". To
 compile the debug version you have to go out of src directory and execute the
 following command:
 
+
   c:\Qt\4.7.0 make 
+
 
 
     4.2.3. Flex and Bison
@@ -824,19 +945,23 @@ to get versions that match your current Qt installed version.
       4.2.4.3. Compile SIP
       ====================
 
+
   c:\Qt\4.7.0\bin\qtvars.bat 
   python configure.py -p win32-g++ 
   make 
   make install 
 
 
+
       4.2.4.4. Compile PyQt
       =====================
+
 
   c:\Qt\4.7.0\bin\qtvars.bat 
   python configure.py 
   make 
   make install 
+
 
 
       4.2.4.5. Final python notes
@@ -869,18 +994,24 @@ http://www.cmake.org/files/v2.8/cmake-2.8.2-win32-x86.exe
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) Create development 
 directory and move into it
 
+
   md c:\dev\cpp 
   cd c:\dev\cpp 
+
 
 Check out sources from SVN:
 
 For svn trunk:
 
+
   svn co https://svn.osgeo.org/qgis/trunk/qgis 
+
 
 For svn 1.5 branch
 
+
   svn co https://svn.osgeo.org/qgis/branches/Release-1_5_0 qgis1.5.0
+
 
 
     4.2.8. Compiling
@@ -892,21 +1023,27 @@ this document.
 Start a cmd.exe window ( Start -> Run -> cmd.exe ) if you don't have one
 already.  Add paths to compiler and our MSYS environment:
 
+
   c:\Qt\4.7.0\bin\qtvars.bat 
+
 
 For ease of use add c:\Qt\4.7.0\bin\ to your system path in system
 properties so you can just type qtvars.bat when you open the cmd console.
 Create build directory and set it as current directory:
+
 
   cd c:\dev\cpp\qgis 
   md build 
   cd build 
 
 
+
     4.2.9. Configuration
     ====================
 
+
   cmakesetup ..  
+
 
 Note: You must include the '..' above.
 
@@ -929,7 +1066,9 @@ When configuration is done, click 'OK' to exit the setup utility.
     4.2.10. Compilation and installation
     ====================================
 
+
    make make install 
+
 
 
     4.2.11. Run qgis.exe from the directory where it's installed (CMAKE_INSTALL_PREFIX)
@@ -1046,6 +1185,7 @@ In MSYS console go to the directory where you've unpacked or checked out sources
 
 Run these commands:
 
+
   export PATH="/usr/local/bin:/usr/local/lib:$PATH"
   ./configure --prefix=/usr/local --bindir=/usr/local --with-includes=/usr/local/include --with-libs=/usr/local/lib --with-cxx --without-jpeg \
   --without-tiff --with-postgres=yes --with-postgres-includes=/local/pgsql/include --with-pgsql-libs=/local/pgsql/lib --with-opengl=windows --with-fftw \
@@ -1053,6 +1193,7 @@ Run these commands:
   --with-proj-share=/usr/local/share/proj
   make
   make install
+
 
 It should get installed to c:\msys\local\grass-6.3.cvs
 
@@ -1074,17 +1215,22 @@ Unpack to e.g. c:\msys\local\src
 To compile, I had to patch the sources: in file source/headers/timeval.h line 13.
 Change it from:
 
+
   #ifdef _WIN32
 
 to:
 
+
   #if defined(_WIN32) && defined(_MSC_VER)
 
+
 Now, in MSYS console, go to the source directory and run:
+
 
   ./configure --prefix=/usr/local
   make
   make install
+
 
 
       4.3.2.4. SQLITE
@@ -1116,9 +1262,11 @@ Unpack to c:\msys\local\src
 
 Run from MSYS console in the source directory:
 
+
   ./configure
   make
   make install
+
 
 
       4.3.2.6. EXPAT
@@ -1132,9 +1280,11 @@ Unpack to c:\msys\local\src
 
 Run from MSYS console in the source directory:
 
+
   ./configure
   make
   make install
+
 
 
       4.3.2.7. POSTGRES
@@ -1175,7 +1325,9 @@ Parallel Compilation: On multiprocessor/multicore Macs, it's possible to speed
 up compilation, but it's not automatic.  Whenever you type "make" (but NOT "make install"),
 instead type:
 
+
   make -j [n]
+
 
 Replace [n] with the number of cores and/or processors your Mac has.  On recent
 models with hyperthreading processors this can be double the physical count of
@@ -1199,7 +1351,9 @@ as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
 PPC note: There appear to be issues with Qt Cocoa on PPC Macs.  QT Carbon
 is recommended on PPC Macs.
 
+
   http://qt.nokia.com/downloads
+
 
 If you want debug frameworks, Qt also provides a dmg with these.  These are in
 addition to the non-debug frameworks.
@@ -1212,8 +1366,10 @@ libQtUiTools was added, both in /usr/lib.  When using a system SDK
 these libraries will not be found.  To fix this problem,
 add symlinks to /usr/local:
 
+
   sudo ln -s /usr/lib/libQtUiTools.a /usr/local/lib/
   sudo ln -s /usr/lib/libQtCLucene.dylib /usr/local/lib/
+
 
 These should then be found automatically on Leopard and above.  Earlier systems
 may need some help by adding '-L/usr/local/lib' to CMAKE_SHARED_LINKER_FLAGS,
@@ -1227,7 +1383,9 @@ Download William Kyngesburye's excellent GDAL Complete package that includes
 PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.  There is also
 a GSL framework.
 
+
   http://www.kyngchaos.com/wiki/software/frameworks
+
 
 Once downloaded, open and install the frameworks.
 
@@ -1236,11 +1394,15 @@ Qgis just needs the libpq client library, so unless you want to setup the full
 Postgres + PostGIS server, all you need is the client-only package.
 It's available here:
 
+
   http://www.kyngchaos.com/wiki/software/postgres 
+
 
 Also available is a GRASS application:
 
+
   http://www.kyngchaos.com/wiki/software/grass
+
 
 
     5.2.1. Additional Dependencies: General compatibility note
@@ -1266,13 +1428,17 @@ not necessary on Snow Leopard.
 
 Get the expat sources:
 
+
   http://sourceforge.net/project/showfiles.php?group_id=10127 
 
+
 Double-click the source tarball to unpack, then, in Terminal.app, cd to the source folder and:
+
 
   ./configure
   make 
   sudo make install 
+
 
 
     5.2.3. Additional Dependencies: Python
@@ -1284,7 +1450,9 @@ Leopard and Snow Leopard. You can still install Python from python.org if prefer
 
 If installing from python.org, make sure you install at least the latest Python 2.x from 
 
+
   http://www.python.org/download/
+
 
 Python 3 is a major change, and may have compatibility issues, so try it at your own risk.
 
@@ -1294,15 +1462,19 @@ Python 3 is a major change, and may have compatibility issues, so try it at your
 
 Retrieve the python bindings toolkit SIP from
 
+
   http://www.riverbankcomputing.com/software/sip/download
+
 
 Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
 and (this installs by default into the Python framework, and is appropriate only for 
 python.org Python installs):
 
+
   python configure.py 
   make 
   sudo make install 
+
 
 Leopard notes
 
@@ -1310,8 +1482,10 @@ If building on Leopard, using Leopard's bundled Python, SIP wants to install in 
 system path -- this is not a good idea.  Use this configure command instead of the 
 basic configure above:
 
+
   python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip -s MacOSX10.5.sdk
+
 
 Snow Leopard notes
 
@@ -1320,13 +1494,17 @@ Also, you need to specify the architecture you want (requires at least SIP 4.9),
 and make sure to run the versioned python binary (this one responds to the
 'arch' command, 'python' does not). If you are using 32-bit Qt (Qt Carbon):
 
+
   python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip --arch=i386 -s MacOSX10.6.sdk
 
+
 For 64-bit Qt (Qt Cocoa), use this configure line:
+
 
   python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.6.sdk
+
 
 
     5.2.5. Additional Dependencies: PyQt
@@ -1334,25 +1512,33 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 
 Retrieve the python bindings toolkit for Qt from
 
+
   http://www.riverbankcomputing.com/software/pyqt/download
+
 
 Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
 and (this installs by default into the Python framework, and is appropriate only for
 python.org Python installs):
 
+
   python configure.py 
   yes 
+
 
 There is a problem with the configuration that needs to be fixed now
 (it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
 
+
       'qt_dir': '/usr',
+
 
 Then continue with compilation and installation (this is a good place to use
 parallel compilation, if you can):
 
+
   make 
   sudo make install 
+
 
 Leopard notes
 
@@ -1360,7 +1546,9 @@ If building on Leopard, using Leopard's bundled Python, PyQt wants to install
 in the system path -- this is not a good idea.  Use this configure command
 instead of the basic configure above:
 
+
   python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+
 
 If there is a problem with undefined symbols in QtOpenGL on Leopard, edit
 QtOpenGL/makefile and add -undefined dynamic_lookup to LFLAGS.
@@ -1374,11 +1562,15 @@ and make sure to run the versioned python binary (this one responds to the
 'arch' command, which is important for pyuic4, 'python' does not).
 If you are using 32-bit Qt (Qt Carbon):
 
+
   python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+
 
 For 64-bit Qt (Qt Cocoa), use this configure line:
 
+
   python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+
 
 
     5.2.6. Additional Dependencies: Qwt/PyQwt
@@ -1387,7 +1579,9 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 The GPS tracking feature uses Qwt.  Some popular 3rd-party plugins use PyQwt.
 You can take care of both with the PyQwt source from:
 
+
   http://pyqwt.sourceforge.net/
+
 
 Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
 Normal compilation does both Qwt and PyQwt at the same time, but Qwt is statically linked
@@ -1398,21 +1592,28 @@ you don't get a bloated debug static library (too bad they are not configurable 
 qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
 line, within an 'else' block, and change 'debug' to 'release'.  Like so:
 
+
       else {
           CONFIG           += release     # release/debug
       }
 
+
 Also uncomment (remove # prefix) the line 'CONFIG += QwtDll'.  Like so:
+
 
   CONFIG           += QwtDll
 
+
 If you are building for Qt Carbon 32bit on Snow Leopard, add a line at the bottom:
 
+
   CONFIG += x86
+
 
 Save and close.
 
 Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and install:
+
 
   qmake -spec macx-g++
   make
@@ -1420,16 +1621,19 @@ Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and
   sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib \
   /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
 
+
 The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is the 
 minor.point version, and it may be an SVN version).  Remember this for QGIS and PyQwt configuration.
 
 Now for PyQwt.  Still in the Terminal:
+
 
   cd ../configure
   python configure.py --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
   --extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
   make
   sudo make install
+
 
 Make sure to use the qwt install path from the Qwt build above.
 
@@ -1439,9 +1643,11 @@ If using Qt Carbon, you need to specify which architectures to build, otherwise
 it will default to a combination that does not work (ie x86_64 for a Carbon Qt).
 This is not needed for Qt Cocoa. Configure as follows:
 
+
   python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
   --extra-lflags="-arch i386" --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
   --extra-lib-dirs=/usr/local/qwt-5.2.1-svn/lib --extra-libs=qwt
+
 
 
     5.2.7. Additional Dependencies: Bison
@@ -1452,14 +1658,18 @@ Leopard and Snow Leopard note: Leopard and Snow Leopard include Bison 2.3, so th
 The version of bison available by default on Mac OS X 10.4 is too old so you need to
 get a more recent one on your system. Download at least version 2.3 from:
 
+
   ftp.gnu.org/gnu/bison/
+
 
 Now build and install it to a prefix of /usr/local.Ê Double-click the source
 tarball to unpack it, then cd to the source folder and:
 
+
   ./configure --prefix=/usr/local 
   make
   sudo make install 
+
 
 
   5.3. Install CMake for OSX
@@ -1467,16 +1677,20 @@ tarball to unpack it, then cd to the source folder and:
 
 Get the latest source release from here:
 
+
   http://www.cmake.org/cmake/resources/software.html
+
 
 Binary installers are available for OS X, but they are not recommended
 (2.4 versions install in /usr instead of /usr/local, and 2.6 versions are a
 strange application). Instead, download the source, double-click the source tarball,
 then cd to the source folder and:
 
+
   ./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
   make
   sudo make install
+
 
 
   5.4. Install subversion for OSX
@@ -1489,7 +1703,9 @@ The [http://sourceforge.net/projects/macsvn/MacSVN] project has a downloadable
 build of svn. If you are a GUI inclined person you may want to grab their gui
 client too. Get the command line client here:
 
+
   curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Subversion_1.4.2.zip 
+
 
 Once downloaded open the zip file and run the installer.
 
@@ -1497,18 +1713,24 @@ You also need to install BerkleyDB available from the same
 http://sourceforge.net/projects/macsvn/ (website). At the time of writing the
 file was here:
 
+
   curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Berkeley_DB_4.5.20.zip 
+
 
 Once again unzip this and run the installer therein.
 
 Lastly we need to ensure that the svn commandline executeable is in the path.
 Add the following line to the end of /etc/bashrc using sudo:
 
+
   sudo vim /etc/bashrc 
+
 
 And add this line to the bottom before saving and quiting:
 
+
   export PATH=/usr/local/bin:$PATH:/usr/local/pgsql/bin 
+
 
 /usr/local/bin needs to be first in the path so that the newer bison (that will
 be built from source further down) is found before the bison (which is very
@@ -1523,20 +1745,27 @@ Now close and reopen your shell to get the updated vars.
 Now we are going to check out the sources for QGIS. First we will create a
 directory for working in (or some folder of your choice):
 
+
   mkdir -p ~/dev/cpp cd ~/dev/cpp 
+
 
 Now we check out the sources:
 
 Trunk:
 
+
   svn co https://svn.osgeo.org/qgis/trunk/qgis qgis 
+
 
 For a release branch version x.y.z:
 
+
   svn co https://svn.qgis.org/qgis/branches/Release-x_y_z qgis-x.y.z
+
 
 The first time you check out QGIS sources you will probably get a message like
 this:
+
 
    Error validating server certificate for 'https://svn.qgis.org:443':
    - The certificate is not issued by a trusted authority. Use the fingerprint to
@@ -1546,6 +1775,7 @@ this:
    - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
    - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
      (R)eject, accept (t)emporarily or accept (p)ermanently?  
+
 
 I suggest you press 'p' to accept the key permanently.
 
@@ -1560,6 +1790,7 @@ straight into your /Applications folder. The instructions below assume you are
 building into a pre-existing ${HOME}/Applications directory.
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
+
   mkdir build
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
@@ -1569,12 +1800,14 @@ In a Terminal cd to the qgis source folder previously downloaded, then:
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
   ..
 
+
 This will automatically find and use the previously installed frameworks, and the GRASS
 application if installed.
 
 Or, to use a Unix-style build of GRASS, use the following cmake invocation
 (minimum GRASS version as stated in the Qgis requirements, substitute the GRASS
 path and version as required):
+
 
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
   -D CMAKE_BUILD_TYPE=MinSizeRel \
@@ -1584,8 +1817,10 @@ path and version as required):
   -D GRASS_PREFIX=/user/local/grass-6.4.0 \
   ..
 
+
 Snow Leopard note: To handle 32-bit Qt (Carbon), create a 32bit python wrapper
 script and add arch flags to the configuration:
+
 
   sudo cat >/usr/local/bin/python32 <<EOF
   #!/bin/sh
@@ -1602,6 +1837,7 @@ script and add arch flags to the configuration:
   -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
   ..
 
+
 Bundling note: Older Qt versions may have problems with some Qt plugins and Qgis.
 The way to handle this is to bundle Qt inside the Qgis application.  You can do this now
 or wait to see if there are immediate crashes when running Qgis.  It's also a good
@@ -1610,7 +1846,9 @@ install Xcode just so Qt would install!).
 
 To bundle Qt, add the following line before the last line in the above cmake configurations:
 
+
   -D QGIS_MACAPP_BUNDLE=1 \
+
 
 
   5.7. Building
@@ -1619,15 +1857,21 @@ To bundle Qt, add the following line before the last line in the above cmake con
 Now we can start the build process (remember the parallel compilation note at
 the beginning, this is a good place to use it, if you can):
 
+
   make 
+
 
 If all built without errors you can then install it:
 
+
   make install 
+
 
 or, for a /Applications build:
 
+
   sudo make install
+
 
 
   6. Authors and Acknowledgments
@@ -1658,4 +1902,8 @@ The following people have contributed to this document:
 - GNU/Linux Section
  - Tim Sutton 2006
  - Debian package section: Juergen Fischer 2008
+
+
+
+
 
