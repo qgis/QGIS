@@ -84,6 +84,10 @@ class GUI_EXPORT QgsLegendInterface : public QObject
     //! a parent group can be given to nest the new group in it
     virtual int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 ) = 0;
 
+    //! Add a new group
+    //! a parent group index has to be given to nest the new group in it
+    virtual int addGroup( QString name, bool expand, int parentIndex ) = 0;
+
     //! Remove group on index
     virtual void removeGroup( int groupIndex ) = 0;
 

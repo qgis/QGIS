@@ -159,7 +159,8 @@ int QgsLegend::addGroupToCurrentItem( QString name, bool expand )
 
 int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
 {
-  if ( name.isEmpty() )
+  bool nameEmpty = name.isEmpty();
+  if ( nameEmpty )
     name = tr( "group" ); // some default name if none specified
 
   QgsLegendGroup *parentGroup = dynamic_cast<QgsLegendGroup *>( parent );
@@ -173,8 +174,16 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   QModelIndex groupIndex = indexFromItem( group );
   setExpanded( groupIndex, expand );
   setCurrentItem( group );
-  openEditor();
+  if ( nameEmpty )
+    openEditor();
+
   return groupIndex.row();
+}
+
+int QgsLegend::addGroup( QString name, bool expand, int groupIndex )
+{
+  QgsLegendGroup * lg = dynamic_cast<QgsLegendGroup *>( topLevelItem( groupIndex ) );
+  return addGroup( name, expand, lg );
 }
 
 void QgsLegend::removeAll()
