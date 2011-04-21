@@ -26,5 +26,7 @@ WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "diagramoverlay
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "oracleplugin" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "evis" "true"
 WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "rasterterrainplugin" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "roadgraphplugin" "true"
+WriteRegStr HKEY_CURRENT_USER "Software\QuantumGIS\QGIS\Plugins" "spatialqueryplugin" "true"
 
 ###############################  reg2nsis end  #################################
