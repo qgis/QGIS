@@ -52,6 +52,10 @@ class QgsLegendInterface : QObject
     //! Add a new group
     //! @note added parent parameter in 1.7
     virtual int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent =0 ) = 0;
+    
+    //! Add a new group
+    //! @note added parentIndex parameter in 1.7
+    virtual int addGroup( QString name, bool expand, int parentIndex ) = 0;
 
     //! Remove group on index
     virtual void removeGroup( int groupIndex ) =0;
