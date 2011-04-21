@@ -732,8 +732,9 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
 
   //create objects for qgis rendering
-  QStringList theLayers = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
-  mMapRenderer->setLayerSet( theLayers );
+  layerIdList.clear();
+  layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
+  mMapRenderer->setLayerSet( layerIdList );
   return theImage;
 }
 
