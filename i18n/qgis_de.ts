@@ -13654,7 +13654,9 @@ p, li { white-space: pre-wrap; }
         <source>Could not import data from %1!
 
 </source>
-        <translation>Konnte die Daten von %1 nicht importieren!</translation>
+        <translation>Konnte die Daten von %1 nicht importieren!
+
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="290"/>
