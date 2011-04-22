@@ -100,12 +100,12 @@ getDeps($_) for @ARGV;
 
 if(-f "../addons/bin/NCSEcw4_RO.dll") {
 	print "Enabling ECW support...\n" if $verbose;
-	getDeps("gdal17-ecw")
+	getDeps("gdal-ecw")
 }
 
 if(-f "../addons/bin/lti_dsdk_dll.dll") {
 	print "Enabling MrSID support...\n" if $verbose;
-	getDeps("gdal17-mrsid")
+	getDeps("gdal-mrsid")
 }
 
 foreach my $p ( keys %pkgs ) {
