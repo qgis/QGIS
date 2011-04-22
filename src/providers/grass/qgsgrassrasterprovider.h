@@ -18,8 +18,8 @@
 
 /* $Id: qgsgrassrasterprovider.h 12528 2009-12-20 12:29:07Z jef $ */
 
-#ifndef QGSWMSPROVIDER_H
-#define QGSWMSPROVIDER_H
+#ifndef QGSGRASSRASTERPROVIDER_H
+#define QGSGRASSRASTERPROVIDER_H
 
 extern "C"
 {
@@ -36,6 +36,9 @@ extern "C"
 #include <QDomElement>
 #include <QMap>
 #include <QVector>
+#include <QTemporaryFile>
+#include <QProcess>
+#include <QHash>
 
 class QgsCoordinateTransform;
 
@@ -63,7 +66,7 @@ class QgsGrassRasterValue
 };
 /**
 
-  \brief Data provider for OGC WMS layers.
+  \brief Data provider for GRASS raster layers.
 
   This provider implements the
   interface defined in the QgsDataProvider class to provide access to spatial
@@ -72,7 +75,7 @@ class QgsGrassRasterValue
 */
 class QgsGrassRasterProvider : public QgsRasterDataProvider
 {
-    //Q_OBJECT
+    Q_OBJECT
 
   public:
     /**
@@ -140,32 +143,20 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
     /**
-     * \brief Identify details from a WMS Server from the last screen update
+     * \brief Identify details from a GRASS layer from the last screen update
      *
      * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
      *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
+     * \return  A text document containing the return from the GRASS layer
      */
     QString identifyAsText( const QgsPoint& point );
 
     /**
-     * \brief Identify details from a WMS Server from the last screen update
+     * \brief Identify details from a GRASS layer from the last screen update
      *
      * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
      *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
+     * \return  A text document containing the return from the GRASS layer
      *
      * \note  added in 1.5
      */
@@ -230,7 +221,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
      */
     QString metadata();
 
-    // Following methods specific for  WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
+    // Following methods specific for are not used at all in this provider and should be removed IMO from qgsdataprovider.h
     void addLayers( QStringList const &  layers, QStringList const &  styles = QStringList() ) {}
     QStringList supportedImageEncodings() { return QStringList();}
     QString imageEncoding() const { return QString(); }
@@ -248,7 +239,7 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
   private:
 
     /**
-    * Flag indicating if the layer data source is a valid WMS layer
+    * Flag indicating if the layer data source is a valid layer
     */
     bool mValid;
 
@@ -271,4 +262,3 @@ class QgsGrassRasterProvider : public QgsRasterDataProvider
 };
 
 #endif
-
