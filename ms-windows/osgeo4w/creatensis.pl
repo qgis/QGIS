@@ -289,11 +289,11 @@ creatensis.pl [options] [packages...]
     -keep		don't start with a fresh unpacked directory
     -version=m.m.p	package version (defaults to CMakeLists.txt setting)
     -revision=rNNNNN	svn revision of package (determined by svnversion if not given)
-    -packagename=s	name of package (defaults to 'Quantum GIS'
+    -packagename=s	name of package (defaults to 'Quantum GIS')
     -shortname=s	shortname used for batch file (defaults to 'qgis')
     -help		this help
 
-  If no packages are given 'qgis-full' an it's dependencies will be retrieved
+  If no packages are given 'qgis-full' and it's dependencies will be retrieved
   and packaged.
 
 =cut
