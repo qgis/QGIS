@@ -438,12 +438,19 @@ bool QgsPostgresProvider::declareCursor(
     if ( !whereClause.isEmpty() )
       query += QString( " where %1" ).arg( whereClause );
 
-    return connectionRO->openCursor( cursorName, query );
+    if ( !connectionRO->openCursor( cursorName, query ) )
+    {
+      // reloading the fields might help next time around
+      rewind();
+      return false;
+    }
   }
   catch ( PGFieldNotFound )
   {
     return false;
   }
+
+  return true;
 }
 
 bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetchGeometry,
@@ -2937,24 +2944,36 @@ QgsRectangle QgsPostgresProvider::extent()
       {
         if ( QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toInt() > 0 )
         {
-          sql = QString( "select %1(%2,%3,%4)" )
-                .arg( connectionRO->majorVersion() < 2 ? "estimated_extent" : "st_estimated_extent" )
-                .arg( quotedValue( mSchemaName ) )
-                .arg( quotedValue( mTableName ) )
-                .arg( quotedValue( geometryColumn ) );
+          sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
           result = connectionRO->PQexec( sql );
-          if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
+          if ( PQresultStatus( result ) == PGRES_TUPLES_OK &&
+               PQntuples( result ) == 1 &&
+               QString::fromUtf8( PQgetvalue( result, 0, 0 ) ).toLong() > 0 )
           {
-            ext = PQgetvalue( result, 0, 0 );
-
-            // fix for what might be a postgis bug: when the extent crosses the
-            // dateline extent() returns -180 to 180 (which appears right), but
-            // estimated_extent() returns eastern bound of data (>-180) and
-            // 180 degrees.
-            if ( !ext.startsWith( "-180 " ) && ext.contains( ",180 " ) )
+            sql = QString( "select %1(%2,%3,%4)" )
+                  .arg( connectionRO->majorVersion() < 2 ? "estimated_extent" : "st_estimated_extent" )
+                  .arg( quotedValue( mSchemaName ) )
+                  .arg( quotedValue( mTableName ) )
+                  .arg( quotedValue( geometryColumn ) );
+            result = connectionRO->PQexec( sql );
+            if ( PQresultStatus( result ) == PGRES_TUPLES_OK && PQntuples( result ) == 1 )
             {
-              ext.clear();
+              ext = PQgetvalue( result, 0, 0 );
+
+              // fix for what might be a postgis bug: when the extent crosses the
+              // dateline extent() returns -180 to 180 (which appears right), but
+              // estimated_extent() returns eastern bound of data (>-180) and
+              // 180 degrees.
+              if ( !ext.startsWith( "-180 " ) && ext.contains( ",180 " ) )
+              {
+                ext.clear();
+              }
             }
+          }
+          else
+          {
+            // no features => ignore estimated extent
+            ext.clear();
           }
         }
       }
@@ -3322,8 +3341,8 @@ QString QgsPostgresProvider::quotedValue( QString value ) const
   if ( value.isNull() )
     return "NULL";
 
-  // FIXME: use PQescapeStringConn
   value.replace( "'", "''" );
+  value.replace( "\\\"", "\\\\\"" );
   return value.prepend( "'" ).append( "'" );
 }
 
@@ -3482,7 +3501,7 @@ QString QgsPostgresProvider::subsetString()
   return sqlWhereClause;
 }
 
-PGconn * QgsPostgresProvider::pgConnection()
+PGconn *QgsPostgresProvider::pgConnection()
 {
   connectRW();
   return connectionRW->pgConnection();

@@ -229,17 +229,18 @@ QString QgsRectangle::toString( bool automaticPrecision ) const
 // Return a string representation of the rectangle with high precision
 QString QgsRectangle::toString( int thePrecision ) const
 {
+  QString rep;
+  if ( isEmpty() )
+    rep = "Empty";
+  else
+    rep = QString( "%1,%2 : %3,%4" )
+          .arg( xmin, 0, 'f', thePrecision )
+          .arg( ymin, 0, 'f', thePrecision )
+          .arg( xmax, 0, 'f', thePrecision )
+          .arg( ymax, 0, 'f', thePrecision );
 
-  QString rep = QString::number( xmin, 'f', thePrecision ) +
-                QString( "," ) +
-                QString::number( ymin, 'f', thePrecision ) +
-                QString( " : " ) +
-                QString::number( xmax, 'f', thePrecision ) +
-                QString( "," ) +
-                QString::number( ymax, 'f', thePrecision ) ;
-#ifdef QGISDEBUG
-// QgsDebugMsg(QString("Extents : %1").arg(rep));
-#endif
+  QgsDebugMsgLevel( QString( "Extents : %1" ).arg( rep ), 4 );
+
   return rep;
 }
 
