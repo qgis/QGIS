@@ -219,7 +219,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.4 */
     QgsFeatureRendererV2* rendererV2();
     /** Set renderer V2.
-     * @note ddded in 1.4
+     * @note added in 1.4
      */
     void setRendererV2( QgsFeatureRendererV2* r );
     /** Return whether using renderer V2.
