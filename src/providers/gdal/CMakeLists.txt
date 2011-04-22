@@ -1,6 +1,5 @@
-
 SET(GDAL_SRCS qgsgdalprovider.cpp)
-SET (GDAL_MOC_HDRS  qgsgdalprovider.h)
+SET(GDAL_MOC_HDRS  qgsgdalprovider.h)
 
 INCLUDE_DIRECTORIES (
   ../../core
@@ -10,9 +9,8 @@ INCLUDE_DIRECTORIES (
 #  ${GEOS_INCLUDE_DIR}
 )
 
-#QT4_WRAP_CPP(GDAL_MOC_SRCS ${GDAL_MOC_HDRS})
-#ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} ${GDAL_MOC_SRCS})
-ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} )
+QT4_WRAP_CPP(GDAL_MOC_SRCS ${GDAL_MOC_HDRS})
+ADD_LIBRARY (gdalprovider MODULE ${GDAL_SRCS} ${GDAL_MOC_SRCS})
 
 TARGET_LINK_LIBRARIES (gdalprovider
   qgis_core
