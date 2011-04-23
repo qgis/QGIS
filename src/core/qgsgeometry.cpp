@@ -1473,7 +1473,7 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
             ptr += 2 * sizeof( double ) * ( vertexnr - pointindex );
             if ( hasZValue )
             {
-              ptr += 3 * sizeof( double ) * ( vertexnr - pointindex );
+              ptr += sizeof( double ) * ( vertexnr - pointindex );
             }
             memcpy( ptr, &x, sizeof( double ) );
             ptr += sizeof( double );
