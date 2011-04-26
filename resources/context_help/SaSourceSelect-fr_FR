@@ -1,0 +1,47 @@
+﻿<h3>Ajouter des tables SQL AnyWhere</h
+>
+Cette boîte de dialogue vous permet d'ajouter couches SQL AnyWhere (table avec une colonne de géométrie) au canevas de carte de QGI
+.
+<p>
+<a href="#connect">Connexions</a><br/>
+<a href="#add">Ajouter des couches</a><br/>
+<a href="#filter">Filtrer une couche</a><br/>
+<a href="#search">Options de recherche</a><br/>
+
+<a href="#connect">
+<h4>Connexions</h4>
+</a>
+<ul>
+<li>Choisir la connexion à utiliser depuis la liste déroulante et cliquer sur <label>Connecter</label>.
+<li>S'il n'y a pas de connexion, cliquez sur le bouton <label>Nouveau</label> pour créer une connexion
+
+<li>Pour modifier ou effacer la connexion sélectionnée, cliquez sur les boutons <label>Edition</label> ou  <label>Effacer</label>, respectivement.
+</ul>
+<a name="add">
+<h4>Ajouter des couches</h4>
+</a>
+Pour ajouter une couche:
+<ol>
+<li>Choisir la connexion voulue depuis la liste déroulante
+
+<li>Cliquez sur le bouton <label>Connexion</label>, qui va remplir la liste des couches de la base de données
+
+Des options qui affectent la manière dont cette liste est remplie sont décrites dans l'Aide de la boîte de dialogue de la nouvelle connexion.
+
+<li>Trouvez la couche que vous voulez ajouter dans la liste et cliquez sur celle-ci afin de la sélectionner
+
+<li>Vous pouvez sélectionner des couches supplémentaires en maintenant la touche Ctrl enfoncée et en cliquant
+
+<li>Cliquez sur <label>Ajouter</label> pour ajouter la(les) couche(s) dans la carte.
+</ol>
+<a name="filter">
+<h4>Filtrer une couche</h4>
+</a>
+Pour filtrer une couche avant de l'ajouter dans la carte, il faut soit double-cliquer sur son nom soit la sélectionner puis cliquer sur le bouton <label>Constructeur de requête</label>
+
+Ceci va ouvrir le Constructeur de requête, vous permettant ainsi de  construire une instruction SQL à utiliser dans le filtrage des enregistrements.
+
+<a name="search">
+<h4>Options de recherche</h4>
+</a>
+Cochez sur <label>Options de recherche</label> permet des options supplémentaires de recherche dans différents types de colonnes, et ce, en utilisant 2 modes de recherche: <label>Wildcard</label> ou <label>RegExp</label>.
