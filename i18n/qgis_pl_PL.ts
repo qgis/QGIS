@@ -8719,7 +8719,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1957"/>
         <source>Symbology labels and diagrams</source>
-        <translation>Style, etykiety i diagramy</translation>
+        <translation>Style, etykiety i wykresy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1959"/>
@@ -32189,7 +32189,7 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="36"/>
         <source>Quantum GIS is open source software. This means that the software source code can be freely viewed and modified. The GPL places a restriction that any modifications you make must be made available to the Quantum GIS project, and that you can not create a new version of Quantum GIS under a &apos;closed source&apos; license. Visit &lt;a href=&quot;http://qgis.org&quot;&gt; the QGIS home page (http://qgis.org)&lt;/a&gt; for more information.</source>
-        <translation>Quantum GIS jest wolnym oprogramowaniem. Oznacza to, że kod źródłowy programu może być publicznie udostępniany i modyfikowany. Licencja GPL wymaga jedynie, aby modyfikacje programu były również publiczne. Zabronione jest też tworzenie &apos;zamkniętej&apos; wersji Quantum GIS. Aby uzyskać więcej informacji, odwiedź stronę projektu &lt;a href=&quot;http://qgis.org&quot;&gt;(http://qgis.org)&lt;/a&gt;.</translation>
+        <translation>Oznacza to, że kod źródłowy programu może być dostępny publicznie i modyfikowany przez użytkowników. Licencja GPL wymaga jednak, aby modyfikacje programu były również dostępne. Zabronione jest natomiast tworzenie &apos;zamkniętej&apos; wersji Quantum GIS. Aby uzyskać więcej informacji, odwiedź stronę projektu &lt;a href=&quot;http://qgis.org&quot;&gt;(http://qgis.org)&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="46"/>
@@ -32199,7 +32199,7 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="47"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation>Jeśli jesteś autorem publikacji naukowej lub innego artykułu, który odnosi się do QGIS, byłoby nam miło zamieścić o tym informację w sekcji &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;studia przypadków&lt;/a&gt; na stronie Quantum GIS pod adresem (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
+        <translation>Jeśli jesteś autorem publikacji naukowej lub artykułu opisującego wykorzystanie QGIS, pomysl czy nie warto byłoby podzielić się tym z innymi. Te i podobne informacje zamieszczane są na stronie Quantum GIS jako &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;studia przypadków&lt;/a&gt; pod adresem (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="53"/>
@@ -32210,7 +32210,7 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
         <location filename="../src/app/qgstipfactory.cpp" line="54"/>
         <source>Would you like to see QGIS in your native language? We are looking for more translators and would appreciate your help! The translation process is fairly straight forward - instructions are available in the QGIS wiki &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;translator&apos;s page (http://www.qgis.org/wiki/GUI_Translation).&lt;/a&gt;</source>
         <translatorcomment>wolne tłumaczenie dostosowane do naszych potrzeb ...</translatorcomment>
-        <translation>Quantum GIS zaczyna być wykorzystywany w coraz to nowych dziedzinach. Poszukujemy osób, które znają terminologię branżową i mogłyby pomóc nam w tłumaczeniach. Jeśli zauważysz błąd w tłumaczeniu &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation&quot;&gt;skontaktuj się z osobami zajmującymi się polskimi tłumaczeniami&lt;/a&gt; lub &lt;a href=&quot;http://forum.quantum-gis.pl/forum-15.html&quot;&gt;zamieść post na forum tłumaczeń&lt;/a&gt;</translation>
+        <translation>Quantum GIS zaczyna być wykorzystywany w coraz to nowych dziedzinach. Poszukujemy osób, które znają terminologię branżową i mogłyby pomóc nam w tłumaczeniach specjalistycznych. Jeśli zauważysz błąd w tłumaczeniu lub chcesz dołączyć do naszej grupy, &lt;a href=&quot;http://www.qgis.org/wiki/GUI_Translation_Progress#Translators_List&quot;&gt;skontaktuj się z nami&lt;/a&gt; lub zamieść post na &lt;a href=&quot;http://forum.quantum-gis.pl/forum-15.html&quot;&gt;polskim forum tłumaczeń WiOO&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="62"/>
@@ -32221,9 +32221,9 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
         <location filename="../src/app/qgstipfactory.cpp" line="63"/>
         <source>If you need help using QGIS we have a &apos;users&apos;  mailing list where users help each other with issues related to using our sofware. We also have a &apos;developers&apos; mailing list. for those wanting help and to discuss things relating the the QGIS code base. Details on how to subscribe are in the &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;community section&lt;/a&gt; of the QGIS home page (http://www.qgis.org/en/community/mailing-lists.html).</source>
         <translatorcomment>wolne tłumaczenie dostosowane do naszych potrzeb ...</translatorcomment>
-        <translation>Jeśli potrzebujesz pomocy przy korzystaniu z QGIS masz do wyboru kilka opcji.
+        <translation>Jeśli potrzebujesz pomocy przy korzystaniu z QGIS, masz do wyboru kilka opcji.
 Dla osób znających język angielski uruchomione są &lt;a href=&quot;http://www.qgis.org/en/community/mailing-lists.html&quot;&gt;listy użytkowników (users) oraz programistów (developers)&lt;/a&gt;, dostępne na stronie (http://www.qgis.org/en/community/mailing-lists.html).
-Dla osób szukających pomocy w języku polskim uruchomione zostało &lt;a href=&quot;http://forum.quantum-gis.pl/&quot;&gt;forum dyskusyjne&lt;/a&gt; pod adresem (http://forum.quantum-gis.pl/).</translation>
+Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href=&quot;http://forum.quantum-gis.pl/&quot;&gt;forum dyskusyjne&lt;/a&gt; pod adresem (http://forum.quantum-gis.pl/).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="71"/>
@@ -32233,117 +32233,117 @@ Dla osób szukających pomocy w języku polskim uruchomione zostało &lt;a href=
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="72"/>
         <source>Both are correct. For articles we suggest you write &apos;Quantum GIS (QGIS) is ....&apos; and then refer to it as QGIS thereafter.</source>
-        <translation>Obydwie nazwy sa poprawne. W artykułach proponujemy pisać &apos;Quantum GIS (QGIS) jest ... &apos;, i następnie wykorzystywanie nazwy skróconej QGIS.</translation>
+        <translation>Obydwie nazwy sa poprawne. W artykułach proponujemy na początku napisać &apos;Quantum GIS (QGIS) jest ... &apos;, a następnie wykorzystywać jedynie formę skróconą - QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="76"/>
         <source>How do I refer to Quantum GIS?</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazewnictwo w ramach projektu Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="77"/>
         <source>QGIS is spelled in all caps. We have various subprojects of the QGIS project and it will help to avoid confusion if you refer to each by its name:&lt;ul&gt;&lt;li&gt;QGIS Library - this is the C++ library that contains the core logic that is used to build the QGIS user interface and other applications.&lt;/li&gt;&lt;li&gt;QGIS Application - this is the desktop application that you know and love so much :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - this is a server-side application based on the QGIS Library that will serve up your .qgs projects using the WMS protocol.&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwę QGIS piszemy dużymi literami. W ramach projektu QGIS rozwijane są różne podprojekty i aby ich nie mylić przyjęto następujące nazewnictwo:&lt;ul&gt;&lt;li&gt;Biblioteka QGIS - jest to biblioteka w języku C++ zawierająca rdzeń logiki do budowy interfejsu użytkownika QGIS oraz aplikacji pochodnych.&lt;/li&gt;&lt;li&gt;Program QGIS - jest aplikacją klasy desktop z której aktualnie korzystasz.&lt;/li&gt;&lt;li&gt;QGIS Mapserver - jest aplikacją serwerową zbudowaną w oparciu o Bibliotekę QGIS Library. Udostępnia projekty QGIS (*.qgs) za pośrednictwem usługi WMS.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="91"/>
         <source>Add the current date to a map layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Jak dodać aktualną datę do wydruku mapy?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="92"/>
         <source>You can add a current date variable to your map layout. Create a regular text label and add the string $CURRENT_DATE(yyyy-MM-dd) to the text box. See the &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;QDate::toString format documentation&lt;/a&gt; for the possible date formats.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj na wydruku nową etykietę tekstową i wpisz w jej treści ciąg znaków $CURRENT_DATE(yyyy-MM-dd). Więcej informacji o formatowaniu dat znajdziesz w &lt;a href=&quot;http://doc.qt.nokia.com/latest/qdate.html#toString&quot;&gt;dokumentacji QDate::toString&lt;/a&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="99"/>
         <source>Moving Elements and Maps in the Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Przesuwanie obiektów i map na wydruku</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>W oknie wydruku map, na pasku narzędzi, są do wyboru dwie ikonu do przesuwania elementów. Pierwsza z nich (ta z lewej - domyślna) służy do wybierania i przesuwania obiektów na mapie. Po wybraniu obiektu możesz go również przesuwać strzałkami na klawiaturze. Druga z ikon (ta po prawej stronie) służy do przesuwania zawartości wybranej mapy. Aby dokładnie umiejscowić dowolny obiekt na mapie, możesz również wykorzystać opcję &lt;strong&gt;Pozycja i rozmiar...&lt;/strong&gt;, którą znajdziesz w zakładce &lt;strong&gt;Obiekt &amp;rarr; Ustawienia ogólne&lt;/strong&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="114"/>
         <source>Lock an element in the layout view</source>
-        <translation type="unfinished"></translation>
+        <translation>Blokowanie obiektów na wydruku</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="115"/>
         <source>By left clicking an element in the layout view you can select it, by right clicking an element you can lock it. A lock symbol will appear in the upper left corner of the selected element. This prevents the element from accidentally being moved with the mouse. While in a locked state, you cannot move an element with the mouse but you can still move it with the arrow keys or by absolutely positioning it by setting its &lt;strong&gt;Position and Size&lt;/strong&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kliknięcie lewym klawiszem na obiekcie wybiera go. Kliknięcie prawym klawiszem blokuje wskazany obiekt. Jest to zaznaczane ikoną kłódki, która pojawia się w lewym górnym rogu. Zapobiega to przypadkowemu przesunięciu obiektu myszą. Możliwe jest jednak nadal przesunięcie przy pomocy klawiszy strzałek na klawiaturze oraz poprzez &lt;strong&gt;Obiekt &amp;rarr; Ustawienia ogólne &amp;rarr; Pozycja i rozmiar...&lt;/strong&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="125"/>
         <source>Rotating a map and linking a north arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót mapy wraz ze strzałką północy</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="126"/>
         <source>You can rotate a map by setting its rotation value in the &lt;strong&gt;Item tab &amp;rarr; Map&lt;/strong&gt; section. To place a north arrow in your layout you can use the &lt;strong&gt;Add Image&lt;/strong&gt; tool, the button with the little camera icon. QGIS comes with a selection of north arrows. After the placement of the north arrow in the layout you can link it with a specific map frame by activating the &lt;strong&gt;Sync with map&lt;/strong&gt; checkbox and selecting a map frame. Whenever you change the rotation value of a linked map, the north arrow will now automatically adjust its rotation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Możesz obrócić mapę na wydruku podając jej kąt obrotu. Z wyświetlaną mapą można zsynchronizować strzałkę północy. Dodaj ją do wydruku ikoną &lt;strong&gt;Dodaj obraz&lt;/strong&gt;, a następnie włącz &lt;strong&gt;Synchronizację z odpowiednią mapą&lt;/strong&gt;. Od tej chwili obrotowi mapy będzie towarzyszył równoczesny obrót strzałki północy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="138"/>
         <source>Numeric scale value in map layout linked to map frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Wyświetlanie skali mapy w postaci numerycznej na wydruku</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="139"/>
         <source>If you want to place a text label as a placeholder for the current scale, linked to a map frame, you need to place a scalebar and set the style to &apos;Numeric&apos;. You also need to select the map frame, if there is more than one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli chcesz umieścić aktualną skalę mapy na wydruku, dodaj do wydruku podziałkę, wybierz z listy odpowiedni obiekt mapy, a następnie z listy rozwijalnej wybierz styl w postaci numerycznej.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="146"/>
         <source>Using the mouse scroll wheel</source>
-        <translation type="unfinished"></translation>
+        <translation>Używanie kółka myszki</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="147"/>
         <source>You can use the scroll wheel on your mouse to zoom in, out and pan the map. Scroll forwards to zoom in, scroll backwards to zoom out and press and hold the scroll wheel down to pan the map. You can configure options for scroll wheel behaviour in the Options panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kółko myszki może być używane do powiększania/pomniejszania/przesuwania aktualnego podglądu mapy. Ruch w przód powiększa widok, ruch w tył pomniejsza widok, zaś wciśnięcie kółka umożliwia przesuwania podglądu mapy. Możesz skonfigurować działanie kółka myszki w &lt;strong&gt;Opcje &amp;rarr; Narzędzia&lt;/strong&gt;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="154"/>
         <source>Stopping rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Przerwij renderowanie mapy</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="155"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation type="unfinished"></translation>
+        <translation>Czasem wyświetlenie dużej mapy zajmuje wieki. Naciśnięcie klawisza ESC lub małej ikony z pędzlem i czerwonym przekreślony kółkiem w prawy dolnym rogu okna, przerwie rysowania. Jeśli planujesz wykonanie kilku operacji mogących spowolnić odświeżanie widoku, możesz tymczasowo wyłączyć automatyczne przerysowywania widoku mapy. Należy w tym celu wyłączyć opcję Renderuj umieszczoną w prawym dolnym rogu ekranu. Nie zapomnij jednak ponownie włączyć tej opcji po zakończeniu operacji!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="166"/>
         <source>Join intersected polylines when rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Przenikanie przecinających się linii</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="167"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Aby uzyskać efekt przenikania linii, tak jak pokazano to na prawej ilustracji poniżej, należy włączyć poziomy wyświetlania warstw symboli. Znajdziesz je na górze okna stylu wartwy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>Auto-enable on the fly projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformacja układu współrzędnych w locie</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="176"/>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dostępna jest we Właściwościach projektu, w zakładce Układ współrzędnych (CRS). Jeśli chcesz aby była domyślnie aktywna dla wszystkich nowych projektów, możesz to zdefiniować w Opcjach programu, w zakładce Układ współrzędnych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="183"/>
         <source>Sponsor QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Wspieranie QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="184"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli dzięki QGIS oszczędzasz pieniądze (czas?) lub podoba Ci się to co robimy, zastanów się nad możliwością wspracia finansowego projektu. Pieniądze od sponsorów wykorzystywane są na organizację półrocznych spotkań (hackfestów) twórców programu oraz ogólne koszty funkcjonowania. Odwiedź stronę &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Sponsorowanie QGIS&lt;/a&gt;, aby poznać więcej szczegółów.</translation>
     </message>
 </context>
 <context>
@@ -32351,12 +32351,12 @@ Dla osób szukających pomocy w języku polskim uruchomione zostało &lt;a href=
     <message>
         <location filename="../src/app/qgstipgui.cpp" line="53"/>
         <source>&amp;Previous</source>
-        <translation>&amp;Poprzedni</translation>
+        <translation>&amp;Poprzednia</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipgui.cpp" line="57"/>
         <source>&amp;Next</source>
-        <translation>&amp;Następny</translation>
+        <translation>&amp;Następna</translation>
     </message>
 </context>
 <context>
@@ -33099,7 +33099,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1593"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1718"/>
         <source>Text diagram</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekst wykresu</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="701"/>
