@@ -5851,27 +5851,27 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6346"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6352"/>
         <source>invalid line</source>
         <translation>Ungültige Linie</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6424"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6430"/>
         <source>segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7</source>
         <translation>Segment %1 des Rings %2 des Polygons %3 schneidet Segment %4 des Rings %5 des Polygons %6 bei %7</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6458"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6464"/>
         <source>ring %1 not closed</source>
         <translation>Ring %1 nicht geschlossen</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6466"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6472"/>
         <source>line %1 with less than two points</source>
         <translation>Linie %1 mit weniger als zwei Punkten</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/core/qgsgeometry.cpp" line="6484"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6490"/>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
         <translation>
@@ -5880,35 +5880,35 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         </translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6606"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6610"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6612"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6616"/>
         <source>polygon %1 inside polygon %2</source>
         <translation>Polygon %1 liegt im Polygon %2</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6450"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6456"/>
         <source>ring %1 with less than three points</source>
         <translation>Ring %1 mit weniger als drei Punkten</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6515"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6521"/>
         <source>segments %1 and %2 of line %3 intersect at %4</source>
         <translation>Segmente %1 und %2 der Linie %3 schneiden sich bei %4</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6432"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6520"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6438"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6526"/>
         <source>stopping validation after more than 100 errors</source>
         <translation>Überprüfung nach mehr als 100 Fehlern gestoppt</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6536"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6542"/>
         <source>ring %1 of polygon %2 not in exterior ring</source>
         <translation>Ring %1 des Polygons %2 nicht innerhalb des äußeren Rings</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsgeometry.cpp" line="6623"/>
-        <location filename="../src/core/qgsgeometry.cpp" line="6624"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6629"/>
+        <location filename="../src/core/qgsgeometry.cpp" line="6630"/>
         <source>Unknown geometry type</source>
         <translation>Unbekannter Geometrietyp</translation>
     </message>
@@ -19921,18 +19921,19 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
 <context>
     <name>QgsMapToolSplitFeatures</name>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="96"/>
         <source>Split error</source>
         <translation>Trennfehler</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="96"/>
         <source>An error occured during feature splitting</source>
         <translation>Ein Fehler ist bei Objekttrennung aufgetreten</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="91"/>
         <source>No feature split done</source>
         <translation>Keine Objekttrennung vorgenommen</translation>
     </message>
@@ -19980,6 +19981,11 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
         <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
         <translation>Schnittkanten festgestellt. Es ist sicher zu stellen, dass die Trennlinie Objekte in mehrere Teile zerlegt.</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="91"/>
+        <source>The geometry is invalid. Please repair before trying to split it.</source>
+        <translation>Die Geometrie ist ungültig. Bitte vor der Objekttrennung reparieren.</translation>
     </message>
 </context>
 <context>
