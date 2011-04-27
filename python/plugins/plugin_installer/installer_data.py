@@ -436,11 +436,8 @@ class Repositories(QObject):
             if QGIS_VER[0]==qgisMinimumVersion[0] or (qgisMinimumVersion!="0" and qgisMaximumVersion!="2"):   # to be deleted
               #add the plugin to the cache
               plugins.addFromRepository(plugin)
-        self.mRepositories[reposName]["state"] = 2
-      else:
-        #print "Repository parsing error"
-        self.mRepositories[reposName]["state"] = 3
-        self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller","Couldn't parse output from the repository")
+      # set state=2, even if the repo is empty
+      self.mRepositories[reposName]["state"] = 2
 
     self.emit(SIGNAL("repositoryFetched(QString)"), reposName )
 
