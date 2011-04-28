@@ -102,8 +102,8 @@ QgsRasterProjector::QgsRasterProjector(
   // Calculate source dimensions
   calcSrcExtent();
   calcSrcRowsCols();
-  mSrcXRes = mSrcExtent.height() / mSrcRows;
-  mSrcYRes = mSrcExtent.width() / mSrcCols;
+  mSrcYRes = mSrcExtent.height() / mSrcRows;
+  mSrcXRes = mSrcExtent.width() / mSrcCols;
 
   // init helper points
   pHelperTop = new QgsPoint[mDestCols];
@@ -121,21 +121,20 @@ QgsRasterProjector::~QgsRasterProjector()
 void QgsRasterProjector::calcSrcExtent()
 {
   /* Run around the mCPMatrix and find source extent */
+  // Attention, source limits are not necessarily on destination edges, e.g.
+  // for destination EPSG:32661 Polar Stereographic and source EPSG:4326,
+  // the maximum y may be in the middle of destination extent
+  // TODO: How to find extent exactly and quickly?
+  // For now, we runt through all matrix
   QgsPoint myPoint = mCPMatrix[0][0];
   mSrcExtent = QgsRectangle( myPoint.x(), myPoint.y(), myPoint.x(), myPoint.y() );
   for ( int i = 0; i < mCPRows; i++ )
   {
-    myPoint = mCPMatrix[i][0];
-    mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
-    myPoint = mCPMatrix[i][mCPCols-1];
-    mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
-  }
-  for ( int i = 1; i < mCPCols - 1; i++ )
-  {
-    myPoint = mCPMatrix[0][i];
-    mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
-    myPoint = mCPMatrix[mCPRows-1][i];
-    mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
+    for ( int j = 1; j < mCPCols - 1; j++ )
+    {
+      myPoint = mCPMatrix[i][j];
+      mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
+    }
   }
   // Expand a bit to avoid possible approx coords falling out because of representation error?
 
@@ -301,16 +300,23 @@ void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcR
 
 void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
+  //QgsDebugMsg( QString( "theDestRow = %1" ).arg(theDestRow) );
+  //QgsDebugMsg( QString( "theDestRow = %1 mDestExtent.yMaximum() = %2 mDestYRes = %3" ).arg(theDestRow).arg(mDestExtent.yMaximum()).arg(mDestYRes) );
+
   // Get coordinate of center of destination cell
   double x = mDestExtent.xMinimum() + ( theDestCol + 0.5 ) * mDestXRes;
   double y = mDestExtent.yMaximum() - ( theDestRow + 0.5 ) * mDestYRes;
   double z = 0;
 
+  //QgsDebugMsg( QString( "x = %1 y = %2" ).arg(x).arg(y) );
   mCoordinateTransform.transformInPlace( x, y, z );
+  //QgsDebugMsg( QString( "x = %1 y = %2" ).arg(x).arg(y) );
 
   // Get source row col
-  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcXRes );
-  *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcYRes );
+  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcYRes );
+  *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcXRes );
+  //QgsDebugMsg( QString( "mSrcExtent.yMaximum() = %1 mSrcYRes = %2" ).arg(mSrcExtent.yMaximum()).arg(mSrcYRes) );
+  //QgsDebugMsg( QString( "theSrcRow = %1 theSrcCol = %2" ).arg(*theSrcRow).arg(*theSrcCol) );
 
   // With epsg 32661 (Polar Stereographic) it was happening that *theSrcCol == mSrcCols
   // For now silently correct limits to avoid crashes
@@ -362,8 +368,8 @@ void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
 
   // TODO: check again cell selection (coor is in the middle)
 
-  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcXRes );
-  *theSrcCol = ( int ) floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcYRes );
+  *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcYRes );
+  *theSrcCol = ( int ) floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcXRes );
 
   // For now silently correct limits to avoid crashes
   // TODO: review
