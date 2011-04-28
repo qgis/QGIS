@@ -28866,7 +28866,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1203"/>
         <source>Reset to file defined null</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywróć wartość NULL z pliku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1240"/>
@@ -31338,7 +31338,7 @@ Czy chcesz nadpisać relację [%2]?</translation>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="203"/>
         <source>Global schema</source>
-        <translation>Schemat globalny</translation>
+        <translation>Schemat domyślny</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="269"/>
@@ -32199,7 +32199,7 @@ Im niższy numer, tym wcześniej rysowana jest warstwa.</translation>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="47"/>
         <source>If you write a scientific paper or any other article that refers to QGIS we would love to include your work in the &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;case studies section&lt;/a&gt; of the Quantum GIS home page (http://http://www.qgis.org/en/community/qgis-case-studies.html).</source>
-        <translation>Jeśli jesteś autorem publikacji naukowej lub artykułu opisującego wykorzystanie QGIS, pomysl czy nie warto byłoby podzielić się tym z innymi. Te i podobne informacje zamieszczane są na stronie Quantum GIS jako &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;studia przypadków&lt;/a&gt; pod adresem (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
+        <translation type="unfinished">Jeśli jesteś autorem publikacji naukowej lub artykułu opisującego wykorzystanie QGIS, pomyśl czy nie warto byłoby podzielić się tym z innymi. Te i podobne informacje zamieszczane są na stronie Quantum GIS jako &lt;a href=&quot;http://www.qgis.org/en/community/qgis-case-studies.html&quot;&gt;studia przypadków&lt;/a&gt; pod adresem (http://http://www.qgis.org/en/community/qgis-case-studies.html).</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="53"/>
@@ -32343,7 +32343,7 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="184"/>
         <source>If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;QGIS Sponsorship Web Page&lt;/a&gt; for more details.</source>
-        <translation>Jeśli dzięki QGIS oszczędzasz pieniądze (czas?) lub podoba Ci się to co robimy, zastanów się nad możliwością wspracia finansowego projektu. Pieniądze od sponsorów wykorzystywane są na organizację półrocznych spotkań (hackfestów) twórców programu oraz ogólne koszty funkcjonowania. Odwiedź stronę &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Sponsorowanie QGIS&lt;/a&gt;, aby poznać więcej szczegółów.</translation>
+        <translation>Jeśli dzięki QGIS oszczędzasz pieniądze (czas?) lub podoba Ci się to co robimy, zastanów się nad możliwością wsparcia finansowego projektu. Pieniądze od sponsorów wykorzystywane są na organizację dwa razy do roku roboczych spotkań twórców programu oraz na ogólne koszty funkcjonowania projektu. Odwiedź stronę &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;Sponsorowanie QGIS&lt;/a&gt;, aby poznać więcej szczegółów.</translation>
     </message>
 </context>
 <context>
@@ -33099,14 +33099,14 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1593"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1718"/>
         <source>Text diagram</source>
-        <translation>Tekst wykresu</translation>
+        <translation>tekstowy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="701"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1592"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1722"/>
         <source>Pie chart</source>
-        <translation>Wykres kołowy</translation>
+        <translation>kołowy</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="718"/>
@@ -33175,7 +33175,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1552"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1623"/>
         <source>MM</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1565"/>
@@ -33205,22 +33205,22 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1582"/>
         <source>On line</source>
-        <translation type="unfinished">na linii</translation>
+        <translation>na linii</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1583"/>
         <source>Above line</source>
-        <translation type="unfinished">ponad linią</translation>
+        <translation>ponad linią</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1584"/>
         <source>Below Line</source>
-        <translation type="unfinished">poniżej linii</translation>
+        <translation>poniżej linii</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1585"/>
         <source>Map orientation</source>
-        <translation>Orientacja mapy</translation>
+        <translation>zgodnie z mapą</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1607"/>
@@ -33605,22 +33605,22 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="620"/>
         <source>Joins</source>
-        <translation type="unfinished">Złączenia</translation>
+        <translation>Złączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="665"/>
         <source>Join layer</source>
-        <translation type="unfinished">Tabela</translation>
+        <translation>Tabela</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="670"/>
         <source>Join field</source>
-        <translation type="unfinished">Pole tabeli</translation>
+        <translation>Pole tabeli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="675"/>
         <source>Target field</source>
-        <translation type="unfinished">Pole złączenia</translation>
+        <translation>Pole złączenia</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="101"/>
@@ -35549,7 +35549,10 @@ Tried URL: %1</source>
 
 SQL Anywhere error code: %1
 Description: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie nie powiodło się. Sprawdź ustawienia i spróbuj ponownie.
+
+Kod błędu SQL Anywhere: %1
+Opis: %2</translation>
     </message>
 </context>
 <context>
@@ -35557,147 +35560,147 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="20"/>
         <source>Create a new SQL Anywhere connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Utwórz nowe połączenie SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Informacja o połączeniu</translation>
+        <translation>Informacja o połączeniu</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="66"/>
         <source>Name</source>
-        <translation type="unfinished">Nazwa</translation>
+        <translation>Nazwa</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="76"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="86"/>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="96"/>
         <source>Server</source>
-        <translation type="unfinished">Serwer</translation>
+        <translation>Serwer</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="106"/>
         <source>Database</source>
-        <translation type="unfinished">Baza danych</translation>
+        <translation>Baza danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="116"/>
         <source>Connection Parameters</source>
-        <translation type="unfinished">Parametry</translation>
+        <translation>Parametry</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="126"/>
         <source>Username</source>
-        <translation type="unfinished">Użytkownik</translation>
+        <translation>Użytkownik</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="136"/>
         <source>Password</source>
-        <translation type="unfinished">Hasło</translation>
+        <translation>Hasło</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="156"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Nazwa dla nowego połączenia</translation>
+        <translation>Nazwa dla nowego połączenia</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="163"/>
         <source>Name or IP address of computer hosting the database server (leave blank for local connections)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa lub adres IP serwera (pozostaw puste dla połączeń lokalnych)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="170"/>
         <source>Port number used by the database server (leave blank for default 2638)</source>
-        <translation type="unfinished"></translation>
+        <translation>Numer portu serwera baz danych (pozostaw puste dla domyślnego 2638)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="177"/>
         <source>Name of the database server (leave blank for default server on host)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa serwera baz danych (pozostaw puste dla domyślnego serwera)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="184"/>
         <source>Name of the database (leave blank for default database on server)</source>
-        <translation type="unfinished"></translation>
+        <translation>Nazwa bazy danych (pozostaw puste dla domyślnej bazy)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="191"/>
         <source>Additional connection parameters</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodatkowe parametry połączenia</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="198"/>
         <source>Database username</source>
-        <translation type="unfinished"></translation>
+        <translation>Użytkownik bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="205"/>
         <source>Database password</source>
-        <translation type="unfinished"></translation>
+        <translation>Hasło bazy danych</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="227"/>
         <source>Save Username</source>
-        <translation type="unfinished">Zapisz nazwę użytkownika</translation>
+        <translation>Zapisz użytkownika</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="224"/>
         <source>Save the connection username in the registry</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisuje nazwę użytkownika w rejestrze</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="234"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished">&amp;Test połączenia</translation>
+        <translation>&amp;Test połączenia</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="244"/>
         <source>Save Password</source>
-        <translation type="unfinished">Zapisz hasło</translation>
+        <translation>Zapisz hasło</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="241"/>
         <source>Save the connection password in the registry (WARNING: NOT SECURE)</source>
-        <translation type="unfinished"></translation>
+        <translation>Zapisuje hasło połączenia w rejestrze (UWAGA: NIE JEST TO BEZPIECZNE)</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="254"/>
         <source>Simple Encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Proste szyfrowanie</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="251"/>
         <source>Encrypt packets using simple encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Szyfruj pakiety prostym szyfrem</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="264"/>
         <source>Estimate table metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Szacuj metadane tabeli</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="261"/>
         <source>Use estimates for certain layer properties such as cardinality, extent, etc. (improves performance)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Używa szacowanych wartości warstwy do przyspieszenia operacji</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="274"/>
         <source>Search other users&apos; tables</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Szukaj w innych tabelach</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sanewconnectionbase.ui" line="271"/>
         <source>Search for geometry columns in tables owned by other users</source>
-        <translation type="unfinished"></translation>
+        <translation>Szuka pól geometrii w tabelach innych użytkowników</translation>
     </message>
 </context>
 <context>
@@ -35705,37 +35708,37 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="48"/>
         <source>&amp;Test</source>
-        <translation type="unfinished">&amp;Testuj</translation>
+        <translation>&amp;Testuj</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="52"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished">&amp;Wyczyść</translation>
+        <translation>&amp;Wyczyść</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="118"/>
         <source>Invalid Query</source>
-        <translation type="unfinished">Błąd w zapytaniu</translation>
+        <translation>Błąd w zapytaniu</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="118"/>
         <source>Setting the query failed</source>
-        <translation type="unfinished">Zapytanie nie powiodło się</translation>
+        <translation>Zapytanie nie powiodło się</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="175"/>
         <source>No Query</source>
-        <translation type="unfinished">Brak zapytania</translation>
+        <translation>Brak zapytania</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="176"/>
         <source>You must create a query before you can test it</source>
-        <translation type="unfinished">Utwórz zapytanie zanim je przetestujesz</translation>
+        <translation>Utwórz zapytanie zanim je przetestujesz</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="181"/>
         <source>Query Result</source>
-        <translation type="unfinished">Wyniki zapytania</translation>
+        <translation>Wyniki zapytania</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="182"/>
@@ -35750,17 +35753,17 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="187"/>
         <source>Query Failed</source>
-        <translation type="unfinished">Zapytanie nie powiodło się</translation>
+        <translation>Zapytanie nie powiodło się</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="188"/>
         <source>An error occurred when executing the query</source>
-        <translation type="unfinished">Wystąpił błąd podczas wykonywania zapytania</translation>
+        <translation>Wystąpił błąd podczas wykonywania zapytania</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="206"/>
         <source>Error in Query</source>
-        <translation type="unfinished">Błąd w zapytaniu</translation>
+        <translation>Błąd w zapytaniu</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="206"/>
@@ -35773,54 +35776,54 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="62"/>
         <source>&amp;Add</source>
-        <translation type="unfinished">Dod&amp;aj</translation>
+        <translation>Dod&amp;aj</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="67"/>
         <source>&amp;Build Query</source>
-        <translation type="unfinished">Stwórz &amp;zapytanie</translation>
+        <translation>Stwórz &amp;zapytanie</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="74"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="193"/>
         <source>Wildcard</source>
-        <translation type="unfinished">Maska</translation>
+        <translation>Maska</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="75"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="197"/>
         <source>RegExp</source>
-        <translation type="unfinished">RegExp</translation>
+        <translation>RegExp</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="77"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="205"/>
         <source>All</source>
-        <translation type="unfinished"></translation>
+        <translation>Wszystkie</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="78"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="209"/>
         <source>Schema</source>
-        <translation type="unfinished">Schemat</translation>
+        <translation>Schemat</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="79"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="213"/>
         <source>Table</source>
-        <translation type="unfinished">Tabela</translation>
+        <translation>Tabela</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="80"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="217"/>
         <source>Type</source>
-        <translation type="unfinished">Typ</translation>
+        <translation>Typ</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="81"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="221"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="82"/>
@@ -35832,43 +35835,43 @@ Description: %2</source>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="83"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="229"/>
         <source>Geometry column</source>
-        <translation type="unfinished">Kolumna geometrii</translation>
+        <translation>Pole geometrii</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="84"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="233"/>
         <source>Sql</source>
-        <translation type="unfinished">Sql</translation>
+        <translation>SQL</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="135"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished">Czy na pewno chcesz usunąć połączenie %1 i wszystkie związane z nim ustawienia?</translation>
+        <translation>Czy na pewno chcesz usunąć połączenie %1 i wszystkie związane z nim ustawienia?</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="137"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Zatwierdź usunięcie</translation>
+        <translation>Zatwierdź usunięcie</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="331"/>
         <source>Select Table</source>
-        <translation type="unfinished">Wybierz Tabelę</translation>
+        <translation>Wybierz tabelę</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="331"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished">Musisz wybrać tabelę aby dodać warstwę.</translation>
+        <translation>Musisz wybrać tabelę aby dodać warstwę.</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="357"/>
         <source>Failed to load interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie powiodło się wczytanie interfejsu</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="414"/>
         <source>Connection failed</source>
-        <translation type="unfinished">Połączenie nie powiodło się</translation>
+        <translation>Połączenie nie powiodło się</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="415"/>
@@ -35876,27 +35879,30 @@ Description: %2</source>
 
 SQL Anywhere error code: %2
 Description: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Połączenie z bazą %1 nie powiodło się. Sprawdź ustawienia i spróbuj ponownie.
+
+Kod błędu SQL Anywhere: %2
+Opis: %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="567"/>
         <source>No accessible tables found</source>
-        <translation type="unfinished">Nie znaleziono dostępnych tabel</translation>
+        <translation>Nie znaleziono dostępnych tabel</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="568"/>
         <source>Database connection was successful, but no tables containing geometry columns were %1.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pomyślnie połączono z bazą danych, ale nie odnaleziono tabeli z polem geometrii, gdzie %1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="571"/>
         <source>found</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">znaleziono</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="571"/>
         <source>found in your schema</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">znaleziono w schemacie</translation>
     </message>
 </context>
 <context>
@@ -36338,7 +36344,7 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="57"/>
         <source>with interval</source>
-        <translation type="unfinished">w przedziale</translation>
+        <translation>w odstępach co</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_markerline.ui" line="80"/>
@@ -37676,7 +37682,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>(Optional) column to read labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pole z etykietą (opcjonalne)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
@@ -37746,7 +37752,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Attribute field to (over)write</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pole atrybutu do zapisu</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
@@ -37902,7 +37908,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="53"/>
         <source>Cats (select from the map or using their id)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kategorie (wybierz z mapy lub poprzed ID)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="54"/>
@@ -38607,47 +38613,47 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="211"/>
         <source>Feature type (for polygons, choose Boundary)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Typ obiektu (dla poligonów wybierz granice)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="226"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj raster z sumarycznym kosztem przejścia między lokalizacjami na podstawie rastrowej mapy kosztów oraz współrzędnych punktów początkowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="227"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj raster z sumarycznym kosztem przejścia między lokalizacjami na podstawie rastrowej mapy kosztów oraz rastrowej mapie punktów początkowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="228"/>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj raster z sumarycznym kosztem przejścia między lokalizacjami na podstawie rastrowej mapy kosztów oraz wektorowej mapie punktów początkowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="229"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj raster z sumarycznym kosztem przejścia między lokalizacjami na podstawie NMT, rastrowej mapy oporów oraz współrzędnych punktów początkowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="230"/>
         <source>Generate raster of cumulative cost of moving between locations, based on elevation and friction input rasters and starting point(s) vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Generuj raster z sumarycznym kosztem przejścia między lokalizacjami na podstawie NMT, rastrowej mapy oporów oraz wektorową mapą punktów początkowych</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="287"/>
         <source>Link GDAL supported raster as GRASS raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Podłącz mapę rastrową GDAL jako raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="288"/>
         <source>Link GDAL supported raster loaded in QGIS as GRASS raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Podłącz mapę rastrową GDAL wczytaną do QGIS jako raster GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="289"/>
         <source>Link all GDAL supported rasters in a directory as GRASS rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Podłącz wszystkie mapy rastrowe GDAL z folderu jako rastry GRASS</translation>
     </message>
     <message>
         <source>Export vector table</source>
@@ -39174,7 +39180,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="301"/>
         <source>Maximal tolerance value (higher value=more simplification)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Maksymalna wartość tolerancji (wyższa wartość = większe uproszczenie)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="302"/>
@@ -39184,7 +39190,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="303"/>
         <source>Minimum size for each basin (number of cells)</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimalny rozmiar każdej zlewni (w komórkach rastra)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="304"/>
@@ -39234,7 +39240,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="313"/>
         <source>Number of rows to be skipped</source>
-        <translation type="unfinished"></translation>
+        <translation>Liczba wierszy do pominięcia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="314"/>
@@ -39379,7 +39385,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="342"/>
         <source>Rebuild topology of a vector in mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Przebuduj topologię wektora w mapsecie</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="343"/>
@@ -39594,7 +39600,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="385"/>
         <source>Separator (| , 	 etc.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Separator (| , 	 etc.)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="386"/>
@@ -39929,17 +39935,17 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="452"/>
         <source>Which column for the X coordinate? The first is 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumna współrzędnej X. Pierwsza ma numer 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="453"/>
         <source>Which column for the Y coordinate?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolumna współrzędnej Y.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="454"/>
         <source>Which column for the Z coordinate? If 0, z coordinate is not used</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kolumna współrzędnej Z. Jeśli nieużywana, podaj 0.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="455"/>
