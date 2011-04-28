@@ -3366,12 +3366,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       else if ( type == QVariant::String )
       {
         // binding a TEXT value
-        QString txt = it->toString();
-        int len = txt.toUtf8().length() + 1;
-        char *vl = new char [len];
-        strcpy( vl, txt.toUtf8().constData() );
-        sqlite3_bind_text( stmt, ++ia, vl, len, SQLITE_TRANSIENT );
-        delete [] vl;
+        QByteArray ba = it->toString().toUtf8();
+        sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
       }
       else
       {
