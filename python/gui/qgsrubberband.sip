@@ -44,6 +44,11 @@ class QgsRubberBand: QgsMapCanvasItem
     */
     void addGeometry(QgsGeometry* geom, QgsVectorLayer* layer);
 
+    /**Sets this rubber band to a map canvas rectangle
+      @param rect rectangle in canvas coordinates
+      @note added in version 1.7*/
+    void setToCanvasRectangle( const QRect& rect );
+
     /**Adds translation to original coordinates (all in map coordinates)*/
     void setTranslationOffset(double dx, double dy);
 
