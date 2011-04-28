@@ -1568,10 +1568,11 @@ QPointF QgsComposerMap::composerMapPosForItem( const QGraphicsItem* item ) const
     return QPointF( 0, 0 );
   }
 
-  double mapX = item->scenePos().x() / mMapCanvas->width() * mMapRenderer->extent().width() + mMapRenderer->extent().xMinimum();
-  double mapY = mMapRenderer->extent().yMaximum() - item->scenePos().y() / mMapCanvas->height() * mMapRenderer->extent().height();
+  QRectF graphicsSceneRect = mMapCanvas->sceneRect();
+  QPointF itemScenePos = item->scenePos();
+  QgsRectangle mapRendererExtent = mMapRenderer->extent();
 
-  double itemX = rect().width() * ( mapX - mExtent.xMinimum() ) / mExtent.width() + mXOffset;
-  double itemY = rect().height() * ( mExtent.yMaximum() - mapY ) / mExtent.height() + mYOffset;
-  return QPointF( itemX, itemY );
+  double mapX = itemScenePos.x() / graphicsSceneRect.width() * mapRendererExtent.width() + mapRendererExtent.xMinimum();
+  double mapY = mapRendererExtent.yMaximum() - itemScenePos.y() / graphicsSceneRect.height() * mapRendererExtent.height();
+  return mapToItemCoords( QPointF( mapX, mapY ) );
 }
