@@ -20,8 +20,7 @@
 #include "qgsmaptool.h"
 #include <QRect>
 
-
-class QRubberBand;
+class QgsRubberBand;
 
 /** \ingroup gui
  * A map tool for zooming into the map.
@@ -32,6 +31,8 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
   public:
     //! constructor
     QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
+
+    ~QgsMapToolZoom();
 
     //! Overridden mouse move event
     virtual void canvasMoveEvent( QMouseEvent * e );
@@ -44,6 +45,8 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
 
     virtual bool isTransient() { return true; }
 
+    virtual void deactivate();
+
   protected:
     //! stores actual zoom rect
     QRect mZoomRect;
@@ -54,8 +57,7 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
 
-    //! TODO: to be changed to a canvas item
-    QRubberBand* mRubberBand;
+    QgsRubberBand* mRubberBand;
 };
 
 #endif
