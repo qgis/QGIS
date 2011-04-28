@@ -101,8 +101,8 @@ void QgsGrassRegionEdit::setRegion( const QgsPoint& ul, const QgsPoint& lr )
   mStartPoint = ul;
   mEndPoint = lr;
   calcSrcRegion();
-  drawRegion( canvas(), mRubberBand, mSrcRectangle, &mCoordinateTransform );
-  drawRegion( canvas(), mSrcRubberBand, QgsRectangle( mStartPoint, mEndPoint ) );
+  drawRegion( canvas(), mRubberBand, mSrcRectangle, &mCoordinateTransform, true );
+  drawRegion( canvas(), mSrcRubberBand, QgsRectangle( mStartPoint, mEndPoint ), 0, true );
 }
 
 void QgsGrassRegionEdit::calcSrcRegion()
@@ -142,19 +142,23 @@ void QgsGrassRegionEdit::transform( QgsMapCanvas *canvas, QVector<QgsPoint> &poi
   }
 }
 
-void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform * coordinateTransform )
+void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubberBand, const QgsRectangle &rect, QgsCoordinateTransform * coordinateTransform, bool isPolygon )
 {
   QVector<QgsPoint> points;
   points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
   points.append( QgsPoint( rect.xMaximum(), rect.yMinimum() ) );
   points.append( QgsPoint( rect.xMaximum(), rect.yMaximum() ) );
   points.append( QgsPoint( rect.xMinimum(), rect.yMaximum() ) );
+  if ( !isPolygon )
+  {
+    points.append( QgsPoint( rect.xMinimum(), rect.yMinimum() ) );
+  }
 
   if ( coordinateTransform )
   {
     transform( canvas, points, coordinateTransform );
   }
-  rubberBand->reset( true );
+  rubberBand->reset( isPolygon );
   for ( int i = 0; i < points.size(); i++ )
   {
     bool update = false; // true to update canvas
