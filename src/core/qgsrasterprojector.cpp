@@ -85,7 +85,7 @@ QgsRasterProjector::QgsRasterProjector(
     }
     // What is the maximum reasonable size of transformatio matrix?
     // TODO: consider better when to break - ratio
-    if ( mCPRows * mCPCols > 0.25 * mDestRows * mDestCols )
+    if ( mCPRows * mCPCols > 0.0625 * mDestRows * mDestCols )
     {
       QgsDebugMsg( "Too large CP matrix" );
       mApproximate = false;
@@ -312,6 +312,14 @@ void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *
   *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - y ) / mSrcXRes );
   *theSrcCol = ( int ) floor(( x - mSrcExtent.xMinimum() ) / mSrcYRes );
 
+  // With epsg 32661 (Polar Stereographic) it was happening that *theSrcCol == mSrcCols
+  // For now silently correct limits to avoid crashes
+  // TODO: review
+  if ( *theSrcRow >= mSrcRows ) *theSrcRow = mSrcRows - 1;
+  if ( *theSrcRow < 0 ) *theSrcRow = 0;
+  if ( *theSrcCol >= mSrcCols ) *theSrcCol = mSrcCols - 1;
+  if ( *theSrcCol < 0 ) *theSrcCol = 0;
+
   assert( *theSrcRow < mSrcRows );
   assert( *theSrcCol < mSrcCols );
 }
@@ -357,6 +365,12 @@ void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
   *theSrcRow = ( int ) floor(( mSrcExtent.yMaximum() - mySrcY ) / mSrcXRes );
   *theSrcCol = ( int ) floor(( mySrcX - mSrcExtent.xMinimum() ) / mSrcYRes );
 
+  // For now silently correct limits to avoid crashes
+  // TODO: review
+  if ( *theSrcRow >= mSrcRows ) *theSrcRow = mSrcRows - 1;
+  if ( *theSrcRow < 0 ) *theSrcRow = 0;
+  if ( *theSrcCol >= mSrcCols ) *theSrcCol = mSrcCols - 1;
+  if ( *theSrcCol < 0 ) *theSrcCol = 0;
   assert( *theSrcRow < mSrcRows );
   assert( *theSrcCol < mSrcCols );
 }
