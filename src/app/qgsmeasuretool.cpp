@@ -63,7 +63,6 @@ void QgsMeasureTool::activate()
 {
   mDialog->restorePosition();
   QgsMapTool::activate();
-  mRightMouseClicked = false;
 
   // ensure that we have correct settings
   updateSettings();
