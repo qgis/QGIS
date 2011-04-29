@@ -846,7 +846,10 @@ void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
-  mCustomProperties.clear();
+  if ( keyStartsWith.isEmpty() )
+  {
+    mCustomProperties.clear();
+  }
 
   QDomNodeList nodes = propsNode.childNodes();
 
@@ -869,6 +872,13 @@ void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString
 
 void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const
 {
+  //remove already existing <customproperties> tags
+  QDomNodeList propertyList = layerNode.toElement().elementsByTagName( "customproperties" );
+  for ( int i = 0; i < propertyList.size(); ++i )
+  {
+    layerNode.removeChild( propertyList.at( i ) );
+  }
+
   QDomElement propsElement = doc.createElement( "customproperties" );
 
   for ( QMap<QString, QVariant>::const_iterator it = mCustomProperties.constBegin(); it != mCustomProperties.constEnd(); ++it )
