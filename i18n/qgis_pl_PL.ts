@@ -4018,7 +4018,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="739"/>
         <source>Pan Map</source>
-        <translation>Przesuwanie</translation>
+        <translation>Przesuń widok</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="751"/>
@@ -4453,12 +4453,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1359"/>
         <source>Stretch histogram of active raster to view extents</source>
-        <translation>Rozciągnij histogram aktywnego rastra w zasięgu widoku</translation>
+        <translation>Rozciągnij kontrast aktywnego rastra w zasięgu widoku</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1368"/>
         <source>Help Contents</source>
-        <translation>Zawartość pliku pomocy</translation>
+        <translation>Informacje i podręczniki (ang.)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1371"/>
@@ -4468,12 +4468,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1376"/>
         <source>API documentation</source>
-        <translation>Dokumentacja API</translation>
+        <translation>API dla programistów (ang.)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>QGIS Home Page</source>
-        <translation>Strona domowa QGIS</translation>
+        <translation>Strona projektu QGIS (ang.)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1388"/>
@@ -4483,7 +4483,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Check QGIS Version</source>
-        <translation>Sprawdź wersję Qgis</translation>
+        <translation>Sprawdź wersję QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1400"/>
@@ -4528,12 +4528,12 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1476"/>
         <source>Full histogram stretch</source>
-        <translation>Pełne rozciągnięcie histogramu</translation>
+        <translation>Pełne rozciągnięcie kontrastu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1479"/>
         <source>Stretch histogram to full dataset</source>
-        <translation>Rozciągnij histogram do pełnego zakresu danych</translation>
+        <translation>Rozciągnij kontrast do pełnego zakresu danych</translation>
     </message>
 </context>
 <context>
@@ -8587,7 +8587,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1193"/>
         <source>Current map coordinate</source>
-        <translation>Aktualne współrzędne mapy</translation>
+        <translation>Aktualne współrzędne kursora</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1207"/>
@@ -8602,7 +8602,7 @@ Prosimy o kontakt z autorami.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1279"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation>Ta ikona wskazuje czy aktywna jest transformacja w locie układu współrzędnych. Kliknij ikonę aby wyświetlić okno dialogowe właściwości projektu.</translation>
+        <translation>Ta ikona wskazuje czy aktywna jest reprojekcja w locie układu współrzędnych. Kliknij ikonę aby wyświetlić okno dialogowe właściwości projektu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1283"/>
@@ -8889,7 +8889,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2001"/>
         <source>On-the-fly reprojection of rasters added!</source>
-        <translation>Dodano transformację układów współrzędnych w locie dla warstw rastrowych!</translation>
+        <translation>Dodano reprojekcję w locie dla warstw rastrowych!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2002"/>
@@ -9794,19 +9794,19 @@ Błędy:  %2
         <location filename="../src/app/qgisapp.cpp" line="4908"/>
         <location filename="../src/app/qgisapp.cpp" line="4917"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
-        <translation>Aby wykonać pełne rozciągnięcie histogramu, należy wybrać warstwę rastrową.</translation>
+        <translation>Aby wykonać pełne rozciągnięcie kontrastu, należy wybrać warstwę rastrową.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4940"/>
         <location filename="../src/app/qgisapp.cpp" line="4983"/>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
-        <translation type="unfinished">Aby wykonać lokalne rozciągnięcie histogramu, należy wybrać warstwę rastrową ze skalą szarości lub wielokanałową.</translation>
+        <translation>Aby wykonać lokalne rozciągnięcie kontrastu, należy wybrać warstwę rastrową ze skalą szarości lub wielokanałową.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4955"/>
         <location filename="../src/app/qgisapp.cpp" line="4964"/>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
-        <translation>Aby wykonać lokalne rozciągnięcie histogramu, należy wybrać warstwę rastrową.</translation>
+        <translation>Aby wykonać lokalne rozciągnięcie kontrastu, należy wybrać warstwę rastrową.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4916"/>
@@ -15315,17 +15315,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="225"/>
         <source>to real</source>
-        <translation>to real</translation>
+        <translation>real()</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="232"/>
         <source>to int</source>
-        <translation>to int</translation>
+        <translation>int()</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="239"/>
         <source>to string</source>
-        <translation>to string</translation>
+        <translation>string()</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="246"/>
@@ -23967,7 +23967,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="166"/>
         <source>Dataset</source>
-        <translation>Dataset</translation>
+        <translation>Warstwa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="186"/>
@@ -24192,7 +24192,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1540"/>
         <source>Locale to use instead</source>
-        <translation>Zastąp ustawieniami lokalnymi</translation>
+        <translation>Wybierz wersję językową</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1563"/>
@@ -24335,7 +24335,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="608"/>
         <source>Path(s) to search for Scalable Vector Graphic (SVG) symbols</source>
-        <translation>Ścieżki przeszukiwania symboli Scalable Vector Graphic (SVG)</translation>
+        <translation>Ścieżki przeszukiwania symboli SVG (Scalable Vector Graphics)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="838"/>
@@ -24476,7 +24476,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1385"/>
         <source>Enable &apos;on the &amp;fly&apos; reprojection by default</source>
-        <translation>Domyślnie włącz &amp;transformację układów współrzędnych w locie</translation>
+        <translation>Domyślnie włącz &amp;reprojekcję w locie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1392"/>
@@ -26899,7 +26899,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="197"/>
         <source>Layer units (only used when CRS transformation is disabled)</source>
-        <translation>Deklarowane jednostki warstwy (tylko przy wyłączonej reprojekcji)</translation>
+        <translation>Deklarowane jednostki warstwy (tylko przy wyłączonej reprojekcji w locie)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="203"/>
@@ -27146,7 +27146,7 @@ Kontynuować?</translation>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="324"/>
         <source>Enable &apos;on the fly&apos; CRS transformation</source>
-        <translation>Transformuj układ współrzędnych w locie</translation>
+        <translation>Reprojekcja w locie</translation>
     </message>
 </context>
 <context>
@@ -31470,7 +31470,9 @@ p, li { white-space: pre-wrap; }
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt; for more details. In the list below you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;Cały nasz zespół pracuje naprawdę ciężko, aby z każdą wersją program był coraz lepszy. Zauważyliście jak program szybko rozwija się i ile nowych funkcji oferuje? Quantum GIS tworzony jest z sercem. Chcemy aby stawał się coraz lepszy, i aby wszyscy mogli z niego korzystać. Niezależnie od zasobności portfela. 
+Jeśli dzięki QGIS oszczędzasz pieniądze (czas?) lub podoba Ci się to co robimy, zastanów się nad możliwością wsparcia finansowego projektu. Pieniądze od sponsorów wykorzystujemy na organizację dwa razy do roku roboczych spotkań twórców programu oraz na ogólne koszty funkcjonowania projektu. Odwiedź stronę &lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;sponsorowanie QGIS&lt;/a&gt;, aby poznać więcej szczegółów.
+Na liście poniżej znajdziesz informacje o firmach i instytucjach, które wspomogły rozwój tego programu finansowo, za co składamy im w tym miejscu serdeczne podziękowania!&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;Sponsorzy 2011&lt;/span&gt;&lt;/p&gt;
 &lt;hr /&gt;
@@ -31789,29 +31791,29 @@ Nadpisać ją?</translation>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="268"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="276"/>
         <source>Gradient</source>
-        <translation>Gradient</translation>
+        <translation>gradient</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="268"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="287"/>
         <source>Random</source>
-        <translation>Losowy</translation>
+        <translation>losowa</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="268"/>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="298"/>
         <source>ColorBrewer</source>
-        <translation>ColorBrewer</translation>
+        <translation>schemat kolorów</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="270"/>
         <source>Color ramp type</source>
-        <translation>Typ palety kolorów</translation>
+        <translation>Paleta kolorów</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="271"/>
         <source>Please select color ramp type:</source>
-        <translation>Wybierz typ palety kolorów:</translation>
+        <translation>Wybierz typ:</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsstylev2managerdialog.cpp" line="315"/>
@@ -31844,7 +31846,7 @@ Nadpisać ją?</translation>
     <message>
         <location filename="../src/ui/qgsstylev2managerdialogbase.ui" line="14"/>
         <source>Style Manager</source>
-        <translation>Zarządzanie Stylem</translation>
+        <translation>Zarządzanie stylem</translation>
     </message>
     <message>
         <source>Style item type</source>
@@ -32243,7 +32245,7 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="77"/>
         <source>QGIS is spelled in all caps. We have various subprojects of the QGIS project and it will help to avoid confusion if you refer to each by its name:&lt;ul&gt;&lt;li&gt;QGIS Library - this is the C++ library that contains the core logic that is used to build the QGIS user interface and other applications.&lt;/li&gt;&lt;li&gt;QGIS Application - this is the desktop application that you know and love so much :-).&lt;/li&gt;&lt;li&gt;QGIS Mapserver - this is a server-side application based on the QGIS Library that will serve up your .qgs projects using the WMS protocol.&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>Nazwę QGIS piszemy dużymi literami. W ramach projektu QGIS rozwijane są różne podprojekty i aby ich nie mylić przyjęto następujące nazewnictwo:&lt;ul&gt;&lt;li&gt;Biblioteka QGIS - jest to biblioteka w języku C++ zawierająca rdzeń logiki do budowy interfejsu użytkownika QGIS oraz aplikacji pochodnych.&lt;/li&gt;&lt;li&gt;Program QGIS - jest aplikacją klasy desktop z której aktualnie korzystasz.&lt;/li&gt;&lt;li&gt;QGIS Mapserver - jest aplikacją serwerową zbudowaną w oparciu o Bibliotekę QGIS Library. Udostępnia projekty QGIS (*.qgs) za pośrednictwem usługi WMS.&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation type="unfinished">Nazwę QGIS piszemy dużymi literami. W ramach projektu QGIS rozwijane są różne podprojekty i aby ich nie mylić, przyjęto następujące nazewnictwo:&lt;ul&gt;&lt;li&gt;Biblioteka QGIS - jest to biblioteka w języku C++ zawierająca rdzeń logiki do budowy interfejsu użytkownika QGIS oraz aplikacji pochodnych.&lt;/li&gt;&lt;li&gt;Program QGIS - jest aplikacją klasy desktop z której aktualnie korzystasz.&lt;/li&gt;&lt;li&gt;QGIS Mapserver - jest aplikacją serwerową zbudowaną w oparciu o Bibliotekę QGIS. Udostępnia projekty QGIS (*.qgs) za pośrednictwem usługi WMS.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="91"/>
@@ -32313,7 +32315,7 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="155"/>
         <source>Sometimes you have a very large dataset which takes ages to draw. You can press &apos;esc&apos; (the escape key), or click the small red &apos;X&apos; icon in the status bar to the bottom right of the window at any time to halt rendering. If you are going to be performing several actions (e.g. modifying symbology options) and wish to temporarily disable map rendering while you do so, you can uncheck the &apos;Render&apos; checkbox in the bottom right of the status bar. Don&apos;t forget to check it on again when you are ready to have the map draw itself again!</source>
-        <translation>Czasem wyświetlenie dużej mapy zajmuje wieki. Naciśnięcie klawisza ESC lub małej ikony z pędzlem i czerwonym przekreślony kółkiem w prawy dolnym rogu okna, przerwie rysowania. Jeśli planujesz wykonanie kilku operacji mogących spowolnić odświeżanie widoku, możesz tymczasowo wyłączyć automatyczne przerysowywania widoku mapy. Należy w tym celu wyłączyć opcję Renderuj umieszczoną w prawym dolnym rogu ekranu. Nie zapomnij jednak ponownie włączyć tej opcji po zakończeniu operacji!</translation>
+        <translation type="unfinished">Czasem wyświetlenie dużej mapy zajmuje wieki. Naciśnięcie klawisza ESC lub małej ikony z pędzlem i czerwonym przekreślony kółkiem zlokalizowanej w prawy dolnym rogu okna, przerwie rysowanie. Jeśli planujesz wykonanie kilku operacji mogących spowolnić odświeżanie widoku, możesz tymczasowo wyłączyć automatyczne przerysowywanie widoku mapy. Należy w tym celu wyłączyć opcję Renderuj umieszczoną w prawym dolnym rogu ekranu. Nie zapomnij jednak ponownie włączyć tej opcji po zakończeniu operacji!</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="166"/>
@@ -32323,17 +32325,17 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="167"/>
         <source>When applying layered styles to a polyline layer, you can join intersecting lines together simply by enabling symbol levels. The image below shows a before (left) and after (right) view of an intersection when symbol levels are enabled.</source>
-        <translation>Aby uzyskać efekt przenikania linii, tak jak pokazano to na prawej ilustracji poniżej, należy włączyć poziomy wyświetlania warstw symboli. Znajdziesz je na górze okna stylu wartwy.</translation>
+        <translation type="unfinished">Aby uzyskać efekt przenikania linii, tak jak pokazano na prawej ilustracji poniżej, należy włączyć poziomy wyświetlania warstw symboli. Znajdziesz je na górze okna stylu wartwy.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="175"/>
         <source>Auto-enable on the fly projection</source>
-        <translation>Transformacja układu współrzędnych w locie</translation>
+        <translation>Reprojekcja w locie</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="176"/>
         <source>In the options dialog, under the CRS tab, you can set QGIS so that whenever you create a new project, &apos;on the fly projection&apos; is enabled automatically and a pre-selected Coordinate Reference System of your choice is used.</source>
-        <translation>Dostępna jest we Właściwościach projektu, w zakładce Układ współrzędnych (CRS). Jeśli chcesz aby była domyślnie aktywna dla wszystkich nowych projektów, możesz to zdefiniować w Opcjach programu, w zakładce Układ współrzędnych.</translation>
+        <translation type="unfinished">Dostępna jest we Właściwościach projektu, w zakładce Układ współrzędnych (CRS). Jeśli chcesz, aby była domyślnie aktywna dla wszystkich nowych projektów, możesz to zdefiniować w Opcjach programu, w zakładce Układ współrzędnych.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="183"/>
@@ -33944,7 +33946,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="140"/>
         <source>Classes</source>
-        <translation>Klasy</translation>
+        <translation>Liczba klas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="194"/>
@@ -34397,7 +34399,7 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation>Dodaj warstwę z serwera</translation>
+        <translation>Dodaj warstwę WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="21"/>
@@ -34412,7 +34414,7 @@ Może to wskazywać na błędną konfigurację serwera. Czy mam go użyć mimo w
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="82"/>
         <source>&amp;New</source>
-        <translation>&amp;Nowy</translation>
+        <translation>&amp;Nowa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="92"/>
