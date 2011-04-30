@@ -102,11 +102,6 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   }
 
   // if xml reading was successfull, save the inputXML in a file
-  time_t t;
-  struct tm *currentTime;
-  time( &t );
-  currentTime = localtime( &t );
-
   QFile soapFile;
   QTextStream soapStream;
 

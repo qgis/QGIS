@@ -138,7 +138,6 @@ void QgsComposerScaleBar::applyDefaultSize()
   if ( mComposerMap )
   {
     //calculate mNumUnitsPerSegment
-    QRectF composerItemRect = mComposerMap->rect();
     QgsRectangle composerMapRect = mComposerMap->extent();
 
     double proposedScaleBarLength = composerMapRect.width() / 4;

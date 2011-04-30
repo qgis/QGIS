@@ -611,7 +611,6 @@ namespace pal
     double cp;
     double best_cp;
     double distNearestPoint;
-    int nearestPoint;
 
     double area;
     double width;
@@ -689,14 +688,12 @@ namespace pal
         alpha_seg = (( i / 4 > 0 ? ( i / 4 ) - 1 : 3 ) ) * M_PI / 2 + alpha;
 
         best_cp = DBL_MAX;
-        nearestPoint = -1;
         for ( j = 0; j < nbPoints; j++ )
         {
           cp = cross_product( bb[i+2], bb[i+3], bb[i], bb[i+1], x[cHull[j]], y[cHull[j]] );
           if ( cp < best_cp )
           {
             best_cp = cp;
-            nearestPoint = cHull[j];
           }
         }
 

@@ -4214,8 +4214,10 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
   // used in all cases of the statement (otherwise they may get
   // executed, but never used, in a bit of code where performance is
   // critical).
-  if ( ! fet.isValid() ) { return; }
-  bool needToTrim = false;
+  if ( ! fet.isValid() )
+  {
+    return;
+  }
 
   QgsGeometry* geom = fet.geometry();
   if ( !geom )
@@ -4283,10 +4285,8 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
         //QPointF pt( x, y );
 
         // Work around a +/- 32768 limitation on coordinates
-        if ( qAbs( x ) > QgsClipper::MAX_X ||
-             qAbs( y ) > QgsClipper::MAX_Y )
-          needToTrim = true;
-        else
+        if ( qAbs( x ) <= QgsClipper::MAX_X &&
+             qAbs( y ) <= QgsClipper::MAX_Y )
           p->drawImage( pt, *marker );
       }
       p->restore();

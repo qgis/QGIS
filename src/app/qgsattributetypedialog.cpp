@@ -86,7 +86,6 @@ void QgsAttributeTypeDialog::vCellChanged( int row, int column )
 void QgsAttributeTypeDialog::removeSelectedButtonPushed()
 {
   QList<QTableWidgetItem *> list = tableWidget->selectedItems();
-  QList<QTableWidgetItem *>::iterator it = list.begin();
   QSet<int> rowsToRemove;
   int removed = 0;
   int i = 0;

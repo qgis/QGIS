@@ -216,7 +216,6 @@ void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
     return;
   }
 
-  QPointF canvasPoint = toCanvasCoordinates( mMapPosition );
   if ( mMarkerSymbol )
   {
     mMarkerSymbol->startRender( renderContext );

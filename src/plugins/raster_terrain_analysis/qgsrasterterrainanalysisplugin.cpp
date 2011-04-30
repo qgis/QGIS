@@ -82,7 +82,6 @@ void QgsRasterTerrainAnalysisPlugin::run()
     QString analysisMethod = d.selectedAnalysisMethod();
     QString selectedFormat = d.selectedDriverKey();
     QString outputFile = d.selectedOuputFilePath();
-    int returnValue;
 
     QgsNineCellFilter* filter = 0;
     if ( d.selectedAnalysisMethod() == tr( "Slope" ) )
@@ -106,7 +105,7 @@ void QgsRasterTerrainAnalysisPlugin::run()
     {
       QProgressDialog p( tr( "Calculating " ) + d.selectedAnalysisMethod() + "...", tr( "Abort..." ), 0, 0 );
       p.setWindowModality( Qt::WindowModal );
-      returnValue = filter->processRaster( &p );
+      filter->processRaster( &p );
       delete filter;
       if ( d.addLayerToProject() )
       {

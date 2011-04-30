@@ -120,9 +120,7 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     {
       char* crsWKT = 0;
       OGRSpatialReferenceH ogrSRS = OSRNewSpatialReference( NULL );
-      const QgsCoordinateReferenceSystem& outputCrs = rl->crs();
-      int epsgCode = outputCrs.epsg();
-      if ( epsgCode > 0 &&  OSRImportFromEPSG( ogrSRS, epsgCode ) == CE_None )
+      if ( OSRSetFromUserInput( ogrSRS, rl->crs().authid().toUtf8().constData() ) == OGRERR_NONE )
       {
         OSRExportToWkt( ogrSRS, &crsWKT );
         GDALSetProjection( outputDataset, crsWKT );

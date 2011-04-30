@@ -1747,7 +1747,6 @@ void TerminalDisplay::extendSelection( const QPoint& position )
   // this widget.
 
   // Adjust position within text area bounds. See FIXME above.
-  QPoint oldpos = pos;
   if ( pos.x() < tLx + _leftMargin )
     pos.setX( tLx + _leftMargin );
   if ( pos.x() > tLx + _leftMargin + _usedColumns*_fontWidth - 1 )

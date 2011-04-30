@@ -1463,12 +1463,6 @@ void QgsGrassEdit::addAttributes( int field, int cat )
       }
       else
       {
-        int size;
-        if ( atts->size() < ( int ) cols->size() )
-          size = atts->size();
-        else
-          size = cols->size();
-
         for ( unsigned int j = 0; j < cols->size(); j++ )
         {
           QgsField col = ( *cols )[j];

@@ -3877,8 +3877,6 @@ void QgisApp::mergeSelectedFeatures()
   }
 
   //make a first geometry union and notify the user straight away if the union geometry type does not match the layer one
-  QGis::WkbType originalType = vl->wkbType();
-  QGis::WkbType newType = unionGeom->wkbType();
   if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
   {
     QMessageBox::critical( 0, tr( "Union operation canceled" ), tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );
@@ -3918,8 +3916,6 @@ void QgisApp::mergeSelectedFeatures()
       return;
     }
 
-    originalType = vl->wkbType();
-    newType = unionGeom->wkbType();
     if ( providerChecksTypeStrictly && unionGeom->wkbType() != vl->wkbType() )
     {
       QMessageBox::critical( 0, "Union operation canceled", tr( "The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled" ) );

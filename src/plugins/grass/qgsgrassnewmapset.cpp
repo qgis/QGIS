@@ -1147,7 +1147,6 @@ void QgsGrassNewMapset::setMapsets()
   QDir d( locationPath );
 
   // Add all subdirs containing WIND
-  QTreeWidgetItem *lvi;
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
     if ( d[i] == "." || d[i] == ".." ) continue;
@@ -1158,7 +1157,7 @@ void QgsGrassNewMapset::setMapsets()
 
     if ( QFile::exists( windPath ) )
     {
-      lvi = new QTreeWidgetItem( mMapsetsListView, QStringList() << d[i] << mapsetInfo.owner() );
+      new QTreeWidgetItem( mMapsetsListView, QStringList() << d[i] << mapsetInfo.owner() );
     }
   }
 }

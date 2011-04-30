@@ -320,13 +320,8 @@ void QgsMapRenderer::render( QPainter* painter )
     }
   }
 
-  bool placeOverlays = false;
   QgsOverlayObjectPositionManager* overlayManager = overlayManagerFromSettings();
   QList<QgsVectorOverlay*> allOverlayList; //list of all overlays, used to draw them after layers have been rendered
-  if ( overlayManager )
-  {
-    placeOverlays = true;
-  }
 
   // render all layers in the stack, starting at the base
   QListIterator<QString> li( mLayerSet );
