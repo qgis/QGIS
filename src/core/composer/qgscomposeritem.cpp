@@ -958,7 +958,6 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
   //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
   double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
   QPointF p2 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
-  QPointF p4 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x4, y4 ), distM1 );
 
   if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
   {

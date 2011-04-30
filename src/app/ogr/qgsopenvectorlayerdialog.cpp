@@ -240,12 +240,10 @@ void QgsOpenVectorLayerDialog::setConnectionTypeListPosition()
   QSettings settings;
 
   QString toSelect = settings.value( "/ogr/connections/selectedtype" ).toString();
-  bool set = false;
   for ( int i = 0; i < cmbDatabaseTypes->count(); ++i )
     if ( cmbDatabaseTypes->itemText( i ) == toSelect )
     {
       cmbDatabaseTypes->setCurrentIndex( i );
-      set = true;
       break;
     }
 }

@@ -3443,7 +3443,6 @@ QgsRectangle QgsGeometry::boundingBox()
   int numLineStrings;
   int idx, jdx, kdx;
   unsigned char *ptr;
-  char lsb;
   QgsPoint pt;
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -3568,7 +3567,6 @@ QgsRectangle QgsGeometry::boundingBox()
       for ( jdx = 0; jdx < numLineStrings; jdx++ )
       {
         // each of these is a wbklinestring so must handle as such
-        lsb = *ptr;
         ptr += 5;   // skip type since we know its 2
         nPoints = ( int * ) ptr;
         ptr += sizeof( int );
@@ -4135,7 +4133,6 @@ bool QgsGeometry::exportWkbToGeos()
   int numLineStrings;
   int idx, jdx, kdx;
   unsigned char *ptr;
-  char lsb;
   QgsPoint pt;
   QGis::WkbType wkbtype;
   bool hasZValue = false;
@@ -4226,7 +4223,6 @@ bool QgsGeometry::exportWkbToGeos()
           QgsPolyline sequence;
 
           // each of these is a wbklinestring so must handle as such
-          lsb = *ptr;
           ptr += 5;   // skip type since we know its 2
           nPoints = ( int * ) ptr;
           ptr += sizeof( int );
@@ -5165,7 +5161,6 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
   }
 
   GEOSGeometry** newInnerRings = new GEOSGeometry*[ringList.size()];
-  QList<GEOSGeometry*>::const_iterator it = ringList.constBegin();
   for ( int i = 0; i < ringList.size(); ++i )
   {
     newInnerRings[i] = ringList.at( i );

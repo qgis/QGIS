@@ -137,7 +137,6 @@ void QgsGrassBrowser::addMap()
   QgsDebugMsg( "entered." );
 
   QModelIndexList indexes = mTree->selectionModel()->selectedIndexes();
-  bool mapSelected = false;
 
   QList<QModelIndex>::const_iterator it = indexes.begin();
   for ( ; it != indexes.end(); ++it )
@@ -152,7 +151,6 @@ void QgsGrassBrowser::addMap()
       //mIface->addRasterLayer( uri, map );
       mIface->addRasterLayer( uri, map, "grassraster", QStringList(), QStringList(),
                               QString(), QString() );
-      mapSelected = true;
     }
     else if ( type == QgsGrassModel::Vector )
     {
@@ -177,7 +175,6 @@ void QgsGrassBrowser::addMap()
                        map, layer, list.size() );
 
       mIface->addVectorLayer( uri, name, "grass" );
-      mapSelected = true;
     }
     else if ( type == QgsGrassModel::Region )
     {

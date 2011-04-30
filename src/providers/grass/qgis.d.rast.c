@@ -27,7 +27,6 @@ int main( int argc, char **argv )
 {
   char *mapset;
   char *name;
-  int fp;
   struct GModule *module;
   struct Option *map;
   struct Option *win;
@@ -81,14 +80,7 @@ int main( int argc, char **argv )
   G_set_window( &window );
 
   raster_type = G_raster_map_type( name, "" );
-  fp = G_raster_map_is_fp( name, mapset );
 
-  /* use DCELL even if the map is FCELL */
-  // Why? It would break dataType in provider.
-  //if ( fp )
-  //  display( name, mapset, DCELL_TYPE, format->answer );
-  //else
-  //  display( name, mapset, CELL_TYPE, format->answer );
   display( name, mapset, raster_type, format->answer );
 
   exit( EXIT_SUCCESS );
@@ -198,9 +190,6 @@ static int cell_draw( char *name,
       }
       else
       {
-        int *val;
-        val = ( int* )( ptr );
-        //G_debug ( 0, "val = %d", *val );
         if ( data_type == CELL_TYPE )
         {
           //G_debug ( 0, "valx = %d", *((CELL *) ptr));

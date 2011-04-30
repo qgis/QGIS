@@ -1886,8 +1886,6 @@ void QgsRasterLayerProperties::refreshHistogram()
   // and max - scaled to image height. 1 line drawn per selected band
   //
   const int BINCOUNT = 255;
-  enum GRAPH_TYPE { BAR_CHART, LINE_CHART } myGraphType;
-  myGraphType = BAR_CHART;
   bool myIgnoreOutOfRangeFlag = true;
   bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
