@@ -1582,7 +1582,7 @@ Wtyczka nie zostanie włączona.</translation>
     </message>
     <message>
         <source>Build a shapefile as a raster tileindex</source>
-        <translation type="unfinished">Generuj Shapefile będący indeksem kafli</translation>
+        <translation type="unfinished">Generuj Shapefile z indeksem kafli</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
@@ -1913,7 +1913,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation type="unfinished">Przelicz - srcwin</translation>
+        <translation>Konwertuj - srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
@@ -1921,7 +1921,7 @@ Czy chcesz je zakończyć mimo wszystko?</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
-        <translation type="unfinished">Przelicz - prjwin</translation>
+        <translation>Konwertuj - prjwin</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
@@ -2198,7 +2198,7 @@ Wyłącz opcję &quot;Użyj zasięgu przecięcia&quot;, aby otrzymać niepusty w
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="114"/>
         <source>Se&amp;parate</source>
-        <translation type="unfinished">&amp;Rozdziel kanały</translation>
+        <translation>Jako osobne &amp;kanały</translation>
     </message>
     <message>
         <source>&amp;Resolution:</source>
@@ -2697,17 +2697,17 @@ Wyłącz opcję &quot;Użyj zasięgu przecięcia&quot;, aby otrzymać niepusty w
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="330"/>
         <source>Matching mode</source>
-        <translation type="unfinished">Tryb zgodności</translation>
+        <translation type="unfinished">Bez interpolacji kolorów z palety</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="342"/>
         <source>Exact color (otherwise &quot;0,0,0,0&quot; RGBA)</source>
-        <translation>Definicja kolor (lub &quot;0,0,0,0&quot; RGBA)</translation>
+        <translation type="unfinished">Tylko pasujące (RGBA 0000 dla pozostałych)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="355"/>
         <source>Nearest color</source>
-        <translation>Sąsiedni kolor</translation>
+        <translation type="unfinished">Dopasuj najbliższy</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="365"/>
@@ -6093,7 +6093,7 @@ Czy chcesz wskazać ścieżkę (GISBASE) do Twojej instalacji GRASS?</translatio
         <location filename="../src/app/qgspluginregistry.cpp" line="287"/>
         <source>Attempting to resolve the classFactory function
 </source>
-        <translation type="unfinished">Próba analizy funkcji classFactory
+        <translation type="unfinished">Próba wykonania funkcji classFactory
 </translation>
     </message>
     <message>
@@ -12044,7 +12044,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="130"/>
         <source>Item frame toggled</source>
-        <translation type="unfinished">Włączono/wyłączono ramkę</translation>
+        <translation>Włączono lub wyłączono ramkę elementu</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="178"/>
@@ -12261,7 +12261,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="135"/>
         <source>Legend layer space</source>
-        <translation type="unfinished">Odstęp warstwy legendy</translation>
+        <translation>Odstęp warstwy legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="147"/>
@@ -12271,7 +12271,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="159"/>
         <source>Legend icon label space</source>
-        <translation type="unfinished">Odstęp ikony etykiety legendy</translation>
+        <translation>Odstęp ikony etykiety legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="180"/>
@@ -12281,12 +12281,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="202"/>
         <source>Legend group font changed</source>
-        <translation type="unfinished">Zmieniono czcionkę grupy legendy</translation>
+        <translation>Zmieniono czcionkę grupy legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="224"/>
         <source>Legend layer font changed</source>
-        <translation type="unfinished">Zmieniono czcionkę legendy warstwy</translation>
+        <translation>Zmieniono czcionkę legendy warstwy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="246"/>
@@ -12301,13 +12301,13 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="492"/>
         <source>Legend item edited</source>
-        <translation type="unfinished">Edytowano element legendy</translation>
+        <translation>Edytowano element legendy</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="525"/>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="555"/>
         <source>Legend updated</source>
-        <translation type="unfinished">Zmieniono legendę</translation>
+        <translation>Zmieniono legendę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="544"/>
@@ -12613,7 +12613,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="512"/>
         <source>Grid checkbox toggled</source>
-        <translation type="unfinished">włączono/wyłączono siatkę</translation>
+        <translation>włączono lub wyłączono siatkę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="533"/>
@@ -13036,7 +13036,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="127"/>
         <source>Scalebar map changed</source>
-        <translation type="unfinished">zmieniono podziałkę</translation>
+        <translation>zmieniono podziałkę</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="175"/>
@@ -13061,17 +13061,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="228"/>
         <source>Scalebar height changed</source>
-        <translation type="unfinished">zmieniono wysokość podziałki</translation>
+        <translation>zmieniono wysokość podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="251"/>
         <source>Scalebar font changed</source>
-        <translation type="unfinished">zmieniono czcionkę podziałki</translation>
+        <translation>zmieniono czcionkę podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="273"/>
         <source>Scalebar color changed</source>
-        <translation type="unfinished">zmieniono kolor podziałki</translation>
+        <translation>zmieniono kolor podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="287"/>
@@ -13086,17 +13086,17 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="313"/>
         <source>Scalebar style changed</source>
-        <translation type="unfinished">zmieniono styl podziałki</translation>
+        <translation>zmieniono styl podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="355"/>
         <source>Scalebar label bar space</source>
-        <translation type="unfinished">Odstęp etykiety podziałki</translation>
+        <translation>Odstęp etykiety podziałki</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="368"/>
         <source>Scalebar box content space</source>
-        <translation type="unfinished">Odstęp pojamnika podziałki</translation>
+        <translation>Odstęp pojemnika podziałki</translation>
     </message>
 </context>
 <context>
@@ -13364,12 +13364,12 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="279"/>
         <source>Table grid toggled</source>
-        <translation>Przełącznik linii tabeli</translation>
+        <translation>włączono lub wyłączono linie tabeli</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="366"/>
         <source>Table visible only toggled</source>
-        <translation type="unfinished">Przełącznik widoczności tabeli</translation>
+        <translation type="unfinished">włączono lub wyłączono filtr tabeli</translation>
     </message>
 </context>
 <context>
@@ -19939,7 +19939,7 @@ w wierszu %2 kolumnie %3</translation>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="14"/>
         <source>Handle bad layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Brakujące warstwy</translation>
     </message>
     <message>
         <location filename="../src/ui/qgshandlebadlayersbase.ui" line="21"/>
@@ -22652,7 +22652,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <source>dd</source>
-        <translation type="unfinished"></translation>
+        <translation>stopnie dzies.</translation>
     </message>
     <message>
         <source>feet</source>
@@ -24456,7 +24456,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="937"/>
         <source>Overlays</source>
         <translatorcomment>to nie jest chyba dobre tłumaczenie</translatorcomment>
-        <translation type="unfinished">Nakładki</translation>
+        <translation>Nakładki</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="964"/>
@@ -24924,32 +24924,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="16"/>
         <source>Solid Line</source>
-        <translation type="unfinished">linia ciągła</translation>
+        <translation>linia ciągła</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="18"/>
         <source>Dash Line</source>
-        <translation type="unfinished">linia kreskowa</translation>
+        <translation>linia kreskowa</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="19"/>
         <source>Dot Line</source>
-        <translation type="unfinished">linia kropkowa</translation>
+        <translation>linia kropkowa</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="20"/>
         <source>Dash Dot Line</source>
-        <translation type="unfinished">linia kreska-kropka</translation>
+        <translation>linia kreska-kropka</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="21"/>
         <source>Dash Dot Dot Line</source>
-        <translation type="unfinished">linia kreska-kropka-kropka</translation>
+        <translation>linia kreska-kropka-kropka</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="17"/>
         <source>No Pen</source>
-        <translation type="unfinished">bez rysowania</translation>
+        <translation>bez linii</translation>
     </message>
 </context>
 <context>
@@ -25230,7 +25230,7 @@ Rozszerzona informacja o błędzie:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="58"/>
         <source>&amp;Build query</source>
-        <translation type="unfinished">Stwórz &amp;zapytanie</translation>
+        <translation>Stwórz &amp;zapytanie</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="59"/>
@@ -26543,7 +26543,7 @@ Zainstaluj PostGIS ze wsparciem GEOS (http://geos.refractions.net)</translation>
         <source>PostgreSQL is still in recovery after a database crash
 (or you are connected to a (read-only) slave).
 Write accesses will be denied.</source>
-        <translation type="unfinished">Bazy PostgreSQL jest wciąż w odbudowie po awarii 
+        <translation>Bazy PostgreSQL jest wciąż w odbudowie po awarii 
 (lub jesteś połączony w trybie do odczytu).
 Zapis do bazy jest niedostępny.</translation>
     </message>
@@ -28586,7 +28586,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
         <translatorcomment>tu nie ma chyba nic do tłumaczenie - skąd to w pliku ts?</translatorcomment>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
