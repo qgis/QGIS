@@ -153,9 +153,13 @@ void QgsVectorGradientColorRampV2Dialog::stopDoubleClicked( QTreeWidgetItem* ite
 
 void QgsVectorGradientColorRampV2Dialog::addStop()
 {
+  // Qt 4.7 Mac Cocoa bug: calling QInputDialog::getInt after QColorDialog::getColor will freeze app
+  // workaround: call QColorDialog::getColor below instead of here
+#ifndef QT_MAC_USE_COCOA
   QColor color = QColorDialog::getColor( QColor(), this );
   if ( !color.isValid() )
     return;
+#endif
 
   bool ok;
   int val = 50;
@@ -174,6 +178,13 @@ void QgsVectorGradientColorRampV2Dialog::addStop()
 #endif
   if ( !ok )
     return;
+
+  // Qt 4.7 Mac Cocoa bug workaround: call QColorDialog::getColor here instead of above
+#ifdef QT_MAC_USE_COCOA
+  QColor color = QColorDialog::getColor( QColor(), this );
+  if ( !color.isValid() )
+    return;
+#endif
 
   double key = val / 100.0;
   QStringList lst;
