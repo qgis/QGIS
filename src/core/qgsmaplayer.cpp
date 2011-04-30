@@ -846,7 +846,26 @@ void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
-  if ( keyStartsWith.isEmpty() )
+  if ( !keyStartsWith.isEmpty() )
+  {
+    //remove old keys
+    QStringList keysToRemove;
+    QMap<QString, QVariant>::const_iterator pIt = mCustomProperties.constBegin();
+    for ( ; pIt != mCustomProperties.constEnd(); ++pIt )
+    {
+      if ( pIt.key().startsWith( keyStartsWith ) )
+      {
+        keysToRemove.push_back( pIt.key() );
+      }
+    }
+
+    QStringList::const_iterator sIt = keysToRemove.constBegin();
+    for ( ; sIt != keysToRemove.constEnd(); ++sIt )
+    {
+      mCustomProperties.remove( *sIt );
+    }
+  }
+  else
   {
     mCustomProperties.clear();
   }
