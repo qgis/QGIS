@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Regularized spline with tension raster interpolation based on vector points" module="v.surf.rst">
+	<option key="input" layeroption="layer" typemask="point,line" id="input" />
+	<field key="zcolumn" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
+	<option key="tension" />
+	<!--option key="smooth" /-->
+	<option key="elev" />
+	<option key="dmax" answer="5" hidden="yes" />
+	<option key="dmin" answer="2" hidden="yes" />
+	<!--option key="segmax" answer="1000" hidden="yes" /-->
+	<!--option key="npmin" answer="5000" hidden="yes" /-->
+</qgisgrassmodule>

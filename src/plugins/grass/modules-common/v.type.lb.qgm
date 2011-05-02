@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Convert lines to boundaries" module="v.type">
+	<option key="input" typemask="line"/>
+	<option key="output"/>
+	<option key="type" answer="line,boundary" hidden="yes" />
+</qgisgrassmodule>

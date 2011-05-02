@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsComposerManagerBase</class>
+ <widget class="QDialog" name="QgsComposerManagerBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>346</width>
+    <height>195</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Composer manager</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" rowspan="3" colspan="2">
+    <widget class="QListWidget" name="mComposerListWidget"/>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QComboBox" name="mTemplate"/>
+   </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="mAddButton">
+     <property name="text">
+      <string>Add</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>mComposerListWidget</tabstop>
+  <tabstop>mTemplate</tabstop>
+  <tabstop>mAddButton</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsComposerManagerBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsComposerManagerBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>260</x>
+     <y>185</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

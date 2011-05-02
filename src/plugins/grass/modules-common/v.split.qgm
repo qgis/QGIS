@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+<qgisgrassmodule label="Split lines to shorter segments" module="v.split">
+        <option key="input" typemask="line,boundary"/>
+        <option key="output"/>
+	<option key="length"/>
+	<option key="vertices"/>
+</qgisgrassmodule>
+

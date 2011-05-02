@@ -1,0 +1,31 @@
+<h3>Attributtabelle</h3>
+Die Attributtabelle zeigt Objekte des gew&auml;hlten Layers an.  Jede Zeile stelle ein Objekt auf der Karte mit seinem Attributen in mehreren Spalten.  Die Objekt in der Tabelle k&ouml;nnen durchsucht, ausgew&auml;hlt, verschieben und auch bearbeitet werden.  Die Attributtabelle erscheint normalerweise als separates Fenster.   Wenn Sie es ge&ouml;ffnet haben, aber es nicht mehr sehen k&ouml;nnen, ist es vermutlich unter dem QGIS-Hauptfenster verschwunden.  Sie k&ouml;nnen das Fenster auch gedockt anzeigen indem Sie unter <label>Einstellungen > Optionen > Allgemein</label> ein H&auml;kchen bei <label>Attributtabelle gedockt &ouml;ffnen</label> setzen.<p>
+
+Die Nummer des Tabellenobjekts ist in der f&uuml;hrenden Spalte angegeben<p>
+<p>
+<a href="#Selecting">Ausw&auml;hlen</a><br/>
+<a href="#Sorting">Sortieren</a><br/>
+<a href="#Searching">Suchen</a><br/>
+<a href="#Field">Feldrechner</a><br/>
+
+<a name="Selecting">
+<h4>Ausw&auml;hlen</h4>
+</a>
+Zeilen k&ouml;nnen durch Klicken auf die Zeilennummer auf der linken Seite der Zeile ausgew&auml;hlt werden.  Die Auswahl einer Zeile &auml;ndern die aktuelle Cursorposition nicht.  Mehrere Zeilen k&ouml;nnen durch Dr&uuml;cken der Taste <label>Strg</label> gew&auml;hlt werden.  Eine fortlaufende Auswahl kann durch Dr&uuml;cken der Taste <label>Umschalt</label> und Klicken auf mehrere Zeilentitel auf der linken Seite der Zeile erreicht werden.   Damit werden alle Zeilen zwischen der aktuellen und der angeklickten Zeile werden gew&auml;hlt.
+
+<a name="Sorting">
+<h4>Sortieren</h4>
+</a>
+Jede Spalte kann durch Klick auf den Spaltentitel sortiert werden.  Ein kleiner Pfeil zeigt die Sortierreihenfolge an (Nach unten bedeutet absteigende Werte von oben nach unten und nach oben aufsteigende Werte von oben nach unten).<br> Benutzen Sie den Knopf <label>Ausgew&auml;hlte nach oben</label> um die gew&auml;hlten Tabellenzeilen als erste anzuzeigen.  Um nur die gew&auml;hlten Datens&auml;tze anzuzeigen haken Sie das Kontrollk&auml;stchen <label>Nur gew&auml;hlte Datens&auml;tze zeigen</label> ab.
+
+<a name="Searching">
+<h4>Suchen</h4>
+</a>
+F&uuml;r eine einfache Suche nach Attribute einer Spalte kann das <label>Suche nach</label> eingesetzt werden.  W&auml;hlen Sie das Feld (Spalte), das durchsucht werden soll aus der Auswahlliste und klicken Sie auf den Knopf <label>Suchen</label>.<br> F&uuml;r komplexere Suche verwenden Sie bitte <label>Erweitere Suche</label> Dieser Knopf &ouml;ffnet den Abfrageeditor und erlaubt Ihnen Zeilen zu w&auml;hlen, die zu einer SQL-&auml;hnlichen Where-Klausel passen.
+
+<a name="Field">
+<h4>Feldrechner</h4>
+</a>
+Der Knopf <label>Feldrechner</label> in der Attributtabelle erm&ouml;glicht Berechnungen auf mit vorhandenen Attributwerten oder definierten Funktionen.  Z.B.  kann die L&auml;nge oder Fl&auml;che von Geometrieobjekten berechnet werden.<br/>
+Die Ergebnisse k&ouml;nnen in eine neue Attributspalte geschrieben oder eine vorhandene Spalte damit &uuml;berschrieben werden.<br/>
+Um den Feldrechner zu &ouml;ffnen, m&uuml;ssen Sie den Vektorlayer zuvor in den Bearbeitungsmodus versetzen.

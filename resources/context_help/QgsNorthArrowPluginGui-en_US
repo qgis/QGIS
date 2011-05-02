@@ -1,0 +1,4 @@
+<h3> North Arrow Plugin</h3>
+Displays a north arrow overlayed onto the map.
+<p>
+At present there is only one style available. You can adjust the angle of the arrow or let QGIS set the direction automatically. If you choose to let QGIS determine the direction, it makes its best guess as to how the arrow should be oriented. For placement of the arrow you have four options, corresponding to the four corners of the map canvas.

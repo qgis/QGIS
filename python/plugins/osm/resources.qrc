@@ -1,0 +1,77 @@
+<RCC>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_load.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_import.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_save.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_download.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_upload.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_move.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_identify.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_createPolygon.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_createPoint.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_createLine.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_featureManager.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_createRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_addRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_editRelation.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_urDetails.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_remove.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeFeat.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeTag.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_removeMember.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_generateTags.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_questionMark.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_undo.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_redo.png</file>
+    </qresource>
+    <qresource prefix="/plugins/osm_plugin" >
+        <file>images/osm_clearUndoRedo.png</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Update vector map metadata" module="v.support">
+	<option key="map" />
+	<option key="organization" />
+	<option key="date" />
+	<option key="person" />
+	<option key="map_name" />
+	<option key="map_date" />
+	<option key="scale" />
+	<option key="zone" />
+	<option key="thresh" />
+	<option key="comment" />
+	<option key="cmdhist" />
+</qgisgrassmodule>

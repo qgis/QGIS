@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create red, green and blue rasters combining hue, intensity, and saturation (his) values from rasters" module="r.his">
+	<option key="h_map"/>
+	<option key="i_map"/>
+	<option key="s_map"/>
+	<option key="r_map"/>
+	<option key="g_map"/>
+	<option key="b_map"/>
+</qgisgrassmodule>

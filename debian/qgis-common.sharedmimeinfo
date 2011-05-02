@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mime-info xmlns="http://www.freedesktop.org/standards/shared-mime-info">
+ <mime-type type="application/x-qgis">
+  <comment xml:lang="en">Quantum GIS Project</comment>
+  <glob pattern="*.qgs"/>
+ </mime-type>
+
+ <mime-type type="application/shapefile">
+  <comment xml:lang="en">ESRI shape file</comment>
+  <glob pattern="*.shp"/>
+ </mime-type>
+
+ <mime-type type="application/mif">
+  <comment xml:lang="en">MapInfo file</comment>
+  <glob pattern="*.mif"/>
+ </mime-type>
+
+ <mime-type type="application/gml">
+  <comment xml:lang="en">Geographic Markup Language</comment>
+  <glob pattern="*.gml"/>
+ </mime-type>
+
+ <mime-type type="image/geotiff">
+  <comment xml:lang="en">GEOTiff</comment>
+  <glob pattern="*.tif"/>
+  <glob pattern="*.tiff"/>
+ </mime-type>
+ 
+ <mime-type type="image/jpeg">
+  <comment xml:lang="en">JPEG compress raster data</comment>
+  <glob pattern="*.jpg"/>
+  <glob pattern="*.jpeg"/>
+ </mime-type>
+
+ <mime-type type="image/jp2">
+  <comment xml:lang="en">JPEG 2000 compress raster data</comment>
+  <glob pattern="*.jp2"/>
+  <glob pattern="*.j2k"/>
+ </mime-type>
+
+ <mime-type type="image/ecw">
+  <comment xml:lang="en">ECW compressed raster data</comment>
+  <glob pattern="*.ecw"/>
+ </mime-type>
+
+ <mime-type type="image/sid">
+  <comment xml:lang="en">MrSID compress raster data</comment>
+  <glob pattern="*.sid"/>
+ </mime-type>
+
+</mime-info>

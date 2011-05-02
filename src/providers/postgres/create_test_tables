@@ -1,0 +1,162 @@
+-- A script to create a number of tables in a PostGIS enabled
+-- PostgreSQL database that test the ability of Qgis to load said
+-- tables.
+
+-- $Id:$
+
+-- These are all in the public schema (need to do a set for a non-public shema)
+
+-- normal table
+-- Should load
+CREATE TABLE test0 (id int4 primary key) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test0','the_geom',4326,'LINESTRING',2);
+INSERT INTO test0 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- no select permission on table
+-- Should NOT load
+CREATE TABLE test1 (id int4);
+SELECT addgeometrycolumn('public','test1','the_geom',4326,'LINESTRING',2);
+INSERT INTO test1 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+REVOKE SELECT ON test1 FROM public;
+
+-- no primary key on table, but has an oid
+-- Should load
+CREATE TABLE TEST2 (id int4) WITH OIDS;
+SELECT addgeometrycolumn('public','test2','the_geom',4326,'LINESTRING',2);
+INSERT INTO test2 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- primary key of non int4 type, but has an oid
+-- Should load
+CREATE TABLE test3 (id double precision PRIMARY KEY) WITH OIDS;
+SELECT addgeometrycolumn('public','test3','the_geom',4326,'LINESTRING',2);
+INSERT INTO test3 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- no primary key, no oid, no other field of type int4 with unique constraint
+-- Should NOT load
+CREATE TABLE test4 (id double precision) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test4','the_geom',4326,'LINESTRING',2);
+INSERT INTO test4 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- no primary key, no oid, but an int4 column with a unique constraint
+-- Should load
+CREATE TABLE test5 (id int4 UNIQUE) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test5','the_geom',4326,'LINESTRING',2);
+INSERT INTO test5 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- no primary key, no oid, but an int4 column, but without a unique
+-- constraint, but unique data
+-- Should load
+CREATE TABLE test6 (id int4) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test6','the_geom',4326,'LINESTRING',2);
+INSERT INTO test6 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+INSERT INTO test6 (id, the_geom) values (1, geomfromtext('LINESTRING(151 -43, 161 -44)',4326));
+
+-- no primary key, no oid, but an int4 column, but without a unique
+-- constraint, and duplicate data
+-- Should NOT load
+CREATE TABLE test7 (id int4) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test7','the_geom',4326,'LINESTRING',2);
+INSERT INTO test7 (id, the_geom) values (0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+INSERT INTO test7 (id, the_geom) values (0, geomfromtext('LINESTRING(151 -43, 161 -44)',4326));
+
+-- no primary key, no oid, but a non int4 column with a unique constraint
+-- Should NOT load
+CREATE TABLE test8 (id double precision NOT NULL UNIQUE) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test8','the_geom',4326,'LINESTRING',2);
+INSERT INTO test8 (id, the_geom) values (0.0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- a primary key that covers more than one column, and no oid
+-- Should NOT load
+CREATE TABLE test9 (id1 int4, id2 int4, PRIMARY KEY (id1, id2)) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test9','the_geom', 4326, 'LINESTRING',2);
+INSERT INTO test9 (id1, id2, the_geom) values (0, 0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- a primary key that covers more than one column, and no oid, but with a 
+-- unique constraint on another int4 column
+-- Should load
+CREATE TABLE test10 (id1 int4, id2 int4, id3 int4 NOT NULL UNIQUE, PRIMARY KEY (id1, id2)) WITHOUT OIDS;
+SELECT addgeometrycolumn('public','test10','the_geom', 4326, 'LINESTRING',2);
+INSERT INTO test10 (id1, id2, id3, the_geom) values (0, 0, 0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- a primary key that covers more than one column, but with an oid
+-- Should load
+CREATE TABLE test11 (id1 int4, id2 int4, PRIMARY KEY (id1, id2)) WITH OIDS;
+SELECT addgeometrycolumn('public','test11','the_geom', 4326, 'LINESTRING',2);
+INSERT INTO test11 (id1, id2, the_geom) values (0, 0, geomfromtext('LINESTRING(150 -43, 160 -44)',4326));
+
+-- a proper table, but with no data in it
+-- Should load
+CREATE TABLE test12 (id int4 primary key) WITHOUT OIDS;
+SELECT addgeometrycolumn('public', 'test12', 'the_geom', 4326, 'LINESTRING', 2);
+
+-- And now the views...
+
+-- Note views which refer to tables that are loaded only due to their
+-- having an oid column will not load because the view doesn't have
+-- access to the oid (unless it is explicitly included in the view).
+
+
+-- Should not load
+CREATE VIEW v_test1 AS SELECT * from test1;
+
+-- Should load
+CREATE VIEW v_test2 AS SELECT *, oid from test2;
+
+-- Should load
+CREATE VIEW v_test3 AS SELECT *, oid from test3;
+
+-- Should not load
+CREATE VIEW v_test4 AS SELECT * from test4;
+
+-- Should load
+CREATE VIEW v_test5 AS SELECT * from test5;
+
+-- Should load
+CREATE VIEW v_test6 AS SELECT * from test6;
+
+-- Should not load
+CREATE VIEW v_test7 AS SELECT * from test7;
+
+-- Should not load
+CREATE VIEW v_test8 AS SELECT * from test8;
+
+-- Should not load
+CREATE VIEW v_test9 AS SELECT * from test9;
+
+-- Should load
+CREATE VIEW v_test10 AS SELECT * from test10;
+
+-- Should not load
+CREATE VIEW v_test11 AS SELECT *, oid from test11;
+
+-- Should load
+CREATE VIEW v_test12 AS SELECt * from test12;
+
+-- and how to delete the tables
+SELECT dropgeometrytable('public','test0');
+SELECT dropgeometrytable('public','test1');
+SELECT dropgeometrytable('public','test2');
+SELECT dropgeometrytable('public','test3');
+SELECT dropgeometrytable('public','test4');
+SELECT dropgeometrytable('public','test5');
+SELECT dropgeometrytable('public','test6');
+SELECT dropgeometrytable('public','test7');
+SELECT dropgeometrytable('public','test8');
+SELECT dropgeometrytable('public','test9');
+SELECT dropgeometrytable('public','test10');
+SELECT dropgeometrytable('public','test11');
+SELECT dropgeometrytable('public','test12');
+
+
+DROP VIEW v_test1;
+DROP VIEW v_test2;
+DROP VIEW v_test3;
+DROP VIEW v_test4;
+DROP VIEW v_test5;
+DROP VIEW v_test6;
+DROP VIEW v_test7;
+DROP VIEW v_test8;
+DROP VIEW v_test9;
+DROP VIEW v_test10;
+DROP VIEW v_test11;
+DROP VIEW v_test12;

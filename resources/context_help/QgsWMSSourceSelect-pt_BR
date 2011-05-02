@@ -1,0 +1,37 @@
+<h3>Criar uma nova conexão WMS</h3>
+Camadas WMS podem ser adicionadas de forma simples, contanto que você saiba a URL para acessar o servidor WMS, você tenha uma conexão com esse servidor, e o servidor HTTP entenda o o mecanismo de transporte de dados.<p>
+O QGIS atualmente pode atuar como um cliente WMS que compreende servidores WMS 1.1, 1.1.1 e 1.3.
+<p>
+<a href="#serv">Servidores</a><br/>
+<a href="#load">Carregar camadas WMS</a><br/>
+<a href="#lay">Ordem da camada</a><br/>
+<a href="#search">Buscador de servidores</a><br/>
+
+<a name="serv">
+<h4>Servidores</h4>
+</a>
+Para definir um novo servidor WMS na seção <label>Conexões de servidores</label> selecione <label>Novo</label>. Em seguida, insira os parâmetros para se conectar ao servidor WMS desejado.<p>
+Você pode adicionar alguns servidores para rodar, clicando no botão <label>Adicionar servidores padrão</label>. Isso adicionará pelo menos três servidores WMS para você usar, incluindo o servidor WMS da NASA (JPL).<p>
+Uma vez que a nova WMS conexão com o servidor foi criada, ela será preservada para futuras seções do QGIS.
+
+<a name="load">
+<h5>Carregar camadas WMS</h5>
+</a>
+Selecione o botão <label>Conectar</label> para recuperar as capacidades do servidor selecionado. Isso inclui a codificação de imagens, camadas, Estilos de camadas e projeções.<br/>
+Enquanto ocorre o download de dados do servidor WMS, o progresso pode ser visualizado no canto inferior esquerdo da janela do complemento WMS.<p>
+A seção <label>Codificação da imagem</label> agora lista os formatos que são suportados pelo cliente e servidor.<br/>
+Escolha um dependendo de suas exigências de precisão da imagem.<p>
+Você pode selecionar várias camadas ao mesmo tempo, elas serão combinadas com o servidor WMS e transmitidas ao QGIS de uma vez.<p>
+Cada camada WMS pode ser apresentada em vários SRCs, dependendo da capacidade do servidor WMS. Para escolher um SRC, selecione <label>Mudar...</label>
+
+<a name="lay">
+<h4>Ordem de camada</h4>
+</a>
+Nesta aba, você pode mudar a ordem das camadas WMS carregadas.
+
+<a name="search">
+<h4>Buscar servidor</h4>
+</a>
+Nesta aba, você pode procurar por servidores WMS. É possível inserir uma sequência de pesquisa em um campo de texto e clicar o botão <label>Buscar</label>.<p>
+Para visualizar os resultados, selecione uma entrada na tabela, pressione o botão <label>Adicionar linha selecionada a lista WMS</label> e retornar para a aba <label>Servidores</label>.<p>
+Você só precisa solicitar a lista de camadas, clicando no botão <label>Conectar</label>.

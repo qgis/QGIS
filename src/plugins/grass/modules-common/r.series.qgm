@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Make each output cell function of the values assigned to the corresponding cells in the input rasters" module="r.series">
+	<flag key="n" answer="off" hidden="no" />
+	<file key="input" label="Type in map names separated by a comma" />
+	<option key="method" />
+	<option key="output" />
+</qgisgrassmodule>

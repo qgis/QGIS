@@ -1,0 +1,37 @@
+<h3>Create a new WMS connection</h3>
+WMS layers can be added quite simply, as long as you know the URL to access the WMS server, you have a serviceable connection to that server, and the server understands HTTP as the data transport mechanism.<p>
+QGIS currently can act as a WMS client that understands WMS 1.1, 1.1.1 and 1.3 servers.
+<p>
+<a href="#serv">Servers</a><br/>
+<a href="#load">Loading WMS Layers</a><br/>
+<a href="#lay">Layer Order</a><br/>
+<a href="#search">Server Search</a><br/>
+
+<a name="serv">
+<h4>Servers</h4>
+</a>
+To define a new WMS server in the <label>Server Connections</label> section, select <label>New</label>. Then enter the parameters to connect to your desired WMS server.<p>
+You can add some servers to play with by clicking the <label>Add default servers</label> button. This will add at least three WMS servers for you to use.<p>
+Once the new WMS Server connection has been created, it will be preserved for future QGIS sessions.
+
+<a name="load">
+<h5>Loading WMS Layers</h5>
+</a>
+Select the <label>Connect</label> button to retrieve the capabilities of the selected server. This includes the Image encoding, Layers, Layer Styles and Projections.<br/>
+While downloading data from the WMS server, the download progress is visualized in the left bottom of the WMS Plugin dialog.<p>
+The <label>Image encoding</label> section now lists the formats that are supported by both the client and server.<br/>
+Choose one depending on your image accuracy requirements.<p>
+You can select several layers at once, they will be combined at the WMS Server and transmitted to QGIS in one go.<p>
+Each WMS Layer can be presented in multiple CRSs, depending on the capability of the WMS server. To choose a CRS, select <label>Change...</label>
+
+<a name="lay">
+<h4>Layer Order</h4>
+</a>
+On this tab you can change the order of loaded WMS layers.
+
+<a name="search">
+<h4>Server Search</h4>
+</a>
+On this tab you can search for WMS servers. It is possible to enter a search-string in the text field an hit the <label>Search</label> button.<p>
+To visualize the results, select an table entry, press the <label>Add selected row to WMS list</label> button and change back to the <label>Servers</label> tab.<p>
+You only need to request the list of layers by clicking the <label>Connect</label> button.

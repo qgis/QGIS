@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Convert raster to vector lines" module="r.to.vect">
+	<option key="input" />
+	<option key="output" />
+	<option key="feature" answer="line" hidden="yes" />
+	<flag key="s" answer="on" hidden="yes" />
+</qgisgrassmodule>

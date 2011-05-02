@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create watershed basin" module="r.water.outlet">
+	<option key="drainage" />
+	<option key="easting" />
+	<option key="northing" />
+	<option key="basin" />
+</qgisgrassmodule>

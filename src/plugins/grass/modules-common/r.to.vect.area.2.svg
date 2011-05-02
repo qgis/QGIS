@@ -1,0 +1,9 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.area.2" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <polygon points="376 376 351 376 199 376 173 351 173 351 148 326 148 326 123 300 123 199 148 173 148 173 173 148 173 148 199 123 351 123 376 148 376 199 402 224 402 224 427 249 427 249 402 275 402 275 376 300 376 351 376 376 376 376" transform="translate(0.331263 0.331263)" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(150,150,150);" />
+  <polygon points="376 376 351 376 199 376 173 351 173 351 148 326 148 326 123 300 123 199 148 173 148 173 173 148 173 148 199 123 351 123 376 148 376 199 402 224 402 224 427 249 427 249 402 275 402 275 376 300 376 351 376 376 376 376" transform="translate(0.331263 0.331263)" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+ </g>
+</svg>

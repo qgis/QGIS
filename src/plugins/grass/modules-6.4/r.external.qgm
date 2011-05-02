@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassdatamodule.dtd">
+<qgisgrassmodule label="Link GDAL supported raster as GRASS raster" module="r.external">
+	<flag key="o"/>
+	<flag key="e"/>
+	<file key="input"/>
+	<option key="output"/>
+	<option key="band"/>
+	<option key="title"/>
+</qgisgrassmodule>

@@ -1,0 +1,6 @@
+Coordinate Capture Plugin for Quantum GIS
+
+       Tim Sutton 2008
+
+A simple plugin that allows you to copy the 
+coordinates of mouse clicks to the clipboard.

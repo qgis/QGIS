@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GdalToolsWidget</class>
+ <widget class="QWidget" name="GdalToolsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>181</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Raster tile index</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Input directory</string>
+       </property>
+       <property name="buddy">
+        <cstring>inSelector</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QCheckBox" name="recurseCheck">
+       <property name="text">
+        <string>Recurse subdirectories</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Output shapefile</string>
+       </property>
+       <property name="buddy">
+        <cstring>outSelector</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="indexFieldCheck">
+       <property name="text">
+        <string>Tile index field</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="indexFieldEdit">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>location</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+     <item row="2" column="1">
+      <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="absolutePathCheck">
+     <property name="text">
+      <string>Write absolute path</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="skipDifferentProjCheck">
+     <property name="text">
+      <string>Skip files with different projection ref</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

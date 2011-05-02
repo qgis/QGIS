@@ -1,0 +1,440 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsFieldCalculatorBase</class>
+ <widget class="QDialog" name="QgsFieldCalculatorBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>689</width>
+    <height>538</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Field calculator</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <widget class="QCheckBox" name="mOnlyUpdateSelectedCheckBox">
+     <property name="text">
+      <string>Only update selected features</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QCheckBox" name="mUpdateExistingFieldCheckBox">
+     <property name="text">
+      <string>Update existing field</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QComboBox" name="mExistingFieldComboBox"/>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QGroupBox" name="mNewFieldGroupBox">
+     <property name="title">
+      <string>New field</string>
+     </property>
+     <layout class="QGridLayout">
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QLabel" name="mFieldNameLabel">
+        <property name="text">
+         <string>Output field name</string>
+        </property>
+        <property name="buddy">
+         <cstring>mOutputFieldNameLineEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="3">
+       <widget class="QLineEdit" name="mOutputFieldNameLineEdit"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mOutputFieldTypeLabel">
+        <property name="text">
+         <string>Output field type</string>
+        </property>
+        <property name="buddy">
+         <cstring>mOutputFieldTypeComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="3">
+       <widget class="QComboBox" name="mOutputFieldTypeComboBox"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="mOutputFieldWidthLabel">
+        <property name="text">
+         <string>Output field width</string>
+        </property>
+        <property name="buddy">
+         <cstring>mOuputFieldWidthSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QSpinBox" name="mOuputFieldWidthSpinBox">
+        <property name="toolTip">
+         <string>Width of complete output. For example 123,456 means 6 as field width.</string>
+        </property>
+        <property name="minimum">
+         <number>0</number>
+        </property>
+        <property name="value">
+         <number>5</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QLabel" name="mOutputFieldPrecisionLabel">
+        <property name="text">
+         <string>Precision</string>
+        </property>
+        <property name="buddy">
+         <cstring>mOutputFieldPrecisionSpinBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QSpinBox" name="mOutputFieldPrecisionSpinBox">
+        <property name="value">
+         <number>2</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QGroupBox" name="mOperatorsGroupBox">
+     <property name="title">
+      <string>Operators</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_1">
+      <property name="topMargin">
+       <number>5</number>
+      </property>
+      <property name="bottomMargin">
+       <number>5</number>
+      </property>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="mPlusPushButton">
+        <property name="text">
+         <string>+</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QPushButton" name="mMultiplyPushButton">
+        <property name="text">
+         <string>*</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="mSqrtButton">
+        <property name="text">
+         <string>sqrt</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="mSinButton">
+        <property name="text">
+         <string>sin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="mTanButton">
+        <property name="text">
+         <string>tan</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="mACosButton">
+        <property name="text">
+         <string>acos</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="mOpenBracketPushButton">
+        <property name="text">
+         <string>(</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="mMinusPushButton">
+        <property name="text">
+         <string>-</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="mDividePushButton">
+        <property name="text">
+         <string>/</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="mExpButton">
+        <property name="text">
+         <string>^</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="mCosButton">
+        <property name="text">
+         <string>cos</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
+       <widget class="QPushButton" name="mASinButton">
+        <property name="text">
+         <string>asin</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="5">
+       <widget class="QPushButton" name="mATanButton">
+        <property name="text">
+         <string>atan</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QPushButton" name="mCloseBracketPushButton">
+        <property name="text">
+         <string>)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="mToRealButton">
+        <property name="text">
+         <string>to real</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="mToIntButton">
+        <property name="text">
+         <string>to int</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2">
+       <widget class="QPushButton" name="mToStringButton">
+        <property name="text">
+         <string>to string</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QPushButton" name="mLengthButton">
+        <property name="text">
+         <string>length</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="4">
+       <widget class="QPushButton" name="mAreaButton">
+        <property name="text">
+         <string>area</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QPushButton" name="mRowNumButton">
+        <property name="text">
+         <string>rownum</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QPushButton" name="mConcatButton">
+        <property name="text">
+         <string>||</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mFieldCalculatorExpressionLabel">
+     <property name="text">
+      <string>Field calculator expression</string>
+     </property>
+     <property name="buddy">
+      <cstring>mExpressionTextEdit</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QTextEdit" name="mExpressionTextEdit">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>32</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="2">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QFrame" name="frame">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="1" rowspan="2" colspan="2">
+       <widget class="QFrame" name="mValuesFrame">
+        <layout class="QGridLayout">
+         <property name="leftMargin">
+          <number>9</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>6</number>
+         </property>
+         <item row="2" column="2">
+          <widget class="QPushButton" name="mAllPushButton">
+           <property name="text">
+            <string>All</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1" rowspan="3">
+          <widget class="QListWidget" name="mValueListWidget">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>48</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QListWidget" name="mFieldsListWidget">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>48</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Fields</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Values</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+     <zorder>mValuesFrame</zorder>
+     <zorder>mFieldsListWidget</zorder>
+     <zorder>label</zorder>
+     <zorder>label_2</zorder>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>mOutputFieldNameLineEdit</tabstop>
+  <tabstop>mOutputFieldTypeComboBox</tabstop>
+  <tabstop>mOuputFieldWidthSpinBox</tabstop>
+  <tabstop>mOutputFieldPrecisionSpinBox</tabstop>
+  <tabstop>mValueListWidget</tabstop>
+  <tabstop>mAllPushButton</tabstop>
+  <tabstop>mPlusPushButton</tabstop>
+  <tabstop>mMultiplyPushButton</tabstop>
+  <tabstop>mSqrtButton</tabstop>
+  <tabstop>mSinButton</tabstop>
+  <tabstop>mTanButton</tabstop>
+  <tabstop>mACosButton</tabstop>
+  <tabstop>mOpenBracketPushButton</tabstop>
+  <tabstop>mMinusPushButton</tabstop>
+  <tabstop>mDividePushButton</tabstop>
+  <tabstop>mExpButton</tabstop>
+  <tabstop>mCosButton</tabstop>
+  <tabstop>mASinButton</tabstop>
+  <tabstop>mATanButton</tabstop>
+  <tabstop>mCloseBracketPushButton</tabstop>
+  <tabstop>mToRealButton</tabstop>
+  <tabstop>mToIntButton</tabstop>
+  <tabstop>mToStringButton</tabstop>
+  <tabstop>mLengthButton</tabstop>
+  <tabstop>mAreaButton</tabstop>
+  <tabstop>mRowNumButton</tabstop>
+  <tabstop>mExpressionTextEdit</tabstop>
+  <tabstop>mButtonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsFieldCalculatorBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>679</x>
+     <y>559</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsFieldCalculatorBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>679</x>
+     <y>559</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

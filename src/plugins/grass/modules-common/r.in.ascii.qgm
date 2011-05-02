@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import ASCII raster" module="r.in.ascii">
+	<file key="input" type="old" />
+	<option key="mult" />
+	<option key="nv" />
+	<flag key="i" />
+	<flag key="f" />
+	<flag key="d" />
+	<flag key="s" />
+	<option key="output" />
+</qgisgrassmodule>

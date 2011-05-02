@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="16px"
+   height="16px"
+   id="svg3427"
+   sodipodi:version="0.32"
+   inkscape:version="0.46"
+   sodipodi:docname="religion=jewish.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/matt/Programming/openstreetmap/icons/religion=jewish.png"
+   inkscape:export-xdpi="90"
+   inkscape:export-ydpi="90">
+  <defs
+     id="defs3429">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 8 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="16 : 8 : 1"
+       inkscape:persp3d-origin="8 : 5.3333333 : 1"
+       id="perspective3435" />
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="31.875"
+     inkscape:cx="1.6784314"
+     inkscape:cy="8"
+     inkscape:current-layer="layer4"
+     showgrid="true"
+     inkscape:grid-bbox="true"
+     inkscape:document-units="px"
+     inkscape:window-width="1280"
+     inkscape:window-height="723"
+     inkscape:window-x="0"
+     inkscape:window-y="0" />
+  <metadata
+     id="metadata3432">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/licenses/publicdomain/" />
+        <dc:title>religion=jewish</dc:title>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Matt Amos</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Matt Amos asserts the moral right to be identified as the author of this work.</dc:title>
+          </cc:Agent>
+        </dc:rights>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     sodipodi:insensitive="true">
+    <rect
+       style="fill:#535353;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3946"
+       width="16"
+       height="16"
+       x="0"
+       y="0"
+       rx="4" />
+  </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer4"
+     inkscape:label="top">
+    <path
+       sodipodi:type="star"
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:0.90153075;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path6639"
+       sodipodi:sides="3"
+       sodipodi:cx="7.7490196"
+       sodipodi:cy="7.8745098"
+       sodipodi:r1="5.5801702"
+       sodipodi:r2="2.4325917"
+       sodipodi:arg1="-0.52402754"
+       sodipodi:arg2="0.52317"
+       inkscape:flatsided="true"
+       inkscape:rounded="0"
+       inkscape:randomized="0"
+       d="M 12.580392,5.082353 L 7.7514122,13.454679 L 2.9152547,5.086497 L 12.580392,5.082353 z"
+       transform="matrix(1.1092245,0,0,1.1092245,-0.8462519,-0.8602905)" />
+    <path
+       d="M 12.580392,5.082353 L 7.7514122,13.454679 L 2.9152547,5.086497 L 12.580392,5.082353 z"
+       inkscape:randomized="0"
+       inkscape:rounded="0"
+       inkscape:flatsided="true"
+       sodipodi:arg2="0.52317"
+       sodipodi:arg1="-0.52402754"
+       sodipodi:r2="2.4325917"
+       sodipodi:r1="5.5801702"
+       sodipodi:cy="7.8745098"
+       sodipodi:cx="7.7490196"
+       sodipodi:sides="3"
+       id="path6641"
+       style="fill:none;fill-opacity:1;stroke:#ffffff;stroke-width:0.90153075;stroke-linecap:square;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       sodipodi:type="star"
+       transform="matrix(1.1092245,0,0,-1.1092245,-0.8462519,16.612998)" />
+  </g>
+</svg>

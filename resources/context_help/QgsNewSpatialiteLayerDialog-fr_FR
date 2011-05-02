@@ -1,0 +1,21 @@
+<h3Créer une nouvelle couche SpatiaLite</h3>
+Vous pouvez utiliser cette fenêtre pour créer une nouvelle couche Spatialite et/ou une nouvelle base Spatialite.
+<h4>Base de données</h4>
+Choisissez une base de données dans la liste déroulante. Cette liste est remplie par vos connexions Spatialite précédentes. Si vous n'avez aucune connexion existante ou si vous voulez créer une nouvelle base, cliquez sur le bouton (<label>...</label>) à la droite de la liste.
+<h4>Nom de la couche</h4>
+Entrez un nom pour la couche que voulez créer. Le nom doit être composé d'un mot. Vous pouvez utiliser des tirets bas (_) si nécessaire.
+<h4>Colonne géométrique</h4>
+Entrez un nom pour la colonne géométrique ou laissez le nom par défaut.
+<h4>Type</h4>
+Choisissez le type de géométrie que vous désirez pour cette couche.
+<h4>EPSG SRID</h4>
+Entrez le numéro EPSG pour l'identifiant de la référence spatiale (SRID). Par défaut c'est le SRIS WGS 84 qui est sélectionné. Cliquez sur le bouton <label>Trouver un SRID</label> pour changer le système de coordonnées de référence si besoin. Cet SRID doit exister dans la table spatial_ref_sys de votre base.
+<h4>Créer une clé primaire auto-incrémentée</h4>
+Le fait de cliquer sur cette case ajoutera une clé primaire à la nouvelle couche. Cette clé sera auto-incrémentée, ce qui signifie que vous n'aurez pas à saisir manuellement sa valeur à chaque ajout d'entités dans la couche.
+<h4>Nouvel attribut</h4>
+Ajoutez l'attribut désiré en cliquant sur le bouton <label>Ajouter à la liste d'attribut</label> après avoir spécifié le nom et le type. Seulement les types entier, réel et chaîne de caractère sont supportés.<br/>
+La longueur et la précision sont inutiles dans une base Spatialite, vous n'avez donc pas besoin de les spécifier.
+<h4>Liste d'attributs</h4>
+Dans cette section vous pouvez voir la liste des attributs existants. Pour en effacer, sélectionnez-le et cliquez sur le bouton <label>Effacer l'attribut sélectionné</label>.
+<p>
+Cliquez sur <label>OK</label> pour créer la couche et fermer la fenêtre. Cliquez sur <label>Appliquer</label> pour appliquer les modifications sans quitter la fenêtre et sur <label>Annuler</label> pour fermer la fenêtre sans modifications.

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=Quantum GIS
+Version=1.0
+GenericName=Geographical Information System
+GenericName[de]=Geographisches Informationssystem
+Icon=qgis-icon
+TryExec=/usr/bin/qgis
+Exec=/usr/bin/qgis %F
+Terminal=false
+StartupNotify=false
+Categories=Qt;Education;Science;Geography;
+MimeType=application/x-qgis-project;image/tiff;image/jpeg;image/jp2;application/x-raster-aig;application/x-raster-ecw;application/x-raster-mrsid;application/x-mapinfo-mif;application/x-esri-shape;

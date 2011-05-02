@@ -1,0 +1,26 @@
+<h3>Propiedades del proyecto</h3>
+Este diálogo permite establecer algunas propiedades relacionadas con el <label>Proyecto</label>. Un proyecto es un conjunto guardado de capas y su configuración, así como otra información necesaria para restaurar el proyecto desde el disco.<p>
+
+<h4>Pestaña general</h4>
+<table border=1>
+<tr>
+<td>Título de proyecto</td><td>Un título descriptivo para el proyecto. Este título aparecerá en la barra de títulos de la ventana de QGIS.</td>
+</tr>
+<tr>
+<td>Unidades del mapa</td><td>Elija las unidades del mapa adecuadas para las capas del proyecto.</td>
+</tr>
+<tr>
+<td>Precisión de la visualización del cursor</td><td>Use la configuración manual para establecer la precisión de la visualización en la barra de estado. A medida que se mueve el ratón sobre la vista del mapa, las coordenadas se actualizan y se muestran en la barra de estado usando la precisión que elija. Automática (predeterminado) tiene como resultado una precisión por omisión basada en las unidades del mapa.</td>
+</tr>
+<tr>
+<td>Configuración de la digitalización</td><td>Esto permite establecer la tolerancia de autoensamblado en píxeles, la anchura de línea usada al digitalizar y el color de las líneas digitalizadas.</td>
+</tr>
+<tr><td>Color de selección</td><td>Los objetos espaciales seleccionados se muestran en el mapa usando este color.</td>
+</tr>
+</table>
+<a anchor="projections"></a><h4>Pestaña proyección</h4>
+La pestaña proyección permite establecer la proyección para el proyecto actual y activar la proyección al vuelo. No es necesario tener guardado el proyecto para configurar y activar la proyección al vuelo.<p>
+Para usar la proyección al vuelo, haga clic en la casilla de verificación <label>Activar proyección al vuelo</label>. Elija luego la proyección para el proyecto (Vista del mapa) de la lista de sistemas de coordenadas geográficas o proyectadas.
+<p>
+Puede encontrar un sistema de coordenadas introduciendo su PostGIS SRID, código EPSG o el QGIS SRSRID y haciendo clic en el botón <label>Encontrar</label>.
+ 

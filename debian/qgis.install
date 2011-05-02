@@ -1,0 +1,34 @@
+usr/lib/qgis/plugins/libcopyrightlabelplugin.so
+usr/lib/qgis/plugins/libdelimitedtextplugin.so
+usr/lib/qgis/plugins/libgeorefplugin.so
+usr/lib/qgis/plugins/libgpsimporterplugin.so
+usr/lib/qgis/plugins/libnortharrowplugin.so
+usr/lib/qgis/plugins/libscalebarplugin.so
+usr/lib/qgis/plugins/libspitplugin.so
+usr/lib/qgis/plugins/libwfsplugin.so
+usr/lib/qgis/plugins/libdxf2shpconverterplugin.so
+usr/lib/qgis/plugins/libinterpolationplugin.so 
+usr/lib/qgis/plugins/libcoordinatecaptureplugin.so
+usr/lib/qgis/plugins/liboracleplugin.so
+usr/lib/qgis/plugins/libdiagramoverlay.so 
+usr/lib/qgis/plugins/libevis.so 
+usr/lib/qgis/plugins/librasterterrainplugin.so
+usr/lib/qgis/plugins/libspatialqueryplugin.so
+usr/lib/qgis/plugins/libdisplacementplugin.so
+usr/lib/qgis/plugins/libofflineeditingplugin.so
+usr/lib/qgis/plugins/libroadgraphplugin.so
+usr/lib/qgis/qgis_help
+usr/share/pixmaps/qgis-icon.xpm
+usr/share/pixmaps/qgis-mime-icon.png
+usr/share/pixmaps/qgis-mime-icon.png usr/share/icons/crystalsvg/128x128/mimetypes
+../qgis.desktop usr/share/applications
+../qgis.xml usr/share/mime/packages
+../mime/application/x-esri-shape.desktop usr/share/mimelnk/application
+../mime/application/x-mapinfo-mif.desktop usr/share/mimelnk/application
+../mime/application/x-esri-crs.desktop usr/share/mimelnk/application
+../mime/application/x-raster-ecw.desktop usr/share/mimelnk/application
+../mime/application/x-adobe-mif.desktop usr/share/mimelnk/application
+../mime/application/x-raster-aig.desktop usr/share/mimelnk/application
+../mime/application/x-qgis-project.desktop usr/share/mimelnk/application
+../mime/application/x-raster-mrsid.desktop usr/share/mimelnk/application
+../mime/application/x-qgis-layer-settings.desktop usr/share/mimelnk/application

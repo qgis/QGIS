@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import loaded raster" module="r.in.gdal">
+	<flag key="o" answer="on" hidden="yes" />
+	<flag key="e" answer="off" hidden="yes" />
+	<gdal key="input" label="GDAL raster layer" />
+	<option key="output" />
+</qgisgrassmodule>

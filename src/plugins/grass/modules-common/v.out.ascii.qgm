@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Convert GRASS binary vector to GRASS ASCII vector" module="v.out.ascii">
+	<option key="input" />
+	<option key="format"/>
+	<file key="output" type="new" />
+	<option key="fs" advanced="yes" />
+</qgisgrassmodule>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate covariance/correlation matrix for user-defined rasters" module="r.covar">
+	<option key="map" />
+</qgisgrassmodule>

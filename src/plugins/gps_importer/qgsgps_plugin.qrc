@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>gps_importer.png</file>
+    </qresource>
+</RCC>

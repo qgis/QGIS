@@ -1,0 +1,302 @@
+<ui version="4.0" >
+ <class>SaSourceSelectBase</class>
+ <widget class="QDialog" name="SaSourceSelectBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>723</width>
+    <height>469</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Add SQL Anywhere layer</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset>
+     <normaloff/>
+   </iconset>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout" >
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>SQL Anywhere Connections</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>11</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="2" column="3" >
+       <widget class="QPushButton" name="btnDelete" >
+        <property name="text" >
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QPushButton" name="btnEdit" >
+        <property name="text" >
+         <string>Edit</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" >
+       <widget class="QPushButton" name="btnNew" >
+        <property name="text" >
+         <string>New</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QPushButton" name="btnConnect" >
+        <property name="text" >
+         <string>Connect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="4" >
+       <widget class="QComboBox" name="cmbConnections" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QTreeView" name="mTablesTreeView" >
+     <property name="selectionMode" >
+      <enum>QAbstractItemView::MultiSelection</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="mSearchGroupBox" >
+     <property name="title" >
+      <string>Search options</string>
+     </property>
+     <property name="flat" >
+      <bool>true</bool>
+     </property>
+     <property name="checkable" >
+      <bool>true</bool>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="mSearchLabel" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>Search</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mSearchTableEdit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QLabel" name="mSearchModeLabel" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>Search mode</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mSearchModeComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" >
+       <widget class="QComboBox" name="mSearchModeComboBox" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QLabel" name="mSearchColumnsLabel" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="text" >
+         <string>Search in columns</string>
+        </property>
+        <property name="buddy" >
+         <cstring>mSearchColumnComboBox</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" >
+       <widget class="QComboBox" name="mSearchColumnComboBox" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLineEdit" name="mSearchTableEdit" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>cmbConnections</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>btnNew</tabstop>
+  <tabstop>btnEdit</tabstop>
+  <tabstop>btnDelete</tabstop>
+  <tabstop>mTablesTreeView</tabstop>
+  <tabstop>mSearchGroupBox</tabstop>
+  <tabstop>mSearchTableEdit</tabstop>
+  <tabstop>mSearchColumnComboBox</tabstop>
+  <tabstop>mSearchModeComboBox</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>SaSourceSelectBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>352</x>
+     <y>466</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>361</x>
+     <y>421</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchTableEdit</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>94</x>
+     <y>437</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>177</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchColumnComboBox</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>97</x>
+     <y>437</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>343</x>
+     <y>402</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchModeComboBox</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>115</x>
+     <y>437</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>281</x>
+     <y>410</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchLabel</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>133</x>
+     <y>437</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>58</x>
+     <y>360</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchColumnsLabel</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>51</x>
+     <y>437</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>57</x>
+     <y>402</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mSearchGroupBox</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>mSearchModeLabel</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>82</x>
+     <y>437</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>68</x>
+     <y>411</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

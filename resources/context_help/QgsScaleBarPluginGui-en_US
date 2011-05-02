@@ -1,0 +1,15 @@
+﻿<h3>Scale bar Plugin</h3>
+Draws a scale bar on the map.
+<p>
+You can control the style and placement, as well as the labeling of the bar. QGIS only supports displaying the scale in the same units as your map frame. So if the units of your layers are in meters, you can't create a scale bar in feet. Likewise if you are using decimal degrees, you can't create a scale bar to display distance in meters.</p>
+<p>
+To add a scale bar:
+<ol>
+<li>Choose the placement from the <label>Placement</label> drop-down list.</li>
+<li>Choose the style from the <label>Scale bar style</label> list.</li>
+<li>Select the color for the bar <label>Color of bar</label> or use the default black color.</li>
+<li>Set the size of the bar and its label <label>Size of bar</label>. </li>
+<li>Make sure the <label>Enable scale bar</label> checkbox is checked.</li>
+<li>Optionally choose to automatically snap to a round number when the canvas is resized <label>Automatically snap to round number on resize</label>.</li>
+<li>Click <label>OK</label>.</li>
+</ol>

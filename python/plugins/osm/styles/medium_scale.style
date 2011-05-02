@@ -1,0 +1,70 @@
+#LINE
+highway trunk 2.7 1 170,221,170
+highway trunk_link 2.7 1 170,221,170
+highway primary 2.5 1 219,112,147
+highway secondary 2.3 1 255,221,170
+highway tertiary 2.0 1 238,230,133
+highway pedestrian 0.25 1 230,214,182
+highway residential 0.25 1 100,100,100
+highway unclassified 0.25 1 100,100,100
+highway service 0.25 1 100,100,100
+highway footway 0.15 3 255,160,140
+highway path 0.15 3 255,160,140
+highway steps 0.15 3 255,160,140
+highway living_street 0.8 1 207,207,190
+highway cycleway 0.8 3 0,115,255
+highway construction 0.5 2 204,238,221
+tracktype grade2 0.8 3 0,115,255
+highway track 1.4 2 181,164,130
+highway unsurfaced 0.8 2 230,214,182
+highway * 0.5 1 0,255,0
+railway subway 0.1 2 187,187,187
+railway rail 0.01 4 120,120,120
+railway tram 0.1 1 119,136,119
+railway preserved 0.05 2 187,187,187
+railway * 0.1 0 0,0,0
+boundary administrative 1 3 85,26,139
+waterway drain 0.5 1 135,206,255
+power line 1.4 1 139,139,131
+* * 1 1 200,200,200
+#POLYGON
+leisure park 0 0 0,0,0 88,245,168
+leisure garden 0 0 0,0,0 88,245,168
+leisure pitch 0 0 0,0,0 136,204,170
+leisure track 0.05 1 40,40,40 119,221,187
+leisure playground 0.05 1 40,40,40 221,255,255
+leisure golf_course 0 0 0,0,0 187,221,187
+leisure stadium 0 0 0,0,0 102,204,170
+landuse forest 0 0 0,0,0 139,207,102
+landuse allotments 0 1 0,0,0 222,184,135
+landuse construction 0 0 0,0,0 153,153,102
+landuse cemetery 0 0 0,0,0 170,204,170
+landuse brownfield 0 0 0,0,0 153,153,102
+landuse village_green 0 0 0,0,0 204,238,170
+landuse industrial 0 0 0,0,0 221,221,238
+landuse recreation_ground 0 0 0,0,0 204,238,170
+tourism zoo 0 0 0,0,0 180,238,180
+natural water 0 0 0,0,0 135,206,255
+natural wood 0.1 1 40,40,40 170,204,153
+natural land 0 0 0,0,0 170,170,170
+waterway riverbank 0 0 0,0,0 135,206,255
+place island 1 1 0,0,0 255,255,255
+highway trunk 6 1 150,0,0 170,221,170
+highway primary 6 1 219,112,147 255,255,255
+highway secondary 4.5 1 255,120,0 255,255,255
+highway tertiary 3 1 238,230,133 255,255,255
+highway pedestrian 0.8 1 230,214,182 255,255,255
+highway residential 1 1 100,100,100 235,235,235
+highway service 1 1 100,100,100 235,235,235
+highway footway 1.4 3 255,160,140 255,255,255
+amenity place_of_worship 0.02 1 0,0,0 123,140,123
+amenity grave_yard 0 0 0,0,0 157,191,157
+amenity school 0.05 1 160,160,110 221,221,170
+power station 0.05 1 170,170,170 187,187,187
+area yes 0.2 1 100,100,100 235,235,235
+building yes 0 0 0,0,0 204,153,153
+amenity parking 0 0 0,0,0 255,255,153
+boundary administrative 1 3 85,26,139 255,255,255
+* * 0.01 1 40,40,40 255,255,255
+#POINT
+amenity hospital emergency/amenity=hospital.svg 6

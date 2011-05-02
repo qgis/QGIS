@@ -1,0 +1,5 @@
+<h3>Dodaj tabele SpatiaLite</h3>
+Aby zdefiniować nowe połączenie, kliknij przycisk <label>Nowy</label> i wskaż położenie bazy SpatiaLite na dysku. Baza SpatiaLite jest plikiem o rozszerzeniu <i>.sqlite</i>.<p>
+Następnie kliknij <label>Połącz</label> i wybierz z drzewa warstw te, które chcesz otworzyć w QGIS.<br/>
+Kliknij <label>Dodaj</label>, warstwy zostaną wczytane.<p>
+Połączenie raz zdefiniowane będzie zapamiętane i dostępne do użycia z rozwijalnej listy.

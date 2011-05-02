@@ -1,0 +1,34 @@
+<h3>Marcadores espaciales</h3>
+Los marcadores espaciales le permiten "marcar" una localización geográfica y volver a ella más tarde.
+<p>
+<a href="#creating">Crear una marcador</a><br/>
+<a href="#working">Trabajar con marcadores</a><br/>
+<a href="#zooming">Zum a un marcador</a><br/>
+<a href="#deleting">Borrar un marcador</a><br/>
+
+<a name="creating">
+<h4>Crear una marcador</h4>
+</a>
+Para crear un marcador:
+<ol>
+<li>Haga zum o desplácese al área de interés.
+<li>Pulse en <label>Nuevo marcador</label> o teclee Ctrl-M.
+<li>Introduzca un nombre descriptivo para el marcador (hasta 255 caracteres).
+<li>Pulse <label>Aceptar</label> para añadir el marcador o <label>Cancelar</label> para salir sin añadirlo.
+</ol>
+Tenga en cuenta que puede tener múltiples marcadores con el mismo nombre.
+<a name="working">
+<h4>Trabajar con marcadores</h4>
+</a>
+Para usar o administrar marcadores, pulse el botón <label>Mostrar marcadores</label> o seleccione <label>Mostrar marcadores</label> del menú <label>Ver</label>. El diálogo de marcadores le permite hacer zum a un marcador o borrarlo. No puede editar el nombre o las coordenadas del marcador.
+<a name="zooming">
+<h5>Zum a un marcador</h5>
+</a>
+En el diálogo de marcadores, seleccione el marcador deseado haciendo clic en él y luego pulse el botón <label>Zum a</label>.
+<p>
+También puede hacer zum a un marcador haciendo doble clic en él.
+<a name="deleting">
+<h5>Borrar un marcador</h5>
+</a>
+Para borrar un marcador del diálogo de marcadores, haga clic en el botón <label>Borrar</label>. Confirme su elección haciendo clic en <label>Aceptar</label> o cancele el borrado haciendo clic en <label>Cancelar</label>.
+

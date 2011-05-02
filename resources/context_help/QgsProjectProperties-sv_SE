@@ -1,0 +1,26 @@
+<h3>Projektinställningar</h3>
+I denna dialogruta kan du justera många inställningar som berör <label>Projektet</label>. Ett projekt är en sparad mängd med lager och deras inställningar, samt annan infromation för att läsa in projektet från hårddisk.<p>
+
+<h4>Fliken Allmänt</h4>
+<table border=1>
+<tr>
+<td>Projekttitel</td><td>En beskrivande titel för projektet. Denna titel visas i titelfältet i QGIS-fönstret</td>
+</tr>
+<tr>
+<td>Kartenheter</td><td>Välj lämplig kartenhet för lagren i projektet</td>
+</tr>
+<tr>
+<td>Precision</td><td>Använda manuell inställning för att bestämma vilken precision som koordinaterna skall visas i. När muspekaren flyttas över kartvyn, ändras koordinaterna och visas i statusfältet med den precision du har valt. Automatisk (standard) använder sig av standardinställningen beroende på kartenhet.</td>
+</tr>
+<tr>
+<td>Digitalisering</td><td>Här kan du ställa in toleransen för fästning i bildpunkter, linjens bredd vid digitalisering, och färgen på de digitaliserade linjerna.</td>
+</tr>
+<tr><td>Färg för valda</td><td>Valda objeket på kartan använder denna färg.</td>
+</tr>
+</table>
+<a anchor="projections"></a><h4>Fliken Projektion</h4>
+Under fliken Projektion kan du bestämma projektion för aktuellt projekt, och även sätta på projektion. Du behöver inte ha sparat ett projekt för att bestämma och sätta på projektion.<p>
+För att använda projektion, markera rutan <label>Sätt på projektion</label>. Välj sedan projektion för projektet (kartvyn) från listan över geografiska eller projicerade koordinatsystem.
+<p>
+Du kan leta efter koordinatsystem genom att mata in PostGIS SRID, EPSG-kod, QGIS SRSRID eller namn och klicka på knappen<label>Hitta</label>.
+ 

@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsSpitBase</class>
+ <widget class="QDialog" name="QgsSpitBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>695</width>
+    <height>520</height>
+   </rect>
+  </property>
+  <property name="baseSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>SPIT - Shapefile to PostGIS Import Tool</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout">
+   <property name="margin">
+    <number>9</number>
+   </property>
+   <property name="spacing">
+    <number>6</number>
+   </property>
+   <item row="2" column="0" colspan="2">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>PostgreSQL connections</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QComboBox" name="cmbConnections">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QPushButton" name="btnConnect">
+          <property name="toolTip">
+           <string>Connect to PostGIS</string>
+          </property>
+          <property name="whatsThis">
+           <string>Connect to PostGIS</string>
+          </property>
+          <property name="text">
+           <string>Connect</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnNew">
+          <property name="toolTip">
+           <string>Create a new PostGIS connection</string>
+          </property>
+          <property name="whatsThis">
+           <string>Create a new PostGIS connection</string>
+          </property>
+          <property name="text">
+           <string>New</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnEdit">
+          <property name="toolTip">
+           <string>Edit the current PostGIS connection</string>
+          </property>
+          <property name="whatsThis">
+           <string>Edit the current PostGIS connection</string>
+          </property>
+          <property name="text">
+           <string>Edit</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnRemove">
+          <property name="toolTip">
+           <string>Remove the current PostGIS connection</string>
+          </property>
+          <property name="whatsThis">
+           <string>Remove the current PostGIS connection</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>Import options and shapefile list</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QGridLayout" name="gridLayout_1">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>Geometry column name</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtGeomName</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="txtGeomName"/>
+        </item>
+        <item row="0" column="2">
+         <widget class="QCheckBox" name="chkUseDefaultGeom">
+          <property name="toolTip">
+           <string>Set the geometry column name to the default value</string>
+          </property>
+          <property name="whatsThis">
+           <string>Set the geometry column name to the default value</string>
+          </property>
+          <property name="text">
+           <string>Use default geometry column name</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>SRID</string>
+          </property>
+          <property name="buddy">
+           <cstring>spinSrid</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QSpinBox" name="spinSrid">
+          <property name="minimum">
+           <number>-1</number>
+          </property>
+          <property name="maximum">
+           <number>1000000000</number>
+          </property>
+          <property name="value">
+           <number>-1</number>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QCheckBox" name="chkUseDefaultSrid">
+          <property name="toolTip">
+           <string>Set the SRID to the default value</string>
+          </property>
+          <property name="whatsThis">
+           <string>Set the SRID to the default value</string>
+          </property>
+          <property name="text">
+           <string>Use default SRID</string>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="label">
+          <property name="text">
+           <string>Primary key column name</string>
+          </property>
+          <property name="buddy">
+           <cstring>txtPrimaryKeyName</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="2" column="1">
+         <widget class="QLineEdit" name="txtPrimaryKeyName"/>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="textLabel1_4">
+          <property name="text">
+           <string>Global schema</string>
+          </property>
+          <property name="buddy">
+           <cstring>cmbSchema</cstring>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="1">
+         <widget class="QComboBox" name="cmbSchema">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="duplicatesEnabled">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QTableWidget" name="tblShapefiles">
+        <property name="selectionMode">
+         <enum>QAbstractItemView::MultiSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <spacer>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="0" column="1">
+         <widget class="QPushButton" name="btnAddFile">
+          <property name="toolTip">
+           <string>Add a shapefile to the list of files to be imported</string>
+          </property>
+          <property name="whatsThis">
+           <string>Add a shapefile to the list of files to be imported</string>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="btnRemoveFile">
+          <property name="toolTip">
+           <string>Remove the selected shapefile from the import list</string>
+          </property>
+          <property name="whatsThis">
+           <string>Remove the selected shapefile from the import list</string>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="btnRemoveAll">
+          <property name="toolTip">
+           <string>Remove all the shapefiles from the import list</string>
+          </property>
+          <property name="whatsThis">
+           <string>Remove all the shapefiles from the import list</string>
+          </property>
+          <property name="text">
+           <string>Remove All</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>cmbConnections</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>btnNew</tabstop>
+  <tabstop>btnEdit</tabstop>
+  <tabstop>btnRemove</tabstop>
+  <tabstop>txtGeomName</tabstop>
+  <tabstop>chkUseDefaultGeom</tabstop>
+  <tabstop>spinSrid</tabstop>
+  <tabstop>chkUseDefaultSrid</tabstop>
+  <tabstop>txtPrimaryKeyName</tabstop>
+  <tabstop>cmbSchema</tabstop>
+  <tabstop>tblShapefiles</tabstop>
+  <tabstop>btnAddFile</tabstop>
+  <tabstop>btnRemoveFile</tabstop>
+  <tabstop>btnRemoveAll</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="spit.qrc"/>
+ </resources>
+ <connections/>
+</ui>

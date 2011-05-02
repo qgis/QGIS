@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Download and import data from WMS server" module="r.in.wms">
+	<option key="mapserver" />
+	<option key="layers" />
+	<option key="srs" />
+	<option key="format" />
+	<option key="wmsquery" />
+	<flag key="d" answer="off" />
+	<flag key="c" answer="off" />
+	<option key="folder" />
+	<option key="wgetoptions" />
+	<option key="curloptions" />
+	<flag key="k" answer="off" />
+	<flag key="p" answer="off" />
+	<option key="method" />
+	<option key="output" />
+</qgisgrassmodule>

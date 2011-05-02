@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Convert vector to raster using attribute values" module="v.to.rast">
+	<option key="input" layeroption="layer"/>
+	<field key="column" layer="input" type="integer,double" label="Attribute field" />
+	<option key="output"/>
+	<option key="use" answer="attr" hidden="yes" />
+</qgisgrassmodule>

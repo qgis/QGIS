@@ -1,0 +1,190 @@
+<ui version="4.0" >
+ <class>QgsGrassModuleBase</class>
+ <widget class="QDialog" name="QgsGrassModuleBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>430</width>
+    <height>367</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>GRASS Module</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="1" column="0" >
+    <widget class="QTabWidget" name="mTabWidget" >
+     <widget class="QWidget" name="options" >
+      <attribute name="title" >
+       <string>Options</string>
+      </attribute>
+     </widget>
+     <widget class="QWidget" name="output" >
+      <attribute name="title" >
+       <string>Output</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTextBrowser" name="mOutputTextBrowser" />
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Manual</string>
+      </attribute>
+      <layout class="QVBoxLayout" >
+       <property name="leftMargin" >
+        <number>0</number>
+       </property>
+       <property name="topMargin" >
+        <number>0</number>
+       </property>
+       <property name="rightMargin" >
+        <number>0</number>
+       </property>
+       <property name="bottomMargin" >
+        <number>0</number>
+       </property>
+       <item>
+        <widget class="QTextBrowser" name="mManualTextBrowser" />
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="0" column="0" >
+    <widget class="QLabel" name="lblModuleName" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text" >
+      <string>TextLabel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QFrame" name="frame4" >
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth" >
+      <number>0</number>
+     </property>
+     <property name="margin" stdset="0" >
+      <number>0</number>
+     </property>
+     <layout class="QHBoxLayout" >
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>21</width>
+          <height>31</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mRunButton" >
+        <property name="text" >
+         <string>Run</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mViewButton" >
+        <property name="text" >
+         <string>View output</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>31</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QPushButton" name="mCloseButton" >
+        <property name="text" >
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Expanding</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>21</width>
+          <height>31</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QProgressBar" name="mProgressBar" />
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,448 @@
+<ui version="4.0" >
+ <class>QgsGrassEditBase</class>
+ <widget class="QMainWindow" name="QgsGrassEditBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>542</width>
+    <height>347</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>GRASS Edit</string>
+  </property>
+  <widget class="QWidget" name="centralwidget" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>542</width>
+     <height>325</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" >
+    <item row="0" column="0" >
+     <widget class="QTabWidget" name="tabWidget" >
+      <property name="currentIndex" >
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>512</width>
+         <height>278</height>
+        </rect>
+       </property>
+       <attribute name="title" >
+        <string>Category</string>
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="textLabel3" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Mode</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mCatModeBox" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="currentIndex" >
+             <number>-1</number>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="catLabel" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Category</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="mCatEntry" >
+            <property name="minimumSize" >
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="textLabel2" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Layer</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mFieldBox" >
+            <property name="minimumSize" >
+             <size>
+              <width>80</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+            <property name="duplicatesEnabled" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>20</width>
+            <height>171</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_2" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>512</width>
+         <height>278</height>
+        </rect>
+       </property>
+       <attribute name="title" >
+        <string>Settings</string>
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="textLabel4" >
+            <property name="text" >
+             <string>Snapping in screen pixels</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="mSnapPixels" >
+            <property name="value" >
+             <number>10</number>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>191</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer>
+          <property name="orientation" >
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>20</width>
+            <height>211</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_3" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>512</width>
+         <height>278</height>
+        </rect>
+       </property>
+       <attribute name="title" >
+        <string>Symbology</string>
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="label" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Line width</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="mLineWidthSpinBox" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="label_2" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Preferred" hsizetype="Minimum" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text" >
+             <string>Marker size</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QSpinBox" name="mMarkerSizeSpinBox" >
+            <property name="sizePolicy" >
+             <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer>
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>171</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTreeWidget" name="symbologyList" >
+          <property name="sizeHint" stdset="0" >
+           <size>
+            <width>256</width>
+            <height>192</height>
+           </size>
+          </property>
+          <property name="rootIsDecorated" >
+           <bool>false</bool>
+          </property>
+          <property name="treeStepSize" stdset="0" >
+           <number>20</number>
+          </property>
+          <column>
+           <property name="text" >
+            <string>Disp</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Color</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Index</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_4" >
+       <property name="geometry" >
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>512</width>
+         <height>278</height>
+        </rect>
+       </property>
+       <attribute name="title" >
+        <string>Table</string>
+       </attribute>
+       <layout class="QVBoxLayout" >
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <widget class="QLabel" name="textLabel1" >
+            <property name="text" >
+             <string>Layer</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="mTableField" >
+            <property name="editable" >
+             <bool>true</bool>
+            </property>
+            <property name="duplicatesEnabled" >
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QTableWidget" name="mAttributeTable" >
+          <property name="lineWidth" >
+           <number>2</number>
+          </property>
+          <property name="selectionMode" >
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="columnCount" >
+           <number>3</number>
+          </property>
+          <property name="numRows" stdset="0" >
+           <number>0</number>
+          </property>
+          <property name="numCols" stdset="0" >
+           <number>3</number>
+          </property>
+          <column>
+           <property name="text" >
+            <string>Column</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text" >
+            <string>Length</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" >
+          <item>
+           <spacer name="horizontalSpacer" >
+            <property name="orientation" >
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0" >
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mAddColumnButton" >
+            <property name="text" >
+             <string>Add Column</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="mAlterTableButton" >
+            <property name="text" >
+             <string>Create / Alter Table</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusbar" >
+   <property name="geometry" >
+    <rect>
+     <x>0</x>
+     <y>325</y>
+     <width>542</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

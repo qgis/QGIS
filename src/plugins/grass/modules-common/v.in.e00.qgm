@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import ESRI E00 vector" module="v.in.e00">
+	<file key="file" type="old" label="E00 vector layer" />
+	<option key="type" />
+	<option key="vect" />
+</qgisgrassmodule>

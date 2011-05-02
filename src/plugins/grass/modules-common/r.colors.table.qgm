@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Set raster color table from setted tables" module="r.colors">
+	<option key="map" />
+	<option key="color" />
+</qgisgrassmodule>

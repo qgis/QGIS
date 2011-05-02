@@ -1,0 +1,134 @@
+<!-- DTD for QGIS project file
+* This DTD describes the maplayers and their symbology and
+* is used when saving/restoring a QGIS project.
+-->
+
+<!--
+  --  Project Properties
+  --
+  -->
+<!ELEMENT qgis (title, extent, projectlayers, mapunits) >
+<!ELEMENT projectlayers (maplayer*) >
+<!ELEMENT extent (xmin, ymin, xmax, ymax) >
+<!ELEMENT xmin (#PCDATA) >
+<!ELEMENT ymin (#PCDATA) >
+<!ELEMENT xmax (#PCDATA) >
+<!ELEMENT ymax (#PCDATA) >
+<!ELEMENT title (#PCDATA) >
+<!ELEMENT mapunits (#PCDATA) >
+<!--  Attribute Lists -->
+<!ATTLIST qgis 
+	projectname CDATA #REQUIRED 
+	mapunits (meters|feet|degrees) "meters"
+  >
+<!ATTLIST projectlayers layercount CDATA #REQUIRED >
+<!--
+  --  General Map Layer Properties
+  --  (apply to both vector and raster)
+  -->
+<!ELEMENT maplayer (layername, datasource, classificationattribute*, (singlesymbol|singlemarker|graduatedsymbol|continuoussymbol|graduatedmarker|rasterproperties) >
+<!ELEMENT layername (#PCDATA) >
+<!ELEMENT datasource (#PCDATA) >
+<!--  Attribute Lists -->
+<!--Raster : flag indicating whether the layer should be represented in overview or not -->
+<!ELEMENT  showInOverviewFlag>
+<!-- Attribute lists -->
+<!ATTLIST showInOverViewFlag boolean (1|0|true|false) "false">
+<!ATTLIST maplayer
+	type (vector|raster|database) "vector"
+	visible (1|0) "0"
+	>
+
+<!--
+  --  Element symbol contains the settings for a qpainter
+  --
+  -->
+
+<!ELEMENT symbol (lowervalue, uppervalue, label,
+outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
+<!ELEMENT lowervalue (#PCDATA) >
+<!ELEMENT uppervalue (#PCDATA) >
+<!ELEMENT label (#PCDATA) >
+<!ELEMENT outlinecolor EMPTY >
+<!ELEMENT outlinestyle (#PCDATA) >
+<!ELEMENT outlinewidth (#PCDATA) >
+<!ELEMENT fillcolor EMPTY >
+<!ELEMENT fillpattern (#PCDATA) >
+
+<!ATTLIST outlinecolor 
+	red CDATA #REQUIRED
+	green CDATA #REQUIRED
+	blue CDATA #REQUIRED
+	>
+
+<!ATTLIST fillcolor 
+	red CDATA #REQUIRED
+	green CDATA #REQUIRED
+	blue CDATA #REQUIRED
+	>
+
+<!--
+  --  elements to store the settings of the different symbology types
+  --
+  -->
+
+<!ELEMENT singlesymbol (symbol) >
+<!ELEMENT singlemarker (renderitem) >
+<!ELEMENT graduatedsymbol (classificationfield,symbol+) >
+<!ELEMENT graduatedmarker (classificationfield,rangerenderitem+) >
+<!ELEMENT uniquevalue (classificationfield,renderitem+) >
+<!ELEMENT uniquevaluemarker (classificationfield,renderitem+) >
+<!ELEMENT classificationfield (#PCDATA) >
+<!ELEMENT continuoussymbol (classificationfield,lowestsymbol,highestsymbol) >
+<!ELEMENT lowestsymbol (symbol) >
+<!ELEMENT highestsymbol (symbol) >
+
+<!--
+  --  Raster Layer Properties
+  --
+  -->
+<!ELEMENT rasterproperties (showDebugOverlayFlag, showGrayAsColorFlag, invertHistogramFlag, stdDevsToPlotDouble, transparencyLevelInt, redBandNameQString, greenBandNameQString, blueBandNameQString, grayBandNameQString) >
+<!--Raster flag to indicate whether debug infor overlay should be rendered onto the raster -->
+<!ELEMENT  showDebugOverlayFlag>
+<!--Raster : the rendering style to be used for this layer -->
+ <!ELEMENT drawingStyle (#CDATA)>
+<!--Raster : flag indicating whether the histogram should be inverted or not -->
+<!ELEMENT  invertHistogramFlag>
+<!--Raster : Number of stddev to plot (0) to ignore -->
+<!ELEMENT  stdDevsToPlotDouble>
+<!--Raster transparency for this layer should be 0-255 -->
+<!ELEMENT transparencyLevelInt>
+<!--Raster : the band to be associated with the color red - usually red -->
+ <!ELEMENT redBandNameQString (#CDATA)>
+<!--Raster : the band to be associated with the color green - usually green -->
+<!ELEMENT  greenBandNameQString (#CDATA)>
+<!--Raster : the band to be associated with the color blue - usually blue -->
+<!ELEMENT  blueBandNameQString (#CDATA)>
+<!--Raster :  the band to be associated with the grayscale only ouput - usually gray  -->
+<!ELEMENT grayBandNameQString (#CDATA)>
+<!--  Attribute Lists -->
+<!ATTLIST showDebugOverlayFlag boolean (1|0|true|false) "false">	
+<!ATTLIST invertHistogramFlag boolean (1|0|true|false) "false">
+<!ATTLIST stdDevsToPlotDouble value CDATA "0">
+<!ATTLIST transparencyLevelInt value CDATA "0">
+
+<!--
+  --  Legend
+  --
+  -->
+
+<!ELEMENT legend (legendgroup* | legendlayer*) >
+<!ATTLIST legend open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendgroup (legendlayer*) >
+<!ATTLIST legendgroup open (1|0|true|false) "false" name CDATA checked (Qt::Checked|Qt::Unchecked|Qt::PartiallyChecked) "Qt::Checked">
+<!ELEMENT legendlayer (legendsymbologyitem+, legendlayerfilegroup>
+<!ATTLIST legendlayer open (1|0|true|false) "false" checked (Qt::Checked|Qt::Unchecked|Qt::PartiallyChecked) "Qt::Checked"> 
+<!ELEMENT legendlayerfilegroup (legendlayerfile*) >
+<!ATTLIST legendlayerfilegroup open (1|0|true|false) "false" > #open or closed
+<!ATTLIST legendlayerfilegroup hidden(1|0|true|false) "false"> #hidden or shown
+<!ELEMENT legendlayerfile>
+<!ATTLIST legendlayerfile id CDATA> #unique layer id of the associated layer
+<!ATTLIST legendlayerfile open (1|0|true|false) "false"> #open or closed
+<!ELEMENT legendsymbologyitem>
+<!ATTLIST legendsymbologyitem open (1|0|true|false) "false"> #open or closed
+

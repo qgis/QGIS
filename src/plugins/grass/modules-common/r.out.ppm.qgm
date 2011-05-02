@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export raster to PPM image at the resolution of the current region" module="r.out.ppm">
+	<option key="input" />
+	<flag key="G" />
+	<file key="output" type="new" />
+</qgisgrassmodule>

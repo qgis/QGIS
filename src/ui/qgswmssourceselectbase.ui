@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsWMSSourceSelectBase</class>
+ <widget class="QDialog" name="QgsWMSSourceSelectBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>773</width>
+    <height>539</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Add Layer(s) from a Server</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
+  </property>
+  <property name="toolTip">
+   <string>Save connections to file</string>
+  </property>
+  <property name="sizeGripEnabled">
+   <bool>true</bool>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="labelStatus">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Ready</string>
+     </property>
+     <property name="wordWrap">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabServers">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tabLayers">
+      <attribute name="title">
+       <string>Layers</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0" colspan="12">
+        <widget class="QComboBox" name="cmbConnections"/>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QPushButton" name="btnConnect">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>C&amp;onnect</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2" colspan="2">
+        <widget class="QPushButton" name="btnNew">
+         <property name="text">
+          <string>&amp;New</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QPushButton" name="btnEdit">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Edit</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5">
+        <widget class="QPushButton" name="btnDelete">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string>Delete</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="7">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>8</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="11">
+        <widget class="QPushButton" name="btnAddDefault">
+         <property name="statusTip">
+          <string>Adds a few example WMS servers</string>
+         </property>
+         <property name="whatsThis">
+          <string comment="Adds several example WMS servers to the list"/>
+         </property>
+         <property name="text">
+          <string>Add default servers</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="12">
+        <widget class="QTreeWidget" name="lstLayers">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::MultiSelection</enum>
+         </property>
+         <property name="allColumnsShowFocus">
+          <bool>true</bool>
+         </property>
+         <column>
+          <property name="text">
+           <string>ID</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Title</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Abstract</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="12">
+        <widget class="QGroupBox" name="btnGrpImageEncoding">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>16</width>
+           <height>64</height>
+          </size>
+         </property>
+         <property name="title">
+          <string>Image encoding</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="12">
+        <widget class="QGroupBox" name="gbCRS">
+         <property name="title">
+          <string>Options</string>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Layer name</string>
+            </property>
+            <property name="buddy">
+             <cstring>leLayerName</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" colspan="2">
+           <widget class="QLineEdit" name="leLayerName"/>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="labelCoordRefSys">
+            <property name="text">
+             <string>Coordinate Reference System</string>
+            </property>
+            <property name="buddy">
+             <cstring>btnChangeSpatialRefSys</cstring>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2">
+           <widget class="QPushButton" name="btnChangeSpatialRefSys">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>Change ...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="9">
+        <widget class="QPushButton" name="btnSave">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="8">
+        <widget class="QPushButton" name="btnLoad">
+         <property name="toolTip">
+          <string>Load connections from file</string>
+         </property>
+         <property name="text">
+          <string>Load</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabLayerOrder">
+      <attribute name="title">
+       <string>Layer Order</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="mLayerUpButton">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="mLayerDownButton">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>391</width>
+           <height>30</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" colspan="3">
+        <widget class="QTreeWidget" name="mLayerOrderTreeWidget">
+         <property name="columnCount">
+          <number>2</number>
+         </property>
+         <column>
+          <property name="text">
+           <string>Layer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Style</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabTilesets">
+      <attribute name="title">
+       <string>Tilesets</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="lstTilesets">
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="cornerButtonEnabled">
+          <bool>false</bool>
+         </property>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Layers</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Styles</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Size</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Format</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>CRS</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabServerSearch">
+      <attribute name="title">
+       <string>Server Search</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QLineEdit" name="leSearchTerm"/>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="btnSearch">
+         <property name="text">
+          <string>Search</string>
+         </property>
+         <property name="default">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="2">
+        <widget class="QTableWidget" name="tableWidgetWMSList">
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="cornerButtonEnabled">
+          <bool>false</bool>
+         </property>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Title</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Description</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>URL</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2">
+        <widget class="QPushButton" name="btnAddWMS">
+         <property name="text">
+          <string>Add selected row to WMS list</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>tabServers</tabstop>
+  <tabstop>cmbConnections</tabstop>
+  <tabstop>btnConnect</tabstop>
+  <tabstop>btnNew</tabstop>
+  <tabstop>btnEdit</tabstop>
+  <tabstop>btnDelete</tabstop>
+  <tabstop>btnAddDefault</tabstop>
+  <tabstop>lstLayers</tabstop>
+  <tabstop>leLayerName</tabstop>
+  <tabstop>btnChangeSpatialRefSys</tabstop>
+  <tabstop>mLayerUpButton</tabstop>
+  <tabstop>mLayerDownButton</tabstop>
+  <tabstop>mLayerOrderTreeWidget</tabstop>
+  <tabstop>lstTilesets</tabstop>
+  <tabstop>leSearchTerm</tabstop>
+  <tabstop>btnSearch</tabstop>
+  <tabstop>tableWidgetWMSList</tabstop>
+  <tabstop>btnAddWMS</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsWMSSourceSelectBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>518</x>
+     <y>510</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>551</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

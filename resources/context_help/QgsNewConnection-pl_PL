@@ -1,0 +1,19 @@
+<h3>Nowe połączenie dla PostGIS</h3>
+Utworzenie nowego połączenia z bazą PostGIS wymaga posiadania pewnych informacji o serwerze, bazie danych i znajomości nazwy użytkownika oraz hasła logowania do bazy.
+<h4>Wymagane parametry</h4>
+<ul>
+<li><label>Nazwa</label> - opisowa nazwa dla połączenia
+<li><label>Host</label> - nazwa hosta serwera bazy danych (np. madison.qgis.org; jeśli baza PostGIS jest na tym samym komputerze, będzie to localhost)
+<li><label>Baza danych</label> - nazwa bazy danych do której będzie utworzone połączenie
+<li><label>Port</label> - port PostreSQL. Domyślny port to 5432. Jeśli nie masz pewności, skonsultuj się z administratorem bazy danych.
+<li><label>Użytkownik</label> - twoja nazwa użytkownika bazy
+<li><label>Hasło</label> - twoje hasło do bazy
+</ul>
+<h4>Opcje</h4>
+<ol>
+<li><label>Zapisz hasło</label> - jeśli dostęp do twojej bazy danych jest chroniony hasłem, możesz je zapamiętać w QGIS, jednak należy mieć świadomość względów bezpieczeństwa. Hasło jest przechowywane otwatrym tekstem w preferencjach QGIS.  
+<li><label>Sprawdź tylko tabelę geometry_columns</label> - QGIS przeszukuje wszystkie tabele w bazie danych, które mają kolumnę z danymi przestrzennymi. Możesz tak skonfigurować połączenie, aby szukać warstw tylko "zarejestrowanych" jako posiadające wpis w geometry_columns. Przyspieszy to tworzenie listy dostępnych warstw, ale można w ten sposób pominąć warstwy, których nie ma w spisie.
+<li><label>Sprawdź tylko schemat „public”</label> - Opcja ta pozwala przeszukiwać tylko schemat \public, co także przyspiesza listowanie warstw, ale przydatne jest jedynie w przypadku, gdy tylko tam są przechowywane.
+</ol>
+<h4>Test połączenia</h4>
+Przycisk <label>Test połączenia</label> inicjuje połączenie z bazą używając parametrów, które zostały wskazane. Jest to dobry sposób sprawdzenia poprawności parametrów połączenia, zanim zostanie ono zapisane.

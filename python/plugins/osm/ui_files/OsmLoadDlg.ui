@@ -1,0 +1,163 @@
+<ui version="4.0" >
+ <class>OsmLoadDlg</class>
+ <widget class="QDialog" name="OsmLoadDlg" >
+  <property name="windowModality" >
+   <enum>Qt::ApplicationModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>508</width>
+    <height>309</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Load OSM</string>
+  </property>
+  <property name="toolTip" >
+   <string/>
+  </property>
+  <property name="whatsThis" >
+   <string/>
+  </property>
+  <property name="modal" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <layout class="QGridLayout" >
+     <item row="0" column="0" colspan="2" >
+      <widget class="QLabel" name="label" >
+       <property name="text" >
+        <string>OpenStreetMap file to load:</string>
+       </property>
+       <property name="indent" >
+        <number>-1</number>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0" >
+      <widget class="QLineEdit" name="OSMFileEdit" />
+     </item>
+     <item row="1" column="1" >
+      <widget class="QPushButton" name="browseOSMButton" >
+       <property name="text" >
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Add columns for tags:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QListWidget" name="lstTags" >
+       <property name="sizePolicy" >
+        <sizepolicy vsizetype="Expanding" hsizetype="Preferred" >
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QCheckBox" name="chkCustomRenderer" >
+       <property name="text" >
+        <string>Use custom renderer</string>
+       </property>
+       <property name="checked" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="styleCombo" >
+       <property name="minimumSize" >
+        <size>
+         <width>182</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize" >
+        <size>
+         <width>182</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="maximumSize" >
+      <size>
+       <width>110</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="baseSize" >
+      <size>
+       <width>110</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::NoButton|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" >
+    <widget class="QCheckBox" name="chkReplaceData" >
+     <property name="text" >
+      <string>Replace current data (current layers will be removed)</string>
+     </property>
+     <property name="checked" >
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>OSMFileEdit</tabstop>
+  <tabstop>browseOSMButton</tabstop>
+  <tabstop>lstTags</tabstop>
+  <tabstop>chkCustomRenderer</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>OsmLoadDlg</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

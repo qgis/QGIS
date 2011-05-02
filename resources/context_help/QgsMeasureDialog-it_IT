@@ -1,0 +1,6 @@
+<h3>Strumenti di misura</h3>
+Ci sono due strumenti di misura: lunghezza e area. Con questi strumenti di possono misurare distanze e aree sull'area mappa. Attualmente i risultati delle misuresono espressi in unità metriche. Un clic singolo con il tasto destro del mouse interrompe la misura, mentre un doppio clic con il tasto destro inizia una nuova misurazione.
+<h4>Misura di lunghezze</h4>
+Per misurare lunghezze lineari, selezionare il tool e fare clic lungo il percorso da misurare. Viene visualizzata la lunghezza di igni segmento e, al contempo, la lunghezza totale del percorso.
+<h4>Misura di aree</h4>
+Per misurare aree, selezionare il tool e fare clic per disegnare un'area. L'area del poligono disegnato viene dinamicamente calcolata e visualizzata.

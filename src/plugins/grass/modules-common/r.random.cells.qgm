@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create random cell values with spatial dependence" module="r.random.cells">
+	<option key="distance" />
+	<option key="output" />
+</qgisgrassmodule>

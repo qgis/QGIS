@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Find shortest path on vector network" module="v.net.path">
+	<option key="input" />
+	<option key="alayer" answer="1" />
+	<option key="nlayer" answer="2" />
+	<file key="file" type="old" />
+	<option key="afcolumn" />
+	<option key="abcolumn" />
+	<option key="ncolumn" />
+	<option key="dmax" />
+	<flag key="g" />
+	<flag key="s" />
+	<option key="output" />
+</qgisgrassmodule>

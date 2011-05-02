@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) raster" module="r.cost">
+	<option key="input"/>
+	<option key="start_rast"/>
+	<option key="output"/>
+	<option key="max_cost" hidden="no"/>
+	<option key="stop_coordinate" hidden="no" advanced="yes"/>
+<!-- commented out until #3203 is fixed <option key="stop_points" hidden="no" advanced="yes"/> -->
+	<option key="null_cost" hidden="no" advanced="yes"/>
+	<flag key="k" hidden="no" />
+	<flag key="n" hidden="no" advanced="yes"/>
+	<flag key="r" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

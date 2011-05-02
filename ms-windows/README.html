@@ -1,0 +1,461 @@
+<html>
+
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<meta http-equiv="Content-Language" content="en" />
+<meta name="Author" content="Marco Pasetti" />
+<meta name="Description" content="How to prepare a MS-Windows Quantum GIS Release" />
+
+<title>WinQGIS Release How-To</title>
+
+<style type="text/css" />
+
+/* Wiki Pages Styles */
+
+/* TableOfContents */
+
+.table-of-contents	{ 
+					border: 1px solid #bbbbbb;
+					color: black; background-color: #eeeeee;
+					font-size: small;
+					text-align:left;
+					margin: 0.5em; padding-left: 1em;
+					width: 360;
+					}
+
+/* Contents */
+
+html	{
+		background-color: white;
+		color: black;
+		font-family: Arial, Lucida Grande, sans-serif;
+		font-size: 10pt;
+		}
+		
+body	{
+		margin: 30;
+		}
+		
+ol	{
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 10pt;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+	}
+
+h1	{
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 18pt;
+	margin-top: 0;
+	margin-bottom: 50;
+	}
+
+h2	{
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 16pt;
+	margin-top: 60;
+	margin-bottom: 20;
+	}
+	
+h3	{
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 14pt;
+	margin-top: 60;
+	margin-bottom: 20;
+	}
+
+h4	{
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 11pt;
+	margin-top: 0;
+	margin-bottom: 0;
+	}
+
+p	{
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 10pt;
+	margin-top: 10;
+	margin-bottom: 10;
+	}
+
+code	{
+		font-family: Courier-new, monospace;
+		font-size: 10pt;
+		margin-top: 10;
+		margin-bottom: 10;
+		}
+		
+pre	{
+	padding: 1em;
+	border: 1px dashed #2f6fab;
+	color: black;
+	background-color: #f9f9f9;
+	line-height: 1.1em;
+	}
+	
+	
+/* Tables */
+
+table
+{
+	margin: 0.5em 0 0 0.5em;
+	border-collapse: collapse;
+}
+
+td
+{
+	padding: 0.25em 0.5em 0.25em 0.5em;
+	border: 0pt solid #ADB9CC;
+	font-family: Arial, Lucida Grande, sans-serif;
+	font-size: 10pt;
+}
+		
+
+/* Links */
+
+a	{
+	text-decoration: none;
+	color: #002bb8;
+	background: none;
+	}
+	
+a:hover {
+		text-decoration: underline;
+		color: green;
+		}
+	
+a:visited:hover	{
+				text-decoration: underline;
+				color: red;
+				}
+</style>
+
+</head>
+
+<body>
+
+<h1>How to prepare a MS-Windows Quantum GIS Release</h1>
+
+<div class="table-of-contents">
+
+<p><strong>Table of Contents</strong></p>
+
+<p><a href="#Introduction">Introduction</a></p>
+
+<p><ol>
+<li><a href="#MSYS">MSYS</a></li>
+<li><a href="#MinGW">MinGW</a></li>
+<li><a href="#Quantum GIS MSYS Environment">Quantum GIS MSYS Environment</a></li>
+<li><a href="#Qt OpenSource">Qt OpenSource</a></li>
+<li><a href="#Python">Python</a></li>
+<li><a href="#SIP">SIP</a></li>
+<li><a href="#PyQt">PyQt</a></li>
+<li><a href="#CMake">CMake</a></li>
+<li><a href="#Quantum GIS">Quantum GIS Build</a></li>
+<li><a href="#Quantum GIS Package">Quantum GIS self-contained Package</a></li>
+<li><a href="#NSIS">NSIS</a></li>
+<li><a href="#Quantum GIS Installer">Quantum GIS Installer</a></li>
+</ol></p>
+
+<p><a href="#Credits and Contacts">Credits and Contacts</a></p>
+
+<br>
+
+</div>
+
+
+
+<div id="Introduction">
+
+<p><h3>Introduction</h3></p>
+
+
+<p>This document explains how to prepare a MS-Windows Quantum GIS release (as a self-contained package installer)
+using the scripts contained in the ms-windows folder. In order to avoid mistakes or misunderstandings,
+I highly recommend to follow each step and command exactly as they are written in this document.</p>
+
+</div>
+
+
+
+
+<div id="MSYS">
+
+<p><h3>1. MSYS (1.0.11)</h3></p>
+
+<p>Download the <a target="_blank" href="http://prdownloads.sourceforge.net/mingw/MSYS-1.0.11-2004.04.30-1.exe">MSYS installer</a></p>
+
+<p>Install to <code>c:\msys</code></p>
+
+<p>At the command prompt question for post install, type <code>n</code> and then enter.</p>
+
+<p>Download the <a target="_blank" href="http://downloads.sourceforge.net/mingw/coreutils-5.97-MSYS-1.0.11-snapshot.tar.bz2">
+MSYS coreutils package</a></p>
+
+<p>Unpack it to a temporary folder, then copy all the content of the <code>coreutils-5.97</code> folder to <code>c:\msys</code>
+(overwrite the existing files when asked)</p>
+
+</div>
+
+
+
+
+<div id="MinGW">
+
+<p><h3>2. MinGW (5.1.4)</h3></p>
+
+<p>Download the <a target="_blank" href="http://downloads.sourceforge.net/mingw/MinGW-5.1.4.exe">MinGW installer</a></p>
+
+<p>Select "Download and Install Current Version";</p>
+
+<p>Install only "g++ compiler" and "MinGW Make";</p>
+
+<p>Install to <code>c:\msys\mingw</code></p>
+
+</div>
+
+
+
+
+<div id="Quantum GIS MSYS Environment">
+
+<p><h3>3. Quantum GIS MSYS Environment</h3></p>
+
+<p>Download the <a target="_blank" href="http://download.osgeo.org/qgis/win32/msys.zip">
+Quantum GIS MSYS Environment</a></p>
+
+<p>Extract the whole package to <code>c:\msys\local</code></p>
+
+</div>
+
+
+
+<div id="Qt OpenSource">
+
+<p><h3>4. Qt OpenSource (4.4.0)</h3></p>
+
+<p>
+Download the <a target="_blank" href="ftp://ftp.trolltech.com/qt/source/qt-win-opensource-4.4.0-mingw.exe">Qt OpenSource installer</a>
+</p>
+
+<p>Install to <code>C:\DevTools\Qt-OpenSource</code></p>
+
+<p>When the installer will ask for MinGW, you don't need to download and install it, just point the installer to
+<code>c:\msys\mingw</code></p>
+
+<p>At the alert message "The installer could not found a valid c:\msys\mingw\include\w32api.h", press "Yes" and continue.</p>
+
+<p>When Qt installation is complete, edit <code>C:\DevTools\Qt-OpenSource\bin\qtvars.bat</code> and do as follows:</p>
+
+<p>At line 8 replace:</p>
+<pre><code>echo -- PATH set to C:\DevTools\Qt-OpenSource\bin</code></pre>
+
+<p>with:</p>
+<pre><code>echo -- Adding MSYS environment directories to PATH</code></pre>
+
+<p>At line 14 replace:</p>
+<pre><code>set PATH=C:\DevTools\Qt-OpenSource\bin</code></pre>
+
+<p>with:</p>
+<pre><code>set PATH=%PATH%;c:\msys\local\bin;c:\msys\local\sqlite\bin;c:\msys\local\pgsql\lib</code></pre>
+
+<p>Finally, add <code>C:\DevTools\Qt-OpenSource\bin</code> to your <code>PATH</code> system variable.</p>
+
+</div>
+
+
+
+
+<div id="Python">
+
+<p><h3>5. Python (2.5.2)</h3></p>
+
+<p>
+Download the <a target="_blank" href="http://www.python.org/ftp/python/2.5.2/python-2.5.2.msi">Python installer</a>
+</p>
+
+<p>Install to <code>C:\DevTools\Python</code></p>
+
+<p>Add <code>C:\DevTools\Python</code> to your <code>PATH</code> system variable.</p>
+
+</div>
+
+
+
+
+<div id="SIP">
+
+<p><h3>6. SIP (4.7.6)</h3></p>
+
+<p>
+Download the <a target="_blank" href="http://www.riverbankcomputing.com/static/Downloads/sip4/sip-4.7.6.zip">SIP source code</a>
+</p>
+
+<p>Unpack to <code>c:\msys\local\src</code></p>
+
+<p>Open a Windows terminal and type:</p>
+<pre><code>cd c:\msys\local\src\sip-4.7.6
+qtvars
+python configure.py -p win32-g++
+make
+make install</code></pre>
+
+</div>
+
+
+
+
+<div id="PyQt">
+
+<p><h3>7. PyQt (4.4.2)</h3></p>
+
+<p>
+Download the <a target="_blank" href="http://www.riverbankcomputing.com/static/Downloads/PyQt4/PyQt-win-gpl-4.4.2.zip">PyQt source code</a>
+</p>
+
+<p>Unpack to <code>c:\msys\local\src</code></p>
+
+<p>Open a Windows terminal and type:</p>
+<pre><code>cd c:\msys\local\src\PyQt-win-gpl-4.4.2
+qtvars
+python configure.py
+make
+make install</code></pre>
+
+</div>
+
+
+
+
+<div id="CMake">
+
+<p><h3>8. CMake (2.6.0)</h3></p>
+
+<p>
+Download the <a target="_blank" href="http://www.cmake.org/files/v2.6/cmake-2.6.0-win32-x86.exe">CMake installer</a>
+</p>
+
+<p>Launch the CMake installer and do as follows:</p>
+
+<p>Select "Add CMake to the system PATH for all users"</p>
+
+<p>Install to <code>C:\DevTools\CMake</code></p>
+
+</div>
+
+
+
+
+<div id="Quantum GIS">
+
+<p><h3>9. Quantum GIS Build (0.11.0)</h3></p>
+
+<p>
+Download the <a target="_blank" href="http://download.osgeo.org/qgis/src/qgis_0.11.0.tar.gz">Quantum GIS source code</a>
+</td>
+</tr></table>
+
+<p>Unpack to <code>c:\msys\local\src</code></p>
+
+<p>Open a Windows terminal and type:</p>
+<pre><code>cd c:\msys\local\src\qgis_0.11.0
+md build
+cd build
+qtvars
+cmakesetup ..</code></pre>
+
+<p>In CMake Setup utility press "Configure" button and, when asked, choose "MinGW Makefiles" as generator.</p>
+
+<p>CMake Setup will alert you for missing dependencies; don't care, press OK and continue.</p>
+
+<p>When finished, select "Show Advanced Values" checkbox.</p>
+
+<p>For each item listed below, select the related box in the CMake Setup utility, type in the suggested value and then press enter
+(we will perform a "bottom-up" procedure, editing last values of the CMake Setup list as first):</p>
+
+<pre><code>SQLITE3_LIBRARY = c:/msys/local/sqlite/bin/libsqlite3-0.dll
+SQLITE3_INCLUDE_DIR = c:/msys/local/sqlite/include
+POSTGRES_INCLUDE_DIR = c:/msys/local/pgsql/include
+GRASS_PREFIX = c:/msys/local/grass-6.3.0
+CMAKE_INSTALL_PREFIX = c:/msys/local/qgis-0.11.0
+CMAKE_CXX_FLAGS = -DGEOS_INLINE
+CMAKE_BUILD_TYPE = Release</code></pre>
+
+<p>When finished press OK button.</p>
+
+<p>Finally, in the same terminal session, type:</p>
+<pre><code>make
+make install</code></pre>
+
+</div>
+
+
+
+
+<div id="Quantum GIS Package">
+
+<p><h3>10. Quantum GIS self-contained Package</h3></p>
+
+<p>Copy all the content of the ms-windows folder to a temporary directory, for example <code>c:\temp</code>.</p>
+
+<p>Launch the file <code>c:\temp\QGIS-Packager.bat</code> and select the option number 2.</p>
+
+<p>When finished, you should have a Quantum GIS self-contained release package in <code>c:\temp\QGIS-Release-Package</code>.</p>
+
+</div>
+
+
+
+
+<div id="NSIS">
+
+<p><h3>11. NSIS (2.38)</h3></p>
+
+<p>Download the <a target="_blank" href="http://prdownloads.sourceforge.net/nsis/nsis-2.38-setup.exe">NSIS installer</a></p>
+
+<p>Install to <code>c:\DevTools</code></p>
+
+</div>
+
+
+
+
+<div id="Quantum GIS Installer">
+
+<p><h3>12. Quantum GIS Installer</h3></p>
+
+<p>Open the the file <code>c:\temp\QGIS-Installer.nsi</code>.</p>
+
+<p>At line 13 set the <code>INSTALLER_TYPE</code> variable to <code>"Release"</code>, then, at lines 19-22, set the
+<code>RELEASE_VERSION_NUMBER</code>, the <code>RELEASE_VERSION_NAME</code>, the <code>RELEASE_SVN_REVISION</code> and
+the <code>RELEASE_BINARY_REVISION</code> variables.</p>
+
+<p>Finally, right click on the file <code>c:\temp\QGIS-Installer.nsi</code> and select <code>Compile NSIS Script</code>.</p>
+
+<p>When finished, you should have the Quantum GIS release installer in <code>c:\temp</code>.</p>
+
+</div>
+
+
+
+
+<div id="Credits and Contacts">
+
+<p><h3>Credits and Contacts</h3></p>
+
+<p>The Quantum GIS MSYS Environment and the Quantum GIS Packager and Installer scripts are provided by Marco Pasetti.</p>
+
+<p>
+To contact him, e-mail to: Quantum GIS Development Mailing List
+(<a target="_blank" href="http://lists.osgeo.org/mailman/listinfo/qgis-developer">http://lists.osgeo.org/mailman/listinfo/qgis-developer</a>).
+</p>
+
+<p>Edited by Marco Pasetti on 13 September 2008.</p>
+
+</div>
+
+</body>
+
+</html>

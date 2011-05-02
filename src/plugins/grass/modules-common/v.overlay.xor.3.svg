@@ -1,0 +1,16 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/v.overlay.xor.3" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polygon points="306 234 313 208 313 192 298 166 283 151 261 132 233 114 228 110 264 96 309 85 364 87 392 93 424 104 448 126 462 168 466 186 468 222 468 267 461 309 442 349 409 378 361 400 281 403 234 386 243 385 282 374 298 339 301 311 301 277 306 234" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="306 234 313 208 313 192 298 166 283 151 261 132 233 114 228 110 264 96 309 85 364 87 392 93 424 104 448 126 462 168 466 186 468 222 468 267 461 309 442 349 409 378 361 400 281 403 234 386 243 385 282 374 298 339 301 311 301 277 306 234" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="234 386 185 386 128 371 91 350 73 319 48 274 41 234 42 194 50 156 61 131 83 109 112 98 154 86 179 84 199 89 228 110 224 112 190 136 179 172 178 222 187 261 201 296 208 330 212 352 231 384 234 386" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="234 386 185 386 128 371 91 350 73 319 48 274 41 234 42 194 50 156 61 131 83 109 112 98 154 86 179 84 199 89 228 110 224 112 190 136 179 172 178 222 187 261 201 296 208 330 212 352 231 384 234 386" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+  </g>
+ </g>
+</svg>

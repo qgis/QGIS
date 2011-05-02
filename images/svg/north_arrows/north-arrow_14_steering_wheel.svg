@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.0" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 450 500">
+	<title>North Arrow, Steering Wheel</title>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:format>image/svg+xml</dc:format>
+				<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+				<dc:title>North Arrow, Steering Wheel</dc:title>
+				<dc:date>2009-11-08</dc:date>
+				<dc:creator>
+					<cc:Agent>
+						<dc:title>Silvio Grosso</dc:title>
+					</cc:Agent>
+				</dc:creator>
+				<dc:description>North Arrow, Steering Wheel</dc:description>
+				<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+			</cc:Work>
+			<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+			</cc:License>
+		</rdf:RDF>
+	</metadata>
+	<g transform="matrix(1.2048906,0,0,1.2187584,-140.60253,-383.18666)">
+		<path id="character_n" fill="black" d="M278.25,373.19h11.57l15.09,22.18v-22.18h11.68v40.09h-11.68l-15.01-22.02v22.02h-11.65v-40.09z"/>
+		<path id="character_e" fill="black" d="M414.25,509h33.19v8.56h-20.78v6.37h19.28v8.18h-19.28v7.9h21.39v9.08h-33.8v-40.09z"/>
+		<path id="outer_circle" d="M545.48,517.99a79.802,79.802,0,1,1,-159.6,0,79.802,79.802,0,1,1,159.6,0z" transform="matrix(0.759387,0,0,0.722648,-57.16595,152.0945)" stroke="black" stroke-linecap="square" stroke-width="26.5" fill="none"/>
+		<path id="inner_circle" d="M545.48,517.99a79.802,79.802,0,1,1,-159.6,0,79.802,79.802,0,1,1,159.6,0z" transform="matrix(0.184375,0,0,0.165506,211.2137,441.605)" stroke="black" stroke-linecap="square" stroke-width="70" fill="none"/>
+		<g id="crossings" stroke="black" stroke-width="5.5" fill="none">		
+			<path d="M296.73,544.41v39.65" />
+			<path d="M296.43,468.61v39.65" />
+			<path d="M354.47,527.72h-39.65" />
+			<path d="M277.4,526.65h-39.65" />
+			<path d="M257.75,487.63l28.04,28.04" />
+			<path d="M309.21,537.99l28.04,28.03" />
+			<path d="M285.79,534.06l-28.04,28.03" />
+			<path d="M337.25,486.2l-28.04,28.04" />
+		</g>
+		<g id="arrows" fill="black" stroke="black" stroke-width="2.53">		
+			<path d="M286.27,459.2v-28.94l11.07-14.47,11.08,14.47v28.94h-22.15z" />
+			<path d="M365.32,518.63h28.94l14.47,11.07-14.47,11.08h-28.94v-22.15z" />
+			<path d="M307.56,589.72v28.95l-11.08,14.47-11.08-14.47v-28.95h22.16z" />
+			<path d="M227.78,537.65h-28.95l-14.47-11.07,14.47-11.08h28.95v22.15z" />
+		</g>
+	</g>
+</svg>

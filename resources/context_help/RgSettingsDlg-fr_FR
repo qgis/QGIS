@@ -1,0 +1,38 @@
+﻿<h3>Paramètres du plugin Graphes Routiers</h3>
+<p>Graphes Routiers est une extension pour QGIS écrite en C++ qui calcule le chemin le chemin le plus court entre 2 points sur n'importe quelle polyligne et trace ce chemin au-dessus du réseau routier.
+</p>
+<p>
+<a href="#creating">Unités de l'extension</a><br/>
+<a href="#topologyTolerance">Tolérance de topologie</a><br/>
+<a href="#layerSettings">Paramètres de l'onglet "Transportation layer"</a><br/>
+</p>
+
+<a name="creating">
+<h4>Unités de l'extension</h4>
+</a>
+<p> Vous pouvez ajuster les unités de la distance calculée et de la mesure de temps du chemin.
+Sélectionnez les unités de distance via le menu déroulant <label>Unités de distance</label> et <label>Unités de temps</label>.</p>
+<a name="topologyTolerance">
+<h4>Tolérance de topologie</h4>
+</a>
+<p><label>Tolérance de topologie</label> - la distance entre les unités du projet.
+Si la distance entre deux points tombe en dessous de la tolérance de la topologie, ils sont considérés comme étant un seul et même sommet.
+Une tolérance de topologie plus grande que zéro ralentit l'execution de l'extension, tout comme vous pouvez également utiliser des sources de données non idéales. </p>
+
+<h5>Remarque</h5>
+<p>L'extension de Graphes Routiers considère deux routes comme liées si elles ont un noeud commun. Un noeud est uniquement identifié par ses coordonnées.
+Cependant, des erreurs dans le processus de numérisation peuvent apparaître. Les erreurs se produisent parfois lorsque le réseau est transformé d'un système de coordonnées de référence à l'autre. Cela pourrait provoquer le fait que l'extension de Graphes Routiers considère les routes connectées comme étant déconnectées. Dans ce cas, la tolérance de topologie devrait être fixée dans une valeur plus grand que zéro.
+</p>
+
+<a name="LayerSettings">
+<h4>Paramètres de l'onglet "Couche de transport"</h4>
+</a>
+<p><label>Le paramètre "Couche"</label> - la couche de données des routes</p>
+<p><label>Le paramètre "Champ de direction"</label> - la valeur de ce champ indique comment l'extension interprète les couches d'entités.
+ <label>Valeur "pour l'aller"</label> - la direction du mouvement correspond à l'ordre des points dans une entité.
+ <label>Valeur "pour le retour"</label> - la direction du mouvement correspond à l'ordre inverse des points dans une entité. 
+ <label>Value pour deux directions "pour les deux sens"</label> - les deux sont possibles.</p>
+<p>Le champ de vitesse</p> - champ contenant la vitesse enregistrée sur la route.</p>
+
+<h5>Paramètres par défaut</h5>
+<p>Si la table des attributs de votre couche linéaire ne contient pas les champs obligatoires ou les champs contiennent des valeurs inattendues, l'extension va utiliser les valeurs par défaut. Vous pouvez les définir dans l'onglet par défaut.<label>Paramètres par défaut</label>.</p>

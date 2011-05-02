@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Assign new value as result of operation on columns to column in attribute table" module="v.db.update">
+	<option key="map" layeroption="layer" />
+	<field key="column" layer="map" type="integer,double,varchar,string" label="Attribute field" />
+	<option key="qcolumn" />
+</qgisgrassmodule>

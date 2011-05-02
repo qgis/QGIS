@@ -1,0 +1,282 @@
+<ui version="4.0" >
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog" >
+  <property name="windowModality" >
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>377</width>
+    <height>473</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Projection Management Tool</string>
+  </property>
+  <property name="sizeGripEnabled" >
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout" >
+   <item row="0" column="0" colspan="2" >
+    <widget class="QLabel" name="label_3" >
+     <property name="text" >
+      <string>Input vector layer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="2" >
+    <widget class="QComboBox" name="inShape" />
+   </item>
+   <item row="2" column="0" colspan="2" >
+    <widget class="QLabel" name="label_4" >
+     <property name="text" >
+      <string>Input spatial reference system</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2" >
+    <widget class="QLineEdit" name="inRef" >
+     <property name="readOnly" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>Output spatial reference system</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QRadioButton" name="rdoProjection" >
+        <property name="text" >
+         <string>Use predefined spatial reference system</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <layout class="QHBoxLayout" >
+        <item>
+         <widget class="QLineEdit" name="txtProjection" >
+          <property name="readOnly" >
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QToolButton" name="btnProjection" >
+          <property name="text" >
+           <string>Choose</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QRadioButton" name="radioButton_2" >
+        <property name="text" >
+         <string>Import spatial reference system from existing layer</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QComboBox" name="cmbLayer" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="text" >
+         <string>Import spatial reference system</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0" >
+       <widget class="QLineEdit" name="outRef" >
+        <property name="enabled" >
+         <bool>false</bool>
+        </property>
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2" >
+    <widget class="QLabel" name="label_2" >
+     <property name="text" >
+      <string>Output Shapefile</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="2" >
+    <layout class="QHBoxLayout" >
+     <item>
+      <widget class="QLineEdit" name="outShape" >
+       <property name="readOnly" >
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolOut" >
+       <property name="text" >
+        <string>Browse</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="7" column="0" >
+    <widget class="QProgressBar" name="progressBar" >
+     <property name="value" >
+      <number>0</number>
+     </property>
+     <property name="alignment" >
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="textVisible" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="1" >
+    <widget class="QDialogButtonBox" name="buttonBox_2" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox_2</sender>
+   <signal>accepted()</signal>
+   <receiver>Dialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>133</x>
+     <y>470</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>215</x>
+     <y>290</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox_2</sender>
+   <signal>rejected()</signal>
+   <receiver>Dialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>59</x>
+     <y>470</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>132</x>
+     <y>239</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>txtProjection</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>122</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>127</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rdoProjection</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>btnProjection</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>228</x>
+     <y>170</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>355</x>
+     <y>204</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>cmbLayer</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>94</x>
+     <y>235</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>95</x>
+     <y>265</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>label_5</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>37</x>
+     <y>232</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>46</x>
+     <y>281</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>outRef</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>24</x>
+     <y>226</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>30</x>
+     <y>306</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

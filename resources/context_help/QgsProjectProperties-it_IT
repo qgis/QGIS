@@ -1,0 +1,38 @@
+<h3>Proprietà progetto</h3>
+Questa finestra di dialogo consente di impostare le proprietà relative al <label>Progetto</label>. Un progetto è un insieme salvato di layer con determinate impostazioni e altre informazioni necessarie per recuperare il progetto dal disco.<p>
+
+
+<a href="#general">Tab Generale</a><br/>
+<a href="#crs">Tab Coordinate di Riferimento Spaziale (CRS)</a><br/>
+<a href="#layers">Tab Layer interrogabili</a><br/>
+
+<a name="general">
+<h4>Tab Generale</h4>
+</a>
+<table border=1>
+<tr><td><label>Titolo del progetto</label></td><td>Un titolo descrittivo del progetto. Questo titolo verrà visualizzato nella barra del titolo della finestra di QGIS</td></tr>
+<tr><td><label>Colore della selezione</label></td><td>Gli elementi selezionati verranno visualizzati sull'area mappa usando questo colore.</td></tr>
+<tr><td><label>Colore di sfondo</label></td><td>Il colore dell'area mappa.</td></tr>
+<tr><td><label>Salva percorsi</label></td><td>Possibilita' di salvare i percorsi come assoluti o relativi.</td></tr>
+<tr><td><label>Unita' layer</label></td><td>Scegliere le unita' di misura appropriate per i layer nel progetto.</td></tr>
+<tr><td><label>Precisione</label></td><td>Utilizzare 'manuale' per impostare la precisione della visualizzazione nella barra di stato. Quando il mouse si sposta sull'area mappa, le coordinate vengono aggiornate e visualizzate nella barra di stato usando la precisione scelta. Automatico (il default) corrisponde ad una precisione di default basata sulle unita' mappa.</td></tr>
+<tr><td><label>Digitalizzazione</label></td><td>L'opzione <label> Abilita modifica topologica</label> abilita la modifica mantenendo contorni comuni tra poligoni adiacenti. La modifica di un vertice in un contorno comune comporta l'aggiornamento di entrambi i contorni.<p>
+Per evitare di modificare tutti i vertici del contorno comune selezionare <label>Evitare intersezioni di nuovi poligoni</label>. Nella finestra di dialogo spuntare i layer ai quali il nuovo poligono deve essere appoggiato. Disegnare il nuovo poligono sovrapposto all'esistente, verra' tagliato automaticamente. <p>
+<label>Opzioni di snap</label> consente di impostare la tolleranza di snap in pixel o unita' mappa e la modalita' di  snapping: <label>al vertice</label>, <label>al segmento</label>, <label>a vertice e segmento</label> distintamente per ogni layer.</td></tr>
+
+</table>
+<a name="crs">
+<h4>Tab Coordinate di Riferimento Spaziale (CRS)</h4>
+</a>
+Il tab Coordinate di Riferimento Spaziale (CRS) consente di impostare la proiezione per il progetto corrente e di abilitare la trasformazione 'modifica immediata'. Non e' necessario avere un progetto salvato per impostare e abilitare la 'modifica immediata' trasformazione CRS.
+<p>
+Per usare la 'modifica immediata' trasformazione CRS, clic sul checkbox <label>Abilita la 'modifica immediata' trasformazione CRS</label>. Poi scegliere la proiezione per il progetto (area mappa) dalla lista dei sistemi di coordinate geografiche o proiettate.
+<p>
+E' possibile trovare un sistema di coordinate indicando il nome, il codice EPSG oppure l'ID di QGIS e facendo clic sul pulsante <label>trova</label>.
+<p>
+Gli ultimi 4 sistemi di coordinate usati sono disponibili come pulsanti nella parte inferiore.
+
+<a name="layers">
+<h4>Tab layer interrogabili</h4>
+</a>
+In questo tab si puo' scegliere in quali layer deve agire lo strumento di interrogazione (recupero informazioni).

@@ -1,0 +1,3 @@
+usr/lib/libqgis_core.so.{QGIS_ABI}
+usr/lib/libqgis_gui.so.{QGIS_ABI}
+usr/lib/libqgis_analysis.so.{QGIS_ABI}

@@ -1,0 +1,84 @@
+<h3>Optionen</h3>
+Diese Dialog erlaubt einige grundlegenden Einstellungen f&uuml;r QGIS.  Es gibt folgende Reiter: 
+<p>
+
+<a href="#general">Allgemein</a><br/>
+<a href="#ren">Darstellung & SVG</a><br/>
+<a href="#map">Kartenwerkzeuge</a><br/>
+<a href="#over">&Uuml;berlagern</a><br/>
+<a href="#digit">Digitalisierung</a><br/>
+<a href="#crs">KBS</a><br/>
+<a href="#loc">Sprache</a><br/>
+<a href="#net">Netwerk & Proxy</a><br/>
+
+<a name="general">
+<h4>Allgemein</h4>
+</a>
+Auf diesem Reiter kann man allgemeine Voreinstellungen zum Verhalten beim &Ouml;ffnen und Speichern von Projekte, der Kartendatenstellung, dem gew&uuml;nschten Iconthema und einigen andere treffen.
+<a name="ren">
+<h4>Darstellungen & SVG</h4>
+</a>
+In diesem Reiter kann man Voreinstellungen zur Layern treffen.<br>
+Normalerweise werden alle Layer in QGIS gezeichnet, wenn die Kartenansicht aktualisiert werden muss.  Die passiert z.B. wenn:
+<ul>
+<li>ein Layer hinzugef&uuml;gt wird
+<li>Verschieben des oder Zoomen im Kartenausschnitts
+<li>Ver&auml;nderung der QGIS-Fenstergr&ouml;&szlig;e
+<li>&Auml;nderung der Sichtbarkeit von Layern
+</ul>
+Es gibt einige M&ouml;glichkeiten den QGIS-Zeichenvorgang zu beeinflussen: 
+<ul>
+<li>Layer k&ouml;nnen hinzugef&uuml;gt werden, ohne das sie gezeichnet werden: Dies bedeutet, dass der Layer zur Karte hinzugef&uuml;gt wird, aber das Sichtbarkeitskontrollk&auml;stchen in der Legende nicht automatisch angehakt ist.  Diese Option wird mit Kontrollk&auml;stchen <label>Normalerweise werden alle neuen Layer im Kartenfenster angezeigt</label> gesteuert.</li>
+
+<li>Sie k&ouml;nnen einstellen, dass die Kartenansicht aktualisiert wird, w&auml;hrend die Objekte gezeichnet werden: Normalerweise zeigt QGIS Objekte erst an, wenn der Layer komplett gezeichnet wurde. Um die Anzeige w&auml;hrend des Ladens von Objekten zu aktualisieren, setzen Sie im Feld <label>Anzahl von Objekt nach deren Zeichnung die Anzeige aktualsiert werden soll</label> einen passenden Wert. Der Wert von 0 ist voreingestellt und schaltet die Funktion ab. W&auml;hlen Sie den Wert zu niedrig leidet die Geschwindigkeit, da die Kartenanzeige w&auml;hrend des Ladens laufend aktualisiert werden muss.  Ein guter Startwert ist 500.
+</ul>
+
+<a name="map">
+<h4>Kartenwerkzeuge</h4>
+</a>
+
+<h5>Abfrage</h5>
+Die Einstellung <label>Modus</label> legt fest welche Layer durch Werkzeug <label>Objekte abfragen</label> angezeigt werden. <label>Von oben nach unten</label> statt <label>Aktueller Layer</label> bewirkt, dass alle angezeigten Layer abgefragt werden. 
+
+<h5>Messwerkzeug</h5>
+Hier k&ouml;nnen Sie einen Ellipsoid f&uuml;r Entfernungsberechnungen, Ma&szlig;einheiten und die bevorzugte Farbe des Gummibandes einstellen.
+
+<h5>Verschieben und Zoomen</h5>
+Erlaubt die Einstellung von Mausradaktion und -zoomfaktor.
+
+<a name="over">
+<h4>&Uuml;berlagerung</h4>
+</a>
+Legen Sie einen Platzierungsalgorithmus f&uuml;r Beschriftungen fest. W&auml;hlen Sie zwischen <label>Zentrum (am schnellsten)</label>, <label>Kette (schnell)</label>, <label>Popmusik-Tabu-Kette (langsam)</label>, <label>Popmusik-Tabu (langsam)</label> und <label>Popmusik-Kette (sehr 
+langsam)</label>.
+
+<a name="digit">
+<h4>Digitalisierung</h4>
+</a>
+<h5>Gummiband</h5>
+Auf dem Reiter <label>Digitalisierung</label> k&ouml;nnen Sie die Linienbreite und -farbe des Gummibandes zum Digitalisierung einstellen.
+<h5>Objektfang</h5>
+Hier k&ouml;nnen Sie eine allgemeine, projektweite Objektfangtoleranz angeben.<p>
+Sie k&ouml;nnen den Fangmodus auf <label>zum St&uuml;tzpunkt</label>, <label>zum Segment</label> oder <label>zu St&uuml;tzpunkt und Segment</label> einstellen. Auch k&ouml;nnen Sie eine Fangtoleranz und einen Suchradius f&uuml;r die St&uuml;tzpunktbearbeitung angeben. Die Toleranz kann in Karteneinheiten oder Pixeln angegeben werden. W&auml;hlen Sie Pixel haben Sie den Vorteil, das die Fangtoleranz nicht nach Zoomoperationen ge&auml;ndert werden 
+muss.<p>
+Eine Layer basierte Fangtoleranz k&ouml;nnen Sie &uuml;ber <label>Einstellungen</label> (oder <label>Datei</label>) > <label>Projekteigenschaften...</label> festlegen.  Dort k&ouml;nnen Sie im Reiter <label>Allgemein</label>, Abschnitt <label>Digitalisierung</label> auf <label>Fangoptionen...</label> klicken, um den Fangmodus auf Layerbasis zu konfigurieren. 
+
+<h5>Knickpunktmarken</h5>
+Sie k&ouml;nnen den Markerstil auf <label>Teiltransparenter Kreis</label>, <label>Kreuz</label> oder <label>Keine</label> und die Gr&ouml;&szlig;e einstellen.
+
+<h5>Attributwerte eingeben</h5>
+Normalerweise wird der Benutzer nach dem Digitalisieren eines neuen Objekts aufgefordert Attributwerte daf&uuml;r einzugeben.  Durch das Abhaken von <label>Eingabe der Attributwerte bei der Erstellung neuere Objekte unterdr&uuml;cken</label> kann man dies unterdr&uuml;cken und die Attribute nachtr&auml;glich eingeben.
+
+<a name="crs">
+<h4>KBS</h4>
+</a>
+QGIS setzt das Karten-KBS nicht mehr auf das des ersten geladenen Layers.  Wenn Sie Ihre QGIS-Sitzung mit Layern beginnen, die kein KBS haben, m&uuml;ssen Sie die KBS-Definition dieser Layer &uuml;berpr&uuml;fen und festlegen.  Dies kann hier global passieren.<p>
+Das voreingestellte globale KBS <code>proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</code> ist in QGIS vordefiniert, kann aber ge&auml;ndert werden und die neue Definition wird f&uuml;r zuk&uuml;nftige QGIS-Sitzungen gespeichert.
+<a name="loc">
+<h4>Sprache</h4>
+</a>
+Informiert &uuml;ber die aktive Sprachumgebung des Systems.  Um eine andere zu w&auml;hlen, haken Sie <label>System-Locale &uuml;berschreiben</label> an, w&auml;hlen die gew&uuml;nschte Umgebung und starten QGIS neu. 
+<a name="net">
+<h4>Netzwerk & Proxy</h4>
+</a>
+Haken Sie <label>Proxy f&uuml;r Webzugriff benutzen an</label> und setzen Sie Host und Port sowie ggf. Benutzer und Passwort und den Proxytyp.

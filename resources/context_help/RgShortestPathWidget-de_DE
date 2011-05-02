@@ -1,0 +1,14 @@
+<h3>Den k&uuml;rzesten Weg finden</h3>
+<p>Stra&szlig;engraph ist eine C++-Erweiterung f&uuml;r Quantum GIS, die den k&uuml;rzesten Weg zwischen zwei Punkten auf jedem Linienlayer bestimmt und &uuml;ber dem Stra&szlig;ennetz anzeigt. Bevor die Erweiterung genutzt werden kann, mu&szlig; sie konfiguriert werden. Dies erfolgt unter <label>Erweiterungen &rarr; Stra&szlig;engraph &rarr; Einstellungen</label></p>
+<p>
+<a href="#howto">Wie's geht</a><br/>
+</p>
+
+<a name="howto">
+<h4>Wie's geht</h4>
+</a>
+<p>Sie k&ouml;nnen Start- und Endpunkt mit den Kn&ouml;pfen neben <label>Start</label> und <label>Stopp</label> ausw&auml;hlen.
+Durch Klick auf <label>Berechnen</label> wird der k&uuml;rzeste Weg mit dem Optimierungskriterium, das unter <label>Kriterium</label> gew&auml;hlt ist, ausgef&uuml;hrt. Mit <label>Export</label> k&ouml;nnen Sie den berechneten Weg in einem neuen Vektorlayer speichern und mit <label>L&ouml;schen</label> alle Felder, die Punkte sowie den berechneten Weg aus der Karte l&ouml;schen.</p>
+
+<h5>Hinweis</h5>
+<p>Um den Start- und Endpunkt der Route mit dem Stra&szlig;ennetz zu verbinden w&auml;hlt die Erweiterung den n&auml;chsten Knoten oder die n&auml;chste Kante des Graphen. Sie k&ouml;nnen aber an jedem Punkt des Graphen beginnen. Allerdings wird der Abstand vom Start- bzw. Endpunkt zum Stra&szlig;ennetz nicht ber&uuml;cksichtigt.</p>

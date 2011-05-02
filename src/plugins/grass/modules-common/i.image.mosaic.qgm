@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Mosaic up to 4 images" module="i.image.mosaic">
+	<option key="image1" />
+	<option key="image2" />
+	<option key="image3" />
+	<option key="image4" />
+</qgisgrassmodule>

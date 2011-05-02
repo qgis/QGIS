@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Set the region to match multiple vectors" module="g.region">
+	<file key="vect" label="Type in map names separated by a comma" />
+</qgisgrassmodule>

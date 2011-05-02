@@ -1,0 +1,16 @@
+<h3>Custom Coordinate Reference System Definition</h3>
+If QGIS does not provide the coordinate reference system you need, you can define a custom CRS. <p>
+To define a CRS, select <label>Custom CRS</label> from the <label>Edit</label> (Gnome, OSX) or <label>Settings</label> (KDE, Windows) menu. Custom CRS are stored in your QGIS user database. In addition to your custom CRS, this database also contains your spatial bookmarks and other custom data.
+
+<h4>Define</h4>
+To create a new CRS, click the <label>New</label> button and enter:
+<ul>
+<li>descriptive name 
+<li>CRS parameters
+</ul>
+After that you can save your CRS by clicking the button <label>Save</label>.
+<p>
+Note that the Parameters must begin with a +proj=-block, to represent the new coordinate reference
+system.
+<p>
+Defining a custom CRS in QGIS requires a good understanding of the Proj.4 projection library. To begin, refer to the <a href="ftp://ftp.remotesensing.org/proj/OF90-284.pdf">Cartographic Projection Procedures for the UNIX Environment</a> - A User's Manual by Gerald I. Evenden, U.S. Geological Survey Open-File Report 90-284, 1990. This manual describes the use of the <i>proj.4</i> and related command line utilities. The cartographic parameters used with <i>proj.4</i> are described in the user manual, and are the same as those used by QGIS.

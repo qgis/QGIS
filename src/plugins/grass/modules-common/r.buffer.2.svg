@@ -1,0 +1,35 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/putrela0/mpasol/blazek/inst/qgiscvs07/plugins/grass/modules/r.buffer.2" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <clipPath id="clip1" >
+   <rect width="500" x="0" y="0" height="500" />
+  </clipPath>
+  <g style="clip-path:url(#clip1)" >
+   <polygon points="147 447 29 447 29 326 68 326 68 246 108 246 108 206 225 206 225 166 303 166 303 86 342 86 342 46 460 46 460 166 421 166 421 246 381 246 381 286 342 286 342 326 186 326 186 407 147 407 147 447 381 126 421 126 421 86 381 86 381 126 342 126 342 206 264 206 264 246 147 246 147 286 108 286 108 367 68 367 68 407 108 407 108 367 147 367 147 286 303 286 303 246 342 246 342 206 381 206 381 126 147 447" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="147 447 29 447 29 326 68 326 68 246 108 246 108 206 225 206 225 166 303 166 303 86 342 86 342 46 460 46 460 166 421 166 421 246 381 246 381 286 342 286 342 326 186 326 186 407 147 407 147 447" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="381 126 421 126 421 86 381 86 381 126 342 126 342 206 264 206 264 246 147 246 147 286 108 286 108 367 68 367 68 407 108 407 108 367 147 367 147 286 303 286 303 246 342 246 342 206 381 206 381 126" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(0,0,255);" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:15;fill:none;" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="381 126 381 86 421 86 421 126 381 126" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="342 206 342 126 381 126 381 206 342 206" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="147 286 147 246 264 246 264 206 342 206 342 246 303 246 303 286 147 286" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="108 367 108 286 147 286 147 367 108 367" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(170,255,255);" />
+   <polygon points="108 367 108 407 68 407 68 367 108 367" style="stroke:rgb(0,0,255);stroke-width:15;fill:none;" />
+  </g>
+ </g>
+</svg>

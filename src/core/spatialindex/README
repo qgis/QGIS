@@ -1,0 +1,14 @@
+
+Spatial indexing is based on code by Marios Hadjieleftheriou, who has
+developed spatial index library and published it under GNU GPL.
+
+This code is based on version 1.0 of the library which can be found here:
+http://u-foria.org/marioh/spatialindex/index.html
+
+Spatial index library has Tools library as a dependency. Here we use it
+in version 0.51b, it's available online (also under GNU GPL):
+http://u-foria.org/marioh/tools/index.html
+
+There are only few differences from the original libraries, namely:
+- removed MVR-tree, TPR-tree and their variants of Point and Region
+- removed SHA1 hash

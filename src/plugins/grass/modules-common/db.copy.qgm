@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Copy a table" module="db.copy">
+	<option key="from_driver" />
+	<option key="from_database" />
+	<option key="from_table" />
+	<option key="to_driver" />
+	<option key="to_database" />
+	<option key="to_table" />
+</qgisgrassmodule>

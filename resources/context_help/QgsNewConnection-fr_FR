@@ -1,0 +1,20 @@
+<h3>Create a new PostGIS connection</h3>
+<h3>Créer une nouvelle connexion PostGIS</h3>
+Vous devez connaître le nom de l'hôte, le port d'accès, le nom d'utilisateur et le mot de passe permettant d'accéder au serveur de base de données.
+<h4>Paramètres requis</h4>
+<ul>
+<li><label>Nom>/label> - un nom décrivant cette connexion ("Serveur voirie")
+<li><label>Hôte</label> - le nom d'hôte du serveur (p. ex. test.qgis.org)
+<li><label>Base de données</label> - nom de la base à laquelle se connecter
+<li><label>Port</label> - port sur lequel PostgreSQL écoute. Par défaut, il s'agit du 5432. Dans le doute, demandez à votre administrateur.
+<li><label>Nom utilisateur</label> - un nom d'utilisateur ayant les accès à cette base
+<li><label>Mot de passe</label> - votre mot de passe
+</ul>
+<h4>Options</h4>
+<ol>
+<li><label>Enregistrer le mot de passe</label> - enregistre votre mot de passe pour que n'ayez pas à le resaisir à chaque fois. Le mot de passe est stocké en clair dans les préférences de QGIS.
+<li><label>Uniquemenr regarder la table geometry_columns</label> - normalement QGIS examines chaque table de la base pour voir si il y a une table de géométrie pour l'ajouter à la liste des couches. Cocher cette case demande à QGIS de ne lister que les tables qui ont une entrée dans leur colonne géométrique.
+<li><label>Uniquemenr regarder dans le schéma public</label> - cela limite la recherche aux couches ayant le schéma public
+</ol>
+<h4>Tester la connexion</h4>
+En cliquant sur le bouton<label>Tester la Connexion</label>, un essai est fait sur la base en utilisant les paramètres spécifiés. C'est une bonne façon de vérifier que ces paramètres fonctionnent avant d'enregistrer la connexion.

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create raster images with textural features from raster (first serie of indices)" module="r.texture">
+	<option key="input" />
+	<option key="size" />
+	<option key="distance" />
+	<flag key="a" />
+	<flag key="c" />
+	<flag key="k" />
+	<flag key="v" />
+	<flag key="i" />
+	<flag key="s" />
+	<flag key="w" />
+	<option key="prefix" />
+</qgisgrassmodule>

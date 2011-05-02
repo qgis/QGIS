@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Blend red, green, raster layers to obtain one color raster" module="r.composite">
+	<option key="red"/>
+	<option key="green"/>
+	<option key="blue"/>
+	<option key="lev_red" answer="32" hidden="no" label="(1-256)" />
+	<option key="lev_green" answer="32" hidden="no" label="(1-256)" />
+	<option key="lev_blue" answer="32" hidden="no" label="(1-256)" />
+	<option key="output"/>
+</qgisgrassmodule>

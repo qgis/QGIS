@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Exports attribute tables into various format" module="db.out.ogr">
+	<option key="input" />
+	<file key="dsn" type="new" />
+	<option key="format" />
+	<option key="db_table" />
+</qgisgrassmodule>

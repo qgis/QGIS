@@ -1,0 +1,8 @@
+<h3>Nordpfeil-Erweiterung</h3>
+Zeigt einen Nordpfeil &uuml;ber der Karte an.
+<p>
+Gegenw&auml;rtig steht nur ein Stil zur Verf&uuml;gung.  Sie k&ouml;nnen den Winkel des 
+Pfeils einstellen oder QGIS die Richtung automatisch einstellen lassen. Wenn 
+Sie QGIS die Richtung feststellen lassen, versucht es sein bestes, um zu erraten 
+wie der Pfeil orientiert sein sollte.  Zur Platzierung k&ouml;nnen Sie aus vier, den 
+vier Ecken der Karte entsprechenden, Positionen w&auml;hlen.

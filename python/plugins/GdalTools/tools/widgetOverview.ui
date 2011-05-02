@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GdalToolsWidget</class>
+ <widget class="QWidget" name="GdalToolsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>376</width>
+    <height>311</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Build overviews (Pyramids)</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QCheckBox" name="batchCheck">
+     <property name="text">
+      <string>Batch mode (for processing whole directory)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>&amp;Input file</string>
+       </property>
+       <property name="buddy">
+        <cstring>inSelector</cstring>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="algorithmCheck">
+       <property name="text">
+        <string>Resampling method</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QComboBox" name="algorithmCombo">
+       <item>
+        <property name="text">
+         <string>nearest</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>average</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>gauss</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>average_mp</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>average_magphase</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>mode</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Levels (space delimited)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="levelsEdit"/>
+     </item>
+     <item row="0" column="1">
+      <widget class="GdalToolsInOutSelector" name="inSelector" native="true"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="cleanCheck">
+     <property name="toolTip">
+      <string>Remove all overviews.</string>
+     </property>
+     <property name="text">
+      <string>Clean</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="roModeCheck">
+     <property name="toolTip">
+      <string>In order to generate external overview (for GeoTIFF especially).</string>
+     </property>
+     <property name="text">
+      <string>Open in read-only mode</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="tiffjpegCheck">
+     <property name="toolTip">
+      <string>Create external overviews in TIFF format, compressed using JPEG.</string>
+     </property>
+     <property name="text">
+      <string>Overviews in TIFF format with JPEG compression</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="jpegQualityContainer">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="leftMargin">
+       <number>24</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="jpegQualityLabel">
+        <property name="toolTip">
+         <string>For JPEG compressed external overviews, 
+the JPEG quality can be set.</string>
+        </property>
+        <property name="text">
+         <string>JPEG Quality (1-100)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSpinBox" name="jpegQualitySpin">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>For JPEG compressed external overviews, 
+the JPEG quality can be set.</string>
+        </property>
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QCheckBox" name="rrdCheck">
+     <property name="toolTip">
+      <string>Alternate overview format using Erdas Imagine format, 
+placing the overviews in an associated .aux file 
+suitable for direct use with Imagine,ArcGIS, GDAL.</string>
+     </property>
+     <property name="text">
+      <string>Use Imagine format (.aux file)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QProgressBar" name="progressBar"/>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>GdalToolsInOutSelector</class>
+   <extends>QWidget</extends>
+   <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

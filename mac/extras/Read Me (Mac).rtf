@@ -1,0 +1,136 @@
+{\rtf1\mac\ansicpg10000\cocoartf824\cocoasubrtf480
+\readonlydoc1{\fonttbl\f0\fswiss\fcharset77 Helvetica-Bold;\f1\fswiss\fcharset77 Helvetica;\f2\fmodern\fcharset77 Courier;
+}
+{\colortbl;\red255\green255\blue255;}
+\margl1440\margr1440\vieww11100\viewh8700\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\qc
+
+\f0\b\fs24 \cf0 QGIS 1.0.0 Release Notes for Macintosh
+\f1\b0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+\cf0 \
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f0\b \cf0 Contents\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+1. Requirements\
+2. Included Libraries\
+3. Known limitations\
+4. GPS Plugin\
+5. GRASS Plugin\
+6. Python Language and Plugins\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f0\b \cf0 1. Requirements\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+This release of QGIS requires Mac OS X 10.3.9 or later. A PostgreSQL version 7 or 8 server with PostGIS extensions installed is required if using PostgreSQL features.\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f0\b \cf0 2. Included Libraries\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+The following libraries are included with this distribution of QGIS. If you have other versions of these libraries installed, QGIS will ignore your versions and use these.\
+\
+GDAL 1.5.3 (libgdal.1.dylib)\
+GEOS 3.0.1 (libgeos_c.1.4.2.dylib)\
+PROJ 4.6.1 (libproj.0.5.5.dylib)\
+SQLite 3.6.4 (libsqlite3.0.dylib)\
+Xerces-C++ 2.8.0 (libxerces-c.28.0.dylib)\
+Qt/Mac 4.4.3 (various Qt frameworks)\
+GIF 4.1.6 (libgif.4.1.6.dylib)\
+JPEG 6b (libjpeg.62.0.0.dylib)\
+PNG 1.2.29 (libpng12.0.dylib)\
+TIFF 3.8.2 (libtiff.3.dylib)\
+GeoTIFF 1.2.4 (libgeotiff.1.2.4.dylib)\
+JasPer 1.900.1.uuid (libjasper.1.0.0.dylib)\
+Expat 2.0.1 (libexpat.1.5.2.dylib)\
+FFTW 3.1.3 (libfftw3.3.1.3.dylib)\
+GSL 1.11 (libgsl.0.dylib, libgslcblas.0.dylib)\
+PostgreSQL 8.3.4 (libpq.5.1.dylib) This client can also access a version 7 server.\
+GRASS 6.3.0 (libgrass_*.6.3.0.dylib)\
+SIP 4.7.7 (sip.so)\
+PyQt4 4.4.3 (Qt*.so)\
+\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f0\b \cf0 3. Known limitations\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 The main window cannot be resized while a WMS layer is displayed. Therefore adjust the window size before opening a WMS layer.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+\cf0 To use QGIS with a language other than English, you must change both the Language and Format settings in the International System Preferences. The QGIS application menu uses the Language preference while all other QGIS menus use the Format preference to select the language.\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f0\b \cf0 4. GPS Plugin\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 To use GPSBabel with the GPS plugin, QGIS must be able to find it. This can be done in one of two ways. Create a symbolic link to GPSBabel in some directory already on your search path:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f2 \cf0 ln -s /Applications/GPSBabel+-1.3.6/gpsbabel /usr/local/bin/gpsbabel\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1 \cf0 \
+or add the folder containing GPSBabel to your search path:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f2 \cf0 export PATH=$PATH:/Applications/GPSBabel+-1.3.6\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1 \cf0 \
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f0\b \cf0 5. GRASS Plugin\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 To enable all the functions of the GRASS plugin, a GRASS mapset must be opened first or else QGIS should be launched from inside GRASS. Some GRASS distributions provide a GRASS menu item to launch QGIS. If GRASS does not contain a QGIS menu item, launch QGIS from the GRASS command-line prompt:\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f2 \cf0 /Applications/qgis-1.0.0/qgis1.0.0.app/Contents/MacOS/qgis\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+
+\f1 \cf0 \
+If you have not previously run QGIS with GRASS, you may be prompted for the location of the GRASS directory GISBASE. On a Mac, this directory is usually somewhere inside the GRASS bundle (GRASS.app). Select the folder containing a 
+\f2 bin
+\f1  folder containing many files beginning with "d."\
+(d dot).\
+\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f0\b \cf0 6. Python Language and Plugins\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\ql\qnatural
+
+\f1\b0 \cf0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
+\cf0 Using Python plugins or the programming language requires Python 2.5. It is already installed with Mac OS X 10.5 but must be obtained from http://www.python.org for Mac OS X 10.4.\
+}

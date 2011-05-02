@@ -1,0 +1,115 @@
+<h3>Propriedades da Camada Vetorial</h3>
+Este diálogo permite você trabalhar com propriedades e configurações de camadas vetoriais.
+<p>
+<a href="#symbology">Simbologia</a><br/>
+<a href="#labels">Rótulos</a><br/>
+<a href="#attributes">Atributos</a><br/>
+<a href="#general">Geral</a><br/>
+<a href="#metadata">Metadados</a><br/>
+<a href="#actions">Ações</a><br/>
+<a href="#diagram">Diagrama de Sobreposição</a><br/>
+
+<a name="symbology">
+<h4>Symbology</h4>
+</a>
+Para alterar a simbologia de uma camada, basta clicar duas vezes sobre a entrada da legenda e o diálogo de  vetor <label>Layer Properties</label> aparecerá.<p>
+Dentro deste diálogo você pode definir o estilo de sua camada de vetorial. Dependendo da opção de processamento selecionada, você tem a possibilidade de também classificar suas feições de mapa.
+<h5>Tipo de legenda</h5>
+O QGIS suporta um número de renderizadores de simbologia para controlar como as características do vetor são exibidas. Atualmente, os renderizadores disponíveis são as seguintes:
+<ul>
+<li><label>Símbolo simples</label> - um único estilo é aplicado a cada objeto na camada.
+<li><label>Sómbolo graduado</label> - objetos dentro da camada são exibidos com símbolos diferentes classificados pelos valores de um campo particular.
+<li><label>Cor contínua</label> - objetos dentro da camada são exibidos com um gradiente de cores classificados por valores numéricos dentro de um campo especificado.
+<li><label>Valor único</label> - objetos são classificados pelos valores únicos dentro de um campo especificado com cada valor com um símbolo diferente.
+</ul>
+
+<h5>Nova simbologia</h5>
+Click <label>Nova simbologia</label> botão para usar a aplicação de nova simbologia para a camada.
+
+<h5>Transparência do vetor</h5>
+O QGIS permite definir uma transparência para cada camada vetorial. Isso pode ser feito com o controle deslizante <label>Transparência</label>. Isto é muito útil para sobrepor várias camadas de vetorais.
+
+<h5>Salvar estilos</h5>
+Depois de ter seu estilo camada definido você pode salvar o seu estilo de camada para um arquivo separado (com extensão *. QML). Pra efetuar isso, use o botão <label>Salvar estilo...</label>. Não precisa dizer que <label>Carregar estilo...</label> carregará seu estilo de camada salvo.<br/>
+Se você deseja utilizar sempre um estilo particular, sempre que uma camada for carregada, use o botão <label>Salvar como padrão</label> para torná-lo seu estilo padrão. Além disso, se você fizer alterações para o estilo que você não gostou, use o botão <label>Restaurar Estilo Padrão</label> para reverter ao estilo padrão.
+
+<a name="labels">
+<h4>Rótulos</h4>
+</a>
+A guia Rótulos permite que você ative características de rotulagem e controle uma série de opções relacionadas a fontes, a posição, estilo, alinhamento e afastamento.<br/>
+Marque a caixa<label>Mostra Rótulos</label>para habilitar a rotulagem.
+
+<h5>Opções básicas de rotulagem</h5>
+Escolha o campo com o rótulo.<p>
+Selecione o botão <label>Fonte</label> e  <label>Cor</label> para definir fonte e cor. Você pode também mudar o ângulo de posicionamento do rótulo de texto.<p>
+Se têm rótulos que se estendem por várias linhas, marque <label>Rótulo multilinhas?</label>. O QGIS irá verificar se há uma linha de retorno verdadeira em seu campo de rótulo e inserir a linha de quebra de acordo. Uma verdadeira linha de retorno é um caractere  \n (e não dois caracteres distintos, como uma folga \n seguida do caractere).
+
+<h5>Posicionamento</h5>
+Altera a colocação de rótulos, selecionando um dos botões de seleção no grupo <label>Posicionamento</label>.
+
+<h5>Unidades de tamanho da fonte</h5>
+A <label>Unidades de tamanho da fonte</label> permite você selecionar entre <label>Pontos</label> ou <label>Unidades do mapa</label>.
+
+<h5>Buffer nos rótulos</h5>
+Colocar buffer os rótulos significa colocar um alo em torno das letras para torná-las mais visíveis. Para colocar buffer nos rótulos:
+<ol>
+<li>Clique na caixa <label>Buffer nos rótulos</label> para habilitar o Beffer
+<li>Escolha um tamanho para o buffer usando a caixa de rotação.
+<li>Escolha uma cor clicando em <label>Cor</label> e escolha a cor desejada no seletor de cores. Você pode também definir alguma transparência para o buffer se preferir.
+<li>Clique <label>Aplicar</label> para ver se você gosta das modificações
+</ol>
+Observe que você também pode especificar o tamanho do buffer em unidades do mapa se funcionar melhor para você.
+
+<h5>Posicionamento de dados definidos, propriedades, buffer, a posição</h5>
+As entradas restantes na aba <label>Rótulo</label> lhe permitem controlar a aparência dos rótulos usando atributos armazenados na camada. As entradas de início <label>Dados definidos</label> permite que você defina os parâmetros para os rótulos usando os campos na camada.
+
+
+<a name="attributes">
+<h4>Atributos</h4>
+</a>
+Com a aba <label>Atributos</label> os atributos do conjunto de dados selecionados podem ser manipulados. Os botões <label>Nova coluna</label> e <label>Excluir coluna</label> podem ser usados, quando o conjunto de dados estiver em modo de edição. A biblioteca OGR tem suporte para adicionar novas colunas, mas não removê-las, se você tiver uma versão do GADL > = 1.6 instalada. Caso contrário, apenas as colunas de camadas de PostGIS podem ser editadas.<p>
+O botão <label>Alternar para o modo de edição</label> aciona este modo.<p>
+Dentro da aba Atributos, você encontra também uma edição de elementos da coluna. Esta coluna pode ser utilizado para definir valores ou um intervalo de valores que podem ser adicionados ao atributo específico da coluna da tabela. Se você clicar o botão <label>edit widget</label> um diálogo se abre, onde você pode definir elementos diferentes. Estes elementos são:<br/>
+<ul>
+<li><label>Editar linha</label> um campo de edição que permite inserir texto simples (ou restringir para números de atributos numéricos).
+<li><label>Classificação</label> Exibe uma caixa de combinação com os valores utilizados para a classificação, se você tiver escolhido <label>valor único</label> como o tipo de legenda na aba simbologia da caixa de diálogo propriedades.
+<li><label>Intervalo</label> Permite definir valores numéricos de um intervalo específico. A edição de um elemento pode ser uma barra ou uma caixa de giro.
+<li><label>Valor único</label> O usuário pode selecionar um dos valores já utilizados na tabela de atributos. Se ativado <label>editável</label> editar uma linha é mostrado com o apoio autocompletar, mas valores adicionais são possíveis, caso contrário, uma caixa de combinação é utilizada.
+<li><label>Nome de arquivo</label> Simplifica a seleção, adicionando uma janela de seleção de arquivos.
+<li><label>Mapa de valor</label> uma caixa de combinação com itens predefinidos. O valor é armazenado no atributo, a descrição é mostrada na caixa de combinação. Você pode definir os valores manualmente ou carregá-los de uma camada ou um arquivo CSV.
+<li><label>Enumeração</label> Abre uma caixa de combinação com os valores que podem ser utilizadas dentro dos tipos de colunas. Isto é atualmente suportado apenas pelo fornecedor postgres.
+<li><label>Imutável</label> A coluna de atributo imutável é somente leitura. O usuário não pode de modificar o conteúdo.
+<li><label>Ocultar</label> A coluna de atributo oculto é invisível para o usuário.
+<li><label>Caixa</label> A caixa é mostrada. O valor que representa o estado da caixa no atributo deve ser inserido.
+<li><label>Editar texto</label> Um texto de campo editável é mostrado, que permite a digitação de texto multilinhas.
+</ul>
+
+<a name="general">
+<h4>Geral</h4>
+</a>
+A aba Geral permite que você mude o nome para exibição, defina escala dependente das opções de renderização, crie um índice espacial do arquivo vetorial (somente para os formatos suportados e OGR PostGIS) e exiba ou alterae a projeção de uma camada vetorial específica.<p>
+Você pode também filtrar expressões usando o <label>Construtor de consulta</label>.
+
+<h5>Subdefinir</h5>
+O Botão <label>Construtor de consulta</label> permite limitar as características de uma camada de um subconjunto de correspondência de uma expressão.
+
+<a name="metadata">
+<h4>Metadados</h4>
+</a>
+A aba <label>Metadados</label> contém informações sobre a camada, incluindo detalhes sobre o tipo e localização, número de feições, tipo de feição e as capacidades de edição. O SRC da camada, fornecendo informações de projeção, é exibido nessa aba. Esta é uma maneira rápida para obter informações sobre a camada.
+
+<a name="actions">
+<h4>Ações</h4>
+</a>
+O QGIS fornece a capacidade de executar uma ação com base nos atributos de uma feição. Isso pode ser usado para executar qualquer número de ações, por exemplo, executar um programa com os argumentos construídos a partir dos atributos de um recurso ou passar parâmetros para uma ferramenta de relatórios da web.<br/>
+Ações são úteis quando você frequentemente deseja executar um aplicativo externo ou exibir uma página da web com base em um ou mais valores em sua camada de vetor. Um exemplo está realizando uma pesquisa com base em um valor de atributo.<p>
+Consulte o Guia do Usuário para mais informações.
+
+<h5>Usando ações</h5>
+As ações podem ser invocadas a partir do diálogo <label>Identificar Resultados</label>.
+
+<a name="diagram">
+<h4>Diagrama de Sobreposição</h4>
+</a>
+A aba Diagram permite que você adicione um gráfico sobreposição a uma camada de vetor. Para ativar esse recurso, abra <label>Gerenciador de complementos</label> e selecione o complemento <label>Diagrama de Sobreposição</label>. Depois disso, há uma nova aba  de diálogo na camada vetorial <label>Propriedades da camada</label> onde as configurações para os diagramas podem ser inseridas.<p>
+A implementação atual de diagramas fornece suporte para gráficos do tipo pizza e barras e para o aumento linear do tamanho do diagrama de acordo com um atributo de classificação.

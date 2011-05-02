@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Join table to existing vector table" module="v.db.join">
+	<option key="map" layeroption="layer" />
+	<field key="column" layer="map" type="integer,string" label="Attribute field" />
+	<option key="otable"/>
+	<option key="ocolumn" label="Attribute field to join" />
+</qgisgrassmodule>

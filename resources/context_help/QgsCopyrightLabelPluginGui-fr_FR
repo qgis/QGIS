@@ -1,0 +1,72 @@
+<h3>Extension Étiquette de Copyright</h3>
+L'extension Étiquette de Copyright permet d'afficher une mention de droit d'auteur sur la carte du projet en cours.
+<p>
+<a href="#afficher">Afficher l'Étiquette de Copyright</a><br/>
+<a href="#placer">Placer l'Étiquette de Copyright</a><br/>
+<a href="#personnaliser">Personnaliser l'Étiquette de Copyright</a><br/>
+
+<a name="afficher">
+<h4>Afficher l'Étiquette de Copyright</h4>
+</a>
+Pour activer l'affichage de l'Étiquette de Copyright, appuyer sur le bouton <label>Étiquette de Copyright</label> dans la barre d'outil, ou choisir la fonction <label>Étiquette de Copyright</label> dans le menu <label>Extension > Décorations</label>.
+<p>Dans la boîte de dialogue <label>Extension d'étiquette de Copyright</label>, réaliser les actions suivantes:
+</p>
+<ol>
+<li>Cocher le bouton <label>Activer l'étiquette du Copyright</label> située en bas à droite de la boîte de dialogue;
+</li>
+<li>Appuyer sur le bouton <label>OK</label> afin de valider ce choix ou sur le bouton <label>Annuler</label> pour fermer la boîte de dialogue sans valider l'activation de l'affichage d'étiquette.
+</li>
+</ol>
+<a name="placer">
+<h4>Placer l'Étiquette de Copyright</h4>
+</a>
+Le choix l'emplacement de la mention de droit d'auteur sur la carte peut être personnalisé de manière à apparaître dans un des quatre coins de la carte en cours.
+<p>Pour définir une position de l'Étiquette de Copyright, ouvrir la 
+boîte de dialogue <label>Extension d'étiquette de Copyright</label> et choisir un des quatre emplacements disponibles à l'aide de la liste déroulante située en face de la mention <label>Placement</label>. 
+Pour valider le placement choisi, appuyez sur le bouton <label>OK</label> ou sur le bouton <label>Annuler</label> pour fermer la boîte de dialogue sans valider la modification de placement d'étiquette. 
+</p>
+<a name="personnaliser">
+<h4>Personnaliser l'Étiquette de Copyright</h4>
+</a>
+Le style, la couleur et le contenu de l'Étiquette de Copyright peuvent être personnalisés. 
+<p>Tous les changements se font depuis la zone de texte inférieure située dans la boîte de dialogue <label>Extension d'étiquette de Copyright</label> et son pris en compte après validation par appui sur le bouton <label>OK</label>.
+</p>
+<h5>Choix du type de mention</h5>
+La mention en elle-même, qui est un caractère spécial, apparaît dans la fenêtre sous forme d'abréviation ENTITY.<br>
+Par défaut, c'est la mention de copyright qui est proposée dans QGIS, mais il est possible d'afficher une mention particulière différente pour peu que la mention ENTITY soit correctement inscrite.
+<p>Par exemple :
+</p>
+<ul>
+<li>© mention de copyright
+</li>
+<li>™ mention de marque commerciale (trademark)
+</li>
+<li>® mention de marque déposée
+</li>
+<li>♥ affiche un coeur...
+</li>
+</ul>
+<p>NB 1: inscrire l'abréviation ENTITY sans les parenthèses<br>
+NB 1: Cette liste n'est pas exhaustive, il est possible de mettre bien d'autres caractères spéciaux afin de personnaliser la mention sur la carte. Amusez-vous!
+</p>
+<h5>Choix de la couleur</h5>
+Sélectionner tout ou partie du texte de la mention dont la couleur doit être changée puis appuyer sur la case <label>Couleur</label>.<br>
+Choisir une couleur dans la fenêtre de choix et valider en appuyant sur <label>OK</label>.
+<h5>Choix du style</h5>
+Le style de mise en forme de l'étiquette peut être personnalisé en insérant des balises HTML simples autour de la mention. 
+<p>Ainsi, il est possible de mettre la mention en gras, en italique ou encore de réaliser une étiquette multi-lignes. 
+Les balises les plus courantes sont:
+</p>
+<ul>
+<li>&lt;B&gt;<b> Pour du texte en gras</b>&lt;/B&gt;
+</li>
+<li>&lt;I&gt;<i> Pour du texte en italique</i>&lt;/I&gt;
+</li>
+<li>&lt;U&gt;<u> Pour souligner le texte</u>&lt;/U&gt;
+</li>
+<li>&lt;BR&gt; Pour insérer un retour chariot
+</li>
+</ul>
+<p>NB 1: une balise ouverte doit toujours être fermée pour qu’elle soit prise en compte<br>
+NB 2: Les balises HTML peuvent être additionnées entre elles afin de mélanger les styles.<br>
+</p>

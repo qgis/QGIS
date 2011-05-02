@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import only some layers of a DXF vector" module="v.in.dxf">
+	<ogr key="input" label="DXF vector layer" />
+	<option key="layers" />
+	<option key="output" />
+	<flag key="1" answer="off" hidden="yes" />
+	<flag key="e" answer="on" hidden="yes" />
+</qgisgrassmodule>

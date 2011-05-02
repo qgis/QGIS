@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export vector to Mapinfo" module="v.out.ogr">
+	<option key="input" layeroption="layer" typeoption="type" />
+	<option key="format" answer="MapInfo_File" hidden="yes" />
+	<file key="dsn" type="new" fileoption="olayer" label="Output Shapefile" filters="MapInfo (*.tab)" />
+</qgisgrassmodule>

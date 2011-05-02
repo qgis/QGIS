@@ -1,0 +1,88 @@
+<h3>Instalador de Complementos Phyton</h3>
+Baixa e instala complementos de reposiorios remotos.
+<br/><br/>
+<a href="#pltab">Aba Complementos</a><br/>
+<a href="#retab">Aba Repositórios</a><br/>
+<a href="#optab">Aba Opções</a><br/>
+
+<a name="pltab">
+<h4>Aba Complementos</h4>
+</a>
+
+<p align='justify'>
+A aba <label>Complementos</label> contém uma lista de todos os complementos phyton instalados, bem como os complementos disponíveis nos repositórios remotos. Cada complemento pode ser:
+<dl>
+<dt>não instalado</dt><dd>isto significa que o complemento está disponível no repositório, mas não está instalado ainda. Se você quiser instalá-lo, selecione o complemento a partir da lista e clique no botão <label>Instalar complemento</label>.</dd>
+<dt>novo</dt><dd>significa que o complemento foi recentemente disponibilizado no repositório.</dd>
+<dt>instalado</dt><dd>indica que o complemento já está instalado. Se também estiver disponível em um repositório o botão <label>Reinstalar complemento</label> estará habilitado. Se a versão for mais antiga que a instalada o botão <label>Desatualizar complemento</label> então aparecerá.</dd>
+<dt>atualizável</dt><dd>significa que o complemento está instalado, mas existe uma versão atualizada disponível. 
+Neste caso, o botão <label>Atualizar complemento</label> estará habilitado.</dd>
+<dt>inválido</dt><dd>significa que o complemento está instalado, mas está indisponível ou quebrado. A razão será explicada no campos de descrição do complemento.</dd>
+</dl>
+</p>
+
+Para instalar um complemento, selecione-o a na lista e clique no botão <label>Instalar complemento</label>. O complemento é instalado na sua pastas de usuário:
+<table border=1>
+<tr><th>OS</th><th>sistema de complementos</th><th>complementos instalados pelo usuário</th></tr>
+<tr><td>Linux e derivados</td><td>./share/qgis/python/plugins</td><td rowspan=2>$HOME/.qgis/python/plugins</td></tr>
+<tr><td>Mac OS X</td><td>./Contents/MacOS/share/qgis/python/plugins</td></tr>
+<tr><td>Windows</td><td>(pasta de instalação do QGIS)\python\plugins</td><td>%USERPROFILE%\.qgis\python\plugins</td></tr>
+</table>
+<br/>
+
+<p align='justify'>
+Se a instalação for bem sucedida, uma mensagem de confirmação irá aparecer. O complemento está pronto para uso.
+</p>
+
+<p align='justify'>
+Se a instalação falhar, o motivo da falha será exibido em uma janela de aviso. Mais freqüentemente,
+erros são o resultado de problemas de conexão e / ou falta de módulos Python. No primeiro caso, você provavelmente terá de esperar antes de tentar instalar novamente, em último caso, você deve instalar os módulos em falta relevantes para o seu sistema operacional antes de usar o complemento. No Linux, os módulos mais necessários devem estar disponíveis através de um gerenciador de pacotes. Para instruções de instalação no Windows, visite a página home do módulo. Se você estiver usando um proxy, pode ser necessário configurá-lo sob <label>Editar</label> > <label>Opções</label> 
+(Gnome, OSX) ou <label>Configurações</label> > <label>Opções</label> (KDE, Windows) na aba <label>Proxy</label>.
+</p>
+
+<p align='justify'>
+O botão <label>Desinstalar complemento</label> estará habilitado apenas se o complemento selecionado estiver instalado e não for um complemento vital. Note que se você tiver instalado uma atualização de complemento vital, você pode desinstalar a atualização com <label>Desinstalar complemento</label> e reverter para a versão que veio com o QGIS. Esta versão padrão, no entanto, não poderá ser desinstalada.
+</p>
+
+
+
+
+<a name="retab">
+<h4>Aba repositórios</h4>
+</a>
+<p align='justify'>
+A segunda aba <label>Repositórios</label>, contém uma lista de repositórios de complementos disponíveis para o Instalador de Complementos. Por padrão, apenas o repositório oficial do QGIS vem habilitado. Você pode adicionar muitos outros repositórios de contribuidores clicando no botão <label>Adicionar repositórios de terceiros</label>. Os repositórios adicionados contém um grande número de complemento úteis mantidos pelo time de desenvolvimento do QGIS. Desta forma, nós não nos responsabilizamos por eles. Você pode também gerenciar os repositórios manualmente, que é adicionar, remover e editar as entradas. Temporariamente desabilitar um determinado repositório clicando o botão <label>Editar...</label>.
+</p>
+
+
+
+
+
+<a name="optab">
+<h4>Aba Opções</h4>
+</a>
+<p align='justify'>
+A aba <label>Opções</label> é onde você pode configurar as configurações do Instalador de Complementos.
+A caixa de opção <label>Verificar por atualizações ao iniciar</label> faz com que o QGIS busque automaticamente por atualizações de complementos e novidades. Por padrão, se esta feição estiver habilitada todos os repositórios listados e disponíveis na aba <label>Repositórios</label> estarão marcados para verificação de atualizações cada vez que o QGIS é iniciado. A frequência de verificação pode ser ajustada usando o menu de opções, podendo ser programado diariamente até mensalmente. Se um novo complemento ou atualização estiver disponível, uma notificação aparecerá na barra de estado.
+</p>
+
+<p align='justify'>
+Algumas conexões de internet poderão causar problemas ao aguardar a verificação por atualizações.
+Nesses casos, um indicador <i>Verificando novos complementos...</i> estará visível na barra de estado durante toda a sesão do QGIS e poderá causar falhas enquanto existir. Neste caso, desabilite a caixa de opção.
+</p>
+
+
+Adicionalmente, você pode especificar o tipo de complementos que serão mostrados pelo Instalador de Complementos. Em <i>Complementos permitidos</i>, você pode especificar o que deseja:
+<ul>
+<li> Apenas mostrar complementos a partir do repositório oficial</li>
+<li> Mostrar apenas complementos exceto os de caráter experimental,</li>
+<li> ou mostrar todos os complementos, inclusive aqueles que marcados como experimentais.</li>
+</ul>
+
+<br/>
+<table border=1 width='95%' align='center'><tr><td>
+Note: Complementos experimentais são geralmente desaconselhados para uso em produção, pois estão em fase de teste.
+</td></tr></table>
+
+
+

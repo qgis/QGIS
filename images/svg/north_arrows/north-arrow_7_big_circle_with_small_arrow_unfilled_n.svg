@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" version="1.0" xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" viewBox="0 0 450 500">
+	<title>North Arrow, Big Filled Circle, Small arrow and unfilled N on top</title>
+	<metadata>
+		<rdf:RDF>
+			<cc:Work rdf:about="">
+				<dc:format>image/svg+xml</dc:format>
+				<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+				<dc:title>North Arrow, Big Filled Circle, Small arrow and unfilled N on top</dc:title>
+				<dc:description>North Arrow, Big Filled Circle, Small arrow and unfilled N on top</dc:description>
+				<dc:date>2009-11-08</dc:date>
+				<dc:creator>
+					<cc:Agent>
+						<dc:title>Silvio Grosso</dc:title>
+					</cc:Agent>
+				</dc:creator>
+				<cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+			</cc:Work>
+			<cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+				<cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+			</cc:License>
+		</rdf:RDF>
+	</metadata>
+	<g stroke="#000000" transform="matrix(0.9234006,0,0,0.7812741,-84.804084,-133.6346)">
+		<path id="filled_circle_at_bottom" d="M268.57,508.08a90,90,0,1,1,-180,0,90,90,0,1,1,180,0z" transform="translate(150.3595,67.84687)" stroke-width="6.5" fill="black" stroke="black" />
+		<path id="character_n" d="M318.9,490.44h14.23l18.57,27.29v-27.29h14.37v49.32h-14.37l-18.47-27.08v27.08h-14.33z" transform="matrix(2.124314,0,0,2.055934,-398.6878,-753.803)" stroke="black" stroke-width="3.2" fill="none"/>
+		<path id="small_arrow" d="M309.65,408.23v75.46l37.4-0.85v-74.61l31.28,5.01-51.99-62.37-49.43,65.88,32.74-8.52z" stroke-width="6" fill="black" stroke="black"/>
+	</g>
+</svg>

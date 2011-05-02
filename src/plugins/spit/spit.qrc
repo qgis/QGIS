@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/" >
+        <file>spit.png</file>
+        <file>spit_icon.png</file>
+        <file>spit_image.png</file>
+    </qresource>
+</RCC>

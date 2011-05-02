@@ -1,0 +1,9 @@
+
+FILE (GLOB IMAGES *.png)
+
+INSTALL (FILES ${IMAGES}
+         DESTINATION ${QGIS_DATA_DIR}/themes/default)
+
+FILE (GLOB PLUG_IMAGES  plugins/*.png)
+
+INSTALL (FILES ${PLUG_IMAGES} DESTINATION ${QGIS_DATA_DIR}/themes/default/plugins)

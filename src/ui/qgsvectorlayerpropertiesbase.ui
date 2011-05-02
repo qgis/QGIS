@@ -1,0 +1,1210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsVectorLayerPropertiesBase</class>
+ <widget class="QDialog" name="QgsVectorLayerPropertiesBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>777</width>
+    <height>650</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Layer Properties</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../images/images.qrc">
+    <normaloff>:/images/icons/qgis-icon-16x16.png</normaloff>:/images/icons/qgis-icon-16x16.png</iconset>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pbnLoadDefaultStyle">
+       <property name="text">
+        <string>Restore Default Style</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveDefaultStyle">
+       <property name="text">
+        <string>Save As Default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnLoadStyle">
+       <property name="text">
+        <string>Load Style ...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveStyleAs">
+       <property name="text">
+        <string>Save Style ...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>22</width>
+       <height>22</height>
+      </size>
+     </property>
+     <widget class="QWidget" name="tabWidgetPage1">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/symbology.png</normaloff>:/images/themes/default/propertyicons/symbology.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Style</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="legendtypelabel">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>32767</width>
+           <height>22</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Legend type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="legendtypecombobox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>26</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>32767</width>
+           <height>22</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QLabel" name="lblTransparencyPercent">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Transparency</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QSlider" name="sliderTransparency">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximum">
+          <number>255</number>
+         </property>
+         <property name="value">
+          <number>0</number>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="5">
+        <widget class="QStackedWidget" name="widgetStackRenderers">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Sunken</enum>
+         </property>
+         <property name="currentIndex">
+          <number>0</number>
+         </property>
+         <widget class="QWidget" name="page"/>
+         <widget class="QWidget" name="page_2"/>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <widget class="QPushButton" name="btnUseNewSymbology">
+         <property name="text">
+          <string>New symbology</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage2">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Labels</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="labelCheckBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Display labels</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QFrame" name="labelOptionsFrame">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage3">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/attributes.png</normaloff>:/images/themes/default/propertyicons/attributes.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Fields</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QToolButton" name="mAddAttributeButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>New column</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../.designer/xpm/new_attribute.png</normaloff>../../../../../.designer/xpm/new_attribute.png</iconset>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+N</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QToolButton" name="mDeleteAttributeButton">
+         <property name="toolTip">
+          <string>Delete column</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>../../../../../.designer/xpm/delete_attribute.png</normaloff>../../../../../.designer/xpm/delete_attribute.png</iconset>
+         </property>
+         <property name="shortcut">
+          <string>Ctrl+X</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QToolButton" name="mToggleEditingButton">
+         <property name="toolTip">
+          <string>Toggle editing mode</string>
+         </property>
+         <property name="whatsThis">
+          <string>Click to toggle table editing</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QToolButton" name="mCalculateFieldButton">
+         <property name="toolTip">
+          <string>Field calculator</string>
+         </property>
+         <property name="whatsThis">
+          <string>Click to toggle table editing</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>658</width>
+           <height>19</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" colspan="5">
+        <widget class="QTableWidget" name="tblAttributes">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>256</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="sortingEnabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage4">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>General</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_7">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QScrollArea" name="scrollArea_2">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents_2">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>755</width>
+            <height>526</height>
+           </rect>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QGroupBox" name="indexGroupBox">
+             <property name="title">
+              <string>Options</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="textLabel3">
+                <property name="text">
+                 <string>Display name</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="txtDisplayName"/>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="textLabel2">
+                <property name="toolTip">
+                 <string>Display field for the Identify Results dialog box</string>
+                </property>
+                <property name="whatsThis">
+                 <string>This sets the display field for the Identify Results dialog box</string>
+                </property>
+                <property name="text">
+                 <string>Display field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QComboBox" name="displayFieldComboBox">
+                <property name="whatsThis">
+                 <string>Use this control to set which field is placed at the top level of the Identify Results dialog box.</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label">
+                <property name="text">
+                 <string>Edit UI</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1" colspan="2">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <widget class="QLineEdit" name="leEditForm"/>
+                </item>
+                <item>
+                 <widget class="QToolButton" name="pbnSelectEditForm">
+                  <property name="text">
+                   <string>...</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="1" column="3">
+               <widget class="QPushButton" name="pbnIndex">
+                <property name="text">
+                 <string>Create Spatial Index</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="4">
+               <widget class="QLineEdit" name="leSpatialRefSys">
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QLineEdit" name="leEditFormInit"/>
+              </item>
+              <item row="2" column="3">
+               <widget class="QPushButton" name="pbnChangeSpatialRefSys">
+                <property name="toolTip">
+                 <string>Specify the coordinate reference system of the layer's geometry.</string>
+                </property>
+                <property name="whatsThis">
+                 <string>Specify the coordinate reference system of the layer's geometry.</string>
+                </property>
+                <property name="text">
+                 <string>Specify CRS</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Init function</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QGroupBox" name="chkUseScaleDependentRendering">
+             <property name="title">
+              <string>Use scale dependent rendering</string>
+             </property>
+             <property name="checkable">
+              <bool>true</bool>
+             </property>
+             <layout class="QGridLayout">
+              <property name="margin">
+               <number>11</number>
+              </property>
+              <item row="0" column="2">
+               <widget class="QLabel" name="textLabel1_2_2">
+                <property name="text">
+                 <string>Maximum</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="textLabel1">
+                <property name="text">
+                 <string>Minimum</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="leMinimumScale"/>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLineEdit" name="leMaximumScale"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QGroupBox" name="grpSubset">
+             <property name="title">
+              <string>Subset</string>
+             </property>
+             <layout class="QGridLayout">
+              <property name="margin">
+               <number>11</number>
+              </property>
+              <item row="0" column="0" colspan="2">
+               <widget class="QTextEdit" name="txtSubsetSQL">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="acceptDrops">
+                 <bool>false</bool>
+                </property>
+                <property name="acceptRichText">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Expanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>480</width>
+                  <height>21</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QPushButton" name="pbnQueryBuilder">
+                <property name="text">
+                 <string>Query Builder</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage5">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/metadata.png</normaloff>:/images/themes/default/propertyicons/metadata.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Metadata</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_8">
+       <item row="0" column="0">
+        <widget class="QTextEdit" name="teMetadata">
+         <property name="lineWidth">
+          <number>2</number>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tabWidgetPage6">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/action.png</normaloff>:/images/themes/default/propertyicons/action.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Actions</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_9">
+       <item row="0" column="0">
+        <widget class="QFrame" name="actionOptionsFrame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mJoinPage">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/join.png</normaloff>:/images/themes/default/propertyicons/join.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Joins</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_10">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="mButtonAddJoin">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="mButtonRemoveJoin">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>354</width>
+           <height>23</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" colspan="3">
+        <widget class="QTreeWidget" name="mJoinTreeWidget">
+         <property name="columnCount">
+          <number>3</number>
+         </property>
+         <column>
+          <property name="text">
+           <string>Join layer</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Join field</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Target field</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="mDiagramPage">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/diagram.png</normaloff>:/images/themes/default/propertyicons/diagram.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Diagrams</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_14">
+       <item row="0" column="0" colspan="2">
+        <widget class="QCheckBox" name="mDisplayDiagramsCheckBox">
+         <property name="text">
+          <string>Display diagrams</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <layout class="QHBoxLayout" name="_2">
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="mTypeLabel">
+           <property name="text">
+            <string>Diagram type</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mDiagramTypeComboBox"/>
+         </item>
+        </layout>
+       </item>
+       <item row="0" column="3" colspan="3">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="mPriorityLabel">
+           <property name="text">
+            <string>Priority:</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mPriorityLowLabel">
+           <property name="text">
+            <string>Low</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSlider" name="mPrioritySlider">
+           <property name="maximum">
+            <number>10</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="invertedAppearance">
+            <bool>false</bool>
+           </property>
+           <property name="invertedControls">
+            <bool>false</bool>
+           </property>
+           <property name="tickPosition">
+            <enum>QSlider::TicksBelow</enum>
+           </property>
+           <property name="tickInterval">
+            <number>1</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="mPriorityHighLabel">
+           <property name="text">
+            <string>High</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item row="1" column="0" colspan="6">
+        <widget class="QGroupBox" name="mAppearanceGroupBox">
+         <property name="title">
+          <string>Appearance</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_13">
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_16">
+            <item>
+             <widget class="QLabel" name="mPenWidthLabel">
+              <property name="text">
+               <string>Pen width</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
+              <property name="maximum">
+               <double>99999.990000000005239</double>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="0" colspan="4">
+           <layout class="QHBoxLayout" name="horizontalLayout_13">
+            <item>
+             <widget class="QCheckBox" name="mScaleDependentDiagramVisibilityCheckBox">
+              <property name="text">
+               <string>Scale dependent visibility</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLabel" name="mMinimumDiagramScaleLabel">
+              <property name="text">
+               <string>Minimum</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mMinimumDiagramScaleLineEdit"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="mMaximumDiagramScaleLabel">
+              <property name="text">
+               <string>Maximum</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mMaximumDiagramScaleLineEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <widget class="QLabel" name="mBackgroundColorLabel">
+                <property name="text">
+                 <string>Background color</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QgsColorButton" name="mBackgroundColorButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mDiagramFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="mPenColorLabel">
+              <property name="text">
+               <string>Pen color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsColorButton" name="mDiagramPenColorButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>25</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+         <zorder></zorder>
+         <zorder></zorder>
+         <zorder>mDiagramFontButton</zorder>
+         <zorder></zorder>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="6">
+        <widget class="QGroupBox" name="mSizeGroupBox">
+         <property name="title">
+          <string>Size</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_12">
+          <item row="0" column="0">
+           <widget class="QCheckBox" name="mFixedSizeCheckBox">
+            <property name="text">
+             <string>Fixed size</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="mDiagramSizeSpinBox">
+            <property name="maximum">
+             <double>9999999.990000000223517</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>335</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0" colspan="4">
+           <widget class="QLabel" name="mLinearlyScalingLabel">
+            <property name="text">
+             <string>Scale linearly between 0 and the following attribute value / diagram size:</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="4">
+           <layout class="QHBoxLayout" name="mLinearlyScalingLayout">
+            <item>
+             <widget class="QLabel" name="mSizeAttributeLabel">
+              <property name="text">
+               <string>Attribute</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mSizeAttributeComboBox"/>
+            </item>
+            <item>
+             <widget class="QPushButton" name="mFindMaximumValueButton">
+              <property name="text">
+               <string>Find maximum value</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="mValueLineEdit"/>
+            </item>
+            <item>
+             <widget class="QLabel" name="mSizeLabel">
+              <property name="text">
+               <string>Size</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="mSizeSpinBox">
+              <property name="maximum">
+               <number>10000000</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_12">
+            <item>
+             <widget class="QLabel" name="mDiagramUnitsLabel">
+              <property name="text">
+               <string>Size units</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mDiagramUnitComboBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="6">
+        <widget class="QGroupBox" name="mPlacementGroupBox">
+         <property name="title">
+          <string>Position</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_11">
+          <item row="0" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_7">
+            <item>
+             <widget class="QLabel" name="mPlacementLabel">
+              <property name="text">
+               <string>Placement</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mPlacementComboBox"/>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QLabel" name="mLineOptionsLabel">
+              <property name="text">
+               <string>Line Options</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mLineOptionsComboBox"/>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QLabel" name="mDiagramDistanceLabel">
+              <property name="text">
+               <string>Distance</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QDoubleSpinBox" name="mDiagramDistanceSpinBox"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="mDataDefinedPositionLabel">
+            <property name="text">
+             <string>Data defined position</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="mXPosColLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>x</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mDataDefinedXComboBox"/>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="2">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
+            <item>
+             <widget class="QLabel" name="mYPosColLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>y</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QComboBox" name="mDataDefinedYComboBox"/>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="mAttributesLabel">
+         <property name="text">
+          <string>Attributes</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1" colspan="2">
+        <widget class="QComboBox" name="mDiagramAttributesComboBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="3">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>241</width>
+           <height>23</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="4">
+        <widget class="QPushButton" name="mRemoveCategoryPushButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/symbologyRemove.png</normaloff>:/images/themes/default/symbologyRemove.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="5">
+        <widget class="QPushButton" name="mAddCategoryPushButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../images/images.qrc">
+           <normaloff>:/images/themes/default/symbologyAdd.png</normaloff>:/images/themes/default/symbologyAdd.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" colspan="6">
+        <widget class="QTreeWidget" name="mDiagramAttributesTreeWidget">
+         <property name="columnCount">
+          <number>2</number>
+         </property>
+         <column>
+          <property name="text">
+           <string>Attribute</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Color</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>txtDisplayName</tabstop>
+  <tabstop>displayFieldComboBox</tabstop>
+  <tabstop>leSpatialRefSys</tabstop>
+  <tabstop>pbnIndex</tabstop>
+  <tabstop>leMinimumScale</tabstop>
+  <tabstop>leMaximumScale</tabstop>
+  <tabstop>txtSubsetSQL</tabstop>
+  <tabstop>pbnQueryBuilder</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,531 @@
+qgis (1.7.0) UNRELEASED; urgency=low
+
+  * new development version 1.7 after branch
+  * add qgis-sqlanywhere1.7.0 package
+  * add road graph plugin
+  * drop quickprint and ogrconverter plugin
+  * add gdal provider
+  * turn qgis-providers-common's architecture to all
+  * include api documentation
+  * Missing ${python:Depends} added to python-qgis dependencies
+    (closes: #611492)
+  * move qgis_help to /usr/lib/qgis (closes: #615833)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 24 Mar 2011 00:24:01 +0100
+
+qgis (1.6.0) UNRELEASED; urgency=low
+
+  * new development version 1.6 after branch
+  * qgis-plugin-grass-common breaks earlier versions of qgis-common: add
+    control fields.
+  * include displacementplugin and offline editing plugin
+  * add subversion as build dependency for trunk
+  * add qgis-mapserver package
+  * trim dependencies
+ 
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 17 Oct 2010 12:09:23 +0200
+
+qgis (1.5.0) UNRELEASED; urgency=low
+
+  * new development version 1.5 after branch
+  * adapted Francesco Paolo Lovergine's updates to Debian qgis 1.4 package
+  * require CMake >2.6 and Qt 4.4
+  * remove circular dependencies
+  * integrate new GRASS raster provider and remove dependency to
+    libgdal1-$VERSION-grass
+  * add spatialquery plugin
+  * include qgis.g.browser in grass plugin
+  * drop symbol tracking as C++ ABIs change too frequently
+  * exclude python scripts from grass plugin on lenny
+  * add missing dependency to python-sip(4) to python-qgis
+  * follow sip4 => sip transition
+  * add gdal-bin and python-gdal dependency for GdalTools
+  * trim build dependencies
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 23 Jun 2010 18:34:25 +0200
+
+qgis (1.4.0) UNRELEASED; urgency=low
+
+  * new development version after 1.3 branch
+  * use templates for configuration for ABIs and distributions
+  * policy updated to 3.8.3
+  * remove README.Debian from libqgis-dev
+  * add symbol files for shared libraries
+  * shorten qgis.sh
+  * add all python files in qgis' site-packages
+  * add labeling plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 17 Nov 2009 16:27:53 +0100
+
+qgis (1.3.0) UNRELEASED; urgency=low
+
+  * new upstream release
+  * add analysis library and raster terrain analysis plugin
+  * alternativly depend on libgdal1-1.6.0-grass
+  * include CONTRIBUTORS, TRANSLATORS and DONORS
+  * reverse order of libgdal1-*-grass dependencies
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 12 Sep 2009 22:09:18 +0200
+
+qgis (1.2.0) UNRELEASED; urgency=low
+
+  * new development version after 1.1 branch
+  * add new build dependency to pyqt4-dev-tools
+  * update SONAMEs to 1.2.0
+  * add python dependency to qgis-plugin-grass-common
+  * include osm provider and evis plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 18 Aug 2009 08:20:18 +0200
+
+qgis (1.1.0-5) UNRELEASED; urgency=low
+
+  * rename {qgis,qgis_help}.man to {qgis,qgis_help}.1
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 21 Apr 2009 22:09:33 +0200
+
+qgis (1.1.0-4) UNRELEASED; urgency=low
+
+  * include oracle plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 15 Apr 2009 22:32:27 +0200
+
+qgis (1.1.0-3) UNRELEASED; urgency=low
+
+  * include diagram overlays 
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 08 Apr 2009 16:30:57 +0200
+
+qgis (1.1.0-2) UNRELEASED; urgency=low
+
+  * change package names to reflect ABI (changes SONAME)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 05 Apr 2009 12:34:38 +0200
+
+qgis (1.1.0-1) UNRELEASED; urgency=low
+
+  * allow build with GRASS 6.4rc3
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 02 Mar 2009 21:06:07 +0100
+
+qgis (1.1.0) UNRELEASED; urgency=low
+
+  * gridmaker plugin removed from package
+  * updated mime support
+  * sync with debian-gis debian/ tree
+    - introduce arch-independent qgis-common and
+      qgis-plugin-grass-common
+    - policy updated to 3.8.0
+    - join libqgis1-core and libqgis1-gui to libqgis1
+    - add debian/watch
+    - dh_lintian overrides
+    - fix qgis.desktop
+    - fix license reference in copyright
+  * introduce arch-independent python-qgis-common
+  * added sharedmimeinfo
+  * remove dpatch
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 13 Feb 2009 22:03:25 +0100
+
+qgis (1.0.0) experimental; urgency=low
+ 
+  * new upstream release
+  * update qgis.mime
+  * add qgis.desktop and qgis.xml 
+  * add mime types for KDE
+  * don't ignore errors in preinst and postrm
+  * run ldconfig in postrm
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 23 Dec 2008 20:42:21 +0100
+
+qgis (1.0preview18) experimental; urgency=low
+
+  * add suggestion for gpsbabel
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 20 Dec 2008 19:08:34 +0100
+
+qgis (1.0preview17) experimental; urgency=low
+
+  * include quickprint and coordinate capture plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 12 Nov 2008 12:57:46 +0100
+
+qgis (1.0preview16) experimental; urgency=low
+
+  * new upstream preview release (1.0preview2).
+  * introduce conflict with uim-qt3 (fixes GUI issues on Ubuntu intrepid)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 08 Nov 2008 12:10:21 +0100
+
+qgis (1.0preview7) experimental; urgency=low
+
+  * remove quickprint plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 01 Sep 2008 21:58:58 +0200
+
+qgis (1.0preview6) experimental; urgency=low
+
+  * add missing dependency of python-qgis to python-qt4
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 29 Aug 2008 17:26:33 +0200
+
+qgis (1.0preview5) experimental; urgency=low
+
+  * add wrapper scripts to qgis-plugin-grass that adds the grass
+    shared libraries to LD_LIBRARY_PATH.
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 29 Aug 2008 00:19:05 +0200
+
+qgis (1.0preview4) experimental; urgency=low
+
+  * add ogr converter plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 27 Aug 2008 17:48:32 +0200
+
+qgis (1.0preview3) experimental; urgency=low
+
+  * build in pedantic mode
+  * add interpolation plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 23 Aug 2008 15:19:32 +0200
+
+qgis (1.0preview2) experimental; urgency=low
+
+  * added dxf2shp plugin
+  * removed pggeoprocessing plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 20 Aug 2008 08:47:29 +0200
+
+qgis (1.0preview1) experimental; urgency=low
+
+  * prepackaging of Quantum GIS 1.0
+  * raised abi version from 0.11 to 1
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 19 Jul 2008 19:57:04 +0200
+
+qgis (0.11.0-2) stable; urgency=low
+
+  * remove libqgisgrass0.11 package by integrating it into qgis-plugin-grass
+  * move libqgisgrass.so link from libqgis1-dev to qgis-plugin-grass
+  * qgis recommends instead of just suggests the grass and python plugin
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 19 Jul 2008 11:38:49 +0200
+
+qgis (0.11.0-1) stable; urgency=low
+
+  * libqgispython0.11 integrated into python-qgis
+  * introduced a build conflict with libqgis1-dev
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 16 Jul 2008 22:42:11 +0200
+
+qgis (0.11.0) stable; urgency=low
+
+  * New upstream release: Quantum GIS 0.11.0 'Metis'
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 15 Jul 2008 20:41:12 +0200
+
+qgis (0.11.0test3) experimental; urgency=low
+
+  * add memory provider
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 10 Jun 2008 15:32:42 +0200
+
+qgis (0.11.0test2) experimental; urgency=low
+
+  * removed 'upstream' changes from changelog 
+  * policy update 3.7.2 to 3.7.3
+  * python support: renamed qgis-python-plugin to python-qgis, moved to python
+    section, added Python:Provides
+  * replaced QGIS with Quantum GIS in descriptions
+  * moved so symlinks to dev package
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sun, 01 Jun 2008 13:45:39 +0200
+
+qgis (0.11.0test1) experimental; urgency=low
+
+  * prepackaging of Quantum GIS 0.11.0 'Mantis'
+  * raised abi from 0.10 to 0.11
+  * separate packages for python support
+  * raised dependency from python-qt4* from 4.0.0 to 4.1.0
+  * call cmake with -Wno-dev
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 29 May 2008 00:23:14 +0200
+
+qgis (0.10.0-2) gutsy; urgency=low
+  
+  * fix libgdal1 grass dependency for ubuntu gutsy/hardy (1.4.0 | 1.5.0)
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 30 Apr 2008 22:35:42 +0200
+
+qgis (0.10.0-1) gutsy; urgency=low
+  
+  * updated Maintainer field
+  * updated version for sip build dependency and removed old libgdal<1.5
+    dependencies.
+  * removed explicit shared library dependency for qgis and qgis-grass-plugin.
+  * removed recommends for qt4-designer on libqgis1-dev, because there's also
+    a depends.
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 28 Apr 2008 22:21:53 +0200
+
+qgis (0.10.0) gutsy; urgency=low
+
+  * Quantum GIS 0.10.0 'Io' upstream release
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Fri, 18 Apr 2008 00:51:58 +0200
+
+qgis (0.9.2test1) gutsy; urgency=low
+
+  * Testing package to see if icons deploy 
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 12 Feb 2008 21:18:35 -0200
+
+qgis (0.9.2rc1) gutsy; urgency=low
+
+  * new upstream release
+
+ -- Tim Sutton <tim@linfiniti.com>  Mon, 28 Jan 2008 23:00:41 -0200
+
+qgis (0.9.1) gutsy; urgency=low
+
+  * new upstream release
+
+ -- Tim Sutton <tim@linfiniti.com>  Fri, 07 Dec 2007 01:36:55 -0200
+
+qgis (0.9.0) gutsy; urgency=low
+
+  * Quantum GIS 0.9.0 'Ganymede' release 
+
+ -- Tim Sutton <tim@linfiniti.com>  Tue, 28 Aug 2007 22:43:41 -0300
+
+qgis (0.8.1-3) UNRELEASED; urgency=low
+
+  * Added Build-Depends: sip4.
+
+ -- Niccolo Rigacci <niccolo@rigacci.org>  Fri, 10 Aug 2007 11:37:29 +0200
+
+qgis (0.8.1-2) UNRELEASED; urgency=low
+
+  * Quick-and-dirty changes on Debian files.
+
+ -- Niccolo Rigacci <niccolo@rigacci.org>  Fri, 10 Aug 2007 10:52:25 +0200
+
+qgis (0.8.1-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * Now the building system is based on cmake. Qt4 and SIP are required.
+  * Added cmake.dpatch new patch (to build-up consistently).
+  * Added georef.dpatch new patch (improvement of georeferencer by Martin Dobias).
+  * Removed obsolete postgresql-dev build-dep.
+    (closes: #429984)
+  * Removed obsolete libmysqlclient14-dev build-dep.
+  * Added a grid_maker patch to compile standalone binaries.
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Fri, 29 Jun 2007 16:03:56 +0200
+
+qgis (0.8.0-5) unstable; urgency=low
+
+  * Added python-dev build-dep. 
+    Patch added: ax_python.dpatch, fixes python environment detection.
+    (closes: #429234)
+  * Added build-dep for autoconf/automake due to acinclude.m4 changes.
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Tue, 19 Jun 2007 18:28:05 +0200
+
+qgis (0.8.0-4) unstable; urgency=low
+
+  * Enabled python scripts support and changed build-dep and suggests as consequence.
+  * Enabled WFS support.
+    (closes: #302618)
+  * Long description revised.
+  * Patch gcc43-fixes updated. Thanks again Martin Michlmayr.
+    (closes: #417522)
+  * Now installing missing binaries: msexport, qgis_help
+    (closes: #423989)
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Tue, 22 May 2007 17:03:18 +0200
+
+qgis (0.8.0-3) unstable; urgency=low
+
+  * Added missing flex/bison build-deps.
+    (closes: #421143)
+  * Added gcc4.3-fixes based the patch by tbm.
+    (closes: #417522)
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Mon, 30 Apr 2007 23:24:02 +0200
+
+qgis (0.8.0-2) unstable; urgency=low
+
+  * Releasing for unstable.
+    Moved to soname 1 instead of 0.
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Tue, 10 Apr 2007 13:42:47 +0200
+
+qgis (0.8.0-1) experimental; urgency=low
+
+  * New upstream release.
+  * Patchset updated.
+    New patch: gridmaker_bin to generate gridmaker binary as it should.
+
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Wed,  4 Apr 2007 14:19:48 +0200
+
+qgis (0.7.4-6) UNRELEASED; urgency=low
+
+  * Moved to team maintainership as asked by Steve.
+  * Moved to new gdal 1.4.0 dependency (currently in experimental)
+
+ -- Francesco Paolo Lovergine <frankie@debian.org>  Wed,  4 Apr 2007 14:04:38 +0200
+
+qgis (0.7.4-5) unstable; urgency=low
+
+  * Acknowledge GCC 4.1 NMU (Closes: #356215)
+  * Update deps to libgdal1-1.3.2-dev and grass-dev (Closes: #383143, #360649)
+  * Bump standards version to 3.7.2. No changes made.
+
+ -- Steve Halasz <debian@adkgis.org>  Sat, 19 Aug 2006 22:13:32 -0400
+
+qgis (0.7.4-4.1) unstable; urgency=low
+
+  * NMU as part of the GCC 4.1 transition.
+  * patches/gcc41-extra-qualifications.dpatch: Update to remove two more
+    extra qualifications from C++ files (Closes: #356215)
+
+ -- Martin Michlmayr <tbm@cyrius.com>  Fri, 26 May 2006 23:57:18 +0200
+
+qgis (0.7.4-4) unstable; urgency=low
+
+  * Apply patch for building with gcc 4.1 (Closes: #356215)
+  * Create patch for moving location of installed documentation
+    (Closes: #355208)
+  * Remove essentially empty README file (Closes: #324533)
+
+ -- Steve Halasz <debian@adkgis.org>  Fri,  7 Apr 2006 10:12:58 -0400
+
+qgis (0.7.4-3) unstable; urgency=low
+
+  * Build with libgdal1-1.3.1
+  * Build-dep on libmysqlclient15-dev
+  * Remove follow-on build-deps that are now pulled in by
+    libgdal1-1.3.1-dev
+
+ -- Steve Halasz <debian@adkgis.org>  Mon, 20 Feb 2006 20:21:48 -0500
+
+qgis (0.7.4-2) unstable; urgency=low
+
+  * Build libqgis0 as separate package to conform to policy (Closes: #339254)
+  * Rename qgis-dev to libqgis0-dev
+  * Build-dep on libmysqlclient14-dev
+  * Acknowledge binary NMU (Closes: #345148)
+
+ -- Steve Halasz <debian@adkgis.org>  Wed, 14 Dec 2005 23:14:35 -0500
+
+qgis (0.7.4-1) unstable; urgency=low
+
+  * New upstream release
+  * Build GRASS support in qgis-plugin-grass package (Closes: #248649)
+
+ -- Steve Halasz <debian@adkgis.org>  Sat,  5 Nov 2005 16:04:45 -0500
+
+qgis (0.7.0-1) unstable; urgency=low
+
+  * New upstream release (Closes: #327592)
+    - Don't segfault when starting without X (Closes: #295872)
+    - GPX plugin uses less RAM (Closes: #284238)
+  * PostgreSQL transition: build-dep on libpq-dev | postgresql-dev
+  * C++ ABI transition. No explicit changes made. (Closes: #327597)
+  * Bump standards version to 3.6.2. No changes made.
+
+ -- Steve Halasz <debian@adkgis.org>  Fri, 16 Sep 2005 10:43:49 -0400
+
+qgis (0.6.0-2) unstable; urgency=low
+
+  * Depend on xerces26 instead of xerces21 (Closes: #301709)
+  * Apply patch for PostGis 1.0 (Closes: #303743)
+  * Added note about setting QTDIR=/usr/share/qt3 (Closes: #281910)
+  * Patch for crash loading shapefiles exposed by gdal 1.2.6
+
+ -- Steve Halasz <debian@adkgis.org>  Thu, 14 Apr 2005 11:03:20 -0400
+
+qgis (0.6.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Display version name consistently (Closes: #275608)
+  * Make Alt+F accelerators unique (Closes: #275611)
+  * Use upstream's new manpage for qgis
+  * Make delimited text plugin dialog more user-friendly (Closes: #282085)
+  * Fix for disappearing icons (Closes: #275610)
+  * Properly load shapefiles specified on the command line (Closes: #275607)
+
+ -- Steve Halasz <debian@adkgis.org>  Tue, 21 Dec 2004 09:46:27 -0500
+
+qgis (0.5.0-2) unstable; urgency=low
+
+  * Fix typos in .install files that left out the delimitedtext plugin 
+    (Closes: #282084)
+
+ -- Steve Halasz <debian@adkgis.org>  Fri, 19 Nov 2004 10:51:07 -0500
+
+qgis (0.5.0-1) unstable; urgency=low
+
+  * New upstream release
+  * Create separate qgis-dev package (Closes: #264213)
+
+ -- Steve Halasz <debian@adkgis.org>  Wed,  6 Oct 2004 07:34:28 -0400
+
+qgis (0.4.0-3) unstable; urgency=medium
+
+  * Add build-dep on libjasper-1.701-dev
+  * Add build-dep on libtiff4-dev - doh! :-/
+  * Add build-dep on netcdfg-dev
+
+ -- Steve Halasz <debian@adkgis.org>  Tue, 10 Aug 2004 11:22:29 -0400
+
+qgis (0.4.0-2) unstable; urgency=low
+
+  *  Remove build-dep on libtiff3g-dev (Closes: #264573)
+
+ -- Steve Halasz <debian@adkgis.org>  Mon,  9 Aug 2004 09:15:08 -0400
+
+qgis (0.4.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Steve Halasz <debian@adkgis.org>  Fri,  2 Jul 2004 09:36:23 -0400
+
+qgis (0.3.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Steve Halasz <debian@adkgis.org>  Wed, 26 May 2004 09:38:22 -0400
+
+qgis (0.2.0-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Steve Halasz <debian@adkgis.org>  Mon, 26 Apr 2004 09:48:19 -0400
+
+qgis (0.1-2) unstable; urgency=low
+
+  * Build with the Shapefile to PostGIS Import Tool (SPIT) and 
+    PostgreSQL support (Closes: #233191)
+
+ -- Steve Halasz <debian@adkgis.org>  Wed,  7 Apr 2004 09:18:34 -0400
+
+qgis (0.1-1) unstable; urgency=low
+
+  * New upstream release
+  * changed install location of html documentation to /usr/share/doc/qgis 
+  * updated man page to describe new command-line options and include pointers
+    to HTML and PDF documentation (Closes: #234600)
+  * debian/control:
+    - updated description to include raster support
+
+ -- Steve Halasz <debian@adkgis.org>  Wed, 25 Feb 2004 08:56:18 -0500
+
+qgis (0.0.13-1) unstable; urgency=low
+
+  * Initial Release (Closes: #217237).
+  * clean out config.status and config.log before building
+
+ -- Steve Halasz <debian@adkgis.org>  Fri,  9 Jan 2004 12:27:07 -0500
+

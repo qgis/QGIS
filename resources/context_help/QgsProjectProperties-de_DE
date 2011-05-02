@@ -1,0 +1,35 @@
+<h3>Projekteigenschaften</h3>
+In diesem Dialog k&ouml;nnen Sie die Eigenschaften des <label>Projekts</label> einstellen. In einem Projekt werden eine Menge von Layern mit Ihren Einstellungen sowie andere Information, die zur Wiederherstellung des Projekts beim Laden von Festplatte ben&ouml;tigt werden, gespeichert.</p>
+
+<a href="#general">Reiter allgemein</a><br/>
+<a href="#crs">Reiter Koordinatenbezugssystem (KBS)</a><br/>
+<a href="#layers">Reiter abfragbare Layer</a><br/>
+
+<a name="general">
+<h4>Reiter Allgemein</h4>
+</a>
+<table border=1>
+<tr><td><label>Projekttitel</label></td><td>Ein beschreibender Titel f&uuml;r das Projekt. Dieser Titel wird in der Titelzeile des QGIS-Fenster angezeigt.</td></tr>
+<tr><td><label>Auswahlfarbe</label></td><td>Ausgew&auml;hlte Objekte werden in der Karte in dieser Farbe angezeigt.</td></tr>
+<tr><td><label>Hintergrundfarbe</label></td><td>Die Farbe des Kartenhintergrunds.</td></tr>
+<tr><td><label>Pfade speichern</label></td><td>M&ouml;glichkeit Pfade absolut oder relativ zu speichern.</td><tr>
+<tr><td><label>Layereinheiten</label></td><td>W&auml;hlen Sie die Einheiten der Layer des Projekts</td></tr>
+<tr><td><label>Genauigkeit</label></td><td>Benutzen Sie die manuelle Einstellungen der Anzeigegenauigkeit in der Statuszeile. W&auml;hrend die Maus &uuml;ber die Karte bewegt wird, werden die Koordinaten st&auml;ndig mit der gew&auml;hlten Genauigkeit in der Statuszeile angezeigt. Automatisch (die Voreinstellung) f&uuml;hrt zu einer von den Karteneinheiten abh&auml;ngigen Voreinstellung.</td></tr>
+<tr><td><label>Digitalisierung</label></td><td>Die Option <label>Erm&ouml;gliche topologisches Editieren</label> gestattet bearbeiten und weiterf&uuml;hren von Polygonmosaiken. Das Verschieben des St&uuml;tzpunkts einer gemeinsamer Grenze f&uuml;hrt zur &Auml;nderung beider Grenzen.<p>
+Um die Digitalisierung aller gemeinsamen Punkte einer Grenze zu vermeiden dient die Option <label>&Uuml;berschneidung von neuen Polygonen vermeiden...</label>. Im Dialogfenster sind die gew&uuml;nschten Layer zu w&auml;hlen an die das neue Polygon angepasst werden soll.  Die Fl&auml;chen der Polygone, die das neue Polygon &uuml;berdeckt, 
+werden automatisch entfernt.<p>
+<label>Fangoptionen</label> erlaubt Ihnen f&uuml;r jeden einzelnen Layer eine Fangtoleranz in Pixeln oder Karteneinheiten und den Fangmodus einzustellen: <label>zum St&uuml;tzpunkt</label>, <label>zu Segment</label> oder <label>zum St&uuml;tzpunkt oder Segment</label></td></tr>
+</table>
+<a name="crs">
+<h4>Reiter Koordinatenbezugssystem (KBS)</h4>
+</a>
+Der Reiter Koordinatenbezugssystem (KBS) erlaubt Ihnen die Einstellung der Projektion des aktuellen Projekts und das aktivieren der Projektion zur Laufzeit. Sie brauchen das Projekt nicht zu speichern, um die 'On-The-Fly'-Transformation einzustellen oder zu aktivieren.<p>
+Um die Transformation zu benutzen, klicken Sie auf <label>'On-The-Fly'-KBS-Transformation aktivieren</label>, dann w&auml;hlen Sie die Projektion des Projekts (Karte) aus der Liste der geographischen oder projizierte Koordinatensysteme.
+<p>
+Sie k&ouml;nnen ein Koordinatensystem suchen indem Sie die PostGIS SRID, den EPSG-Code oder den QGIS ID eingeben und auf <label>Suchen</label> klicken.
+
+<a name="layers">
+<h4>Abfragbare Layer</h4>
+</a>
+
+Auf diesem Reiter k&ouml;nnen Sie einstellen welche Layern das Abfragewerkzeug ber&uuml;cksichtigt.

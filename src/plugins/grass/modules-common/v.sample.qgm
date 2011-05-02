@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Sample raster at site locations" module="v.sample">
+	<option key="input" typemask="point"/>
+	<field key="column" layer="input" type="integer,double"/>
+	<option key="raster"/>
+	<option key="output"/>
+	<flag key="b" answer="off" hidden="no" />
+	<flag key="c" answer="off" hidden="no" />
+</qgisgrassmodule>

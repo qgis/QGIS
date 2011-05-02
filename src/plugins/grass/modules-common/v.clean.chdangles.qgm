@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Change the type of boundary dangle to line" module="v.clean">
+	<option key="input" typemask="area"/>
+	<option key="tool" answer="chdangle" hidden="yes"/>
+	<option key="thresh"/>
+	<option key="output"/>
+</qgisgrassmodule>

@@ -1,0 +1,6 @@
+<h3>Ferramentas de medida</h3>
+Existem duas ferramentas de medida: comprimento e área. Com estas, você pode medir ambas distâncias e áreas no mapa da tela. Atualmente as ferramentas fornecem resultados em unidades métricas apenas. Um simples clique com o botão direito do mouse encerra a medição, enquanto que dois cliques com o botão direito do mouse iniciarão uma nova medição.
+<h4>Medir Comprimentos</h4>
+Para medir comprimentos, selecione a ferramenta e clique ao longo do caminho que você deseja medir. O comprimento de cada seguimento é mostrado, assim como todo o comprimento para o caminho.
+<h4>Medir Áreas</h4>
+Para medir áreas, selecione a ferramenta e clique para criar a área. A área total é mostrada instantaneamente enquanto você clica.

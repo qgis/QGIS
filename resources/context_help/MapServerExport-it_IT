@@ -1,0 +1,36 @@
+<h3>Esporta un progetto QGIS su Map File di MapServer</h3>
+<p>
+Questo strumento consente di esportare un progetto QGIS su un Map File pronto per MapServer
+Sono richiesti il <b>Map file</b> e il <b>progetto QGIS</b>.
+</p>
+Spuntare il checkbox <label>Usa progetto corrente</label> o inserisci il percorso assoluto al file di progetto QGIS (.qgs) che si vuole esportare. Clic sul pulsante "Sfoglia" che si trova a destra per cercare un file di progetto (.qgs).
+
+<h4>Map file</h4>
+
+<label>Map file</label> Inserire un nome per il map file da creare. E' possibile
+usare il pulsante a destra per cercare la directory in cui salvare il map
+file creato.
+
+<h4>Mappa</h4>
+Questi valori vengono scritto nel map file nel posto giusto al fine di impostare
+la dimensione della immagine in output, unita' di misura e tipo di immagine.
+<dl>
+  <dt><label>Nome</label></dt>
+  <dd>Un nome per la mappa. Questo nome vera' usato come prefisso per tutte le immagini generate da MapServer.</dd>
+  <dt><label>Larghezza</label></dt>
+  <dd>Larghezza dell'immagine in pixel.</dd>
+  <dt><label>Altezza</label></dt>
+  <dd>Altezza dell'immagine in pixel.</dd>
+  <dt><label>Unita'</label></dt>
+  <dd>Unita' di misura usata per l'output.</dd>
+  <dt><label>Tipo di immagine</label></dt>
+  <dd>Formato per l'immagine di output generata da MapServer</dd>
+</dl>
+<h4>Percorsi</h4>
+<dl>
+  <dt><label>Template</label></dt>
+  <dd>Percorso assoluto al file template di MapServer da usare con il map file.</dd>
+  <dt><label>Header</label></dt>
+  <dd>Percorso assoluto al file header di MapServer da usare con il map file.</dd>
+  <dt><label>Footer</label></dt>
+  <dd>Percorso assoluto al file footer di MapServer da usare con il map file.</dd>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Thin no-zero cells that denote line features" module="r.thin">
+	<option key="input"/>
+	<option key="output"/>
+</qgisgrassmodule>

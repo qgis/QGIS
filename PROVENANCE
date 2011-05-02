@@ -1,0 +1,123 @@
+<!-- 
+This file documents the code provenance review for QGIS as part of the
+OSGEO incubation process and should remain in the QGIS source tree. It
+should not be included in release packages. 
+
+This file is in MediaWiki format for inclusion on the OSGEO wiki.
+-->
+Note the authoritative copy of this document is stored in the QGIS repository.
+= Committers Past and Present =
+ dassau - Otto Dassau
+ ersts - Peter Ersts
+ g_j_m - Gavin Macaulay
+ godofredo - Godofredo Contreras
+ gsherman - Gary Sherman
+ homann - Magnus Homann
+ hoshi - Masaru Hoshi
+ jef - Jürgen Fischer
+ jobi - Jens Oberender
+ larsl - Lars Luthman
+ leo.lami - Leonardo Lami
+ mcoletti - Mark Coletti
+ mhugent - Marco Hugentobler
+ morb_au - Brendan Morley
+ perrygeo - Matthew Perry
+ rabla/rblazek - Radim Blazek
+ rawbytes - Denis Antipov
+ sbr00pwb - Peter Brewer
+ shalasz/stevehalasz - Steve Halasz
+ spoerri - Christoph Spoerri
+ StevenB - Steven Bell
+ telwertowski - Tom Elwertowski
+ timlinux - Tim Sutton
+ warmerdam - Frank Warmerdam
+ what_nick - Tisham Dhar
+ wonder - Martin Dobias
+= Outstanding Issues =
+No issues were discovered in the code review. All external code was
+examined to make sure there were no license problems (see below). 
+= Included Libraries =
+The following libraries are used in QGIS:
+* GDAL/OGR
+* GSL (optional)
+* Qt 
+* PostgreSQL (optional)
+* Python (optional)
+* GRASS (optional)
+* PyQt (optional)
+* Sip (optional)
+* Sqlite3
+= Source Code Review =
+All non-generated source files were manually reviewed for copyright and
+license statements, as well as potential issues. This constituted a
+review of 364 implementation files (.cpp and .cc), 378 header files
+(.h), and 21 Python scripts in the src directory and its subdirectories:
+ app
+ designer
+ core
+ gui
+ helpviewer
+ mac
+ plugins
+ providers
+ ui
+Where copyright and/or GPL license statement were missing, it was added
+after ensuring it was appropriate. All code within the project is
+licensed under the GPL or LGPL, version 2.
+
+== External Source Files ==
+The following files are included in the QGIS source tree from external
+sources. The source, license, and copyright are noted for each.
+=== src/core/spatialindex/include ===
+Copyright (C) Navel Ltd., LGPL
+* LineSegment.h
+* Point.h
+* PointerPool.h
+* PoolPointer.h
+* RTree.h
+* Region.h
+* SmartPointer.h
+* SpatialIndex.h
+* TemporaryFile.h
+* Tools.h
+=== src/core/spatialindex/storagemanager ===
+Copyright (C) Navel Ltd., LGPL
+* Buffer.cc
+* Buffer.h
+* DiskStorageManager.cc
+* DiskStorageManager.h
+* MemoryStorageManager.cc
+* MemoryStorageManager.h
+* RandomEvictionsBuffer.cc
+* RandomEvictionsBuffer.h
+=== src/core/spatialindex/rtree  ===
+Copyright (C) Navel Ltd., LGPL
+* BulkLoader.cc
+* BulkLoader.h
+* Index.cc
+* Index.h
+* Leaf.cc
+* Leaf.h
+* Node.cc
+* Node.h
+* PointerPoolNode.h
+* RTree.cc
+* RTree.h
+* Statistics.cc
+* Statistics.h
+
+=== src/core/spatialindex/tools ===
+Copyright (C) Navel Ltd., LGPL
+* ExternalSort.cc
+* ExternalSort.h
+* TemporaryFile.cc
+* Tools.cc
+
+=== src/plugins/grid_maker ===
+NOTE: These files have since been removed from SVN:
+* shapefile.h  Copyright (c) 1999, Frank Warmerdam, MIT or LGPL
+* utils.h 
+**Taken from txt2dbf 1.0.2 by Frank Koormann, see http://www.usf.uni-osnabrueck.de/~fkoorman/software/dbftools.en.html.  Licensed as "The program is free of charge as well as the source" but no license is mentioned 
+ 
+
+

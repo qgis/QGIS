@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Upload raster values at positions of vector points to the table" module="v.what.rast">
+	<option key="vector" layeroption="layer" typemask="point"/>
+	<field key="column" layer="vector" type="integer,double"/>
+	<option key="raster"/>
+</qgisgrassmodule>

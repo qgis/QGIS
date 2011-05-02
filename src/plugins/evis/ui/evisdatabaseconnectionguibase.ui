@@ -1,0 +1,511 @@
+<ui version="4.0" >
+ <class>eVisDatabaseConnectionGuiBase</class>
+ <widget class="QDialog" name="eVisDatabaseConnectionGuiBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>478</width>
+    <height>548</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Database Connection</string>
+  </property>
+  <property name="windowIcon" >
+   <iconset resource="../resources/evis.qrc" >
+    <normaloff>:/evis/eVisDatabaseConnection.png</normaloff>:/evis/eVisDatabaseConnection.png</iconset>
+  </property>
+  <layout class="QGridLayout" >
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <property name="spacing" >
+    <number>6</number>
+   </property>
+   <item row="0" column="1" >
+    <widget class="QToolBox" name="databaseConnectionToolBox" >
+     <property name="frameShape" >
+      <enum>QFrame::Panel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Sunken</enum>
+     </property>
+     <property name="currentIndex" >
+      <number>1</number>
+     </property>
+     <widget class="QWidget" name="PredefinedQueries" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>470</width>
+        <height>237</height>
+       </rect>
+      </property>
+      <attribute name="label" >
+       <string>Predefined Queries</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="pbtnLoadPredefinedQueries" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Fixed" hsizetype="Ignored" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip" >
+          <string>Load predefined queries</string>
+         </property>
+         <property name="whatsThis" >
+          <string>Loads an XML file with predefined queries. Use the Open File window to locate the XML file that contains one or more predefined queries using the format described in the user guide.</string>
+         </property>
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="icon" >
+          <iconset>
+           <normaloff>../../../images/themes/default/mActionFolder.png</normaloff>../../../images/themes/default/mActionFolder.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QLabel" name="lblPredefinedQueryFilename" >
+         <property name="sizePolicy" >
+          <sizepolicy vsizetype="Preferred" hsizetype="Maximum" >
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text" >
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="2" >
+        <widget class="QTextEdit" name="teditQueryDescription" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>The description of the selected query.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="2" >
+        <widget class="QComboBox" name="cboxPredefinedQueryList" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>Select the predefined query you want to use from the drop-down list containing queries identified from the file loaded using the Open File icon above. To run the query you need to click on the SQL Query tab. The query will be automatically entered in the query window.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeType" >
+          <enum>QSizePolicy::Fixed</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>45</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>401</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="databaseConnection" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>446</width>
+        <height>237</height>
+       </rect>
+      </property>
+      <attribute name="label" >
+       <string>Database Connection</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="5" column="3" colspan="4" >
+        <widget class="QLabel" name="lblConnectionStatus" >
+         <property name="text" >
+          <string>not connected</string>
+         </property>
+         <property name="textFormat" >
+          <enum>Qt::AutoText</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1" colspan="2" >
+        <widget class="QLabel" name="label_7" >
+         <property name="text" >
+          <string>&lt;html>&lt;head>&lt;meta name="qrichtext" content="1" />&lt;style type="text/css">
+p, li { white-space: pre-wrap; }
+&lt;/style>&lt;/head>&lt;body style=" font-family:'Sans Serif'; font-size:9pt; font-weight:400; font-style:normal; text-decoration:none;">
+&lt;p style=" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;">&lt;span style=" font-style:italic;">Connection Status: &lt;/span>&lt;/p>&lt;/body>&lt;/html></string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QLabel" name="lblDatabaseHost" >
+         <property name="text" >
+          <string>Database Host</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" >
+        <widget class="QLineEdit" name="leDatabaseHost" >
+         <property name="whatsThis" >
+          <string>Enter the database host. If the database resides on your desktop you should enter ¨localhost¨. If you selected ¨MSAccess¨ as the database type this option will not be available. </string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="6" >
+        <widget class="QLineEdit" name="leDatabasePassword" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>Password to access the database.</string>
+         </property>
+         <property name="echoMode" >
+          <enum>QLineEdit::Password</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1" >
+        <widget class="QLineEdit" name="leDatabaseName" >
+         <property name="whatsThis" >
+          <string>Enter the name of the database.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>20</width>
+           <height>51</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="5" >
+        <widget class="QLabel" name="lblDatabaseUsername" >
+         <property name="text" >
+          <string>Username</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" >
+        <widget class="QLineEdit" name="leDatabasePort" >
+         <property name="whatsThis" >
+          <string>Enter the port through which the database must be accessed if a MYSQL database is used.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0" >
+        <widget class="QPushButton" name="pbtnConnect" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>Connect to the database using the parameters selected above. If the connection was successful a message will be displayed in the Output Console below saying the connection was established. </string>
+         </property>
+         <property name="text" >
+          <string>Connect</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="6" >
+        <widget class="QLineEdit" name="leDatabaseUsername" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>User name to access the database.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" >
+        <widget class="QComboBox" name="cboxDatabaseType" >
+         <property name="whatsThis" >
+          <string>Select the type of database from the list of supported databases in the drop-down menu.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="4" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="0" >
+        <widget class="QLabel" name="lblDatabaseName" >
+         <property name="text" >
+          <string>Database Name</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="5" >
+        <widget class="QLabel" name="lblDatabasePassword" >
+         <property name="text" >
+          <string>Password</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" >
+        <widget class="QLabel" name="label_8" >
+         <property name="text" >
+          <string>Database Type</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" >
+        <widget class="QLabel" name="lblDatabasePort" >
+         <property name="text" >
+          <string>Port</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2" colspan="2" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="2" colspan="2" >
+        <widget class="QPushButton" name="pbtnOpenFile" >
+         <property name="text" >
+          <string/>
+         </property>
+         <property name="icon" >
+          <iconset>
+           <normaloff>../../../images/themes/default/mActionFolder.png</normaloff>../../../images/themes/default/mActionFolder.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="sqlQuery" >
+      <property name="geometry" >
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>470</width>
+        <height>237</height>
+       </rect>
+      </property>
+      <attribute name="label" >
+       <string>SQL Query</string>
+      </attribute>
+      <layout class="QGridLayout" >
+       <property name="margin" >
+        <number>9</number>
+       </property>
+       <property name="spacing" >
+        <number>6</number>
+       </property>
+       <item row="1" column="1" >
+        <spacer>
+         <property name="orientation" >
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0" >
+          <size>
+           <width>341</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="1" column="0" >
+        <widget class="QPushButton" name="pbtnRunQuery" >
+         <property name="whatsThis" >
+          <string>Run the query entered above. The status of the query will be displayed in the Output  Console below.</string>
+         </property>
+         <property name="text" >
+          <string>Run Query</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="0" colspan="2" >
+        <widget class="QTextEdit" name="teditSqlStatement" >
+         <property name="toolTip" >
+          <string/>
+         </property>
+         <property name="whatsThis" >
+          <string>Enter the query you want to run in this window.</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="4" column="1" >
+    <widget class="QDialogButtonBox" name="buttonBox" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons" >
+      <set>QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item rowspan="2" row="3" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>0</width>
+       <height>53</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="3" column="1" >
+    <widget class="Line" name="line" >
+     <property name="orientation" >
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" >
+    <widget class="QTextEdit" name="teditConsole" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Ignored" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="whatsThis" >
+      <string>A window for status messages to be displayed.</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>0</width>
+       <height>125</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1" >
+    <widget class="QLabel" name="label" >
+     <property name="text" >
+      <string>Output Console</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType" >
+      <enum>QSizePolicy::Maximum</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>0</width>
+       <height>314</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item rowspan="5" row="0" column="0" >
+    <spacer>
+     <property name="orientation" >
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0" >
+      <size>
+       <width>0</width>
+       <height>530</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <tabstops>
+  <tabstop>teditConsole</tabstop>
+  <tabstop>cboxDatabaseType</tabstop>
+  <tabstop>leDatabaseHost</tabstop>
+  <tabstop>leDatabasePort</tabstop>
+  <tabstop>leDatabaseName</tabstop>
+  <tabstop>leDatabaseUsername</tabstop>
+  <tabstop>leDatabasePassword</tabstop>
+  <tabstop>pbtnConnect</tabstop>
+  <tabstop>teditSqlStatement</tabstop>
+  <tabstop>pbtnRunQuery</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../resources/evis.qrc" />
+ </resources>
+ <connections/>
+</ui>

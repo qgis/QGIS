@@ -1,0 +1,113 @@
+ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
+
+########################################################
+# Files
+
+SET(GRASS_PROVIDER_SRCS provider.cpp)
+
+SET(GRASS_RASTER_PROVIDER_SRCS qgsgrassrasterprovider.cpp)
+
+SET(GRASS_LIB_SRCS qgsgrassprovider.cpp qgsgrass.cpp)
+
+SET(QGIS_D_RAST_SRCS qgis.d.rast.c)
+
+SET(QGIS_G_INFO_SRCS qgis.g.info.c)
+
+########################################################
+# Build
+
+INCLUDE_DIRECTORIES (
+  ../../core
+  ../../core/raster
+  ${GRASS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+  ${PROJ_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+)
+
+QT4_WRAP_CPP(GRASS_MOC_SRCS qgsgrassprovider.h)
+ADD_LIBRARY (qgisgrass SHARED ${GRASS_LIB_SRCS} ${GRASS_MOC_SRCS})
+
+SET_TARGET_PROPERTIES(qgisgrass PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
+
+IF (WIN32)
+  SET_TARGET_PROPERTIES(qgisgrass PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllexport)\"" )
+ELSE (WIN32)
+  SET_TARGET_PROPERTIES(qgisgrass PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
+ENDIF (WIN32)
+
+TARGET_LINK_LIBRARIES (qgisgrass
+  qgis_core
+  ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_vect}
+  ${GRASS_LIBRARY_dbmibase}
+  ${GRASS_LIBRARY_dbmiclient}
+  ${GRASS_LIBRARY_gproj}
+)
+
+IF (APPLE)
+  SET_TARGET_PROPERTIES(qgisgrass PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
+ENDIF (APPLE)
+
+ADD_LIBRARY (grassprovider MODULE ${GRASS_PROVIDER_SRCS} ${GRASS_MOC_SRCS})
+
+IF (WIN32)
+  SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllexport)\"" )
+ELSE (WIN32)
+  SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
+ENDIF (WIN32)
+
+TARGET_LINK_LIBRARIES (grassprovider
+  qgisgrass
+)
+
+QT4_WRAP_CPP(GRASS_MOC_RASTERSRCS qgsgrassrasterprovider.h)
+ADD_LIBRARY (grassrasterprovider MODULE ${GRASS_RASTER_PROVIDER_SRCS} ${GRASS_MOC_RASTERSRCS})
+
+IF (WIN32)
+  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllexport)\"" )
+ELSE (WIN32)
+  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
+ENDIF (WIN32)
+
+TARGET_LINK_LIBRARIES (grassrasterprovider
+  qgisgrass
+  qgis_core
+)
+
+ADD_EXECUTABLE(qgis.d.rast ${QGIS_D_RAST_SRCS})
+
+TARGET_LINK_LIBRARIES (qgis.d.rast
+  ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_datetime}
+  ${GDAL_LIBRARY}
+)
+
+ADD_EXECUTABLE(qgis.g.info ${QGIS_G_INFO_SRCS})
+
+TARGET_LINK_LIBRARIES (qgis.g.info
+  ${GRASS_LIBRARY_gis}
+  ${GRASS_LIBRARY_datetime}
+  ${GRASS_LIBRARY_gproj}
+  ${GDAL_LIBRARY}
+)
+
+########################################################
+# Install
+
+INSTALL(TARGETS qgisgrass
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR})
+       
+INSTALL(TARGETS grassprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
+INSTALL(TARGETS grassrasterprovider
+  RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
+  LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
+
+INSTALL(TARGETS qgis.d.rast qgis.g.info
+        RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}/grass/modules 
+        PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)

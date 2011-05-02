@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed" module="v.clean">
+	<option key="input" typeoption="type"/>
+	<option key="tool" answer="prune" hidden="yes"/>
+	<option key="thresh"/>
+	<option key="output"/>
+</qgisgrassmodule>

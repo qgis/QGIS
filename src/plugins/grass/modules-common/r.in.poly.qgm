@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import raster from ASCII polygon/line" module="r.in.poly">
+	<file key="input" type="old" />
+	<option key="output" />
+</qgisgrassmodule>

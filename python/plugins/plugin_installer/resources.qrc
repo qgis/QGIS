@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/plugins/installer">
+        <file>plugin_installer.png</file>
+        <file>qgis-icon.png</file>
+        <file>repoDisabled.png</file>
+        <file>repoUnavailable.png</file>
+        <file>repoConnected.png</file>
+    </qresource>
+</RCC>

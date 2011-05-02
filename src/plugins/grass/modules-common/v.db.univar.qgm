@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate univariate statistics for numeric attributes in a data table" module="v.db.univar">
+	<option key="table" />
+	<field key="column" layer="table" type="integer,double" label="Attribute field" />
+	<flag key="e" answer="no"/>
+</qgisgrassmodule>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export raster to text file as x,y,z values based on cell centers" module="r.out.xyz">
+	<option key="input" />
+	<option key="fs" />
+	<file key="output" type="new" />
+</qgisgrassmodule>

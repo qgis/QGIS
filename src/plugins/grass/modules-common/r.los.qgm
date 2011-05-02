@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<!-- TODO: this is bad -->
+<qgisgrassmodule label="Line-of-sight raster analysis" module="r.los">
+	<option key="input"/>
+	<option key="coordinate" />
+	<option key="obs_elev" answer="1.75" hidden="no" />
+	<option key="max_dist" answer="10000" hidden="no" />
+	<option key="output" />
+</qgisgrassmodule>

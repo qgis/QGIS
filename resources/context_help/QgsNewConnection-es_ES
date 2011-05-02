@@ -1,0 +1,19 @@
+<h3>Crear una nueva conexión a PostGIS</h3>
+Para crear una nueva conexión PostGIS, necesita saber el servidor, el puerto y su nombre de usuario y contraseña para el servidor de bases de datos.
+<h4>Parámetros requeridos</h4>
+<ul>
+<li><label>Nombre</label> - un nombre descriptivo para la conexión.
+<li><label>Servidor</label> - el nombre del servidor de la base de datos (ej. madison.qgis.org).
+<li><label>Base de datos</label> - nombre de la base de datos a la que conectarse.
+<li><label>Puerto</label> - puerto al que PostgreSQL. Por omisión este es el 5432. En caso de duda, compruebe con su administador de bases de datos.
+<li><label>Nombre de usuario</label> - su nombre de usuario de la base de datos.
+<li><label>Contraseña</label> - su contraseña de la base de datos.
+</ul>
+<h4>Opciones</h4>
+<ol>
+<li><label>Guardar contraseña</label> - guarda su contraseña de forma que no tenga que introducirla cada vez. La contraseña se guarda en texto plano con sus preferencias de QGIS.
+<li><label>Buscar sólo en la tabla de columnas de geometría</label> - normalmente QGIS examina cada tabla en la base de datos para ver si tiene una columna de geometría y si es así, la añade a la lista de capas. Marcando esta casilla le dice a QGIS que sólo muestre capas que han sido "registradas" y tienen una entrada en la tabla de columnas de geometría.
+<li><label>Buscar sólo en el esquema "público"</label> - esto limita la búsqueda de capas al esquema público.
+</ol>
+<h4>Probar la conexión</h4>
+Haciendo clic en el botón <label>Probar conexión</label> inicia un intento de conexión a la base de datos usando los parámetros que ha especificado. Esta es una buena forma de comprobar los parámetros de conexión antes de guardar la conexión.

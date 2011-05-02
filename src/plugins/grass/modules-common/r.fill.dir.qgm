@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Filter and create depressionless elevation map and flow direction map from elevation raster" module="r.fill.dir">
+	<option key="input" />
+	<option key="type" answer="grass" hidden="yes"/>
+	<option key="elevation" />
+	<option key="direction" />
+</qgisgrassmodule>

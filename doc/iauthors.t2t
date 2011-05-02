@@ -1,0 +1,28 @@
+
+= Authors and Acknowledgments =
+
+The following people have contributed to this document:
+
+- Windows MINGW Section
+ - Tim Sutton, Godofredo Contreras 2006
+ - CMake additions Magnus Homann 2007
+ - Python additions Martin Dobias 2007
+ - With thanks to Tisham Dhar for preparing the initial msys environment
+
+- Windows MSVC Section (Detailed install)
+ - David Willis 2007
+ - MSVC install additions Tim Sutton 2007
+ - PostgreSQL, Qt compile, SIP, Python, AutoExp additions Juergen Fischer 2007
+
+- Windows MSVC Section (Simplified install)
+ - Tim Sutton 2007
+ - Juergen Fischer 2007
+ - Florian Hillen 2010
+
+- OSX Section
+ - Tim Sutton 2007
+ - With special thanks to Tom Elwertowski and William Kyngesburye
+
+- GNU/Linux Section
+ - Tim Sutton 2006
+ - Debian package section: Juergen Fischer 2008

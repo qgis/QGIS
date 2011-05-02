@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export raster to binary array" module="r.out.bin">
+	<option key="input" />
+	<option key="null" />
+	<flag key="h" />
+	<flag key="b" />
+	<flag key="s" />
+	<file key="output" type="new" />
+</qgisgrassmodule>

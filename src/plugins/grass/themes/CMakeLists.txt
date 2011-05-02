@@ -1,0 +1,1 @@
+SUBDIRS(default classic gis)

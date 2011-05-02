@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Display list of category values found in raster" module="r.describe">
+	<flag key="1" />
+	<flag key="r" />
+	<flag key="d" />
+	<flag key="i" />
+	<flag key="q" />
+	<option key="map" />
+	<option key="nv" />
+	<option key="nsteps" />
+</qgisgrassmodule>

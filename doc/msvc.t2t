@@ -1,0 +1,198 @@
+
+==Building with Microsoft Visual Studio==
+
+This section describes how to build QGIS using Visual Studio on Windows.  This
+is currently also who the binary QGIS packages are made (earlier versions used
+MinGW).
+
+This section describes the setup required to allow Visual Studio to be used to
+build QGIS. 
+
+===Visual C++ Express Edition===
+
+The free (as in free beer) Express Edition installer is available under:
+	
+	http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe
+
+The optional products are not necessary.  In the process the Windows SDKs for
+Visual Studio 2008 will also be downloaded and installed.
+
+You also need the Microsoft Windows Server® 2003 R2 Platform SDK (for setupapi):
+
+	http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe
+
+You only need Microsoft Windows Core SDK / Build Environment (x86 32-Bit).
+
+===Other tools and dependencies===
+
+Download and install following packages:
+
+|| Tool | Website |
+| CMake | http://www.cmake.org/files/v2.8/cmake-2.8.4-win32-x86.exe |
+| Flex | http://gnuwin32.sourceforge.net/downlinks/flex.php |
+| Bison | http://gnuwin32.sourceforge.net/downlinks/bison.php |
+| SVN | http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download |
+| or GIT | http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe | 
+| OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe |
+
+OSGeo4W does not only provide ready packages for the current QGIS release and
+nightly builds of the trunk, but also offers most of the dependencies needs to
+build it.
+
+For the QGIS build you need to install following packages from OSGeo4W (select
+//Advanced Installation//):
+
+- expat
+- fcgi
+- gdal17
+- grass
+- gsl-devel
+- iconv
+- pyqt4
+- qt4-devel
+- qwt5-devel-qt4
+- sip
+-
+
+This will also select packages the above packages depend on.
+
+Additionally QGIS also needs the include file ``unistd.h``, which normally
+doesn't exist on Windows.  It's shipped with Flex/Bison in ``GnuWin32\include``
+and needs to be copied into the ``VC\include`` directory of your Visual C++
+installation.
+
+Earlier versions of this document also covered how to build all above
+dependencies.  If you're interested in that, check the history of this page in the Wiki
+or the SVN repository.
+
+=== Setting up the Visual Studio project with CMake ===
+
+To start a command prompt with an environment that both has the VC++ and the OSGeo4W
+variables create the following batch file (assuming the above packages were
+installed in the default locations):
+
+```
+@echo off
+path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin;%PROGRAMFILES%\subversion\bin;%PROGRAMFILES%\GnuWin32\bin
+set PYTHONPATH=
+
+set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
+call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
+
+set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft Platform SDK for Windows Server 2003 R2\include
+set LIB=%LIB%;%PROGRAMFILES%\Microsoft Platform SDK for Windows Server 2003 R2\lib
+
+set OSGEO4W_ROOT=C:\OSGeo4W
+call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
+
+@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.0
+@set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\gdal-17\include;%OSGEO4W_ROOT%\include
+@set LIB=%LIB%;%OSGEO4W_ROOT%\apps\gdal-17\lib;%OSGEO4W_ROOT%\lib
+
+@cmd
+```
+
+Start the batch file and on the command prompt checkout the QGIS source from
+svn to the source directory ``qgis-trunk``:
+
+```
+svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
+```
+
+or using git-svn (from the git shell):
+
+```
+git svn clone --username $USER --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+```
+
+Create a 'build' directory somewhere. This will be where all the build output
+will be generated.
+
+Now run ``cmake-gui`` and in the //Where is the source code:// box, browse to
+the top level QGIS directory.
+
+In the //Where to build the binaries:// box, browse to the 'build' directory you
+created.
+
+Adjust the path to bison and flex so that the shortened ``C:/Progra~1`` is used 
+rather than ``C:/Program Files``.
+
+Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
+bindings are placed into the output directory when you run the INSTALL target.
+
+Hit ``Configure`` to start the configuration and select ``Visual Studio 9 2008``
+and keep ``native compilers`` and click ``Finish``.
+
+The configuration should complete without any further questions and allow you to
+click ``Generate``.
+
+Now close ``cmake-gui`` and continue on the command prompt by starting
+``vcexpress``.  Use File / Open / Project/Solutions and open the
+qgis-x.y.z.sln File in your project directory.
+
+Change ``Solution Configuration`` from ``Debug`` to ``RelWithDebInfo`` (Release
+with Debug Info)  or ``Release`` before you build QGIS using the ALL_BUILD
+target (otherwise you need debug libraries that are not included).
+
+After the build completed you should install QGIS using the INSTALL target.
+
+Install QGIS by building the INSTALL project. By default this will install to
+c:\Program Files\qgis<version> (this can be changed by changing the
+CMAKE_INSTALL_PREFIX variable in cmake-gui). 
+ 
+You will also either need to add all the dependency DLLs to the QGIS install
+directory or add their respective directories to your PATH.
+
+=== Packaging ===
+
+To create a windows 'all in one' standalone  package ''under ubuntu'' (yes you
+read correctly) do the following:
+
+```
+sudo apt-get install nsis
+```
+
+Now 
+
+```
+cd qgis/ms-windows/osgeo4w
+```
+
+And run the nsis creation script:
+
+```
+creatensis.pl
+```
+
+When the script completes, it should have created a QGIS installer executable
+in the ms-windows directory (using the QGIS binaries from OSGEO4W). 
+
+=== Packaging your own build of QGIS ===
+
+Assuming you have completed the above packaging step, if you want to include
+your own hand built QGIS executables, you need to copy them in from your
+windows installation into the ms-windows file tree created by the creatensis
+script.
+
+```
+cd ms-windows/
+rm -rf osgeo4w/unpacked/apps/qgis/*
+cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
+```
+
+Now create a package.
+
+```
+./quickpackage.sh
+```
+
+After this you should now have a nsis installer containing your own build 
+of QGIS and all dependencies needed to run it on a windows machine.
+
+
+=== Osgeo4w packaging ===
+
+The actual packaging process is currently not documented, for now please take a
+look at:
+
+//ms-windows/osgeo4w/package.cmd//

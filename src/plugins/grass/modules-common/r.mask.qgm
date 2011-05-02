@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create a MASK for limiting raster operation" module="r.mask">
+	<option key="input" />
+	<option key="maskcats" />
+</qgisgrassmodule>

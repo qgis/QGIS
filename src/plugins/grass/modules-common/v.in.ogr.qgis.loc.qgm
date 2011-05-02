@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import loaded vector and create a fitted location" module="v.in.ogr"> 
+	<flag key="o" answer="off" hidden="yes" />
+	<ogr key="dsn" layeroption="layer" whereoption="where" label="OGR vector layer" /> 
+	<option key="output" />	
+	<option key="location" />
+        <option key="type" advanced="yes"/>
+        <flag key="z" answer="off" hidden="no" advanced="yes"/>
+        <flag key="e" answer="off" hidden="no" advanced="yes"/>
+        <option key="snap" advanced="yes" /> 
+        <option key="min_area" advanced="yes" />
+        <option key="where" advanced="yes"/>
+</qgisgrassmodule>

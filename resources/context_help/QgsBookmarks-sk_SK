@@ -1,0 +1,34 @@
+<h3>Geopriestorové záložky</h3>
+Geopriestorové záložky vám dovolia zaznačiť si pohľad (polohu) určitej lokality (miesta) a vrátiť sa k nej neskôr. 
+<p>
+<a href="#creating">Vytvorenie záložky</a><br/>
+<a href="#working">Práca so záložkami</a><br/>
+<a href="#zooming">Zmena mapového pohľadu podľa záložky</a><br/>
+<a href="#deleting">Vymazanie záložky</a><br/>
+
+<a name="creating">
+<h4>Vytvorenie záložky</h4>
+</a>
+Postup na vytvorenie záložky:
+<ol>
+<li>Nastavte pohľad (približovaním, oddaľovaním posúvaním mapy) tak aby obsahoval záujmovú oblasť.
+<li>Kliknite na ikonu <label>Nová záložka</label> alebo použite klávesovú skratku Ctrl-B.
+<li>Vložte popisný názov záložky (do 255 znakov).
+<li>Kliknutím na tlačidlo <label>OK</label> vytvoríte geopriestorovú záložku; kliknutím na <label>Storno</label> opustíte dialógové okno bez toho aby bola záložka vytvorená.
+</ol>
+Poznámka: Je možné mať viacero záložiek s tým istým názvom.
+<a name="working">
+<h4>Práca so záložkami</h4>
+</a>
+So záložkami možno narábať kliknutím na tlačidlo <label>Ukázať záložky</label> alebo vybratím položky <label>Ukázať záložky</label> z menu <label>Pohľad</label>. Dialógové okno so záložkami vám dovolí zmeniť pohľad podľa záložky alebo vymazať nektorú záložku. Nie je možné upraviť názov záložky, alebo súradnice..
+<a name="zooming">
+<h5>Zmena mapového pohľadu podľa záložky</h5>
+</a>
+V dialógovom okne Záložky vyberte kliknutím požadovanú záložku a následným kliknutím na tlačidlo <label>Priblížiť sa</label> sa zmeníte mapový pohľad tak, aby zodpovedal danej záložke.
+<p>
+Zmeniť pohľad možno aj priamo dvojklikom na danú záložku.
+<a name="deleting">
+<h5>Vymazanie záložky</h5>
+</a>
+Na vymazanie záložky zo zoznamu záložiek v kliknite najskôr na záložku ktorú chcete vymazať a následne na tlačidlo <label>Vymazať</label>. Svoje rozhodnutie povrďte kliknutím na <label>OK</label>, prípadne môžete váš zámer zmeniť a kliknutím na <label>Storno</label> zrušiť operáciu vymazania záložky.
+

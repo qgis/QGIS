@@ -1,0 +1,700 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsGPSPluginGuiBase</class>
+ <widget class="QDialog" name="QgsGPSPluginGuiBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>563</width>
+    <height>241</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GPS Tools</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff/>
+   </iconset>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <item>
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>4</number>
+     </property>
+     <widget class="QWidget" name="tab1">
+      <attribute name="title">
+       <string>Load GPX file</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblGPXFile">
+           <property name="text">
+            <string>File</string>
+           </property>
+           <property name="buddy">
+            <cstring>pbnGPXSelectFile</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QgsFileDropEdit" name="leGPXFile"/>
+         </item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="pbnGPXSelectFile">
+           <property name="text">
+            <string>Browse...</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblGPXFeatureTypes">
+           <property name="text">
+            <string>Feature types</string>
+           </property>
+           <property name="buddy">
+            <cstring>cbGPXWaypoints</cstring>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QCheckBox" name="cbGPXWaypoints">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Waypoints</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QCheckBox" name="cbGPXRoutes">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Routes</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="1">
+          <widget class="QCheckBox" name="cbGPXTracks">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>Tracks</string>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="2">
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <spacer name="verticalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab2">
+      <attribute name="title">
+       <string>Import other file</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1_5">
+         <property name="text">
+          <string>File to import</string>
+         </property>
+         <property name="buddy">
+          <cstring>pbnIMPInput</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="leIMPInput">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="pbnIMPInput">
+         <property name="text">
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel2_3">
+         <property name="text">
+          <string>Feature type</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbIMPFeature</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cmbIMPFeature">
+         <property name="minimumSize">
+          <size>
+           <width>130</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="textLabel1_6">
+         <property name="text">
+          <string>Layer name</string>
+         </property>
+         <property name="buddy">
+          <cstring>leIMPLayer</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="leIMPLayer"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="textLabel3_3">
+         <property name="text">
+          <string>GPX output file</string>
+         </property>
+         <property name="buddy">
+          <cstring>leIMPOutput</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="leIMPOutput"/>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="pbnIMPOutput">
+         <property name="text">
+          <string>Save As...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLabel" name="textLabel2_6">
+         <property name="text">
+          <string>(Note: Selecting correct file type in browser dialog important!)</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab3">
+      <attribute name="title">
+       <string>Download from GPS</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_4">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel1">
+         <property name="text">
+          <string>GPS device</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbDLDevice</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QComboBox" name="cmbDLDevice">
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="pbDLEditDevices">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Edit devices...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel2_5">
+         <property name="text">
+          <string>Port</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbDLPort</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cmbDLPort">
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="pbnRefresh">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Refresh</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="textLabel1_3">
+         <property name="text">
+          <string>Feature type</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbDLFeatureType</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="cmbDLFeatureType">
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+         <item>
+          <property name="text">
+           <string>Waypoints</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Routes</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Tracks</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="textLabel1_2">
+         <property name="text">
+          <string>Layer name</string>
+         </property>
+         <property name="buddy">
+          <cstring>leDLBasename</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="leDLBasename"/>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="textLabel2">
+         <property name="text">
+          <string>Output file</string>
+         </property>
+         <property name="buddy">
+          <cstring>leDLOutput</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="leDLOutput"/>
+       </item>
+       <item row="4" column="2">
+        <widget class="QPushButton" name="pbnDLOutput">
+         <property name="text">
+          <string>Save As...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>1</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab4">
+      <attribute name="title">
+       <string>Upload to GPS</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_5">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel2_2">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Data layer</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbULLayer</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1" colspan="2">
+        <widget class="QComboBox" name="cmbULLayer">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>90</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel2_4">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>GPS device</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbULDevice</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1" colspan="2">
+        <widget class="QComboBox" name="cmbULDevice">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>120</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="pbULEditDevices">
+         <property name="text">
+          <string>Edit devices</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="textLabel3">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Port</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbULPort</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1" colspan="2">
+        <widget class="QComboBox" name="cmbULPort">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>100</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <spacer name="verticalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="3" column="1">
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab5">
+      <attribute name="title">
+       <string>GPX Conversions</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="textLabel5_4">
+         <property name="text">
+          <string>GPX input file</string>
+         </property>
+         <property name="buddy">
+          <cstring>pbnCONVInput</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="leCONVInput">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="pbnCONVInput">
+         <property name="text">
+          <string>Browse...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="textLabel5_3">
+         <property name="text">
+          <string>Conversion</string>
+         </property>
+         <property name="buddy">
+          <cstring>cmbCONVType</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QComboBox" name="cmbCONVType">
+         <property name="minimumSize">
+          <size>
+           <width>10</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="textLabel5_2">
+         <property name="text">
+          <string>GPX output file</string>
+         </property>
+         <property name="buddy">
+          <cstring>leCONVOutput</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="leCONVOutput"/>
+       </item>
+       <item row="3" column="0">
+        <widget class="QLabel" name="textLabel5_1">
+         <property name="text">
+          <string>Layer name</string>
+         </property>
+         <property name="buddy">
+          <cstring>leCONVLayer</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="leCONVLayer"/>
+       </item>
+       <item row="4" column="1">
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="5" column="1">
+        <spacer name="verticalSpacer_5">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>40</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="2" column="2">
+        <widget class="QPushButton" name="pbnCONVOutput">
+         <property name="text">
+          <string>Save As...</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QgsFileDropEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfiledropedit.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>leGPXFile</tabstop>
+  <tabstop>pbnGPXSelectFile</tabstop>
+  <tabstop>cbGPXWaypoints</tabstop>
+  <tabstop>cbGPXRoutes</tabstop>
+  <tabstop>cbGPXTracks</tabstop>
+  <tabstop>leIMPInput</tabstop>
+  <tabstop>pbnIMPInput</tabstop>
+  <tabstop>cmbIMPFeature</tabstop>
+  <tabstop>leIMPLayer</tabstop>
+  <tabstop>leIMPOutput</tabstop>
+  <tabstop>pbnIMPOutput</tabstop>
+  <tabstop>cmbDLDevice</tabstop>
+  <tabstop>pbDLEditDevices</tabstop>
+  <tabstop>cmbDLPort</tabstop>
+  <tabstop>pbnRefresh</tabstop>
+  <tabstop>cmbDLFeatureType</tabstop>
+  <tabstop>leDLBasename</tabstop>
+  <tabstop>leDLOutput</tabstop>
+  <tabstop>pbnDLOutput</tabstop>
+  <tabstop>cmbULLayer</tabstop>
+  <tabstop>cmbULDevice</tabstop>
+  <tabstop>pbULEditDevices</tabstop>
+  <tabstop>cmbULPort</tabstop>
+  <tabstop>leCONVInput</tabstop>
+  <tabstop>pbnCONVInput</tabstop>
+  <tabstop>cmbCONVType</tabstop>
+  <tabstop>leCONVOutput</tabstop>
+  <tabstop>pbnCONVOutput</tabstop>
+  <tabstop>leCONVLayer</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources>
+  <include location="qgsgps_plugin.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -1,0 +1,17 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20001102//EN" "http://www.w3.org/TR/2000/CR-SVG-20001102/DTD/svg-20001102.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="500" x="0" y="0" height="500" id="/hardmnt/janacek0/ssi/blazek/inst/qgis/cvs/plugins/grass/modules/r.to.vect.line.1" >
+ <rect width="500" x="0" y="0" height="500" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(255,255,255);" />
+ <g style="stroke:rgb(0,0,0);stroke-width:0.9;fill:none;" >
+  <polygon points="347 143 347 75 415 75 415 143 347 143" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(150,150,150);" />
+  <polygon points="347 143 347 75 415 75 415 143 347 143" style="stroke:rgb(150,150,150);stroke-width:15;fill:none;" />
+  <polygon points="279 212 279 143 347 143 347 212 279 212" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(150,150,150);" />
+  <polygon points="279 212 279 143 347 143 347 212 279 212" style="stroke:rgb(150,150,150);stroke-width:15;fill:none;" />
+  <polygon points="210 280 210 212 279 212 279 280 210 280" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(150,150,150);" />
+  <polygon points="210 280 210 212 279 212 279 280 210 280" style="stroke:rgb(150,150,150);stroke-width:15;fill:none;" />
+  <polygon points="142 348 142 280 210 280 210 348 142 348" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(150,150,150);" />
+  <polygon points="142 348 142 280 210 280 210 348 142 348" style="stroke:rgb(150,150,150);stroke-width:15;fill:none;" />
+  <polygon points="142 348 142 416 74 416 74 348 142 348" style="stroke:rgb(0,0,0);stroke-width:0;fill:rgb(150,150,150);" />
+  <polygon points="142 348 142 416 74 416 74 348 142 348" style="stroke:rgb(150,150,150);stroke-width:15;fill:none;" />
+ </g>
+</svg>

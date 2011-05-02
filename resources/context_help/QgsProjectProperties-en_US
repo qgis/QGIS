@@ -1,0 +1,34 @@
+<h3>Project Properties</h3>
+This dialog allows you to set a number of properties related to the <label>Project</label>. A Project is a saved set of layers and their settings, as well as other information required to restore the project from disk.<p>
+
+<a href="#general">General Tab</a><br/>
+<a href="#crs">Coordinate Reference System (CRS) Tab</a><br/>
+<a href="#layers">Identifiable layers Tab</a><br/>
+
+<a name="general">
+<h4>General Tab</h4>
+</a>
+<table border=1>
+<tr><td><label>Project title</label></td><td>A descriptive title for the project. This title will be displayed in the title bar of the QGIS window</td></tr>
+<tr><td><label>Selection color</label></td><td>Selected features are displayed on the map using this color.</td></tr>
+<tr><td><label>Background color</label></td><td>The color of the map canvas.</td></tr>
+<tr><td><label>Save paths</label></td><td>Ability to save the paths as absolute or relative.</td></tr>
+<tr><td><label>Layer units</label></td><td>Choose the units appropriate for the layers in the project.</td></tr>
+<tr><td><label>Precision</label></td><td>Use the manual setting to set the precision of the display in the status bar. As the mouse is moved over the map canvas, the coordinates are updated and displayed in the status bar using the precision you choose. Automatic (the default) results in a default precision based on the map units.</td></tr>
+<tr><td><label>Digitizing</label></td><td>The option <label> Enable topological editing</label> enables editing and maintaining common boundaries in polygon mosaics. Editing a vertex in shared boundary will result in updating both boundaries.<p>
+To avoid digitizing all vertices of the common boundary select <label>Avoid intersections of new polygons</label>. In the dialog window tick appropriate layers to which the new polygon will be adjusted. Draw the new polygon in the way it overlap the existing one, it will be cut automatically. <p>
+<label>Snapping options</label> allows you to set the snapping tolerance in pixels or map units and the snapping mode: <label>to vertex</label>, <label>to segment</label>, <label>to vertex and segment</label> for every layer separately.</td></tr>
+
+</table>
+<a name="crs">
+<h4>Coordinate Reference System (CRS) Tab</h4>
+</a>
+The Coordinate Reference System (CRS) tab allows you to set the projection for the current project and enable on the fly transformation. You do not need to have a saved project to setup and enable 'on the fly' CRS transformation.
+<p>To use 'on the fly' CRS transformation, click the <label>Enable 'on the fly' CRS transformation</label> check box. Then choose the projection for the project (map canvas) from the list of Geographic or Projected coordinate systems.
+<p>You can find a coordinate system by entering its name, EPSG code or the QGIS ID and clicking the <label>Find</label> button.
+<p>The list of recently used coordinate systems will be available on the bottom for quick access.
+
+<a name="layers">
+<h4>Identifiable layers Tab</h4>
+</a>
+On this tab you can choose on which layers the identify tool will work.

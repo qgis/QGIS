@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Compress and decompress raster" module="r.compress">
+	<option key="map" />
+	<flag key="u" />
+</qgisgrassmodule>

@@ -1,0 +1,524 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsComposerBase</class>
+ <widget class="QMainWindow" name="QgsComposerBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1333</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="mouseTracking">
+    <bool>true</bool>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_1">
+    <item row="0" column="0">
+     <widget class="QSplitter" name="mSplitter">
+      <property name="mouseTracking">
+       <bool>true</bool>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QFrame" name="mViewFrame">
+       <property name="mouseTracking">
+        <bool>true</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+      </widget>
+      <widget class="QTabWidget" name="mOptionsTabWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>150</width>
+         <height>10</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>32767</width>
+         <height>32767</height>
+        </size>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="tab">
+        <attribute name="title">
+         <string>General</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <property name="margin">
+          <number>9</number>
+         </property>
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <item row="1" column="0" colspan="2">
+          <widget class="QFrame" name="mCompositionOptionsFrame">
+           <property name="frameShape">
+            <enum>QFrame::StyledPanel</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Raised</enum>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QComboBox" name="mCompositionNameComboBox">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
+          <widget class="QLabel" name="textLabel1">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string>Composition</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="tab_2">
+        <attribute name="title">
+         <string>Item</string>
+        </attribute>
+        <layout class="QGridLayout">
+         <property name="margin">
+          <number>0</number>
+         </property>
+         <property name="spacing">
+          <number>6</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QStackedWidget" name="mItemStackedWidget">
+           <widget class="QWidget" name="page"/>
+           <widget class="QWidget" name="page_2"/>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QDialogButtonBox" name="mButtonBox">
+      <property name="standardButtons">
+       <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionLoadFromTemplate"/>
+   <addaction name="mActionSaveAsTemplate"/>
+   <addaction name="mActionExportAsImage"/>
+   <addaction name="mActionExportAsPDF"/>
+   <addaction name="mActionExportAsSVG"/>
+   <addaction name="mActionPrint"/>
+   <addaction name="separator"/>
+   <addaction name="mActionZoomAll"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionRefreshView"/>
+   <addaction name="separator"/>
+   <addaction name="mActionUndo"/>
+   <addaction name="mActionRedo"/>
+   <addaction name="mActionAddNewMap"/>
+   <addaction name="mActionAddImage"/>
+   <addaction name="mActionAddNewLabel"/>
+   <addaction name="mActionAddNewLegend"/>
+   <addaction name="mActionAddNewScalebar"/>
+   <addaction name="mActionAddBasicShape"/>
+   <addaction name="mActionAddArrow"/>
+   <addaction name="mActionAddTable"/>
+   <addaction name="separator"/>
+   <addaction name="mActionSelectMoveItem"/>
+   <addaction name="mActionMoveItemContent"/>
+   <addaction name="mActionGroupItems"/>
+   <addaction name="mActionUngroupItems"/>
+  </widget>
+  <action name="mActionPrint">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionFilePrint.png</normaloff>../themes/default/mActionFilePrint.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Print...</string>
+   </property>
+  </action>
+  <action name="mActionZoomAll">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionZoomFullExtent.png</normaloff>../themes/default/mActionZoomFullExtent.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Full</string>
+   </property>
+  </action>
+  <action name="mActionZoomIn">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionZoomIn.png</normaloff>../themes/default/mActionZoomIn.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="mActionZoomOut">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionZoomOut.png</normaloff>../themes/default/mActionZoomOut.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+  </action>
+  <action name="mActionAddNewMap">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionAddMap.png</normaloff>../themes/default/mActionAddMap.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Map</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new map</string>
+   </property>
+  </action>
+  <action name="mActionAddNewLabel">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionLabel.png</normaloff>../themes/default/mActionLabel.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Label</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new label</string>
+   </property>
+  </action>
+  <action name="mActionAddNewLegend">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionAddLegend.png</normaloff>../themes/default/mActionAddLegend.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Vector Legend</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new vect legend</string>
+   </property>
+  </action>
+  <action name="mActionSelectMoveItem">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionPan.png</normaloff>../themes/default/mActionPan.png</iconset>
+   </property>
+   <property name="text">
+    <string>Move Item</string>
+   </property>
+   <property name="toolTip">
+    <string>Select/Move item</string>
+   </property>
+  </action>
+  <action name="mActionExportAsImage">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionSaveMapAsImage.png</normaloff>../themes/default/mActionSaveMapAsImage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export as Image...</string>
+   </property>
+  </action>
+  <action name="mActionExportAsPDF">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionSaveAsPDF.png</normaloff>../themes/default/mActionSaveAsPDF.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export as PDF...</string>
+   </property>
+  </action>
+  <action name="mActionExportAsSVG">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionSaveAsSVG.png</normaloff>../themes/default/mActionSaveAsSVG.png</iconset>
+   </property>
+   <property name="text">
+    <string>Export as SVG...</string>
+   </property>
+  </action>
+  <action name="mActionAddNewScalebar">
+   <property name="icon">
+    <iconset>
+     <normaloff>../../plugins/scale_bar/icon.xpm</normaloff>../../plugins/scale_bar/icon.xpm</iconset>
+   </property>
+   <property name="text">
+    <string>Add Scalebar</string>
+   </property>
+   <property name="toolTip">
+    <string>Add new scalebar</string>
+   </property>
+  </action>
+  <action name="mActionRefreshView">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionDraw.png</normaloff>../themes/default/mActionDraw.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="toolTip">
+    <string>Refresh view</string>
+   </property>
+  </action>
+  <action name="mActionAddImage">
+   <property name="icon">
+    <iconset>
+     <normaloff>../themes/default/mActionAddImage.png</normaloff>../themes/default/mActionAddImage.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Image</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemContent">
+   <property name="text">
+    <string>Move Content</string>
+   </property>
+   <property name="toolTip">
+    <string>Move item content</string>
+   </property>
+  </action>
+  <action name="mActionGroupItems">
+   <property name="text">
+    <string>Group</string>
+   </property>
+   <property name="toolTip">
+    <string>Group items</string>
+   </property>
+  </action>
+  <action name="mActionUngroupItems">
+   <property name="text">
+    <string>Ungroup</string>
+   </property>
+   <property name="toolTip">
+    <string>Ungroup items</string>
+   </property>
+  </action>
+  <action name="mActionRaiseItems">
+   <property name="text">
+    <string>Raise</string>
+   </property>
+   <property name="toolTip">
+    <string>Raise selected items</string>
+   </property>
+  </action>
+  <action name="mActionLowerItems">
+   <property name="text">
+    <string>Lower</string>
+   </property>
+   <property name="toolTip">
+    <string>Lower selected items</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToTop">
+   <property name="text">
+    <string>Bring to Front</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to top</string>
+   </property>
+  </action>
+  <action name="mActionMoveItemsToBottom">
+   <property name="text">
+    <string>Send to Back</string>
+   </property>
+   <property name="toolTip">
+    <string>Move selected items to bottom</string>
+   </property>
+  </action>
+  <action name="mActionLoadFromTemplate">
+   <property name="text">
+    <string>Load From template</string>
+   </property>
+  </action>
+  <action name="mActionSaveAsTemplate">
+   <property name="text">
+    <string>Save as template</string>
+   </property>
+  </action>
+  <action name="mActionAlignLeft">
+   <property name="text">
+    <string>Align left</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items left</string>
+   </property>
+  </action>
+  <action name="mActionAlignHCenter">
+   <property name="text">
+    <string>Align center</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center horizontal</string>
+   </property>
+  </action>
+  <action name="mActionAlignRight">
+   <property name="text">
+    <string>Align right</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items right</string>
+   </property>
+  </action>
+  <action name="mActionAlignTop">
+   <property name="text">
+    <string>Align top</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items to top</string>
+   </property>
+  </action>
+  <action name="mActionAlignVCenter">
+   <property name="text">
+    <string>Align center vertical</string>
+   </property>
+   <property name="toolTip">
+    <string>Align center vertical</string>
+   </property>
+  </action>
+  <action name="mActionAlignBottom">
+   <property name="text">
+    <string>Align bottom</string>
+   </property>
+   <property name="toolTip">
+    <string>Align selected items bottom</string>
+   </property>
+  </action>
+  <action name="mActionQuit">
+   <property name="text">
+    <string>&amp;Quit</string>
+   </property>
+   <property name="toolTip">
+    <string>Quit</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="mActionAddBasicShape">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Basic Shape</string>
+   </property>
+  </action>
+  <action name="mActionAddArrow">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add arrow</string>
+   </property>
+  </action>
+  <action name="mActionAddTable">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add table</string>
+   </property>
+   <property name="toolTip">
+    <string>Adds attribute table</string>
+   </property>
+  </action>
+  <action name="mActionPageSetup">
+   <property name="text">
+    <string>Page Setup</string>
+   </property>
+  </action>
+  <action name="mActionUndo">
+   <property name="icon">
+    <iconset>
+     <normalon>:/images/themes/default/mActionUndo.png</normalon>
+    </iconset>
+   </property>
+   <property name="text">
+    <string>Undo</string>
+   </property>
+   <property name="toolTip">
+    <string>Revert last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Z</string>
+   </property>
+  </action>
+  <action name="mActionRedo">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionRedo.png</normaloff>:/images/themes/default/mActionRedo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Redo</string>
+   </property>
+   <property name="toolTip">
+    <string>Restore last change</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+Z</string>
+   </property>
+  </action>
+ </widget>
+ <tabstops>
+  <tabstop>mCompositionNameComboBox</tabstop>
+  <tabstop>mOptionsTabWidget</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

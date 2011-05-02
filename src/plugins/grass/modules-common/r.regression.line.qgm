@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Calculate linear regression from two rasters: y = a + b*x" module="r.regression.line">
+	<option key="map1" />
+	<option key="map2"/>
+</qgisgrassmodule>

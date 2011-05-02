@@ -1,0 +1,6 @@
+<h3>Herramientas de medición</h3>
+Hay dos herramientas de medida: longitud y áreas. Con ellas puede medir tanto distancias como áreas en la vista del mapa. Actualmente las herramientas proporcionan los resultados sólo en unidades métricas. Un simple clic derecho del ratón detiene la medición, mientras que dos clics derechos comienzan una nueva medición.
+<h4>Medir longitudes</h4>
+Para medir longitudes, seleccione la herramienta y haga clic a lo largo de la ruta que quiera medir. La longitud de cada segmento se muestra, al igual que la longitud total del recorrido.
+<h4>Medir áreas</h4>
+Para medir áreas, seleccione la herramienta y haga clic para crear el área a medir. La superficie total se muestra de forma dinámica a medida que va pinchando con el ratón.

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Upload vector values at positions of vector points" module="v.what.vect">
+	<option key="vector" layeroption="layer" typemask="point"/>
+	<field key="column" layer="vector" type="integer,double,string"/>
+	<option key="qvector" layeroption="layer" typemask="area"/>
+	<field key="qcolumn" layer="qvector" type="string"/>
+</qgisgrassmodule>

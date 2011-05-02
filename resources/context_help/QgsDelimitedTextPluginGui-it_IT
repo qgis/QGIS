@@ -1,0 +1,35 @@
+<h3>Plugin layer di testo delimitato</h3>
+Carica e visualizza file di testo delimitato contenenti coordinate x,y.
+<p>
+<p>
+<a href="#re">Requisiti</a><br/>
+<a href="#example">Esempio di file di testo valido</a><br/>
+<a href="#notes">Note</a><br/>
+
+<a name="re">
+<h4>Requisiti</h4>
+</a>
+Per visualizzare un file di testo come layer, il file deve contenere:
+<ol>
+<li>Una riga di header (intestazione) delimitata per i nomi dei campi. Questa deve essere la prima riga nel file di testo.</li>
+<li>La riga di header deve contenere un campo X e un campo Y. Questi campi possono avere un nome qualsiasi.</li>
+<li>Le coordinate <B>x</B> e <B>y</B> devono essere specificate come numero. Il sistema di coordinate non e' importante.</li>
+</ol>
+<a name="example">
+<h4>Esempio di file di testo valido</h4> 
+</a>
+X;Y;ELEV<br/>
+-300120;7689960;13<br/>
+-654360;7562040;52<br/>
+1640;7512840;3<br/>
+[...]<br/>
+<a name="notes">
+<h4>Note</h4>
+</a>
+<ol>
+<li>Il file di testo utilizza <b>;</b> (punto e virgola) come delimitatore. Qualsiasi carattere può essere usato per delimitare i campi.</li>
+<li>La prima riga e' la riga di intestazione (header). Contiene i campi X, Y e ELEV.</li>
+<li>Non si usano le virgolette (quotes=") per delimitare i campi di testo.</li>
+<li>Le coordinate x sono contenute nel campo X.</li>
+<li>Le coordinate y sono contenute nel campo Y.</li>
+</ol>

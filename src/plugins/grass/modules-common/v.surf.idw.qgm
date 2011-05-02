@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Inverse distance squared weighting raster interpolation based on vector points" module="v.surf.idw">
+	<option key="input" layeroption="layer" typemask="point,line" id="input" />
+	<field key="column" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
+	<option key="npoints" />
+	<option key="output" />
+</qgisgrassmodule>

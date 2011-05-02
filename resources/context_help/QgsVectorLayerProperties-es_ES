@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+       <META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+       <TITLE></TITLE>
+       <META NAME="GENERATOR" CONTENT="OpenOffice.org 2.2  (Linux)">
+       <META NAME="CREATED" CONTENT="20071110;10472400">
+       <META NAME="CHANGEDBY" CONTENT="Carlos">
+       <META NAME="CHANGED" CONTENT="20071110;10501900">
+       <STYLE TYPE="text/css">
+       <!--
+               @page { size: 21cm 29.7cm }
+               H3.western { font-family: "Albany", sans-serif }
+               H3.cjk { font-family: "HG Mincho Light J" }
+               H3.ctl { font-family: "Arial Unicode MS" }
+               H4.western { font-family: "Albany", sans-serif; font-size: 11pt; font-style: italic }
+               H4.cjk { font-family: "HG Mincho Light J"; font-size: 11pt; font-style: italic }
+               H4.ctl { font-family: "Arial Unicode MS"; font-size: 11pt; font-style: italic }
+       -->
+       </STYLE>
+</HEAD>
+<BODY LANG="es-ES" DIR="LTR">
+<H3 CLASS="western">Propiedades de capa vectorial</H3>
+<P>Este di&aacute;logo le permite trabajar con la configuraci&oacute;n
+y las propiedades de las capas vectoriales. Hay cinco pesta&ntilde;as:
+</P>
+<OL>
+       <LI><P STYLE="margin-bottom: 0cm"><A HREF="#symbology">Simbolog&iacute;a</A>
+               </P>
+       <LI><P STYLE="margin-bottom: 0cm"><A HREF="#general">General</A>
+       </P>
+       <LI><P STYLE="margin-bottom: 0cm"><A HREF="#metadata">Metadatos</A>
+       </P>
+       <LI><P STYLE="margin-bottom: 0cm"><A HREF="#labels">Etiquetas</A>
+       </P>
+       <LI><P><A HREF="#actions">Acciones</A>
+       </P>
+</OL>
+<H4 CLASS="western"><A NAME="symbology"></A>Simbolog&iacute;a</H4>
+<H4 CLASS="western"><A NAME="general"></A>General</H4>
+<H4 CLASS="western"><A NAME="metadata"></A>Metadatos</H4>
+<H4 CLASS="western"><A NAME="labels"></A>Etiquetas</H4>
+<H4 CLASS="western"><A NAME="actions"></A>Acciones</H4>
+</BODY>
+</HTML>

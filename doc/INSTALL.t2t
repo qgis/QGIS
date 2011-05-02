@@ -1,0 +1,89 @@
+Quantum GIS (QGIS)
+
+Building QGIS from source - step by step
+
+
+%! target       : html
+%! style        : style.css
+%! Options      : --toc --toc-level 2 --enum-title --css-sugar --css-inside
+%! preproc      : TUT_URL   https://qgis.org
+%! PostProc(html): '(?i)(<pre>)' '<div class="code">\1'
+%! PostProc(html): '(?i)(</pre>)' '\1</div>'
+% Next line will replace tabs with 2 spaces in txt generated outputs
+%! PostProc(txt): '(?i)(\t)' '  '
+%! encoding: iso-8859-1
+% These are comments and will not be generated in any output
+% -------------------
+
+%This document is in txt2tags format. You can generate html, plain text and
+%moinmoin formatted documentation by running txt2tags on this document. See the
+%txt2tags home page for more details.  Please insert manual line breaks in this
+%document as it makes diffing for changes much easier. To do this in vim 
+%automatically, select a section then issue (gq) command. Please don't
+%apply vim formatting to the whole document as it screws up some formatting
+%rather apply it selectively to paragraphs where needed.
+
+% To generate the text version of this document:
+% txt2tags -t txt -o INSTALL INSTALL.t2t
+% To generate the mediawiki version of this document:
+% txt2tags -t wiki --no-enum-title -o INSTALL.wiki INSTALL.t2t
+% To generate the html version of this document:
+% txt2tags -t html -o INSTALL.html INSTALL.t2t
+% To generate the LaTeX version of this document:
+% txt2tags -t tex -o INSTALL.tex INSTALL.t2t
+
+% End of comments
+% -------------------
+
+Last update: %%date
+Last change: %%mtime
+
+%%toc
+
+= Introduction =
+
+This document is the original installation guide of the described software 
+Quantum GIS. The software and hardware descriptions named in this 
+document are in most cases registered trademarks and are therefore subject 
+to the legal requirements. Quantum GIS is subject to the GNU General Public 
+License. Find more information on the Quantum GIS Homepage:
+http://www.qgis.org
+
+The details, that are given in this document have been written and verified 
+to the best of knowledge and responsibility of the editors. Nevertheless, 
+mistakes concerning the content are possible. Therefore, all data are not 
+liable to any duties or guarantees. The editors and publishers do not take 
+any responsibility or liability for failures and their consequences. You are 
+always welcome for indicating possible mistakes.
+
+You can download this document as part of the Quantum GIS 'User and 
+Installation Guide' in HTML and PDF format via http://www.qgis.org. A current 
+version is also available at the wiki, see:
+http://www.qgis.org/wiki/Installation_Guide 
+
+Translations of this document can also be downloaded at the documentation area 
+of the Quantum GIS project at http://www.qgis.org. More information is 
+available via http://wiki.qgis.org/qgiswiki/DocumentationWritersCorner. 
+
+Please visit http://qgis.org for information on joining our mailing lists 
+and getting involved in the project further.
+
+/!\ **Note to document writers:** Please use this document as the central
+place for describing build procedures. Please do not remove this notice. 
+
+/!\ **Note to document writers:** This documented is generated from 
+doc/INSTALL.t2t - if you need to edit this document, be sure to edit that 
+file rather than the generated INSTALL document found in the root of the 
+source directory.
+
+%!include: overview.t2t
+
+%!include: linux.t2t
+
+= Building on Windows =
+%!include: msvc.t2t
+%!include: msys.t2t
+
+%!include: osx.t2t
+
+%!include: iauthors.t2t

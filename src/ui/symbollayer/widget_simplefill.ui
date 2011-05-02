@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>WidgetSimpleFill</class>
+ <widget class="QWidget" name="WidgetSimpleFill">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>335</width>
+    <height>206</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QgsColorButtonV2" name="btnChangeColor">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2" rowspan="6">
+      <spacer>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Preferred</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>28</width>
+         <height>158</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Fill style</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Border color</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
+       <property name="text">
+        <string>Change</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Border style</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_5">
+       <property name="text">
+        <string>Border width</string>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="QDoubleSpinBox" name="spinBorderWidth">
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="0">
+      <widget class="QLabel" name="label_6">
+       <property name="text">
+        <string>Offset X,Y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QDoubleSpinBox" name="spinOffsetX">
+         <property name="minimum">
+          <double>-999.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QDoubleSpinBox" name="spinOffsetY">
+         <property name="minimum">
+          <double>-999.000000000000000</double>
+         </property>
+         <property name="maximum">
+          <double>999.000000000000000</double>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer>
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>244</width>
+       <height>21</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsColorButtonV2</class>
+   <extends>QPushButton</extends>
+   <header>qgscolorbutton.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsPenStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgspenstylecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsBrushStyleComboBox</class>
+   <extends>QComboBox</extends>
+   <header>qgsbrushstylecombobox.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>btnChangeColor</tabstop>
+  <tabstop>cboFillStyle</tabstop>
+  <tabstop>btnChangeBorderColor</tabstop>
+  <tabstop>cboBorderStyle</tabstop>
+  <tabstop>spinBorderWidth</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

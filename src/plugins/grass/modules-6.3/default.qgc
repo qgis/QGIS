@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrass SYSTEM "http://mrcc.com/qgisgrass.dtd">
+<qgisgrass name="Default">
+<modules>
+
+<section label="GRASS MODULES">
+	<grass name="shell"/>
+	<section label="File">
+                <section label="Create new GRASS location from metadata file">
+                        <grass name="g.proj.wkt"/>
+                </section>
+		<section label="Import">
+			<section label="Import raster">
+                                <grass name="r.in.gdal.qgis"/>
+                                <grass name="r.in.gdal.qgis.loc"/>
+				<grass name="r.in.gdal"/>
+				<grass name="r.in.gdal.loc"/>
+				<grass name="r.in.xyz"/>
+				<grass name="r.in.ascii"/>
+				<grass name="r.in.poly"/>
+				<grass name="r.in.bin"/>
+				<grass name="r.in.arc"/>
+				<grass name="r.in.gridatb"/>
+				<grass name="r.in.mat"/>
+				<grass name="i.in.spotvgt"/>
+				<grass name="r.in.srtm"/>
+				<grass name="r.in.aster"/>
+				<grass name="r.in.wms"/>
+			</section>
+			<section label="Import vector">
+                                <grass name="v.in.ogr.qgis"/>
+                                <grass name="v.in.ogr.qgis.loc"/>
+				<grass name="v.in.ogr"/>
+				<grass name="v.in.ogr.loc"/>
+                                <grass name="v.in.ogr.all"/> 
+                                <grass name="v.in.ogr.all.loc"/> 
+				<grass name="v.in.dxf"/>
+				<grass name="v.in.e00"/>
+                                <grass name="v.in.ascii"/>
+				<grass name="v.in.mapgen"/>
+				<grass name="v.in.db"/>
+				<grass name="v.in.garmin"/>
+				<grass name="v.in.gpsbabel"/>
+			</section>
+			<section label="Database">
+				<grass name="db.in.ogr"/>
+			</section>
+		</section>
+		<section label="Export">
+			<section label="Export raster">
+				<grass name="r.out.gdal"/>
+				<grass name="r.out.gdal.gtiff"/>
+				<grass name="r.out.ascii"/>
+				<grass name="r.out.xyz"/>
+				<grass name="r.out.arc"/>
+				<grass name="r.out.gridatb"/>
+				<grass name="r.out.mat"/>
+				<grass name="r.out.bin"/>
+				<grass name="r.out.mpeg"/>
+				<grass name="r.out.png"/>
+				<grass name="r.out.ppm"/>
+				<grass name="r.out.ppm3"/>
+				<grass name="r.out.pov"/>
+				<grass name="r.out.tiff"/>
+				<grass name="r.out.vrml"/>
+				<grass name="r.out.vtk"/>
+			</section>
+			<section label="Export vector">
+				<grass name="v.out.ogr"/>
+				<grass name="v.out.ogr.gml"/>
+				<grass name="v.out.ogr.mapinfo"/>
+				<grass name="v.out.ogr.postgis"/>
+				<grass name="v.out.ascii"/>
+				<grass name="v.out.dxf"/>
+				<grass name="v.out.pov"/>
+				<grass name="v.out.svg"/>
+				<grass name="v.out.vtk"/>
+			</section>
+		</section>
+		<section label="Map type conversion">
+			<section label="Convert a raster to vector">
+				<grass name="r.to.vect.point"/>
+				<grass name="r.to.vect.line"/>
+				<grass name="r.to.vect.area"/>
+			</section>
+			<section label="Convert a vector to raster">
+				<grass name="v.to.rast.constant"/>
+				<grass name="v.to.rast.attr"/>
+			</section>
+		</section>
+	</section>
+
+	<section label="Config">
+		<section label="Region">
+			<section label="Region settings">
+                                <grass name="g.region.save"/> 
+                                <grass name="g.region.zoom"/> 
+                                <grass name="g.region.multiple.raster"/> 
+                                <grass name="g.region.multiple.vector"/>
+			</section>
+			<section label="Projection management">
+                                <section label="Print projection information of the current location">
+ 					<grass name="g.proj.print"/>
+				</section>
+                                <section label="Print projection information from a georeferenced file"> 
+					<grass name="g.proj.geo"/>
+                                        <grass name="g.proj.ascii"/> 
+					<grass name="g.proj.proj"/>
+				</section>
+                                <section label="Print projection information from a georeferenced file and create a new location based on it"> 
+                                        <grass name="g.proj.geo.new"/> 
+					<grass name="g.proj.ascii.new"/>
+					<grass name="g.proj.proj.new"/>
+				</section>
+			</section>
+			<section label="Convert coordinates">
+				<grass name="m.cogo"/>
+			</section>
+		</section>
+	</section>
+
+	<section label="Raster">
+		<section label="Develop map">
+			<section label="Compress raster">
+				<grass name="r.compress"/>
+			</section>
+			<section label="Sets the boundary definitions for a raster map">
+				<grass name="r.region.region"/>
+				<grass name="r.region.raster"/>
+				<grass name="r.region.vector"/>
+				<grass name="r.region.edge"/>
+				<grass name="r.region.alignTo"/>
+			</section>
+			<section label="Manage raster cells value">
+				<grass name="r.null.val"/>
+				<grass name="r.null.to"/>
+				<grass name="r.quant"/>
+			</section>
+			<section label="Change resolution">
+				<grass name="r.resamp.stats"/>
+				<grass name="r.resamp.interp"/>
+				<grass name="r.resample"/>
+				<grass name="r.resamp.rst"/>
+			</section>
+			<section label="Raster support">
+				<grass name="r.support"/>
+				<grass name="r.support.stats"/>
+			</section>
+			<section label="Reproject raster from another Location">
+				<grass name="r.proj"/>
+			</section>
+		</section>
+		<section label="Manage map colors">
+			<grass name="r.colors.table"/>
+			<grass name="r.colors.rules"/>
+			<grass name="r.colors.rast"/>
+			<grass name="r.blend"/>
+			<grass name="r.composite"/>
+			<grass name="r.his"/>
+		</section>
+		<section label="Spatial analysis">
+			<section label="Buffer">
+				<grass name="r.buffer"/>
+			</section>
+			<section label="Mask">
+				<grass name="r.mask"/>
+			</section>
+			<section label="Map algebra">
+				<grass name="r.mapcalc"/>
+				<grass name="r.mapcalculator"/>
+			</section>
+			<section label="Neighborhood analysis">
+				<grass name="r.neighbors"/>
+				<grass name="v.neighbors"/>
+			</section>
+			<section label="Overlay maps">
+                                <grass name="r.cross"/> 
+                                <grass name="r.series"/> 
+                                <grass name="r.patch"/> 
+				<grass name="r.statistics"/>
+			</section>
+			<section label="Solar and irradiation model">
+                                <grass name="r.sunmask.position"/> 
+                                <grass name="r.sunmask.date.time"/> 
+			</section>
+			<section label="Terrain analysis">
+				<grass name="r.cost.coord"/>
+				<grass name="r.cost.rast"/>
+				<grass name="r.cost.vect"/>
+				<grass name="r.drain"/>
+				<grass name="r.shaded.relief"/>
+				<grass name="r.slope.aspect.slope"/>
+				<grass name="r.slope.aspect.aspect"/>
+				<grass name="r.param.scale"/>
+				<grass name="r.texture"/>
+				<grass name="r.texture.bis"/>
+				<grass name="r.los"/>
+				<grass name="r.grow.distance"/>
+				<grass name="r.walk.coord"/>
+				<grass name="r.walk.vect"/>
+			</section>
+			<section label="Transform features">
+				<grass name="r.clump"/>
+				<grass name="r.grow"/>
+				<grass name="r.thin"/>
+			</section>
+		</section>
+		<section label="Spatial models">
+			<section label="Hydrologic modelling">
+				<grass name="r.watershed"/>
+				<grass name="r.carve"/>
+				<grass name="r.fill.dir"/>
+				<grass name="r.lake.xy"/>
+				<grass name="r.lake.seed"/>
+				<grass name="r.topidx"/>
+				<grass name="r.basins.fill"/>
+				<grass name="r.water.outlet"/>
+			</section>
+		</section>
+		<section label="Change category values and labels">
+			<grass name="r.reclass.area.greater"/>
+			<grass name="r.reclass.area.lesser"/>
+			<grass name="r.reclass"/>
+			<grass name="r.recode"/>
+			<grass name="r.rescale"/>
+		</section>
+		<section label="Surface management">
+			<section label="Concentric circles">
+				<grass name="r.circle"/>
+			</section>
+			<section label="Create random points">
+				<grass name="r.random"/>
+				<grass name="r.random.cells"/>
+			</section>
+			<section label="Generate surface">
+				<grass name="v.kernel"/>
+				<grass name="r.surf.fractal"/>
+				<grass name="r.surf.gauss"/>
+				<grass name="r.plane"/>
+				<grass name="r.surf.random"/>
+			</section>
+			<section label="Generate vector contour lines">
+				<grass name="r.contour"/>
+				<grass name="r.contour2"/>
+			</section>
+			<section label="Interpolate surface">
+				<grass name="v.surf.bspline"/>
+				<grass name="r.surf.idw"/>
+				<grass name="r.surf.idw2"/>
+				<grass name="v.surf.idw"/>
+				<grass name="v.surf.rst"/>
+				<grass name="r.fillnulls"/>
+                                <grass name="r.surf.contour"/>
+			</section>
+		</section>
+		<section label="Reports and statistics">
+			<section label="Reports">
+				<grass name="r.category"/>
+			</section>
+			<section label="Statistics">
+				<grass name="r.sum"/>
+				<grass name="r.report"/>
+				<grass name="r.average"/>
+				<grass name="r.median"/>
+				<grass name="r.mode"/>
+				<grass name="r.volume"/>
+				<grass name="r.surf.area"/>
+				<grass name="r.univar"/>
+				<grass name="r.covar"/>
+				<grass name="r.regression.line"/>
+				<grass name="r.coin"/>
+				<grass name="r.distance"/>
+			</section>
+		</section>
+	</section>
+
+	<section label="Vector">
+		<section label="Develop map">
+			<section label="Topology management">
+				<grass name="v.build.all"/>
+				<grass name="v.build.one"/>
+			</section>
+			<section label="Toolset for cleaning topology of vector map">
+				<grass name="v.clean.break"/>
+				<grass name="v.clean.snap"/>
+				<grass name="v.clean.rmdangles"/>
+				<grass name="v.clean.chdangles"/>
+				<grass name="v.clean.rmbridge"/>
+				<grass name="v.clean.chbridge"/>
+				<grass name="v.clean.rmdupl"/>
+				<grass name="v.clean.rmdac"/>
+				<grass name="v.clean.bpol"/>
+				<grass name="v.clean.prune"/>
+				<grass name="v.clean.rmarea"/>
+				<grass name="v.clean.rmline"/>
+				<grass name="v.clean.rmsa"/>
+			</section>
+			<section label="Change the type of geometry elements">
+				<grass name="v.type.lb"/>
+				<grass name="v.type.bl"/>
+				<grass name="v.type.pc"/>
+				<grass name="v.type.cp"/>
+			</section>
+			<section label="Manage features">
+				<grass name="v.centroids"/>
+				<grass name="v.build.polylines"/>
+				<grass name="v.segment"/>
+				<grass name="v.split"/>
+				<grass name="v.to.points"/>
+				<grass name="v.parallel"/>
+				<grass name="v.dissolve"/>
+			</section>
+			<section label="Convert 2D vector to 3D by sampling raster">
+				<grass name="v.drape"/>
+			</section>
+			<section label="Reproject vector from another Location">
+				<grass name="v.transform"/>
+				<grass name="v.proj"/>
+			</section>
+			<section label="Metadata support">
+				<grass name="v.support"/>
+			</section>
+			<section label="Generalization">
+				<grass name="v.generalize"/>
+			</section>
+		</section>
+		<section label="Database connection">
+			<grass name="v.db.connect"/>
+			<grass name="v.db.sconnect"/>
+			<grass name="v.db.what.connect"/>
+		</section>
+		<section label="Spatial analysis">
+			<section label="Extract features from vector">
+				<grass name="v.extract.where"/>
+				<grass name="v.extract.list"/>
+				<grass name="v.select.overlap"/>
+			</section>
+			<section label="Buffer">
+				<grass name="v.buffer"/>
+			</section>
+			<section label="Vector geometry analysis">
+				<grass name="v.distance"/>
+			</section>
+			<section label="Network analysis">
+				<grass name="v.net.alloc"/>
+				<grass name="v.net"/>
+				<grass name="v.net.nodes"/>
+				<grass name="v.net.visibility"/>
+				<grass name="v.net.path"/>
+				<grass name="v.net.iso"/>
+				<grass name="v.net.salesman"/>
+				<grass name="v.net.steiner"/>
+			</section>
+			<section label="Overlay">
+                                <grass name="v.patch"/> 
+				<grass name="v.overlay.or"/>
+				<grass name="v.overlay.and"/>
+				<grass name="v.overlay.not"/>
+				<grass name="v.overlay.xor"/>
+			</section>
+		</section>
+		<section label="Change field">
+			<section label="Layers categories management">
+				<grass name="v.category.add"/>
+				<grass name="v.category.del"/>
+				<grass name="v.category.sum"/>
+			</section>
+			<section label="Reclass category values">
+				<grass name="v.reclass.file"/>
+				<grass name="v.reclass.attr"/>
+			</section>
+		</section>
+		<section label="Work with vector points">
+			<section label="Create standard vectors">
+				<grass name="v.in.region"/>
+				<grass name="v.mkgrid.region"/>
+			</section>
+			<section label="Create points">
+				<grass name="v.in.db"/>
+				<grass name="v.random"/>
+				<grass name="v.perturb"/>
+			</section>
+			<section label="Manage training dataset">
+				<grass name="v.kcv"/>
+				<grass name="v.outlier"/>
+			</section>
+			<section label="Delaunay triangulation, Voronoi diagram and convex hull">
+				<grass name="v.hull"/>
+				<grass name="v.delaunay.line"/>
+				<grass name="v.delaunay.area"/>
+				<grass name="v.voronoi.line"/>
+				<grass name="v.voronoi.area"/>
+			</section>
+		</section>
+		<section label="Vector update by other maps">
+			<grass name="v.rast.stats"/>
+			<grass name="v.what.vect"/>
+			<grass name="v.what.rast"/>
+			<grass name="v.sample"/>
+		</section>
+		<section label="Report and statistics">
+			<grass name="v.to.db"/>
+			<grass name="v.report"/>
+			<grass name="v.univar"/>
+			<grass name="v.normal"/>
+		</section>
+	</section>
+
+	<section label="Imagery">
+		<section label="Develop images and group">
+			<grass name="i.image.mosaic"/>
+		</section>
+		<section label="Manage image colors">
+			<grass name="i.rgb.his"/>
+			<grass name="i.his.rgb"/>
+			<grass name="i.landsat.rgb"/>
+			<grass name="i.fusion.brovey"/>
+		</section>
+		<section label="Filter image">
+			<grass name="i.zc"/>
+			<grass name="r.mfilter"/>
+		</section>
+		<section label="Tassled cap vegetation index">
+			<grass name="i.tasscap4"/>
+			<grass name="i.tasscap5"/>
+			<grass name="i.tasscap7"/>
+		</section>
+		<section label="Transform image">
+			<grass name="i.fft"/>
+			<grass name="i.ifft"/>
+		</section>
+		<section label="Reports and statistics">
+			<grass name="r.describe"/>
+			<grass name="r.bitpattern"/>
+			<grass name="r.kappa"/>
+			<grass name="i.oif"/>
+		</section>
+	</section>
+
+	<section label="Database">
+		<section label="Database management">
+			<grass name="db.connect"/>
+			<grass name="db.connect.schema"/>
+			<grass name="v.db.reconnect.all"/>
+			<grass name="db.login"/>
+		</section>
+		<section label="Tables management">
+			<grass name="db.copy"/>
+			<grass name="v.db.addtable"/>
+			<grass name="v.db.droptable"/>
+		</section>
+		<section label="Columns management">
+			<grass name="v.db.addcol"/>
+			<grass name="v.db.update_const"/>
+			<grass name="v.db.update_query"/>
+			<grass name="v.db.update_op"/>
+			<grass name="v.db.update_op_query"/>
+			<grass name="v.db.dropcol"/>
+			<grass name="v.db.renamecol"/>
+			<grass name="db.execute"/>
+			<grass name="db.select"/>
+			<grass name="v.db.select"/>
+			<grass name="v.db.select.where"/>
+		</section>
+		<section label="Others">
+			<grass name="v.db.join"/>
+			<grass name="v.db.univar"/>
+		</section>
+	</section>
+
+	<section label="3d Visualization">
+		<grass name="nviz"/>
+	</section>
+
+	<section label="Help">
+		<grass name="g.manual"/>
+	</section>
+</section>
+
+</modules>
+</qgisgrass>

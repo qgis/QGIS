@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Set PostgreSQL DB connection" module="db.connect-login.pg.py" manual="db.connect">
+	<option key="database" />
+	<option key="schema" />
+	<option key="host" />
+	<option key="port" answer="5432"/>
+	<option key="user"/>
+	<option key="password"/>
+</qgisgrassmodule>

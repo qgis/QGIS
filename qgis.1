@@ -1,0 +1,124 @@
+.TH QGIS 1 "March 9, 2011"
+.SH NAME
+qgis \- Quantum GIS Geographic Information System 
+.SH SYNOPSIS
+.B qgis [--snapshot
+.I filename]
+.br
+.B "     [--lang"
+.I language]
+.br
+.B "     [--project"
+.I projectfile]
+.br
+.B "     [--extent"
+.I xmin,ymin,xmax,ymax]
+.br
+.B "     [--width"
+.I width]
+.br
+.B "     [--height"
+.I height]
+.br
+.B "     [--nologo]"
+.br
+.B "     [--noplugins]"
+.br
+.B "     [--optionspath"
+.I path]
+.br
+.B "     [--configpath"
+.I path]
+.br
+.B "     [--help]"
+.br
+.B "     [file]..."
+.br
+See OPTIONS for a full description.
+.SH DESCRIPTION
+Quantum GIS (QGIS) is a cross platform, Free and Open Source Geographic
+Information System (GIS). Supported platforms include Linux/Unix, Mac OS X and
+Microsoft Windows. QGIS supports vector, raster, and database formats. QGIS is
+licensed under the GNU Public License. 
+
+Some of the major features include: 
+
+*Support for spatially enabled PostGIS tables 
+.br
+*Support for shapefiles, ArcInfo coverages, Mapinfo, and other formats
+  supported by OGR 
+.br
+*Raster support for a large number of formats 
+.br
+*Identify features 
+.br
+*Display attribute tables 
+.br
+*Select features 
+.br
+*GRASS Digitizing 
+.br
+*Feature labeling 
+.br
+.SH OPTIONS
+.TP
+.B \--snapshot filename
+Create a snapshot image from the specified layers and save it to filename. The 
+snapshot is saved in PNG format.
+.TP
+.B \--lang language
+Set the language used by QGIS. Language is specified using the locale string
+that matches one of the translations supported by QGIS. For example, to use the
+German translation, specify
+.B --lang de
+.TP
+.B \--project filename
+Load the specified
+.SM QGIS
+project file. The layers specified in the project file are loaded, the layers
+are symbolized, and the view extent is restored.
+.TP
+.B \--extent xmin,ymin,xmax,ymax
+Set initial map extent by passing coordinates of that rectangle.
+.TP
+.B \--width width
+Width of snapshot to emit
+.TP
+.B \--height height
+Height of snapshot to emit
+.TP
+.B \--nologo
+Hide splash screen
+.TP
+.B \--noplugins
+.br
+Don't restore plugins on startup. Useful if some third-party plugins make QGIS crash during startup.
+.TP
+.B \--optionspath path
+Use the given QSettings path
+.TP
+.B \--configpath path
+Use the given path for all user configuration
+.TP
+.B \--help
+.br 
+Display brief usage help.
+.TP
+.B file...
+A list of one or more files to be loaded into QGIS at startup. Files must
+consist of a data format supported by QGIS and only disk-based formats can be
+loaded using this method. This includes shapefiles, MapInfo files, and most
+raster formats. Data stores that cannot be loaded in this way include PostGIS
+layers in a PostgreSQL database and GRASS vector/raster data.
+
+.SH FILES
+.TP
+.B ~/.config/QuantumGIS/qgis.conf
+QGIS preferences file. This file stores windows size/location, loaded plugins,
+user options, and other application settings.
+.SH BUGS
+See the QGIS home page (http://qgis.org) for a list of known issues with the
+latest release.
+.SH AUTHOR
+Gary Sherman <sherman at mrcc.com>
+

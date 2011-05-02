@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create new raster by combining other rasters" module="r.patch">
+	<option key="input"/>
+	<flag key="z" answer="off" hidden="no" />
+	<file key="input" type="multiple" />
+	<option key="output" />
+</qgisgrassmodule>

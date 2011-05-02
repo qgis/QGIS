@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Convert points to centroids" module="v.type">
+	<option key="input" typemask="point"/>
+	<option key="output"/>
+	<option key="type" answer="point,centroid" hidden="yes" />
+</qgisgrassmodule>

@@ -1,0 +1,34 @@
+<h3>Utwórz nowe połączenie WMS</h3>
+<p>Warstwy WMS w prosty sposób mogą być wyświetlone w QGIS, o ile znasz adres serwera, masz do niego dostęp, oraz obsługuje on protokół HTTP do przesyłania danych.</p>
+<p>QGIS obecnie może być klientem dla następujących wersji protokołu WMS: 1.1, 1.1.1 oraz 1.3.</p>
+
+<a href="#serv">Serwery</a><br/>
+<a href="#load">Wczytywanie warstw WMS</a><br/>
+<a href="#lay">Kolejność warstw</a><br/>
+<a href="#search">Szukaj serwera</a><br/>
+
+<a name="serv">
+<h4>Serwery</h4>
+</a>
+<p>Aby zdefiniować połączenie do nowego serwera WMS, w zakładce <label>Warstwy</label> wybierz przycisk <label>Nowy</label>. Następnie wprowadź parametry serwera, z którym chcesz się połączyć.</p>
+<p>Możesz dodać kilka przykładowych serwerów przyciskiem <label>Dodaj domyślne serwery</label>. W ten sposób dodasz co najmniej trzy przykładowe serwery WMS, między innymi NASA (JPL) WMS server.</p>
+<p>Kiedy dane dotyczące połączenia z serwerem zostaną zapisane, będą one dostępne do ponownego użycia na rozwijalnej liście połączeń. Również po przeinstalowaniu QGIS-a do nowszej wersji.</p>
+
+<a name="load">
+<h5>Wczytywanie warstw WMS</h5>
+</a>
+<p>Wybierz z listy rozwijalnej pożądany serwer i wciśnij przycisk <label>Połącz</label>, aby pobrać spis zawartości wybranego serwisu. Jest to lista dostępnych warstw oraz ich układów współrzędnych, formatów obrazu czy stylów. Przy pobieraniu danych z serwera WMS, szczegóły procesu są wyświetlane w dole głównego okna programu.</p>
+<p>Do wyświetlenia można wybrać od razu więcej niż jedną warstwę. W takim przypadku wybrane warstwy zostaną połączone przez serwer WMS i przesłane do QGIS jako jeden obraz.</p>
+<p>Sekcja <label>Kodowanie obrazu</label> podaje formaty obsługiwane przez serwer WMS i QGIS jako klienta WMS.</p>
+<p>Każda z warstw WMS może być udostępniana w wielu układach współrzędnych, w zależności od konfiguracji serwera WMS. Domyślnie wybrany jest aktualny układ współrzędnych projektu, o ile jest dostępny dla wybranej warstwy. Aby wybrać inny układ niż proponowany, kliknij przycisk <label>Zmień...</label>.</p>
+
+<a name="lay">
+<h4>Kolejność warstw</h4>
+</a>
+W tej zakładce można zmienić kolejność warstw WMS komponowanych po stronie serwera w jeden obraz.
+
+<a name="search">
+<h4>Szukaj serwera</h4>
+</a>
+<p>W tej zakładce dostępne są narzędzia do poszukiwania serwerów WMS. W polu edycyjnym należy wpisać poszukiwaną frazę i kliknąć przycisk <label>Szukaj</label>.</p>
+<p>Wyniki poszukiwań zostaną wyświetlone w oknie poniżej. Po wybraniu odpowiedniego serwera, kliknij na <label>Dodaj wybraną pozycję do listy serwerów WMS</label> i powróć do pierwszej zakładki z listą serwerów.Pozostaje tylko wybór dopiero co dopisanego do listy rozwijalnej serwera i naciśnięcie przycisku <label>Połącz</label>.</p>

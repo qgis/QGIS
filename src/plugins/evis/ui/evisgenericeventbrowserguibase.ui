@@ -1,0 +1,1029 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>eVisGenericEventBrowserGuiBase</class>
+ <widget class="QDialog" name="eVisGenericEventBrowserGuiBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>766</width>
+    <height>654</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../resources/evis.qrc">
+    <normaloff>:/evis/eVisEventBrowser.png</normaloff>:/evis/eVisEventBrowser.png</iconset>
+  </property>
+  <layout class="QVBoxLayout">
+   <property name="margin">
+    <number>2</number>
+   </property>
+   <item>
+    <widget class="QTabWidget" name="displayArea">
+     <property name="toolTip">
+      <string/>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="Display">
+      <attribute name="title">
+       <string>Display</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0" rowspan="2" colspan="2">
+        <widget class="QLabel" name="labelCompassOffsetWarning">
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <spacer>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>351</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="0" column="2" rowspan="2">
+        <widget class="QPushButton" name="pbtnPrevious">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Use the Previous button to display the previous photo when more than one photo is available for display.</string>
+         </property>
+         <property name="text">
+          <string>Previous</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3" rowspan="2">
+        <widget class="QPushButton" name="pbtnNext">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Use the Next button to display the next photo when more than one photo is available for display.</string>
+         </property>
+         <property name="text">
+          <string>Next</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0" colspan="4">
+        <widget class="QTreeWidget" name="treeEventData">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>125</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>125</height>
+          </size>
+         </property>
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</string>
+         </property>
+         <column>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="3" column="0" colspan="4">
+        <widget class="eVisImageDisplayWidget" name="imageDisplayArea" native="true">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="toolTip">
+          <string>Image display area</string>
+         </property>
+         <property name="whatsThis">
+          <string>Display area for the image.</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0" colspan="3">
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>628</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item row="4" column="3">
+        <widget class="QDialogButtonBox" name="buttonBox">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="standardButtons">
+          <set>QDialogButtonBox::Close</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="Options">
+      <attribute name="title">
+       <string>Options</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_2">
+         <property name="title">
+          <string>File path</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0" colspan="2">
+           <widget class="QLabel" name="label">
+            <property name="text">
+             <string>Attribute containing path to file</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QComboBox" name="cboxEventImagePathField">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="3">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>288</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="chkboxEventImagePathRelative">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</string>
+            </property>
+            <property name="text">
+             <string>Path is relative</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="3">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>251</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="4">
+           <widget class="QCheckBox" name="chkboxSaveEventImagePathData">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the relative path values will be saved for the next session.</string>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Remember this</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="QPushButton" name="pbtnResetEventImagePathData">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Reset to default</string>
+            </property>
+            <property name="statusTip">
+             <string comment="Comment???"/>
+            </property>
+            <property name="whatsThis">
+             <string>Resets the values on this line to the default setting.</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QGroupBox" name="groupBox_3">
+         <property name="title">
+          <string>Compass bearing</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_5">
+            <property name="text">
+             <string>Attribute containing compass bearing</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QComboBox" name="cboxCompassBearingField">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" colspan="3">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>268</width>
+              <height>24</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="chkboxDisplayCompassBearing">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</string>
+            </property>
+            <property name="text">
+             <string>Display compass bearing</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>121</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="3">
+           <widget class="QCheckBox" name="chkboxSaveCompassBearingData">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the Display Compass Bearing values will be saved for the next session.</string>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Remember this</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="pbtnResetCompassBearingData">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Reset to default</string>
+            </property>
+            <property name="whatsThis">
+             <string>Resets the values on this line to the default setting.</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QGroupBox" name="groupBox">
+         <property name="title">
+          <string>Compass offset</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="rbtnManualCompassOffset">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>Define the compass offset manually.</string>
+            </property>
+            <property name="text">
+             <string>Manual</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QDoubleSpinBox" name="dsboxCompassOffset">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </string>
+            </property>
+            <property name="decimals">
+             <number>1</number>
+            </property>
+            <property name="minimum">
+             <double>-180.000000000000000</double>
+            </property>
+            <property name="maximum">
+             <double>180.000000000000000</double>
+            </property>
+            <property name="singleStep">
+             <double>1.000000000000000</double>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" colspan="4">
+           <spacer name="horizontalSpacer_5">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>430</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="rbtnAttributeCompassOffset">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>Define the compass offset using a field from the vector layer attribute table.</string>
+            </property>
+            <property name="text">
+             <string> From Attribute</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="2">
+           <widget class="QComboBox" name="cboxCompassOffsetField">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3" colspan="3">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>424</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="3">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>281</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="2" column="4">
+           <widget class="QCheckBox" name="chkboxSaveCompassOffsetData">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the compass offset values will be saved for the next session.</string>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Remember this</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="5">
+           <widget class="QPushButton" name="pbtnResetCompassOffsetData">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Reset to default</string>
+            </property>
+            <property name="whatsThis">
+             <string>Resets the compass offset values to the default settings.</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Relative paths</string>
+         </property>
+         <layout class="QGridLayout">
+          <item row="0" column="0" colspan="3">
+           <widget class="QLabel" name="label_4">
+            <property name="text">
+             <string>The base path or url from which images and documents can be “relative”</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" colspan="2">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>131</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Base Path</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="leBasePath">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>10</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Base Path</string>
+            </property>
+            <property name="whatsThis">
+             <string>The Base Path onto which the relative path defined above will be appended.</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="2" colspan="2">
+           <widget class="QCheckBox" name="chkboxSaveBasePathData">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the Base Path will be saved for the next session.</string>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Remember this</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="4">
+           <widget class="QPushButton" name="pbtnResetBasePathData">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Reset to default</string>
+            </property>
+            <property name="whatsThis">
+             <string>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QCheckBox" name="chkboxUseOnlyFilename">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </string>
+            </property>
+            <property name="text">
+             <string>Replace entire path/url stored in image path attribute with user defined
+Base Path (i.e. keep only filename from attribute)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="2" colspan="2">
+           <widget class="QCheckBox" name="chkboxSaveUseOnlyFilenameData">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the  current check-box setting will be saved for the next session.</string>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Remember this</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="4">
+           <widget class="QPushButton" name="pbtnResetUseOnlyFilenameData">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Reset to default</string>
+            </property>
+            <property name="whatsThis">
+             <string>Clears the check-box on this line.</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="chkboxApplyPathRulesToDocs">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="MinimumExpanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</string>
+            </property>
+            <property name="text">
+             <string>Apply Path to Image rules when loading docs in external applications</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="2" colspan="2">
+           <widget class="QCheckBox" name="chkboxSaveApplyPathRulesToDocs">
+            <property name="toolTip">
+             <string/>
+            </property>
+            <property name="whatsThis">
+             <string>If checked, the  current check-box setting will be saved for the next session.</string>
+            </property>
+            <property name="layoutDirection">
+             <enum>Qt::LeftToRight</enum>
+            </property>
+            <property name="text">
+             <string>Remember this</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="4">
+           <widget class="QPushButton" name="pbtnResetApplyPathRulesToDocs">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="toolTip">
+             <string>Reset to default</string>
+            </property>
+            <property name="whatsThis">
+             <string>Clears the check-box on this line.</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset>
+              <normaloff>../../../images/themes/default/mActionDraw.png</normaloff>../../../images/themes/default/mActionDraw.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>16</width>
+              <height>16</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="Line" name="line">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QDialogButtonBox" name="buttonboxOptions">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </string>
+         </property>
+         <property name="standardButtons">
+          <set>QDialogButtonBox::RestoreDefaults|QDialogButtonBox::Save</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="ConfigureExternalApplications">
+      <attribute name="title">
+       <string>Configure External Applications</string>
+      </attribute>
+      <layout class="QGridLayout">
+       <item row="0" column="0" colspan="2">
+        <layout class="QHBoxLayout">
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>File extension and external application in which to load a document of that type</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QTableWidget" name="tableFileTypeAssociations">
+         <property name="toolTip">
+          <string/>
+         </property>
+         <property name="whatsThis">
+          <string>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </string>
+         </property>
+         <column>
+          <property name="text">
+           <string>Extension</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Application</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <layout class="QVBoxLayout">
+         <item>
+          <widget class="QPushButton" name="pbtnAddFileType">
+           <property name="toolTip">
+            <string>Add new file type</string>
+           </property>
+           <property name="whatsThis">
+            <string>Add a new file type with a unique extension and the path for the application that can open the file.</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>../../../../raster_transparency_branch/images/themes/default/mActionNewAttribute.png</normaloff>../../../../raster_transparency_branch/images/themes/default/mActionNewAttribute.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="pbtnDeleteFileType">
+           <property name="toolTip">
+            <string>Delete current row</string>
+           </property>
+           <property name="whatsThis">
+            <string>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset>
+             <normaloff>../../../../raster_transparency_branch/images/themes/default/mActionDeleteAttribute.png</normaloff>../../../../raster_transparency_branch/images/themes/default/mActionDeleteAttribute.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer>
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>491</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>eVisImageDisplayWidget</class>
+   <extends>QWidget</extends>
+   <header>evisimagedisplaywidget.h</header>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>pbtnPrevious</tabstop>
+  <tabstop>pbtnNext</tabstop>
+  <tabstop>treeEventData</tabstop>
+  <tabstop>buttonBox</tabstop>
+  <tabstop>cboxEventImagePathField</tabstop>
+  <tabstop>chkboxEventImagePathRelative</tabstop>
+  <tabstop>chkboxSaveEventImagePathData</tabstop>
+  <tabstop>pbtnResetEventImagePathData</tabstop>
+  <tabstop>cboxCompassBearingField</tabstop>
+  <tabstop>chkboxDisplayCompassBearing</tabstop>
+  <tabstop>chkboxSaveCompassBearingData</tabstop>
+  <tabstop>pbtnResetCompassBearingData</tabstop>
+  <tabstop>rbtnManualCompassOffset</tabstop>
+  <tabstop>dsboxCompassOffset</tabstop>
+  <tabstop>rbtnAttributeCompassOffset</tabstop>
+  <tabstop>chkboxSaveCompassOffsetData</tabstop>
+  <tabstop>pbtnResetCompassOffsetData</tabstop>
+  <tabstop>leBasePath</tabstop>
+  <tabstop>chkboxSaveBasePathData</tabstop>
+  <tabstop>pbtnResetBasePathData</tabstop>
+  <tabstop>chkboxUseOnlyFilename</tabstop>
+  <tabstop>chkboxSaveUseOnlyFilenameData</tabstop>
+  <tabstop>pbtnResetUseOnlyFilenameData</tabstop>
+  <tabstop>chkboxApplyPathRulesToDocs</tabstop>
+  <tabstop>chkboxSaveApplyPathRulesToDocs</tabstop>
+  <tabstop>pbtnResetApplyPathRulesToDocs</tabstop>
+  <tabstop>tableFileTypeAssociations</tabstop>
+  <tabstop>pbtnAddFileType</tabstop>
+  <tabstop>pbtnDeleteFileType</tabstop>
+  <tabstop>cboxCompassOffsetField</tabstop>
+  <tabstop>displayArea</tabstop>
+  <tabstop>buttonboxOptions</tabstop>
+ </tabstops>
+ <resources>
+  <include location="../resources/evis.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>eVisGenericEventBrowserGuiBase</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>310</x>
+     <y>652</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>eVisGenericEventBrowserGuiBase</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>525</x>
+     <y>664</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>403</x>
+     <y>273</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

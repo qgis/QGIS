@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsComposerArrowWidgetBase</class>
+ <widget class="QWidget" name="QgsComposerArrowWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>196</width>
+    <height>407</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QToolBox" name="toolBox">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="page">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>178</width>
+        <height>363</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Arrow</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="mArrowColorButton">
+         <property name="text">
+          <string>Arrow color...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+         <property name="prefix">
+          <string>Line width </string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QDoubleSpinBox" name="mArrowHeadWidthSpinBox">
+         <property name="prefix">
+          <string>Arrow head width </string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QGroupBox" name="mArrowMarkersGroupBox">
+         <property name="title">
+          <string>Arrow markers</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_1">
+          <item row="0" column="0" colspan="2">
+           <widget class="QRadioButton" name="mDefaultMarkerRadioButton">
+            <property name="text">
+             <string>Default marker</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mNoMarkerRadioButton">
+            <property name="text">
+             <string>No marker</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="2">
+           <widget class="QRadioButton" name="mSvgMarkerRadioButton">
+            <property name="text">
+             <string>SVG markers</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mStartMarkerLabel">
+            <property name="text">
+             <string>Start marker</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLineEdit" name="mStartMarkerLineEdit"/>
+          </item>
+          <item row="4" column="1">
+           <widget class="QToolButton" name="mStartMarkerToolButton">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <widget class="QLabel" name="mEndMarkerLabel">
+            <property name="text">
+             <string>End marker</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLineEdit" name="mEndMarkerLineEdit"/>
+          </item>
+          <item row="6" column="1">
+           <widget class="QToolButton" name="mEndMarkerToolButton">
+            <property name="text">
+             <string>...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <spacer name="verticalSpacer">
+         <property name="orientation">
+          <enum>Qt::Vertical</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>20</width>
+           <height>62</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

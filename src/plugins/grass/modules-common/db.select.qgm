@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Display results of SQL selection from database" module="db.select">
+	<option key="table" />
+	<option key="database" answer="$GISDBASE/$LOCATION_NAME/$MAPSET/dbf/" />
+	<option key="driver" />
+	<option key="sql" />
+	<option key="fs" answer="|" hidden="yes" />
+</qgisgrassmodule>

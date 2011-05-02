@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsLinearlyScalingDialogBase</class>
+ <widget class="QWidget" name="QgsLinearlyScalingDialogBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>527</width>
+    <height>91</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="QLabel" name="mTitleLabel">
+     <property name="text">
+      <string>Scale linearly between 0 and the following attribute value / diagram size:</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout">
+     <item>
+      <widget class="QPushButton" name="mFindMaximumValueButton">
+       <property name="text">
+        <string>Find maximum value</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mValueLineEdit"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="mSizeLabel">
+       <property name="text">
+        <string>Size</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="mSizeSpinBox">
+       <property name="maximum">
+        <number>10000000</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="mSizeUnitLabel">
+       <property name="text">
+        <string>Size unit</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="mSizeUnitComboBox"/>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

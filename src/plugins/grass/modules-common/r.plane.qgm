@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create a raster plane" module="r.plane">
+	<option key="dip" />
+	<option key="azimuth" />
+	<option key="easting" />
+	<option key="northing" />
+	<option key="elevation" />
+	<option key="name" />
+</qgisgrassmodule>

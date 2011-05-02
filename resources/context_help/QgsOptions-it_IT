@@ -1,0 +1,65 @@
+<h3>Opzioni</h3>
+Questa finestra di dialogo consente di selezionare alcune opzioni di base per QGIS. Ci sono otto tab:
+<p>
+
+<a href="#general">Generale</a><br/>
+<a href="#ren">Rendering & SVG</a><br/>
+<a href="#map">Strumenti mappa</a><br/>
+<a href="#over">Sovrapposizione</a><br/>
+<a href="#digit">Digitalizzazione</a><br/>
+<a href="#crs">CRS</a><br/>
+<a href="#loc">Lingua</a><br/>
+<a href="#net">Rete & Proxy</a><br/>
+
+<a name="general">
+<h4>Generale</h4>
+</a>
+In questo tab è possibile impostare le opzioni generali per il progetto nella fase di apertura/chiusura, visualizzazione predefinita della mappa, tema delle icone preferito e molto altro.
+<a name="ren">
+<h4>Rendering & SVG</h4>
+</a>
+Con questo tab si impostano le opzioni di rendering per i layer della mappa.<br>
+Per default, QGIS effettua un render di tutti i layer visibili ogni volta che l'area mappa deve essere aggiornata. Gli eventi che causano un aggiornamento della mappa sono:
+<ul>
+<li>Aggiunta di un layer
+<li>Pan o zoom
+<li>Redimensionamento della finestra di QGIS
+<li>Accensione/spegnimento di uno o più layer
+</ul>
+QGIS consente di controllare il processo di rendering in vari modi:<p>
+è possibile fare in modo che i nuovi layer caricati non vengano disegnati sull'area mappa.<br>
+Significa che il layer viene aggiunto alla TOC ma il checkbox che controlla la visibilità del layer viene disattivato per default. Per impostare questa opzione togliere la spunta dal checkbox <label>Per impostazione predefinita i nuovi layer aggiunti alla mappa vengono visualizzati subito</label>.<p>
+Si può impostare l'opzione di aggiornare la mappa quando gli oggetti vengono disegnati. <br>
+Per default, QGIS non visualizza alcun elemento di un layer fino a quando l'intero layer è stato renderizzato. Per aggiornare la visualizzazione quando gli elementi vengono letti dalla sorgente dati, impostare il <label>Numero di geometrie da disegnare prima di aggiornare lo schermo</label> ad un valore appropriato. Un valore pari a 0 disabilita l'aggiornamento durante il disegno (questo per default). Un valore troppo basso diminuisce le prestazioni in quanto l'area mappa viene aggiornata continuamente durante la lettura degli elementi. Si suggerisce di iniziare con un valore pari a 500.
+<a name="map">
+<h4>Strumenti mappa</h4>
+</a>
+L'impostazione della <label>Modalità</label> determina quali layer saranno mostrati dallo strumento <label>Informazioni</label>. Cambiando a <label>Su giù</label> anziché <label>Layer corrente</label> verranno visualizzati gli attributi di tutti i layer identificabili con lo strumento <label>Informazioni</label>.
+
+<a name="over">
+<h4>Sovrapposizione</h4>
+</a>
+Definisce l'algoritmo di posizionamento delle etichette. Scegliere tra <label>Punto centrale (velocissimo)</label>, <label>Catena (veloce)</label>, <label>Catena tabu popmusic (lento)</label>, <label>Tabu popmusic (lento)</label> e <label>Catena popmusic (lentissimo)</label>.
+
+<a name="digit">
+<h4>Digitalizzazione</h4>
+</a>
+Nel tab <label>Digitalizzazione</label> è possibile definire una tolleranza di snap generale per tutto il progetto. <p>
+Si può scegliere tra <label>Al vertice</label>, <label>Al segmento</label> oppure <label>Al vertice e segmento</label> come modalità di snap di default. è anche possibile definire una tolleranza di snap di default e un raggio di ricerca per l'editing dei vertici. La tolleranza può essere espressa in unità mappa o in pixel. Il vantaggio di scegliere i pixel consiste nel fatto che la tolleranza non deve essere modificata durante i cambiamenti di zoom. <p>
+può essere definita una tolleranza diversa per ogni layer scegliendo <label>Impostazioni</label> (oppure <label>File</label>)
+> <label>Proprieta' progetto...</label>. Nel tab <label>Generale</label>, sezione <label>Digitalizzazione</label> fare clic su <label>Opzioni di snap...</label> per abilitare e impostare le modalita' di snapping e la tolleranza su ogni layer.
+<a name="crs">
+<h4>CRS</h4>
+</a>
+QGIS non imposta più il CRS al sistema di coordinate del primo layer caricato. Quando si avvia una sessione di QGIS con layer che non hanno un CRS, è necessario controllare e definire il CRS per quei layer. Questo può essere fatto interamente su questo tab.<p>
+Il CRS globale di default <i>proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs</i> è predefinito in QGIS ma può essere cambiato, e la nuova definizione viene salvata per le sessioni successive.
+<a name="lov">
+<h4>Lingua</h4>
+</a>
+Riporta la lingua corrente in uso.
+Per cambiarla spuntare <label>Sovrascrivi lingua in uso</label> e riavviare QGIS.
+<a name="net">
+<h4>Rete & Proxy</h4>
+</a>
+Spuntare <label>Utilizza un proxy per l'accesso web</label> per definire server host, porta, utente e password.
+

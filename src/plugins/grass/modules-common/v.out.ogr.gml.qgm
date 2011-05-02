@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Export vector to GML" module="v.out.ogr">
+	<option key="input" layeroption="layer" typeoption="type" />
+	<option key="format" answer="GML" hidden="yes" />
+	<file key="dsn" type="new" label="Output GML file" filters="GML (*.gml)" />
+	<option key="olayer" answer="default" label="Output layer name (used in GML file)" />
+</qgisgrassmodule>

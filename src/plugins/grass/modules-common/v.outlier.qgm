@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Remove outliers from vector point data" module="v.outlier">
+	<option key="input" />
+	<option key="soe" ansewr="10" />
+	<option key="son" ansewr="10" />
+	<option key="lambda_i" ansewr="0.1" />
+	<option key="thres_o" ansewr="50" />
+	<option key="output" />
+	<option key="outlier" />
+</qgisgrassmodule>

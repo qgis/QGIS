@@ -1,0 +1,33 @@
+<h3>Favoritos Espacial</h3>
+Os Favoritos Geoespaciais permitem você armazenar locais geográficos favoritos para retornar aos mesmos em outra ocasião.
+<p>
+<a href="#creating">Criar Favorito</a><br/>
+<a href="#working">Trabalhar um Favorito</a><br/>
+<a href="#zooming">Visualizar um Favorito</a><br/>
+<a href="#deleting">Excluir um Favorito</a><br/>
+
+<a name="creating">
+<h4>Criar um Favorito</h4>
+</a>
+Para criar um favorito:
+<ol>
+<li>Aproxime ou movimente até a área de interesse
+<li>Clique em <label>Novo Favorito</label> ou digite Ctrl+B
+<li>Entre com uma descrição para os favoritos (no máximo 255 caracteres)
+<li>Clique <label>OK</label> para adicionar aos Favoritos ou <i>Cancelar</i> para sair sem adicionar o local de interesse aos favoritos.
+</ol>
+Note que você pode ter múltiplos favoritos com o mesmo nome.
+<a name="working">
+<h4>Trabalhar com Favoritos</h4>
+</a>
+Para usar ou gerenciar favoritos clique no botão <label>Mostrar Favoritos</label> ou escolha <label>Mostrar Favoritos</label> no menu <i>Exibir</i>. O diálogo favoritos permite você ir ao favorito ou excluí-lo. Você não pode editar o nome ou coordenadas do favorito.
+<a name="zooming">
+<h5>Visualizar um Favoritos</h5>
+A partir do diálogo Favoritos, selecione o favorito desejado clicando nele, então clique no botão <label>Aproximar para</label>.
+<p>
+Você pode também aproximar para o favorito através de um duplo clique no mesmo.
+<a name="deleting">
+<h5>Excluir um Favorito</h5>
+</a>
+Para excluir um favorito do diálogo de Favoritos, clique nele e depois no botão <label>Excluir</label>. Confirme sua escolha clicando em <label>OK</label> ou cancele a exclusão clicando em <label>Cancelar</label>.
+

@@ -1,0 +1,178 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"lenny squeeze hardy intrepid jaunty karmic lucid maverick natty"))
+DISTRIBUTION := sid
+endif
+
+QGIS_MAJOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MAJOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
+QGIS_MINOR=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_MINOR "\([0-9]*\)")/\1/p' CMakeLists.txt)
+QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p' CMakeLists.txt)
+QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
+GRASS_ABI=$(subst .,,$(shell pkg-config --modversion grass|sed -e "s/\.//g" -e "s/RC/-/"))
+GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
+
+CMAKE_OPTS := \
+	-D GRASS_PREFIX=/usr/lib/grass64 \
+	-D CMAKE_INSTALL_PREFIX=/usr \
+	-D CMAKE_SKIP_RPATH=TRUE \
+	-D BINDINGS_GLOBAL_INSTALL=TRUE \
+	-D PEDANTIC=TRUE \
+	-D WITH_SPATIALITE=TRUE \
+	-D WITH_MAPSERVER=TRUE \
+	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
+	-D WITH_APIDOC=TRUE
+
+ifneq (,$(findstring $(DISTRIBUTION),"natty"))
+	CMAKE_OPTS += -D QT_QTWEBKIT_INCLUDE_DIR=/usr/include/QtWebKit
+endif
+
+#ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty sid"))
+	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
+#else
+#	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
+#endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"hardy intrepid"))
+LDFLAGS += -Wl,--as-needed -Wl,--no-undefined
+endif
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+ifeq (,$(findstring nostrip,$(DEB_BUILD_OPTIONS)))
+	INSTALL_PROGRAM += -s
+endif
+
+ifneq (,$(findstring debug,$(DEB_BUILD_OPTIONS)))
+	CMAKE_OPTS += -D CMAKE_BUILD_TYPE=Debug -D ENABLE_TESTS=TRUE
+	MAKEFLAGS += VERBOSE=YES
+endif
+
+ifneq (,$(findstring profile,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -pg
+	CXXFLAGS += -pg
+	LDFLAGS += -pg
+endif
+
+define gentemplate
+$(2): $(1)
+	sed \
+		-e "s/{QGIS_ABI}/$(QGIS_ABI)/g" \
+		-e "s/{GRASS}/$(GRASS)/g" \
+		-e "s/{GRASS_ABI}/$(GRASS_ABI)/g" $$^ >$$@
+
+templateclean::
+	rm -f $(2)
+endef
+
+TEMPLATES := $(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(basename $(t)))
+TEMPLATES += $(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))
+
+$(foreach t,$(wildcard debian/*.in debian/*.$(DISTRIBUTION)),$(eval $(call gentemplate,$(t),$(basename $(t)))))
+$(foreach t,$(wildcard debian/*{QGIS_ABI}*),$(eval $(call gentemplate,$(t),$(subst {QGIS_ABI},$(QGIS_ABI),$(t)))))
+
+debian/build/CMakeCache.txt: $(TEMPLATES) CMakeLists.txt
+	dh_testdir
+	# Add here commands to configure the package.
+	[ -d debian/build ] || mkdir debian/build
+	[ ! -e CMakeCache.txt ] || rm CMakeCache.txt
+	cd debian/build; cmake $(CMAKE_OPTS) ../..
+
+build: build-stamp
+
+build-stamp: debian/build/CMakeCache.txt
+	dh_testdir
+
+	# Add here commands to compile the package.
+	$(MAKE) -C debian/build
+
+	touch $@
+
+cleantemplates:
+	$(MAKE) -f debian/rules templateclean
+	$(MAKE) -f debian/rules debian/control debian/compat
+
+clean: cleantemplates
+	dh_testdir
+	dh_testroot
+	rm -f build-stamp 
+	rm -f i18n/*.qm
+	rm -rf debian/tmp
+
+	# Add here commands to clean up after the build process.
+	rm -rf debian/build
+
+	dh_clean
+
+install: build
+	dh_testdir
+	dh_testroot
+ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
+	dh_clean -k 
+else
+	dh_prep
+endif
+	dh_installdirs
+
+	# Add here commands to install the package into debian/tmp.
+	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
+
+	# Install menu pixmap
+	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
+	install -o root -g root -m 644 $(CURDIR)/debian/qgis-icon.xpm $(CURDIR)/debian/tmp/usr/share/pixmaps
+
+# Build architecture-independent files here.
+binary-indep: build install
+# We have nothing to do by default.
+
+# Build architecture-dependent files here.
+binary-arch: build install
+	dh_testdir
+	dh_testroot
+	dh_installchangelogs ChangeLog
+	dh_installdocs
+	dh_installexamples
+	dh_install --sourcedir=debian/tmp
+
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin
+
+	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
+	
+	dh_pycentral
+	dh_installmenu
+	dh_icons
+ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
+	dh_desktop
+endif
+	dh_installman -pqgis qgis.1
+	dh_installmime -pqgis
+	dh_link
+	if which dh_lintian >/dev/null; then dh_lintian; fi
+	dh_strip
+	dh_compress --exclude=pdf
+	dh_fixperms
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps -l/usr/lib/$(GRASS)/lib
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+binary: binary-indep binary-arch
+.PHONY: build clean binary-indep binary-arch binary install debian/control cleantemplates templateclean

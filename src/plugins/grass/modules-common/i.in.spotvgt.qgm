@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Import SPOT VGT NDVI" module="i.in.spotvgt">
+	<file key="file" type="new" />
+	<flag key="a" />
+	<option key="rast" />
+</qgisgrassmodule>

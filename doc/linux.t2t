@@ -1,0 +1,493 @@
+
+= Building on GNU/Linux =
+
+== Building QGIS with Qt 4.x ==
+
+**Requires:** Ubuntu / Debian derived distro
+
+These notes are for Ubuntu - other versions and Debian derived distros may
+require slight variations in package names.
+
+These notes are for if you want to build QGIS from source. One of the major
+aims here is to show how this can be done using binary packages for ***all***
+dependencies - building only the core QGIS stuff from source. I prefer this
+approach because it means we can leave the business of managing system packages
+to apt and only concern ourselves with coding QGIS! 
+
+This document assumes you have made a fresh install and have a 'clean' system.
+These instructions should work fine if this is a system that has already been
+in use for a while, you may need to just skip those steps which are irrelevant
+to you.
+
+/!\ **Note:** Refer to the section ''Building Debian packages'' for building 
+debian packages.  Unless you plan to develop on QGIS, that is probably the
+easiest option to compile and install QGIS.
+
+== Prepare apt ==
+
+The packages qgis depends on to build are available in the "universe" component
+of Ubuntu. This is not activated by default, so you need to activate it:
+
+1. Edit your /etc/apt/sources.list file.  
+2. Uncomment the all the lines starting with "deb"
+
+Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
+all dependencies to be met.
+
+Now update your local sources database:
+
+``` 
+sudo apt-get update 
+```
+
+
+== Install build dependencies ==
+
+|| Distribution | install command for packages |
+| lenny | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libqt4-dev libqwt5-qt4-dev libsqlite3-dev pkg-config proj pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip4-dev sip4 txt2tags`` |
+| lucid | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev txt2tags`` |
+| maverick | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqtwebkit-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev txt2tags`` |
+| natty | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqtwebkit-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev txt2tags`` |
+| sid | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqtwebkit-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev txt2tags`` |
+| squeeze | ``apt-get install bison cmake doxygen flex graphviz grass-dev libexpat1-dev libfcgi-dev libgdal1-dev libgeos-dev libgsl0-dev libpq-dev libproj-dev libqt4-dev libqwt5-qt4-dev libspatialite-dev libsqlite3-dev pkg-config pyqt4-dev-tools python python-dev python-qt4 python-qt4-dev python-sip python-sip-dev txt2tags`` |
+
+(extracted from the respective control files in ``debian/``)
+
+/!\ **A Special Note:** If you are following this set of instructions on
+a system where you already have Qt3 development tools installed, there will
+be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
+point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
+designed to live alongside each other. This means that for example if you
+have them both installed you will have three qmake exe's:
+
+``` 
+/usr/bin/qmake -> /etc/alternatives/qmake 
+/usr/bin/qmake-qt3
+/usr/bin/qmake-qt4 
+```
+
+The same applies to all other Qt binaries. You will notice above that the
+canonical 'qmake' is managed by apt alternatives, so before we start to
+build QGIS, we need to make Qt4 the default. To return Qt3 to default later
+you can use this same process.
+
+You can use apt alternatives to correct this so that the Qt4 version of
+applications is used in all cases:
+
+``` 
+sudo update-alternatives --config qmake
+sudo update-alternatives --config uic 
+sudo update-alternatives --config designer 
+sudo update-alternatives --config assistant 
+sudo update-alternatives --config qtconfig 
+sudo update-alternatives --config moc 
+sudo update-alternatives --config lupdate 
+sudo update-alternatives --config lrelease 
+sudo update-alternatives --config linguist 
+```
+
+Use the simple command line dialog that appears after running each of the
+above commands to select the Qt4 version of the relevant applications.
+
+/!\ **Note:** For python language bindings SIP >= 4.5 and PyQt4 >= 4.1 is required! Some stable GNU/Linux
+distributions (e.g. Debian or SuSE) only provide SIP < 4.5 and PyQt4 < 4.1. To include support for python 
+language bindings you may need to build and install those packages from source.
+
+
+== Setup ccache (Optional) ==
+
+You should also setup ccache to speed up compile times:
+
+``` 
+cd /usr/local/bin 
+sudo ln -s /usr/bin/ccache gcc 
+sudo ln -s /usr/bin/ccache g++ 
+```
+
+== Prepare your development environment ==
+
+As a convention I do all my development work in $HOME/dev/<language>, so in
+this case we will create a work environment for C++ development work like
+this:
+
+``` 
+mkdir -p ${HOME}/dev/cpp 
+cd ${HOME}/dev/cpp 
+```
+
+This directory path will be assumed for all instructions that follow.
+
+
+== Check out the QGIS Source Code ==
+
+There are two ways the source can be checked out. Use the anonymous method
+if you do not have edit privaleges for the QGIS source repository, or use
+  the developer checkout if you have permissions to commit source code
+  changes.
+
+1. Anonymous Checkout
+
+``` 
+cd ${HOME}/dev/cpp 
+svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
+```
+
+2. Developer Checkout
+
+``` 
+cd ${HOME}/dev/cpp 
+svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
+```
+
+The first time you check out the source you will be prompted to accept the
+qgis.org certificate. Press 'p' to accept it permanently:
+
+``` 
+Error validating server certificate for 'https://svn.qgis.org:443':
+   - The certificate is not issued by a trusted authority. Use the
+     fingerprint to validate the certificate manually!  Certificate
+     information:
+   - Hostname: svn.qgis.org
+   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
+   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
+   - Fingerprint:
+     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
+     accept (t)emporarily or accept (p)ermanently?  
+```
+
+== Starting the compile ==
+
+I compile my development version of QGIS into my ~/apps directory to avoid
+conflicts with Ubuntu packages that may be under /usr. This way for example
+you can use the binary packages of QGIS on your system along side with your
+development version. I suggest you do something similar:
+
+``` 
+mkdir -p ${HOME}/apps 
+```
+
+Now we create a build directory and run ccmake:
+
+```
+cd qgis
+mkdir build
+cd build
+ccmake ..
+```
+
+When you run ccmake (note the .. is required!), a menu will appear where 
+you can configure various aspects of the build. If you do not have root
+access or do not want to overwrite existing QGIS installs (by your
+packagemanager for example), set the CMAKE_BUILD_PREFIX to somewhere you
+have write access to (I usually use /home/timlinux/apps). Now press
+'c' to configure, 'e' to dismiss any error messages that may appear.
+and 'g' to generate the make files. Note that sometimes 'c' needs to 
+be pressed several times before the 'g' option becomes available.
+After the 'g' generation is complete, press 'q' to exit the ccmake 
+interactive dialog.
+
+Now on with the build:
+
+```
+make
+make install
+```
+
+It may take a little while to build depending on your platform.
+
+After that you can try to run QGIS:
+
+``` 
+$HOME/apps/bin/qgis
+```
+
+If all has worked properly the QGIS application should start up and appear
+on your screen.
+
+
+== Building Debian packages ==
+
+Instead of creating a personal installation as in the previous step you can
+also create debian package.  This is done from the qgis root directory, where
+you'll find a debian directory.
+
+First you need to install the debian packaging tools once:
+
+```
+apt-get install build-essential
+```
+
+First you need to create an changelog entry for your distribution. For example for Ubuntu Lucid:
+
+```
+dch -l ~lucid  --force-distribution --distribution lucid "lucid build"
+```
+
+The QGIS packages will be created with:
+
+```
+dpkg-buildpackage -us -uc -b
+```
+
+/!\ **Note:** If ``dpkg-buildpackage`` complains about unmet build dependencies
+you can install them using ``apt-get`` and re-run the command.
+
+/!\ **Note:** If you have ``libqgis1-dev`` installed, you need to remove it first
+using ``dpkg -r libqgis1-dev``.  Otherwise ``dpkg-buildpackage`` will complain about a
+build conflict.
+
+The packages are created in the parent directory (ie. one level up).
+Install them using dpkg.  E.g.:
+
+```
+sudo debi
+```
+
+
+== A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support ==
+
+The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If you want 
+to use different versions of the software (gdal, grass, qgis), just make the 
+necessary adjustments to the following code. This guide assumes that you don't have 
+installed any previous version of gdal, grass and qgis.
+
+===  Step 1: install base packages === 
+
+First you need to install the necessary packages required to download the source 
+code and compile it. Open the terminal and issue the following command:
+
+``` 
+sudo apt-get install build-essential g++ subversion
+```
+
+=== Step 2: compile and install the ecw libraries ===
+
+Go to the ERDAS web site http://www.erdas.com/ and follow the links
+"'''products --> ECW JPEG2000 Codec SDK --> downloads'''" 
+then download the "'''Image Compression SDK Source Code 3.3'''" (you'll need to make a registration 
+and accept a license).
+
+Uncompress the arquive in a proper location (this guide assumes 
+that all the downloaded source code will be placed in the user home) 
+and the enter the newly created folder
+
+``` 
+cd /libecwj2-3.3
+```
+
+Compile the code with the standard commands
+
+``` 
+./configure
+```
+
+then
+
+``` 
+make
+```
+
+then
+
+``` 
+sudo make install
+```
+
+leave the folder 
+
+``` 
+cd ..
+```
+
+=== Step 3: download the MrSID binaries ===
+
+Go to the LIZARDTECH web site http://www.lizardtech.com/ and follow the links
+"'''download --> Developer SDKs'''", 
+then download the "'''GeoExpress SDK for Linux (x86) - gcc 4.1 32-bit'''"
+(you'll need to make a registration and accept a license).
+
+Uncompress the downloaded file. The resulting directory name should be similar to "Geo_DSDK-7.0.0.2167"
+
+=== Step 4: compile and install the gdal libraries ===
+
+Download the latest gdal source code
+
+``` 
+svn checkout https://svn.osgeo.org/gdal/trunk/gdal gdal
+```
+
+then copy a few files from the MrSID binaries folder to the folder with the gdal source code
+('''replace "USERNAME" with your actual account username''')
+
+``` 
+cp /home/USERNAME/Geo_DSDK-7.0.0.2167/include/*.* /home/USERNAME/gdal/frmts/mrsid/
+```
+
+enter the gdal source code folder
+
+``` 
+cd /gdal
+```
+
+and run configure with a few specific parameters
+
+``` 
+./configure --without-grass --with-mrsid=../Geo_DSDK-7.0.0.2167 --without-jp2mrsid
+``` 
+
+at the end of the configuration process you should read something like
+
+``` 
+...
+GRASS support:             no
+...
+...
+...
+ECW support:               yes
+MrSID support              yes			
+...
+```
+
+then compile normally
+
+``` 
+make
+```
+
+and
+
+``` 
+sudo make install
+```
+
+finish the process by creating the necessary links to the most recent shared libraries
+
+``` 
+sudo ldconfig
+```
+
+at this point you may want to check if gdal was compiled correctly with MrSID and ECW
+support by issuing one (or both) of the following commands
+
+``` 
+gdalinfo --formats | grep 'ECW'
+```
+
+``` 
+gdalinfo --formats | grep 'SID'
+```
+
+leave the folder 
+
+``` 
+cd ..
+```
+
+=== Step 5: compile and install GRASS ===
+
+Before downloading and compile GRASS source code you need to install a few
+other libraries and programs. We can do this trough apt
+
+``` 
+sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
+tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
+libgdal1-dev proj libjpeg62-dev libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake \
+python-dev python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev libxmu6 \
+libqt4-dev libgsl0-dev python-qt4 swig python-wxversion python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev \
+tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
+```
+
+At this point we can get the GRASS source code: you may want to download it
+trough svn or maybe you want just to download the latest available source code arquive.
+For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
+
+Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
+
+``` 
+CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
+--with-python=/usr/bin/python2.5-config
+```
+
+The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also http://trac.osgeo.org/grass/ticket/869
+
+Then as usual (it will take a while)
+
+``` 
+make
+```
+
+and
+
+``` 
+sudo make install
+```
+
+leave the folder 
+
+``` 
+cd ..
+```
+
+you have now compiled and installed GRASS (also with the new wxpyhton interface) so you
+may want to give it a try
+
+``` 
+grass64 -wxpython
+```
+
+
+=== Step 6: compile and install QGIS ===
+
+As for GRASS you can obtain the QGIS source code from different sources,
+for instance from svn or just by downloading one of the source code arquives available
+at http://www.qgis.org/download/sources.html
+
+For example download the QGIS 1.1.0 source code here http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz
+
+uncompress the arquive and enter the newly created folder
+
+``` 
+cd /qgis_1.1.0
+```
+
+then run ccmake
+
+``` 
+ccmake .
+```
+
+press the "c" key, then when the option list will appear we need to manually
+configure the "GRASS_PREFIX" parameter. Scroll down until the "GRASS_PREFIX" will appear, 
+press enter and manually set it to
+
+``` 
+/usr/local/grass-6.4.0RC4
+```
+
+then press enter again.
+
+Press the "c" again and the option "Press [g] to generate and exit" will appear.
+Press the "g" key to generate and exit.
+
+then as usual (it will take a while)
+
+``` 
+make
+```
+
+and
+
+``` 
+sudo make install
+```
+
+At the end of the process you should have QGIS and GRASS working with MrSID and ECW
+raster format support.
+
+To run QGIS just use this command 
+
+``` 
+qgis
+```
+
+

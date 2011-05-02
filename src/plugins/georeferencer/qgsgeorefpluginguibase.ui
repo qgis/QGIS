@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsGeorefPluginGuiBase</class>
+ <widget class="QMainWindow" name="QgsGeorefPluginGuiBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>900</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Georeferencer</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout"/>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>900</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="mActionOpenRaster"/>
+    <addaction name="separator"/>
+    <addaction name="mActionStartGeoref"/>
+    <addaction name="mActionGDALScript"/>
+    <addaction name="separator"/>
+    <addaction name="mActionLoadGCPpoints"/>
+    <addaction name="mActionSaveGCPpoints"/>
+    <addaction name="separator"/>
+    <addaction name="mActionQuit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="mActionPan"/>
+    <addaction name="mActionZoomIn"/>
+    <addaction name="mActionZoomOut"/>
+    <addaction name="mActionZoomToLayer"/>
+    <addaction name="mActionZoomLast"/>
+    <addaction name="mActionZoomNext"/>
+    <addaction name="separator"/>
+    <addaction name="mActionLinkGeorefToQGis"/>
+    <addaction name="mActionLinkQGisToGeoref"/>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+    <addaction name="mActionAddPoint"/>
+    <addaction name="mActionDeletePoint"/>
+    <addaction name="mActionMoveGCPPoint"/>
+   </widget>
+   <widget class="QMenu" name="menuSettings">
+    <property name="title">
+     <string>Settings</string>
+    </property>
+    <addaction name="mActionTransformSettings"/>
+    <addaction name="mActionRasterProperties"/>
+    <addaction name="mActionGeorefConfig"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuEdit"/>
+   <addaction name="menuView"/>
+   <addaction name="menuSettings"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <widget class="QToolBar" name="toolBarFile">
+   <property name="windowTitle">
+    <string>File</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionOpenRaster"/>
+   <addaction name="separator"/>
+   <addaction name="mActionStartGeoref"/>
+   <addaction name="mActionGDALScript"/>
+   <addaction name="separator"/>
+   <addaction name="mActionLoadGCPpoints"/>
+   <addaction name="mActionSaveGCPpoints"/>
+   <addaction name="separator"/>
+   <addaction name="mActionTransformSettings"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarEdit">
+   <property name="windowTitle">
+    <string>Edit</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionAddPoint"/>
+   <addaction name="mActionDeletePoint"/>
+   <addaction name="mActionMoveGCPPoint"/>
+  </widget>
+  <widget class="QToolBar" name="toolBarView">
+   <property name="windowTitle">
+    <string>View</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>24</width>
+     <height>24</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionPan"/>
+   <addaction name="mActionZoomIn"/>
+   <addaction name="mActionZoomOut"/>
+   <addaction name="mActionZoomToLayer"/>
+   <addaction name="mActionZoomLast"/>
+   <addaction name="mActionZoomNext"/>
+   <addaction name="separator"/>
+   <addaction name="mActionLinkGeorefToQGis"/>
+   <addaction name="mActionLinkQGisToGeoref"/>
+  </widget>
+  <widget class="QDockWidget" name="dockWidgetGCPpoints">
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::AllDockWidgetAreas</set>
+   </property>
+   <property name="windowTitle">
+    <string>GCP table</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QHBoxLayout" name="horizontalLayout_2"/>
+   </widget>
+  </widget>
+  <action name="mActionOpenRaster">
+   <property name="text">
+    <string>Open raster</string>
+   </property>
+   <property name="statusTip">
+    <string>Open raster</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="mActionZoomIn">
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom In</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
+  </action>
+  <action name="mActionZoomOut">
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="mActionZoomToLayer">
+   <property name="text">
+    <string>Zoom to Layer</string>
+   </property>
+   <property name="statusTip">
+    <string>Zoom to Layer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F</string>
+   </property>
+  </action>
+  <action name="mActionPan">
+   <property name="text">
+    <string>Pan</string>
+   </property>
+   <property name="statusTip">
+    <string>Pan</string>
+   </property>
+  </action>
+  <action name="mActionTransformSettings">
+   <property name="text">
+    <string>Transformation settings</string>
+   </property>
+   <property name="statusTip">
+    <string>Transformation settings</string>
+   </property>
+  </action>
+  <action name="mActionAddPoint">
+   <property name="text">
+    <string>Add point</string>
+   </property>
+   <property name="statusTip">
+    <string>Add point</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="mActionDeletePoint">
+   <property name="text">
+    <string>Delete point</string>
+   </property>
+   <property name="statusTip">
+    <string>Delete point</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="mActionQuit">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+   <property name="statusTip">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="mActionStartGeoref">
+   <property name="text">
+    <string>Start georeferencing</string>
+   </property>
+   <property name="statusTip">
+    <string>Start georeferencing</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="mActionGDALScript">
+   <property name="text">
+    <string>Generate GDAL script</string>
+   </property>
+   <property name="statusTip">
+    <string>Generate GDAL script</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="mActionLinkGeorefToQGis">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Link Georeferencer to QGis</string>
+   </property>
+   <property name="statusTip">
+    <string>Link Georeferencer to QGis</string>
+   </property>
+  </action>
+  <action name="mActionLinkQGisToGeoref">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Link QGis to Georeferencer</string>
+   </property>
+   <property name="statusTip">
+    <string>Link QGis to Georeferencer</string>
+   </property>
+  </action>
+  <action name="mActionSaveGCPpoints">
+   <property name="text">
+    <string>Save GCP points as...</string>
+   </property>
+   <property name="statusTip">
+    <string>Save GCP points as...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="mActionLoadGCPpoints">
+   <property name="text">
+    <string>Load GCP points</string>
+   </property>
+   <property name="statusTip">
+    <string>Load GCP points</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="mActionGeorefConfig">
+   <property name="text">
+    <string>Configure Georeferencer</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="mActionRasterProperties">
+   <property name="text">
+    <string>Raster properties</string>
+   </property>
+  </action>
+  <action name="mActionMoveGCPPoint">
+   <property name="text">
+    <string>Move GCP point</string>
+   </property>
+   <property name="statusTip">
+    <string>Move GCP point</string>
+   </property>
+  </action>
+  <action name="mActionZoomNext">
+   <property name="text">
+    <string>Zoom Next</string>
+   </property>
+  </action>
+  <action name="mActionZoomLast">
+   <property name="text">
+    <string>Zoom Last</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

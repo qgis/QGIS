@@ -1,0 +1,34 @@
+<h3>Segnalibri spaziali</h3>
+I segnalibri spaziali consentono di "marcare" una posizione geografica e di ritornarci in un secondo momento.
+<p>
+<a href="#creating">Creare un segnalibro</a><br/>
+<a href="#working">Lavorare con i segnalibri</a><br/>
+<a href="#zooming">Zoomare su un segnalibro</a><br/>
+<a href="#deleting">Cancellare un segnalibro</a><br/>
+
+<a name="creating">
+<h4>Creare un segnalibro</h4>
+</a>
+Per creare un segnalibro:
+<ol>
+<li>Zoomare o spostarsi sull'area di interesse.
+<li>Clic su <label>Nuovo segnalibro</label> oppure Ctrl-B.
+<li>Inserire un nome descrittivo per il segnalibro (fino a 255 caratteri).
+<li>Clic su <label>OK</label> per aggiungere il segnalibro oppure <label>Annulla</label> per uscire senza aggiungere il segnalibro.
+</ol>
+Nota: si possono avere più segnalibri con lo stesso nome.
+<a name="working">
+<h4>Lavorare con i segnalibri</h4>
+</a>
+Per utilizzare o gestire i segnalibri, clic sul pulsante <label>Mostra segnalibri</label> oppure scegli <label>Mostra segnalibri</label> dal menu' <label>Visualizza</label>. La finestra di dialogo dei segnalibri consente di zoomare su un segnalibro o di cancellarne uno. Non si possono modificare il nome e le coordinare del segnalibro.
+<a name="zooming">
+<h5>Zoomare su un segnalibro</h5>
+</a>
+Dalla finestra di dialogo Segnalibri geospaziali, selezionare il segnalibro desiderato con un clic, poi clic sul pulsante <label>Zoom a</label>.
+<p>
+E' possibile zoomare su un segnalibro con un doppio clic.
+<a name="deleting">
+<h5>Cancellare un segnalibro</h5>
+</a>
+Per cancellare un segnalibro, clic sul nome che lo identifica e poi clic sul pulsante <label>Elimina</label>. Confermare con <label>OK</label> o annullare l'operazione con <label>Annulla</label>.
+

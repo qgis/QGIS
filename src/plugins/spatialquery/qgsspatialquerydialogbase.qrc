@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file>spatialquery.png</file>
+        <file>selectcreatelayer.png</file>
+        <file>itemscreatelayer.png</file>
+    </qresource>
+</RCC>

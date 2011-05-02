@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Bicubic or bilinear spline interpolation with Tykhonov regularization" module="v.surf.bspline">
+	<option key="input"/>
+	<option key="sparse" />
+	<option key="raster" />
+	<flag key="c" />
+</qgisgrassmodule>

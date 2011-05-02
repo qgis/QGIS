@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Connect selected nodes by shortest tree (Steiner tree)" module="v.net.steiner">
+	<option key="input" layeroption="alayer" typemask="line,boundary" label="Input arcs" id="arcs" />
+	<option key="input" mapid="arcs" layeroption="nlayer" typemask="point" label="Input nodes" id="nodes" />
+	<selection key="tcats" layerid="nodes" label="Cats" />
+	<option key="output" />
+</qgisgrassmodule>

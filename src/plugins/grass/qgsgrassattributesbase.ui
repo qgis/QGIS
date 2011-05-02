@@ -1,0 +1,253 @@
+<ui version="4.0" >
+ <class>QgsGrassAttributesBase</class>
+ <widget class="QDialog" name="QgsGrassAttributesBase" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>273</width>
+    <height>330</height>
+   </rect>
+  </property>
+  <property name="sizePolicy" >
+   <sizepolicy vsizetype="Minimum" hsizetype="MinimumExpanding" >
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize" >
+   <size>
+    <width>100</width>
+    <height>300</height>
+   </size>
+  </property>
+  <property name="maximumSize" >
+   <size>
+    <width>32767</width>
+    <height>32767</height>
+   </size>
+  </property>
+  <property name="sizeIncrement" >
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="baseSize" >
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle" >
+   <string>GRASS Attributes</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="spacing" >
+    <number>5</number>
+   </property>
+   <property name="leftMargin" >
+    <number>5</number>
+   </property>
+   <property name="topMargin" >
+    <number>5</number>
+   </property>
+   <property name="rightMargin" >
+    <number>5</number>
+   </property>
+   <property name="bottomMargin" >
+    <number>5</number>
+   </property>
+   <item>
+    <widget class="QTabWidget" name="tabCats" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Expanding" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>50</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="tabShape" >
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <widget class="QWidget" name="tab" >
+      <attribute name="title" >
+       <string>Tab 1</string>
+      </attribute>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QLabel" name="resultLabel" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>0</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>32767</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::Box</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="text" >
+      <string>result</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QFrame" name="buttonsFrame" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize" >
+      <size>
+       <width>100</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="maximumSize" >
+      <size>
+       <width>32767</width>
+       <height>40</height>
+      </size>
+     </property>
+     <property name="frameShape" >
+      <enum>QFrame::StyledPanel</enum>
+     </property>
+     <property name="frameShadow" >
+      <enum>QFrame::Raised</enum>
+     </property>
+     <property name="lineWidth" >
+      <number>0</number>
+     </property>
+     <layout class="QHBoxLayout" >
+      <property name="spacing" >
+       <number>5</number>
+      </property>
+      <property name="leftMargin" >
+       <number>5</number>
+      </property>
+      <property name="topMargin" >
+       <number>5</number>
+      </property>
+      <property name="rightMargin" >
+       <number>5</number>
+      </property>
+      <property name="bottomMargin" >
+       <number>5</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="updateButton" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Preferred" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32767</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Update database record</string>
+        </property>
+        <property name="text" >
+         <string>Update</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="newButton" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32767</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Add new category using settings in GRASS Edit toolbox</string>
+        </property>
+        <property name="text" >
+         <string>New</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="deleteButton" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Expanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>32767</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="toolTip" >
+         <string>Delete selected category</string>
+        </property>
+        <property name="text" >
+         <string>Delete</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11" />
+ <resources/>
+ <connections/>
+</ui>
