@@ -126,7 +126,17 @@ QFileInfo defaultAdminSLD()
   return QFileInfo( "admin.sld" );
 }
 
-
+int fcgi_accept()
+{
+#ifdef Q_OS_WIN
+  if ( FCGX_IsCGI() )
+    return FCGI_Accept();
+  else
+    return FCGX_Accept( &FCGI_stdin->fcgx_stream, &FCGI_stdout->fcgx_stream, &FCGI_stderr->fcgx_stream, &environ );
+#else
+  return FCGI_Accept();
+#endif
+}
 
 int main( int argc, char * argv[] )
 {
@@ -181,11 +191,10 @@ int main( int argc, char * argv[] )
     }
   }
 
-
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
 
-  while ( FCGI_Accept() >= 0 )
+  while ( fcgi_accept() >= 0 )
   {
     printRequestInfos(); //print request infos if in debug mode
 
