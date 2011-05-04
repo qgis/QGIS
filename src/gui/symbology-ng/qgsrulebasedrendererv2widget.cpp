@@ -22,11 +22,14 @@
 #include "qgsapplication.h"
 #include "qgssearchtreenode.h"
 #include "qgssymbolv2selectordialog.h"
+#include "qgslogger.h"
+#include "qstring.h"
 
 #include <QMenu>
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 #include <QMessageBox>
+#include <sstream>
 
 QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
@@ -66,16 +69,29 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
+  btnIncreasePriority->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
+  btnDecreasePriority->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
 
   connect( treeRules, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( editRule() ) );
 
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
   connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
+  connect( btnIncreasePriority, SIGNAL( clicked() ), this, SLOT( increasePriority() ) );
+  connect( btnDecreasePriority, SIGNAL( clicked() ), this, SLOT( decreasePriority() ) );
 
   connect( radNoGrouping, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
   connect( radGroupFilter, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
   connect( radGroupScale, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
+
+  // Make sure buttons are always in the correct state
+  chkUsingFirstRule->setChecked( mRenderer->usingFirstRule() );
+  chkEnableSymbolLevels->setChecked( mRenderer->usingSymbolLevels() );
+  // If symbol levels are used, forcefully check and gray-out the chkUsingFirstRule checkbox
+  if (mRenderer->usingSymbolLevels() ) { forceUsingFirstRule(); }
+  connect( chkUsingFirstRule, SIGNAL( clicked() ), this, SLOT( usingFirstRuleChanged() ));
+  connect( chkEnableSymbolLevels, SIGNAL( clicked() ), this, SLOT( symbolLevelsEnabledChanged() ) );
+  connect( this, SIGNAL( forceChkUsingFirstRule() ), this, SLOT( forceUsingFirstRule() ) );
 
   treeRules->populateRules();
 }
@@ -169,6 +185,99 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 
   treeRules->populateRules();
 }
+
+
+void QgsRuleBasedRendererV2Widget::increasePriority()
+{
+  QTreeWidgetItem * item = treeRules->currentItem();
+    if ( ! item ) return; // No rule selected, exit
+  int rule_index = item->data( 0, Qt::UserRole + 1 ).toInt();
+  if ( rule_index < 0 )
+  {
+    return;// Group of rules selected, exit
+  }
+  else
+  {
+   if ( rule_index > 0 ) // do not increase priority of first rule
+   {
+      mRenderer->swapRules(rule_index, rule_index - 1);
+      treeRules->populateRules();
+    // TODO: find out where the moved rule goes and reselect it (at least for non-grouped display)
+    // maybe based on the following functions :
+    //  findItems(QString(rule_index - 1), Qt::MatchExactly, 4).first.index)
+    //  setCurrentItem, setSelected, scrollToItem
+   }
+  }
+
+}
+
+
+void QgsRuleBasedRendererV2Widget::decreasePriority()
+{
+  QTreeWidgetItem * item = treeRules->currentItem();
+    if ( ! item ) return; // No rule selected, exit
+  int rule_index = item->data( 0, Qt::UserRole + 1 ).toInt();
+  if ( rule_index < 0 )
+  {
+    return;// Group of rules selected, exit
+  }
+  else
+  {
+   if ( rule_index +1 < mRenderer->ruleCount() ) // do not increase priority of last rule
+   {
+     mRenderer->swapRules(rule_index, rule_index + 1);
+     treeRules->populateRules();
+   }
+  }
+}
+
+
+void QgsRuleBasedRendererV2Widget::usingFirstRuleChanged()
+{
+  if ( chkUsingFirstRule->checkState() == Qt::Checked )
+  {
+    mRenderer->setUsingFirstRule(true);
+  }
+  else
+  {
+    mRenderer->setUsingFirstRule(false);
+  }
+
+}
+
+
+void QgsRuleBasedRendererV2Widget::forceUsingFirstRule()
+{
+  chkEnableSymbolLevels->setChecked( true );
+  chkUsingFirstRule->setChecked( true );
+  chkUsingFirstRule->setEnabled(false);
+  mRenderer->setUsingFirstRule(true);
+}
+
+
+void QgsRuleBasedRendererV2Widget::forceNoSymbolLevels()
+{
+    chkEnableSymbolLevels->setChecked( false );
+    chkUsingFirstRule->setEnabled( true );
+    mRenderer->setUsingSymbolLevels( false );
+}
+
+
+void QgsRuleBasedRendererV2Widget::symbolLevelsEnabledChanged()
+{
+  if ( chkEnableSymbolLevels->checkState() == Qt::Checked )
+  {
+    mRenderer->setUsingSymbolLevels(true);
+    emit forceChkUsingFirstRule();
+  }
+  else
+  {
+   mRenderer->setUsingSymbolLevels(false);
+   chkUsingFirstRule->setEnabled(true);
+  }
+}
+
+
 
 
 #include "qgscategorizedsymbolrendererv2.h"
@@ -487,7 +596,15 @@ void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
     //item->setBackground( 1, Qt::lightGray );
     //item->setBackground( 3, Qt::lightGray );
 
+    // Priority (Id): add 1 to rule number and convert to string
+    std::ostringstream ioss;
+    ioss << i+1;
+    std::string ruleIdx = ioss.str();
+    while( ruleIdx.size() < 4 ){ ruleIdx.insert( 0, " " );} // pad to left with spaces (to fix string-based sorting)
+    item->setText( 4, QString(ruleIdx.c_str()) );// Insert Id in table (as 'Priority' column)
+    item->setTextAlignment (4, Qt::AlignRight);
     lst << item;
+
   }
 
 
@@ -550,6 +667,15 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
 
     //item->setBackground( 1, Qt::lightGray );
     //item->setBackground( 3, Qt::lightGray );
+
+    // Priority (Id): add 1 to rule number and convert to string
+    std::ostringstream ioss;
+    ioss << i+1;
+    std::string ruleIdx = ioss.str();
+    while( ruleIdx.size() < 4 ){ ruleIdx.insert( 0, " " );}
+    item->setText( 4, QString(ruleIdx.c_str()) );
+    item->setTextAlignment (4, Qt::AlignRight);
+
   }
   addTopLevelItems( scale_items.values() );
 }
@@ -601,6 +727,14 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByFilter()
       item->setTextAlignment( 2, Qt::AlignRight );
       item->setTextAlignment( 3, Qt::AlignRight );
     }
+
+    // Priority (Id): add 1 to rule number and convert to string
+    std::ostringstream ioss;
+    ioss << i+1;
+    std::string ruleIdx = ioss.str();
+    while( ruleIdx.size() < 4 ){ ruleIdx.insert( 0, " " );}
+    item->setText( 4, QString(ruleIdx.c_str()) );
+    item->setTextAlignment (4, Qt::AlignRight);
   }
 
   addTopLevelItems( filter_items.values() );
