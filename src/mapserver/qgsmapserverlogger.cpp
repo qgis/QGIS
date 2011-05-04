@@ -57,7 +57,8 @@ void QgsMapServerLogger::printMessage( const QString& message )
   if ( !mLogFile.isOpen() )
   {
 #ifdef _MSC_VER
-    ::OutputDebugString( message.toLocal8Bit() );
+    ::OutputDebugString( message .toLocal8Bit() );
+    ::OutputDebugString( "\n" );
 #endif
     return;
   }
