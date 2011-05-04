@@ -24,6 +24,7 @@
 #include <qgssymbol.h>
 #include <qgslonglongvalidator.h>
 #include <qgsfieldvalidator.h>
+#include <qgsmaplayerregistry.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -167,6 +168,47 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
         for ( QMap<QString, QVariant>::const_iterator it = map.begin(); it != map.end(); it++ )
         {
           cb->addItem( it.key(), it.value() );
+        }
+
+        myWidget = cb;
+      }
+    }
+    break;
+
+    case QgsVectorLayer::ValueRelation:
+    {
+      QSettings settings;
+      QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+
+      const QgsVectorLayer::ValueRelationData &data = vl->valueRelation( idx );
+
+      QgsVectorLayer *layer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( data.mLayer ) );
+      QMap< QString, QString > map;
+      if ( layer )
+      {
+        int ki = layer->fieldNameIndex( data.mKey );
+        int vi = layer->fieldNameIndex( data.mValue );
+
+        if ( data.mAllowNull )
+          map.insert( nullValue, tr( "(no selection)" ) );
+
+        if ( ki >= 0 && vi >= 0 )
+        {
+          layer->select( QgsAttributeList() << ki << vi, QgsRectangle(), false );
+          QgsFeature f;
+          while ( layer->nextFeature( f ) )
+          {
+            map.insert( f.attributeMap()[ ki ].toString(), f.attributeMap()[ vi ].toString() );
+          }
+        }
+      }
+
+      QComboBox *cb = comboBox( editor, parent );
+      if ( cb )
+      {
+        for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
+        {
+          cb->addItem( it.value(), it.key() );
         }
 
         myWidget = cb;
@@ -482,7 +524,8 @@ bool QgsAttributeEditor::retrieveValue( QWidget *widget, QgsVectorLayer *vl, int
   {
     if ( editType == QgsVectorLayer::UniqueValues ||
          editType == QgsVectorLayer::ValueMap ||
-         editType == QgsVectorLayer::Classification )
+         editType == QgsVectorLayer::Classification ||
+         editType == QgsVectorLayer::ValueRelation )
     {
       text = cb->itemData( cb->currentIndex() ).toString();
       if ( text == nullValue )
@@ -621,6 +664,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::UniqueValues:
     case QgsVectorLayer::Enumeration:
     case QgsVectorLayer::ValueMap:
+    case QgsVectorLayer::ValueRelation:
     {
       QVariant v = value;
       QComboBox *cb = qobject_cast<QComboBox *>( editor );

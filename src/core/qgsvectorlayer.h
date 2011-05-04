@@ -98,14 +98,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      CheckBox,    /* added in 1.4 */
+      CheckBox,      /* added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,   /* The attribute value should not be changed in the attribute form*/
-      Hidden,      /* The attribute value should not be shown in the attribute form @added in 1.4 */
-      TextEdit,    /* multiline edit @added in 1.4*/
-      Calendar,    /* calendar widget @added in 1.5 */
-      DialRange,   /* dial range @added in 1.5 */
+      Immutable,     /* The attribute value should not be changed in the attribute form*/
+      Hidden,        /* The attribute value should not be shown in the attribute form @added in 1.4 */
+      TextEdit,      /* multiline edit @added in 1.4*/
+      Calendar,      /* calendar widget @added in 1.5 */
+      DialRange,     /* dial range @added in 1.5 */
+      ValueRelation, /* value map from an table @added in 1.8 */
     };
 
     struct RangeData
@@ -117,6 +118,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       QVariant mMin;
       QVariant mMax;
       QVariant mStep;
+    };
+
+    struct ValueRelationData
+    {
+      ValueRelationData() {}
+      ValueRelationData( QString layer, QString key, QString value, bool allowNull )
+          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ) {}
+
+      QString mLayer;
+      QString mKey;
+      QString mValue;
+      bool mAllowNull;
     };
 
     /** Constructor */
@@ -587,6 +600,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /**access range */
     RangeData &range( int idx );
 
+    /**access relations
+     * @note added in 1.8
+     **/
+    ValueRelationData &valueRelation( int idx );
+
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
     @note this method was added in version 1.1
     */
@@ -928,6 +946,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QMap<QString, QVariant> > mValueMaps;
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
+    QMap< QString, ValueRelationData > mValueRelations;
 
     QString mEditForm, mEditFormInit;
     //annotation form for this layer

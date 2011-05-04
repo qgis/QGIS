@@ -19,6 +19,7 @@
 #include "qgsattributetypedialog.h"
 #include "qgsattributetypeloaddialog.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmaplayerregistry.h"
 
 #include "qgslogger.h"
 
@@ -42,6 +43,17 @@ QgsAttributeTypeDialog::QgsAttributeTypeDialog( QgsVectorLayer *vl )
   connect( loadFromLayerButton, SIGNAL( clicked() ), this, SLOT( loadFromLayerButtonPushed() ) );
   connect( loadFromCSVButton, SIGNAL( clicked() ), this, SLOT( loadFromCSVButtonPushed() ) );
   connect( tableWidget, SIGNAL( cellChanged( int, int ) ), this, SLOT( vCellChanged( int, int ) ) );
+
+  valueRelationLayer->clear();
+  foreach( QgsMapLayer *l, QgsMapLayerRegistry::instance()->mapLayers() )
+  {
+    QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( l );
+    if ( vl )
+      valueRelationLayer->addItem( vl->name(), vl->id() );
+  }
+
+  connect( valueRelationLayer, SIGNAL( currentIndexChanged( int ) ), this, SLOT( updateLayerColumns( int ) ) );
+  valueRelationLayer->setCurrentIndex( -1 );
 }
 
 QgsAttributeTypeDialog::~QgsAttributeTypeDialog()
@@ -57,6 +69,11 @@ QgsVectorLayer::EditType QgsAttributeTypeDialog::editType()
 QgsVectorLayer::RangeData QgsAttributeTypeDialog::rangeData()
 {
   return mRangeData;
+}
+
+QgsVectorLayer::ValueRelationData QgsAttributeTypeDialog::valueRelationData()
+{
+  return mValueRelationData;
 }
 
 QMap<QString, QVariant> &QgsAttributeTypeDialog::valueMap()
@@ -258,6 +275,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::Calendar:
       setPage( 11 );
       break;
+
+    case QgsVectorLayer::ValueRelation:
+      setPage( 12 );
+      break;
   }
 }
 
@@ -269,6 +290,11 @@ void QgsAttributeTypeDialog::setValueMap( QMap<QString, QVariant> valueMap )
 void QgsAttributeTypeDialog::setRange( QgsVectorLayer::RangeData range )
 {
   mRangeData = range;
+}
+
+void QgsAttributeTypeDialog::setValueRelation( QgsVectorLayer::ValueRelationData valueRelation )
+{
+  mValueRelationData = valueRelation;
 }
 
 void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editType )
@@ -394,6 +420,13 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
 
     case QgsVectorLayer::UniqueValuesEditable:
       editableUniqueValues->setChecked( editType == QgsVectorLayer::UniqueValuesEditable );
+      break;
+
+    case QgsVectorLayer::ValueRelation:
+      valueRelationLayer->setCurrentIndex( valueRelationLayer->findData( mValueRelationData.mLayer ) );
+      valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
+      valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
+      valueRelationAllowNull->setChecked( mValueRelationData.mAllowNull );
       break;
 
     case QgsVectorLayer::LineEdit:
@@ -558,6 +591,13 @@ void QgsAttributeTypeDialog::accept()
     case 11:
       mEditType = QgsVectorLayer::Calendar;
       break;
+    case 12:
+      mEditType = QgsVectorLayer::ValueRelation;
+      mValueRelationData.mLayer = valueRelationLayer->itemData( valueRelationLayer->currentIndex() ).toString();
+      mValueRelationData.mKey = valueRelationKeyColumn->currentText();
+      mValueRelationData.mValue = valueRelationValueColumn->currentText();
+      mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
+      break;
   }
 
   QDialog::accept();
@@ -566,4 +606,25 @@ void QgsAttributeTypeDialog::accept()
 QString QgsAttributeTypeDialog::defaultWindowTitle()
 {
   return tr( "Attribute Edit Dialog" );
+}
+
+void QgsAttributeTypeDialog::updateLayerColumns( int idx )
+{
+  valueRelationKeyColumn->clear();
+  valueRelationValueColumn->clear();
+
+  QString id = valueRelationLayer->itemData( idx ).toString();
+
+  QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( QgsMapLayerRegistry::instance()->mapLayer( id ) );
+  if ( !vl )
+    return;
+
+  foreach( const QgsField &f, vl->pendingFields() )
+  {
+    valueRelationKeyColumn->addItem( f.name() );
+    valueRelationValueColumn->addItem( f.name() );
+  }
+
+  valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
+  valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
 }

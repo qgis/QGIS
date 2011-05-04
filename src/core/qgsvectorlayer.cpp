@@ -3020,6 +3020,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       {
         mCheckedStates[ name ] = QPair<QString, QString>( editTypeElement.attribute( "checked" ), editTypeElement.attribute( "unchecked" ) );
       }
+      else if ( editType == ValueRelation )
+      {
+        QString id = editTypeElement.attribute( "layer" );
+        QString key = editTypeElement.attribute( "key" );
+        QString value = editTypeElement.attribute( "value" );
+        bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
+        mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull );
+      }
     }
   }
 
@@ -3212,6 +3220,17 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           {
             editTypeElement.setAttribute( "checked", mCheckedStates[ it.key()].first );
             editTypeElement.setAttribute( "unchecked", mCheckedStates[ it.key()].second );
+          }
+          break;
+
+        case ValueRelation:
+          if ( mValueRelations.contains( it.key() ) )
+          {
+            const ValueRelationData &data = mValueRelations[ it.key()];
+            editTypeElement.setAttribute( "layer", data.mLayer );
+            editTypeElement.setAttribute( "key", data.mKey );
+            editTypeElement.setAttribute( "value", data.mValue );
+            editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
           }
           break;
 
@@ -5262,4 +5281,22 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
   if ( !mDiagramLayerSettings )
     mDiagramLayerSettings = new QgsDiagramLayerSettings();
   *mDiagramLayerSettings = s;
+}
+
+QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
+{
+  const QgsFieldMap &fields = pendingFields();
+
+  // FIXME: throw an exception!?
+  if ( fields.contains( idx ) )
+  {
+    QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
+  }
+
+  if ( !mValueRelations.contains( fields[idx].name() ) )
+  {
+    mValueRelations[ fields[idx].name()] = ValueRelationData();
+  }
+
+  return mValueRelations[ fields[idx].name()];
 }

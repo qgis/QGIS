@@ -78,6 +78,12 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     void setCheckedState( QString checked, QString unchecked );
 
     /**
+     * Setter to value relation to be displayed and edited in this dialog
+     * @param valueRelation value relation data which is to be displayed
+     */
+    void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
+
+    /**
      * Getter for checked state after editing
      * @return string representing the checked
      */
@@ -94,6 +100,11 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      * @return range data after editing
      */
     QgsVectorLayer::RangeData rangeData();
+
+    /**
+     * Getter for value relation data
+     */
+    QgsVectorLayer::ValueRelationData valueRelationData();
 
   private slots:
     /**
@@ -124,6 +135,11 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
      */
     void vCellChanged( int row, int column );
 
+    /**
+     * update columns list
+     */
+    void updateLayerColumns( int idx );
+
   private:
 
     QString defaultWindowTitle();
@@ -147,6 +163,7 @@ class QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
     int mIndex;
 
     QgsVectorLayer::RangeData mRangeData;
+    QgsVectorLayer::ValueRelationData mValueRelationData;
     QgsVectorLayer::EditType mEditType;
 };
 

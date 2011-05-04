@@ -245,6 +245,7 @@ void QgsVectorLayerProperties::attributeTypeDialog()
 
   attributeTypeDialog.setValueMap( mValueMaps.value( index, layer->valueMap( index ) ) );
   attributeTypeDialog.setRange( mRanges.value( index, layer->range( index ) ) );
+  attributeTypeDialog.setValueRelation( mValueRelationData.value( index, layer->valueRelation( index ) ) );
 
   QPair<QString, QString> checkStates = mCheckedStates.value( index, layer->checkedState( index ) );
   attributeTypeDialog.setCheckedState( checkStates.first, checkStates.second );
@@ -271,6 +272,9 @@ void QgsVectorLayerProperties::attributeTypeDialog()
       break;
     case QgsVectorLayer::CheckBox:
       mCheckedStates.insert( index, attributeTypeDialog.checkedState() );
+      break;
+    case QgsVectorLayer::ValueRelation:
+      mValueRelationData.insert( index, attributeTypeDialog.valueRelationData() );
       break;
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
@@ -554,6 +558,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::CheckBox, tr( "Checkbox" ) );
   editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
   editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
+  editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -632,6 +637,13 @@ void QgsVectorLayerProperties::apply()
         if ( mCheckedStates.contains( idx ) )
         {
           layer->setCheckedState( idx, mCheckedStates[idx].first, mCheckedStates[idx].second );
+        }
+        break;
+
+      case QgsVectorLayer::ValueRelation:
+        if ( mValueRelationData.contains( idx ) )
+        {
+          layer->valueRelation( idx ) = mValueRelationData[idx];
         }
         break;
 
@@ -945,8 +957,8 @@ QString QgsVectorLayerProperties::metadata()
     }
 
     myMetadata += tr( "In layer spatial reference system units : " )
-      + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-      .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
+                  + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+                  .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
   }
   else
   {
