@@ -348,7 +348,7 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   QgsFeatureRendererV2* r = m->createRenderer( element );
   if ( r )
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
-
+    r->setUsingFirstRule( element.attribute( "firstrule", "0" ).toInt() );
   return r;
 }
 

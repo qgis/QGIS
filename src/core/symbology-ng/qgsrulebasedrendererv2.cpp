@@ -128,7 +128,18 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
 
 QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  return mCurrentSymbol;
+
+  if( !( usingFirstRule() )  )    return mCurrentSymbol;
+
+  for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
+  {
+    Rule* rule = *it;
+
+    if ( rule->isFilterOK( mCurrentFields, feature ) )
+    {
+      return rule->symbol(); //works with levels but takes only first rule
+    }
+  }
 }
 
 void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
@@ -200,6 +211,10 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone()
   QgsSymbolV2* s = mDefaultSymbol->clone();
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( s );
   r->mRules = mRules;
+  r->setUsingSymbolLevels( usingSymbolLevels() );
+  r->setUsingFirstRule( usingFirstRule() );
+  setUsingFirstRule( usingFirstRule() );
+  setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
 
@@ -219,6 +234,8 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
 {
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "RuleRenderer" );
+  rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
+  rendererElem.setAttribute( "firstrule", ( mUsingFirstRule ? "1" : "0" ) );
 
   QDomElement rulesElem = doc.createElement( "rules" );
 
@@ -345,6 +362,12 @@ void QgsRuleBasedRendererV2::removeRuleAt( int index )
 {
   mRules.removeAt( index );
 }
+
+void QgsRuleBasedRendererV2::swapRules( int index1,  int index2 )
+{
+  mRules.swap( index1, index2 );
+}
+
 
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
