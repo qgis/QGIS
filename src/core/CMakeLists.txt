@@ -323,8 +323,8 @@ ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC
 
 SET_TARGET_PROPERTIES(qgis_core PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
 
-# make sure to create qgssvnversion.h before compiling
-ADD_DEPENDENCIES(qgis_core svnversion)
+# make sure to create qgsversion.h before compiling
+ADD_DEPENDENCIES(qgis_core version)
 
 # because of htonl
 IF (WIN32)

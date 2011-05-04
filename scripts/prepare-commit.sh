@@ -33,14 +33,14 @@ fi
 
 # save original changes
 if [ -d .svn ]; then
-	REV=$(svn info | sed -ne "s/Revision: //p")
-	svn diff >r$REV.diff
+	REV=r$(svn info | sed -ne "s/Revision: //p")
+	svn diff >$REV.diff
 elif [ -d .git ]; then
-	REV=$(git svn info | sed -ne "s/Revision: //p")
-	git diff >r$REV.diff
+	REV=$(git log -n1 --pretty=%H)
+	git diff >$REV.diff
 fi
 
-ASTYLEDIFF=astyle.r$REV.diff
+ASTYLEDIFF=astyle.$REV.diff
 >$ASTYLEDIFF
 
 # reformat
@@ -59,7 +59,7 @@ for f in $MODIFIED; do
                 ;;
         esac
 
-        m=$f.r$REV.prepare
+        m=$f.$REV.prepare
 
 	cp $f $m
 	astyle.sh $f

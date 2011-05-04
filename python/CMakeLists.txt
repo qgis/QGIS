@@ -27,7 +27,7 @@ INCLUDE_DIRECTORIES(
     ../src/core/spatialindex
     ../src/core/symbology
     ../src/core/symbology-ng
-    ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgssvnversion.h
+    ${CMAKE_BINARY_DIR}  # qgsconfig.h, qgsversion.h
 )
 
 

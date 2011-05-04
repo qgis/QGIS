@@ -34,7 +34,7 @@ public:
   // Release name
   static const char* QGIS_RELEASE_NAME;
   // The subversion version
-  static const char* QGIS_SVN_VERSION;
+  static const char* QGIS_DEV_VERSION;
 
   // Enumerations
   //
