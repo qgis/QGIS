@@ -28,8 +28,8 @@ easiest option to compile and install QGIS.
 The packages qgis depends on to build are available in the "universe" component
 of Ubuntu. This is not activated by default, so you need to activate it:
 
-1. Edit your /etc/apt/sources.list file.  
-2. Uncomment the all the lines starting with "deb"
++ Edit your /etc/apt/sources.list file.  
++ Uncomment all the lines starting with "deb"
 
 Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
 all dependencies to be met.
@@ -56,9 +56,9 @@ sudo apt-get update
 /!\ **A Special Note:** If you are following this set of instructions on
 a system where you already have Qt3 development tools installed, there will
 be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
-point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
-designed to live alongside each other. This means that for example if you
-have them both installed you will have three qmake exe's:
+point to the Qt3 version, not the Qt4. Ubuntu Qt4 and Qt3 packages are
+designed to live alongside each other. This means that, for example, if you
+have them both installed, you will have three qmake exe's:
 
 ``` 
 /usr/bin/qmake -> /etc/alternatives/qmake 
@@ -121,7 +121,7 @@ This directory path will be assumed for all instructions that follow.
 == Check out the QGIS Source Code ==
 
 There are two ways the source can be checked out. Use the anonymous method
-if you do not have edit privaleges for the QGIS source repository, or use
+if you do not have edit privileges for the QGIS source repository, or use
   the developer checkout if you have permissions to commit source code
   changes.
 
