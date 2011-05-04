@@ -21,4 +21,5 @@ makensis \
 -DBINARY_REVISION=1 \
 -DINSTALLER_TYPE=OSGeo4W \
 -DPACKAGE_FOLDER=osgeo4w/unpacked \
+-DSHORTNAME=qgis \
 QGIS-Installer.nsi
