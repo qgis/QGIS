@@ -313,9 +313,10 @@ QAction *QgisAppInterface::actionCutFeatures() { return qgis->actionCutFeatures(
 QAction *QgisAppInterface::actionCopyFeatures() { return qgis->actionCopyFeatures(); }
 QAction *QgisAppInterface::actionPasteFeatures() { return qgis->actionPasteFeatures(); }
 QAction *QgisAppInterface::actionEditSeparator1() { return 0; }
-QAction *QgisAppInterface::actionCapturePoint() { return qgis->actionCapturePoint(); }
-QAction *QgisAppInterface::actionCaptureLine() { return qgis->actionCaptureLine(); }
-QAction *QgisAppInterface::actionCapturePolygon() { return qgis->actionCapturePolygon(); }
+QAction *QgisAppInterface::actionAddFeature() { return qgis->actionAddFeature(); }
+QAction *QgisAppInterface::actionCapturePoint() { return qgis->actionAddFeature(); }
+QAction *QgisAppInterface::actionCaptureLine() { return qgis->actionAddFeature(); }
+QAction *QgisAppInterface::actionCapturePolygon() { return qgis->actionAddFeature(); }
 QAction *QgisAppInterface::actionDeleteSelected() { return qgis->actionDeleteSelected(); }
 QAction *QgisAppInterface::actionMoveFeature() { return qgis->actionMoveFeature(); }
 QAction *QgisAppInterface::actionSplitFeatures() { return qgis->actionSplitFeatures(); }
@@ -326,7 +327,8 @@ QAction *QgisAppInterface::actionAddVertex() { return 0; }
 QAction *QgisAppInterface::actionDeleteVertex() { return 0; }
 QAction *QgisAppInterface::actionMoveVertex() { return 0; }
 QAction *QgisAppInterface::actionAddRing() { return qgis->actionAddRing(); }
-QAction *QgisAppInterface::actionAddIsland() { return qgis->actionAddIsland(); }
+QAction *QgisAppInterface::actionAddPart() { return qgis->actionAddPart(); }
+QAction *QgisAppInterface::actionAddIsland() { return qgis->actionAddPart(); }
 QAction *QgisAppInterface::actionSimplifyFeature() { return qgis->actionSimplifyFeature(); }
 QAction *QgisAppInterface::actionDeleteRing() { return qgis->actionDeleteRing(); }
 QAction *QgisAppInterface::actionDeletePart() { return qgis->actionDeletePart(); }

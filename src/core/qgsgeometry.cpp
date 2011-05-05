@@ -2814,31 +2814,54 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   return 0;
 }
 
-int QgsGeometry::addIsland( const QList<QgsPoint>& ring )
+int QgsGeometry::addPart( const QList<QgsPoint> &points )
 {
-  //Ring needs to have at least three points and must be closed
-  if ( ring.size() < 4 )
+  QGis::GeometryType geomType = type();
+
+  switch ( geomType )
   {
-    return 2;
+    case QGis::Point:
+      // only one part at a time
+      if ( points.size() != 1 )
+      {
+        QgsDebugMsg( "expected 1 point: " + QString::number( points.size() ) );
+        return 2;
+      }
+      break;
+
+    case QGis::Line:
+      // Line needs to have at least two points and must be closed
+      if ( points.size() < 3 )
+      {
+        QgsDebugMsg( "line must at least have two points: " + QString::number( points.size() ) );
+        return 2;
+      }
+      break;
+
+    case QGis::Polygon:
+      // Ring needs to have at least three points and must be closed
+      if ( points.size() < 4 )
+      {
+        QgsDebugMsg( "polygon must at least have three points: " + QString::number( points.size() ) );
+        return 2;
+      }
+
+      // ring must be closed
+      if ( points.first() != points.last() )
+      {
+        QgsDebugMsg( "polygon not closed" );
+        return 2;
+      }
+      break;
+
+    default:
+      QgsDebugMsg( "unsupported geometry type: " + QString::number( geomType ) );
+      return 2;
   }
 
-  //ring must be closed
-  if ( ring.first() != ring.last() )
+  if ( !isMultipart() && !convertToMultiType() )
   {
-    return 2;
-  }
-
-  if ( wkbType() == QGis::WKBPolygon || wkbType() == QGis::WKBPolygon25D )
-  {
-    if ( !convertToMultiType() )
-    {
-      return 1;
-    }
-  }
-
-  //bail out if wkbtype is not multipolygon
-  if ( wkbType() != QGis::WKBMultiPolygon && wkbType() != QGis::WKBMultiPolygon25D )
-  {
+    QgsDebugMsg( "could not convert to multipart" );
     return 1;
   }
 
@@ -2846,67 +2869,107 @@ int QgsGeometry::addIsland( const QList<QgsPoint>& ring )
   if ( !mGeos || mDirtyGeos )
   {
     if ( !exportWkbToGeos() )
+    {
+      QgsDebugMsg( "could not export to GEOS geometry" );
       return 4;
+    }
   }
 
-  if ( GEOSGeomTypeId( mGeos ) != GEOS_MULTIPOLYGON )
-    return 1;
+  int geosType = GEOSGeomTypeId( mGeos );
+  GEOSGeometry *newPart = 0;
 
-  //create new polygon from ring
+  switch ( geomType )
+  {
+    case QGis::Point:
+      newPart = createGeosPoint( points[0] );
+      break;
 
-  //coordinate sequence first
-  GEOSGeometry *newRing = 0;
-  GEOSGeometry *newPolygon = 0;
+    case QGis::Line:
+      newPart = createGeosLineString( points.toVector() );
+      break;
+
+    case QGis::Polygon:
+    {
+      //create new polygon from ring
+      GEOSGeometry *newRing = 0;
+
+      try
+      {
+        newRing = createGeosLinearRing( points.toVector() );
+        if ( !GEOSisValid( newRing ) )
+          throw GEOSException( "ring invalid" );
+
+        newPart = createGeosPolygon( newRing );
+      }
+      catch ( GEOSException &e )
+      {
+        Q_UNUSED( e );
+        if ( newRing )
+          GEOSGeom_destroy( newRing );
+
+        return 2;
+      }
+    }
+    break;
+
+    default:
+      QgsDebugMsg( "unsupported type: " + QString::number( type() ) );
+      return 2;
+  }
+
+  Q_ASSERT( newPart );
 
   try
   {
-    newRing = createGeosLinearRing( ring.toVector() );
-    if ( !GEOSisValid( newRing ) )
-      throw GEOSException( "ring invalid" );
-    newPolygon = createGeosPolygon( newRing );
-    if ( !GEOSisValid( newPolygon ) )
-      throw GEOSException( "polygon invalid" );
+    if ( !GEOSisValid( newPart ) )
+      throw GEOSException( "new part geometry invalid" );
   }
   catch ( GEOSException &e )
   {
     Q_UNUSED( e );
-    if ( newPolygon )
-      GEOSGeom_destroy( newPolygon );
-    else if ( newRing )
-      GEOSGeom_destroy( newRing );
+
+    if ( newPart )
+      GEOSGeom_destroy( newPart );
+
+    QgsDebugMsg( "part invalid: " + e.what() );
     return 2;
   }
 
-  QVector<GEOSGeometry*> polygons;
+  QVector<GEOSGeometry*> parts;
 
   //create new multipolygon
   int n = GEOSGetNumGeometries( mGeos );
   int i;
   for ( i = 0; i < n; ++i )
   {
-    const GEOSGeometry *polygonN = GEOSGetGeometryN( mGeos, i );
+    const GEOSGeometry *partN = GEOSGetGeometryN( mGeos, i );
 
-    if ( !GEOSDisjoint( polygonN, newPolygon ) )
+    if ( geomType == QGis::Polygon && !GEOSDisjoint( partN, newPart ) )
       //bail out if new polygon is not disjoint with existing ones
       break;
 
-    polygons << GEOSGeom_clone( polygonN );
+    parts << GEOSGeom_clone( partN );
   }
 
   if ( i < n )
   {
     // bailed out
-    for ( int i = 0; i < polygons.size(); i++ )
-      GEOSGeom_destroy( polygons[i] );
+    for ( int i = 0; i < parts.size(); i++ )
+      GEOSGeom_destroy( parts[i] );
+
+    QgsDebugMsg( "new polygon part not disjoint" );
     return 3;
   }
 
-  polygons << newPolygon;
+  parts << newPart;
 
   GEOSGeom_destroy( mGeos );
-  mGeos = createGeosCollection( GEOS_MULTIPOLYGON, polygons );
+
+  mGeos = createGeosCollection( geosType, parts );
+
   mDirtyWkb = true;
   mDirtyGeos = false;
+
   return 0;
 }
 

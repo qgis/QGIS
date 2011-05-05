@@ -203,9 +203,10 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionCopyFeatures();
     virtual QAction *actionPasteFeatures();
     virtual QAction *actionEditSeparator1();
-    virtual QAction *actionCapturePoint();
-    virtual QAction *actionCaptureLine();
-    virtual QAction *actionCapturePolygon();
+    virtual QAction *actionAddFeature();
+    Q_DECL_DEPRECATED virtual QAction *actionCapturePoint();
+    Q_DECL_DEPRECATED virtual QAction *actionCaptureLine();
+    Q_DECL_DEPRECATED virtual QAction *actionCapturePolygon();
     virtual QAction *actionDeleteSelected();
     virtual QAction *actionMoveFeature();
     virtual QAction *actionSplitFeatures();
@@ -213,7 +214,8 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionDeleteVertex();
     virtual QAction *actionMoveVertex();
     virtual QAction *actionAddRing();
-    virtual QAction *actionAddIsland();
+    virtual QAction *actionAddPart();
+    Q_DECL_DEPRECATED virtual QAction *actionAddIsland();
     virtual QAction *actionSimplifyFeature();
     virtual QAction *actionDeleteRing();
     virtual QAction *actionDeletePart();

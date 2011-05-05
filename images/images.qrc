@@ -21,7 +21,7 @@
         <file>themes/default/mActionAddArrow.png</file>
         <file>themes/default/mActionAddBasicShape.png</file>
         <file>themes/default/mActionAddImage.png</file>
-        <file>themes/default/mActionAddIsland.png</file>
+        <file>themes/default/mActionAddPart.png</file>
         <file>themes/default/mActionAddLayer.png</file>
         <file>themes/default/mActionAddLegend.png</file>
         <file>themes/default/mActionAddMap.png</file>
@@ -219,7 +219,7 @@
         <file>themes/gis/mActionAddBasicShape.png</file>
         <file>themes/gis/mActionAddGPSLayer.png</file>
         <file>themes/gis/mActionAddImage.png</file>
-        <file>themes/gis/mActionAddIsland.png</file>
+        <file>themes/gis/mActionAddPart.png</file>
         <file>themes/gis/mActionAddLayer.png</file>
         <file>themes/gis/mActionAddLegend.png</file>
         <file>themes/gis/mActionAddMap.png</file>

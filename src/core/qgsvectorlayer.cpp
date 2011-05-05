@@ -2127,7 +2127,7 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
   return addRingReturnCode;
 }
 
-int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
+int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
 {
   if ( !hasGeometryType() )
     return 6;
@@ -2152,7 +2152,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   if ( changedIt != mChangedGeometries.end() )
   {
     QgsGeometry geom = *changedIt;
-    int returnValue = geom.addIsland( ring );
+    int returnValue = geom.addPart( points );
     editGeometryChange( selectedFeatureId, geom );
     mCachedGeometries[selectedFeatureId] = geom;
     return returnValue;
@@ -2164,7 +2164,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   {
     if ( addedIt->id() == selectedFeatureId )
     {
-      return addedIt->geometry()->addIsland( ring );
+      return addedIt->geometry()->addPart( ring );
       mCachedGeometries[selectedFeatureId] = *addedIt->geometry();
     }
   }
@@ -2174,7 +2174,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( selectedFeatureId );
   if ( cachedIt != mCachedGeometries.end() )
   {
-    int errorCode = cachedIt->addIsland( ring );
+    int errorCode = cachedIt->addPart( points );
     if ( errorCode == 0 )
     {
       editGeometryChange( selectedFeatureId, *cachedIt );
@@ -2192,7 +2192,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
       fGeom = f.geometryAndOwnership();
       if ( fGeom )
       {
-        int errorCode = fGeom->addIsland( ring );
+        int errorCode = fGeom->addPart( points );
         editGeometryChange( selectedFeatureId, *fGeom );
         setModified( true, true );
         delete fGeom;

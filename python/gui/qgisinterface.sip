@@ -201,9 +201,10 @@ class QgisInterface : QObject
     virtual QAction *actionCopyFeatures() = 0;
     virtual QAction *actionPasteFeatures() = 0;
     virtual QAction *actionEditSeparator1() = 0 /Deprecated/;
-    virtual QAction *actionCapturePoint() = 0;
-    virtual QAction *actionCaptureLine() = 0;
-    virtual QAction *actionCapturePolygon() = 0;
+    virtual QAction *actionAddFeature() = 0;
+    virtual QAction *actionCapturePoint() = 0 /Deprecated/;
+    virtual QAction *actionCaptureLine() = 0 /Deprecated/;
+    virtual QAction *actionCapturePolygon() = 0 /Deprecated/;
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
     virtual QAction *actionSplitFeatures() = 0;
@@ -211,7 +212,8 @@ class QgisInterface : QObject
     virtual QAction *actionDeleteVertex() = 0 /Deprecated/;
     virtual QAction *actionMoveVertex() = 0 /Deprecated/;
     virtual QAction *actionAddRing() = 0;
-    virtual QAction *actionAddIsland() = 0;
+    virtual QAction *actionAddPart() = 0;
+    virtual QAction *actionAddIsland() = 0 /Deprecated/;
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;

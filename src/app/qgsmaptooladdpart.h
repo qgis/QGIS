@@ -1,7 +1,7 @@
 /***************************************************************************
-    qgsmaptooladdisland.h  - map tool to add new polygons to multipolygon features
+    qgsmaptooladdpart.h  - map tool to add new polygons to multipolygon features
     ---------------------
-    begin                : Mai 2007
+    begin                : May 2007
     copyright            : (C) 2007 by Marco Hugentobler
     email                : marco dot hugentobler at karto dot baug dot ethz dot ch
  ***************************************************************************
@@ -16,12 +16,12 @@
 
 #include "qgsmaptoolcapture.h"
 
-/**A map tool that adds new polygons to multipolygon features*/
-class QgsMapToolAddIsland: public QgsMapToolCapture
+/**A map tool that adds new parts to multipart features*/
+class QgsMapToolAddPart : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolAddIsland( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolAddIsland();
+    QgsMapToolAddPart( QgsMapCanvas* canvas );
+    virtual ~QgsMapToolAddPart();
     void canvasReleaseEvent( QMouseEvent * e );
 };

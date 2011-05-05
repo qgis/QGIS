@@ -276,8 +276,18 @@ class GUI_EXPORT QgisInterface : public QObject
     Q_DECL_DEPRECATED
 #endif
     virtual QAction *actionEditSeparator1() = 0;
+    virtual QAction *actionAddFeature() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionCapturePoint() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionCaptureLine() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionCapturePolygon() = 0;
     virtual QAction *actionDeleteSelected() = 0;
     virtual QAction *actionMoveFeature() = 0;
@@ -295,7 +305,11 @@ class GUI_EXPORT QgisInterface : public QObject
 #endif
     virtual QAction *actionMoveVertex() = 0;
     virtual QAction *actionAddRing() = 0;
+#ifndef Q_MOC_RUN
+    Q_DECL_DEPRECATED
+#endif
     virtual QAction *actionAddIsland() = 0;
+    virtual QAction *actionAddPart() = 0;
     virtual QAction *actionSimplifyFeature() = 0;
     virtual QAction *actionDeleteRing() = 0;
     virtual QAction *actionDeletePart() = 0;
