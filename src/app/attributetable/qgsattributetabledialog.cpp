@@ -90,6 +90,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mZoomMapToSelectedRowsButton->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
   mInvertSelectionButton->setIcon( getThemeIcon( "/mActionInvertSelection.png" ) );
   mToggleEditingButton->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
+  mSaveEditsButton->setIcon( getThemeIcon( "/mActionSaveEdits.png" ) );
   mDeleteSelectedButton->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
   mOpenFieldCalculator->setIcon( getThemeIcon( "/mActionCalculateField.png" ) );
   mAddAttribute->setIcon( getThemeIcon( "/mActionNewAttribute.png" ) );
@@ -101,9 +102,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   bool canAddAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddAttributes;
   bool canDeleteAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
   bool canAddFeatures = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::AddFeatures;
+
   mToggleEditingButton->setCheckable( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
   mToggleEditingButton->setEnabled( canChangeAttributes && !mLayer->isReadOnly() );
+
+  mSaveEditsButton->setEnabled( canChangeAttributes && mLayer->isEditable() );
   mOpenFieldCalculator->setEnabled( canChangeAttributes && mLayer->isEditable() );
   mDeleteSelectedButton->setEnabled( canDeleteFeatures && mLayer->isEditable() );
   mAddAttribute->setEnabled( canAddAttributes && mLayer->isEditable() );
@@ -113,6 +117,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   // info from table to application
   connect( this, SIGNAL( editingToggled( QgsMapLayer * ) ), QgisApp::instance(), SLOT( toggleEditing( QgsMapLayer * ) ) );
+  connect( this, SIGNAL( saveEdits( QgsMapLayer * ) ), QgisApp::instance(), SLOT( saveEdits( QgsMapLayer * ) ) );
+
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
@@ -683,10 +689,16 @@ void QgsAttributeTableDialog::on_mToggleEditingButton_toggled()
   emit editingToggled( mLayer );
 }
 
+void QgsAttributeTableDialog::on_mSaveEditsButton_clicked()
+{
+  emit saveEdits( mLayer );
+}
+
 void QgsAttributeTableDialog::editingToggled()
 {
   mToggleEditingButton->blockSignals( true );
   mToggleEditingButton->setChecked( mLayer->isEditable() );
+  mSaveEditsButton->setEnabled( mLayer->isEditable() );
   mToggleEditingButton->blockSignals( false );
 
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;

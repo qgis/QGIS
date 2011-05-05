@@ -713,6 +713,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! starts/stops editing mode of a layer
     bool toggleEditing( QgsMapLayer *layer, bool allowCancel = true );
 
+    //! save edits of a layer
+    void saveEdits( QgsMapLayer *layer );
+
     //! save current vector layer
     void saveAsVectorFile();
     void saveSelectionAsVectorFile();

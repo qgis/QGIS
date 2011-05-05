@@ -114,6 +114,10 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void on_mToggleEditingButton_toggled();
     /**
+     * Saves edits
+     */
+    void on_mSaveEditsButton_clicked();
+    /**
      * Inverts selection
      */
     void on_mInvertSelectionButton_clicked();
@@ -160,10 +164,16 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
 
   signals:
     /**
-     * Informs that editing mode ha been toggled
+     * Informs that editing mode has been toggled
      * @param layer layer that has been toggled
      */
     void editingToggled( QgsMapLayer *layer );
+
+    /**
+     * Informs that edits should be saved
+     * @param layer layer whose edits are to be saved
+     */
+    void saveEdits( QgsMapLayer *layer );
 
   protected:
     /**

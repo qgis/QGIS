@@ -4174,7 +4174,15 @@ void QgisApp::saveEdits()
   if ( mMapCanvas && mMapCanvas->isDrawing() )
     return;
 
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() ); // FIXME: save edits of all selected layers
+  foreach( QgsMapLayer * layer, mMapLegend->selectedLayers() )
+  {
+    saveEdits( layer );
+  }
+}
+
+void QgisApp::saveEdits( QgsMapLayer *layer )
+{
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer || !vlayer->isEditable() || !vlayer->isModified() )
     return;
 
