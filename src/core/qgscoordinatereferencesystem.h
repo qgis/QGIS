@@ -322,6 +322,13 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     /*! Get user hint for validation
      */
     QString validationHint();
+    /*! Update proj.4 parameters in our database from proj.4
+     * @returns number of updated CRS on success and
+     *   negative number of failed updates in case of errors.
+     * @note added in 1.8
+     */
+    static int syncDb();
+
     // Mutators -----------------------------------
     // We don't want to expose these to the public api since they wont create
     // a fully valid crs. Programmers should use the createFrom* methods rather
@@ -418,7 +425,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     long getRecordCount();
 
     //! Helper for sql-safe value quoting
-    QString quotedValue( QString value );
+    static QString quotedValue( QString value );
 
     void *mCRS;
 
