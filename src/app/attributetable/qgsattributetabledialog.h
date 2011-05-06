@@ -202,8 +202,6 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void updateTitle();
 
-    QIcon getThemeIcon( const QString theName );
-
     QLineEdit *mQuery;
     QComboBox *mColumnBox;
     QComboBox *mShowBox;

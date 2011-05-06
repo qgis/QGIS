@@ -84,17 +84,17 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   updateTitle();
 
-  mRemoveSelectionButton->setIcon( getThemeIcon( "/mActionUnselectAttributes.png" ) );
-  mSelectedToTopButton->setIcon( getThemeIcon( "/mActionSelectedToTop.png" ) );
-  mCopySelectedRowsButton->setIcon( getThemeIcon( "/mActionCopySelected.png" ) );
-  mZoomMapToSelectedRowsButton->setIcon( getThemeIcon( "/mActionZoomToSelected.png" ) );
-  mInvertSelectionButton->setIcon( getThemeIcon( "/mActionInvertSelection.png" ) );
-  mToggleEditingButton->setIcon( getThemeIcon( "/mActionToggleEditing.png" ) );
-  mSaveEditsButton->setIcon( getThemeIcon( "/mActionSaveEdits.png" ) );
-  mDeleteSelectedButton->setIcon( getThemeIcon( "/mActionDeleteSelected.png" ) );
-  mOpenFieldCalculator->setIcon( getThemeIcon( "/mActionCalculateField.png" ) );
-  mAddAttribute->setIcon( getThemeIcon( "/mActionNewAttribute.png" ) );
-  mRemoveAttribute->setIcon( getThemeIcon( "/mActionDeleteAttribute.png" ) );
+  mRemoveSelectionButton->setIcon( QgisApp::getThemeIcon( "/mActionUnselectAttributes.png" ) );
+  mSelectedToTopButton->setIcon( QgisApp::getThemeIcon( "/mActionSelectedToTop.png" ) );
+  mCopySelectedRowsButton->setIcon( QgisApp::getThemeIcon( "/mActionCopySelected.png" ) );
+  mZoomMapToSelectedRowsButton->setIcon( QgisApp::getThemeIcon( "/mActionZoomToSelected.png" ) );
+  mInvertSelectionButton->setIcon( QgisApp::getThemeIcon( "/mActionInvertSelection.png" ) );
+  mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
+  mSaveEditsButton->setIcon( QgisApp::getThemeIcon( "/mActionSaveEdits.png" ) );
+  mDeleteSelectedButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteSelected.png" ) );
+  mOpenFieldCalculator->setIcon( QgisApp::getThemeIcon( "/mActionCalculateField.png" ) );
+  mAddAttribute->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
+  mRemoveAttribute->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
 
   // toggle editing
   bool canChangeAttributes = mLayer->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
@@ -172,28 +172,6 @@ void QgsAttributeTableDialog::closeEvent( QCloseEvent* event )
   }
 }
 
-
-QIcon QgsAttributeTableDialog::getThemeIcon( const QString theName )
-{
-  // copied from QgisApp::getThemeIcon. To be removed when merged to SVN
-
-  QString myPreferredPath = QgsApplication::activeThemePath() + QDir::separator() + theName;
-  QString myDefaultPath = QgsApplication::defaultThemePath() + QDir::separator() + theName;
-  if ( QFile::exists( myPreferredPath ) )
-  {
-    return QIcon( myPreferredPath );
-  }
-  else if ( QFile::exists( myDefaultPath ) )
-  {
-    //could still return an empty icon if it
-    //doesnt exist in the default theme either!
-    return QIcon( myDefaultPath );
-  }
-  else
-  {
-    return QIcon();
-  }
-}
 
 void QgsAttributeTableDialog::showAdvanced()
 {

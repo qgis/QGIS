@@ -119,7 +119,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     {
       QgsFeature* f = new QgsFeature( 0, "WKBPoint" );
 
-      QgsGeometry *g;
+      QgsGeometry *g = 0;
       if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
       {
         g = QgsGeometry::fromPoint( savePoint );

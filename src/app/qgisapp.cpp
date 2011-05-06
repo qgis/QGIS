@@ -274,7 +274,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 
   if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
   {
-    caption += QString( "r%1" ).arg( QGis::QGIS_DEV_VERSION );
+    caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
   else
   {
@@ -4724,7 +4724,7 @@ void QgisApp::socketConnectionClosed()
       {
         // show more info
         QgsMessageViewer *mv = new QgsMessageViewer( this );
-        mv->setWindowTitle( tr( "QGIS - Changes in SVN since last release" ) );
+        mv->setWindowTitle( tr( "QGIS - Changes since last release" ) );
         mv->setMessageAsHtml( parts[2] );
         mv->exec();
       }

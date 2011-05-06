@@ -60,6 +60,9 @@ SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should b
 # include doxygen documentation
 SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
 
+# build our version of astyle
+SET (WITH_ASTYLE FALSE CACHE BOOL "If you plan to contribute you should reindent with scripts/prepare-commit.sh (using 'our' astyle)")
+
 # try to configure and build POSTGRESQL support
 SET (WITH_POSTGRESQL TRUE CACHE BOOL "Determines whether POSTGRESQL support should be built")
 IF (WITH_POSTGRESQL)
@@ -446,12 +449,21 @@ FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 IF (GIT_MARKER)
   FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
   IF(GIT)
-    ADD_CUSTOM_COMMAND(
-      OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-      COMMAND echo \\\#define QGSVERSION \\\"$$\( ${GIT} log -n1 --pretty=%h \)\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
-      MAIN_DEPENDENCY ${GIT_MARKER}
-      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-    )
+    IF(MSVC)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in (`\"${GIT}\" log -n1 --oneline`) do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        MAIN_DEPENDENCY ${GIT_MARKER}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      )
+    ELSE(MSVC)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND echo \\\#define QGSVERSION \\\"$$\( ${GIT} log -n1 --pretty=%h \)\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        MAIN_DEPENDENCY ${GIT_MARKER}
+        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      )
+    ENDIF(MSVC)
   ELSE(GIT)
     MESSAGE(STATUS "git marker, but no git found - version will be unknown")
     FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")

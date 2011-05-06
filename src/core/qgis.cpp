@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgis.h"
-#ifndef QGSSVNVERSION
+#ifndef QGSVERSION
 #include "qgsversion.h"
 #endif
 
@@ -28,7 +28,7 @@
 // Version string
 const char* QGis::QGIS_VERSION = VERSION;
 
-// SVN version
+// development version
 const char* QGis::QGIS_DEV_VERSION = QGSVERSION;
 
 // Version number used for comparing versions using the

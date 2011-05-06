@@ -1411,7 +1411,7 @@ int QgsCoordinateReferenceSystem::syncDb()
     // 4.7.0 has a bug that crashes after 16 consecutive pj_init_plus with different strings
     else
     {
-      input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toLower() ).arg( auth_id );
+      QString input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toLower() ).arg( auth_id );
       projPJ pj = pj_init_plus( input.toAscii() );
       if ( !pj )
       {
