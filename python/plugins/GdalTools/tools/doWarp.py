@@ -189,7 +189,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
         mask = self.getMaskFileName()
         if not mask.isEmpty():
           arguments << "-q"
-          arguments << "-mask"
+          arguments << "-cutline"
           arguments << mask
           arguments << "-dstalpha"
       if self.isBatchEnabled():
