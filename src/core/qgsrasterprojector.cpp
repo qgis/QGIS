@@ -130,7 +130,7 @@ void QgsRasterProjector::calcSrcExtent()
   mSrcExtent = QgsRectangle( myPoint.x(), myPoint.y(), myPoint.x(), myPoint.y() );
   for ( int i = 0; i < mCPRows; i++ )
   {
-    for ( int j = 1; j < mCPCols - 1; j++ )
+    for ( int j = 0; j < mCPCols ; j++ )
     {
       myPoint = mCPMatrix[i][j];
       mSrcExtent.combineExtentWith( myPoint.x(), myPoint.y() );
