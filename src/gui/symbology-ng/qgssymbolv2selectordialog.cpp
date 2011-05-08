@@ -176,6 +176,8 @@ void QgsSymbolV2SelectorDialog::setSymbolColor()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mSymbol->color(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mSymbol->color(), this );
