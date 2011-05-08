@@ -86,4 +86,6 @@ source directory.
 
 %!include: osx.t2t
 
+%!include: git.t2t
+
 %!include: iauthors.t2t

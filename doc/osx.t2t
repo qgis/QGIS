@@ -334,47 +334,11 @@ make
 sudo make install
 ```
 
-== Install git for OSX ==
+== QGIS source ==
 
-The [git http://git-scm.com/] project has a downloadable build of git.
-Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
+Unzip the QGIS source tarball to a working folder of your choice (/usr/somewhere is not a good choice as it's hidden and requires root privileges).  If you are reading this from the source, you've already done this.
 
-Once downloaded open the disk image and run the installer.
-
-__PPC/source note__
-
-The git site does not offer PPC builds.  If you need a PPC build, or you just want
-a little more control over the installation, you need to compile it yourself.
-
-Download the source from http://git-scm.com/.  Unzip it, and in a Terminal cd to the source folder, then:
-
-```
-make prefix=/usr/local
-sudo make prefix=/usr/local install
-```
-
-If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
-
-```
-export NO_PERL=
-export NO_TCLTK=
-export NO_PYTHON=
-```
-
-== Check out QGIS from git ==
-
-Now we are going to check out the sources for QGIS. First we will create a
-directory for working in (or some folder of your choice):
-
-``` 
-mkdir -p ~/dev/cpp cd ~/dev/cpp 
-```
-
-Now we check out the sources:
-
-``` 
-git clone git://github.com/qgis/Quantum-GIS.git
-```
+If you want to experiment with the latest development sources, see the [git #git] section below.
 
 == Configure the build ==
 
