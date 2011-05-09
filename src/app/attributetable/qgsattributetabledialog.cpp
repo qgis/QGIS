@@ -598,12 +598,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
     return;
   }
 
-  // update view
-  updateSelection();
-
-  disconnect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
   mLayer->setSelectedFeatures( mSelectedFeatures );
-  connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
 
   QString str;
   QWidget *w = mDock ? qobject_cast<QWidget*>( mDock ) : qobject_cast<QWidget*>( this );
