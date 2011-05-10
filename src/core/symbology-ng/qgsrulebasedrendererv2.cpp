@@ -141,6 +141,7 @@ QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feature )
       return rule->symbol(); //works with levels but takes only first rule
     }
   }
+  return mCurrentSymbol;
 }
 
 void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
