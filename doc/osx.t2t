@@ -33,7 +33,9 @@ ie: Macbook Pro i5 (hyperthreading) = 2 cores X 2 = 4
 
 == Install Qt4 from disk image ==
 
-You need a minimum of Qt-4.4.0. I suggest getting the latest.  There is no need for the full Qt SDK, so save yourself some download time and get the frameworks only.
+You need a minimum of Qt-4.4.0. I suggest getting the latest.  There is no need
+for the full Qt SDK, so save yourself some download time and get the frameworks
+  only.
 
 __Snow Leopard note:__ If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
@@ -252,11 +254,13 @@ You can take care of both with the PyQwt source from:
 
 http://pyqwt.sourceforge.net/
 
-Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
-Normal compilation does both Qwt and PyQwt at the same time, but Qwt is statically linked
-into PyQwt, and Qgis can't use it.  So, we need to split the build.
+Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0
+(comes with Qwt 5.2.1).  Normal compilation does both Qwt and PyQwt at the same
+time, but Qwt is statically linked into PyQwt, and Qgis can't use it.  So, we
+need to split the build.
 
-Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and install:
+Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build
+and install:
 
 ```
 cat >> qwtconfig.pri <<EOF
@@ -269,10 +273,12 @@ sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib \
 /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
 ```
 
-The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is the 
-minor.point version, and it may be an SVN version).  Remember this for QGIS and PyQwt configuration.
+The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is
+the minor.point version, and it may be an SVN version).  Remember this for QGIS
+and PyQwt configuration.
 
-Now for PyQwt.  Still in the Terminal (for all Pythons, except see Snow Leopard Carbon note below):
+Now for PyQwt.  Still in the Terminal (for all Pythons, except see Snow Leopard
+Carbon note below):
 
 ```
 cd ../configure
@@ -299,7 +305,8 @@ python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
 
 === Additional Dependencies: Bison ===
 
-__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
+__Leopard and Snow Leopard note:__ Leopard and Snow Leopard include Bison 2.3,
+so this step can be skipped on Leopard and Snow Leopard.
 
 The version of bison available by default on Mac OS X 10.4 is too old so you need to
 get a more recent one on your system. Download at least version 2.3 from:
@@ -336,18 +343,23 @@ sudo make install
 
 == QGIS source ==
 
-Unzip the QGIS source tarball to a working folder of your choice (/usr/somewhere is not a good choice as it's hidden and requires root privileges).  If you are reading this from the source, you've already done this.
+Unzip the QGIS source tarball to a working folder of your choice
+(/usr/somewhere is not a good choice as it's hidden and requires root
+privileges).  If you are reading this from the source, you've already done
+this.
 
-If you want to experiment with the latest development sources, see the [git #git] section below.
+If you want to experiment with the latest development sources, see the [git
+#git] section below.
 
 == Configure the build ==
 
 CMake supports out of source build so we will create a 'build' dir for the
-build process. OS X uses ${HOME}/Applications as a standard user app folder (it gives it the system app folder icon).
-If you have the correct permissions you may want to build
-straight into your /Applications folder. The instructions below assume you are
-building into a pre-existing ${HOME}/Applications directory.
-In a Terminal cd to the qgis source folder previously downloaded, then:
+build process. OS X uses ${HOME}/Applications as a standard user app folder (it
+gives it the system app folder icon).  If you have the correct permissions you
+may want to build straight into your /Applications folder. The instructions
+below assume you are building into a pre-existing ${HOME}/Applications
+directory.  In a Terminal cd to the qgis source folder previously downloaded,
+then:
 
 ```
 mkdir build
@@ -403,13 +415,15 @@ or wait to see if there are immediate crashes when running Qgis.  It's also a go
 idea to bundle Qt if you need to copy Qgis to other Macs (where you would have to
 install Xcode just so Qt would install!).
 
-To bundle Qt, add the following line before the last line (the ".." line) in the above cmake configurations:
+To bundle Qt, add the following line before the last line (the ".." line) in
+the above cmake configurations:
 
 ```
 -D QGIS_MACAPP_BUNDLE=1 \
 ```
 
-Even better for distribution purposes, to also bundle any extras non-framework, non-standard, libs (ie postgres' libpq) bump the bundle number to 2:
+Even better for distribution purposes, to also bundle any extras non-framework,
+non-standard, libs (ie postgres' libpq) bump the bundle number to 2:
 
 ```
 -D QGIS_MACAPP_BUNDLE=2 \
