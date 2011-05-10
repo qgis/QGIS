@@ -21,8 +21,8 @@
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
 
-RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance ) :
-    RgGraphBuilder( crs, topologyTolerance )
+RgSimpleGraphBuilder::RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled, double topologyTolerance ) :
+    RgGraphBuilder( crs,  ctfEnabled, topologyTolerance )
 {
 }
 
