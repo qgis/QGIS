@@ -72,11 +72,21 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
   int featureCount = ( int ) vl->featureCount() * 2;
   int step = 0;
 
-  QgsCoordinateTransform ct( vl->crs(), builder->destinationCrs() );
-
+  QgsCoordinateTransform ct;
   QgsDistanceArea da;
-  da.setSourceCrs( builder->destinationCrs().srsid() );
-  da.setProjectionsEnabled( true );
+  ct.setSourceCrs( vl->crs() );
+
+  if ( builder->coordinateTransformEnabled() )
+  {
+    ct.setDestCRS( builder->destinationCrs() );
+    da.setProjectionsEnabled( true );
+    da.setSourceCrs( builder->destinationCrs().srsid() );
+  }
+  else
+  {
+    ct.setDestCRS( vl->crs() );
+    da.setProjectionsEnabled( false );
+  }
 
   tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
   TiePointInfo tmpInfo;
