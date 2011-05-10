@@ -25,15 +25,18 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
         [
           (self.inSelector, SIGNAL("filenameChanged()")),
           (self.outSelector, SIGNAL("filenameChanged()")),
+          (self.maskSelector, SIGNAL("filenameChanged()"), self.maskCheck),
           (self.fieldEdit, SIGNAL("textChanged(const QString &)"), self.fieldCheck)
         ]
       )
 
       self.connect(self.inSelector, SIGNAL("selectClicked()"), self.fillInputFileEdit)
       self.connect(self.outSelector, SIGNAL("selectClicked()"), self.fillOutputFileEdit)
+      self.connect(self.maskSelector, SIGNAL("selectClicked()"), self.fillMaskFileEdit)
 
   def onLayersChanged(self):
       self.inSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
+      self.maskSelector.setLayers( Utils.LayerRegistry.instance().getRasterLayers() )
 
   def fillInputFileEdit(self):
       lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
@@ -55,10 +58,23 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.outSelector.setFilename(outputFile)
       self.lastEncoding = encoding
 
+  def fillMaskFileEdit(self):
+      lastUsedFilter = Utils.FileFilter.lastUsedRasterFilter()
+      maskFile = Utils.FileDialog.getOpenFileName(self, self.tr( "Select the input file for Polygonize" ), Utils.FileFilter.allRastersFilter(), lastUsedFilter )
+      if maskFile.isEmpty():
+        return
+      Utils.FileFilter.setLastUsedRasterFilter(lastUsedFilter)
+
+      self.maskSelector.setFilename(maskFile)
+
   def getArguments(self):
       arguments = QStringList()
       arguments << self.getInputFileName()
       outputFn = self.getOutputFileName()
+      maskFn = self.getMaskFileName()
+      if self.maskCheck.isChecked() and not maskFn.isEmpty():
+        arguments << "-mask"
+        arguments << maskFn
       if not outputFn.isEmpty():
         arguments << "-f"
         arguments << self.outputFormat
@@ -74,6 +90,9 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
   def getInputFileName(self):
       return self.inSelector.filename()
+  
+  def getMaskFileName(self):
+      return self.maskSelector.filename()
 
   def addLayerIntoCanvas(self, fileInfo):
       vl = self.iface.addVectorLayer(fileInfo.filePath(), fileInfo.baseName(), "ogr")
