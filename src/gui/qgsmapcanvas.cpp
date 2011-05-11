@@ -82,9 +82,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mCanvasProperties( new CanvasProperties )
     , mNewSize( QSize() )
     , mPainting( false )
+    , mAntiAliasing( false )
 {
   //disable the update that leads to the resize crash
-  if( viewport() )
+  if ( viewport() )
   {
     viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
   }
@@ -163,6 +164,7 @@ QgsMapCanvas::~QgsMapCanvas()
 
 void QgsMapCanvas::enableAntiAliasing( bool theFlag )
 {
+  mAntiAliasing = theFlag;
   mMap->enableAntiAliasing( theFlag );
   if ( mMapOverview )
     mMapOverview->enableAntiAliasing( theFlag );
