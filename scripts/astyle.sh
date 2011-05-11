@@ -1,9 +1,15 @@
 #!/bin/bash
 
-ASTYLE=$(dirname $0)/astyle
+for ASTYLE in $(dirname $0)/astyle $(dirname $0)/RelWithDebInfo/astyle
+do
+	if type -p $ASTYLE >/dev/null; then
+		break
+	fi
+	ASTYLE=
+done
 
-if ! type -p $ASTYLE >/dev/null; then
-	echo "astyle not found" >&2
+if [ -z "$ASTYLE" ]; then
+	echo "astyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
 	exit 1	
 fi
 
