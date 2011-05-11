@@ -41,7 +41,7 @@ int main( int argc, char ** argv )
   {
     context = argv[1];
   }
-#if defined(Q_WS_MACX)
+#if defined(Q_WS_MACX) && defined(BUILD_MACAPP_BUNDLE)
   // If we're on Mac, we have the resource library way above us...
   a.setPkgDataPath( QgsApplication::prefixPath() + "/../../../../" + QString( QGIS_DATA_SUBDIR ) );
 #elif defined(Q_WS_WIN)
