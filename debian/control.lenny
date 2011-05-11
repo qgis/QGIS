@@ -27,7 +27,7 @@ Build-Depends:
  python-qt4-dev (>=4.1.0),
  python-sip4-dev (>= 4.5.0),
  sip4 (>= 4.5),
- subversion,
+ git,
  doxygen,
  graphviz,
  txt2tags

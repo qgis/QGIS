@@ -20,7 +20,7 @@ set -e
 if [ -d .svn ]; then
 	MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
 elif [ -d .git ]; then
-	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p")
+	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p" | sort -u)
 else
 	echo No working copy
 	exit 1
@@ -76,6 +76,9 @@ if [ -s "$ASTYLEDIFF" ]; then
 	else
 		echo "Files changed (see $ASTYLEDIFF)"
 	fi
+	exit 1
 else
 	rm $ASTYLEDIFF
 fi
+
+exit 0
