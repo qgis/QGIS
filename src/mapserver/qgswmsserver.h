@@ -143,6 +143,9 @@ class QgsWMSServer
     QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const;
     /**Restores the original layer filters*/
     void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
+    /**Tests if a filter sql string is allowed (safe)
+      @return true in case of success, false if string seems unsafe*/
+    bool testFilterStringSafety( const QString& filter ) const;
 
     /**Map containing the WMS parameters*/
     std::map<QString, QString> mParameterMap;

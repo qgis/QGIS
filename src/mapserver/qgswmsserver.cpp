@@ -1522,7 +1522,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
   if ( filterIt != mParameterMap.end() )
   {
     QString filterParameter = filterIt->second;
-    QStringList layerSplit = filterParameter.split( "," );
+    QStringList layerSplit = filterParameter.split( ";" );
     QStringList::const_iterator layerIt = layerSplit.constBegin();
     for ( ; layerIt != layerSplit.constEnd(); ++layerIt )
     {
@@ -1530,6 +1530,15 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
       if ( eqSplit.size() < 2 )
       {
         continue;
+      }
+
+      //filter string could be unsafe (danger of sql injection)
+      if ( !testFilterStringSafety( eqSplit.at( 1 ) ) )
+      {
+        throw QgsMapServiceException( "Filter string rejected", "The filter string " + eqSplit.at( 1 ) +
+                                      " has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. " +
+                                      "A space between each word / special character is mandatory. Allowed Keywords and special characters are " +
+                                      "AND,OR,IN,<,>=,>,>=,!=,',',(,). Not allowed are semicolons in the filter expression." );
       }
 
       //we know the layer name, but need to go through the list because a layer could be there several times...
@@ -1580,4 +1589,69 @@ void QgsWMSServer::restoreLayerFilters( const QMap < QString, QString >& filterM
       }
     }
   }
+}
+
+bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
+{
+  //; too dangerous for sql injections
+  if ( filter.contains( ";" ) )
+  {
+    return false;
+  }
+
+  QStringList tokens = filter.split( " ", QString::SkipEmptyParts );
+  QStringList::const_iterator tokenIt = tokens.constBegin();
+  for ( ; tokenIt != tokens.constEnd(); ++tokenIt )
+  {
+    //whitelist of allowed characters and keywords
+    if ( tokenIt->compare( "," ) == 0
+         || tokenIt->compare( "(" ) == 0
+         || tokenIt->compare( ")" ) == 0
+         || tokenIt->compare( "=" ) == 0
+         || tokenIt->compare( "!=" ) == 0
+         || tokenIt->compare( "<" ) == 0
+         || tokenIt->compare( "<=" ) == 0
+         || tokenIt->compare( ">" ) == 0
+         || tokenIt->compare( ">=" ) == 0
+         || tokenIt->compare( "AND", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "OR", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0 )
+    {
+      continue;
+    }
+
+    //numbers are ok
+    bool isNumeric;
+    tokenIt->toDouble( &isNumeric );
+    if ( isNumeric )
+    {
+      continue;
+    }
+
+    //numeric strings need to be quoted once either with single or with double quotes
+
+    //single quote
+    if ( tokenIt->size() > 2
+         && ( *tokenIt )[0] == QChar( '\'' )
+         && ( *tokenIt )[tokenIt->size() - 1] == QChar( '\'' )
+         && ( *tokenIt )[1] != QChar( '\'' )
+         && ( *tokenIt )[tokenIt->size() - 2] != QChar( '\'' ) )
+    {
+      continue;
+    }
+
+    //double quote
+    if ( tokenIt->size() > 2
+         && ( *tokenIt )[0] == QChar( '"' )
+         && ( *tokenIt )[tokenIt->size() - 1] == QChar( '"' )
+         && ( *tokenIt )[1] != QChar( '"' )
+         && ( *tokenIt )[tokenIt->size() - 2] != QChar( '"' ) )
+    {
+      continue;
+    }
+
+    return false;
+  }
+
+  return true;
 }
