@@ -147,7 +147,7 @@ QgsVectorFileWriter::QgsVectorFileWriter(
 
       if ( !found )
       {
-        vectorFileName += "." + exts[0];
+        vectorFileName += "." + allExts[0];
       }
     }
 
