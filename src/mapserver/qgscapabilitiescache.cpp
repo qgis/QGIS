@@ -40,5 +40,11 @@ const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QStr
 
 void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFilePath, const QDomDocument* doc )
 {
+  if( mCachedCapabilities.size() > 40 )
+  {
+    //remove another cache entry to avoid memory problems
+    QHash<QString, QDomDocument>::iterator capIt = mCachedCapabilities.begin();
+    mCachedCapabilities.erase( capIt );
+  }
   mCachedCapabilities.insert( configFilePath, doc->cloneNode().toDocument() );
 }

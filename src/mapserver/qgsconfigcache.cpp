@@ -61,12 +61,9 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
 {
   if ( mCachedConfigurations.size() > 40 )
   {
-    //remove 10 elements to avoid memory problems
+    //remove a cache entry to avoid memory problems
     QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-    for ( int i = 0; i < 10; ++i )
-    {
-      configIt = mCachedConfigurations.erase( configIt );
-    }
+    mCachedConfigurations.erase( configIt );
   }
 
   //first open file
