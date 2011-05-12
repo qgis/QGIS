@@ -387,6 +387,12 @@ void QgsWFSSourceSelect::addLayer()
     crsString.prepend( "&SRSNAME=" );
   }
 
+  QString filterString;
+  if ( !mFilterLineEdit->text().isEmpty() )
+  {
+    filterString = ( "&FILTER=" + mFilterLineEdit->text() );
+  }
+
   //add a wfs layer to the map
   if ( mIface )
   {
@@ -402,7 +408,7 @@ void QgsWFSSourceSelect::addLayer()
                    .arg( currentExtent.xMaximum(), 0, 'f' )
                    .arg( currentExtent.yMaximum(), 0, 'f' );
     }
-    mIface->addVectorLayer( uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString, typeName, "WFS" );
+    mIface->addVectorLayer( uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString + filterString, typeName, "WFS" );
   }
   accept();
 }
