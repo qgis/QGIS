@@ -17,6 +17,7 @@ ENDIF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo
 
 SET ( qgis_mapserv_SRCS
   qgis_map_serv.cpp
+  qgscapabilitiescache.cpp
   qgsconfigcache.cpp
   qgsconfigparser.cpp
   qgsepsgcache.cpp

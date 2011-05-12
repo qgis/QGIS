@@ -350,6 +350,8 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   }
   delete theImage;
 
+  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList, layerIdList );
+
   //GetPrint request needs a template parameter
   std::map<QString, QString>::const_iterator templateIt = mParameterMap.find( "TEMPLATE" );
   if ( templateIt == mParameterMap.end() )
@@ -360,6 +362,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   QgsComposition* c = mConfigParser->createPrintComposition( templateIt->second, mMapRenderer, QMap<QString, QString>( mParameterMap ) );
   if ( !c )
   {
+    restoreLayerFilters( originalLayerFilters );
     return 0;
   }
 
@@ -416,6 +419,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     if ( !tempFile.open() )
     {
       delete c;
+      restoreLayerFilters( originalLayerFilters );
       return 0;
     }
 
@@ -450,6 +454,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   {
     throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
+  restoreLayerFilters( originalLayerFilters );
 
   delete c;
   return ba;
@@ -478,7 +483,10 @@ QImage* QgsWMSServer::getMap()
 
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
+
+  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList, layerIdList );
   mMapRenderer->render( &thePainter );
+  restoreLayerFilters( originalLayerFilters );
 
   QgsMapLayerRegistry::instance()->mapLayers().clear();
   return theImage;
@@ -1499,4 +1507,151 @@ void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, d
     p->drawRect( QRectF( boxSpace + symbolWidth - symbolWidth / 3.0, currentY + yDownShift, symbolWidth / 3.0, symbolHeight ) );
   }
   p->setPen( savedPen );
+}
+
+QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const
+{
+  QMap<QString, QString> filterMap;
+
+  if ( layerList.isEmpty() || layerIds.isEmpty() )
+  {
+    return filterMap;
+  }
+
+  std::map<QString, QString>::const_iterator filterIt = mParameterMap.find( "FILTER" );
+  if ( filterIt != mParameterMap.end() )
+  {
+    QString filterParameter = filterIt->second;
+    QStringList layerSplit = filterParameter.split( ";" );
+    QStringList::const_iterator layerIt = layerSplit.constBegin();
+    for ( ; layerIt != layerSplit.constEnd(); ++layerIt )
+    {
+      QStringList eqSplit = layerIt->split( ":" );
+      if ( eqSplit.size() < 2 )
+      {
+        continue;
+      }
+
+      //filter string could be unsafe (danger of sql injection)
+      if ( !testFilterStringSafety( eqSplit.at( 1 ) ) )
+      {
+        throw QgsMapServiceException( "Filter string rejected", "The filter string " + eqSplit.at( 1 ) +
+                                      " has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. " +
+                                      "A space between each word / special character is mandatory. Allowed Keywords and special characters are " +
+                                      "AND,OR,IN,<,>=,>,>=,!=,',',(,). Not allowed are semicolons in the filter expression." );
+      }
+
+      //we know the layer name, but need to go through the list because a layer could be there several times...
+      int listPos = 1;
+      QStringList::const_iterator layerIt = layerList.constBegin();
+      for ( ; layerIt != layerList.constEnd(); ++layerIt )
+      {
+        if ( *layerIt == eqSplit.at( 0 ) )
+        {
+          QString layerId = layerIds.at( layerIds.size() - listPos );
+          QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
+          if ( filteredLayer )
+          {
+            QgsVectorDataProvider* dp = filteredLayer->dataProvider();
+            if ( dp )
+            {
+              filterMap.insert( layerId, dp->subsetString() );
+            }
+
+            QString newSubsetString = eqSplit.at( 1 );
+            if ( !dp->subsetString().isEmpty() )
+            {
+              newSubsetString.prepend( " AND " );
+              newSubsetString.prepend( dp->subsetString() );
+            }
+            dp->setSubsetString( newSubsetString );
+          }
+        }
+        ++listPos;
+      }
+    }
+  }
+  return filterMap;
+}
+
+void QgsWMSServer::restoreLayerFilters( const QMap < QString, QString >& filterMap ) const
+{
+  QMap < QString, QString >::const_iterator filterIt = filterMap.constBegin();
+  for ( ; filterIt != filterMap.constEnd(); ++filterIt )
+  {
+    QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() ) );
+    if ( filteredLayer )
+    {
+      QgsVectorDataProvider* dp = filteredLayer->dataProvider();
+      if ( dp )
+      {
+        dp->setSubsetString( filterIt.value() );
+      }
+    }
+  }
+}
+
+bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
+{
+  //; too dangerous for sql injections
+  if ( filter.contains( ";" ) )
+  {
+    return false;
+  }
+
+  QStringList tokens = filter.split( " ", QString::SkipEmptyParts );
+  QStringList::const_iterator tokenIt = tokens.constBegin();
+  for ( ; tokenIt != tokens.constEnd(); ++tokenIt )
+  {
+    //whitelist of allowed characters and keywords
+    if ( tokenIt->compare( "," ) == 0
+         || tokenIt->compare( "(" ) == 0
+         || tokenIt->compare( ")" ) == 0
+         || tokenIt->compare( "=" ) == 0
+         || tokenIt->compare( "!=" ) == 0
+         || tokenIt->compare( "<" ) == 0
+         || tokenIt->compare( "<=" ) == 0
+         || tokenIt->compare( ">" ) == 0
+         || tokenIt->compare( ">=" ) == 0
+         || tokenIt->compare( "AND", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "OR", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0 )
+    {
+      continue;
+    }
+
+    //numbers are ok
+    bool isNumeric;
+    tokenIt->toDouble( &isNumeric );
+    if ( isNumeric )
+    {
+      continue;
+    }
+
+    //numeric strings need to be quoted once either with single or with double quotes
+
+    //single quote
+    if ( tokenIt->size() > 2
+         && ( *tokenIt )[0] == QChar( '\'' )
+         && ( *tokenIt )[tokenIt->size() - 1] == QChar( '\'' )
+         && ( *tokenIt )[1] != QChar( '\'' )
+         && ( *tokenIt )[tokenIt->size() - 2] != QChar( '\'' ) )
+    {
+      continue;
+    }
+
+    //double quote
+    if ( tokenIt->size() > 2
+         && ( *tokenIt )[0] == QChar( '"' )
+         && ( *tokenIt )[tokenIt->size() - 1] == QChar( '"' )
+         && ( *tokenIt )[1] != QChar( '"' )
+         && ( *tokenIt )[tokenIt->size() - 2] != QChar( '"' ) )
+    {
+      continue;
+    }
+
+    return false;
+  }
+
+  return true;
 }

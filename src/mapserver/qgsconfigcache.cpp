@@ -27,7 +27,7 @@ QgsConfigCache::QgsConfigCache()
 
 QgsConfigCache::~QgsConfigCache()
 {
-  QMap<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
+  QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
   for ( ; configIt != mCachedConfigurations.end(); ++configIt )
   {
     delete configIt.value();
@@ -37,7 +37,7 @@ QgsConfigCache::~QgsConfigCache()
 QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
 {
   QgsConfigParser* p = 0;
-  QMap<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
+  QHash<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
   if ( configIt == mCachedConfigurations.constEnd() )
   {
     QgsMSDebugMsg( "Create new configuration" );
@@ -61,12 +61,9 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
 {
   if ( mCachedConfigurations.size() > 40 )
   {
-    //remove 10 elements to avoid memory problems
-    QMap<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-    for ( int i = 0; i < 10; ++i )
-    {
-      configIt = mCachedConfigurations.erase( configIt );
-    }
+    //remove a cache entry to avoid memory problems
+    QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
+    mCachedConfigurations.erase( configIt );
   }
 
   //first open file

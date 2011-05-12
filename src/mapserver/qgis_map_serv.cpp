@@ -18,6 +18,7 @@ map service syntax for SOAP/HTTP POST
  ***************************************************************************/
 
 #include "qgsapplication.h"
+#include "qgscapabilitiescache.h"
 #include "qgsconfigcache.h"
 #include "qgsgetrequesthandler.h"
 #include "qgssoaprequesthandler.h"
@@ -191,6 +192,9 @@ int main( int argc, char * argv[] )
     }
   }
 
+  //create cache for capabilities XML
+  QgsCapabilitiesCache capabilitiesCache;
+
   //creating QgsMapRenderer is expensive (access to srs.db), so we do it here before the fcgi loop
   QgsMapRenderer* theMapRenderer = new QgsMapRenderer();
 
@@ -291,20 +295,34 @@ int main( int argc, char * argv[] )
 
     if ( requestIt->second == "GetCapabilities" )
     {
-      QDomDocument capabilitiesDocument;
-      try
+      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath );
+      if( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
       {
-        capabilitiesDocument = theServer->getCapabilities();
+        QgsMSDebugMsg( "Capabilities document not found in cache" );
+        QDomDocument doc;
+        try
+        {
+          doc = theServer->getCapabilities();
+        }
+        catch ( QgsMapServiceException& ex )
+        {
+          theRequestHandler->sendServiceException( ex );
+          delete theRequestHandler;
+          delete theServer;
+          continue;
+        }
+        capabilitiesCache.insertCapabilitiesDocument( configFilePath, &doc );
+        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath );
       }
-      catch ( QgsMapServiceException& ex )
+      else
       {
-        theRequestHandler->sendServiceException( ex );
-        delete theRequestHandler;
-        delete theServer;
-        continue;
+        QgsMSDebugMsg( "Found capabilities document in cache" );
       }
-      QgsMSDebugMsg( "sending GetCapabilities response" );
-      theRequestHandler->sendGetCapabilitiesResponse( capabilitiesDocument );
+
+      if( capabilitiesDocument )
+      {
+        theRequestHandler->sendGetCapabilitiesResponse( *capabilitiesDocument );
+      }
       delete theRequestHandler;
       delete theServer;
       continue;

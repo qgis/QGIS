@@ -18,7 +18,7 @@
 #ifndef QGSCONFIGCACHE_H
 #define QGSCONFIGCACHE_H
 
-#include <QMap>
+#include <QHash>
 #include <QString>
 
 class QgsConfigParser;
@@ -39,7 +39,7 @@ class QgsConfigCache
         @return the inserted config parser or 0 in case of error*/
     QgsConfigParser* insertConfiguration( const QString& filePath );
     /**Cached XML configuration documents. Key: file path, value: config parser. Default configuration has key '$default$'*/
-    QMap<QString, QgsConfigParser*> mCachedConfigurations;
+    QHash<QString, QgsConfigParser*> mCachedConfigurations;
 };
 
 #endif // QGSCONFIGCACHE_H
