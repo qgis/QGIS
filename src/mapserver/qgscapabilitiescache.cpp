@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgscapabilitiescache.h"
+#include "qgsmapserverlogger.h"
+#include <QCoreApplication>
 
 QgsCapabilitiesCache::QgsCapabilitiesCache()
 {
+  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
 }
 
 QgsCapabilitiesCache::~QgsCapabilitiesCache()
@@ -27,6 +30,7 @@ QgsCapabilitiesCache::~QgsCapabilitiesCache()
 
 const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QString& configFilePath ) const
 {
+  QCoreApplication::processEvents(); //get updates from file system watcher
   QHash< QString, QDomDocument >::const_iterator it = mCachedCapabilities.find( configFilePath );
   if( it == mCachedCapabilities.constEnd() )
   {
@@ -44,7 +48,20 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFile
   {
     //remove another cache entry to avoid memory problems
     QHash<QString, QDomDocument>::iterator capIt = mCachedCapabilities.begin();
+    mFileSystemWatcher.removePath( capIt.key() );
     mCachedCapabilities.erase( capIt );
   }
   mCachedCapabilities.insert( configFilePath, doc->cloneNode().toDocument() );
+  mFileSystemWatcher.addPath( configFilePath );
+}
+
+void QgsCapabilitiesCache::removeChangedEntry( const QString& path )
+{
+  QgsMSDebugMsg( "Remove capabilities cache entry because file changed" );
+  QHash< QString, QDomDocument >::iterator it = mCachedCapabilities.find( path );
+  if( it != mCachedCapabilities.end() )
+  {
+    mCachedCapabilities.erase( it );
+  }
+  mFileSystemWatcher.removePath( path );
 }

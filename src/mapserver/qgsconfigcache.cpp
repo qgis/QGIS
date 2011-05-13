@@ -20,9 +20,11 @@
 #include "qgsmslayercache.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
+#include <QCoreApplication>
 
 QgsConfigCache::QgsConfigCache()
 {
+  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
 }
 
 QgsConfigCache::~QgsConfigCache()
@@ -36,6 +38,7 @@ QgsConfigCache::~QgsConfigCache()
 
 QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
 {
+  QCoreApplication::processEvents(); //check for updates from file system watcher
   QgsConfigParser* p = 0;
   QHash<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
   if ( configIt == mCachedConfigurations.constEnd() )
@@ -63,7 +66,12 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   {
     //remove a cache entry to avoid memory problems
     QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-    mCachedConfigurations.erase( configIt );
+    if ( configIt != mCachedConfigurations.end() )
+    {
+      mFileSystemWatcher.removePath( configIt.key() );
+      delete configIt.value();
+      mCachedConfigurations.erase( configIt );
+    }
   }
 
   //first open file
@@ -107,6 +115,19 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   }
 
   mCachedConfigurations.insert( filePath, configParser );
+  mFileSystemWatcher.addPath( filePath );
   delete configFile;
   return configParser;
+}
+
+void QgsConfigCache::removeChangedEntry( const QString& path )
+{
+  QgsMSDebugMsg( "Remove config cache entry because file changed" );
+  QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.find( path );
+  if ( configIt != mCachedConfigurations.end() )
+  {
+    delete configIt.value();
+    mCachedConfigurations.erase( configIt );
+  }
+  mFileSystemWatcher.removePath( path );
 }
