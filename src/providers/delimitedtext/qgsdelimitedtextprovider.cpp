@@ -69,7 +69,7 @@ QString QgsDelimitedTextProvider::readLine( QTextStream *stream )
 
 QStringList QgsDelimitedTextProvider::splitLine( QString line )
 {
-  QgsDebugMsg( "Attempting to split the input line: " + line + " using delimiter " + mDelimiter );
+  QgsDebugMsgLevel( "Attempting to split the input line: " + line + " using delimiter " + mDelimiter, 3 );
 
   QStringList parts;
   if ( mDelimiterType == "regexp" )
@@ -77,7 +77,7 @@ QStringList QgsDelimitedTextProvider::splitLine( QString line )
   else
     parts = line.split( mDelimiter );
 
-  QgsDebugMsg( "Split line into " + QString::number( parts.size() ) + " parts" );
+  QgsDebugMsgLevel( "Split line into " + QString::number( parts.size() ) + " parts", 3 );
 
   if ( mDelimiterType == "plain" )
   {
@@ -454,7 +454,7 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     QString line = readLine( mStream ); // Default local 8 bit encoding
     if ( line.isEmpty() )
       continue;
-    
+
     // lex the tokens from the current data line
     QStringList tokens = splitLine( line );
 
@@ -528,27 +528,31 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
           i != mAttributesToFetch.end();
           ++i )
     {
-      QString &value = tokens[attributeColumns[*i]];
+      int fieldIdx = *i;
+      if ( fieldIdx < 0 || fieldIdx >= attributeColumns.count() )
+        continue; // ignore non-existant fields
+
+      QString &value = tokens[attributeColumns[fieldIdx]];
       QVariant val;
-      switch ( attributeFields[*i].type() )
+      switch ( attributeFields[fieldIdx].type() )
       {
         case QVariant::Int:
           if ( !value.isEmpty() )
             val = QVariant( value );
           else
-            val = QVariant( attributeFields[*i].type() );
+            val = QVariant( attributeFields[fieldIdx].type() );
           break;
         case QVariant::Double:
           if ( !value.isEmpty() )
             val = QVariant( value.toDouble() );
           else
-            val = QVariant( attributeFields[*i].type() );
+            val = QVariant( attributeFields[fieldIdx].type() );
           break;
         default:
           val = QVariant( value );
           break;
       }
-      feature.addAttribute( *i, val );
+      feature.addAttribute( fieldIdx, val );
     }
 
     // We have a good line, so return
