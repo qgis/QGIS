@@ -19,11 +19,14 @@
 #define QGSCAPABILITIESCACHE_H
 
 #include <QDomDocument>
+#include <QFileSystemWatcher>
 #include <QHash>
+#include <QObject>
 
 /**A cache for capabilities xml documents (by configuration file path)*/
-class QgsCapabilitiesCache
+class QgsCapabilitiesCache: public QObject
 {
+  Q_OBJECT
   public:
     QgsCapabilitiesCache();
     ~QgsCapabilitiesCache();
@@ -35,6 +38,11 @@ class QgsCapabilitiesCache
 
   private:
     QHash< QString, QDomDocument > mCachedCapabilities;
+    QFileSystemWatcher mFileSystemWatcher;
+
+  private slots:
+    /**Removes changed entry from this cache*/
+    void removeChangedEntry( const QString& path );
 };
 
 #endif // QGSCAPABILITIESCACHE_H
