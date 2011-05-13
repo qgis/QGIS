@@ -21,7 +21,7 @@
 
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-#include "qgisapp.h" //for getThemeIcon
+//#include "qgisapp.h" //for getThemeIcon
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
@@ -32,6 +32,8 @@
 #include "qgsnumericsortlistviewitem.h"
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
+#include "qgswmsconnection.h"
+#include "qgswmsprovider.h"
 #include "qgswmssourceselect.h"
 #include "qgsnetworkaccessmanager.h"
 
@@ -51,107 +53,88 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embededMode )
     : QDialog( parent, fl )
     , mCurrentTileset( 0 )
+    , mManagerMode ( managerMode )
+    , mEmbededMode( embededMode)
 {
   setupUi( this );
 
+  if ( mEmbededMode )
+  {
+    buttonBox->button( QDialogButtonBox::Close )->hide();
+  }
+  
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
-
-  mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
-  mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
-
   mAddButton->setEnabled( false );
-  populateConnectionList();
-
-  QHBoxLayout *layout = new QHBoxLayout;
+ 
   mImageFormatGroup = new QButtonGroup;
 
-  QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
+  if ( !mManagerMode ) {
+    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
 
-  if ( supportedFormats.contains( "png" ) )
-  {
-    mFormats << "image/png";
-    mLabels << "PNG";
+    // TODO: do it without QgisApp
+    //mLayerUpButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowUp.png" ) );
+    //mLayerDownButton->setIcon( QgisApp::getThemeIcon( "/mActionArrowDown.png" ) );
 
-    mFormats << "image/png; mode=24bit"; // UMN mapserver
-    mLabels << "PNG24";
+    QHBoxLayout *layout = new QHBoxLayout;
 
-    mFormats << "image/png8";    // used by geoserver
-    mLabels << "PNG8";
+    mFormats = QgsWmsProvider::supportedFormats();
 
-    mFormats << "png";    // used by french IGN geoportail
-    mLabels << "PNG";
+    // add buttons for available encodings
+    for ( int i = 0; i < mFormats.size(); i++ )
+    {
+      mMimeMap.insert( mFormats[i].format, i );
 
-    mFormats << "pngt";    // used by french IGN geoportail
-    mLabels << "PNGT";
+      QRadioButton *btn = new QRadioButton( mFormats[i].label );
+      btn->setToolTip( mFormats[i].format );
+      btn->setHidden( true );
+      mImageFormatGroup->addButton( btn, i );
+      layout->addWidget( btn );
+    }
+
+    // default to first encoding
+    mImageFormatGroup->button( 0 )->setChecked( true );
+    btnGrpImageEncoding->setDisabled( true );
+
+    layout->addStretch();
+    btnGrpImageEncoding->setLayout( layout );
+
+    //set the current project CRS if available
+    long currentCRS = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
+    if ( currentCRS != -1 )
+    {
+      //convert CRS id to epsg
+      QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
+      if ( currentRefSys.isValid() )
+      {
+        mCRS = currentRefSys.authid();
+      }
+    }
+
+    // set up the default WMS Coordinate Reference System
+    labelCoordRefSys->setText( descriptionForAuthId( mCRS ) );
+
+    // disable layer order and tilesets until we have some
+    tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), false );
+    tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), false );
   }
-
-  if ( supportedFormats.contains( "jpg" ) )
+  else
   {
-    mFormats << "image/jpeg";
-    mLabels << "JPEG";
-
-    mFormats << "jpeg";    // used by french IGN geoportail
-    mLabels << "JPEG";
+    tabServers->removeTab ( tabServers->indexOf ( tabLayerOrder ) );
+    tabServers->removeTab ( tabServers->indexOf ( tabTilesets ) );
+    btnGrpImageEncoding->hide();
+    tabLayers->layout()->removeWidget ( btnGrpImageEncoding );
+    gbCRS->hide();
+    tabLayers->layout()->removeWidget ( gbCRS );
   }
-
-  if ( supportedFormats.contains( "gif" ) )
-  {
-    mFormats << "image/gif";
-    mLabels << "GIF";
-  }
-
-  if ( supportedFormats.contains( "tiff" ) )
-  {
-    mFormats << "image/tiff";
-    mLabels << "TIFF";
-  }
-
-  // add buttons for available encodings
-  for ( int i = 0; i < mFormats.size(); i++ )
-  {
-    mMimeMap.insert( mFormats[i], i );
-
-    QRadioButton *btn = new QRadioButton( mLabels[i] );
-    btn->setToolTip( mFormats[i] );
-    btn->setHidden( true );
-    mImageFormatGroup->addButton( btn, i );
-    layout->addWidget( btn );
-  }
-
-  // default to first encoding
-  mImageFormatGroup->button( 0 )->setChecked( true );
-  btnGrpImageEncoding->setDisabled( true );
-
-  layout->addStretch();
-  btnGrpImageEncoding->setLayout( layout );
 
   // set up the WMS connections we already know about
   populateConnectionList();
 
-  //set the current project CRS if available
-  long currentCRS = QgsProject::instance()->readNumEntry( "SpatialRefSys", "/ProjectCRSID", -1 );
-  if ( currentCRS != -1 )
-  {
-    //convert CRS id to epsg
-    QgsCoordinateReferenceSystem currentRefSys( currentCRS, QgsCoordinateReferenceSystem::InternalCrsId );
-    if ( currentRefSys.isValid() )
-    {
-      mCRS = currentRefSys.authid();
-    }
-  }
-
-  // set up the default WMS Coordinate Reference System
-  labelCoordRefSys->setText( descriptionForAuthId( mCRS ) );
-
-  // disable layer order and tilesets until we have some
-  tabServers->setTabEnabled( tabServers->indexOf( tabLayerOrder ), false );
-  tabServers->setTabEnabled( tabServers->indexOf( tabTilesets ), false );
 
   QSettings settings;
   QgsDebugMsg( "restoring geometry" );
@@ -198,6 +181,7 @@ void QgsWMSSourceSelect::on_btnNew_clicked()
   if ( nc->exec() )
   {
     populateConnectionList();
+    emit connectionsChanged();
   }
 
   delete nc;
@@ -210,6 +194,7 @@ void QgsWMSSourceSelect::on_btnEdit_clicked()
   if ( nc->exec() )
   {
     populateConnectionList();
+    emit connectionsChanged();
   }
 
   delete nc;
@@ -228,6 +213,7 @@ void QgsWMSSourceSelect::on_btnDelete_clicked()
     settings.remove( "/Qgis/WMS/" + cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
     setConnectionListPosition();
+    emit connectionsChanged();
   }
 }
 
@@ -249,6 +235,7 @@ void QgsWMSSourceSelect::on_btnLoad_clicked()
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WMS, fileName );
   dlg.exec();
   populateConnectionList();
+  emit connectionsChanged();
 }
 
 QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
@@ -416,64 +403,11 @@ bool QgsWMSSourceSelect::populateLayerList( QgsWmsProvider *wmsProvider )
 
 void QgsWMSSourceSelect::on_btnConnect_clicked()
 {
-  // populate the table list
-  QSettings settings;
-
-  QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
-  QString credentialsKey = "/Qgis/WMS/" + cmbConnections->currentText();
-
-  QStringList connStringParts;
-
   mConnName = cmbConnections->currentText();
-  mConnectionInfo = settings.value( key + "/url" ).toString();
 
-  // Check for credentials and prepend to the connection info
-  QString username = settings.value( credentialsKey + "/username" ).toString();
-  QString password = settings.value( credentialsKey + "/password" ).toString();
-  if ( !username.isEmpty() )
-  {
-    // check for a password, if none prompt to get it
-    if ( password.isEmpty() )
-    {
-      password = QInputDialog::getText( this, tr( "WMS Password for %1" ).arg( mConnName ), "Password", QLineEdit::Password );
-    }
-    mConnectionInfo = "username=" + username + ",password=" + password + ",url=" + mConnectionInfo;
-  }
-
-  bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
-  bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
-  if ( ignoreGetMap || ignoreGetFeatureInfo )
-  {
-    QString connArgs = "ignoreUrl=";
-    if ( ignoreGetMap )
-    {
-      connArgs += "GetMap";
-      if ( ignoreGetFeatureInfo )
-        connArgs += ";";
-    }
-    if ( ignoreGetFeatureInfo )
-      connArgs += "GetFeatureInfo";
-
-    if ( mConnectionInfo.startsWith( "username=" ) )
-    {
-      mConnectionInfo.prepend( connArgs + "," );
-    }
-    else
-    {
-      mConnectionInfo.prepend( connArgs + ",url=" );
-    }
-  }
-
-  QgsDebugMsg( QString( "Connection info: '%1'." ).arg( mConnectionInfo ) );
-
-
-  // TODO: Create and bind to data provider
-
-  // load the server data provider plugin
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-
-  QgsWmsProvider *wmsProvider =
-    ( QgsWmsProvider* ) pReg->getProvider( "wms", mConnectionInfo );
+  QgsWMSConnection connection ( cmbConnections->currentText() );
+  QgsWmsProvider *wmsProvider = connection.provider ( );
+  mConnectionInfo = connection.connectionInfo();
 
   if ( wmsProvider )
   {
@@ -515,7 +449,7 @@ void QgsWMSSourceSelect::addClicked()
   {
     collectSelectedLayers( layers, styles );
     crs = mCRS;
-    format = mFormats[ mImageFormatGroup->checkedId()];
+    format = mFormats[ mImageFormatGroup->checkedId()].format;
   }
   else
   {
@@ -539,10 +473,15 @@ void QgsWMSSourceSelect::addClicked()
       connInfo.prepend( connArgs + ",url=" );
     }
   }
+  QgsDebugMsg ( "crs = " + crs );
 
-  QgisApp::instance()->addRasterLayer( connInfo,
-                                       leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
-                                       "wms", layers, styles, format, crs );
+  // TODO: do it without QgisApp
+  //QgisApp::instance()->addRasterLayer( connInfo,
+  //                                     leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
+  //                                     "wms", layers, styles, format, crs );
+  emit addRasterLayer( connInfo,
+		       leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
+                       "wms", layers, styles, format, crs );
 }
 
 void QgsWMSSourceSelect::enableLayersForCrs( QTreeWidgetItem *item )
@@ -965,7 +904,7 @@ QString QgsWMSSourceSelect::selectedImageEncoding()
   }
   else
   {
-    return QUrl::toPercentEncoding( mFormats[ id ] );
+    return QUrl::toPercentEncoding( mFormats[ id ].format );
   }
 }
 

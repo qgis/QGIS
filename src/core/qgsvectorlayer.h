@@ -688,6 +688,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       @note added in 1.7 */
     void checkJoinLayerRemove( QString theLayerId );
 
+    QString metadata();
+
   signals:
 
     /** This signal is emited when selection was changed */

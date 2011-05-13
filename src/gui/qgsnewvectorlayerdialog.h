@@ -24,11 +24,15 @@
 
 #include "qgis.h"
 
-class QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
+class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVectorLayerDialogBase
 {
     Q_OBJECT
 
   public:
+
+    // run the dialog, create the layer. Return file name if the creation was successful
+    static QString runAndCreateLayer( QWidget* parent = 0, QString* enc = 0 );
+
     QgsNewVectorLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
     ~QgsNewVectorLayerDialog();
     /**Returns the selected geometry type*/

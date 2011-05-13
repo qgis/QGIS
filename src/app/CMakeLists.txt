@@ -16,6 +16,7 @@ SET(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscontinuouscolordialog.cpp
   qgsconfigureshortcutsdialog.cpp
+  qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
@@ -23,7 +24,6 @@ SET(QGIS_APP_SRCS
   qgsdelattrdialog.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
-  qgsnewvectorlayerdialog.cpp
   qgsgraduatedsymboldialog.cpp
   qgsidentifyresults.cpp
   qgsfeatureaction.cpp
@@ -67,8 +67,6 @@ SET(QGIS_APP_SRCS
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
-  qgsnewhttpconnection.cpp
-  qgsnumericsortlistviewitem.cpp
   qgsoptions.cpp
   qgspastetransformations.cpp
   qgspointrotationitem.cpp
@@ -80,7 +78,6 @@ SET(QGIS_APP_SRCS
   qgsrastercalcdialog.cpp
   qgsrasterlayerproperties.cpp
   qgstextannotationdialog.cpp
-  qgswmssourceselect.cpp
   qgsshortcutsmanager.cpp
   qgssinglesymboldialog.cpp
   qgssnappingdialog.cpp
@@ -94,7 +91,6 @@ SET(QGIS_APP_SRCS
   qgshighlight.cpp
   qgshandlebadlayers.cpp
 
-  qgsmanageconnectionsdialog.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -131,12 +127,6 @@ SET(QGIS_APP_SRCS
   ogr/qgsvectorlayersaveasdialog.cpp
   
   attributetable/qgsattributetabledialog.cpp
-  attributetable/qgsattributetablemodel.cpp
-  attributetable/qgsattributetablememorymodel.cpp
-  attributetable/qgsattributetableview.cpp
-  attributetable/qgsattributetablefiltermodel.cpp
-  attributetable/qgsattributetableidcolumnpair.cpp
-  attributetable/qgsattributetabledelegate.cpp
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
@@ -157,6 +147,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsbookmarks.h
   qgsconfigureshortcutsdialog.h
   qgscontinuouscolordialog.h
+  qgscustomization.h
   qgscustomprojectiondialog.h
   qgsdbtablemodel.h
   qgsdelattrdialog.h
@@ -170,7 +161,6 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
   qgslabelpropertydialog.h
-  qgsmanageconnectionsdialog.h
   qgsmaptooladdfeature.h
   qgsmaptooladdisland.h
   qgsmaptooladdring.h
@@ -199,8 +189,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmeasuredialog.h
   qgsmeasuretool.h
   qgsmergeattributesdialog.h
-  qgsnewhttpconnection.h
-  qgsnewvectorlayerdialog.h
   qgsoptions.h
   qgspastetransformations.h
   qgspluginmanager.h
@@ -218,7 +206,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsundowidget.h
   qgsuniquevaluedialog.h
   qgsvectorlayerproperties.h
-  qgswmssourceselect.h
   qgshandlebadlayers.h
 
   composer/qgsattributeselectiondialog.h
@@ -245,11 +232,7 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsogrsublayersdialog.h
   ogr/qgsvectorlayersaveasdialog.h
   
-  attributetable/qgsattributetableview.h
-  attributetable/qgsattributetablemodel.h
-  attributetable/qgsattributetablememorymodel.h
   attributetable/qgsattributetabledialog.h
-  attributetable/qgsattributetabledelegate.h
 
   gps/qgsgpsinformationwidget.h
   )
@@ -364,7 +347,7 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/gps ../core/gps/qextserialport
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
-  ../gui ../gui/symbology-ng
+  ../gui ../gui/symbology-ng ../gui/attributetable
   ../plugins
   ../python
   gps

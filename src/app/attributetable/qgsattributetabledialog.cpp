@@ -35,6 +35,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsfieldcalculator.h"
 #include "qgsfeatureaction.h"
+#include "qgsattributeaction.h"
 
 class QgsAttributeTableDock : public QDockWidget
 {
@@ -63,6 +64,10 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
+
+  // extent has to be set before the model is created
+  QgsAttributeTableModel::setCurrentExtent( QgisApp::instance()->mapCanvas()->extent() );
+  connect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( updateExtent() ) );
 
   mView->setLayer( mLayer );
   mFilterModel = ( QgsAttributeTableFilterModel * ) mView->model();
@@ -126,10 +131,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mView->verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( updateRowPressed( int ) ) );
   connect( mModel, SIGNAL( modelChanged() ), this, SLOT( updateSelection() ) );
 
-  if ( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() == 2 )
-  {
-    connect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), mModel, SLOT( layerModified() ) );
-  }
+  connect( mView, SIGNAL(willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT(viewWillShowContextMenu(QMenu*, QModelIndex ) ) );
 
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel( mFilterModel );
@@ -241,19 +243,7 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
-  QSettings settings;
-  bool canvasFeatures = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() == 2;
-  if ( canvasFeatures )
-  {
-    disconnect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), mModel, SLOT( layerModified() ) );
-  }
-
   QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
-
-  if ( canvasFeatures )
-  {
-    connect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), mModel, SLOT( layerModified() ) );
-  }
 }
 
 void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
@@ -820,4 +810,50 @@ void QgsAttributeTableDialog::addFeature()
   {
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
   }
+}
+
+void QgsAttributeTableDialog::updateExtent()
+{
+  // let the model know about the new extent (we may be showing only features from current extent)
+  QgsAttributeTableModel::setCurrentExtent( QgisApp::instance()->mapCanvas()->extent() );
+}
+
+void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
+{
+  if ( mLayer->actions()->size() != 0 )
+  {
+
+    QAction *a = menu->addAction( tr( "Run action" ) );
+    a->setEnabled( false );
+
+    for ( int i = 0; i < mLayer->actions()->size(); i++ )
+    {
+      const QgsAction &action = mLayer->actions()->at( i );
+
+      if ( !action.runable() )
+        continue;
+
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), mView, mModel, i, atIndex );
+      menu->addAction( action.name(), a, SLOT( execute() ) );
+    }
+  }
+
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), mView, mModel, -1, atIndex );
+  menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+}
+
+void QgsAttributeTableAction::execute()
+{
+  mModel->executeAction( mAction, mFieldIdx );
+}
+
+void QgsAttributeTableAction::featureForm()
+{
+  QgsFeature f = mModel->feature( mFieldIdx );
+
+  QgsFeatureAction action( tr( "Attributes changed" ), f, mModel->layer(), -1, this );
+  if ( mModel->layer()->isEditable() )
+    action.editFeature();
+  else
+    action.viewFeatureForm();
 }

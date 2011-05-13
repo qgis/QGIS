@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1054</width>
-     <height>27</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -160,17 +160,6 @@
     <addaction name="mActionShowAllLayers"/>
     <addaction name="mActionHideAllLayers"/>
    </widget>
-   <widget class="QMenu" name="mSettingsMenu">
-    <property name="title">
-     <string>&amp;Settings</string>
-    </property>
-    <addaction name="mActionProjectProperties"/>
-    <addaction name="mActionCustomProjection"/>
-    <addaction name="mActionStyleManagerV2"/>
-    <addaction name="mActionConfigureShortcuts"/>
-    <addaction name="mActionOptions"/>
-    <addaction name="mActionSnappingOptions"/>
-   </widget>
    <widget class="QMenu" name="mPluginMenu">
     <property name="title">
      <string>&amp;Plugins</string>
@@ -197,6 +186,18 @@
     <addaction name="separator"/>
     <addaction name="mActionAbout"/>
     <addaction name="mActionSponsors"/>
+   </widget>
+   <widget class="QMenu" name="mSettingsMenu">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="mActionProjectProperties"/>
+    <addaction name="mActionCustomProjection"/>
+    <addaction name="mActionStyleManagerV2"/>
+    <addaction name="mActionConfigureShortcuts"/>
+    <addaction name="mActionCustomization"/>
+    <addaction name="mActionOptions"/>
+    <addaction name="mActionSnappingOptions"/>
    </widget>
    <addaction name="mFileMenu"/>
    <addaction name="mEditMenu"/>
@@ -1491,6 +1492,26 @@
    </property>
    <property name="visible">
     <bool>false</bool>
+   </property>
+  </action>
+  <action name="mActionCustomization">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionOptions.png</normaloff>:/images/themes/default/mActionOptions.png</iconset>
+   </property>
+   <property name="text">
+    <string>Customization...</string>
+   </property>
+  </action>
+  <action name="actionActionCatchForCustomization">
+   <property name="text">
+    <string>mActionCatchForCustomization</string>
+   </property>
+   <property name="toolTip">
+    <string>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+M</string>
    </property>
   </action>
  </widget>

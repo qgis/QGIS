@@ -16,6 +16,7 @@ email                : sherman at mrcc.com
  ***************************************************************************/
 /* $Id$ */
 
+#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 
@@ -303,3 +304,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 };
+
+class QgsOgrLayerItem : public QgsLayerItem
+{
+  Q_OBJECT
+  public:
+    QgsOgrLayerItem ( QgsDataItem* parent, QgsDataItem::Type type, 
+                      QString name, QString path, QString uri );
+    ~QgsOgrLayerItem ();
+
+    bool layerInfo ( QgsMapLayer::LayerType &  type, 
+      QString & providerKey, QString & uri );
+    bool setCrs ( QgsCoordinateReferenceSystem crs );
+    Capability capabilities();
+};
+

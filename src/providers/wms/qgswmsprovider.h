@@ -22,6 +22,7 @@
 #define QGSWMSPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
+#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 
 #include <QString>
@@ -335,6 +336,12 @@ struct QgsWmsCapabilitiesProperty
   QString                       version;
 };
 
+/** Formats supported by QImageReader */
+struct QgsWmsSupportedFormat
+{
+  QString format;
+  QString label;
+};
 
 /**
 
@@ -361,6 +368,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! Destructor
     virtual ~QgsWmsProvider();
+
+    virtual QgsWmsCapabilitiesProperty capabilitiesProperty () { return mCapabilities; } 
 
     /**
      * \brief   Returns a list of the supported layers of the WMS server
@@ -630,6 +639,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
       synchronize with changes in the data source*/
     virtual void reloadData();
 
+    static QVector<QgsWmsSupportedFormat> supportedFormats();
 
   signals:
 
@@ -954,6 +964,56 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     //! supported formats for GetFeatureInfo in order of preference
     QStringList mSupportedGetFeatureFormats;
+};
+
+class QgsWMSConnectionItem : public QgsDataCollectionItem 
+{
+    public:
+     QgsWMSConnectionItem (QgsDataItem* parent, QString name, QString path );
+     ~QgsWMSConnectionItem();
+
+    QVector<QgsDataItem*> createChildren();
+    virtual bool equal(const QgsDataItem *other);
+
+    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
+    QString mConnInfo;
+    QVector<QgsWmsLayerProperty> mLayerProperties;
+};
+
+// WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
+// We have to use QgsDataCollectionItem and support layer methods if necessary
+class QgsWMSLayerItem : public QgsDataCollectionItem
+{
+  Q_OBJECT
+  public:
+    QgsWMSLayerItem (QgsDataItem* parent, QString name, QString path, 
+        QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
+    ~QgsWMSLayerItem ();
+
+    int rowCount();
+
+    bool layerInfo ( QgsMapLayer::LayerType &  type, 
+      QString & providerKey, QString & uri );
+
+    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
+    QString mConnInfo;
+    QgsWmsLayerProperty mLayerProperty;
+};
+
+class QgsWMSRootItem : public QgsDataCollectionItem 
+{
+  Q_OBJECT
+  public:
+    QgsWMSRootItem (QgsDataItem* parent, QString name, QString path );
+    ~QgsWMSRootItem();
+
+    QVector<QgsDataItem*> createChildren();
+
+    virtual void doubleClick();
+    virtual QWidget * paramWidget();
+
+  public slots:
+    void connectionsChanged();
 };
 
 #endif

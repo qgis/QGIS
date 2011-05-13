@@ -178,6 +178,8 @@
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
+        <file>themes/default/mIconWms.png</file>
+        <file>themes/default/mIconWmsLayer.png</file>
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/plugin.png</file>
         <file>themes/default/propertyicons/action.png</file>

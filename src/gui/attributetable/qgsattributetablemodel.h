@@ -26,7 +26,7 @@
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsattributetableidcolumnpair.h"
 
-class QgsAttributeTableModel: public QAbstractTableModel
+class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 {
     Q_OBJECT
 
@@ -136,7 +136,13 @@ class QgsAttributeTableModel: public QAbstractTableModel
     /** Execute an action */
     void executeAction( int action, const QModelIndex &idx ) const;
 
-    void featureForm( QModelIndex& );
+    /** return feature attributes at given index */
+    QgsFeature feature( QModelIndex &idx );
+
+    /** In case the table's behaviour is to show only features from current extent,
+      this is a method how to let the model know what extent to use without having
+      to explicitly ask any canvas */
+    static void setCurrentExtent( const QgsRectangle& extent ) { mCurrentExtent = extent; }
 
   signals:
     /**
@@ -197,6 +203,9 @@ class QgsAttributeTableModel: public QAbstractTableModel
     QList<QgsAttributeTableIdColumnPair> mSortList;
     QHash<int, int> mIdRowMap;
     QHash<int, int> mRowIdMap;
+
+    //! useful when showing only features from a particular extent
+    static QgsRectangle mCurrentExtent;
 
     /**
      * Initializes id <-> row maps

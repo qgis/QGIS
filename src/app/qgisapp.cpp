@@ -111,6 +111,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgscredentialdialog.h"
 #include "qgscursors.h"
+#include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsencodingfiledialog.h"
@@ -145,6 +146,7 @@
 #include "qgsproject.h"
 #include "qgsprojectproperties.h"
 #include "qgsproviderregistry.h"
+#include "qgspythonrunner.h"
 #include "qgsquerybuilder.h"
 #include "qgsrastercalcdialog.h"
 #include "qgsrasterlayer.h"
@@ -162,7 +164,7 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-#include "qgswmssourceselect.h"
+//#include "qgswmssourceselect.h"
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -298,7 +300,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   {
     caption += " - " + QgsProject::instance()->title();
   }
-
+  caption = QgisApp::tr( "Quantum GIS pro Deblin" ); //for dbl
   qgisApp.setWindowTitle( caption );
 } // setTitleBarText_( QWidget * qgisApp )
 
@@ -466,6 +468,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // set graphical message output
   QgsMessageOutput::setMessageOutputCreator( messageOutputViewer_ );
 
+
   // set graphical credential requester
   new QgsCredentialDialog( this );
 
@@ -480,7 +483,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Starting Python" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   loadPythonSupport();
-
 
   // Create the plugin registry and load plugins
   // load any plugins that were running in the last session
@@ -534,6 +536,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Restoring window state" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
   restoreWindowState();
+
+  // do main window customization - after window state has been restored, before the window is shown
+  QgsCustomization::instance()->updateMainWindow();
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
@@ -822,6 +827,7 @@ void QgisApp::createActions()
   connect( mActionCustomProjection, SIGNAL( triggered() ), this, SLOT( customProjection() ) );
   connect( mActionConfigureShortcuts, SIGNAL( triggered() ), this, SLOT( configureShortcuts() ) );
   connect( mActionStyleManagerV2, SIGNAL( triggered() ), this, SLOT( showStyleManagerV2() ) );
+  connect( mActionCustomization, SIGNAL( triggered() ), this, SLOT( customize() ) );
 
 #ifdef Q_WS_MAC
   // Window Menu Items
@@ -990,8 +996,9 @@ void QgisApp::createMenus()
 
   // Panel and Toolbar Submenus
   mPanelMenu = new QMenu( tr( "Panels" ) );
+  mPanelMenu->setObjectName("mPanelMenu");
   mToolbarMenu = new QMenu( tr( "Toolbars" ) );
-
+  mToolbarMenu->setObjectName("mToolbarMenu");
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
   QDialogButtonBox::ButtonLayout layout =
@@ -1018,6 +1025,7 @@ void QgisApp::createMenus()
     mEditMenu->addAction( mActionOptions );
     mEditMenu->addAction( mActionSnappingOptions );
     mEditMenu->addAction( mActionConfigureShortcuts );
+    mEditMenu->addAction( mActionCustomization );
     mEditMenu->addAction( mActionStyleManagerV2 );
     mEditMenu->addAction( mActionCustomProjection );
   }
@@ -1086,7 +1094,6 @@ void QgisApp::createToolBars()
   // select tool button
 
   QToolButton *bt = new QToolButton( mAttributesToolBar );
-  bt->setObjectName( "SelectTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   QList<QAction*> selectActions;
   selectActions << mActionSelect << mActionSelectRectangle << mActionSelectPolygon
@@ -1103,14 +1110,13 @@ void QgisApp::createToolBars()
     case 4: defSelectAction = mActionSelectRadius; break;
   }
   bt->setDefaultAction( defSelectAction );
-
-  mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
+  QAction* selectAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
+  selectAction->setObjectName( "ActionSelect" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // measure tool button
 
   bt = new QToolButton( mAttributesToolBar );
-  bt->setObjectName( "MeasureTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionMeasure );
   bt->addAction( mActionMeasureArea );
@@ -1124,13 +1130,13 @@ void QgisApp::createToolBars()
     case 2: defMeasureAction = mActionMeasureAngle; break;
   }
   bt->setDefaultAction( defMeasureAction );
-  mAttributesToolBar->insertWidget( mActionMapTips, bt );
+  QAction* measureAction = mAttributesToolBar->insertWidget( mActionMapTips, bt );
+  measureAction->setObjectName( "ActionMeasure" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // annotation tool button
 
   bt = new QToolButton();
-  bt->setObjectName( "AnnotationTool" );
   bt->setPopupMode( QToolButton::MenuButtonPopup );
   bt->addAction( mActionTextAnnotation );
   bt->addAction( mActionFormAnnotation );
@@ -1144,7 +1150,8 @@ void QgisApp::createToolBars()
     case 2: defAnnotationAction =  mActionAnnotation; break;
   }
   bt->setDefaultAction( defAnnotationAction );
-  mAttributesToolBar->addWidget( bt );
+  QAction* annotationAction = mAttributesToolBar->addWidget( bt );
+  annotationAction->setObjectName( "ActionAnnotation" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
 
   // Help Toolbar
@@ -1160,6 +1167,7 @@ void QgisApp::createStatusBar()
   // And also rendering suppression checkbox
   //
   mProgressBar = new QProgressBar( statusBar() );
+  mProgressBar->setObjectName( "mProgressBar" );
   mProgressBar->setMaximumWidth( 100 );
   mProgressBar->hide();
   mProgressBar->setWhatsThis( tr( "Progress bar that displays the status "
@@ -1173,6 +1181,7 @@ void QgisApp::createStatusBar()
   statusBar()->setFont( myFont );
   //toggle to switch between mouse pos and extents display in status bar widget
   mToggleExtentsViewButton = new QToolButton( statusBar() );
+  mToggleExtentsViewButton->setObjectName( "mToggleExtentsViewButton" );
   mToggleExtentsViewButton->setMaximumWidth( 20 );
   mToggleExtentsViewButton->setMaximumHeight( 20 );
   mToggleExtentsViewButton->setIcon( getThemeIcon( "tracking.png" ) );
@@ -1183,6 +1192,7 @@ void QgisApp::createStatusBar()
 
   // add a label to show current scale
   mCoordsLabel = new QLabel( QString(), statusBar() );
+  mCoordsLabel->setObjectName( "mCoordsLabel" );
   mCoordsLabel->setFont( myFont );
   mCoordsLabel->setMinimumWidth( 10 );
   mCoordsLabel->setMaximumHeight( 20 );
@@ -1195,6 +1205,7 @@ void QgisApp::createStatusBar()
 
   //coords status bar widget
   mCoordsEdit = new QLineEdit( QString(), statusBar() );
+  mCoordsEdit->setObjectName( "mCoordsEdit" );
   mCoordsEdit->setFont( myFont );
   mCoordsEdit->setMinimumWidth( 10 );
   mCoordsEdit->setMaximumWidth( 300 );
@@ -1214,6 +1225,7 @@ void QgisApp::createStatusBar()
 
   // add a label to show current scale
   mScaleLabel = new QLabel( QString(), statusBar() );
+  mScaleLabel->setObjectName( "mScaleLable" );
   mScaleLabel->setFont( myFont );
   mScaleLabel->setMinimumWidth( 10 );
   mScaleLabel->setMaximumHeight( 20 );
@@ -1225,6 +1237,7 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mScaleLabel, 0 );
 
   mScaleEdit = new QLineEdit( QString(), statusBar() );
+  mScaleEdit->setObjectName( "mScaleEdit" );
   mScaleEdit->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
   mScaleEdit->setMaximumWidth( 100 );
@@ -1242,6 +1255,7 @@ void QgisApp::createStatusBar()
 
   //stop rendering status bar widget
   mStopRenderButton = new QToolButton( statusBar() );
+  mStopRenderButton->setObjectName( "mStopRenderButton" );
   mStopRenderButton->setMaximumWidth( 20 );
   mStopRenderButton->setMaximumHeight( 20 );
   mStopRenderButton->setIcon( getThemeIcon( "mIconStopRendering.png" ) );
@@ -1249,6 +1263,7 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mStopRenderButton, 0 );
   // render suppression status bar widget
   mRenderSuppressionCBox = new QCheckBox( tr( "Render" ), statusBar() );
+  mRenderSuppressionCBox->setObjectName( "mRenderSuppressionCBox" );
   mRenderSuppressionCBox->setChecked( true );
   mRenderSuppressionCBox->setFont( myFont );
   mRenderSuppressionCBox->setWhatsThis( tr( "When checked, the map layers "
@@ -1259,6 +1274,7 @@ void QgisApp::createStatusBar()
   statusBar()->addPermanentWidget( mRenderSuppressionCBox, 0 );
   // On the fly projection active CRS label
   mOnTheFlyProjectionStatusLabel = new QLabel( QString(), statusBar() );
+  mOnTheFlyProjectionStatusLabel->setObjectName( "mOnTheFlyProjectionStatusLabel" );
   mOnTheFlyProjectionStatusLabel->setFont( myFont );
   mOnTheFlyProjectionStatusLabel->setMinimumWidth( 10 );
   mOnTheFlyProjectionStatusLabel->setMaximumHeight( 20 );
@@ -1271,6 +1287,7 @@ void QgisApp::createStatusBar()
   // Changed this to a tool button since a QPushButton is
   // sculpted on OS X and the icon is never displayed [gsherman]
   mOnTheFlyProjectionStatusButton = new QToolButton( statusBar() );
+  mOnTheFlyProjectionStatusButton->setObjectName( "mOntheFlyProjectionStatusButton" );
   mOnTheFlyProjectionStatusButton->setMaximumWidth( 20 );
   // Maintain uniform widget height in status bar by setting button height same as labels
   // For Qt/Mac 3.3, the default toolbutton height is 30 and labels were expanding to match
@@ -1362,6 +1379,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionCheckQgisVersion->setIcon( getThemeIcon( "/mActionCheckQgisVersion.png" ) );
   mActionOptions->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionConfigureShortcuts->setIcon( getThemeIcon( "/mActionOptions.png" ) );
+  mActionCustomization->setIcon( getThemeIcon( "/mActionOptions.png" ) );
   mActionHelpContents->setIcon( getThemeIcon( "/mActionHelpContents.png" ) );
   mActionLocalHistogramStretch->setIcon( getThemeIcon( "/mActionLocalHistogramStretch.png" ) );
   mActionFullHistogramStretch->setIcon( getThemeIcon( "/mActionFullHistogramStretch.png" ) );
@@ -2456,7 +2474,17 @@ void QgisApp::addWmsLayer()
   // Fudge for now
   QgsDebugMsg( "about to addRasterLayer" );
 
-  QgsWMSSourceSelect *wmss = new QgsWMSSourceSelect( this );
+  // TODO: QDialog for now, switch to QWidget in future
+  QDialog *wmss = dynamic_cast<QDialog*> ( QgsProviderRegistry::instance()->getSelectWidget( QString("wms"), this ) );
+  if ( !wmss ) 
+  {
+    QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
+    return;   
+  }
+  connect ( wmss , SIGNAL ( addRasterLayer( QString const &, QString const &, QString const &,QStringList const &,QStringList const &,QString const &,
+QString const &) ),
+	    this , SLOT ( addRasterLayer( QString const &, QString const &, QString const &,QStringList const &,QStringList const &,QString const &,
+QString const &) ) );
   wmss->exec();
   delete wmss;
 }
@@ -2585,96 +2613,17 @@ void QgisApp::newVectorLayer()
     return;
   }
 
-  QgsNewVectorLayerDialog geomDialog( this );
-  if ( geomDialog.exec() == QDialog::Rejected )
-  {
-    return;
-  }
-
-  QGis::WkbType geometrytype = geomDialog.selectedType();
-  QString fileformat = geomDialog.selectedFileFormat();
-  int crsId = geomDialog.selectedCrsId();
-  QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
-
-  std::list<std::pair<QString, QString> > attributes;
-  geomDialog.attributes( attributes );
-
   QString enc;
-  QString fileName;
+  QString fileName = QgsNewVectorLayerDialog::runAndCreateLayer( this, &enc );
 
-  QSettings settings;
-  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
-
-  QgsDebugMsg( "Saving vector file dialog without filters: " );
-
-  QgsEncodingFileDialog* openFileDialog =
-    new QgsEncodingFileDialog( this, tr( "Save As" ), lastUsedDir, "", QString( "" ) );
-
-  openFileDialog->setFileMode( QFileDialog::AnyFile );
-  openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-  openFileDialog->setConfirmOverwrite( true );
-
-  if ( settings.contains( "/UI/lastVectorFileFilter" ) )
+  if ( !fileName.isEmpty() )
   {
-    QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter", QVariant( QString::null ) ).toString();
-    openFileDialog->selectFilter( lastUsedFilter );
+    //then add the layer to the view
+    QStringList fileNames;
+    fileNames.append( fileName );
+    //todo: the last parameter will change accordingly to layer type
+    addVectorLayers( fileNames, enc, "file" );
   }
-
-  if ( openFileDialog->exec() == QDialog::Rejected )
-  {
-    delete openFileDialog;
-    return;
-  }
-
-  fileName = openFileDialog->selectedFiles().first();
-
-  if ( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
-    fileName += ".shp";
-
-  enc = openFileDialog->encoding();
-
-  settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
-  settings.setValue( "/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath() );
-
-  delete openFileDialog;
-
-  //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
-  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
-  QString ogrlib = pReg->library( "ogr" );
-  // load the data provider
-  QLibrary* myLib = new QLibrary( ogrlib );
-  bool loaded = myLib->load();
-  if ( loaded )
-  {
-    QgsDebugMsg( "ogr provider loaded" );
-
-    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
-        const std::list<std::pair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
-    createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
-    if ( createEmptyDataSource )
-    {
-      if ( geometrytype != QGis::WKBUnknown )
-      {
-        QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
-        createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs );
-      }
-      else
-      {
-        QgsDebugMsg( "geometry type not recognised" );
-        return;
-      }
-    }
-    else
-    {
-      QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
-    }
-  }
-
-  //then add the layer to the view
-  QStringList fileNames;
-  fileNames.append( fileName );
-  //todo: the last parameter will change accordingly to layer type
-  addVectorLayers( fileNames, enc, "file" );
 }
 
 #ifdef HAVE_SPATIALITE
@@ -4675,10 +4624,23 @@ void QgisApp::showPluginManager()
   }
 }
 
-static void _runPythonString( const QString &expr )
+// implementation of the python runner
+class QgsPythonRunnerImpl : public QgsPythonRunner
 {
-  QgisApp::instance()->runPythonString( expr );
-}
+public:
+    QgsPythonRunnerImpl(QgsPythonUtils* pythonUtils) : mPythonUtils(pythonUtils) {}
+    virtual bool runCommand( QString command, QString messageOnError = QString() )
+    {
+      if ( mPythonUtils && mPythonUtils->isEnabled() )
+      {
+        return mPythonUtils->runString( command, messageOnError );
+      }
+      return false;
+    }
+
+protected:
+    QgsPythonUtils* mPythonUtils;
+};
 
 void QgisApp::loadPythonSupport()
 {
@@ -4724,7 +4686,9 @@ void QgisApp::loadPythonSupport()
   if ( mPythonUtils && mPythonUtils->isEnabled() )
   {
     QgsPluginRegistry::instance()->setPythonUtils( mPythonUtils );
-    QgsAttributeAction::setPythonExecute( _runPythonString );
+
+    // init python runner
+    QgsPythonRunner::setInstance( new QgsPythonRunnerImpl(mPythonUtils) );
 
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
   }
@@ -4866,6 +4830,11 @@ void QgisApp::configureShortcuts()
 {
   QgsConfigureShortcutsDialog dlg;
   dlg.exec();
+}
+
+void QgisApp::customize()
+{
+  QgsCustomization::instance()->openDialog();
 }
 
 
@@ -6646,13 +6615,6 @@ void QgisApp::updateUndoActions()
   mActionRedo->setEnabled( canRedo );
 }
 
-void QgisApp::runPythonString( const QString &expr )
-{
-  if ( mPythonUtils && mPythonUtils->isEnabled() )
-  {
-    mPythonUtils->runString( expr );
-  }
-}
 
 // add project directory to python path
 void QgisApp::projectChanged( const QDomDocument &doc )
@@ -6678,7 +6640,7 @@ void QgisApp::projectChanged( const QDomDocument &doc )
 
   expr += QString( "sys.path.append('%1')" ).arg( prevProjectDir );
 
-  runPythonString( expr );
+  QgsPythonRunner::run( expr );
 }
 
 void QgisApp::writeProject( QDomDocument &doc )

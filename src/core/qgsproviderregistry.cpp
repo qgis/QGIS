@@ -41,6 +41,8 @@ typedef QString fileVectorFilters_t();
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
+//typedef int dataCapabilities_t();
+//typedef QgsDataItem * dataItem_t(QString);
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
@@ -424,6 +426,64 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   return 0;  // factory didn't exist
 
 } // QgsProviderRegistry::setDataProvider
+
+// This should be QWidget, not QDialog
+typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
+
+QWidget* QgsProviderRegistry::getSelectWidget( const QString & providerKey,
+   QWidget * parent, Qt::WFlags fl )
+{
+  QLibrary *myLib = getLibrary( providerKey );
+  if ( !myLib ) return 0;
+
+  selectFactoryFunction_t * selectFactory =
+    ( selectFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "selectWidget" ) );
+
+  if ( !selectFactory ) return 0;
+
+  QWidget *widget  = ( *selectFactory )( parent, fl );
+  return widget;
+}
+  
+
+void * QgsProviderRegistry::getFunction( QString const & providerKey,
+    QString const & functionName )
+{
+  QString lib = library( providerKey );
+
+  QLibrary* myLib = new QLibrary( lib );
+
+  QgsDebugMsg( "Library name is " + myLib->fileName() );
+
+  bool loaded = myLib->load();
+
+  if ( loaded )
+  {
+    void * ptr = myLib->resolve( functionName.toAscii().data() );
+    delete myLib;
+    return ptr;
+  }
+  delete myLib;
+  return 0;
+}
+
+QLibrary * QgsProviderRegistry::getLibrary( QString const & providerKey )
+{
+  QString lib = library( providerKey );
+
+  QLibrary* myLib = new QLibrary( lib );
+
+  QgsDebugMsg( "Library name is " + myLib->fileName() );
+
+  bool loaded = myLib->load();
+  
+  if ( loaded )
+  {
+    return myLib;
+  } 
+  delete myLib;
+  return 0;
+}
 
 QString QgsProviderRegistry::fileVectorFilters() const
 {

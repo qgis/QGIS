@@ -5,8 +5,6 @@
 SET (WFS_SRCS
      qgswfsplugin.cpp
      qgswfssourceselect.cpp
-     ../../app/qgsnewhttpconnection.cpp
-     ../../app/qgsmanageconnectionsdialog.cpp
 )
 
 SET (WFS_UIS qgswfssourceselectbase.ui)
@@ -14,8 +12,6 @@ SET (WFS_UIS qgswfssourceselectbase.ui)
 SET (WFS_MOC_HDRS
      qgswfsplugin.h
      qgswfssourceselect.h
-     ../../app/qgsnewhttpconnection.h
-     ../../app/qgsmanageconnectionsdialog.h
 )
 
 SET (WFS_RCCS  wfsplugin.qrc)
@@ -37,7 +33,6 @@ INCLUDE_DIRECTORIES(
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
-     ../../app # for QgsNewHttpConnection
      ${GEOS_INCLUDE_DIR}
 )
 

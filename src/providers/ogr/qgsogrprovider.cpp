@@ -37,12 +37,14 @@ email                : sherman at mrcc.com
 #include <QTextCodec>
 
 #include "qgsapplication.h"
+#include "qgsdataitem.h"
 #include "qgsdataprovider.h"
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayer.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -354,11 +356,11 @@ void QgsOgrProvider::setEncoding( const QString& e )
   loadFields();
 }
 
-void QgsOgrProvider::loadFields()
+// This is reused by dataItem
+int getOgrGeomType ( OGRLayerH ogrLayer ) 
 {
-  //the attribute fields need to be read again when the encoding changes
-  mAttributeFields.clear();
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+  int geomType = wkbUnknown;
   if ( fdef )
   {
     geomType = OGR_FD_GetGeomType( fdef );
@@ -380,7 +382,19 @@ void QgsOgrProvider::loadFields()
       }
       OGR_L_ResetReading( ogrLayer );
     }
+  }
+  return geomType;
+}
 
+void QgsOgrProvider::loadFields()
+{
+  //the attribute fields need to be read again when the encoding changes
+  mAttributeFields.clear();
+
+  geomType = getOgrGeomType ( ogrLayer );
+  OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
+  if ( fdef )
+  {
     for ( int i = 0; i < OGR_FD_GetFieldCount( fdef ); ++i )
     {
       OGRFieldDefnH fldDef = OGR_FD_GetFieldDefn( fdef, i );
@@ -1297,7 +1311,10 @@ QString createFilters( QString type )
   static QString myFileFilters;
   /**Directory drivers*/
   static QString myDirectoryDrivers;
-
+  /**Extensions*/
+  static QStringList myExtensions;
+  /**Wildcards*/
+  static QStringList myWildcards;
 
   // if we've already built the supported vector string, just return what
   // we've already built
@@ -1340,14 +1357,17 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "AVCE00" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Arc/Info ASCII Coverage" ), "*.e00" );
+        myExtensions << "e00";
       }
       else if ( driverName.startsWith( "BNA" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Atlas BNA" ), "*.bna" );
+        myExtensions << "bna";
       }
       else if ( driverName.startsWith( "CSV" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Comma Separated Value" ), "*.csv" );
+        myExtensions << "csv";
       }
       else if ( driverName.startsWith( QObject::tr( "DODS" ) ) )
       {
@@ -1358,6 +1378,7 @@ QString createFilters( QString type )
         myDatabaseDrivers += QObject::tr( "ESRI Personal GeoDatabase" ) + ",PGeo;";
 #ifdef WIN32
         myFileFilters += createFileFilter_( QObject::tr( "ESRI Personal GeoDatabase" ), "*.mdb" );
+        myExtensions << "mdb";
 #endif
       }
       else if ( driverName.startsWith( "SDE" ) )
@@ -1367,31 +1388,38 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "ESRI" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "ESRI Shapefiles" ), "*.shp" );
+        myExtensions << "shp" << "dbf";
       }
       else if ( driverName.startsWith( QObject::tr( "FMEObjects Gateway" ) ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "FMEObjects Gateway" ), "*.fdd" );
+        myExtensions << "fdd";
       }
       else if ( driverName.startsWith( "GeoJSON" ) )
       {
         myProtocolDrivers += "GeoJSON,GeoJSON;";
         myFileFilters += createFileFilter_( QObject::tr( "GeoJSON" ), "*.geojson" );
+        myExtensions << "geojson";
       }
       else if ( driverName.startsWith( "GeoRSS" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "GeoRSS" ), "*.xml" );
+        myExtensions << "xml";
       }
       else if ( driverName.startsWith( "GML" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Geography Markup Language [GML]" ), "*.gml" );
+        myExtensions << "gml";
       }
       else if ( driverName.startsWith( "GMT" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Generic Mapping Tools [GMT]" ), "*.gmt" );
+        myExtensions << "gmt";
       }
       else if ( driverName.startsWith( "GPX" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "GPS eXchange Format [GPX]" ), "*.gpx" );
+        myExtensions << "gpx";
       }
       else if ( driverName.startsWith( "GRASS" ) )
       {
@@ -1404,10 +1432,12 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "Interlis 1" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 1" ), "*.itf *.xml *.ili" );
+        myExtensions << "itf" << "xml" << "ili";
       }
       else if ( driverName.startsWith( "Interlis 2" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "INTERLIS 2" ), "*.itf *.xml *.ili" );
+        myExtensions << "itf" << "xml" << "ili";
       }
       else if ( driverName.startsWith( "INGRES" ) )
       {
@@ -1416,14 +1446,17 @@ QString createFilters( QString type )
       else if ( driverName.startsWith( "KML" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Keyhole Markup Language [KML]" ), "*.kml" );
+        myExtensions << "kml";
       }
       else if ( driverName.startsWith( "MapInfo File" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Mapinfo File" ), "*.mif *.tab" );
+        myExtensions << "mif" << "tab";
       }
       else if ( driverName.startsWith( "DGN" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Microstation DGN" ), "*.dgn" );
+        myExtensions << "dgn";
       }
       else if ( driverName.startsWith( "MySQL" ) )
       {
@@ -1449,16 +1482,19 @@ QString createFilters( QString type )
       {
         myFileFilters += createFileFilter_( QObject::tr( "S-57 Base file" ),
                                             "*.000" );
+        myExtensions << "000";
       }
       else if ( driverName.startsWith( "SDTS" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Spatial Data Transfer Standard [SDTS]" ),
                                             "*catd.ddf" );
+        myWildcards << "*catd.ddf";
       }
       else if ( driverName.startsWith( "SQLite" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "SQLite" ),
                                             "*.sqlite" );
+        myExtensions << "sqlite";
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
       {
@@ -1472,19 +1508,23 @@ QString createFilters( QString type )
       {
         myFileFilters += createFileFilter_( QObject::tr( "VRT - Virtual Datasource" ),
                                             "*.vrt" );
+        myExtensions << "vrt";
       }
       else if ( driverName.startsWith( "XPlane" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "X-Plane/Flightgear" ),
                                             "apt.dat nav.dat fix.dat awy.dat" );
+        myWildcards << "apt.dat" << "nav.dat" << "fix.dat" << "awy.dat";
       }
       else if ( driverName.startsWith( "Geoconcept" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "Geoconcept" ), "*.gxt *.txt" );
+        myExtensions << "gxt" << "txt";
       }
       else if ( driverName.startsWith( "DXF" ) )
       {
         myFileFilters += createFileFilter_( QObject::tr( "AutoCAD DXF" ), "*.dxf" );
+        myExtensions << "dxf";
       }
       else
       {
@@ -1515,6 +1555,14 @@ QString createFilters( QString type )
   if ( type == "directory" )
   {
     return myDirectoryDrivers;
+  }
+  if ( type == "extensions" )
+  {
+    return myExtensions.join("|");
+  }
+  if (type == "wildcards" )
+  {
+    return myWildcards.join("|");
   }
   else
   {
@@ -1561,6 +1609,16 @@ QGISEXTERN QString directoryDrivers()
 QString QgsOgrProvider::directoryDrivers() const
 {
   return  createFilters( "directory" );
+}
+
+QGISEXTERN QStringList fileExtensions()
+{
+  return  createFilters( "extensions" ).split("|");
+}
+
+QGISEXTERN QStringList wildcards()
+{
+  return  createFilters( "wildcards" ).split("|");
 }
 
 
@@ -2067,3 +2125,221 @@ void QgsOgrProvider::recalculateFeatureCount()
     OGR_L_SetSpatialFilter( ogrLayer, filter );
   }
 }
+
+QGISEXTERN int dataCapabilities () {
+  return  QgsDataProvider::File | QgsDataProvider::Dir;
+}
+
+QgsOgrLayerItem::QgsOgrLayerItem ( QgsDataItem* parent, QgsDataItem::Type type, 
+    QString name, QString path, QString uri )
+  : QgsLayerItem ( parent, type, name, path, uri )
+{
+}
+
+QgsOgrLayerItem::~QgsOgrLayerItem ()
+{
+}
+
+bool QgsOgrLayerItem::layerInfo ( QgsMapLayer::LayerType & type, 
+      QString & providerKey, QString & uri )
+{
+  QgsDebugMsg ( "Entered" );
+  type = QgsMapLayer::VectorLayer;
+  providerKey = "ogr";
+  uri = mUri;
+  return true;
+}
+
+QgsDataItem::Capability QgsOgrLayerItem::capabilities()
+{
+    QgsDebugMsg( "mPath = " + mPath );
+    OGRRegisterAll();
+    OGRSFDriverH hDriver;
+    OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
+
+    if ( hDataSource == NULL ) return NoCapabilities;
+
+    QString  driverName = OGR_Dr_GetName( hDriver );
+    OGR_DS_Destroy( hDataSource );
+
+    if ( driverName == "ESRI Shapefile" ) return SetCrs;
+
+    return NoCapabilities;
+}
+
+bool QgsOgrLayerItem::setCrs ( QgsCoordinateReferenceSystem crs )
+{
+    QgsDebugMsg( "mPath = " + mPath );
+    OGRRegisterAll();
+    OGRSFDriverH hDriver;
+    OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
+
+    if ( hDataSource == NULL ) return false;
+
+    QString  driverName = OGR_Dr_GetName( hDriver );
+    OGR_DS_Destroy( hDataSource );
+
+    // we are able to assign CRS only to shapefiles :-(
+    if ( driverName == "ESRI Shapefile" )
+    {
+      QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
+      QString wkt = crs.toWkt();
+
+      // save ordinary .prj file
+      OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
+      OSRMorphToESRI(hSRS); // this is the important stuff for shapefile .prj
+      char* pszOutWkt = NULL;
+      OSRExportToWkt(hSRS, &pszOutWkt);
+      QFile prjFile( layerName + ".prj" );
+      if ( prjFile.open( QIODevice::WriteOnly ) )
+      {
+        QTextStream prjStream( &prjFile );
+        prjStream << pszOutWkt << endl;
+        prjFile.close();
+      }
+      else
+      {
+        QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
+	return false;
+      }
+      OSRDestroySpatialReference(hSRS);
+      CPLFree(pszOutWkt);
+
+      // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
+      QFile qpjFile( layerName + ".qpj" );
+      if ( qpjFile.open( QIODevice::WriteOnly ) )
+      {
+        QTextStream qpjStream( &qpjFile );
+        qpjStream << wkt.toLocal8Bit().data() << endl;
+        qpjFile.close();
+      }
+      else
+      {
+        QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
+	return false;
+      }
+
+      return true;
+    }
+
+    // It it is impossible to assign a crs to an existing layer
+    // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
+    return false;
+}
+
+QGISEXTERN QgsDataItem * dataItem ( QString thePath )
+{
+  if ( thePath.isEmpty() ) return 0;
+
+  QFileInfo info ( thePath );
+  if ( info.isFile() )
+  {
+    // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
+    // because OGR drive can open also .dbf, .shx.
+    QStringList myExtensions = fileExtensions();
+    if (  myExtensions.indexOf ( info.suffix().toLower() ) < 0 )
+    {
+      bool matches = false;
+      foreach (QString wildcard, wildcards())
+      {
+        QRegExp rx(wildcard, Qt::CaseInsensitive, QRegExp::Wildcard);
+        if (rx.exactMatch(info.fileName()))
+        {
+          matches = true;
+          break;
+        }
+      }
+      if (!matches)
+        return 0;
+    }
+
+    // .dbf should probably appear if .shp is not present
+    if (info.suffix().toLower() == "dbf")
+    {
+      QString pathShp = thePath.left(thePath.count()-4) + ".shp";
+      if (QFileInfo( pathShp ).exists())
+        return 0;
+    }
+
+    OGRRegisterAll();
+    OGRSFDriverH hDriver;
+    OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
+
+    if ( hDataSource == NULL ) return 0;
+
+    QString  driverName = OGR_Dr_GetName( hDriver );
+    QgsDebugMsg( "OGR Driver : " + driverName );
+
+    int numLayers = OGR_DS_GetLayerCount ( hDataSource );
+
+    if ( numLayers == 0 ) return 0;
+
+    QgsDataCollectionItem * collection = 0;
+    if ( numLayers > 1 )
+    {
+      collection = new QgsDataCollectionItem ( QgsDataItem::Collection, 0, info.fileName(), thePath ); 
+    }
+    for ( int i = 0; i < numLayers; i++ ) 
+    {
+      OGRLayerH hLayer = OGR_DS_GetLayer ( hDataSource, i );
+      OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
+
+      QgsDataItem::Type type = QgsDataItem::Vector; 
+      int ogrType = getOgrGeomType ( hLayer );
+      switch ( ogrType )
+      {
+        case wkbUnknown:
+        case wkbGeometryCollection:
+          break;
+        case wkbNone:
+          type = QgsDataItem::TableLayer;
+          break;
+        case wkbPoint:
+        case wkbMultiPoint: 
+        case wkbPoint25D:   
+        case wkbMultiPoint25D:  
+          type = QgsDataItem::Point;
+          break;
+        case wkbLineString:
+        case wkbMultiLineString:
+        case wkbLineString25D:  
+        case wkbMultiLineString25D:
+          type = QgsDataItem::Line;
+          break;
+        case wkbPolygon: 
+        case wkbMultiPolygon: 
+        case wkbPolygon25D:   
+        case wkbMultiPolygon25D: 
+          type = QgsDataItem::Polygon;
+          break;
+        default: 
+          break;
+      }
+
+      QgsDebugMsg( QString( "ogrType = %1 type = %2").arg(ogrType).arg(type) );
+
+      QString name = info.fileName();
+
+      QString layerName = FROM8( OGR_FD_GetName( hDef ) );
+      QgsDebugMsg( "OGR layer name : " + layerName );
+
+      QString path = thePath;
+      if ( numLayers > 1 ) 
+      {
+	name = layerName;
+	path += "/" + name;
+      }
+
+      QString layerUri = thePath + "|layerid=" + QString::number( i );
+      QgsDebugMsg( "OGR layer uri : " + layerUri );
+
+      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection, type, name, path , layerUri );
+      if ( numLayers == 1 ) return item;
+      collection->addChild( item );
+    }
+    collection->setPopulated();
+    return collection;
+  }
+  return 0;
+}
+

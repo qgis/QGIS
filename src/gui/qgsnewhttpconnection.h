@@ -24,7 +24,7 @@
  * \brief Dialog to allow the user to configure and save connection
  * information for an HTTP Server for WMS, etc.
  */
-class QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBase
+class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpConnectionBase
 {
     Q_OBJECT
 
