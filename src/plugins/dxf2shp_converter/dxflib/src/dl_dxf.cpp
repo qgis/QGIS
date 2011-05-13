@@ -1483,9 +1483,6 @@ bool DL_Dxf::handleLeaderData( DL_CreationInterface* /*creationInterface*/ )
  */
 bool DL_Dxf::handleHatchData( DL_CreationInterface* /*creationInterface*/ )
 {
-
-  static int firstPolylineStatus = 0;
-
   // Allocate hatch loops (group code 91):
   if ( groupCode == 91 && toInt( groupValue ) > 0 )
   {
@@ -1552,16 +1549,13 @@ bool DL_Dxf::handleHatchData( DL_CreationInterface* /*creationInterface*/ )
       dropEdges = false;
 
       hatchLoopIndex++;
-      hatchLoops[hatchLoopIndex]
-      = DL_HatchLoopData( toInt( groupValue ) );
+      hatchLoops[hatchLoopIndex] = DL_HatchLoopData( toInt( groupValue ) );
 
       maxHatchEdges[hatchLoopIndex] = toInt( groupValue );
       hatchEdgeIndex[hatchLoopIndex] = -1;
-      hatchEdges[hatchLoopIndex]
-      = new DL_HatchEdgeData[toInt( groupValue )];
+      hatchEdges[hatchLoopIndex] = new DL_HatchEdgeData[toInt( groupValue )];
 
 // QgsDebugMsg(QString("hatchEdges[%1] = new %2").arg(hatchLoopIndex).arg(toInt(groupValue)));
-      firstPolylineStatus = 0;
     }
     else
     {

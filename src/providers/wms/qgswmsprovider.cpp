@@ -552,21 +552,27 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   else
   {
     mTileReqNo++;
+
     double vres = viewExtent.width() / pixelWidth;
 
-    // find nearest resolution
+    double tres = vres;
     int i;
-    for ( i = 0; i < mResolutions.size() && mResolutions[i] < vres; i++ )
-      QgsDebugMsg( QString( "skipped res: %1:%2" ).arg( i ).arg( mResolutions[i] ) );
-
-    if ( i == mResolutions.size() ||
-         ( i > 0 && vres - mResolutions[i-1] < mResolutions[i] - vres ) )
+    if ( mResolutions.size() > 0 )
     {
-      QgsDebugMsg( "back to previous res" );
-      i--;
-    }
 
-    double tres = mResolutions[i];
+      // find nearest resolution
+      for ( i = 0; i < mResolutions.size() && mResolutions[i] < vres; i++ )
+        QgsDebugMsg( QString( "skipped res: %1:%2" ).arg( i ).arg( mResolutions[i] ) );
+
+      if ( i == mResolutions.size() ||
+           ( i > 0 && vres - mResolutions[i-1] < mResolutions[i] - vres ) )
+      {
+        QgsDebugMsg( "back to previous res" );
+        i--;
+      }
+
+      tres = mResolutions[i];
+    }
 
     // clip view extent to layer extent
     double xmin = qMax( viewExtent.xMinimum(), layerExtent.xMinimum() );
@@ -2144,7 +2150,7 @@ bool QgsWmsProvider::calculateExtent()
     return false;
   }
 
-  if ( mTiled )
+  if ( mTiled && mResolutions.size() > 0 )
   {
     QString layers = activeSubLayers.join( "," );
     QString styles = activeSubStyles.join( "," );

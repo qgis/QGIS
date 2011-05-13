@@ -86,8 +86,8 @@ set OSGEO4W_ROOT=C:\OSGeo4W
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
 @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.0
-@set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\gdal-17\include;%OSGEO4W_ROOT%\include
-@set LIB=%LIB%;%OSGEO4W_ROOT%\apps\gdal-17\lib;%OSGEO4W_ROOT%\lib
+@set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+@set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
 
 @cmd
 ```
@@ -116,6 +116,9 @@ created.
 
 Adjust the path to bison and flex so that the shortened ``C:/Progra~1`` is used 
 rather than ``C:/Program Files``.
+
+Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
+bindings are placed into the output directory when you run the INSTALL target.
 
 Hit ``Configure`` to start the configuration and select ``Visual Studio 9 2008``
 and keep ``native compilers`` and click ``Finish``.
@@ -175,6 +178,11 @@ script.
 cd ms-windows/
 rm -rf osgeo4w/unpacked/apps/qgis/*
 cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
+```
+
+Now create a package.
+
+```
 ./quickpackage.sh
 ```
 

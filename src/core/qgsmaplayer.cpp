@@ -846,7 +846,29 @@ void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString
   if ( propsNode.isNull() ) // no properties stored...
     return;
 
-  mCustomProperties.clear();
+  if ( !keyStartsWith.isEmpty() )
+  {
+    //remove old keys
+    QStringList keysToRemove;
+    QMap<QString, QVariant>::const_iterator pIt = mCustomProperties.constBegin();
+    for ( ; pIt != mCustomProperties.constEnd(); ++pIt )
+    {
+      if ( pIt.key().startsWith( keyStartsWith ) )
+      {
+        keysToRemove.push_back( pIt.key() );
+      }
+    }
+
+    QStringList::const_iterator sIt = keysToRemove.constBegin();
+    for ( ; sIt != keysToRemove.constEnd(); ++sIt )
+    {
+      mCustomProperties.remove( *sIt );
+    }
+  }
+  else
+  {
+    mCustomProperties.clear();
+  }
 
   QDomNodeList nodes = propsNode.childNodes();
 
@@ -869,6 +891,13 @@ void QgsMapLayer::readCustomProperties( const QDomNode& layerNode, const QString
 
 void QgsMapLayer::writeCustomProperties( QDomNode & layerNode, QDomDocument & doc ) const
 {
+  //remove already existing <customproperties> tags
+  QDomNodeList propertyList = layerNode.toElement().elementsByTagName( "customproperties" );
+  for ( int i = 0; i < propertyList.size(); ++i )
+  {
+    layerNode.removeChild( propertyList.at( i ) );
+  }
+
   QDomElement propsElement = doc.createElement( "customproperties" );
 
   for ( QMap<QString, QVariant>::const_iterator it = mCustomProperties.constBegin(); it != mCustomProperties.constEnd(); ++it )

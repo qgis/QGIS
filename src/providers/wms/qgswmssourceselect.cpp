@@ -445,11 +445,18 @@ void QgsWMSSourceSelect::addClicked()
   QString crs;
   QString connInfo = connectionInfo();
 
+  QString connArgs;
+
   if ( lstTilesets->selectedItems().isEmpty() )
   {
     collectSelectedLayers( layers, styles );
     crs = mCRS;
-    format = mFormats[ mImageFormatGroup->checkedId()].format;
+    format = mFormats[ mImageFormatGroup->checkedId()];
+
+    if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
+    {
+      connArgs = QString( "tiled=%1;%2" ).arg( mTileWidth->text().toInt() ).arg( mTileHeight->text().toInt() );
+    }
   }
   else
   {
@@ -459,11 +466,14 @@ void QgsWMSSourceSelect::addClicked()
     format = item->data( Qt::UserRole + 2 ).toString();
     crs    = item->data( Qt::UserRole + 3 ).toString();
 
-    QString connArgs = QString( "tiled=%1;%2;%3" )
-                       .arg( item->data( Qt::UserRole + 4 ).toInt() )
-                       .arg( item->data( Qt::UserRole + 5 ).toInt() )
-                       .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
+    connArgs = QString( "tiled=%1;%2;%3" )
+               .arg( item->data( Qt::UserRole + 4 ).toInt() )
+               .arg( item->data( Qt::UserRole + 5 ).toInt() )
+               .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
+  }
 
+  if ( !connArgs.isEmpty() )
+  {
     if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "ignoreUrl=" ) )
     {
       connInfo.prepend( connArgs + "," );

@@ -2,8 +2,8 @@ Quantum GIS (QGIS)
 Building QGIS from source - step by step
 
 
-Last update: 20110404
-Last change: 20110404
+Last update: 20110504
+Last change: 20110502
 
 
   1. Introduction
@@ -140,7 +140,7 @@ The packages qgis depends on to build are available in the "universe" component
 of Ubuntu. This is not activated by default, so you need to activate it:
 
 1. Edit your /etc/apt/sources.list file.  
-2. Uncomment the all the lines starting with "deb"
+2. Uncomment all the lines starting with "deb"
 
 Also you will need to be running (K)Ubuntu 'edgy' or higher in order for 
 all dependencies to be met.
@@ -148,6 +148,7 @@ all dependencies to be met.
 Now update your local sources database:
 
   sudo apt-get update 
+
 
 
   3.3. Install build dependencies
@@ -166,9 +167,9 @@ Now update your local sources database:
 /!\ A Special Note: If you are following this set of instructions on
 a system where you already have Qt3 development tools installed, there will
 be a conflict between Qt3 tools and Qt4 tools. For example, qmake will
-point to the Qt3 version not the Qt4. Ubuntu Qt4 and Qt3 packages are
-designed to live alongside each other. This means that for example if you
-have them both installed you will have three qmake exe's:
+point to the Qt3 version, not the Qt4. Ubuntu Qt4 and Qt3 packages are
+designed to live alongside each other. This means that, for example, if you
+have them both installed, you will have three qmake exe's:
 
   /usr/bin/qmake -> /etc/alternatives/qmake 
   /usr/bin/qmake-qt3
@@ -227,7 +228,7 @@ This directory path will be assumed for all instructions that follow.
   ===================================
 
 There are two ways the source can be checked out. Use the anonymous method
-if you do not have edit privaleges for the QGIS source repository, or use
+if you do not have edit privileges for the QGIS source repository, or use
   the developer checkout if you have permissions to commit source code
   changes.
 
@@ -654,6 +655,9 @@ created.
 Adjust the path to bison and flex so that the shortened C:/Progra~1 is used 
 rather than C:/Program Files.
 
+Verify that the 'BINDINGS_GLOBAL_INSTALL' option is not checked, so that python
+bindings are placed into the output directory when you run the INSTALL target.
+
 Hit Configure to start the configuration and select Visual Studio 9 2008
 and keep native compilers and click Finish.
 
@@ -709,6 +713,9 @@ script.
   cd ms-windows/
   rm -rf osgeo4w/unpacked/apps/qgis/*
   cp -r /tmp/qgis1.7.0/* osgeo4w/unpacked/apps/qgis/
+
+Now create a package.
+
   ./quickpackage.sh
 
 After this you should now have a nsis installer containing your own build 

@@ -421,18 +421,12 @@ inline QPointF QgsClipper::intersectRect( const QPointF& pt1,
       break;
   }
 
-  if ( std::abs( r_d ) > SMALL_NUM && std::abs( r_n ) > SMALL_NUM )
-  { // they cross
-    double r = r_n / r_d;
-    return QPointF( x1 + r*( x2 - x1 ), y1 + r*( y2 - y1 ) );
-  }
-  else
+  double r = 0;
+  if ( !doubleNear( r_d, 0.0 ) )
   {
-    // Should never get here, but if we do for some reason, cause a
-    // clunk because something else is wrong if we do.
-    Q_ASSERT( std::abs( r_d ) > SMALL_NUM && std::abs( r_n ) > SMALL_NUM );
-    return QPointF();
+    r = r_n / r_d;
   }
+  return QPointF( x1 + r*( x2 - x1 ), y1 + r*( y2 - y1 ) );
 }
 
 inline void QgsClipper::clipStartTop( double& x0, double& y0, const double& x1, const double& y1, double yMax )

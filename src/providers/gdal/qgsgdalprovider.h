@@ -51,16 +51,15 @@ class QgsCoordinateTransform;
 
 /**
 
-  \brief Data provider for OGC WMS layers.
+  \brief Data provider for GDAL layers.
 
-  This provider implements the
-  interface defined in the QgsDataProvider class to provide access to spatial
-  data residing in a OGC Web Map Service.
+  This provider implements the interface defined in the QgsDataProvider class
+  to provide access to spatial data residing in a GDAL layers.
 
 */
 class QgsGdalProvider : public QgsRasterDataProvider
 {
-    //Q_OBJECT
+    Q_OBJECT
 
   public:
     /**
@@ -128,32 +127,21 @@ class QgsGdalProvider : public QgsRasterDataProvider
     bool identify( const QgsPoint & point, QMap<QString, QString>& results );
 
     /**
-     * \brief Identify details from a WMS Server from the last screen update
+     * \brief Identify details from a GDAL layer from the last screen update
      *
      * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
      *
-     * \return  A text document containing the return from the WMS server
+     * \return  A text document containing the return from the GDAL layer
      *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
      */
     QString identifyAsText( const QgsPoint& point );
 
     /**
-     * \brief Identify details from a WMS Server from the last screen update
+     * \brief Identify details from a GDAL layer from the last screen update
      *
      * \param point[in]  The pixel coordinate (as it was displayed locally on screen)
      *
-     * \return  A text document containing the return from the WMS server
-     *
-     * \note WMS Servers prefer to receive coordinates in image space, therefore
-     *       this function expects coordinates in that format.
-     *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
+     * \return  A text document containing the return from the GDAL layer
      *
      * \note  added in 1.5
      */
@@ -220,7 +208,7 @@ class QgsGdalProvider : public QgsRasterDataProvider
      */
     QString metadata();
 
-    // Following methods specific for  WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
+    // Following methods specific for WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
     void addLayers( QStringList const &  layers, QStringList const &  styles = QStringList() ) {}
     QStringList supportedImageEncodings() { return QStringList();}
     QString imageEncoding() const { return QString(); }
@@ -256,7 +244,7 @@ class QgsGdalProvider : public QgsRasterDataProvider
     bool crsFromWkt( const char *wkt );
 
     /**
-    * Flag indicating if the layer data source is a valid WMS layer
+    * Flag indicating if the layer data source is a valid layer
     */
     bool mValid;
 

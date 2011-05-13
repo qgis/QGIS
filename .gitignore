@@ -22,3 +22,11 @@ ms-windows/osgeo4w/nsis/
 ms-windows/osgeo4w/untgz/
 scripts/astyle
 qtcreator-build/
+ms-windows/nsis/
+ms-windows/osgeo4w/addons/
+ms-windows/packages/
+ms-windows/progs/
+ms-windows/untgz/
+scripts/astyle.exe
+# vim temporary files
+.*.swp

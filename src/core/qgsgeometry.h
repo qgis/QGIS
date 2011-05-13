@@ -254,7 +254,8 @@ class CORE_EXPORT QgsGeometry
     /**Adds a new island polygon to a multipolygon feature
      @return 0 in case of success, 1 if not a multipolygon, 2 if ring is not a valid geometry, 3 if new polygon ring
      not disjoint with existing polygons of the feature*/
-    int addIsland( const QList<QgsPoint>& ring );
+    int addPart( const QList<QgsPoint> &points );
+    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint> &points ) { return addPart( points ); }
 
     /**Translate this geometry by dx, dy
      @return 0 in case of success*/

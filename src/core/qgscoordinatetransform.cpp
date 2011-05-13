@@ -350,7 +350,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
   // This is done by looking at a number of points spread evenly
   // across the rectangle
 
-  if ( mShortCircuit || !mInitialisedFlag )
+  if ( mShortCircuit || !mInitialisedFlag || rect.isEmpty() )
     return rect;
 
   static const int numP = 8;

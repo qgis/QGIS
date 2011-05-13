@@ -1,11 +1,11 @@
 LICENSE
 
 Original GIS icons theme was created by Robert Szczepanek [1] and is licensed under a Creative Commons Attribution-Share Alike 3.0 Unported License [2].
-Fill free to use it for GIS software or for any other purposes. I only ask you to let me know about that and to include licence.txt file in your work.
+Feel free to use it for GIS software or for any other purposes. I only ask you to let me know about that and to include licence.txt file in your work.
 
-TITLE:                  gis-0.1
+TITLE:                  gis-0.2
 DESCRIPTION:            GIS icon theme
-AUTHOR:                 Robert Szczepanek	
+AUTHOR:                 Robert Szczepanek, Anita Graser	
 CONTACT:                robert at szczepanek pl
 SITE:                   http://robert.szczepanek.pl/
 
@@ -20,7 +20,7 @@ Tim Sutton
 Borys Jurgiel
 
 Robert Szczepanek
-Cracow 2009 
+Cracow 2011 
 Poland
 
 [1] http://robert.szczepanek.pl/

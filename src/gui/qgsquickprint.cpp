@@ -247,11 +247,6 @@ void QgsQuickPrint::printMap()
 #endif
   QString myFontFamily = "Arial";
 
-  // Background color for pixmaps
-  QColor myLegendBackgroundColor = Qt::white;
-  //QColor myMapBackgroundColor = "#98dbf9"; // nice blue color
-
-
   //
   // Draw the PageBorder
   //

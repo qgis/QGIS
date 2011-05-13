@@ -240,7 +240,6 @@ void QgsMapOverviewCanvas::updatePanningWidget( const QPoint& pos )
 {
 //  if (mPanningWidget->isHidden())
 //    return;
-  QSize size = mPanningWidget->size();
   mPanningWidget->move( pos.x() - mPanningCursorOffset.x(), pos.y() - mPanningCursorOffset.y() );
 }
 

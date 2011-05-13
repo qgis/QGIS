@@ -767,7 +767,6 @@ bool QgsSLDParser::labelSettingsFromUserStyle( const QDomElement& userStyleEleme
                 {
                   if ( !labelBufferElementList.item( 0 ).toElement().isNull() )
                   {
-                    double radius = 5.0;
                     QDomNodeList cssNodes = labelBufferElementList.item( 0 ).toElement().elementsByTagName( "CssParameter" );
                     QString cssName;
                     QDomElement currentElement;
@@ -833,6 +832,13 @@ bool QgsSLDParser::labelSettingsFromUserStyle( const QDomElement& userStyleEleme
                         }
                       }
                     }
+
+                    //QgsMapServerLogger::instance()->printMessage("radius " + QString::number(radius));
+                    myLabelAttributes->setBufferEnabled( true );
+                    myLabelAttributes->setBufferColor( QColor( polyColorRed, polyColorGreen, polyColorBlue, opacity ) );
+
+#if 0
+                    double radius = 5.0;
                     QDomElement radiusElement = labelBufferElementList.item( 0 ).toElement().elementsByTagName( "Radius" ).item( 0 ).toElement();
                     if ( !radiusElement.isNull() )
                     {
@@ -843,10 +849,8 @@ bool QgsSLDParser::labelSettingsFromUserStyle( const QDomElement& userStyleEleme
                         radius = 5.0;
                       }
                     }
-                    //QgsMapServerLogger::instance()->printMessage("radius " + QString::number(radius));
-                    myLabelAttributes->setBufferEnabled( true );
-                    myLabelAttributes->setBufferColor( QColor( polyColorRed, polyColorGreen, polyColorBlue, opacity ) );
-                    //myLabelAttributes->setBufferSize(radius, QgsLabelAttributes::PointUnits);
+                    myLabelAttributes->setBufferSize( radius, QgsLabelAttributes::PointUnits );
+#endif
 
                     // ******** BUG ************  see why setting buffersize dows not work (is a problem in QGIS vector layer rendering)
 
@@ -1397,13 +1401,11 @@ QgsVectorLayer* QgsSLDParser::contourLayerFromRaster( const QDomElement& userSty
   /* -------------------------------------------------------------------- */
   /*      Invoke.                                                         */
   /* -------------------------------------------------------------------- */
-  CPLErr eErr;
-
-  eErr = GDALContourGenerate( hBand, dfInterval, dfOffset,
-                              nFixedLevelCount, adfFixedLevels,
-                              bNoDataSet, dfNoData,
-                              hLayer, 0, nElevField,
-                              GDALTermProgress, NULL );
+  GDALContourGenerate( hBand, dfInterval, dfOffset,
+                       nFixedLevelCount, adfFixedLevels,
+                       bNoDataSet, dfNoData,
+                       hLayer, 0, nElevField,
+                       GDALTermProgress, NULL );
 
   delete adfFixedLevels;
 

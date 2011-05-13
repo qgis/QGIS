@@ -18,9 +18,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgscursors.h"
+#include "qgsrubberband.h"
 
 #include <QMouseEvent>
-#include <QRubberBand>
 #include <QRect>
 #include <QCursor>
 #include <QPixmap>
@@ -28,11 +28,16 @@
 
 
 QgsMapToolZoom::QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut )
-    : QgsMapTool( canvas ), mZoomOut( zoomOut ), mDragging( false )
+    : QgsMapTool( canvas ), mZoomOut( zoomOut ), mDragging( false ), mRubberBand( 0 )
 {
   // set the cursor
   QPixmap myZoomQPixmap = QPixmap(( const char ** )( zoomOut ? zoom_out : zoom_in ) );
   mCursor = QCursor( myZoomQPixmap, 7, 7 );
+}
+
+QgsMapToolZoom::~QgsMapToolZoom()
+{
+  delete mRubberBand;
 }
 
 
@@ -44,12 +49,16 @@ void QgsMapToolZoom::canvasMoveEvent( QMouseEvent * e )
   if ( !mDragging )
   {
     mDragging = true;
-    mRubberBand = new QRubberBand( QRubberBand::Rectangle, mCanvas );
+    delete mRubberBand;
+    mRubberBand = new QgsRubberBand( mCanvas, true );
     mZoomRect.setTopLeft( e->pos() );
   }
   mZoomRect.setBottomRight( e->pos() );
-  mRubberBand->setGeometry( mZoomRect.normalized() );
-  mRubberBand->show();
+  if ( mRubberBand )
+  {
+    mRubberBand->setToCanvasRectangle( mZoomRect );
+    mRubberBand->show();
+  }
 }
 
 
@@ -125,4 +134,10 @@ void QgsMapToolZoom::canvasReleaseEvent( QMouseEvent * e )
     // change to zoom in/out by the default multiple
     mCanvas->zoomWithCenter( e->x(), e->y(), !mZoomOut );
   }
+}
+
+void QgsMapToolZoom::deactivate()
+{
+  delete mRubberBand;
+  mRubberBand = 0;
 }

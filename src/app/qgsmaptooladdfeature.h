@@ -22,7 +22,7 @@ class QgsMapToolAddFeature : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode mode );
+    QgsMapToolAddFeature( QgsMapCanvas* canvas );
     virtual ~QgsMapToolAddFeature();
     void canvasReleaseEvent( QMouseEvent * e );
 

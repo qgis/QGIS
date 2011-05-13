@@ -23,6 +23,7 @@
 #include <QProgressDialog>
 
 #include "gdalwarper.h"
+#include <ogr_srs_api.h>
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8(x) (x).toUtf8().constData()
@@ -117,8 +118,19 @@ int QgsRasterCalculator::processCalculation( QProgressDialog* p )
     QgsRasterLayer* rl = mRasterEntries.at( 0 ).raster;
     if ( rl )
     {
-      //proj format would be better, but is not supported e.g. for writing to GeoTiff
-      GDALSetProjection( outputDataset, TO8( rl->crs().toWkt() ) );
+      char* crsWKT = 0;
+      OGRSpatialReferenceH ogrSRS = OSRNewSpatialReference( NULL );
+      if ( OSRSetFromUserInput( ogrSRS, rl->crs().authid().toUtf8().constData() ) == OGRERR_NONE )
+      {
+        OSRExportToWkt( ogrSRS, &crsWKT );
+        GDALSetProjection( outputDataset, crsWKT );
+      }
+      else
+      {
+        GDALSetProjection( outputDataset, TO8( rl->crs().toWkt() ) );
+      }
+      OSRDestroySpatialReference( ogrSRS );
+      CPLFree( crsWKT );
     }
   }
 

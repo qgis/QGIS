@@ -21,27 +21,32 @@
 #include "qgsmaptooledit.h"
 #include "qgspoint.h"
 #include "qgsgeometry.h"
+#include "qgslegend.h"
 
 class QgsGeometry;
 class QgsRubberBand;
 class QgsVertexMarker;
+class QgsMapLayer;
 
 #include <QPoint>
 #include <QList>
 
 class QgsMapToolCapture : public QgsMapToolEdit
 {
+    Q_OBJECT
+
   public:
 
     enum CaptureMode
     {
+      CaptureNone,
       CapturePoint,
       CaptureLine,
       CapturePolygon
     };
 
     //! constructor
-    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode mode );
+    QgsMapToolCapture( QgsMapCanvas* canvas, CaptureMode mode = CaptureNone );
 
     //! destructor
     virtual ~QgsMapToolCapture();
@@ -60,17 +65,15 @@ class QgsMapToolCapture : public QgsMapToolEdit
     //! Resize rubber band
     virtual void renderComplete();
 
-
+    //! deactive the tool
     virtual void deactivate();
 
-    /*
-    // FIXME: is this still actual or something old that's not used anymore?
-    signals:
-    //! emits mouse position when the canvas is clicked
-    void xyClickCoordinates(QgsPoint &p);
-    */
+  public slots:
+    void currentLayerChanged( QgsMapLayer *layer );
 
   protected:
+    int nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint );
+
     /**Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      @return 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed*/
     int addVertex( const QPoint& p );
@@ -82,7 +85,6 @@ class QgsMapToolCapture : public QgsMapToolEdit
     void stopCapturing();
 
     CaptureMode mode() { return mCaptureMode; }
-
 
     int size() { return mCaptureList.size(); }
     QList<QgsPoint>::iterator begin() { return mCaptureList.begin(); }
@@ -106,6 +108,10 @@ class QgsMapToolCapture : public QgsMapToolEdit
     void validateGeometry();
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
+
+    bool mCaptureModeFromLayer;
+
+    QList<QgsVertexMarker *> mSnappingMarkers;
 };
 
 #endif

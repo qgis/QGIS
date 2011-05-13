@@ -98,14 +98,15 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Classification,
       EditRange,
       SliderRange,
-      CheckBox,    /* added in 1.4 */
+      CheckBox,      /* added in 1.4 */
       FileName,
       Enumeration,
-      Immutable,   /* The attribute value should not be changed in the attribute form*/
-      Hidden,      /* The attribute value should not be shown in the attribute form @added in 1.4 */
-      TextEdit,    /* multiline edit @added in 1.4*/
-      Calendar,    /* calendar widget @added in 1.5 */
-      DialRange,   /* dial range @added in 1.5 */
+      Immutable,     /* The attribute value should not be changed in the attribute form*/
+      Hidden,        /* The attribute value should not be shown in the attribute form @added in 1.4 */
+      TextEdit,      /* multiline edit @added in 1.4*/
+      Calendar,      /* calendar widget @added in 1.5 */
+      DialRange,     /* dial range @added in 1.5 */
+      ValueRelation, /* value map from an table @added in 1.8 */
     };
 
     struct RangeData
@@ -117,6 +118,18 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       QVariant mMin;
       QVariant mMax;
       QVariant mStep;
+    };
+
+    struct ValueRelationData
+    {
+      ValueRelationData() {}
+      ValueRelationData( QString layer, QString key, QString value, bool allowNull )
+          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ) {}
+
+      QString mLayer;
+      QString mKey;
+      QString mValue;
+      bool mAllowNull;
     };
 
     /** Constructor */
@@ -219,7 +232,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      * @note added in 1.4 */
     QgsFeatureRendererV2* rendererV2();
     /** Set renderer V2.
-     * @note ddded in 1.4
+     * @note added in 1.4
      */
     void setRendererV2( QgsFeatureRendererV2* r );
     /** Return whether using renderer V2.
@@ -371,16 +384,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        5 no feature found where ring can be inserted*/
     int addRing( const QList<QgsPoint>& ring );
 
-    /**Adds a new island polygon to a multipolygon feature
+    /**Adds a new part polygon to a multipart feature
      @return
        0 in case of success,
-       1 if selected feature is not multipolygon,
+       1 if selected feature is not multipart,
        2 if ring is not a valid geometry,
        3 if new polygon ring not disjoint with existing rings,
        4 if no feature was selected,
        5 if several features are selected,
        6 if selected geometry not found*/
-    int addIsland( const QList<QgsPoint>& ring );
+    int addPart( const QList<QgsPoint>& ring );
+    Q_DECL_DEPRECATED int addIsland( const QList<QgsPoint>& ring ) { return addPart( ring ); }
 
     /**Translates feature by dx, dy
        @param featureId id of the feature to translate
@@ -586,6 +600,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**access range */
     RangeData &range( int idx );
+
+    /**access relations
+     * @note added in 1.8
+     **/
+    ValueRelationData &valueRelation( int idx );
 
     /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
     @note this method was added in version 1.1
@@ -930,6 +949,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QMap< QString, QMap<QString, QVariant> > mValueMaps;
     QMap< QString, RangeData > mRanges;
     QMap< QString, QPair<QString, QString> > mCheckedStates;
+    QMap< QString, ValueRelationData > mValueRelations;
 
     QString mEditForm, mEditFormInit;
     //annotation form for this layer

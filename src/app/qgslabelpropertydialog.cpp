@@ -55,7 +55,6 @@ void QgsLabelPropertyDialog::init( const QString& layerId, int featureId )
     return;
   }
   const QgsAttributeMap& attributeValues = f.attributeMap();
-  QgsAttributeMap::const_iterator attIt = attributeValues.constBegin();
 
   //get layerproperties. Problem: only for pallabeling...
   QgsPalLabeling* lbl = dynamic_cast<QgsPalLabeling*>( mMapRenderer->labelingEngine() );

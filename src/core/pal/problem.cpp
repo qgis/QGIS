@@ -2138,7 +2138,6 @@ namespace pal
     double initial_cost;
     double cur_cost = 0;
     double best_cost = 0;
-    double bestChain;
 
     int nbOverlap = 0;
 
@@ -2166,7 +2165,6 @@ namespace pal
 
     int tenure = pal->tenure;
 
-    int itBest = -1;
     //int deltaIt = 0;
 
     Triple **candidates = new Triple*[probSize];
@@ -2208,10 +2206,7 @@ namespace pal
 
     sort(( void** ) candidates, probSize, decreaseCost );
 
-    int validCandidateId = -1;
-
     int candidateListSize;
-    int seedSh;
     candidateListSize = int ( pal->candListSize * ( double ) probSize + 0.5 );
 
     if ( candidateListSize > probSize )
@@ -2226,8 +2221,6 @@ namespace pal
     while ( it < stop_it )
     {
       retainedChain = NULL;
-      bestChain = DBL_MAX;
-      validCandidateId = -1;
 
 #ifdef _DEBUG_FULL_
       std::cout << std::endl << std::endl << candidateListSize << std::endl;
@@ -2235,7 +2228,6 @@ namespace pal
       for ( itC = 0; itC < candidateListSize; itC++ )
       {
         seed = candidates[itC]->feat_id;
-        seedSh = seed - borderSize;
 
 #ifdef _DEBUG_FULL_
         std::cout << "new candidates:" << std::endl;
@@ -2253,7 +2245,6 @@ namespace pal
             if ( !retainedChain )
             {
               retainedChain = current_chain;
-              bestChain = current_chain->delta;
 #ifdef _DEBUG_FULL_
               std::cout << "New chain, delta = " << current_chain->delta << std::endl;
 #endif
@@ -2262,7 +2253,6 @@ namespace pal
             {
               delete_chain( retainedChain );
               retainedChain = current_chain;
-              bestChain = current_chain->delta;
 #ifdef _DEBUG_FULL_
               std::cout << "New best chain, delta = " << current_chain->delta << std::endl;
 #endif
@@ -2354,8 +2344,6 @@ namespace pal
 #endif
           best_cost = cur_cost;
           memcpy( best_sol, sol, sizeof( int ) *subSize );
-
-          itBest = it;
 
           stop_it = ( it + itwimp > maxit ? maxit : it + itwimp );
         }

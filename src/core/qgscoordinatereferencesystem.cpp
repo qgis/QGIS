@@ -32,6 +32,7 @@
 #include "qgis.h" //const vals declared here
 
 #include <sqlite3.h>
+#include <proj_api.h>
 
 //gdal and ogr includes (needed for == operator)
 #include <ogr_srs_api.h>
@@ -1352,4 +1353,140 @@ QString QgsCoordinateReferenceSystem::quotedValue( QString value )
 {
   value.replace( "'", "''" );
   return value.prepend( "'" ).append( "'" );
+}
+
+int QgsCoordinateReferenceSystem::syncDb()
+{
+  int updated = 0, errors = 0;
+  sqlite3 *database;
+  if ( sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().constData(), &database ) != SQLITE_OK )
+  {
+    qCritical( "Can't open database: %s [%s]\n", QgsApplication::srsDbFilePath().toLocal8Bit().constData(), sqlite3_errmsg( database ) );
+    return -1;
+  }
+
+  const char *tail;
+  sqlite3_stmt *select;
+  QString sql = "select auth_name,auth_id,parameters from tbl_srs WHERE auth_name IS NOT NULL AND auth_id IS NOT NULL";
+  if ( sqlite3_prepare( database, sql.toAscii(), sql.size(), &select, &tail ) != SQLITE_OK )
+  {
+    qCritical( "Could not prepare: %s [%s]\n", sql.toAscii().constData(), sqlite3_errmsg( database ) );
+    sqlite3_close( database );
+    return -1;
+  }
+
+  OGRSpatialReferenceH crs = OSRNewSpatialReference( NULL );
+
+  while ( sqlite3_step( select ) == SQLITE_ROW )
+  {
+    const char *auth_name = ( const char * ) sqlite3_column_text( select, 0 );
+    const char *auth_id   = ( const char * ) sqlite3_column_text( select, 1 );
+    const char *params    = ( const char * ) sqlite3_column_text( select, 2 );
+
+    QString proj4;
+
+    if ( QString( auth_name ).compare( "epsg", Qt::CaseInsensitive ) == 0 )
+    {
+      OGRErr ogrErr = OSRSetFromUserInput( crs, QString( "epsg:%1" ).arg( auth_id ).toAscii() );
+
+      if ( ogrErr == OGRERR_NONE )
+      {
+        char *output = 0;
+
+        if ( OSRExportToProj4( crs, &output ) == OGRERR_NONE )
+        {
+          proj4 = output;
+          proj4 = proj4.trimmed();
+        }
+        else
+        {
+          QgsDebugMsg( QString( "could not retrieve proj.4 string for epsg:%1 from OGR" ).arg( auth_id ) );
+        }
+
+        if ( output )
+          CPLFree( output );
+      }
+    }
+#if !defined(PJ_VERSION) || PJ_VERSION!=470
+    // 4.7.0 has a bug that crashes after 16 consecutive pj_init_plus with different strings
+    else
+    {
+      QString input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toLower() ).arg( auth_id );
+      projPJ pj = pj_init_plus( input.toAscii() );
+      if ( !pj )
+      {
+        input = QString( "+init=%1:%2" ).arg( QString( auth_name ).toUpper() ).arg( auth_id );
+        pj = pj_init_plus( input.toAscii() );
+      }
+
+      if ( pj )
+      {
+        char *def = pj_get_def( pj, 0 );
+        if ( def )
+        {
+          proj4 = def;
+          pj_dalloc( def );
+
+          input.prepend( ' ' ).append( ' ' );
+          if ( proj4.startsWith( input ) )
+          {
+            proj4 = proj4.mid( input.size() );
+          }
+        }
+        else
+        {
+          QgsDebugMsg( QString( "could not retrieve proj string for %1 from PROJ" ).arg( input ) );
+        }
+      }
+      else
+      {
+        QgsDebugMsgLevel( QString( "could not retrieve crs for %1 from PROJ" ).arg( input ), 3 );
+      }
+
+      pj_free( pj );
+    }
+#endif
+
+    if ( proj4.isEmpty() )
+    {
+      continue;
+    }
+
+    if ( proj4 != params )
+    {
+      char *errMsg = NULL;
+
+      sql = QString( "UPDATE tbl_srs SET parameters=%1 WHERE auth_name=%2 AND auth_id=%3" )
+            .arg( quotedValue( proj4 ) )
+            .arg( quotedValue( auth_name ) )
+            .arg( quotedValue( auth_id ) );
+
+      if ( sqlite3_exec( database, sql.toUtf8(), 0, 0, &errMsg ) != SQLITE_OK )
+      {
+        qCritical( "Could not execute: %s [%s/%s]\n",
+                   sql.toLocal8Bit().constData(),
+                   sqlite3_errmsg( database ),
+                   errMsg ? errMsg : "(unknown error)" );
+        errors++;
+      }
+      else
+      {
+        updated++;
+        QgsDebugMsgLevel( QString( "SQL: %1\n OLD:%2\n NEW:%3" ).arg( sql ).arg( params ).arg( proj4 ), 3 );
+      }
+
+      if ( errMsg )
+        sqlite3_free( errMsg );
+    }
+  }
+
+  OSRDestroySpatialReference( crs );
+
+  sqlite3_finalize( select );
+  sqlite3_close( database );
+
+  if ( errors > 0 )
+    return -errors;
+  else
+    return updated;
 }

@@ -138,6 +138,15 @@ class QgsWMSServer
 
     QImage* printCompositionToImage( QgsComposition* c ) const;
 
+    /**Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
+       @return a map with the original filters ( layer id / filter string )*/
+    QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const;
+    /**Restores the original layer filters*/
+    void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
+    /**Tests if a filter sql string is allowed (safe)
+      @return true in case of success, false if string seems unsafe*/
+    bool testFilterStringSafety( const QString& filter ) const;
+
     /**Map containing the WMS parameters*/
     std::map<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

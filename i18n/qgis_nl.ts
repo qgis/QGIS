@@ -1599,7 +1599,7 @@ Wilt u het toch afsluiten?</translation>
     <name>GdalToolsDialog</name>
     <message>
         <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="obsolete">Geen rasterlaag aktief. Voeg tenminste een rasterlaag toe om door te gaan.</translation>
+        <translation>Geen rasterlaag aktief. Voeg tenminste een rasterlaag toe om door te gaan.</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
@@ -1751,7 +1751,7 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Band to convert:</source>
-        <translation type="obsolete">Band voor &apos;convert&apos;:</translation>
+        <translation>Band voor &apos;convert&apos;:</translation>
     </message>
     <message>
         <source>Select the input file</source>
@@ -1791,7 +1791,7 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Select the cutline file</source>
-        <translation type="obsolete">Selecteer het &apos;cutline&apos; bestand</translation>
+        <translation>Selecteer het &apos;cutline&apos; bestand</translation>
     </message>
     <message>
         <source>Output size required</source>
@@ -1808,14 +1808,6 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     <message>
         <source>Select the color configuration file</source>
         <translation>Selecteer het kleur-configuratie bestand</translation>
-    </message>
-    <message>
-        <source>Select the mask file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Select the input directory with files for convert</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1847,13 +1839,6 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     <message>
         <source>Re-Enable</source>
         <translation>Opnieuw inschakelen</translation>
-    </message>
-</context>
-<context>
-    <name>GdalToolsInOutSelector</name>
-    <message>
-        <source>Select...</source>
-        <translation type="unfinished">Selecteren...</translation>
     </message>
 </context>
 <context>
@@ -2527,7 +2512,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Cutline</source>
-        <translation type="obsolete">Bijschrift</translation>
+        <translation>Bijschrift</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
@@ -2559,7 +2544,7 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     </message>
     <message>
         <source>Slop</source>
-        <translation type="obsolete">&apos;Slop&apos;</translation>
+        <translation>&apos;Slop&apos;</translation>
     </message>
     <message>
         <source>Aspect</source>
@@ -2660,22 +2645,6 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <source>Warp (Reproject)</source>
         <translation>Warp (herprojecteren)</translation>
-    </message>
-    <message>
-        <source>Clipping mode</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Mask layer</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Band to convert</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Slope</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5143,13 +5112,10 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>Estimating normal derivatives...</source>
         <translation>Schatten normaal afgeleiden...</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n geometry error(s) found.</source>
         <comment>number of geometry errors</comment>
-        <translation type="unfinished">
-            <numerusform>%n geometrie-fouten gevonden.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n geometrie-fouten gevonden.
         </translation>
     </message>
     <message>
@@ -5176,13 +5142,10 @@ Wilt u het pad (GISBASE) naar uw GRASS installatie wijzen?</translation>
         <source>line %1 with less than two points</source>
         <translation>lijn %1 heeft minder dan twee punten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation type="unfinished">
-            <numerusform>lijn %1 bevat %n dubbele hoekpunten bij %2
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>lijn %1 bevat %n dubbele hoekpunten bij %2
         </translation>
     </message>
     <message>
@@ -5661,18 +5624,6 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     <message>
         <source>CRS undefined - defaulting to default CRS: %1</source>
         <translation>CRS niet gedefinieerd = val terug op standaard CRS: %1</translation>
-    </message>
-    <message>
-        <source>Cannot open GISRC file</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>command: %1 %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cannot run module</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6473,7 +6424,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     <message>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation> Deze binary is gecompileerd met Qt %1, and gebruikt nu Qt %2</translation>
+        <translation>Dit programma is gecompileerd met Qt %1, en gebruikt nu Qt %2</translation>
     </message>
     <message>
         <source>Stop map rendering</source>
@@ -7232,13 +7183,10 @@ Fouten:  %2
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
         <translation>Laag %1 is geen geldige laag en kan niet worden toegevoegd</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation type="unfinished">
-            <numerusform>%n features geselecteerd in laag %1.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n features geselecteerd in laag %1.
         </translation>
     </message>
     <message>
@@ -7277,13 +7225,10 @@ Fouten negeren?</translation>
         <source>Delete features</source>
         <translation>Kaartobjecten verwijderen</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform>%n kaartobjecten verwijderen?
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n kaartobjecten verwijderen?
         </translation>
     </message>
     <message>
@@ -7422,13 +7367,10 @@ This copy of QGIS writes debugging output.</source>
 Always ignore these errors?</source>
         <translation>Deze fouten altijd negeren?</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation type="unfinished">
-            <numerusform>%n SSL-fouten vonden plaats
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n SSL-fouten vonden plaats
         </translation>
     </message>
     <message>
@@ -8328,31 +8270,22 @@ p, li { white-space: pre-wrap; }
         <source>Error during search</source>
         <translation>Fout tijdens zoekactie</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 (%n Feature(s))</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform>Attribuut tabel - %1 (%n Objecten)
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Attribuut tabel - %1 (%n Objecten)
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 :: %n / %2 feature(s) selected</source>
         <comment>feature count</comment>
-        <translation type="unfinished">
-            <numerusform>Attribuut tabel - %1 :: %n / %2 objecten geselecteerd
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Attribuut tabel - %1 :: %n / %2 objecten geselecteerd
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Attribute table - %1 (%n matching features)</source>
         <comment>matching features</comment>
-        <translation type="unfinished">
-            <numerusform>Attribuut tabel - %1 (%n gevonden objecten)
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Attribuut tabel - %1 (%n gevonden objecten)
         </translation>
     </message>
     <message>
@@ -10458,7 +10391,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Rotation </source>
         <comment>Rotation</comment>
-        <extracomment>Rotation</extracomment>
         <translation>Rotatie</translation>
     </message>
 </context>
@@ -13723,13 +13655,10 @@ p, li { white-space: pre-wrap; }
         <source>Question</source>
         <translation>Vraag</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Are you sure you want to delete %n selected layer(s)?</source>
         <comment>number of layers to delete</comment>
-        <translation type="unfinished">
-            <numerusform>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Weet u zeker dat u de %n geselecteerde lagen wilt verwijderen?
         </translation>
     </message>
     <message>
@@ -15256,17 +15185,6 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
-    <name>QgsGrassRasterProvider</name>
-    <message>
-        <source>Out of extent</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>null (no data)</source>
-        <translation type="unfinished">null (geen data)</translation>
-    </message>
-</context>
-<context>
     <name>QgsGrassRegion</name>
     <message>
         <source>Cannot write region</source>
@@ -15623,13 +15541,10 @@ in regel %2 kolom %3</translation>
         <source>Unhandled layer will be lost.</source>
         <translation>Niet verwerkte bestanden gaan verloren.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation type="unfinished">
-            <numerusform>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Er zijn nog %n niet verwerkte lagen, die gaan verloren als u nu afsluit.
         </translation>
     </message>
 </context>
@@ -15794,15 +15709,12 @@ in regel %2 kolom %3</translation>
         <source>Closing down connection</source>
         <translation>Verbinding wordt afgesloten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="unfinished">
-            <numerusform>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
+        <translation>Netwerkverbinding verbroken na %n seconden van inaktiviteit.
 Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.
-        </numerusform>
-            <numerusform></numerusform>
         </translation>
     </message>
 </context>
@@ -19050,7 +18962,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Selecting this will unselect the &apos;make lines less&apos; jagged toggle</source>
-        <translation type="obsolete">Dit selecteren zal &apos;maak lijnen minder rafelig&apos; deselecteren</translation>
+        <translation>Dit selecteren zal &apos;maak lijnen minder rafelig&apos; deselecteren</translation>
     </message>
     <message>
         <source>Snapping</source>
@@ -21715,13 +21627,10 @@ Hierdoor zal het kiezen van een projectie niet werken...</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Het &apos;where&apos;-filter levert %n rijen op.
         </translation>
     </message>
     <message>
@@ -23229,13 +23138,10 @@ p, li { white-space: pre-wrap; }
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
-        <translation type="unfinished">
-            <numerusform>Filter levert %n objecten
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Filter levert %n objecten
         </translation>
     </message>
     <message>
@@ -23780,13 +23686,10 @@ p, li { white-space: pre-wrap; }
         <source>There is no attribute &apos;%1&apos; in the current vector layer. Please select an existing attribute</source>
         <translation>Er is geen attribuut &apos;%1&apos; in de huidige vectorlaag. Selecteer een aanwezig attribuut</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Found %n matching feature(s).</source>
         <comment>test result</comment>
-        <translation type="unfinished">
-            <numerusform>%n passende objecten gevonden.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n passende objecten gevonden.
         </translation>
     </message>
     <message>
@@ -24207,13 +24110,10 @@ De foutmelding was:
         <source>Insufficient number of layers</source>
         <translation type="obsolete">Onvoldoende kaartlagen</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n selected geometries</source>
         <comment>selected geometries</comment>
-        <translation type="unfinished">
-            <numerusform>%n geselecteerde geometrieën
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n geselecteerde geometrieën
         </translation>
     </message>
     <message>
@@ -26147,112 +26047,76 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
         <source>no renderer</source>
         <translation>geen &apos;renderer&apos;</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) deleted.</source>
         <comment>deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>GESLAAGD: %n attributen verwijderd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>GESLAAGD: %n attributen verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute(s) not deleted.</source>
         <comment>not deleted attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>FOUT: %n attributen niet verwijderd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>FOUT: %n attributen niet verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute(s) added.</source>
         <comment>added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>GESLAAGD: %n attributen toegevoegd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>GESLAAGD: %n attributen toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n new attribute(s) not added</source>
         <comment>not added attributes count</comment>
-        <translation type="unfinished">
-            <numerusform>FOUT: %n nieuwe attributen niet toegevoegd
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>FOUT: %n nieuwe attributen niet toegevoegd
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n attribute value(s) changed.</source>
         <comment>changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>GESLAAGD: %n attribuutwaarden aangepast.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>GESLAAGD: %n attribuutwaarden aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n attribute value change(s) not applied.</source>
         <comment>not changed attribute values count</comment>
-        <translation type="unfinished">
-            <numerusform>FOUT: %n attribuutwaarden zijn niet aangepast.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>FOUT: %n attribuutwaarden zijn niet aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) added.</source>
         <comment>added features count</comment>
-        <translation type="unfinished">
-            <numerusform>GESLAAGD: %n objecten toegevoegd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>GESLAAGD: %n objecten toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not added.</source>
         <comment>not added features count</comment>
-        <translation type="unfinished">
-            <numerusform>FOUT: %n objecten niet toegevoegd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>FOUT: %n objecten niet toegevoegd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n geometries were changed.</source>
         <comment>changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>GESLAAGD: %n geometrieën zijn aangepast.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>GESLAAGD: %n geometrieën zijn aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n geometries not changed.</source>
         <comment>not changed geometries count</comment>
-        <translation type="unfinished">
-            <numerusform>FOUT: %n geometrieën niet aangepast.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>FOUT: %n geometrieën niet aangepast.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>SUCCESS: %n feature(s) deleted.</source>
         <comment>deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>GESLAAGD: %n objecten verwijderd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>GESLAAGD: %n objecten verwijderd.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>ERROR: %n feature(s) not deleted.</source>
         <comment>not deleted features count</comment>
-        <translation type="unfinished">
-            <numerusform>FOUT: %n objecten niet verwijderd.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>FOUT: %n objecten niet verwijderd.
         </translation>
     </message>
     <message>
@@ -26895,7 +26759,7 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     </message>
     <message>
         <source>Date defined position</source>
-        <translation type="obsolete">Datum-bepaalde positie</translation>
+        <translation>Datum-bepaalde positie</translation>
     </message>
     <message>
         <source>x</source>
@@ -26908,10 +26772,6 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Color</source>
         <translation>Kleur</translation>
-    </message>
-    <message>
-        <source>Data defined position</source>
-        <translation type="unfinished">Data-bepaalde positie</translation>
     </message>
 </context>
 <context>
@@ -27279,13 +27139,10 @@ verschilt van de GetCapabilities URL
 
 Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>Ruimtelijke Referentie Systemen (%n beschikbaar)
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Ruimtelijke Referentie Systemen (%n beschikbaar)
         </translation>
     </message>
     <message>
@@ -27312,13 +27169,10 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>No image encoding selected</source>
         <translation>Geen image-encoding geselecteerd</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation type="unfinished">
-            <numerusform>%n Lagen geselecteerd
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n Lagen geselecteerd
         </translation>
     </message>
     <message>
@@ -27374,13 +27228,10 @@ Dit kan een serverconfiguratie fout zijn. Moet de URL worden gebruikt?</translat
         <source>XML files (*.xml *XML)</source>
         <translation>XML bestanden (*.xml *.XML)</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>Opties (%n ruimtelijke referentie systemen beschikbaar)
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Opties (%n ruimtelijke referentie systemen beschikbaar)
         </translation>
     </message>
 </context>
@@ -27805,13 +27656,10 @@ Antwoord was:
         <source>Dom Exception</source>
         <translation>DOM-fout</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>%n tile requests in background</source>
         <comment>tile request count</comment>
-        <translation type="unfinished">
-            <numerusform>%n tile-aanvragen op de achtergrond
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>%n tile-aanvragen op de achtergrond
         </translation>
     </message>
     <message>
@@ -27822,40 +27670,31 @@ Antwoord was:
         <source>Getting tiles via WMS.</source>
         <translation>Tiles via WMS ophalen.</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n cache hits</source>
         <comment>tile cache hits</comment>
-        <translation type="unfinished">
-            <numerusform>, %n cache hits
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>, %n cache hits
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n cache misses.</source>
         <comment>tile cache missed</comment>
-        <translation type="unfinished">
-            <numerusform>, %n cache misses.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>, %n cache misses.
         </translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>, %n errors.</source>
         <comment>errors</comment>
-        <translation type="unfinished">
-            <numerusform>, %n fouten.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>, %n fouten.
         </translation>
     </message>
     <message>
         <source>tile request err %1: %2</source>
-        <translation type="obsolete">tile request fout %1: %2</translation>
+        <translation>tile request fout %1: %2</translation>
     </message>
     <message>
         <source>map request error %1: %2</source>
-        <translation type="obsolete">kaart request fout %1: %2</translation>
+        <translation>kaart request fout %1: %2</translation>
     </message>
     <message>
         <source>empty capabilities document</source>
@@ -27906,13 +27745,10 @@ Tried URL: %1</source>
         <source>(Unknown error code)</source>
         <translation>(Onbekende foutcode)</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>(and %n more)</source>
         <comment>crs</comment>
-        <translation type="unfinished">
-            <numerusform>(en %n meer)
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>(en %n meer)
         </translation>
     </message>
     <message>
@@ -27962,31 +27798,6 @@ Tried URL: %1</source>
     <message>
         <source>identify request redirected.</source>
         <translation>Identificatieverzoek geredirect.</translation>
-    </message>
-    <message>
-        <source>Tile request error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Status: %1
-Reason phrase: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>response: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Response: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Map request error %1: %2</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -28542,13 +28353,10 @@ Omschrijving: %2</translation>
         <source>Query Result</source>
         <translation>Query Resultaten</translation>
     </message>
-    <message numerus="yes">
+    <message>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform>Het &apos;where&apos;-filter levert %n rijen op.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>Het &apos;where&apos;-filter levert %n rijen op.
         </translation>
     </message>
     <message>
@@ -30161,7 +29969,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg elementen aan laag toe (ALLE elementen van het geslecteerde laagtype)</translation>
     </message>
     <message>
         <source>Add missing centroids to closed boundaries</source>
@@ -30173,7 +29981,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Allocate network</source>
-        <translation type="unfinished"></translation>
+        <translation>Wijs een netwerk toe</translation>
     </message>
     <message>
         <source>Assign constant value to column</source>
@@ -30233,7 +30041,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Brovey transform to merge multispectral and high-res panchromatic channels</source>
-        <translation type="unfinished">Brovey transformatie om multispectrale, hoge resolutie beelden samen te voegen</translation>
+        <translation>Brovey transformatie om multispectrale, hoge resolutie beelden samen te voegen</translation>
     </message>
     <message>
         <source>Buffer</source>
@@ -30309,7 +30117,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Calculate volume of data clumps, and create vector with centroids of clumps</source>
-        <translation type="unfinished">Bereken het volume van &apos;data clumps&apos; en maak hiervan een vectorlaag met de controïden</translation>
+        <translation>Bereken het volume van &apos;data clumps&apos; en maak hiervan een vectorlaag met de centroïden</translation>
     </message>
     <message>
         <source>Category or object oriented statistics</source>
@@ -30353,7 +30161,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Choose appropriate format</source>
-        <translation type="unfinished">Kies gewenst formaat</translation>
+        <translation>Kies gewenst formaat</translation>
     </message>
     <message>
         <source>Columns management</source>
@@ -30381,7 +30189,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Config</source>
-        <translation type="unfinished"></translation>
+        <translation>Configureer</translation>
     </message>
     <message>
         <source>Connect nodes by shortest route (traveling salesman)</source>
@@ -30413,7 +30221,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Convert a raster to vector within GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Converteer raster naar vector binnen GRASS</translation>
     </message>
     <message>
         <source>Convert a vector to raster</source>
@@ -30421,7 +30229,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Convert a vector to raster within GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Converteer vector naar raster binnen GRASS</translation>
     </message>
     <message>
         <source>Convert bearing and distance measurements to coordinates and vice versa</source>
@@ -30501,7 +30309,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create a raster plane</source>
-        <translation type="unfinished">Maak een raster met een vlak aan</translation>
+        <translation>Maak een raster met een vlak aan</translation>
     </message>
     <message>
         <source>Create and add new table to vector</source>
@@ -30529,19 +30337,19 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create new GRASS location and transfer data into it</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuwe GRASS-locatie aan en voeg data toe</translation>
     </message>
     <message>
         <source>Create new GRASS location from metadata file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuwe GRASS-locatie aan van een metadatabestand</translation>
     </message>
     <message>
         <source>Create new GRASS location from raster data</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuwe GRASS-locatie aan van rasterdata</translation>
     </message>
     <message>
         <source>Create new GRASS location from vector data</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuwe GRASS-locatie aan van vectordata</translation>
     </message>
     <message>
         <source>Create new layer with category values based upon user&apos;s reclassification of categories in existing raster</source>
@@ -30549,7 +30357,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create new location from .prj (WKT) file</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak een nieuwe locatie aan van een .prj (WKT) bestand</translation>
     </message>
     <message>
         <source>Create new raster by combining other rasters</source>
@@ -30593,7 +30401,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create random cell values with spatial dependence</source>
-        <translation type="unfinished">Genereer random cellwaarden met ruimtelijke afhankelijkheid</translation>
+        <translation>Genereer random cellwaarden met ruimtelijke afhankelijkheid</translation>
     </message>
     <message>
         <source>Create random points</source>
@@ -30605,7 +30413,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create raster images with textural features from raster (first serie of indices)</source>
-        <translation type="unfinished">Maak raster </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Create raster of distance to features in input layer</source>
@@ -30641,7 +30449,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Create standard vectors</source>
-        <translation type="unfinished"></translation>
+        <translation>Maak standaard vectorlagen</translation>
     </message>
     <message>
         <source>Create surface from rasterized contours</source>
@@ -30813,15 +30621,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer rasterlaag</translation>
     </message>
     <message>
         <source>Export raster as non-georeferenced PNG image format</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer rasterlaag als niet gegeorefereerd PNG bestandsformaat</translation>
     </message>
     <message>
         <source>Export raster from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer raster vanuit GRASS</translation>
     </message>
     <message>
         <source>Export raster series to MPEG movie</source>
@@ -30909,11 +30717,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export vector from GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer vectorlaag vanuit GRASS</translation>
     </message>
     <message>
         <source>Export vector table from GRASS to database format</source>
-        <translation type="unfinished"></translation>
+        <translation>Exporteer vectortabel vanuit GRASS naar databaseformaat</translation>
     </message>
     <message>
         <source>Export vector to DXF</source>
@@ -30981,7 +30789,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>File management</source>
-        <translation type="unfinished"></translation>
+        <translation>Bestandsbeheer</translation>
     </message>
     <message>
         <source>Fill lake from seed at given level</source>
@@ -31069,171 +30877,171 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importeren</translation>
+        <translation>Importeren</translation>
     </message>
     <message>
         <source>Import ASCII raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer ASCII-raster</translation>
     </message>
     <message>
         <source>Import DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer DXF vectorlaag</translation>
     </message>
     <message>
         <source>Import ESRI ARC/INFO ASCII GRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer ESRI ARC/INFO ASCII GRID</translation>
     </message>
     <message>
         <source>Import ESRI E00 vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer ESRI E00 vectorlaag</translation>
     </message>
     <message>
         <source>Import GDAL supported raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een GDAL ondersteunde rasterlaag</translation>
     </message>
     <message>
         <source>Import GDAL supported raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een GDAL ondersteunde rasterlaag en maak een passende locatie</translation>
     </message>
     <message>
         <source>Import GRIDATB.FOR (TOPMODEL)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer GRIDATB.FOR (TOPMODEL)</translation>
     </message>
     <message>
         <source>Import MapGen or MatLab vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer MapGen of MatLab vectorlaag</translation>
     </message>
     <message>
         <source>Import OGR vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een OGR vectorlaag</translation>
     </message>
     <message>
         <source>Import OGR vectors in a given data source combining them in a GRASS vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer OGR vectorlagen in een bepaalde databron en combineer deze in een GRASS vectorlaag</translation>
     </message>
     <message>
         <source>Import OGR/PostGIS vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een OGR/PostGIS vectorlaag en maak een passende locatie</translation>
     </message>
     <message>
         <source>Import SPOT VGT NDVI</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer SPOT VGT NDVI</translation>
     </message>
     <message>
         <source>Import SRTM HGT</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer SRTM HGT</translation>
     </message>
     <message>
         <source>Import US-NGA GEOnet Names Server (GNS) country file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een US-NGA GEOnet Names Server (GNS) land-bestand</translation>
     </message>
     <message>
         <source>Import all OGR/PostGIS vectors in a given data source and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer alle OGR/PostGIS vectorlagen in een bepaalde databron en maak een passende locatie</translation>
     </message>
     <message>
         <source>Import attribute tables in various formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer attribuuttabellen in verschillende formaten</translation>
     </message>
     <message>
         <source>Import binary MAT-File(v4)</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer binair MAT-bestand(v4)</translation>
     </message>
     <message>
         <source>Import binary raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer binair raster</translation>
     </message>
     <message>
         <source>Import from database into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer vanuit database in GRASS</translation>
     </message>
     <message>
         <source>Import geonames.org country files</source>
-        <translation type="unfinished"></translation>
+        <translation>Import &apos;geonames.org&apos; land-bestanden</translation>
     </message>
     <message>
         <source>Import into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer in GRASS</translation>
     </message>
     <message>
         <source>Import loaded raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer geladen rasterlaag</translation>
     </message>
     <message>
         <source>Import loaded raster and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een geladen rasterlaag en maak een passende locatie</translation>
     </message>
     <message>
         <source>Import loaded vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een geladen vectorlaag</translation>
     </message>
     <message>
         <source>Import loaded vector and create a fitted location</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een geladen vectorlaag en maak een passende locatie</translation>
     </message>
     <message>
         <source>Import only some layers of a DXF vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer alleen sommige DXF vectorlagen</translation>
     </message>
     <message>
         <source>Import raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer raster</translation>
     </message>
     <message>
         <source>Import raster from ASCII polygon/line</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer raster van ASCII polygoon/lijn</translation>
     </message>
     <message>
         <source>Import raster from coordinates using univariate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer een raster van coördinaten met behulp van univariate statistieken</translation>
     </message>
     <message>
         <source>Import raster into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer raster in GRASS</translation>
     </message>
     <message>
         <source>Import raster into GRASS from QGIS view</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer raster in GRASS vanuit &apos;QGIS view&apos;</translation>
     </message>
     <message>
         <source>Import raster into GRASS from external data sources in GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer raster in GRASS vanuit externe databronnen in GRASS</translation>
     </message>
     <message>
         <source>Import text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer tekstbestand</translation>
     </message>
     <message>
         <source>Import vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer verctorlaag</translation>
     </message>
     <message>
         <source>Import vector from gps using gpsbabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer vector van gps met gpsbabel</translation>
     </message>
     <message>
         <source>Import vector from gps using gpstrans</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer vector van gps met gpstrans</translation>
     </message>
     <message>
         <source>Import vector into GRASS</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer vector in GRASS</translation>
     </message>
     <message>
         <source>Import vector points from database table containing coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Importeer vectorpunten uit databasetabel die coördinaten bevat</translation>
     </message>
     <message>
         <source>Input nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoerknooppunten</translation>
     </message>
     <message>
         <source>Input table</source>
-        <translation type="unfinished"></translation>
+        <translation>Invoertabel</translation>
     </message>
     <message>
         <source>Interpolate surface</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpoleer vlak</translation>
     </message>
     <message>
         <source>Inverse distance squared weighting raster interpolation</source>
@@ -31337,7 +31145,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Network analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Netwerkanalyse</translation>
     </message>
     <message>
         <source>Network maintenance</source>
@@ -31349,15 +31157,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>OGR file</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR-bestand</translation>
     </message>
     <message>
         <source>OGR vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>OGR vectorlaag</translation>
     </message>
     <message>
         <source>Others</source>
-        <translation type="unfinished"></translation>
+        <translation>Andere</translation>
     </message>
     <message>
         <source>Output GML file</source>
@@ -31401,15 +31209,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Print projection information from a georeferenced file</source>
-        <translation type="unfinished"></translation>
+        <translation>Print projectie-informatie van een gegeorefereerd bestand</translation>
     </message>
     <message>
         <source>Print projection information from a georeferenced file and create a new location based on it</source>
-        <translation type="unfinished"></translation>
+        <translation>Print projectie-informatie van een gegeorefereerd bestand en maak een daarop gebaseerde nieuwe locatie</translation>
     </message>
     <message>
         <source>Print projection information of the current location</source>
-        <translation type="unfinished"></translation>
+        <translation>Print projectie-informatie van de huidige locatie</translation>
     </message>
     <message>
         <source>Projection conversion of vector</source>
@@ -31417,7 +31225,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Projection management</source>
-        <translation type="unfinished"></translation>
+        <translation>Projectiemanagement</translation>
     </message>
     <message>
         <source>Put geometry variables in database</source>
@@ -31441,7 +31249,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Raster buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterbuffer</translation>
     </message>
     <message>
         <source>Raster file matrix filter</source>
@@ -31513,7 +31321,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Regio</translation>
     </message>
     <message>
         <source>Region settings</source>
@@ -31705,7 +31513,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Show database connection for vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Laat de databaseconnectie zien voor vectorlagen</translation>
     </message>
     <message>
         <source>Shrink current region until it meets non-NULL data from raster</source>
@@ -31729,11 +31537,11 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Spatial analysis</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijke analyse</translation>
     </message>
     <message>
         <source>Spatial models</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruimtelijke modellen</translation>
     </message>
     <message>
         <source>Split lines to shorter segments</source>
@@ -31789,7 +31597,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Text file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekstbestand</translation>
     </message>
     <message>
         <source>Thin no-zero cells that denote line features</source>
@@ -31801,7 +31609,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Topology management</source>
-        <translation type="unfinished"></translation>
+        <translation>Topologiebeheer</translation>
     </message>
     <message>
         <source>Trace a flow through an elevation model</source>
@@ -31809,15 +31617,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Transform cells with value in null cells</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer cellen met de waarde in &apos;null&apos; cellen</translation>
     </message>
     <message>
         <source>Transform features</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer objecten</translation>
     </message>
     <message>
         <source>Transform image</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformeer afbeelding</translation>
     </message>
     <message>
         <source>Transform null cells in value cells</source>
@@ -31829,15 +31637,15 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Type in map names separated by a comma</source>
-        <translation type="unfinished"></translation>
+        <translation>Geef mapnamen gescheiden door comma&apos;s</translation>
     </message>
     <message>
         <source>Update raster statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Update statistieken van raster</translation>
     </message>
     <message>
         <source>Update vector map metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Update metadata van vectorkaart</translation>
     </message>
     <message>
         <source>Upload raster values at positions of vector points to the table</source>
@@ -31861,7 +31669,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Vector intersection</source>
-        <translation type="unfinished"></translation>
+        <translation>Vector-intersectie</translation>
     </message>
     <message>
         <source>Vector non-intersection</source>
@@ -31909,7 +31717,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Work with vector points</source>
-        <translation type="unfinished"></translation>
+        <translation>Werken met vector-punten</translation>
     </message>
     <message>
         <source>Write only features link to a record</source>
@@ -31941,7 +31749,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Attribute field to (over)write</source>
-        <translation type="unfinished"></translation>
+        <translation>(Over)schrijf attribuutveld</translation>
     </message>
     <message>
         <source>Feature type (for polygons, choose Boundary)</source>
@@ -31949,10 +31757,6 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Maximal tolerance value (higher value=more simplification)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Rebuild topology of a vector in mapset</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

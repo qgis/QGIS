@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>503</height>
+    <width>552</width>
+    <height>439</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -174,13 +174,27 @@
     </widget>
    </item>
    <item row="3" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="mFilterStringLabel">
+       <property name="text">
+        <string>Filter</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="mFilterLineEdit"/>
+     </item>
+    </layout>
+   </item>
+   <item row="4" column="0">
     <widget class="QCheckBox" name="mBboxCheckBox">
      <property name="text">
       <string>Only request features overlapping the current view extent</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>

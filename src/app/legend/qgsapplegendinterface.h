@@ -67,6 +67,9 @@ class QgsAppLegendInterface : public QgsLegendInterface
     //! Add a new group
     int addGroup( QString name, bool expand = true, QTreeWidgetItem* parent = 0 );
 
+    //! Add a new group at a specified index
+    int addGroup( QString name, bool expand, int groupIndex );
+
     //! Remove all groups with the given name
     void removeGroup( int groupIndex );
 

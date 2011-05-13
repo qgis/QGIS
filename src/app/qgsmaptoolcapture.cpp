@@ -23,6 +23,7 @@
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
+#include "qgslogger.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -32,29 +33,91 @@
 
 
 QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode tool )
-    : QgsMapToolEdit( canvas ), mCaptureMode( tool ), mRubberBand( 0 )
+    : QgsMapToolEdit( canvas )
+    , mCaptureMode( tool )
+    , mRubberBand( 0 )
 {
+  mCaptureModeFromLayer = tool == CaptureNone;
   mCapturing = false;
 
   QPixmap mySelectQPixmap = QPixmap(( const char ** ) capture_point_cursor );
   mCursor = QCursor( mySelectQPixmap, 8, 8 );
 
-  mSnapper.setMapCanvas( canvas );
+  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
+           this, SLOT( currentLayerChanged( QgsMapLayer * ) ) );
 }
 
 QgsMapToolCapture::~QgsMapToolCapture()
 {
+  while ( !mSnappingMarkers.isEmpty() )
+    delete mSnappingMarkers.takeFirst();
+
   stopCapturing();
 }
 
+void QgsMapToolCapture::deactivate()
+{
+  while ( !mSnappingMarkers.isEmpty() )
+    delete mSnappingMarkers.takeFirst();
+
+  QgsMapToolEdit::deactivate();
+}
+
+void QgsMapToolCapture::currentLayerChanged( QgsMapLayer *layer )
+{
+  if ( !mCaptureModeFromLayer )
+    return;
+
+  mCaptureMode = CaptureNone;
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
+  if ( !vlayer )
+  {
+    return;
+  }
+
+  switch ( vlayer->geometryType() )
+  {
+    case QGis::Point:
+      mCaptureMode = CapturePoint;
+      break;
+    case QGis::Line:
+      mCaptureMode = CaptureLine;
+      break;
+    case QGis::Polygon:
+      mCaptureMode = CapturePolygon;
+      break;
+    default:
+      mCaptureMode = CaptureNone;
+      break;
+  }
+}
+
+
 void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
 {
+  if ( mCaptureMode == CapturePoint )
+    return;
+
   if ( mRubberBand && mCapturing )
   {
     QgsPoint mapPoint;
     QList<QgsSnappingResult> snapResults;
     if ( mSnapper.snapToBackgroundLayers( e->pos(), snapResults ) == 0 )
     {
+      while ( !mSnappingMarkers.isEmpty() )
+        delete mSnappingMarkers.takeFirst();
+
+      foreach( const QgsSnappingResult &r, snapResults )
+      {
+        QgsVertexMarker *m = new QgsVertexMarker( mCanvas );
+        m->setIconType( QgsVertexMarker::ICON_CROSS );
+        m->setColor( Qt::green );
+        m->setPenWidth( 1 );
+        m->setCenter( r.snappedVertex );
+        mSnappingMarkers << m;
+      }
+
       mapPoint = snapPointFromResults( snapResults, e->pos() );
       mRubberBand->movePoint( mapPoint );
     }
@@ -72,25 +135,13 @@ void QgsMapToolCapture::renderComplete()
 {
 }
 
-void QgsMapToolCapture::deactivate()
-{
-  // don't stopCapturing() here, because the user might just want to
-  // pan or zoom and then continue digitizing.
-  QgsMapTool::deactivate();
-}
-
-int QgsMapToolCapture::addVertex( const QPoint& p )
+int QgsMapToolCapture::nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-
   if ( !vlayer )
   {
+    QgsDebugMsg( "no vector layer" );
     return 1;
-  }
-
-  if ( !mRubberBand )
-  {
-    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon );
   }
 
   QgsPoint digitisedPoint;
@@ -101,11 +152,9 @@ int QgsMapToolCapture::addVertex( const QPoint& p )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
+    QgsDebugMsg( "transformation to layer coordinate failed" );
     return 2;
   }
-
-  QgsPoint mapPoint;
-  QgsPoint layerPoint;
 
   QList<QgsSnappingResult> snapResults;
   if ( mSnapper.snapToBackgroundLayers( p, snapResults ) == 0 )
@@ -118,13 +167,42 @@ int QgsMapToolCapture::addVertex( const QPoint& p )
     catch ( QgsCsException &cse )
     {
       Q_UNUSED( cse );
+      QgsDebugMsg( "transformation to layer coordinate failed" );
       return 2;
     }
-    mRubberBand->addPoint( mapPoint );
-    mCaptureList.append( layerPoint );
-
-    validateGeometry();
   }
+
+  return 0;
+}
+
+
+int QgsMapToolCapture::addVertex( const QPoint &p )
+{
+  QgsPoint layerPoint;
+  QgsPoint mapPoint;
+
+  if ( mode() == CaptureNone )
+  {
+    QgsDebugMsg( "invalid capture mode" );
+    return 2;
+  }
+
+  int res = nextPoint( p, layerPoint, mapPoint );
+  if ( res != 0 )
+  {
+    QgsDebugMsg( "nextPoint failed: " + QString::number( res ) );
+    return res;
+  }
+
+  if ( !mRubberBand )
+  {
+    mRubberBand = createRubberBand( mCaptureMode == CapturePolygon );
+  }
+
+  mRubberBand->addPoint( mapPoint );
+  mCaptureList.append( layerPoint );
+
+  validateGeometry();
 
   return 0;
 }
@@ -193,10 +271,7 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
-  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-
   mGeomErrors.clear();
-
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     delete mGeomErrorMarkers.takeFirst();
@@ -204,6 +279,7 @@ void QgsMapToolCapture::validateGeometry()
 
   switch ( mCaptureMode )
   {
+    case CaptureNone:
     case CapturePoint:
       return;
     case CaptureLine:
@@ -217,6 +293,10 @@ void QgsMapToolCapture::validateGeometry()
       QgsGeometry::validatePolyline( mGeomErrors, 0, mCaptureList.toVector() << mCaptureList[0], true );
       break;
   }
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( !vlayer )
+    return;
 
   QString tip;
   for ( int i = 0; i < mGeomErrors.size(); i++ )

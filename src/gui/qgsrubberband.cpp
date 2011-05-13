@@ -341,6 +341,24 @@ void QgsRubberBand::addGeometry( QgsGeometry* geom, QgsVectorLayer* layer )
   update();
 }
 
+void QgsRubberBand::setToCanvasRectangle( const QRect& rect )
+{
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+
+  const QgsMapToPixel* transform = mMapCanvas->getCoordinateTransform();
+  QgsPoint ll = transform->toMapCoordinates( rect.left(), rect.bottom() );
+  QgsPoint ur = transform->toMapCoordinates( rect.right(), rect.top() );
+
+  reset( true );
+  addPoint( ll, false );
+  addPoint( QgsPoint( ur.x(), ll.y() ), false );
+  addPoint( ur, false );
+  addPoint( QgsPoint( ll.x(), ur.y() ), true );
+}
+
 /*!
   Draw the shape in response to an update event.
   */

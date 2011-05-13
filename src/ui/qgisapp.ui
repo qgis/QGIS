@@ -31,15 +31,13 @@
     <addaction name="mActionCopyFeatures"/>
     <addaction name="mActionPasteFeatures"/>
     <addaction name="separator"/>
-    <addaction name="mActionCapturePoint"/>
-    <addaction name="mActionCaptureLine"/>
-    <addaction name="mActionCapturePolygon"/>
+    <addaction name="mActionAddFeature"/>
     <addaction name="mActionMoveFeature"/>
     <addaction name="mActionDeleteSelected"/>
     <addaction name="separator"/>
     <addaction name="mActionSimplifyFeature"/>
     <addaction name="mActionAddRing"/>
-    <addaction name="mActionAddIsland"/>
+    <addaction name="mActionAddPart"/>
     <addaction name="mActionDeleteRing"/>
     <addaction name="mActionDeletePart"/>
     <addaction name="mActionReshapeFeatures"/>
@@ -256,9 +254,7 @@
    </attribute>
    <addaction name="mActionToggleEditing"/>
    <addaction name="mActionSaveEdits"/>
-   <addaction name="mActionCapturePoint"/>
-   <addaction name="mActionCaptureLine"/>
-   <addaction name="mActionCapturePolygon"/>
+   <addaction name="mActionAddFeature"/>
    <addaction name="mActionMoveFeature"/>
    <addaction name="mActionNodeTool"/>
    <addaction name="mActionDeleteSelected"/>
@@ -280,7 +276,7 @@
    <addaction name="mActionRedo"/>
    <addaction name="mActionSimplifyFeature"/>
    <addaction name="mActionAddRing"/>
-   <addaction name="mActionAddIsland"/>
+   <addaction name="mActionAddPart"/>
    <addaction name="mActionDeleteRing"/>
    <addaction name="mActionDeletePart"/>
    <addaction name="mActionReshapeFeatures"/>
@@ -531,49 +527,19 @@
     <string>Ctrl+V</string>
    </property>
   </action>
-  <action name="mActionCapturePoint">
+  <action name="mActionAddFeature">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCapturePoint.png</normaloff>:/images/themes/default/mActionCapturePoint.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddFeature.png</normaloff>:/images/themes/default/mActionAddFeature.png</iconset>
    </property>
    <property name="text">
-    <string>Capture Point</string>
+    <string>Add feature</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+.</string>
-   </property>
-  </action>
-  <action name="mActionCaptureLine">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCaptureLine.png</normaloff>:/images/themes/default/mActionCaptureLine.png</iconset>
-   </property>
-   <property name="text">
-    <string>Capture Line</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+/</string>
-   </property>
-  </action>
-  <action name="mActionCapturePolygon">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionCapturePolygon.png</normaloff>:/images/themes/default/mActionCapturePolygon.png</iconset>
-   </property>
-   <property name="text">
-    <string>Capture Polygon</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+?</string>
    </property>
   </action>
   <action name="mActionMoveFeature">
@@ -633,13 +599,13 @@
     <string>Add Ring</string>
    </property>
   </action>
-  <action name="mActionAddIsland">
+  <action name="mActionAddPart">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionAddIsland.png</normaloff>:/images/themes/default/mActionAddIsland.png</iconset>
+     <normaloff>:/images/themes/default/mActionAddPart.png</normaloff>:/images/themes/default/mActionAddPart.png</iconset>
    </property>
    <property name="text">
     <string>Add Part</string>

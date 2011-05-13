@@ -22,7 +22,8 @@
 #include <QKeyEvent>
 #include <QSettings>
 
-QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas ): QgsMapTool( canvas )
+QgsMapToolEdit::QgsMapToolEdit( QgsMapCanvas* canvas )
+    : QgsMapTool( canvas )
 {
   mSnapper.setMapCanvas( canvas );
 }

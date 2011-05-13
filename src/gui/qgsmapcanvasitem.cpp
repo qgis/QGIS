@@ -42,6 +42,10 @@ void QgsMapCanvasItem::paint( QPainter * painter,
                               const QStyleOptionGraphicsItem * option,
                               QWidget * widget )
 {
+  if ( mMapCanvas->antiAliasingEnabled() )
+  {
+    painter->setRenderHint( QPainter::Antialiasing );
+  }
   paint( painter ); // call the derived item's drawing routines
 }
 

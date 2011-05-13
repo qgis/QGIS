@@ -253,8 +253,10 @@ class QgsCoordinateReferenceSystem
          * @return QGis::UnitType that gives the units for the coordinate system
          */
         QGis::UnitType mapUnits() const;
-
-
+        /*! Update proj.4 parameters in our database from proj.4
+         * @returns number of updated CRS on success and
+         *   negative number of failed updates in case of errors.
+         * @note added in 1.8
+         */
+        static int syncDb();
 };
-
-

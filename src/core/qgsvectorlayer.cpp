@@ -786,7 +786,9 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif //Q_WS_MAC
   }
 
+#ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
+#endif
 }
 
 void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bool labeling )
@@ -2125,7 +2127,7 @@ int QgsVectorLayer::addRing( const QList<QgsPoint>& ring )
   return addRingReturnCode;
 }
 
-int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
+int QgsVectorLayer::addPart( const QList<QgsPoint> &points )
 {
   if ( !hasGeometryType() )
     return 6;
@@ -2150,7 +2152,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   if ( changedIt != mChangedGeometries.end() )
   {
     QgsGeometry geom = *changedIt;
-    int returnValue = geom.addIsland( ring );
+    int returnValue = geom.addPart( points );
     editGeometryChange( selectedFeatureId, geom );
     mCachedGeometries[selectedFeatureId] = geom;
     return returnValue;
@@ -2162,7 +2164,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   {
     if ( addedIt->id() == selectedFeatureId )
     {
-      return addedIt->geometry()->addIsland( ring );
+      return addedIt->geometry()->addPart( ring );
       mCachedGeometries[selectedFeatureId] = *addedIt->geometry();
     }
   }
@@ -2172,7 +2174,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
   QgsGeometryMap::iterator cachedIt = mCachedGeometries.find( selectedFeatureId );
   if ( cachedIt != mCachedGeometries.end() )
   {
-    int errorCode = cachedIt->addIsland( ring );
+    int errorCode = cachedIt->addPart( points );
     if ( errorCode == 0 )
     {
       editGeometryChange( selectedFeatureId, *cachedIt );
@@ -2190,7 +2192,7 @@ int QgsVectorLayer::addIsland( const QList<QgsPoint>& ring )
       fGeom = f.geometryAndOwnership();
       if ( fGeom )
       {
-        int errorCode = fGeom->addIsland( ring );
+        int errorCode = fGeom->addPart( points );
         editGeometryChange( selectedFeatureId, *fGeom );
         setModified( true, true );
         delete fGeom;
@@ -2270,7 +2272,7 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
   QgsRectangle bBox; //bounding box of the split line
   int returnCode = 0;
   int splitFunctionReturn; //return code of QgsGeometry::splitGeometry
-  int numberOfSplitedFeatures = 0;
+  int numberOfSplittedFeatures = 0;
 
   QgsFeatureList featureList;
   const QgsFeatureIds selectedIds = selectedFeaturesIds();
@@ -2350,15 +2352,15 @@ int QgsVectorLayer::splitFeatures( const QList<QgsPoint>& splitLine, bool topolo
           addTopologicalPoints( *topol_it );
         }
       }
-      ++numberOfSplitedFeatures;
+      ++numberOfSplittedFeatures;
     }
     else if ( splitFunctionReturn > 1 ) //1 means no split but also no error
     {
-      returnCode = 3;
+      returnCode = splitFunctionReturn;
     }
   }
 
-  if ( numberOfSplitedFeatures == 0 && selectedIds.size() > 0 )
+  if ( numberOfSplittedFeatures == 0 && selectedIds.size() > 0 )
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
@@ -3018,6 +3020,14 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       {
         mCheckedStates[ name ] = QPair<QString, QString>( editTypeElement.attribute( "checked" ), editTypeElement.attribute( "unchecked" ) );
       }
+      else if ( editType == ValueRelation )
+      {
+        QString id = editTypeElement.attribute( "layer" );
+        QString key = editTypeElement.attribute( "key" );
+        QString value = editTypeElement.attribute( "value" );
+        bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
+        mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull );
+      }
     }
   }
 
@@ -3210,6 +3220,17 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
           {
             editTypeElement.setAttribute( "checked", mCheckedStates[ it.key()].first );
             editTypeElement.setAttribute( "unchecked", mCheckedStates[ it.key()].second );
+          }
+          break;
+
+        case ValueRelation:
+          if ( mValueRelations.contains( it.key() ) )
+          {
+            const ValueRelationData &data = mValueRelations[ it.key()];
+            editTypeElement.setAttribute( "layer", data.mLayer );
+            editTypeElement.setAttribute( "key", data.mKey );
+            editTypeElement.setAttribute( "value", data.mValue );
+            editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
           }
           break;
 
@@ -4212,8 +4233,10 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
   // used in all cases of the statement (otherwise they may get
   // executed, but never used, in a bit of code where performance is
   // critical).
-  if ( ! fet.isValid() ) { return; }
-  bool needToTrim = false;
+  if ( ! fet.isValid() )
+  {
+    return;
+  }
 
   QgsGeometry* geom = fet.geometry();
   if ( !geom )
@@ -4281,10 +4304,8 @@ void QgsVectorLayer::drawFeature( QgsRenderContext &renderContext,
         //QPointF pt( x, y );
 
         // Work around a +/- 32768 limitation on coordinates
-        if ( qAbs( x ) > QgsClipper::MAX_X ||
-             qAbs( y ) > QgsClipper::MAX_Y )
-          needToTrim = true;
-        else
+        if ( qAbs( x ) <= QgsClipper::MAX_X &&
+             qAbs( y ) <= QgsClipper::MAX_Y )
           p->drawImage( pt, *marker );
       }
       p->restore();
@@ -5492,5 +5513,22 @@ QString QgsVectorLayer::metadata()
 
   myMetadata += "</body></html>";
   return myMetadata;
+}
   
+QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
+{
+  const QgsFieldMap &fields = pendingFields();
+
+  // FIXME: throw an exception!?
+  if ( fields.contains( idx ) )
+  {
+    QgsDebugMsg( QString( "field %1 not found" ).arg( idx ) );
+  }
+
+  if ( !mValueRelations.contains( fields[idx].name() ) )
+  {
+    mValueRelations[ fields[idx].name()] = ValueRelationData();
+  }
+
+  return mValueRelations[ fields[idx].name()];
 }

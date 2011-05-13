@@ -402,12 +402,16 @@ bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bo
           {
             if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
             {
+              unsigned char *featureGeom = NULL;
+              size_t geom_size = 0;
               const void *blob = sqlite3_column_blob( stmt, ic );
               size_t blob_size = sqlite3_column_bytes( stmt, ic );
-              unsigned char *featureGeom = new unsigned char[blob_size + 1];
-              memset( featureGeom, '\0', blob_size + 1 );
-              memcpy( featureGeom, blob, blob_size );
-              feature.setGeometryAndOwnership( featureGeom, blob_size + 1 );
+              convertToGeosWKB ( (const unsigned char *)blob, blob_size, 
+                                 &featureGeom, &geom_size );
+              if ( featureGeom )
+                   feature.setGeometryAndOwnership( featureGeom, geom_size );
+              else
+                   feature.setGeometryAndOwnership( 0, 0 );
             }
             else
             {
@@ -592,6 +596,7 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
             break;
         case GAIA_LINESTRING:
             points = gaiaImport32 ( p_in, little_endian, endian_arch );
+            gsize += 4;
             switch ( nDims )
             {
                 case GAIA_XY_Z_M:
@@ -609,10 +614,12 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
         case GAIA_POLYGON:
             rings = gaiaImport32 ( p_in, little_endian, endian_arch );
             p_in += 4;
+            gsize += 4;
             for ( ib = 0; ib < rings; ib++ )
             {
                 points = gaiaImport32 ( p_in, little_endian, endian_arch );
                 p_in += 4;
+                gsize += 4;
                 switch ( nDims )
                 {
                     case GAIA_XY_Z_M:
@@ -761,6 +768,7 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
             break;
         case GEOS_3D_LINESTRING:
             points = gaiaImport32 ( p_in, little_endian, endian_arch );
+            gsize += 4;
             switch ( nDims )
             {
                 case GAIA_XY_Z_M:
@@ -778,10 +786,12 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
         case GEOS_3D_POLYGON:
             rings = gaiaImport32 ( p_in, little_endian, endian_arch );
             p_in += 4;
+            gsize += 4;
             for ( ib = 0; ib < rings; ib++ )
             {
                 points = gaiaImport32 ( p_in, little_endian, endian_arch );
                 p_in += 4;
+                gsize += 4;
                 switch ( nDims )
                 {
                     case GAIA_XY_Z_M:
@@ -933,7 +943,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB ( const unsigned char *blob,
     else
         return;
 		
-    if ( gDims == 2 && nDims == 2 )
+    if ( gDims == 2 && nDims == GAIA_XY )
     {
     // already 2D: simply copying is required
         unsigned char *wkbGeom = new unsigned char[blob_size + 1];
@@ -2148,16 +2158,19 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
         case GAIA_LINESTRINGM:
         case GAIA_LINESTRINGZM:
             points = gaiaImport32 ( p_in, little_endian, endian_arch );
+            gsize += 4;
             gsize += points * ( 3 * sizeof(double) );
             break;
         case GAIA_POLYGONZ:
         case GAIA_POLYGONM:
             rings = gaiaImport32 ( p_in, little_endian, endian_arch );
             p_in += 4;
+            gsize += 4;
             for ( ib = 0; ib < rings; ib++ )
             {
                 points = gaiaImport32 ( p_in, little_endian, endian_arch );
                 p_in += 4;
+                gsize += 4;
                 gsize += points * ( 3 * sizeof(double) );
                 p_in += points * ( 3 * sizeof(double) );
             }
@@ -2165,10 +2178,12 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
         case GAIA_POLYGONZM:
             rings = gaiaImport32 ( p_in, little_endian, endian_arch );
             p_in += 4;
+            gsize += 4;
             for ( ib = 0; ib < rings; ib++ )
             {
                 points = gaiaImport32 ( p_in, little_endian, endian_arch );
                 p_in += 4;
+                gsize += 4;
                 gsize += points * ( 3 * sizeof(double) );
                 p_in += points * ( 4 * sizeof(double) );
             }
@@ -2473,7 +2488,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
                     gaiaExport64 ( p_out, coord, 1, endian_arch );	// Z 
                     p_in += sizeof(double);
                     p_out += sizeof(double);
-                    if (type == GAIA_LINESTRINGZM)
+                    if (type == GAIA_MULTILINESTRINGZM)
                         p_in += sizeof(double);
                 }
             }
@@ -2552,7 +2567,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
                         gaiaExport64 ( p_out, coord, 1, endian_arch );	// Z 
                         p_in += sizeof(double);
                         p_out += sizeof(double);
-                        if (type == GAIA_POLYGONZM)
+                        if (type == GAIA_MULTIPOLYGONZM)
                             p_in += sizeof(double);
                     }
                 }
@@ -2619,7 +2634,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
                         gaiaExport64 ( p_out, coord, 1, endian_arch );	// Z 
                         p_in += sizeof(double);
                         p_out += sizeof(double);
-                        if (type == GAIA_POINTZM)
+                        if (type2 == GAIA_POINTZM)
                             p_in += sizeof(double);
                         break;
                     case GAIA_LINESTRINGM:			
@@ -2662,7 +2677,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
                             gaiaExport64 ( p_out, coord, 1, endian_arch );	// Z 
                             p_in += sizeof(double);
                             p_out += sizeof(double);
-                            if (type == GAIA_LINESTRINGZM)
+                            if (type2 == GAIA_LINESTRINGZM)
                                 p_in += sizeof(double);
                         }
                         break;
@@ -2719,7 +2734,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB ( const unsigned char *blob,
                                 gaiaExport64 ( p_out, coord, 1, endian_arch );	// Z 
                                 p_in += sizeof(double);
                                 p_out += sizeof(double);
-                                if (type == GAIA_POLYGONZM)
+                                if (type2 == GAIA_POLYGONZM)
                                     p_in += sizeof(double);
                             }
                         }
@@ -3351,12 +3366,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
       else if ( type == QVariant::String )
       {
         // binding a TEXT value
-        QString txt = it->toString();
-        int len = txt.toUtf8().length() + 1;
-        char *vl = new char [len];
-        strcpy( vl, txt.toUtf8().constData() );
-        sqlite3_bind_text( stmt, ++ia, vl, len, SQLITE_TRANSIENT );
-        delete [] vl;
+        QByteArray ba = it->toString().toUtf8();
+        sqlite3_bind_text( stmt, ++ia, ba.constData(), ba.size(), SQLITE_TRANSIENT );
       }
       else
       {

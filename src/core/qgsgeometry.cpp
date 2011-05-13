@@ -1473,7 +1473,7 @@ bool QgsGeometry::moveVertex( double x, double y, int atVertex )
             ptr += 2 * sizeof( double ) * ( vertexnr - pointindex );
             if ( hasZValue )
             {
-              ptr += 3 * sizeof( double ) * ( vertexnr - pointindex );
+              ptr += sizeof( double ) * ( vertexnr - pointindex );
             }
             memcpy( ptr, &x, sizeof( double ) );
             ptr += sizeof( double );
@@ -2814,31 +2814,54 @@ int QgsGeometry::addRing( const QList<QgsPoint>& ring )
   return 0;
 }
 
-int QgsGeometry::addIsland( const QList<QgsPoint>& ring )
+int QgsGeometry::addPart( const QList<QgsPoint> &points )
 {
-  //Ring needs to have at least three points and must be closed
-  if ( ring.size() < 4 )
+  QGis::GeometryType geomType = type();
+
+  switch ( geomType )
   {
-    return 2;
+    case QGis::Point:
+      // only one part at a time
+      if ( points.size() != 1 )
+      {
+        QgsDebugMsg( "expected 1 point: " + QString::number( points.size() ) );
+        return 2;
+      }
+      break;
+
+    case QGis::Line:
+      // Line needs to have at least two points and must be closed
+      if ( points.size() < 3 )
+      {
+        QgsDebugMsg( "line must at least have two points: " + QString::number( points.size() ) );
+        return 2;
+      }
+      break;
+
+    case QGis::Polygon:
+      // Ring needs to have at least three points and must be closed
+      if ( points.size() < 4 )
+      {
+        QgsDebugMsg( "polygon must at least have three points: " + QString::number( points.size() ) );
+        return 2;
+      }
+
+      // ring must be closed
+      if ( points.first() != points.last() )
+      {
+        QgsDebugMsg( "polygon not closed" );
+        return 2;
+      }
+      break;
+
+    default:
+      QgsDebugMsg( "unsupported geometry type: " + QString::number( geomType ) );
+      return 2;
   }
 
-  //ring must be closed
-  if ( ring.first() != ring.last() )
+  if ( !isMultipart() && !convertToMultiType() )
   {
-    return 2;
-  }
-
-  if ( wkbType() == QGis::WKBPolygon || wkbType() == QGis::WKBPolygon25D )
-  {
-    if ( !convertToMultiType() )
-    {
-      return 1;
-    }
-  }
-
-  //bail out if wkbtype is not multipolygon
-  if ( wkbType() != QGis::WKBMultiPolygon && wkbType() != QGis::WKBMultiPolygon25D )
-  {
+    QgsDebugMsg( "could not convert to multipart" );
     return 1;
   }
 
@@ -2846,67 +2869,107 @@ int QgsGeometry::addIsland( const QList<QgsPoint>& ring )
   if ( !mGeos || mDirtyGeos )
   {
     if ( !exportWkbToGeos() )
+    {
+      QgsDebugMsg( "could not export to GEOS geometry" );
       return 4;
+    }
   }
 
-  if ( GEOSGeomTypeId( mGeos ) != GEOS_MULTIPOLYGON )
-    return 1;
+  int geosType = GEOSGeomTypeId( mGeos );
+  GEOSGeometry *newPart = 0;
 
-  //create new polygon from ring
+  switch ( geomType )
+  {
+    case QGis::Point:
+      newPart = createGeosPoint( points[0] );
+      break;
 
-  //coordinate sequence first
-  GEOSGeometry *newRing = 0;
-  GEOSGeometry *newPolygon = 0;
+    case QGis::Line:
+      newPart = createGeosLineString( points.toVector() );
+      break;
+
+    case QGis::Polygon:
+    {
+      //create new polygon from ring
+      GEOSGeometry *newRing = 0;
+
+      try
+      {
+        newRing = createGeosLinearRing( points.toVector() );
+        if ( !GEOSisValid( newRing ) )
+          throw GEOSException( "ring invalid" );
+
+        newPart = createGeosPolygon( newRing );
+      }
+      catch ( GEOSException &e )
+      {
+        Q_UNUSED( e );
+        if ( newRing )
+          GEOSGeom_destroy( newRing );
+
+        return 2;
+      }
+    }
+    break;
+
+    default:
+      QgsDebugMsg( "unsupported type: " + QString::number( type() ) );
+      return 2;
+  }
+
+  Q_ASSERT( newPart );
 
   try
   {
-    newRing = createGeosLinearRing( ring.toVector() );
-    if ( !GEOSisValid( newRing ) )
-      throw GEOSException( "ring invalid" );
-    newPolygon = createGeosPolygon( newRing );
-    if ( !GEOSisValid( newPolygon ) )
-      throw GEOSException( "polygon invalid" );
+    if ( !GEOSisValid( newPart ) )
+      throw GEOSException( "new part geometry invalid" );
   }
   catch ( GEOSException &e )
   {
     Q_UNUSED( e );
-    if ( newPolygon )
-      GEOSGeom_destroy( newPolygon );
-    else if ( newRing )
-      GEOSGeom_destroy( newRing );
+
+    if ( newPart )
+      GEOSGeom_destroy( newPart );
+
+    QgsDebugMsg( "part invalid: " + e.what() );
     return 2;
   }
 
-  QVector<GEOSGeometry*> polygons;
+  QVector<GEOSGeometry*> parts;
 
   //create new multipolygon
   int n = GEOSGetNumGeometries( mGeos );
   int i;
   for ( i = 0; i < n; ++i )
   {
-    const GEOSGeometry *polygonN = GEOSGetGeometryN( mGeos, i );
+    const GEOSGeometry *partN = GEOSGetGeometryN( mGeos, i );
 
-    if ( !GEOSDisjoint( polygonN, newPolygon ) )
+    if ( geomType == QGis::Polygon && !GEOSDisjoint( partN, newPart ) )
       //bail out if new polygon is not disjoint with existing ones
       break;
 
-    polygons << GEOSGeom_clone( polygonN );
+    parts << GEOSGeom_clone( partN );
   }
 
   if ( i < n )
   {
     // bailed out
-    for ( int i = 0; i < polygons.size(); i++ )
-      GEOSGeom_destroy( polygons[i] );
+    for ( int i = 0; i < parts.size(); i++ )
+      GEOSGeom_destroy( parts[i] );
+
+    QgsDebugMsg( "new polygon part not disjoint" );
     return 3;
   }
 
-  polygons << newPolygon;
+  parts << newPart;
 
   GEOSGeom_destroy( mGeos );
-  mGeos = createGeosCollection( GEOS_MULTIPOLYGON, polygons );
+
+  mGeos = createGeosCollection( geosType, parts );
+
   mDirtyWkb = true;
   mDirtyGeos = false;
+
   return 0;
 }
 
@@ -3177,10 +3240,16 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
   {
     exportGeosToWkb();
   }
+
   if ( !mGeos || mDirtyGeos )
   {
     if ( !exportWkbToGeos() )
       return 1;
+  }
+
+  if ( !GEOSisValid( mGeos ) )
+  {
+    return 7;
   }
 
   //make sure splitLine is valid
@@ -3233,126 +3302,126 @@ int QgsGeometry::splitGeometry( const QList<QgsPoint>& splitLine, QList<QgsGeome
 /**Replaces a part of this geometry with another line*/
 int QgsGeometry::reshapeGeometry( const QList<QgsPoint>& reshapeWithLine )
 {
-    if ( reshapeWithLine.size() < 2 )
+  if ( reshapeWithLine.size() < 2 )
+  {
+    return 1;
+  }
+
+  if ( type() == QGis::Point )
+  {
+    return 1; //cannot reshape points
+  }
+
+  GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
+
+  //make sure this geos geometry is up-to-date
+  if ( !mGeos || mDirtyGeos )
+  {
+    exportWkbToGeos();
+  }
+
+  //single or multi?
+  int numGeoms = GEOSGetNumGeometries( mGeos );
+  if ( numGeoms == -1 )
+  {
+    return 1;
+  }
+
+  bool isMultiGeom = false;
+  int geosTypeId = GEOSGeomTypeId( mGeos );
+  if ( geosTypeId == GEOS_MULTILINESTRING || geosTypeId == GEOS_MULTIPOLYGON )
+  {
+    isMultiGeom = true;
+  }
+
+  bool isLine = ( type() == QGis::Line );
+
+  //polygon or multipolygon?
+  if ( !isMultiGeom )
+  {
+    GEOSGeometry* reshapedGeometry;
+    if ( isLine )
     {
-      return 1;
-    }
-
-    if ( type() == QGis::Point )
-    {
-      return 1; //cannot reshape points
-    }
-
-    GEOSGeometry* reshapeLineGeos = createGeosLineString( reshapeWithLine.toVector() );
-
-    //make sure this geos geometry is up-to-date
-    if ( !mGeos || mDirtyGeos )
-    {
-      exportWkbToGeos();
-    }
-
-    //single or multi?
-    int numGeoms = GEOSGetNumGeometries( mGeos );
-    if ( numGeoms == -1 )
-    {
-      return 1;
-    }
-
-    bool isMultiGeom = false;
-    int geosTypeId = GEOSGeomTypeId( mGeos );
-    if ( geosTypeId == GEOS_MULTILINESTRING || geosTypeId == GEOS_MULTIPOLYGON )
-    {
-      isMultiGeom = true;
-    }
-
-    bool isLine = ( type() == QGis::Line );
-
-    //polygon or multipolygon?
-    if ( !isMultiGeom )
-    {
-      GEOSGeometry* reshapedGeometry;
-      if ( isLine )
-      {
-        reshapedGeometry = reshapeLine( mGeos, reshapeLineGeos );
-      }
-      else
-      {
-        reshapedGeometry = reshapePolygon( mGeos, reshapeLineGeos );
-      }
-
-      GEOSGeom_destroy( reshapeLineGeos );
-      if ( reshapedGeometry )
-      {
-        GEOSGeom_destroy( mGeos );
-        mGeos = reshapedGeometry;
-        mDirtyWkb = true;
-        return 0;
-      }
-      else
-      {
-        return 1;
-      }
+      reshapedGeometry = reshapeLine( mGeos, reshapeLineGeos );
     }
     else
     {
-      //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
-      bool reshapeTookPlace = false;
+      reshapedGeometry = reshapePolygon( mGeos, reshapeLineGeos );
+    }
 
-      GEOSGeometry* currentReshapeGeometry = 0;
-      GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
+    GEOSGeom_destroy( reshapeLineGeos );
+    if ( reshapedGeometry )
+    {
+      GEOSGeom_destroy( mGeos );
+      mGeos = reshapedGeometry;
+      mDirtyWkb = true;
+      return 0;
+    }
+    else
+    {
+      return 1;
+    }
+  }
+  else
+  {
+    //call reshape for each geometry part and replace mGeos with new geometry if reshape took place
+    bool reshapeTookPlace = false;
 
-      for ( int i = 0; i < numGeoms; ++i )
-      {
-        if ( isLine )
-        {
-          currentReshapeGeometry = reshapeLine( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
-        }
-        else
-        {
-          currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
-        }
+    GEOSGeometry* currentReshapeGeometry = 0;
+    GEOSGeometry** newGeoms = new GEOSGeometry*[numGeoms];
 
-        if ( currentReshapeGeometry )
-        {
-          newGeoms[i] = currentReshapeGeometry;
-          reshapeTookPlace = true;
-        }
-        else
-        {
-          newGeoms[i] = GEOSGeom_clone( GEOSGetGeometryN( mGeos, i ) );
-        }
-      }
-      GEOSGeom_destroy( reshapeLineGeos );
-
-      GEOSGeometry* newMultiGeom = 0;
+    for ( int i = 0; i < numGeoms; ++i )
+    {
       if ( isLine )
       {
-        newMultiGeom = GEOSGeom_createCollection( GEOS_MULTILINESTRING, newGeoms, numGeoms );
-      }
-      else //multipolygon
-      {
-        newMultiGeom = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, newGeoms, numGeoms );
-      }
-
-      delete[] newGeoms;
-      if ( ! newMultiGeom )
-      {
-        return 3;
-      }
-
-      if ( reshapeTookPlace )
-      {
-        GEOSGeom_destroy( mGeos );
-        mGeos = newMultiGeom;
-        mDirtyWkb = true;
-        return 0;
+        currentReshapeGeometry = reshapeLine( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
       }
       else
       {
-        GEOSGeom_destroy( newMultiGeom );
-        return 1;
+        currentReshapeGeometry = reshapePolygon( GEOSGetGeometryN( mGeos, i ), reshapeLineGeos );
+      }
+
+      if ( currentReshapeGeometry )
+      {
+        newGeoms[i] = currentReshapeGeometry;
+        reshapeTookPlace = true;
+      }
+      else
+      {
+        newGeoms[i] = GEOSGeom_clone( GEOSGetGeometryN( mGeos, i ) );
       }
     }
+    GEOSGeom_destroy( reshapeLineGeos );
+
+    GEOSGeometry* newMultiGeom = 0;
+    if ( isLine )
+    {
+      newMultiGeom = GEOSGeom_createCollection( GEOS_MULTILINESTRING, newGeoms, numGeoms );
+    }
+    else //multipolygon
+    {
+      newMultiGeom = GEOSGeom_createCollection( GEOS_MULTIPOLYGON, newGeoms, numGeoms );
+    }
+
+    delete[] newGeoms;
+    if ( ! newMultiGeom )
+    {
+      return 3;
+    }
+
+    if ( reshapeTookPlace )
+    {
+      GEOSGeom_destroy( mGeos );
+      mGeos = newMultiGeom;
+      mDirtyWkb = true;
+      return 0;
+    }
+    else
+    {
+      GEOSGeom_destroy( newMultiGeom );
+      return 1;
+    }
+  }
 }
 
 int QgsGeometry::makeDifference( QgsGeometry* other )
@@ -3437,7 +3506,6 @@ QgsRectangle QgsGeometry::boundingBox()
   int numLineStrings;
   int idx, jdx, kdx;
   unsigned char *ptr;
-  char lsb;
   QgsPoint pt;
   QGis::WkbType wkbType;
   bool hasZValue = false;
@@ -3562,7 +3630,6 @@ QgsRectangle QgsGeometry::boundingBox()
       for ( jdx = 0; jdx < numLineStrings; jdx++ )
       {
         // each of these is a wbklinestring so must handle as such
-        lsb = *ptr;
         ptr += 5;   // skip type since we know its 2
         nPoints = ( int * ) ptr;
         ptr += sizeof( int );
@@ -4129,7 +4196,6 @@ bool QgsGeometry::exportWkbToGeos()
   int numLineStrings;
   int idx, jdx, kdx;
   unsigned char *ptr;
-  char lsb;
   QgsPoint pt;
   QGis::WkbType wkbtype;
   bool hasZValue = false;
@@ -4220,7 +4286,6 @@ bool QgsGeometry::exportWkbToGeos()
           QgsPolyline sequence;
 
           // each of these is a wbklinestring so must handle as such
-          lsb = *ptr;
           ptr += 5;   // skip type since we know its 2
           nPoints = ( int * ) ptr;
           ptr += sizeof( int );
@@ -5159,7 +5224,6 @@ GEOSGeometry* QgsGeometry::reshapePolygon( const GEOSGeometry* polygon, const GE
   }
 
   GEOSGeometry** newInnerRings = new GEOSGeometry*[ringList.size()];
-  QList<GEOSGeometry*>::const_iterator it = ringList.constBegin();
   for ( int i = 0; i < ringList.size(); ++i )
   {
     newInnerRings[i] = ringList.at( i );

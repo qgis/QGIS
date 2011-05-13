@@ -20,7 +20,7 @@ set -e
 if [ -d .svn ]; then
 	MODIFIED=$(svn status | sed -ne "s/^[MA] *//p")
 elif [ -d .git ]; then
-	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p")
+	MODIFIED=$(git status | sed -rne "s/^#	(modified|new file): *//p" | sort -u)
 else
 	echo No working copy
 	exit 1
@@ -33,14 +33,14 @@ fi
 
 # save original changes
 if [ -d .svn ]; then
-	REV=$(svn info | sed -ne "s/Revision: //p")
-	svn diff >r$REV.diff
+	REV=r$(svn info | sed -ne "s/Revision: //p")
+	svn diff >$REV.diff
 elif [ -d .git ]; then
-	REV=$(git svn info | sed -ne "s/Revision: //p")
-	git diff >r$REV.diff
+	REV=$(git log -n1 --pretty=%H)
+	git diff >$REV.diff
 fi
 
-ASTYLEDIFF=astyle.r$REV.diff
+ASTYLEDIFF=astyle.$REV.diff
 >$ASTYLEDIFF
 
 # reformat
@@ -59,7 +59,7 @@ for f in $MODIFIED; do
                 ;;
         esac
 
-        m=$f.r$REV.prepare
+        m=$f.$REV.prepare
 
 	cp $f $m
 	astyle.sh $f
@@ -76,6 +76,9 @@ if [ -s "$ASTYLEDIFF" ]; then
 	else
 		echo "Files changed (see $ASTYLEDIFF)"
 	fi
+	exit 1
 else
 	rm $ASTYLEDIFF
 fi
+
+exit 0

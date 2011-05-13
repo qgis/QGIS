@@ -86,6 +86,8 @@ void QgsSimpleLineSymbolLayerV2Widget::colorChanged()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
@@ -233,6 +235,8 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorBorder()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor borderColor = QColorDialog::getColor( mLayer->borderColor(), this );
@@ -248,6 +252,8 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setColorFill()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
@@ -327,6 +333,8 @@ void QgsSimpleFillSymbolLayerV2Widget::setColor()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
@@ -342,6 +350,8 @@ void QgsSimpleFillSymbolLayerV2Widget::setBorderColor()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mLayer->borderColor(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mLayer->borderColor(), this );
@@ -665,6 +675,8 @@ void QgsLineDecorationSymbolLayerV2Widget::colorChanged()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mLayer->color(), this );
@@ -861,6 +873,8 @@ void QgsFontMarkerSymbolLayerV2Widget::setColor()
 {
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
+  // Qt bug: http://bugreports.qt.nokia.com/browse/QTBUG-14889
+  // FIXME need to also check max QT_VERSION when Qt bug fixed
   QColor color = QColorDialog::getColor( mLayer->color(), this, "", QColorDialog::DontUseNativeDialog );
 #else
   QColor color = QColorDialog::getColor( mLayer->color(), this );

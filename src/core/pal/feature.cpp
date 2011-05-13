@@ -1010,7 +1010,6 @@ namespace pal
     if ( shapes_final->size() > 0 )
     {
       LinkedList<LabelPosition*> *positions = new LinkedList<LabelPosition*> ( ptrLPosCompare );
-      int it;
 
       int id = 0; // ids for candidates
       double dlx, dly; // delta from label center and bottom-left corner
@@ -1037,7 +1036,6 @@ namespace pal
         j++;
       }
 
-      it = 0;
       dx = dy = min( yrm, xrm ) / 2;
 
       int num_try = 0;

@@ -69,7 +69,7 @@ typedef SInt32 SRefCon;
 #include "qgsapplication.h"
 #include <qgsconfig.h>
 #include <qgscustomization.h>
-#include <qgssvnversion.h>
+#include <qgsversion.h>
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
@@ -88,7 +88,7 @@ static const char * const ident_ = "$Id$";
 void usage( std::string const & appName )
 {
   std::cerr << "Quantum GIS - " << VERSION << " '" << RELEASE_NAME << "' ("
-            << QGSSVNVERSION << ")\n"
+            << QGSVERSION << ")\n"
             << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n"
             << "raster and vector data.\n"
             << "Usage: " << appName <<  " [options] [FILES]\n"
@@ -541,6 +541,10 @@ int main( int argc, char *argv[] )
   {
     myApp.installTranslator( &qgistor );
   }
+  else
+  {
+    qWarning( "loading of qgis translation failed [%s]", QString( "%1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ).toLocal8Bit().constData() );
+  }
 
   /* Translation file for Qt.
    * The strings from the QMenuBar context section are used by Qt/Mac to shift
@@ -551,6 +555,10 @@ int main( int argc, char *argv[] )
   if ( qttor.load( QString( "qt_" ) + myTranslationCode, QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ) )
   {
     myApp.installTranslator( &qttor );
+  }
+  else
+  {
+    qWarning( "loading of qt translation failed [%s]", QString( "%1/qt_%2" ).arg( QLibraryInfo::location( QLibraryInfo::TranslationsPath ) ).arg( myTranslationCode ).toLocal8Bit().constData() );
   }
 
   //set up splash screen

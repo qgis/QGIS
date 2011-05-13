@@ -61,6 +61,11 @@ class GUI_EXPORT QgsRubberBand: public QgsMapCanvasItem
     */
     void setToGeometry( QgsGeometry* geom, QgsVectorLayer* layer );
 
+    /**Sets this rubber band to a map canvas rectangle
+      @param rect rectangle in canvas coordinates
+      @note added in version 1.7*/
+    void setToCanvasRectangle( const QRect& rect );
+
     /**Add the geometry of an existing feature to a rubberband
      This is useful for multi feature highlighting.
     @param geom the geometry object

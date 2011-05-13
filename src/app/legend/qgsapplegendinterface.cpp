@@ -37,6 +37,11 @@ int QgsAppLegendInterface::addGroup( QString name, bool expand, QTreeWidgetItem*
   return mLegend->addGroup( name, expand, parent );
 }
 
+int QgsAppLegendInterface::addGroup( QString name, bool expand, int parentIndex )
+{
+  return mLegend->addGroup( name, expand, parentIndex );
+}
+
 void QgsAppLegendInterface::removeGroup( int groupIndex )
 {
   mLegend->removeGroup( groupIndex );

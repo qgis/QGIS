@@ -34,7 +34,7 @@ SET(QGIS_APP_SRCS
   qgslabelpreview.cpp
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
-  qgsmaptooladdisland.cpp
+  qgsmaptooladdpart.cpp
   qgsmaptooladdring.cpp
   qgsmaptoolannotation.cpp
   qgsmaptoolcapture.cpp
@@ -162,7 +162,8 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelinggui.h
   qgslabelpropertydialog.h
   qgsmaptooladdfeature.h
-  qgsmaptooladdisland.h
+  qgsmaptoolcapture.h
+  qgsmaptooladdpart.h
   qgsmaptooladdring.h
   qgsmaptooladdvertex.h
   qgsmaptoolchangelabelproperties.h

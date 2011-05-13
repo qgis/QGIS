@@ -157,8 +157,6 @@ void QgsGraduatedSymbolDialog::adjustNumberOfClasses()
     show();
     return;
   }
-
-  std::map < QString, int >::iterator iter = mFieldMap.find( fieldstring );
 }
 
 void QgsGraduatedSymbolDialog::apply()

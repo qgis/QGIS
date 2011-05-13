@@ -238,6 +238,15 @@ class QgsLegend : public QTreeWidget
     int addGroup( QString name = QString(), bool expand = true, QTreeWidgetItem* parent = 0 );
 
     /*!
+     * Slot called when user wishes to add a new empty layer group to the legend.
+     * All parameter are mandatory to be used to programatically nest a new group
+     * @param name name of the new group
+     * @param expand expand the group
+     * @return index of inserted group
+     */
+    int addGroup( QString name, bool expand, int parentIndex );
+
+    /*!
      * Removes all groups with the given name.
      * @param name name of the groups to remove
      * @return void

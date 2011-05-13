@@ -33,7 +33,7 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas, CaptureMode tool ): QgsMapToolCapture( canvas, tool )
+QgsMapToolAddFeature::QgsMapToolAddFeature( QgsMapCanvas* canvas ): QgsMapToolCapture( canvas )
 {
 }
 
@@ -112,10 +112,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
     }
 
-    // emit signal - QgisApp can catch it and save point position to clipboard
-    // FIXME: is this still actual or something old that's not used anymore?
-    //emit xyClickCoordinates(idPoint);
-
     //only do the rest for provider with feature addition support
     //note that for the grass provider, this will return false since
     //grass provider has its own mechanism of feature addition
@@ -123,47 +119,17 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
     {
       QgsFeature* f = new QgsFeature( 0, "WKBPoint" );
 
-      int size = 0;
-      char endian = QgsApplication::endian();
-      unsigned char *wkb = NULL;
-      int wkbtype = 0;
-      double x = savePoint.x();
-      double y = savePoint.y();
-
+      QgsGeometry *g = 0;
       if ( layerWKBType == QGis::WKBPoint || layerWKBType == QGis::WKBPoint25D )
       {
-        size = 1 + sizeof( int ) + 2 * sizeof( double );
-        wkb = new unsigned char[size];
-        wkbtype = QGis::WKBPoint;
-        memcpy( &wkb[0], &endian, 1 );
-        memcpy( &wkb[1], &wkbtype, sizeof( int ) );
-        memcpy( &wkb[5], &x, sizeof( double ) );
-        memcpy( &wkb[5] + sizeof( double ), &y, sizeof( double ) );
+        g = QgsGeometry::fromPoint( savePoint );
       }
       else if ( layerWKBType == QGis::WKBMultiPoint || layerWKBType == QGis::WKBMultiPoint25D )
       {
-        size = 2 + 3 * sizeof( int ) + 2 * sizeof( double );
-        wkb = new unsigned char[size];
-        wkbtype = QGis::WKBMultiPoint;
-        int position = 0;
-        memcpy( &wkb[position], &endian, 1 );
-        position += 1;
-        memcpy( &wkb[position], &wkbtype, sizeof( int ) );
-        position += sizeof( int );
-        int npoint = 1;
-        memcpy( &wkb[position], &npoint, sizeof( int ) );
-        position += sizeof( int );
-        memcpy( &wkb[position], &endian, 1 );
-        position += 1;
-        int pointtype = QGis::WKBPoint;
-        memcpy( &wkb[position], &pointtype, sizeof( int ) );
-        position += sizeof( int );
-        memcpy( &wkb[position], &x, sizeof( double ) );
-        position += sizeof( double );
-        memcpy( &wkb[position], &y, sizeof( double ) );
+        g = QgsGeometry::fromMultiPoint( QgsMultiPoint() << savePoint );
       }
 
-      f->setGeometryAndOwnership( &wkb[0], size );
+      f->setGeometry( g );
 
       vlayer->beginEditCommand( tr( "Feature added" ) );
 
@@ -237,70 +203,18 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
 
       //create QgsFeature with wkb representation
       QgsFeature* f = new QgsFeature( 0, "WKBLineString" );
-      unsigned char* wkb;
-      int wkbsize;
-      char endian = QgsApplication::endian();
+
+      QgsGeometry *g;
 
       if ( mode() == CaptureLine )
       {
         if ( layerWKBType == QGis::WKBLineString || layerWKBType == QGis::WKBLineString25D )
         {
-          wkbsize = 1 + 2 * sizeof( int ) + 2 * size() * sizeof( double );
-          wkb = new unsigned char[wkbsize];
-          int wkbtype = QGis::WKBLineString;
-          int length = size();
-          memcpy( &wkb[0], &endian, 1 );
-          memcpy( &wkb[1], &wkbtype, sizeof( int ) );
-          memcpy( &wkb[1+sizeof( int )], &length, sizeof( int ) );
-          int position = 1 + 2 * sizeof( int );
-          double x, y;
-          for ( QList<QgsPoint>::iterator it = begin(); it != end(); ++it )
-          {
-            QgsPoint savePoint = *it;
-            x = savePoint.x();
-            y = savePoint.y();
-
-            memcpy( &wkb[position], &x, sizeof( double ) );
-            position += sizeof( double );
-
-            memcpy( &wkb[position], &y, sizeof( double ) );
-            position += sizeof( double );
-          }
+          g = QgsGeometry::fromPolyline( points().toVector() );
         }
         else if ( layerWKBType == QGis::WKBMultiLineString || layerWKBType == QGis::WKBMultiLineString25D )
         {
-          wkbsize = 1 + 2 * sizeof( int ) + 1 + 2 * sizeof( int ) + 2 * size() * sizeof( double );
-          wkb = new unsigned char[wkbsize];
-          int position = 0;
-          int wkbtype = QGis::WKBMultiLineString;
-          memcpy( &wkb[position], &endian, 1 );
-          position += 1;
-          memcpy( &wkb[position], &wkbtype, sizeof( int ) );
-          position += sizeof( int );
-          int nlines = 1;
-          memcpy( &wkb[position], &nlines, sizeof( int ) );
-          position += sizeof( int );
-          memcpy( &wkb[position], &endian, 1 );
-          position += 1;
-          int linewkbtype = QGis::WKBLineString;
-          memcpy( &wkb[position], &linewkbtype, sizeof( int ) );
-          position += sizeof( int );
-          int length = size();
-          memcpy( &wkb[position], &length, sizeof( int ) );
-          position += sizeof( int );
-          double x, y;
-          for ( QList<QgsPoint>::iterator it = begin(); it != end(); ++it )
-          {
-            QgsPoint savePoint = *it;
-            x = savePoint.x();
-            y = savePoint.y();
-
-            memcpy( &wkb[position], &x, sizeof( double ) );
-            position += sizeof( double );
-
-            memcpy( &wkb[position], &y, sizeof( double ) );
-            position += sizeof( double );
-          }
+          g = QgsGeometry::fromMultiPolyline( QgsMultiPolyline() << points().toVector() );
         }
         else
         {
@@ -308,93 +222,19 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           stopCapturing();
           return; //unknown wkbtype
         }
-        f->setGeometryAndOwnership( &wkb[0], wkbsize );
+
+        f->setGeometry( g );
       }
       else // polygon
       {
+        QgsGeometry *g;
         if ( layerWKBType == QGis::WKBPolygon ||  layerWKBType == QGis::WKBPolygon25D )
         {
-          wkbsize = 1 + 3 * sizeof( int ) + 2 * ( size() + 1 ) * sizeof( double );
-          wkb = new unsigned char[wkbsize];
-          int wkbtype = QGis::WKBPolygon;
-          int length = size() + 1;//+1 because the first point is needed twice
-          int numrings = 1;
-          memcpy( &wkb[0], &endian, 1 );
-          memcpy( &wkb[1], &wkbtype, sizeof( int ) );
-          memcpy( &wkb[1+sizeof( int )], &numrings, sizeof( int ) );
-          memcpy( &wkb[1+2*sizeof( int )], &length, sizeof( int ) );
-          int position = 1 + 3 * sizeof( int );
-          double x, y;
-          QList<QgsPoint>::iterator it;
-          for ( it = begin(); it != end(); ++it )
-          {
-            QgsPoint savePoint = *it;
-            x = savePoint.x();
-            y = savePoint.y();
-
-            memcpy( &wkb[position], &x, sizeof( double ) );
-            position += sizeof( double );
-
-            memcpy( &wkb[position], &y, sizeof( double ) );
-            position += sizeof( double );
-          }
-          // close the polygon
-          it = begin();
-          QgsPoint savePoint = *it;
-          x = savePoint.x();
-          y = savePoint.y();
-
-          memcpy( &wkb[position], &x, sizeof( double ) );
-          position += sizeof( double );
-
-          memcpy( &wkb[position], &y, sizeof( double ) );
+          g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
         }
         else if ( layerWKBType == QGis::WKBMultiPolygon ||  layerWKBType == QGis::WKBMultiPolygon25D )
         {
-          wkbsize = 2 + 5 * sizeof( int ) + 2 * ( size() + 1 ) * sizeof( double );
-          wkb = new unsigned char[wkbsize];
-          int wkbtype = QGis::WKBMultiPolygon;
-          int polygontype = QGis::WKBPolygon;
-          int length = size() + 1;//+1 because the first point is needed twice
-          int numrings = 1;
-          int numpolygons = 1;
-          int position = 0; //pointer position relative to &wkb[0]
-          memcpy( &wkb[position], &endian, 1 );
-          position += 1;
-          memcpy( &wkb[position], &wkbtype, sizeof( int ) );
-          position += sizeof( int );
-          memcpy( &wkb[position], &numpolygons, sizeof( int ) );
-          position += sizeof( int );
-          memcpy( &wkb[position], &endian, 1 );
-          position += 1;
-          memcpy( &wkb[position], &polygontype, sizeof( int ) );
-          position += sizeof( int );
-          memcpy( &wkb[position], &numrings, sizeof( int ) );
-          position += sizeof( int );
-          memcpy( &wkb[position], &length, sizeof( int ) );
-          position += sizeof( int );
-          double x, y;
-          QList<QgsPoint>::iterator it;
-          for ( it = begin(); it != end(); ++it ) //add the captured points to the polygon
-          {
-            QgsPoint savePoint = *it;
-            x = savePoint.x();
-            y = savePoint.y();
-
-            memcpy( &wkb[position], &x, sizeof( double ) );
-            position += sizeof( double );
-
-            memcpy( &wkb[position], &y, sizeof( double ) );
-            position += sizeof( double );
-          }
-          // close the polygon
-          it = begin();
-          QgsPoint savePoint = *it;
-          x = savePoint.x();
-          y = savePoint.y();
-          memcpy( &wkb[position], &x, sizeof( double ) );
-          position += sizeof( double );
-          memcpy( &wkb[position], &y, sizeof( double ) );
+          g = QgsGeometry::fromMultiPolygon( QgsMultiPolygon() << ( QgsPolygon() << points().toVector() ) );
         }
         else
         {
@@ -402,7 +242,8 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           stopCapturing();
           return; //unknown wkbtype
         }
-        f->setGeometryAndOwnership( &wkb[0], wkbsize );
+
+        f->setGeometry( g );
 
         int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
         if ( avoidIntersectionsReturn == 1 )
