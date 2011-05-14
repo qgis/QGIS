@@ -24,20 +24,9 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>307</width>
-        <height>616</height>
-       </rect>
-      </property>
-      <attribute name="label">
+    <widget class="QTabWidget" name="toolBox">
+     <widget class="QWidget" name="page" native="true">
+      <attribute name="title">
        <string>Scale bar</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -48,9 +37,6 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mSegmentSizeSpinBox</cstring>
          </property>
         </widget>
        </item>
@@ -71,9 +57,6 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mMapUnitsPerBarUnitSpinBox</cstring>
          </property>
         </widget>
        </item>
@@ -103,9 +86,6 @@
          <property name="text">
           <string>Style</string>
          </property>
-         <property name="buddy">
-          <cstring>mStyleComboBox</cstring>
-         </property>
         </widget>
        </item>
        <item row="7" column="0">
@@ -124,9 +104,6 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mMapComboBox</cstring>
          </property>
         </widget>
        </item>
@@ -205,9 +182,6 @@
          </property>
          <property name="wordWrap">
           <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mUnitLabelLineEdit</cstring>
          </property>
         </widget>
        </item>

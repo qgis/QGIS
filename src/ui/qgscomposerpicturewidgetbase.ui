@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>293</width>
+    <width>327</width>
     <height>540</height>
    </rect>
   </property>
@@ -24,21 +24,28 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
+    <widget class="QTabWidget" name="toolBox">
+     <property name="enabled">
+      <bool>true</bool>
      </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>-129</y>
-        <width>266</width>
-        <height>632</height>
-       </rect>
-      </property>
-      <attribute name="label">
-       <string>Picture options</string>
+     <property name="tabShape">
+      <enum>QTabWidget::Rounded</enum>
+     </property>
+     <property name="elideMode">
+      <enum>Qt::ElideNone</enum>
+     </property>
+     <property name="documentMode">
+      <bool>false</bool>
+     </property>
+     <property name="tabsClosable">
+      <bool>false</bool>
+     </property>
+     <property name="movable">
+      <bool>false</bool>
+     </property>
+     <widget class="QWidget" name="page" native="true">
+      <attribute name="title">
+       <string>Picture Options</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_2">
        <item row="0" column="0">
@@ -156,9 +163,6 @@
             <property name="text">
              <string>Load</string>
             </property>
-            <property name="buddy">
-             <cstring>mPictureLineEdit</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -201,9 +205,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mWidthLineEdit</cstring>
-            </property>
            </widget>
           </item>
           <item row="3" column="0">
@@ -222,9 +223,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mHeightLineEdit</cstring>
             </property>
            </widget>
           </item>
@@ -248,9 +246,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mRotationSpinBox</cstring>
             </property>
            </widget>
           </item>

@@ -30,7 +30,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
   setupUi( this );
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mComposerTable );
-  mToolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  toolBox->addTab( itemPropertiesWidget, tr( "General options" ) );
 
   blockAllSignals( true );
 

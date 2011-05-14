@@ -28,7 +28,7 @@ QgsComposerLabelWidget::QgsComposerLabelWidget( QgsComposerLabel* label ): QWidg
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, label );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  toolBox->addTab( itemPropertiesWidget, tr( "General options" ) );
 
   if ( mComposerLabel )
   {
