@@ -36,7 +36,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture* picture 
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, picture );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  toolBox->addTab( itemPropertiesWidget, tr( "General options" ) );
 
   mWidthLineEdit->setValidator( new QDoubleValidator( this ) );
   mHeightLineEdit->setValidator( new QDoubleValidator( this ) );

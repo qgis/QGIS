@@ -36,7 +36,7 @@ QgsComposerArrowWidget::QgsComposerArrowWidget( QgsComposerArrow* arrow ): QWidg
 
   //add widget for general composer item properties
   QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, mArrow );
-  toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
+  toolBox->addTab( itemPropertiesWidget, tr( "General options" ) );
 
   setGuiElementValues();
 

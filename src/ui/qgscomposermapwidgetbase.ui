@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>404</width>
-    <height>447</height>
+    <width>433</width>
+    <height>830</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,20 +24,15 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QToolBox" name="toolBox">
+    <widget class="QTabWidget" name="toolBox">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>377</width>
-        <height>414</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="page" native="true">
+      <attribute name="title">
        <string>Map</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
@@ -81,9 +76,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mWidthLineEdit</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="1">
@@ -96,9 +88,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mHeightLineEdit</cstring>
             </property>
            </widget>
           </item>
@@ -119,9 +108,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mScaleLineEdit</cstring>
-            </property>
            </widget>
           </item>
           <item row="5" column="1">
@@ -138,9 +124,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mRotationSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -203,16 +186,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_2">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>394</width>
-        <height>356</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="page2" native="true">
+      <attribute name="title">
        <string>Extents</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_5">
@@ -233,9 +208,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mXMinLineEdit</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -248,9 +220,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mXMaxLineEdit</cstring>
             </property>
            </widget>
           </item>
@@ -265,9 +234,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mYMinLineEdit</cstring>
-            </property>
            </widget>
           </item>
           <item row="5" column="0">
@@ -280,9 +246,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mYMaxLineEdit</cstring>
             </property>
            </widget>
           </item>
@@ -320,16 +283,8 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="page_3">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>377</width>
-        <height>720</height>
-       </rect>
-      </property>
-      <attribute name="label">
+     <widget class="QWidget" name="page3" native="true">
+      <attribute name="title">
        <string>Grid</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
@@ -356,9 +311,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mGridTypeComboBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="1" column="0">
@@ -371,9 +323,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mIntervalXSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -395,9 +344,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mOffsetXSpinBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="8" column="0">
@@ -417,9 +363,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mLineWidthSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -445,9 +388,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mAnnotationPositionComboBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="23" column="0">
@@ -463,9 +403,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mAnnotationDirectionComboBox</cstring>
             </property>
            </widget>
           </item>
@@ -487,9 +424,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mDistanceToMapFrameSpinBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="36" column="0">
@@ -502,9 +436,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mCoordinatePrecisionSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -536,9 +467,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mIntervalYSpinBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="6" column="0">
@@ -559,9 +487,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mOffsetYSpinBox</cstring>
-            </property>
            </widget>
           </item>
           <item row="14" column="0">
@@ -571,9 +496,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mCrossWidthSpinBox</cstring>
             </property>
            </widget>
           </item>
@@ -597,9 +519,6 @@
             </property>
             <property name="wordWrap">
              <bool>true</bool>
-            </property>
-            <property name="buddy">
-             <cstring>mLineColorButton</cstring>
             </property>
            </widget>
           </item>

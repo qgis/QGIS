@@ -39,20 +39,12 @@
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
-        <widget class="QToolBox" name="toolBox">
+        <widget class="QTabWidget" name="toolBox">
          <property name="currentIndex">
           <number>1</number>
          </property>
-         <widget class="QWidget" name="page">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>338</width>
-            <height>404</height>
-           </rect>
-          </property>
-          <attribute name="label">
+         <widget class="QWidget" name="page" native="true">
+          <attribute name="title">
            <string>General</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout">
@@ -60,9 +52,6 @@
             <widget class="QLabel" name="mTitleLabel">
              <property name="text">
               <string>&amp;Title</string>
-             </property>
-             <property name="buddy">
-              <cstring>mTitleLineEdit</cstring>
              </property>
             </widget>
            </item>
@@ -178,16 +167,8 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="page_2">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>351</width>
-            <height>394</height>
-           </rect>
-          </property>
-          <attribute name="label">
+         <widget class="QWidget" name="page_2" native="true">
+          <attribute name="title">
            <string>Legend items</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout_2">

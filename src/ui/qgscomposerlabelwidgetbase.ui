@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>547</width>
-    <height>425</height>
+    <height>533</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,20 +21,9 @@
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
-    <widget class="QToolBox" name="toolBox">
-     <property name="currentIndex">
-      <number>0</number>
-     </property>
-     <widget class="QWidget" name="page">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>513</width>
-        <height>402</height>
-       </rect>
-      </property>
-      <attribute name="label">
+    <widget class="QTabWidget" name="toolBox">
+     <widget class="QWidget" name="page" native="true">
+      <attribute name="title">
        <string>Label</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
@@ -69,9 +58,6 @@
         <widget class="QLabel" name="mMarginTextLabel">
          <property name="text">
           <string>Margin (mm)</string>
-         </property>
-         <property name="buddy">
-          <cstring>mMarginDoubleSpinBox</cstring>
          </property>
         </widget>
        </item>
