@@ -16,9 +16,10 @@ makensis \
 -DVERSION_NAME='Wroclaw' \
 -DSVN_REVISION='0' \
 -DQGIS_BASE='Quantum GIS' \
--DINSTALLER_NAME='QGIS-1-7-0-Setup.exe' \
+-DINSTALLER_NAME='QGIS-1-7-0-Setup-a1a0b35.exe' \
 -DDISPLAYED_NAME='Quantum GIS 1.7.0' \
 -DBINARY_REVISION=1 \
 -DINSTALLER_TYPE=OSGeo4W \
 -DPACKAGE_FOLDER=osgeo4w/unpacked \
+-DSHORTNAME=qgis \
 QGIS-Installer.nsi
