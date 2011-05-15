@@ -46,6 +46,14 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
       COMMENT "Building ${_out}.html from ${_in}"
       )
 
+    ADD_CUSTOM_COMMAND(
+      OUTPUT ${_out}.tex
+      COMMAND ${TXT2TAGS_EXECUTABLE}
+      ARGS -o${_out}.tex -t tex ${_in}
+      DEPENDS ${_in}
+      COMMENT "Building ${_out}.tex from ${_in}"
+      )
+
     SET(${_sources} ${${_sources}} ${_out} ${_out}.html)
   ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_TXT2TAGS_FILES)
