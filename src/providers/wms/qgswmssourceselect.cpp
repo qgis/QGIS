@@ -451,7 +451,7 @@ void QgsWMSSourceSelect::addClicked()
   {
     collectSelectedLayers( layers, styles );
     crs = mCRS;
-    format = mFormats[ mImageFormatGroup->checkedId()];
+    format = mFormats[ mImageFormatGroup->checkedId()].format;
 
     if ( mTileWidth->text().toInt() > 0 && mTileHeight->text().toInt() > 0 )
     {
