@@ -97,9 +97,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
 #ifdef Q_WS_MAC
     //! Change event (update window menu on ActivationChange)
     virtual void changeEvent( QEvent * );
-
-    //! Show event (add window to menu)
-    virtual void showEvent( QShowEvent * );
 #endif
 
   signals:
