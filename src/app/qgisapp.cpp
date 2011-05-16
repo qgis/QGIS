@@ -300,7 +300,7 @@ static void setTitleBarText_( QWidget & qgisApp )
   {
     caption += " - " + QgsProject::instance()->title();
   }
-  caption = QgisApp::tr( "Quantum GIS pro Deblin" ); //for dbl
+
   qgisApp.setWindowTitle( caption );
 } // setTitleBarText_( QWidget * qgisApp )
 
