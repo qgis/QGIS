@@ -371,16 +371,6 @@ void QgsComposer::changeEvent( QEvent* event )
       break;
   }
 }
-
-void QgsComposer::showEvent( QShowEvent *event )
-{
-  QMainWindow::showEvent( event );
-  // add to menu if (re)opening window (event not due to unminimize)
-  if ( !event->spontaneous() )
-  {
-    QgisApp::instance()->addWindow( mWindowAction );
-  }
-}
 #endif
 
 void QgsComposer::setTitle( const QString& title )
@@ -1137,6 +1127,14 @@ void QgsComposer::showEvent( QShowEvent* event )
     }
     mMapsToRestore.clear();
   }
+
+#ifdef Q_WS_MAC
+  // add to menu if (re)opening window (event not due to unminimize)
+  if ( !event->spontaneous() )
+  {
+    QgisApp::instance()->addWindow( mWindowAction );
+  }
+#endif
 }
 
 void QgsComposer::saveWindowState()
