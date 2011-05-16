@@ -2227,7 +2227,7 @@ bool QgsOgrLayerItem::setCrs ( QgsCoordinateReferenceSystem crs )
     return false;
 }
 
-QGISEXTERN QgsDataItem * dataItem ( QString thePath )
+QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() ) return 0;
 
@@ -2277,7 +2277,7 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
     QgsDataCollectionItem * collection = 0;
     if ( numLayers > 1 )
     {
-      collection = new QgsDataCollectionItem ( QgsDataItem::Collection, 0, info.fileName(), thePath ); 
+      collection = new QgsDataCollectionItem( parentItem, info.fileName(), thePath );
     }
     for ( int i = 0; i < numLayers; i++ ) 
     {
@@ -2333,7 +2333,7 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
       QString layerUri = thePath + "|layerid=" + QString::number( i );
       QgsDebugMsg( "OGR layer uri : " + layerUri );
 
-      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection, name, path, layerUri, layerType );
+      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );
       if ( numLayers == 1 ) return item;
       collection->addChild( item );
     }

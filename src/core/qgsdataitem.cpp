@@ -46,6 +46,7 @@ QIcon QgsDataCollectionItem::sDirIcon;
 QgsDataItem::QgsDataItem(QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path)
   : QObject(parent), mType(type), mParent(parent), mPopulated(false), mName(name), mPath(path)
 {
+  QgsDebugMsg(QString("@ %1 %2 %3").arg(mType).arg((unsigned long)mParent).arg(mPath));
 }
 
 QIcon QgsDataItem::icon()
@@ -132,7 +133,6 @@ void QgsDataItem::addChildItem ( QgsDataItem * child, bool refresh )
   }
 
   if ( refresh ) emit beginInsertItems ( this, i, i );
-  child->setParent(this);
   mChildren.insert ( i, child );
 
   connect ( child, SIGNAL(beginInsertItems ( QgsDataItem*, int, int )),
@@ -238,8 +238,8 @@ bool QgsLayerItem::equal(const QgsDataItem *other)
 }
 
 // ---------------------------------------------------------------------
-QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path)
-  : QgsDataItem( type, parent, name, path)
+QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path)
+  : QgsDataItem( Collection, parent, name, path)
 {
 
   if (sDirIcon.isNull())
@@ -261,13 +261,11 @@ QgsDataCollectionItem::~QgsDataCollectionItem()
 QVector<QgsDataProvider*> QgsDirectoryItem::mProviders = QVector<QgsDataProvider*>();
 QVector<QLibrary*> QgsDirectoryItem::mLibraries = QVector<QLibrary*>();
 
-// TODO: bad place, where to put this? qgsproviderregistry.h?
-typedef int dataCapabilities_t();
-typedef QgsDataItem * dataItem_t(QString);
 
 QgsDirectoryItem::QgsDirectoryItem(QgsDataItem* parent, QString name, QString path)
-  : QgsDataCollectionItem(Directory, parent, name, path)
+  : QgsDataCollectionItem(parent, name, path)
 {
+  mType = Directory;
   mIcon = sDirIcon;
 
   if ( mLibraries.size() == 0 ) {
@@ -345,7 +343,7 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
         continue;
       }
 
-      QgsDataItem * item = dataItem ( path );
+      QgsDataItem * item = dataItem ( path, this );
       if ( item )
       {
         children.append( item );

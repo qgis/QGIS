@@ -3051,7 +3051,7 @@ QGISEXTERN int dataCapabilities () {
 }
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem ( QgsDataItem* parent, QString name, QString path ) 
-  : QgsDataCollectionItem ( QgsDataItem::Collection, parent, name, path )
+  : QgsDataCollectionItem ( parent, name, path )
 {
 }
 
@@ -3104,12 +3104,14 @@ bool QgsWMSConnectionItem::equal(const QgsDataItem *other)
 }
 // ---------------------------------------------------------------------------
 QgsWMSLayerItem::QgsWMSLayerItem ( QgsDataItem* parent, QString name, QString path, QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperty )
-  : QgsDataCollectionItem ( QgsDataItem::Collection, parent, name, path ),
+  : QgsLayerItem ( parent, name, path, QString(), QgsLayerItem::Raster ),
     mCapabilitiesProperty ( capabilitiesProperty ),
     mConnInfo ( connInfo ),
     mLayerProperty ( layerProperty )
 {
   // Populate everything, it costs nothing, all info about layers is collected
+  /*
+    // TODO
   foreach ( QgsWmsLayerProperty layerProperty, mLayerProperty.layer ) 
   {
     // Attention, the name may be empty
@@ -3118,6 +3120,7 @@ QgsWMSLayerItem::QgsWMSLayerItem ( QgsDataItem* parent, QString name, QString pa
     QgsWMSLayerItem * layer = new QgsWMSLayerItem ( this, layerProperty.title, mPath+"/" + pathName, mCapabilitiesProperty, mConnInfo, layerProperty );
     addChild ( layer ); 
   }
+  */
 
   if ( mChildren.size() == 0 )
   {
@@ -3188,7 +3191,7 @@ bool QgsWMSLayerItem::layerInfo(QgsMapLayer::LayerType &  type,
 
 // ---------------------------------------------------------------------------
 QgsWMSRootItem::QgsWMSRootItem ( QgsDataItem* parent, QString name, QString path ) 
-  : QgsDataCollectionItem ( QgsDataItem::Collection, parent, name, path )
+  : QgsDataCollectionItem ( parent, name, path )
 {
   mIcon = QIcon ( getThemePixmap ( "mIconWms.png" ) );
 
@@ -3234,9 +3237,9 @@ void QgsWMSRootItem::connectionsChanged()
 
 // ---------------------------------------------------------------------------
 
-QGISEXTERN QgsDataItem * dataItem ( QString thePath )
+QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
 {
-  QgsWMSRootItem * root = new QgsWMSRootItem ( 0, "WMS", "wms:" );
+  QgsWMSRootItem * root = new QgsWMSRootItem ( parentItem, "WMS", "wms:" );
 
   return root;
 }

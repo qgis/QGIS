@@ -30,6 +30,12 @@
 #include "qgscoordinatereferencesystem.h"
 
 class QgsDataProvider;
+class QgsDataItem;
+
+// TODO: bad place, where to put this? qgsproviderregistry.h?
+typedef int dataCapabilities_t();
+typedef QgsDataItem * dataItem_t(QString, QgsDataItem*);
+
 
 /** base class for all items in the model */
 class CORE_EXPORT QgsDataItem : public QObject
@@ -51,9 +57,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     int rowCount();
 
     QIcon icon();
-
-    // TODO: remove
-    void setParent ( QgsDataItem *parent ) { mParent = parent; }
 
     //
 
@@ -161,7 +164,7 @@ protected:
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
 public:
-  QgsDataCollectionItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path =0);
+  QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path =0);
   ~QgsDataCollectionItem();
 
   void setPopulated() { mPopulated = true; }

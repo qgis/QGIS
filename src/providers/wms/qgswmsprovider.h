@@ -982,7 +982,7 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
-class QgsWMSLayerItem : public QgsDataCollectionItem
+class QgsWMSLayerItem : public QgsLayerItem
 {
   Q_OBJECT
   public:

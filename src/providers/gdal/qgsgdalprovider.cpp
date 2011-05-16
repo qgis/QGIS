@@ -1927,7 +1927,7 @@ bool QgsGdalLayerItem::setCrs ( QgsCoordinateReferenceSystem crs )
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN QgsDataItem * dataItem ( QString thePath )
+QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() ) return 0;
 
@@ -1968,7 +1968,7 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
     QString name = info.fileName();
     QString uri = thePath;
 
-    QgsLayerItem * item = new QgsGdalLayerItem( 0, name, thePath, uri );
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, uri );
     return item;
   }
   return 0;

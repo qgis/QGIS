@@ -10,9 +10,6 @@
 
 #include "qgsbrowsermodel.h"
 
-// TODO: bad place, where to put this? qgsproviderregistry?
-typedef int dataCapabilities_t();
-typedef QgsDataItem * dataItem_t(QString);
 
 QgsBrowserModel::QgsBrowserModel(QObject *parent) :
     QAbstractItemModel(parent)
@@ -57,7 +54,7 @@ QgsBrowserModel::QgsBrowserModel(QObject *parent) :
       continue;
     }
 
-    QgsDataItem * item = dataItem ( "" ); // empty path -> top level
+    QgsDataItem * item = dataItem ( "", NULL ); // empty path -> top level
     if ( item )
     {
       QgsDebugMsg ( "Add new top level item : " + item->mName );
