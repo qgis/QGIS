@@ -3095,7 +3095,7 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
 bool QgsWMSConnectionItem::equal(const QgsDataItem *other)
 {
-  if ( typeid ( *this ) != typeid ( *other ) )
+  if ( type() != other->type() )
   {
     return false;
   }

@@ -56,8 +56,6 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     int rowCount();
 
-    QIcon icon();
-
     //
 
     virtual void refresh();
@@ -88,13 +86,22 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // members
 
+    Type type() const { return mType; }
+    QgsDataItem* parent() const { return mParent; }
+    QVector<QgsDataItem*> children() const { return mChildren; }
+    QIcon icon() const { return mIcon; }
+    QString name() const { return mName; }
+    QString path() const { return mPath; }
+
+  protected:
+
     Type mType;
     QgsDataItem* mParent;
     QVector<QgsDataItem*> mChildren; // easier to have it always
     bool mPopulated;
     QString mName;
-    QIcon mIcon;
     QString mPath; // it is also used to identify item in tree
+    QIcon mIcon;
 
   public slots:
     virtual void doubleClick();

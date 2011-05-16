@@ -57,7 +57,7 @@ QgsBrowserModel::QgsBrowserModel(QObject *parent) :
     QgsDataItem * item = dataItem ( "", NULL ); // empty path -> top level
     if ( item )
     {
-      QgsDebugMsg ( "Add new top level item : " + item->mName );
+      QgsDebugMsg ( "Add new top level item : " + item->name() );
       connectItem(item);
       mRootItems << item;
     }
@@ -88,7 +88,7 @@ QVariant QgsBrowserModel::data( const QModelIndex & index, int role ) const
 
   if (role == Qt::DisplayRole)
   {
-     return QVariant(ptr->mName);
+     return QVariant(ptr->name());
   }
   else if (role == Qt::DecorationRole && index.column() == 0)
   {
@@ -162,13 +162,13 @@ QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex & par
   {
     // this is ordinary item: return a valid index if the requested child exists
     QgsDataItem* ptr = (QgsDataItem*) parent.internalPointer();
-    if (ptr->mType == QgsDataItem::Directory || ptr->mType == QgsDataItem::Collection)
+    if (ptr->type() == QgsDataItem::Directory || ptr->type() == QgsDataItem::Collection)
     {
       // this is a directory: get index of its subdir!
       QgsDirectoryItem* di = (QgsDirectoryItem*) ptr;
-      return createIndex(row, column, di->mChildren.at(row));
+      return createIndex(row, column, di->children().at(row));
     }
-    if (ptr->mType == QgsDataItem::Layer)
+    if (ptr->type() == QgsDataItem::Layer)
     {
       return QModelIndex(); // has no children
     }
@@ -184,7 +184,7 @@ QModelIndex QgsBrowserModel::index( QgsDataItem *item )
   // Item index
   QModelIndex index = QModelIndex();
 
-  const QVector<QgsDataItem*>& children = item->mParent ? item->mParent->mChildren : mRootItems;
+  const QVector<QgsDataItem*>& children = item->parent() ? item->parent()->children() : mRootItems;
 
   Q_ASSERT( children.size() > 0 );
   int row = -1;
@@ -213,7 +213,7 @@ QModelIndex QgsBrowserModel::parent( const QModelIndex & index ) const
   //qDebug("parent of: %d %d", index.row(), index.column());
 
   QgsDataItem* ptr = (QgsDataItem*) index.internalPointer();
-  QgsDataItem* parentItem = ptr->mParent;
+  QgsDataItem* parentItem = ptr->parent();
 
   if (parentItem == NULL)
   {
@@ -222,7 +222,7 @@ QModelIndex QgsBrowserModel::parent( const QModelIndex & index ) const
   }
 
   const QVector<QgsDataItem*>& children =
-      parentItem->mParent ? ((QgsDirectoryItem*)parentItem->mParent)->mChildren : mRootItems;
+      parentItem->parent() ? ((QgsDirectoryItem*)parentItem->parent())->children() : mRootItems;
   Q_ASSERT(children.count() > 0);
 
   for (int i = 0; i < children.count(); i++)
@@ -243,13 +243,13 @@ void QgsBrowserModel::refresh( QString path, const QModelIndex& theIndex )
   {
     QModelIndex idx = index(i, 0, theIndex);
     QgsDataItem* ptr = (QgsDataItem*) idx.internalPointer();
-    if ( ptr->mPath == path )
+    if ( ptr->path() == path )
     {
-      QgsDebugMsg( "Arrived " + ptr->mPath );
+      QgsDebugMsg( "Arrived " + ptr->path() );
       ptr->refresh();
       return;
     }
-    if ( path.indexOf ( ptr->mPath ) == 0 )
+    if ( path.indexOf ( ptr->path() ) == 0 )
     {
       refresh( path, idx );
       break;
@@ -267,14 +267,14 @@ void QgsBrowserModel::refresh( const QModelIndex& theIndex )
   else
   {
     QgsDataItem* ptr = (QgsDataItem*) theIndex.internalPointer();
-    QgsDebugMsg( "Refresh " + ptr->mPath );
+    QgsDebugMsg( "Refresh " + ptr->path() );
     ptr->refresh();
   }
 }
 
 void QgsBrowserModel::beginInsertItems( QgsDataItem* parent, int first, int last )
 {
-  QgsDebugMsg( "parent mPath = " + parent->mPath );
+  QgsDebugMsg( "parent mPath = " + parent->path() );
   QModelIndex idx = index( parent );
   if ( !idx.isValid() ) return;
   QgsDebugMsg( "valid");
@@ -288,7 +288,7 @@ void QgsBrowserModel::endInsertItems()
 }
 void QgsBrowserModel::beginRemoveItems( QgsDataItem* parent, int first, int last )
 {
-  QgsDebugMsg( "parent mPath = " + parent->mPath );
+  QgsDebugMsg( "parent mPath = " + parent->path() );
   QModelIndex idx = index( parent );
   if ( !idx.isValid() ) return;
   beginRemoveRows( idx, first, last );

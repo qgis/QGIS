@@ -46,12 +46,6 @@ QIcon QgsDataCollectionItem::sDirIcon;
 QgsDataItem::QgsDataItem(QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path)
   : QObject(parent), mType(type), mParent(parent), mPopulated(false), mName(name), mPath(path)
 {
-  QgsDebugMsg(QString("@ %1 %2 %3").arg(mType).arg((unsigned long)mParent).arg(mPath));
-}
-
-QIcon QgsDataItem::icon()
-{
-  return mIcon;
 }
 
 // TODO: This is copy from QgisApp, bad
@@ -227,9 +221,8 @@ QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QString name, QString path, QStr
 bool QgsLayerItem::equal(const QgsDataItem *other)
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
-  if ( typeid ( *this ) != typeid ( *other ) )
+  if ( type() != other->type() )
   {
-    //QgsDebugMsg ( "different typeid" );
     return false;
   }
   //const QgsLayerItem *o = qobject_cast<const QgsLayerItem *> ( other );
@@ -356,12 +349,11 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
 bool QgsDirectoryItem::equal(const QgsDataItem *other)
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
-  if ( typeid ( *this ) != typeid ( *other ) )
+  if ( type() != other->type() )
   {
-    //QgsDebugMsg ( "different typeid" );
     return false;
   }
-  return ( mPath == other->mPath );
+  return ( path() == other->path() );
 }
 
 QWidget * QgsDirectoryItem::paramWidget()

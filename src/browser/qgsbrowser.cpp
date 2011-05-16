@@ -90,7 +90,7 @@ void QgsBrowser::expand( QString path, const QModelIndex& index )
     QModelIndex idx = mModel->index(i, 0, index);
     QgsDataItem* ptr = (QgsDataItem*) idx.internalPointer();
 
-    if ( path.indexOf ( ptr->mPath ) == 0 )
+    if ( path.indexOf ( ptr->path() ) == 0 )
     {
       treeView->expand( idx );
       treeView->scrollTo (idx, QAbstractItemView::PositionAtTop );
@@ -145,7 +145,7 @@ void QgsBrowser::itemClicked(const QModelIndex& index)
     paramEnable = true;
   }
 
-  if (ptr->mType == QgsDataItem::Layer)
+  if (ptr->type() == QgsDataItem::Layer)
   {
     QgsLayerItem* item = static_cast<QgsLayerItem*>(ptr);
     bool res = layerClicked(item);
@@ -186,7 +186,7 @@ void QgsBrowser::itemClicked(const QModelIndex& index)
     tabWidget->setCurrentIndex ( selected );
   }
 
-  qDebug("clicked: %d %d %s", index.row(), index.column(), ptr->mName.toAscii().data());
+  qDebug("clicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data());
 }
 
 bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
@@ -250,7 +250,7 @@ void QgsBrowser::itemDoubleClicked(const QModelIndex& index)
   QgsDataItem* ptr = (QgsDataItem*) index.internalPointer();
 
   ptr->doubleClick();
-  qDebug("doubleclicked: %d %d %s", index.row(), index.column(), ptr->mName.toAscii().data());
+  qDebug("doubleclicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data());
 }
 
 void QgsBrowser::itemExpanded(const QModelIndex& index)
@@ -265,8 +265,8 @@ void QgsBrowser::itemExpanded(const QModelIndex& index)
   }
 */
   // TODO: save separately each type (FS, WMS)
-  settings.setValue ( "/Browser/lastExpanded", ptr->mPath );
-  QgsDebugMsg( "last expanded: " + ptr->mPath );
+  settings.setValue ( "/Browser/lastExpanded", ptr->path() );
+  QgsDebugMsg( "last expanded: " + ptr->path() );
 }
 
 void QgsBrowser::newVectorLayer()
@@ -320,7 +320,7 @@ void QgsBrowser::on_mActionSetProjection_triggered()
     // selectedIndexes() is protected
 
     QgsDataItem* ptr = (QgsDataItem*) mIndex.internalPointer();
-    if ( ptr->mType == QgsDataItem::Layer )
+    if ( ptr->type() == QgsDataItem::Layer )
     {
       QgsLayerItem* layerItem = static_cast<QgsLayerItem*>(ptr);
       if ( ! layerItem->setCrs ( srs ) )
@@ -490,7 +490,7 @@ void QgsBrowser::refresh( const QModelIndex& index )
   if ( index.isValid() ) 
   {
     QgsDataItem* item = (QgsDataItem*) index.internalPointer();
-    QgsDebugMsg( "path = " + item->mPath );
+    QgsDebugMsg( "path = " + item->path() );
   }
   mModel->refresh( index );
   for ( int i = 0 ; i < mModel->rowCount(index); i++ ) 
