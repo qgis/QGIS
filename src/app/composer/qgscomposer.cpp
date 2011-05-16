@@ -1185,7 +1185,7 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   QDomElement composerElem = doc.createElement( "Composer" );
   composerElem.setAttribute( "title", mTitle );
 
-  //change preview mode of minimised / hidden maps (show contents only on demand)
+  //change preview mode of minimised / hidden maps before saving XML (show contents only on demand)
   QMap< QgsComposerMap*, QgsComposerMap::PreviewMode >::iterator mapIt = mMapsToRestore.begin();
   for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
   {
