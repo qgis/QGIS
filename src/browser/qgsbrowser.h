@@ -24,6 +24,7 @@
 #include "ui_qgsbrowserbase.h"
 
 class QgsBrowserModel;
+class QgsLayerItem;
 class QgsMapLayer;
 
 class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
@@ -59,6 +60,8 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
 
 protected:
     void keyPressEvent( QKeyEvent * e );
+
+    bool layerClicked(QgsLayerItem* ptr);
 
     enum Tab
     {

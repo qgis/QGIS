@@ -3130,11 +3130,6 @@ QgsWMSLayerItem::~QgsWMSLayerItem ()
 {
 }
 
-int QgsWMSLayerItem::rowCount() 
-{
-  return mChildren.size();
-}
-
 bool QgsWMSLayerItem::layerInfo(QgsMapLayer::LayerType &  type, 
       QString & providerKey, QString & uri )
 {

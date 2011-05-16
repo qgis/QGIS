@@ -38,6 +38,11 @@
 #include "qgslogger.h" 
 #include "qgsproviderregistry.h" 
 
+// shared icons
+QIcon QgsLayerItem::sIconPoint, QgsLayerItem::sIconLine, QgsLayerItem::sIconPolygon, QgsLayerItem::sIconTable, QgsLayerItem::sIconDefault;
+QIcon QgsDataCollectionItem::sDirIcon;
+
+
 QgsDataItem::QgsDataItem(QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path)
   : QObject(parent), mType(type), mParent(parent), mPopulated(false), mName(name), mPath(path)
 {
@@ -45,8 +50,7 @@ QgsDataItem::QgsDataItem(QgsDataItem::Type type, QgsDataItem* parent, QString na
 
 QIcon QgsDataItem::icon()
 {
-  if ( !mIcon.isNull() ) return mIcon;
-  return mDefaultIcon;
+  return mIcon;
 }
 
 // TODO: This is copy from QgisApp, bad
@@ -197,47 +201,27 @@ void QgsDataItem::refresh()
 
 // ---------------------------------------------------------------------
 
-QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QString name, QString path)
-  : QgsDataItem(Layer, parent, name, path)
+QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType)
+  : QgsDataItem(Layer, parent, name, path), mUri(uri), mLayerType(layerType)
 {
-}
-
-QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QgsDataItem::Type type, QString name, QString path, QString uri)
-  : QgsDataItem(type, parent, name, path), mUri(uri)
-{
-  
-}
-QIcon QgsLayerItem::icon()
-{
-  if ( !mIcon.isNull() ) return mIcon;
-
-  QString name;
-  switch ( mType )
+  if (sIconPoint.isNull())
   {
-    case QgsDataItem::Point:
-      name = "/mIconPointLayer.png";
-      break;
-    case QgsDataItem::Line:
-      name = "/mIconLineLayer.png";
-      break;
-    case QgsDataItem::Polygon:
-      name = "/mIconPolygonLayer.png";
-      break;
-    case QgsDataItem::TableLayer:
-      name = "/mIconTableLayer.png";
-      break;
-    default:
-      name = "/mIconLayer.png";
-      break;
+    // initialize shared icons
+    sIconPoint = QIcon( getThemePixmap( "/mIconPointLayer.png" ) );
+    sIconLine = QIcon( getThemePixmap( "/mIconLineLayer.png" ) );
+    sIconPolygon = QIcon( getThemePixmap( "/mIconPolygonLayer.png" ) );
+    sIconTable = QIcon( getThemePixmap( "/mIconTableLayer.png" ) );
+    sIconDefault = QIcon( getThemePixmap( "/mIconLayer.png" ) );
   }
-  //QgsDebugMsg( QString ( "mType = %1 name = %2").arg ( mType).arg (name ) );
-  if ( !name.isEmpty() )
+
+  switch (layerType)
   {
-    QPixmap pixmap = getThemePixmap ( name );
-    //QgsDebugMsg( QString ( "pixmap.isNull = %1").arg(pixmap.isNull() ) );
-    return QIcon ( pixmap );
+    case Point:      mIcon = sIconPoint; break;
+    case Line:       mIcon = sIconLine; break;
+    case Polygon:    mIcon = sIconPolygon; break;
+    case TableLayer: mIcon = sIconTable; break;
+    default:         mIcon = sIconDefault; break;
   }
-  return mDefaultIcon;
 }
 
 bool QgsLayerItem::equal(const QgsDataItem *other)
@@ -257,10 +241,15 @@ bool QgsLayerItem::equal(const QgsDataItem *other)
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path)
   : QgsDataItem( type, parent, name, path)
 {
-  QStyle *style = QApplication::style();
-  mDefaultIcon = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
-  mDefaultIcon.addPixmap( style->standardPixmap( QStyle::SP_DirOpenIcon ), 
-                          QIcon::Normal, QIcon::On );
+
+  if (sDirIcon.isNull())
+  {
+    // initialize shared icons
+    QStyle *style = QApplication::style();
+    sDirIcon = QIcon( style->standardPixmap( QStyle::SP_DirClosedIcon ) );
+    sDirIcon.addPixmap( style->standardPixmap( QStyle::SP_DirOpenIcon ),
+                            QIcon::Normal, QIcon::On );
+  }
 }
 QgsDataCollectionItem::~QgsDataCollectionItem()
 {
@@ -279,6 +268,8 @@ typedef QgsDataItem * dataItem_t(QString);
 QgsDirectoryItem::QgsDirectoryItem(QgsDataItem* parent, QString name, QString path)
   : QgsDataCollectionItem(Directory, parent, name, path)
 {
+  mIcon = sDirIcon;
+
   if ( mLibraries.size() == 0 ) {
     QStringList keys = QgsProviderRegistry::instance()->providerList();
     QStringList::const_iterator i;

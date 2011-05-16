@@ -309,8 +309,7 @@ class QgsOgrLayerItem : public QgsLayerItem
 {
   Q_OBJECT
   public:
-    QgsOgrLayerItem ( QgsDataItem* parent, QgsDataItem::Type type, 
-                      QString name, QString path, QString uri );
+    QgsOgrLayerItem ( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
     ~QgsOgrLayerItem ();
 
     bool layerInfo ( QgsMapLayer::LayerType &  type, 

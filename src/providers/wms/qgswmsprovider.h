@@ -990,8 +990,6 @@ class QgsWMSLayerItem : public QgsDataCollectionItem
         QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
     ~QgsWMSLayerItem ();
 
-    int rowCount();
-
     bool layerInfo ( QgsMapLayer::LayerType &  type, 
       QString & providerKey, QString & uri );
 

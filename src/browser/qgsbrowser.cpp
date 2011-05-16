@@ -138,14 +138,60 @@ void QgsBrowser::itemClicked(const QModelIndex& index)
   // this should probably go to the model and only emit signal when a layer is clicked
 
 
-  mActionSetProjection->setEnabled ( ptr->capabilities() & QgsDataItem::SetCrs );
-
   mParamWidget = ptr->paramWidget();
   if ( mParamWidget ) {
     paramLayout->addWidget ( mParamWidget );
     mParamWidget->show();
     paramEnable = true;
   }
+
+  if (ptr->mType == QgsDataItem::Layer)
+  {
+    QgsLayerItem* item = static_cast<QgsLayerItem*>(ptr);
+    bool res = layerClicked(item);
+
+    if (res)
+    {
+      metaEnable = true;
+      previewEnable = true;
+      if ( mLayer->type() == QgsMapLayer::VectorLayer ) {
+        attributesEnable = true;
+      }
+    }
+  }
+  else
+  {
+    mActionSetProjection->setEnabled ( false );
+  }
+
+  // force update of the current tab
+  updateCurrentTab();
+
+  int selected = -1;
+  if ( mLastTab.contains( typeid(*ptr).name() )  )
+  {
+    selected = mLastTab[ typeid(*ptr).name()];
+  }
+
+  // Enabling tabs call tabChanged !
+  tabWidget->setTabEnabled ( tabWidget->indexOf( paramTab ), paramEnable);
+  tabWidget->setTabEnabled ( tabWidget->indexOf( metaTab ), metaEnable );
+  tabWidget->setTabEnabled ( tabWidget->indexOf( previewTab ), previewEnable );
+  tabWidget->setTabEnabled ( tabWidget->indexOf( attributesTab ), attributesEnable );
+
+  // select tab according last selection for this data item
+  if ( selected >= 0  )
+  {
+    qDebug("set tab %s %d", typeid(*ptr).name(), selected );
+    tabWidget->setCurrentIndex ( selected );
+  }
+
+  qDebug("clicked: %d %d %s", index.row(), index.column(), ptr->mName.toAscii().data());
+}
+
+bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
+{
+  mActionSetProjection->setEnabled ( ptr->capabilities() & QgsLayerItem::SetCrs );
 
   QgsMapLayer::LayerType type;
   QString providerKey;
@@ -185,46 +231,19 @@ void QgsBrowser::itemClicked(const QModelIndex& index)
     }
   }
 
-  if ( mLayer && mLayer->isValid() ) 
-  {
-    QgsDebugMsg ( "Layer created");
-
-    QgsMapLayerRegistry::instance()->addMapLayer(mLayer);
-
-    metaEnable = true;
-    previewEnable = true;
-    if ( mLayer->type() == QgsMapLayer::VectorLayer ) {
-      attributesEnable = true;
-    }
-    // force update of the current tab
-    updateCurrentTab();
-  }
-  else
+  if ( !mLayer || !mLayer->isValid() )
   {
     qDebug("No layer" );
+    return false;
   }
 
-  int selected = -1;
-  if ( mLastTab.contains( typeid(*ptr).name() )  )
-  {
-    selected = mLastTab[ typeid(*ptr).name()];
-  }
+  QgsDebugMsg ( "Layer created");
 
-  // Enabling tabs call tabChanged !
-  tabWidget->setTabEnabled ( tabWidget->indexOf( paramTab ), paramEnable);
-  tabWidget->setTabEnabled ( tabWidget->indexOf( metaTab ), metaEnable );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( previewTab ), previewEnable );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( attributesTab ), attributesEnable );
-  
-  // select tab according last selection for this data item
-  if ( selected >= 0  )
-  {
-    qDebug("set tab %s %d", typeid(*ptr).name(), selected );
-    tabWidget->setCurrentIndex ( selected );
-  }
-  
-  qDebug("clicked: %d %d %s", index.row(), index.column(), ptr->mName.toAscii().data());
+  QgsMapLayerRegistry::instance()->addMapLayer(mLayer);
+
+  return true;
 }
+
 
 void QgsBrowser::itemDoubleClicked(const QModelIndex& index)
 {
@@ -301,9 +320,13 @@ void QgsBrowser::on_mActionSetProjection_triggered()
     // selectedIndexes() is protected
 
     QgsDataItem* ptr = (QgsDataItem*) mIndex.internalPointer();
-    if ( ! ptr->setCrs ( srs ) ) 
+    if ( ptr->mType == QgsDataItem::Layer )
     {
-      QMessageBox::critical( this, tr( "CRS" ), tr( "Cannot set layer CRS" ));
+      QgsLayerItem* layerItem = static_cast<QgsLayerItem*>(ptr);
+      if ( ! layerItem->setCrs ( srs ) )
+      {
+        QMessageBox::critical( this, tr( "CRS" ), tr( "Cannot set layer CRS" ));
+      }
     }
     QgsDebugMsg( srs.authid() + " - " + srs.description() );
   }

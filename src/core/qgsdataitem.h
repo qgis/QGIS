@@ -41,45 +41,23 @@ class CORE_EXPORT QgsDataItem : public QObject
       Collection,
       Directory,
       Layer,
-      Vector,
-      Raster,
-      Point,
-      Line,
-      Polygon,
-      TableLayer,
-      Database,
-      Table
-    };
-    enum Capability
-    {
-      NoCapabilities =          0,
-      SetCrs         =          1 //Can set CRS on layer or group of layers
     };
 
     QgsDataItem(QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path);
     virtual ~QgsDataItem() {}
 
-    virtual bool hasChildren();
+    bool hasChildren();
 
-    virtual int rowCount();
+    int rowCount();
 
-    virtual QIcon icon ();
+    QIcon icon();
 
+    // TODO: remove
     void setParent ( QgsDataItem *parent ) { mParent = parent; }
 
-    QPixmap getThemePixmap( const QString theName );
-
-    // Sets info about layer which can be created for this item
-    // returns true if layer can be created
-    virtual bool layerInfo ( QgsMapLayer::LayerType & type, 
-      QString & providerKey, QString & uri ) { return false; } 
+    //
 
     virtual void refresh();
-
-    // This will _write_ selected crs in data source
-    virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }
-
-    virtual Capability capabilities() { return NoCapabilities; }
 
     // Create vector of children
     virtual QVector<QgsDataItem*> createChildren();
@@ -94,22 +72,26 @@ class CORE_EXPORT QgsDataItem : public QObject
     // remove and delete child item, signals to browser are emited
     virtual void deleteChildItem ( QgsDataItem * child );
 
+    virtual bool equal(const QgsDataItem *other)  { return false; }
+
+    virtual QWidget * paramWidget() { return 0; }
+
+    // static methods
+
+    static QPixmap getThemePixmap( const QString theName );
+
     // Find child index in vector of items using '==' operator
-    int findItem ( QVector<QgsDataItem*> items, QgsDataItem * item );
+    static int findItem ( QVector<QgsDataItem*> items, QgsDataItem * item );
+
+    // members
 
     Type mType;
     QgsDataItem* mParent;
     QVector<QgsDataItem*> mChildren; // easier to have it always
     bool mPopulated;
     QString mName;
-    // Are the data shared? Cannot be static because each child has different.
-    QIcon mDefaultIcon; 
     QIcon mIcon;
     QString mPath; // it is also used to identify item in tree
-
-    virtual bool equal(const QgsDataItem *other)  { return false; }
-
-    virtual QWidget * paramWidget() { return 0; }
 
   public slots:
     virtual void doubleClick();
@@ -129,15 +111,49 @@ class CORE_EXPORT QgsDataItem : public QObject
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
 public:
-  QgsLayerItem(QgsDataItem* parent, QString name, QString path);
-  QgsLayerItem(QgsDataItem* parent, QgsDataItem::Type type, QString name, QString path, QString uri);
+  enum LayerType
+  {
+    Vector,
+    Raster,
+    Point,
+    Line,
+    Polygon,
+    TableLayer,
+    Database,
+    Table
+  };
 
-  virtual QIcon icon ();
+  enum Capability
+  {
+    NoCapabilities =          0,
+    SetCrs         =          1 //Can set CRS on layer or group of layers
+  };
+
+  QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType);
+
+  // --- reimplemented from QgsDataItem ---
 
   virtual bool equal(const QgsDataItem *other);
 
+  // --- New virtual methods for layer item derived classes ---
+
+  // Sets info about layer which can be created for this item
+  // returns true if layer can be created
+  virtual bool layerInfo ( QgsMapLayer::LayerType & type,
+    QString & providerKey, QString & uri ) { return false; }
+
+  // This will _write_ selected crs in data source
+  virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }
+
+  virtual Capability capabilities() { return NoCapabilities; }
+
+protected:
+
   QString mProvider;
   QString mUri;
+  LayerType mLayerType;
+
+  static QIcon sIconPoint, sIconLine, sIconPolygon, sIconTable, sIconDefault;
 };
 
 
@@ -150,6 +166,8 @@ public:
 
   void setPopulated() { mPopulated = true; }
   void addChild( QgsDataItem *item ) { mChildren.append(item); }
+
+  static QIcon sDirIcon; // shared icon: open/closed directory
 };
 
 /** A directory: contains subdirectories and layers */

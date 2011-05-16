@@ -2130,9 +2130,9 @@ QGISEXTERN int dataCapabilities () {
   return  QgsDataProvider::File | QgsDataProvider::Dir;
 }
 
-QgsOgrLayerItem::QgsOgrLayerItem ( QgsDataItem* parent, QgsDataItem::Type type, 
-    QString name, QString path, QString uri )
-  : QgsLayerItem ( parent, type, name, path, uri )
+QgsOgrLayerItem::QgsOgrLayerItem ( QgsDataItem* parent,
+    QString name, QString path, QString uri, LayerType layerType )
+  : QgsLayerItem ( parent, name, path, uri, layerType )
 {
 }
 
@@ -2150,7 +2150,7 @@ bool QgsOgrLayerItem::layerInfo ( QgsMapLayer::LayerType & type,
   return true;
 }
 
-QgsDataItem::Capability QgsOgrLayerItem::capabilities()
+QgsLayerItem::Capability QgsOgrLayerItem::capabilities()
 {
     QgsDebugMsg( "mPath = " + mPath );
     OGRRegisterAll();
@@ -2284,7 +2284,7 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
       OGRLayerH hLayer = OGR_DS_GetLayer ( hDataSource, i );
       OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
 
-      QgsDataItem::Type type = QgsDataItem::Vector; 
+      QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
       int ogrType = getOgrGeomType ( hLayer );
       switch ( ogrType )
       {
@@ -2292,31 +2292,31 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
         case wkbGeometryCollection:
           break;
         case wkbNone:
-          type = QgsDataItem::TableLayer;
+          layerType = QgsLayerItem::TableLayer;
           break;
         case wkbPoint:
         case wkbMultiPoint: 
         case wkbPoint25D:   
         case wkbMultiPoint25D:  
-          type = QgsDataItem::Point;
+          layerType = QgsLayerItem::Point;
           break;
         case wkbLineString:
         case wkbMultiLineString:
         case wkbLineString25D:  
         case wkbMultiLineString25D:
-          type = QgsDataItem::Line;
+          layerType = QgsLayerItem::Line;
           break;
         case wkbPolygon: 
         case wkbMultiPolygon: 
         case wkbPolygon25D:   
         case wkbMultiPolygon25D: 
-          type = QgsDataItem::Polygon;
+          layerType = QgsLayerItem::Polygon;
           break;
         default: 
           break;
       }
 
-      QgsDebugMsg( QString( "ogrType = %1 type = %2").arg(ogrType).arg(type) );
+      QgsDebugMsg( QString( "ogrType = %1 layertype = %2").arg(ogrType).arg(layerType) );
 
       QString name = info.fileName();
 
@@ -2333,7 +2333,7 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
       QString layerUri = thePath + "|layerid=" + QString::number( i );
       QgsDebugMsg( "OGR layer uri : " + layerUri );
 
-      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection, type, name, path , layerUri );
+      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection, name, path, layerUri, layerType );
       if ( numLayers == 1 ) return item;
       collection->addChild( item );
     }

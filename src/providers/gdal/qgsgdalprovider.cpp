@@ -1876,7 +1876,7 @@ QGISEXTERN int dataCapabilities () {
 
 QgsGdalLayerItem::QgsGdalLayerItem ( QgsDataItem* parent,
     QString name, QString path, QString uri )
-  : QgsLayerItem ( parent, QgsDataItem::Raster, name, path, uri )
+  : QgsLayerItem ( parent, name, path, uri, QgsLayerItem::Raster )
 {
 }
 
@@ -1894,7 +1894,7 @@ bool QgsGdalLayerItem::layerInfo(QgsMapLayer::LayerType &  type,
   return true;
 }
 
-QgsDataItem::Capability QgsGdalLayerItem::capabilities()
+QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
 {
   // Check if data sour can be opened for update
   QgsDebugMsg( "mPath = " + mPath );
@@ -1964,8 +1964,6 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath )
     if ( hDS == NULL ) return 0;
 
     QgsDebugMsg( "GdalDataset opened " + thePath );
-
-    int bandCount = GDALGetRasterCount( hDS );
 
     QString name = info.fileName();
     QString uri = thePath;
