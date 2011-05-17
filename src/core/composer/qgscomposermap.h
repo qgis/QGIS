@@ -126,7 +126,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setNewExtent( const QgsRectangle& extent );
 
     PreviewMode previewMode() const {return mPreviewMode;}
-    void setPreviewMode( PreviewMode m ) {mPreviewMode = m;}
+    void setPreviewMode( PreviewMode m );
 
     /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
     @note this function was added in version 1.2*/

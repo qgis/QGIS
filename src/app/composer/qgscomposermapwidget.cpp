@@ -269,10 +269,12 @@ void QgsComposerMapWidget::updateGuiElements()
     if ( previewMode == QgsComposerMap::Cache )
     {
       index = mPreviewModeComboBox->findText( tr( "Cache" ) );
+      mUpdatePreviewButton->setEnabled( true );
     }
     else if ( previewMode == QgsComposerMap::Render )
     {
       index = mPreviewModeComboBox->findText( tr( "Render" ) );
+      mUpdatePreviewButton->setEnabled( true );
     }
     else if ( previewMode == QgsComposerMap::Rectangle )
     {

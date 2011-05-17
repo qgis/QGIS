@@ -531,6 +531,12 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
   emit extentChanged();
 }
 
+void QgsComposerMap::setPreviewMode( PreviewMode m )
+{
+  mPreviewMode = m;
+  emit itemChanged();
+}
+
 void QgsComposerMap::setOffset( double xOffset, double yOffset )
 {
   mXOffset = xOffset;
@@ -541,6 +547,7 @@ void QgsComposerMap::setMapRotation( double r )
 {
   setRotation( r );
   emit rotationChanged( r );
+  emit itemChanged();
 }
 
 void QgsComposerMap::updateItem()
