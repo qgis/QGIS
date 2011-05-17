@@ -538,7 +538,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   restoreWindowState();
 
   // do main window customization - after window state has been restored, before the window is shown
-  QgsCustomization::instance()->updateMainWindow();
+  QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
@@ -1065,17 +1065,26 @@ void QgisApp::createToolBars()
   // qmainwindow::saveState and qmainwindow::restoreState
   // work properly
 
+  QList<QToolBar*> toolbarMenuToolBars;
+  toolbarMenuToolBars << mFileToolBar
+  << mLayerToolBar
+  << mDigitizeToolBar
+  << mAdvancedDigitizeToolBar
+  << mMapNavToolBar
+  << mAttributesToolBar
+  << mPluginToolBar
+  << mHelpToolBar
+  << mRasterToolBar
+  << mLabelToolBar;
+
   QList<QAction*> toolbarMenuActions;
-  toolbarMenuActions << mFileToolBar->toggleViewAction()
-  << mLayerToolBar->toggleViewAction()
-  << mDigitizeToolBar->toggleViewAction()
-  << mAdvancedDigitizeToolBar->toggleViewAction()
-  << mMapNavToolBar->toggleViewAction()
-  << mAttributesToolBar->toggleViewAction()
-  << mPluginToolBar->toggleViewAction()
-  << mHelpToolBar->toggleViewAction()
-  << mRasterToolBar->toggleViewAction()
-  << mLabelToolBar->toggleViewAction();
+  // Set action names so that they can be used in customization
+  foreach ( QToolBar *toolBar, toolbarMenuToolBars )
+  {
+    toolBar->toggleViewAction()->setObjectName ( "mActionToggle" + toolBar->objectName().mid(1) );
+    toolbarMenuActions << toolBar->toggleViewAction();
+  }
+
   mToolbarMenu->addActions( toolbarMenuActions );
 
   // select tool button

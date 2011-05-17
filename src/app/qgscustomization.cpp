@@ -594,7 +594,7 @@ QgsCustomization::~QgsCustomization()
 {
 }
 
-void QgsCustomization::updateMainWindow()
+void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
 {
   // collect tree items even if the customization is disabled
   createTreeItemMenus();
@@ -643,6 +643,8 @@ void QgsCustomization::updateMainWindow()
       if (!visible)
       {
         mw->removeToolBar(tb);
+        // remove also from menu, because toolbars removed here, switched on later from menu don't work correctly
+        theToolBarMenu->removeAction( tb->toggleViewAction() ); 
       }
       else
       {
