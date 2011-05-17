@@ -125,8 +125,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
 
-    PreviewMode previewMode() {return mPreviewMode;}
-    void setPreviewMode( PreviewMode m ) {mPreviewMode = m;}
+    PreviewMode previewMode() const {return mPreviewMode;}
+    void setPreviewMode( PreviewMode m );
 
     /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
     @note this function was added in version 1.2*/
@@ -253,6 +253,8 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     double crossLength() {return mCrossLength;}
 
     void setMapRotation( double r );
+
+    void updateItem();
 
     /**Sets canvas pointer (necessary to query and draw map canvas items)*/
     void setMapCanvas( QGraphicsView* canvas ) { mMapCanvas = canvas; }

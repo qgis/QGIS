@@ -217,6 +217,9 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     double rotation() const {return mRotation;}
 
+    /**Updates item, with the possibility to do custom update for subclasses*/
+    virtual void updateItem() { QGraphicsRectItem::update(); }
+
   public slots:
     virtual void setRotation( double r );
     void repaint();

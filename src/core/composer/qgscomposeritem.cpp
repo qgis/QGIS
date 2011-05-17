@@ -568,6 +568,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
         changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + moveRectX,
                                           originalItem->transform().dy() + moveRectY,
                                           originalItem->rect().width(), originalItem->rect().height() ) );
+        changeComposerItem->updateItem();
       }
     }
     return;
@@ -587,6 +588,7 @@ void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const
   {
     changeComposerItem->setSceneRect( QRectF( originalItem->transform().dx() + mx, originalItem->transform().dy() + my,
                                       originalItem->rect().width() + rx, originalItem->rect().height() + ry ) );
+    changeComposerItem->updateItem();
   }
 }
 

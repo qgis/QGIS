@@ -30,3 +30,7 @@ ms-windows/untgz/
 scripts/astyle.exe
 # vim temporary files
 .*.swp
+*.aux
+*.out
+*.tex
+*.toc

@@ -253,6 +253,9 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 
     double rotation() const;
 
+    /**Updates item, with the possibility to do custom update for subclasses*/
+    virtual void updateItem();
+
   public slots:
     virtual void setRotation( double r);
 
