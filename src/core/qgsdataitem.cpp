@@ -68,11 +68,6 @@ QPixmap QgsDataItem::getThemePixmap( const QString theName )
   }
 }
 
-void QgsDataItem::doubleClick()
-{
-
-}
-
 void QgsDataItem::emitBeginInsertItems( QgsDataItem* parent, int first, int last )
 {
   emit beginInsertItems ( parent, first, last );

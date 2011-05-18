@@ -104,7 +104,6 @@ class CORE_EXPORT QgsDataItem : public QObject
     QIcon mIcon;
 
   public slots:
-    virtual void doubleClick();
     void emitBeginInsertItems( QgsDataItem* parent, int first, int last );
     void emitEndInsertItems();
     void emitBeginRemoveItems( QgsDataItem* parent, int first, int last );

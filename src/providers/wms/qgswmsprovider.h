@@ -1006,7 +1006,6 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren();
 
-    virtual void doubleClick();
     virtual QWidget * paramWidget();
 
   public slots:

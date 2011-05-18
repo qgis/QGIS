@@ -250,7 +250,7 @@ void QgsBrowser::itemDoubleClicked(const QModelIndex& index)
 {
   QgsDataItem* ptr = (QgsDataItem*) index.internalPointer();
 
-  ptr->doubleClick();
+  // Currently doing nothing
   qDebug("doubleclicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data());
 }
 

@@ -3216,14 +3216,6 @@ QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
   return connections;
 }
 
-void QgsWMSRootItem::doubleClick()
-{
-  QgsWMSSourceSelect *select = new QgsWMSSourceSelect(0,0,true);
-  select->exec();
-  delete select;
-
-  refresh();
-}
 QWidget * QgsWMSRootItem::paramWidget()
 {
   QgsWMSSourceSelect *select = new QgsWMSSourceSelect(0,0,true,true);
