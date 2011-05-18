@@ -3104,11 +3104,14 @@ bool QgsWMSConnectionItem::equal(const QgsDataItem *other)
 }
 // ---------------------------------------------------------------------------
 QgsWMSLayerItem::QgsWMSLayerItem ( QgsDataItem* parent, QString name, QString path, QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperty )
-  : QgsLayerItem ( parent, name, path, QString(), QgsLayerItem::Raster ),
+  : QgsLayerItem ( parent, name, path, QString(), QgsLayerItem::Raster, "wms" ),
     mCapabilitiesProperty ( capabilitiesProperty ),
     mConnInfo ( connInfo ),
     mLayerProperty ( layerProperty )
+    //mProviderKey ("wms"),
+    //mLayerType ( QgsLayerItem::Raster )
 {
+  mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
   /*
     // TODO
@@ -3133,7 +3136,7 @@ QgsWMSLayerItem::~QgsWMSLayerItem ()
 {
 }
 
-QString QgsWMSLayerItem::uri() 
+QString QgsWMSLayerItem::createUri() 
 {
   QString uri;
   if ( mLayerProperty.name.isEmpty() ) return uri; // layer collection

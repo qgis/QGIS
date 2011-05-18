@@ -2132,17 +2132,12 @@ QGISEXTERN int dataCapabilities () {
 
 QgsOgrLayerItem::QgsOgrLayerItem ( QgsDataItem* parent,
     QString name, QString path, QString uri, LayerType layerType )
-  : QgsLayerItem ( parent, name, path, uri, layerType )
+  : QgsLayerItem ( parent, name, path, uri, layerType, "ogr" )
 {
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem ()
 {
-}
-
-QString QgsOgrLayerItem::uri()
-{
-  return mUri;
 }
 
 QgsLayerItem::Capability QgsOgrLayerItem::capabilities()

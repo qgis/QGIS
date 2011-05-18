@@ -140,7 +140,7 @@ public:
     SetCrs         =          1 //Can set CRS on layer or group of layers
   };
 
-  QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType);
+  QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey);
 
   // --- reimplemented from QgsDataItem ---
 
@@ -149,13 +149,13 @@ public:
   // --- New virtual methods for layer item derived classes ---
 
   // Returns QgsMapLayer::LayerType  
-  virtual QgsMapLayer::LayerType mapLayerType() { return QgsMapLayer::VectorLayer; }
+  QgsMapLayer::LayerType mapLayerType();
 
   // Returns layer uri or empty string if layer cannot be created
-  virtual QString uri() { return QString(); }
+  QString uri() { return mUri; }
 
   // Returns provider key 
-  virtual QString providerKey() { return QString(); }
+  QString providerKey() { return mProviderKey; }
 
   // This will _write_ selected crs in data source
   virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }
@@ -164,7 +164,7 @@ public:
 
 protected:
 
-  QString mProvider;
+  QString mProviderKey;
   QString mUri;
   LayerType mLayerType;
 

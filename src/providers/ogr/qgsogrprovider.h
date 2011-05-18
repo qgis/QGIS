@@ -312,9 +312,6 @@ class QgsOgrLayerItem : public QgsLayerItem
     QgsOgrLayerItem ( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
     ~QgsOgrLayerItem ();
 
-    QgsMapLayer::LayerType mapLayerType() { return QgsMapLayer::VectorLayer; }
-    QString uri();
-    QString providerKey() { return "ogr"; }
     bool setCrs ( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
 };

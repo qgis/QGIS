@@ -1876,17 +1876,12 @@ QGISEXTERN int dataCapabilities () {
 
 QgsGdalLayerItem::QgsGdalLayerItem ( QgsDataItem* parent,
     QString name, QString path, QString uri )
-  : QgsLayerItem ( parent, name, path, uri, QgsLayerItem::Raster )
+  : QgsLayerItem ( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
 {
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem ()
 {
-}
-
-QString QgsGdalLayerItem::uri()
-{
-  return mUri;
 }
 
 QgsLayerItem::Capability QgsGdalLayerItem::capabilities()

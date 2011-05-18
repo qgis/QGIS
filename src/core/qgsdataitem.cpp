@@ -195,8 +195,9 @@ void QgsDataItem::refresh()
 
 // ---------------------------------------------------------------------
 
-QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType)
-  : QgsDataItem(Layer, parent, name, path), mUri(uri), mLayerType(layerType)
+QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey)
+  : QgsDataItem(Layer, parent, name, path), mUri(uri), mLayerType(layerType),
+    mProviderKey(providerKey)
 {
   if (sIconPoint.isNull())
   {
@@ -218,6 +219,12 @@ QgsLayerItem::QgsLayerItem(QgsDataItem* parent, QString name, QString path, QStr
   }
 }
 
+QgsMapLayer::LayerType QgsLayerItem::mapLayerType()
+{
+  if ( mLayerType == QgsLayerItem::Raster ) return QgsMapLayer::RasterLayer;
+  return QgsMapLayer::VectorLayer;
+}
+
 bool QgsLayerItem::equal(const QgsDataItem *other)
 {
   //QgsDebugMsg ( mPath + " x " + other->mPath );
@@ -227,7 +234,7 @@ bool QgsLayerItem::equal(const QgsDataItem *other)
   }
   //const QgsLayerItem *o = qobject_cast<const QgsLayerItem *> ( other );
   const QgsLayerItem *o = dynamic_cast<const QgsLayerItem *> ( other );
-  return ( mPath == o->mPath && mName == o->mName && mUri == o->mUri && mProvider == o->mProvider );
+  return ( mPath == o->mPath && mName == o->mName && mUri == o->mUri && mProviderKey == o->mProviderKey );
 }
 
 // ---------------------------------------------------------------------

@@ -293,10 +293,6 @@ class QgsGdalLayerItem : public QgsLayerItem
                       QString name, QString path, QString uri );
     ~QgsGdalLayerItem ();
 
-    QgsMapLayer::LayerType mapLayerType() { return QgsMapLayer::RasterLayer; }
-    QString uri();
-    QString providerKey() { return "gdal"; }
-
     bool setCrs ( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
 };
