@@ -1884,14 +1884,9 @@ QgsGdalLayerItem::~QgsGdalLayerItem ()
 {
 }
 
-bool QgsGdalLayerItem::layerInfo(QgsMapLayer::LayerType &  type, 
-      QString & providerKey, QString & uri )
+QString QgsGdalLayerItem::uri()
 {
-  QgsDebugMsg ( "Entered" );
-  type = QgsMapLayer::RasterLayer;
-  providerKey = "gdal";
-  uri = mUri;
-  return true;
+  return mUri;
 }
 
 QgsLayerItem::Capability QgsGdalLayerItem::capabilities()

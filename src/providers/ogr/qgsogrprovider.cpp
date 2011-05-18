@@ -2140,14 +2140,9 @@ QgsOgrLayerItem::~QgsOgrLayerItem ()
 {
 }
 
-bool QgsOgrLayerItem::layerInfo ( QgsMapLayer::LayerType & type, 
-      QString & providerKey, QString & uri )
+QString QgsOgrLayerItem::uri()
 {
-  QgsDebugMsg ( "Entered" );
-  type = QgsMapLayer::VectorLayer;
-  providerKey = "ogr";
-  uri = mUri;
-  return true;
+  return mUri;
 }
 
 QgsLayerItem::Capability QgsOgrLayerItem::capabilities()

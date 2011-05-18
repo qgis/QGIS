@@ -123,6 +123,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 public:
   enum LayerType
   {
+    NoType,
     Vector,
     Raster,
     Point,
@@ -147,10 +148,14 @@ public:
 
   // --- New virtual methods for layer item derived classes ---
 
-  // Sets info about layer which can be created for this item
-  // returns true if layer can be created
-  virtual bool layerInfo ( QgsMapLayer::LayerType & type,
-    QString & providerKey, QString & uri ) { return false; }
+  // Returns QgsMapLayer::LayerType  
+  virtual QgsMapLayer::LayerType mapLayerType() { return QgsMapLayer::VectorLayer; }
+
+  // Returns layer uri or empty string if layer cannot be created
+  virtual QString uri() { return QString(); }
+
+  // Returns provider key 
+  virtual QString providerKey() { return QString(); }
 
   // This will _write_ selected crs in data source
   virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }

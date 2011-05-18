@@ -3133,13 +3133,10 @@ QgsWMSLayerItem::~QgsWMSLayerItem ()
 {
 }
 
-bool QgsWMSLayerItem::layerInfo(QgsMapLayer::LayerType &  type, 
-      QString & providerKey, QString & uri )
+QString QgsWMSLayerItem::uri() 
 {
-  if ( mLayerProperty.name.isEmpty() ) return false; // layer collection
-
-  type = QgsMapLayer::RasterLayer;
-  providerKey = "wms";
+  QString uri;
+  if ( mLayerProperty.name.isEmpty() ) return uri; // layer collection
 
   QString rasterLayerPath = mConnInfo;
   QString baseName = mLayerProperty.name;
@@ -3186,7 +3183,7 @@ bool QgsWMSLayerItem::layerInfo(QgsMapLayer::LayerType &  type,
   }
   uri = rasterLayerPath + "|layers=" + layers.join(",") + "|styles=" + styles.join(",") + "|format=" + format + "|crs=" + crs;
 
-  return true;
+  return uri;
 }
 
 // ---------------------------------------------------------------------------

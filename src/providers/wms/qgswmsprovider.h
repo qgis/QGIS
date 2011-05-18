@@ -990,8 +990,9 @@ class QgsWMSLayerItem : public QgsLayerItem
         QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
     ~QgsWMSLayerItem ();
 
-    bool layerInfo ( QgsMapLayer::LayerType &  type, 
-      QString & providerKey, QString & uri );
+    QgsMapLayer::LayerType mapLayerType() { return QgsMapLayer::RasterLayer; }
+    QString uri();
+    QString providerKey() { return "wms"; }
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
     QString mConnInfo;

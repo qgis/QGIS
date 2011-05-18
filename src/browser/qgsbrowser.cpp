@@ -193,11 +193,12 @@ bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
 {
   mActionSetProjection->setEnabled ( ptr->capabilities() & QgsLayerItem::SetCrs );
 
-  QgsMapLayer::LayerType type;
-  QString providerKey;
-  QString uri;
-  if ( ptr->layerInfo(type, providerKey, uri) )
+  QString uri = ptr->uri();
+  if ( !uri.isEmpty() )
   {
+    QgsMapLayer::LayerType type = ptr->mapLayerType();
+    QString providerKey = ptr->providerKey();
+
     QgsDebugMsg ( providerKey + " : " + uri );
     if ( type == QgsMapLayer::VectorLayer ) 
     {
@@ -214,15 +215,15 @@ bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
       QString crs;
       for ( int i = 1 ; i < URIParts.size(); i++ )
       {
-	QString part = URIParts.at( i );
-	int pos = part.indexOf( "=" );
-	QString field = part.left( pos );
-	QString value = part.mid( pos + 1 );
+        QString part = URIParts.at( i );
+        int pos = part.indexOf( "=" );
+        QString field = part.left( pos );
+        QString value = part.mid( pos + 1 );
 
-	if ( field == "layers" ) layers = value.split(",");
-	if ( field == "styles" ) styles = value.split(",");
-	if ( field == "format" ) format = value;
-	if ( field == "crs" ) crs = value;
+        if ( field == "layers" ) layers = value.split(",");
+        if ( field == "styles" ) styles = value.split(",");
+        if ( field == "format" ) format = value;
+        if ( field == "crs" ) crs = value;
       }
       QgsDebugMsg ( "rasterLayerPath = " + rasterLayerPath );
       QgsDebugMsg ( "layers = " + layers.join(" " ) );
