@@ -390,6 +390,7 @@ void QgsComposerMap::resize( double dx, double dy )
   QRectF currentRect = rect();
   QRectF newSceneRect = QRectF( transform().dx(), transform().dy(), currentRect.width() + dx, currentRect.height() + dy );
   setSceneRect( newSceneRect );
+  updateItem();
 }
 
 void QgsComposerMap::moveContent( double dx, double dy )
@@ -489,10 +490,6 @@ void QgsComposerMap::setSceneRect( const QRectF& rectangle )
   mExtent = QgsRectangle( mExtent.xMinimum(), mExtent.yMinimum(), mExtent.xMaximum(), mExtent.yMinimum() + newHeight );
   mCacheUpdated = false;
 
-  if ( mPreviewMode != Rectangle )
-  {
-    cache();
-  }
   updateBoundingRect();
   update();
   emit itemChanged();
@@ -513,6 +510,7 @@ void QgsComposerMap::setNewExtent( const QgsRectangle& extent )
   double newHeight = currentRect.width() * extent.height() / extent.width();
 
   setSceneRect( QRectF( transform().dx(), transform().dy(), currentRect.width(), newHeight ) );
+  updateItem();
 }
 
 void QgsComposerMap::setNewScale( double scaleDenominator )
@@ -533,6 +531,12 @@ void QgsComposerMap::setNewScale( double scaleDenominator )
   emit extentChanged();
 }
 
+void QgsComposerMap::setPreviewMode( PreviewMode m )
+{
+  mPreviewMode = m;
+  emit itemChanged();
+}
+
 void QgsComposerMap::setOffset( double xOffset, double yOffset )
 {
   mXOffset = xOffset;
@@ -543,6 +547,16 @@ void QgsComposerMap::setMapRotation( double r )
 {
   setRotation( r );
   emit rotationChanged( r );
+  emit itemChanged();
+}
+
+void QgsComposerMap::updateItem()
+{
+  if ( mPreviewMode != QgsComposerMap::Rectangle &&  !mCacheUpdated )
+  {
+    cache();
+  }
+  QgsComposerItem::updateItem();
 }
 
 bool QgsComposerMap::containsWMSLayer() const

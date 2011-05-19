@@ -371,16 +371,6 @@ void QgsComposer::changeEvent( QEvent* event )
       break;
   }
 }
-
-void QgsComposer::showEvent( QShowEvent *event )
-{
-  QMainWindow::showEvent( event );
-  // add to menu if (re)opening window (event not due to unminimize)
-  if ( !event->spontaneous() )
-  {
-    QgisApp::instance()->addWindow( mWindowAction );
-  }
-}
 #endif
 
 void QgsComposer::setTitle( const QString& title )
@@ -1123,6 +1113,30 @@ void QgsComposer::resizeEvent( QResizeEvent *e )
   saveWindowState();
 }
 
+void QgsComposer::showEvent( QShowEvent* event )
+{
+  if ( event->spontaneous() ) //event from the window system
+  {
+    //go through maps and restore original preview modes (show on demand after loading from project file)
+    QMap< QgsComposerMap*, QgsComposerMap::PreviewMode >::iterator mapIt = mMapsToRestore.begin();
+    for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+    {
+      mapIt.key()->setPreviewMode( mapIt.value() );
+      mapIt.key()->cache();
+      mapIt.key()->update();
+    }
+    mMapsToRestore.clear();
+  }
+
+#ifdef Q_WS_MAC
+  // add to menu if (re)opening window (event not due to unminimize)
+  if ( !event->spontaneous() )
+  {
+    QgisApp::instance()->addWindow( mWindowAction );
+  }
+#endif
+}
+
 void QgsComposer::saveWindowState()
 {
   QSettings settings;
@@ -1168,6 +1182,14 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
 {
   QDomElement composerElem = doc.createElement( "Composer" );
   composerElem.setAttribute( "title", mTitle );
+
+  //change preview mode of minimised / hidden maps before saving XML (show contents only on demand)
+  QMap< QgsComposerMap*, QgsComposerMap::PreviewMode >::iterator mapIt = mMapsToRestore.begin();
+  for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
+  {
+    mapIt.key()->setPreviewMode( mapIt.value() );
+  }
+  mMapsToRestore.clear();
 
   //store if composer is open or closed
   if ( isVisible() )
@@ -1283,6 +1305,20 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
     QgsComposerMap* newMap = new QgsComposerMap( mComposition );
     newMap->readXML( currentComposerMapElem, doc );
+
+    if ( fromTemplate ) //show map directly if loaded from template
+    {
+      newMap->updateItem();
+    }
+    else //show map only on demand if loaded from project
+    {
+      if ( newMap->previewMode() != QgsComposerMap::Rectangle )
+      {
+        mMapsToRestore.insert( newMap, newMap->previewMode() );
+        newMap->setPreviewMode( QgsComposerMap::Rectangle );
+      }
+    }
+
     addComposerMap( newMap );
     mComposition->addItem( newMap );
     mComposition->update();
@@ -1518,6 +1554,12 @@ void QgsComposer::deleteItem( QgsComposerItem* item )
   //the item itself is not deleted here (usually, this is done in the destructor of QgsAddRemoveItemCommand)
   delete( it.value() );
   mItemWidgetMap.remove( it.key() );
+
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
+  if ( map )
+  {
+    mMapsToRestore.remove( map );
+  }
 }
 
 void QgsComposer::setSelectionTool()

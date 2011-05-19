@@ -58,8 +58,8 @@ class Dialog( QDialog, Ui_Dialog ):
     self.leOutShape.setText( self.outFileName )
 
   def inputFile( self ):
-    files = QFileDialog.getOpenFileNames( self, self.tr( "Select files to merge" ), ".", "Shapefiles(*.shp *.SHP)"  )
-    if files.isEmpty():
+    ( files, self.inEncoding ) =  ftools_utils.openDialog( self, dialogMode="ManyFiles" )
+    if files is None or self.inEncoding is None:
       self.inputFiles = None
       return
 
@@ -134,7 +134,7 @@ class Dialog( QDialog, Ui_Dialog ):
     self.btnOk.setEnabled( False )
 
     self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.inEncoding, self.outFileName, self.encoding )
-    QObject.connect( self.mergeThread, SIGNAL( "rangeChanged( PyQt_PyObject )" ), self.setProgressRange )
+    QObject.connect( self.mergeThread, SIGNAL( "rangeChanged( PyQt_PyObject )" ), self.setFeatureProgressRange )
     QObject.connect( self.mergeThread, SIGNAL( "checkStarted()" ), self.setFeatureProgressFormat )
     QObject.connect( self.mergeThread, SIGNAL( "checkFinished()" ), self.resetFeatureProgressFormat )
     QObject.connect( self.mergeThread, SIGNAL( "fileNameChanged( PyQt_PyObject )" ), self.setShapeProgressFormat )
@@ -149,8 +149,8 @@ class Dialog( QDialog, Ui_Dialog ):
 
     self.mergeThread.start()
 
-  def setProgressRange( self, max ):
-    self.progressFeatures.setRange( 0, max )
+  def setFeatureProgressRange( self, maximum ):
+    self.progressFeatures.setRange( 0, maximum )
     self.progressFeatures.setValue( 0 )
 
   def setFeatureProgressFormat( self ):
@@ -216,13 +216,38 @@ class ShapeMergeThread( QThread ):
 
     interrupted = False
 
+    # create attribute list with uniquie fields
+    # from all selected layers
+    mergedFields = {}
+    count = 0
+    self.emit( SIGNAL( "rangeChanged( PyQt_PyObject )" ), len( self.shapes ) )
+    self.emit( SIGNAL( "checkStarted()" ) )
+    for fileName in self.shapes:
+      layerPath = QFileInfo( self.baseDir + "/" + fileName ).absoluteFilePath()
+      newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
+      if not newLayer.isValid():
+        continue
+      vprovider = newLayer.dataProvider()
+      layerFields = vprovider.fields()
+      for layerIndex, layerField in layerFields.iteritems():
+        fieldFound = False
+        for mergedIndex, mergedField in mergedFields.iteritems():
+          if ( mergedField.name() == layerField.name() ) and ( mergedField.type() == layerField.type() ):
+            fieldFound = True
+
+        if not fieldFound:
+          mergedFields[ count ] = layerField
+          count += 1
+      self.emit( SIGNAL( "featureProcessed()" ) )
+    self.emit( SIGNAL( "checkFinished()" ) )
+
     # get information about shapefiles
     layerPath = QFileInfo( self.baseDir + "/" + self.shapes[ 0 ] ).absoluteFilePath()
     newLayer = QgsVectorLayer( layerPath, QFileInfo( layerPath ).baseName(), "ogr" )
     self.crs = newLayer.crs()
     self.geom = newLayer.wkbType()
     vprovider = newLayer.dataProvider()
-    self.fields = vprovider.fields()
+    self.fields = mergedFields
 
     writer = QgsVectorFileWriter( self.outputFileName, self.outputEncoding,
              self.fields, self.geom, self.crs )
@@ -234,6 +259,7 @@ class ShapeMergeThread( QThread ):
         continue
       vprovider = newLayer.dataProvider()
       vprovider.setEncoding( self.inputEncoding )
+      layerFields = vprovider.fields()
       allAttrs = vprovider.attributeIndexes()
       vprovider.select( allAttrs )
       nFeat = vprovider.featureCount()
@@ -244,9 +270,15 @@ class ShapeMergeThread( QThread ):
       inGeom = QgsGeometry()
       while vprovider.nextFeature( inFeat ):
         atMap = inFeat.attributeMap()
+        mergedAttrs = {}
+        # fill available attributes with values
+        for layerIndex, layerField in layerFields.iteritems():
+          for mergedIndex, mergedField in self.fields.iteritems():
+            if ( mergedField.name() == layerField.name() ) and ( mergedField.type() == layerField.type() ):
+              mergedAttrs[ mergedIndex ] = atMap[ layerIndex ]
         inGeom = QgsGeometry( inFeat.geometry() )
         outFeat.setGeometry( inGeom )
-        outFeat.setAttributeMap( atMap )
+        outFeat.setAttributeMap( mergedAttrs )
         writer.addFeature( outFeat )
         self.emit( SIGNAL( "featureProcessed()" ) )
 

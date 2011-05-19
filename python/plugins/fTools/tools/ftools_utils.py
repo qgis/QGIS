@@ -253,7 +253,7 @@ def getUniqueValues( provider, index ):
     return values
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
-def saveDialog( parent, filtering="Shapefiles (*.shp)"):
+def saveDialog( parent, filtering="Shapefiles (*.shp *.SHP)"):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" ).toString()
     encode = settings.value( "/UI/encoding" ).toString()
@@ -269,18 +269,24 @@ def saveDialog( parent, filtering="Shapefiles (*.shp)"):
     return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
 
 # Generate a save file dialog with a dropdown box for choosing encoding style
-def openDialog( parent, filtering="Shapefiles (*.shp)"):
+# with mode="SingleFile" will allow to select only one file, in other cases - several files
+def openDialog( parent, filtering="Shapefiles (*.shp *.SHP)", dialogMode="SingleFile"):
     settings = QSettings()
     dirName = settings.value( "/UI/lastShapefileDir" ).toString()
     encode = settings.value( "/UI/encoding" ).toString()
     fileDialog = QgsEncodingFileDialog( parent, "Save output shapefile", dirName, QString(filtering), encode )
-    fileDialog.setFileMode( QFileDialog.AnyFile )
+    #fileDialog.setFileMode( QFileDialog.AnyFile )
+    fileDialog.setFileMode( QFileDialog.ExistingFiles )
     fileDialog.setAcceptMode( QFileDialog.AcceptOpen )
     if not fileDialog.exec_() == QDialog.Accepted:
             return None, None
     files = fileDialog.selectedFiles()
     settings.setValue("/UI/lastShapefileDir", QVariant( QFileInfo( unicode( files.first() ) ).absolutePath() ) )
-    return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    #return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    if dialogMode == "SingleFile":
+      return ( unicode( files.first() ), unicode( fileDialog.encoding() ) )
+    else:
+      return ( files, unicode( fileDialog.encoding() ) )
 
 # Generate a select directory dialog with a dropdown box for choosing encoding style
 def dirDialog( parent ):

@@ -62,6 +62,8 @@ SET ( qgis_mapserv_SRCS
 
 SET (qgis_mapserv_MOC_HDRS
   qgsftptransaction.h
+  qgscapabilitiescache.h
+  qgsconfigcache.h
 )
 
 SET (qgis_mapserv_RCCS 
