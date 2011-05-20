@@ -24,9 +24,11 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
+#include "qgsrasterlayer.h"
 #include "qgsrasterpyramid.h"
 
 #include <QImage>
@@ -1625,17 +1627,7 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-/**
-  Builds the list of file filter strings to later be used by
-  QgisApp::addRasterLayer()
-
-  We query GDAL for a list of supported raster formats; we then build
-  a list of file filter strings from that list.  We return a string
-  that contains this list that is suitable for use in a
-  QFileDialog::getOpenFileNames() call.
-
-*/
-QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
+void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString, QStringList & theExtensions, QStringList & theWildcards )
 {
   QgsDebugMsg( "Entered" );
   // first get the GDAL driver manager
@@ -1731,6 +1723,7 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
         QString glob = "*." + myGdalDriverExtension.replace( "/", " *." );
+        theExtensions << myGdalDriverExtension.replace( "/", "" ).replace("*", "").replace(".","");
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
@@ -1740,14 +1733,17 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
 
           jp2Driver = myGdalDriver;   // first JP2 driver found
           glob += " *.j2k";           // add alternate extension
+          theExtensions << "j2k";
         }
         else if ( myGdalDriverDescription == "GTiff" )
         {
           glob += " *.tiff";
+          theExtensions << "tiff";
         }
         else if ( myGdalDriverDescription == "JPEG" )
         {
           glob += " *.jpeg";
+          theExtensions << "jpeg";
         }
 
         theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
@@ -1777,6 +1773,7 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
       {
         QString glob = "*.dem";
         theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theExtensions << "dem";
       }
       else if ( myGdalDriverDescription.startsWith( "DTED" ) )
       {
@@ -1785,12 +1782,26 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
         glob += " *.dt1";
         glob += " *.dt2";
         theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theExtensions << "dt0" << "dt1" << "dt2";
       }
       else if ( myGdalDriverDescription.startsWith( "MrSID" ) )
       {
         // MrSID use "*.sid"
         QString glob = "*.sid";
         theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theExtensions << "sid";
+      }
+      else if ( myGdalDriverDescription.startsWith( "EHdr" ) )
+      {
+        QString glob = "*.bil";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theExtensions << "bil";
+      }
+      else if ( myGdalDriverDescription.startsWith( "AIG" ) )
+      {
+        QString glob = "hdr.adf";
+        theFileFiltersString += ";;[GDAL] " + myGdalDriverLongName + " (" + glob.toLower() + " " + glob.toUpper() + ")";
+        theWildcards << "hdr.adf";
       }
       else
       {
@@ -1840,3 +1851,116 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
     return true;
   }
 }
+
+/**
+  Builds the list of file filter strings to later be used by
+  QgisApp::addRasterLayer()
+
+  We query GDAL for a list of supported raster formats; we then build
+  a list of file filter strings from that list.  We return a string
+  that contains this list that is suitable for use in a
+  QFileDialog::getOpenFileNames() call.
+
+*/
+QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
+{
+  QStringList exts;
+  QStringList wildcards;
+  buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
+}
+
+QGISEXTERN int dataCapabilities () {
+  return  QgsDataProvider::File | QgsDataProvider::Dir;
+}
+
+
+QgsGdalLayerItem::QgsGdalLayerItem ( QgsDataItem* parent,
+    QString name, QString path, QString uri )
+  : QgsLayerItem ( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
+{
+}
+
+QgsGdalLayerItem::~QgsGdalLayerItem ()
+{
+}
+
+QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
+{
+  // Check if data sour can be opened for update
+  QgsDebugMsg( "mPath = " + mPath );
+  GDALAllRegister();
+  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+
+  if ( hDS == NULL ) return NoCapabilities;
+
+  return SetCrs;
+}
+
+bool QgsGdalLayerItem::setCrs ( QgsCoordinateReferenceSystem crs )
+{
+  QgsDebugMsg( "mPath = " + mPath );
+  GDALAllRegister();
+  GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
+
+  if ( hDS == NULL ) return false;
+
+  QString wkt = crs.toWkt();
+  if ( GDALSetProjection ( hDS, wkt.toLocal8Bit().data() ) != CE_None )
+  {
+    QgsDebugMsg( "Could not set CRS" );
+    return false;
+  }
+  GDALClose ( hDS );
+  return true;
+}
+
+static QStringList extensions = QStringList();
+static QStringList wildcards = QStringList();
+
+QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
+{
+  if ( thePath.isEmpty() ) return 0;
+
+  QFileInfo info ( thePath );
+  if ( info.isFile() )
+  {
+    // Filter files by extension
+    if ( extensions.isEmpty() )
+    {
+      QString filterString;
+      buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
+      QgsDebugMsg( "extensions: " + extensions.join(" ") );
+      QgsDebugMsg( "wildcards: " + wildcards.join(" ") );
+    }
+    if (  extensions.indexOf ( info.suffix().toLower() ) < 0 )
+    {
+      bool matches = false;
+      foreach (QString wildcard, wildcards)
+      {
+        QRegExp rx(wildcard, Qt::CaseInsensitive, QRegExp::Wildcard);
+        if (rx.exactMatch(info.fileName()))
+        {
+          matches = true;
+          break;
+        }
+      }
+      if (!matches)
+        return 0;
+    }
+
+    GDALAllRegister();
+    GDALDatasetH hDS = GDALOpen( TO8F( thePath ), GA_ReadOnly );
+
+    if ( hDS == NULL ) return 0;
+
+    QgsDebugMsg( "GdalDataset opened " + thePath );
+
+    QString name = info.fileName();
+    QString uri = thePath;
+
+    QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, uri );
+    return item;
+  }
+  return 0;
+}
+

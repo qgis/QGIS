@@ -29,6 +29,7 @@
 #include <QDomElement>
 
 #include "qgsattributeaction.h"
+#include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
 
@@ -67,11 +68,17 @@ void QgsAttributeAction::doAction( int index, const QgsAttributeMap &attributes,
   {
     if ( executePython )
     {
+      // deprecated
       executePython( expandedAction );
     }
     else if ( smPythonExecute )
     {
+      // deprecated
       smPythonExecute( expandedAction );
+    }
+    else
+    {
+      QgsPythonRunner::run( expandedAction );
     }
   }
   else

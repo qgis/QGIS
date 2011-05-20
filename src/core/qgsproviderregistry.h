@@ -23,6 +23,7 @@
 #include <map>
 
 #include <QDir>
+#include <QLibrary>
 #include <QString>
 
 
@@ -66,6 +67,19 @@ class CORE_EXPORT QgsProviderRegistry
      */
     QgsDataProvider * getProvider( const QString & providerKey,
                                    const QString & dataSource );
+
+    QWidget * getSelectWidget ( const QString & providerKey, 
+                                QWidget * parent=0, Qt::WFlags fl=0 );
+
+    /** Get pointer to provider function
+        @param providerKey identificator of the provider
+        @param functionName name of function
+        @return pointer to function or NULL on error
+     */
+    void * getFunction( const QString & providerKey,
+                        const QString & functionName );
+
+    QLibrary * getLibrary ( const QString & providerKey );
 
     /** Return list of available providers by their keys */
     QStringList providerList() const;

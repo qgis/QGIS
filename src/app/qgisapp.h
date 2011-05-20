@@ -113,18 +113,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
       */
     bool addRasterLayers( QStringList const & theLayerQStringList, bool guiWarning = true );
 
-    /** Open a raster layer using the Raster Data Provider.
-     *  Note this is included to support WMS layers only at this stage,
-     *  GDAL layer support via a Provider is not yet implemented.
-     */
-    QgsRasterLayer* addRasterLayer( QString const & rasterLayerPath,
-                                    QString const & baseName,
-                                    QString const & providerKey,
-                                    QStringList const & layers,
-                                    QStringList const & styles,
-                                    QString const & format,
-                                    QString const & crs );
-
     /** open a raster layer for the given file
       @returns false if unable to open a raster layer for rasterFile
       @note
@@ -343,9 +331,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *helpToolBar() { return mHelpToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
 
-    //! run python
-    void runPythonString( const QString &expr );
-
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
 
@@ -434,6 +419,17 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent * event );
 
+    /** Open a raster layer using the Raster Data Provider.
+     *  Note this is included to support WMS layers only at this stage,
+     *  GDAL layer support via a Provider is not yet implemented.
+     */
+    QgsRasterLayer* addRasterLayer( QString const & rasterLayerPath,
+                                    QString const & baseName,
+                                    QString const & providerKey,
+                                    QStringList const & layers,
+                                    QStringList const & styles,
+                                    QString const & format,
+                                    QString const & crs );
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -588,6 +584,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void customProjection();
     //! configure shortcuts
     void configureShortcuts();
+    //! show customization dialog
+    void customize();
     //! options dialog slot
     void options();
     //! Whats-this help slot
