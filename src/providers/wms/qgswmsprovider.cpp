@@ -3113,17 +3113,14 @@ QgsWMSLayerItem::QgsWMSLayerItem ( QgsDataItem* parent, QString name, QString pa
 {
   mUri = createUri();
   // Populate everything, it costs nothing, all info about layers is collected
-  /*
-    // TODO
   foreach ( QgsWmsLayerProperty layerProperty, mLayerProperty.layer ) 
   {
     // Attention, the name may be empty
     QgsDebugMsg( QString::number(layerProperty.orderId ) + " " + layerProperty.name + " " + layerProperty.title );
     QString pathName = layerProperty.name.isEmpty() ? QString::number(layerProperty.orderId ) : layerProperty.name;
     QgsWMSLayerItem * layer = new QgsWMSLayerItem ( this, layerProperty.title, mPath+"/" + pathName, mCapabilitiesProperty, mConnInfo, layerProperty );
-    addChild ( layer ); 
+    mChildren.append( layer );
   }
-  */
 
   if ( mChildren.size() == 0 )
   {
