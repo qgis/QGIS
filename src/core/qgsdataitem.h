@@ -77,6 +77,19 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual QWidget * paramWidget() { return 0; }
 
+    //
+
+    enum Capability
+    {
+      NoCapabilities =          0,
+      SetCrs         =          1 //Can set CRS on layer or group of layers
+    };
+
+    // This will _write_ selected crs in data source
+    virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }
+
+    virtual Capability capabilities() { return NoCapabilities; }
+
     // static methods
 
     static QPixmap getThemePixmap( const QString theName );
@@ -133,12 +146,6 @@ public:
     Table
   };
 
-  enum Capability
-  {
-    NoCapabilities =          0,
-    SetCrs         =          1 //Can set CRS on layer or group of layers
-  };
-
   QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey);
 
   // --- reimplemented from QgsDataItem ---
@@ -155,11 +162,6 @@ public:
 
   // Returns provider key 
   QString providerKey() { return mProviderKey; }
-
-  // This will _write_ selected crs in data source
-  virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }
-
-  virtual Capability capabilities() { return NoCapabilities; }
 
 protected:
 
