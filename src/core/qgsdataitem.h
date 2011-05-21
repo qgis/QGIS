@@ -34,13 +34,13 @@ class QgsDataItem;
 
 // TODO: bad place, where to put this? qgsproviderregistry.h?
 typedef int dataCapabilities_t();
-typedef QgsDataItem * dataItem_t(QString, QgsDataItem*);
+typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 
 /** base class for all items in the model */
 class CORE_EXPORT QgsDataItem : public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     enum Type
     {
@@ -49,7 +49,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Layer,
     };
 
-    QgsDataItem(QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path);
+    QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
     virtual ~QgsDataItem() {}
 
     bool hasChildren();
@@ -68,12 +68,12 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // Insert new child using alphabetical order based on mName, emits necessary signal to model before and after, sets parent and connects signals
     // refresh - refresh populated item, emit signals to model
-    virtual void addChildItem ( QgsDataItem * child, bool refresh = false );
+    virtual void addChildItem( QgsDataItem * child, bool refresh = false );
 
     // remove and delete child item, signals to browser are emited
-    virtual void deleteChildItem ( QgsDataItem * child );
+    virtual void deleteChildItem( QgsDataItem * child );
 
-    virtual bool equal(const QgsDataItem *other)  { return false; }
+    virtual bool equal( const QgsDataItem *other )  { return false; }
 
     virtual QWidget * paramWidget() { return 0; }
 
@@ -86,7 +86,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs ( QgsCoordinateReferenceSystem crs ) { return false; }
+    virtual bool setCrs( QgsCoordinateReferenceSystem crs ) { return false; }
 
     virtual Capability capabilities() { return NoCapabilities; }
 
@@ -95,7 +95,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     static QPixmap getThemePixmap( const QString theName );
 
     // Find child index in vector of items using '==' operator
-    static int findItem ( QVector<QgsDataItem*> items, QgsDataItem * item );
+    static int findItem( QVector<QgsDataItem*> items, QgsDataItem * item );
 
     // members
 
@@ -132,99 +132,106 @@ class CORE_EXPORT QgsDataItem : public QObject
 /** Item that represents a layer that can be opened with one of the providers */
 class CORE_EXPORT QgsLayerItem : public QgsDataItem
 {
-public:
-  enum LayerType
-  {
-    NoType,
-    Vector,
-    Raster,
-    Point,
-    Line,
-    Polygon,
-    TableLayer,
-    Database,
-    Table
-  };
+    Q_OBJECT
+  public:
+    enum LayerType
+    {
+      NoType,
+      Vector,
+      Raster,
+      Point,
+      Line,
+      Polygon,
+      TableLayer,
+      Database,
+      Table
+    };
 
-  QgsLayerItem(QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey);
+    QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey );
 
-  // --- reimplemented from QgsDataItem ---
+    // --- reimplemented from QgsDataItem ---
 
-  virtual bool equal(const QgsDataItem *other);
+    virtual bool equal( const QgsDataItem *other );
 
-  // --- New virtual methods for layer item derived classes ---
+    // --- New virtual methods for layer item derived classes ---
 
-  // Returns QgsMapLayer::LayerType  
-  QgsMapLayer::LayerType mapLayerType();
+    // Returns QgsMapLayer::LayerType
+    QgsMapLayer::LayerType mapLayerType();
 
-  // Returns layer uri or empty string if layer cannot be created
-  QString uri() { return mUri; }
+    // Returns layer uri or empty string if layer cannot be created
+    QString uri() { return mUri; }
 
-  // Returns provider key 
-  QString providerKey() { return mProviderKey; }
+    // Returns provider key
+    QString providerKey() { return mProviderKey; }
 
-protected:
+  protected:
 
-  QString mProviderKey;
-  QString mUri;
-  LayerType mLayerType;
+    QString mProviderKey;
+    QString mUri;
+    LayerType mLayerType;
 
-  static QIcon sIconPoint, sIconLine, sIconPolygon, sIconTable, sIconDefault;
+    static const QIcon &iconPoint();
+    static const QIcon &iconLine();
+    static const QIcon &iconPolygon();
+    static const QIcon &iconTable();
+    static const QIcon &iconDefault();
 };
 
 
 /** A Collection: logical collection of layers or subcollections, e.g. GRASS location/mapset, database? wms source? */
 class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
-public:
-  QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path =0);
-  ~QgsDataCollectionItem();
+    Q_OBJECT
+  public:
+    QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = 0 );
+    ~QgsDataCollectionItem();
 
-  void setPopulated() { mPopulated = true; }
-  void addChild( QgsDataItem *item ) { mChildren.append(item); }
+    void setPopulated() { mPopulated = true; }
+    void addChild( QgsDataItem *item ) { mChildren.append( item ); }
 
-  static QIcon sDirIcon; // shared icon: open/closed directory
+    static const QIcon &iconDir(); // shared icon: open/closed directory
 };
 
 /** A directory: contains subdirectories and layers */
 class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 {
-public:
-  enum Column
-  {
-    Name,
-    Size,
-    Date,
-    Permissions,
-    Owner,
-    Group,
-    Type
-  };
-  QgsDirectoryItem(QgsDataItem* parent, QString name, QString path);
-  ~QgsDirectoryItem();
+    Q_OBJECT
+  public:
+    enum Column
+    {
+      Name,
+      Size,
+      Date,
+      Permissions,
+      Owner,
+      Group,
+      Type
+    };
+    QgsDirectoryItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsDirectoryItem();
 
-  QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem*> createChildren();
 
-  virtual bool equal(const QgsDataItem *other);
+    virtual bool equal( const QgsDataItem *other );
 
-  virtual QWidget * paramWidget();
+    virtual QWidget * paramWidget();
 
-  static QVector<QgsDataProvider*> mProviders;
-  static QVector<QLibrary*> mLibraries;
+    static QVector<QgsDataProvider*> mProviders;
+    static QVector<QLibrary*> mLibraries;
 };
 
 class QgsDirectoryParamWidget : public QTreeWidget
 {
-  Q_OBJECT
+    Q_OBJECT
 
-public:
-  QgsDirectoryParamWidget(QString path, QWidget* parent = NULL);
+  public:
+    QgsDirectoryParamWidget( QString path, QWidget* parent = NULL );
 
-protected:
-  void mousePressEvent(QMouseEvent* event);
+  protected:
+    void mousePressEvent( QMouseEvent* event );
 
-public slots:
-  void showHideColumn();
+  public slots:
+    void showHideColumn();
 };
 
 #endif // QGSDATAITEM_H
