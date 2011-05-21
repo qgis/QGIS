@@ -126,7 +126,7 @@ bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext&
   double rasterScaleFactor = 1.0;
 
   //little trick to find out if painting origines from composer or main map canvas
-  if ( data( 0 ).toString() == "composer" )
+  if ( data( 1 ).toString() == "composer" )
   {
     rasterScaleFactor = painterDpi / 25.4;
     scaleFactor = dpi / 25.4;
