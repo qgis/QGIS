@@ -34,7 +34,7 @@
 
 */
 
-class QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
+class GUI_EXPORT QgsNumericSortTreeWidgetItem : public QTreeWidgetItem
 {
 
 //  Q_OBJECT

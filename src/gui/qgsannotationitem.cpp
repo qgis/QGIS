@@ -30,6 +30,7 @@ QgsAnnotationItem::QgsAnnotationItem( QgsMapCanvas* mapCanvas ): QgsMapCanvasIte
   mFrameBorderWidth = 1.0;
   mFrameColor = QColor( 0, 0, 0 );
   mFrameBackgroundColor = QColor( 255, 255, 255 );
+  setData( 0, "AnnotationItem" );
 }
 
 QgsAnnotationItem::~QgsAnnotationItem()
@@ -232,7 +233,7 @@ void QgsAnnotationItem::drawSelectionBoxes( QPainter* p )
   }
 
   //no selection boxes for composer mode
-  if ( data( 0 ).toString() == "composer" )
+  if ( data( 1 ).toString() == "composer" )
   {
     return;
   }

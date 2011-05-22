@@ -26,7 +26,7 @@ class QgsVectorLayer;
 class QMenu;
 
 
-class QgsAttributeTableView : public QTableView
+class GUI_EXPORT QgsAttributeTableView : public QTableView
 {
     Q_OBJECT
 
@@ -48,30 +48,13 @@ class QgsAttributeTableView : public QTableView
 
     void contextMenuEvent( QContextMenuEvent* );
 
+  signals:
+    void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
+
   private:
     QgsAttributeTableModel* mModel;
     QgsAttributeTableFilterModel* mFilterModel;
     QMenu *mActionPopup;
 };
-
-class QgsAttributeTableAction : public QAction
-{
-    Q_OBJECT
-
-  public:
-    QgsAttributeTableAction( const QString &name, QgsAttributeTableView *view, QgsAttributeTableModel *model, int action, const QModelIndex &fieldIdx ) :
-        QAction( name, view ), mModel( model ), mAction( action ), mFieldIdx( fieldIdx )
-    {}
-
-  public slots:
-    void execute();
-    void featureForm();
-
-  private:
-    QgsAttributeTableModel *mModel;
-    int mAction;
-    QModelIndex mFieldIdx;
-};
-
 
 #endif

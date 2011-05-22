@@ -1,4 +1,4 @@
-SUBDIRS(core analysis ui gui app providers plugins helpviewer crssync)
+SUBDIRS(core analysis ui gui app providers plugins helpviewer crssync browser)
 
 IF (WITH_BINDINGS)
   SUBDIRS(python)

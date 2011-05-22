@@ -36,7 +36,7 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
 void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
                                      QString gisbase, QString location, QString mapset, QString map )
 {
-  QStringList layers = QgsGrassSelect::vectorLayers(
+  QStringList layers = QgsGrass::vectorLayers(
                          gisbase, location, mapset, map );
 
 

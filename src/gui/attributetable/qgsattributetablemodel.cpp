@@ -19,14 +19,14 @@
 #include "qgsfield.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
-#include "qgisapp.h"
 #include "qgsattributeaction.h"
 #include "qgsmapcanvas.h"
-#include "qgsfeatureaction.h"
 
 #include <QtGui>
 #include <QVariant>
 #include <limits>
+
+QgsRectangle QgsAttributeTableModel::mCurrentExtent; // static member
 
 
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
@@ -231,7 +231,7 @@ void QgsAttributeTableModel::loadLayer()
     if ( behaviour == 2 )
     {
       // current canvas only
-      rect = QgisApp::instance()->mapCanvas()->extent();
+      rect = mCurrentExtent;
     }
 
     mLayer->select( QgsAttributeList(), rect, false );
@@ -498,7 +498,7 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
   mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );
 }
 
-void QgsAttributeTableModel::featureForm( QModelIndex &idx )
+QgsFeature QgsAttributeTableModel::feature( QModelIndex &idx )
 {
   QgsFeature f;
   QgsAttributeMap attributes;
@@ -509,9 +509,5 @@ void QgsAttributeTableModel::featureForm( QModelIndex &idx )
     f.changeAttribute( i, data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, mLayer, -1, this );
-  if ( mLayer->isEditable() )
-    action.editFeature();
-  else
-    action.viewFeatureForm();
+  return f;
 }

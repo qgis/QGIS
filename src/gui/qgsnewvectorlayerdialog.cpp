@@ -18,19 +18,26 @@
 
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
-#include "qgisapp.h" // <- for theme icons
+//#include "qgisapp.h" // <- for theme icons
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
 #include <QPushButton>
+
+#include <QLibrary>
+#include <QSettings>
+#include "qgsencodingfiledialog.h"
+#include "qgsproviderregistry.h"
 
 
 QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
-  mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
-  mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
+
+  // TODO: do it without QgisApp
+  //mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
+  //mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mTypeBox->addItem( tr( "Text data" ), "String" );
   mTypeBox->addItem( tr( "Whole number" ), "Integer" );
   mTypeBox->addItem( tr( "Decimal number" ), "Real" );
@@ -194,4 +201,99 @@ void QgsNewVectorLayerDialog::nameChanged( QString name )
 void QgsNewVectorLayerDialog::selectionChanged()
 {
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
+}
+
+
+// this is static
+QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget* parent, QString* pEnc )
+{
+  QgsNewVectorLayerDialog geomDialog( parent );
+  if ( geomDialog.exec() == QDialog::Rejected )
+  {
+    return QString();
+  }
+
+  QGis::WkbType geometrytype = geomDialog.selectedType();
+  QString fileformat = geomDialog.selectedFileFormat();
+  int crsId = geomDialog.selectedCrsId();
+  QgsDebugMsg( QString( "New file format will be: %1" ).arg( fileformat ) );
+
+  std::list<std::pair<QString, QString> > attributes;
+  geomDialog.attributes( attributes );
+
+  QString enc;
+  QString fileName;
+
+  QSettings settings;
+  QString lastUsedDir = settings.value( "/UI/lastVectorFileFilterDir", "." ).toString();
+
+  QgsDebugMsg( "Saving vector file dialog without filters: " );
+
+  QgsEncodingFileDialog* openFileDialog =
+    new QgsEncodingFileDialog( parent, tr( "Save As" ), lastUsedDir, "", QString( "" ) );
+
+  openFileDialog->setFileMode( QFileDialog::AnyFile );
+  openFileDialog->setAcceptMode( QFileDialog::AcceptSave );
+  openFileDialog->setConfirmOverwrite( true );
+
+  if ( settings.contains( "/UI/lastVectorFileFilter" ) )
+  {
+    QString lastUsedFilter = settings.value( "/UI/lastVectorFileFilter", QVariant( QString::null ) ).toString();
+    openFileDialog->selectFilter( lastUsedFilter );
+  }
+
+  if ( openFileDialog->exec() == QDialog::Rejected )
+  {
+    delete openFileDialog;
+    return QString();
+  }
+
+  fileName = openFileDialog->selectedFiles().first();
+
+  if ( fileformat == "ESRI Shapefile" && !fileName.endsWith( ".shp", Qt::CaseInsensitive ) )
+    fileName += ".shp";
+
+  enc = openFileDialog->encoding();
+
+  settings.setValue( "/UI/lastVectorFileFilter", openFileDialog->selectedFilter() );
+  settings.setValue( "/UI/lastVectorFileFilterDir", openFileDialog->directory().absolutePath() );
+
+  delete openFileDialog;
+
+  //try to create the new layer with OGRProvider instead of QgsVectorFileWriter
+  QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
+  QString ogrlib = pReg->library( "ogr" );
+  // load the data provider
+  QLibrary* myLib = new QLibrary( ogrlib );
+  bool loaded = myLib->load();
+  if ( loaded )
+  {
+    QgsDebugMsg( "ogr provider loaded" );
+
+    typedef bool ( *createEmptyDataSourceProc )( const QString&, const QString&, const QString&, QGis::WkbType,
+        const std::list<std::pair<QString, QString> >&, const QgsCoordinateReferenceSystem * );
+    createEmptyDataSourceProc createEmptyDataSource = ( createEmptyDataSourceProc ) cast_to_fptr( myLib->resolve( "createEmptyDataSource" ) );
+    if ( createEmptyDataSource )
+    {
+      if ( geometrytype != QGis::WKBUnknown )
+      {
+        QgsCoordinateReferenceSystem srs( crsId, QgsCoordinateReferenceSystem::InternalCrsId );
+        createEmptyDataSource( fileName, fileformat, enc, geometrytype, attributes, &srs );
+      }
+      else
+      {
+        QgsDebugMsg( "geometry type not recognised" );
+        return QString();
+      }
+    }
+    else
+    {
+      QgsDebugMsg( "Resolving newEmptyDataSource(...) failed" );
+      return QString();
+    }
+  }
+
+  if ( pEnc )
+    *pEnc = enc;
+  return fileName;
 }

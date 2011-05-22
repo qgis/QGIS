@@ -23,7 +23,7 @@
 #include <QDomDocument>
 #include "ui_qgsmanageconnectionsdialogbase.h"
 
-class QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase
+class GUI_EXPORT QgsManageConnectionsDialog : public QDialog, private Ui::QgsManageConnectionsDialogBase
 {
     Q_OBJECT
 

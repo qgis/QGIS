@@ -690,6 +690,7 @@ int QgsWFSData::createMultiPointFromFragments()
   mCurrentWKBSize = 0;
   mCurrentWKBSize += 1 + 2 * sizeof( int );
   mCurrentWKBSize += totalWKBFragmentSize();
+  mCurrentWKB = new unsigned char[mCurrentWKBSize];
 
   int pos = 0;
   QGis::WkbType type = QGis::WKBMultiPoint;

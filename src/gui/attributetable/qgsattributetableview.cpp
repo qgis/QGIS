@@ -26,10 +26,9 @@
 
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
-#include "qgsattributeaction.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
-    : QTableView( parent ), mActionPopup( 0 )
+    : QTableView( parent ), mModel( 0 ), mFilterModel( 0 ), mActionPopup( 0 )
 {
   QSettings settings;
   restoreGeometry( settings.value( "/BetterAttributeTable/geometry" ).toByteArray() );
@@ -46,6 +45,19 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
 
 void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
 {
+  if ( layer == NULL )
+  {
+    setModel( NULL );
+    delete mModel;
+    mModel = NULL;
+    delete mFilterModel;
+    mFilterModel = NULL;
+    return;
+  }
+
+  QgsAttributeTableModel* oldModel = mModel;
+  QgsAttributeTableFilterModel* filterModel = mFilterModel;
+
   // in case the provider allows fast access to features
   // we will use the model that calls featureAtId() to fetch only the
   // features in the current view. Otherwise we'll have to store
@@ -58,6 +70,9 @@ void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
   mFilterModel = new QgsAttributeTableFilterModel( layer );
   mFilterModel->setSourceModel( mModel );
   setModel( mFilterModel );
+
+  delete oldModel;
+  delete filterModel;
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()
@@ -93,36 +108,11 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
 
   mActionPopup = new QMenu();
 
-  if ( vlayer->actions()->size() != 0 )
+  // let some other parts of the application add some actions
+  emit willShowContextMenu(mActionPopup, idx);
+
+  if ( mActionPopup->actions().count() > 0 )
   {
-
-    QAction *a = mActionPopup->addAction( tr( "Run action" ) );
-    a->setEnabled( false );
-
-    for ( int i = 0; i < vlayer->actions()->size(); i++ )
-    {
-      const QgsAction &action = vlayer->actions()->at( i );
-
-      if ( !action.runable() )
-        continue;
-
-      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), this, mModel, i, idx );
-      mActionPopup->addAction( action.name(), a, SLOT( execute() ) );
-    }
+    mActionPopup->popup( event->globalPos() );
   }
-
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), this, mModel, -1, idx );
-  mActionPopup->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
-
-  mActionPopup->popup( event->globalPos() );
-}
-
-void QgsAttributeTableAction::execute()
-{
-  mModel->executeAction( mAction, mFieldIdx );
-}
-
-void QgsAttributeTableAction::featureForm()
-{
-  mModel->featureForm( mFieldIdx );
 }

@@ -162,7 +162,7 @@ void QgsGrassBrowser::addMap()
     else if ( type == QgsGrassModel::VectorLayer )
     {
 
-      QStringList list = QgsGrassSelect::vectorLayers(
+      QStringList list = QgsGrass::vectorLayers(
                            QgsGrass::getDefaultGisdbase(),
                            QgsGrass::getDefaultLocation(),
                            mModel->itemMapset( *it ), map );
