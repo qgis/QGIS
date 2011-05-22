@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>338</width>
-    <height>191</height>
+    <height>226</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -93,7 +93,7 @@
       <item row="1" column="0" colspan="2">
        <widget class="QStackedWidget" name="modeStackedWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_3">
@@ -110,7 +110,7 @@
           <property name="margin">
            <number>0</number>
           </property>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <spacer name="verticalSpacer">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -132,6 +132,13 @@
           </item>
           <item row="0" column="1">
            <widget class="GdalToolsInOutSelector" name="maskSelector" native="true"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QCheckBox" name="alphaBandCheck">
+            <property name="text">
+             <string>Create an output alpha band</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
