@@ -73,7 +73,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     // remove and delete child item, signals to browser are emited
     virtual void deleteChildItem( QgsDataItem * child );
 
-    virtual bool equal( const QgsDataItem *other )  { return false; }
+    virtual bool equal( const QgsDataItem *other );
 
     virtual QWidget * paramWidget() { return 0; }
 

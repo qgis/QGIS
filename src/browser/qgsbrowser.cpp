@@ -419,7 +419,7 @@ void QgsBrowser::updateCurrentTab()
 
   if (current == Metadata && mDirtyMetadata)
   {
-    if (mLayer)
+    if (mLayer && mLayer->isValid())
     {
       // Set meta
       QString myStyle = QgsApplication::reportStyleSheet();
@@ -436,7 +436,7 @@ void QgsBrowser::updateCurrentTab()
 
   if (current == Preview && mDirtyPreview)
   {
-    if (mLayer)
+    if (mLayer && mLayer->isValid())
     {
       // Create preview: add to map canvas
       QList<QgsMapCanvasLayer> layers;
@@ -452,7 +452,7 @@ void QgsBrowser::updateCurrentTab()
 
   if (current == Attributes && mDirtyAttributes)
   {
-    if ( mLayer && mLayer->type() == QgsMapLayer::VectorLayer )
+    if ( mLayer  && mLayer->isValid() && mLayer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayer );
       QApplication::setOverrideCursor(Qt::WaitCursor);

@@ -759,7 +759,7 @@ void QgsGrassModel::refreshItem( QgsGrassModelItem *item )
 
     case QgsGrassModel::Vector:
     {
-      QStringList list = QgsGrassSelect::vectorLayers(
+      QStringList list = QgsGrass::vectorLayers(
                            QgsGrass::getDefaultGisdbase(),
                            QgsGrass::getDefaultLocation(),
                            item->mMapset, item->mMap );

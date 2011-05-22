@@ -93,7 +93,7 @@ const QIcon &QgsDataCollectionItem::iconDir()
 {
   static QIcon icon;
 
-  if ( !icon.isNull() )
+  if ( icon.isNull() )
   {
     // initialize shared icons
     QStyle *style = QApplication::style();
@@ -250,6 +250,16 @@ void QgsDataItem::refresh()
   }
 }
 
+bool QgsDataItem::equal( const QgsDataItem *other )
+{
+    if ( typeid ( this ) == typeid ( other ) &&
+         mPath == other->path() )
+    {
+      return true;
+    }
+    return false;
+}
+
 // ---------------------------------------------------------------------
 
 QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey )
@@ -327,9 +337,10 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString p
         }
         if ( dataCapabilities() == QgsDataProvider::NoDataCapabilities )
         {
-          QgsDebugMsg( library->fileName() + " does not have File capability" );
+          QgsDebugMsg( library->fileName() + " has NoDataCapabilities" );
           continue;
         }
+        QgsDebugMsg( QString ( "%1 dataCapabilities : %2").arg(library->fileName()).arg(dataCapabilities() )  );
         mLibraries.append( library );
       }
       else
@@ -360,10 +371,11 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
     children.append( item );
   }
 
-  QStringList fileEntries = dir.entryList( QDir::Files, QDir::Name );
+  QStringList fileEntries = dir.entryList( QDir::Dirs|QDir::NoDotAndDotDot|QDir::Files, QDir::Name );
   foreach( QString name, fileEntries )
   {
     QString path = dir.absoluteFilePath( name );
+    QFileInfo fileInfo ( path );
     foreach( QLibrary *library, mLibraries )
     {
       // we could/should create separate list of providers for each purpose
@@ -374,7 +386,11 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
 
       int capabilities = dataCapabilities();
 
-      if ( !( capabilities & QgsDataProvider::File ) ) continue;
+      if ( !( (fileInfo.isFile() && (capabilities & QgsDataProvider::File)) ||
+	      (fileInfo.isDir() && (capabilities & QgsDataProvider::Dir))) ) 
+      {
+	continue;
+      }
 
       dataItem_t * dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
       if ( ! dataItem )
