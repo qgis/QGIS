@@ -28,6 +28,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.outSelector, SIGNAL("filenameChanged()") ),
           (self.noDataSpin, SIGNAL("valueChanged(int)"), self.noDataCheck, "1.7.0"),
           (self.maskSelector, SIGNAL("filenameChanged()"), self.maskModeRadio, "1.6.0"),
+          (self.alphaBandCheck, SIGNAL( "stateChanged( int )") ),
           (self.extentSelector, [SIGNAL("selectionStarted()"), SIGNAL("newExtentDefined()")], self.extentModeRadio), 
           (self.modeStackedWidget, SIGNAL("currentIndexChanged(int)"))
         ]
@@ -138,7 +139,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           arguments << "-q"
           arguments << "-cutline"
           arguments << mask
-          arguments << "-dstalpha"
+          if self.alphaBandCheck.isChecked():
+            arguments << "-dstalpha"
 
       outputFn = self.getOutputFileName()
       if not outputFn.isEmpty():
