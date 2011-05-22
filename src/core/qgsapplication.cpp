@@ -61,7 +61,7 @@ QString QgsApplication::mConfigPath = QDir::homePath() + QString( "/.qgis/" );
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath )
     : QApplication( argc, argv, GUIenabled )
 {
-#if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
+#if (defined(Q_WS_MACX) && defined(BUILD_MACAPP_BUNDLE)) || defined(Q_WS_WIN32) || defined(WIN32)
   setPrefixPath( applicationDirPath(), true );
 #else
   QDir myDir( applicationDirPath() );

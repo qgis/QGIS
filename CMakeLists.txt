@@ -5,11 +5,17 @@ SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINO
 SET(RELEASE_NAME "Trunk")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
-IF (APPLE)
+
+# Declaring here since it affects QGIS_APP_NAME
+IF(APPLE)
+  SET (BUILD_MACAPP_BUNDLE TRUE CACHE BOOL "Should QGIS be build as a .app or installed UNIX-style?")
+ENDIF(APPLE)
+
+IF (APPLE AND BUILD_MACAPP_BUNDLE)
   SET(QGIS_APP_NAME "QGIS")
-ELSE (APPLE)
+ELSE (APPLE AND BUILD_MACAPP_BUNDLE)
   SET(QGIS_APP_NAME "qgis")
-ENDIF (APPLE)
+ENDIF (APPLE AND BUILD_MACAPP_BUNDLE)
 
 # Note the version no is Mmmpp for Major/minor/patch, 0-padded, thus '10100' for 1.1.0
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
@@ -99,6 +105,7 @@ SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.
 
 # whether unit tests should be build
 SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
+
 
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
@@ -288,11 +295,22 @@ IF (WIN32)
 ELSE (WIN32)
 
   IF (APPLE)
-    # for Mac OS X, everything is put inside an application bundle
-    SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
-    SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
-    # path for library references
-    SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
+    #this will define ${APP_SERVICES_LIBRARY}
+    FIND_LIBRARY(APP_SERVICES_LIBRARY ApplicationServices )
+
+    IF (BUILD_MACAPP_BUNDLE)
+      # Everything is put inside an application bundle
+      SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX}/${QGIS_APP_NAME}.app/Contents)
+      SET (CMAKE_INSTALL_PREFIX ${QGIS_MACAPP_PREFIX}/MacOS)
+      # path for library references
+      SET (CMAKE_INSTALL_NAME_DIR @executable_path/lib)
+    ELSE (BUILD_MACAPP_BUNDLE)
+      SET (QGIS_MACAPP_PREFIX ${CMAKE_INSTALL_PREFIX})
+      SET (CMAKE_INSTALL_NAME_DIR ${CMAKE_INSTALL_PREFIX}/lib)
+    ENDIF (BUILD_MACAPP_BUNDLE)
+  ENDIF (APPLE)
+
+  IF (APPLE AND BUILD_MACAPP_BUNDLE)
     # 4 bundling levels, each includes previous
     #   0  nothing
     #   1  Qt frameworks
@@ -305,8 +323,6 @@ ELSE (WIN32)
     ELSE ()
         SET (OSX_HAVE_LOADERPATH 0)
     ENDIF ()
-    #this will define ${APP_SERVICES_LIBRARY}
-    FIND_LIBRARY(APP_SERVICES_LIBRARY ApplicationServices )
 
     SET (DEFAULT_BIN_SUBDIR      bin)
     SET (QGIS_BIN_SUBDIR_REV     ..)
@@ -324,7 +340,7 @@ ELSE (WIN32)
     SET (QGIS_PLUGIN_SUBDIR_REV  ../../MacOS)
     SET (DEFAULT_INCLUDE_SUBDIR  include/qgis)
 
-  ELSE (APPLE)
+  ELSE (APPLE AND BUILD_MACAPP_BUNDLE)
     # UNIX
     SET (DEFAULT_BIN_SUBDIR     bin)
     SET (DEFAULT_CGIBIN_SUBDIR  bin)
@@ -333,7 +349,7 @@ ELSE (WIN32)
     SET (DEFAULT_LIBEXEC_SUBDIR lib${LIB_SUFFIX}/qgis)
     SET (DEFAULT_PLUGIN_SUBDIR  lib${LIB_SUFFIX}/qgis/plugins)
     SET (DEFAULT_INCLUDE_SUBDIR include/qgis)
-  ENDIF (APPLE)
+  ENDIF (APPLE AND BUILD_MACAPP_BUNDLE)
 
 ENDIF (WIN32)
 
@@ -497,9 +513,9 @@ IF (APPLE)
 ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems
-IF (UNIX AND NOT APPLE)
+IF (UNIX AND NOT (APPLE AND BUILD_MACAPP_BUNDLE))
   INSTALL (FILES qgis.1 DESTINATION ${QGIS_MANUAL_DIR}/man1)
-ENDIF (UNIX AND NOT APPLE)
+ENDIF (UNIX AND NOT (APPLE AND BUILD_MACAPP_BUNDLE))
 
 INSTALL(FILES cmake/FindQGIS.cmake DESTINATION ${QGIS_DATA_DIR})
 
