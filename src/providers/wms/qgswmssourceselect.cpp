@@ -55,9 +55,9 @@
 
 QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embededMode )
     : QDialog( parent, fl )
-    , mCurrentTileset( 0 )
     , mManagerMode ( managerMode )
     , mEmbededMode( embededMode)
+    , mCurrentTileset( 0 )
 {
   setupUi( this );
 

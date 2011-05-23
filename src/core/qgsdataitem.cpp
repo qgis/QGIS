@@ -263,8 +263,10 @@ bool QgsDataItem::equal( const QgsDataItem *other )
 // ---------------------------------------------------------------------
 
 QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType, QString providerKey )
-    : QgsDataItem( Layer, parent, name, path ), mUri( uri ), mLayerType( layerType ),
-    mProviderKey( providerKey )
+    : QgsDataItem( Layer, parent, name, path )
+    , mProviderKey( providerKey )
+    , mUri( uri )
+    , mLayerType( layerType )
 {
   switch ( layerType )
   {
