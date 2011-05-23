@@ -19,7 +19,7 @@ bool QgsPythonRunner::run( QString command, QString messageOnError )
   }
   else
   {
-    QgsDebugMsg("Unable to run Python command: runner not available!");
+    QgsDebugMsg( "Unable to run Python command: runner not available!" );
     return false;
   }
 }

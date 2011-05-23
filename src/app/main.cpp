@@ -448,7 +448,7 @@ int main( int argc, char *argv[] )
   }
 
   // GUI customization is enabled by default unless --nocustomization argument is used
-  QgsCustomization::instance()->setEnabled(myCustomization);
+  QgsCustomization::instance()->setEnabled( myCustomization );
 
   QgsApplication myApp( argc, argv, myUseGuiFlag, configpath );
 
@@ -624,10 +624,10 @@ int main( int argc, char *argv[] )
   QgisApp *qgis = new QgisApp( mypSplash, myRestorePlugins ); // "QgisApp" used to find canonical instance
   qgis->setObjectName( "QgisApp" );
 
-  myApp.connect ( 
-    &myApp, SIGNAL( preNotify( QObject *, QEvent *, bool *)),
+  myApp.connect(
+    &myApp, SIGNAL( preNotify( QObject *, QEvent *, bool * ) ),
     //qgis, SLOT( preNotify( QObject *, QEvent *))
-    QgsCustomization::instance(), SLOT( preNotify( QObject *, QEvent *, bool *))
+    QgsCustomization::instance(), SLOT( preNotify( QObject *, QEvent *, bool * ) )
   );
 
   /////////////////////////////////////////////////////////////////////

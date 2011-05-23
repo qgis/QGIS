@@ -277,8 +277,10 @@ QStringList QgsDetailedItemDelegate::wordWrap( QString theString,
     QFontMetrics theMetrics,
     int theWidth ) const
 {
-  if ( theString.isEmpty() ) return QStringList();
-  if ( 50 >= theWidth ) return QStringList() << theString;
+  if ( theString.isEmpty() )
+    return QStringList();
+  if ( 50 >= theWidth )
+    return QStringList() << theString;
   //QString myDebug = QString("Word wrapping: %1 into %2 pixels").arg(theString).arg(theWidth);
   //qDebug(myDebug.toLocal8Bit());
   //iterate the string

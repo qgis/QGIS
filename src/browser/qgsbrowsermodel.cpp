@@ -31,8 +31,9 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
   // Add non file top level items
   foreach( QString key, QgsProviderRegistry::instance()->providerList() )
   {
-    QLibrary *library = QgsProviderRegistry::instance()->getLibrary( key );
-    if ( !library ) continue;
+    QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( key );
+    if ( !library )
+      continue;
 
     dataCapabilities_t * dataCapabilities = ( dataCapabilities_t * ) cast_to_fptr( library->resolve( "dataCapabilities" ) );
     if ( !dataCapabilities )
@@ -277,7 +278,8 @@ void QgsBrowserModel::beginInsertItems( QgsDataItem* parent, int first, int last
 {
   QgsDebugMsg( "parent mPath = " + parent->path() );
   QModelIndex idx = index( parent );
-  if ( !idx.isValid() ) return;
+  if ( !idx.isValid() )
+    return;
   QgsDebugMsg( "valid" );
   beginInsertRows( idx, first, last );
   QgsDebugMsg( "end" );
@@ -291,7 +293,8 @@ void QgsBrowserModel::beginRemoveItems( QgsDataItem* parent, int first, int last
 {
   QgsDebugMsg( "parent mPath = " + parent->path() );
   QModelIndex idx = index( parent );
-  if ( !idx.isValid() ) return;
+  if ( !idx.isValid() )
+    return;
   beginRemoveRows( idx, first, last );
 }
 void QgsBrowserModel::endRemoveItems()

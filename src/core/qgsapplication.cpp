@@ -115,7 +115,8 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   bool done = false;
   emit preNotify( receiver, event, &done );
 
-  if ( done ) return true;
+  if ( done )
+    return true;
 
   // Send event to receiver and catch unhandled exceptions
   done = true;

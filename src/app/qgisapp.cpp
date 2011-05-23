@@ -983,9 +983,9 @@ void QgisApp::createMenus()
 
   // Panel and Toolbar Submenus
   mPanelMenu = new QMenu( tr( "Panels" ) );
-  mPanelMenu->setObjectName("mPanelMenu");
+  mPanelMenu->setObjectName( "mPanelMenu" );
   mToolbarMenu = new QMenu( tr( "Toolbars" ) );
-  mToolbarMenu->setObjectName("mToolbarMenu");
+  mToolbarMenu->setObjectName( "mToolbarMenu" );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
   QDialogButtonBox::ButtonLayout layout =
@@ -1079,9 +1079,9 @@ void QgisApp::createToolBars()
 
   QList<QAction*> toolbarMenuActions;
   // Set action names so that they can be used in customization
-  foreach ( QToolBar *toolBar, toolbarMenuToolBars )
+  foreach( QToolBar *toolBar, toolbarMenuToolBars )
   {
-    toolBar->toggleViewAction()->setObjectName ( "mActionToggle" + toolBar->objectName().mid(1) );
+    toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
     toolbarMenuActions << toolBar->toggleViewAction();
   }
 
@@ -2448,16 +2448,16 @@ void QgisApp::addWmsLayer()
   QgsDebugMsg( "about to addRasterLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
-  QDialog *wmss = dynamic_cast<QDialog*> ( QgsProviderRegistry::instance()->getSelectWidget( QString("wms"), this ) );
-  if ( !wmss ) 
+  QDialog *wmss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "wms" ), this ) );
+  if ( !wmss )
   {
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
-    return;   
+    return;
   }
-  connect ( wmss , SIGNAL ( addRasterLayer( QString const &, QString const &, QString const &,QStringList const &,QStringList const &,QString const &,
-QString const &) ),
-	    this , SLOT ( addRasterLayer( QString const &, QString const &, QString const &,QStringList const &,QStringList const &,QString const &,
-QString const &) ) );
+  connect( wmss , SIGNAL( addRasterLayer( QString const &, QString const &, QString const &, QStringList const &, QStringList const &, QString const &,
+                                          QString const & ) ),
+           this , SLOT( addRasterLayer( QString const &, QString const &, QString const &, QStringList const &, QStringList const &, QString const &,
+                                        QString const & ) ) );
   wmss->exec();
   delete wmss;
 }
@@ -3103,8 +3103,10 @@ void QgisApp::toggleActiveWindowMaximized()
   QWidget *window = QApplication::activeWindow();
   if ( window )
   {
-    if ( window->isMaximized() ) window->showNormal();
-    else window->showMaximized();
+    if ( window->isMaximized() )
+      window->showNormal();
+    else
+      window->showMaximized();
   }
 }
 
@@ -4554,8 +4556,8 @@ void QgisApp::showPluginManager()
 // implementation of the python runner
 class QgsPythonRunnerImpl : public QgsPythonRunner
 {
-public:
-    QgsPythonRunnerImpl(QgsPythonUtils* pythonUtils) : mPythonUtils(pythonUtils) {}
+  public:
+    QgsPythonRunnerImpl( QgsPythonUtils* pythonUtils ) : mPythonUtils( pythonUtils ) {}
     virtual bool runCommand( QString command, QString messageOnError = QString() )
     {
       if ( mPythonUtils && mPythonUtils->isEnabled() )
@@ -4565,7 +4567,7 @@ public:
       return false;
     }
 
-protected:
+  protected:
     QgsPythonUtils* mPythonUtils;
 };
 
@@ -4615,7 +4617,7 @@ void QgisApp::loadPythonSupport()
     QgsPluginRegistry::instance()->setPythonUtils( mPythonUtils );
 
     // init python runner
-    QgsPythonRunner::setInstance( new QgsPythonRunnerImpl(mPythonUtils) );
+    QgsPythonRunner::setInstance( new QgsPythonRunnerImpl( mPythonUtils ) );
 
     std::cout << "Python support ENABLED :-) " << std::endl; // OK
   }
@@ -5477,7 +5479,8 @@ void QgisApp::updateMouseCoordinatePrecision()
     dp = QgsProject::instance()->readNumEntry( "PositionPrecision", "/DecimalPlaces" );
 
   // Keep dp sensible
-  if ( dp < 0 ) dp = 0;
+  if ( dp < 0 )
+    dp = 0;
 
   mMousePrecisionDecimalPlaces = dp;
 }

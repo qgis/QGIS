@@ -289,11 +289,11 @@ class QgsGdalProvider : public QgsRasterDataProvider
 class QgsGdalLayerItem : public QgsLayerItem
 {
   public:
-    QgsGdalLayerItem ( QgsDataItem* parent,
+    QgsGdalLayerItem( QgsDataItem* parent,
                       QString name, QString path, QString uri );
-    ~QgsGdalLayerItem ();
+    ~QgsGdalLayerItem();
 
-    bool setCrs ( QgsCoordinateReferenceSystem crs );
+    bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
 };
 

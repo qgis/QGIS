@@ -14,7 +14,7 @@
  */
 class CORE_EXPORT QgsPythonRunner
 {
-public:
+  public:
 
     /** returns true if the runner has an instance
         (and thus is able to run commands) */
@@ -28,7 +28,7 @@ public:
       Takes ownership of the object, deletes previous instance. */
     static void setInstance( QgsPythonRunner* runner );
 
-protected:
+  protected:
     /** protected constructor: can be instantiated only from children */
     QgsPythonRunner();
     virtual ~QgsPythonRunner();

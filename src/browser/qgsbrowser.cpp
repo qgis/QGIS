@@ -1,5 +1,5 @@
 /***************************************************************************
-               qgs.cpp  - 
+                             qgsbrowser.cpp  -
                              -------------------
     begin                : 2011-04-01
     copyright            : (C) 2011 Radim Blazek
@@ -15,11 +15,10 @@
  *                                                                         *
  ***************************************************************************/
 /* $Id$ */
-#include <typeinfo>
-
 #include <QSettings>
 #include <QMessageBox>
 #include <QKeyEvent>
+#include <QMetaObject>
 
 #include "qgsapplication.h"
 #include "qgsdataitem.h"
@@ -38,39 +37,39 @@
 QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
     : QMainWindow( parent, flags ),
     mDirtyMetadata( true ), mDirtyPreview( true ), mDirtyAttributes( true ),
-    mLayer( 0 ), mParamWidget(0)
+    mLayer( 0 ), mParamWidget( 0 )
 {
   setupUi( this );
 
   // Disable tabs by default
-  tabWidget->setTabEnabled ( tabWidget->indexOf( paramTab ), false );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( metaTab ), false );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( previewTab ), false );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( attributesTab ), false );
-  
-  mModel = new QgsBrowserModel(treeView);
-  treeView->setModel(mModel);
+  tabWidget->setTabEnabled( tabWidget->indexOf( paramTab ), false );
+  tabWidget->setTabEnabled( tabWidget->indexOf( metaTab ), false );
+  tabWidget->setTabEnabled( tabWidget->indexOf( previewTab ), false );
+  tabWidget->setTabEnabled( tabWidget->indexOf( attributesTab ), false );
+
+  mModel = new QgsBrowserModel( treeView );
+  treeView->setModel( mModel );
 
   // Last expanded is stored, dont cover whole height with file system
   //treeView->expand( mModel->index(0,0) );
 
-  connect(treeView, SIGNAL(clicked(const QModelIndex&)), this, SLOT(itemClicked(const QModelIndex&)));
+  connect( treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
 
-  treeView->setExpandsOnDoubleClick (false);
-  connect(treeView, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(itemDoubleClicked(const QModelIndex&)));
-  connect(treeView, SIGNAL(expanded(const QModelIndex&)), this, SLOT(itemExpanded(const QModelIndex&)));
+  treeView->setExpandsOnDoubleClick( false );
+  connect( treeView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( itemDoubleClicked( const QModelIndex& ) ) );
+  connect( treeView, SIGNAL( expanded( const QModelIndex& ) ), this, SLOT( itemExpanded( const QModelIndex& ) ) );
 
-  connect(tabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabChanged()));
+  connect( tabWidget, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged() ) );
 
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
 
-  connect(stopRenderingButton, SIGNAL(clicked()), this, SLOT(stopRendering()) );
+  connect( stopRenderingButton, SIGNAL( clicked() ), this, SLOT( stopRendering() ) );
 
-  mapCanvas->setCanvasColor(Qt::white);
+  mapCanvas->setCanvasColor( Qt::white );
 
-  QSettings settings; 
-  QString lastPath =  settings.value ( "/Browser/lastExpanded" ).toString();
-  QgsDebugMsg ( "lastPath = " + lastPath );
+  QSettings settings;
+  QString lastPath =  settings.value( "/Browser/lastExpanded" ).toString();
+  QgsDebugMsg( "lastPath = " + lastPath );
   if ( !lastPath.isEmpty() )
   {
     expand( lastPath );
@@ -84,29 +83,29 @@ QgsBrowser::~QgsBrowser()
 
 void QgsBrowser::expand( QString path, const QModelIndex& index )
 {
-  QStringList paths = path.split('/');  
-  for ( int i = 0; i < mModel->rowCount(index); i++ ) 
+  QStringList paths = path.split( '/' );
+  for ( int i = 0; i < mModel->rowCount( index ); i++ )
   {
-    QModelIndex idx = mModel->index(i, 0, index);
-    QgsDataItem* ptr = (QgsDataItem*) idx.internalPointer();
+    QModelIndex idx = mModel->index( i, 0, index );
+    QgsDataItem* ptr = ( QgsDataItem* ) idx.internalPointer();
 
-    if ( path.indexOf ( ptr->path() ) == 0 )
+    if ( path.indexOf( ptr->path() ) == 0 )
     {
       treeView->expand( idx );
-      treeView->scrollTo (idx, QAbstractItemView::PositionAtTop );
+      treeView->scrollTo( idx, QAbstractItemView::PositionAtTop );
       expand( path, idx );
       break;
     }
   }
 }
 
-void QgsBrowser::itemClicked(const QModelIndex& index)
+void QgsBrowser::itemClicked( const QModelIndex& index )
 {
   mIndex = index;
 
-  QgsDataItem* ptr = (QgsDataItem*) index.internalPointer();  
+  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
 
-  // Disable preview, attributes tab 
+  // Disable preview, attributes tab
 
   bool paramEnable = false;
   bool metaEnable = false;
@@ -123,8 +122,9 @@ void QgsBrowser::itemClicked(const QModelIndex& index)
   QList<QgsMapCanvasLayer> nolayers;
   mapCanvas->setLayerSet( nolayers );
   metaTextBrowser->clear();
-  if ( mParamWidget ) {
-    paramLayout->removeWidget ( mParamWidget );
+  if ( mParamWidget )
+  {
+    paramLayout->removeWidget( mParamWidget );
     mParamWidget->hide();
     delete mParamWidget;
     mParamWidget = 0;
@@ -139,59 +139,61 @@ void QgsBrowser::itemClicked(const QModelIndex& index)
 
 
   mParamWidget = ptr->paramWidget();
-  if ( mParamWidget ) {
-    paramLayout->addWidget ( mParamWidget );
+  if ( mParamWidget )
+  {
+    paramLayout->addWidget( mParamWidget );
     mParamWidget->show();
     paramEnable = true;
   }
 
-  if (ptr->type() == QgsDataItem::Layer)
+  if ( ptr->type() == QgsDataItem::Layer )
   {
-    QgsLayerItem* item = static_cast<QgsLayerItem*>(ptr);
-    bool res = layerClicked(item);
+    QgsLayerItem* item = static_cast<QgsLayerItem*>( ptr );
+    bool res = layerClicked( item );
 
-    if (res)
+    if ( res )
     {
       metaEnable = true;
       previewEnable = true;
-      if ( mLayer->type() == QgsMapLayer::VectorLayer ) {
+      if ( mLayer->type() == QgsMapLayer::VectorLayer )
+      {
         attributesEnable = true;
       }
     }
   }
   else
   {
-    mActionSetProjection->setEnabled ( false );
+    mActionSetProjection->setEnabled( false );
   }
 
   // force update of the current tab
   updateCurrentTab();
 
   int selected = -1;
-  if ( mLastTab.contains( typeid(*ptr).name() )  )
+  if ( mLastTab.contains( ptr->metaObject()->className() ) )
   {
-    selected = mLastTab[ typeid(*ptr).name()];
+    selected = mLastTab[ ptr->metaObject()->className() ];
   }
 
   // Enabling tabs call tabChanged !
-  tabWidget->setTabEnabled ( tabWidget->indexOf( paramTab ), paramEnable);
-  tabWidget->setTabEnabled ( tabWidget->indexOf( metaTab ), metaEnable );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( previewTab ), previewEnable );
-  tabWidget->setTabEnabled ( tabWidget->indexOf( attributesTab ), attributesEnable );
+  tabWidget->setTabEnabled( tabWidget->indexOf( paramTab ), paramEnable );
+  tabWidget->setTabEnabled( tabWidget->indexOf( metaTab ), metaEnable );
+  tabWidget->setTabEnabled( tabWidget->indexOf( previewTab ), previewEnable );
+  tabWidget->setTabEnabled( tabWidget->indexOf( attributesTab ), attributesEnable );
 
   // select tab according last selection for this data item
-  if ( selected >= 0  )
+  if ( selected >= 0 )
   {
-    qDebug("set tab %s %d", typeid(*ptr).name(), selected );
-    tabWidget->setCurrentIndex ( selected );
+    qDebug( "set tab %s %d", ptr->metaObject()->className(), selected );
+    tabWidget->setCurrentIndex( selected );
   }
 
-  qDebug("clicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data());
+  qDebug( "clicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data() );
 }
 
-bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
+bool QgsBrowser::layerClicked( QgsLayerItem* ptr )
 {
-  mActionSetProjection->setEnabled ( ptr->capabilities() & QgsLayerItem::SetCrs );
+  mActionSetProjection->setEnabled( ptr->capabilities() & QgsLayerItem::SetCrs );
 
   QString uri = ptr->uri();
   if ( !uri.isEmpty() )
@@ -199,14 +201,14 @@ bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
     QgsMapLayer::LayerType type = ptr->mapLayerType();
     QString providerKey = ptr->providerKey();
 
-    QgsDebugMsg ( providerKey + " : " + uri );
-    if ( type == QgsMapLayer::VectorLayer ) 
+    QgsDebugMsg( providerKey + " : " + uri );
+    if ( type == QgsMapLayer::VectorLayer )
     {
-      mLayer = new QgsVectorLayer( uri, QString(), providerKey);
+      mLayer = new QgsVectorLayer( uri, QString(), providerKey );
     }
-    if ( type == QgsMapLayer::RasterLayer ) 
+    if ( type == QgsMapLayer::RasterLayer )
     {
-      // This should go to WMS provider 
+      // This should go to WMS provider
       QStringList URIParts = uri.split( "|" );
       QString rasterLayerPath = URIParts.at( 0 );
       QStringList layers;
@@ -220,13 +222,17 @@ bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
         QString field = part.left( pos );
         QString value = part.mid( pos + 1 );
 
-        if ( field == "layers" ) layers = value.split(",");
-        if ( field == "styles" ) styles = value.split(",");
-        if ( field == "format" ) format = value;
-        if ( field == "crs" ) crs = value;
+        if ( field == "layers" )
+          layers = value.split( "," );
+        if ( field == "styles" )
+          styles = value.split( "," );
+        if ( field == "format" )
+          format = value;
+        if ( field == "crs" )
+          crs = value;
       }
-      QgsDebugMsg ( "rasterLayerPath = " + rasterLayerPath );
-      QgsDebugMsg ( "layers = " + layers.join(" " ) );
+      QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
+      QgsDebugMsg( "layers = " + layers.join( " " ) );
 
       mLayer = new QgsRasterLayer( 0, rasterLayerPath, "", providerKey, layers, styles, format, crs );
     }
@@ -234,39 +240,39 @@ bool QgsBrowser::layerClicked(QgsLayerItem* ptr)
 
   if ( !mLayer || !mLayer->isValid() )
   {
-    qDebug("No layer" );
+    qDebug( "No layer" );
     return false;
   }
 
-  QgsDebugMsg ( "Layer created");
+  QgsDebugMsg( "Layer created" );
 
-  QgsMapLayerRegistry::instance()->addMapLayer(mLayer);
+  QgsMapLayerRegistry::instance()->addMapLayer( mLayer );
 
   return true;
 }
 
 
-void QgsBrowser::itemDoubleClicked(const QModelIndex& index)
+void QgsBrowser::itemDoubleClicked( const QModelIndex& index )
 {
-  QgsDataItem* ptr = (QgsDataItem*) index.internalPointer();
+  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
 
   // Currently doing nothing
-  qDebug("doubleclicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data());
+  qDebug( "doubleclicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data() );
 }
 
-void QgsBrowser::itemExpanded(const QModelIndex& index)
+void QgsBrowser::itemExpanded( const QModelIndex& index )
 {
-  QSettings settings; 
-  QgsDataItem* ptr = (QgsDataItem*) index.internalPointer();
-/*
-  if (ptr->mType == QgsDataItem::Directory || ptr->mType == QgsDataItem::Collection )
-  {
-    QgsDirectoryItem* i = (QgsDirectoryItem*) ptr;
-    settings.setValue ( "/Browser/lastExpandedDir", i->mPath );
-  }
-*/
+  QSettings settings;
+  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+  /*
+    if (ptr->mType == QgsDataItem::Directory || ptr->mType == QgsDataItem::Collection )
+    {
+      QgsDirectoryItem* i = (QgsDirectoryItem*) ptr;
+      settings.setValue ( "/Browser/lastExpandedDir", i->mPath );
+    }
+  */
   // TODO: save separately each type (FS, WMS)
-  settings.setValue ( "/Browser/lastExpanded", ptr->path() );
+  settings.setValue( "/Browser/lastExpanded", ptr->path() );
   QgsDebugMsg( "last expanded: " + ptr->path() );
 }
 
@@ -274,7 +280,7 @@ void QgsBrowser::newVectorLayer()
 {
   // Set file dialog to last selected dir
   QSettings settings;
-  QString lastPath =  settings.value ( "/Browser/lastExpanded" ).toString();
+  QString lastPath =  settings.value( "/Browser/lastExpanded" ).toString();
   if ( !lastPath.isEmpty() )
   {
     settings.setValue( "/UI/lastVectorFileFilterDir", lastPath );
@@ -286,15 +292,15 @@ void QgsBrowser::newVectorLayer()
   {
     QgsDebugMsg( "New vector layer: " + fileName );
     expand( fileName );
-    QFileInfo fileInfo ( fileName );
+    QFileInfo fileInfo( fileName );
     QString dirPath = fileInfo.absoluteDir().path();
-    mModel->refresh ( dirPath );
+    mModel->refresh( dirPath );
   }
 }
 
 void QgsBrowser::on_mActionWmsConnections_triggered()
 {
-  QDialog *wmss = dynamic_cast<QDialog*> ( QgsProviderRegistry::instance()->getSelectWidget( QString("wms"), this ) );
+  QDialog *wmss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "wms" ), this ) );
   if ( !wmss )
   {
     QMessageBox::warning( this, tr( "WMS" ), tr( "Cannot get WMS select dialog from provider." ) );
@@ -308,7 +314,8 @@ void QgsBrowser::on_mActionWmsConnections_triggered()
 
 void QgsBrowser::on_mActionSetProjection_triggered()
 {
-  if ( !mLayer ) { return; }
+  if ( !mLayer )
+    return;
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setSelectedCrsId( mLayer->crs().srsid() );
@@ -320,13 +327,13 @@ void QgsBrowser::on_mActionSetProjection_triggered()
     // Is this safe?
     // selectedIndexes() is protected
 
-    QgsDataItem* ptr = (QgsDataItem*) mIndex.internalPointer();
+    QgsDataItem* ptr = ( QgsDataItem* ) mIndex.internalPointer();
     if ( ptr->type() == QgsDataItem::Layer )
     {
-      QgsLayerItem* layerItem = static_cast<QgsLayerItem*>(ptr);
-      if ( ! layerItem->setCrs ( srs ) )
+      QgsLayerItem* layerItem = static_cast<QgsLayerItem*>( ptr );
+      if ( ! layerItem->setCrs( srs ) )
       {
-        QMessageBox::critical( this, tr( "CRS" ), tr( "Cannot set layer CRS" ));
+        QMessageBox::critical( this, tr( "CRS" ), tr( "Cannot set layer CRS" ) );
       }
     }
     QgsDebugMsg( srs.authid() + " - " + srs.description() );
@@ -365,14 +372,14 @@ void QgsBrowser::restoreWindowState()
     QList<int> sizes;
     sizes << size0;
     sizes << settings.value( "/Windows/Browser/sizes/1" ).toInt();
-    QgsDebugMsg( QString("set splitter sizes to %1 %2").arg(sizes[0]).arg(sizes[1]) );
-    splitter->setSizes(sizes);
+    QgsDebugMsg( QString( "set splitter sizes to %1 %2" ).arg( sizes[0] ).arg( sizes[1] ) );
+    splitter->setSizes( sizes );
   }
 }
 
 void QgsBrowser::keyPressEvent( QKeyEvent * e )
 {
-  QgsDebugMsg( "Entered");
+  QgsDebugMsg( "Entered" );
   if ( e->key() == Qt::Key_Escape )
   {
     stopRendering();
@@ -386,7 +393,7 @@ void QgsBrowser::keyPressEvent( QKeyEvent * e )
 void QgsBrowser::stopRendering()
 {
   // you might have seen this already in QgisApp
-  QgsDebugMsg( "Entered");
+  QgsDebugMsg( "Entered" );
   if ( mapCanvas )
   {
     QgsMapRenderer* mypMapRenderer = mapCanvas->mapRenderer();
@@ -404,9 +411,9 @@ void QgsBrowser::stopRendering()
 QgsBrowser::Tab QgsBrowser::activeTab()
 {
   QWidget* curr = tabWidget->currentWidget();
-  if (curr == metaTab)
+  if ( curr == metaTab )
     return Metadata;
-  if (curr == previewTab)
+  if ( curr == previewTab )
     return Preview;
   return Attributes;
 }
@@ -417,9 +424,9 @@ void QgsBrowser::updateCurrentTab()
 
   Tab current = activeTab();
 
-  if (current == Metadata && mDirtyMetadata)
+  if ( current == Metadata && mDirtyMetadata )
   {
-    if (mLayer && mLayer->isValid())
+    if ( mLayer && mLayer->isValid() )
     {
       // Set meta
       QString myStyle = QgsApplication::reportStyleSheet();
@@ -429,33 +436,33 @@ void QgsBrowser::updateCurrentTab()
     }
     else
     {
-      metaTextBrowser->setHtml(QString());
+      metaTextBrowser->setHtml( QString() );
     }
     mDirtyMetadata = false;
   }
 
-  if (current == Preview && mDirtyPreview)
+  if ( current == Preview && mDirtyPreview )
   {
-    if (mLayer && mLayer->isValid())
+    if ( mLayer && mLayer->isValid() )
     {
       // Create preview: add to map canvas
       QList<QgsMapCanvasLayer> layers;
-      layers << QgsMapCanvasLayer(mLayer);
-      mapCanvas->setLayerSet(layers);
+      layers << QgsMapCanvasLayer( mLayer );
+      mapCanvas->setLayerSet( layers );
       QgsRectangle fullExtent = mLayer->extent();
-      fullExtent.scale(1.05); // add some border
-      mapCanvas->setExtent(fullExtent);
+      fullExtent.scale( 1.05 ); // add some border
+      mapCanvas->setExtent( fullExtent );
       mapCanvas->refresh();
     }
     mDirtyPreview = false;
   }
 
-  if (current == Attributes && mDirtyAttributes)
+  if ( current == Attributes && mDirtyAttributes )
   {
     if ( mLayer  && mLayer->isValid() && mLayer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayer );
-      QApplication::setOverrideCursor(Qt::WaitCursor);
+      QApplication::setOverrideCursor( Qt::WaitCursor );
       attributeTable->setLayer( vlayer );
       QApplication::restoreOverrideCursor();
     }
@@ -471,11 +478,11 @@ void QgsBrowser::tabChanged()
 {
   updateCurrentTab();
   // Store last selected tab for selected data item
-  if ( mIndex.isValid() ) 
+  if ( mIndex.isValid() )
   {
-    QObject* ptr = (QObject*) mIndex.internalPointer();
-    QgsDebugMsg( QString("save last tab %1 : %2").arg( typeid(*ptr).name() ).arg(tabWidget->currentIndex()) );
-    mLastTab[typeid(*ptr).name()] = tabWidget->currentIndex();
+    QObject* ptr = ( QObject* ) mIndex.internalPointer();
+    QgsDebugMsg( QString( "save last tab %1 : %2" ).arg( ptr->metaObject()->className() ).arg( tabWidget->currentIndex() ) );
+    mLastTab[ ptr->metaObject()->className() ] = tabWidget->currentIndex();
   }
 }
 
@@ -488,16 +495,16 @@ void QgsBrowser::on_mActionRefresh_triggered()
 void QgsBrowser::refresh( const QModelIndex& index )
 {
   QgsDebugMsg( "Entered" );
-  if ( index.isValid() ) 
+  if ( index.isValid() )
   {
-    QgsDataItem* item = (QgsDataItem*) index.internalPointer();
+    QgsDataItem* item = ( QgsDataItem* ) index.internalPointer();
     QgsDebugMsg( "path = " + item->path() );
   }
   mModel->refresh( index );
-  for ( int i = 0 ; i < mModel->rowCount(index); i++ ) 
+  for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
-    QModelIndex idx = mModel->index(i, 0, index);
-    if ( treeView->isExpanded ( idx ) )
+    QModelIndex idx = mModel->index( i, 0, index );
+    if ( treeView->isExpanded( idx ) )
     {
       refresh( idx );
     }

@@ -116,7 +116,6 @@ qgsmaptoolemitpoint.h
 qgsmessageviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
-qgsnumericsortlistviewitem.h
 qgscredentialdialog.h
 qgsprojectionselector.h
 qgsquickprint.h

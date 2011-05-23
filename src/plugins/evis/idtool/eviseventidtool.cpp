@@ -60,7 +60,8 @@ eVisEventIdTool::eVisEventIdTool( QgsMapCanvas* theCanvas )
 */
 void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 {
-  if ( 0 == mCanvas || 0 == theMouseEvent ) { return; }
+  if ( 0 == mCanvas || 0 == theMouseEvent )
+    return;
 
   //Check to see if there is a layer selected
   if ( mCanvas->currentLayer( ) )
@@ -88,19 +89,20 @@ void eVisEventIdTool::canvasReleaseEvent( QMouseEvent* theMouseEvent )
 void eVisEventIdTool::select( QgsPoint thePoint )
 {
 
-  if ( 0 == mCanvas ) { return; }
-  
+  if ( 0 == mCanvas )
+    return;
+
   QgsVectorLayer* myLayer = ( QgsVectorLayer* )mCanvas->currentLayer( );
-  
+
   // create the search rectangle. this was modeled after the QgsMapIdentifyTool in core QGIS application
   double searchWidth = mCanvas->extent( ).width( ) * (( double )QGis::DEFAULT_IDENTIFY_RADIUS / 100.0 );
-  
+
   QgsRectangle myRectangle;
   myRectangle.setXMinimum( thePoint.x( ) - searchWidth );
   myRectangle.setXMaximum( thePoint.x( ) + searchWidth );
   myRectangle.setYMinimum( thePoint.y( ) - searchWidth );
   myRectangle.setYMaximum( thePoint.y( ) + searchWidth );
-  
+
   //Transform rectange to map coordinates
   myRectangle = toLayerCoordinates( myLayer, myRectangle );
 
@@ -108,7 +110,7 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   myLayer->removeSelection( false );
   //select features
   myLayer->select( QgsAttributeList(), myRectangle, true, true );
-  
+
   QgsFeature f;
   QgsFeatureIds newSelectedFeatures;
   while ( myLayer->nextFeature( f ) )
@@ -117,7 +119,7 @@ void eVisEventIdTool::select( QgsPoint thePoint )
   }
 
   myLayer->setSelectedFeatures( newSelectedFeatures );
-  
+
   //Launch a new event browser to view selected features
   mBrowser = new eVisGenericEventBrowserGui( mCanvas, mCanvas, NULL );
   mBrowser->setAttribute( Qt::WA_DeleteOnClose );

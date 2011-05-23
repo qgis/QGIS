@@ -137,7 +137,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   connect( mView->verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( updateRowPressed( int ) ) );
   connect( mModel, SIGNAL( modelChanged() ), this, SLOT( updateSelection() ) );
 
-  connect( mView, SIGNAL(willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT(viewWillShowContextMenu(QMenu*, QModelIndex ) ) );
+  connect( mView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
   mLastClickedHeaderIndex = 0;
   mSelectionModel = new QItemSelectionModel( mFilterModel );

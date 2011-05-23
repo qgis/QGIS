@@ -239,7 +239,8 @@ QgsSqlAnywhereProvider::loadFields()
     const QgsVectorDataProvider::NativeType fieldNativeType = stmt->mapType( info.native_type );
 
     // skip the geom column
-    if ( fieldName == mGeometryColumn ) continue;
+    if ( fieldName == mGeometryColumn )
+      continue;
 
     // look for duplicates
     if ( fieldNames.contains( fieldName ) )
@@ -742,7 +743,8 @@ QgsSqlAnywhereProvider::featureAtId( int featureId, QgsFeature & feature, bool f
                           + QString( "AND %1 = ? " )
                           .arg( quotedIdentifier( mKeyColumn ) );
 
-    if ( mIdStmt ) { delete mIdStmt; }
+    if ( mIdStmt )
+      delete mIdStmt;
     mIdStmt = mConnRO->prepare( makeSelectSql( whereClause ) );
   }
 
@@ -818,7 +820,8 @@ QgsSqlAnywhereProvider::select( QgsAttributeList fetchAttributes, QgsRectangle r
                      .arg( mSrid );
     }
 
-    if ( mStmt ) { delete mStmt; }
+    if ( mStmt )
+      delete mStmt;
     mStmt = mConnRO->prepare( makeSelectSql( whereClause ) );
   }
 

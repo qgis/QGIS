@@ -166,7 +166,8 @@ void QgsDataItem::populate()
 
 int QgsDataItem::rowCount()
 {
-  if ( !mPopulated ) populate();
+  if ( !mPopulated )
+    populate();
   return mChildren.size();
 }
 bool QgsDataItem::hasChildren()
@@ -180,10 +181,13 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   int i;
   for ( i = 0; i < mChildren.size(); i++ )
   {
-    if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 ) break;
+    if ( mChildren[i]->mName.localeAwareCompare( child->mName ) >= 0 )
+      break;
   }
 
-  if ( refresh ) emit beginInsertItems( this, i, i );
+  if ( refresh )
+    emit beginInsertItems( this, i, i );
+
   mChildren.insert( i, child );
 
   connect( child, SIGNAL( beginInsertItems( QgsDataItem*, int, int ) ),
@@ -195,8 +199,8 @@ void QgsDataItem::addChildItem( QgsDataItem * child, bool refresh )
   connect( child, SIGNAL( endRemoveItems() ),
            this, SLOT( emitEndRemoveItems() ) );
 
-  if ( refresh ) emit endInsertItems();
-
+  if ( refresh )
+    emit endInsertItems();
 }
 void QgsDataItem::deleteChildItem( QgsDataItem * child )
 {
@@ -214,7 +218,8 @@ int QgsDataItem::findItem( QVector<QgsDataItem*> items, QgsDataItem * item )
   for ( int i = 0; i < items.size(); i++ )
   {
     QgsDebugMsg( QString::number( i ) + " : " + items[i]->mPath + " x " + item->mPath );
-    if ( items[i]->equal( item ) ) return i;
+    if ( items[i]->equal( item ) )
+      return i;
   }
   return -1;
 }
@@ -229,7 +234,8 @@ void QgsDataItem::refresh()
   QVector<QgsDataItem*> remove;
   foreach( QgsDataItem *child, mChildren )
   {
-    if ( findItem( items, child ) >= 0 ) continue;
+    if ( findItem( items, child ) >= 0 )
+      continue;
     remove.append( child );
   }
   foreach( QgsDataItem *child, remove )
@@ -280,7 +286,8 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QSt
 
 QgsMapLayer::LayerType QgsLayerItem::mapLayerType()
 {
-  if ( mLayerType == QgsLayerItem::Raster ) return QgsMapLayer::RasterLayer;
+  if ( mLayerType == QgsLayerItem::Raster )
+    return QgsMapLayer::RasterLayer;
   return QgsMapLayer::VectorLayer;
 }
 
@@ -328,7 +335,7 @@ QgsDirectoryItem::QgsDirectoryItem( QgsDataItem* parent, QString name, QString p
       QString k( *i );
       // some providers hangs with empty uri (Postgis) etc...
       // -> using libraries directly
-      QLibrary *library = QgsProviderRegistry::instance()->getLibrary( k );
+      QLibrary *library = QgsProviderRegistry::instance()->providerLibrary( k );
       if ( library )
       {
         dataCapabilities_t * dataCapabilities = ( dataCapabilities_t * ) cast_to_fptr( library->resolve( "dataCapabilities" ) );
@@ -384,7 +391,10 @@ QVector<QgsDataItem*> QgsDirectoryItem::createChildren( )
 
       // TODO: use existing fileVectorFilters(),directoryDrivers() ?
       dataCapabilities_t * dataCapabilities = ( dataCapabilities_t * ) cast_to_fptr( library->resolve( "dataCapabilities" ) );
-      if ( !dataCapabilities ) continue;
+      if ( !dataCapabilities )
+      {
+        continue;
+      }
 
       int capabilities = dataCapabilities();
 

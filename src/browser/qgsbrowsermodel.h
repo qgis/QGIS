@@ -9,8 +9,8 @@
 class QgsBrowserModel : public QAbstractItemModel
 {
     Q_OBJECT
-public:
-    explicit QgsBrowserModel(QObject *parent = 0);
+  public:
+    explicit QgsBrowserModel( QObject *parent = 0 );
     ~QgsBrowserModel();
 
     // implemented methods from QAbstractItemModel for read-only access
@@ -31,7 +31,7 @@ public:
     virtual int rowCount( const QModelIndex & parent = QModelIndex() ) const;
     /** Provides the number of columns of data exposed by the model. List models do not provide this function
       because it is already implemented in QAbstractListModel. */
-    virtual int columnCount ( const QModelIndex & parent = QModelIndex() ) const;
+    virtual int columnCount( const QModelIndex & parent = QModelIndex() ) const;
 
     /** Returns the index of the item in the model specified by the given row, column and parent index. */
     virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
@@ -42,17 +42,17 @@ public:
     virtual QModelIndex parent( const QModelIndex & index ) const;
 
 
-    bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
+    bool hasChildren( const QModelIndex & parent = QModelIndex() ) const;
 
     // Refresh item specified by path
     void refresh( QString path, const QModelIndex& index = QModelIndex() );
     // Refresh item childs
     void refresh( const QModelIndex& index = QModelIndex() );
 
-    void connectItem ( QgsDataItem * item );
-signals:
+    void connectItem( QgsDataItem * item );
+  signals:
 
-public slots:
+  public slots:
     //void removeItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
     //void addItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
     //void refreshItems( QgsDataItem * parent, QVector<QgsDataItem *>items );
@@ -62,7 +62,7 @@ public slots:
     void beginRemoveItems( QgsDataItem* parent, int first, int last );
     void endRemoveItems();
 
-protected:
+  protected:
     QVector<QgsDataItem*> mRootItems;
     QIcon mIconDirectory;
 };

@@ -26,7 +26,7 @@
 /**A cache for capabilities xml documents (by configuration file path)*/
 class QgsCapabilitiesCache: public QObject
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsCapabilitiesCache();
     ~QgsCapabilitiesCache();

@@ -238,7 +238,8 @@ QDateTime QgsRasterLayer::lastModified( QString const & name )
   QFileInfo fi( name );
 
   // Is it file?
-  if ( !fi.exists() ) return t;
+  if ( !fi.exists() )
+    return t;
 
   t = fi.lastModified();
 
@@ -580,7 +581,8 @@ QString QgsRasterLayer::colorShadingAlgorithmAsString() const
  */
 void QgsRasterLayer::computeMinimumMaximumEstimates( int theBand, double* theMinMax )
 {
-  if ( 0 == theMinMax ) { return; }
+  if ( !theMinMax )
+    return;
 
   if ( 0 < theBand && theBand <= ( int ) bandCount() )
   {
@@ -612,7 +614,8 @@ void QgsRasterLayer::computeMinimumMaximumEstimates( int theBand, double& theMin
  */
 void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* theMinMax )
 {
-  if ( 0 == theMinMax ) { return; }
+  if ( !theMinMax )
+    return;
 
   int myDataType = mDataProvider->dataType( theBand );
   void* myScanData = readData( theBand, &mLastViewPort );
@@ -2543,7 +2546,7 @@ void QgsRasterLayer::setColorShadingAlgorithm( ColorShadingAlgorithm theShadingA
   QgsDebugMsg( "called with [" + QString::number( theShadingAlgorithm ) + "]" );
   if ( mColorShadingAlgorithm != theShadingAlgorithm )
   {
-    if ( 0 == mRasterShader )
+    if ( !mRasterShader )
     {
       mRasterShader = new QgsRasterShader();
     }
@@ -2898,7 +2901,8 @@ QStringList QgsRasterLayer::subLayers() const
 void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
 {
   //TODO: This should be depreciated and a new function written that just returns a new QPixmap, it will be safer
-  if ( 0 == theQPixmap ) { return; }
+  if ( !theQPixmap )
+    return;
 
   theQPixmap->fill( );  //defaults to white
 
@@ -2950,7 +2954,9 @@ void QgsRasterLayer::thumbnailAsPixmap( QPixmap * theQPixmap )
 void QgsRasterLayer::thumbnailAsImage( QImage * thepImage )
 {
   //TODO: This should be depreciated and a new function written that just returns a new QImage, it will be safer
-  if ( 0 == thepImage ) { return; }
+  if ( !thepImage )
+    return;
+
 
   thepImage->fill( Qt::white ); //defaults to white
 

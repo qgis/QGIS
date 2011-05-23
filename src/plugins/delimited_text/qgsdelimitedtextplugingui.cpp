@@ -165,11 +165,16 @@ void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
 QString QgsDelimitedTextPluginGui::selectedChars()
 {
   QString chars = "";
-  if ( cbxDelimSpace->isChecked() ) chars += " ";
-  if ( cbxDelimTab->isChecked() ) chars += "\\t";
-  if ( cbxDelimSemicolon->isChecked() ) chars += ";";
-  if ( cbxDelimComma->isChecked() ) chars += ",";
-  if ( cbxDelimColon->isChecked() ) chars += ":";
+  if ( cbxDelimSpace->isChecked() )
+    chars += " ";
+  if ( cbxDelimTab->isChecked() )
+    chars += "\\t";
+  if ( cbxDelimSemicolon->isChecked() )
+    chars += ";";
+  if ( cbxDelimComma->isChecked() )
+    chars += ",";
+  if ( cbxDelimColon->isChecked() )
+    chars += ":";
   return chars;
 }
 
@@ -254,7 +259,8 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   cmbYField->setEnabled( false );
   cmbWktField->setEnabled( false );
 
-  if ( ! haveValidFileAndDelimiters() ) return;
+  if ( ! haveValidFileAndDelimiters() )
+    return;
 
   QFile file( txtFilePath->text() );
   if ( !file.open( QIODevice::ReadOnly ) )

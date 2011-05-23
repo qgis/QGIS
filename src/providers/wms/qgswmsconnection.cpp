@@ -52,7 +52,7 @@
 #include <QNetworkReply>
 
 QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
-  mConnName ( theConnName )
+    mConnName( theConnName )
 {
   QgsDebugMsg( "theConnName = " + theConnName );
 
@@ -63,7 +63,7 @@ QgsWMSConnection::QgsWMSConnection( QString theConnName ) :
 
   QStringList connStringParts;
 
-  mConnectionInfo = settings.value( key + "/url" ).toString(); 
+  mConnectionInfo = settings.value( key + "/url" ).toString();
 
   // Check for credentials and prepend to the connection info
   QString username = settings.value( credentialsKey + "/username" ).toString();
@@ -111,12 +111,12 @@ QgsWMSConnection::~QgsWMSConnection()
 
 }
 
-QString QgsWMSConnection::connectionInfo ( )
+QString QgsWMSConnection::connectionInfo( )
 {
   return mConnectionInfo;
 }
 
-QgsWmsProvider * QgsWMSConnection::provider ( )
+QgsWmsProvider * QgsWMSConnection::provider( )
 {
   // TODO: Create and bind to data provider
 
@@ -124,7 +124,7 @@ QgsWmsProvider * QgsWMSConnection::provider ( )
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
   QgsWmsProvider *wmsProvider =
-    ( QgsWmsProvider* ) pReg->getProvider( "wms", mConnectionInfo );
+    ( QgsWmsProvider* ) pReg->provider( "wms", mConnectionInfo );
 
   return wmsProvider;
 }

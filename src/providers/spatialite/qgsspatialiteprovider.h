@@ -380,41 +380,41 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
-    void convertToGeosWKB ( const unsigned char *blob, size_t blob_size, 
-                            unsigned char **wkb, size_t *geom_size );
+    void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
+                           unsigned char **wkb, size_t *geom_size );
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
-                                   int little_endian, 
-                                   int endian_arch );
-    int computeSizeFromMultiWKB3D( const unsigned char *p_in, int nDims, 
                                    int little_endian,
                                    int endian_arch );
-    void convertFromGeosWKB2D( const unsigned char *blob, size_t blob_size, 
-                              unsigned char *wkb, size_t geom_size,  
-                              int nDims, int little_endian, int endian_arch );
-    void convertFromGeosWKB3D( const unsigned char *blob, size_t blob_size, 
-                              unsigned char *wkb, size_t geom_size, 
-                              int nDims, int little_endian, int endian_arch );
-    int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian, 
+    int computeSizeFromMultiWKB3D( const unsigned char *p_in, int nDims,
+                                   int little_endian,
+                                   int endian_arch );
+    void convertFromGeosWKB2D( const unsigned char *blob, size_t blob_size,
+                               unsigned char *wkb, size_t geom_size,
+                               int nDims, int little_endian, int endian_arch );
+    void convertFromGeosWKB3D( const unsigned char *blob, size_t blob_size,
+                               unsigned char *wkb, size_t geom_size,
+                               int nDims, int little_endian, int endian_arch );
+    int computeMultiWKB3Dsize( const unsigned char *p_in, int little_endian,
                                int endian_arch );
-    void convertFromGeosWKB ( const unsigned char *blob, size_t blob_size, 
-                              unsigned char **wkb, size_t *geom_size, 
-                              int dims );
-    int computeSizeFromGeosWKB3D( const unsigned char *blob, size_t size, 
-                                  int type, int nDims, int little_endian, 
+    void convertFromGeosWKB( const unsigned char *blob, size_t blob_size,
+                             unsigned char **wkb, size_t *geom_size,
+                             int dims );
+    int computeSizeFromGeosWKB3D( const unsigned char *blob, size_t size,
+                                  int type, int nDims, int little_endian,
                                   int endian_arch );
-    int computeSizeFromGeosWKB2D( const unsigned char *blob, size_t size,    
-                                  int type, int nDims, int little_endian, 
+    int computeSizeFromGeosWKB2D( const unsigned char *blob, size_t size,
+                                  int type, int nDims, int little_endian,
                                   int endian_arch );
-	
+
     enum GEOS_3D
     {
-        GEOS_3D_POINT              = -2147483647,
-        GEOS_3D_LINESTRING         = -2147483646,
-        GEOS_3D_POLYGON            = -2147483645,
-        GEOS_3D_MULTIPOINT         = -2147483644,
-        GEOS_3D_MULTILINESTRING    = -2147483643,
-        GEOS_3D_MULTIPOLYGON       = -2147483642,
-        GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
+      GEOS_3D_POINT              = -2147483647,
+      GEOS_3D_LINESTRING         = -2147483646,
+      GEOS_3D_POLYGON            = -2147483645,
+      GEOS_3D_MULTIPOINT         = -2147483644,
+      GEOS_3D_MULTILINESTRING    = -2147483643,
+      GEOS_3D_MULTIPOLYGON       = -2147483642,
+      GEOS_3D_GEOMETRYCOLLECTION = -2147483641,
     };
 
   public:

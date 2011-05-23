@@ -2711,7 +2711,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   mDataProvider =
-    ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->getProvider( provider, mDataSource ) );
+    ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
 
   if ( mDataProvider )
   {
@@ -2902,11 +2902,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
       if ( returnCode == 1 )
       {
-        errorMessage = tr( "No renderer object" ); delete renderer; return false;
+        errorMessage = tr( "No renderer object" );
+        delete renderer;
+        return false;
       }
       else if ( returnCode == 2 )
       {
-        errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+        errorMessage = tr( "Classification field not found" );
+        delete renderer;
+        return false;
       }
 
       mRenderer = renderer;
@@ -5514,7 +5518,7 @@ QString QgsVectorLayer::metadata()
   myMetadata += "</body></html>";
   return myMetadata;
 }
-  
+
 QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
 {
   const QgsFieldMap &fields = pendingFields();
