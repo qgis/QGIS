@@ -71,7 +71,8 @@ void QgsGrassRegionEdit::canvasPressEvent( QMouseEvent * event )
 //! mouse movement in map canvas
 void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
 {
-  if ( !mDraw ) return;
+  if ( !mDraw )
+    return;
 
   mEndPoint = toMapCoordinates( event->pos() );
   setRegion( mStartPoint, mEndPoint );
@@ -80,7 +81,8 @@ void QgsGrassRegionEdit::canvasMoveEvent( QMouseEvent * event )
 //! mouse button released
 void QgsGrassRegionEdit::canvasReleaseEvent( QMouseEvent * event )
 {
-  if ( !mDraw ) return;
+  if ( !mDraw )
+    return;
 
   mEndPoint = toMapCoordinates( event->pos() );
   setRegion( mStartPoint, mEndPoint );
@@ -162,7 +164,8 @@ void QgsGrassRegionEdit::drawRegion( QgsMapCanvas *canvas, QgsRubberBand* rubber
   for ( int i = 0; i < points.size(); i++ )
   {
     bool update = false; // true to update canvas
-    if ( i == points.size() - 1 ) update = true;
+    if ( i == points.size() - 1 )
+      update = true;
     rubberBand->addPoint( points[i], update );
   }
   rubberBand->show();
@@ -327,7 +330,8 @@ QgsGrassRegion::~QgsGrassRegion()
 
 void QgsGrassRegion::northChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.north = mNorth->text().toDouble();
   if ( mWindow.north < mWindow.south )
@@ -339,7 +343,8 @@ void QgsGrassRegion::northChanged()
 
 void QgsGrassRegion::southChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.south = mSouth->text().toDouble();
   if ( mWindow.south > mWindow.north )
@@ -351,7 +356,8 @@ void QgsGrassRegion::southChanged()
 
 void QgsGrassRegion::eastChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.east = mEast->text().toDouble();
   if ( mWindow.east < mWindow.west )
@@ -363,7 +369,8 @@ void QgsGrassRegion::eastChanged()
 
 void QgsGrassRegion::westChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.west = mWest->text().toDouble();
   if ( mWindow.west > mWindow.east )
@@ -375,7 +382,8 @@ void QgsGrassRegion::westChanged()
 
 void QgsGrassRegion::NSResChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.ns_res = mNSRes->text().toDouble();
   if ( mWindow.ns_res <= 0 )
@@ -387,7 +395,8 @@ void QgsGrassRegion::NSResChanged()
 
 void QgsGrassRegion::EWResChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.ew_res = mEWRes->text().toDouble();
   if ( mWindow.ew_res <= 0 )
@@ -399,7 +408,8 @@ void QgsGrassRegion::EWResChanged()
 
 void QgsGrassRegion::rowsChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.rows = mRows->text().toInt();
   if ( mWindow.rows < 1 )
@@ -411,7 +421,8 @@ void QgsGrassRegion::rowsChanged()
 
 void QgsGrassRegion::colsChanged()
 {
-  if ( mUpdatingGui ) return;
+  if ( mUpdatingGui )
+    return;
 
   mWindow.cols = mCols->text().toInt();
   if ( mWindow.cols < 1 )

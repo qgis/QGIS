@@ -122,18 +122,21 @@ void QgsGrassSelect::setLocations()
   // Add all subdirs containing PERMANENT/DEFAULT_WIND
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
-    if ( d[i] == "." || d[i] == ".." ) continue;
+    if ( d[i] == "." || d[i] == ".." )
+      continue;
 
     QString ldpath = egisdbase->text() + "/" + d[i];
 
     if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
     {
-      if ( !G_is_location( ldpath.toLocal8Bit().constData() ) ) continue;
+      if ( !G_is_location( ldpath.toLocal8Bit().constData() ) )
+        continue;
     }
     else
     {
       QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
-      if ( !QFile::exists( chf ) ) continue;
+      if ( !QFile::exists( chf ) )
+        continue;
     }
 
     // if type is MAPSET check also if at least one mapset owned by user exists
@@ -145,10 +148,12 @@ void QgsGrassSelect::setLocations()
 
       for ( unsigned int j = 0; j < ld.count(); j++ )
       {
-        if ( !QgsGrass::isMapset( ldpath + "/" + ld[j] ) ) continue;
+        if ( !QgsGrass::isMapset( ldpath + "/" + ld[j] ) )
+          continue;
 
         QFileInfo info( ldpath + "/" + ld[j] );
-        if ( !info.isWritable() ) continue;
+        if ( !info.isWritable() )
+          continue;
 
         // TODO: check if owner == user: how to get uer name in QT
 
@@ -156,7 +161,8 @@ void QgsGrassSelect::setLocations()
         break;
       }
 
-      if ( !exists ) continue;
+      if ( !exists )
+        continue;
     }
 
     elocation->addItem( QString( d[i] ) );
@@ -185,7 +191,8 @@ void QgsGrassSelect::setMapsets()
   emap->clear();
   elayer->clear();
 
-  if ( elocation->count() < 1 ) return;
+  if ( elocation->count() < 1 )
+    return;
 
   // Location directory
   QString ldpath = egisdbase->text() + "/" + elocation->currentText();
@@ -227,7 +234,8 @@ void QgsGrassSelect::setMaps()
   emap->clear();
   elayer->clear();
 
-  if ( emapset->count() < 1 ) return;
+  if ( emapset->count() < 1 )
+    return;
 
   // Mapset directory
   QString ldpath = egisdbase->text() + "/" + elocation->currentText() + "/" + emapset->currentText();
@@ -244,7 +252,8 @@ void QgsGrassSelect::setMaps()
     for ( int j = 0; j < list.count(); j++ )
     {
       emap->addItem( list[j] );
-      if ( list[j] == lastVectorMap ) sel = idx;
+      if ( list[j] == lastVectorMap )
+        sel = idx;
       idx++;
     }
 
@@ -258,7 +267,8 @@ void QgsGrassSelect::setMaps()
     for ( int j = 0; j < list.count(); j++ )
     {
       emap->addItem( list[j] );
-      if ( list[j] == lastRasterMap ) sel = idx;
+      if ( list[j] == lastRasterMap )
+        sel = idx;
       idx++;
     }
 
@@ -269,7 +279,8 @@ void QgsGrassSelect::setMaps()
 
     for ( unsigned int j = 0; j < md.count(); j++ )
     {
-      if ( md[j] == "." || md[j] == ".." ) continue;
+      if ( md[j] == "." || md[j] == ".." )
+        continue;
 
       QString m = QString( md[j] + " (GROUP)" );
       emap->addItem( m );
@@ -320,8 +331,10 @@ void QgsGrassSelect::setLayers()
 
   elayer->clear();
 
-  if ( type != VECTOR ) return;
-  if ( emap->count() < 1 ) return;
+  if ( type != VECTOR )
+    return;
+  if ( emap->count() < 1 )
+    return;
 
   QStringList layers = QgsGrass::vectorLayers( egisdbase->text(),
                                      elocation->currentText(), emapset->currentText(),
@@ -332,7 +345,8 @@ void QgsGrassSelect::setLayers()
   for ( int i = 0; i < layers.count(); i++ )
   {
     elayer->addItem( layers[i] );
-    if ( layers[i] == lastLayer ) sel = idx;
+    if ( layers[i] == lastLayer )
+      sel = idx;
     idx++;
   }
 

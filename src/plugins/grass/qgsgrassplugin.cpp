@@ -69,8 +69,10 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
 
 QgsGrassPlugin::~QgsGrassPlugin()
 {
-  if ( mTools ) mTools->closeTools();
-  if ( mEdit ) mEdit->closeEdit();
+  if ( mTools )
+    mTools->closeTools();
+  if ( mEdit )
+    mEdit->closeEdit();
   QString err = QgsGrass::closeMapset();
 }
 
@@ -509,7 +511,8 @@ void QgsGrassPlugin::newVector()
   name = dialog.getItem( "vector", tr( "New vector name" ),
                          tr( "New vector name" ), "", "", &ok );
 
-  if ( !ok ) return;
+  if ( !ok )
+    return;
 
   // Create new map
   QgsGrass::setMapset( QgsGrass::getDefaultGisdbase(),
@@ -589,10 +592,12 @@ void QgsGrassPlugin::displayRegion()
 // QgsDebugMsg("entered.");
 
   mRegionBand->reset();
-  if ( !mRegionAction->isChecked() ) { return; }
+  if ( !mRegionAction->isChecked() )
+    return;
 
   // Display region of current mapset if in active mode
-  if ( !QgsGrass::activeMode() ) return;
+  if ( !QgsGrass::activeMode() )
+    return;
 
   QString gisdbase = QgsGrass::getDefaultGisdbase();
   QString location = QgsGrass::getDefaultLocation();
@@ -693,7 +698,8 @@ void QgsGrassPlugin::openMapset()
 
   QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::MAPSET );
 
-  if ( !sel->exec() ) return;
+  if ( !sel->exec() )
+    return;
 
   QString err = QgsGrass::openMapset( sel->gisdbase,
                                       sel->location, sel->mapset );

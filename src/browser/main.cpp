@@ -41,7 +41,7 @@ int main( int argc, char ** argv )
 #if defined(Q_WS_WIN)
   QString prefixPath = QApplication::applicationDirPath();
 #else
-  QString prefixPath = QApplication::applicationDirPath()+"/..";
+  QString prefixPath = QApplication::applicationDirPath() + "/..";
 #endif
   a.setPrefixPath( prefixPath, true );
   a.initQgis();
@@ -51,7 +51,7 @@ int main( int argc, char ** argv )
   QCoreApplication::setOrganizationDomain( "qgis.org" );
   QCoreApplication::setApplicationName( "QGIS" );
 
-/*
+#if 0
   QString myTranslationCode = "";
 
   // This is mostly copy from Help viewer - not sure if important
@@ -76,28 +76,28 @@ int main( int argc, char ** argv )
     }
   }
   QgsDebugMsg( QString( "Setting translation to %1/qgis_%2" ).arg( i18nPath ).arg( myTranslationCode ) );
-*/
+
   /* Translation file for Qt.
    * The strings from the QMenuBar context section are used by Qt/Mac to shift
    * the About, Preferences and Quit items to the Mac Application menu.
    * These items must be translated identically in both qt_ and qgis_ files.
    */
-/*
+
   QTranslator qttor( 0 );
   if ( qttor.load( QString( "qt_" ) + myTranslationCode, i18nPath ) )
   {
     a.installTranslator( &qttor );
   }
-*/
+
   /* Translation file for QGIS.
    */
-/*
+
   QTranslator qgistor( 0 );
   if ( qgistor.load( QString( "qgis_" ) + myTranslationCode, i18nPath ) )
   {
     a.installTranslator( &qgistor );
   }
-*/
+#endif
 
   QgsBrowser w;
 

@@ -86,7 +86,8 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 
   mSelPen = mPen;
   QColor selColor = context.selectionColor();
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! selectionIsOpaque )
+    selColor.setAlphaF( context.alpha() );
   mSelPen.setColor( selColor );
 }
 
@@ -619,7 +620,8 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
   mPen.setWidth( context.outputLineWidth( mWidth ) );
   mPen.setColor( penColor );
   QColor selColor = context.selectionColor();
-  if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+  if ( ! selectionIsOpaque )
+    selColor.setAlphaF( context.alpha() );
   mSelPen.setWidth( context.outputLineWidth( mWidth ) );
   mSelPen.setColor( selColor );
 }

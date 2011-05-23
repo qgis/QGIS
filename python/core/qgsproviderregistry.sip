@@ -26,7 +26,7 @@ class QgsProviderRegistry
 
     void setLibraryDirectory(const QDir & path);
  
-    QgsDataProvider * getProvider( const QString & providerKey, 
+    QgsDataProvider *provider( const QString & providerKey,
                                    const QString & dataSource );
 
     /** Return list of available providers by their keys */

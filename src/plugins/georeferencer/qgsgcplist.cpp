@@ -61,7 +61,8 @@ int QgsGCPList::size() const
   const_iterator it = begin();
   while ( it != end() )
   {
-    if (( *it )->isEnabled() ) s++;
+    if (( *it )->isEnabled() )
+      s++;
     it++;
   }
   return s;

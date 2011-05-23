@@ -45,8 +45,8 @@ class QgsWMSConnection : public QObject
     ~QgsWMSConnection();
 
   public:
-    QgsWmsProvider *provider ( );
-    QString connectionInfo(); 
+    QgsWmsProvider *provider();
+    QString connectionInfo();
     QString mConnName;
     QString mConnectionInfo;
 };

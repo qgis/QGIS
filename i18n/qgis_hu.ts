@@ -21268,7 +21268,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.</numerusform>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>Az adathalmazodat tartalmazó könyvtárnak írhatónak kell lennie! </translation>
     </message>
     <message>
@@ -26295,7 +26295,7 @@ SQL:%3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="982"/>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 nem írható. Módosítsd a jogokat (ha lehet) és próbáld újra.</translation>
     </message>
     <message>
@@ -27912,7 +27912,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1560"/>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>A fájl nem írható. Néhány formátum nem támogatja a piramist. Nézd meg a GDAL dokumentációt a kétségeid vannak.</translation>
     </message>
     <message>

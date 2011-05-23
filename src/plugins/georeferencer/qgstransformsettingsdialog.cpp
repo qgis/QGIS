@@ -69,9 +69,11 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
   cbxUserResolution->setChecked( s.value( "/Plugin-Georeferencer/user_specified_resolution", false ).toBool() );
   bool ok;
   dsbHorizRes->setValue( s.value( "/Plugin-GeoReferencer/user_specified_resx",     1.0 ).toDouble( &ok ) );
-  if ( !ok ) dsbHorizRes->setValue( 1.0 );
+  if ( !ok )
+    dsbHorizRes->setValue( 1.0 );
   dsbVerticalRes->setValue( s.value( "/Plugin-GeoReferencer/user_specified_resy", -1.0 ).toDouble( &ok ) );
-  if ( !ok ) dsbHorizRes->setValue( -1.0 );
+  if ( !ok )
+    dsbHorizRes->setValue( -1.0 );
 
   // Activate spin boxes for vertical/horizontal resolution, if the option is checked
   dsbHorizRes->setEnabled( cbxUserResolution->isChecked() );

@@ -307,12 +307,12 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 class QgsOgrLayerItem : public QgsLayerItem
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsOgrLayerItem ( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
-    ~QgsOgrLayerItem ();
+    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
+    ~QgsOgrLayerItem();
 
-    bool setCrs ( QgsCoordinateReferenceSystem crs );
+    bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
 };
 

@@ -299,13 +299,15 @@ bool QgsGrass::isValidGrassBaseDir( QString const gisBase )
 #if 0
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-    if ( G_is_gisbase( gisBase.toUtf8().constData() ) ) return true;
+    if ( G_is_gisbase( gisBase.toUtf8().constData() ) )
+      return true;
   }
   else
   {
 #endif
     QFileInfo gbi( gisBase + "/etc/element_list" );
-    if ( gbi.exists() ) return true;
+    if ( gbi.exists() )
+      return true;
 #if 0
   }
 #endif
@@ -443,7 +445,8 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   // Check if the mapset is in use
   QString gisBase = getenv( "GISBASE" );
-  if ( gisBase.isEmpty() ) return QObject::tr( "GISBASE is not set." );
+  if ( gisBase.isEmpty() )
+    return QObject::tr( "GISBASE is not set." );
 
   QFileInfo fi( mapsetPath + "/WIND" );
   if ( !fi.exists() )
@@ -546,7 +549,8 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
       {
         continue;
       }
-      if ( line.contains( "GRASS_GUI:" ) ) guiSet = true;
+      if ( line.contains( "GRASS_GUI:" ) )
+        guiSet = true;
       stream << line;
     }
     in.close();
@@ -635,7 +639,8 @@ QString QgsGrass::closeMapset( )
       QDir dir( mTmp );
       for ( unsigned int i = 0; i < dir.count(); i++ )
       {
-        if ( dir[i] == "." || dir[i] == ".." ) continue;
+        if ( dir[i] == "." || dir[i] == ".." )
+          continue;
 
         dir.remove( dir[i] );
         if ( dir.remove( dir[i] ) )
@@ -660,7 +665,8 @@ QStringList GRASS_EXPORT QgsGrass::locations( QString gisbase )
 
   QStringList list;
 
-  if ( gisbase.isEmpty() ) return list;
+  if ( gisbase.isEmpty() )
+    return list;
 
   QDir d = QDir( gisbase );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
@@ -692,7 +698,8 @@ QStringList GRASS_EXPORT QgsGrass::mapsets( QString locationPath )
 
   QStringList list;
 
-  if ( locationPath.isEmpty() ) return list;
+  if ( locationPath.isEmpty() )
+    return list;
 
   QDir d = QDir( locationPath );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
@@ -750,7 +757,8 @@ QStringList GRASS_EXPORT QgsGrass::vectors( QString mapsetPath )
 
   QStringList list;
 
-  if ( mapsetPath.isEmpty() ) return list;
+  if ( mapsetPath.isEmpty() )
+    return list;
 
   QDir d = QDir( mapsetPath + "/vector" );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
@@ -905,7 +913,8 @@ QStringList GRASS_EXPORT QgsGrass::rasters( QString mapsetPath )
 
   QStringList list;
 
-  if ( mapsetPath.isEmpty() ) return list;
+  if ( mapsetPath.isEmpty() )
+    return list;
 
   QDir d = QDir( mapsetPath + "/cellhd" );
   d.setFilter( QDir::Files );
@@ -933,7 +942,8 @@ QStringList GRASS_EXPORT QgsGrass::elements( QString mapsetPath, QString element
 
   QStringList list;
 
-  if ( mapsetPath.isEmpty() ) return list;
+  if ( mapsetPath.isEmpty() )
+    return list;
 
   QDir d = QDir( mapsetPath + "/" + element );
   d.setFilter( QDir::Files );
@@ -1356,7 +1366,8 @@ QHash<QString, QString> GRASS_EXPORT QgsGrass::info( QString gisdbase, QString l
     for ( int i = 0; i < list.size(); i++ )
     {
       QStringList keyVal = list[i].split( ':' );
-      if ( list[i].isEmpty() ) { continue; }
+      if ( list[i].isEmpty() )
+        continue;
       if ( keyVal.size() != 2 )
       {
         throw QgsGrass::Exception( "Cannot parse GRASS map info key value : " + list[i] + " (" + str + " ) " );
@@ -1385,7 +1396,8 @@ QList<QgsGrass::Color> GRASS_EXPORT QgsGrass::colors( QString gisdbase, QString 
     for ( int i = 0; i < list.size(); i++ )
     {
       QgsGrass::Color c;
-      if ( list[i].isEmpty() ) { continue; }
+      if ( list[i].isEmpty() )
+        continue;
       if ( sscanf( list[i].toUtf8().data(), "%lf %lf %d %d %d %d %d %d", &( c.value1 ), &( c.value2 ), &( c.red1 ), &( c.green1 ), &( c.blue1 ), &( c.red2 ), &( c.green2 ), &( c.blue2 ) ) != 8 )
       {
         throw QgsGrass::Exception( "Cannot parse GRASS colors" + list[i] + " (" + str + " ) " );
@@ -1462,19 +1474,24 @@ QString GRASS_EXPORT QgsGrass::versionString()
 
 bool GRASS_EXPORT QgsGrass::isMapset( QString path )
 {
+#if 0
   /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
   enable its use after some period (others do update) */
-  /*
+
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-  if ( G_is_mapset( path.toUtf8().constData() ) ) return true;
+    if ( G_is_mapset( path.toUtf8().constData() ) )
+      return true;
   }
   else
   {
-  */
-  QString windf = path + "/WIND";
-  if ( QFile::exists( windf ) ) return true;
-  //}
+#endif
+    QString windf = path + "/WIND";
+    if ( QFile::exists( windf ) )
+      return true;
+#if 0
+  }
+#endif
 
   return false;
 }

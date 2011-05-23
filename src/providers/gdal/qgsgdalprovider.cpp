@@ -105,7 +105,8 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   registerGdalDrivers();
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
-  if ( uri.isEmpty() ) return;
+  if ( uri.isEmpty() )
+    return;
 
   mGdalDataset = NULL;
 
@@ -390,7 +391,8 @@ QgsGdalProvider::~QgsGdalProvider()
 // This was used by raster layer to reload data
 void QgsGdalProvider::closeDataset()
 {
-  if ( !mValid ) return;
+  if ( !mValid )
+    return;
   mValid = false;
 
   GDALDereferenceDataset( mGdalBaseDataset );
@@ -918,7 +920,8 @@ double  QgsGdalProvider::noDataValue() const
 void QgsGdalProvider::computeMinMax( int theBandNo )
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
-  if ( mMinMaxComputed[theBandNo-1] ) return;
+  if ( mMinMaxComputed[theBandNo-1] )
+    return;
   double GDALrange[2];
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   GDALComputeRasterMinMax( myGdalBand, 1, GDALrange ); //Approximate
@@ -1357,7 +1360,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
   // TODO add signal and connect from rasterlayer
   //emit drawingProgress( 0, 0 );
-  //first test if the file is writeable
+  //first test if the file is writable
   //QFileInfo myQFile( mDataSource );
   QFileInfo myQFile( dataSourceUri() );
 
@@ -1723,7 +1726,7 @@ void buildSupportedRasterFileFilterAndExtensions( QString & theFileFiltersString
       {
         // XXX add check for SDTS; in that case we want (*CATD.DDF)
         QString glob = "*." + myGdalDriverExtension.replace( "/", " *." );
-        theExtensions << myGdalDriverExtension.replace( "/", "" ).replace("*", "").replace(".","");
+        theExtensions << myGdalDriverExtension.replace( "/", "" ).replace( "*", "" ).replace( ".", "" );
         // Add only the first JP2 driver found to the filter list (it's the one GDAL uses)
         if ( myGdalDriverDescription == "JPEG2000" ||
              myGdalDriverDescription.startsWith( "JP2" ) ) // JP2ECW, JP2KAK, JP2MrSID
@@ -1869,18 +1872,19 @@ QGISEXTERN void buildSupportedRasterFileFilter( QString & theFileFiltersString )
   buildSupportedRasterFileFilterAndExtensions( theFileFiltersString, exts, wildcards );
 }
 
-QGISEXTERN int dataCapabilities () {
+QGISEXTERN int dataCapabilities()
+{
   return  QgsDataProvider::File | QgsDataProvider::Dir;
 }
 
 
-QgsGdalLayerItem::QgsGdalLayerItem ( QgsDataItem* parent,
-    QString name, QString path, QString uri )
-  : QgsLayerItem ( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
+QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
+                                    QString name, QString path, QString uri )
+    : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
 {
 }
 
-QgsGdalLayerItem::~QgsGdalLayerItem ()
+QgsGdalLayerItem::~QgsGdalLayerItem()
 {
 }
 
@@ -1891,37 +1895,40 @@ QgsLayerItem::Capability QgsGdalLayerItem::capabilities()
   GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
 
-  if ( hDS == NULL ) return NoCapabilities;
+  if ( !hDS )
+    return NoCapabilities;
 
   return SetCrs;
 }
 
-bool QgsGdalLayerItem::setCrs ( QgsCoordinateReferenceSystem crs )
+bool QgsGdalLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
 {
   QgsDebugMsg( "mPath = " + mPath );
   GDALAllRegister();
   GDALDatasetH hDS = GDALOpen( TO8F( mPath ), GA_Update );
 
-  if ( hDS == NULL ) return false;
+  if ( !hDS )
+    return false;
 
   QString wkt = crs.toWkt();
-  if ( GDALSetProjection ( hDS, wkt.toLocal8Bit().data() ) != CE_None )
+  if ( GDALSetProjection( hDS, wkt.toLocal8Bit().data() ) != CE_None )
   {
     QgsDebugMsg( "Could not set CRS" );
     return false;
   }
-  GDALClose ( hDS );
+  GDALClose( hDS );
   return true;
 }
 
 static QStringList extensions = QStringList();
 static QStringList wildcards = QStringList();
 
-QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
+QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  if ( thePath.isEmpty() ) return 0;
+  if ( thePath.isEmpty() )
+    return 0;
 
-  QFileInfo info ( thePath );
+  QFileInfo info( thePath );
   if ( info.isFile() )
   {
     // Filter files by extension
@@ -1929,29 +1936,30 @@ QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
     {
       QString filterString;
       buildSupportedRasterFileFilterAndExtensions( filterString, extensions, wildcards );
-      QgsDebugMsg( "extensions: " + extensions.join(" ") );
-      QgsDebugMsg( "wildcards: " + wildcards.join(" ") );
+      QgsDebugMsg( "extensions: " + extensions.join( " " ) );
+      QgsDebugMsg( "wildcards: " + wildcards.join( " " ) );
     }
-    if (  extensions.indexOf ( info.suffix().toLower() ) < 0 )
+    if ( extensions.indexOf( info.suffix().toLower() ) < 0 )
     {
       bool matches = false;
-      foreach (QString wildcard, wildcards)
+      foreach( QString wildcard, wildcards )
       {
-        QRegExp rx(wildcard, Qt::CaseInsensitive, QRegExp::Wildcard);
-        if (rx.exactMatch(info.fileName()))
+        QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
+        if ( rx.exactMatch( info.fileName() ) )
         {
           matches = true;
           break;
         }
       }
-      if (!matches)
+      if ( !matches )
         return 0;
     }
 
     GDALAllRegister();
     GDALDatasetH hDS = GDALOpen( TO8F( thePath ), GA_ReadOnly );
 
-    if ( hDS == NULL ) return 0;
+    if ( !hDS )
+      return 0;
 
     QgsDebugMsg( "GdalDataset opened " + thePath );
 

@@ -164,9 +164,15 @@ void QgsScaleBarPlugin::run()
   int myUnits = qGisInterface->mapCanvas()->mapUnits();
   switch ( myUnits )
   {
-    case 0: myPluginGui->getSpinSize()->setSuffix( tr( " metres/km" ) ); break;
-    case 1: myPluginGui->getSpinSize()->setSuffix( tr( " feet/miles" ) ); break;
-    case 2: myPluginGui->getSpinSize()->setSuffix( tr( " degrees" ) ); break;
+    case 0:
+      myPluginGui->getSpinSize()->setSuffix( tr( " metres/km" ) );
+      break;
+    case 1:
+      myPluginGui->getSpinSize()->setSuffix( tr( " feet/miles" ) );
+      break;
+    case 2:
+      myPluginGui->getSpinSize()->setSuffix( tr( " degrees" ) );
+      break;
     default:
       QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( myUnits ) );
   };
@@ -196,7 +202,8 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount = qGisInterface->mapCanvas()->layerCount();
-  if ( !myLayerCount || !myCanvasWidth || !myMapUnitsPerPixelDouble ) return;
+  if ( !myLayerCount || !myCanvasWidth || !myMapUnitsPerPixelDouble )
+    return;
 
   //Large if statement which determines whether to render the scale bar
   if ( mEnabled )

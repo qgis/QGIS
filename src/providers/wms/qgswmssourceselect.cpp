@@ -53,26 +53,27 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embededMode )
+QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )
+    , mManagerMode( managerMode )
+    , mEmbeddedMode( embeddedMode )
     , mCurrentTileset( 0 )
-    , mManagerMode ( managerMode )
-    , mEmbededMode( embededMode)
 {
   setupUi( this );
 
-  if ( mEmbededMode )
+  if ( mEmbeddedMode )
   {
     buttonBox->button( QDialogButtonBox::Close )->hide();
   }
-  
+
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );
- 
+
   mImageFormatGroup = new QButtonGroup;
 
-  if ( !mManagerMode ) {
+  if ( !mManagerMode )
+  {
     buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
     connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addClicked() ) );
 
@@ -124,12 +125,12 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
   }
   else
   {
-    tabServers->removeTab ( tabServers->indexOf ( tabLayerOrder ) );
-    tabServers->removeTab ( tabServers->indexOf ( tabTilesets ) );
+    tabServers->removeTab( tabServers->indexOf( tabLayerOrder ) );
+    tabServers->removeTab( tabServers->indexOf( tabTilesets ) );
     btnGrpImageEncoding->hide();
-    tabLayers->layout()->removeWidget ( btnGrpImageEncoding );
+    tabLayers->layout()->removeWidget( btnGrpImageEncoding );
     gbCRS->hide();
-    tabLayers->layout()->removeWidget ( gbCRS );
+    tabLayers->layout()->removeWidget( gbCRS );
   }
 
   // set up the WMS connections we already know about
@@ -405,8 +406,8 @@ void QgsWMSSourceSelect::on_btnConnect_clicked()
 {
   mConnName = cmbConnections->currentText();
 
-  QgsWMSConnection connection ( cmbConnections->currentText() );
-  QgsWmsProvider *wmsProvider = connection.provider ( );
+  QgsWMSConnection connection( cmbConnections->currentText() );
+  QgsWmsProvider *wmsProvider = connection.provider( );
   mConnectionInfo = connection.connectionInfo();
 
   if ( wmsProvider )
@@ -483,14 +484,14 @@ void QgsWMSSourceSelect::addClicked()
       connInfo.prepend( connArgs + ",url=" );
     }
   }
-  QgsDebugMsg ( "crs = " + crs );
+  QgsDebugMsg( "crs = " + crs );
 
   // TODO: do it without QgisApp
   //QgisApp::instance()->addRasterLayer( connInfo,
   //                                     leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
   //                                     "wms", layers, styles, format, crs );
   emit addRasterLayer( connInfo,
-		       leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
+                       leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
                        "wms", layers, styles, format, crs );
 }
 

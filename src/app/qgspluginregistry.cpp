@@ -189,13 +189,16 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
   int minVerMajor, minVerMinor, minVerBugfix = 0;
   bool ok;
   minVerMajor = minVersionParts.at( 0 ).toInt( &ok );
-  if ( !ok ) return false;
+  if ( !ok )
+    return false;
   minVerMinor = minVersionParts.at( 1 ).toInt( &ok );
-  if ( !ok ) return false;
+  if ( !ok )
+    return false;
   if ( minVersionParts.count() == 3 )
   {
     minVerBugfix = minVersionParts.at( 2 ).toInt( &ok );
-    if ( !ok ) return false;
+    if ( !ok )
+      return false;
   }
 
   // our qgis version - cut release name after version number
@@ -207,15 +210,19 @@ bool QgsPluginRegistry::checkQgisVersion( QString minVersion )
   int qgisBugfix = qgisVersionParts.at( 2 ).toInt();
 
   // first check major version
-  if ( minVerMajor > qgisMajor ) return false;
-  if ( minVerMajor < qgisMajor ) return true;
-
+  if ( minVerMajor > qgisMajor )
+    return false;
+  if ( minVerMajor < qgisMajor )
+    return true;
   // if same, check minor version
-  if ( minVerMinor > qgisMinor ) return false;
-  if ( minVerMinor < qgisMinor ) return true;
+  if ( minVerMinor > qgisMinor )
+    return false;
+  if ( minVerMinor < qgisMinor )
+    return true;
 
   // if still same, check bugfix version
-  if ( minVerBugfix > qgisBugfix ) return false;
+  if ( minVerBugfix > qgisBugfix )
+    return false;
 
   // looks like min version is the same as our version - that's fine
   return true;

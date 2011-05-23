@@ -313,7 +313,8 @@ void QgsGrassEditMoveVertex::mouseClick( QgsPoint & point, Qt::MouseButton butto
           double dist2 = Vect_points_distance( xl, yl, 0.0, e->mEditPoints->x[e->mSelectedPart],
                                                e->mEditPoints->y[e->mSelectedPart], 0.0, 0 );
 
-          if ( dist1 < dist2 ) e->mSelectedPart--;
+          if ( dist1 < dist2 )
+            e->mSelectedPart--;
 
           e->setCanvasPrompt( tr( "Select new position" ), "", "Release vertex" );
         }
@@ -579,7 +580,8 @@ void QgsGrassEditDeleteVertex::mouseClick( QgsPoint & point, Qt::MouseButton but
           double dist2 = Vect_points_distance( xl, yl, 0.0, e->mEditPoints->x[e->mSelectedPart],
                                                e->mEditPoints->y[e->mSelectedPart], 0.0, 0 );
 
-          if ( dist1 < dist2 ) e->mSelectedPart--;
+          if ( dist1 < dist2 )
+            e->mSelectedPart--;
 
           e->displayDynamic( e->mEditPoints->x[e->mSelectedPart], e->mEditPoints->y[e->mSelectedPart],
                              QgsVertexMarker::ICON_BOX, e->mSize );

@@ -644,19 +644,24 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
       {
         if ( mLeft->type() != tNodeList )
         {
-          if ( !getValue( value1, mLeft, fields, f ) ) return value1;
+          if ( !getValue( value1, mLeft, fields, f ) )
+            return value1;
         }
         else
         {
-          if ( mLeft->mNodeList.size() > 0 && !getValue( value1, mLeft->mNodeList[0], fields, f ) ) return value1;
-          if ( mLeft->mNodeList.size() > 1 && !getValue( value2, mLeft->mNodeList[1], fields, f ) ) return value2;
-          if ( mLeft->mNodeList.size() > 2 && !getValue( value3, mLeft->mNodeList[2], fields, f ) ) return value3;
+          if ( mLeft->mNodeList.size() > 0 && !getValue( value1, mLeft->mNodeList[0], fields, f ) )
+            return value1;
+          if ( mLeft->mNodeList.size() > 1 && !getValue( value2, mLeft->mNodeList[1], fields, f ) )
+            return value2;
+          if ( mLeft->mNodeList.size() > 2 && !getValue( value3, mLeft->mNodeList[2], fields, f ) )
+            return value3;
         }
       }
       if ( mRight )
       {
         Q_ASSERT( !mLeft || mLeft->type() != tNodeList );
-        if ( !getValue( value2, mRight, fields, f ) ) return value2;
+        if ( !getValue( value2, mRight, fields, f ) )
+          return value2;
       }
 
       if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )

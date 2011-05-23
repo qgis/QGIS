@@ -25,7 +25,8 @@ QgsVectorColorRampV2* QgsVectorGradientColorRampV2::create( const QgsStringMap& 
     foreach( QString stop, props["stops"].split( ':' ) )
     {
       int i = stop.indexOf( ';' );
-      if ( i == -1 ) continue;
+      if ( i == -1 )
+        continue;
 
       QColor c = QgsSymbolLayerV2Utils::decodeColor( stop.mid( i + 1 ) );
       stops.insert( stop.left( i ).toDouble(), c );

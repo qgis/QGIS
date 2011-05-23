@@ -304,7 +304,10 @@ QIcon SaDbTableModel::iconForType( QGis::WkbType type ) const
   {
     return SqlAnywhere::getThemeIcon( "/mIconPolygonLayer.png" );
   }
-  else return QIcon();
+  else
+  {
+    return QIcon();
+  }
 }
 
 QGis::WkbType SaDbTableModel::qgisTypeFromDbType( const QString& dbType ) const

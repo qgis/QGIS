@@ -161,8 +161,10 @@ int main( int argc, char **argv )
         {
           col = ( int ) G_easting_to_col( x, &window );
           row = ( int ) G_northing_to_row( y, &window );
-          if ( col == window.cols ) col--;
-          if ( row == window.rows ) row--;
+          if ( col == window.cols )
+            col--;
+          if ( row == window.rows )
+            row--;
 
           if ( col < 0 || col > window.cols || row < 0 || row > window.rows )
           {

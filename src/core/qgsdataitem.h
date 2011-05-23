@@ -183,7 +183,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
 {
     Q_OBJECT
   public:
-    QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = 0 );
+    QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path = QString::null );
     ~QgsDataCollectionItem();
 
     void setPopulated() { mPopulated = true; }

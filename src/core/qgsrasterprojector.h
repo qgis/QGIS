@@ -200,7 +200,7 @@ class QgsRasterProjector
     /** Maximum source resolution */
     double mMaxSrcXRes;
     double mMaxSrcYRes;
-    
+
     /** Use approximation */
     bool mApproximate;
 };

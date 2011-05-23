@@ -334,7 +334,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** \brief Obtain Metadata for this layer */
     virtual QString metadata();
-    
+
     /** Time stamp of data source in the moment when data/metadata were loaded by provider */
     virtual QDateTime timestamp() const { return QDateTime() ; }
 

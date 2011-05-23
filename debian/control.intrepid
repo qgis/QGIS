@@ -148,6 +148,7 @@ Description: Quantum GIS mapserver
 
 Package: qgis-api-doc
 Architecture: all
+Section: doc
 Description: Quantum GIS API documentation
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.

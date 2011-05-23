@@ -109,7 +109,7 @@ void QgsAttributeTableView::contextMenuEvent( QContextMenuEvent *event )
   mActionPopup = new QMenu();
 
   // let some other parts of the application add some actions
-  emit willShowContextMenu(mActionPopup, idx);
+  emit willShowContextMenu( mActionPopup, idx );
 
   if ( mActionPopup->actions().count() > 0 )
   {
