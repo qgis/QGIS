@@ -92,7 +92,7 @@ void QgsGCPCanvasItem::paint( QPainter* p )
     p->drawText( textBounds, Qt::AlignLeft, msg );
   }
 
-  if ( data( 0 ) != "composer" ) //draw residuals only on screen
+  if ( data( 1 ) != "composer" ) //draw residuals only on screen
   {
     drawResidualArrow( p, context );
   }

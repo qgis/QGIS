@@ -139,6 +139,9 @@ class QgsGrass
         QString mapsetName );
     static GRASS_EXPORT QStringList rasters( QString mapsetPath );
 
+    //! Get list of vector layers
+    static QStringList vectorLayers( QString, QString, QString, QString );
+    
     //! List of elements
     static GRASS_EXPORT QStringList elements( QString gisbase, QString locationName,
         QString mapsetName, QString element );

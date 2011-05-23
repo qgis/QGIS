@@ -1481,7 +1481,7 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   {
     currentItem = itemList.at( i );
     //don't draw mapcanvasmap (has z value -10)
-    if ( !currentItem || currentItem->zValue() == -10 )
+    if ( !currentItem || currentItem->data( 0 ).toString() != "AnnotationItem" )
     {
       continue;
     }
@@ -1495,7 +1495,7 @@ void QgsComposerMap::drawCanvasItems( QPainter* painter, const QStyleOptionGraph
   {
     currentItem = itemList.at( i );
     //don't draw mapcanvasmap (has z value -10)
-    if ( !currentItem || currentItem->zValue() == -10 )
+    if ( !currentItem || currentItem->data( 0 ) != "AnnotationItem" )
     {
       continue;
     }
@@ -1564,9 +1564,9 @@ void QgsComposerMap::drawCanvasItem( QGraphicsItem* item, QPainter* painter, con
   painter->scale( scaleFactor, scaleFactor );
 
   //a little trick to let the item know that the paint request comes from the composer
-  item->setData( 0, "composer" );
+  item->setData( 1, "composer" );
   item->paint( painter, itemStyle, 0 );
-  item->setData( 0, "" );
+  item->setData( 1, "" );
   painter->restore();
 }
 

@@ -13,6 +13,8 @@
         <file>themes/default/geographic.png</file>
         <file>themes/default/gpsicons/barchart.svg</file>
         <file>themes/default/gpsicons/polarchart.svg</file>
+        <file>themes/default/grass_location.png</file>
+        <file>themes/default/grass_mapset.png</file>
         <file>themes/default/join_bevel.png</file>
         <file>themes/default/join_miter.png</file>
         <file>themes/default/join_round.png</file>
@@ -178,6 +180,8 @@
         <file>themes/default/mIconTableLayer.png</file>
         <file>themes/default/mIconUnknownLayerType.png</file>
         <file>themes/default/mIconWaitingForLayerType.png</file>
+        <file>themes/default/mIconWms.png</file>
+        <file>themes/default/mIconWmsLayer.png</file>
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/plugin.png</file>
         <file>themes/default/propertyicons/action.png</file>

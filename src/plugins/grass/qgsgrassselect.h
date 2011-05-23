@@ -41,9 +41,6 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
       MAPCALC // file in $MAPSET/mapcalc directory (used by QgsGrassMapcalc)
     };
 
-    //! Get list of vector layer
-    static QStringList vectorLayers( QString, QString, QString, QString );
-
     QString  gisdbase;
     QString  location;
     QString  mapset;

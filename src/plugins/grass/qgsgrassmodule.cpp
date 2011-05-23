@@ -1593,7 +1593,7 @@ void QgsGrassModule::viewOutput()
   {
     QString map = mOutputVector.at( i );
 
-    QStringList layers = QgsGrassSelect::vectorLayers(
+    QStringList layers = QgsGrass::vectorLayers(
                            QgsGrass::getDefaultGisdbase(),
                            QgsGrass::getDefaultLocation(),
                            QgsGrass::getDefaultMapset(), map );

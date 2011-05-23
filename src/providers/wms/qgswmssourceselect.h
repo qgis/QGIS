@@ -22,6 +22,8 @@
 #include "qgisgui.h"
 #include "qgscontexthelp.h"
 
+#include "qgswmsprovider.h"
+
 #include <QStringList>
 #include <QPushButton>
 
@@ -47,7 +49,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embededMode = false );
     //! Destructor
     ~QgsWMSSourceSelect();
 
@@ -122,6 +124,12 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     //! Add a few example servers to the list.
     void addDefaultServers();
 
+    //! Connections manager mode
+    bool mManagerMode;
+    
+    //! Embeded mode, without 'Close'
+    bool mEmbededMode;
+
     //! Selected CRS
     QString mCRS;
 
@@ -129,10 +137,11 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QSet<QString> mCRSs;
 
     //! Supported formats
-    QStringList mFormats;
+    //QStringList mFormats;
+    QVector<QgsWmsSupportedFormat> mFormats;
 
     //! Labels for supported formats
-    QStringList mLabels;
+    //QStringList mLabels;
 
     //! Map mime types to supported formats
     QMap<QString, int> mMimeMap;
@@ -187,7 +196,15 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     QList<QTreeWidgetItem*> mCurrentSelection;
     QTableWidgetItem* mCurrentTileset;
-
+  signals:
+    void addRasterLayer( QString const & rasterLayerPath,
+			  QString const & baseName,
+			  QString const & providerKey,
+			  QStringList const & layers,
+			  QStringList const & styles,
+			  QString const & format,
+			  QString const & crs );
+    void connectionsChanged();
   private slots:
     void on_btnSearch_clicked();
     void on_btnAddWMS_clicked();

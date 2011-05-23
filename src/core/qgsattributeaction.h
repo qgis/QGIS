@@ -136,6 +136,7 @@ class  CORE_EXPORT QgsAttributeAction
     QgsAction &at( int idx ) { return mActions[idx]; }
     QgsAction &operator[]( int idx ) { return mActions[idx]; }
 
+    //! @deprecated Initialize QgsPythonRunner instead
     static void setPythonExecute( void ( * )( const QString & ) );
 
   private:
