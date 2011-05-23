@@ -21984,7 +21984,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>データセットがおいてあるディレクトリは書き込み許可が必要です</translation>
     </message>
     <message>
@@ -27075,7 +27075,7 @@ SQL:%2
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="982"/>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1は書き込みできません。権限を調整して（可能なら）再度実行してください。</translation>
     </message>
     <message>
@@ -28721,7 +28721,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1560"/>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>ファイルは書き込みができません。いくつかのフォーマットではピラミッドオーバービューはサポートされません。疑わしい場合はGDALのドキュメントを参照してください。</translation>
     </message>
     <message>

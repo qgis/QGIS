@@ -21792,7 +21792,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>Le répertoire contenant vos jeux de données doit être inscriptible !</translation>
     </message>
     <message>
@@ -26879,7 +26879,7 @@ SQL : %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="982"/>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 n&apos;est pas inscriptible. Veuillez ajuster vos autorisations et essayer de nouveau.</translation>
     </message>
     <message>
@@ -28504,7 +28504,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1560"/>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Le fichier n&apos;était pas inscriptible. Certains formats ne supportent pas les aperçus en pyramides. En cas de doute consultez la documentation de GDAL.</translation>
     </message>
     <message>

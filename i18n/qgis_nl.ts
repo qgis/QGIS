@@ -16995,7 +16995,7 @@ Er kan een probleem zijn met uw netwerkverbinding, of bij de WMS-server.
 %1</translation>
     </message>
     <message>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>De map/directory van uw dataset moet schrijfbaar zijn!</translation>
     </message>
     <message>
@@ -21216,7 +21216,7 @@ Resultaat: %3 (%4)</translation>
         <translation>Opslaan van bestand %1 mislukt </translation>
     </message>
     <message>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 kan niet worden opgeslagen. Pas de schrijfrechten aan (indien mogelijk) en probeer opnieuw.</translation>
     </message>
     <message>
@@ -22444,7 +22444,7 @@ p, li { white-space: pre-wrap; }
         <translation>Let op dat het aanmaken van interne (overzichts)pyramides uw data kan vernielen - maak eerst een backup van uw data!</translation>
     </message>
     <message>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Het bestand kon niet worden weggeschreven. Sommige formaten ondersteunen geen pyramideoverzichten. Raadpleet de GDAL-documentatie als u twijfelt.</translation>
     </message>
     <message>
