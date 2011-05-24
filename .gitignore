@@ -28,3 +28,6 @@ ms-windows/packages/
 ms-windows/progs/
 ms-windows/untgz/
 scripts/astyle.exe
+doc/CODING.html
+doc/CODING.tex
+doc/INSTALL.tex
