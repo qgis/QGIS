@@ -24753,7 +24753,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1531"/>
         <source>Override system locale</source>
-        <translation>Sovascrivi lingua in uso</translation>
+        <translation>Sovrascrivi lingua in uso</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1550"/>
