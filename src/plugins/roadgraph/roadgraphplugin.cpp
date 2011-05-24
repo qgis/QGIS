@@ -305,7 +305,8 @@ void RoadGraphPlugin::render( QPainter *painter )
   if ( graphDirector == NULL )
     return;
 
-  RgSimpleGraphBuilder builder( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs() );
+  RgSimpleGraphBuilder builder( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs(),
+                                mQGisIface->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
   QVector< QgsPoint > null;
   graphDirector->makeGraph( &builder , null, null );
   AdjacencyMatrix m = builder.adjacencyMatrix();
