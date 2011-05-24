@@ -33,7 +33,8 @@ class CORE_EXPORT QgsColorBrewerPalette
       foreach( QString entry, list )
       {
         QStringList items = entry.split( QChar( '-' ) );
-        if ( items.count() != 3 ) continue;
+        if ( items.count() != 3 )
+          continue;
         if ( !schemes.contains( items[0] ) )
           schemes << items[0];
       }
@@ -49,7 +50,8 @@ class CORE_EXPORT QgsColorBrewerPalette
       foreach( QString entry, list )
       {
         QStringList items = entry.split( QChar( '-' ) );
-        if ( items.count() != 3 || items[0] != schemeName ) continue;
+        if ( items.count() != 3 || items[0] != schemeName )
+          continue;
         variants << items[1].toInt();
       }
 
@@ -59,7 +61,8 @@ class CORE_EXPORT QgsColorBrewerPalette
     static QColor parseColor( QString color )
     {
       QStringList p = color.split( QChar( ',' ) );
-      if ( p.count() != 3 ) return QColor();
+      if ( p.count() != 3 )
+        return QColor();
       return QColor( p[0].toInt(), p[1].toInt(), p[2].toInt() );
     }
 

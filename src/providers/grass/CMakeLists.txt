@@ -3,11 +3,11 @@ ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ########################################################
 # Files
 
-SET(GRASS_PROVIDER_SRCS provider.cpp)
+SET(GRASS_PROVIDER_SRCS provider.cpp qgsgrassprovider.cpp )
 
 SET(GRASS_RASTER_PROVIDER_SRCS qgsgrassrasterprovider.cpp)
 
-SET(GRASS_LIB_SRCS qgsgrassprovider.cpp qgsgrass.cpp)
+SET(GRASS_LIB_SRCS qgsgrass.cpp)
 
 SET(QGIS_D_RAST_SRCS qgis.d.rast.c)
 

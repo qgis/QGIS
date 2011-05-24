@@ -205,7 +205,8 @@ QPicture QgsMarkerCatalogue::pictureMarker( QString fullName, double size, QPen 
   {
     // TODO Change this logic so width is size and height is same
     // proportion of scale factor as in oritignal SVG TS XXX
-    if ( size < 1 ) size = 1;
+    if ( size < 1 )
+      size = 1;
     myPicture = QPicture( size );
   }
 

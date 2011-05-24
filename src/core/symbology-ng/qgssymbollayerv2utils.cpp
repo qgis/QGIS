@@ -366,7 +366,8 @@ QPolygonF offsetLine( QPolygonF polyline, double dist )
       // if it's not the first line segment
       // calc intersection with last line (with offset)
       QPointF pt_tmp = linesIntersection( pt_old, t_old, pt_new, t_new );
-      if ( !pt_tmp.isNull() ) pt_new = pt_tmp;
+      if ( !pt_tmp.isNull() )
+        pt_new = pt_tmp;
     }
 
     newLine.append( pt_new );

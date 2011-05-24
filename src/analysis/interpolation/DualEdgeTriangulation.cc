@@ -1979,7 +1979,6 @@ void DualEdgeTriangulation::ruppertRefinement()
 
           }
           while ( actedge != pointingedge );
-
         }
       }
     }
@@ -2190,9 +2189,6 @@ void DualEdgeTriangulation::ruppertRefinement()
 
         }
         while ( actedge != pointingedge );
-
-
-
       }
     } //end fast method
 
@@ -2407,7 +2403,6 @@ void DualEdgeTriangulation::ruppertRefinement()
 
       }
       while ( actedge != pointingedge );
-
     }
   }
 

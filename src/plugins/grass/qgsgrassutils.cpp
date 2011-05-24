@@ -29,21 +29,19 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
                                         int nLayers )
 {
   QString name = map;
-  if ( nLayers > 1 ) name += " " + layer;
+  if ( nLayers > 1 )
+    name += " " + layer;
   return name;
 }
 
 void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
                                      QString gisbase, QString location, QString mapset, QString map )
 {
-  QStringList layers = QgsGrassSelect::vectorLayers(
-                         gisbase, location, mapset, map );
-
+  QStringList layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
 
   for ( int i = 0; i < layers.count(); i++ )
   {
-    QString name = QgsGrassUtils::vectorLayerName(
-                     map, layers[i], layers.size() );
+    QString name = QgsGrassUtils::vectorLayerName( map, layers[i], layers.size() );
 
     QString uri = gisbase + "/" + location + "/"
                   + mapset + "/" + map + "/" + layers[i];
@@ -78,7 +76,8 @@ QString QgsGrassElementDialog::getItem( QString element,
                                         QString text, QString source, bool * ok )
 {
   QgsDebugMsg( "entered." );
-  if ( ok ) *ok = false;
+  if ( ok )
+    *ok = false;
   mElement = element;
   mSource = source;
   mDialog = new QDialog();

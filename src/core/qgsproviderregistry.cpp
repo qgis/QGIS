@@ -41,6 +41,8 @@ typedef QString fileVectorFilters_t();
 typedef QString databaseDrivers_t();
 typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
+//typedef int dataCapabilities_t();
+//typedef QgsDataItem * dataItem_t(QString);
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
@@ -329,8 +331,7 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
-    QString const & dataSource )
+QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QString const & dataSource )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -424,6 +425,65 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
   return 0;  // factory didn't exist
 
 } // QgsProviderRegistry::setDataProvider
+
+// This should be QWidget, not QDialog
+typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
+
+QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
+    QWidget * parent, Qt::WFlags fl )
+{
+  QLibrary *myLib = providerLibrary( providerKey );
+  if ( !myLib )
+    return 0;
+
+  selectFactoryFunction_t * selectFactory =
+    ( selectFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "selectWidget" ) );
+
+  if ( !selectFactory )
+    return 0;
+
+  return selectFactory( parent, fl );
+}
+
+
+void * QgsProviderRegistry::function( QString const & providerKey,
+                                      QString const & functionName )
+{
+  QString lib = library( providerKey );
+
+  QLibrary* myLib = new QLibrary( lib );
+
+  QgsDebugMsg( "Library name is " + myLib->fileName() );
+
+  bool loaded = myLib->load();
+
+  if ( loaded )
+  {
+    void * ptr = myLib->resolve( functionName.toAscii().data() );
+    delete myLib;
+    return ptr;
+  }
+  delete myLib;
+  return 0;
+}
+
+QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey )
+{
+  QString lib = library( providerKey );
+
+  QLibrary *myLib = new QLibrary( lib );
+
+  QgsDebugMsg( "Library name is " + myLib->fileName() );
+
+  bool loaded = myLib->load();
+
+  if ( loaded )
+  {
+    return myLib;
+  }
+  delete myLib;
+  return 0;
+}
 
 QString QgsProviderRegistry::fileVectorFilters() const
 {

@@ -15,6 +15,7 @@
 /* $Id$ */
 
 #include "qgsapplication.h"
+#include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsexception.h"
@@ -111,8 +112,14 @@ bool QgsApplication::event( QEvent * event )
 
 bool QgsApplication::notify( QObject * receiver, QEvent * event )
 {
+  bool done = false;
+  emit preNotify( receiver, event, &done );
+
+  if ( done )
+    return true;
+
   // Send event to receiver and catch unhandled exceptions
-  bool done = true;
+  done = true;
   try
   {
     done = QApplication::notify( receiver, event );
@@ -129,6 +136,7 @@ bool QgsApplication::notify( QObject * receiver, QEvent * event )
   {
     QMessageBox::critical( activeWindow(), tr( "Exception" ), tr( "unknown exception" ) );
   }
+
   return done;
 }
 

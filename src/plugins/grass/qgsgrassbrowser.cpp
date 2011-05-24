@@ -162,7 +162,7 @@ void QgsGrassBrowser::addMap()
     else if ( type == QgsGrassModel::VectorLayer )
     {
 
-      QStringList list = QgsGrassSelect::vectorLayers(
+      QStringList list = QgsGrass::vectorLayers(
                            QgsGrass::getDefaultGisdbase(),
                            QgsGrass::getDefaultLocation(),
                            mModel->itemMapset( *it ), map );
@@ -179,7 +179,8 @@ void QgsGrassBrowser::addMap()
     else if ( type == QgsGrassModel::Region )
     {
       struct Cell_head window;
-      if ( !getItemRegion( *it, &window ) ) continue;
+      if ( !getItemRegion( *it, &window ) )
+        continue;
       writeRegion( &window );
     }
   }
@@ -267,7 +268,8 @@ void QgsGrassBrowser::copyMap()
     QString newName = ed.getItem( element, tr( "New name" ),
                                   tr( "New name for layer \"%1\"" ).arg( map ), suggest, source, &ok );
 
-    if ( !ok ) return;
+    if ( !ok )
+      return;
 
     QString module = "g.copy";
 #ifdef WIN32
@@ -315,7 +317,8 @@ void QgsGrassBrowser::renameMap()
     QString mapset = mModel->itemMapset( *it );
     QString map = mModel->itemMap( *it );
 
-    if ( mapset != QgsGrass::getDefaultMapset() ) continue; // should not happen
+    if ( mapset != QgsGrass::getDefaultMapset() )
+      continue; // should not happen
 
     QString typeName;
     QString element;
@@ -340,7 +343,8 @@ void QgsGrassBrowser::renameMap()
     QString newName = ed.getItem( element, tr( "New name" ),
                                   tr( "New name for layer \"%1\"" ).arg( map ), "", map, &ok );
 
-    if ( !ok ) return;
+    if ( !ok )
+      return;
 
     QString module = "g.rename";
 #ifdef WIN32
@@ -396,9 +400,12 @@ void QgsGrassBrowser::deleteMap()
     QString map = mModel->itemMap( *it );
 
     QString typeName;
-    if ( type == QgsGrassModel::Raster ) typeName = "rast";
-    else if ( type == QgsGrassModel::Vector ) typeName = "vect";
-    else if ( type == QgsGrassModel::Region ) typeName = "region";
+    if ( type == QgsGrassModel::Raster )
+      typeName = "rast";
+    else if ( type == QgsGrassModel::Vector )
+      typeName = "vect";
+    else if ( type == QgsGrassModel::Region )
+      typeName = "region";
 
     if ( mapset != QgsGrass::getDefaultMapset() )
     {
@@ -442,7 +449,8 @@ void QgsGrassBrowser::setRegion()
   QList<QModelIndex>::const_iterator it = indexes.begin();
   for ( ; it != indexes.end(); ++it )
   {
-    if ( !getItemRegion( *it, &window ) ) return;
+    if ( !getItemRegion( *it, &window ) )
+      return;
   }
   writeRegion( &window );
 }

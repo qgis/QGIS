@@ -94,7 +94,7 @@ class QgsComposerMap : QgsComposerItem
     /**Sets new Extent and changes width, height (and implicitely also scale)*/
     void setNewExtent( const QgsRectangle& extent );
 
-    PreviewMode previewMode();
+    PreviewMode previewMode() const;
     void setPreviewMode( PreviewMode m );
 
     /**Getter for flag that determines if the stored layer set should be used or the current layer set of the qgis mapcanvas
@@ -221,6 +221,10 @@ class QgsComposerMap : QgsComposerItem
     @note this function was added in version 1.4*/
     void setCrossLength(double l);
     double crossLength();
+
+    void setMapRotation( double r );
+
+    void updateItem();
 
   public slots:
 

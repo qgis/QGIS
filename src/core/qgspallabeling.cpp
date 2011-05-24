@@ -62,7 +62,8 @@ class QgsPalGeometry : public PalGeometry
 
     ~QgsPalGeometry()
     {
-      if ( mG ) GEOSGeom_destroy( mG );
+      if ( mG )
+        GEOSGeom_destroy( mG );
       delete mInfo;
     }
 
@@ -82,7 +83,8 @@ class QgsPalGeometry : public PalGeometry
 
     pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale )
     {
-      if ( mInfo ) return mInfo;
+      if ( mInfo )
+        return mInfo;
 
       // create label info!
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
@@ -714,7 +716,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     case QgsPalLayerSettings::Curved:      arrangement = P_CURVED; break;
     case QgsPalLayerSettings::Horizontal:  arrangement = P_HORIZ; break;
     case QgsPalLayerSettings::Free:        arrangement = P_FREE; break;
-    default: Q_ASSERT( "unsupported placement" && 0 ); return 0; break;
+    default: Q_ASSERT( "unsupported placement" && 0 ); return 0;
   }
 
   // create the pal layer

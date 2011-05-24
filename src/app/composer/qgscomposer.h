@@ -18,7 +18,7 @@
 #ifndef QGSCOMPOSER_H
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"
-#include "qgscomposeritem.h"
+#include "qgscomposermap.h"
 #include "qgscontexthelp.h"
 #include <QPrinter>
 
@@ -26,7 +26,6 @@ class QgisApp;
 class QgsComposerArrow;
 class QgsComposerLabel;
 class QgsComposerLegend;
-class QgsComposerMap;
 class QgsComposerPicture;
 class QgsComposerScaleBar;
 class QgsComposerShape;
@@ -93,12 +92,11 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Resize event
     virtual void resizeEvent( QResizeEvent * );
 
+    virtual void showEvent( QShowEvent* event );
+
 #ifdef Q_WS_MAC
     //! Change event (update window menu on ActivationChange)
     virtual void changeEvent( QEvent * );
-
-    //! Show event (add window to menu)
-    virtual void showEvent( QShowEvent * );
 #endif
 
   signals:
@@ -321,6 +319,9 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QPrinter mPrinter;
 
     QUndoView* mUndoView;
+
+    //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
+    QMap< QgsComposerMap*, QgsComposerMap::PreviewMode > mMapsToRestore;
 };
 
 #endif

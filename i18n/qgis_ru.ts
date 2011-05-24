@@ -19350,7 +19350,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>Необходимы права на запись в каталог, содержащий ваши данные!</translation>
     </message>
     <message>
@@ -24186,7 +24186,7 @@ SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="982"/>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 не является записываемым файлом. Пожалуйста, исправьте права доступа (если возможно) и попробуйте ещё раз.</translation>
     </message>
     <message>
@@ -25704,7 +25704,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1560"/>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Запись в файл невозможна. Некоторые форматы не поддерживают обзорные пирамиды. Обратитесь к документации GDAL за дополнительной информацией.</translation>
     </message>
     <message>

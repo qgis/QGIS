@@ -374,7 +374,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
   {
     QMatrix transform;
 
-    // bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
+    bool hasDataDefinedRotation = context.renderHints() & QgsSymbolV2::DataDefinedRotation;
     bool hasDataDefinedSize = context.renderHints() & QgsSymbolV2::DataDefinedSizeScale;
 
     // move to the desired position
@@ -389,7 +389,7 @@ void QgsSimpleMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV
     }
 
     // rotate if necessary
-    if ( mAngle != 0 )
+    if ( mAngle != 0 && hasDataDefinedRotation )
     {
       transform.rotate( mAngle );
     }

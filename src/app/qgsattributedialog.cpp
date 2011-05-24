@@ -27,6 +27,7 @@
 #include "qgshighlight.h"
 #include "qgssearchstring.h"
 #include "qgssearchtreenode.h"
+#include "qgspythonrunner.h"
 
 #include "qgisapp.h"
 
@@ -282,15 +283,15 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     int pos = module.lastIndexOf( "." );
     if ( pos >= 0 )
     {
-      QgisApp::instance()->runPythonString( QString( "import %1" ).arg( module.left( pos ) ) );
+      QgsPythonRunner::run( QString( "import %1" ).arg( module.left( pos ) ) );
     }
 
     mFormNr = smFormCounter++;
-    QgisApp::instance()->runPythonString( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mFormNr ).arg(( unsigned long ) mDialog ) );
+    QgsPythonRunner::run( QString( "_qgis_featureform_%1 = wrapinstance( %2, QtGui.QDialog )" ).arg( mFormNr ).arg(( unsigned long ) mDialog ) );
 
     QString expr = QString( "%1(_qgis_featureform_%2,'%3',%4)" ).arg( vl->editFormInit() ).arg( mFormNr ).arg( vl->id() ).arg( mFeature->id() );
     QgsDebugMsg( QString( "running featureForm init: %1" ).arg( expr ) );
-    QgisApp::instance()->runPythonString( expr );
+    QgsPythonRunner::run( expr );
   }
 
   restoreGeometry();
@@ -401,7 +402,7 @@ void QgsAttributeDialog::dialogDestroyed()
   if ( -1 < mFormNr )
   {
     QString expr = QString( "if locals().has_key('_qgis_featureform_%1'): del _qgis_featureform_%1\n" ).arg( mFormNr );
-    QgisApp::instance()->runPythonString( expr );
+    QgsPythonRunner::run( expr );
   }
 
   mDialog = NULL;

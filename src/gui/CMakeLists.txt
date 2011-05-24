@@ -22,6 +22,13 @@ symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
 symbology-ng/characterwidget.cpp
 symbology-ng/qgsstylev2exportimportdialog.cpp
 
+attributetable/qgsattributetablemodel.cpp
+attributetable/qgsattributetablememorymodel.cpp
+attributetable/qgsattributetableview.cpp
+attributetable/qgsattributetablefiltermodel.cpp
+attributetable/qgsattributetableidcolumnpair.cpp
+attributetable/qgsattributetabledelegate.cpp
+
 qgisgui.cpp
 qgisinterface.cpp
 qgsannotationitem.cpp
@@ -38,6 +45,7 @@ qgsfiledropedit.cpp
 qgsfieldvalidator.cpp
 qgsformannotationitem.cpp
 qgsgenericprojectionselector.cpp
+qgsmanageconnectionsdialog.cpp
 qgsmapcanvas.cpp
 qgsmapcanvasitem.cpp
 qgsmapcanvasmap.cpp
@@ -49,6 +57,9 @@ qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
+qgsnewhttpconnection.cpp
+qgsnewvectorlayerdialog.cpp
+qgsnumericsortlistviewitem.cpp
 qgscredentialdialog.cpp
 qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
@@ -83,6 +94,11 @@ symbology-ng/qgspenstylecombobox.h
 symbology-ng/qgsbrushstylecombobox.h
 symbology-ng/qgsstylev2exportimportdialog.h
 
+attributetable/qgsattributetableview.h
+attributetable/qgsattributetablemodel.h
+attributetable/qgsattributetablememorymodel.h
+attributetable/qgsattributetabledelegate.h
+
 qgsattributeeditor.h
 qgscomposerview.h
 qgsdetaileditemdelegate.h
@@ -93,10 +109,13 @@ qgsencodingfiledialog.h
 qgsfieldvalidator.h
 qgsformannotationitem.h
 qgsgenericprojectionselector.h
+qgsmanageconnectionsdialog.h
 qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmessageviewer.h
+qgsnewhttpconnection.h
+qgsnewvectorlayerdialog.h
 qgscredentialdialog.h
 qgsprojectionselector.h
 qgsquickprint.h
@@ -210,6 +229,13 @@ qgsmaptip.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
 qgsfieldvalidator.h
+
+attributetable/qgsattributetablemodel.h
+attributetable/qgsattributetablememorymodel.h
+attributetable/qgsattributetableview.h
+attributetable/qgsattributetablefiltermodel.h
+attributetable/qgsattributetableidcolumnpair.h
+attributetable/qgsattributetabledelegate.h
 
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h

@@ -138,7 +138,8 @@ int QgsGrassAttributes::addTab( const QString & label )
   {
     bool ok = settings.contains( path + QString::number( i ) );
     int cw = settings.value( path + QString::number( i ), 30 ).toInt();
-    if ( ok ) tb->setColumnWidth( i, cw );
+    if ( ok )
+      tb->setColumnWidth( i, cw );
   }
 
   connect( tb->horizontalHeader(), SIGNAL( sectionResized( int, int, int ) ),
@@ -220,7 +221,8 @@ void QgsGrassAttributes::updateAttributes( )
 {
   QgsDebugMsg( "entered." );
 
-  if ( tabCats->count() == 0 ) return;
+  if ( tabCats->count() == 0 )
+    return;
 
   QTableWidget *tb = static_cast<QTableWidget *>( tabCats->currentWidget() );
 
@@ -235,7 +237,8 @@ void QgsGrassAttributes::updateAttributes( )
 
     for ( int i = 2; i < tb->rowCount(); i++ )
     {
-      if ( i > 2 ) sql.append( ", " );
+      if ( i > 2 )
+        sql.append( ", " );
 
       QString val = tb->item( i, 1 )->text().trimmed();
 
@@ -291,7 +294,8 @@ void QgsGrassAttributes::deleteCat( )
 {
   QgsDebugMsg( "entered." );
 
-  if ( tabCats->count() == 0 ) return;
+  if ( tabCats->count() == 0 )
+    return;
 
   QTableWidget *tb = static_cast<QTableWidget *>( tabCats->currentWidget() );
 

@@ -299,13 +299,15 @@ bool QgsGrass::isValidGrassBaseDir( QString const gisBase )
 #if 0
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-    if ( G_is_gisbase( gisBase.toUtf8().constData() ) ) return true;
+    if ( G_is_gisbase( gisBase.toUtf8().constData() ) )
+      return true;
   }
   else
   {
 #endif
     QFileInfo gbi( gisBase + "/etc/element_list" );
-    if ( gbi.exists() ) return true;
+    if ( gbi.exists() )
+      return true;
 #if 0
   }
 #endif
@@ -443,7 +445,8 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
 
   // Check if the mapset is in use
   QString gisBase = getenv( "GISBASE" );
-  if ( gisBase.isEmpty() ) return QObject::tr( "GISBASE is not set." );
+  if ( gisBase.isEmpty() )
+    return QObject::tr( "GISBASE is not set." );
 
   QFileInfo fi( mapsetPath + "/WIND" );
   if ( !fi.exists() )
@@ -546,7 +549,8 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
       {
         continue;
       }
-      if ( line.contains( "GRASS_GUI:" ) ) guiSet = true;
+      if ( line.contains( "GRASS_GUI:" ) )
+        guiSet = true;
       stream << line;
     }
     in.close();
@@ -635,7 +639,8 @@ QString QgsGrass::closeMapset( )
       QDir dir( mTmp );
       for ( unsigned int i = 0; i < dir.count(); i++ )
       {
-        if ( dir[i] == "." || dir[i] == ".." ) continue;
+        if ( dir[i] == "." || dir[i] == ".." )
+          continue;
 
         dir.remove( dir[i] );
         if ( dir.remove( dir[i] ) )
@@ -660,7 +665,8 @@ QStringList GRASS_EXPORT QgsGrass::locations( QString gisbase )
 
   QStringList list;
 
-  if ( gisbase.isEmpty() ) return list;
+  if ( gisbase.isEmpty() )
+    return list;
 
   QDir d = QDir( gisbase );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
@@ -692,7 +698,8 @@ QStringList GRASS_EXPORT QgsGrass::mapsets( QString locationPath )
 
   QStringList list;
 
-  if ( locationPath.isEmpty() ) return list;
+  if ( locationPath.isEmpty() )
+    return list;
 
   QDir d = QDir( locationPath );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
@@ -750,7 +757,8 @@ QStringList GRASS_EXPORT QgsGrass::vectors( QString mapsetPath )
 
   QStringList list;
 
-  if ( mapsetPath.isEmpty() ) return list;
+  if ( mapsetPath.isEmpty() )
+    return list;
 
   QDir d = QDir( mapsetPath + "/vector" );
   d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs );
@@ -765,6 +773,99 @@ QStringList GRASS_EXPORT QgsGrass::vectors( QString mapsetPath )
     */
     list.append( d[i] );
   }
+  return list;
+}
+QStringList GRASS_EXPORT QgsGrass::vectorLayers( QString gisdbase,
+    QString location, QString mapset, QString mapName )
+{
+  QStringList list;
+
+  // Set location
+  QgsGrass::setLocation( gisdbase, location );
+
+  /* Open vector */
+  QgsGrass::resetError();
+  //Vect_set_open_level( 2 );
+  struct Map_info map;
+  int level = -1;
+
+  try
+  {
+    level = Vect_open_old_head( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
+    return list;
+  }
+
+  if ( level == 1 )
+  {
+    QgsDebugMsg( "Cannot open vector on level 2" );
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
+    // Vect_close here is correct, it should work, but it seems to cause
+    // crash on win http://trac.osgeo.org/qgis/ticket/2003
+    // disabled on win test it
+#if !defined(WIN32)
+    Vect_close( &map );
+#endif
+    return list;
+  }
+  else if ( level < 1 )
+  {
+    QgsDebugMsg( "Cannot open vector" );
+    QMessageBox::warning( 0, QObject::tr( "Warning" ), QObject::tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
+    return list;
+  }
+
+  QgsDebugMsg( "GRASS vector successfully opened" );
+
+
+  // Get layers
+  int ncidx = Vect_cidx_get_num_fields( &map );
+
+  for ( int i = 0; i < ncidx; i++ )
+  {
+    int field = Vect_cidx_get_field_number( &map, i );
+    QString fs;
+    fs.sprintf( "%d", field );
+
+    QgsDebugMsg( QString( "i = %1 layer = %2" ).arg( i ).arg( field ) );
+
+    /* Points */
+    int npoints = Vect_cidx_get_type_count( &map, field, GV_POINT );
+    if ( npoints > 0 )
+    {
+      QString l = fs + "_point";
+      list.append( l );
+    }
+
+    /* Lines */
+    /* Lines without category appears in layer 0, but not boundaries */
+    int tp;
+    if ( field == 0 )
+      tp = GV_LINE;
+    else
+      tp = GV_LINE | GV_BOUNDARY;
+
+    int nlines = Vect_cidx_get_type_count( &map, field, tp );
+    if ( nlines > 0 )
+    {
+      QString l = fs + "_line";
+      list.append( l );
+    }
+
+    /* Polygons */
+    int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
+    if ( nareas > 0 )
+    {
+      QString l = fs + "_polygon";
+      list.append( l );
+    }
+  }
+  Vect_close( &map );
+
   return list;
 }
 
@@ -812,7 +913,8 @@ QStringList GRASS_EXPORT QgsGrass::rasters( QString mapsetPath )
 
   QStringList list;
 
-  if ( mapsetPath.isEmpty() ) return list;
+  if ( mapsetPath.isEmpty() )
+    return list;
 
   QDir d = QDir( mapsetPath + "/cellhd" );
   d.setFilter( QDir::Files );
@@ -840,7 +942,8 @@ QStringList GRASS_EXPORT QgsGrass::elements( QString mapsetPath, QString element
 
   QStringList list;
 
-  if ( mapsetPath.isEmpty() ) return list;
+  if ( mapsetPath.isEmpty() )
+    return list;
 
   QDir d = QDir( mapsetPath + "/" + element );
   d.setFilter( QDir::Files );
@@ -1263,7 +1366,8 @@ QHash<QString, QString> GRASS_EXPORT QgsGrass::info( QString gisdbase, QString l
     for ( int i = 0; i < list.size(); i++ )
     {
       QStringList keyVal = list[i].split( ':' );
-      if ( list[i].isEmpty() ) { continue; }
+      if ( list[i].isEmpty() )
+        continue;
       if ( keyVal.size() != 2 )
       {
         throw QgsGrass::Exception( "Cannot parse GRASS map info key value : " + list[i] + " (" + str + " ) " );
@@ -1292,7 +1396,8 @@ QList<QgsGrass::Color> GRASS_EXPORT QgsGrass::colors( QString gisdbase, QString 
     for ( int i = 0; i < list.size(); i++ )
     {
       QgsGrass::Color c;
-      if ( list[i].isEmpty() ) { continue; }
+      if ( list[i].isEmpty() )
+        continue;
       if ( sscanf( list[i].toUtf8().data(), "%lf %lf %d %d %d %d %d %d", &( c.value1 ), &( c.value2 ), &( c.red1 ), &( c.green1 ), &( c.blue1 ), &( c.red2 ), &( c.green2 ), &( c.blue2 ) ) != 8 )
       {
         throw QgsGrass::Exception( "Cannot parse GRASS colors" + list[i] + " (" + str + " ) " );
@@ -1369,19 +1474,24 @@ QString GRASS_EXPORT QgsGrass::versionString()
 
 bool GRASS_EXPORT QgsGrass::isMapset( QString path )
 {
+#if 0
   /* TODO: G_is_mapset() was added to GRASS 6.1 06-05-24,
   enable its use after some period (others do update) */
-  /*
+
   if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
   {
-  if ( G_is_mapset( path.toUtf8().constData() ) ) return true;
+    if ( G_is_mapset( path.toUtf8().constData() ) )
+      return true;
   }
   else
   {
-  */
-  QString windf = path + "/WIND";
-  if ( QFile::exists( windf ) ) return true;
-  //}
+#endif
+    QString windf = path + "/WIND";
+    if ( QFile::exists( windf ) )
+      return true;
+#if 0
+  }
+#endif
 
   return false;
 }

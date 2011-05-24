@@ -27,6 +27,8 @@
 
 #include <QByteArray>
 #include <QDir>
+#include <QFile>
+#include <QFileInfo>
 #include <QMessageBox>
 #include <QTextCodec>
 //#include <QtGui/qwindowdefs.h>
@@ -245,7 +247,8 @@ void QgsGrassProvider::update( void )
   QgsDebugMsg( QString( "mNumberFeatures = %1 mCidxFieldIndex = %2 mCidxFieldNumCats = %3" ).arg( mNumberFeatures ).arg( mCidxFieldIndex ).arg( mCidxFieldNumCats ) );
 
   // Create selection array
-  if ( mSelection ) free( mSelection );
+  if ( mSelection )
+    free( mSelection );
   mSelectionSize = allocateSelection( mMap, &mSelection );
   resetSelection( 1 );
 
@@ -429,7 +432,8 @@ bool QgsGrassProvider::nextFeature( QgsFeature& feature )
 void QgsGrassProvider::resetSelection( bool sel )
 {
   QgsDebugMsg( "entered." );
-  if ( !mValid ) return;
+  if ( !mValid )
+    return;
   memset( mSelection, ( int ) sel, mSelectionSize );
   mNextCidx = 0;
 }
@@ -644,7 +648,8 @@ int QgsGrassProvider::openLayer( QString gisdbase, QString location, QString map
 
   for ( unsigned int i = 0; i <  mLayers.size(); i++ )
   {
-    if ( !( mLayers[i].valid ) ) continue;
+    if ( !( mLayers[i].valid ) )
+      continue;
 
     GMAP *mp = &( mMaps[mLayers[i].mapId] );
 
@@ -727,7 +732,8 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
 
   // TODO: free old attributes
 
-  if ( !layer.map ) return;
+  if ( !layer.map )
+    return;
 
   // Get field info
   layer.fieldInfo = Vect_get_field( layer.map, layer.field ); // should work also with field = 0
@@ -738,7 +744,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
   layer.attributes = 0;
   layer.fields.clear();
   layer.keyColumn = -1;
-  if ( layer.fieldInfo == NULL )
+  if ( !layer.fieldInfo )
   {
     QgsDebugMsg( "No field info -> no attribute table" );
   }
@@ -748,7 +754,7 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
     dbDriver *databaseDriver = db_start_driver_open_database( layer.fieldInfo->driver,
                                layer.fieldInfo->database );
 
-    if ( databaseDriver == NULL )
+    if ( !databaseDriver )
     {
       QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( layer.fieldInfo->database ).arg( layer.fieldInfo->driver ) );
     }
@@ -841,15 +847,18 @@ void QgsGrassProvider::loadAttributes( GLAYER &layer )
               QgsDebugMsg( "Cannot fetch DB record" );
               break;
             }
-            if ( !more ) break; // no more records
+            if ( !more )
+              break; // no more records
 
             // Check cat value
             dbColumn *column = db_get_table_column( databaseTable, layer.keyColumn );
             dbValue *value = db_get_column_value( column );
 
-            if ( db_test_value_isnull( value ) ) continue;
+            if ( db_test_value_isnull( value ) )
+              continue;
             layer.attributes[layer.nAttributes].cat = db_get_value_int( value );
-            if ( layer.attributes[layer.nAttributes].cat < 0 ) continue;
+            if ( layer.attributes[layer.nAttributes].cat < 0 )
+              continue;
 
             layer.attributes[layer.nAttributes].values = ( char ** ) malloc( layer.nColumns * sizeof( char* ) );
 
@@ -1014,7 +1023,7 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
   // Find the vector
   const char *ms = G_find_vector2( mapName.toUtf8().data(), mapset.toUtf8().data() ) ;
 
-  if ( ms == NULL )
+  if ( !ms )
   {
     QgsDebugMsg( "Cannot find GRASS vector" );
     return -1;
@@ -1049,7 +1058,8 @@ int QgsGrassProvider::openMap( QString gisdbase, QString location, QString mapse
                                       tr( "GRASS vector map %1 does not have topology. Build topology?" ).arg( mapName ),
                                       QMessageBox::Ok | QMessageBox::Cancel );
 
-    if ( ret == QMessageBox::Cancel ) return -1;
+    if ( ret == QMessageBox::Cancel )
+      return -1;
   }
 
   // Open vector
@@ -1146,7 +1156,8 @@ void QgsGrassProvider::updateMap( int mapId )
 
   for ( unsigned int i = 0; i <  mLayers.size(); i++ )
   {
-    // if ( !(mLayers[i].valid) ) continue; // ?
+    // if ( !(mLayers[i].valid) )
+    //   continue; // ?
 
     if ( mLayers[i].mapId == mapId )
     {
@@ -1177,7 +1188,7 @@ void QgsGrassProvider::closeMap( int mapId )
 
     if ( mMaps[mapId].valid )
     {
-      bool mapsetunset = G__getenv( "MAPSET" ) == NULL || *G__getenv( "MAPSET" ) == 0;
+      bool mapsetunset = !G__getenv( "MAPSET" ) || !*G__getenv( "MAPSET" );
       if ( mapsetunset )
         G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toUtf8().data() );
       try
@@ -1401,11 +1412,13 @@ void QgsGrassProvider::freeze()
 {
   QgsDebugMsg( "entered." );
 
-  if ( !isValid() ) return;
+  if ( !isValid() )
+    return;
 
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
 
-  if ( map->frozen ) return;
+  if ( map->frozen )
+    return;
 
   map->frozen = true;
   Vect_close( map->map );
@@ -1415,10 +1428,12 @@ void QgsGrassProvider::thaw()
 {
   QgsDebugMsg( "entered." );
 
-  if ( !isValid() ) return;
+  if ( !isValid() )
+    return;
   GMAP *map = &( mMaps[mLayers[mLayerId].mapId] );
 
-  if ( !map->frozen ) return;
+  if ( !map->frozen )
+    return;
 
   if ( reopenMap() )
   {
@@ -1554,7 +1569,8 @@ bool QgsGrassProvider::closeEdit( bool newMap )
 
   map->update = false;
 
-  if ( !reopenMap() ) return false;
+  if ( !reopenMap() )
+    return false;
 
   map->valid = true;
 
@@ -1589,7 +1605,8 @@ bool QgsGrassProvider::reopenMap()
   // Reload sources to layers
   for ( unsigned int i = 0; i <  mLayers.size(); i++ )
   {
-    // if ( !(mLayers[i].valid) ) continue; // ?
+    // if ( !(mLayers[i].valid) )
+    //   continue; // ?
 
     if ( mLayers[i].mapId == mLayers[mLayerId].mapId )
     {
@@ -1624,7 +1641,8 @@ int QgsGrassProvider::readLine( struct line_pnts *Points, struct line_cats *Cats
   if ( Cats )
     Vect_reset_cats( Cats );
 
-  if ( !Vect_line_alive( mMap, line ) ) return -1;
+  if ( !Vect_line_alive( mMap, line ) )
+    return -1;
 
   return ( Vect_read_line( mMap, Points, Cats, line ) );
 }
@@ -1819,7 +1837,7 @@ QString *QgsGrassProvider::key( int field )
 
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     return key;
@@ -1838,7 +1856,7 @@ std::vector<QgsField> *QgsGrassProvider::columns( int field )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     return ( col );
@@ -1848,7 +1866,7 @@ std::vector<QgsField> *QgsGrassProvider::columns( int field )
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
-  if ( driver == NULL )
+  if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
     return ( col );
@@ -1912,7 +1930,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     return att;
@@ -1922,7 +1940,7 @@ QgsAttributeMap *QgsGrassProvider::attributes( int field, int cat )
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
-  if ( driver == NULL )
+  if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
     return att;
@@ -1993,7 +2011,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     *error = QString::fromLatin1( "Cannot get field info" );
@@ -2004,7 +2022,7 @@ QString *QgsGrassProvider::updateAttributes( int field, int cat, const QString &
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
-  if ( driver == NULL )
+  if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
     *error = QString::fromUtf8( "Cannot open database" );
@@ -2064,7 +2082,8 @@ int QgsGrassProvider::dbLinkField( int link )
 
   struct  field_info *fi = Vect_get_dblink( mMap, link );
 
-  if ( fi == NULL ) return 0;
+  if ( !fi )
+    return 0;
 
   return ( fi->number );
 }
@@ -2077,7 +2096,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     *error = QString::fromLatin1( "Cannot get field info" );
@@ -2089,7 +2108,7 @@ QString *QgsGrassProvider::executeSql( int field, const QString &sql )
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
-  if ( driver == NULL )
+  if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
     *error = QString::fromUtf8( "Cannot open database" );
@@ -2150,8 +2169,7 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   }
 
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
-
-  if ( driver == NULL )
+  if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
     *error = QString::fromUtf8( "Cannot open database" );
@@ -2180,7 +2198,8 @@ QString *QgsGrassProvider::createTable( int field, const QString &key, const QSt
   db_close_database_shutdown_driver( driver );
   db_free_string( &dbstr );
 
-  if ( !error->isEmpty() ) return error;
+  if ( !error->isEmpty() )
+    return error;
 
   ret = Vect_map_add_dblink( mMap, field, NULL, fi->table, key.toLatin1().data(),
                              fi->database, fi->driver );
@@ -2202,7 +2221,7 @@ QString *QgsGrassProvider::addColumn( int field, const QString &column )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info" );
     *error = QString::fromLatin1( "Cannot get field info" );
@@ -2225,7 +2244,7 @@ QString *QgsGrassProvider::insertAttributes( int field, int cat )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     *error = QString::fromLatin1( "Cannot get field info" );
@@ -2248,7 +2267,7 @@ QString *QgsGrassProvider::deleteAttributes( int field, int cat )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     *error = QString::fromLatin1( "Cannot get field info" );
@@ -2289,7 +2308,7 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   struct  field_info *fi = Vect_get_field( mMap, field ); // should work also with field = 0
 
   // Read attributes
-  if ( fi == NULL )
+  if ( !fi )
   {
     QgsDebugMsg( "No field info -> no attributes" );
     *orphan = false;
@@ -2300,7 +2319,7 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   QgsGrass::setMapset( mGisdbase, mLocation, mMapset );
   dbDriver *driver = db_start_driver_open_database( fi->driver, fi->database );
 
-  if ( driver == NULL )
+  if ( !driver )
   {
     QgsDebugMsg( QString( "Cannot open database %1 by driver %2" ).arg( fi->database ).arg( fi->driver ) );
     *error = QString::fromUtf8( "Cannot open database" );
@@ -2328,7 +2347,8 @@ QString *QgsGrassProvider::isOrphan( int field, int cat, int *orphan )
   int nRecords = db_get_num_rows( &cursor );
   QgsDebugMsg( QString( "Number of records: %1" ).arg( nRecords ) );
 
-  if ( nRecords > 0 ) { *orphan = true; }
+  if ( nRecords > 0 )
+    *orphan = true;
 
   db_close_database_shutdown_driver( driver );
   db_free_string( &dbstr );
@@ -2372,3 +2392,133 @@ QString QgsGrassProvider::description() const
 {
   return GRASS_DESCRIPTION;
 } // QgsGrassProvider::description()
+
+
+QgsGrassLocationItem::QgsGrassLocationItem ( QgsDataItem* parent, QString path ) 
+  : QgsDataCollectionItem ( parent, "", path )
+{
+  QFileInfo fi ( path );
+  mName =fi.baseName();
+  mIcon = QIcon ( getThemePixmap ( "grass_location.png" ) );
+}
+QgsGrassLocationItem::~QgsGrassLocationItem () {} 
+
+bool QgsGrassLocationItem::isLocation ( QString path  )
+{
+  //QgsDebugMsg( "path = " + path );
+  return QFile::exists( path + QDir::separator() + "PERMANENT" + QDir::separator() + "DEFAULT_WIND" );
+}
+
+QVector<QgsDataItem*>QgsGrassLocationItem::createChildren()
+{
+  QVector<QgsDataItem*> mapsets;
+
+  QDir dir( mPath );
+  
+  QStringList entries = dir.entryList( QDir::Dirs|QDir::NoDotAndDotDot, QDir::Name );
+  foreach( QString name, entries )
+  {
+    QString path = dir.absoluteFilePath( name );
+
+    if ( QgsGrassMapsetItem::isMapset ( path ) )
+    {
+      QgsGrassMapsetItem * mapset = new QgsGrassMapsetItem ( this,  path );
+      mapsets.append ( mapset );
+    }
+  }
+  return mapsets;
+}
+
+QgsGrassMapsetItem::QgsGrassMapsetItem ( QgsDataItem* parent, QString path ) 
+  : QgsDataCollectionItem ( parent, "", path )
+{
+  QDir dir( path ); 
+  mName = dir.dirName();
+  dir.cdUp();
+  mLocation = dir.dirName();
+  dir.cdUp();
+  mGisdbase = dir.path();
+
+  mIcon = QIcon ( getThemePixmap ( "grass_mapset.png" ) );
+}
+
+QgsGrassMapsetItem::~QgsGrassMapsetItem () {} 
+
+bool QgsGrassMapsetItem::isMapset ( QString path  )
+{
+  return QFile::exists( path + QDir::separator() + "WIND" );
+}
+
+QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
+{
+  QVector<QgsDataItem*> items; 
+  
+  QStringList vectorNames = QgsGrass::vectors( mPath );
+  
+  foreach( QString name, vectorNames )
+  {   
+    QStringList layerNames = QgsGrass::vectorLayers( mGisdbase , mLocation, mName, name );
+
+    QString path = mPath + QDir::separator() + "vector" + QDir::separator() + name;
+
+    QgsDataCollectionItem *map;
+    if ( layerNames.size() != 1 )
+      map = new QgsDataCollectionItem( this, name );
+    foreach( QString layerName, layerNames )
+    {
+      QString uri = mPath + QDir::separator() + name + QDir::separator() +layerName;
+      QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
+      QString typeName = layerName.split("_")[1];
+      QString baseLayerName = layerName.split("_")[0];
+
+      if ( typeName == "point" )
+        layerType = QgsLayerItem::Point;
+      else if ( typeName == "line" )
+        layerType = QgsLayerItem::Line;
+      else if ( typeName == "polygon" )
+        layerType = QgsLayerItem::Polygon;
+
+      if ( layerNames.size() == 1 ) 
+      {
+	
+	QgsLayerItem *layer = new QgsLayerItem ( this, name + " " + baseLayerName, path, uri, layerType, "grass" );
+	items.append( layer );
+      }
+      else
+      {
+	QgsLayerItem *layer = new QgsLayerItem ( map, baseLayerName, path, uri, layerType, "grass" );
+	map->addChild( layer );
+      }
+    }
+    if ( layerNames.size() != 1 )
+      items.append( map );
+  }
+  
+  QStringList rasterNames = QgsGrass::rasters( mPath );
+  
+  foreach( QString name, rasterNames )
+  {
+    QString uri = mPath + QDir::separator() + "cellhd" + QDir::separator() + name;
+    QgsDebugMsg ( "uri = " + uri );
+
+    QgsLayerItem *layer = new QgsLayerItem ( this, name, uri, uri, QgsLayerItem::Raster, "grassraster" );
+
+    items.append( layer );
+  }
+
+  return items;
+}
+
+QGISEXTERN int dataCapabilities () {
+  return  QgsDataProvider::Dir;
+}
+
+QGISEXTERN QgsDataItem * dataItem ( QString thePath, QgsDataItem* parentItem )
+{
+  if ( QgsGrassLocationItem::isLocation ( thePath ) )
+  {
+    QgsGrassLocationItem * location = new QgsGrassLocationItem ( parentItem,  thePath );
+    return location;
+  }
+  return 0;
+}

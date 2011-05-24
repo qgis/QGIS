@@ -193,10 +193,14 @@ bool QgsContrastEnhancement::generateLookupTable()
 {
   mEnhancementDirty = false;
 
-  if ( 0 == mContrastEnhancementFunction ) { return false; }
-  if ( NoEnhancement == mContrastEnhancementAlgorithm ) { return false; }
-  if ( QGS_Byte != mRasterDataType && QGS_UInt16 != mRasterDataType && QGS_Int16 != mRasterDataType ) { return false; }
-  if ( !mLookupTable ) { return false; }
+  if ( !mContrastEnhancementFunction )
+    return false;
+  if ( NoEnhancement == mContrastEnhancementAlgorithm )
+    return false;
+  if ( QGS_Byte != mRasterDataType && QGS_UInt16 != mRasterDataType && QGS_Int16 != mRasterDataType )
+    return false;
+  if ( !mLookupTable )
+    return false;
 
   QgsDebugMsg( "building lookup table" );
   QgsDebugMsg( "***MinimumValue : " + QString::number( mMinimumValue ) );

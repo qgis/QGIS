@@ -122,18 +122,21 @@ void QgsGrassSelect::setLocations()
   // Add all subdirs containing PERMANENT/DEFAULT_WIND
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
-    if ( d[i] == "." || d[i] == ".." ) continue;
+    if ( d[i] == "." || d[i] == ".." )
+      continue;
 
     QString ldpath = egisdbase->text() + "/" + d[i];
 
     if ( QgsGrass::versionMajor() > 6 || QgsGrass::versionMinor() > 0 )
     {
-      if ( !G_is_location( ldpath.toLocal8Bit().constData() ) ) continue;
+      if ( !G_is_location( ldpath.toLocal8Bit().constData() ) )
+        continue;
     }
     else
     {
       QString chf = egisdbase->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
-      if ( !QFile::exists( chf ) ) continue;
+      if ( !QFile::exists( chf ) )
+        continue;
     }
 
     // if type is MAPSET check also if at least one mapset owned by user exists
@@ -145,10 +148,12 @@ void QgsGrassSelect::setLocations()
 
       for ( unsigned int j = 0; j < ld.count(); j++ )
       {
-        if ( !QgsGrass::isMapset( ldpath + "/" + ld[j] ) ) continue;
+        if ( !QgsGrass::isMapset( ldpath + "/" + ld[j] ) )
+          continue;
 
         QFileInfo info( ldpath + "/" + ld[j] );
-        if ( !info.isWritable() ) continue;
+        if ( !info.isWritable() )
+          continue;
 
         // TODO: check if owner == user: how to get uer name in QT
 
@@ -156,7 +161,8 @@ void QgsGrassSelect::setLocations()
         break;
       }
 
-      if ( !exists ) continue;
+      if ( !exists )
+        continue;
     }
 
     elocation->addItem( QString( d[i] ) );
@@ -185,7 +191,8 @@ void QgsGrassSelect::setMapsets()
   emap->clear();
   elayer->clear();
 
-  if ( elocation->count() < 1 ) return;
+  if ( elocation->count() < 1 )
+    return;
 
   // Location directory
   QString ldpath = egisdbase->text() + "/" + elocation->currentText();
@@ -227,7 +234,8 @@ void QgsGrassSelect::setMaps()
   emap->clear();
   elayer->clear();
 
-  if ( emapset->count() < 1 ) return;
+  if ( emapset->count() < 1 )
+    return;
 
   // Mapset directory
   QString ldpath = egisdbase->text() + "/" + elocation->currentText() + "/" + emapset->currentText();
@@ -244,7 +252,8 @@ void QgsGrassSelect::setMaps()
     for ( int j = 0; j < list.count(); j++ )
     {
       emap->addItem( list[j] );
-      if ( list[j] == lastVectorMap ) sel = idx;
+      if ( list[j] == lastVectorMap )
+        sel = idx;
       idx++;
     }
 
@@ -258,7 +267,8 @@ void QgsGrassSelect::setMaps()
     for ( int j = 0; j < list.count(); j++ )
     {
       emap->addItem( list[j] );
-      if ( list[j] == lastRasterMap ) sel = idx;
+      if ( list[j] == lastRasterMap )
+        sel = idx;
       idx++;
     }
 
@@ -269,7 +279,8 @@ void QgsGrassSelect::setMaps()
 
     for ( unsigned int j = 0; j < md.count(); j++ )
     {
-      if ( md[j] == "." || md[j] == ".." ) continue;
+      if ( md[j] == "." || md[j] == ".." )
+        continue;
 
       QString m = QString( md[j] + " (GROUP)" );
       emap->addItem( m );
@@ -320,10 +331,12 @@ void QgsGrassSelect::setLayers()
 
   elayer->clear();
 
-  if ( type != VECTOR ) return;
-  if ( emap->count() < 1 ) return;
+  if ( type != VECTOR )
+    return;
+  if ( emap->count() < 1 )
+    return;
 
-  QStringList layers = vectorLayers( egisdbase->text(),
+  QStringList layers = QgsGrass::vectorLayers( egisdbase->text(),
                                      elocation->currentText(), emapset->currentText(),
                                      emap->currentText().toUtf8() );
 
@@ -332,7 +345,8 @@ void QgsGrassSelect::setLayers()
   for ( int i = 0; i < layers.count(); i++ )
   {
     elayer->addItem( layers[i] );
-    if ( layers[i] == lastLayer ) sel = idx;
+    if ( layers[i] == lastLayer )
+      sel = idx;
     idx++;
   }
 
@@ -367,100 +381,6 @@ void QgsGrassSelect::setLayers()
   {
     elayer->setDisabled( false );
   }
-}
-
-QStringList QgsGrassSelect::vectorLayers( QString gisdbase,
-    QString location, QString mapset, QString mapName )
-{
-  QStringList list;
-
-  // Set location
-  QgsGrass::setLocation( gisdbase, location );
-
-  /* Open vector */
-  QgsGrass::resetError();
-  //Vect_set_open_level( 2 );
-  struct Map_info map;
-  int level = -1;
-
-  try
-  {
-    level = Vect_open_old_head( &map, ( char * ) mapName.toUtf8().data(), ( char * ) mapset.toUtf8().data() );
-  }
-  catch ( QgsGrass::Exception &e )
-  {
-    Q_UNUSED( e );
-    QgsDebugMsg( QString( "Cannot open GRASS vector: %1" ).arg( e.what() ) );
-    return list;
-  }
-
-  if ( level == 1 )
-  {
-    QgsDebugMsg( "Cannot open vector on level 2" );
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module)." ).arg( mapName ).arg( mapset ) );
-    // Vect_close here is correct, it should work, but it seems to cause
-    // crash on win http://trac.osgeo.org/qgis/ticket/2003
-    // disabled on win test it
-#if !defined(WIN32)
-    Vect_close( &map );
-#endif
-    return list;
-  }
-  else if ( level < 1 )
-  {
-    QgsDebugMsg( "Cannot open vector" );
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open vector %1 in mapset %2" ).arg( mapName ).arg( mapset ) );
-    return list;
-  }
-
-  QgsDebugMsg( "GRASS vector successfully opened" );
-
-
-  // Get layers
-  int ncidx = Vect_cidx_get_num_fields( &map );
-
-  for ( int i = 0; i < ncidx; i++ )
-  {
-    int field = Vect_cidx_get_field_number( &map, i );
-    QString fs;
-    fs.sprintf( "%d", field );
-
-    QgsDebugMsg( QString( "i = %1 layer = %2" ).arg( i ).arg( field ) );
-
-    /* Points */
-    int npoints = Vect_cidx_get_type_count( &map, field, GV_POINT );
-    if ( npoints > 0 )
-    {
-      QString l = fs + "_point";
-      list.append( l );
-    }
-
-    /* Lines */
-    /* Lines without category appears in layer 0, but not boundaries */
-    int tp;
-    if ( field == 0 )
-      tp = GV_LINE;
-    else
-      tp = GV_LINE | GV_BOUNDARY;
-
-    int nlines = Vect_cidx_get_type_count( &map, field, tp );
-    if ( nlines > 0 )
-    {
-      QString l = fs + "_line";
-      list.append( l );
-    }
-
-    /* Polygons */
-    int nareas = Vect_cidx_get_type_count( &map, field, GV_AREA );
-    if ( nareas > 0 )
-    {
-      QString l = fs + "_polygon";
-      list.append( l );
-    }
-  }
-  Vect_close( &map );
-
-  return list;
 }
 
 void QgsGrassSelect::on_GisdbaseBrowse_clicked()

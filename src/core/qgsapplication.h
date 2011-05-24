@@ -201,6 +201,9 @@ class CORE_EXPORT QgsApplication: public QApplication
       @note: this method was added in version 1.6*/
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
+  signals:
+    void preNotify( QObject * receiver, QEvent * event, bool * done );
+
   private:
     static QObject* mFileOpenEventReceiver;
     static QStringList mFileOpenEventList;

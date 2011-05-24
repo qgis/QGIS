@@ -23,6 +23,7 @@
 
 
 #include "qgscoordinatereferencesystem.h"
+#include "qgsdataitem.h"
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
@@ -270,8 +271,6 @@ class QgsGdalProvider : public QgsRasterDataProvider
     // List of estimated max values, index 0 for band 1
     QList<double> mMaximum;
 
-    //GDALDataType mGdalDataType;
-
     /** \brief Pointer to the gdaldataset */
     GDALDatasetH mGdalBaseDataset;
 
@@ -285,6 +284,17 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     QList<QgsRasterPyramid> mPyramidList;
 
+};
+
+class QgsGdalLayerItem : public QgsLayerItem
+{
+  public:
+    QgsGdalLayerItem( QgsDataItem* parent,
+                      QString name, QString path, QString uri );
+    ~QgsGdalLayerItem();
+
+    bool setCrs( QgsCoordinateReferenceSystem crs );
+    Capability capabilities();
 };
 
 #endif

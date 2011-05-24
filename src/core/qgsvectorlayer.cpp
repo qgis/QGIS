@@ -2711,7 +2711,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   mDataProvider =
-    ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->getProvider( provider, mDataSource ) );
+    ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
 
   if ( mDataProvider )
   {
@@ -2902,11 +2902,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
       if ( returnCode == 1 )
       {
-        errorMessage = tr( "No renderer object" ); delete renderer; return false;
+        errorMessage = tr( "No renderer object" );
+        delete renderer;
+        return false;
       }
       else if ( returnCode == 2 )
       {
-        errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+        errorMessage = tr( "Classification field not found" );
+        delete renderer;
+        return false;
       }
 
       mRenderer = renderer;
@@ -5281,6 +5285,238 @@ void QgsVectorLayer::setDiagramLayerSettings( const QgsDiagramLayerSettings& s )
   if ( !mDiagramLayerSettings )
     mDiagramLayerSettings = new QgsDiagramLayerSettings();
   *mDiagramLayerSettings = s;
+}
+
+QString QgsVectorLayer::metadata()
+{
+  QString myMetadata = "<html><body>";
+  myMetadata += "<table width=\"100%\">";
+
+  //-------------
+
+  myMetadata += "<tr class=\"glossy\"><td>";
+  myMetadata += tr( "General:" );
+  myMetadata += "</td></tr>";
+
+  // data comment
+  if ( !( dataComment().isEmpty() ) )
+  {
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "Layer comment: %1" ).arg( dataComment() );
+    myMetadata += "</td></tr>";
+  }
+
+  //storage type
+  myMetadata += "<tr><td>";
+  myMetadata += tr( "Storage type of this layer: %1" ).arg( storageType() );
+  myMetadata += "</td></tr>";
+
+  // data source
+  myMetadata += "<tr><td>";
+  myMetadata += tr( "Source for this layer: %1" ).arg( publicSource() );
+  myMetadata += "</td></tr>";
+
+  //geom type
+
+  QGis::GeometryType type = geometryType();
+
+  if ( type < 0 || type > QGis::NoGeometry )
+  {
+    QgsDebugMsg( "Invalid vector type" );
+  }
+  else
+  {
+    QString typeString( QGis::qgisVectorGeometryType[geometryType()] );
+
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "Geometry type of the features in this layer: %1" ).arg( typeString );
+    myMetadata += "</td></tr>";
+  }
+
+
+  //feature count
+  myMetadata += "<tr><td>";
+  myMetadata += tr( "The number of features in this layer: %1" ).arg( featureCount() );
+  myMetadata += "</td></tr>";
+  //capabilities
+  myMetadata += "<tr><td>";
+  myMetadata += tr( "Editing capabilities of this layer: %1" ).arg( capabilitiesString() );
+  myMetadata += "</td></tr>";
+
+  //-------------
+
+  QgsRectangle myExtent = extent();
+  myMetadata += "<tr class=\"glossy\"><td>";
+  myMetadata += tr( "Extents:" );
+  myMetadata += "</td></tr>";
+  //extents in layer cs  TODO...maybe make a little nested table to improve layout...
+  myMetadata += "<tr><td>";
+
+  // Try to be a bit clever over what number format we use for the
+  // extents. Some people don't like it using scientific notation when the
+  // numbers get large, but for small numbers this is the more practical
+  // option (so we can't force the format to 'f' for all values).
+  // The scheme:
+  // - for all numbers with more than 5 digits, force non-scientific notation
+  // and 2 digits after the decimal point.
+  // - for all smaller numbers let the OS decide which format to use (it will
+  // generally use non-scientific unless the number gets much less than 1).
+
+  QString xMin, yMin, xMax, yMax;
+  double changeoverValue = 99999; // The 'largest' 5 digit number
+  if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
+  {
+    xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
+  }
+  else
+  {
+    xMin = QString( "%1" ).arg( myExtent.xMinimum() );
+  }
+  if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
+  {
+    yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
+  }
+  else
+  {
+    yMin = QString( "%1" ).arg( myExtent.yMinimum() );
+  }
+  if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
+  {
+    xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
+  }
+  else
+  {
+    xMax = QString( "%1" ).arg( myExtent.xMaximum() );
+  }
+  if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
+  {
+    yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
+  }
+  else
+  {
+    yMax = QString( "%1" ).arg( myExtent.yMaximum() );
+  }
+
+  myMetadata += tr( "In layer spatial reference system units : " )
+                + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+                .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
+  myMetadata += "</td></tr>";
+
+  //extents in project cs
+
+  try
+  {
+#if 0
+    // TODO: currently disabled, will revisit later [MD]
+    QgsRectangle myProjectedExtent = coordinateTransform->transformBoundingBox( extent() );
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "In project spatial reference system units : " )
+                  + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+                  .arg( myProjectedExtent.xMinimum() )
+                  .arg( myProjectedExtent.yMinimum() )
+                  .arg( myProjectedExtent.xMaximum() )
+                  .arg( myProjectedExtent.yMaximum() );
+    myMetadata += "</td></tr>";
+#endif
+
+    //
+    // Display layer spatial ref system
+    //
+    myMetadata += "<tr class=\"glossy\"><td>";
+    myMetadata += tr( "Layer Spatial Reference System:" );
+    myMetadata += "</td></tr>";
+    myMetadata += "<tr><td>";
+    myMetadata += crs().toProj4().replace( QRegExp( "\"" ), " \"" );
+    myMetadata += "</td></tr>";
+
+    //
+    // Display project (output) spatial ref system
+    //
+#if 0
+    // TODO: disabled for now, will revisit later [MD]
+    myMetadata += "<tr><td bgcolor=\"gray\">";
+    myMetadata += tr( "Project (Output) Spatial Reference System:" );
+    myMetadata += "</td></tr>";
+    myMetadata += "<tr><td>";
+    myMetadata += coordinateTransform->destCRS().toProj4().replace( QRegExp( "\"" ), " \"" );
+    myMetadata += "</td></tr>";
+#endif
+  }
+  catch ( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    QgsDebugMsg( cse.what() );
+
+    myMetadata += "<tr><td>";
+    myMetadata += tr( "In project spatial reference system units : " )
+                  + tr( "(Invalid transformation of layer extents)" );
+    myMetadata += "</td></tr>";
+
+  }
+
+#if 0
+  //
+  // Add the info about each field in the attribute table
+  //
+  myMetadata += "<tr class=\"glossy\"><td>";
+  myMetadata += tr( "Attribute field info:" );
+  myMetadata += "</td></tr>";
+  myMetadata += "<tr><td>";
+
+  // Start a nested table in this trow
+  myMetadata += "<table width=\"100%\">";
+  myMetadata += "<tr><th>";
+  myMetadata += tr( "Field" );
+  myMetadata += "</th>";
+  myMetadata += "<th>";
+  myMetadata += tr( "Type" );
+  myMetadata += "</th>";
+  myMetadata += "<th>";
+  myMetadata += tr( "Length" );
+  myMetadata += "</th>";
+  myMetadata += "<th>";
+  myMetadata += tr( "Precision" );
+  myMetadata += "</th>";
+  myMetadata += "<th>";
+  myMetadata += tr( "Comment" );
+  myMetadata += "</th>";
+
+  //get info for each field by looping through them
+  const QgsFieldMap& myFields = pendingFields();
+  for ( QgsFieldMap::const_iterator it = myFields.begin(); it != myFields.end(); ++it )
+  {
+    const QgsField& myField = *it;
+
+    myMetadata += "<tr><td>";
+    myMetadata += myField.name();
+    myMetadata += "</td>";
+    myMetadata += "<td>";
+    myMetadata += myField.typeName();
+    myMetadata += "</td>";
+    myMetadata += "<td>";
+    myMetadata += QString( "%1" ).arg( myField.length() );
+    myMetadata += "</td>";
+    myMetadata += "<td>";
+    myMetadata += QString( "%1" ).arg( myField.precision() );
+    myMetadata += "</td>";
+    myMetadata += "<td>";
+    myMetadata += QString( "%1" ).arg( myField.comment() );
+    myMetadata += "</td></tr>";
+  }
+
+  //close field list
+  myMetadata += "</table>"; //end of nested table
+#endif
+
+  myMetadata += "</td></tr>"; //end of stats container table row
+  //
+  // Close the table
+  //
+
+  myMetadata += "</table>";
+
+  myMetadata += "</body></html>";
+  return myMetadata;
 }
 
 QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )

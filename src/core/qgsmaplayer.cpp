@@ -711,7 +711,7 @@ QString QgsMapLayer::saveNamedStyle( const QString theURI, bool & theResultFlag 
     QFileInfo myDirInfo( myFileInfo.path() );  //excludes file name
     if ( !myDirInfo.isWritable() )
     {
-      return tr( "The directory containing your dataset needs to be writeable!" );
+      return tr( "The directory containing your dataset needs to be writable!" );
     }
 
     // now construct the file name for our .qml style file
@@ -937,4 +937,9 @@ void QgsMapLayer::setValid( bool valid )
 void QgsMapLayer::clearCacheImage()
 {
   setCacheImage( 0 );
+}
+
+QString QgsMapLayer::metadata()
+{
+  return QString();
 }

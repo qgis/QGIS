@@ -16,8 +16,6 @@
  ***************************************************************************/
 /* $Id: qgsrasterprojector.cpp 15005 2011-01-08 16:35:21Z rblazek $ */
 
-#include <cassert>
-
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"
 #include "qgscoordinatetransform.h"
@@ -176,10 +174,12 @@ QString QgsRasterProjector::cpToString()
   QString myString;
   for ( int i = 0; i < mCPRows; i++ )
   {
-    if ( i > 0 ) myString += "\n";
+    if ( i > 0 )
+      myString += "\n";
     for ( int j = 0; j < mCPCols; j++ )
     {
-      if ( j > 0 ) myString += "  ";
+      if ( j > 0 )
+        myString += "  ";
       QgsPoint myPoint = mCPMatrix[i][j];
       myString += myPoint.toString();
     }
@@ -210,10 +210,12 @@ void QgsRasterProjector::calcSrcRowsCols()
       QgsPoint myPointB = mCPMatrix[i][j+1];
       QgsPoint myPointC = mCPMatrix[i+1][j];
       double mySize = sqrt( myPointA.sqrDist( myPointB ) ) / myDestColsPerMatrixCell;
-      if ( mySize < myMinSize ) { myMinSize = mySize; }
+      if ( mySize < myMinSize )
+        myMinSize = mySize;
 
       mySize = sqrt( myPointA.sqrDist( myPointC ) ) / myDestRowsPerMatrixCell;
-      if ( mySize < myMinSize ) { myMinSize = mySize; }
+      if ( mySize < myMinSize )
+        myMinSize = mySize;
     }
   }
 
@@ -294,7 +296,8 @@ void QgsRasterProjector::nextHelper()
 
 void QgsRasterProjector::srcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
 {
-  if ( mApproximate ) approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
+  if ( mApproximate )
+    approximateSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
   else preciseSrcRowCol( theDestRow, theDestCol, theSrcRow, theSrcCol );
 }
 
@@ -321,13 +324,17 @@ void QgsRasterProjector::preciseSrcRowCol( int theDestRow, int theDestCol, int *
   // With epsg 32661 (Polar Stereographic) it was happening that *theSrcCol == mSrcCols
   // For now silently correct limits to avoid crashes
   // TODO: review
-  if ( *theSrcRow >= mSrcRows ) *theSrcRow = mSrcRows - 1;
-  if ( *theSrcRow < 0 ) *theSrcRow = 0;
-  if ( *theSrcCol >= mSrcCols ) *theSrcCol = mSrcCols - 1;
-  if ( *theSrcCol < 0 ) *theSrcCol = 0;
+  if ( *theSrcRow >= mSrcRows )
+    *theSrcRow = mSrcRows - 1;
+  if ( *theSrcRow < 0 )
+    *theSrcRow = 0;
+  if ( *theSrcCol >= mSrcCols )
+    *theSrcCol = mSrcCols - 1;
+  if ( *theSrcCol < 0 )
+    *theSrcCol = 0;
 
-  assert( *theSrcRow < mSrcRows );
-  assert( *theSrcCol < mSrcCols );
+  Q_ASSERT( *theSrcRow < mSrcRows );
+  Q_ASSERT( *theSrcCol < mSrcCols );
 }
 
 void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, int *theSrcRow, int *theSrcCol )
@@ -373,12 +380,16 @@ void QgsRasterProjector::approximateSrcRowCol( int theDestRow, int theDestCol, i
 
   // For now silently correct limits to avoid crashes
   // TODO: review
-  if ( *theSrcRow >= mSrcRows ) *theSrcRow = mSrcRows - 1;
-  if ( *theSrcRow < 0 ) *theSrcRow = 0;
-  if ( *theSrcCol >= mSrcCols ) *theSrcCol = mSrcCols - 1;
-  if ( *theSrcCol < 0 ) *theSrcCol = 0;
-  assert( *theSrcRow < mSrcRows );
-  assert( *theSrcCol < mSrcCols );
+  if ( *theSrcRow >= mSrcRows )
+    *theSrcRow = mSrcRows - 1;
+  if ( *theSrcRow < 0 )
+    *theSrcRow = 0;
+  if ( *theSrcCol >= mSrcCols )
+    *theSrcCol = mSrcCols - 1;
+  if ( *theSrcCol < 0 )
+    *theSrcCol = 0;
+  Q_ASSERT( *theSrcRow < mSrcRows );
+  Q_ASSERT( *theSrcCol < mSrcCols );
 }
 
 void QgsRasterProjector::insertRows()
@@ -466,7 +477,8 @@ bool QgsRasterProjector::checkCols()
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
       QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
       double mySqrDist = myDestApprox.sqrDist( myDestPoint );
-      if ( mySqrDist > mSqrTolerance ) { return false; }
+      if ( mySqrDist > mSqrTolerance )
+        return false;
     }
   }
   return true;
@@ -489,7 +501,8 @@ bool QgsRasterProjector::checkRows()
       QgsPoint mySrcApprox(( mySrcPoint1.x() + mySrcPoint3.x() ) / 2, ( mySrcPoint1.y() + mySrcPoint3.y() ) / 2 );
       QgsPoint myDestApprox = mCoordinateTransform.transform( mySrcApprox, QgsCoordinateTransform::ReverseTransform );
       double mySqrDist = myDestApprox.sqrDist( myDestPoint );
-      if ( mySqrDist > mSqrTolerance ) { return false; }
+      if ( mySqrDist > mSqrTolerance )
+        return false;
     }
   }
   return true;

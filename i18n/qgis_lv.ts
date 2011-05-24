@@ -17147,7 +17147,7 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
 %1</translation>
     </message>
     <message>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>Mapei, kurā atrodas jūsu datu kopas, ir jābūt ar rakstīšanas iespēju!</translation>
     </message>
     <message>
@@ -21277,7 +21277,7 @@ Lūdzu instalējiet PostGIS ar GEOS atbalstu (http://geos.refractions.net)</tran
         <translation>Nav iespējams saglabāt failā %1</translation>
     </message>
     <message>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 nav rakstāms. Ja iespējams, izlabojiet tiesības un mēģiniet vēlreiz.</translation>
     </message>
     <message>
@@ -22516,7 +22516,7 @@ p, li { white-space: pre-wrap; }
         <translation>Lūdzu ievērojiet, ka piramīdu veidošana ietekmē orģinālos datus un šo darbību vairs nav iespējams atdarīt!</translation>
     </message>
     <message>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Fails nav rakstāms. Daži formāti neatbalsta piramīdu veidošanu. Sīkāka informācija GDAL dokumentācijā.</translation>
     </message>
     <message>

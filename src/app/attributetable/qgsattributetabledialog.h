@@ -58,6 +58,10 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void editingToggled();
 
+    void updateExtent();
+
+    void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
+
   private slots:
     /**
      * submits the data
@@ -220,5 +224,26 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
 
     QDockWidget *mDock;
 };
+
+
+class QgsAttributeTableAction : public QAction
+{
+    Q_OBJECT
+
+  public:
+    QgsAttributeTableAction( const QString &name, QgsAttributeTableView *view, QgsAttributeTableModel *model, int action, const QModelIndex &fieldIdx ) :
+        QAction( name, view ), mModel( model ), mAction( action ), mFieldIdx( fieldIdx )
+    {}
+
+  public slots:
+    void execute();
+    void featureForm();
+
+  private:
+    QgsAttributeTableModel *mModel;
+    int mAction;
+    QModelIndex mFieldIdx;
+};
+
 
 #endif

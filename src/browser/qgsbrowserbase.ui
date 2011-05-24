@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsBrowserBase</class>
+ <widget class="QMainWindow" name="QgsBrowserBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>714</width>
+    <height>471</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>QGIS Browser</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>696</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QTreeView" name="treeView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>1</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+         <horstretch>3</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentIndex">
+        <number>1</number>
+       </property>
+       <widget class="QWidget" name="paramTab">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <attribute name="title">
+         <string>Param</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <item>
+          <layout class="QVBoxLayout" name="paramLayout"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="metaTab">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <attribute name="title">
+         <string>Metadata</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QTextBrowser" name="metaTextBrowser"/>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="previewTab">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <attribute name="title">
+         <string>Preview</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QgsMapCanvas" name="mapCanvas"/>
+         </item>
+         <item>
+          <widget class="QWidget" name="widget" native="true">
+           <layout class="QHBoxLayout" name="horizontalLayout_2">
+            <item>
+             <spacer name="horizontalSpacer">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>370</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QPushButton" name="stopRenderingButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>Stop rendering</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="attributesTab">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <attribute name="title">
+         <string>Attributes</string>
+        </attribute>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QgsAttributeTableView" name="attributeTable"/>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="toolButtonStyle">
+    <enum>Qt::ToolButtonTextBesideIcon</enum>
+   </property>
+   <property name="floatable">
+    <bool>false</bool>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="mActionRefresh"/>
+   <addaction name="mActionWmsConnections"/>
+   <addaction name="mActionNewVectorLayer"/>
+   <addaction name="mActionSetProjection"/>
+  </widget>
+  <action name="mActionNewVectorLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewVectorLayer.png</normaloff>:/images/themes/default/mActionNewVectorLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>New Shapefile</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+N</string>
+   </property>
+  </action>
+  <action name="mActionRefresh">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDraw.png</normaloff>:/images/themes/default/mActionDraw.png</iconset>
+   </property>
+   <property name="text">
+    <string>Refresh</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="mActionSetProjection">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionCustomProjection.png</normaloff>:/images/themes/default/mActionCustomProjection.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set layer CRS</string>
+   </property>
+   <property name="toolTip">
+    <string>Set layer CRS</string>
+   </property>
+  </action>
+  <action name="mActionWmsConnections">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWmsLayer.png</normaloff>:/images/themes/default/mActionAddWmsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Manage WMS</string>
+   </property>
+   <property name="toolTip">
+    <string>Manage WMS Connections</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+W</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsMapCanvas</class>
+   <extends>QGraphicsView</extends>
+   <header>qgsmapcanvas.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsAttributeTableView</class>
+   <extends>QTableView</extends>
+   <header>qgsattributetableview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
+ <connections/>
+</ui>

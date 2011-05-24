@@ -269,10 +269,12 @@ void QgsComposerMapWidget::updateGuiElements()
     if ( previewMode == QgsComposerMap::Cache )
     {
       index = mPreviewModeComboBox->findText( tr( "Cache" ) );
+      mUpdatePreviewButton->setEnabled( true );
     }
     else if ( previewMode == QgsComposerMap::Render )
     {
       index = mPreviewModeComboBox->findText( tr( "Render" ) );
+      mUpdatePreviewButton->setEnabled( true );
     }
     else if ( previewMode == QgsComposerMap::Rectangle )
     {
@@ -400,13 +402,17 @@ void QgsComposerMapWidget::updateComposerExtentFromGui()
   bool conversionSuccess;
 
   xmin = mXMinLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {return;}
+  if ( !conversionSuccess )
+    return;
   xmax = mXMaxLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {return;}
+  if ( !conversionSuccess )
+    return;
   ymin = mYMinLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {return;}
+  if ( !conversionSuccess )
+    return;
   ymax = mYMaxLineEdit->text().toDouble( &conversionSuccess );
-  if ( !conversionSuccess ) {return;}
+  if ( !conversionSuccess )
+    return;
 
   QgsRectangle newExtent( xmin, ymin, xmax, ymax );
   mComposerMap->beginCommand( tr( "Map extent changed" ) );

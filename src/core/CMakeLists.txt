@@ -46,6 +46,7 @@ SET(QGIS_CORE_SRCS
   qgscontexthelp.cpp
   qgscoordinatetransform.cpp
   qgsdatasourceuri.cpp
+  qgsdataitem.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
@@ -78,6 +79,7 @@ SET(QGIS_CORE_SRCS
   qgsproviderextentcalcevent.cpp
   qgsprovidermetadata.cpp
   qgsproviderregistry.cpp
+  qgspythonrunner.cpp
   qgsrasterprojector.cpp
   qgsrasterdataprovider.cpp
   qgsrendercontext.cpp
@@ -219,6 +221,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
   qgscontexthelp.h
   qgscoordinatetransform.h
+  qgsdataitem.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h
@@ -381,6 +384,7 @@ SET(QGIS_CORE_HDRS
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdatasourceuri.h
+  qgsdataitem.h
   qgsdistancearea.h
   qgscsexception.h
   qgsexception.h
@@ -411,6 +415,7 @@ SET(QGIS_CORE_HDRS
   qgsproviderextentcalcevent.h
   qgsprovidermetadata.h
   qgsproviderregistry.h
+  qgspythonrunner.h
   qgsrasterprojector.h
   qgsrasterdataprovider.h
   qgsrectangle.h

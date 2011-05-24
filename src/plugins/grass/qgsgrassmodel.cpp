@@ -99,7 +99,8 @@ void QgsGrassModelItem::copyNames( QgsGrassModelItem *item )
 
 QVariant QgsGrassModelItem::data( int role )
 {
-  if ( role != Qt::DisplayRole ) return QVariant();
+  if ( role != Qt::DisplayRole )
+    return QVariant();
 
   return name();
 }
@@ -520,7 +521,8 @@ void QgsGrassModelItem::populate()
 {
   QgsDebugMsg( "called." );
 
-  if ( mPopulated ) return;
+  if ( mPopulated )
+    return;
 
   mModel->refreshItem( this );
 }
@@ -708,9 +710,12 @@ void QgsGrassModel::refreshItem( QgsGrassModelItem *item )
                             "windows" );
 
       QStringList list;
-      if ( vectors.count() > 0 ) list.append( "vector" );
-      if ( rasters.count() > 0 ) list.append( "raster" );
-      if ( regions.count() > 0 ) list.append( "region" );
+      if ( vectors.count() > 0 )
+        list.append( "vector" );
+      if ( rasters.count() > 0 )
+        list.append( "raster" );
+      if ( regions.count() > 0 )
+        list.append( "region" );
 
       removeItems( item, list );
 
@@ -759,7 +764,7 @@ void QgsGrassModel::refreshItem( QgsGrassModelItem *item )
 
     case QgsGrassModel::Vector:
     {
-      QStringList list = QgsGrassSelect::vectorLayers(
+      QStringList list = QgsGrass::vectorLayers(
                            QgsGrass::getDefaultGisdbase(),
                            QgsGrass::getDefaultLocation(),
                            item->mMapset, item->mMap );
@@ -796,7 +801,8 @@ QModelIndex QgsGrassModel::index( int row, int column,
   // for example if beginInsertRows(,0,0) is called and the first
   // item was previously deleted => check if row < 0
   // and return empty QModelIndex, but is it correct?
-  if ( row < 0 ) return QModelIndex();
+  if ( row < 0 )
+    return QModelIndex();
 
   QgsGrassModelItem *item;
   if ( !parent.isValid() )
@@ -807,8 +813,10 @@ QModelIndex QgsGrassModel::index( int row, int column,
   {
     item = static_cast<QgsGrassModelItem*>( parent.internalPointer() );
   }
-  //if ( !item->populated() ) refreshItem(item);
-  if ( !item->populated() ) item->populate();
+  //if ( !item->populated() )
+  //refreshItem(item);
+  if ( !item->populated() )
+    item->populate();
   return createIndex( row, column, item->child( row ) );
 }
 
@@ -816,14 +824,16 @@ QModelIndex QgsGrassModel::parent( const QModelIndex & index ) const
 {
 // QgsDebugMsg("entered.");
 
-  if ( !index.isValid() ) return QModelIndex();
+  if ( !index.isValid() )
+    return QModelIndex();
 
   QgsGrassModelItem *item =
     static_cast<QgsGrassModelItem*>( index.internalPointer() );
 
   QgsGrassModelItem *parentNode = item->mParent;
 
-  if ( parentNode == 0 || parentNode == mRoot ) return QModelIndex();
+  if ( parentNode == 0 || parentNode == mRoot )
+    return QModelIndex();
 
   // parent's row
   QVector<QgsGrassModelItem*> children = parentNode->mParent ?
@@ -855,8 +865,10 @@ int QgsGrassModel::rowCount( const QModelIndex & parent ) const
   }
 // QgsDebugMsg(QString("name = %1").arg(item->name()));
 // QgsDebugMsg(QString("count = %1").arg(item->mChildren.size()));
-  if ( !item->populated() ) item->populate();
-  //if ( !item->populated() ) refreshItem(item);
+  if ( !item->populated() )
+    item->populate();
+  //if ( !item->populated() )
+  //refreshItem(item);
   return item->mChildren.size();
 }
 
@@ -870,8 +882,10 @@ QVariant QgsGrassModel::data( const QModelIndex &index, int role ) const
 {
 // QgsDebugMsg("entered.");
 
-  if ( !index.isValid() ) { return QVariant(); }
-  if ( role != Qt::DisplayRole && role != Qt::DecorationRole ) return QVariant();
+  if ( !index.isValid() )
+    return QVariant();
+  if ( role != Qt::DisplayRole && role != Qt::DecorationRole )
+    return QVariant();
 
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
@@ -920,7 +934,8 @@ QVariant QgsGrassModel::data( const QModelIndex &index, int role ) const
 
 QString QgsGrassModel::itemName( const QModelIndex &index )
 {
-  if ( !index.isValid() ) { return QString(); }
+  if ( !index.isValid() )
+    return QString();
 
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
@@ -930,7 +945,8 @@ QString QgsGrassModel::itemName( const QModelIndex &index )
 
 QString QgsGrassModel::itemMapset( const QModelIndex &index )
 {
-  if ( !index.isValid() ) { return QString(); }
+  if ( !index.isValid() )
+    return QString();
 
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
@@ -940,7 +956,8 @@ QString QgsGrassModel::itemMapset( const QModelIndex &index )
 
 QString QgsGrassModel::itemMap( const QModelIndex &index )
 {
-  if ( !index.isValid() ) { return QString(); }
+  if ( !index.isValid() )
+    return QString();
 
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
@@ -950,7 +967,8 @@ QString QgsGrassModel::itemMap( const QModelIndex &index )
 
 QString QgsGrassModel::itemInfo( const QModelIndex &index )
 {
-  if ( !index.isValid() ) { return QString(); }
+  if ( !index.isValid() )
+    return QString();
 
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
@@ -960,7 +978,8 @@ QString QgsGrassModel::itemInfo( const QModelIndex &index )
 
 int QgsGrassModel::itemType( const QModelIndex &index ) const
 {
-  if ( !index.isValid() ) { return QgsGrassModel::None; }
+  if ( !index.isValid() )
+    return QgsGrassModel::None;
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
   return item->type();
@@ -968,7 +987,8 @@ int QgsGrassModel::itemType( const QModelIndex &index ) const
 
 QString QgsGrassModel::uri( const QModelIndex &index ) const
 {
-  if ( !index.isValid() ) { return QString(); }
+  if ( !index.isValid() )
+    return QString();
   QgsGrassModelItem *item;
   item = static_cast<QgsGrassModelItem*>( index.internalPointer() );
   return item->uri();
