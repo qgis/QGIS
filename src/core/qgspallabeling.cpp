@@ -576,9 +576,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation ) )
       return;
   }
-  catch ( std::exception* e )
+  catch ( std::exception &e )
   {
-    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( f.id() ) + QString::fromLatin1( e->what() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( f.id() ) + QString::fromLatin1( e.what() ) );
     return;
   }
 
@@ -869,9 +870,10 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
       return;
     }
   }
-  catch ( std::exception* e )
+  catch ( std::exception &e )
   {
-    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( feat.id() ) + QString::fromLatin1( e->what() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( feat.id() ) + QString::fromLatin1( e.what() ) );
     return;
   }
 
@@ -961,6 +963,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   }
   catch ( std::exception& e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ) );
     //mActiveLayers.clear(); // clean up
     return;

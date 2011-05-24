@@ -778,6 +778,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     }
     catch ( const QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
                    .arg( fet.typeName() ).arg( cse.what() ) );
     }
@@ -920,6 +921,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
         }
         catch ( const QgsCsException &cse )
         {
+          Q_UNUSED( cse );
           QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
                        .arg( fet.typeName() ).arg( cse.what() ) );
         }
@@ -1106,6 +1108,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     }
     catch ( QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Rendering stopped. %2" )
                    .arg( fet.typeName() ).arg( cse.what() ) );
       return false;
@@ -1446,7 +1449,9 @@ void QgsVectorLayer::updateExtents()
   mLayerExtent.setMinimal();
 
   if ( !mDataProvider )
+  {
     QgsDebugMsg( "invoked with null mDataProvider" );
+  }
 
   if ( mDeletedFeatureIds.isEmpty() && mChangedGeometries.isEmpty() )
   {
@@ -1739,7 +1744,9 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
             }
 
             if ( !found )
+            {
               QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
+            }
           }
           else
           {
@@ -1841,7 +1848,9 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
         }
 
         if ( !found )
+        {
           QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
+        }
       }
       else
       {

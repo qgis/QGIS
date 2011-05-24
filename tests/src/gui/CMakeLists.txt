@@ -20,24 +20,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
 #############################################################
 # Compiler defines
 
-# expect that classes are being IMPORTED for the tests
-IF (WIN32)
-  # expect that classes are being imported
-  # Note: MSVC doesn't like when the macros are quotes
-  # and MSYS doesn't like them unqouted (bacause of braces)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
-    #ADD_DEFINITIONS("-DPLUGIN_EXPORT=__declspec(dllimport)")
-    #next needed for qgis gui includes
-    ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllimport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllimport)\"")
-    #ADD_DEFINITIONS("\"-DPLUGIN_EXPORT=__declspec(dllimport)\"")
-    #next needed for qgis gui includes
-    ADD_DEFINITIONS("-UGUI_EXPORT \"-DGUI_EXPORT=__declspec(dllimport)\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
-
 # This define is used for tests that need to locate the test
 # data under tests/testdata in the qgis source tree.
 # the TEST_DATA_DIR variable is set in the top level CMakeLists.txt

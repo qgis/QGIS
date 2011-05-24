@@ -3,22 +3,10 @@
 
 SUBDIRS( sqlanyconnection )
 
-SET (SA_SRCS 
-    qgssqlanywhereprovider.cpp
-)
-SET (SA_MOC_HDRS 
-    qgssqlanywhereprovider.h
-)
+SET (SA_SRCS qgssqlanywhereprovider.cpp)
+SET (SA_MOC_HDRS qgssqlanywhereprovider.h)
 
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DSACONN_EXPORT=__declspec(dllexport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-USACONN_EXPORT \"-DSACONN_EXPORT=__declspec(dllexport)\"")
-  ENDIF (MSVC)
-ELSE (WIN32)
-  ADD_DEFINITIONS(-DSACONN_EXPORT=)
-ENDIF (WIN32)
+ADD_DEFINITIONS("-DSACONN_EXPORT=${DLLEXPORT}")
 
 ########################################################
 # Build
