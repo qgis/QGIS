@@ -29,7 +29,7 @@
 /**
 * \ingroup analysis
 * \class QgsGraphBuilderInterface
-* \brief Determine interface for creating a graph. Contains the settings of the graph.
+* \brief Determine interface for creating a graph. Contains the settings of the graph. QgsGraphBuilder and QgsGraphDirector is a Builder pattern
 */
 class ANALYSIS_EXPORT QgsGraphBuilderInterface
 {

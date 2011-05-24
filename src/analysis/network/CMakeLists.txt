@@ -7,6 +7,7 @@ SET(QGIS_NETWORK_ANALYSIS_SRCS
   qgsgraph.cpp
   qgsgraphbuilder.cpp
   qgsdistanceedgeproperter.cpp
+  qgslinevectorlayerdirector.cpp
 )
 
 INCLUDE_DIRECTORIES(BEFORE raster)
@@ -50,14 +51,14 @@ INSTALL(TARGETS qgis_networkanalysis
   ARCHIVE DESTINATION ${QGIS_LIB_DIR})
 
 
-# Added by Tim to install headers
-
 SET(QGIS_NETWORK_ANALYSIS_HDRS 
   qgsgraph.h 
-  qgsgraphbuilderinterface.h 
+  qgsgraphbuilderintr.h 
   qgsgraphbuilder.h 
   qgsedgeproperter.h 
-  qgsdistanceedgeproperter.h )
+  qgsdistanceedgeproperter.h 
+  qgsgraphdirector.h 
+  qgslinevectorlayerdirector.h )
 
 INSTALL(CODE "MESSAGE(\"Installing NETWORK ANALYSIS headers...\")")
 INSTALL(FILES ${QGIS_NETWORK_ANALYSIS_HDRS} ${QGIS_NETWORK_ANALYSIS_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
