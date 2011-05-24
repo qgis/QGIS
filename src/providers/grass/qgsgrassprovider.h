@@ -689,25 +689,25 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
 
 class QgsGrassLocationItem : public QgsDataCollectionItem
 {
-    public:
-     QgsGrassLocationItem (QgsDataItem* parent, QString path );
-     ~QgsGrassLocationItem();
-     
-     static bool isLocation ( QString path );
-     QVector<QgsDataItem*> createChildren();
+  public:
+    QgsGrassLocationItem( QgsDataItem* parent, QString path );
+    ~QgsGrassLocationItem();
+
+    static bool isLocation( QString path );
+    QVector<QgsDataItem*> createChildren();
 };
 
-class QgsGrassMapsetItem : public QgsDataCollectionItem 
+class QgsGrassMapsetItem : public QgsDataCollectionItem
 {
-    public:
-     QgsGrassMapsetItem (QgsDataItem* parent, QString path );
-     ~QgsGrassMapsetItem();
-     
-     static bool isMapset ( QString path );
-     QVector<QgsDataItem*> createChildren();
-     
-     QString mLocation;
-     QString mGisdbase;
+  public:
+    QgsGrassMapsetItem( QgsDataItem* parent, QString path );
+    ~QgsGrassMapsetItem();
+
+    static bool isMapset( QString path );
+    QVector<QgsDataItem*> createChildren();
+
+    QString mLocation;
+    QString mGisdbase;
 };
 
 

@@ -541,11 +541,17 @@ bool QgsOSMDataProvider::nextFeature( QgsFeature& feature )
 
     default:
       if ( mFeatureType == PointType )
+      {
         QgsDebugMsg( "Getting next feature of type <point> failed." );
+      }
       else if ( mFeatureType == LineType )
+      {
         QgsDebugMsg( "Getting next feature of type <line> failed." );
+      }
       else if ( mFeatureType == PolygonType )
+      {
         QgsDebugMsg( "Getting next feature of type <polygon> failed." );
+      }
       feature.setValid( false );
       return false;
   }

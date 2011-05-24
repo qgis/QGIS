@@ -25,7 +25,9 @@ QgsCredentials *QgsCredentials::smInstance = 0;
 void QgsCredentials::setInstance( QgsCredentials *theInstance )
 {
   if ( smInstance )
+  {
     QgsDebugMsg( "already registered an instance of QgsCredentials" );
+  }
 
   smInstance = theInstance;
 }

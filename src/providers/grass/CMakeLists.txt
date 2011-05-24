@@ -1,22 +1,9 @@
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 
 ########################################################
-# Files
-
-SET(GRASS_PROVIDER_SRCS provider.cpp qgsgrassprovider.cpp )
-
-SET(GRASS_RASTER_PROVIDER_SRCS qgsgrassrasterprovider.cpp)
-
-SET(GRASS_LIB_SRCS qgsgrass.cpp)
-
-SET(QGIS_D_RAST_SRCS qgis.d.rast.c)
-
-SET(QGIS_G_INFO_SRCS qgis.g.info.c)
-
-########################################################
 # Build
 
-INCLUDE_DIRECTORIES (
+INCLUDE_DIRECTORIES(
   ../../core
   ../../core/raster
   ${GRASS_INCLUDE_DIR}
@@ -25,18 +12,15 @@ INCLUDE_DIRECTORIES (
   ${GEOS_INCLUDE_DIR}
 )
 
-QT4_WRAP_CPP(GRASS_MOC_SRCS qgsgrassprovider.h)
-ADD_LIBRARY (qgisgrass SHARED ${GRASS_LIB_SRCS} ${GRASS_MOC_SRCS})
+#
+# GRASS library
+#
 
-SET_TARGET_PROPERTIES(qgisgrass PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
-
-IF (WIN32)
-  SET_TARGET_PROPERTIES(qgisgrass PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllexport)\"" )
-ELSE (WIN32)
-  SET_TARGET_PROPERTIES(qgisgrass PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
-ENDIF (WIN32)
-
-TARGET_LINK_LIBRARIES (qgisgrass
+ADD_LIBRARY(qgisgrass SHARED qgsgrass.cpp)
+SET_TARGET_PROPERTIES(qgisgrass PROPERTIES
+                      VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION}
+                      COMPILE_FLAGS "\"-DGRASS_LIB_EXPORT=${DLLEXPORT}\" \"-DGRASS_EXPORT=${DLLIMPORT}\"" )
+TARGET_LINK_LIBRARIES(qgisgrass
   qgis_core
   ${GRASS_LIBRARY_gis}
   ${GRASS_LIBRARY_vect}
@@ -49,43 +33,41 @@ IF (APPLE)
   SET_TARGET_PROPERTIES(qgisgrass PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
 ENDIF (APPLE)
 
-ADD_LIBRARY (grassprovider MODULE ${GRASS_PROVIDER_SRCS} ${GRASS_MOC_SRCS})
+#
+# GRASS vector provider
+#
 
-IF (WIN32)
-  SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllexport)\"" )
-ELSE (WIN32)
-  SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
-ENDIF (WIN32)
+QT4_WRAP_CPP(GRASS_PROVIDER_MOC_SRCS qgsgrassprovider.h)
+ADD_LIBRARY(grassprovider SHARED qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
+SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
+TARGET_LINK_LIBRARIES(grassprovider qgisgrass)
 
-TARGET_LINK_LIBRARIES (grassprovider
-  qgisgrass
-)
+#
+# grass raster provider
+#
 
-QT4_WRAP_CPP(GRASS_MOC_RASTERSRCS qgsgrassrasterprovider.h)
-ADD_LIBRARY (grassrasterprovider MODULE ${GRASS_RASTER_PROVIDER_SRCS} ${GRASS_MOC_RASTERSRCS})
+QT4_WRAP_CPP(GRASS_RASTERPROVIDER_MOC_SRCS qgsgrassrasterprovider.h)
+ADD_LIBRARY(grassrasterprovider MODULE qgsgrassrasterprovider.cpp ${GRASS_RASTERPROVIDER_MOC_SRCS})
+SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
+TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
 
-IF (WIN32)
-  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=__declspec(dllexport)\"" )
-ELSE (WIN32)
-  SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "-DGRASS_EXPORT=" )
-ENDIF (WIN32)
+#
+# grass raster display module
+#
 
-TARGET_LINK_LIBRARIES (grassrasterprovider
-  qgisgrass
-  qgis_core
-)
-
-ADD_EXECUTABLE(qgis.d.rast ${QGIS_D_RAST_SRCS})
-
-TARGET_LINK_LIBRARIES (qgis.d.rast
+ADD_EXECUTABLE(qgis.d.rast qgis.d.rast.c)
+TARGET_LINK_LIBRARIES(qgis.d.rast
   ${GRASS_LIBRARY_gis}
   ${GRASS_LIBRARY_datetime}
   ${GDAL_LIBRARY}
 )
 
-ADD_EXECUTABLE(qgis.g.info ${QGIS_G_INFO_SRCS})
+#
+# grass info module
+#
 
-TARGET_LINK_LIBRARIES (qgis.g.info
+ADD_EXECUTABLE(qgis.g.info qgis.g.info.c)
+TARGET_LINK_LIBRARIES(qgis.g.info
   ${GRASS_LIBRARY_gis}
   ${GRASS_LIBRARY_datetime}
   ${GRASS_LIBRARY_gproj}

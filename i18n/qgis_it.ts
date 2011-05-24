@@ -24753,7 +24753,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1531"/>
         <source>Override system locale</source>
-        <translation>Sovascrivi lingua in uso</translation>
+        <translation>Sovrascrivi lingua in uso</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1550"/>
@@ -26832,7 +26832,7 @@ Result: %3 (%4)</translation>
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation>Impossibiel accedere alla tabella %1.
+        <translation>Impossibile accedere alla tabella %1.
 Questo il messaggio di errore dal database:
 %2.
 SQL: %3</translation>
