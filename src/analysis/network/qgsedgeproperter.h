@@ -23,15 +23,29 @@
 #include <qgsfeature.h>
 #include <qgslabel.h>
 
+/**
+ * \class QgsEdgeProperter
+ * \brief QgsEdgeProperter is a strategy pattern. You can use it for customize edge property.
+ */
 class ANALYSIS_EXPORT QgsEdgeProperter
 {
   public:
+    /**
+     * default constructor
+     */
     QgsEdgeProperter()
     { }
-
+    
+    /**
+     * QgsGraphDirector call this method for fetching attribute from source layer
+     * \return required attributes list
+     */
     virtual QgsAttributeList requiredAttributes() const
     { return QgsAttributeList(); }
     
+    /**
+     * calculate and return adge property
+     */
     virtual QVariant property( double distance, const QgsFeature& f ) const
     { return QVariant(); }
 };
