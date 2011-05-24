@@ -5,6 +5,7 @@
 
 SET(QGIS_NETWORK_ANALYSIS_SRCS
   qgsgraph.cpp
+  qgsgraphbuilder.cpp
 )
 
 INCLUDE_DIRECTORIES(BEFORE raster)
@@ -51,7 +52,9 @@ INSTALL(TARGETS qgis_networkanalysis
 # Added by Tim to install headers
 
 SET(QGIS_NETWORK_ANALYSIS_HDRS 
-  qgsgraph.h )
+  qgsgraph.h 
+  qgsgraphbuilderinterface.h 
+  qgsgraphbuilder.h )
 
 INSTALL(CODE "MESSAGE(\"Installing NETWORK ANALYSIS headers...\")")
 INSTALL(FILES ${QGIS_NETWORK_ANALYSIS_HDRS} ${QGIS_NETWORK_ANALYSIS_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
