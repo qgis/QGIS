@@ -9341,8 +9341,8 @@ QWT verze: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2050"/>
-        <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
-        <translation>Odstraněn ogr convertor plugin - použijte místo toho kontext menu &apos;uložit jako&apos;.</translation>
+        <source>Removed ogr converter plugin - use &apos;save as&apos; context menu rather.</source>
+        <translation>Odstraněn ogr converter plugin - použijte místo toho kontext menu &apos;uložit jako&apos;.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2052"/>
@@ -11122,7 +11122,7 @@ Chyba byla:%2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
-        <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
+        <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
         <translation>Umožňuje nastavit číselné hodnoty z určeného rozsahu. Editovací doplněk může být jak posuvník tak otočný volič.</translation>
     </message>
     <message>
@@ -32398,7 +32398,7 @@ Přepsat?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
         <translation>V panelu nástrojů Tvůrce map můžete najít dvě tlačítka pro posun prvků. Levé (kurzor výběru se symbolem ruky) vybírá a posouvá prvky v návrhu mapy. Po vybrání prvku tímto nástrojem ho můžete posouvat pomocí kláves šipek. Pro přesné umístění použijte dialog  &lt;strong&gt;Pozice a velikost&lt;/strong&gt; , který lze nalézt v panelu &lt;strong&gt;Položka &amp;rarr; Obecné možnosti &amp;rarr; Pozice a velikost&lt;/strong&gt;. Pro jednodušší umístění také můžete nastavit specifické kotevní body prvku v rámci tohoto dialogu. Další nástroj přesunu prvků (ikonka globusu s rukou) dovoluje posouvat obsah mapy uvnitř mapového rámu.</translation>
     </message>
     <message>
@@ -34037,7 +34037,7 @@ Měly by být existující třídy před klasifikací smazány?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="139"/>
-        <source>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
+        <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
         <translation>Toto dovoluje potlačit vytváření atributu, protože některé OGR ovladače (např. DGN, DXF) to nepodporují.</translation>
     </message>
     <message>

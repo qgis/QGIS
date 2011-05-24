@@ -2038,7 +2038,7 @@ void QgisApp::about()
     whatsNew += "<ul>";
     whatsNew += "<li>" + tr( "Support for icons of plugins in the plugin manager dialog." ) + "</li>";
     whatsNew += "<li>" + tr( "Removed quickprint plugin - use easyprint plugin rather from plugin repo." ) + "</li>";
-    whatsNew += "<li>" + tr( "Removed ogr convertor plugin - use 'save as' context menu rather." ) + "</li>";
+    whatsNew += "<li>" + tr( "Removed ogr converter plugin - use 'save as' context menu rather." ) + "</li>";
     whatsNew += "</ul>";
     whatsNew += "<h3>" + tr( "Printing" ) + "</h3>";
     whatsNew += "<ul>";
