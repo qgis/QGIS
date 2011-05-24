@@ -639,8 +639,15 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   }
 
   int cnt = points.count();
-  QPointF p1 = points.at( cnt - 2 );
-  QPointF p2 = points.at( cnt - 1 );
+  QPointF p2 = points.at( --cnt );
+  QPointF p1 = points.at( --cnt );
+  while ( p2 == p1 && cnt )
+    p1 = points.at( --cnt );
+  if ( p1 == p2 ) {
+    // this is a collapsed line... don't bother drawing an arrow
+    // with arbitrary orientation
+    return;
+  }
 
   double angle = atan2( p2.y() - p1.y(), p2.x() - p1.x() );
   double size = context.outputLineWidth( mWidth * 8 );
