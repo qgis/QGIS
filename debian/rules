@@ -131,7 +131,9 @@ endif
 
 	# remove unwanted files
 	rm debian/tmp/usr/share/qgis/doc/api/installdox
+ifeq (,$(findstring $(DISTRIBUTION),"lenny"))
 	rm debian/tmp/usr/share/qgis/doc/api/jquery.js
+endif
 
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
