@@ -7637,7 +7637,7 @@ QWT: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2050"/>
-        <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
+        <source>Removed ogr converter plugin - use &apos;save as&apos; context menu rather.</source>
         <translation>Удалён модуль преобразования форматов (используйте пункт контекстного меню «Сохранить как»).</translation>
     </message>
     <message>
@@ -8874,7 +8874,7 @@ Error was:%2</source>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
-        <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
+        <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
         <translation>Позволяет ввод числовых значений из указанного диапазона. Элемент редактирования может быть ползунком или полем ввода.</translation>
     </message>
     <message>
@@ -29335,7 +29335,7 @@ Overwrite?</source>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
         <translation>Для перемещения элементов макета карты в QGIS предусмотрено два инструмента. Первый инструмент (перемещение элемента) позволяет выбрать и переместить элемент в пределах макета. Выбранный элемент также можно переместить клавишами со стрелками. Для более точного позиционирования можно использовать диалог «Положение и размер», который доступен на вкладке «Общие параметры» свойств элемента. Другой инструмент (перемещение содержимого) позволяет переместить содержимое карты в пределах границ соответствующей карты.</translation>
     </message>
     <message>
@@ -30922,7 +30922,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="139"/>
-        <source>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
+        <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
         <translation>Не создавать атрибуты для OGR-форматов, которые не поддерживают атрибуты (DGN, DXF).</translation>
     </message>
     <message>
