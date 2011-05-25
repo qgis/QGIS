@@ -256,6 +256,7 @@ void QgsGrassPlugin::mapsetChanged()
     }
     catch ( QgsGrass::Exception &e )
     {
+      Q_UNUSED( e );
       QgsDebugMsg( "Cannot read GRASS CRS : " + QString( e.what() ) );
       mCrs = QgsCoordinateReferenceSystem();
     }

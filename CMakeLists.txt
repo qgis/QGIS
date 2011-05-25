@@ -348,27 +348,17 @@ IF(COMMAND cmake_policy)
 ENDIF(COMMAND cmake_policy)
 
 IF (WIN32)
-  # expect that classes are being imported
-  # Note: MSVC doesn't like when the macros are quotes
-  # and MSYS doesn't like them unqouted (bacause of braces)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DGUI_EXPORT=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DPYTHON_EXPORT=__declspec(dllimport)")
-    ADD_DEFINITIONS("-DANALYSIS_EXPORT=__declspec(dllimport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("\"-DCORE_EXPORT=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("\"-DGUI_EXPORT=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("\"-DPYTHON_EXPORT=__declspec(dllimport)\"")
-    ADD_DEFINITIONS("\"-DANALYSIS_EXPORT=__declspec(dllimport)\"")
-  ENDIF (MSVC)
+  SET(DLLIMPORT "__declspec(dllimport)")
+  SET(DLLEXPORT "__declspec(dllexport)")
 ELSE (WIN32)
-  # other compilers don't use that MSVC construct
-  ADD_DEFINITIONS(-DCORE_EXPORT=)
-  ADD_DEFINITIONS(-DGUI_EXPORT=)
-  ADD_DEFINITIONS(-DPYTHON_EXPORT=)
-  ADD_DEFINITIONS(-DANALYSIS_EXPORT=)
-ENDIF (WIN32)
+  SET(DLLIMPORT "")
+  SET(DLLEXPORT "")
+ENDIF(WIN32)
+
+ADD_DEFINITIONS("-DCORE_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("-DGUI_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("-DPYTHON_EXPORT=${DLLIMPORT}")
+ADD_DEFINITIONS("-DANALYSIS_EXPORT=${DLLIMPORT}")
 
 #############################################################
 # user-changeable settings which can be used to customize

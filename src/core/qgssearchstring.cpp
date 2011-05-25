@@ -24,7 +24,6 @@
 //! global function from parser.y that interfaces parser
 extern QgsSearchTreeNode* parseSearchString( const QString& str, QString& parserErrorMsg );
 
-
 QgsSearchString::QgsSearchString()
 {
   mTree = NULL;

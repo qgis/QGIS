@@ -42,6 +42,10 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
   {
     element = *it;
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
+    if( sepidx == -1 )
+    {
+      continue;
+    }
 
     key = element.left( sepidx );
     value = element.mid( sepidx + 1 );

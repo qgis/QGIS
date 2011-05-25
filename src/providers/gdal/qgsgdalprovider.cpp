@@ -1360,7 +1360,7 @@ QString QgsGdalProvider::buildPyramids( QList<QgsRasterPyramid> const & theRaste
 
   // TODO add signal and connect from rasterlayer
   //emit drawingProgress( 0, 0 );
-  //first test if the file is writeable
+  //first test if the file is writable
   //QFileInfo myQFile( mDataSource );
   QFileInfo myQFile( dataSourceUri() );
 

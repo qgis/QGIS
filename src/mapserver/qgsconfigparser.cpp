@@ -437,8 +437,11 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       continue;
     }
 
-    currentLabel->setText( titleIt.value() );
-    currentLabel->adjustSizeToText();
+    if( !titleIt.key().isEmpty() ) //no label text replacement with empty key
+    {
+      currentLabel->setText( titleIt.value() );
+      currentLabel->adjustSizeToText();
+    }
   }
 
   return c;

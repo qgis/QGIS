@@ -337,8 +337,8 @@ void QgsGrassSelect::setLayers()
     return;
 
   QStringList layers = QgsGrass::vectorLayers( egisdbase->text(),
-                                     elocation->currentText(), emapset->currentText(),
-                                     emap->currentText().toUtf8() );
+                       elocation->currentText(), emapset->currentText(),
+                       emap->currentText().toUtf8() );
 
   int idx = 0;
   int sel = -1;

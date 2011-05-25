@@ -521,7 +521,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 
   setRelevantFields( mFetchGeom, mAttributesToFetch );
 
-  while ( ( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
+  while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
     // skip features without geometry
     if ( !mFetchFeaturesWithoutGeom && !OGR_F_GetGeometryRef( fet ) )
