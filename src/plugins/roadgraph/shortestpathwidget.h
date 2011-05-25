@@ -12,8 +12,6 @@
 #ifndef ROADGRAPHPLUGIN_SHORTESTPATHDLG_H
 #define ROADGRAPHPLUGIN_SHORTESTPATHDLG_H
 
-#include "utils.h"
-
 // QT includes
 #include <QDockWidget>
 
@@ -33,6 +31,8 @@ class QgsMapToolEmitPoint;
 class QgsMapCanvas;
 
 class RoadGraphPlugin;
+
+class QgsGraph;
 
 /**
 @author Sergey Yakushev
@@ -105,7 +105,7 @@ class RgShortestPathWidget : public QDockWidget
     /**
      * retrun path as a graph
      */
-    bool getPath( AdjacencyMatrix &m, QgsPoint& p1, QgsPoint& p2 );
+    bool getPath( QgsGraph *, QgsPoint& p1, QgsPoint& p2 );
 
     /**
      * This line edit show front points coordinates

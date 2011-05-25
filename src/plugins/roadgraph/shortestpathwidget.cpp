@@ -38,12 +38,14 @@
 #include <qgsapplication.h>
 #include <qgsvectorlayer.h>
 
+#include <qgsgraphdirector.h>
+#include <qgsgraphbuilder.h>
+#include <qgsgraph.h>
+#include <qgsgraphanalyzer.h>
+
 // roadgraph plugin includes
 #include "roadgraphplugin.h"
 #include "shortestpathwidget.h"
-#include "utils.h"
-#include "simplegraphbuilder.h"
-#include "graphdirector.h"
 #include "exportdlg.h"
 #include "units.h"
 #include "settings.h"
@@ -228,7 +230,7 @@ void RgShortestPathWidget::setBackPoint( const QgsPoint& pt )
   mrbBackPoint->show();
 }
 
-bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPoint& p2 )
+bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoint& p2 )
 {
   if ( mFrontPointLineEdit->text().isNull() || mBackPointLineEdit->text().isNull() )
   {
@@ -236,13 +238,14 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     return false;
   }
 
-  RgSimpleGraphBuilder builder(
-    mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
-    mPlugin->iface()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled(),
+  QgsDistanceArea da;
+  QgsGraphBuilder builder( 
+    mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(), 
+    da, 
+    mPlugin->iface()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled(), 
     mPlugin->topologyToleranceFactor() );
-
   {
-    const RgGraphDirector *director = mPlugin->director();
+    const QgsGraphDirector *director = mPlugin->director();
     if ( director == NULL )
     {
       QMessageBox::critical( this, tr( "Plugin isn't configured" ), tr( "Plugin isn't configured!" ) );
@@ -256,8 +259,8 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
 
     points.push_back( mFrontPoint );
     points.push_back( mBackPoint );
-
     director->makeGraph( &builder, points, tiedPoint );
+   
     p1 = tiedPoint[ 0 ];
     p2 = tiedPoint[ 1 ];
     // not need
@@ -274,16 +277,20 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
     return false;
   }
-  AdjacencyMatrix m = builder.adjacencyMatrix();
+  QgsGraph* graph = builder.graph();
+  QVector< int > pointIdx(0,0);
+  QVector< double > pointCost(0,0.0);
+ 
+  int startVertexIdx = graph->findVertex( p1 );
+  int criterionNum = 0;
+  if ( mCriterionName->currentIndex() > 0 )
+    criterionNum = 1;
+  
+  QgsGraphAnalyzer::shortestpath( graph, startVertexIdx, criterionNum, pointIdx, pointCost, shortestTree );
 
-  DijkstraFinder::OptimizationCriterion criterion = DijkstraFinder::byCost;
-  if ( mCriterionName->currentIndex() == 1 )
-    criterion = DijkstraFinder::byTime;
-
-  DijkstraFinder f( m, criterion );
-
-  matrix = f.find( p1, p2 );
-  if ( matrix.find( p1 ) == matrix.end() )
+  delete graph;
+  
+  if ( shortestTree->findVertex( p2 ) == -1 )
   {
     QMessageBox::critical( this, tr( "Path not found" ), tr( "Path not found" ) );
     return false;
@@ -294,29 +301,39 @@ bool RgShortestPathWidget::getPath( AdjacencyMatrix& matrix, QgsPoint& p1, QgsPo
 void RgShortestPathWidget::findingPath()
 {
   QgsPoint p1, p2;
-  AdjacencyMatrix path;
-  if ( !getPath( path, p1, p2 ) )
+  QgsGraph path;
+  
+  if ( !getPath( &path, p1, p2) )
     return;
-
+  
   mrbPath->reset( false );
   double time = 0.0;
   double cost = 0.0;
-
-  AdjacencyMatrix::iterator it = path.find( p1 );
-  if ( it == path.end() )
-    return;
-  mrbPath->addPoint( it->first );
-
-  while ( it != path.end() )
+  
+  int startVertexIdx = path.findVertex( p1 );
+  int stopVertexIdx  = path.findVertex( p2 );
+  QList< QgsPoint > p;
+  while( startVertexIdx != stopVertexIdx )
   {
-    AdjacencyMatrixString::iterator it2 = it->second.begin();
-    if ( it2 == it->second.end() )
+    QgsGraphEdgeList l = path.vertex( stopVertexIdx ).inEdges();
+    if ( l.empty() )
       break;
-    mrbPath->addPoint( it2->first );
-    time += it2->second.mTime;
-    cost += it2->second.mCost;
-    it = path.find( it2->first );
+    const QgsGraphEdge& e = path.edge( l.front() );
+    
+    cost += e.property(0).toDouble();
+    time += e.property(1).toDouble();
+
+    p.push_front( path.vertex( e.in() ).point() );
+ 
+    stopVertexIdx = e.out();
   }
+  p.push_front( p1 );
+  QList< QgsPoint>::iterator it;
+  for ( it = p.begin(); it != p.end(); ++it )
+  {
+    mrbPath->addPoint( *it );
+  }
+    
   Unit timeUnit = Unit::byName( mPlugin->timeUnitName() );
   Unit distanceUnit = Unit::byName( mPlugin->distanceUnitName() );
 
@@ -339,12 +356,12 @@ void RgShortestPathWidget::clear()
 
 void RgShortestPathWidget::exportPath()
 {
-  RgExportDlg dlg( this );
+/*  RgExportDlg dlg( this );
   if ( !dlg.exec() )
     return;
 
   QgsPoint p1, p2;
-  AdjacencyMatrix path;
+  QgsGraph path;
   if ( !getPath( path, p1, p2 ) )
     return;
 
@@ -354,12 +371,6 @@ void RgShortestPathWidget::exportPath()
 
   QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
                              vl->crs() );
-
-  QVector< QgsPoint > points;
-  AdjacencyMatrix::iterator it = path.find( p1 );
-  if ( it == path.end() )
-    return;
-  points.append( ct.transform( it->first ) );
 
   while ( it != path.end() )
   {
@@ -377,7 +388,7 @@ void RgShortestPathWidget::exportPath()
   vl->updateExtents();
 
   mPlugin->iface()->mapCanvas()->update();
-
+*/
 }
 
 void RgShortestPathWidget::helpRequested()

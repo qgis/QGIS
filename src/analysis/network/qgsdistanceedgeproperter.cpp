@@ -10,7 +10,7 @@
  ***************************************************************************/
 
 //QGIS includes
-#include <qgsdistanceedgeproperter.h>
+#include "qgsdistanceedgeproperter.h"
 
 QVariant QgsDistanceEdgeProperter::property( double distance, const QgsFeature& f ) const
 {

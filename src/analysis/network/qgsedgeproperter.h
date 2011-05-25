@@ -49,13 +49,4 @@ class ANALYSIS_EXPORT QgsEdgeProperter
     virtual QVariant property( double distance, const QgsFeature& f ) const
     { return QVariant(); }
 };
-
-class ANALYSIS_EXPORT QgsEdgeDistanceProperter : public QgsEdgeProperter
-{
-  public:
-    virtual QVariant property( double distance, const QgsFeature& ) const
-    {
-      return QVariant( distance );
-    }
-};
 #endif //QGSEDGEPROPERTYH

@@ -42,7 +42,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * @param topologyTolerance sqrt distance between source point as one graph vertex
      */  
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, const QgsDistanceArea& da, bool ctfEnabled = true, double topologyTolerance = 0.0) :
-      mCrs( crs ), mDa( da ), mCtfEnabled ( ctfEnabled ), mTopologyTolerance( topologyTolerance )
+      mCrs( crs ), mCtfEnabled ( ctfEnabled ), mTopologyTolerance( topologyTolerance )
     { 
       mDa.setSourceCrs( mCrs.srsid() );
     }
