@@ -8,11 +8,13 @@ SET(QGIS_NETWORK_ANALYSIS_SRCS
   qgsgraphbuilder.cpp
   qgsdistanceedgeproperter.cpp
   qgslinevectorlayerdirector.cpp
+  qgsgraphanalyzer.cpp
 )
 
 INCLUDE_DIRECTORIES(BEFORE raster)
 
 SET(QGIS_ANALYSIS_MOC_HDRS
+  qgslinevectorlayerdirector.cpp
 )
 
 QT4_WRAP_CPP(QGIS_NETWORK_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
@@ -58,7 +60,8 @@ SET(QGIS_NETWORK_ANALYSIS_HDRS
   qgsedgeproperter.h 
   qgsdistanceedgeproperter.h 
   qgsgraphdirector.h 
-  qgslinevectorlayerdirector.h )
+  qgslinevectorlayerdirector.h 
+  qgsgraphanalyzer.h )
 
 INSTALL(CODE "MESSAGE(\"Installing NETWORK ANALYSIS headers...\")")
 INSTALL(FILES ${QGIS_NETWORK_ANALYSIS_HDRS} ${QGIS_NETWORK_ANALYSIS_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
