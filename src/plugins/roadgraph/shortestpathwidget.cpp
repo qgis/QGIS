@@ -238,10 +238,8 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
     return false;
   }
 
-  QgsDistanceArea da;
   QgsGraphBuilder builder( 
     mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(), 
-    da, 
     mPlugin->iface()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled(), 
     mPlugin->topologyToleranceFactor() );
   {

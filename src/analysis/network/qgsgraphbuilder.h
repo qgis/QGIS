@@ -53,7 +53,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     /**
      * default constructor
      */
-    QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, const QgsDistanceArea& da, bool otfEnabled, double topologyTolerance = 0.0 );
+    QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
     
     ~QgsGraphBuilder();
 
