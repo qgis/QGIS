@@ -66,7 +66,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     }
 
     //! get topology tolerance
-    bool topologyTolerance()
+    double topologyTolerance()
     {
       return mTopologyTolerance;
     }

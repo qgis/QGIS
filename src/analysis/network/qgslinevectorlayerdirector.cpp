@@ -98,14 +98,22 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     QgsPolyline::iterator pointIt;
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
-      pt2 = ct.transform( *pointIt );
+      pt2 = builder->addVertex( ct.transform( *pointIt ) );
       if ( !isFirstPoint )
       {
         int i = 0;
         for ( i = 0; i != additionalPoints.size(); ++i )
         {
           TiePointInfo info;
-          info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), info.mTiedPoint );
+          if ( pt1 == pt2 )
+          {
+            info.mLength = additionalPoints[ i ].sqrDist( pt1 );
+            info.mTiedPoint = pt1;
+          }else
+          {
+            info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), 
+                pt2.x(), pt2.y(), info.mTiedPoint );
+          }
 
           if ( pointLengthMap[ i ].mLength > info.mLength )
           {

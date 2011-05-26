@@ -39,19 +39,15 @@ QgsPoint QgsGraphBuilder::addVertex( const QgsPoint& pt )
   if ( id != -1 )
     return mGraph->vertex( id ).point();
    
+  QgsPoint newPoint = pt;
   if ( topologyTolerance() > 0 )
   {
-    int newId = mGraph->addVertex( pt );
-
-    QgsFeature f( newId );
-    f.setGeometry( QgsGeometry::fromPoint( pt ) );
-    mPointIndex.insertFeature( f );
-   
-    return pt;
+    newPoint = QgsPoint( ceil( pt.x() / topologyTolerance() ) * topologyTolerance(),
+                         ceil( pt.y() / topologyTolerance() ) * topologyTolerance() );
   }
   int newId = mGraph->addVertex( pt );
   
-  mPointMap[ pt ] = newId;
+  mPointMap[ newPoint ] = newId;
   return pt;
 }
 
@@ -82,22 +78,18 @@ QgsGraph* QgsGraphBuilder::graph()
 
 int QgsGraphBuilder::pointId( const QgsPoint& pt )
 {
+  QgsPoint findPoint = pt;
   if ( topologyTolerance() > 0.0 )
   {
-    QgsRectangle r( pt.x() - topologyTolerance(), pt.y() - topologyTolerance(), pt.x() + topologyTolerance(), pt.y() + topologyTolerance() );
-    QList< int > searchResult = mPointIndex.intersects( r );
-    if ( !searchResult.empty() )
-    {
-      return searchResult.front();
-    }
-
-  }else
-  {
-    std::map< QgsPoint, int, QgsPointCompare >::iterator it = mPointMap.find( pt );
-    if ( it != mPointMap.end() )
-    {
-      return it->second;
-    }
+    findPoint = QgsPoint( ceil( pt.x() / topologyTolerance() ) * topologyTolerance() , 
+                          ceil( pt.y() / topologyTolerance() ) * topologyTolerance() ) ;
   }
+ 
+  std::map< QgsPoint, int, QgsPointCompare >::iterator it = mPointMap.find( findPoint );
+  if ( it != mPointMap.end() )
+  {
+    return it->second;
+  }
+  
   return -1;
 }

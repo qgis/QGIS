@@ -264,7 +264,7 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
     // not need
     delete director;
   }
-
+  
   if ( p1 == QgsPoint( 0.0, 0.0 ) )
   {
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Start point doesn't tie to the road!" ) );
@@ -275,11 +275,12 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
     QMessageBox::critical( this, tr( "Tie point failed" ), tr( "Stop point doesn't tie to the road!" ) );
     return false;
   }
-  QgsGraph* graph = builder.graph();
+
   QVector< int > pointIdx(0,0);
   QVector< double > pointCost(0,0.0);
  
   int startVertexIdx = graph->findVertex( p1 );
+  std::cout << " startVertexIdx " << startVertexIdx << "\n";
   int criterionNum = 0;
   if ( mCriterionName->currentIndex() > 0 )
     criterionNum = 1;
