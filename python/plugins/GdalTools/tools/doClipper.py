@@ -139,6 +139,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           arguments << "-q"
           arguments << "-cutline"
           arguments << mask
+          if Utils.GdalConfig.version() >= "1.8.0":
+            arguments << "-crop_to_cutline"
           if self.alphaBandCheck.isChecked():
             arguments << "-dstalpha"
 

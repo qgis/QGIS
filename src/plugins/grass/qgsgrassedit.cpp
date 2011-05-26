@@ -1912,11 +1912,11 @@ void QgsGrassEdit::setCanvasPrompt( QString left, QString mid, QString right )
   QgsDebugMsg( "entered." );
   mCanvasPrompt = "";
   if ( left.length() > 0 )
-    mCanvasPrompt.append( tr( "Left: %1   " ).arg( left ) );
+    mCanvasPrompt.append( tr( "Left: %1" ).arg( left ) );
   if ( mid.length() > 0 )
-    mCanvasPrompt.append( tr( "Middle: %1" ).arg( mid ) );
+    mCanvasPrompt.append( tr( " -- Middle: %1" ).arg( mid ) );
   if ( right.length() > 0 )
-    mCanvasPrompt.append( tr( "Right: %1" ).arg( right ) );
+    mCanvasPrompt.append( tr( " -- Right: %1" ).arg( right ) );
 }
 
 void QgsGrassEdit::attributesClosed()

@@ -66,6 +66,7 @@ class CORE_EXPORT QgsSearchTreeNode
       opPLUS,
       opMINUS,
       opMUL,
+      opMOD,
       opDIV,
       opPOW,
       opSQRT,
