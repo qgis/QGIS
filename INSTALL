@@ -1,9 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
+Thursday May 26, 2011
 
 
-Last update: 20110526
-Last change: 20110526
+Last Updated: Thursday May 26, 2011
+Last Change : Thursday May 26, 2011
 
 
   1. Introduction
@@ -29,10 +30,7 @@ Last change: 20110526
     5.4. QGIS source
     5.5. Configure the build
     5.6. Building
-  6. git
-    6.1. Installation
-    6.2. Get QGIS from git
-  7. Authors and Acknowledgments
+  6. Authors and Acknowledgments
 
 
   1. Introduction
@@ -1583,68 +1581,7 @@ or, for an /Applications build:
   sudo make install
 
 
-  6. git
-  ======
-
-
-  6.1. Installation
-  =================
-
-Optional.  If you want to try different branches and/or easily update the source when changes are made, install git and clone the source.  For random just-want-to-see-what's-going-on-in-development builds, download a tarbal from github.
-
-
-    6.1.1. Install git for GNU/Linux
-    ================================
-
-
-    6.1.2. install git for Windows
-    ==============================
-
-
-    6.1.3. Install git for OSX
-    ==========================
-
-The git (http://git-scm.com/) project has a downloadable build of git.
-Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
-
-Once downloaded open the disk image and run the installer.
-
-PPC/source note
-
-The git site does not offer PPC builds.  If you need a PPC build, or you just want
-a little more control over the installation, you need to compile it yourself.
-
-Download the source from http://git-scm.com/.  Unzip it, and in a Terminal cd to the source folder, then:
-
-  make prefix=/usr/local
-  sudo make prefix=/usr/local install
-
-If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
-
-  export NO_PERL=
-  export NO_TCLTK=
-  export NO_PYTHON=
-
-
-  6.2. Get QGIS from git
-  ======================
-
-You can download a development tarball (no git installation needed) from:
-
-http://github.com/qgis/Quantum-GIS
-
-This defaults to the current master, but you can select any other branch or tag as desired.
-
-Or for more long-term testing of development sources: clone the sources with git (in an appropriate location on your computer):
-
-  git clone git://github.com/qgis/Quantum-GIS.git
-
-This automatically activates the master.  To switch to another branch:
-
-  git checkout [branchname]
-
-
-  7. Authors and Acknowledgments
+  6. Authors and Acknowledgments
   ==============================
 
 The following people have contributed to this document:

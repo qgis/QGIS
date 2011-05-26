@@ -44,13 +44,14 @@ pre, code { font-family: monospace }
 
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
-<H3>Building QGIS from source - step by step</H3>
+<H2>Building QGIS from source - step by step</H2>
+<H3>Thursday May 26, 2011</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last update: 20110526
-Last change: 20110526
+Last Updated: Thursday May 26, 2011
+Last Change : Thursday May 26, 2011
 </P>
 <DIV CLASS="toc">
 
@@ -84,12 +85,7 @@ Last change: 20110526
     <LI><A HREF="#toc22">5.5. Configure the build</A>
     <LI><A HREF="#toc23">5.6. Building</A>
     </UL>
-  <LI><A HREF="#git">git</A>
-    <UL>
-    <LI><A HREF="#toc25">6.1. Installation</A>
-    <LI><A HREF="#toc26">6.2. Get QGIS from git</A>
-    </UL>
-  <LI><A HREF="#toc27">Authors and Acknowledgments</A>
+  <LI><A HREF="#toc24">Authors and Acknowledgments</A>
   </OL>
 
 </DIV>
@@ -2217,85 +2213,8 @@ or, for an /Applications build:
 sudo make install
 </PRE></div>
 
-<A NAME="git"></A>
-<H1>6. git</H1>
-
-<A NAME="toc25"></A>
-<H2>6.1. Installation</H2>
-
-<P>
-Optional.  If you want to try different branches and/or easily update the source when changes are made, install git and clone the source.  For random just-want-to-see-what's-going-on-in-development builds, download a tarbal from github.
-</P>
-
-<H3>6.1.1. Install git for GNU/Linux</H3>
-
-<H3>6.1.2. install git for Windows</H3>
-
-<H3>6.1.3. Install git for OSX</H3>
-
-<P>
-The <A HREF="http://git-scm.com/">git</A> project has a downloadable build of git.
-Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
-</P>
-<P>
-Once downloaded open the disk image and run the installer.
-</P>
-<P>
-<U>PPC/source note</U>
-</P>
-<P>
-The git site does not offer PPC builds.  If you need a PPC build, or you just want
-a little more control over the installation, you need to compile it yourself.
-</P>
-<P>
-Download the source from <A HREF="http://git-scm.com/">http://git-scm.com/</A>.  Unzip it, and in a Terminal cd to the source folder, then:
-</P>
-
-<div class="code"><PRE>
-make prefix=/usr/local
-sudo make prefix=/usr/local install
-</PRE></div>
-
-<P>
-If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
-</P>
-
-<div class="code"><PRE>
-export NO_PERL=
-export NO_TCLTK=
-export NO_PYTHON=
-</PRE></div>
-
-<A NAME="toc26"></A>
-<H2>6.2. Get QGIS from git</H2>
-
-<P>
-You can download a development tarball (no git installation needed) from:
-</P>
-<P>
-<A HREF="http://github.com/qgis/Quantum-GIS">http://github.com/qgis/Quantum-GIS</A>
-</P>
-<P>
-This defaults to the current master, but you can select any other branch or tag as desired.
-</P>
-<P>
-Or for more long-term testing of development sources: clone the sources with git (in an appropriate location on your computer):
-</P>
-
-<div class="code"><PRE>
-git clone git://github.com/qgis/Quantum-GIS.git
-</PRE></div>
-
-<P>
-This automatically activates the master.  To switch to another branch:
-</P>
-
-<div class="code"><PRE>
-git checkout [branchname]
-</PRE></div>
-
-<A NAME="toc27"></A>
-<H1>7. Authors and Acknowledgments</H1>
+<A NAME="toc24"></A>
+<H1>6. Authors and Acknowledgments</H1>
 
 <P>
 The following people have contributed to this document:

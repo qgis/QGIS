@@ -1,7 +1,6 @@
 Quantum GIS (QGIS)
-
 Building QGIS from source - step by step
-
+%%date(%A %B %d, %Y)
 
 %! target       : html
 %! style        : style.css
@@ -12,6 +11,33 @@ Building QGIS from source - step by step
 % Next line will replace tabs with 2 spaces in txt generated outputs
 %! PostProc(txt): '(?i)(\t)' '  '
 %! encoding: iso-8859-1
+%
+% Tex processing
+%
+% Make sure this is first
+%! PostProc(tex): '\\includegraphics' '\\includegraphics[width=100mm]'
+% scartcl is from the koma script document class (apt-get install texlive-latex-recommended ttf-komatuna)
+% setlength parindent suppresses first line of paragraph idents
+% parskip puts blank space between paragraphs
+% title pic stuff used to put a logo on the front page
+%! PostProc(tex): '\\documentclass{article}' '\\documentclass{scrartcl}\n\\setlength{\\parindent}{0pt}\n\\setlength{\\parskip}{2ex}'
+% use the color table and table packages so we can pimp the tables a little
+%! PostProc(tex): '\\usepackage{style.css}  % user defined' '\\usepackage{fancyvrb}\n\\usepackage{colortbl} \n\\usepackage [table]{xcolor}\n\\definecolor{tableShade}{HTML}{cecece}\n\\definecolor{qgis-green}{HTML}{0E7300}\n\\usepackage{wallpaper}\n\\LRCornerWallPaper{1}{WALLPAPER-IMAGE}\n\\usepackage{hyperref}\n\\hypersetup{linkcolor=qgis-green,urlcolor=qgis-green}\\renewcommand\\thesection{\\color{qgis-green}\\thechapter\\arabic{section}}'
+% Make the header row of tables have a dark background. light text
+%! PostProc(tex): '\\hline \\textbf' '\\hline \\rowcolor[rgb]{0,0,0} \\color{white} \\textbf'
+%! PostProc(tex): '& \\textbf' '& \\color{white} \\textbf'
+% Make verbatim text a little smaller and use fancyvrb package to draw it in a box
+% Note Verbatim with capital V for fancyvrb to work
+%! PostProc(tex): '\\begin{verbatim}' '{\\scriptsize\\begin{Verbatim}[frame=single,rulecolor=\\color{qgis-green}, framesep=4mm, label=\\fbox{\\small\\emph{Listing}}]'
+%! PostProc(tex): '\\end{verbatim}' '\\end{Verbatim}\n}'
+%! PostProc(tex): '\\section' '\\newpage\\section'
+%! PostProc(tex): 'section{' 'section{\\color{qgis-green}'
+%! PostProc(tex): NEWPAGE  '\\newpage'
+% Give alternating table rows different colours and use a smaller font in tables (\tiny)
+%! PostProc(tex): '\\begin{tabular}' '\\rowcolors{2}{tableShade}{white} \n\\tiny\\begin{tabular}'
+%! encoding: iso-8859-1
+
+%! PostProc(tex): WALLPAPER-IMAGE 'qgis-footer.png'
 % These are comments and will not be generated in any output
 % -------------------
 
@@ -30,13 +56,13 @@ Building QGIS from source - step by step
 % To generate the html version of this document:
 % txt2tags -t html -o INSTALL.html INSTALL.t2t
 % To generate the LaTeX version of this document:
-% txt2tags -t tex -o INSTALL.tex INSTALL.t2t
+% txt2tags -t tex -o INSTALL.tex INSTALL.t2t; pdflatex INSTALL.tex
 
 % End of comments
 % -------------------
 
-Last update: %%date
-Last change: %%mtime
+Last Updated: %%date(%A %B %d, %Y)
+Last Change : %%mtime(%A %B %d, %Y)
 
 %%toc
 
@@ -85,7 +111,5 @@ source directory.
 %!include: msys.t2t
 
 %!include: osx.t2t
-
-%!include: git.t2t
 
 %!include: iauthors.t2t
