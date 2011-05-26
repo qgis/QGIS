@@ -20,7 +20,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #include <cfloat>
 #include <cstring>
@@ -84,8 +83,6 @@
 #include <dlfcn.h>
 #endif
 
-
-static const char * const ident_ = "$Id$";
 
 // typedef for the QgsDataProvider class factory
 typedef QgsDataProvider * create_it( const QString* uri );

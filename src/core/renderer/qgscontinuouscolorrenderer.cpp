@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgscontinuouscolorrenderer.cpp 5371 2006-04-25 01:52:13Z wonder $ */
 
 #include "qgscontinuouscolorrenderer.h"
 #include "qgsmarkercatalogue.h"

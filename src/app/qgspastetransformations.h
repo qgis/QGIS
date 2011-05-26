@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSPASTETRANSFORMATIONS_H
 #define QGSPASTETRANSFORMATIONS_H
 #include "ui_qgspastetransformationsbase.h"

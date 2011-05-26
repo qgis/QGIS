@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSNEWHTTPCONNECTION_H
 #define QGSNEWHTTPCONNECTION_H
 #include "ui_qgsnewhttpconnectionbase.h"

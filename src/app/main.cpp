@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 //qt includes
 #include <QBitmap>
@@ -80,8 +79,6 @@ typedef SInt32 SRefCon;
 #include "../../images/themes/default/qgis.xpm" // Linux
 #include <QIcon>
 #endif
-
-static const char * const ident_ = "$Id$";
 
 /** print usage text
  */

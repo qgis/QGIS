@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSUNIQUEVALUEDIALOG_H
 #define QGSUNIQUEVALUEDIALOG_H

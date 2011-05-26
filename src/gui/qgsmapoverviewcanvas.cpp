@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"

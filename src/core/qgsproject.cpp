@@ -38,9 +38,6 @@
 #include <QObject>
 #include <QTextStream>
 
-
-static const char *const ident_ = "$Id$";
-
 // canonical project instance
 QgsProject * QgsProject::theProject_;
 

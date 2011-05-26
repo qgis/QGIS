@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSGEOREFTOOLADDPOINT_H
 #define QGSGEOREFTOOLADDPOINT_H

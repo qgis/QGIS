@@ -17,7 +17,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID

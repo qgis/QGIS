@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSPLUGINMANAGER_H
 #define QGSPLUGINMANAGER_H
 #include <vector>

@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef QGSSPITPLUGIN_H
 #define QGSSPITPLUGIN_H
 #include "../qgisplugin.h"

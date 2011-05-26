@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsfield.h 6833 2007-03-24 22:40:10Z wonder $ */
 
 #ifndef QGSRENDERCHECKER_H
 #define QGSRENDERCHECKER_H

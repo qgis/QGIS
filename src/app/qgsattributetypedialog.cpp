@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsattributetypedialog.h"
 #include "qgsattributetypeloaddialog.h"

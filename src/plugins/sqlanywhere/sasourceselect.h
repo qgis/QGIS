@@ -23,7 +23,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #ifndef SASOURCESELECT_H
 #define SASOURCESELECT_H

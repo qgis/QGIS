@@ -18,7 +18,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 /***************************************************************************
  *   QGIS Programming conventions:
@@ -61,7 +60,6 @@
 //
 #include "qgsgeorefplugingui.h"
 
-static const char * const sIdent = "$Id$";
 static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Georeferencing rasters using GDAL" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );

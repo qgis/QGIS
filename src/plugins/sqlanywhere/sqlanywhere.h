@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef SQLANYWHERE_H
 #define SQLANYWHERE_H
 

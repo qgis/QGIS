@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsmapcanvas.h 5341 2006-04-22 12:11:36Z wonder $ */
 
 #ifndef QGSMAPCANVAS_H
 #define QGSMAPCANVAS_H

@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSMESSAGEVIEWER_H
 #define QGSMESSAGEVIEWER_H
 

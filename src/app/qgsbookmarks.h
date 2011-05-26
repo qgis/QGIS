@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"

@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgscustomization.h"
 #include "qgisapp.h"
 #include "qgsapplication.h"

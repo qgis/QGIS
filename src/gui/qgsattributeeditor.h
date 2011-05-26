@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSATTRIBUTEEDITOR_H
 #define QGSATTRIBUTEEDITOR_H
 

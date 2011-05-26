@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 // includes
 #include <vector>
@@ -30,8 +29,6 @@
 #include "qgsspitplugin.h"
 #include "qgsspit.h"
 
-
-static const char * const ident_ = "$Id$";
 
 static const QString name_ = QObject::tr( "SPIT" );
 static const QString description_ = QObject::tr( "Shapefile to PostgreSQL/PostGIS Import Tool" );

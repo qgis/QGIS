@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgssinglesymbolrenderer.h 5371 2006-04-25 01:52:13Z wonder $ */
 
 #ifndef QGSSINGLESYMBOLRENDERER_H
 #define QGSSINGLESYMBOLRENDERER_H

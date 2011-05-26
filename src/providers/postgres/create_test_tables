@@ -2,8 +2,6 @@
 -- PostgreSQL database that test the ability of Qgis to load said
 -- tables.
 
--- $Id:$
-
 -- These are all in the public schema (need to do a set for a non-public shema)
 
 -- normal table

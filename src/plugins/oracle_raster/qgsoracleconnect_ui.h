@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QgsOracleConnect_H
 #define QgsOracleConnect_H

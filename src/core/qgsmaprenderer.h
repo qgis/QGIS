@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSMAPRENDER_H
 #define QGSMAPRENDER_H

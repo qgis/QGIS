@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgscolorbutton.cpp 6251 2006-12-13 23:23:50Z telwertowski $ */
 
 #include "qgscolorbutton.h"
 #include <QPainter>

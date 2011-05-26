@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquerydialog.h 15303 2011-03-01 08:10:18Z jef $ */
 
 #ifndef SPATIALQUERYDIALOG_H
 #define SPATIALQUERYDIALOG_H

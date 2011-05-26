@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #ifndef QGSNUMERICSORTLISTVIEWITEM_H
 #define QGSNUMERICSORTLISTVIEWITEM_H

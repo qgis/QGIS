@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
  
 %option noyywrap
 %option case-insensitive

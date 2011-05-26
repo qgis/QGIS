@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #ifndef QGSGPSPLUGINGUI_H
 #define QGSGPSPLUGINGUI_H

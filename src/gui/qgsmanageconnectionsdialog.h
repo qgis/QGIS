@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #ifndef QGSMANAGECONNECTIONSDIALOG_H
 #define QGSMANAGECONNECTIONSDIALOG_H

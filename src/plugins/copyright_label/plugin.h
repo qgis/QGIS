@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef QGSCOPYRIGHTLABELPLUGIN
 #define QGSCOPYRIGHTLABELPLUGIN
 #include "../qgisplugin.h"

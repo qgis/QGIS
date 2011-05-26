@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgsattributedialog.h"
 #include "qgsfield.h"
 #include "qgslogger.h"

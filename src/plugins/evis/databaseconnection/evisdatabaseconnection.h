@@ -24,7 +24,6 @@
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
-/*  $Id$ */
 #ifndef EVISDATABASECONNECTION_H
 #define EVISDATABASECONNECTION_H
 

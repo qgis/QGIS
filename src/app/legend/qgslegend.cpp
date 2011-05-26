@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -43,8 +42,6 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QTreeWidgetItem>
-
-static const char *const ident_ = "$Id$";
 
 const int AUTOSCROLL_MARGIN = 16;
 

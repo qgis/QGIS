@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSVERTEXMARKER_H
 #define QGSVERTEXMARKER_H

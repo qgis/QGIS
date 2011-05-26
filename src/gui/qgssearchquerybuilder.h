@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSSEARCHQUERYBUILDER_H
 #define QGSSEARCHQUERYBUILDER_H

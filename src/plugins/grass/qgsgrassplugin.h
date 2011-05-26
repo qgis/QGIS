@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef QGSGRASSPLUGIN_H
 #define QGSGRASSPLUGIN_H
 #include "../qgisplugin.h"

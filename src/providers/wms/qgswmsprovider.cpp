@@ -19,7 +19,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 #include <typeinfo>
 
 #define WMS_THRESHOLD 200  // time to wait for an answer without emitting dataChanged() 

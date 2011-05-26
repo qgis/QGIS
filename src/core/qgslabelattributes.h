@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSLABELATTRIBUTES_H
 #define QGSLABELATTRIBUTES_H
 

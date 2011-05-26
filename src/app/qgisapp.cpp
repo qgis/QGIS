@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 //
 // QT4 includes make sure to use the new <CamelCase> style!

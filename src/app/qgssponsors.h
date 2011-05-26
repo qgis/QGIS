@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSSPONSORS_H
 #define QGSSPONSORS_H
 

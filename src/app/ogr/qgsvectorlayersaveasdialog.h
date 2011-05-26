@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSVECTORLAYERSAVEASDIALOG_H
 #define QGSVECTORLAYERSAVEASDIALOG_H
 
