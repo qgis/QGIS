@@ -109,7 +109,7 @@ string      "'"{str_char}*"'"
 
 "||"   { return CONCAT; }
 
-[+-/*^]    { return yytext[0]; }
+[+-/*^%]    { return yytext[0]; }
 
 [()]      { return yytext[0]; }
 
