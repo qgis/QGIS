@@ -1,9 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
+Thursday May 26, 2011
 
 
-Last update: 20110504
-Last change: 20110502
+Last Updated: Thursday May 26, 2011
+Last Change : Tuesday May 24, 2011
 
 
   1. Introduction
@@ -629,8 +630,8 @@ installed in the default locations):
   call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
   
   @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.0
-  @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\gdal-17\include;%OSGEO4W_ROOT%\include
-  @set LIB=%LIB%;%OSGEO4W_ROOT%\apps\gdal-17\lib;%OSGEO4W_ROOT%\lib
+  @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+  @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
   
   @cmd
 
@@ -1665,4 +1666,7 @@ The following people have contributed to this document:
 - GNU/Linux Section
  - Tim Sutton 2006
  - Debian package section: Juergen Fischer 2008
+
+- Latex Generator
+ - Tim Sutton 2011
 
