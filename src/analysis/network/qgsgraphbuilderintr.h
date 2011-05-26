@@ -72,9 +72,9 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     }
     
     //! get measurement tool
-    QgsDistanceArea& distanceArea()
+    QgsDistanceArea* distanceArea()
     {
-      return mDa;
+      return &mDa;
     }
 
     //! add vertex

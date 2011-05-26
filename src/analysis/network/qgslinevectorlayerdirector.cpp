@@ -69,19 +69,23 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   int featureCount = ( int ) vl->featureCount() * 2;
   int step = 0;
 
-  QgsCoordinateTransform ct( vl->crs(), builder->destinationCrs() );
-
-  QgsDistanceArea da;
-  da.setSourceCrs( builder->destinationCrs().srsid() );
-  da.setProjectionsEnabled( true );
-
+  QgsCoordinateTransform ct;
+  ct.setSourceCrs( vl->crs() );
+  if ( builder->coordinateTransformationEnabled() )
+  {
+    ct.setDestCRS( builder->destinationCrs() );
+  }else
+  {
+    ct.setDestCRS( vl->crs() );
+  }
+ 
   tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
   TiePointInfo tmpInfo;
   tmpInfo.mLength = std::numeric_limits<double>::infinity();
 
   QVector< TiePointInfo > pointLengthMap( additionalPoints.size(), tmpInfo );
   QVector< TiePointInfo >::iterator pointLengthIt;
-
+  
   // begin: tie points to the graph
   QgsAttributeList la;
   vl->select( la );
@@ -229,7 +233,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
           pt2 = pointsIt->second;
           if ( !isFirstPoint )
           {
-            double distance = da.measureLine( pt1, pt2 );
+            double distance = builder->distanceArea()->measureLine( pt1, pt2 );
             QVector< QVariant > prop;
             QList< QgsEdgeProperter* >::const_iterator it;
             for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
