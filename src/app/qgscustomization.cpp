@@ -838,30 +838,22 @@ void QgsCustomization::removeFromLayout( QLayout *theLayout, QWidget * theWidget
 
 void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * done )
 {
-  QWidget *widget = qobject_cast<QWidget*>( receiver );
+  if ( event->type() == QEvent::Show || event->type() == QEvent::MouseButtonPress )
+  {
+    QWidget *widget = qobject_cast<QWidget*>( receiver );
 
-  if ( mEnabled && widget && event->type() == QEvent::Show )
-  {
-    QgsCustomization::customizeWidget( widget, event );
-    if ( widget->inherits( "QDialog" ) &&  pDialog && pDialog->isVisible() )
+    if ( mEnabled && widget && event->type() == QEvent::Show )
     {
-      // TODO?
+      QgsCustomization::customizeWidget( widget, event );
     }
-  }
-  else if ( mEnabled && widget && ( event->type() == QEvent::Hide || event->type() == QEvent::Close ) )
-  {
-    if ( widget->inherits( "QDialog" ) &&  pDialog && pDialog->isVisible() )
+    else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
-      // TODO?
-    }
-  }
-  else if ( widget && event->type() == QEvent::MouseButtonPress )
-  {
-    QgsDebugMsg( "click" );
-    if ( pDialog && pDialog->isVisible() )
-    {
-      QMouseEvent *e = static_cast<QMouseEvent*>( event );
-      *done = pDialog->switchWidget( widget, e );
+      QgsDebugMsg( "click" );
+      if ( pDialog && pDialog->isVisible() )
+      {
+        QMouseEvent *e = static_cast<QMouseEvent*>( event );
+        *done = pDialog->switchWidget( widget, e );
+      }
     }
   }
   // Shortcut arrives only if it is defined and used in main app

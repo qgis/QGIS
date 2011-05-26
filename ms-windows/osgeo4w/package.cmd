@@ -159,6 +159,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude "apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%.bat.tmpl ^
+	bin/%PACKAGENAME%-browser.bat.tmpl ^
 	etc/postinstall/%PACKAGENAME%.bat ^
 	etc/preremove/%PACKAGENAME%.bat ^
 	>>%LOG% 2>&1
