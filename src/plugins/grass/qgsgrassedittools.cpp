@@ -228,15 +228,15 @@ void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
 
   if ( e->mEditPoints->n_points == 0 )
   {
-    e->setCanvasPrompt( tr( "New point" ), "", "" );
+    e->setCanvasPrompt( tr( "New vertex" ), "", "" );
   }
   else if ( e->mEditPoints->n_points == 1 )
   {
-    e->setCanvasPrompt( tr( "New point" ), tr( "Undo last point" ), "" );
+    e->setCanvasPrompt( tr( "New vertex" ), tr( "Undo last vertex" ), "" );
   }
   else if ( e->mEditPoints->n_points > 1 )
   {
-    e->setCanvasPrompt( tr( "New point" ), tr( "Undo last point" ), tr( "Close line" ) );
+    e->setCanvasPrompt( tr( "New vertex" ), tr( "Undo last vertex" ), tr( "Close line" ) );
   }
 }
 
