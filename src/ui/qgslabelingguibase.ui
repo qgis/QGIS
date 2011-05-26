@@ -53,6 +53,13 @@
      <item>
       <widget class="QComboBox" name="cboFieldName"/>
      </item>
+     <item>
+      <widget class="QToolButton" name="btnExpression">
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </item>
    <item row="1" column="0">
@@ -393,8 +400,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>435</height>
+            <width>645</width>
+            <height>488</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -847,8 +854,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>532</height>
+            <width>645</width>
+            <height>675</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">

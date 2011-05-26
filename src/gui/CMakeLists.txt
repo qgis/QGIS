@@ -69,6 +69,7 @@ qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
 qgssearchquerybuilder.cpp
+qgsexpressionbuilder.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -123,6 +124,7 @@ qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
+qgsexpressionbuilder.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
@@ -227,6 +229,7 @@ qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
 qgssearchquerybuilder.h
+qgsexpressionbuilder.h
 qgsattributeeditor.h
 qgsfieldvalidator.h
 
@@ -243,6 +246,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 )
 
 

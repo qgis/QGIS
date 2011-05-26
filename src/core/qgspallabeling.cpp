@@ -41,13 +41,16 @@
 #include "qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgslabelsearchtree.h"
+#include "qgssearchtreenode.h"
+#include "qgssearchstring.h"
+
 #include <qgslogger.h>
 #include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
 #include <qgsvectordataprovider.h>
 #include <qgsgeometry.h>
 #include <qgsmaprenderer.h>
-
+#include <QMessageBox>
 
 using namespace pal;
 
@@ -155,6 +158,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
 {
   // copy only permanent stuff
   fieldName = s.fieldName;
+  isExpression = s.isExpression;
   placement = s.placement;
   placementFlags = s.placementFlags;
   textFont = s.textFont;
@@ -276,6 +280,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
     return; // there's no information available
 
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
+  isExpression = layer->customProperty( "labeling/isExpression").toBool();
   placement = ( Placement ) layer->customProperty( "labeling/placement" ).toInt();
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   QString fontFamily = layer->customProperty( "labeling/fontFamily" ).toString();
@@ -311,6 +316,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling", "pal" );
 
   layer->setCustomProperty( "labeling/fieldName", fieldName );
+  layer->setCustomProperty( "labeling/isExpression", isExpression );
   layer->setCustomProperty( "labeling/placement", placement );
   layer->setCustomProperty( "labeling/placementFlags", ( unsigned int )placementFlags );
 
@@ -427,9 +433,36 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   labelY = qAbs( ptSize.y() - ptZero.y() );
 }
 
-void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
+void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
-  QString labelText = f.attributeMap()[fieldIndex].toString();
+    QString labelText;
+    if (isExpression)
+    {
+        QgsSearchString searchString;
+        // We don't do any validating here as we should only have a vaild expression at this point.
+        searchString.setString( fieldName );
+
+       QgsSearchTreeNode* searchTree = searchString.tree();
+        if ( !searchTree )
+        {
+          return;
+        }
+
+        QgsSearchTreeValue outValue;
+        searchTree->getValue( outValue, searchTree, layer->dataProvider()->fields() , f );
+
+        if (outValue.isError())
+        {
+            QgsDebugMsg("EXPRESSION ERROR = " + outValue.string());
+           return;
+        }
+        QgsDebugMsg("EXPRESSION OUT VALUE = " + outValue.string());
+         labelText  = outValue.string();
+  }
+  else
+  {
+      labelText = f.attributeMap()[fieldIndex].toString();
+  }
   double labelX, labelY; // will receive label size
   QFont labelFont = textFont;
 
@@ -569,7 +602,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );
 
-  // register feature to the layer
+  //  feature to the layer
   try
   {
     if ( !palLayer->registerFeature( lbl->strId(), lbl, labelX, labelY, labelText.toUtf8().constData(),
@@ -689,11 +722,15 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   if ( !lyrTmp.enabled )
     return 0;
 
-  // find out which field will be needed
-  int fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
-  if ( fldIndex == -1 )
-    return 0;
-  attrIndices.insert( fldIndex );
+  // If we aren't an expression, we check to see if we can find the column.
+  int fldIndex ;
+  if (!lyrTmp.isExpression)
+  {
+      fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
+      if ( fldIndex == -1)
+          return 0;
+      attrIndices.insert( fldIndex );
+  }
 
   //add indices of data defined fields
   QMap< QgsPalLayerSettings::DataDefinedProperties, int >::const_iterator dIt = lyrTmp.dataDefinedProperties.constBegin();
@@ -782,7 +819,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
 void QgsPalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
 {
   QgsPalLayerSettings& lyr = mActiveLayers[layer];
-  lyr.registerFeature( f, context );
+  lyr.registerFeature(layer, f, context );
 }
 
 void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context )
@@ -836,7 +873,7 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
     }
   }
 
-  // register feature to the layer
+  //  feature to the layer
   int ddColX = layerIt.value().xPosColumn;
   int ddColY = layerIt.value().yPosColumn;
   double ddPosX = 0.0;
@@ -1212,7 +1249,6 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
 
   // TODO: optimize access :)
   const QgsPalLayerSettings& lyr = layer( label->getLayerName() );
-
   QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
 

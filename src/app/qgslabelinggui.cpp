@@ -24,13 +24,15 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelengineconfigdialog.h"
+#include "qgssearchstring.h"
+#include "qgsexpressionbuilder.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
-
+#include <QTextEdit>
 #include <iostream>
 #include <QApplication>
-
+#include <QMessageBox>
 
 
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
@@ -44,6 +46,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
   connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
+  connect( btnExpression, SIGNAL(clicked()), this, SLOT( showExpressionDialog()));
 
   // set placement methods page based on geometry type
   switch ( layer->geometryType() )
@@ -65,12 +68,14 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   label_19->setEnabled( layer->geometryType() != QGis::Point );
   mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
 
-  populateFieldNames();
-
   // load labeling settings from layer
   QgsPalLayerSettings lyr;
   lyr.readFromLayer( layer );
+  populateFieldNames();
 
+  //Add the current expression to the bottom of the list.
+  if (lyr.isExpression)
+      cboFieldName->addItem(lyr.fieldName);
   populateDataDefinedCombos( lyr );
 
   // placement
@@ -184,18 +189,23 @@ QgsLabelingGui::~QgsLabelingGui()
 
 void QgsLabelingGui::apply()
 {
-  layerSettings().writeToLayer( mLayer );
-  // trigger refresh
-  if ( mMapCanvas )
-  {
-    mMapCanvas->refresh();
-  }
+    QgsPalLayerSettings settings = layerSettings();
+     // If we get here we are good to go.
+    settings.writeToLayer( mLayer );
+    // trigger refresh
+    if ( mMapCanvas )
+    {
+        mMapCanvas->refresh();
+    }
 }
 
 QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
   lyr.fieldName = cboFieldName->currentText();
+  // Check if we are an expression. Also treats expressions with just a column name as non expressions,
+  // this saves time later so we don't have to parse the expression tree.
+  lyr.isExpression = mLayer->fieldNameIndex( lyr.fieldName ) == -1;
 
   lyr.dist = 0;
   lyr.placementFlags = 0;
@@ -299,7 +309,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   return lyr;
 }
-
 
 void QgsLabelingGui::populateFieldNames()
 {
@@ -448,6 +457,35 @@ void QgsLabelingGui::showEngineConfigDialog()
   QgsLabelEngineConfigDialog dlg( mLBL, this );
   dlg.exec();
 }
+
+void QgsLabelingGui::showExpressionDialog()
+{
+    QDialog* dlg = new QDialog();
+    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
+                                                       | QDialogButtonBox::Cancel);
+    QgsExpressionBuilder* builder = new QgsExpressionBuilder();
+    QGridLayout* layout = new QGridLayout();
+    dlg->setLayout(layout);
+    layout->addWidget(builder);
+    layout->addWidget(buttonBox);
+
+    if ( dlg->exec() )
+    { 
+      QString expression =  builder->getExpressionString();
+      //Do validation here first before applying
+      QgsSearchString searchString;
+      if ( !searchString.setString( expression ) )
+      {
+        //expression not valid
+          QMessageBox::critical( 0, "Syntax error",
+                                 "Invalid expression syntax. The error message of the parser is: '" + searchString.parserErrorMsg() + "'" );
+          return;
+      }
+
+      cboFieldName->addItem(expression);
+      cboFieldName->setCurrentIndex(cboFieldName->count() - 1);
+    }
+ }
 
 void QgsLabelingGui::updateUi()
 {

@@ -586,51 +586,58 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields,
 
 QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, QgsFeature &f )
 {
-  QgsDebugMsgLevel( "valueAgainst: " + makeSearchString(), 2 );
+  QgsDebugMsg( "VALUE AGAINST: " + makeSearchString());
 
   switch ( mType )
   {
     case tNumber:
-      QgsDebugMsgLevel( "number: " + QString::number( mNumber ), 2 );
+      QgsDebugMsg( "number: " + QString::number( mNumber ));
       return QgsSearchTreeValue( mNumber );
 
     case tString:
-      QgsDebugMsgLevel( "text: " + EVAL_STR( mText ), 2 );
+      QgsDebugMsg( "text: " + EVAL_STR( mText ) );
       return QgsSearchTreeValue( mText );
 
     case tColumnRef:
     {
-      QgsDebugMsgLevel( "column (" + mText.toLower() + "): ", 2 );
+      QgsDebugMsg( "column (" + mText.toLower() + "): " );
       // find field index for the column
       QgsFieldMap::const_iterator it;
       for ( it = fields.begin(); it != fields.end(); it++ )
       {
-        if ( QString::compare( it->name(), mText, Qt::CaseInsensitive ) == 0 )
-          break;
+            QgsDebugMsg(it->name());
+            if ( QString::compare( it->name(), mText, Qt::CaseInsensitive ) == 0 )
+              break;
       }
 
       if ( it == fields.end() )
       {
         // report missing column if not found
-        QgsDebugMsgLevel( "ERROR!", 2 );
+        QgsDebugMsg( "ERROR!" );
         return QgsSearchTreeValue( 1, mText );
       }
 
       // get the value
       QVariant val = f.attributeMap()[it.key()];
+      QgsAttributeMap::const_iterator its;
+      for ( its = f.attributeMap().begin(); its != f.attributeMap().end(); its++ )
+      {
+            QgsDebugMsg(its->toString());
+      }
+
       if ( val.isNull() )
       {
-        QgsDebugMsgLevel( "   NULL", 2 );
+        QgsDebugMsg( "   NULL" );
         return QgsSearchTreeValue();
       }
       else if ( val.type() == QVariant::Bool || val.type() == QVariant::Int || val.type() == QVariant::Double )
       {
-        QgsDebugMsgLevel( "   number: " + QString::number( val.toDouble() ), 2 );
+        QgsDebugMsg( "   number: " + QString::number( val.toDouble() ) );
         return QgsSearchTreeValue( val.toDouble() );
       }
       else
       {
-        QgsDebugMsgLevel( "   text: " + EVAL_STR( val.toString() ), 2 );
+        QgsDebugMsg( "   text: " + EVAL_STR( val.toString() ) );
         return QgsSearchTreeValue( val.toString() );
       }
 

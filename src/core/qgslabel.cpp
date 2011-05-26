@@ -34,9 +34,13 @@
 #include "qgsmaptopixel.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrendercontext.h"
+#include "qgssearchtreenode.h"
+#include "qgssearchstring.h"
 
 #include "qgslabelattributes.h"
 #include "qgslabel.h"
+
+#include <QMessageBox>
 
 // use M_PI define PI 3.141592654
 #ifdef WIN32
@@ -103,8 +107,29 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   double x2 = point.x();
   double scale = ( x2 - x1 ) * 0.001;
 
+  QgsSearchString searchString;
+  if ( !searchString.setString( " to string (Diameter) + 'mm'" ) )
+  {
+    //expression not valid
+    QMessageBox::critical( 0, "Syntax error", "Invalid expression syntax. The error message of the parser is: '" + searchString.parserErrorMsg() + "'" );
+    return;
+  }
+
+  //get QgsSearchTreeNode
+  QgsSearchTreeNode* searchTree = searchString.tree();
+  if ( !searchTree )
+  {
+    return;
+  }
+
+  QgsSearchTreeValue outValue;
+  searchTree->getValue( outValue, searchTree, mField , feature );
+ if (outValue.isError())
+     QMessageBox::critical( 0, "Error in expression tree" , "Error" );
+  text = outValue.string();
+
   /* Text */
-  value = fieldValue( Text, feature );
+  /*value = fieldValue( Text, feature );
   if ( value.isEmpty() )
   {
     text = mLabelAttributes->text();
@@ -112,7 +137,7 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
   else
   {
     text = value;
-  }
+  } */
 
   /* Font */
   value = fieldValue( Family, feature );
@@ -1029,8 +1054,6 @@ void QgsLabel::readXML( const QDomNode& node )
   }
 
 } // QgsLabel::readXML()
-
-
 
 void QgsLabel::writeXML( QDomNode & layer_node, QDomDocument & document ) const
 {
