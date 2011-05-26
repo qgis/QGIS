@@ -28,6 +28,12 @@ ms-windows/packages/
 ms-windows/progs/
 ms-windows/untgz/
 scripts/astyle.exe
+# vim temporary files
+.*.swp
+*.aux
+*.out
+*.tex
+*.toc
 doc/CODING.html
 doc/CODING.tex
 doc/INSTALL.tex

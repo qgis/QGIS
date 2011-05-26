@@ -389,7 +389,6 @@ sudo apt-get install git
 Windows users can obtain [msys git http://code.google.com/p/msysgit/].
 
 
-
 == Accessing the Repository ==
 
 To clone QGIS master:
