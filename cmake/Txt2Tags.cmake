@@ -21,6 +21,12 @@ MACRO(FIND_TXT2TAGS)
       MESSAGE(STATUS "txt2tags not found - disabled")
     ENDIF (NOT TXT2TAGS_EXECUTABLE)
   ENDIF(NOT TXT2TAGS_EXECUTABLE)
+  IF (NOT PDFLATEX_EXECUTABLE)
+    FIND_PROGRAM(PDFLATEX_EXECUTABLE pdflatex)
+  ENDIF (NOT PDFLATEX_EXECUTABLE)
+  IF (NOT PDFLATEX_EXECUTABLE)
+    MESSAGE(STATUS "pdflatex not found - disabled")
+  ENDIF(NOT PDFLATEX_EXECUTABLE)
 ENDMACRO(FIND_TXT2TAGS)
 
 MACRO(ADD_TXT2TAGS_FILES _sources)
@@ -46,14 +52,26 @@ MACRO(ADD_TXT2TAGS_FILES _sources)
       COMMENT "Building ${_out}.html from ${_in}"
       )
 
-    ADD_CUSTOM_COMMAND(
-      OUTPUT ${_out}.tex
-      COMMAND ${TXT2TAGS_EXECUTABLE}
-      ARGS -o${_out}.tex -t tex ${_in}
-      DEPENDS ${_in}
-      COMMENT "Building ${_out}.tex from ${_in}"
-      )
-
     SET(${_sources} ${${_sources}} ${_out} ${_out}.html)
+
+    IF (PDFLATEX_EXECUTABLE)
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${_out}.tex
+        COMMAND ${TXT2TAGS_EXECUTABLE}
+        ARGS -o${_out}.tex -t tex ${_in}
+        DEPENDS ${_in}
+        COMMENT "Building ${_out}.tex from ${_in}"
+        )
+
+      ADD_CUSTOM_COMMAND(
+        OUTPUT ${_out}.pdf
+	COMMAND TEXINPUTS=.:${CMAKE_CURRENT_SOURCE_DIR}: ${PDFLATEX_EXECUTABLE}
+        ARGS -output-directory=${CMAKE_CURRENT_BINARY_DIR} ${_out}.tex
+        DEPENDS ${_out}.tex
+        COMMENT "Building ${_out}.pdf from ${_out}.tex"
+        )
+      SET(${_sources} ${${_sources}} ${_out}.pdf)
+    ENDIF (PDFLATEX_EXECUTABLE)
+
   ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_TXT2TAGS_FILES)
