@@ -276,9 +276,11 @@ bool RgShortestPathWidget::getPath( QgsGraph* shortestTree, QgsPoint& p1, QgsPoi
     return false;
   }
 
+  QgsGraph *graph = builder.graph();
+
   QVector< int > pointIdx(0,0);
   QVector< double > pointCost(0,0.0);
- 
+   
   int startVertexIdx = graph->findVertex( p1 );
   std::cout << " startVertexIdx " << startVertexIdx << "\n";
   int criterionNum = 0;
