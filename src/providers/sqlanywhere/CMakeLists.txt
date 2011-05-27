@@ -1,7 +1,7 @@
 ########################################################
 # Files
 
-SUBDIRS( sqlanyconnection )
+ADD_SUBDIRECTORY(sqlanyconnection)
 
 SET (SA_SRCS qgssqlanywhereprovider.cpp)
 SET (SA_MOC_HDRS qgssqlanywhereprovider.h)

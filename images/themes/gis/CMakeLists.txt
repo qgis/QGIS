@@ -1,4 +1,4 @@
-SUBDIRS (plugins)
+ADD_SUBDIRECTORY(plugins)
 
 FILE (GLOB IMAGES *.png)
 

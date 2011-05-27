@@ -467,10 +467,14 @@ ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 #############################################################
 # process subdirs
 
-SUBDIRS(src doc images resources i18n)
+ADD_SUBDIRECTORY(src)
+ADD_SUBDIRECTORY(doc)
+ADD_SUBDIRECTORY(images)
+ADD_SUBDIRECTORY(resources)
+ADD_SUBDIRECTORY(i18n)
 
 IF (WITH_BINDINGS)
-  SUBDIRS (python)
+  ADD_SUBDIRECTORY(python)
 ENDIF (WITH_BINDINGS)
 
 IF (ENABLE_TESTS)
@@ -478,12 +482,12 @@ IF (ENABLE_TESTS)
   #so that unit tests can use TEST_DATA_DIR to locate
   #the test data. See CMakeLists in test dirs for more info
   SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
-  SUBDIRS(tests)
+  ADD_SUBDIRECTORY(tests)
 ENDIF (ENABLE_TESTS)
 
 IF (APPLE)
   # must be last for install, so install_name_tool can do its work
-  SUBDIRS (mac)
+  ADD_SUBDIRECTORY(mac)
 ENDIF (APPLE)
 
 # manual page - makes sense only on unix systems

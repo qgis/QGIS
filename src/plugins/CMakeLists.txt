@@ -1,39 +1,38 @@
-SUBDIRS (copyright_label 
-  delimited_text
-  diagram_overlay
-  interpolation 
-  north_arrow 
-  scale_bar
-  oracle_raster
-  raster_terrain_analysis
-  coordinate_capture
-  dxf2shp_converter
-  evis
-  point_displacement_renderer
-  spatialquery
-  sqlanywhere
-  roadgraph
-  )
+ADD_SUBDIRECTORY(copyright_label)
+ADD_SUBDIRECTORY(delimited_text)
+ADD_SUBDIRECTORY(diagram_overlay)
+ADD_SUBDIRECTORY(interpolation)
+ADD_SUBDIRECTORY(north_arrow)
+ADD_SUBDIRECTORY(scale_bar)
+ADD_SUBDIRECTORY(oracle_raster)
+ADD_SUBDIRECTORY(raster_terrain_analysis)
+ADD_SUBDIRECTORY(coordinate_capture)
+ADD_SUBDIRECTORY(dxf2shp_converter)
+ADD_SUBDIRECTORY(evis)
+ADD_SUBDIRECTORY(point_displacement_renderer)
+ADD_SUBDIRECTORY(spatialquery)
+ADD_SUBDIRECTORY(sqlanywhere)
+ADD_SUBDIRECTORY(roadgraph)
 
 IF (WITH_SPATIALITE)
-  SUBDIRS( offline_editing )
+  ADD_SUBDIRECTORY(offline_editing)
 ENDIF (WITH_SPATIALITE)
 
 IF (POSTGRES_FOUND)
-  SUBDIRS (spit)
+  ADD_SUBDIRECTORY(spit)
 ENDIF (POSTGRES_FOUND)
 
 IF (EXPAT_FOUND)
-  SUBDIRS (gps_importer wfs)
+  ADD_SUBDIRECTORY(gps_importer)
+  ADD_SUBDIRECTORY(wfs)
 ENDIF (EXPAT_FOUND)
 
 IF (GSL_FOUND)
-  SUBDIRS (georeferencer)
+  ADD_SUBDIRECTORY(georeferencer)
 ENDIF (GSL_FOUND)
 
 IF (GRASS_FOUND)
-  SUBDIRS (grass)
+  ADD_SUBDIRECTORY(grass)
 ENDIF (GRASS_FOUND)
 
 INSTALL(FILES qgisplugin.h qgsrendererplugin.h DESTINATION ${QGIS_INCLUDE_DIR})
-
