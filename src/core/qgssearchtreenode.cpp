@@ -268,6 +268,7 @@ QString QgsSearchTreeNode::makeSearchString()
         case opPLUS:  str += "+"; break;
         case opMINUS: str += "-"; break;
         case opMUL:   str += "*"; break;
+        case opMOD:   str += "%"; break;
         case opDIV:   str += "/"; break;
         case opPOW:   str += "^"; break;
 
@@ -781,6 +782,10 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
           return QgsSearchTreeValue( val1 - val2 );
         case opMUL:
           return QgsSearchTreeValue( val1 * val2 );
+        case opMOD:
+          // NOTE: we _might_ support float operators, like postgresql does
+          // see 83c94a886c059 commit in postgresql git repo for more info
+          return QgsSearchTreeValue( int(val1) % int(val2) );
         case opDIV:
           if ( val2 == 0 )
             return QgsSearchTreeValue( 2, "" ); // division by zero
