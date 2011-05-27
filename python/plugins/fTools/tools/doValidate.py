@@ -71,6 +71,7 @@ class ValidateDialog( QDialog, Ui_Dialog ):
     self.iface = iface
     self.setupUi(self)
     self.setModal(False) # we want to be able to interact with the featuresmc.extent().width()
+    self.setWindowFlags( Qt.SubWindow )
     # adjust user interface
     self.setWindowTitle( self.tr( "Check geometry validity" ) )
     self.cmbField.setVisible( False )
