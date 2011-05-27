@@ -141,6 +141,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     if ( tiedPoint[ i ] != QgsPoint( 0.0, 0.0 ) )
     {
       tiedPoint[ i ] = builder->addVertex( tiedPoint[ i ] );
+      pointLengthMap[ i ].mTiedPoint = tiedPoint[ i ];
     }
   }
 
@@ -216,22 +217,22 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
       pt2 = builder->addVertex( ct.transform( *pointIt ) );
-
-      std::map< double, QgsPoint > pointsOnArc;
-      pointsOnArc[ 0.0 ] = pt1;
-      pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
-
-      for ( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
-      {
-        if ( pointLengthIt->mFirstPoint == pt1 && pointLengthIt->mLastPoint == pt2 )
-        {
-          QgsPoint tiedPoint = pointLengthIt->mTiedPoint;
-          pointsOnArc[ pt1.sqrDist( tiedPoint )] = tiedPoint;
-        }
-      }
-
       if ( !isFirstPoint )
       {
+ 
+        std::map< double, QgsPoint > pointsOnArc;
+        pointsOnArc[ 0.0 ] = pt1;
+        pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
+
+        for ( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
+        {
+          if ( pointLengthIt->mFirstPoint == pt1 && pointLengthIt->mLastPoint == pt2 )
+          {
+            QgsPoint tiedPoint = pointLengthIt->mTiedPoint;
+            pointsOnArc[ pt1.sqrDist( tiedPoint )] = tiedPoint;
+          }
+        }
+
         std::map< double, QgsPoint >::iterator pointsIt;
         QgsPoint pt1;
         QgsPoint pt2;

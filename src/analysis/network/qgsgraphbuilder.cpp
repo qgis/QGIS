@@ -42,8 +42,8 @@ QgsPoint QgsGraphBuilder::addVertex( const QgsPoint& pt )
   QgsPoint newPoint = pt;
   if ( topologyTolerance() > 0 )
   {
-    newPoint = QgsPoint( ceil( pt.x() / topologyTolerance() ) * topologyTolerance(),
-                         ceil( pt.y() / topologyTolerance() ) * topologyTolerance() );
+    newPoint = QgsPoint( ceil( pt.x() / topologyTolerance() ),
+                         ceil( pt.y() / topologyTolerance() ) );
   }
   int newId = mGraph->addVertex( pt );
   
@@ -81,8 +81,8 @@ int QgsGraphBuilder::pointId( const QgsPoint& pt )
   QgsPoint findPoint = pt;
   if ( topologyTolerance() > 0.0 )
   {
-    findPoint = QgsPoint( ceil( pt.x() / topologyTolerance() ) * topologyTolerance() , 
-                          ceil( pt.y() / topologyTolerance() ) * topologyTolerance() ) ;
+    findPoint = QgsPoint( ceil( pt.x() / topologyTolerance() ), 
+                          ceil( pt.y() / topologyTolerance() ) ) ;
   }
  
   std::map< QgsPoint, int, QgsPointCompare >::iterator it = mPointMap.find( findPoint );
