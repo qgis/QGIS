@@ -15,15 +15,6 @@ ENDIF (APPLE)
 MATH(EXPR QGIS_VERSION_INT "${CPACK_PACKAGE_VERSION_MAJOR}*10000+${CPACK_PACKAGE_VERSION_MINOR}*100+${CPACK_PACKAGE_VERSION_PATCH}")
 MESSAGE(STATUS "Quantum GIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS_VERSION_INT})")
 
-# TODO:
-# - install includes for libs
-# - nice output when configured
-# - rename *.ui files to have the same filename as their implementation
-#   e.g. instead of blahblahbase.ui use blahblah.ui
-#   because it's more common in Qt4 
-# Note on last point above by Tim Sutton - I prefer to have the base suffix
-# as it indicates the ui generated class will be a base class for the widget.
-
 #############################################################
 # CMake settings
 
@@ -37,15 +28,9 @@ SET(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 # in generated makefiles use relative paths so the project dir is moveable
 # Note commented out since it cause problems but it would be nice to resolve these and enable
-# 
-# issue is caused by INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}) near the end of this file generating incorrect path 
+#
+# issue is caused by INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR}) near the end of this file generating incorrect path
 #SET (CMAKE_USE_RELATIVE_PATHS ON)
-
-# it's possible to set PLUGINS_ALSO_BINARIES to TRUE
-# then some plugins that can run as standalone apps will be built
-# also as standalone apps
-SET (PLUGINS_ALSO_BINARIES FALSE)
-
 
 # try to configure and build GRASS plugin by default
 SET (WITH_GRASS TRUE CACHE BOOL "Determines whether GRASS plugin should be built")
@@ -253,23 +238,21 @@ IF (WIN32)
   SET (DEFAULT_DATA_SUBDIR    .)
   SET (DEFAULT_PLUGIN_SUBDIR  plugins)
   SET (DEFAULT_INCLUDE_SUBDIR include)
-  
+
   IF (MSVC)
     SET (DEFAULT_BIN_SUBDIR bin)
     SET (DEFAULT_CGIBIN_SUBDIR bin)
     # put all the build products into a single directory
     # under build (doesnt affect install target) to make for
     # easier debugging.
-    #tell msvc compiler to use main instead of winmain as the
-    #application entry point
-    #SET(QT_USE_QTMAIN TRUE) 
+
     # Turn on defines for non standard maths stuff
     ADD_DEFINITIONS(-D_USE_MATH_DEFINES)
 
     # Turn off deprecation warnings
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
     ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_WARNINGS)
-    
+
     IF (CMAKE_BUILD_TYPE MATCHES Debug OR CMAKE_BUILD_TYPE MATCHES RelWithDebInfo)
       MESSAGE (STATUS "Generating browse files")
       ADD_DEFINITIONS( /FR )
@@ -337,7 +320,7 @@ ENDIF (WIN32)
 
 #assume we have escaped compiler directives
 #eventually we want to change this to new
-#since we don't need to jump through so many 
+#since we don't need to jump through so many
 #hoops to escape compiler directives then
 IF(COMMAND cmake_policy)
   cmake_policy(SET CMP0003 NEW)
