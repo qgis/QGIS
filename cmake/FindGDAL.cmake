@@ -14,6 +14,7 @@
 # GDAL_INCLUDE_DIR      = where to find headers 
 
 
+INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacPlistMacros.cmake)
 
 IF(WIN32)
 
@@ -49,7 +50,18 @@ ELSE(WIN32)
         IF (GDAL_LIBRARY)
           # they're all the same in a framework
           SET (GDAL_INCLUDE_DIR ${GDAL_LIBRARY}/Headers CACHE PATH "Path to a file.")
-          SET (GDAL_CONFIG ${GDAL_LIBRARY}/Programs/geos-config CACHE FILEPATH "Path to a program.")
+          # set GDAL_CONFIG to make later test happy, not used here, may not exist
+          SET (GDAL_CONFIG ${GDAL_LIBRARY}/unix/bin/gdal-config CACHE FILEPATH "Path to a program.")
+          # version in info.plist
+          GET_VERSION_PLIST (${GDAL_LIBRARY}/Resources/Info.plist GDAL_VERSION)
+          IF (NOT GDAL_VERSION)
+            MESSAGE (FATAL_ERROR "Could not determine GDAL version from framework.")
+          ENDIF (NOT GDAL_VERSION)
+          STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GDAL_VERSION_MAJOR "${GDAL_VERSION}")
+          STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GDAL_VERSION_MINOR "${GDAL_VERSION}")
+          IF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
+            MESSAGE (FATAL_ERROR "GDAL version is too old (${GDAL_VERSION}). Use 1.4.0 or higher.")
+          ENDIF (GDAL_VERSION_MAJOR LESS 1 OR GDAL_VERSION_MINOR LESS 4)
         ENDIF (GDAL_LIBRARY)
         SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
       ENDIF ()
