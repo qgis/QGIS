@@ -34,19 +34,23 @@ Developers guide for QGIS
       1.9.5. Use Braces Even for Single Line Statements
       1.9.6. Book recommendations
   2. GIT Access
-    2.1. Accessing the Repository
-    2.2. Check out a branch
-    2.3. QGIS documentation sources
-    2.4. GIT Documentation
-    2.5. Development in branches
-      2.5.1. Purpose
-      2.5.2. Procedure
-    2.6. Submitting Patches
-      2.6.1. Patch file naming
-      2.6.2. Create your patch in the top level QGIS source dir
-      2.6.3. Getting your patch noticed
-      2.6.4. Due Diligence
-    2.7. Obtaining GIT Write Access
+    2.1. Installation
+      2.1.1. Install git for GNU/Linux
+      2.1.2. Install git for Windows
+      2.1.3. Install git for OSX
+    2.2. Accessing the Repository
+    2.3. Check out a branch
+    2.4. QGIS documentation sources
+    2.5. GIT Documentation
+    2.6. Development in branches
+      2.6.1. Purpose
+      2.6.2. Procedure
+    2.7. Submitting Patches
+      2.7.1. Patch file naming
+      2.7.2. Create your patch in the top level QGIS source dir
+      2.7.3. Getting your patch noticed
+      2.7.4. Due Diligence
+    2.8. Obtaining GIT Write Access
   3. Unit Testing
     3.1. The QGIS testing framework  - an overview
     3.2. Creating a unit test
@@ -415,14 +419,53 @@ http://doc.trolltech.com/qq/qq13-apis.html designing Qt style (APIs)
   2. GIT Access
   =============
 
-This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system. Debian based distro users can do:
+This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system.
+
+
+  2.1. Installation
+  =================
+
+
+    2.1.1. Install git for GNU/Linux
+    ================================
+
+Debian based distro users can do:
 
   sudo apt-get install git
+
+
+    2.1.2. Install git for Windows
+    ==============================
 
 Windows users can obtain msys git (http://code.google.com/p/msysgit/).
 
 
-  2.1. Accessing the Repository
+    2.1.3. Install git for OSX
+    ==========================
+
+The git (http://git-scm.com/) project has a downloadable build of git.
+Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
+
+Once downloaded open the disk image and run the installer.
+
+PPC/source note
+
+The git site does not offer PPC builds.  If you need a PPC build, or you just want
+a little more control over the installation, you need to compile it yourself.
+
+Download the source from http://git-scm.com/.  Unzip it, and in a Terminal cd to the source folder, then:
+
+  make prefix=/usr/local
+  sudo make prefix=/usr/local install
+
+If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
+
+  export NO_PERL=
+  export NO_TCLTK=
+  export NO_PYTHON=
+
+
+  2.2. Accessing the Repository
   =============================
 
 To clone QGIS master:
@@ -430,7 +473,7 @@ To clone QGIS master:
   git://github.com/qgis/Quantum-GIS.git
 
 
-  2.2. Check out a branch
+  2.3. Check out a branch
   =======================
 
 To check out a branch, for example the release 1.7.0 branch do:
@@ -455,7 +498,7 @@ See the INSTALL file in the source tree for specific instructions on building
 development versions. 
 
 
-  2.3. QGIS documentation sources
+  2.4. QGIS documentation sources
   ===============================
 
 If you're interested in checking out Quantum GIS documentation sources:
@@ -467,7 +510,7 @@ If you're interested in checking out Quantum GIS documentation sources:
 You can also take a look at DocumentationWritersCorner for more information.
 
 
-  2.4. GIT Documentation
+  2.5. GIT Documentation
   ======================
 
 See the following sites for information on becoming a GIT master.
@@ -477,11 +520,11 @@ http://progit.org
 http://gitready.com
 
 
-  2.5. Development in branches
+  2.6. Development in branches
   ============================
 
 
-    2.5.1. Purpose
+    2.6.1. Purpose
     ==============
 
 The complexity of the QGIS source code has increased considerably during the
@@ -495,7 +538,7 @@ This section describes the procedure for branching and merging in the QGIS
 project.
 
 
-    2.5.2. Procedure
+    2.6.2. Procedure
     ================
 
 - Initial announcement on mailing list:
@@ -541,14 +584,14 @@ Component will be opened to file tickets against.  Once there are no remaining
 issues left, the technical advisor of the PSC merges the changes into master.
 
 
-  2.6. Submitting Patches
+  2.7. Submitting Patches
   =======================
 
 There are a few guidelines that will help you to get your patches into QGIS
 easily, and help us deal with the patches that are sent to use easily.
 
 
-    2.6.1. Patch file naming
+    2.7.1. Patch file naming
     ========================
 
 If the patch is a fix for a specific bug, please name the file with the bug
@@ -559,7 +602,7 @@ If the bug is an enhancement or new feature, its usually a good idea to create
 a ticket in trac (https://trac.osgeo.org/qgis/) first and then attach you 
 
 
-    2.6.2. Create your patch in the top level QGIS source dir
+    2.7.2. Create your patch in the top level QGIS source dir
     =========================================================
 
 This makes it easier for us to apply the patches since we don't need to
@@ -580,7 +623,7 @@ and then generate a patch which contains the delta between your feature branch
 and what is in the master branch.
 
 
-    2.6.3. Getting your patch noticed
+    2.7.3. Getting your patch noticed
     =================================
 
 QGIS developers are busy folk. We do scan the incoming patches on bug reports
@@ -591,7 +634,7 @@ can escalate your query to one of the Project Steering Committee members
 (contact details also available on the Project Organigram).
 
 
-    2.6.4. Due Diligence
+    2.7.4. Due Diligence
     ====================
 
 QGIS is licensed under the GPL. You should make every effort to ensure you only
@@ -600,7 +643,7 @@ rights. Also do not submit code that you are not happy to have made available
 under the GPL.
 
 
-  2.7. Obtaining GIT Write Access
+  2.8. Obtaining GIT Write Access
   ===============================
 
 Write access to QGIS source tree is by invitation. Typically when a person

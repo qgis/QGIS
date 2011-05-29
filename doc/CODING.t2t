@@ -407,14 +407,48 @@ You should also really read this article from Qt Quarterly on
 
 = GIT Access =
 
-This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system. Debian based distro users can do:
+This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system.
+
+== Installation ==
+
+=== Install git for GNU/Linux ===
+
+Debian based distro users can do:
 
 ```
 sudo apt-get install git
 ```
 
+=== Install git for Windows ===
+
 Windows users can obtain [msys git http://code.google.com/p/msysgit/].
 
+=== Install git for OSX ===
+
+The [git http://git-scm.com/] project has a downloadable build of git.
+Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
+
+Once downloaded open the disk image and run the installer.
+
+__PPC/source note__
+
+The git site does not offer PPC builds.  If you need a PPC build, or you just want
+a little more control over the installation, you need to compile it yourself.
+
+Download the source from http://git-scm.com/.  Unzip it, and in a Terminal cd to the source folder, then:
+
+```
+make prefix=/usr/local
+sudo make prefix=/usr/local install
+```
+
+If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
+
+```
+export NO_PERL=
+export NO_TCLTK=
+export NO_PYTHON=
+```
 
 
 == Accessing the Repository ==

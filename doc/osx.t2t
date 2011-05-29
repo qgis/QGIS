@@ -355,9 +355,15 @@ make
 sudo make install
 ```
 
-== Download QGIS source from github ==
+== QGIS source ==
 
-Go to the github QGIS project page:
+Unzip the QGIS source tarball to a working folder of your choice
+(/usr/somewhere is not a good choice as it's hidden and requires root
+privileges).  If you are reading this from the source, you've already done
+this.
+
+If you want to experiment with the latest development sources, go to the github
+QGIS project page:
 
 http://github.com/qgis/Quantum-GIS
 
