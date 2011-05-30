@@ -299,7 +299,7 @@ void QgsVectorLayerJoinBuffer::writeXml( QDomNode& layer_node, QDomDocument& doc
   }
 }
 
-void QgsVectorLayerJoinBuffer::readXml( QDomNode& layer_node )
+void QgsVectorLayerJoinBuffer::readXml( const QDomNode& layer_node )
 {
   mVectorJoins.clear();
   QDomElement vectorJoinsElem = layer_node.firstChildElement( "vectorjoins" );

@@ -3221,7 +3221,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   @note Called by QgsMapLayer::readXML().
 */
-bool QgsRasterLayer::readXml( QDomNode & layer_node )
+bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 {
   //! @note Make sure to read the file first so stats etc are initialised properly!
 

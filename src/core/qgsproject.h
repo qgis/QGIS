@@ -23,17 +23,21 @@
 
 #include <memory>
 #include "qgsprojectversion.h"
-#include <QObject>
+#include <QHash>
 #include <QList>
+#include <QObject>
 #include <QPair>
 
 //#include <QDomDocument>
 
 class QFileInfo;
 class QDomDocument;
+class QDomElement;
 class QDomNode;
 
+class QgsMapLayer;
 class QgsProjectBadLayerHandler;
+class QgsVectorLayer;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -272,6 +276,18 @@ class CORE_EXPORT QgsProject : public QObject
       @note added in 1.4 */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
+    /**Adds layer to list of embedded layers
+      @note: added in version 1.8*/
+    void addEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+
+    /**Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
+    QString layerIsEmbedded( const QString& id ) const;
+
+    /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
+      @return the layer or 0 in case of error
+      @note: added in version 1.8*/
+    static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+
   protected:
 
     /** Set error message from read/write operation
@@ -281,6 +297,9 @@ class CORE_EXPORT QgsProject : public QObject
     /** Clear error message
       @note added in 1.4 */
     void clearError();
+
+    //Creates layer and adds it to maplayer registry
+    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:
 
@@ -316,6 +335,9 @@ class CORE_EXPORT QgsProject : public QObject
     QString mErrorMessage;
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
+
+    /**Embeded layers which are defined in other projects. Key: layer id, value: project file path*/
+    QHash< QString, QString > mEmbeddedLayers;
 
 }; // QgsProject
 
