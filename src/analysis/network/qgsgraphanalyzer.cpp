@@ -43,7 +43,7 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
   {
     result.push_back( QPair<double, int> ( std::numeric_limits<double>::infinity() , i ) );
   }
-  result.push_back ( QPair<double, int>( 0.0, -1 ) );
+  result[ startPointIdx ] = QPair<double, int> ( 0.0, -1 );
 
   not_begin.insert( 0.0, startPointIdx );
   
@@ -55,9 +55,10 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
     int curVertex = it.value();
     not_begin.erase( it );
 
+    // edge index list
     QgsGraphEdgeList l = source->vertex( curVertex ).outEdges();
     QgsGraphEdgeList::iterator edgeIt;
-    for (edgeIt = l.begin(); edgeIt != l.end(); ++edgeIt)
+    for ( edgeIt = l.begin(); edgeIt != l.end(); ++edgeIt )
     {
       const QgsGraphEdge& edge = source->edge( *edgeIt );
       double cost = edge.property( criterionNum ).toDouble() + curCost;
@@ -69,7 +70,7 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
       }
     }
   }
-  
+ 
   // fill shortestpath tree
   if ( treeResult != NULL )
   {
