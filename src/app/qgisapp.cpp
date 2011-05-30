@@ -779,6 +779,7 @@ void QgisApp::createActions()
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
+  connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
@@ -5048,6 +5049,16 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 
 }
 
+void QgisApp::embedLayers()
+{
+  //dialog to select groups/layers from other project files
+
+  //hardcoded for debugging
+  QString filepath="/home/marco/geodaten/projekte/composertest.qgs";
+  QString id="komb113320110516093016594";
+  QgsProject::instance()->createEmbeddedLayer( id, filepath );
+}
+
 void QgisApp::setExtent( QgsRectangle theRect )
 {
   mMapCanvas->setExtent( theRect );
@@ -6513,6 +6524,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   if ( !ml )
     return;
 
+  if( !QgsProject::instance()->layerIsEmbedded( ml->id() ).isEmpty() )
+  {
+    return; //don't show properties of embedded layers
+  }
+
   if ( ml->type() == QgsMapLayer::RasterLayer )
   {
     QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
@@ -6525,6 +6541,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
+
     rlp->exec();
     delete rlp; // delete since dialog cannot be reused without updating code
   }
