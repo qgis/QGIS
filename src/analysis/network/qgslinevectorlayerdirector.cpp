@@ -31,6 +31,58 @@
 
 //standard includes
 #include <limits>
+#include <algorithm>
+
+class QgsPointCompare
+{
+  public:
+    QgsPointCompare( double tolerance ) :
+      mTolerance( tolerance )
+    {  }
+  
+    bool operator()( const QgsPoint& p1, const QgsPoint& p2 ) const
+    {
+      if ( mTolerance <= 0 )
+        return p1.x() == p2.x() ? p1.y() < p2.y() : p1.x() < p2.x();
+
+      double tx1 = ceil( p1.x()/mTolerance );
+      double tx2 = ceil( p2.x()/mTolerance );
+      if ( tx1 == tx2 )
+        return ceil( p1.y()/mTolerance ) < ceil( p2.y()/mTolerance );
+      return tx1 < tx2;
+    }
+  
+  private:
+    double mTolerance;
+};
+
+template <typename RandIter, typename Type, typename CompareOp > RandIter my_binary_search( RandIter begin, RandIter end, Type val, CompareOp comp)
+{
+  // result if not found
+  RandIter not_found = end;
+
+  while ( true )
+  {
+    RandIter avg = begin + (end-begin)/2;
+    if ( begin == avg || end == avg )
+    {
+      if ( !comp( *begin, val ) && !comp( val, *begin ) )
+        return begin;
+      if ( !comp( *end, val ) && !comp( val, *end ) )
+        return end;
+      
+      return not_found;
+    }
+    if ( comp( val, *avg ) )
+      end = avg;
+    else if ( comp( *avg, val ) )
+      begin = avg;
+    else
+      return avg;
+  }
+
+  return not_found;
+}
 
 QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( const QString& layerId,
     int directionFieldId,
@@ -80,12 +132,16 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   }
  
   tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
+  
   TiePointInfo tmpInfo;
   tmpInfo.mLength = std::numeric_limits<double>::infinity();
 
   QVector< TiePointInfo > pointLengthMap( additionalPoints.size(), tmpInfo );
   QVector< TiePointInfo >::iterator pointLengthIt;
   
+  //Graph's points;
+  QVector< QgsPoint > points;
+
   // begin: tie points to the graph
   QgsAttributeList la;
   vl->select( la );
@@ -98,7 +154,9 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     QgsPolyline::iterator pointIt;
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
-      pt2 = builder->addVertex( ct.transform( *pointIt ) );
+      pt2 = ct.transform( *pointIt );
+      points.push_back( pt2 );
+
       if ( !isFirstPoint )
       {
         int i = 0;
@@ -131,7 +189,6 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     }
     emit buildProgress( ++step, featureCount );
   }
-
   // end: tie points to graph
 
   // add tied point to graph 
@@ -140,10 +197,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   {
     if ( tiedPoint[ i ] != QgsPoint( 0.0, 0.0 ) )
     {
-      tiedPoint[ i ] = builder->addVertex( tiedPoint[ i ] );
-      pointLengthMap[ i ].mTiedPoint = tiedPoint[ i ];
+      points.push_back( tiedPoint [ i ] );
     }
   }
+  
+  QgsPointCompare pointCompare( builder->topologyTolerance() );
+
+  qSort( points.begin(), points.end(), pointCompare );
+  QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() ); 
+  points.resize( tmp - points.begin() );
+  
+  for (i=0;i<points.size();++i)
+    builder->addVertex( i, points[ i ] );
+  
+  for ( i = 0; i < tiedPoint.size() ; ++i)
+    tiedPoint[ i ] = *(my_binary_search( points.begin(), points.end(), tiedPoint[ i ], pointCompare ) );
 
   { // fill attribute list 'la'
     QgsAttributeList tmpAttr;
@@ -216,10 +284,10 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     QgsPolyline::iterator pointIt;
     for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
     {
-      pt2 = builder->addVertex( ct.transform( *pointIt ) );
+      pt2 = ct.transform( *pointIt );
+      
       if ( !isFirstPoint )
       {
- 
         std::map< double, QgsPoint > pointsOnArc;
         pointsOnArc[ 0.0 ] = pt1;
         pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
@@ -236,11 +304,16 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
         std::map< double, QgsPoint >::iterator pointsIt;
         QgsPoint pt1;
         QgsPoint pt2;
+        int pt1idx = -1, pt2idx = -1;
         bool isFirstPoint = true;
         for ( pointsIt = pointsOnArc.begin(); pointsIt != pointsOnArc.end(); ++pointsIt )
         {
           pt2 = pointsIt->second;
-          if ( !isFirstPoint )
+          tmp = my_binary_search( points.begin(), points.end(), pt2, pointCompare );
+          pt2 = *tmp;
+          pt2idx = tmp - points.begin();
+
+          if ( !isFirstPoint && pt1 != pt2 )
           {
             double distance = builder->distanceArea()->measureLine( pt1, pt2 );
             QVector< QVariant > prop;
@@ -253,14 +326,15 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             if ( directionType == 1 ||
                  directionType == 3 )
             {
-              builder->addArc( pt1, pt2, prop );
+              builder->addArc( pt1idx, pt1, pt2idx, pt2, prop );
             }
             if ( directionType == 2 ||
                  directionType == 3 )
             {
-              builder->addArc( pt2, pt1, prop );
+              builder->addArc( pt2idx, pt2, pt1idx, pt1, prop );
             }
           }
+          pt1idx = pt2idx;
           pt1 = pt2;
           isFirstPoint = false;
         }

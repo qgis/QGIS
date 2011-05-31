@@ -60,9 +60,9 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    virtual QgsPoint addVertex( const QgsPoint& pt );
+    virtual void addVertex( int id, const QgsPoint& pt );
 
-    virtual void addArc( const QgsPoint& pt1, const QgsPoint& pt2, const QVector< QVariant >& prop );
+    virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& prop );
 
     /**
      * return QgsGraph result;
@@ -70,12 +70,6 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     QgsGraph* graph();
   
   private:  
-    // return -1 if pt not found
-    int pointId( const QgsPoint& pt );
-
-    QgsSpatialIndex mPointIndex;
-
-    std::map< QgsPoint, int, QgsPointCompare > mPointMap;
 
     QgsGraph *mGraph;
 };
