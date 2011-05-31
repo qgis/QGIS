@@ -23,7 +23,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #include "sasourceselect.h"
 #include "sanewconnection.h"
@@ -404,7 +403,8 @@ void SaSourceSelect::on_btnConnect_clicked()
       SaDebugMsg( "Unable to get list of spatially enabled tables "
                   "from the database" );
     }
-    if ( cmbConnections->count() > 0 ) mAddButton->setEnabled( true );
+    if ( cmbConnections->count() > 0 )
+      mAddButton->setEnabled( true );
 
     conn->release();
 

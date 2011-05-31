@@ -4,6 +4,7 @@ Developers guide for QGIS
 
 ------------------------------------------------------------------------
 
+
   1. QGIS Coding Standards
     1.1. Classes
       1.1.1. Names
@@ -16,7 +17,7 @@ Developers guide for QGIS
     1.3. C++ Files
       1.3.1. Names
       1.3.2. Standard Header and License
-      1.3.3. SVN Keyword
+      1.3.3. Keyword Substitution
     1.4. Variable Names
     1.5. Enumerated Types
     1.6. Global Constants
@@ -32,24 +33,24 @@ Developers guide for QGIS
       1.9.4. Add Trailing Identifying Comments
       1.9.5. Use Braces Even for Single Line Statements
       1.9.6. Book recommendations
-  2. SVN Access
-    2.1. Accessing the Repository
-    2.2. Anonymous Access
-    2.3. QGIS documentation sources
-    2.4. SVN Documentation
-    2.5. Development in branches
-      2.5.1. Purpose
-      2.5.2. Procedure
-      2.5.3. Creating a branch
-      2.5.4. Merge regularly from trunk to branch
-    2.6. Submitting Patches
-      2.6.1. Patch file naming
-      2.6.2. Create your patch in the top level QGIS source dir
-      2.6.3. Including non version controlled files in your patch
-      2.6.4. Getting your patch noticed
-      2.6.5. Due Diligence
-    2.7. Obtaining SVN Write Access
-      2.7.1. Procedure once you have access
+  2. GIT Access
+    2.1. Installation
+      2.1.1. Install git for GNU/Linux
+      2.1.2. Install git for Windows
+      2.1.3. Install git for OSX
+    2.2. Accessing the Repository
+    2.3. Check out a branch
+    2.4. QGIS documentation sources
+    2.5. GIT Documentation
+    2.6. Development in branches
+      2.6.1. Purpose
+      2.6.2. Procedure
+    2.7. Submitting Patches
+      2.7.1. Patch file naming
+      2.7.2. Create your patch in the top level QGIS source dir
+      2.7.3. Getting your patch noticed
+      2.7.4. Due Diligence
+    2.8. Obtaining GIT Write Access
   3. Unit Testing
     3.1. The QGIS testing framework  - an overview
     3.2. Creating a unit test
@@ -79,12 +80,10 @@ These standards should be followed by all QGIS developers.
 
 Class in QGIS begin with Qgs and are formed using mixed case. 
 
-
   Examples:
     QgsPoint
     QgsMapCanvas
     QgsRasterLayer
-
 
 
     1.1.2. Members
@@ -93,10 +92,8 @@ Class in QGIS begin with Qgs and are formed using mixed case.
 Class member names begin with a lower case m and are formed using mixed
 case.
 
-
     mMapCanvas  
     mCurrentExtent
-
 
 All class members should be private.
 Public class members are STRONGLY discouraged
@@ -109,10 +106,8 @@ Class member values should be obtained through accesssor functions. The
 function should be named without a get prefix. Accessor functions for the
 two private members above would be: 
 
-
     mapCanvas()
     currentExtent()
-
 
 
     1.1.4. Functions
@@ -121,10 +116,8 @@ two private members above would be:
 Function names begin with a lowercase letter and are formed using mixed case.
 The function name should convey something about the purpose of the function.
 
-
     updateMapExtent()
     setUserOptions()
-
 
 
   1.2. Qt Designer
@@ -136,7 +129,6 @@ The function name should convey something about the purpose of the function.
 
 QGIS classes that are generated from Qt Designer (ui) files should have a
 Base suffix. This identifies the class as a generated base class.
-
 
   Examples:
     QgsPluginManagerBase
@@ -165,11 +157,9 @@ C++ implementation and header files should be have a .cpp and .h extension
 respectively.  Filename should be all lowercase and, in the case of classes,
 match the class name.
 
-
   Example:
     Class QgsFeatureAttribute source files are 
       qgsfeatureattribute.cpp and qgsfeatureattribute.h
-
 
 /!\ Note: in case it is not clear from the statement above, for a filename 
 to match a class name it implicitly means that each class should be declared 
@@ -182,7 +172,6 @@ identify where the code is relating to specific class.
 
 Each source file should contain a header section patterned after the following
 example:
-
 
   /***************************************************************************
       qgsfield.cpp - Describes a field in a layer or table
@@ -200,26 +189,12 @@ example:
    ***************************************************************************/
 
 
+    1.3.3. Keyword Substitution
+    ===========================
 
-    1.3.3. SVN Keyword
-    ==================
-
-Each source file should contain the $Id$ keyword. This will be expanded by SVN
-to contain useful information about the file, revision, last committer, and
-date/time of last checkin.
-
-Place the keyword right after the standard header/license that is found at the
-top of each source file:
-
-
-    /* $Id$ */
-
-
-You also need to set 
-
-svn propset svn:keywords "Id"
-
-for the new files.
+In the days of SVN we used to require that each source file should contain the
+$Id$ keyword. Keyword substitution is not supported by GIT and so should no
+longer be used.
 
 
   1.4. Variable Names
@@ -227,18 +202,15 @@ for the new files.
 
 Variable names begin with a lower case letter and are formed using mixed case.
 
-
   Examples:
     mapCanvas
     currentExtent
-
 
 
   1.5. Enumerated Types
   =====================
 
 Enumerated types should be named in CamelCase with a leading capital e.g.:
-
 
       enum UnitType
       {
@@ -247,7 +219,6 @@ Enumerated types should be named in CamelCase with a leading capital e.g.:
         Degrees,
         UnknownUnit
       } ;
-
 
 Do not use generic type names that will conflict with other types. e.g. use
 "UnkownUnit" rather than "Unknown"
@@ -258,9 +229,7 @@ Do not use generic type names that will conflict with other types. e.g. use
 
 Global constants should be written in upper case underscore separated e.g.:
 
-
   const long GEOCRS_ID = 3344;
-
 
 
   1.7. Editing
@@ -291,7 +260,6 @@ should emulate these settings.
 
 Braces should start on the line following the expression:
 
-
     if(foo == 1)
     {
       // do stuff
@@ -301,7 +269,6 @@ Braces should start on the line following the expression:
       // do something else
       ...
     }
-
 
 There is a scripts/prepare-commit.sh that looks up the changed files and
 reindents them using astyle.  This should be run before committing.
@@ -320,7 +287,6 @@ work against any of the 1.x QGIS releases (although recompiling may be
 required).Cleanups to the API should be done in a manner similar to the
 Trolltech developers e.g.
 
-
   class Foo 
   {
     public:
@@ -338,7 +304,6 @@ Trolltech developers e.g.
   }
 
 
-
   1.9. Coding Style
   =================
 
@@ -349,10 +314,8 @@ errors, development time, and maintenance.
     1.9.1. Where-ever Possible Generalize Code
     ==========================================
 
-
   If you are cut-n-pasting code, or otherwise writing the same thing more than
   once, consider consolidating the code into a single function.
-
 
 This will:
 
@@ -362,15 +325,12 @@ This will:
   thus making it harder to understand and maintain for others
 
 
-
     1.9.2. Prefer Having Constants First in Predicates
     ==================================================
 
 Prefer to put constants first in predicates. 
 
-
   "0 == value" instead of "value == 0"
-
 
 This will help prevent programmers from accidentally using "=" when they meant
 to use "==", which can introduce very subtle logic bugs.  The compiler will
@@ -386,15 +346,11 @@ humans to parse code.
 
 Which is easier to read, this:
 
-
   if (!a&&b)
-
 
 or this:
 
-
   if ( ! a && b )
-
 
 
     1.9.4. Add Trailing Identifying Comments
@@ -412,12 +368,10 @@ desired part.
 
 e.g.,
 
-
   void foo::bar()
   { 
       // ... imagine a lot of code here 
   } // foo::bar()
-
 
 
     1.9.5. Use Braces Even for Single Line Statements
@@ -429,19 +383,16 @@ generate broken code.
 
 Consider:
 
-
     if (foo)
       bar();
    else
       baz();
-
 
 Adding code after bar() or baz() without adding enclosing braces would create
 broken code.  Though most programmers would naturally do that, some may forget
 to do so in haste.
 
 So, prefer this:
-
 
    if (foo)
    {
@@ -453,7 +404,6 @@ So, prefer this:
    } 
 
 
-
     1.9.6. Book recommendations
     ===========================
 
@@ -462,91 +412,119 @@ So, prefer this:
 - Effective STL (http://www.awprofessional.com/title/0201749629), Scott Meyers
 - Design Patterns (http://www.awprofessional.com/title/0201634988), GoF
 
-
 You should also really read this article from Qt Quarterly on 
 http://doc.trolltech.com/qq/qq13-apis.html designing Qt style (APIs)
 
 
-  2. SVN Access
+  2. GIT Access
   =============
 
-This page describes how to get started using the QGIS Subversion repository
+This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system.
 
 
-  2.1. Accessing the Repository
+  2.1. Installation
+  =================
+
+
+    2.1.1. Install git for GNU/Linux
+    ================================
+
+Debian based distro users can do:
+
+  sudo apt-get install git
+
+
+    2.1.2. Install git for Windows
+    ==============================
+
+Windows users can obtain msys git (http://code.google.com/p/msysgit/).
+
+
+    2.1.3. Install git for OSX
+    ==========================
+
+The git (http://git-scm.com/) project has a downloadable build of git.
+Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
+
+Once downloaded open the disk image and run the installer.
+
+PPC/source note
+
+The git site does not offer PPC builds.  If you need a PPC build, or you just want
+a little more control over the installation, you need to compile it yourself.
+
+Download the source from http://git-scm.com/.  Unzip it, and in a Terminal cd to the source folder, then:
+
+  make prefix=/usr/local
+  sudo make prefix=/usr/local install
+
+If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
+
+  export NO_PERL=
+  export NO_TCLTK=
+  export NO_PYTHON=
+
+
+  2.2. Accessing the Repository
   =============================
 
-To check out QGIS HEAD:
+To clone QGIS master:
+
+  git://github.com/qgis/Quantum-GIS.git
 
 
-    svn --username [your user name] co https://svn.osgeo.org/qgis/trunk/qgis
+  2.3. Check out a branch
+  =======================
 
+To check out a branch, for example the release 1.7.0 branch do:
 
+    cd Quantum-GIS
+    git fetch
+    git branch --track origin release-1_7_0
+    git checkout release-1_7_0
+    
 
-  2.2. Anonymous Access
-  =====================
+To check out the master branch:
 
-You can use the following commands to perform an anonymous checkout from the
-QGIS Subversion repository.  Note we recommend checking out the trunk (unless
-you are a developer or really HAVE to have the latest changes and don't mind
-lots of crashing!).
+    cd Quantum-GIS
+    git checkout master
 
-You must have a subversion client installed prior to checking out the code. See
-the Subversion website for more information. The Links page contains a good
-selection of SVN clients for various platforms.
-
-To check out a branch
-
-
-    svn co https://svn.osgeo.org/qgis/branches/<branch name>
-
-
-To check out SVN stable trunk:
-
-
-    svn co https://svn.osgeo.org/qgis/trunk/qgis qgis_trunk
-
-
-/!\ Note: If you are behind a proxy server, edit your ~/subversion/servers
-file to specify your proxy settings first!
-
-/!\ Note: In QGIS we keep our most stable code in the version 1_0 branch.
-Trunk contains code for the so called 'unstable' release series. Periodically
-we will tag a release off trunk, and then continue stabilisation and selective
-incorporation of new features into trunk.
+/!\ Note: In QGIS we keep our most stable code in the current release branch.
+Master contains code for the so called 'unstable' release series. Periodically
+we will branch a release off master, and then continue stabilisation and selective
+incorporation of new features into master.
 
 See the INSTALL file in the source tree for specific instructions on building
 development versions. 
 
 
-  2.3. QGIS documentation sources
+  2.4. QGIS documentation sources
   ===============================
 
 If you're interested in checking out Quantum GIS documentation sources:
 
-
     svn co https://svn.osgeo.org/qgis/docs/trunk qgis_docs
 
+/!\ Note: This url will change to a git URL in the near future.
 
 You can also take a look at DocumentationWritersCorner for more information.
 
 
-  2.4. SVN Documentation
+  2.5. GIT Documentation
   ======================
 
-The repository is organized as follows:
+See the following sites for information on becoming a GIT master.
 
-http://wiki.qgis.org/images/repo.png
+http://gitref.org
+http://progit.org
+http://gitready.com
 
-See the Subversion book http://svnbook.red-bean.com for information on becoming
-a SVN master.
 
-
-  2.5. Development in branches
+  2.6. Development in branches
   ============================
 
 
-    2.5.1. Purpose
+    2.6.1. Purpose
     ==============
 
 The complexity of the QGIS source code has increased considerably during the
@@ -554,13 +532,13 @@ last years. Therefore it is hard to anticipate the side effects that the
 addition of a feature will have. In the past, the QGIS project had very long
 release cycles because it was a lot of work to reetablish the stability of the
 software system after new features were added. To overcome these problems, QGIS
-switched to a development model where new features are coded in svn branches
-first and merged to trunk (the main branch) when they are finished and stable.
+switched to a development model where new features are coded in GIT branches
+first and merged to master (the main branch) when they are finished and stable.
 This section describes the procedure for branching and merging in the QGIS
 project.
 
 
-    2.5.2. Procedure
+    2.6.2. Procedure
     ================
 
 - Initial announcement on mailing list:
@@ -570,130 +548,82 @@ technical advisor of the project steering committee (PSC). If the new feature
 requires any changes to the QGIS architecture, a request for comment (RFC) is
 needed. 
 
-- Create a branch: 
-Create a new svn branch for the development of the new feature (see
-UsingSubversion for the svn syntax). Now you can start developing.
+Create a branch: 
+Create a new GIT branch for the development of the new feature. 
 
-- Merge from trunk regularly:
-It is recommended to merge the changes in trunk to the branch on a regular
-basis. This makes it easier to merge the branch back to trunk later.
+  git branch newfeature
+  git checkout newfeature
 
-- Documentation on wiki: 
+
+Now you can start developing. If you plan to do extensive on that branch, would
+like to share the work with other developers, and have write access to the
+upstream repo, you can push your repo up to the QGIS official repo by doing:
+
+  git push origin newfeature
+
+
+Note: if the branch already exists your changes will be pushed into it.
+
+Merge from master regularly:
+It is recommended to merge the changes in master to the branch on a regular
+basis. This makes it easier to merge the branch back to master later.
+
+  git merge master
+
+
+Documentation on wiki: 
 It is also recommended to document the intended changes and the current status
 of the work on a wiki page.
 
-- Testing before merging back to trunk: 
+Testing before merging back to master: 
 When you are finished with the new feature and happy with the stability, make
 an announcement on the developer list.  Before merging back, the changes will
 be tested by developers and users. Binary packages (especially for OsX and
 Windows) will be generated to also involve non-developers. In trac, a new
 Component will be opened to file tickets against.  Once there are no remaining
-issues left, the technical advisor of the PSC merges the changes into trunk.
+issues left, the technical advisor of the PSC merges the changes into master.
 
 
-
-
-    2.5.3. Creating a branch
-    ========================
-
-We prefer that new feature developments happen out of trunk so that trunk
-remains in a stable state. To create a branch use the following command:
-
-
-  svn copy https://svn.osgeo.org/qgis/trunk/qgis https://svn.osgeo.org/qgis/branches/qgis_newfeature
-  svn commit -m "New feature branch"
-
-
-
-    2.5.4. Merge regularly from trunk to branch
-    ===========================================
-
-When working in a branch you should regularly merge trunk into it so that your
-branch does not diverge more than necessary. In the top level dir of your
-branch, first type `svn info` to determine the revision numbers of your
-branch which will produce output something like this:
-
-
-  timlinux@timlinux-desktop:~/dev/cpp/qgis_raster_transparency_branch$ svn info
-  Caminho: .
-  URL: https://svn.osgeo.org/qgis/branches/raster_transparency_branch
-  Raiz do Repositório: https://svn.osgeo.org/qgis
-  UUID do repositório: c8812cc2-4d05-0410-92ff-de0c093fc19c
-  Revisão: 6546
-  Tipo de Nó: diretório
-  Agendado: normal
-  Autor da Última Mudança: timlinux
-  Revisão da Última Mudança: 6495
-  Data da Última Mudança: 2007-02-02 09:29:47 -0200 (Sex, 02 Fev 2007)
-  Propriedades da Última Mudança: 2007-01-09 11:32:55 -0200 (Ter, 09 Jan 2007)
-
-
-The second revision number shows the revision number of the start revision of
-your branch and the first the current revision. You can do a dry run of the
-merge like this:
-
-
-  svn merge --dry-run -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
-
-
-After you are happy with the changes that will be made do the merge for real
-like this:
-
-
-  svn merge -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
-  svn commit -m "Merged upstream changes from trunk to my branch"
-
-
-
-  2.6. Submitting Patches
+  2.7. Submitting Patches
   =======================
 
 There are a few guidelines that will help you to get your patches into QGIS
 easily, and help us deal with the patches that are sent to use easily.
 
 
-    2.6.1. Patch file naming
+    2.7.1. Patch file naming
     ========================
 
 If the patch is a fix for a specific bug, please name the file with the bug
-number in it e.g.  bug777fix.diff, and attach it to the original bug report
+number in it e.g.  bug777fix.patch, and attach it to the original bug report
 in trac (https://trac.osgeo.org/qgis/).
 
 If the bug is an enhancement or new feature, its usually a good idea to create
 a ticket in trac (https://trac.osgeo.org/qgis/) first and then attach you 
 
 
-    2.6.2. Create your patch in the top level QGIS source dir
+    2.7.2. Create your patch in the top level QGIS source dir
     =========================================================
 
 This makes it easier for us to apply the patches since we don't need to
 navigate to a specific place in the source tree to apply the patch. Also when I
-receive patches I usually evaluate them using kompare, and having the patch
+receive patches I usually evaluate them using merge, and having the patch
 from the top level dir makes this much easier. Below is an example of how you
 can include multiple changed files into your patch from the top level
 directory:
 
+  cd Quantum-GIS
+  git checkout master
+  git pull origin master
+  git checkout newfeature
+  git format-patch master --stdout > bug777fix.patch
 
-  cd qgis
-  svn diff src/ui/somefile.ui src/app/somefile2.cpp > bug872fix.diff
-
-
-
-    2.6.3. Including non version controlled files in your patch
-    ===========================================================
-
-If your improvements include new files that don't yet exist in the repository,
-you should indicate to svn that they need to be added before generating your
-patch e.g.
+This will make sure your master branch is in sync with the upstream repository,
+and then generate a patch which contains the delta between your feature branch
+and what is in the master branch.
 
 
-  cd qgis
-  svn add src/lib/somenewfile.cpp
-  svn diff > bug7887fix.diff
-
-
-
-    2.6.4. Getting your patch noticed
+    2.7.3. Getting your patch noticed
     =================================
 
 QGIS developers are busy folk. We do scan the incoming patches on bug reports
@@ -704,7 +634,7 @@ can escalate your query to one of the Project Steering Committee members
 (contact details also available on the Project Organigram).
 
 
-    2.6.5. Due Diligence
+    2.7.4. Due Diligence
     ====================
 
 QGIS is licensed under the GPL. You should make every effort to ensure you only
@@ -713,7 +643,7 @@ rights. Also do not submit code that you are not happy to have made available
 under the GPL.
 
 
-  2.7. Obtaining SVN Write Access
+  2.8. Obtaining GIT Write Access
   ===============================
 
 Write access to QGIS source tree is by invitation. Typically when a person
@@ -728,72 +658,26 @@ demonstrated ability to submit patches and should ideally have submitted several
 substantial patches that demonstrate their understanding of modifying the code
 base without breaking things, etc.
 
+Note: Since moving to GIT, we are less likely to grant write access to new
+developers since it is trivial to share code within github by forking QGIS and
+then issuing pull requests.
 
-    2.7.1. Procedure once you have access
-    =====================================
-
-Checkout the sources:
-
-
-  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
-
-
-Build the sources (see INSTALL document for proper detailed instructions)
-
-
-  cd qgis
-  mkdir build
-  ccmake ..    (set your preferred options)
-  make
-  make install  (maybe you need to do with sudo / root perms)
-
-
-Make your edits
-
-
-  cd ..
-
-
-Make your changes in sources. Always check that everything compiles before
-making any commits.  Try to be aware of possible breakages your commits may
-cause for people building on other platforms and with older / newer versions of
+Always check that everything compiles before making any commits / pull
+requests.  Try to be aware of possible breakages your commits may cause for
+people building on other platforms and with older / newer versions of
 libraries.
 
-Add files (if you added any new files). The svn status command can be used to
-quickly see if you have added new files.
-
-
-  svn status src/pluguns/grass/modules
-
-
-Files listed with ? in front are not in SVN and possibly need to be added by
-you:
-
-
-  svn add src/pluguns/grass/modules/foo.xml
-
-
-Commit your changes
-
-
-  svn commit src/pluguns/grass/modules/foo.xml
-
-
-Your editor (as defined in $EDITOR environment variable) will appear and you
-should make a comment at the top of the file (above the area that says 'don't
-change this'. Put a descriptive comment and rather do several small commits if
-the changes across a number of files are unrelated. Conversely we prefer you to
-group related changes into a single commit.
-
-Save and close in your editor. The first time you do this, you should be
-prompted to put in your username and password. Just use the same ones as your
-trac account.
+When making a commit, your editor (as defined in $EDITOR environment variable)
+will appear and you should make a comment at the top of the file (above the
+area that says 'don't change this'. Put a descriptive comment and rather do
+several small commits if the changes across a number of files are unrelated.
+Conversely we prefer you to group related changes into a single commit.
 
 
   3. Unit Testing
   ===============
 
-As of November 2007 we require all new features going into trunk to be
+As of November 2007 we require all new features going into master to be
 accompanied with a unit test. Initially we have limited this requirement to
 qgis_core, and we will extend this requirement to other parts of the code base
 once people are familiar with the procedures for unit testing explained in the
@@ -846,7 +730,6 @@ the details:
  more fine grained control over running tests.
 
 
-
 Right with that overview in mind, I will delve into a bit of detail. I've
 already done much of the configuration for you in CMake and other places in the
 source tree so all you need to do are the easy bits - writing unit tests!
@@ -864,7 +747,6 @@ prefixed with 'Test'.  So our test implementation goes in a file called
 testqgsrasterlayer.cpp and the class itself will be TestQgsRasterLayer. First
 we add our standard copyright banner:
 
-
   /***************************************************************************
        testqgsvectorfilewriter.cpp
        --------------------------------------
@@ -880,20 +762,16 @@ we add our standard copyright banner:
    *                                                                         *
    ***************************************************************************/
 
-
 Next we use start our includes needed for the tests we plan to run. There is 
 one special include all tests should have:
 
-
   #include <QtTest>
-
 
 Note that we use the new style Qt4 includes - i.e. QtTest is included not
 qttest.h
 
 Beyond that you just continue implementing your class as per normal, pulling 
 in whatever headers you may need:
-
 
   //Qt includes...
   #include <QObject>
@@ -908,26 +786,21 @@ in whatever headers you may need:
   #include <qgsrasterbandstats.h> 
   #include <qgsapplication.h>
 
-
 Since we are combining both class declaration and implementation in a single
 file the class declaration comes next. We start with our doxygen documentation.
 Every test case should be properly documented. We use the doxygen ingroup
 directive so that all the UnitTests appear as a module in the generated Doxygen
 documentation. After that comes a short description of the unit test:
 
-
   /** \ingroup UnitTests
    * This is a unit test for the QgsRasterLayer class.
    */
 
-
 The class must inherit from QObject and include the Q_OBJECT macro.
-
 
   class TestQgsRasterLayer: public QObject
   {
     Q_OBJECT;
-
 
 All our test methods are implemented as private slots. The QtTest framework
 will sequentially call each private slot method in the test class. There are
@@ -938,7 +811,6 @@ method will be called and after each test method is called the cleanup()
 method is called. These methods are handy in that they allow you to allocate
 and cleanup resources prior to running each test, and the test unit as a whole.
 
-
   private slots:
     // will be called before the first testfunction is executed.
     void initTestCase();
@@ -948,7 +820,6 @@ and cleanup resources prior to running each test, and the test unit as a whole.
     void init(){};
     // will be called after every testfunction.
     void cleanup();
-
 
 Then come your test methods, all of which should take no parameters and
 should return void. The methods will be called in order of declaration.  I
@@ -966,7 +837,6 @@ and normally you do not need to write tests for accessors and mutators.  If it
 should happen that an acccessor or mutator is not working as expected you would
 normally implement a regression test to check for this (see lower down).
 
-
     //
     // Functional Testing
     //
@@ -975,7 +845,6 @@ normally implement a regression test to check for this (see lower down).
     void isValid();
   
     // more functional tests here ...
-
 
 Next we implement our regression tests. Regression tests should be
 implemented to replicate the conditions of a particular bug. For example I
@@ -1003,7 +872,6 @@ regression<TicketID> for your test functions. If no trac ticket exists for the
 regression, you should create one first.  Using this approach allows the person
 running a failed regression test easily go and find out more information.
 
-
     //
     // Regression Testing
     //
@@ -1016,7 +884,6 @@ running a failed regression test easily go and find out more information.
     
     // more regression tests go here ...
 
-
 Finally in our test class declaration you can declare privately any data
 members and helper methods your unit test may need. In our case I will declare
 a QgsRasterLayer * which can be used by any of our test methods. The raster
@@ -1026,7 +893,6 @@ tests. By declaring helper methods (which may be called by various test
 functions) privately, you can ensure that they wont be automatically run by the
 QTest executeable that is created when we compile our test.
 
-
     private:
       // Here we have any data structures that may need to 
       // be used in many test cases.
@@ -1034,10 +900,8 @@ QTest executeable that is created when we compile our test.
   };
   
 
-
 That ends our class declaration. The implementation is simply inlined in the
 same file lower down. First our init and cleanup functions:
-
 
   void TestQgsRasterLayer::initTestCase()
   {
@@ -1068,7 +932,6 @@ same file lower down. First our init and cleanup functions:
   }
   
 
-
 The above init function illustrates a couple of interesting things.
 
  1. I needed to manually set the QGIS application data path so that
@@ -1092,7 +955,6 @@ raster layer was correctly loaded in the initTestCase.  QVERIFY is a Qt macro
 that you can use to evaluate a test condition.  There are a few other use
 macros Qt provide for use in your tests including:
 
-
   QCOMPARE ( actual, expected )
   QEXPECT_FAIL ( dataIndex, comment, mode )
   QFAIL ( message )
@@ -1106,16 +968,13 @@ macros Qt provide for use in your tests including:
   QVERIFY ( condition )
   QWARN ( message ) 
 
-
 Some of these macros are useful only when using the Qt framework for data
 driven testing (see the Qt docs for more detail).
-
 
   void TestQgsRasterLayer::isValid()
   {
     QVERIFY ( mpLayer->isValid() );
   }
-
 
 Normally your functional tests would cover all the range of functionality of
 your classes public API where feasible. With our functional tests out the way,
@@ -1124,7 +983,6 @@ we can look at our regression test example.
 Since the issue in bug #832 is a misreported cell count, writing our test if
 simply a matter of using QVERIFY to check that the cell count meets the
 expected value:
-
 
   void TestQgsRasterLayer::regression832()
   {
@@ -1135,14 +993,11 @@ expected value:
      QVERIFY ( mpLayer->getRasterBandStats(1).elementCountInt == 100 );
   }
 
-
 With all the unit test functions implemented, there one final thing we need to
 add to our test class:
 
-
   QTEST_MAIN(TestQgsRasterLayer)
   #include "moc_testqgsrasterlayer.cxx"
-
 
 The purpose of these two lines is to signal to Qt's moc that his is a QtTest
 (it will generate a main method that in turn calls each test funtion.  The last
@@ -1157,10 +1012,8 @@ Adding your unit test to the build system is simply a matter of editing the
 CMakeLists.txt in the test directory, cloning one of the existing test blocks,
 and then replacing your test class name into it.  For example:
 
-
   # QgsRasterLayer test
   ADD_QGIS_TEST(rasterlayertest testqgsrasterlayer.cpp)
-
 
 
   3.4. The ADD_QGIS_TEST macro explained
@@ -1168,7 +1021,6 @@ and then replacing your test class name into it.  For example:
 
 I'll run through these lines briefly to explain what they do, but if you are
 not interested, just do the step explained in the above section and section.
-
 
   MACRO (ADD_QGIS_TEST testname testsrc)
     SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
@@ -1200,24 +1052,19 @@ not interested, just do the step explained in the above section and section.
     ENDIF (APPLE)
   ENDMACRO (ADD_QGIS_TEST)
 
-
 Lets look a little more in detail at the individual lines. First we define the
 list of sources for our test. Since we have only one source file (following the
 methodology I described above where class declaration and definition are in the
 same file) its a simple statement:
 
-
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-
 
 Since our test class needs to be run through the Qt meta object compiler (moc)
 we need to provide a couple of lines to make that happen too:
 
-
   SET(qgis_${testname}_MOC_CPPS ${testsrc})
   QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-
 
 Next we tell cmake that it must make an executeable from the test class.
 Remember in the previous section on the last line of the class implementation I
@@ -1225,10 +1072,8 @@ included the moc outputs directly into our test class, so that will give it
 (among other things) a main method so the class can be compiled as an
 executeable:
 
-
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
   ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
-
 
 Next we need to specify any library dependencies. At the moment classes have
 been implemented with a catch-all QT_LIBRARIES dependency, but I will be
@@ -1236,14 +1081,11 @@ working to replace that with the specific Qt libraries that each class needs
 only. Of course you also need to link to the relevant qgis libraries as
 required by your unit test.
 
-
   TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
-
 
 Next I tell cmake to install the tests to the same place as the qgis binaries
 itself. This is something I plan to remove in the future so that the tests can
 run directly from inside the source tree.
-
 
   SET_TARGET_PROPERTIES(qgis_${testname}
     PROPERTIES
@@ -1265,7 +1107,6 @@ run directly from inside the source tree.
     INSTALL(TARGETS qgis_${testname} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
     ADD_TEST(qgis_${testname} ${CMAKE_INSTALL_PREFIX}/bin/qgis_${testname})
   ENDIF (APPLE)
-
 
 Finally the above uses ADD_TEST to register the test with cmake / ctest . Here
 is where the best magic happens - we register the class with ctest. If you
@@ -1297,14 +1138,11 @@ Other than that, just build QGIS as per normal and the tests should build too.
 
 The simplest way to run the tests is as part of your normal build process:
 
-
   make && make install && make test
-
 
 The make test command will invoke CTest which will run each test that was
 registered using the ADD_TEST CMake directive described above. Typical output
 from make test will look like this:
-
 
   Running tests...
   Start processing tests
@@ -1320,11 +1158,9 @@ from make test will look like this:
     Errors while running CTest
     make: *** [test] Error 8
 
-
 If a test fails, you can use the ctest command to examine more closely why it
 failed. User the -R option to specify a regex for which tests you want to run
 and -V to get verbose output:
-
 
   [build] ctest -R appl -V
   Start processing tests
@@ -1363,7 +1199,6 @@ and -V to get verbose output:
   1 - qgis_applicationtest (Failed)
     Errors while running CTest
   
-
 
 Well that concludes this section on writing unit tests in QGIS. We hope you
 will get into the habit of writing test to test new functionality and to check
@@ -1422,14 +1257,12 @@ guidelines are followed in layout and design of GUIs.
    suffixed to the button text.
 
 
-
   5. Authors
   ==========
 
 - Tim Sutton (author and editor)
 - Gary Sherman
 - Marco Hugentobler
-
 
 Original pages from wiki to deprecate:
 
@@ -1439,9 +1272,5 @@ Original pages from wiki to deprecate:
 - http://www.qgis.org/wiki/How_to_debug_QGIS_Plugins
 - http://wiki.qgis.org/qgiswiki/DevelopmentInBranches (./)
 - http://wiki.qgis.org/qgiswiki/SubmittingPatchesAndSvnAccess (./)
-
-
-
-
 
 

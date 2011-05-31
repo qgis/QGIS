@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgisapp.h 12390 2009-12-09 21:35:43Z jef $ */
 #ifndef QGSGPSINFORMATIONWIDGET_H
 #define QGSGPSINFORMATIONWIDGET_H
 

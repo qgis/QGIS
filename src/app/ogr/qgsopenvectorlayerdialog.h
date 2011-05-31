@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSOPENVECTORLAYERDIALOG_H
 #define QGSOPENVECTORLAYERDIALOG_H
 

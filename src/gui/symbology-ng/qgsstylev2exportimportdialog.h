@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsstylev2exportimportdialog.h 13187 2010-03-28 22:14:44Z jef $ */
 
 #ifndef QGSSTYLEV2EXPORTIMPORTDIALOG_H
 #define QGSSTYLEV2EXPORTIMPORTDIALOG_H

@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 
 #include <qgslogger.h>
@@ -35,14 +34,16 @@ SqlAnyStatement::SqlAnyStatement( SqlAnyConnection *conn )
 
 SqlAnyStatement::~SqlAnyStatement()
 {
-  if ( isValid() ) { api()->sqlany_free_stmt( mHndl );  }
+  if ( isValid() )
+    api()->sqlany_free_stmt( mHndl );
   mConn->release();
 }
 
 bool
 SqlAnyStatement::reset( )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   SaDebugMsg( "Resetting statement." );
   if ( !api()->sqlany_reset( mHndl ) )
   {
@@ -57,16 +58,19 @@ SqlAnyStatement::reset( )
 sacapi_i32
 SqlAnyStatement::numParams( )
 {
-  if ( !isValid() ) return -1;
+  if ( !isValid() )
+    return -1;
   sacapi_i32 retval = api()->sqlany_num_params( mHndl );
-  if ( retval < 0 ) { getErrMsg(); }
+  if ( retval < 0 )
+    getErrMsg();
   return retval;
 }
 
 bool
 SqlAnyStatement::describe_bind_param( sacapi_i32 index, a_sqlany_bind_param &param )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_describe_bind_param( mHndl, index, &param ) )
   {
     getErrMsg();
@@ -78,7 +82,8 @@ SqlAnyStatement::describe_bind_param( sacapi_i32 index, a_sqlany_bind_param &par
 bool
 SqlAnyStatement::bind_param( sacapi_i32 index, a_sqlany_bind_param &param )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_bind_param( mHndl, index, &param ) )
   {
     getErrMsg();
@@ -90,7 +95,8 @@ SqlAnyStatement::bind_param( sacapi_i32 index, a_sqlany_bind_param &param )
 bool
 SqlAnyStatement::execute( )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   SaDebugMsg( "Executing prepared statement." );
   if ( !api()->sqlany_execute( mHndl ) )
   {
@@ -106,7 +112,8 @@ SqlAnyStatement::execute( )
 bool
 SqlAnyStatement::fetchAbsolute( sacapi_i32 rownum )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_fetch_absolute( mHndl, rownum ) )
   {
     getErrMsg();
@@ -118,7 +125,8 @@ SqlAnyStatement::fetchAbsolute( sacapi_i32 rownum )
 bool
 SqlAnyStatement::fetchNext( )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_fetch_next( mHndl ) )
   {
     getErrMsg();
@@ -130,7 +138,8 @@ SqlAnyStatement::fetchNext( )
 bool
 SqlAnyStatement::getColumn( sacapi_u32 col_index, a_sqlany_data_value *buffer )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_get_column( mHndl, col_index, buffer ) )
   {
     getErrMsg();
@@ -142,7 +151,8 @@ SqlAnyStatement::getColumn( sacapi_u32 col_index, a_sqlany_data_value *buffer )
 bool
 SqlAnyStatement::getColumnInfo( sacapi_u32 col_index, a_sqlany_column_info *buffer )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_get_column_info( mHndl, col_index, buffer ) )
   {
     getErrMsg();
@@ -165,16 +175,19 @@ SqlAnyStatement::getColumnInfo( sacapi_u32 col_index, a_sqlany_column_info *buff
 sacapi_i32
 SqlAnyStatement::getData( sacapi_u32 col_index, size_t offset, void *buffer, size_t size )
 {
-  if ( !isValid() ) return -1;
+  if ( !isValid() )
+    return -1;
   sacapi_i32 nbytes = api()->sqlany_get_data( mHndl, col_index, offset, buffer, size );
-  if ( nbytes < 0 ) { getErrMsg(); }
+  if ( nbytes < 0 )
+    getErrMsg();
   return nbytes;
 }
 
 bool
 SqlAnyStatement::getDataInfo( sacapi_u32 col_index, a_sqlany_data_info *buffer )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_get_data_info( mHndl, col_index, buffer ) )
   {
     getErrMsg();
@@ -186,21 +199,24 @@ SqlAnyStatement::getDataInfo( sacapi_u32 col_index, a_sqlany_data_info *buffer )
 sacapi_i32
 SqlAnyStatement::numCols( )
 {   // n<0 means estimated to be |n|
-  if ( !isValid() ) return 0;
+  if ( !isValid() )
+    return 0;
   return api()->sqlany_num_cols( mHndl );
 }
 
 sacapi_i32
 SqlAnyStatement::numRows( )
 {   // n<0 means estimated to be |n|
-  if ( !isValid() ) return 0;
+  if ( !isValid() )
+    return 0;
   return api()->sqlany_num_rows( mHndl );
 }
 
 bool
 SqlAnyStatement::nextResultSet( )
 {
-  if ( !isValid() ) return false;
+  if ( !isValid() )
+    return false;
   if ( !api()->sqlany_get_next_result( mHndl ) )
   {
     getErrMsg();

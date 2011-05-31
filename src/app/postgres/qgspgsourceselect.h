@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSPGSOURCESELECT_H
 #define QGSPGSOURCESELECT_H
 #include "ui_qgsdbsourceselectbase.h"

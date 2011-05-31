@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: qgsspatialquery.cpp 15302 2011-03-01 08:00:54Z timlinux $ */
 
 #include <QMessageBox>
 

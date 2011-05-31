@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSLEGENDINTERFACE_H
 #define QGSLEGENDINTERFACE_H

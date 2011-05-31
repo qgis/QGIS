@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSWMSSOURCESELECT_H
 #define QGSWMSSOURCESELECT_H
@@ -49,7 +48,7 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
   public:
     //! Constructor
-    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embededMode = false );
+    QgsWMSSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsWMSSourceSelect();
 
@@ -126,9 +125,9 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
 
     //! Connections manager mode
     bool mManagerMode;
-    
-    //! Embeded mode, without 'Close'
-    bool mEmbededMode;
+
+    //! Embedded mode, without 'Close'
+    bool mEmbeddedMode;
 
     //! Selected CRS
     QString mCRS;
@@ -198,12 +197,12 @@ class QgsWMSSourceSelect : public QDialog, private Ui::QgsWMSSourceSelectBase
     QTableWidgetItem* mCurrentTileset;
   signals:
     void addRasterLayer( QString const & rasterLayerPath,
-			  QString const & baseName,
-			  QString const & providerKey,
-			  QStringList const & layers,
-			  QStringList const & styles,
-			  QString const & format,
-			  QString const & crs );
+                         QString const & baseName,
+                         QString const & providerKey,
+                         QStringList const & layers,
+                         QStringList const & styles,
+                         QString const & format,
+                         QString const & crs );
     void connectionsChanged();
   private slots:
     void on_btnSearch_clicked();

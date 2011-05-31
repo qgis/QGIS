@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPLUGINREGISTRY_H
 #define QGSPLUGINREGISTRY_H

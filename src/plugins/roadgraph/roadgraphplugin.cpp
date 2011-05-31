@@ -56,7 +56,6 @@
 
 // standard includes
 
-static const char * const sIdent = "$Id: roadgraphplugin.cpp 9327 2009-04-20 10:09:44Z YEKST $";
 static const QString sName = QObject::tr( "Road graph plugin" );
 static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );

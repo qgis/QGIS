@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgssinglesymboldialog.h"
 #include "qgsmarkercatalogue.h"

@@ -79,7 +79,7 @@ Description: GRASS plugin for Quantum GIS
 
 Package: qgis-plugin-grass-common
 Architecture: all
-Depends: python
+Depends: ${python:Depends}
 Replaces: qgis-common (<< 1.5)
 Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for Quantum GIS - architecture-independent data
@@ -104,7 +104,7 @@ Description: Python bindings to Quantum GIS
 Package: python-qgis-common
 Section: python
 Architecture: all
-Depends: gdal-bin, python-gdal
+Depends: gdal-bin, python-gdal, ${python:Depends}
 Provides: ${python:Provides}
 XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS - architecture-independent files

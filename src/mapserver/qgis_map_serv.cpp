@@ -296,7 +296,7 @@ int main( int argc, char * argv[] )
     if ( requestIt->second == "GetCapabilities" )
     {
       const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath );
-      if( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
+      if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
       {
         QgsMSDebugMsg( "Capabilities document not found in cache" );
         QDomDocument doc;
@@ -319,7 +319,7 @@ int main( int argc, char * argv[] )
         QgsMSDebugMsg( "Found capabilities document in cache" );
       }
 
-      if( capabilitiesDocument )
+      if ( capabilitiesDocument )
       {
         theRequestHandler->sendGetCapabilitiesResponse( *capabilitiesDocument );
       }

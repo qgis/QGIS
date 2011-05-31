@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSMAPTOOLCAPTURE_H
 #define QGSMAPTOOLCAPTURE_H

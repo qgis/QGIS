@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSMAPTOOLEMITPOINT_H
 #define QGSMAPTOOLEMITPOINT_H

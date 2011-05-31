@@ -13,6 +13,7 @@
 #    GEOS_LIBRARY
 #
  
+INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacPlistMacros.cmake)
 
 IF(WIN32)
 
@@ -54,7 +55,18 @@ ELSE(WIN32)
         IF (GEOS_LIBRARY)
           # they're all the same in a framework
           SET (GEOS_INCLUDE_DIR ${GEOS_LIBRARY}/Headers CACHE PATH "Path to a file.")
-          SET (GEOS_CONFIG ${GEOS_LIBRARY}/Programs/geos-config CACHE FILEPATH "Path to a program.")
+          # set GEOS_CONFIG to make later test happy, not used here, may not exist
+          SET (GEOS_CONFIG ${GEOS_LIBRARY}/unix/bin/geos-config CACHE FILEPATH "Path to a program.")
+          # version in info.plist
+          GET_VERSION_PLIST (${GEOS_LIBRARY}/Resources/Info.plist GEOS_VERSION)
+          IF (NOT GEOS_VERSION)
+            MESSAGE (FATAL_ERROR "Could not determine GEOS version from framework.")
+          ENDIF (NOT GEOS_VERSION)
+          STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\1" GEOS_VERSION_MAJOR "${GEOS_VERSION}")
+          STRING(REGEX REPLACE "([0-9]+)\\.([0-9]+)\\.([0-9]+)" "\\2" GEOS_VERSION_MINOR "${GEOS_VERSION}")
+          IF (GEOS_VERSION_MAJOR LESS 3)
+            MESSAGE (FATAL_ERROR "GEOS version is too old (${GEOS_VERSION}). Use 3.0.0 or higher.")
+          ENDIF (GEOS_VERSION_MAJOR LESS 3)
         ENDIF (GEOS_LIBRARY)
         SET (CMAKE_FIND_FRAMEWORK ${CMAKE_FIND_FRAMEWORK_save} CACHE STRING "" FORCE)
       ENDIF ()

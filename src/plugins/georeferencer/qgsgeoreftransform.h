@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
 
 #ifndef QGS_GEOREF_TRANSFORM_H
 #define QGS_GEOREF_TRANSFORM_H

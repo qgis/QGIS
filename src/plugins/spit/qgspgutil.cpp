@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgspgutil.h"
 
 QgsPgUtil *QgsPgUtil::mInstance = 0;

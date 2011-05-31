@@ -152,7 +152,7 @@
          <item>
           <widget class="QLabel" name="rangeLabel">
            <property name="text">
-            <string>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</string>
+            <string>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>

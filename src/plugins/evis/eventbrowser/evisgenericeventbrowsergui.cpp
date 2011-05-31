@@ -24,7 +24,6 @@
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
-/*  $Id$ */
 #include "evisgenericeventbrowsergui.h"
 
 #include "qgsapplication.h"
@@ -266,7 +265,8 @@ bool eVisGenericEventBrowserGui::initBrowser( )
     mFeatureIds = mVectorLayer->selectedFeaturesIds( ).toList( );
   }
 
-  if ( 0 == mFeatureIds.size( ) ) { return false; }
+  if ( 0 == mFeatureIds.size( ) )
+    return false;
 
   //get the first feature in the list so we can set the field in the pulldown menues
   QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
@@ -534,7 +534,8 @@ void eVisGenericEventBrowserGui::displayImage( )
       //get a copy of the feature
       QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-      if ( 0 == myFeature ) { return; }
+      if ( 0 == myFeature )
+        return;
 
       QgsPoint myPoint = myFeature->geometry( )->asPoint( );
       myPoint = mCanvas->mapRenderer( )->layerToMapCoordinates( mVectorLayer, myPoint );
@@ -581,7 +582,8 @@ void eVisGenericEventBrowserGui::loadRecord( )
   QgsFeature* myFeature;
   myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-  if ( 0 == myFeature ) { return; }
+  if ( 0 == myFeature )
+    return;
 
   QString myCompassBearingField = cboxCompassBearingField->currentText( );
   QString myCompassOffsetField = cboxCompassOffsetField->currentText( );
@@ -834,7 +836,8 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
     QgsFieldMap myFieldMap = mDataProvider->fields( );
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( 0 == myFeature ) { return; }
+    if ( 0 == myFeature )
+      return;
 
     QgsAttributeMap myAttributeMap = myFeature->attributeMap( );
     for ( QgsAttributeMap::const_iterator it = myAttributeMap.begin( ); it != myAttributeMap.end( ); ++it )
@@ -860,7 +863,8 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
     QgsFieldMap myFieldMap = mDataProvider->fields( );
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( 0 == myFeature ) { return; }
+    if ( 0 == myFeature )
+      return;
 
     QgsAttributeMap myAttributeMap = myFeature->attributeMap( );
     for ( QgsAttributeMap::const_iterator it = myAttributeMap.begin( ); it != myAttributeMap.end( ); ++it )
@@ -886,7 +890,8 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
     QgsFieldMap myFieldMap = mDataProvider->fields( );
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( 0 == myFeature ) { return; }
+    if ( 0 == myFeature )
+      return;
 
     QgsAttributeMap myAttributeMap = myFeature->attributeMap( );
     for ( QgsAttributeMap::const_iterator it = myAttributeMap.begin( ); it != myAttributeMap.end( ); ++it )
@@ -1110,7 +1115,8 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter* thePainter )
     //Get a pointer to the current feature
     QgsFeature* myFeature = featureAtId( mFeatureIds.at( mCurrentFeatureIndex ) );
 
-    if ( 0 == myFeature ) { return; }
+    if ( 0 == myFeature )
+      return;
 
     QgsPoint myPoint = myFeature->geometry( )->asPoint( );
     myPoint = mCanvas->mapRenderer( )->layerToMapCoordinates( mVectorLayer, myPoint );

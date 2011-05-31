@@ -38,9 +38,6 @@
 #include <QObject>
 #include <QTextStream>
 
-
-static const char *const ident_ = "$Id$";
-
 // canonical project instance
 QgsProject * QgsProject::theProject_;
 
@@ -979,7 +976,7 @@ bool QgsProject::write()
     // even though we got an error, let's make
     // sure it's closed anyway
     imp_->file.close();
-    setError( tr( "%1 is not writeable. Please adjust permissions (if possible) and try again." )
+    setError( tr( "%1 is not writable. Please adjust permissions (if possible) and try again." )
               .arg( imp_->file.fileName() ) );
     return false;
   }

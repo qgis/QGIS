@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgdalprovider.h 12528 2009-12-20 12:29:07Z jef $ */
 
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H
@@ -289,11 +288,11 @@ class QgsGdalProvider : public QgsRasterDataProvider
 class QgsGdalLayerItem : public QgsLayerItem
 {
   public:
-    QgsGdalLayerItem ( QgsDataItem* parent,
+    QgsGdalLayerItem( QgsDataItem* parent,
                       QString name, QString path, QString uri );
-    ~QgsGdalLayerItem ();
+    ~QgsGdalLayerItem();
 
-    bool setCrs ( QgsCoordinateReferenceSystem crs );
+    bool setCrs( QgsCoordinateReferenceSystem crs );
     Capability capabilities();
 };
 

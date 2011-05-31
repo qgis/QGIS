@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgrassrasterprovider.cpp 11522 2009-08-28 14:49:22Z jef $ */
 
 #include "qgslogger.h"
 #include "qgsgrass.h"
@@ -211,7 +210,8 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
 
-  if ( pixelWidth <= 0 || pixelHeight <= 0 ) return;
+  if ( pixelWidth <= 0 || pixelHeight <= 0 )
+    return;
 
   QStringList arguments;
   arguments.append( "map=" +  mMapName + "@" + mMapset );
@@ -572,7 +572,8 @@ QgsGrassRasterValue::~QgsGrassRasterValue()
 QString QgsGrassRasterValue::value( double x, double y )
 {
   QString value = "error";
-  if ( !mProcess ) return value; // throw some exception?
+  if ( !mProcess )
+    return value; // throw some exception?
   QString coor = QString( "%1 %2\n" ).arg( x ).arg( y );
   QgsDebugMsg( "coor : " + coor );
   mProcess->write( coor.toAscii() ); // how to flush, necessary?

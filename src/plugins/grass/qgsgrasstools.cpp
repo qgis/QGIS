@@ -120,7 +120,8 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
 void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 {
   QgsDebugMsg( "entered." );
-  if ( !item ) return;
+  if ( !item )
+    return;
 
   QString name = item->text( 1 );
   QgsDebugMsg( QString( "name = %1" ).arg( name ) );
@@ -129,7 +130,8 @@ void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 
 void QgsGrassTools::runModule( QString name )
 {
-  if ( name.length() == 0 ) return;  // Section
+  if ( name.length() == 0 )
+    return;  // Section
 
 #ifndef WIN32
   QgsGrassShell* sh = 0;
@@ -184,12 +186,15 @@ void QgsGrassTools::runModule( QString name )
   // We must call resize to reset COLUMNS environment variable
   // used by bash !!!
 
+#if 0
   /* TODO: Implement something that resizes the terminal without
    *       crashes.
-  #ifndef WIN32
-    if ( sh ) sh->resizeTerminal();
-  #endif
-  */
+   */
+#ifndef WIN32
+  if ( sh )
+    sh->resizeTerminal();
+#endif
+#endif
 }
 
 bool QgsGrassTools::loadConfig( QString filePath )

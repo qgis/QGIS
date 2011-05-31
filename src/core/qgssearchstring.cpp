@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgssearchstring.h"
 #include "qgssearchtreenode.h"
@@ -23,7 +22,6 @@
 
 //! global function from parser.y that interfaces parser
 extern QgsSearchTreeNode* parseSearchString( const QString& str, QString& parserErrorMsg );
-
 
 QgsSearchString::QgsSearchString()
 {

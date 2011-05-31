@@ -107,7 +107,7 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " and Size</strong>. For easier positioning you can also set"
                         " specific anchor points of the element within this dialogue."
                         " The other move tool (the globe icon combined with the hand icon)"
-                        " allows to move the map content within a map frame."
+                        " allows one to move the map content within a map frame."
                       ) );
   addGuiTip( myTip );
   // This  tip contributed by Andreas Neumann

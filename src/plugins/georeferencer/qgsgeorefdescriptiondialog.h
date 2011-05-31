@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSGEOREFDESCRIPTIONDIALOG_H
 #define QGSGEOREFDESCRIPTIONDIALOG_H

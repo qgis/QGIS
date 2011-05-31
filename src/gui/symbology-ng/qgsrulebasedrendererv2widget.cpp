@@ -120,7 +120,8 @@ void QgsRuleBasedRendererV2Widget::addRule()
 void QgsRuleBasedRendererV2Widget::editRule()
 {
   QTreeWidgetItem * item = treeRules->currentItem();
-  if ( ! item ) return;
+  if ( ! item )
+    return;
 
   int rule_index = item->data( 0, Qt::UserRole + 1 ).toInt();
   if ( rule_index < 0 )
@@ -144,7 +145,8 @@ void QgsRuleBasedRendererV2Widget::editRule()
 void QgsRuleBasedRendererV2Widget::removeRule()
 {
   QTreeWidgetItem * item = treeRules->currentItem();
-  if ( ! item ) return;
+  if ( ! item )
+    return;
 
   int rule_index = item->data( 0, Qt::UserRole + 1 ).toInt();
   if ( rule_index < 0 )
@@ -182,10 +184,12 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 void QgsRuleBasedRendererV2Widget::refineRule( int type )
 {
   QTreeWidgetItem * item = treeRules->currentItem();
-  if ( ! item ) return;
+  if ( ! item )
+    return;
 
   int rule_index = item->data( 0, Qt::UserRole + 1 ).toInt();
-  if ( rule_index < 0 ) return;
+  if ( rule_index < 0 )
+    return;
 
   QgsRuleBasedRendererV2::Rule& initialRule = mRenderer->ruleAt( rule_index );
 
@@ -429,7 +433,8 @@ QString QgsRendererRulesTreeWidget::formatScale( int denom, int size )
 #include "qgslogger.h"
 void QgsRendererRulesTreeWidget::populateRules()
 {
-  if ( !mR ) return;
+  if ( !mR )
+    return;
 
   clear();
 
@@ -473,7 +478,8 @@ void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
     item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
 
     QString txtRule = rule.filterExpression();
-    if ( txtRule.isEmpty() ) txtRule = tr( "(no filter)" );
+    if ( txtRule.isEmpty() )
+      txtRule = tr( "(no filter)" );
     item->setText( 1, txtRule );
 
     if ( rule.dependsOnScale() )
@@ -536,7 +542,8 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
     item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
 
     QString txtRule = rule.filterExpression();
-    if ( txtRule.isEmpty() ) txtRule = tr( "(no filter)" );
+    if ( txtRule.isEmpty() )
+      txtRule = tr( "(no filter)" );
     item->setText( 1, txtRule );
 
     if ( rule.dependsOnScale() )

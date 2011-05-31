@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSATTRIBUTETYPELOADDIALOG_H
 #define QGSATTRIBUTETYPELOADDIALOG_H
 

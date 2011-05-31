@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 
 #ifndef QGSNEWOGRCONNECTION_H
 #define QGSNEWOGRCONNECTION_H

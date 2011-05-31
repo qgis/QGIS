@@ -129,6 +129,10 @@ endif
 	# Add here commands to install the package into debian/tmp.
 	$(MAKE) -C debian/build install DESTDIR=$(CURDIR)/debian/tmp
 
+	# remove unwanted files
+	rm debian/tmp/usr/share/qgis/doc/api/installdox
+	! [ -f debian/tmp/usr/share/qgis/doc/api/jquery.js ] || rm debian/tmp/usr/share/qgis/doc/api/jquery.js
+
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps
@@ -150,9 +154,11 @@ binary-arch: build install
 
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qgis $(CURDIR)/debian/qgis/usr/bin
+	install -o root -g root -m 755 $(CURDIR)/debian/tmp/usr/bin/qbrowser $(CURDIR)/debian/qgis/usr/bin
 
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis-plugin-grass/usr/bin
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
+	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
 	dh_pycentral
 	dh_installmenu
@@ -160,7 +166,7 @@ binary-arch: build install
 ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
 	dh_desktop
 endif
-	dh_installman -pqgis qgis.1
+	dh_installman -pqgis qgis.1 qbrowser.1
 	dh_installmime -pqgis
 	dh_link
 	if which dh_lintian >/dev/null; then dh_lintian; fi

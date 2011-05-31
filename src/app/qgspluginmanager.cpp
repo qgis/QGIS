@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsconfig.h"
 
@@ -175,7 +174,8 @@ void QgsPluginManager::getPythonPluginDescriptions()
     QString version     = mPythonUtils->getPluginMetadata( packageName, "version" );
     QString iconName    = mPythonUtils->getPluginMetadata( packageName, "icon" );
 
-    if ( pluginName == "__error__" || description == "__error__" || version == "__error__" ) continue;
+    if ( pluginName == "__error__" || description == "__error__" || version == "__error__" )
+      continue;
 
     bool isCompatible = QgsPluginRegistry::instance()->isPythonPluginCompatible( packageName );
     QString compatibleString; // empty by default

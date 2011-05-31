@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSCONTEXTHELP_H
 #define QGSCONTEXTHELP_H
 #include <QObject>

@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsproviderregistry.h"
 
@@ -331,8 +330,7 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
  *        It seems more sensible to provide the code in one place rather than
  *        in qgsrasterlayer, qgsvectorlayer, serversourceselect, etc.
  */
-QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
-    QString const & dataSource )
+QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QString const & dataSource )
 {
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
@@ -430,24 +428,25 @@ QgsDataProvider* QgsProviderRegistry::getProvider( QString const & providerKey,
 // This should be QWidget, not QDialog
 typedef QWidget * selectFactoryFunction_t( QWidget * parent, Qt::WFlags fl );
 
-QWidget* QgsProviderRegistry::getSelectWidget( const QString & providerKey,
-   QWidget * parent, Qt::WFlags fl )
+QWidget* QgsProviderRegistry::selectWidget( const QString & providerKey,
+    QWidget * parent, Qt::WFlags fl )
 {
-  QLibrary *myLib = getLibrary( providerKey );
-  if ( !myLib ) return 0;
+  QLibrary *myLib = providerLibrary( providerKey );
+  if ( !myLib )
+    return 0;
 
   selectFactoryFunction_t * selectFactory =
     ( selectFactoryFunction_t * ) cast_to_fptr( myLib->resolve( "selectWidget" ) );
 
-  if ( !selectFactory ) return 0;
+  if ( !selectFactory )
+    return 0;
 
-  QWidget *widget  = ( *selectFactory )( parent, fl );
-  return widget;
+  return selectFactory( parent, fl );
 }
-  
 
-void * QgsProviderRegistry::getFunction( QString const & providerKey,
-    QString const & functionName )
+
+void * QgsProviderRegistry::function( QString const & providerKey,
+                                      QString const & functionName )
 {
   QString lib = library( providerKey );
 
@@ -467,20 +466,20 @@ void * QgsProviderRegistry::getFunction( QString const & providerKey,
   return 0;
 }
 
-QLibrary * QgsProviderRegistry::getLibrary( QString const & providerKey )
+QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey )
 {
   QString lib = library( providerKey );
 
-  QLibrary* myLib = new QLibrary( lib );
+  QLibrary *myLib = new QLibrary( lib );
 
   QgsDebugMsg( "Library name is " + myLib->fileName() );
 
   bool loaded = myLib->load();
-  
+
   if ( loaded )
   {
     return myLib;
-  } 
+  }
   delete myLib;
   return 0;
 }

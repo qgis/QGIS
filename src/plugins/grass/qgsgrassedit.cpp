@@ -168,7 +168,8 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMa
 
   mCanvas = mIface->mapCanvas();
 
-  if ( !isEditable( layer ) ) return;
+  if ( !isEditable( layer ) )
+    return;
 
   //TODO dynamic_cast ?
   mLayer = ( QgsVectorLayer* )layer;
@@ -182,7 +183,8 @@ QgsGrassEdit::QgsGrassEdit( QgisInterface *iface, QgsMapLayer* layer, bool newMa
 
 bool QgsGrassEdit::isEditable( QgsMapLayer *layer )
 {
-  if ( !layer ) return false;
+  if ( !layer )
+    return false;
 
   QgsDebugMsgLevel( "layer name: " + layer->name(), 3 );
 
@@ -466,7 +468,8 @@ void QgsGrassEdit::init()
 
   for ( int i = 0; i < SYMB_COUNT; i++ )
   {
-    if ( i == SYMB_NODE_0 ) continue;
+    if ( i == SYMB_NODE_0 )
+      continue;
 
     QPixmap pm( 40, 15 );
     pm.fill( mSymb[i].color() );
@@ -645,7 +648,8 @@ void QgsGrassEdit::columnTypeChanged( int row, int col )
 {
   QgsDebugMsg( QString( "row = %1 col = %2" ).arg( row ).arg( col ) );
 
-  if ( col != 1 ) return;
+  if ( col != 1 )
+    return;
 
   QTableWidgetItem *ti = mAttributeTable->item( row, 2 );
   if ( ti )
@@ -677,7 +681,8 @@ void QgsGrassEdit::alterTable( void )
 
     for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
     {
-      if ( i > 0 ) sql.append( ", " );
+      if ( i > 0 )
+        sql.append( ", " );
 
       type = mAttributeTable->item( i, 1 )->text();
       sql.append( mAttributeTable->item( i, 0 )->text() + " " + type );
@@ -709,7 +714,8 @@ void QgsGrassEdit::alterTable( void )
 
     for ( int i = 0; i < mAttributeTable->rowCount(); i++ )
     {
-      if ( !( mAttributeTable->item( i, 0 )->flags() & Qt::ItemIsEnabled ) ) continue;
+      if ( !( mAttributeTable->item( i, 0 )->flags() & Qt::ItemIsEnabled ) )
+        continue;
 
       type = mAttributeTable->item( i, 1 )->text();
       sql = mAttributeTable->item( i, 0 )->text() + " " + type;
@@ -738,13 +744,15 @@ void QgsGrassEdit::changeSymbology( QTreeWidgetItem * item, int col )
 
   QSettings settings;
 
-  if ( !item ) return;
+  if ( !item )
+    return;
 
   int index = item->text( 3 ).toInt();
 
   if ( col == 0 )
   {
-    if ( index == SYMB_BACKGROUND || index == SYMB_HIGHLIGHT || index == SYMB_DYNAMIC ) return;
+    if ( index == SYMB_BACKGROUND || index == SYMB_HIGHLIGHT || index == SYMB_DYNAMIC )
+      return;
 
     mSymbDisplay[index] = item->checkState( 0 ) == Qt::Checked;
 
@@ -825,7 +833,8 @@ void QgsGrassEdit::updateSymb( void )
   {
     int line = mProvider->updatedLine( i );
     QgsDebugMsg( QString( "updated line = %1" ).arg( line ) );
-    if ( !( mProvider->lineAlive( line ) ) ) continue;
+    if ( !( mProvider->lineAlive( line ) ) )
+      continue;
     mLineSymb[line] = lineSymbFromMap( line );
   }
 
@@ -838,7 +847,8 @@ void QgsGrassEdit::updateSymb( void )
   for ( unsigned int i = 0; i < nnodes; i++ )
   {
     int node = mProvider->updatedNode( i );
-    if ( !( mProvider->nodeAlive( node ) ) ) continue;
+    if ( !( mProvider->nodeAlive( node ) ) )
+      continue;
     mNodeSymb[node] = nodeSymbFromMap( node );
     QgsDebugMsg( QString( "node = %1 mNodeSymb = %2" ).arg( node ).arg( mNodeSymb[node] ) );
   }
@@ -875,7 +885,8 @@ int QgsGrassEdit::lineSymbFromMap( int line )
 
   int type = mProvider->readLine( NULL, NULL, line );
 
-  if ( type < 0 ) return 0;
+  if ( type < 0 )
+    return 0;
 
   switch ( type )
   {
@@ -890,22 +901,31 @@ int QgsGrassEdit::lineSymbFromMap( int line )
     case GV_BOUNDARY:
       int left, right, nareas;
 
-      if ( !( mProvider->lineAreas( line, &left, &right ) ) ) return 0;
+      if ( !( mProvider->lineAreas( line, &left, &right ) ) )
+        return 0;
 
       /* Count areas on both sides */
       nareas = 0;
-      if ( left > 0 || ( left < 0 && mProvider->isleArea( -left ) > 0 ) ) nareas++;
-      if ( right > 0 || ( right < 0 && mProvider->isleArea( -right ) > 0 ) ) nareas++;
-      if ( nareas == 0 ) return SYMB_BOUNDARY_0;
-      else if ( nareas == 1 ) return SYMB_BOUNDARY_1;
-      else return SYMB_BOUNDARY_2;
+      if ( left > 0 || ( left < 0 && mProvider->isleArea( -left ) > 0 ) )
+        nareas++;
+      if ( right > 0 || ( right < 0 && mProvider->isleArea( -right ) > 0 ) )
+        nareas++;
+      if ( nareas == 0 )
+        return SYMB_BOUNDARY_0;
+      else if ( nareas == 1 )
+        return SYMB_BOUNDARY_1;
+      else
+        return SYMB_BOUNDARY_2;
       break;
 
     case GV_CENTROID:
       int area = mProvider->centroidArea( line );
-      if ( area == 0 ) return SYMB_CENTROID_OUT;
-      else if ( area > 0 ) return SYMB_CENTROID_IN;
-      else return SYMB_CENTROID_DUPL; /* area < 0 */
+      if ( area == 0 )
+        return SYMB_CENTROID_OUT;
+      else if ( area > 0 )
+        return SYMB_CENTROID_IN;
+      else
+        return SYMB_CENTROID_DUPL; /* area < 0 */
       break;
   }
 
@@ -1198,7 +1218,8 @@ void QgsGrassEdit::snap( QgsPoint & point, double startX, double startY )
   // Start
   double startDist = hypot( x - startX, y - startY );
   bool startIn = false;
-  if ( startDist <= thresh ) startIn = true;
+  if ( startDist <= thresh )
+    startIn = true;
 
   // Nearest node
   double nodeX = 0;
@@ -1404,14 +1425,16 @@ void QgsGrassEdit::checkOrphan( int field, int cat )
                           tr( "Cannot check orphan record: %1" ).arg( *error ) );
     return;
   }
-  if ( !orphan ) return;
+  if ( !orphan )
+    return;
 
   QMessageBox::StandardButton ret = QMessageBox::question( 0, tr( "Warning" ),
                                     tr( "Orphan record was left in attribute table. "
                                         "<br>Delete the record?" ),
                                     QMessageBox::Ok | QMessageBox::Cancel );
 
-  if ( ret == QMessageBox::Cancel ) return;
+  if ( ret == QMessageBox::Cancel )
+    return;
 
   // Delete record
   error = mProvider->deleteAttributes( field, cat );
@@ -1496,7 +1519,8 @@ void QgsGrassEdit::addCat( int line )
 
   line = mProvider->rewriteLine( line, type, mPoints, mCats );
   mSelectedLine = line;
-  if ( mAttributes ) mAttributes->setLine( line );
+  if ( mAttributes )
+    mAttributes->setLine( line );
   updateSymb();
   increaseMaxCat();
 
@@ -1533,7 +1557,8 @@ void QgsGrassEdit::deleteCat( int line, int field, int cat )
 
   line = mProvider->rewriteLine( line, type, mPoints, mCats );
   mSelectedLine = line;
-  if ( mAttributes ) mAttributes->setLine( line );
+  if ( mAttributes )
+    mAttributes->setLine( line );
 
   // Check orphan record
   checkOrphan( field, cat );
@@ -1550,7 +1575,8 @@ void QgsGrassEdit::postRender( QPainter * )
   //          after disconnect (is it a queue?)
   //          -> check mValid
 
-  if ( !mValid ) return;
+  if ( !mValid )
+    return;
 
   displayMap();
 
@@ -1594,7 +1620,8 @@ void QgsGrassEdit::displayMap()
   {
     for ( int node = 1; node <= nnodes; node++ )
     {
-      if ( mNodeSymb[node] == SYMB_NODE_0 ) continue; // do not display nodes with points only
+      if ( mNodeSymb[node] == SYMB_NODE_0 )
+        continue; // do not display nodes with points only
       displayNode( node, mSymb[mNodeSymb[node]], mSize, painter );
     }
   }
@@ -1624,7 +1651,8 @@ void QgsGrassEdit::displayUpdated( void )
   for ( int i = 0; i < nlines; i++ )
   {
     int line = mProvider->updatedLine( i );
-    if ( !( mProvider->lineAlive( line ) ) ) continue;
+    if ( !( mProvider->lineAlive( line ) ) )
+      continue;
 
     displayElement( line, mSymb[mLineSymb[line]], mSize, painter );
   }
@@ -1634,8 +1662,10 @@ void QgsGrassEdit::displayUpdated( void )
   for ( int i = 0; i < nnodes; i++ )
   {
     int node = mProvider->updatedNode( i );
-    if ( !( mProvider->nodeAlive( node ) ) ) continue;
-    if ( mNodeSymb[node] == SYMB_NODE_0 ) continue; // do not display nodes with points only
+    if ( !( mProvider->nodeAlive( node ) ) )
+      continue;
+    if ( mNodeSymb[node] == SYMB_NODE_0 )
+      continue; // do not display nodes with points only
     displayNode( node, mSymb[mNodeSymb[node]], mSize, painter );
   }
 
@@ -1656,10 +1686,12 @@ void QgsGrassEdit::displayElement( int line, const QPen & pen, int size, QPainte
   if ( line == 0 )
     return;
 
-  if ( !mSymbDisplay[mLineSymb[line]] ) return;
+  if ( !mSymbDisplay[mLineSymb[line]] )
+    return;
 
   int type = mProvider->readLine( mPoints, NULL, line );
-  if ( type < 0 ) return;
+  if ( type < 0 )
+    return;
 
   QPainter *myPainter;
   if ( !painter )
@@ -1708,7 +1740,8 @@ void QgsGrassEdit::eraseElement( int line )
   QgsDebugMsg( QString( "line = %1" ).arg( line ) );
 
   int type = mProvider->readLine( NULL, NULL, line );
-  if ( type < 0 ) return;
+  if ( type < 0 )
+    return;
 
   // Erase line
   displayElement( line, mSymb[SYMB_BACKGROUND], mSize );
@@ -1782,11 +1815,13 @@ void QgsGrassEdit::displayNode( int node, const QPen & pen, int size, QPainter *
 {
   QgsDebugMsg( QString( "node = %1" ).arg( node ) );
 
-  if ( !mSymbDisplay[mNodeSymb[node]] ) return;
+  if ( !mSymbDisplay[mNodeSymb[node]] )
+    return;
 
   double x, y;
 
-  if ( !( mProvider->nodeCoor( node, &x, &y ) ) ) return;
+  if ( !( mProvider->nodeCoor( node, &x, &y ) ) )
+    return;
 
   displayIcon( x, y, pen, QgsVertexMarker::ICON_X, size, painter );
 }
@@ -1876,9 +1911,12 @@ void QgsGrassEdit::setCanvasPrompt( QString left, QString mid, QString right )
 {
   QgsDebugMsg( "entered." );
   mCanvasPrompt = "";
-  if ( left.length() > 0 ) mCanvasPrompt.append( tr( "Left: %1   " ).arg( left ) );
-  if ( mid.length() > 0 ) mCanvasPrompt.append( tr( "Middle: %1" ).arg( mid ) );
-  if ( right.length() > 0 ) mCanvasPrompt.append( tr( "Right: %1" ).arg( right ) );
+  if ( left.length() > 0 )
+    mCanvasPrompt.append( tr( "Left: %1" ).arg( left ) );
+  if ( mid.length() > 0 )
+    mCanvasPrompt.append( tr( " -- Middle: %1" ).arg( mid ) );
+  if ( right.length() > 0 )
+    mCanvasPrompt.append( tr( " -- Right: %1" ).arg( right ) );
 }
 
 void QgsGrassEdit::attributesClosed()

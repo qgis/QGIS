@@ -452,7 +452,8 @@ QStringList QgsGrassMapcalc::checkOutput()
 
   QString value = mOutputLineEdit->text().trimmed();
 
-  if ( value.length() == 0 ) return QStringList();
+  if ( value.length() == 0 )
+    return QStringList();
 
   QString path = QgsGrass::getDefaultGisdbase() + "/"
                  + QgsGrass::getDefaultLocation() + "/"
@@ -633,8 +634,10 @@ void QgsGrassMapcalc::setOption()
 {
   QgsDebugMsg( "entered." );
 
-  if ( mTool != Select ) return;
-  if ( !mObject ) return;
+  if ( mTool != Select )
+    return;
+  if ( !mObject )
+    return;
 
   switch ( mObject->type() )
   {
@@ -666,8 +669,10 @@ void QgsGrassMapcalc::setOption()
     case QgsGrassMapcalcObject::Function :
       for ( unsigned int i = 0; i < mFunctions.size(); i++ )
       {
-        if ( mFunctions[i].name() != mObject->function().name() ) continue;
-        if ( mFunctions[i].inputCount() != mObject->function().inputCount() ) continue;
+        if ( mFunctions[i].name() != mObject->function().name() )
+          continue;
+        if ( mFunctions[i].inputCount() != mObject->function().inputCount() )
+          continue;
 
         mFunctionComboBox->setCurrentIndex( i );
         break;
@@ -684,13 +689,17 @@ void QgsGrassMapcalc::setTool( int tool )
   // Clear old
   if ( mTool == Select )
   {
-    if ( mObject ) mObject->setSelected( false );
-    if ( mConnector ) mConnector->setSelected( false );
+    if ( mObject )
+      mObject->setSelected( false );
+    if ( mConnector )
+      mConnector->setSelected( false );
   }
   else
   {
-    if ( mObject ) delete mObject;
-    if ( mConnector ) delete mConnector;
+    if ( mObject )
+      delete mObject;
+    if ( mConnector )
+      delete mConnector;
     mCanvas->update();
   }
   mObject = 0;
@@ -846,7 +855,8 @@ void QgsGrassMapcalc::updateMaps()
   {
     QgsMapLayer *layer = canvas->layer( i );
 
-    if ( layer->type() != QgsMapLayer::RasterLayer ) continue;
+    if ( layer->type() != QgsMapLayer::RasterLayer )
+      continue;
 
     // Check if it is GRASS raster
     QString source = QDir::cleanPath( layer->source() );
@@ -855,16 +865,19 @@ void QgsGrassMapcalc::updateMaps()
     //QChar sep = QDir::separator();
     QChar sep = '/';
 
-    if ( source.contains( "cellhd" ) == 0 ) continue;
+    if ( source.contains( "cellhd" ) == 0 )
+      continue;
 
     // Most probably GRASS layer, check GISBASE and LOCATION
     QStringList split = source.split( sep, QString::SkipEmptyParts );
 
-    if ( split.size() < 4 ) continue;
+    if ( split.size() < 4 )
+      continue;
 
     QString map = split.last();
     split.pop_back(); // map
-    if ( split.last() != "cellhd" ) continue;
+    if ( split.last() != "cellhd" )
+      continue;
     split.pop_back(); // cellhd
 
     QString mapset = split.last();
@@ -879,12 +892,17 @@ void QgsGrassMapcalc::updateMaps()
     QDir curlocDir( QgsGrass::getDefaultGisdbase() + sep + QgsGrass::getDefaultLocation() );
     QString curloc = curlocDir.canonicalPath();
 
-    if ( loc != curloc ) continue;
+    if ( loc != curloc )
+      continue;
 
-    //if ( mUpdate && mapset != QgsGrass::getDefaultMapset() ) continue;
+#if 0
+    if ( mUpdate && mapset != QgsGrass::getDefaultMapset() )
+      continue;
+#endif
 
     mMapComboBox->addItem( layer->name() );
-    //if ( layer->name() == current ) mMapComboBox->setItemText( mMapComboBox->currentIndex(), current );
+    //if ( layer->name() == current )
+    //  mMapComboBox->setItemText( mMapComboBox->currentIndex(), current );
     mMaps.push_back( map + "@" + mapset );
   }
 }
@@ -893,8 +911,10 @@ void QgsGrassMapcalc::mapChanged()
 {
   QgsDebugMsg( "entered." );
 
-  if (( mTool != AddMap && mTool != Select )  || !mObject ) return;
-  if ( mObject->type() != QgsGrassMapcalcObject::Map ) return;
+  if (( mTool != AddMap && mTool != Select )  || !mObject )
+    return;
+  if ( mObject->type() != QgsGrassMapcalcObject::Map )
+    return;
 
   mObject->setValue( mMaps[mMapComboBox->currentIndex()],
                      mMapComboBox->currentText() );
@@ -905,8 +925,10 @@ void QgsGrassMapcalc::constantChanged()
 {
   QgsDebugMsg( "entered." );
 
-  if (( mTool != AddConstant && mTool != Select ) || !mObject ) return;
-  if ( mObject->type() != QgsGrassMapcalcObject::Constant ) return;
+  if (( mTool != AddConstant && mTool != Select ) || !mObject )
+    return;
+  if ( mObject->type() != QgsGrassMapcalcObject::Constant )
+    return;
 
   mObject->setValue( mConstantLineEdit->text() );
   mCanvas->update();
@@ -916,8 +938,10 @@ void QgsGrassMapcalc::functionChanged()
 {
   QgsDebugMsg( "entered." );
 
-  if (( mTool != AddFunction && mTool != Select ) || !mObject ) return;
-  if ( mObject->type() != QgsGrassMapcalcObject::Function ) return;
+  if (( mTool != AddFunction && mTool != Select ) || !mObject )
+    return;
+  if ( mObject->type() != QgsGrassMapcalcObject::Function )
+    return;
 
   mObject->setFunction( mFunctions[ mFunctionComboBox->currentIndex()] );
   mCanvas->update();
@@ -925,10 +949,14 @@ void QgsGrassMapcalc::functionChanged()
 
 void QgsGrassMapcalc::limit( QPoint *point )
 {
-  if ( point->x() < 0 ) point->setX( 0 );
-  if ( point->y() < 0 ) point->setY( 0 );
-  if ( point->x() > mCanvas->width() ) point->setX( mCanvas->width() );
-  if ( point->y() > mCanvas->height() ) point->setY( mCanvas->height() );
+  if ( point->x() < 0 )
+    point->setX( 0 );
+  if ( point->y() < 0 )
+    point->setY( 0 );
+  if ( point->x() > mCanvas->width() )
+    point->setX( mCanvas->width() );
+  if ( point->y() > mCanvas->height() )
+    point->setY( mCanvas->height() );
 }
 
 void QgsGrassMapcalc::resizeCanvas( int width, int height )
@@ -1007,10 +1035,14 @@ void QgsGrassMapcalc::autoGrow()
 
     QgsDebugMsg( QString( "r.left = %1 r.right = %2 r.top = %3 bottom = %4" ).arg( r.left() ).arg( r.right() ).arg( r.top() ).arg( r.bottom() ) );
 
-    if ( r.left() - thresh < left )     left   = r.left() - thresh;
-    if ( r.right() + thresh > right )   right  = r.right() + thresh;
-    if ( r.top() - thresh < top )       top    = r.top() - thresh;
-    if ( r.bottom() + thresh > bottom ) bottom = r.bottom() + thresh;
+    if ( r.left() - thresh < left )
+      left   = r.left() - thresh;
+    if ( r.right() + thresh > right )
+      right  = r.right() + thresh;
+    if ( r.top() - thresh < top )
+      top    = r.top() - thresh;
+    if ( r.bottom() + thresh > bottom )
+      bottom = r.bottom() + thresh;
 
     QgsDebugMsg( QString( "left = %1 right = %2 top = %3 bottom = %4" ).arg( left ).arg( right ).arg( top ).arg( bottom ) );
   }
@@ -1051,7 +1083,8 @@ void QgsGrassMapcalc::saveAs()
     bool ok;
     name = QInputDialog::getText( this, tr( "New mapcalc" ),
                                   tr( "Enter new mapcalc name:" ), QLineEdit::Normal, mFileName, &ok );
-    if ( !ok ) return;
+    if ( !ok )
+      return;
     name = name.trimmed();
 
     if ( name.isEmpty() )
@@ -1067,7 +1100,8 @@ void QgsGrassMapcalc::saveAs()
                                         tr( "The file already exists. Overwrite?" ),
                                         QMessageBox::Ok | QMessageBox::Cancel );
 
-      if ( ret == QMessageBox::Cancel ) continue;
+      if ( ret == QMessageBox::Cancel )
+        continue;
     }
     break;
   }
@@ -1217,7 +1251,8 @@ void QgsGrassMapcalc::load()
   QgsDebugMsg( "entered." );
 
   QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::MAPCALC );
-  if ( sel->exec() == QDialog::Rejected ) return;
+  if ( sel->exec() == QDialog::Rejected )
+    return;
 
   // Open file
   QString path = sel->gisdbase + "/" + sel->location + "/"
@@ -1269,7 +1304,8 @@ void QgsGrassMapcalc::load()
   {
     QDomNode node = objectNodes.item( n );
     QDomElement e = node.toElement();
-    if ( e.isNull() ) continue;
+    if ( e.isNull() )
+      continue;
 
     QgsDebugMsg( QString( "id = %1" ).arg( e.attribute( "id", "?" ).toLocal8Bit().constData() ) );
     unsigned int id = e.attribute( "id", "0" ).toInt();
@@ -1278,7 +1314,8 @@ void QgsGrassMapcalc::load()
     QString typeName = e.attribute( "type", "constant" );
     QString value = e.attribute( "value", "???" );
 
-    if ( id >= mNextId ) mNextId = id + 1;
+    if ( id >= mNextId )
+      mNextId = id + 1;
     if ( id >= objects.size() )
     {
       objects.resize( id + 1 );
@@ -1297,7 +1334,8 @@ void QgsGrassMapcalc::load()
     else if ( typeName == "output" )
       type = QgsGrassMapcalcObject::Output;
 
-    if ( type == -1 ) continue;
+    if ( type == -1 )
+      continue;
 
     QgsGrassMapcalcObject *obj = new QgsGrassMapcalcObject( type );
     objects[id] = obj;
@@ -1328,8 +1366,10 @@ void QgsGrassMapcalc::load()
         int fn = -1;
         for ( unsigned int i = 0; i < mFunctions.size(); i++ )
         {
-          if ( mFunctions[i].name() != value ) continue;
-          if ( mFunctions[i].inputCount() != inputCount ) continue;
+          if ( mFunctions[i].name() != value )
+            continue;
+          if ( mFunctions[i].inputCount() != inputCount )
+            continue;
           fn = i;
         }
 
@@ -1349,11 +1389,13 @@ void QgsGrassMapcalc::load()
   {
     QDomNode node = connectorNodes.item( n );
     QDomElement e = node.toElement();
-    if ( e.isNull() ) continue;
+    if ( e.isNull() )
+      continue;
 
     QgsDebugMsg( QString( "id = %1" ).arg( e.attribute( "id", "?" ).toLocal8Bit().constData() ) );
     unsigned int id = e.attribute( "id", "0" ).toInt();
-    if ( id >= mNextId ) mNextId = id + 1;
+    if ( id >= mNextId )
+      mNextId = id + 1;
 
     QgsGrassMapcalcConnector *con = new QgsGrassMapcalcConnector( mCanvas );
 
@@ -1367,7 +1409,8 @@ void QgsGrassMapcalc::load()
     {
       QDomNode node2 = endNodes.item( n2 );
       QDomElement e2 = node2.toElement();
-      if ( e2.isNull() ) continue;
+      if ( e2.isNull() )
+        continue;
 
       int x = e2.attribute( "x", "0" ).toInt();
       int y = e2.attribute( "y", "0" ).toInt();
@@ -1377,7 +1420,8 @@ void QgsGrassMapcalc::load()
 
       int objId = e2.attribute( "object", "-1" ).toInt();
       QgsDebugMsg( QString( "objId = %1" ).arg( objId ) );
-      if ( objId < 0 ) continue; // not connected
+      if ( objId < 0 )
+        continue; // not connected
 
       if ( static_cast<uint>( objId ) < objects.size() && objects[objId] )
       {
@@ -1458,7 +1502,8 @@ QgsGrassMapcalcObject::QgsGrassMapcalcObject( int type )
   mInputCount = 0;
   mOutputCount = 1;
 
-  if ( mType == Function ) mInputCount = 2;
+  if ( mType == Function )
+    mInputCount = 2;
 
   if ( mType == Output )
   {
@@ -1608,7 +1653,8 @@ void QgsGrassMapcalcObject::resetSize()
       */
       QString l = mFunction.inputLabels().at( i );
       int len = metrics.width( l );
-      if ( len > mInputTextWidth ) mInputTextWidth = len;
+      if ( len > mInputTextWidth )
+        mInputTextWidth = len;
     }
   }
 
@@ -1738,7 +1784,8 @@ bool QgsGrassMapcalcObject::tryConnect( QgsGrassMapcalcConnector *connector,
   {
     for ( int i = 0; i < mInputCount; i++ )
     {
-      if ( mInputConnectors[i] ) continue; // used
+      if ( mInputConnectors[i] )
+        continue; // used
 
       double d = sqrt( pow(( double )( mInputPoints[i].x() + pos().x() - p.x() ), 2.0 )
                        + pow(( double )( mInputPoints[i].y() + pos().y() - p.y() ), 2.0 ) );
@@ -2010,7 +2057,8 @@ void QgsGrassMapcalcConnector::setSocket( int end,
   mSocketDir[end] = direction;
   mSocket[end] = socket;
 
-  if ( !object ) return; // disconnect only
+  if ( !object )
+    return; // disconnect only
 
   mSocketObjects[end]->setConnector( mSocketDir[end],
                                      mSocket[end], this, end );
@@ -2036,8 +2084,10 @@ QString QgsGrassMapcalcConnector::expression()
   QgsDebugMsg( "entered." );
   for ( int i = 0; i < 2; i++ )
   {
-    if ( !mSocketObjects[i] ) continue;
-    if ( mSocketDir[i] != QgsGrassMapcalcObject::Out ) continue;
+    if ( !mSocketObjects[i] )
+      continue;
+    if ( mSocketDir[i] != QgsGrassMapcalcObject::Out )
+      continue;
     return mSocketObjects[i]->expression();
   }
 
@@ -2057,7 +2107,8 @@ QgsGrassMapcalcFunction::QgsGrassMapcalcFunction( int type, QString name,
     mLabel( label ), mDescription( description ),
     mDrawLabel( drawLabel )
 {
-  if ( mLabel.isEmpty() ) mLabel = mName;
+  if ( mLabel.isEmpty() )
+    mLabel = mName;
 
   if ( !labels.isEmpty() )
   {

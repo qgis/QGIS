@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPROVIDERMETADATA_H
 #define QGSPROVIDERMETADATA_H

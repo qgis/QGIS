@@ -62,7 +62,8 @@ class QgsPalGeometry : public PalGeometry
 
     ~QgsPalGeometry()
     {
-      if ( mG ) GEOSGeom_destroy( mG );
+      if ( mG )
+        GEOSGeom_destroy( mG );
       delete mInfo;
     }
 
@@ -82,7 +83,8 @@ class QgsPalGeometry : public PalGeometry
 
     pal::LabelInfo* info( QFontMetricsF* fm, const QgsMapToPixel* xform, double fontScale )
     {
-      if ( mInfo ) return mInfo;
+      if ( mInfo )
+        return mInfo;
 
       // create label info!
       QgsPoint ptZero = xform->toMapCoordinates( 0, 0 );
@@ -574,9 +576,10 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
                                      xPos, yPos, dataDefinedPosition, angle, dataDefinedRotation ) )
       return;
   }
-  catch ( std::exception* e )
+  catch ( std::exception &e )
   {
-    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( f.id() ) + QString::fromLatin1( e->what() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( f.id() ) + QString::fromLatin1( e.what() ) );
     return;
   }
 
@@ -714,7 +717,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     case QgsPalLayerSettings::Curved:      arrangement = P_CURVED; break;
     case QgsPalLayerSettings::Horizontal:  arrangement = P_HORIZ; break;
     case QgsPalLayerSettings::Free:        arrangement = P_FREE; break;
-    default: Q_ASSERT( "unsupported placement" && 0 ); return 0; break;
+    default: Q_ASSERT( "unsupported placement" && 0 ); return 0;
   }
 
   // create the pal layer
@@ -867,9 +870,10 @@ void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& 
       return;
     }
   }
-  catch ( std::exception* e )
+  catch ( std::exception &e )
   {
-    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( feat.id() ) + QString::fromLatin1( e->what() ) );
+    Q_UNUSED( e );
+    QgsDebugMsg( QString( "Ignoring feature %1 due PAL exception: " ).arg( feat.id() ) + QString::fromLatin1( e.what() ) );
     return;
   }
 
@@ -959,6 +963,7 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
   }
   catch ( std::exception& e )
   {
+    Q_UNUSED( e );
     QgsDebugMsg( "PAL EXCEPTION :-( " + QString::fromLatin1( e.what() ) );
     //mActiveLayers.clear(); // clean up
     return;

@@ -9048,7 +9048,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2050"/>
-        <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
+        <source>Removed ogr converter plugin - use &apos;save as&apos; context menu rather.</source>
         <translation>Usunięto wtyczkę konwersji OGR. Zaleca się stosowanie &apos;Zapisz jako..&apos; z menu kontekstowego.</translation>
     </message>
     <message>
@@ -11027,7 +11027,7 @@ Błąd brzmi:%2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
-        <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
+        <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
         <translation>Umożliwia zdefiniowanie wartości z określonego zakresu. Widżet edycji może być suwakiem lub obrotowy.</translation>
     </message>
     <message>
@@ -21769,7 +21769,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>Katalog zawierający dataset musi być dostępny do zapisu!</translation>
     </message>
     <message>
@@ -26778,7 +26778,7 @@ Rezultat: %3 (%4)</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="982"/>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 nie umożliwia zapisu. Dostosuj uprawnienia (jeśli to możliwe) i spróbuj ponownie.</translation>
     </message>
     <message>
@@ -28424,7 +28424,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1560"/>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>Niemożliwy zapis do pliku. Niektóre formatu nie obsługują podglądu piramid. Sprawdź dokumentację GDAL w razie wątpliwości.</translation>
     </message>
     <message>
@@ -32264,7 +32264,7 @@ Dla osób szukających pomocy w języku polskim, uruchomione zostało &lt;a href
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
         <translation>W oknie wydruku map, na pasku narzędzi, są do wyboru dwie ikonu do przesuwania elementów. Pierwsza z nich (ta z lewej - domyślna) służy do wybierania i przesuwania obiektów na mapie. Po wybraniu obiektu możesz go również przesuwać strzałkami na klawiaturze. Druga z ikon (ta po prawej stronie) służy do przesuwania zawartości wybranej mapy. Aby dokładnie umiejscowić dowolny obiekt na mapie, możesz również wykorzystać opcję &lt;strong&gt;Pozycja i rozmiar...&lt;/strong&gt;, którą znajdziesz w zakładce &lt;strong&gt;Obiekt &amp;rarr; Ustawienia ogólne&lt;/strong&gt;.</translation>
     </message>
     <message>
@@ -33898,7 +33898,7 @@ Czy aktualne klasy powinny zostać usunięte przed klasyfikacją?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="139"/>
-        <source>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
+        <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
         <translation>Umożliwia pominięcie tworzenia atrybutów dla wybranych formatów (np. DGN, DXF).</translation>
     </message>
     <message>

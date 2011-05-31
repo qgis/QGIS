@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgspluginitem.h"
 
 QgsPluginItem::QgsPluginItem( QString _name, QString _fullPath, QString _type, bool _python ):

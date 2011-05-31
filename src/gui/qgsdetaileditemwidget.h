@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSDETAILEDITEMWIDGET_H
 #define QGSDETAILEDITEMWIDGET_H
 
@@ -26,7 +25,7 @@
  * @see also QgsDetailedItem and QgsDetailedItemData.
  */
 class QgsDetailedItemWidget :
-    public QWidget, private Ui::QgsDetailedItemWidgetBase
+      public QWidget, private Ui::QgsDetailedItemWidgetBase
 {
     Q_OBJECT
   public:

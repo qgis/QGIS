@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSFILEDROPEDIT_H
 #define QGSFILEDROPEDIT_H
 

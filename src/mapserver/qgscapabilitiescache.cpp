@@ -32,19 +32,19 @@ const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QStr
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
   QHash< QString, QDomDocument >::const_iterator it = mCachedCapabilities.find( configFilePath );
-  if( it == mCachedCapabilities.constEnd() )
+  if ( it == mCachedCapabilities.constEnd() )
   {
     return 0;
   }
   else
   {
-    return &(it.value());
+    return &( it.value() );
   }
 }
 
 void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFilePath, const QDomDocument* doc )
 {
-  if( mCachedCapabilities.size() > 40 )
+  if ( mCachedCapabilities.size() > 40 )
   {
     //remove another cache entry to avoid memory problems
     QHash<QString, QDomDocument>::iterator capIt = mCachedCapabilities.begin();
@@ -59,7 +59,7 @@ void QgsCapabilitiesCache::removeChangedEntry( const QString& path )
 {
   QgsMSDebugMsg( "Remove capabilities cache entry because file changed" );
   QHash< QString, QDomDocument >::iterator it = mCachedCapabilities.find( path );
-  if( it != mCachedCapabilities.end() )
+  if ( it != mCachedCapabilities.end() )
   {
     mCachedCapabilities.erase( it );
   }

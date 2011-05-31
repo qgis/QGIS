@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsdelimitedtextprovider.h"
 
@@ -155,13 +154,20 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
   QString xField;
   QString yField;
 
-  if ( url.hasQueryItem( "delimiter" ) ) mDelimiter = url.queryItemValue( "delimiter" );
-  if ( url.hasQueryItem( "delimiterType" ) ) mDelimiterType = url.queryItemValue( "delimiterType" );
-  if ( url.hasQueryItem( "wktField" ) ) wktField = url.queryItemValue( "wktField" );
-  if ( url.hasQueryItem( "xField" ) ) xField = url.queryItemValue( "xField" );
-  if ( url.hasQueryItem( "yField" ) ) yField = url.queryItemValue( "yField" );
-  if ( url.hasQueryItem( "skipLines" ) ) mSkipLines = url.queryItemValue( "skipLines" ).toInt();
-  if ( url.hasQueryItem( "crs" ) ) mCrs.createFromString( url.queryItemValue( "crs" ) );
+  if ( url.hasQueryItem( "delimiter" ) )
+    mDelimiter = url.queryItemValue( "delimiter" );
+  if ( url.hasQueryItem( "delimiterType" ) )
+    mDelimiterType = url.queryItemValue( "delimiterType" );
+  if ( url.hasQueryItem( "wktField" ) )
+    wktField = url.queryItemValue( "wktField" );
+  if ( url.hasQueryItem( "xField" ) )
+    xField = url.queryItemValue( "xField" );
+  if ( url.hasQueryItem( "yField" ) )
+    yField = url.queryItemValue( "yField" );
+  if ( url.hasQueryItem( "skipLines" ) )
+    mSkipLines = url.queryItemValue( "skipLines" ).toInt();
+  if ( url.hasQueryItem( "crs" ) )
+    mCrs.createFromString( url.queryItemValue( "crs" ) );
 
   QgsDebugMsg( "Data source uri is " + uri );
   QgsDebugMsg( "Delimited text file is: " + mFileName );

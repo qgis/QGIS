@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgsmaptopixel.h"
 #include <QPoint>
 #include <QTextStream>

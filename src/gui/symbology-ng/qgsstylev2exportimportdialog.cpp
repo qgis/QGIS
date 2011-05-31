@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsstylev2exportimportdialog.cpp 13187 2010-03-28 22:14:44Z jef $ */
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -205,14 +204,19 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
         switch ( res )
         {
-          case QMessageBox::Cancel:   return;
-          case QMessageBox::No:       continue;
-          case QMessageBox::Yes:      dst->addSymbol( symbolName, symbol );
+          case QMessageBox::Cancel:
+            return;
+          case QMessageBox::No:
             continue;
-          case QMessageBox::YesToAll: prompt = false;
+          case QMessageBox::Yes:
+            dst->addSymbol( symbolName, symbol );
+            continue;
+          case QMessageBox::YesToAll:
+            prompt = false;
             overwrite = true;
             break;
-          case QMessageBox::NoToAll:  prompt = false;
+          case QMessageBox::NoToAll:
+            prompt = false;
             overwrite = false;
             break;
         }
@@ -241,11 +245,15 @@ void QgsStyleV2ExportImportDialog::moveStyles( QModelIndexList* selection, QgsSt
                                         QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
         switch ( res )
         {
-          case QMessageBox::Cancel:   return;
-          case QMessageBox::No:       continue;
-          case QMessageBox::Yes:      dst->addColorRamp( symbolName, ramp );
+          case QMessageBox::Cancel:
+            return;
+          case QMessageBox::No:
             continue;
-          case QMessageBox::YesToAll: prompt = false;
+          case QMessageBox::Yes:
+            dst->addColorRamp( symbolName, ramp );
+            continue;
+          case QMessageBox::YesToAll:
+            prompt = false;
             overwrite = true;
             break;
           case QMessageBox::NoToAll:  prompt = false;

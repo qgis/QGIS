@@ -19,7 +19,6 @@ back to QgsVectorLayer.
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
@@ -164,7 +163,8 @@ void QgsAttributeActionDialog::remove()
     attributeActionTable->removeRow( row );
 
     // And select the row below the one that was selected or the last one.
-    if ( row >= attributeActionTable->rowCount() ) row = attributeActionTable->rowCount() - 1;
+    if ( row >= attributeActionTable->rowCount() )
+      row = attributeActionTable->rowCount() - 1;
     attributeActionTable->selectRow( row );
   }
 }
@@ -172,7 +172,6 @@ void QgsAttributeActionDialog::remove()
 void QgsAttributeActionDialog::insert()
 {
   // Add the action details as a new row in the table.
-
   int pos = attributeActionTable->rowCount();
   insert( pos );
 }

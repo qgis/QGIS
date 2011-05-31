@@ -104,8 +104,10 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString theDefinition
   {
     QString authName = reCrsId.cap( 1 ).toLower();
     CrsType type = InternalCrsId;
-    if ( authName == "epsg" ) type = EpsgCrsId;
-    if ( authName == "postgis" ) type = PostgisCrsId;
+    if ( authName == "epsg" )
+      type = EpsgCrsId;
+    if ( authName == "postgis" )
+      type = PostgisCrsId;
     long id = reCrsId.cap( 2 ).toLong();
     result = createFromId( id, type );
   }

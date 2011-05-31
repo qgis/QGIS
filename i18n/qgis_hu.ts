@@ -9171,7 +9171,7 @@ QWT Version: %1.</source>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2050"/>
-        <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
+        <source>Removed ogr converter plugin - use &apos;save as&apos; context menu rather.</source>
         <translation>OGR konvertáló modul eltávolítása - használd helyette a mentés mint menüpontot.</translation>
     </message>
     <message>
@@ -10541,7 +10541,7 @@ Error was:%2</source>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
-        <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
+        <source>Allows one to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
         <translation>Egy megadott tartományba eső értékek beállítását teszi lehetővé. A szerkesztő elem lehet csúszka vagy spin box.</translation>
     </message>
     <message>
@@ -21268,7 +21268,7 @@ A hiba a hálózati kapcsolatodban vagy a WMS szervernél lehet.</numerusform>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
-        <source>The directory containing your dataset needs to be writeable!</source>
+        <source>The directory containing your dataset needs to be writable!</source>
         <translation>Az adathalmazodat tartalmazó könyvtárnak írhatónak kell lennie! </translation>
     </message>
     <message>
@@ -26295,7 +26295,7 @@ SQL:%3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="982"/>
-        <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
+        <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
         <translation>%1 nem írható. Módosítsd a jogokat (ha lehet) és próbáld újra.</translation>
     </message>
     <message>
@@ -27912,7 +27912,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1560"/>
-        <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
+        <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
         <translation>A fájl nem írható. Néhány formátum nem támogatja a piramist. Nézd meg a GDAL dokumentációt a kétségeid vannak.</translation>
     </message>
     <message>
@@ -31678,7 +31678,7 @@ Felülírhatom?</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
-        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
+        <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows one to move the map content within a map frame.</source>
         <translation>A lapösszeállítás eszközsorban két gombot is találsz az elemek mozgatására. A baloldali (nyíl egy kézzel) szelektálja és mozgatja az elemeket az összeállításban. A kiválasztás után a nyíl billentyűkkel is mozgathatod őket. A pontos pozició beállításához használd a &lt;strong&gt;Pozíció és méret&lt;/strong&gt; párbeszédablakot, melyet az Elem fülön az Általános beállítások &amp;rarr; Pozíció és méret alatt találsz meg. A könnyebb pozícionálás érdekében különböző referencia pontokat is beállíthatsz ebben a párbeszédablakban. A másik mozgatás eszköz (a földgömb egy kézzel) segítségével a térkép tartalmat mozgathatod a térkép keretben.</translation>
     </message>
     <message>
@@ -33271,7 +33271,7 @@ Töröljem a létező osztályokat az osztályozás előtt?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="139"/>
-        <source>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
+        <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
         <translation>Ez lehetővé teszi az attribútum létrehozás elhagyását, mivel néhány OGR meghatjó (pl. DGN, DXF) nem támogatja azt.</translation>
     </message>
     <message>

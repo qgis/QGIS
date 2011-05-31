@@ -17,7 +17,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSRUNPROCESS_H
 #define QGSRUNPROCESS_H

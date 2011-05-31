@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSCSEXCEPTION_H
 #define QGSCSEXCEPTION_H
 

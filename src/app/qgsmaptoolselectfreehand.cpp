@@ -12,7 +12,6 @@ email                : jpalmer at linz dot govt dot nz
 *   (at your option) any later version.                                   *
 *                                                                         *
 ***************************************************************************/
-/* $Id$ */
 
 #include "qgsmaptoolselectfreehand.h"
 #include "qgsmaptoolselectutils.h"

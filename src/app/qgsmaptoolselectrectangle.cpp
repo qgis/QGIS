@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsmaptoolselectrangle.cpp 13380 2010-04-25 12:51:49Z jef $ */
 
 #include "qgsmaptoolselectrectangle.h"
 #include "qgsmaptoolselectutils.h"

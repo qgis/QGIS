@@ -12,7 +12,6 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSFEATURE_H
 #define QGSFEATURE_H

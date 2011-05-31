@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSDETAILEDITEMDELEGATE_H
 #define QGSDETAILEDITEMDELEGATE_H
 
@@ -33,7 +32,7 @@ class QFont;
  * @see also QgsDetailedItemData
  */
 class GUI_EXPORT QgsDetailedItemDelegate :
-    public QAbstractItemDelegate
+      public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
