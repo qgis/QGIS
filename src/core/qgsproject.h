@@ -286,7 +286,8 @@ class CORE_EXPORT QgsProject : public QObject
     /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
       @return the layer or 0 in case of error
       @note: added in version 1.8*/
-    static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+    //static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+      bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   protected:
 
