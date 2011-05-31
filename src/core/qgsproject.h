@@ -276,10 +276,6 @@ class CORE_EXPORT QgsProject : public QObject
       @note added in 1.4 */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
-    /**Adds layer to list of embedded layers
-      @note: added in version 1.8*/
-    void addEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
-
     /**Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
     QString layerIsEmbedded( const QString& id ) const;
 
