@@ -1653,7 +1653,16 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
     QString id = mapLayerElem.firstChildElement("id").text();
     if( id == layerId )
     {
-      return addLayer( mapLayerElem, brokenNodes, vectorLayerList );
+      mEmbeddedLayers.insert( layerId, projectFilePath );
+      if( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )
+      {
+        return true;
+      }
+      else
+      {
+        mEmbeddedLayers.remove( layerId );
+        return false;
+      }
 #if 0
       QString type = mapLayerElem.attribute("type");
       QgsMapLayer* layer = 0;

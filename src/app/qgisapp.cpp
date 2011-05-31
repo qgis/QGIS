@@ -5055,7 +5055,7 @@ void QgisApp::embedLayers()
 
   //hardcoded for debugging
   QString filepath="/home/marco/geodaten/projekte/composertest.qgs";
-  QString id="komb113320110516093016594";
+  QString id="komb113320110531113659299";
 
   QList<QDomNode> brokenNodes;
   QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;

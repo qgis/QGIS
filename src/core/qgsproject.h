@@ -337,7 +337,8 @@ class CORE_EXPORT QgsProject : public QObject
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
 
-    /**Embeded layers which are defined in other projects. Key: layer id, value: project file path*/
+    /**Embeded layers which are defined in other projects. Key: layer id, value: project file path.
+       If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)*/
     QHash< QString, QString > mEmbeddedLayers;
 
 }; // QgsProject
