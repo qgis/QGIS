@@ -636,6 +636,12 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   }
 
   QgsLegendLayer* llayer = new QgsLegendLayer( layer );
+  if( !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+  {
+    QFont itemFont;
+    itemFont.setItalic( true );
+    llayer->setFont( 0, itemFont );
+  }
 
   //set the correct check states
   blockSignals( true );
