@@ -684,7 +684,10 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
     if( element.attribute("embedded") == "1" )
     {
-      createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ) );
+      if( !createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ), brokenNodes, vLayerList ) )
+      {
+        returnStatus = false;
+      }
       continue;
     }
     else
@@ -960,6 +963,10 @@ bool QgsProject::read()
 
 bool QgsProject::read( QDomNode & layerNode )
 {
+  QList<QDomNode> brokenNodes;
+  QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+  return addLayer( layerNode.toElement(), brokenNodes, vectorLayerList );
+#if 0
   QString type = layerNode.toElement().attribute( "type" );
 
   QgsMapLayer *mapLayer = NULL;
@@ -1004,6 +1011,7 @@ bool QgsProject::read( QDomNode & layerNode )
   }
 
   return  true;
+#endif //0
 } // QgsProject::read( QDomNode & layerNode )
 
 
@@ -1617,24 +1625,24 @@ QString QgsProject::layerIsEmbedded( const QString& id ) const
   return it.value();
 };
 
-QgsMapLayer* QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath )
+bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList )
 {
   QFile projectFile( projectFilePath );
   if( !projectFile.open( QIODevice::ReadOnly ) )
   {
-    return 0;
+    return false;
   }
 
   QDomDocument projectDocument;
   if( !projectDocument.setContent( &projectFile ) )
   {
-    return 0;
+    return false;
   }
 
   QDomElement projectLayersElem = projectDocument.documentElement().firstChildElement("projectlayers");
   if( projectLayersElem.isNull() )
   {
-    return 0;
+    return false;
   }
 
   QDomNodeList mapLayerNodes = projectLayersElem.elementsByTagName("maplayer");
@@ -1645,12 +1653,8 @@ QgsMapLayer* QgsProject::createEmbeddedLayer( const QString& layerId, const QStr
     QString id = mapLayerElem.firstChildElement("id").text();
     if( id == layerId )
     {
+      return addLayer( mapLayerElem, brokenNodes, vectorLayerList );
 #if 0
-      if( !addLayer( element, brokenNodes, vLayerList ) )
-      {
-        returnStatus = false;
-      }
-#endif //0
       QString type = mapLayerElem.attribute("type");
       QgsMapLayer* layer = 0;
       if( type == "vector" )
@@ -1684,10 +1688,12 @@ QgsMapLayer* QgsProject::createEmbeddedLayer( const QString& layerId, const QStr
         return 0;
       }
       return layer;
+#endif //0
     }
   }
 
-  return 0;
+  //brokenNodes.push_back(  );
+  return false;
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )
