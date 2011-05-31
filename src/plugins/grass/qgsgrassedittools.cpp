@@ -228,15 +228,15 @@ void QgsGrassEditNewLine::mouseClick( QgsPoint & point, Qt::MouseButton button )
 
   if ( e->mEditPoints->n_points == 0 )
   {
-    e->setCanvasPrompt( tr( "New point" ), "", "" );
+    e->setCanvasPrompt( tr( "New vertex" ), "", "" );
   }
   else if ( e->mEditPoints->n_points == 1 )
   {
-    e->setCanvasPrompt( tr( "New point" ), tr( "Undo last point" ), "" );
+    e->setCanvasPrompt( tr( "New vertex" ), tr( "Undo last vertex" ), "" );
   }
   else if ( e->mEditPoints->n_points > 1 )
   {
-    e->setCanvasPrompt( tr( "New point" ), tr( "Undo last point" ), tr( "Close line" ) );
+    e->setCanvasPrompt( tr( "New vertex" ), tr( "Undo last vertex" ), tr( "Close line" ) );
   }
 }
 
@@ -313,7 +313,8 @@ void QgsGrassEditMoveVertex::mouseClick( QgsPoint & point, Qt::MouseButton butto
           double dist2 = Vect_points_distance( xl, yl, 0.0, e->mEditPoints->x[e->mSelectedPart],
                                                e->mEditPoints->y[e->mSelectedPart], 0.0, 0 );
 
-          if ( dist1 < dist2 ) e->mSelectedPart--;
+          if ( dist1 < dist2 )
+            e->mSelectedPart--;
 
           e->setCanvasPrompt( tr( "Select new position" ), "", "Release vertex" );
         }
@@ -579,7 +580,8 @@ void QgsGrassEditDeleteVertex::mouseClick( QgsPoint & point, Qt::MouseButton but
           double dist2 = Vect_points_distance( xl, yl, 0.0, e->mEditPoints->x[e->mSelectedPart],
                                                e->mEditPoints->y[e->mSelectedPart], 0.0, 0 );
 
-          if ( dist1 < dist2 ) e->mSelectedPart--;
+          if ( dist1 < dist2 )
+            e->mSelectedPart--;
 
           e->displayDynamic( e->mEditPoints->x[e->mSelectedPart], e->mEditPoints->y[e->mSelectedPart],
                              QgsVertexMarker::ICON_BOX, e->mSize );

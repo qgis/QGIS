@@ -80,7 +80,9 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
   {
     ct.setDestCRS( builder->destinationCrs() );
     da.setProjectionsEnabled( true );
-    da.setSourceCrs( builder->destinationCrs().srsid() );
+    //
+    //da.setSourceCrs( builder->destinationCrs().srsid() );
+    //
   }
   else
   {
@@ -114,8 +116,15 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
         for ( i = 0; i != additionalPoints.size(); ++i )
         {
           TiePointInfo info;
-          info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), info.mTiedPoint );
-
+          if ( pt1 == pt2 )
+          {
+            info.mLength = additionalPoints[ i ].sqrDist( pt1 );
+            info.mTiedPoint = pt1;
+          }
+          else
+          {
+            info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), info.mTiedPoint );
+          }
           if ( pointLengthMap[ i ].mLength > info.mLength )
           {
             info.mTiedPoint = builder->addVertex( info.mTiedPoint );

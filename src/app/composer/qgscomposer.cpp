@@ -499,7 +499,8 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
 
   int result = myQFileDialog->exec();
   raise();
-  if ( result != QDialog::Accepted ) return;
+  if ( result != QDialog::Accepted )
+    return;
 
   QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   if ( myOutputFileNameQString == "" )
@@ -666,7 +667,8 @@ void QgsComposer::on_mActionExportAsImage_triggered()
     QString myFilter = tr( "%1 format (*.%2 *.%3)" )
                        .arg( myFormat ).arg( myFormat.toLower() ).arg( myFormat.toUpper() );
 
-    if ( myCounterInt > 0 ) myFilters += ";;";
+    if ( myCounterInt > 0 )
+      myFilters += ";;";
     myFilters += myFilter;
     myFilterMap[myFilter] = myFormat;
     if ( myFormat == myLastUsedFormat )
@@ -799,7 +801,8 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
 
   int result = myQFileDialog->exec();
   raise();
-  if ( result != QDialog::Accepted ) return;
+  if ( result != QDialog::Accepted )
+    return;
 
   QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
   if ( myOutputFileNameQString == "" )

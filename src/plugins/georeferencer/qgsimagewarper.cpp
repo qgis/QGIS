@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include <cmath>
 #include <iostream>
@@ -51,7 +50,8 @@ bool QgsImageWarper::openSrcDSAndGetWarpOpt( const QString &input, const Resampl
   // Open input file
   GDALAllRegister();
   hSrcDS = GDALOpen( TO8F( input ), GA_ReadOnly );
-  if ( hSrcDS == NULL ) return false;
+  if ( !hSrcDS )
+    return false;
 
   // Setup warp options.
   psWarpOptions = GDALCreateWarpOptions();
@@ -80,7 +80,7 @@ bool QgsImageWarper::createDestinationDataset(
 {
   // create the output file
   GDALDriverH driver = GDALGetDriverByName( "GTiff" );
-  if ( driver == NULL )
+  if ( !driver )
   {
     return false;
   }
@@ -91,7 +91,7 @@ bool QgsImageWarper::createDestinationDataset(
                        GDALGetRasterCount( hSrcDS ),
                        GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) ),
                        papszOptions );
-  if ( hDstDS == NULL )
+  if ( !hDstDS )
   {
     return false;
   }
@@ -187,12 +187,16 @@ int QgsImageWarper::warpFile( const QString& input,
   if ( destResX != 0.0 || destResY != 0.0 )
   {
     // If only one scale has been specified, fill in the other from the GDAL suggestion
-    if ( destResX == 0.0 ) destResX = adfGeoTransform[1];
-    if ( destResY == 0.0 ) destResY = adfGeoTransform[5];
+    if ( destResX == 0.0 )
+      destResX = adfGeoTransform[1];
+    if ( destResY == 0.0 )
+      destResY = adfGeoTransform[5];
 
     // Make sure user-specified coordinate system has canonical orientation
-    if ( destResX < 0.0 ) destResX = -destResX;
-    if ( destResY > 0.0 ) destResY = -destResY;
+    if ( destResX < 0.0 )
+      destResX = -destResX;
+    if ( destResY > 0.0 )
+      destResY = -destResY;
 
     // Assert that the north-up convention is fullfiled by GDALSuggestedWarpOutput (should always be the case)
     assert( adfGeoTransform[0] > 0.0 );
@@ -289,7 +293,7 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
     double *x, double *y, double *z, int *panSuccess )
 {
   TransformChain *chain = static_cast<TransformChain*>( pTransformerArg );
-  if ( chain == NULL )
+  if ( !chain )
   {
     return false;
   }
@@ -304,7 +308,8 @@ int QgsImageWarper::GeoToPixelTransform( void *pTransformerArg, int bDstToSrc, i
     // Transform from georeferenced to pixel/line
     for ( int i = 0; i < nPointCount; ++i )
     {
-      if ( !panSuccess[i] ) continue;
+      if ( !panSuccess[i] )
+        continue;
       double xP = x[i];
       double yP = y[i];
       x[i] = chain->adfInvGeotransform[0] + xP * chain->adfInvGeotransform[1] + yP * chain->adfInvGeotransform[2];

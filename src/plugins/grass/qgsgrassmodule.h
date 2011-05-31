@@ -180,10 +180,10 @@ class QgsGrassModuleOptions
     virtual QStringList checkOutput() { return QStringList() ; }
 
     //! Freeze output vector maps used in QGIS on Windows
-    virtual void freezeOutput() { return; }
+    virtual void freezeOutput() {}
 
     //! Thaw output vector maps used in QGIS on Windows
-    virtual void thawOutput() { return; }
+    virtual void thawOutput() { }
 
     //! Check if option is ready
     //  Returns empty string or error message

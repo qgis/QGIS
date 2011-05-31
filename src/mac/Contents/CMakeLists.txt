@@ -21,7 +21,7 @@ ADD_CUSTOM_TARGET(Info.plist ALL
 #############################################################
 # process subdirs
 
-SUBDIRS(Resources)
+ADD_SUBDIRECTORY(Resources)
 
 #############################################################
 # install

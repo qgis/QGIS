@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSMAPTOOLSPLITFEATURES_H
 #define QGSMAPTOOLSPLITFEATURES_H

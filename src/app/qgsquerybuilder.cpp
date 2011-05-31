@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgsquerybuilder.h"
 #include "qgslogger.h"
 #include <QListView>

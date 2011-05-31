@@ -24,7 +24,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 
 #include "sqlanywhere.h"
@@ -304,7 +303,10 @@ QIcon SaDbTableModel::iconForType( QGis::WkbType type ) const
   {
     return SqlAnywhere::getThemeIcon( "/mIconPolygonLayer.png" );
   }
-  else return QIcon();
+  else
+  {
+    return QIcon();
+  }
 }
 
 QGis::WkbType SaDbTableModel::qgisTypeFromDbType( const QString& dbType ) const

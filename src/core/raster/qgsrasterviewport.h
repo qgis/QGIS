@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsrasterlayer.h 4380 2005-12-26 23:37:50Z timlinux $ */
 #ifndef QGSRASTERVIEWPORT_H
 #define QGSRASTERVIEWPORT_H
 

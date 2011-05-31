@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include <qgslogger.h>
 #include <qgscredentials.h>
@@ -83,7 +82,8 @@ SqlAnyConnection::~SqlAnyConnection()
   sApi.sqlany_disconnect( mHandle );
   sApi.sqlany_free_connection( mHandle );
   connCount--;
-  if ( !mMapKey.isEmpty() ) { connCache.remove( mMapKey ); }
+  if ( !mMapKey.isEmpty() )
+    connCache.remove( mMapKey );
 
   gMutex.unlock();
 }
@@ -168,24 +168,31 @@ SqlAnyConnection::makeUri( QString connName, QString host
 
   // begin DBNAME
   uri = "dbname=\"";
-  if ( !connName.isEmpty() ) { uri += "CON=" + connName + ";"; }
+  if ( !connName.isEmpty() )
+    uri += "CON=" + connName + ";";
   if ( !host.isEmpty() || !port.isEmpty() )
   {
     uri += "HOST=";
     uri += ( host.isEmpty() ? "localhost" : host );
-    if ( !port.isEmpty() ) { uri += ":" + port; }
+    if ( !port.isEmpty() )
+      uri += ":" + port;
     uri += ";";
   }
-  if ( !server.isEmpty() ) { uri += "SERVER=" + server + ";"; }
-  if ( !database.isEmpty() ) { uri += "DBN=" + database + ";"; }
-  if ( !parameters.isEmpty() ) { uri += parameters + ";"; }
-  if ( simpleEncrypt ) { uri += "ENC=SIMPLE;"; }
+  if ( !server.isEmpty() )
+    uri += "SERVER=" + server + ";";
+  if ( !database.isEmpty() )
+    uri += "DBN=" + database + ";";
+  if ( !parameters.isEmpty() )
+    uri += parameters + ";";
+  if ( simpleEncrypt )
+    uri += "ENC=SIMPLE;";
   uri += "\" ";
   // end DBNAME
 
   uri += "user=\"" + username + "\" ";
   uri += "password=\"" + password + "\" ";
-  if ( estimateMeta ) { uri += "estimatedmetadata=true "; }
+  if ( estimateMeta )
+    uri += "estimatedmetadata=true ";
 
   return uri;
 }
@@ -354,7 +361,8 @@ SqlAnyConnection::release()
   // use the global mutex when adjusting the reference count
   gMutex.lock();
   mRefCount--;
-  if ( mRefCount == 0 ) { delete this; }
+  if ( mRefCount == 0 )
+    delete this;
   gMutex.unlock();
 }
 
@@ -456,7 +464,8 @@ SqlAnyConnection::execute_immediate( QString sql, sacapi_i32 &code, char *errbuf
   // the connection mutex
   mMutex.lock();
   ok = sApi.sqlany_execute_immediate( mHandle, sql.toUtf8().constData() );
-  if ( !ok ) { getError( code, errbuf, size ); }
+  if ( !ok )
+    getError( code, errbuf, size );
   mMutex.unlock();
 
   return ok != 0;

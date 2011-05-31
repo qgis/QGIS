@@ -64,7 +64,8 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
   QColor selColor = context.selectionColor();
   // selColor.setAlphaF( context.alpha() );
   mSelBrush = QBrush( selColor );
-  if ( selectFillStyle )  mSelBrush.setStyle( mBrushStyle );
+  if ( selectFillStyle )
+    mSelBrush.setStyle( mBrushStyle );
   mBorderColor.setAlphaF( context.alpha() );
   mPen = QPen( mBorderColor );
   mPen.setStyle( mBorderStyle );
@@ -251,7 +252,8 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolyg
   if ( context.selected() )
   {
     QColor selColor = context.selectionColor();
-    if ( ! selectionIsOpaque ) selColor.setAlphaF( context.alpha() );
+    if ( ! selectionIsOpaque )
+      selColor.setAlphaF( context.alpha() );
     p->setBrush( QBrush( selColor ) );
     _renderPolygon( p, points, rings );
   }

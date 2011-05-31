@@ -212,7 +212,8 @@ void QgsConfigureShortcutsDialog::changeShortcut()
 void QgsConfigureShortcutsDialog::resetShortcut()
 {
   QAction* action = currentAction();
-  if ( !action ) return;
+  if ( !action )
+    return;
 
   // set default shortcut
   QString shortcut = QgsShortcutsManager::instance()->actionDefaultShortcut( action );
@@ -361,7 +362,8 @@ void QgsConfigureShortcutsDialog::setGettingShortcut( bool getting )
 void QgsConfigureShortcutsDialog::setCurrentActionShortcut( QKeySequence s )
 {
   QAction* action = currentAction();
-  if ( !action ) return;
+  if ( !action )
+    return;
 
   // first check whether this action is not taken already
   QAction* otherAction = QgsShortcutsManager::instance()->actionForShortcut( s );

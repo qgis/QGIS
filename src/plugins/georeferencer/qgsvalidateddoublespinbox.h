@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
 
 #ifndef QGS_VALIDATED_DOUBLE_SPINBOX_H
 #define QGS_VALIDATED_DOUBLE_SPINBOX_H

@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPOSTGRESPROVIDER_H
 #define QGSPOSTGRESPROVIDER_H

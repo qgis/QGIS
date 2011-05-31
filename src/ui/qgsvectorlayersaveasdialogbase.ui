@@ -136,7 +136,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QCheckBox" name="mSkipAttributeCreation">
         <property name="toolTip">
-         <string>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don't support it.</string>
+         <string>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don't support it.</string>
         </property>
         <property name="text">
          <string>Skip attribute creation</string>

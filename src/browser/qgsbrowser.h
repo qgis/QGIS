@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSBROWSER_H
 #define QGSBROWSER_H
 
@@ -35,14 +34,14 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     ~QgsBrowser();
 
     // Expand to given path
-    void expand ( QString path, const QModelIndex& index = QModelIndex() );
+    void expand( QString path, const QModelIndex& index = QModelIndex() );
 
 
 
   public slots:
-    void itemClicked(const QModelIndex& index);
-    void itemDoubleClicked(const QModelIndex& index);
-    void itemExpanded(const QModelIndex& index);
+    void itemClicked( const QModelIndex& index );
+    void itemDoubleClicked( const QModelIndex& index );
+    void itemExpanded( const QModelIndex& index );
     void on_mActionSetProjection_triggered();
     void on_mActionWmsConnections_triggered();
     void on_mActionRefresh_triggered();
@@ -56,12 +55,12 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     void stopRendering();
 
     // Refresh all leaf or expanded items
-    void refresh ( const QModelIndex& index= QModelIndex() );
+    void refresh( const QModelIndex& index = QModelIndex() );
 
-protected:
+  protected:
     void keyPressEvent( QKeyEvent * e );
 
-    bool layerClicked(QgsLayerItem* ptr);
+    bool layerClicked( QgsLayerItem* ptr );
 
     enum Tab
     {
@@ -78,7 +77,7 @@ protected:
     QModelIndex mIndex;
     QWidget *mParamWidget;
     // last (selected) tab for each
-    QMap<QString,int> mLastTab;
+    QMap<QString, int> mLastTab;
 };
 
 #endif // QGSBROWSER_H

@@ -24,7 +24,6 @@
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
-/*  $Id$ */
 #ifndef eVisGenericEventBrowserGui_H
 #define eVisGenericEventBrowserGui_H
 

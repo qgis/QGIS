@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #ifndef QGSWMSPROVIDER_H
 #define QGSWMSPROVIDER_H
@@ -369,7 +368,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Destructor
     virtual ~QgsWmsProvider();
 
-    virtual QgsWmsCapabilitiesProperty capabilitiesProperty () { return mCapabilities; } 
+    virtual QgsWmsCapabilitiesProperty capabilitiesProperty() { return mCapabilities; }
 
     /**
      * \brief   Returns a list of the supported layers of the WMS server
@@ -966,14 +965,14 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QStringList mSupportedGetFeatureFormats;
 };
 
-class QgsWMSConnectionItem : public QgsDataCollectionItem 
+class QgsWMSConnectionItem : public QgsDataCollectionItem
 {
-    public:
-     QgsWMSConnectionItem (QgsDataItem* parent, QString name, QString path );
-     ~QgsWMSConnectionItem();
+  public:
+    QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsWMSConnectionItem();
 
     QVector<QgsDataItem*> createChildren();
-    virtual bool equal(const QgsDataItem *other);
+    virtual bool equal( const QgsDataItem *other );
 
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
     QString mConnInfo;
@@ -984,11 +983,11 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
 // We have to use QgsDataCollectionItem and support layer methods if necessary
 class QgsWMSLayerItem : public QgsLayerItem
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsWMSLayerItem (QgsDataItem* parent, QString name, QString path, 
-        QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
-    ~QgsWMSLayerItem ();
+    QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
+                     QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
+    ~QgsWMSLayerItem();
 
     QString createUri();
 
@@ -997,11 +996,11 @@ class QgsWMSLayerItem : public QgsLayerItem
     QgsWmsLayerProperty mLayerProperty;
 };
 
-class QgsWMSRootItem : public QgsDataCollectionItem 
+class QgsWMSRootItem : public QgsDataCollectionItem
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsWMSRootItem (QgsDataItem* parent, QString name, QString path );
+    QgsWMSRootItem( QgsDataItem* parent, QString name, QString path );
     ~QgsWMSRootItem();
 
     QVector<QgsDataItem*> createChildren();

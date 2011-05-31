@@ -13,7 +13,6 @@
     without limitation, on the condition that you retain the foregoing
     copyright notice and disclaimer as to the original iAnywhere code.  
  ***************************************************************************/
-/* $Id$ */
 
 -- BEGIN CONFIGURATION VARIABLES
 CREATE OR REPLACE VARIABLE @QGIS_SAMPLES_DIR TEXT;

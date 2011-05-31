@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include <cmath>
 #include <sqlite3.h>
@@ -667,7 +666,8 @@ void QgsDistanceArea::computeAreaInit()
 
   m_Qp = getQ( M_PI / 2 );
   m_E  = 4 * M_PI * m_Qp * m_AE;
-  if ( m_E < 0.0 ) m_E = -m_E;
+  if ( m_E < 0.0 )
+    m_E = -m_E;
 }
 
 
@@ -720,8 +720,10 @@ double QgsDistanceArea::computePolygonArea( const QList<QgsPoint>& points )
   * the difference between total surface area of the earth and
   * the "north pole" area.
   */
-  if ( area > m_E ) area = m_E;
-  if ( area > m_E / 2 ) area = m_E - area;
+  if ( area > m_E )
+    area = m_E;
+  if ( area > m_E / 2 )
+    area = m_E - area;
 
   return area;
 }

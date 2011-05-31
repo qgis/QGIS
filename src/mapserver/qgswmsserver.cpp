@@ -868,13 +868,17 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     bool bboxOk = true;
     QString bbString = bbIt->second;
     minx = bbString.section( ",", 0, 0 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+      bboxOk = false;
     miny = bbString.section( ",", 1, 1 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+      bboxOk = false;
     maxx = bbString.section( ",", 2, 2 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+      bboxOk = false;
     maxy = bbString.section( ",", 3, 3 ).toDouble( &conversionSuccess );
-    if ( !conversionSuccess ) {bboxOk = false;}
+    if ( !conversionSuccess )
+      bboxOk = false;
 
     if ( !bboxOk )
     {

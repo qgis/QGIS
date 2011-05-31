@@ -17,7 +17,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgshttptransaction.h 5697 2006-08-15 10:29:46Z morb_au $ */
 
 #ifndef QGSHTTPTRANSACTION_H
 #define QGSHTTPTRANSACTION_H

@@ -300,7 +300,7 @@ void QgsSymbolV2PropertiesDialog::layerChanged()
 
   // get layer info
   QgsSymbolLayerV2* layer = currentLayer();
-  if ( layer == NULL )
+  if ( !layer )
     return;
 
   // update layer type combo box
@@ -316,8 +316,8 @@ void QgsSymbolV2PropertiesDialog::layerChanged()
 void QgsSymbolV2PropertiesDialog::updateLockButton()
 {
   QgsSymbolLayerV2* layer = currentLayer();
-  if ( layer == NULL ) return;
-
+  if ( !layer )
+    return;
   btnLock->setChecked( layer->isLocked() );
 }
 
@@ -325,8 +325,8 @@ void QgsSymbolV2PropertiesDialog::updateLockButton()
 void QgsSymbolV2PropertiesDialog::layerTypeChanged()
 {
   QgsSymbolLayerV2* layer = currentLayer();
-  if ( layer == NULL ) return;
-
+  if ( !layer )
+    return;
   QString newLayerType = cboLayerType->itemData( cboLayerType->currentIndex() ).toString();
   if ( layer->layerType() == newLayerType )
     return;
@@ -372,7 +372,8 @@ void QgsSymbolV2PropertiesDialog::addLayer()
 void QgsSymbolV2PropertiesDialog::removeLayer()
 {
   int idx = currentLayerIndex();
-  if ( idx < 0 ) return;
+  if ( idx < 0 )
+    return;
   int row = currentRowIndex();
   mSymbol->deleteSymbolLayer( idx );
 
@@ -417,8 +418,8 @@ void QgsSymbolV2PropertiesDialog::moveLayerByOffset( int offset )
 void QgsSymbolV2PropertiesDialog::lockLayer()
 {
   QgsSymbolLayerV2* layer = currentLayer();
-  if ( layer == NULL ) return;
-
+  if ( !layer )
+    return;
   layer->setLocked( btnLock->isChecked() );
 }
 

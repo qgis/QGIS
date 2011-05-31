@@ -59,9 +59,6 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 
-const char * const ident =
-  "$Id$";
-
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
     // Constant that signals property not used.
@@ -1557,7 +1554,7 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
     else if ( res == "ERROR_WRITE_FORMAT" )
     {
       QMessageBox::warning( this, tr( "Building pyramids failed." ),
-                            tr( "The file was not writeable. Some formats do not "
+                            tr( "The file was not writable. Some formats do not "
                                 "support pyramid overviews. Consult the GDAL documentation if in doubt." ) );
     }
     else if ( res == "FAILED_NOT_SUPPORTED" )

@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSLONGLONGVALIDATOR_H
 #define QGSLONGLONGVALIDATOR_H

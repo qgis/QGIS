@@ -1,2 +1,1 @@
-
-SUBDIRS(Contents)
+ADD_SUBDIRECTORY(Contents)

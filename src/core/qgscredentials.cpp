@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgscredentials.h"
 #include "qgslogger.h"
@@ -25,7 +24,9 @@ QgsCredentials *QgsCredentials::smInstance = 0;
 void QgsCredentials::setInstance( QgsCredentials *theInstance )
 {
   if ( smInstance )
+  {
     QgsDebugMsg( "already registered an instance of QgsCredentials" );
+  }
 
   smInstance = theInstance;
 }

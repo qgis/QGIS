@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSHANDLEBADLAYERS_H
 #define QGSHANDLEBADLAYERS_H
 

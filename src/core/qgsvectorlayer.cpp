@@ -20,7 +20,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #include <cfloat>
 #include <cstring>
@@ -84,8 +83,6 @@
 #include <dlfcn.h>
 #endif
 
-
-static const char * const ident_ = "$Id$";
 
 // typedef for the QgsDataProvider class factory
 typedef QgsDataProvider * create_it( const QString* uri );
@@ -778,6 +775,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
     }
     catch ( const QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
                    .arg( fet.typeName() ).arg( cse.what() ) );
     }
@@ -920,6 +918,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
         }
         catch ( const QgsCsException &cse )
         {
+          Q_UNUSED( cse );
           QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Ignoring this feature. %2" )
                        .arg( fet.typeName() ).arg( cse.what() ) );
         }
@@ -1106,6 +1105,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     }
     catch ( QgsCsException &cse )
     {
+      Q_UNUSED( cse );
       QgsDebugMsg( QString( "Failed to transform a point while drawing a feature of type '%1'. Rendering stopped. %2" )
                    .arg( fet.typeName() ).arg( cse.what() ) );
       return false;
@@ -1446,7 +1446,9 @@ void QgsVectorLayer::updateExtents()
   mLayerExtent.setMinimal();
 
   if ( !mDataProvider )
+  {
     QgsDebugMsg( "invoked with null mDataProvider" );
+  }
 
   if ( mDeletedFeatureIds.isEmpty() && mChangedGeometries.isEmpty() )
   {
@@ -1739,7 +1741,9 @@ bool QgsVectorLayer::nextFeature( QgsFeature &f )
             }
 
             if ( !found )
+            {
               QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
+            }
           }
           else
           {
@@ -1841,7 +1845,9 @@ bool QgsVectorLayer::featureAtId( int featureId, QgsFeature& f, bool fetchGeomet
         }
 
         if ( !found )
+        {
           QgsDebugMsg( QString( "No attributes for the added feature %1 found" ).arg( f.id() ) );
+        }
       }
       else
       {
@@ -2711,7 +2717,7 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   //XXX - This was a dynamic cast but that kills the Windows
   //      version big-time with an abnormal termination error
   mDataProvider =
-    ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->getProvider( provider, mDataSource ) );
+    ( QgsVectorDataProvider* )( QgsProviderRegistry::instance()->provider( provider, mDataSource ) );
 
   if ( mDataProvider )
   {
@@ -2902,11 +2908,15 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
 
       if ( returnCode == 1 )
       {
-        errorMessage = tr( "No renderer object" ); delete renderer; return false;
+        errorMessage = tr( "No renderer object" );
+        delete renderer;
+        return false;
       }
       else if ( returnCode == 2 )
       {
-        errorMessage = tr( "Classification field not found" ); delete renderer; return false;
+        errorMessage = tr( "Classification field not found" );
+        delete renderer;
+        return false;
       }
 
       mRenderer = renderer;
@@ -5514,7 +5524,7 @@ QString QgsVectorLayer::metadata()
   myMetadata += "</body></html>";
   return myMetadata;
 }
-  
+
 QgsVectorLayer::ValueRelationData &QgsVectorLayer::valueRelation( int idx )
 {
   const QgsFieldMap &fields = pendingFields();

@@ -22,7 +22,6 @@
  * perform upgrades to a more recent version
  */
 
-/* $Id$ */
 
 #ifndef QGSPROJECTFILETRANSFORM_H
 #define QGSPROJECTFILETRANSFORM_H

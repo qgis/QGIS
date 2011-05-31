@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgshelpserver.h"
 
 // The communications technique used here has been adapted from Qt Assistant.

@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSWMSCONNECTION_H
 #define QGSWMSCONNECTION_H
@@ -45,8 +44,8 @@ class QgsWMSConnection : public QObject
     ~QgsWMSConnection();
 
   public:
-    QgsWmsProvider *provider ( );
-    QString connectionInfo(); 
+    QgsWmsProvider *provider();
+    QString connectionInfo();
     QString mConnName;
     QString mConnectionInfo;
 };

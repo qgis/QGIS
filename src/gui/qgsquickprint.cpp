@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: plugin.cpp 7796 2007-12-16 22:11:38Z homann $ */
 
 //
 // QGIS Specific includes
@@ -227,7 +226,8 @@ void QgsQuickPrint::printMap()
   //
   int myOriginalDpi = mpMapRenderer->outputDpi();
   //sensible default to prevent divide by zero
-  if ( 0 == myOriginalDpi ) myOriginalDpi = 96;
+  if ( 0 == myOriginalDpi )
+    myOriginalDpi = 96;
   QSize myOriginalSize = mpMapRenderer->outputSize();
 
   //define the font sizes and family
@@ -797,7 +797,8 @@ void QgsQuickPrint::renderPrintScaleBar( QPainter * thepPainter,
   //
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
   int myLayerCount = thepMapRenderer->layerSet().count();
-  if ( !myLayerCount || !myMapUnitsPerPixelDouble ) return;
+  if ( !myLayerCount || !myMapUnitsPerPixelDouble )
+    return;
 
   //Calculate size of scale bar for preferred number of map units
   double myScaleBarWidth = myPreferredSize;
@@ -1072,9 +1073,8 @@ QString QgsQuickPrint::pageSizeToString( QPrinter::PageSize theSize )
   if ( theSize == QPrinter::Ledger ) return "QPrinter::Ledger";
   if ( theSize == QPrinter::Legal ) return "QPrinter::Legal";
   if ( theSize == QPrinter::Letter ) return "QPrinter::Letter";
-  //falback
+  //fallback
   return "QPrinter::A4";
-
 }
 
 QPrinter::PageSize QgsQuickPrint::stringToPageSize( QString theSize )
@@ -1108,10 +1108,6 @@ QPrinter::PageSize QgsQuickPrint::stringToPageSize( QString theSize )
   if ( theSize == "QPrinter::Ledger" ) return QPrinter::Ledger;
   if ( theSize == "QPrinter::Legal" ) return QPrinter::Legal;
   if ( theSize == "QPrinter::Letter" ) return QPrinter::Letter;
-  //falback
+  //fallback
   return QPrinter::A4;
-
 }
-
-
-

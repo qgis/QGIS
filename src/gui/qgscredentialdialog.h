@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSCREDENTIALDIALOG_H
 #define QGSCREDENTIALDIALOG_H
 

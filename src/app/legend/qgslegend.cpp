@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsapplication.h"
 #include "qgisapp.h"
@@ -43,8 +42,6 @@
 #include <QMouseEvent>
 #include <QPixmap>
 #include <QTreeWidgetItem>
-
-static const char *const ident_ = "$Id$";
 
 const int AUTOSCROLL_MARGIN = 16;
 
@@ -870,7 +867,8 @@ void QgsLegend::legendLayerShowInOverview()
     return;
 
   QgsLegendLayer* ll = qobject_cast<QgsLegendLayer *>( li );
-  if ( !ll ) return;
+  if ( !ll )
+    return;
   ll->showInOverview();
 }
 
@@ -1805,7 +1803,7 @@ void QgsLegend::legendLayerZoom()
     }
   }
 
-  if( extent.isEmpty() )
+  if ( extent.isEmpty() )
   {
     return;
   }

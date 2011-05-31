@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSCOMPOSER_H
 #define QGSCOMPOSER_H
 #include "ui_qgscomposerbase.h"

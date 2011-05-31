@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSCONTINUOUSCOLORDIALOG_H
 #define QGSCONTINUOUSCOLORDIALOG_H

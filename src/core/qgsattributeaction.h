@@ -20,7 +20,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSATTRIBUTEACTION_H
 #define QGSATTRIBUTEACTION_H

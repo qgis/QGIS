@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"

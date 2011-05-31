@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #include <QCloseEvent>
 #include <QFileDialog>
@@ -395,22 +394,28 @@ void QgsManageConnectionsDialog::loadWMSConnections( const QDomDocument &doc, co
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      int res = QMessageBox::warning( this, tr( "Loading connections" ),
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading connections" ),
                                       tr( "Connection with name '%1' already exists. Overwrite?" )
                                       .arg( connectionName ),
                                       QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
-        case QMessageBox::Cancel:   return;
-        case QMessageBox::No:       child = child.nextSiblingElement();
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
           continue;
-        case QMessageBox::Yes:      overwrite = true;
-          break;
-        case QMessageBox::YesToAll: prompt = false;
+        case QMessageBox::Yes:
           overwrite = true;
           break;
-        case QMessageBox::NoToAll:  prompt = false;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
           overwrite = false;
           break;
       }
@@ -471,22 +476,28 @@ void QgsManageConnectionsDialog::loadWFSConnections( const QDomDocument &doc, co
     // check for duplicates
     if ( keys.contains( connectionName ) && prompt )
     {
-      int res = QMessageBox::warning( this, tr( "Loading connections" ),
+      int res = QMessageBox::warning( this,
+                                      tr( "Loading connections" ),
                                       tr( "Connection with name '%1' already exists. Overwrite?" )
                                       .arg( connectionName ),
                                       QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
 
       switch ( res )
       {
-        case QMessageBox::Cancel:   return;
-        case QMessageBox::No:       child = child.nextSiblingElement();
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
           continue;
-        case QMessageBox::Yes:      overwrite = true;
-          break;
-        case QMessageBox::YesToAll: prompt = false;
+        case QMessageBox::Yes:
           overwrite = true;
           break;
-        case QMessageBox::NoToAll:  prompt = false;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
           overwrite = false;
           break;
       }
@@ -554,15 +565,20 @@ void QgsManageConnectionsDialog::loadPgConnections( const QDomDocument &doc, con
                                       QMessageBox::Yes | QMessageBox::YesToAll | QMessageBox::No | QMessageBox::NoToAll | QMessageBox::Cancel );
       switch ( res )
       {
-        case QMessageBox::Cancel:   return;
-        case QMessageBox::No:       child = child.nextSiblingElement();
+        case QMessageBox::Cancel:
+          return;
+        case QMessageBox::No:
+          child = child.nextSiblingElement();
           continue;
-        case QMessageBox::Yes:      overwrite = true;
-          break;
-        case QMessageBox::YesToAll: prompt = false;
+        case QMessageBox::Yes:
           overwrite = true;
           break;
-        case QMessageBox::NoToAll:  prompt = false;
+        case QMessageBox::YesToAll:
+          prompt = false;
+          overwrite = true;
+          break;
+        case QMessageBox::NoToAll:
+          prompt = false;
           overwrite = false;
           break;
       }

@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgslogger.h"
 #include "qgsdistancearea.h"
@@ -268,6 +267,7 @@ QString QgsSearchTreeNode::makeSearchString()
         case opPLUS:  str += "+"; break;
         case opMINUS: str += "-"; break;
         case opMUL:   str += "*"; break;
+        case opMOD:   str += "%"; break;
         case opDIV:   str += "/"; break;
         case opPOW:   str += "^"; break;
 
@@ -644,19 +644,24 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
       {
         if ( mLeft->type() != tNodeList )
         {
-          if ( !getValue( value1, mLeft, fields, f ) ) return value1;
+          if ( !getValue( value1, mLeft, fields, f ) )
+            return value1;
         }
         else
         {
-          if ( mLeft->mNodeList.size() > 0 && !getValue( value1, mLeft->mNodeList[0], fields, f ) ) return value1;
-          if ( mLeft->mNodeList.size() > 1 && !getValue( value2, mLeft->mNodeList[1], fields, f ) ) return value2;
-          if ( mLeft->mNodeList.size() > 2 && !getValue( value3, mLeft->mNodeList[2], fields, f ) ) return value3;
+          if ( mLeft->mNodeList.size() > 0 && !getValue( value1, mLeft->mNodeList[0], fields, f ) )
+            return value1;
+          if ( mLeft->mNodeList.size() > 1 && !getValue( value2, mLeft->mNodeList[1], fields, f ) )
+            return value2;
+          if ( mLeft->mNodeList.size() > 2 && !getValue( value3, mLeft->mNodeList[2], fields, f ) )
+            return value3;
         }
       }
       if ( mRight )
       {
         Q_ASSERT( !mLeft || mLeft->type() != tNodeList );
-        if ( !getValue( value2, mRight, fields, f ) ) return value2;
+        if ( !getValue( value2, mRight, fields, f ) )
+          return value2;
       }
 
       if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
@@ -776,6 +781,10 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
           return QgsSearchTreeValue( val1 - val2 );
         case opMUL:
           return QgsSearchTreeValue( val1 * val2 );
+        case opMOD:
+          // NOTE: we _might_ support float operators, like postgresql does
+          // see 83c94a886c059 commit in postgresql git repo for more info
+          return QgsSearchTreeValue( int(val1) % int(val2) );
         case opDIV:
           if ( val2 == 0 )
             return QgsSearchTreeValue( 2, "" ); // division by zero

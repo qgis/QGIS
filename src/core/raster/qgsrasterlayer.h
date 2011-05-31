@@ -18,7 +18,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSRASTERLAYER_H
 #define QGSRASTERLAYER_H
 

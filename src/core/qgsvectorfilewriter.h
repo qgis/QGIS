@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef _QGSVECTORFILEWRITER_H_
 #define _QGSVECTORFILEWRITER_H_

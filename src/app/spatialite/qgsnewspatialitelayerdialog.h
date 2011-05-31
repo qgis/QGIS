@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSNEWSPATIALITELAYERDIALOG_H
 #define QGSNEWSPATIALITELAYERDIALOG_H
 

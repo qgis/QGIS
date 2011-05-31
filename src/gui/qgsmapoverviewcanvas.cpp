@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
@@ -127,10 +126,14 @@ void QgsMapOverviewCanvas::drawExtentRect()
 #if 0
   // test whether panning widget should be drawn
   bool show = false;
-  if ( ur.x() >= 0 && ur.x() < width() )  show = true;
-  if ( ll.x() >= 0 && ll.x() < width() )  show = true;
-  if ( ur.y() >= 0 && ur.y() < height() ) show = true;
-  if ( ll.y() >= 0 && ll.y() < height() ) show = true;
+  if ( ur.x() >= 0 && ur.x() < width() )
+    show = true;
+  if ( ll.x() >= 0 && ll.x() < width() )
+    show = true;
+  if ( ur.y() >= 0 && ur.y() < height() )
+    show = true;
+  if ( ll.y() >= 0 && ll.y() < height() )
+    show = true;
   if ( !show )
   {
     QgsDebugMsg( "panning: extent out of overview area" );
@@ -153,8 +156,10 @@ void QgsMapOverviewCanvas::drawExtentRect()
   // are drawn at odd locations) if both coords are at limit. This may
   // have something to do with Qt calculating dimensions as x2 - x1 + 1.
   // (INT_MAX - INT_MIN + 1 is UINT_MAX + 1)
-  if ( x1 == INT_MIN && x2 == INT_MAX ) x1 += 1;  // x2 -= 1 works too
-  if ( y1 == INT_MIN && y2 == INT_MAX ) y1 += 1;
+  if ( x1 == INT_MIN && x2 == INT_MAX )
+    x1 += 1;  // x2 -= 1 works too
+  if ( y1 == INT_MIN && y2 == INT_MAX )
+    y1 += 1;
 #endif
 
   QRect r( x1, y1, x2 - x1 + 1, y2 - y1 + 1 );

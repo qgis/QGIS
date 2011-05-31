@@ -14,7 +14,6 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsmapcanvas.cpp 5400 2006-04-30 20:14:08Z wonder $ */
 
 
 #include <QtGlobal>
@@ -518,7 +517,8 @@ void QgsMapCanvas::setExtent( QgsRectangle const & r )
   updateScale();
   if ( mMapOverview )
     mMapOverview->drawExtentRect();
-  if ( mLastExtent.size() > 20 ) mLastExtent.removeAt( 0 );
+  if ( mLastExtent.size() > 20 )
+    mLastExtent.removeAt( 0 );
 
   //clear all extent items after current index
   for ( int i = mLastExtent.size() - 1; i > mLastExtentIndex; i-- )

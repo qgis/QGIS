@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsrasterprojector.h 15005 2011-01-08 16:35:21Z rblazek $ */
 
 /* This code takes ideas from WarpBuilder in Geotools.
  * Thank you to Ing. Andrea Aime, Ing. Simone Giannecchini and GeoSolutions S.A.S.
@@ -200,7 +199,7 @@ class QgsRasterProjector
     /** Maximum source resolution */
     double mMaxSrcXRes;
     double mMaxSrcYRes;
-    
+
     /** Use approximation */
     bool mApproximate;
 };

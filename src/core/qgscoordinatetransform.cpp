@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgscoordinatetransform.h"
 #include "qgsmessageoutput.h"
 #include "qgslogger.h"
@@ -222,7 +221,8 @@ void QgsCoordinateTransform::initialise()
 
 QgsPoint QgsCoordinateTransform::transform( const QgsPoint thePoint, TransformDirection direction ) const
 {
-  if ( mShortCircuit || !mInitialisedFlag ) return thePoint;
+  if ( mShortCircuit || !mInitialisedFlag )
+    return thePoint;
   // transform x
   double x = thePoint.x();
   double y = thePoint.y();
@@ -258,7 +258,8 @@ QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY
 
 QgsRectangle QgsCoordinateTransform::transform( const QgsRectangle theRect, TransformDirection direction ) const
 {
-  if ( mShortCircuit || !mInitialisedFlag ) return theRect;
+  if ( mShortCircuit || !mInitialisedFlag )
+    return theRect;
   // transform x
   double x1 = theRect.xMinimum();
   double y1 = theRect.yMinimum();

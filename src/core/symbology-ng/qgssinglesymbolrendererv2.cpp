@@ -80,8 +80,10 @@ void QgsSingleSymbolRendererV2::startRender( QgsRenderContext& context, const Qg
     mTempSymbol = mSymbol->clone();
 
     int hints = 0;
-    if ( mRotationFieldIdx != -1 ) hints |= QgsSymbolV2::DataDefinedRotation;
-    if ( mSizeScaleFieldIdx != -1 ) hints |= QgsSymbolV2::DataDefinedSizeScale;
+    if ( mRotationFieldIdx != -1 )
+      hints |= QgsSymbolV2::DataDefinedRotation;
+    if ( mSizeScaleFieldIdx != -1 )
+      hints |= QgsSymbolV2::DataDefinedSizeScale;
     mTempSymbol->setRenderHints( hints );
 
     mTempSymbol->startRender( context );

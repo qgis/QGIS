@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef QGSGRASSPLUGIN_H
 #define QGSGRASSPLUGIN_H
 #include "../qgisplugin.h"
@@ -41,9 +40,11 @@ class QToolBar;
 * \brief OpenModeller plugin for QGIS
 *
 */
-class QgsGrassPlugin: public QObject, public QgisPlugin
+class QgsGrassPlugin : public QObject, public QgisPlugin
 {
-  Q_OBJECT public:
+    Q_OBJECT
+
+  public:
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
@@ -68,7 +69,7 @@ class QgsGrassPlugin: public QObject, public QgisPlugin
      */
     virtual int type();
     //! Destructor
-    virtual ~ QgsGrassPlugin();
+    virtual ~QgsGrassPlugin();
 
     //! Get Region Pen
     QPen & regionPen( void );

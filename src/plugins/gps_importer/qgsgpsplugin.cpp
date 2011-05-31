@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 // includes
 
@@ -48,7 +47,6 @@
 #include "qgsgpsplugingui.h"
 
 
-static const char * const ident_ = "$Id$";
 static const QString name_ = QObject::tr( "GPS Tools" );
 static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
 static const QString version_ = QObject::tr( "Version 0.1" );
@@ -320,14 +318,10 @@ void QgsGPSPlugin::convertGPSFile( QString inputFileName,
 
   switch ( convertType )
   {
-    case 0:
-      convertStrings << "-x" << "transform,wpt=rte,del"; break;
-    case 1:
-      convertStrings << "-x" << "transform,rte=wpt,del"; break;
-    case 2:
-      convertStrings << "-x" << "transform,trk=wpt,del"; break;
-    case 3:
-      convertStrings << "-x" << "transform,wpt=trk,del"; break;
+    case 0: convertStrings << "-x" << "transform,wpt=rte,del"; break;
+    case 1: convertStrings << "-x" << "transform,rte=wpt,del"; break;
+    case 2: convertStrings << "-x" << "transform,trk=wpt,del"; break;
+    case 3: convertStrings << "-x" << "transform,wpt=trk,del"; break;
     default:
       QgsDebugMsg( "Illegal conversion index!" );
       return;

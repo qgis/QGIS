@@ -198,7 +198,8 @@ void QgsGrassNewMapset::databaseChanged()
   QDir d( mDatabaseLineEdit->text() );
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
-    if ( d[i] == "." || d[i] == ".." ) continue;
+    if ( d[i] == "." || d[i] == ".." )
+      continue;
 
     QString windName = mDatabaseLineEdit->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
     QString locationName = mDatabaseLineEdit->text() + "/" + d[i];
@@ -246,7 +247,8 @@ void QgsGrassNewMapset::setLocations( )
   int sel = -1;
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
-    if ( d[i] == "." || d[i] == ".." ) continue;
+    if ( d[i] == "." || d[i] == ".." )
+      continue;
 
     QString windName = mDatabaseLineEdit->text() + "/" + d[i] + "/PERMANENT/DEFAULT_WIND";
     QString locationName = mDatabaseLineEdit->text() + "/" + d[i];
@@ -684,7 +686,8 @@ void QgsGrassNewMapset::checkRegion()
     err = true;
   }
 
-  if ( err ) return;
+  if ( err )
+    return;
 
   mCellHead.north = n;
   mCellHead.south = s;
@@ -762,22 +765,30 @@ void QgsGrassNewMapset::loadRegions()
 
     QDomElement elem = node.toElement();
     QDomNodeList nameNodes = elem.elementsByTagName( "gml:name" );
-    if ( nameNodes.count() == 0 ) continue;
-    if ( nameNodes.item( 0 ).isNull() ) continue;
+    if ( nameNodes.count() == 0 )
+      continue;
+    if ( nameNodes.item( 0 ).isNull() )
+      continue;
 
     QDomElement nameElem = nameNodes.item( 0 ).toElement();
-    if ( nameElem.text().isNull() ) continue;
+    if ( nameElem.text().isNull() )
+      continue;
 
     QDomNodeList envNodes = elem.elementsByTagName( "gml:Envelope" );
-    if ( envNodes.count() == 0 ) continue;
-    if ( envNodes.item( 0 ).isNull() ) continue;
+    if ( envNodes.count() == 0 )
+      continue;
+    if ( envNodes.item( 0 ).isNull() )
+      continue;
     QDomElement envElem = envNodes.item( 0 ).toElement();
 
     QDomNodeList coorNodes = envElem.elementsByTagName( "gml:coordinates" );
-    if ( coorNodes.count() == 0 ) continue;
-    if ( coorNodes.item( 0 ).isNull() ) continue;
+    if ( coorNodes.count() == 0 )
+      continue;
+    if ( coorNodes.item( 0 ).isNull() )
+      continue;
     QDomElement coorElem = coorNodes.item( 0 ).toElement();
-    if ( coorElem.text().isNull() ) continue;
+    if ( coorElem.text().isNull() )
+      continue;
 
     QStringList coor = coorElem.text().split( " ", QString::SkipEmptyParts );
     if ( coor.size() != 2 )
@@ -886,21 +897,29 @@ void QgsGrassNewMapset::setSelectedRegion()
     e = points[1].x();
     w = points[0].x();
 
-    if ( n > 90 ) n = 90;
-    if ( s < -90 ) s = -90;
+    if ( n > 90 )
+      n = 90;
+    if ( s < -90 )
+      s = -90;
 #if 0
-    if ( e > 180 ) e = 180;
-    if ( w < -180 ) w = 180;
+    if ( e > 180 )
+      e = 180;
+    if ( w < -180 )
+      w = 180;
 #endif
   }
   else
   {
     for ( int i = 0; i < 4; i++ )
     {
-      if ( i == 0 || points[i].y() > n ) n = points[i].y();
-      if ( i == 0 || points[i].y() < s ) s = points[i].y();
-      if ( i == 0 || points[i].x() > e ) e = points[i].x();
-      if ( i == 0 || points[i].x() < w ) w = points[i].x();
+      if ( i == 0 || points[i].y() > n )
+        n = points[i].y();
+      if ( i == 0 || points[i].y() < s )
+        s = points[i].y();
+      if ( i == 0 || points[i].x() > e )
+        e = points[i].x();
+      if ( i == 0 || points[i].x() < w )
+        w = points[i].x();
     }
   }
 
@@ -987,7 +1006,8 @@ void QgsGrassNewMapset::drawRegion()
   QPixmap pm = mPixmap;
   mRegionMap->setPixmap( pm );
 
-  if ( mCellHead.proj == PROJECTION_XY ) return;
+  if ( mCellHead.proj == PROJECTION_XY )
+    return;
 
   QgsDebugMsg( QString( "pm.isNull() = %1" ).arg( pm.isNull() ) );
   QPainter p( &pm );
@@ -1071,8 +1091,10 @@ void QgsGrassNewMapset::drawRegion()
       // use 89.9 - for draw it is not so important
       if ( mCellHead.proj == PROJECTION_LL )
       {
-        if ( points[i].y() >= 89.9 )  points[i].setY( 89.9 );
-        if ( points[i].y() <= -89.9 )  points[i].setY( -89.9 );
+        if ( points[i].y() >= 89.9 )
+          points[i].setY( 89.9 );
+        if ( points[i].y() <= -89.9 )
+          points[i].setY( -89.9 );
       }
 
       QgsDebugMsg( QString( "%1,%2" ).arg( points[i].x() ).arg( points[i].y() ) );
@@ -1149,7 +1171,8 @@ void QgsGrassNewMapset::setMapsets()
   // Add all subdirs containing WIND
   for ( unsigned int i = 0; i < d.count(); i++ )
   {
-    if ( d[i] == "." || d[i] == ".." ) continue;
+    if ( d[i] == "." || d[i] == ".." )
+      continue;
 
     QString mapsetPath = locationPath + "/" + d[i];
     QString windPath = mapsetPath + "/WIND";
