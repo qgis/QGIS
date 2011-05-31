@@ -1610,11 +1610,6 @@ void QgsProject::setBadLayerHandler( QgsProjectBadLayerHandler* handler )
   mBadLayerHandler = handler;
 }
 
-void QgsProject::addEmbeddedLayer( const QString& layerId, const QString& projectFilePath )
-{
-  mEmbeddedLayers.insert( layerId, projectFilePath );
-}
-
 QString QgsProject::layerIsEmbedded( const QString& id ) const
 {
   QHash< QString, QString >::const_iterator it = mEmbeddedLayers.find( id );
