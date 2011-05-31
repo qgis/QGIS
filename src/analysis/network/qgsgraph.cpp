@@ -11,7 +11,7 @@
 
 /**
  * \file qgsgraph.cpp
- * \brief implementation QgsGraph, QgsGraphVertex, QgsGraphEdge
+ * \brief implementation QgsGraph, QgsGraphVertex, QgsGraphArc
  */
 
 #include "qgsgraph.h"
@@ -32,20 +32,20 @@ int QgsGraph::addVertex( const QgsPoint& pt )
   return mGraphVertexes.size()-1;
 }
 
-int QgsGraph::addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties )
+int QgsGraph::addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties )
 {
-  QgsGraphEdge e;
+  QgsGraphArc e;
 
   e.mProperties = properties;
   e.mOut = outVertexIdx;
   e.mIn  = inVertexIdx;
-  mGraphEdges.push_back( e );
-  int edgeIdx = mGraphEdges.size()-1;
+  mGraphArc.push_back( e );
+  int edgeIdx = mGraphArc.size()-1;
 
-  mGraphVertexes[ outVertexIdx ].mOutEdges.push_back( edgeIdx );
-  mGraphVertexes[ inVertexIdx ].mInEdges.push_back( edgeIdx );
+  mGraphVertexes[ outVertexIdx ].mOutArc.push_back( edgeIdx );
+  mGraphVertexes[ inVertexIdx ].mInArc.push_back( edgeIdx );
    
-  return mGraphEdges.size()-1;
+  return mGraphArc.size()-1;
 }
 
 const QgsGraphVertex& QgsGraph::vertex( int idx ) const
@@ -53,9 +53,9 @@ const QgsGraphVertex& QgsGraph::vertex( int idx ) const
   return mGraphVertexes[ idx ];
 }
 
-const QgsGraphEdge& QgsGraph::edge( int idx ) const
+const QgsGraphArc& QgsGraph::arc( int idx ) const
 {
-  return mGraphEdges[ idx ];
+  return mGraphArc[ idx ];
 }
 
 
@@ -64,9 +64,9 @@ int QgsGraph::vertexCount() const
   return mGraphVertexes.size();
 }
 
-int QgsGraph::edgeCount() const
+int QgsGraph::arcCount() const
 {
-  return mGraphEdges.size();
+  return mGraphArc.size();
 }
 
 int QgsGraph::findVertex( const QgsPoint& pt ) const
@@ -82,27 +82,27 @@ int QgsGraph::findVertex( const QgsPoint& pt ) const
   return -1;
 }
 
-QgsGraphEdge::QgsGraphEdge()
+QgsGraphArc::QgsGraphArc()
 {
  
 }
 
-QVariant QgsGraphEdge::property(int i) const
+QVariant QgsGraphArc::property(int i) const
 {
   return mProperties[ i ];
 }
 
-QVector< QVariant > QgsGraphEdge::properties() const
+QVector< QVariant > QgsGraphArc::properties() const
 {
   return mProperties;
 }
 
-int QgsGraphEdge::in() const
+int QgsGraphArc::in() const
 {
   return mIn;
 }
 
-int QgsGraphEdge::out() const
+int QgsGraphArc::out() const
 {
   return mOut;
 }
@@ -113,14 +113,14 @@ QgsGraphVertex::QgsGraphVertex( const QgsPoint& point )
 
 }
 
-QgsGraphEdgeList QgsGraphVertex::outEdges() const
+QgsGraphArcIdList QgsGraphVertex::outArc() const
 {
-  return mOutEdges;
+  return mOutArc;
 }
 
-QgsGraphEdgeList QgsGraphVertex::inEdges() const
+QgsGraphArcIdList QgsGraphVertex::inArc() const
 {
-  return mInEdges;
+  return mInArc;
 }
 
 QgsPoint QgsGraphVertex::point() const

@@ -40,7 +40,7 @@ void QgsGraphBuilder::addVertex( int, const QgsPoint& pt )
 
 void QgsGraphBuilder::addArc( int pt1id, const QgsPoint&, int pt2id, const QgsPoint&, const QVector< QVariant >& prop )
 {
-  mGraph->addEdge( pt1id, pt2id, prop );
+  mGraph->addArc( pt1id, pt2id, prop );
 }
 
 QgsGraph* QgsGraphBuilder::graph()

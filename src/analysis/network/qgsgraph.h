@@ -38,10 +38,10 @@ class QgsGraphVertex;
  * \class QgsGraphEdge
  * \brief This class implement a graph edge
  */
-class ANALYSIS_EXPORT QgsGraphEdge
+class ANALYSIS_EXPORT QgsGraphArc
 {
   public:
-    QgsGraphEdge();
+    QgsGraphArc();
 
     /**
      * return property value
@@ -75,7 +75,7 @@ class ANALYSIS_EXPORT QgsGraphEdge
 };
 
 
-typedef QList< int > QgsGraphEdgeList;
+typedef QList< int > QgsGraphArcIdList;
 
 /**
  * \ingroup analysis
@@ -99,12 +99,12 @@ class ANALYSIS_EXPORT QgsGraphVertex
     /**
      * return outgoing edges
      */
-    QgsGraphEdgeList outEdges() const;
+    QgsGraphArcIdList outArc() const;
     
     /**
      * return incoming edges
      */
-    QgsGraphEdgeList inEdges() const;
+    QgsGraphArcIdList inArc() const;
     
     /**
      * return vertex point
@@ -113,8 +113,8 @@ class ANALYSIS_EXPORT QgsGraphVertex
   
   private:
     QgsPoint mCoordinate;
-    QgsGraphEdgeList mOutEdges;
-    QgsGraphEdgeList mInEdges;
+    QgsGraphArcIdList mOutArc;
+    QgsGraphArcIdList mInArc;
 
   friend class QgsGraph;
 };
@@ -141,7 +141,7 @@ class ANALYSIS_EXPORT QgsGraph
     /**
      * add edge to a graph
      */
-    int addEdge( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
+    int addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
     
     /**
      * retrun vertex count
@@ -156,12 +156,12 @@ class ANALYSIS_EXPORT QgsGraph
    /**
      * retrun edge count
      */
-    int edgeCount() const;
+    int arcCount() const;
    
     /** 
      * retrun edge at index
      */
-    const QgsGraphEdge& edge( int idx ) const;
+    const QgsGraphArc& arc( int idx ) const;
 
     /**
      * find vertex by point
@@ -172,7 +172,7 @@ class ANALYSIS_EXPORT QgsGraph
   private: 
     QVector<QgsGraphVertex> mGraphVertexes;
     
-    QVector<QgsGraphEdge> mGraphEdges;
+    QVector<QgsGraphArc> mGraphArc;
 };
 
 #endif //QGSGRAPHH

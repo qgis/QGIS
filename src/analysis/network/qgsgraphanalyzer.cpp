@@ -34,7 +34,7 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
   QMap< double, int > not_begin;  
   QMap< double, int >::iterator it;
 
-  // QVector< QPair< cost, edge id > result
+  // QVector< QPair< cost, arc id > result
   QVector< QPair< double, int > > result;
 
   result.reserve( source->vertexCount() );
@@ -56,17 +56,17 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
     not_begin.erase( it );
 
     // edge index list
-    QgsGraphEdgeList l = source->vertex( curVertex ).outEdges();
-    QgsGraphEdgeList::iterator edgeIt;
-    for ( edgeIt = l.begin(); edgeIt != l.end(); ++edgeIt )
+    QgsGraphArcIdList l = source->vertex( curVertex ).outArc();
+    QgsGraphArcIdList::iterator arcIt;
+    for ( arcIt = l.begin(); arcIt != l.end(); ++arcIt )
     {
-      const QgsGraphEdge& edge = source->edge( *edgeIt );
-      double cost = edge.property( criterionNum ).toDouble() + curCost;
+      const QgsGraphArc& arc = source->arc( *arcIt );
+      double cost = arc.property( criterionNum ).toDouble() + curCost;
 
-      if ( cost < result[ edge.in() ].first )
+      if ( cost < result[ arc.in() ].first )
       {
-        result[ edge.in() ] = QPair< double, int >( cost, *edgeIt );
-        not_begin.insert( cost, edge.in() );
+        result[ arc.in() ] = QPair< double, int >( cost, *arcIt );
+        not_begin.insert( cost, arc.in() );
       }
     }
   }
@@ -88,10 +88,10 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
     {
       if ( result[ i ].first < std::numeric_limits<double>::infinity() && result[i].second != -1)
       {  
-        const QgsGraphEdge& edge = source->edge( result[i].second );
+        const QgsGraphArc& arc = source->arc( result[i].second );
 
-        treeResult->addEdge( source2result[ edge.out() ], source2result[ i ], 
-            edge.properties() );
+        treeResult->addArc( source2result[ arc.out() ], source2result[ i ], 
+            arc.properties() );
       }
     }
   }

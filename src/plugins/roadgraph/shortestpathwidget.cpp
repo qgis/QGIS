@@ -316,10 +316,10 @@ void RgShortestPathWidget::findingPath()
   QList< QgsPoint > p;
   while( startVertexIdx != stopVertexIdx )
   {
-    QgsGraphEdgeList l = path.vertex( stopVertexIdx ).inEdges();
+    QgsGraphArcIdList l = path.vertex( stopVertexIdx ).inArc();
     if ( l.empty() )
       break;
-    const QgsGraphEdge& e = path.edge( l.front() );
+    const QgsGraphArc& e = path.arc( l.front() );
     
     cost += e.property(0).toDouble();
     time += e.property(1).toDouble();
