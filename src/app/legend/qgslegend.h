@@ -193,6 +193,8 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
+    void addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent = 0 );
+
   public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -366,6 +368,9 @@ class QgsLegend : public QTreeWidget
 
     // The action when the mouse is released
     enum { BEFORE, INSERT, AFTER } mDropAction;
+
+    // Groups defined in other project files
+    QHash< QString, QString > mEmbeddedGroups;
 
     /** Hide the line that indicates insertion position */
     void hideLine();

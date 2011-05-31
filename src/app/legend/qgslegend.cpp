@@ -611,6 +611,77 @@ Qt::CheckState QgsLegend::layerCheckState( QgsMapLayer * layer )
   return ll ? ll->checkState( 0 ) : Qt::Unchecked;
 }
 
+void QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent )
+{
+  mEmbeddedGroups.insert( groupName, projectFilePath );
+
+  //open project file, get layer ids in group, add the layers
+  QFile projectFile( projectFilePath );
+  if( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument projectDocument;
+  if( !projectDocument.setContent( &projectFile ) )
+  {
+    return;
+  }
+
+  QDomElement legendElem = projectDocument.documentElement().firstChildElement("legend");
+  if( legendElem.isNull() )
+  {
+    return;
+  }
+
+  QList<QDomNode> brokenNodes;
+  QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+  QSettings settings;
+
+  QDomNodeList legendGroupList = legendElem.elementsByTagName("legendgroup");
+  for( int i = 0; i < legendGroupList.size(); ++i )
+  {
+    QDomElement legendElem = legendGroupList.at(i).toElement();
+    if( legendElem.attribute("name") == groupName )
+    {
+      QgsLegendGroup* group = 0;
+      if( parent )
+      {
+        group = new QgsLegendGroup( parent, groupName );
+      }
+      else
+      {
+        group = new QgsLegendGroup( this, groupName );
+      }
+
+      QFont groupFont;
+      groupFont.setItalic( true );
+      group->setFont( 0, groupFont );
+      setCurrentItem( group );
+
+      QDomNodeList groupChildren = legendElem.childNodes();
+      for( int j = 0; j < groupChildren.size(); ++j )
+      {
+        QDomElement childElem = groupChildren.at( j ).toElement();
+        QString tagName = childElem.tagName();
+        if( tagName == "legendlayer" )
+        {
+          QString layerId = childElem.firstChildElement("filegroup").firstChildElement("legendlayerfile").attribute("layerid");
+          QgsProject::instance()->createEmbeddedLayer( layerId, projectFilePath, brokenNodes, vectorLayerList );
+          if( currentItem() )
+          {
+            insertItem( currentItem(), group );
+          }
+        }
+        else if( tagName == "legendgroup" )
+        {
+          addEmbeddedGroup( childElem.attribute("name"), projectFilePath, group );
+        }
+      }
+    }
+  }
+}
+
 int QgsLegend::getItemPos( QTreeWidgetItem* item )
 {
   int counter = 1;

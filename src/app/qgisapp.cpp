@@ -5054,12 +5054,16 @@ void QgisApp::embedLayers()
   //dialog to select groups/layers from other project files
 
   //hardcoded for debugging
-  QString filepath="/home/marco/geodaten/projekte/composertest.qgs";
+  /*QString filepath="/home/marco/geodaten/projekte/composertest.qgs";
   QString id="komb113320110531113659299";
 
   QList<QDomNode> brokenNodes;
   QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-  QgsProject::instance()->createEmbeddedLayer( id, filepath, brokenNodes, vectorLayerList );
+  QgsProject::instance()->createEmbeddedLayer( id, filepath, brokenNodes, vectorLayerList );*/
+
+  QString filepath="/home/marco/geodaten/projekte/rasters.qgs";
+  QString groupname="Karten";
+  mMapLegend->addEmbeddedGroup( groupname, filepath );
 }
 
 void QgisApp::setExtent( QgsRectangle theRect )
