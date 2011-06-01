@@ -452,6 +452,7 @@ void QgsGrassPlugin::edit()
     mCanvas->refresh();
     connect( mEdit, SIGNAL( finished() ), this, SLOT( setEditAction() ) );
     connect( mEdit, SIGNAL( finished() ), this, SLOT( cleanUp() ) );
+    connect( mEdit, SIGNAL( destroyed() ), this, SLOT( editClosed() ) );
     connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( closeEdit( QString ) ) );
   }
   else
@@ -484,6 +485,12 @@ void QgsGrassPlugin::closeEdit( QString layerId )
   {
     mEdit->closeEdit();
   }
+}
+
+void QgsGrassPlugin::editClosed()
+{
+  if( mEdit == sender() )
+    mEdit = 0;
 }
 
 void QgsGrassPlugin::cleanUp()

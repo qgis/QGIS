@@ -1780,9 +1780,8 @@ void QgsGrassEdit::displayDynamic( struct line_pnts *Points, double x, double y,
 
 void QgsGrassEdit::displayNode( int node, const QPen & pen, int size, QPainter *painter )
 {
-  QgsDebugMsg( QString( "node = %1" ).arg( node ) );
-
-  if ( !mSymbDisplay[mNodeSymb[node]] ) return;
+  if ( !mSymbDisplay[mNodeSymb[node]] )
+    return;
 
   double x, y;
 
@@ -1805,8 +1804,6 @@ QgsPoint QgsGrassEdit::transformLayerToMap( QgsPoint point )
 void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
                                 int type, int size, QPainter *painter )
 {
-  QgsDebugMsg( "entered." );
-
   QgsPoint point;
   QPolygon pointArray( 2 );
 
