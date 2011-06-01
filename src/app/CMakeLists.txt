@@ -20,6 +20,7 @@ SET(QGIS_APP_SRCS
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
+  qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
   qgsdisplayangle.cpp
@@ -152,6 +153,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdbtablemodel.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
+  qgsembedlayerdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h

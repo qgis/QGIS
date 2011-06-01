@@ -113,6 +113,7 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
@@ -5061,9 +5062,32 @@ void QgisApp::embedLayers()
   QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
   QgsProject::instance()->createEmbeddedLayer( id, filepath, brokenNodes, vectorLayerList );*/
 
-  QString filepath="/home/marco/geodaten/projekte/rasters.qgs";
+  /*QString filepath="/home/marco/geodaten/projekte/rasters.qgs";
   QString groupname="Karten";
-  mMapLegend->addEmbeddedGroup( groupname, filepath );
+  mMapLegend->addEmbeddedGroup( groupname, filepath );*/
+
+  QgsEmbedLayerDialog d;
+  if( d.exec() == QDialog::Accepted )
+  {
+    //groups
+    QList< QPair < QString, QString > > groups = d.embeddedGroups();
+    QList< QPair < QString, QString > >::const_iterator groupIt = groups.constBegin();
+    for(; groupIt != groups.constEnd(); ++groupIt )
+    {
+      mMapLegend->addEmbeddedGroup( groupIt->first, groupIt->second );
+    }
+
+    //layers
+    QList<QDomNode> brokenNodes;
+    QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+
+    QList< QPair < QString, QString > > layers = d.embeddedLayers();
+    QList< QPair < QString, QString > >::const_iterator layerIt = layers.constBegin();
+    for(; layerIt != layers.constEnd(); ++layerIt )
+    {
+      QgsProject::instance()->createEmbeddedLayer( layerIt->first, layerIt->second, brokenNodes, vectorLayerList );
+    }
+  }
 }
 
 void QgisApp::setExtent( QgsRectangle theRect )
