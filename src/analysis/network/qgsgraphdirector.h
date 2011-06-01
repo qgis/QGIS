@@ -22,7 +22,7 @@
 
 //QGIS includes
 #include <qgspoint.h>
-#include "qgsedgeproperter.h"
+#include "qgsarcproperter.h"
 
 //forward declarations
 class QgsGraphBuilderInterface;
@@ -59,7 +59,7 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
                             const QVector< QgsPoint >& additionalPoints,
                             QVector< QgsPoint>& tiedPoints ) const = 0;
     
-    void addProperter( QgsEdgeProperter* prop )
+    void addProperter( QgsArcProperter* prop )
     {
       mProperterList.push_back( prop );
     }
@@ -70,6 +70,6 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
     virtual QString name() const = 0;
   
   protected:
-    QList<QgsEdgeProperter*> mProperterList;
+    QList<QgsArcProperter*> mProperterList;
 };
 #endif //QGSGRAPHDIRECTORH

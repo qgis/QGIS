@@ -6,7 +6,7 @@
 SET(QGIS_NETWORK_ANALYSIS_SRCS
   qgsgraph.cpp
   qgsgraphbuilder.cpp
-  qgsdistanceedgeproperter.cpp
+  qgsdistancearcproperter.cpp
   qgslinevectorlayerdirector.cpp
   qgsgraphanalyzer.cpp
 )
@@ -57,8 +57,8 @@ SET(QGIS_NETWORK_ANALYSIS_HDRS
   qgsgraph.h 
   qgsgraphbuilderintr.h 
   qgsgraphbuilder.h 
-  qgsedgeproperter.h 
-  qgsdistanceedgeproperter.h 
+  qgsarcproperter.h 
+  qgsdistancearcproperter.h 
   qgsgraphdirector.h 
   qgslinevectorlayerdirector.h 
   qgsgraphanalyzer.h )

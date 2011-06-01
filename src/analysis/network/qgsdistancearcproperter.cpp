@@ -10,9 +10,9 @@
  ***************************************************************************/
 
 //QGIS includes
-#include "qgsdistanceedgeproperter.h"
+#include "qgsdistancearcproperter.h"
 
-QVariant QgsDistanceEdgeProperter::property( double distance, const QgsFeature& f ) const
+QVariant QgsDistanceArcProperter::property( double distance, const QgsFeature& f ) const
 {
     return QVariant( distance );
 }

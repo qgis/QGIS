@@ -14,9 +14,9 @@
 #ifndef ROADGRAPH_SPEEDPROPERTER_H
 #define ROADGRAPH_SPEEDPROPERTER_H
 
-#include <qgsedgeproperter.h>
+#include <qgsarcproperter.h>
 
-class RgSpeedProperter : public QgsEdgeProperter
+class RgSpeedProperter : public QgsArcProperter
 {
   public:
     RgSpeedProperter( int attributeId, double defaultValue, double toMetricFactor );

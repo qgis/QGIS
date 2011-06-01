@@ -13,18 +13,42 @@
 *                                                                          *
 ***************************************************************************/
 
-#ifndef QGSEDGEDISTANCEPROPERTERH
-#define QGSEDGEDISTANCEPROPERTERH
+#ifndef QGSEDGEPROPERTERH
+#define QGSEDGEPROPERTERH
 
 // QT4 includes
 #include <QVariant>
 
 // QGIS includes
-#include <qgsedgeproperter.h>
+#include <qgsfeature.h>
+#include <qgslabel.h>
 
-class ANALYSIS_EXPORT QgsDistanceEdgeProperter : public QgsEdgeProperter
+/**
+ * \ingroup networkanalysis
+ * \class QgsEdgeProperter
+ * \brief QgsEdgeProperter is a strategy pattern. 
+ * You can use it for customize arc property. For example look at QgsDistanceArcProperter or src/plugins/roadgraph/speedproperter.h 
+ */
+class ANALYSIS_EXPORT QgsArcProperter
 {
   public:
-    virtual QVariant property( double distance, const QgsFeature& ) const;
+    /**
+     * default constructor
+     */
+    QgsArcProperter()
+    { }
+    
+    /**
+     * QgsGraphDirector call this method for fetching attribute from source layer
+     * \return required attributes list
+     */
+    virtual QgsAttributeList requiredAttributes() const
+    { return QgsAttributeList(); }
+    
+    /**
+     * calculate and return adge property
+     */
+    virtual QVariant property( double distance, const QgsFeature& f ) const
+    { return QVariant(); }
 };
-#endif //QGSEDGEDISTANCEPROPERTYH
+#endif //QGSEDGEPROPERTYH

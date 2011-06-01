@@ -30,7 +30,7 @@
 #include <qgslinevectorlayerdirector.h>
 #include <qgsgraphbuilder.h>
 #include <qgsgraph.h>
-#include <qgsdistanceedgeproperter.h>
+#include <qgsdistancearcproperter.h>
 
 // Road grap plugin includes
 #include "roadgraphplugin.h"
@@ -281,7 +281,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
                                    mSettings->mBothDirectionVal,
                                    mSettings->mDefaultDirection
                                    );
-    director->addProperter( new QgsDistanceEdgeProperter() );
+    director->addProperter( new QgsDistanceArcProperter() );
     director->addProperter( new RgSpeedProperter( provider->fieldNameIndex( mSettings->mSpeed ), 
         mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
