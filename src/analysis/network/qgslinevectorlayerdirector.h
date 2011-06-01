@@ -27,7 +27,7 @@ class QgsGraphBuilderInterface;
 class QgsVectorLayer;
 
 /**
-* \ingroup analysis
+* \ingroup networkanalysis
 * \class QgsLineVectorLayerDirector
 * \brief Determine making the graph from vector line layer
 */
@@ -46,12 +46,12 @@ class QgsLineVectorLayerDirector : public QgsGraphDirector
      * @param layerId
      * @param directionFieldId feield contain road direction value
      * @param directDirectionValue value for one-way road
-     * @param reverseDirection value for reverse one-way road
+     * @param reverseDirectionValue value for reverse one-way road
      * @param bothDirectionValue value for road
      * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both direction
      */
     QgsLineVectorLayerDirector( const QString& layerId,
-                               int directionFiledId,
+                               int directionFieldId,
                                const QString& directDirectionValue,
                                const QString& reverseDirectionValue,
                                const QString& bothDirectionValue,
@@ -61,7 +61,7 @@ class QgsLineVectorLayerDirector : public QgsGraphDirector
     //! Destructor
     virtual ~QgsLineVectorLayerDirector();
     
-    /**
+    /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
     void makeGraph( QgsGraphBuilderInterface *builder,

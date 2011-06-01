@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgsgraphalyzer.h - QGIS Tools for vector geometry analysis
+    qgsgraphalyzer.h - QGIS Tools for graph analysis
                              -------------------
     begin                : 14 april 2010
     copyright            : (C) Sergey Yakushev
@@ -24,7 +24,7 @@
 // forward-declaration
 class QgsGraph;
 
-/** \ingroup analysis
+/** \ingroup networkanalysis
  * The QGis class provides graph analysis functions
  */
 

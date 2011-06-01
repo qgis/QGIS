@@ -34,7 +34,7 @@
 class QgsGraphVertex;
 
 /**
- * \ingroup analysis
+ * \ingroup networkanalysis
  * \class QgsGraphEdge
  * \brief This class implement a graph edge
  */
@@ -78,7 +78,7 @@ class ANALYSIS_EXPORT QgsGraphArc
 typedef QList< int > QgsGraphArcIdList;
 
 /**
- * \ingroup analysis
+ * \ingroup networkanalysis
  * \class QgsGraphVertex
  * \brief This class implement a graph vertex
  */
@@ -120,7 +120,7 @@ class ANALYSIS_EXPORT QgsGraphVertex
 };
 
 /**
- * \ingroup analysis
+ * \ingroup networkanalysis
  * \class QgsGraph
  * \brief Mathematics graph representation
  */

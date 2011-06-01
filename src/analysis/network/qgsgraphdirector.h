@@ -28,7 +28,7 @@
 class QgsGraphBuilderInterface;
 
 /**
- * \ingroup analysis
+ * \ingroup networkanalysis
  * \class QgsGraphDirector
  * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
  */

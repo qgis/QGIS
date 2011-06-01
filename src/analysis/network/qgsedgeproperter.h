@@ -24,8 +24,10 @@
 #include <qgslabel.h>
 
 /**
+ * \ingroup networkanalysis
  * \class QgsEdgeProperter
- * \brief QgsEdgeProperter is a strategy pattern. You can use it for customize edge property.
+ * \brief QgsEdgeProperter is a strategy pattern. 
+ * You can use it for customize edge property. For example look at QgsDistanceEdgeProperter or src/plugins/roadgraph/speedproperter.h 
  */
 class ANALYSIS_EXPORT QgsEdgeProperter
 {

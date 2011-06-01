@@ -28,7 +28,7 @@ class QgsCoordinateTransform;
 class QgsGraph;
 
 /**
-* \ingroup analysis
+* \ingroup networkanalysis
 * \class QgsGraphBuilder
 * \brief This class making the QgsGraph object
 */
