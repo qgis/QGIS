@@ -611,7 +611,7 @@ Qt::CheckState QgsLegend::layerCheckState( QgsMapLayer * layer )
   return ll ? ll->checkState( 0 ) : Qt::Unchecked;
 }
 
-void QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent )
+QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent )
 {
   mEmbeddedGroups.insert( groupName, projectFilePath );
 
@@ -619,19 +619,19 @@ void QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& proje
   QFile projectFile( projectFilePath );
   if( !projectFile.open( QIODevice::ReadOnly ) )
   {
-    return;
+    return 0;
   }
 
   QDomDocument projectDocument;
   if( !projectDocument.setContent( &projectFile ) )
   {
-    return;
+    return 0;
   }
 
   QDomElement legendElem = projectDocument.documentElement().firstChildElement("legend");
   if( legendElem.isNull() )
   {
-    return;
+    return 0;
   }
 
   QList<QDomNode> brokenNodes;
@@ -667,8 +667,8 @@ void QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& proje
         if( tagName == "legendlayer" )
         {
           QString layerId = childElem.firstChildElement("filegroup").firstChildElement("legendlayerfile").attribute("layerid");
-          QgsProject::instance()->createEmbeddedLayer( layerId, projectFilePath, brokenNodes, vectorLayerList );
-          if( currentItem() )
+          QgsProject::instance()->createEmbeddedLayer( layerId, projectFilePath, brokenNodes, vectorLayerList, false );
+          if( currentItem() && currentItem() != group )
           {
             insertItem( currentItem(), group );
           }
@@ -678,8 +678,10 @@ void QgsLegend::addEmbeddedGroup( const QString& groupName, const QString& proje
           addEmbeddedGroup( childElem.attribute("name"), projectFilePath, group );
         }
       }
+      return group;
     }
   }
+  return 0;
 }
 
 int QgsLegend::getItemPos( QTreeWidgetItem* item )
@@ -1003,14 +1005,22 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
         legendgroupnode.setAttribute( "checked", "Qt::PartiallyChecked" );
       }
 
-      QList<QTreeWidgetItem *> children;
-      for ( int i = 0; i < currentItem->childCount(); i++ )
+      QHash< QString, QString >::const_iterator embedIt = mEmbeddedGroups.find( item->text( 0 ) );
+      if( embedIt != mEmbeddedGroups.constEnd() )
       {
-        children << currentItem->child( i );
+        legendgroupnode.setAttribute("embedded", 1);
+        legendgroupnode.setAttribute("project", embedIt.value() );
       }
+      else
+      {
+        QList<QTreeWidgetItem *> children;
+        for ( int i = 0; i < currentItem->childCount(); i++ )
+        {
+          children << currentItem->child( i );
+        }
 
-      writeXML( children, legendgroupnode, document );
-
+        writeXML( children, legendgroupnode, document );
+      }
       node.appendChild( legendgroupnode );
     }
     else if ( item->type() == QgsLegendItem::LEGEND_LAYER )
@@ -1109,11 +1119,18 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
     //test every possibility of element...
     if ( childelem.tagName() == "legendgroup" )
     {
-      QgsLegendGroup *theGroup;
-      if ( parent )
-        theGroup = new QgsLegendGroup( parent, name );
+      QgsLegendGroup* theGroup = 0;
+      if( childelem.attribute("embedded") == "1" )
+      {
+        theGroup = addEmbeddedGroup( name, childelem.attribute( "project" ) );
+      }
       else
-        theGroup = new QgsLegendGroup( this, name );
+      {
+        if ( parent )
+          theGroup = new QgsLegendGroup( parent, name );
+        else
+          theGroup = new QgsLegendGroup( this, name );
+      }
 
       //set the checkbox of the legend group to the right state
       blockSignals( true );
