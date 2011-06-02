@@ -35,20 +35,6 @@ class QgsGraph;
 
 class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 {
-  private:
-    /**
-     * \class QgsPointCompare
-     * \brief equivalence ratio
-     */
-    class QgsPointCompare
-    {
-      public:
-        bool operator()( const QgsPoint& a, const QgsPoint& b ) const
-        {
-          return a.x() == b.x() ? a.y() < b.y() : a.x() < b.x();
-        }
-    };
-
   public:
     /**
      * default constructor
