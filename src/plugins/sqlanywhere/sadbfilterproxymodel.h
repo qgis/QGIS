@@ -22,7 +22,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #ifndef SADBFILTERPROXYMODEL_H
 #define SADBFILTERPROXYMODEL_H

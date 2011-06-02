@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPROVIDERCOUNTCALCEVENT_H
 #define QGSPROVIDERCOUNTCALCEVENT_H

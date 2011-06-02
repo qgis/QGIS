@@ -17,7 +17,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPROJECT_H
 #define QGSPROJECT_H

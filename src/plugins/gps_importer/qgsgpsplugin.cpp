@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 // includes
 
@@ -48,7 +47,6 @@
 #include "qgsgpsplugingui.h"
 
 
-static const char * const ident_ = "$Id$";
 static const QString name_ = QObject::tr( "GPS Tools" );
 static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
 static const QString version_ = QObject::tr( "Version 0.1" );

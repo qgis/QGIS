@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSWMSSOURCESELECT_H
 #define QGSWMSSOURCESELECT_H

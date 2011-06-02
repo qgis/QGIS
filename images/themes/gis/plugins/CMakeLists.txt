@@ -1,4 +1,4 @@
-SUBDIRS (coordinate_capture)
+ADD_SUBDIRECTORY(coordinate_capture)
 
 FILE (GLOB IMAGES *.png)
 

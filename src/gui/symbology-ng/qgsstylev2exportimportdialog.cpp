@@ -14,7 +14,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsstylev2exportimportdialog.cpp 13187 2010-03-28 22:14:44Z jef $ */
 
 #include <QCloseEvent>
 #include <QFileDialog>

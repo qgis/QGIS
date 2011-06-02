@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSGENERICPROJECTIONSELECTOR_H
 #define QGSGENERICPROJECTIONSELECTOR_H
 #include <ui_qgsgenericprojectionselectorbase.h>

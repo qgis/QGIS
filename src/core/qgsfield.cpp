@@ -13,12 +13,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsfield.h"
-
-static const char * const ident_ =
-  "$Id$";
 
 /*
 QgsField::QgsField(QString nam, QString typ, int len, int prec, bool num,

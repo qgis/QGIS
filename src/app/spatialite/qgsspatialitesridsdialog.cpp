@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include <QMessageBox>
 #include "qgsspatialitesridsdialog.h"
 QgsSpatialiteSridsDialog::QgsSpatialiteSridsDialog( QWidget *parent, Qt::WFlags fl )

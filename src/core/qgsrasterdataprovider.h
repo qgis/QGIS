@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 /* Thank you to Marco Hugentobler for the original vector DataProvider */
 

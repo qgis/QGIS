@@ -24,7 +24,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #ifndef SADBTABLEMODEL_H
 #define SADBTABLEMODEL_H

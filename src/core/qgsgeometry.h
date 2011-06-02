@@ -12,7 +12,6 @@ email                : morb at ozemail dot com dot au
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSGEOMETRY_H
 #define QGSGEOMETRY_H

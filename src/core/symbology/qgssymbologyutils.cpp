@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgssymbologyutils.h"
 #include "qgslogger.h"
 #include <QPixmap>

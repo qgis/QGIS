@@ -72,11 +72,23 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
   int featureCount = ( int ) vl->featureCount() * 2;
   int step = 0;
 
-  QgsCoordinateTransform ct( vl->crs(), builder->destinationCrs() );
-
+  QgsCoordinateTransform ct;
   QgsDistanceArea da;
-  da.setSourceCrs( builder->destinationCrs().srsid() );
-  da.setProjectionsEnabled( true );
+  ct.setSourceCrs( vl->crs() );
+
+  if ( builder->coordinateTransformEnabled() )
+  {
+    ct.setDestCRS( builder->destinationCrs() );
+    da.setProjectionsEnabled( true );
+    //
+    //da.setSourceCrs( builder->destinationCrs().srsid() );
+    //
+  }
+  else
+  {
+    ct.setDestCRS( vl->crs() );
+    da.setProjectionsEnabled( false );
+  }
 
   tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
   TiePointInfo tmpInfo;
@@ -104,8 +116,15 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
         for ( i = 0; i != additionalPoints.size(); ++i )
         {
           TiePointInfo info;
-          info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), info.mTiedPoint );
-
+          if ( pt1 == pt2 )
+          {
+            info.mLength = additionalPoints[ i ].sqrDist( pt1 );
+            info.mTiedPoint = pt1;
+          }
+          else
+          {
+            info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), pt2.x(), pt2.y(), info.mTiedPoint );
+          }
           if ( pointLengthMap[ i ].mLength > info.mLength )
           {
             info.mTiedPoint = builder->addVertex( info.mTiedPoint );

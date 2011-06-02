@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSMAPLAYERREGISTRY_H
 #define QGSMAPLAYERREGISTRY_H

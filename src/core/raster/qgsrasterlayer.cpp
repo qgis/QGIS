@@ -14,7 +14,6 @@ email                : tim at linfiniti.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsapplication.h"
 #include "qgslogger.h"

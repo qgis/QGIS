@@ -1,7 +1,7 @@
-SUBDIRS(plugins)
+ADD_SUBDIRECTORY(plugins)
 
 IF (WITH_INTERNAL_SPATIALITE)
-  SUBDIRS(pyspatialite)
+  ADD_SUBDIRECTORY(pyspatialite)
 
   INCLUDE_DIRECTORIES(
     ../src/core/spatialite/headers
@@ -51,7 +51,7 @@ ENDIF(NOT PYQT4_VERSION_NUM LESS 264194)
 
 # core module
 FILE(GLOB sip_files_core core/*.sip)
-set(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
+SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core})
 ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
 
 # additional gui includes
@@ -65,7 +65,7 @@ INCLUDE_DIRECTORIES(
 
 # gui module
 FILE(GLOB sip_files_gui gui/*.sip)
-set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
+SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_gui})
 ADD_SIP_PYTHON_MODULE(qgis.gui gui/gui.sip qgis_core qgis_gui)
 
 # additional analysis includes
@@ -76,7 +76,7 @@ INCLUDE_DIRECTORIES(
 
 # analysis module
 FILE(GLOB sip_files_analysis analysis/*.sip)
-set(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
+SET(SIP_EXTRA_FILES_DEPEND ${sip_files_core} ${sip_files_analysis})
 ADD_SIP_PYTHON_MODULE(qgis.analysis analysis/analysis.sip qgis_core qgis_analysis)
 
 

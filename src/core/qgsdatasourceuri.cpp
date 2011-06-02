@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsdatasourceuri.h 5839 2006-09-19 18:04:21Z wonder $ */
 
 #include "qgsdatasourceuri.h"
 #include "qgslogger.h"

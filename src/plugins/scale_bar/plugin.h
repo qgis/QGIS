@@ -18,7 +18,6 @@ email                : sbr00pwb@users.sourceforge.net
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef QGSCALEBARPLUGIN
 #define QGSCALEBARPLUGIN
 #include "../qgisplugin.h"

@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgdalprovider.cpp 11522 2009-08-28 14:49:22Z jef $ */
 
 #include "qgslogger.h"
 #include "qgsgdalprovider.h"

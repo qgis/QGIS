@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsmaptoolselectrectangle.h 13187 2010-03-28 22:14:44Z jef $ */
 
 #ifndef QGSMAPTOOLRECTANGLE_H
 #define QGSMAPTOOLRECTANGLE_H

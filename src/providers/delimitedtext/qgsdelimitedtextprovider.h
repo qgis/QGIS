@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"

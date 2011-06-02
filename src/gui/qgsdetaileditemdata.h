@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSDETAILEDITEMDATA_H
 #define QGSDETAILEDITEMDATA_H
 

@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgrassrasterprovider.h 12528 2009-12-20 12:29:07Z jef $ */
 
 #ifndef QGSGRASSRASTERPROVIDER_H
 #define QGSGRASSRASTERPROVIDER_H

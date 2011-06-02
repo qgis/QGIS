@@ -1,8 +1,17 @@
+# include doxygen documentation
+SET (WITH_APIDOC FALSE CACHE BOOL "Determines whether the QGIS API doxygen documentation should be built")
+
+# include doxygen documentation
+SET (WITH_TXT2TAGS_PDF FALSE CACHE BOOL "Determines whether PDF should be generate for the txt2tags documentation")
+
 INCLUDE(Txt2Tags)
 FIND_TXT2TAGS()
 
 IF(TXT2TAGS_EXECUTABLE)
   ADD_TXT2TAGS_FILES(QGIS_DOC_FILES INSTALL.t2t CODING.t2t)
+  IF(WITH_TXT2TAGS_PDF)
+    ADD_TXT2TAGS_PDFS(QGIS_DOC_FILES INSTALL.t2t CODING.t2t)
+  ENDIF(WITH_TXT2TAGS_PDF)
   ADD_CUSTOM_TARGET (t2tdoc ALL DEPENDS ${QGIS_DOC_FILES})
 ELSE(TXT2TAGS_EXECUTABLE)
   SET(QGIS_DOC_FILES

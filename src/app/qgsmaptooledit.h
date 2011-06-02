@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSMAPTOOLEDIT_H
 #define QGSMAPTOOLEDIT_H

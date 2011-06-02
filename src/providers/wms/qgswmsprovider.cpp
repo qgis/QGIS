@@ -19,7 +19,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 #include <typeinfo>
 
 #define WMS_THRESHOLD 200  // time to wait for an answer without emitting dataChanged() 
@@ -1725,6 +1724,25 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
               e1.attribute( "maxx" ).toDouble(),
               e1.attribute( "maxy" ).toDouble()
             );
+
+        if ( e1.hasAttribute( "SRS" ) && e1.attribute( "SRS" ) != DEFAULT_LATLON_CRS )
+        {
+          try
+          {
+            QgsCoordinateReferenceSystem src;
+            src.createFromOgcWmsCrs( e1.attribute( "SRS" ) );
+
+            QgsCoordinateReferenceSystem dst;
+            dst.createFromOgcWmsCrs( DEFAULT_LATLON_CRS );
+
+            QgsCoordinateTransform ct( src, dst );
+            layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
+          }
+          catch ( QgsCsException &cse )
+          {
+            Q_UNUSED( cse );
+          }
+        }
       }
       else if ( e1.tagName() == "EX_GeographicBoundingBox" ) //for WMS 1.3
       {
@@ -1752,8 +1770,19 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
                                  e1.attribute( "maxx" ).toDouble(),
                                  e1.attribute( "maxy" ).toDouble()
                                );
-        bbox.crs = e1.attribute( "CRS" );
-        layerProperty.boundingBox.push_back( bbox );
+        if ( e1.hasAttribute( "CRS" ) || e1.hasAttribute( "SRS" ) )
+        {
+          if ( e1.hasAttribute( "CRS" ) )
+            bbox.crs = e1.attribute( "CRS" );
+          else if ( e1.hasAttribute( "SRS" ) )
+            bbox.crs = e1.attribute( "SRS" );
+
+          layerProperty.boundingBox.push_back( bbox );
+        }
+        else
+        {
+          QgsDebugMsg( "CRS/SRS attribute note found in BoundingBox" );
+        }
       }
       else if ( e1.tagName() == "Dimension" )
       {

@@ -14,7 +14,6 @@ email                : sherman at mrcc.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsmapcanvas.cpp 5400 2006-04-30 20:14:08Z wonder $ */
 
 
 #include <QtGlobal>

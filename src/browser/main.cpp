@@ -33,7 +33,6 @@ int main( int argc, char ** argv )
 {
   QSettings settings;
 
-
   QgsApplication a( argc, argv, true );
   a.setThemeName( settings.value( "/Themes", "default" ).toString() );
 

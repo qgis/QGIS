@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
  
 %{
 #include <qglobal.h>
@@ -113,7 +112,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %left IN
 
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %left '^'
 %left UMINUS  // fictitious symbol (for unary minus)
 

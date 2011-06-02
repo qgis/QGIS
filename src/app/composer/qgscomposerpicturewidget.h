@@ -54,6 +54,8 @@ class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWi
 
   private:
     QgsComposerPicture* mPicture;
+    bool mPreviewInitialized;
+
     /**Add the icons of a directory to the preview. Returns 0 in case of success*/
     int addDirectoryToPreview( const QString& path );
     /**Add the icons of the standard directories to the preview*/

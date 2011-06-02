@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSBOOKMARKITEM_H
 #define QGSBOOKMARKITEM_H
 

@@ -12,7 +12,6 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-/*  $Id$ */
 
 //
 // QGIS Specific includes
@@ -34,8 +33,6 @@
 #include <QFile>
 #include <QToolBar>
 
-static const char *const sIdent =
-  "$Id$";
 static const QString sName = QObject::tr( "Dxf2Shp Converter" );
 static const QString sDescription = QObject::tr( "Converts from dxf to shp file format" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );

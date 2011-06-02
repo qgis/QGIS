@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QgsSpatialiteSridsDialog_H
 #define QgsSpatialiteSridsDialog_H
 #include "ui_qgsspatialitesridsdialogbase.h"

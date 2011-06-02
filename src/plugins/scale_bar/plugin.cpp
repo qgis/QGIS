@@ -18,7 +18,6 @@ email                : sbr00pwb@users.sourceforge.net
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 // includes
 
@@ -57,8 +56,6 @@ email                : sbr00pwb@users.sourceforge.net
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
 #endif
-
-static const char * const ident_ = "$Id$";
 
 static const QString name_ = QObject::tr( "ScaleBar" );
 static const QString description_ = QObject::tr( "Draws a scale bar" );

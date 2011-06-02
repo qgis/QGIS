@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSSYMBOLOGYUTILS_H
 #define QGSSYMBOLOGYUTILS_H

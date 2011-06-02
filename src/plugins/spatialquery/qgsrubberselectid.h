@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #ifndef QGSRUBBERSELECTID_H
 #define QGSRUBBERSELECTID_H

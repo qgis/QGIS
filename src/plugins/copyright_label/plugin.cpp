@@ -18,7 +18,6 @@ email                : tim@linfiniti.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 // includes
 
@@ -45,8 +44,6 @@ email                : tim@linfiniti.com
 #include "plugingui.h"
 #include "qgslogger.h"
 
-
-static const char * const ident_ = "$Id$";
 
 static const QString name_ = QObject::tr( "CopyrightLabel" );
 static const QString description_ = QObject::tr( "Draws copyright information" );

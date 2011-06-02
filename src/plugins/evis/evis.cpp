@@ -45,7 +45,6 @@
  *   ( at your option ) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #include "evis.h"
 
 //
@@ -80,7 +79,6 @@
 #define QGISEXTERN extern "C"
 #endif
 
-static const char * const sIdent = "$Id$";
 static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
