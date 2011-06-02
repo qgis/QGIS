@@ -8,3 +8,5 @@
 %Include qgsdistancearcproperter.sip
 %Include qgsgraphbuilderintr.sip
 %Include qgsgraphbuilder.sip
+%Include qgsgraphdirector.sip
+%Include qgslinevectorlayerdirector.sip

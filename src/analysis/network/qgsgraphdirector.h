@@ -57,7 +57,8 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
      */
     virtual void makeGraph( QgsGraphBuilderInterface* builder,
                             const QVector< QgsPoint >& additionalPoints,
-                            QVector< QgsPoint>& tiedPoints ) const = 0;
+                            QVector< QgsPoint>& tiedPoints ) const
+    {}
     
     void addProperter( QgsArcProperter* prop )
     {
