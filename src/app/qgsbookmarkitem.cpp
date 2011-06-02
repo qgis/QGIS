@@ -42,7 +42,36 @@ void QgsBookmarkItem::store()
   int rc;
   QgsDebugMsg( QString( "Opening user database: %1" ).arg( mUserDbPath ) );
   rc = sqlite3_open( mUserDbPath.toUtf8().data(), &db );
-  if ( rc )
+  if ( SQLITE_OK == rc )
+  {
+    // prepare the sql statement
+    QString sql;
+    QTextStream sqlStream( &sql );
+    // use '17 g' format; SmartNotation is default
+    sqlStream.setRealNumberPrecision( 17 );
+    sqlStream << "insert into tbl_bookmarks values(null,'" <<
+    // fix occurrences of single-quote
+    mName.replace( '\'', "''" ) << "','" <<
+    mProjectTitle.replace( '\'', "''" ) << "'," <<
+    mViewExtent.xMinimum() << "," <<
+    mViewExtent.yMinimum() << "," <<
+    mViewExtent.xMaximum() << "," <<
+    mViewExtent.yMaximum() << "," <<
+    mSrid << ")";
+
+    QgsDebugMsg( QString( "Storing bookmark using: %1" ).arg( sql ) );
+
+    char * errmsg = 0;
+    rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg );
+    if ( rc != SQLITE_OK )
+    {
+      // XXX query failed -- warn the user some how
+      QgsDebugMsg( QString( "Failed to store bookmark: %1" ).arg( errmsg ) );
+      sqlite3_free( errmsg );
+    }
+    sqlite3_close( db );
+  }
+  else
   {
     QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( db ) ) );
 
@@ -50,40 +79,4 @@ void QgsBookmarkItem::store()
     //     database if it does not exist.
     assert( rc == 0 );
   }
-  // prepare the sql statement
-  const char *pzTail;
-  sqlite3_stmt *ppStmt;
-  QString sql;
-  QTextStream sqlStream( &sql );
-  sqlStream << "insert into tbl_bookmarks values(null,'" <<
-  mName << "','" <<
-  mProjectTitle << "'," <<
-  mViewExtent.xMinimum() << "," <<
-  mViewExtent.yMinimum() << "," <<
-  mViewExtent.xMaximum() << "," <<
-  mViewExtent.yMaximum() << "," <<
-  mSrid << ")";
-
-  QgsDebugMsg( QString( "Storing bookmark using: %1" ).arg( sql ) );
-
-  QByteArray sqlData = sql.toUtf8();
-
-  rc = sqlite3_prepare( db, sqlData.constData(), sqlData.size(), &ppStmt, &pzTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( rc == SQLITE_OK )
-  {
-    // get the first row of the result set
-    if ( sqlite3_step( ppStmt ) != SQLITE_DONE )
-    {
-
-      // XXX query failed -- warn the user some how
-      QgsDebugMsg( QString( "Failed to store bookmark: %1" ).arg( sqlite3_errmsg( db ) ) );
-    }
-    // close the statement
-    sqlite3_finalize( ppStmt );
-    // close the database
-    sqlite3_close( db );
-  }
-
-
 }
