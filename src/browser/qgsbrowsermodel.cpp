@@ -43,20 +43,20 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
     }
 
     int capabilities = dataCapabilities();
-    if ( capabilities  == QgsDataProvider::NoDataCapabilities )
+    if ( capabilities == QgsDataProvider::NoDataCapabilities )
     {
       QgsDebugMsg( library->fileName() + " does not have any dataCapabilities" );
       continue;
     }
 
     dataItem_t * dataItem = ( dataItem_t * ) cast_to_fptr( library->resolve( "dataItem" ) );
-    if ( ! dataItem )
+    if ( !dataItem )
     {
       QgsDebugMsg( library->fileName() + " does not have dataItem" );
       continue;
     }
 
-    QgsDataItem * item = dataItem( "", NULL );  // empty path -> top level
+    QgsDataItem *item = dataItem( "", NULL );  // empty path -> top level
     if ( item )
     {
       QgsDebugMsg( "Add new top level item : " + item->name() );
@@ -83,24 +83,29 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
-QVariant QgsBrowserModel::data( const QModelIndex & index, int role ) const
+QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
 {
   if ( !index.isValid() )
     return QVariant();
 
-  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
-
-  if ( role == Qt::DisplayRole )
+  QgsDataItem *item = dataItem( index );
+  if ( !item )
   {
-    return QVariant( ptr->name() );
+    return QVariant();
+  }
+  else if ( role == Qt::DisplayRole )
+  {
+    return item->name();
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
-    return QVariant( ptr->icon() );
+    return item->icon();
   }
-
-  // unsupported role
-  return QVariant();
+  else
+  {
+    // unsupported role
+    return QVariant();
+  }
 }
 
 QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -113,7 +118,7 @@ QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, 
   return QVariant();
 }
 
-int QgsBrowserModel::rowCount( const QModelIndex & parent ) const
+int QgsBrowserModel::rowCount( const QModelIndex &parent ) const
 {
   //qDebug("rowCount: idx: (valid %d) %d %d", parent.isValid(), parent.row(), parent.column());
 
@@ -125,24 +130,18 @@ int QgsBrowserModel::rowCount( const QModelIndex & parent ) const
   else
   {
     // ordinary item: number of its children
-    QgsDataItem* ptr = ( QgsDataItem* ) parent.internalPointer();
-
-    return ptr->rowCount();
+    QgsDataItem *item = dataItem( parent );
+    return item ? item->rowCount() : 0;
   }
 }
 
 bool QgsBrowserModel::hasChildren( const QModelIndex & parent ) const
 {
   if ( !parent.isValid() )
-  {
     return true; // root item: its children are top level items
-  }
-  else
-  {
-    QgsDataItem* ptr = ( QgsDataItem* ) parent.internalPointer();
 
-    return ptr->hasChildren();
-  }
+  QgsDataItem *item = dataItem( parent );
+  return item && item->hasChildren();
 }
 
 int QgsBrowserModel::columnCount( const QModelIndex & parent ) const
@@ -150,108 +149,25 @@ int QgsBrowserModel::columnCount( const QModelIndex & parent ) const
   return 1;
 }
 
-QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex & parent ) const
-{
-  //qDebug("index: idx: (valid %d) %d %d", parent.isValid(), parent.row(), parent.column());
-
-  if ( !parent.isValid() )
-  {
-    // this is the root item, parent of the top level items
-    Q_ASSERT( column == 0 && row >= 0 && row < mRootItems.count() );
-    return createIndex( row, column, mRootItems[row] );
-  }
-  else
-  {
-    // this is ordinary item: return a valid index if the requested child exists
-    QgsDataItem* ptr = ( QgsDataItem* ) parent.internalPointer();
-    if ( ptr->type() == QgsDataItem::Directory || ptr->type() == QgsDataItem::Collection )
-    {
-      // this is a directory: get index of its subdir!
-      QgsDirectoryItem* di = ( QgsDirectoryItem* ) ptr;
-      return createIndex( row, column, di->children().at( row ) );
-    }
-    if ( ptr->type() == QgsDataItem::Layer )
-    {
-      return QModelIndex(); // has no children
-    }
-
-    Q_ASSERT( false && "unknown item in index()" );
-  }
-
-  return QModelIndex(); // if the child does not exist
-}
-
-QModelIndex QgsBrowserModel::index( QgsDataItem *item )
-{
-  // Item index
-  QModelIndex index = QModelIndex();
-
-  const QVector<QgsDataItem*>& children = item->parent() ? item->parent()->children() : mRootItems;
-
-  Q_ASSERT( children.size() > 0 );
-  int row = -1;
-  for ( int i = 0; i < children.size(); i++ )
-  {
-    if ( item == children[i] )
-    {
-      row = i;
-      break;
-    }
-  }
-  QgsDebugMsg( QString( "row = %1" ).arg( row ) );
-  Q_ASSERT( row >= 0 );
-  index = createIndex( row, 0, item );
-
-  return index;
-}
-
-QModelIndex QgsBrowserModel::parent( const QModelIndex & index ) const
-{
-  if ( !index.isValid() )
-    return QModelIndex();
-
-  // return QModelInde of parent, i.e. where the parent is within its parent :-)
-
-  //qDebug("parent of: %d %d", index.row(), index.column());
-
-  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
-  QgsDataItem* parentItem = ptr->parent();
-
-  if ( parentItem == NULL )
-  {
-    // parent of our root is invalid index
-    return QModelIndex();
-  }
-
-  const QVector<QgsDataItem*>& children =
-    parentItem->parent() ? (( QgsDirectoryItem* )parentItem->parent() )->children() : mRootItems;
-  Q_ASSERT( children.count() > 0 );
-
-  for ( int i = 0; i < children.count(); i++ )
-  {
-    if ( children[i] == parentItem )
-      return createIndex( i, 0, parentItem );
-  }
-
-  Q_ASSERT( false && "parent not found!" );
-  return QModelIndex();
-}
-
 /* Refresh dir path */
-void QgsBrowserModel::refresh( QString path, const QModelIndex& theIndex )
+void QgsBrowserModel::refresh( QString path, const QModelIndex &theIndex )
 {
   QStringList paths = path.split( '/' );
   for ( int i = 0; i < rowCount( theIndex ); i++ )
   {
     QModelIndex idx = index( i, 0, theIndex );
-    QgsDataItem* ptr = ( QgsDataItem* ) idx.internalPointer();
-    if ( ptr->path() == path )
+    QgsDataItem *item = dataItem( idx );
+    if ( !item )
+      break;
+
+    if ( item->path() == path )
     {
-      QgsDebugMsg( "Arrived " + ptr->path() );
-      ptr->refresh();
+      QgsDebugMsg( "Arrived " + item->path() );
+      item->refresh();
       return;
     }
-    if ( path.indexOf( ptr->path() ) == 0 )
+
+    if ( path.indexOf( item->path() ) == 0 )
     {
       refresh( path, idx );
       break;
@@ -259,25 +175,55 @@ void QgsBrowserModel::refresh( QString path, const QModelIndex& theIndex )
   }
 }
 
+QModelIndex QgsBrowserModel::index( int row, int column, const QModelIndex &parent ) const
+{
+  QgsDataItem *p = dataItem( parent );
+  const QVector<QgsDataItem*> &items = p ? p->children() : mRootItems;
+  QgsDataItem *item = items.value( row, 0 );
+  return item ? createIndex( row, column, item ) : QModelIndex();
+}
+
+QModelIndex QgsBrowserModel::parent( const QModelIndex &index ) const
+{
+  QgsDataItem *item = dataItem( index );
+  if ( !item )
+    return QModelIndex();
+
+  return findItem( item->parent() );
+}
+
+QModelIndex QgsBrowserModel::findItem( QgsDataItem *item, QgsDataItem *parent ) const
+{
+  const QVector<QgsDataItem*> &items = parent ? parent->children() : mRootItems;
+
+  for ( int i = 0; i < items.size(); i++ )
+  {
+    if ( items[i] == item )
+      return createIndex( i, 0, item );
+
+    QModelIndex childIndex = findItem( item, items[i] );
+    if ( childIndex.isValid() )
+      return childIndex;
+  }
+
+  return QModelIndex();
+}
+
 /* Refresh item */
 void QgsBrowserModel::refresh( const QModelIndex& theIndex )
 {
-  if ( !theIndex.isValid() )  // root
-  {
-    // Nothing to do I believe, mRootItems are always the same
-  }
-  else
-  {
-    QgsDataItem* ptr = ( QgsDataItem* ) theIndex.internalPointer();
-    QgsDebugMsg( "Refresh " + ptr->path() );
-    ptr->refresh();
-  }
+  QgsDataItem *item = dataItem( theIndex );
+  if ( !item )
+    return;
+
+  QgsDebugMsg( "Refresh " + item->path() );
+  item->refresh();
 }
 
-void QgsBrowserModel::beginInsertItems( QgsDataItem* parent, int first, int last )
+void QgsBrowserModel::beginInsertItems( QgsDataItem *parent, int first, int last )
 {
   QgsDebugMsg( "parent mPath = " + parent->path() );
-  QModelIndex idx = index( parent );
+  QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
   QgsDebugMsg( "valid" );
@@ -289,10 +235,10 @@ void QgsBrowserModel::endInsertItems()
   QgsDebugMsg( "Entered" );
   endInsertRows();
 }
-void QgsBrowserModel::beginRemoveItems( QgsDataItem* parent, int first, int last )
+void QgsBrowserModel::beginRemoveItems( QgsDataItem *parent, int first, int last )
 {
   QgsDebugMsg( "parent mPath = " + parent->path() );
-  QModelIndex idx = index( parent );
+  QModelIndex idx = findItem( parent );
   if ( !idx.isValid() )
     return;
   beginRemoveRows( idx, first, last );
@@ -312,4 +258,12 @@ void QgsBrowserModel::connectItem( QgsDataItem* item )
            this, SLOT( beginRemoveItems( QgsDataItem*, int, int ) ) );
   connect( item, SIGNAL( endRemoveItems() ),
            this, SLOT( endRemoveItems() ) );
+}
+
+QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const
+{
+  void *v = idx.internalPointer();
+  QgsDataItem *d = reinterpret_cast<QgsDataItem*>( v );
+  Q_ASSERT( !v || d );
+  return d;
 }

@@ -3184,7 +3184,7 @@ QString QgsWMSLayerItem::createUri()
   }
   else
   {
-    styles << "default"; // TODO: use loadDefaultStyleFlag
+    styles << ""; // TODO: use loadDefaultStyleFlag
   }
 
   QString format;
