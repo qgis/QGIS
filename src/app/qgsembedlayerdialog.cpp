@@ -1,8 +1,10 @@
 #include "qgsembedlayerdialog.h"
+#include "qgsproject.h"
 #include "qgisapp.h"
 #include <QDomDocument>
 #include <QFileDialog>
 #include <QFileInfo>
+#include <QMessageBox>
 #include <QSettings>
 
 QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
@@ -69,6 +71,13 @@ void QgsEmbedLayerDialog::changeProjectFile()
   QFile projectFile( mProjectFileLineEdit->text() );
   if( !projectFile.exists() )
   {
+    return;
+  }
+
+  //check we are not embedding from/to the same project
+  if( mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
+  {
+    QMessageBox::critical( 0, tr("Recursive embeding not possible"), tr("It is not possible to embed layers / groups from the current project") );
     return;
   }
 
