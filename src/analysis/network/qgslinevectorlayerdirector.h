@@ -43,14 +43,14 @@ class QgsLineVectorLayerDirector : public QgsGraphDirector
     };
   public:
     /**
-     * @param layerId
+     * @param vl  source vector layer
      * @param directionFieldId feield contain road direction value
      * @param directDirectionValue value for one-way road
      * @param reverseDirectionValue value for reverse one-way road
      * @param bothDirectionValue value for road
      * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both direction
      */
-    QgsLineVectorLayerDirector( const QString& layerId,
+    QgsLineVectorLayerDirector( QgsVectorLayer* vl,
                                int directionFieldId,
                                const QString& directDirectionValue,
                                const QString& reverseDirectionValue,
@@ -70,13 +70,10 @@ class QgsLineVectorLayerDirector : public QgsGraphDirector
 
     QString name() const;
 
-  private:
-
-    QgsVectorLayer* myLayer() const;
 
   private:
 
-    QString mLayerId;
+    QgsVectorLayer *mVectorLayer;
 
     int mDirectionFieldId;
 

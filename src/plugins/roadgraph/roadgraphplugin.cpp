@@ -260,7 +260,6 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
   {
     if ( it.value()->name() != mSettings->mLayer )
       continue;
-    layerId = it.key();
     layer = dynamic_cast< QgsVectorLayer* >( it.value() );
     break;
   }
@@ -274,7 +273,7 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
   
     QgsLineVectorLayerDirector * director =
-      new QgsLineVectorLayerDirector( layerId,
+      new QgsLineVectorLayerDirector( layer,
                                    provider->fieldNameIndex( mSettings->mDirection ),
                                    mSettings->mFirstPointToLastPointDirectionVal,
                                    mSettings->mLastPointToFirstPointDirectionVal,

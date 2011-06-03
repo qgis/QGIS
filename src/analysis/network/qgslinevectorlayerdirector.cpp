@@ -19,7 +19,6 @@
 
 // Qgis includes
 #include <qgsvectorlayer.h>
-#include <qgsmaplayerregistry.h>
 #include <qgsvectordataprovider.h>
 #include <qgspoint.h>
 #include <qgsgeometry.h>
@@ -84,7 +83,7 @@ template <typename RandIter, typename Type, typename CompareOp > RandIter my_bin
   return not_found;
 }
 
-QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( const QString& layerId,
+QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
     int directionFieldId,
     const QString& directDirectionValue,
     const QString& reverseDirectionValue,
@@ -92,7 +91,7 @@ QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( const QString& layerId,
     int defaultDirection
     )
 {
-  mLayerId                = layerId;
+  mVectorLayer            = myLayer;
   mDirectionFieldId       = directionFieldId;
   mDirectDirectionValue   = directDirectionValue;
   mReverseDirectionValue  = reverseDirectionValue;
@@ -113,7 +112,7 @@ QString QgsLineVectorLayerDirector::name() const
 void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints,
     QVector< QgsPoint >& tiedPoint ) const
 {
-  QgsVectorLayer *vl = myLayer();
+  QgsVectorLayer *vl = mVectorLayer;
 
   if ( vl == NULL )
     return;
@@ -346,14 +345,3 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   } // while( vl->nextFeature(feature) )
 } // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints, QVector< QgsPoint >& tiedPoint )
 
-QgsVectorLayer* QgsLineVectorLayerDirector::myLayer() const
-{
-  QMap <QString, QgsMapLayer*> m = QgsMapLayerRegistry::instance()->mapLayers();
-  QMap <QString, QgsMapLayer*>::const_iterator it = m.find( mLayerId );
-  if ( it == m.end() )
-  {
-    return NULL;
-  }
-  // return NULL if it.value() isn't QgsVectorLayer()
-  return dynamic_cast<QgsVectorLayer*>( it.value() );
-}
