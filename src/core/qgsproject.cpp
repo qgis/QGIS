@@ -1605,6 +1605,12 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
     QString id = mapLayerElem.firstChildElement("id").text();
     if( id == layerId )
     {
+      //layer can be embedded only once
+      if( mapLayerElem.attribute("embedded") == "1" )
+      {
+        return false;
+      }
+
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
       if( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )
       {
