@@ -24,7 +24,7 @@
 #include <QHash>
 #include <QString>
 
-/**Manages joined field for a vector layer*/
+/**Manages joined fields for a vector layer*/
 class CORE_EXPORT QgsVectorLayerJoinBuffer
 {
   public:

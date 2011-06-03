@@ -2693,6 +2693,7 @@ bool QgsVectorLayer::readXml( const QDomNode& layer_node )
   mJoinBuffer->readXml( layer_node );
 
   updateFieldMap();
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )

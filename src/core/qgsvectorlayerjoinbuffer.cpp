@@ -96,7 +96,11 @@ void QgsVectorLayerJoinBuffer::updateFieldMap( QgsFieldMap& fields, int& maxInde
     QgsFieldMap::const_iterator fieldIt = joinFields.constBegin();
     for ( ; fieldIt != joinFields.constEnd(); ++fieldIt )
     {
-      fields.insert( maxIndex + 1 + fieldIt.key(), fieldIt.value() );
+      //skip the join field to avoid double field names (fields often have the same name)
+      if ( fieldIt.key() != joinIt->joinField )
+      {
+        fields.insert( maxIndex + 1 + fieldIt.key(), fieldIt.value() );
+      }
     }
 
     if ( maximumIndex( joinFields, currentMaxIndex ) )
@@ -217,6 +221,12 @@ void QgsVectorLayerJoinBuffer::addJoinedFeatureAttributes( QgsFeature& f, const 
     QgsAttributeList::const_iterator attIt = attributes.constBegin();
     for ( ; attIt != attributes.constEnd(); ++attIt )
     {
+      //skip the join field to avoid double field names (fields often have the same name)
+      if ( *attIt == joinInfo.joinField )
+      {
+        continue;
+      }
+
       if ( found )
       {
         f.addAttribute( *attIt + attributeIndexOffset, featureAttributes.value( *attIt ) );
