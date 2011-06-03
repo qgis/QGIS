@@ -132,6 +132,7 @@
      <addaction name="mActionNewSpatialiteLayer"/>
     </widget>
     <addaction name="menuNew"/>
+    <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddOgrLayer"/>
     <addaction name="mActionAddRasterLayer"/>
     <addaction name="mActionAddPgLayer"/>
@@ -234,7 +235,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="mActionEmbedLayers"/>
    <addaction name="mActionAddOgrLayer"/>
    <addaction name="mActionAddRasterLayer"/>
    <addaction name="mActionAddPgLayer"/>
@@ -1483,7 +1483,10 @@
   </action>
   <action name="mActionEmbedLayers">
    <property name="text">
-    <string>Embed Layers</string>
+    <string>Embed layers and groups...</string>
+   </property>
+   <property name="toolTip">
+    <string>Embed layers and groups from other project files</string>
    </property>
   </action>
  </widget>
