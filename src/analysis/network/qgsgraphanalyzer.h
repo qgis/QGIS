@@ -28,7 +28,7 @@ class QgsGraph;
  * The QGis class provides graph analysis functions
  */
 
-class QgsGraphAnalyzer
+class ANALYSIS_EXPORT QgsGraphAnalyzer
 {
   public:
     /**
@@ -41,6 +41,13 @@ class QgsGraphAnalyzer
      * @param treeResult return shortest path tree
      */
     static void shortestpath( const QgsGraph* source, int startVertexIdx, int criterionNum, const QVector<int>& destPointCost, QVector<double>& cost, QgsGraph* treeResult );
- 
+
+    /**
+     * return shortest path tree with root-node in startVertexIdx
+     * @param source The source graph
+     * @param startVertexIdx index of start vertex
+     * @param criterionNum index of edge property as optimization criterion
+     */
+    static QgsGraph* shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum );
 };
 #endif //QGSGRAPHANALYZERH

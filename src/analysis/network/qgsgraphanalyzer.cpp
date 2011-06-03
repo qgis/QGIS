@@ -102,3 +102,13 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
     cost[i] = result[ destPointCost[i] ].first;
   }
 }
+
+QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum)
+{
+  QgsGraph *g = new QgsGraph;
+  QVector<int> v;
+  QVector<double> vv;
+  QgsGraphAnalyzer::shortestpath( source, startVertexIdx, criterionNum, v, vv, g );
+
+  return g;
+}

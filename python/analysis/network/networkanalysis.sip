@@ -10,3 +10,4 @@
 %Include qgsgraphbuilder.sip
 %Include qgsgraphdirector.sip
 %Include qgslinevectorlayerdirector.sip
+%Include qgsgraphanalyzer.sip
