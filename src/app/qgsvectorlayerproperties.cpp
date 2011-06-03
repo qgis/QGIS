@@ -296,7 +296,8 @@ void QgsVectorLayerProperties::toggleEditing()
 {
   emit toggleEditing( layer );
 
-  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() && !layer->isEditable() );
+  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                               !layer->isEditable() && layer->vectorJoins().size() < 1 );
   if ( layer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
@@ -474,7 +475,8 @@ void QgsVectorLayerProperties::reset( void )
   // on the builder. If the ability to enter a query directly into the box is required,
   // a mechanism to check it must be implemented.
   txtSubsetSQL->setEnabled( false );
-  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() && !layer->isEditable() );
+  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                               !layer->isEditable() && layer->vectorJoins().size() < 1 );
   if ( layer->isEditable() )
   {
     pbnQueryBuilder->setToolTip( tr( "Stop editing mode to enable this." ) );
@@ -1079,6 +1081,8 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
       layer->addJoin( info );
       loadRows(); //update attribute tab
       addJoinToTreeWidget( info );
+      pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                                   !layer->isEditable() && layer->vectorJoins().size() < 1 );
     }
   }
 }
@@ -1116,6 +1120,8 @@ void QgsVectorLayerProperties::on_mButtonRemoveJoin_clicked()
   layer->removeJoin( currentJoinItem->data( 0, Qt::UserRole ).toString() );
   loadRows();
   mJoinTreeWidget->takeTopLevelItem( mJoinTreeWidget->indexOfTopLevelItem( currentJoinItem ) );
+  pbnQueryBuilder->setEnabled( layer && layer->dataProvider() && layer->dataProvider()->supportsSubsetString() &&
+                               !layer->isEditable() && layer->vectorJoins().size() < 1 );
 }
 
 void QgsVectorLayerProperties::handleDiagramItemDoubleClick( QTreeWidgetItem * item, int column )
