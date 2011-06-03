@@ -437,6 +437,12 @@ class QgsLegend : public QTreeWidget
      */
     int getItemPos( QTreeWidgetItem* item );
 
+    /**Returns true if the item is a group embedde from another project*/
+    bool groupEmbedded( QTreeWidgetItem* item ) const;
+
+    /**Returns true if the parent group is embedded from another project*/
+    bool parentGroupEmbedded( QTreeWidgetItem* item ) const;
+
     /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
     QgsMapCanvas* mMapCanvas;
 
