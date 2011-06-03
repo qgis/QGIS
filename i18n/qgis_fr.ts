@@ -1828,7 +1828,7 @@ Voulez-vous quand même la stopper ?</translation>
     </message>
     <message>
         <source>Select the mask file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le fichier de masque</translation>
     </message>
     <message>
         <source>Select the input directory with files to Warp</source>
@@ -1944,7 +1944,7 @@ Voulez-vous quand même la stopper ?</translation>
     </message>
     <message>
         <source>Select the input directory with files for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner le répertoire contenant les fichiers à convertir</translation>
     </message>
     <message>
         <source>Select the file for DEM</source>
@@ -2068,7 +2068,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     <message>
         <location filename="../python/plugins/GdalTools/tools/inOutSelector.ui" line="46"/>
         <source>Select...</source>
-        <translation type="unfinished">Sélection...</translation>
+        <translation>Sélection...</translation>
     </message>
 </context>
 <context>
@@ -2243,7 +2243,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="70"/>
         <source>Clipping mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Mode de découpage</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="76"/>
@@ -2256,7 +2256,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="126"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="181"/>
         <source>Mask layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Couche de masquage</translation>
     </message>
     <message>
         <source>&amp;No data value:</source>
@@ -2402,7 +2402,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="82"/>
         <source>Band to convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Bande à convertir</translation>
     </message>
     <message>
         <source>&amp;Input file:</source>
@@ -6283,7 +6283,7 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1056"/>
         <source>Cannot open GISRC file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvir le fichier GISRC</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1076"/>
@@ -6293,12 +6293,12 @@ Voulez-vous renseigner le chemin (GISBASE) vers votre installation de GRASS ?</t
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1077"/>
         <source>command: %1 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>commande : %1 %2</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1096"/>
         <source>Cannot run module</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de démarrer le module</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1097"/>
@@ -7428,7 +7428,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2002"/>
         <source>Proper implementation of raster providers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Meilleure implémentation des prestataires rasters</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2003"/>
@@ -7453,7 +7453,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2009"/>
         <source>Feature form updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jours du formulaire d&apos;objet</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2011"/>
@@ -7463,7 +7463,7 @@ Vous visualisez ce message car vous n&apos;avez aucun affichage (DISPLAY) param�
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2012"/>
         <source>Fix feature updates in feature form from attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Correction de la mise à jour des objets via un formulaire depuis la table attributaire</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2013"/>
@@ -17292,7 +17292,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="128"/>
         <source>Pretty Breaks</source>
-        <translation>Jolies ruptures</translation>
+        <translation>Seuils doux</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="163"/>
@@ -19504,12 +19504,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="352"/>
         <source>Out of extent</source>
-        <translation type="unfinished"></translation>
+        <translation>En-dehors de l&apos;emprise</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="356"/>
         <source>null (no data)</source>
-        <translation type="unfinished">null (pas de données)</translation>
+        <translation>null (pas de données)</translation>
     </message>
 </context>
 <context>
@@ -22442,7 +22442,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="91"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished"></translation>
+        <translation>La géométrie est invalide. Veuillez la réparer avant d&apos;essayer de la découper.</translation>
     </message>
 </context>
 <context>
@@ -33445,7 +33445,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="953"/>
         <source>Empty</source>
-        <translation type="unfinished">Vide</translation>
+        <translation>Vide</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1004"/>
@@ -35061,30 +35061,31 @@ La réponse est :
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="786"/>
         <source>Tile request error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur dans la requête de tuile</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="786"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="887"/>
         <source>Status: %1
 Reason phrase: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Statut : %&amp;
+Raison : %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="805"/>
         <source>response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>réponse : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="887"/>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="912"/>
         <source>Map request error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur dans la requête de carte</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="912"/>
         <source>Response: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>réponse : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1959"/>
@@ -35173,7 +35174,7 @@ La réponse est :
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2884"/>
         <source>Map request error %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur dans la requête de carte %1 : %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="1099"/>
