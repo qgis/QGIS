@@ -98,10 +98,6 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
   QSettings settings;
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
-  // Create QgsDistance Area for customization ProjectionEnabled setting
-  QgsDistanceArea myDa;
-  configureDistanceArea( myDa );
-
   // show current distance/area while moving the point
   // by creating a temporary copy of point array
   // and adding moving point at the end
@@ -109,14 +105,14 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
   {
     QList<QgsPoint> tmpPoints = mTool->points();
     tmpPoints.append( point );
-    double area = myDa.measurePolygon( tmpPoints );
+    double area = mDa.measurePolygon( tmpPoints );
     editTotal->setText( formatArea( area, decimalPlaces ) );
   }
   else if ( !mMeasureArea && mTool->points().size() > 0 )
   {
     QgsPoint p1( mTool->points().last() ), p2( point );
 
-    double d = myDa.measureLine( p1, p2 );
+    double d = mDa.measureLine( p1, p2 );
     editTotal->setText( formatDistance( mTotal + d, decimalPlaces ) );
     QGis::UnitType myDisplayUnits;
     // Ignore units
@@ -131,14 +127,10 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
   QSettings settings;
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
-  // Create QgsDistance Area for customization ProjectionEnabled setting
-  QgsDistanceArea myDa;
-  configureDistanceArea( myDa );
-
   int numPoints = mTool->points().size();
   if ( mMeasureArea && numPoints > 2 )
   {
-    double area = myDa.measurePolygon( mTool->points() );
+    double area = mDa.measurePolygon( mTool->points() );
     editTotal->setText( formatArea( area, decimalPlaces ) );
   }
   else if ( !mMeasureArea && numPoints > 1 )
@@ -147,7 +139,7 @@ void QgsMeasureDialog::addPoint( QgsPoint &point )
 
     QgsPoint p1 = mTool->points()[last], p2 = mTool->points()[last+1];
 
-    double d = myDa.measureLine( p1, p2 );
+    double d = mDa.measureLine( p1, p2 );
 
     mTotal += d;
     editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
@@ -244,7 +236,7 @@ void QgsMeasureDialog::updateUi()
       break;
     case QGis::UnknownUnit:
       mTable->setHeaderLabels( QStringList( tr( "Segments" ) ) );
-  };
+  }
 
   if ( mMeasureArea )
   {
@@ -257,6 +249,7 @@ void QgsMeasureDialog::updateUi()
     editTotal->setText( formatDistance( 0, decimalPlaces ) );
   }
 
+  configureDistanceArea();
 }
 
 void QgsMeasureDialog::convertMeasurement( double &measure, QGis::UnitType &u, bool isArea )
@@ -323,16 +316,12 @@ void QgsMeasureDialog::changeProjectionEnabledState()
 
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 
-  // create DistanceArea
-  QgsDistanceArea myDa;
-  configureDistanceArea( myDa );
-
   if ( mMeasureArea )
   {
     double area = 0.0;
     if ( mTool->points().size() > 1 )
     {
-      area = myDa.measurePolygon( mTool->points() );
+      area = mDa.measurePolygon( mTool->points() );
     }
     editTotal->setText( formatArea( area, decimalPlaces ) );
   }
@@ -348,7 +337,7 @@ void QgsMeasureDialog::changeProjectionEnabledState()
       p2 = *it;
       if ( !b )
       {
-        double d  = myDa.measureLine( p1, p2 );
+        double d  = mDa.measureLine( p1, p2 );
         mTotal += d;
         editTotal->setText( formatDistance( mTotal, decimalPlaces ) );
         QGis::UnitType myDisplayUnits;
@@ -368,11 +357,11 @@ void QgsMeasureDialog::changeProjectionEnabledState()
   }
 }
 
-void QgsMeasureDialog::configureDistanceArea( QgsDistanceArea& da )
+void QgsMeasureDialog::configureDistanceArea()
 {
   QSettings settings;
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  da.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
-  da.setEllipsoid( ellipsoidId );
-  da.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
+  mDa.setSourceCrs( mTool->canvas()->mapRenderer()->destinationCrs().srsid() );
+  mDa.setEllipsoid( ellipsoidId );
+  mDa.setProjectionsEnabled( mcbProjectionEnabled->isChecked() );
 }
