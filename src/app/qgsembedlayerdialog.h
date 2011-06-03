@@ -22,12 +22,14 @@ class QgsEmbedLayerDialog: public QDialog, private Ui::QgsEmbedLayerDialogBase
     void on_mBrowseFileToolButton_clicked();
     void on_mProjectFileLineEdit_editingFinished();
     void on_mTreeWidget_itemSelectionChanged();
+    void on_mButtonBox_accepted();
 
   private:
     void changeProjectFile();
     void addLegendGroupToTreeWidget( const QDomElement& groupElem, QTreeWidgetItem* parent = 0 );
     void addLegendLayerToTreeWidget( const QDomElement& layerElem, QTreeWidgetItem* parent = 0 );
     void unselectChildren( QTreeWidgetItem* item );
+    QString mProjectPath;
 };
 
 #endif // QGSEMBEDLAYERSDIALOG_H

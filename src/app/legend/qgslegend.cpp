@@ -295,6 +295,12 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
     // record which items were selected and hide them
     foreach( QTreeWidgetItem * item, selectedItems() )
     {
+      //prevent to drag out content under groups that are embedded from other
+      //project files.
+      if( parentGroupEmbedded( item ) )
+      {
+        continue;
+      }
       item->setHidden( true );
       mItemsBeingMoved << item;
     }
@@ -324,6 +330,7 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
   if ( mItemsBeingMoved.isEmpty() )
   {
     QgsDebugMsg( "nothing to move" );
+    setCursor( QCursor( Qt::ArrowCursor ) );
     return;
   }
 
@@ -364,36 +371,47 @@ void QgsLegend::mouseMoveEvent( QMouseEvent * e )
 
       mDropTarget = layer;
 
-      if ( e->y() < ( y0 + y1 ) / 2 )
+      //prevent inserting content into embedded groups
+      if( !parentGroupEmbedded( litem ) )
       {
-        QgsDebugMsg( "insert before layer" );
-        mDropAction = BEFORE;
-        line_y = y0;
-      }
-      else
-      {
-        QgsDebugMsg( "insert after layer" );
-        mDropAction = AFTER;
-        line_y = y1;
+        if ( e->y() < ( y0 + y1 ) / 2 )
+        {
+          QgsDebugMsg( "insert before layer" );
+          mDropAction = BEFORE;
+          line_y = y0;
+        }
+        else
+        {
+          QgsDebugMsg( "insert after layer" );
+          mDropAction = AFTER;
+          line_y = y1;
+        }
       }
     }
-    else if ( group )
-    {
+      else if ( group )
+      {
       if ( yCoordAboveCenter( litem, e->y() ) ) //over center of item
       {
         QgsDebugMsg( "insert before group" );
 
-        line_y = visualItemRect( item ).top() + 1;
-        mDropTarget = item;
-        mDropAction = BEFORE;
+        //prevent inserting content into embedded groups
+        if( !parentGroupEmbedded( item ) )
+        {
+          line_y = visualItemRect( item ).top() + 1;
+          mDropTarget = item;
+          mDropAction = BEFORE;
+        }
       }
       else // below center of item
       {
-        QgsDebugMsg( "insert into group" );
+        if( !groupEmbedded( item ) )
+        {
+          QgsDebugMsg( "insert into group" );
 
-        line_y = visualItemRect( item ).bottom() - 2;
-        mDropTarget = item;
-        mDropAction = INSERT;
+          line_y = visualItemRect( item ).bottom() - 2;
+          mDropTarget = item;
+          mDropAction = INSERT;
+        }
       }
     }
     else
@@ -566,7 +584,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     {
       qobject_cast<QgsLegendLayer*>( li )->addToPopupMenu( theMenu );
 
-      if ( li->parent() )
+      if ( li->parent() && !parentGroupEmbedded( li ) )
       {
         theMenu.addAction( tr( "&Make to toplevel item" ), this, SLOT( makeToTopLevelItem() ) );
       }
@@ -583,7 +601,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
                          tr( "&Set group CRS" ), this, SLOT( legendGroupSetCRS() ) );
     }
 
-    if ( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP )
+    if ( ( li->type() == QgsLegendItem::LEGEND_LAYER || li->type() == QgsLegendItem::LEGEND_GROUP ) && !groupEmbedded( li ) && !parentGroupEmbedded( li ) )
     {
       theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
     }
@@ -644,6 +662,13 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
     QDomElement legendElem = legendGroupList.at(i).toElement();
     if( legendElem.attribute("name") == groupName )
     {
+      //embedded groups cannot be embedded again
+      if( legendElem.attribute("embedded") == "1" )
+      {
+        mEmbeddedGroups.remove( groupName );
+        return 0;
+      }
+
       QgsLegendGroup* group = 0;
       if( parent )
       {
@@ -678,6 +703,7 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
           addEmbeddedGroup( childElem.attribute("name"), projectFilePath, group );
         }
       }
+      checkLayerOrderUpdate();
       return group;
     }
   }
@@ -1091,6 +1117,12 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
       // layer id
       legendlayerfilenode.setAttribute( "layerid", layer->id() );
       layerfilegroupnode.appendChild( legendlayerfilenode );
+
+      //embedded layer?
+      if( !QgsProject::instance()->layerIsEmbedded( layer->id() ).isEmpty() )
+      {
+        legendlayerfilenode.setAttribute( "embedded", "1" );
+      }
 
       // visible flag
       legendlayerfilenode.setAttribute( "visible", ll->isVisible() );
@@ -1814,7 +1846,10 @@ void QgsLegend::openEditor()
   QTreeWidgetItem* theItem = currentItem();
   if ( theItem )
   {
-    editItem( theItem, 0 );
+    if( !groupEmbedded( theItem ) && !parentGroupEmbedded( theItem ) )
+    {
+      editItem( theItem, 0 );
+    }
   }
 }
 
@@ -1823,10 +1858,13 @@ void QgsLegend::makeToTopLevelItem()
   QgsLegendItem* theItem = dynamic_cast<QgsLegendItem *>( currentItem() );
   if ( theItem )
   {
-    theItem->storeAppearanceSettings();
-    removeItem( theItem );
-    addTopLevelItem( theItem );
-    theItem->restoreAppearanceSettings();
+    if( !parentGroupEmbedded( theItem ) )
+    {
+      theItem->storeAppearanceSettings();
+      removeItem( theItem );
+      addTopLevelItem( theItem );
+      theItem->restoreAppearanceSettings();
+    }
   }
 }
 
@@ -2129,4 +2167,40 @@ void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs
   // Turn on rendering (if it was on previously)
   if ( renderFlagState )
     mMapCanvas->setRenderFlag( true );
+}
+
+bool QgsLegend::parentGroupEmbedded( QTreeWidgetItem* item ) const
+{
+  if( !item )
+  {
+    return false;
+  }
+
+  QgsLegendItem* lItem = dynamic_cast<QgsLegendItem*>(item);
+  if( lItem && lItem->parent() )
+  {
+    QgsLegendGroup* parentGroup = dynamic_cast<QgsLegendGroup*>( lItem->parent() );
+    if( parentGroup && parentGroup->type() == QgsLegendItem::LEGEND_GROUP
+        && mEmbeddedGroups.contains( parentGroup->text( 0 ) ) )
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool QgsLegend::groupEmbedded( QTreeWidgetItem* item ) const
+{
+  if( !item )
+  {
+    return false;
+  }
+
+  QgsLegendGroup* gItem = dynamic_cast<QgsLegendGroup*>(item);
+  if( !gItem )
+  {
+    return false;
+  }
+
+  return mEmbeddedGroups.contains( gItem->text( 0 ) );
 }
