@@ -596,10 +596,10 @@ easily, and help us deal with the patches that are sent to use easily.
 
 If the patch is a fix for a specific bug, please name the file with the bug
 number in it e.g.  bug777fix.patch, and attach it to the original bug report
-in trac (https://trac.osgeo.org/qgis/).
+in trac (http://hub.qgis.org/projects/quantum-gis).
 
 If the bug is an enhancement or new feature, its usually a good idea to create
-a ticket in trac (https://trac.osgeo.org/qgis/) first and then attach you 
+a ticket in trac (http://hub.qgis.org/projects/quantum-gis) first and then attach you 
 
 
     2.7.2. Create your patch in the top level QGIS source dir
@@ -868,7 +868,7 @@ test before fixing the bug will let you automate the testing for bug
 resolution in an efficient manner.
 
 To implement your regression test, you should follow the naming convention of
-regression<TicketID> for your test functions. If no trac ticket exists for the
+regression<TicketID> for your test functions. If no redmine ticket exists for the
 regression, you should create one first.  Using this approach allows the person
 running a failed regression test easily go and find out more information.
 
