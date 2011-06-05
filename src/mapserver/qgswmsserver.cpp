@@ -702,6 +702,9 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   {
     return 0;
   }
+  QFile file("/tmp/wmslog.txt");
+  file.open(QIODevice::Append);
+  file.write( "initialiseRendering parser initial checks ok\n" );  
 
   //pass external GML to the SLD parser.
   std::map<QString, QString>::const_iterator gmlIt = mParameterMap.find( "GML" );
@@ -720,6 +723,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
       delete gmlDoc;
     }
   }
+  file.write( "initialiseRendering parser gml checks ok\n" );  
 
   QImage* theImage = createImage();
   if ( !theImage )
@@ -732,6 +736,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
     delete theImage;
     return 0;
   }
+  file.write( "initialiseRendering parser secondary checks ok\n" );  
   mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
 
   //find out the current scale denominater and set it to the SLD parser
@@ -743,6 +748,9 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   layerIdList.clear();
   layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
   mMapRenderer->setLayerSet( layerIdList );
+  file.write( "initialiseRendering done\n" );  
+  file.write( mapExtent.toString() );  
+  file.close();
   return theImage;
 }
 
