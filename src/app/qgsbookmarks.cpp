@@ -37,6 +37,9 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
     mParent( parent )
 {
   setupUi( this );
+
+  restorePosition();
+
   // user database is created at QGIS startup in QgisApp::createDB
   // we just check whether there is our database [MD]
   QFileInfo myFileInfo;
@@ -53,11 +56,15 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
   // Create the zoomto and delete buttons and add them to the
   // toolbar
   //
+  QPushButton * btnUpdate = new QPushButton( tr( "&Update" ) );
   QPushButton * btnDelete = new QPushButton( tr( "&Delete" ) );
   QPushButton * btnZoomTo = new QPushButton( tr( "&Zoom to" ) );
   btnZoomTo->setDefault( true );
+  buttonBox->addButton( btnUpdate, QDialogButtonBox::ActionRole );
   buttonBox->addButton( btnDelete, QDialogButtonBox::ActionRole );
   buttonBox->addButton( btnZoomTo, QDialogButtonBox::ActionRole );
+  // connect the slot up to catch when a bookmark is updated
+  connect( btnUpdate, SIGNAL( clicked() ), this, SLOT( on_btnUpdate_clicked() ) );
   // connect the slot up to catch when a bookmark is deleted
   connect( btnDelete, SIGNAL( clicked() ), this, SLOT( on_btnDelete_clicked() ) );
   // connect the slot up to catch when a bookmark is zoomed to
@@ -108,7 +115,7 @@ void QgsBookmarks::initialise()
         QString xMax = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 5 ) );
         QString yMax = QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 6 ) );
         // set the extents
-        item->setText( 2, xMin + ", " + yMin + ", " + xMax + ", " + yMax );
+        item->setText( 2, xMin + ", " + yMin + " : " + xMax + ", " + yMax );   // use colon to separate ll from ur corners listed (be consistent with other displays of extent)
         // set the id
         item->setText( 3, QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
       }
@@ -142,6 +149,66 @@ void QgsBookmarks::saveWindowLocation()
 {
   QSettings settings;
   settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
+}
+
+void QgsBookmarks::on_btnUpdate_clicked()
+{
+  // get the current item
+  QTreeWidgetItem *item = lstBookmarks->currentItem();
+  if ( item )
+  {
+    // make sure the user really wants to update this bookmark
+    if ( QMessageBox::Ok == QMessageBox::information( this, tr( "Really Update?" ),
+         tr( "Are you sure you want to update the %1 bookmark?" ).arg( item->text( 0 ) ),
+         QMessageBox::Ok | QMessageBox::Cancel ) )
+    {
+      // retrieve the current map extent
+      QgsRectangle viewExtent = QgisApp::instance()->mapCanvas()->extent();
+
+      int rc;
+      QgsDebugMsg( QString( "Opening user database: %1" ).arg( QgsApplication::qgisUserDbFilePath() ) );
+      rc = connectDb();
+      if ( SQLITE_OK == rc )
+      {
+        // prepare the sql statement
+        QString sql;
+        QTextStream sqlStream( &sql );
+        // use '17 g' format; SmartNotation is default
+        sqlStream.setRealNumberPrecision( 17 );
+        sqlStream << "update tbl_bookmarks set " <<
+        "xmin=" << viewExtent.xMinimum() << "," <<
+        "ymin=" << viewExtent.yMinimum() << "," <<
+        "xmax=" << viewExtent.xMaximum() << "," <<
+        "ymax=" << viewExtent.yMaximum() << " " <<
+        "where bookmark_id=" << item->text( 3 );
+        QgsDebugMsg( QString( "Storing bookmark using: %1" ).arg( sql ) );
+
+        char * errmsg;
+        rc = sqlite3_exec( db, sql.toUtf8(), NULL, NULL, &errmsg );
+        if ( rc != SQLITE_OK )
+        {
+          // XXX Provide popup message on failure?
+          QMessageBox::warning( this, tr( "Error updating bookmark" ),
+                                tr( "Failed to update the %1 bookmark. The database said:\n%2" )
+                                .arg( item->text( 0 ) ).arg( errmsg ) );
+          sqlite3_free( errmsg );
+        }
+        // close the database
+        sqlite3_close( db );
+
+        refreshBookmarks();
+
+      }
+      else
+      {
+        QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( db ) ) );
+
+        // XXX This will likely never happen since on open, sqlite creates the
+        //     database if it does not exist.
+        assert( rc == 0 );
+      }
+    }
+  }
 }
 
 void QgsBookmarks::on_btnDelete_clicked()
@@ -186,7 +253,7 @@ void QgsBookmarks::on_btnZoomTo_clicked()
   zoomToBookmark();
 }
 
-void QgsBookmarks::on_lstBookmarks_doubleClicked( QTreeWidgetItem *lvi )
+void QgsBookmarks::on_lstBookmarks_itemDoubleClicked( QTreeWidgetItem *lvi )
 {
   zoomToBookmark();
 }
