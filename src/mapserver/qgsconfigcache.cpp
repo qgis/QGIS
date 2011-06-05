@@ -22,6 +22,17 @@
 #include "qgssldparser.h"
 #include <QCoreApplication>
 
+QgsConfigCache* QgsConfigCache::mInstance = 0;
+
+QgsConfigCache* QgsConfigCache::instance()
+{
+  if ( !mInstance )
+  {
+    mInstance = new QgsConfigCache();
+  }
+  return mInstance;
+}
+
 QgsConfigCache::QgsConfigCache()
 {
   QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString& ) ), this, SLOT( removeChangedEntry( const QString& ) ) );
