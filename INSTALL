@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Sunday May 29, 2011
+Sunday June 05, 2011
 
 
-Last Updated: Sunday May 29, 2011
-Last Change : Friday May 20, 2011
+Last Updated: Sunday June 05, 2011
+Last Change : Thursday June 02, 2011
 
 
   1. Introduction
@@ -27,7 +27,7 @@ Last Change : Friday May 20, 2011
     5.1. Install Qt4 from disk image
     5.2. Install development frameworks for QGIS dependencies
     5.3. Install CMake for OSX
-    5.4. Download QGIS source from github
+    5.4. QGIS source
     5.5. Configure the build
     5.6. Building
   6. Authors and Acknowledgments
@@ -1496,10 +1496,16 @@ tarball, then cd to the source folder and:
   sudo make install
 
 
-  5.4. Download QGIS source from github
-  =====================================
+  5.4. QGIS source
+  ================
 
-Go to the github QGIS project page:
+Unzip the QGIS source tarball to a working folder of your choice
+(/usr/somewhere is not a good choice as it's hidden and requires root
+privileges).  If you are reading this from the source, you've already done
+this.
+
+If you want to experiment with the latest development sources, go to the github
+QGIS project page:
 
 http://github.com/qgis/Quantum-GIS
 
