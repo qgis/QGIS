@@ -52,6 +52,9 @@ QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedLayers() const
 
 void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
 {
+  //line edit might emit editingFinished signal when loosing focus
+  mProjectFileLineEdit->blockSignals( true );
+
   QSettings s;
   QString projectFile = QFileDialog::getOpenFileName( 0, tr("Select project file"), s.value("/qgis/last_embedded_project_path").toString() ,tr("QGIS project files (*.qgs)") );
   if( !projectFile.isEmpty() )
@@ -59,6 +62,7 @@ void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
     mProjectFileLineEdit->setText( projectFile );
   }
   changeProjectFile();
+  mProjectFileLineEdit->blockSignals( false );
 }
 
 void QgsEmbedLayerDialog::on_mProjectFileLineEdit_editingFinished()
@@ -71,6 +75,12 @@ void QgsEmbedLayerDialog::changeProjectFile()
   QFile projectFile( mProjectFileLineEdit->text() );
   if( !projectFile.exists() )
   {
+    return;
+  }
+
+  if( mProjectPath == mProjectFileLineEdit->text() )
+  {
+    //already up to date
     return;
   }
 

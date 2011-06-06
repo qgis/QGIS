@@ -1164,6 +1164,11 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
           theGroup = new QgsLegendGroup( this, name );
       }
 
+      if( !theGroup )
+      {
+        continue;
+      }
+
       //set the checkbox of the legend group to the right state
       blockSignals( true );
       QString checked = childelem.attribute( "checked" );
