@@ -5,10 +5,12 @@
 SET(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconnection.cpp
+  ../../app/postgres/qgspgsourceselect.cpp
 )
 SET(PG_MOC_HDRS
   qgspostgresprovider.h
   qgspostgresconnection.h
+  ../../app/postgres/qgspgsourceselect.h
 )
 
 
@@ -21,6 +23,11 @@ INCLUDE_DIRECTORIES(
   ../../core
   ${POSTGRES_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
+  ../../core
+  ../../gui
+  ../../app
+  ../../app/postgres
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 
 ADD_LIBRARY (postgresprovider MODULE ${PG_SRCS} ${PG_MOC_SRCS})

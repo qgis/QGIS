@@ -23,17 +23,35 @@ extern "C"
 #include <libpq-fe.h>
 }
 #include "qgsvectordataprovider.h"
+#include "qgsdataitem.h"
 #include "qgsrectangle.h"
+
 #include <list>
 #include <queue>
 #include <fstream>
 #include <set>
 
+#include <QVector>
+
 class QgsFeature;
 class QgsField;
 class QgsGeometry;
 
+
 #include "qgsdatasourceuri.h"
+
+/** Layer Property structure */
+// TODO: Fill to Postgres/PostGIS specifications
+struct QgsPostgresLayerProperty
+{
+  // Postgres/PostGIS layer properties
+  QString       type;
+  QString       schemaName;
+  QString       tableName;
+  QString       geometryColName;
+  QStringList   pkCols;
+  QString       sql;
+};
 
 /**
   \class QgsPostgresProvider
@@ -239,6 +257,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
+    //! Get the list of supported layers
+    bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
+                          bool searchGeometryColumnsOnly = true,
+                          bool searchPublicOnly = true,
+                          bool allowGeometrylessTables = false );
+
     //! Get the postgres connection
     PGconn * pgConnection();
 
@@ -329,6 +353,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     QString whereClause( QgsFeatureId featureId ) const;
 
+    /** Gets information about the spatial tables */
+    bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
+
+    /** get primary key candidates (all int4 columns) */
+    QStringList pkCandidates( QString schemaName, QString viewName );
+
     bool hasSufficientPermsAndCapabilities();
 
     qint64 getBinaryInt( PGresult *queryResult, int row, int col );
@@ -372,6 +402,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     //! Data source URI struct for this layer
     QgsDataSourceURI mUri;
+
+    //! List of the supported layers
+    QVector<QgsPostgresLayerProperty> layersSupported;
 
     /**
      * Flag indicating if the layer data source is a valid PostgreSQL layer
