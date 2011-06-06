@@ -45,22 +45,15 @@ void QgsMapToolMeasureAngle::canvasMoveEvent( QMouseEvent * e )
   mRubberBand->movePoint( point );
   if ( mAnglePoints.size() == 2 )
   {
-    if ( !mResultDisplay )
+    if ( !mResultDisplay->isVisible() )
     {
-      mResultDisplay = new QgsDisplayAngle( mCanvas->topLevelWidget() );
-      QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
-      QObject::connect( mResultDisplay, SIGNAL( changeProjectionEnabledState() ),
-                        this, SLOT( changeProjectionEnabledState() ) );
       mResultDisplay->move( e->pos() - QPoint( 100, 100 ) );
+      mResultDisplay->show();
     }
-    mResultDisplay->show();
-
-    QgsDistanceArea myDa;
-    configureDistanceArea( myDa );
 
     //angle calculation
-    double azimuthOne = myDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
-    double azimuthTwo = myDa.bearing( mAnglePoints.at( 1 ), point );
+    double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
+    double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), point );
     double resultAngle = azimuthTwo - azimuthOne;
     QgsDebugMsg( QString::number( qAbs( resultAngle ) ) );
     QgsDebugMsg( QString::number( M_PI ) );
@@ -90,6 +83,14 @@ void QgsMapToolMeasureAngle::canvasReleaseEvent( QMouseEvent * e )
 
   if ( mAnglePoints.size() < 1 )
   {
+    if ( mResultDisplay == NULL )
+    {
+      mResultDisplay = new QgsDisplayAngle( mCanvas->topLevelWidget() );
+      QObject::connect( mResultDisplay, SIGNAL( rejected() ), this, SLOT( stopMeasuring() ) );
+      QObject::connect( mResultDisplay, SIGNAL( changeProjectionEnabledState() ),
+                        this, SLOT( changeProjectionEnabledState() ) );
+    }
+    configureDistanceArea();
     createRubberBand();
   }
 
@@ -153,12 +154,11 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
   if ( !mResultDisplay )
     return;
 
-  QgsDistanceArea myDa;
-  configureDistanceArea( myDa );
+  configureDistanceArea();
 
   //angle calculation
-  double azimuthOne = myDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
-  double azimuthTwo = myDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 2 ) );
+  double azimuthOne = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 0 ) );
+  double azimuthTwo = mDa.bearing( mAnglePoints.at( 1 ), mAnglePoints.at( 2 ) );
   double resultAngle = azimuthTwo - azimuthOne;
   QgsDebugMsg( QString::number( fabs( resultAngle ) ) );
   QgsDebugMsg( QString::number( M_PI ) );
@@ -177,13 +177,13 @@ void QgsMapToolMeasureAngle::changeProjectionEnabledState()
 
 }
 
-void QgsMapToolMeasureAngle::configureDistanceArea( QgsDistanceArea& da )
+void QgsMapToolMeasureAngle::configureDistanceArea()
 {
   QSettings settings;
   QString ellipsoidId = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString();
-  da.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
-  da.setEllipsoid( ellipsoidId );
-  da.setProjectionsEnabled( mResultDisplay->projectionEnabled() );
+  mDa.setSourceCrs( mCanvas->mapRenderer()->destinationCrs().srsid() );
+  mDa.setEllipsoid( ellipsoidId );
+  mDa.setProjectionsEnabled( mResultDisplay->projectionEnabled() );
 }
 
 
