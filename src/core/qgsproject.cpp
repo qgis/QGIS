@@ -684,10 +684,7 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 
     if( element.attribute("embedded") == "1" )
     {
-      if( !createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ), brokenNodes, vLayerList ) )
-      {
-        returnStatus = false;
-      }
+      createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ), brokenNodes, vLayerList );
       continue;
     }
     else
