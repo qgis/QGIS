@@ -147,44 +147,53 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   QgsFeature feature;
   while ( vl->nextFeature( feature ) )
   {
-    QgsPoint pt1, pt2;
-    bool isFirstPoint = true;
-    QgsPolyline pl = feature.geometry()->asPolyline();
-    QgsPolyline::iterator pointIt;
-    for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
+    QgsMultiPolyline mpl;
+    if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
+      mpl = feature.geometry()->asMultiPolyline();
+    else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
+      mpl.push_back( feature.geometry()->asPolyline() );
+    
+    QgsMultiPolyline::iterator mplIt;
+    for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
     {
-      pt2 = ct.transform( *pointIt );
-      points.push_back( pt2 );
-
-      if ( !isFirstPoint )
+      QgsPoint pt1, pt2;
+      bool isFirstPoint = true;
+      QgsPolyline::iterator pointIt;
+      for ( pointIt = mplIt->begin(); pointIt != mplIt->end(); ++pointIt )
       {
-        int i = 0;
-        for ( i = 0; i != additionalPoints.size(); ++i )
+        pt2 = ct.transform( *pointIt );
+        points.push_back( pt2 );
+
+        if ( !isFirstPoint )
         {
-          TiePointInfo info;
-          if ( pt1 == pt2 )
+          int i = 0;
+          for ( i = 0; i != additionalPoints.size(); ++i )
           {
-            info.mLength = additionalPoints[ i ].sqrDist( pt1 );
-            info.mTiedPoint = pt1;
-          }else
-          {
-            info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), 
+            TiePointInfo info;
+            if ( pt1 == pt2 )
+            {
+              info.mLength = additionalPoints[ i ].sqrDist( pt1 );
+              info.mTiedPoint = pt1;
+            }else
+            {
+              info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), 
                 pt2.x(), pt2.y(), info.mTiedPoint );
-          }
+            }
 
-          if ( pointLengthMap[ i ].mLength > info.mLength )
-          {
-            info.mTiedPoint = info.mTiedPoint ;
-            info.mFirstPoint = pt1;
-            info.mLastPoint = pt2;
+            if ( pointLengthMap[ i ].mLength > info.mLength )
+            {
+              info.mTiedPoint = info.mTiedPoint ;
+              info.mFirstPoint = pt1;
+              info.mLastPoint = pt2;
 
-            pointLengthMap[ i ] = info;
-            tiedPoint[ i ] = info.mTiedPoint;
+              pointLengthMap[ i ] = info;
+              tiedPoint[ i ] = info.mTiedPoint;
+            }
           }
         }
+        pt1 = pt2;
+        isFirstPoint = false;
       }
-      pt1 = pt2;
-      isFirstPoint = false;
     }
     emit buildProgress( ++step, featureCount );
   }
@@ -276,71 +285,80 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
     }
 
     // begin features segments and add arc to the Graph;
-    QgsPoint pt1, pt2;
-
-    bool isFirstPoint = true;
-    QgsPolyline pl = feature.geometry()->asPolyline();
-    QgsPolyline::iterator pointIt;
-    for ( pointIt = pl.begin(); pointIt != pl.end(); ++pointIt )
+    QgsMultiPolyline mpl;
+    if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
+      mpl = feature.geometry()->asMultiPolyline();
+    else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
+      mpl.push_back( feature.geometry()->asPolyline() );
+    
+    QgsMultiPolyline::iterator mplIt;
+    for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
     {
-      pt2 = ct.transform( *pointIt );
-      
-      if ( !isFirstPoint )
+      QgsPoint pt1, pt2;
+
+      bool isFirstPoint = true;
+      QgsPolyline::iterator pointIt;
+      for ( pointIt = mplIt->begin(); pointIt != mplIt->end(); ++pointIt )
       {
-        std::map< double, QgsPoint > pointsOnArc;
-        pointsOnArc[ 0.0 ] = pt1;
-        pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
-
-        for ( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
-        {
-          if ( pointLengthIt->mFirstPoint == pt1 && pointLengthIt->mLastPoint == pt2 )
-          {
-            QgsPoint tiedPoint = pointLengthIt->mTiedPoint;
-            pointsOnArc[ pt1.sqrDist( tiedPoint )] = tiedPoint;
-          }
-        }
-
-        std::map< double, QgsPoint >::iterator pointsIt;
-        QgsPoint pt1;
-        QgsPoint pt2;
-        int pt1idx = -1, pt2idx = -1;
-        bool isFirstPoint = true;
-        for ( pointsIt = pointsOnArc.begin(); pointsIt != pointsOnArc.end(); ++pointsIt )
-        {
-          pt2 = pointsIt->second;
-          tmp = my_binary_search( points.begin(), points.end(), pt2, pointCompare );
-          pt2 = *tmp;
-          pt2idx = tmp - points.begin();
-
-          if ( !isFirstPoint && pt1 != pt2 )
-          {
-            double distance = builder->distanceArea()->measureLine( pt1, pt2 );
-            QVector< QVariant > prop;
-            QList< QgsArcProperter* >::const_iterator it;
-            for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
-            {
-              prop.push_back( (*it)->property( distance, feature ) );
-            }
+        pt2 = ct.transform( *pointIt );
       
-            if ( directionType == 1 ||
-                 directionType == 3 )
+        if ( !isFirstPoint )
+        {
+          std::map< double, QgsPoint > pointsOnArc;
+          pointsOnArc[ 0.0 ] = pt1;
+          pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
+
+          for ( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
+          {
+            if ( pointLengthIt->mFirstPoint == pt1 && pointLengthIt->mLastPoint == pt2 )
             {
-              builder->addArc( pt1idx, pt1, pt2idx, pt2, prop );
-            }
-            if ( directionType == 2 ||
-                 directionType == 3 )
-            {
-              builder->addArc( pt2idx, pt2, pt1idx, pt1, prop );
+              QgsPoint tiedPoint = pointLengthIt->mTiedPoint;
+              pointsOnArc[ pt1.sqrDist( tiedPoint )] = tiedPoint;
             }
           }
-          pt1idx = pt2idx;
-          pt1 = pt2;
-          isFirstPoint = false;
-        }
-      } // if ( !isFirstPoint )
-      pt1 = pt2;
-      isFirstPoint = false;
-    } // for (it = pl.begin(); it != pl.end(); ++it)
+
+          std::map< double, QgsPoint >::iterator pointsIt;
+          QgsPoint pt1;
+          QgsPoint pt2;
+          int pt1idx = -1, pt2idx = -1;
+          bool isFirstPoint = true;
+          for ( pointsIt = pointsOnArc.begin(); pointsIt != pointsOnArc.end(); ++pointsIt )
+          {
+            pt2 = pointsIt->second;
+            tmp = my_binary_search( points.begin(), points.end(), pt2, pointCompare );
+            pt2 = *tmp;
+            pt2idx = tmp - points.begin();
+
+            if ( !isFirstPoint && pt1 != pt2 )
+            {
+              double distance = builder->distanceArea()->measureLine( pt1, pt2 );
+              QVector< QVariant > prop;
+              QList< QgsArcProperter* >::const_iterator it;
+              for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
+              {
+                prop.push_back( (*it)->property( distance, feature ) );
+              }
+      
+              if ( directionType == 1 ||
+                   directionType == 3 )
+              {
+                builder->addArc( pt1idx, pt1, pt2idx, pt2, prop );
+              }
+              if ( directionType == 2 ||
+                   directionType == 3 )
+              {
+                builder->addArc( pt2idx, pt2, pt1idx, pt1, prop );
+              }
+            }
+            pt1idx = pt2idx;
+            pt1 = pt2;
+            isFirstPoint = false;
+          }
+        } // if ( !isFirstPoint )
+        pt1 = pt2;
+        isFirstPoint = false;
+      } // for (it = pl.begin(); it != pl.end(); ++it)
+    }
     emit buildProgress( ++step, featureCount );
   } // while( vl->nextFeature(feature) )
 } // makeGraph( QgsGraphBuilderInterface *builder, const QVector< QgsPoint >& additionalPoints, QVector< QgsPoint >& tiedPoint )
