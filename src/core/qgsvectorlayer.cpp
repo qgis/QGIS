@@ -2638,7 +2638,7 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
-bool QgsVectorLayer::readXml( QDomNode & layer_node )
+bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 {
   QgsDebugMsg( QString( "Datasource in QgsVectorLayer::readXml: " ) + mDataSource.toLocal8Bit().data() );
 

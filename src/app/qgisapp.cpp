@@ -113,6 +113,7 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
@@ -779,6 +780,7 @@ void QgisApp::createActions()
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
+  connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
@@ -5048,6 +5050,46 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 
 }
 
+void QgisApp::embedLayers()
+{
+  //dialog to select groups/layers from other project files
+
+  //hardcoded for debugging
+  /*QString filepath="/home/marco/geodaten/projekte/composertest.qgs";
+  QString id="komb113320110531113659299";
+
+  QList<QDomNode> brokenNodes;
+  QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+  QgsProject::instance()->createEmbeddedLayer( id, filepath, brokenNodes, vectorLayerList );*/
+
+  /*QString filepath="/home/marco/geodaten/projekte/rasters.qgs";
+  QString groupname="Karten";
+  mMapLegend->addEmbeddedGroup( groupname, filepath );*/
+
+  QgsEmbedLayerDialog d;
+  if( d.exec() == QDialog::Accepted )
+  {
+    //groups
+    QList< QPair < QString, QString > > groups = d.embeddedGroups();
+    QList< QPair < QString, QString > >::const_iterator groupIt = groups.constBegin();
+    for(; groupIt != groups.constEnd(); ++groupIt )
+    {
+      mMapLegend->addEmbeddedGroup( groupIt->first, groupIt->second );
+    }
+
+    //layers
+    QList<QDomNode> brokenNodes;
+    QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+
+    QList< QPair < QString, QString > > layers = d.embeddedLayers();
+    QList< QPair < QString, QString > >::const_iterator layerIt = layers.constBegin();
+    for(; layerIt != layers.constEnd(); ++layerIt )
+    {
+      QgsProject::instance()->createEmbeddedLayer( layerIt->first, layerIt->second, brokenNodes, vectorLayerList );
+    }
+  }
+}
+
 void QgisApp::setExtent( QgsRectangle theRect )
 {
   mMapCanvas->setExtent( theRect );
@@ -6513,6 +6555,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   if ( !ml )
     return;
 
+  if( !QgsProject::instance()->layerIsEmbedded( ml->id() ).isEmpty() )
+  {
+    return; //don't show properties of embedded layers
+  }
+
   if ( ml->type() == QgsMapLayer::RasterLayer )
   {
     QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
@@ -6525,6 +6572,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
+
     rlp->exec();
     delete rlp; // delete since dialog cannot be reused without updating code
   }
