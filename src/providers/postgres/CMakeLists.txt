@@ -2,8 +2,14 @@
 ########################################################
 # Files
 
-SET(PG_SRCS qgspostgresprovider.cpp)
-SET(PG_MOC_HDRS qgspostgresprovider.h)
+SET(PG_SRCS
+  qgspostgresprovider.cpp
+  qgspostgresconnection.cpp
+)
+SET(PG_MOC_HDRS
+  qgspostgresprovider.h
+  qgspostgresconnection.h
+)
 
 
 ########################################################
@@ -11,7 +17,7 @@ SET(PG_MOC_HDRS qgspostgresprovider.h)
 
 QT4_WRAP_CPP(PG_MOC_SRCS ${PG_MOC_HDRS})
 
-INCLUDE_DIRECTORIES (
+INCLUDE_DIRECTORIES(
   ../../core
   ${POSTGRES_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
