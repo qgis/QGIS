@@ -5053,26 +5053,14 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 void QgisApp::embedLayers()
 {
   //dialog to select groups/layers from other project files
-
-  //hardcoded for debugging
-  /*QString filepath="/home/marco/geodaten/projekte/composertest.qgs";
-  QString id="komb113320110531113659299";
-
-  QList<QDomNode> brokenNodes;
-  QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
-  QgsProject::instance()->createEmbeddedLayer( id, filepath, brokenNodes, vectorLayerList );*/
-
-  /*QString filepath="/home/marco/geodaten/projekte/rasters.qgs";
-  QString groupname="Karten";
-  mMapLegend->addEmbeddedGroup( groupname, filepath );*/
-
   QgsEmbedLayerDialog d;
-  if( d.exec() == QDialog::Accepted )
+  if ( d.exec() == QDialog::Accepted )
   {
+    mMapCanvas->freeze( true );
     //groups
     QList< QPair < QString, QString > > groups = d.embeddedGroups();
     QList< QPair < QString, QString > >::const_iterator groupIt = groups.constBegin();
-    for(; groupIt != groups.constEnd(); ++groupIt )
+    for ( ; groupIt != groups.constEnd(); ++groupIt )
     {
       mMapLegend->addEmbeddedGroup( groupIt->first, groupIt->second );
     }
@@ -5083,9 +5071,14 @@ void QgisApp::embedLayers()
 
     QList< QPair < QString, QString > > layers = d.embeddedLayers();
     QList< QPair < QString, QString > >::const_iterator layerIt = layers.constBegin();
-    for(; layerIt != layers.constEnd(); ++layerIt )
+    for ( ; layerIt != layers.constEnd(); ++layerIt )
     {
       QgsProject::instance()->createEmbeddedLayer( layerIt->first, layerIt->second, brokenNodes, vectorLayerList );
+    }
+    mMapCanvas->freeze( false );
+    if ( groups.size() > 0 || layers.size() > 0 )
+    {
+      mMapCanvas->refresh();
     }
   }
 }
@@ -6555,7 +6548,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   if ( !ml )
     return;
 
-  if( !QgsProject::instance()->layerIsEmbedded( ml->id() ).isEmpty() )
+  if ( !QgsProject::instance()->layerIsEmbedded( ml->id() ).isEmpty() )
   {
     return; //don't show properties of embedded layers
   }
