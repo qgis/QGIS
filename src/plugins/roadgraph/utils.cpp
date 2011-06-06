@@ -150,6 +150,7 @@ AdjacencyMatrix DijkstraFinder::find( const QgsPoint& frontPoint, const QgsPoint
   }
 
   AdjacencyMatrix m;
+  m[ frontPoint ];
   QgsPoint nextPoint = backPoint;
   QgsPoint firstPoint = backPoint;
   while ( true )
