@@ -1556,23 +1556,48 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
           QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
           if ( filteredLayer )
           {
-            QgsVectorDataProvider* dp = filteredLayer->dataProvider();
-            if ( dp )
+            if( filteredLayer )
             {
-              filterMap.insert( layerId, dp->subsetString() );
+              filterMap.insert( layerId, filteredLayer->subsetString() );
+              QString newSubsetString = eqSplit.at( 1 );
+              if ( !filteredLayer->subsetString().isEmpty() )
+              {
+                newSubsetString.prepend( " AND " );
+                newSubsetString.prepend( filteredLayer->subsetString() );
+              }
+              filteredLayer->setSubsetString( newSubsetString );
             }
-
-            QString newSubsetString = eqSplit.at( 1 );
-            if ( !dp->subsetString().isEmpty() )
-            {
-              newSubsetString.prepend( " AND " );
-              newSubsetString.prepend( dp->subsetString() );
-            }
-            dp->setSubsetString( newSubsetString );
           }
         }
         ++listPos;
       }
+    }
+
+    //No BBOX parameter in request. We use the union of the filtered layer
+    //to provide the functionality of zooming to selected records via (enhanced) WMS.
+    if( mMapRenderer && mMapRenderer->extent().isEmpty() )
+    {
+      QgsRectangle filterExtent;
+      QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+      for(; filterIt != filterMap.constEnd(); ++filterIt )
+      {
+        QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
+        if( !mapLayer )
+        {
+          continue;
+        }
+
+        QgsRectangle layerExtent = mapLayer->extent();
+        if( filterExtent.isEmpty() )
+        {
+          filterExtent = layerExtent;
+        }
+        else
+        {
+          filterExtent.combineExtentWith( &layerExtent );
+        }
+      }
+      mMapRenderer->setExtent( filterExtent );
     }
   }
   return filterMap;
