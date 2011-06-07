@@ -156,6 +156,9 @@ int QgsLegend::addGroupToCurrentItem( QString name, bool expand )
 
 int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
 {
+  //avoid multiple refreshes of map canvas because of itemChanged signal
+  blockSignals( true );
+
   bool nameEmpty = name.isEmpty();
   if ( nameEmpty )
     name = tr( "group" ); // some default name if none specified
@@ -174,6 +177,7 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   if ( nameEmpty )
     openEditor();
 
+  blockSignals( false );
   return groupIndex.row();
 }
 
