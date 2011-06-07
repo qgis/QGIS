@@ -2890,9 +2890,10 @@ long QgsPostgresProvider::featureCount() const
   // get total number of features
   QString sql;
 
-  // only use estimated metadata when there is no where clause, otherwise
-  // we get an incorrect feature count for the subset
-  if ( !isQuery && mUseEstimatedMetadata  && sqlWhereClause.isEmpty())
+  // use estimated metadata even when there is a where clause,
+  // although we get an incorrect feature count for the subset
+  // - but make huge dataset usable.
+  if ( !isQuery && mUseEstimatedMetadata  )
   {
     sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }
@@ -2905,7 +2906,6 @@ long QgsPostgresProvider::featureCount() const
       sql += " where " + sqlWhereClause;
     }
   }
-
 
   Result result = connectionRO->PQexec( sql );
 
