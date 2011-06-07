@@ -698,10 +698,19 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
         {
           QString layerId = childElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" );
           QgsProject::instance()->createEmbeddedLayer( layerId, projectFilePath, brokenNodes, vectorLayerList, false );
-          QTreeWidgetItem* cItem = currentItem();
-          if ( cItem && cItem != group )
+          QTreeWidgetItem* cItem = 0;
+          if( settings.value("/qgis/addNewLayersToCurrentGroup", false ).toBool() )
           {
+            cItem = group->takeChild( 0 );
+          }
+          else
+          {
+            cItem = currentItem();
             removeItem( cItem );
+          }
+
+          if( cItem )
+          {
             group->insertChild( group->childCount(), cItem );
           }
         }
