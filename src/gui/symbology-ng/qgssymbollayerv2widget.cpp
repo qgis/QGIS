@@ -20,8 +20,8 @@
 
 
 
-QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsSimpleLineSymbolLayerV2Widget::QgsSimpleLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -158,8 +158,8 @@ void QgsSimpleLineSymbolLayerV2Widget::updatePatternIcon()
 ///////////
 
 
-QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsSimpleMarkerSymbolLayerV2Widget::QgsSimpleMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -286,8 +286,8 @@ void QgsSimpleMarkerSymbolLayerV2Widget::setOffset()
 
 ///////////
 
-QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsSimpleFillSymbolLayerV2Widget::QgsSimpleFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -389,8 +389,8 @@ void QgsSimpleFillSymbolLayerV2Widget::offsetChanged()
 
 ///////////
 
-QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget(const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -446,7 +446,7 @@ void QgsMarkerLineSymbolLayerV2Widget::setInterval( double val )
 
 void QgsMarkerLineSymbolLayerV2Widget::setMarker()
 {
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
   if ( dlg.exec() == 0 )
     return;
   updateMarker();
@@ -495,8 +495,8 @@ void QgsMarkerLineSymbolLayerV2Widget::setPlacement()
 ///////////
 
 
-QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsSvgMarkerSymbolLayerV2Widget::QgsSvgMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -642,8 +642,8 @@ void QgsSvgMarkerSymbolLayerV2Widget::setOffset()
 
 ///////////////
 
-QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -698,7 +698,7 @@ void QgsLineDecorationSymbolLayerV2Widget::penWidthChanged()
 
 #include <QFileDialog>
 
-QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( QWidget* parent ): QgsSymbolLayerV2Widget( parent )
+QgsSVGFillSymbolLayerWidget::QgsSVGFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent ): QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = 0;
   setupUi( this );
@@ -784,7 +784,7 @@ void QgsSVGFillSymbolLayerWidget::insertIcons()
 
 void QgsSVGFillSymbolLayerWidget::on_mChangeOutlinePushButton_clicked()
 {
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     return;
@@ -814,8 +814,8 @@ void QgsSVGFillSymbolLayerWidget::updateOutlineIcon()
 
 /////////////
 
-QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -915,8 +915,8 @@ void QgsFontMarkerSymbolLayerV2Widget::setOffset()
 ///////////////
 
 
-QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( QWidget* parent )
-    : QgsSymbolLayerV2Widget( parent )
+QgsCentroidFillSymbolLayerV2Widget::QgsCentroidFillSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
+    : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
 
@@ -944,7 +944,7 @@ QgsSymbolLayerV2* QgsCentroidFillSymbolLayerV2Widget::symbolLayer()
 
 void QgsCentroidFillSymbolLayerV2Widget::setMarker()
 {
-  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
   if ( dlg.exec() == 0 )
     return;
   updateMarker();

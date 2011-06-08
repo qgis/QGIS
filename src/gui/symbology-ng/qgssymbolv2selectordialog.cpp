@@ -18,8 +18,8 @@
 #include <QKeyEvent>
 #include <QMenu>
 
-QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent, bool embedded )
-    : QDialog( parent ), mAdvancedMenu( NULL )
+QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
+    : QDialog( parent ), mAdvancedMenu( NULL ), mVectorLayer( vl )
 {
   mStyle = style;
   mSymbol = symbol;
@@ -162,7 +162,7 @@ void QgsSymbolV2SelectorDialog::updateSymbolInfo()
 
 void QgsSymbolV2SelectorDialog::changeSymbolProperties()
 {
-  QgsSymbolV2PropertiesDialog dlg( mSymbol, this );
+  QgsSymbolV2PropertiesDialog dlg( mSymbol, mVectorLayer, this );
   if ( !dlg.exec() )
     return;
 

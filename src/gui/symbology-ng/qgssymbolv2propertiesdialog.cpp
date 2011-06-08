@@ -101,8 +101,8 @@ static void _initWidgetFunctions()
 
 //////////
 
-QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, QWidget* parent )
-    : QDialog( parent ), mSymbol( symbol )
+QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
+    : QDialog( parent ), mSymbol( symbol ), mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -247,7 +247,7 @@ void QgsSymbolV2PropertiesDialog::loadPropertyWidgets()
     if ( am == NULL ) // check whether the metadata is assigned
       continue;
 
-    QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget();
+    QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget( mVectorLayer );
     if ( w == NULL ) // check whether the function returns correct widget
       continue;
 
