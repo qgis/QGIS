@@ -112,7 +112,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
 
 QString QgsEllipseSymbolLayerV2::layerType() const
 {
-  return "Ellipse";
+  return "EllipseMarker";
 }
 
 void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
