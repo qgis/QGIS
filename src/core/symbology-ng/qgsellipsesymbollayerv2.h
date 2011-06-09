@@ -26,32 +26,32 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setSymbolWidth( double w ){ mSymbolWidth = w; }
     double symbolWidth() const { return mSymbolWidth; }
 
-    void setDataDefinedWidth( int c ){ mDataDefinedWidth = c; }
-    int dataDefinedWidth() const { return mDataDefinedWidth; }
+    void setWidthField( int index, const QString& field );
+    const QPair<int, QString>& widthField() const { return mWidthField; }
 
     void setSymbolHeight( double h ){ mSymbolHeight = h; }
     double symbolHeight() const { return mSymbolHeight; }
 
-    void setDataDefinedHeight( int c ){ mDataDefinedHeight = c; }
-    int dataDefinedHeight() const { return mDataDefinedHeight; }
+    void setHeightField( int index, const QString& field );
+    const QPair<int, QString>& heightField() const { return mHeightField; }
 
     void setOutlineWidth( double w ){ mOutlineWidth = w; }
     double outlineWidth() const { return mOutlineWidth; }
 
-    void setDataDefinedOutlineWidth( int c ){ mDataDefinedOutlineWidth = c; }
-    int dataDefinedOutlineWidth() const { return mDataDefinedOutlineWidth; }
+    void setOutlineWidthField( int index, const QString& field );
+    const QPair<int, QString>& outlineWidthField() const { return mOutlineWidthField; }
 
     void setFillColor( const QColor& c ){ mFillColor = c;}
     QColor fillColor() const { return mFillColor; }
 
-    void setDataDefinedFillColor( int c ){ mDataDefinedFillColor = c; }
-    int dataDefinedFillColor() const { return mDataDefinedFillColor; }
+    void setFillColorField( int index, const QString& field );
+    const QPair<int, QString>& fillColorField() const { return mFillColorField; }
 
     void setOutlineColor( const QColor& c ){ mOutlineColor = c; }
     QColor outlineColor() const { return mOutlineColor; }
 
-    void setDataDefinedOutlineColor( int c ){ mDataDefinedOutlineColor = c; }
-    int dataDefinedOutlineColor() const { return mDataDefinedOutlineColor; }
+    void setOutlineColorField( int index, const QString& field );
+    const QPair<int, QString>& outlineColorField() const { return mOutlineColorField; }
 
     QSet<QString> usedAttributes() const;
 
@@ -59,19 +59,19 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QString mSymbolName;
     double mSymbolWidth;
     /**Take width from attribute (-1  if fixed width)*/
-    int mDataDefinedWidth;
+    QPair<int, QString> mWidthField;
     double mSymbolHeight;
     /**Take height from attribute (-1 if fixed height)*/
-    int mDataDefinedHeight;
+    QPair<int, QString> mHeightField;
     double mOutlineWidth;
     /**Take outline width from attribute (-1 if fixed outline width)*/
-    int mDataDefinedOutlineWidth;
+    QPair<int, QString> mOutlineWidthField;
     QColor mFillColor;
     /**Take fill color from attribute (-1 if fixed fill color)*/
-    int mDataDefinedFillColor;
+    QPair<int, QString> mFillColorField;
     QColor mOutlineColor;
     /**Take outline color from attribute (-1 if fixed outline color)*/
-    int mDataDefinedOutlineColor;
+    QPair<int, QString> mOutlineColorField;
     QPainterPath mPainterPath;
 
     QPen mPen;

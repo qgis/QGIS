@@ -282,7 +282,7 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 ////////////////////
 
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
-    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( 0 )
+    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f )
 {
 
 }

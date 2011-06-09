@@ -48,6 +48,33 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   {
     mShapeListWidget->setCurrentItem( symbolItemList.at( 0 ) );
   }
+
+  //set combo entries to current values
+  blockComboSignals( true );
+  if( mLayer )
+  {
+    if( mLayer->widthField().first != -1 )
+    {
+      mDDSymbolWidthComboBox->setCurrentIndex( mDDSymbolWidthComboBox->findText( mLayer->widthField().second ) );
+    }
+    if( mLayer->heightField().first != -1 )
+    {
+      mDDSymbolHeightComboBox->setCurrentIndex( mDDSymbolHeightComboBox->findText( mLayer->heightField().second ) );
+    }
+    if( mLayer->outlineWidthField().first != -1 )
+    {
+      mDDOutlineWidthComboBox->setCurrentIndex( mDDOutlineWidthComboBox->findText( mLayer->outlineWidthField().second ) );
+    }
+    if( mLayer->fillColorField().first != -1 )
+    {
+      mDDFillColorComboBox->setCurrentIndex( mDDFillColorComboBox->findText( mLayer->fillColorField().second ) );
+    }
+    if( mLayer->outlineColorField().first != -1 )
+    {
+      mDDOutlineColorComboBox->setCurrentIndex( mDDOutlineColorComboBox->findText( mLayer->outlineColorField().second ) );
+    }
+  }
+  blockComboSignals( false );
 }
 
 QgsSymbolLayerV2* QgsEllipseSymbolLayerV2Widget::symbolLayer()
@@ -159,7 +186,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDSymbolWidthComboBox_currentIndexChange
 {
   if( mLayer )
   {
-    mLayer->setDataDefinedWidth( mDDSymbolWidthComboBox->itemData( idx ).toInt() );
+    mLayer->setWidthField( mDDSymbolWidthComboBox->itemData( idx ).toInt(),  mDDSymbolWidthComboBox->itemText( idx ) );
   }
 }
 
@@ -167,7 +194,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDSymbolHeightComboBox_currentIndexChang
 {
   if( mLayer )
   {
-    mLayer->setDataDefinedHeight( mDDSymbolHeightComboBox->itemData( idx ).toInt() );
+    mLayer->setHeightField( mDDSymbolHeightComboBox->itemData( idx ).toInt(),  mDDSymbolHeightComboBox->itemText( idx ));
   }
 }
 
@@ -175,7 +202,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineWidthComboBox_currentIndexChang
 {
   if( mLayer )
   {
-    mLayer->setDataDefinedOutlineWidth( mDDOutlineWidthComboBox->itemData( idx ).toInt() );
+    mLayer->setOutlineWidthField( mDDOutlineWidthComboBox->itemData( idx ).toInt(),  mDDOutlineWidthComboBox->itemText( idx ) );
   }
 }
 
@@ -183,7 +210,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDFillColorComboBox_currentIndexChanged(
 {
   if( mLayer )
   {
-    mLayer->setDataDefinedFillColor( mDDFillColorComboBox->itemData( idx ).toInt() );
+    mLayer->setFillColorField( mDDFillColorComboBox->itemData( idx ).toInt(), mDDFillColorComboBox->itemText( idx ) );
   }
 }
 
@@ -191,7 +218,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineColorComboBox_currentIndexChang
 {
   if( mLayer )
   {
-    mLayer->setDataDefinedOutlineColor( mDDOutlineColorComboBox->itemData( idx ).toInt() );
+    mLayer->setOutlineColorField( mDDOutlineColorComboBox->itemData( idx ).toInt(), mDDOutlineColorComboBox->itemText( idx ) );
   }
 }
 
