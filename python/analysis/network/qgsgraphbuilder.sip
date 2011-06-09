@@ -28,6 +28,6 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
     /**
      * return QgsGraph result;
      */
-    QgsGraph* graph();
+    QgsGraph* graph() /Factory/;
 };
 
