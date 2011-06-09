@@ -1,10 +1,12 @@
 #ifndef QGSSYMBOLLAYERV2_H
 #define QGSSYMBOLLAYERV2_H
 
-#include <QMap>
+
 
 #include <QColor>
+#include <QMap>
 #include <QPointF>
+#include <QSet>
 
 #include "qgssymbolv2.h"
 
@@ -51,6 +53,9 @@ class CORE_EXPORT QgsSymbolLayerV2
     // used only with rending with symbol levels is turned on (0 = first pass, 1 = second, ...)
     void setRenderingPass( int renderingPass ) { mRenderingPass = renderingPass; }
     int renderingPass() const { return mRenderingPass; }
+
+    // symbol layers normally only use additional attributes to provide data defined settings
+    virtual QSet<QString> usedAttributes() const { return QSet<QString>(); }
 
   protected:
     QgsSymbolLayerV2( QgsSymbolV2::SymbolType type, bool locked = false )

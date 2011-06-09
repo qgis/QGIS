@@ -265,6 +265,20 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
   return lst;
 }
 
+QSet<QString> QgsSymbolV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+  QgsSymbolLayerV2List::const_iterator sIt = mLayers.constBegin();
+  for(; sIt != mLayers.constEnd(); ++sIt )
+  {
+    if( *sIt )
+    {
+      attributes.unite( (*sIt)->usedAttributes() );
+    }
+  }
+  return attributes;
+}
+
 ////////////////////
 
 QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )

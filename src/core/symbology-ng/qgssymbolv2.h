@@ -99,6 +99,8 @@ class CORE_EXPORT QgsSymbolV2
     //! @note added in 1.5
     int renderHints() { return mRenderHints; }
 
+    QSet<QString> usedAttributes() const;
+
   protected:
     QgsSymbolV2( SymbolType type, QgsSymbolLayerV2List layers ); // can't be instantiated
 
