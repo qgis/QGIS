@@ -35,6 +35,12 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setHeightField( int index, const QString& field );
     const QPair<int, QString>& heightField() const { return mHeightField; }
 
+    void setRotation( double r ){ mRotation = r; }
+    double rotation() const { return mRotation; }
+
+    void setRotationField( int index, const QString& field );
+    const QPair<int, QString>& rotationField() const { return mRotationField; }
+
     void setOutlineWidth( double w ){ mOutlineWidth = w; }
     double outlineWidth() const { return mOutlineWidth; }
 
@@ -58,18 +64,24 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
   private:
     QString mSymbolName;
     double mSymbolWidth;
+    double mSymbolHeight;
+    double mRotation;
+    QColor mFillColor;
+    QColor mOutlineColor;
+    double mOutlineWidth;
+
     /**Take width from attribute (-1  if fixed width)*/
     QPair<int, QString> mWidthField;
-    double mSymbolHeight;
     /**Take height from attribute (-1 if fixed height)*/
     QPair<int, QString> mHeightField;
-    double mOutlineWidth;
+    /**Take symbol rotation from attribute (-1 if fixed rotation)*/
+    QPair<int, QString> mRotationField;
     /**Take outline width from attribute (-1 if fixed outline width)*/
     QPair<int, QString> mOutlineWidthField;
-    QColor mFillColor;
+
     /**Take fill color from attribute (-1 if fixed fill color)*/
     QPair<int, QString> mFillColorField;
-    QColor mOutlineColor;
+
     /**Take outline color from attribute (-1 if fixed outline color)*/
     QPair<int, QString> mOutlineColorField;
     QPainterPath mPainterPath;

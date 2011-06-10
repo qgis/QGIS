@@ -4,7 +4,7 @@
 #include <QPainter>
 #include <QSet>
 
-QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName("circle"), mSymbolWidth(4), mSymbolHeight(3), mFillColor( Qt::black ), mOutlineColor( Qt::white )
+QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName("circle"), mSymbolWidth(4), mSymbolHeight(3), mRotation(0), mFillColor( Qt::black ), mOutlineColor( Qt::white )
 {
   mPen.setColor( mOutlineColor );
   mPen.setWidth( 1.0 );
@@ -14,6 +14,7 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName("circle"), mSymb
 
   mWidthField.first = -1;
   mHeightField.first = -1;
+  mRotationField.first = -1;
   mOutlineWidthField.first = -1;
   mFillColorField.first = -1;
   mOutlineColorField.first = -1;
@@ -38,6 +39,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   {
     layer->setSymbolHeight( properties["symbol_height"].toDouble() );
   }
+  if( properties.contains("rotation") )
+  {
+    layer->setRotation( properties["rotation"].toDouble() );
+  }
   if( properties.contains( "outline_width" ) )
   {
     layer->setOutlineWidth( properties["outline_width"].toDouble() );
@@ -59,6 +64,10 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   if( properties.contains( "width_index") && properties.contains("width_field") )
   {
     layer->setWidthField( properties["width_index"].toInt(), properties["width_field"]);
+  }
+  if( properties.contains( "rotation_index" ) && properties.contains("rotation_field") )
+  {
+    layer->setRotationField( properties["rotation_index"].toInt(), properties["rotation_field"] );
   }
   if( properties.contains("outline_width_index") && properties.contains("outline_width_field") )
   {
@@ -113,9 +122,15 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
   QMatrix transform;
   transform.translate( point.x() + off.x(), point.y() + off.y() );
 
+  p->save();
+  if( !doubleNear( mRotation, 0.0 ) )
+  {
+    p->rotate( mRotation );
+  }
   p->setPen( mPen );
   p->setBrush( mBrush );
   p->drawPath( transform.map( mPainterPath ) );
+  p->restore();
 }
 
 QString QgsEllipseSymbolLayerV2::layerType() const
@@ -146,13 +161,16 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::clone() const
 QgsStringMap QgsEllipseSymbolLayerV2::properties() const
 {
   QgsStringMap map;
-  map["symbol_name"] = mSymbolName;
+  map["symbol_name"] = mSymbolName; 
   map["symbol_width"] = QString::number( mSymbolWidth );
-  map["height_index"] = QString::number( mHeightField.first );
-  map["height_field"] = mHeightField.second;
-  map["symbol_height"] = QString::number( mSymbolHeight );
   map["width_index"] = QString::number( mWidthField.first );
   map["width_field"] = mWidthField.second;
+  map["symbol_height"] = QString::number( mSymbolHeight );
+  map["height_index"] = QString::number( mHeightField.first );
+  map["height_field"] = mHeightField.second;
+  map["rotation"] = QString::number( mRotation );
+  map["rotation_index"] = QString::number( mRotationField.first );
+  map["rotation_field"] = mRotationField.second;
   map["outline_width"] = QString::number( mOutlineWidth );
   map["outline_width_index"] = QString::number( mOutlineWidthField.first );
   map["outline_width_field"] = mOutlineWidthField.second;
@@ -256,6 +274,12 @@ void QgsEllipseSymbolLayerV2::setHeightField( int index, const QString& field )
   mHeightField.first = index;
   mHeightField.second = field;
 }
+
+ void QgsEllipseSymbolLayerV2::setRotationField( int index, const QString& field )
+ {
+   mRotationField.first = index;
+   mRotationField.second = field;
+ }
 
 void QgsEllipseSymbolLayerV2::setOutlineWidthField( int index, const QString& field )
 {

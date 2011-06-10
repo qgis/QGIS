@@ -41,6 +41,7 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mLayer = static_cast<QgsEllipseSymbolLayerV2*>( layer );
   mWidthSpinBox->setValue( mLayer->symbolWidth() );
   mHeightSpinBox->setValue( mLayer->symbolHeight() );
+  mRotationSpinBox->setValue( mLayer->rotation() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
@@ -60,6 +61,10 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     if( mLayer->heightField().first != -1 )
     {
       mDDSymbolHeightComboBox->setCurrentIndex( mDDSymbolHeightComboBox->findText( mLayer->heightField().second ) );
+    }
+    if( mLayer->rotationField().first != -1 )
+    {
+      mDDRotationComboBox->setCurrentIndex( mDDRotationComboBox->findText( mLayer->rotationField().second ) );
     }
     if( mLayer->outlineWidthField().first != -1 )
     {
@@ -113,6 +118,15 @@ void QgsEllipseSymbolLayerV2Widget::on_mHeightSpinBox_valueChanged( double d )
   }
 }
 
+void QgsEllipseSymbolLayerV2Widget::on_mRotationSpinBox_valueChanged( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setRotation( d );
+    emit changed();
+  }
+}
+
 void QgsEllipseSymbolLayerV2Widget::on_mOutlineWidthSpinBox_valueChanged( double d )
 {
   if( mLayer )
@@ -154,6 +168,8 @@ void QgsEllipseSymbolLayerV2Widget::fillDataDefinedComboBoxes()
   mDDSymbolWidthComboBox->addItem( "", -1 );
   mDDSymbolHeightComboBox->clear();
   mDDSymbolHeightComboBox->addItem( "", -1 );
+  mDDRotationComboBox->clear();
+  mDDRotationComboBox->addItem( "", -1 );
   mDDOutlineWidthComboBox->clear();
   mDDOutlineWidthComboBox->addItem( "", -1 );
   mDDFillColorComboBox->clear();
@@ -174,6 +190,7 @@ void QgsEllipseSymbolLayerV2Widget::fillDataDefinedComboBoxes()
 
       mDDSymbolWidthComboBox->addItem( fieldName, index );
       mDDSymbolHeightComboBox->addItem( fieldName, index );
+      mDDRotationComboBox->addItem( fieldName, index );
       mDDOutlineWidthComboBox->addItem( fieldName, index );
       mDDFillColorComboBox->addItem( fieldName, index );
       mDDOutlineColorComboBox->addItem( fieldName, index );
@@ -187,6 +204,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDSymbolWidthComboBox_currentIndexChange
   if( mLayer )
   {
     mLayer->setWidthField( mDDSymbolWidthComboBox->itemData( idx ).toInt(),  mDDSymbolWidthComboBox->itemText( idx ) );
+    emit changed();
   }
 }
 
@@ -195,6 +213,16 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDSymbolHeightComboBox_currentIndexChang
   if( mLayer )
   {
     mLayer->setHeightField( mDDSymbolHeightComboBox->itemData( idx ).toInt(),  mDDSymbolHeightComboBox->itemText( idx ));
+    emit changed();
+  }
+}
+
+void QgsEllipseSymbolLayerV2Widget::on_mDDRotationComboBox_currentIndexChanged( int idx )
+{
+  if( mLayer )
+  {
+    mLayer->setRotationField( mDDRotationComboBox->itemData( idx ).toInt(), mDDRotationComboBox->itemText( idx ) );
+    emit changed();
   }
 }
 
@@ -203,6 +231,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineWidthComboBox_currentIndexChang
   if( mLayer )
   {
     mLayer->setOutlineWidthField( mDDOutlineWidthComboBox->itemData( idx ).toInt(),  mDDOutlineWidthComboBox->itemText( idx ) );
+    emit changed();
   }
 }
 
@@ -211,6 +240,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDFillColorComboBox_currentIndexChanged(
   if( mLayer )
   {
     mLayer->setFillColorField( mDDFillColorComboBox->itemData( idx ).toInt(), mDDFillColorComboBox->itemText( idx ) );
+    emit changed();
   }
 }
 
@@ -219,6 +249,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineColorComboBox_currentIndexChang
   if( mLayer )
   {
     mLayer->setOutlineColorField( mDDOutlineColorComboBox->itemData( idx ).toInt(), mDDOutlineColorComboBox->itemText( idx ) );
+    emit changed();
   }
 }
 
@@ -231,6 +262,7 @@ void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
 {
   mDDSymbolWidthComboBox->blockSignals( block );
   mDDSymbolHeightComboBox->blockSignals( block );
+  mDDRotationComboBox->blockSignals( block );
   mDDOutlineWidthComboBox->blockSignals( block );
   mDDFillColorComboBox->blockSignals( block );
   mDDOutlineColorComboBox->blockSignals( block);
