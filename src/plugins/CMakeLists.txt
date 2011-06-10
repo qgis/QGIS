@@ -13,6 +13,7 @@ ADD_SUBDIRECTORY(point_displacement_renderer)
 ADD_SUBDIRECTORY(spatialquery)
 ADD_SUBDIRECTORY(sqlanywhere)
 ADD_SUBDIRECTORY(roadgraph)
+ADD_SUBDIRECTORY(zonal_statistics)
 
 IF (WITH_SPATIALITE)
   ADD_SUBDIRECTORY(offline_editing)
