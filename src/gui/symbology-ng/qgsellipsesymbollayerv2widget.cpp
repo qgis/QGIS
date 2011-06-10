@@ -41,7 +41,7 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   mLayer = static_cast<QgsEllipseSymbolLayerV2*>( layer );
   mWidthSpinBox->setValue( mLayer->symbolWidth() );
   mHeightSpinBox->setValue( mLayer->symbolHeight() );
-  mRotationSpinBox->setValue( mLayer->rotation() );
+  mRotationSpinBox->setValue( mLayer->angle() );
   mOutlineWidthSpinBox->setValue( mLayer->outlineWidth() );
 
   QList<QListWidgetItem *> symbolItemList = mShapeListWidget->findItems( mLayer->symbolName(), Qt::MatchExactly );
@@ -122,7 +122,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mRotationSpinBox_valueChanged( double d )
 {
   if( mLayer )
   {
-    mLayer->setRotation( d );
+    mLayer->setAngle( d );
     emit changed();
   }
 }

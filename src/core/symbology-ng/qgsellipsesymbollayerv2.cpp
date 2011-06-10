@@ -4,7 +4,8 @@
 #include <QPainter>
 #include <QSet>
 
-QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName("circle"), mSymbolWidth(4), mSymbolHeight(3), mRotation(0), mFillColor( Qt::black ), mOutlineColor( Qt::white )
+QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName("circle"), mSymbolWidth(4), mSymbolHeight(3),
+mFillColor( Qt::black ), mOutlineColor( Qt::white ), mOutlineWidth( 0 )
 {
   mPen.setColor( mOutlineColor );
   mPen.setWidth( 1.0 );
@@ -12,6 +13,7 @@ QgsEllipseSymbolLayerV2::QgsEllipseSymbolLayerV2(): mSymbolName("circle"), mSymb
   mBrush.setColor( mFillColor );
   mBrush.setStyle( Qt::SolidPattern );
 
+  mAngle = 0;
   mWidthField.first = -1;
   mHeightField.first = -1;
   mRotationField.first = -1;
@@ -39,9 +41,9 @@ QgsSymbolLayerV2* QgsEllipseSymbolLayerV2::create( const QgsStringMap& propertie
   {
     layer->setSymbolHeight( properties["symbol_height"].toDouble() );
   }
-  if( properties.contains("rotation") )
+  if( properties.contains("angle") )
   {
-    layer->setRotation( properties["rotation"].toDouble() );
+    layer->setAngle( properties["angle"].toDouble() );
   }
   if( properties.contains( "outline_width" ) )
   {
@@ -117,22 +119,15 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     return;
   }
 
-  //priority for rotation: 1. data defined, 2. symbol layer rotation (mRotation), 3. symbol rotation (mAngle)
+  //priority for rotation: 1. data defined, 2. symbol layer rotation (mAngle)
   double rotation = 0.0;
-  if( mRotationField.first != -1 )
+  if( f && mRotationField.first != -1 )
   {
     rotation = f->attributeMap()[mRotationField.first].toDouble();
   }
-  else
+  else if( !doubleNear( mAngle, 0.0 ) )
   {
-    if( !doubleNear( mRotation, 0.0 ) )
-    {
-      rotation = mRotation;
-    }
-    else if( !doubleNear( mAngle, 0.0 ) )
-    {
-      rotation = mAngle;
-    }
+    rotation = mAngle;
   }
 
   QMatrix transform;
@@ -182,7 +177,7 @@ QgsStringMap QgsEllipseSymbolLayerV2::properties() const
   map["symbol_height"] = QString::number( mSymbolHeight );
   map["height_index"] = QString::number( mHeightField.first );
   map["height_field"] = mHeightField.second;
-  map["rotation"] = QString::number( mRotation );
+  map["angle"] = QString::number( mAngle );
   map["rotation_index"] = QString::number( mRotationField.first );
   map["rotation_field"] = mRotationField.second;
   map["outline_width"] = QString::number( mOutlineWidth );
@@ -261,6 +256,10 @@ QSet<QString> QgsEllipseSymbolLayerV2::usedAttributes() const
   if( mHeightField.first != -1 )
   {
     dataDefinedAttributes.insert( mHeightField.second );
+  }
+  if( mRotationField.first != -1 )
+  {
+    dataDefinedAttributes.insert( mRotationField.second );
   }
   if( mOutlineWidthField.first != -1 )
   {

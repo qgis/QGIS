@@ -35,9 +35,6 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setHeightField( int index, const QString& field );
     const QPair<int, QString>& heightField() const { return mHeightField; }
 
-    void setRotation( double r ){ mRotation = r; }
-    double rotation() const { return mRotation; }
-
     void setRotationField( int index, const QString& field );
     const QPair<int, QString>& rotationField() const { return mRotationField; }
 
@@ -65,7 +62,6 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QString mSymbolName;
     double mSymbolWidth;
     double mSymbolHeight;
-    double mRotation;
     QColor mFillColor;
     QColor mOutlineColor;
     double mOutlineWidth;
