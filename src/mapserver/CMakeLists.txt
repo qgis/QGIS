@@ -29,7 +29,6 @@ SET ( qgis_mapserv_SRCS
   qgssldrenderer.cpp
   qgswmsserver.cpp
   qgsmapserviceexception.cpp
-  qgsmapserverlogger.cpp
   qgsmslayercache.cpp
   qgsfilter.cpp
   qgssldrule.cpp

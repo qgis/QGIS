@@ -19,7 +19,7 @@
 #include "qgsconfigcache.h"
 #include "qgsepsgcache.h"
 #include "qgsmslayercache.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -35,6 +35,7 @@
 #include "qgscomposershape.h"
 
 #include "QFileInfo"
+#include "QTextStream"
 
 
 QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePath ): QgsConfigParser(), mXMLDoc( xmlDoc ), mProjectPath( filePath )
@@ -73,7 +74,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
     QgsMapLayer *layer = createLayerFromElement( *layerIt );
     if ( layer )
     {
-      QgsMSDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
+      QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
       layerMap.insert( layer->id(), layer );
     }
 #if QGSMSDEBUG
@@ -82,7 +83,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
       QString buf;
       QTextStream s( &buf );
       layerIt->save( s, 0 );
-      QgsMSDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
+      QgsDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
     }
 #endif
   }
@@ -238,14 +239,14 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
       if ( !layerMap.contains( id ) )
       {
-        QgsMSDebugMsg( QString( "layer %1 not found in map - layer cache to small?" ).arg( id ) );
+        QgsDebugMsg( QString( "layer %1 not found in map - layer cache to small?" ).arg( id ) );
         continue;
       }
 
       QgsMapLayer *currentLayer = layerMap[ id ];
       if ( !currentLayer )
       {
-        QgsMSDebugMsg( QString( "layer %1 not found" ).arg( id ) );
+        QgsDebugMsg( QString( "layer %1 not found" ).arg( id ) );
         continue;
       }
 
@@ -301,7 +302,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     }
     else
     {
-      QgsMSDebugMsg( "unexpected child element" );
+      QgsDebugMsg( "unexpected child element" );
       continue;
     }
 
@@ -309,7 +310,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
     QString buf;
     QTextStream s( &buf );
     layerElem.save( s, 0 );
-    QgsMSDebugMsg( QString( "adding layer: %1" ).arg( buf ) );
+    QgsDebugMsg( QString( "adding layer: %1" ).arg( buf ) );
 #endif
 
     parentElem.appendChild( layerElem );
