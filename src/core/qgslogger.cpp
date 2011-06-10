@@ -99,7 +99,7 @@ void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* 
 #else
       qDebug( "%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().constData(), val );
 #endif
-      logMessageToFile( QString(  "%s: %d: (%s), %s: %d" ).arg( file ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      logMessageToFile( QString( "%s: %d: (%s), %s: %d" ).arg( file ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
   }
 }
@@ -121,7 +121,7 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
     if ( file == NULL )
     {
       qDebug( "%s: %f", var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %f" ).arg( var.toLocal8Bit().constData() ).arg( val ) ); 
+      logMessageToFile( QString( "%s: %f" ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
     else if ( function == NULL )
     {
@@ -131,7 +131,7 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
     else if ( line == -1 )
     {
       qDebug( "%s: (%s): %s: %f", file, function, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString(  "%s: (%s): %s: %f" ).arg( file ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      logMessageToFile( QString( "%s: (%s): %s: %f" ).arg( file ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
     else
     {
@@ -140,7 +140,7 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
 #else
       qDebug( "%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().constData(), val );
 #endif
-      logMessageToFile( QString( "%s: %d: (%s), %s: %f").arg( file ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      logMessageToFile( QString( "%s: %d: (%s), %s: %f" ).arg( file ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
   }
 }
@@ -206,9 +206,9 @@ const void QgsLogger::logMessageToFile( QString theMessage )
   {
     //Maybe more efficient to keep the file open for the life of qgis...
     QFile file( logFile() );
-    file.open(QIODevice::Append);
+    file.open( QIODevice::Append );
     file.write( theMessage.toStdString().c_str() );
-    file.write( "\n" );  
+    file.write( "\n" );
     file.close();
   }
   return;
