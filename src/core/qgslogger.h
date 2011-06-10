@@ -21,6 +21,7 @@
 #include <iostream>
 #include <sstream>
 #include <QString>
+class QFile;
 
 #ifdef QGISDEBUG
 #define QgsDebugMsg(str) QgsLogger::debug(QString(str), 1, __FILE__, __FUNCTION__, __LINE__)
@@ -45,6 +46,9 @@
  * QGIS_DEBUG_FILE may contain a file name. Only the messages from this file are
  * printed (provided they have the right debuglevel). If QGIS_DEBUG_FILE is not
  * set, messages from all files are printed
+ *
+ * QGIS_LOG_FILE may contain a file name. If set, all messages will be appended
+ * to this file rather than to stdout.
 */
 
 class CORE_EXPORT QgsLogger
@@ -107,8 +111,15 @@ class CORE_EXPORT QgsLogger
     static int debugLevel();
 
   private:
+    /**Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
+     * otherwise returns a file name for writing log messages to.*/
+    static const QString logFile();
 
-    /**Reads the environment variable QGIS_DEBUG_FILE. Returns NULL if the variable is not set*/
+    /** Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. **/
+    static const void logMessageToFile( QString theMessage );
+
+    /**Reads the environment variable QGIS_DEBUG_FILE. Returns NULL if the variable is not set.
+     * If set, only messages from this source file will be sent to logs. */
     static const char* debugFile();
 
     /** current debug level */
