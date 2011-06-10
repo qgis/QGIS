@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1054</width>
-     <height>21</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -132,6 +132,7 @@
      <addaction name="mActionNewSpatialiteLayer"/>
     </widget>
     <addaction name="menuNew"/>
+    <addaction name="mActionEmbedLayers"/>
     <addaction name="mActionAddOgrLayer"/>
     <addaction name="mActionAddRasterLayer"/>
     <addaction name="mActionAddPgLayer"/>
@@ -532,7 +533,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../../images/images.qrc">
+    <iconset>
      <normaloff>:/images/themes/default/mActionAddFeature.png</normaloff>:/images/themes/default/mActionAddFeature.png</iconset>
    </property>
    <property name="text">
@@ -1478,6 +1479,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+M</string>
+   </property>
+  </action>
+  <action name="mActionEmbedLayers">
+   <property name="text">
+    <string>Embed layers and groups...</string>
+   </property>
+   <property name="toolTip">
+    <string>Embed layers and groups from other project files</string>
    </property>
   </action>
  </widget>

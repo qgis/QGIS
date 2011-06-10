@@ -141,7 +141,7 @@ void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
   // QgsDebugMsg("entered.");
 }
 
-bool QgsMapLayer::readXML( QDomNode & layer_node )
+bool QgsMapLayer::readXML( const QDomNode& layer_node )
 {
   QgsCoordinateReferenceSystem savedCRS;
   CUSTOM_CRS_VALIDATION savedValidation;
@@ -269,7 +269,7 @@ bool QgsMapLayer::readXML( QDomNode & layer_node )
 } // void QgsMapLayer::readXML
 
 
-bool QgsMapLayer::readXml( QDomNode & layer_node )
+bool QgsMapLayer::readXml( const QDomNode& layer_node )
 {
   // NOP by default; children will over-ride with behavior specific to them
 

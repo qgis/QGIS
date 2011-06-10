@@ -695,7 +695,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     bool readSymbology( const QDomNode& node, QString& errorMessage );
 
     /** \brief Reads layer specific state from project file Dom node */
-    bool readXml( QDomNode & layer_node );
+    bool readXml( const QDomNode& layer_node );
 
     /** \brief Write the symbology for the layer into the docment provided */
     bool writeSymbology( QDomNode&, QDomDocument& doc, QString& errorMessage ) const;

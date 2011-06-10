@@ -176,7 +176,6 @@ int main( int argc, char * argv[] )
 
   //create config cache and search for config files in the current directory.
   //These configurations are used if no mapfile parameter is present in the request
-  QgsConfigCache configCache;
   QString defaultConfigFilePath;
   QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory
   if ( projectFileInfo.exists() )
@@ -245,7 +244,7 @@ int main( int argc, char * argv[] )
       configFilePath = mapFileIt->second;
     }
 
-    QgsConfigParser* adminConfigParser = configCache.searchConfiguration( configFilePath );
+    QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
     if ( !adminConfigParser )
     {
       QgsMSDebugMsg( "parse error on config file " + configFilePath );
