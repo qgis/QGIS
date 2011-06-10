@@ -248,7 +248,7 @@ int main( int argc, char * argv[] )
     if ( !adminConfigParser )
     {
       QgsMSDebugMsg( "parse error on config file " + configFilePath );
-      theRequestHandler->sendServiceException( QgsMapServiceException( "", "Configuration file problem" ) );
+      theRequestHandler->sendServiceException( QgsMapServiceException( "", "Configuration file problem : perhaps you left off the .qgs extension?" ) );
       continue;
     }
 
