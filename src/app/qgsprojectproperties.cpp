@@ -508,10 +508,10 @@ void QgsProjectProperties::restoreState()
 void QgsProjectProperties::on_pbnWMSExtCanvas_clicked()
 {
   QgsRectangle ext = mMapCanvas->extent();
-  mWMSExtMinX->setText( QString::number( ext.xMinimum() ) );
-  mWMSExtMinY->setText( QString::number( ext.yMinimum() ) );
-  mWMSExtMaxX->setText( QString::number( ext.xMaximum() ) );
-  mWMSExtMaxY->setText( QString::number( ext.yMaximum() ) );
+  mWMSExtMinX->setText( QString::number( ext.xMinimum(), 'f', 8 ) );
+  mWMSExtMinY->setText( QString::number( ext.yMinimum(), 'f', 8 ) );
+  mWMSExtMaxX->setText( QString::number( ext.xMaximum(), 'f', 8 ) );
+  mWMSExtMaxY->setText( QString::number( ext.yMaximum(), 'f', 8 ) );
 }
 
 void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
