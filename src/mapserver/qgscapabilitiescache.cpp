@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgscapabilitiescache.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include <QCoreApplication>
 
 QgsCapabilitiesCache::QgsCapabilitiesCache()
@@ -57,7 +57,7 @@ void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFile
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString& path )
 {
-  QgsMSDebugMsg( "Remove capabilities cache entry because file changed" );
+  QgsDebugMsg( "Remove capabilities cache entry because file changed" );
   QHash< QString, QDomDocument >::iterator it = mCachedCapabilities.find( path );
   if ( it != mCachedCapabilities.end() )
   {

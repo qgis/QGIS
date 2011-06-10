@@ -16,7 +16,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgssoaprequesthandler.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include <QBuffer>
 #include <QDir>
@@ -53,7 +53,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
     bool conversionSuccess = false;
     lengthQString = QString( lengthString );
     length = lengthQString.toInt( &conversionSuccess );
-    QgsMSDebugMsg( "length is: " + lengthQString );
+    QgsDebugMsg( "length is: " + lengthQString );
     if ( conversionSuccess )
     {
       input = ( char* )malloc( length + 1 );
@@ -76,27 +76,27 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
       }
       else
       {
-        QgsMSDebugMsg( "input is NULL " );
+        QgsDebugMsg( "input is NULL " );
       }
       free( input );
     }
     else
     {
-      QgsMSDebugMsg( "could not convert CONTENT_LENGTH to int" );
+      QgsDebugMsg( "could not convert CONTENT_LENGTH to int" );
     }
   }
 
-  //QgsMSDebugMsg("input string is: " + inputString)
+  //QgsDebugMsg("input string is: " + inputString)
 
   //inputString to QDomDocument
   QDomDocument inputXML;
   QString errorMsg;
   if ( !inputXML.setContent( inputString, true, &errorMsg ) )
   {
-    QgsMSDebugMsg( "soap request parse error" );
-    QgsMSDebugMsg( "error message: " + errorMsg );
-    QgsMSDebugMsg( "the xml string was:" );
-    QgsMSDebugMsg( inputString );
+    QgsDebugMsg( "soap request parse error" );
+    QgsDebugMsg( "error message: " + errorMsg );
+    QgsDebugMsg( "the xml string was:" );
+    QgsDebugMsg( inputString );
     throw QgsMapServiceException( "InvalidXML", "XML error: " + errorMsg );
     return result;
   }
@@ -109,7 +109,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   QDomNodeList envelopeNodeList = inputXML.elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
   if ( envelopeNodeList.size() < 1 )
   {
-    QgsMSDebugMsg( "Envelope element not found" );
+    QgsDebugMsg( "Envelope element not found" );
     throw QgsMapServiceException( "SOAPError", "Element <Envelope> not found" );
     return result;
   }
@@ -117,7 +117,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   QDomNodeList bodyNodeList = envelopeNodeList.item( 0 ).toElement().elementsByTagNameNS( "http://schemas.xmlsoap.org/soap/envelope/", "Body" );
   if ( bodyNodeList.size() < 1 )
   {
-    QgsMSDebugMsg( "body node not found" );
+    QgsDebugMsg( "body node not found" );
     throw QgsMapServiceException( "SOAPError", "Element <Body> not found" );
     return result;
   }
@@ -127,7 +127,7 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   QString serviceString = firstChildElement.attribute( "service" );
   if ( serviceString == "MS" )
   {
-    QgsMSDebugMsg( "service = MS " );
+    QgsDebugMsg( "service = MS " );
     result.insert( std::make_pair( "SERVICE", "MS" ) );
     mService = "MS";
   }
@@ -274,7 +274,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
         if ( !common.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
-          QgsMSDebugMsg( "external orchestra common capabilities not found" );
+          QgsDebugMsg( "external orchestra common capabilities not found" );
         }
         else
         {
@@ -283,7 +283,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           int errorLineNo;
           if ( !externCapDoc.setContent( &common, false, &parseError, &errorLineNo ) )
           {
-            QgsMSDebugMsg( "parse error at setting content of external orchestra common capabilities: "
+            QgsDebugMsg( "parse error at setting content of external orchestra common capabilities: "
                            + parseError + " at line " + QString::number( errorLineNo ) );
             common.close();
           }
@@ -348,7 +348,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
         if ( !wmsService.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
-          QgsMSDebugMsg( "external wms service capabilities not found" );
+          QgsDebugMsg( "external wms service capabilities not found" );
         }
         else
         {
@@ -357,7 +357,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           int errorLineNo;
           if ( !externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
           {
-            QgsMSDebugMsg( "parse error at setting content of external wms service capabilities: "
+            QgsDebugMsg( "parse error at setting content of external wms service capabilities: "
                            + parseError + " at line " + QString::number( errorLineNo ) );
             wmsService.close();
           }
@@ -395,7 +395,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
         if ( !common.open( QIODevice::ReadOnly ) )
         {
           //throw an exception...
-          QgsMSDebugMsg( "external orchestra common capabilities not found" );
+          QgsDebugMsg( "external orchestra common capabilities not found" );
         }
         else
         {
@@ -404,7 +404,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           int errorLineNo;
           if ( !externCapDoc.setContent( &common, false, &parseError, &errorLineNo ) )
           {
-            QgsMSDebugMsg( "parse error at setting content of external orchestra common capabilities: "
+            QgsDebugMsg( "parse error at setting content of external orchestra common capabilities: "
                            + parseError + " at line " + QString::number( errorLineNo ) );
             common.close();
           }
@@ -700,7 +700,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( std::map<QString, QStri
 
 int QgsSOAPRequestHandler::sendSOAPWithAttachments( QImage* img ) const
 {
-  QgsMSDebugMsg( "Entering." );
+  QgsDebugMsg( "Entering." );
   //create response xml document
   QDomDocument xmlResponse; //response xml, save this into mimeString
   QDomElement envelopeElement = xmlResponse.createElementNS( "http://schemas.xmlsoap.org/soap/envelope/", "Envelope" );
@@ -758,7 +758,7 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   QFile theFile;
   QDir tmpDir;
 
-  QgsMSDebugMsg( "Entering." );
+  QgsDebugMsg( "Entering." );
 
   if ( findOutHostAddress( uri ) != 0 )
   {
@@ -775,7 +775,7 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   tmpDir = QDir( "/tmp" );
 #endif
 
-  QgsMSDebugMsg( "Path to tmpDir is: " + tmpDir.absolutePath() );
+  QgsDebugMsg( "Path to tmpDir is: " + tmpDir.absolutePath() );
 
   //create a random folder under /tmp with map.jpg/png in it
   //and return the link to the client
@@ -784,7 +784,7 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   QString folderName = QString::number( randomNumber );
   if ( !QFile::exists( tmpDir.absolutePath() + "/mas_tmp" ) )
   {
-    QgsMSDebugMsg( "Trying to create mas_tmp folder" );
+    QgsDebugMsg( "Trying to create mas_tmp folder" );
     if ( !tmpDir.mkdir( "mas_tmp" ) )
     {
       return 2;
@@ -793,11 +793,11 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   QDir tmpMasDir( tmpDir.absolutePath() + "/mas_tmp" );
   if ( !tmpMasDir.mkdir( folderName ) )
   {
-    QgsMSDebugMsg( "Trying to create random folder" );
+    QgsDebugMsg( "Trying to create random folder" );
     return 3;
   }
 
-  QgsMSDebugMsg( "Temp. folder is: " + tmpMasDir.absolutePath() + "/" + folderName );
+  QgsDebugMsg( "Temp. folder is: " + tmpMasDir.absolutePath() + "/" + folderName );
 
   if ( mFormat == "JPG" )
   {
@@ -811,13 +811,13 @@ int QgsSOAPRequestHandler::sendUrlToFile( QImage* img ) const
   }
   if ( !theFile.open( QIODevice::WriteOnly ) )
   {
-    QgsMSDebugMsg( "Error, could not open file" );
+    QgsDebugMsg( "Error, could not open file" );
     return 4;
   }
 
   if ( !img->save( &theFile, mFormat.toLocal8Bit().data(), -1 ) )
   {
-    QgsMSDebugMsg( "Error, could not save image" );
+    QgsDebugMsg( "Error, could not save image" );
     return 5;
   }
 
@@ -860,7 +860,7 @@ int QgsSOAPRequestHandler::findOutHostAddress( QString& address ) const
     return 3;
   }
   address = onlineResourceList.at( 0 ).toElement().attribute( "href" );
-  QgsMSDebugMsg( "address found: " + address );
+  QgsDebugMsg( "address found: " + address );
   if ( address.isEmpty() )
   {
     return 4;

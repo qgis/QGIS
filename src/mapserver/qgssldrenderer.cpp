@@ -21,7 +21,7 @@
 #include "qgsfilter.h"
 #include "qgssldrule.h"
 #include "qgssymbol.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include <QPainter>
 #include <QPixmap>
 #include <QSet>

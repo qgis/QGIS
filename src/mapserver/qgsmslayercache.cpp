@@ -17,7 +17,8 @@
 
 #include "qgsmslayercache.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
+#include <QFile>
 
 //maximum number of layers in the cache (and upper limit for layers in one published project)
 #define DEFAULT_MAX_N_LAYERS 50
@@ -40,7 +41,7 @@ QgsMSLayerCache::QgsMSLayerCache()
 
 QgsMSLayerCache::~QgsMSLayerCache()
 {
-  QgsMSDebugMsg( "removing all entries" );
+  QgsDebugMsg( "removing all entries" );
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it;
   for ( it = mEntries.begin(); it != mEntries.end(); ++it )
   {
@@ -51,7 +52,7 @@ QgsMSLayerCache::~QgsMSLayerCache()
 
 void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName, QgsMapLayer* layer, const QList<QString>& tempFiles )
 {
-  QgsMSDebugMsg( "inserting layer" );
+  QgsDebugMsg( "inserting layer" );
   if ( mEntries.size() > std::max( DEFAULT_MAX_N_LAYERS, mProjectMaxLayers ) ) //force cache layer examination after 10 inserted layers
   {
     updateEntries();
@@ -80,7 +81,7 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlNamePair );
   if ( it == mEntries.end() )
   {
-    QgsMSDebugMsg( "Layer not found in cache" );
+    QgsDebugMsg( "Layer not found in cache" );
     return 0;
   }
   else
@@ -94,14 +95,14 @@ QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& la
       vl->removeOverlay( "diagram" );
     }
 #endif //DIAGRAMSERVER
-    QgsMSDebugMsg( "Layer found in cache" );
+    QgsDebugMsg( "Layer found in cache" );
     return it->layerPointer;
   }
 }
 
 void QgsMSLayerCache::updateEntries()
 {
-  QgsMSDebugMsg( "updateEntries" );
+  QgsDebugMsg( "updateEntries" );
   int entriesToDelete = mEntries.size() - std::max( DEFAULT_MAX_N_LAYERS, mProjectMaxLayers );
   if ( entriesToDelete < 1 )
   {
@@ -121,7 +122,7 @@ void QgsMSLayerCache::removeLeastUsedEntry()
   {
     return;
   }
-  QgsMSDebugMsg( "removeLeastUsedEntry" );
+  QgsDebugMsg( "removeLeastUsedEntry" );
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.begin();
   QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator lowest_it = it;
   time_t lowest_time = it->lastUsedTime;
@@ -150,8 +151,8 @@ void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
     QFile removeFile( *it );
     if ( !removeFile.remove() )
     {
-      QgsMSDebugMsg( "could not remove file: " + *it );
-      QgsMSDebugMsg( removeFile.errorString() );
+      QgsDebugMsg( "could not remove file: " + *it );
+      QgsDebugMsg( removeFile.errorString() );
     }
   }
 }

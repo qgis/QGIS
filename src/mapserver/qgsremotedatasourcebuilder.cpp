@@ -18,7 +18,7 @@
 #include "qgsremotedatasourcebuilder.h"
 #include "qgsftptransaction.h"
 #include "qgshttptransaction.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include <QDomElement>
@@ -37,7 +37,7 @@ QgsRemoteDataSourceBuilder::~QgsRemoteDataSourceBuilder()
 
 QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "entering." );
+  QgsDebugMsg( "entering." );
   QgsMapLayer* theLayer = 0;
   if ( elem.tagName() == "RemoteRDS" )
   {
@@ -56,7 +56,7 @@ QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem
 
 QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDomElement& remoteRDSElem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "entering." );
+  QgsDebugMsg( "entering." );
   //load file with QgsHttpTransaction or QgsFtpTransaction
   QByteArray fileContents;
   QString uri = remoteRDSElem.text();
@@ -75,7 +75,7 @@ QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDom
   }
   else
   {
-    QgsMSDebugMsg( "Error, creation of temp file failed" );
+    QgsDebugMsg( "Error, creation of temp file failed" );
     delete tmpFile;
     return 0;
   }
@@ -140,7 +140,7 @@ QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDom
 
   if ( !( vl->isValid() ) )
   {
-    QgsMapServerLogger::instance()->printMessage( "vl is not valid" );
+    QgsDebugMsg( "vl is not valid" );
   }
 
   layersToRemove.push_back( vl );
@@ -155,7 +155,7 @@ int QgsRemoteDataSourceBuilder::loadData( const QString& url, QByteArray& data )
     QgsHttpTransaction http( url );
     if ( !http.getSynchronously( data ) )
     {
-      QgsMSDebugMsg( "Error, loading from http failed" );
+      QgsDebugMsg( "Error, loading from http failed" );
       return 1; //no success
     }
   }

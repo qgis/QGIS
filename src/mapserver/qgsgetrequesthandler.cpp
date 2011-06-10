@@ -1,6 +1,6 @@
 #include "qgsgetrequesthandler.h"
 #include "qgsftptransaction.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsremotedatasourcebuilder.h"
 #include "qgshttptransaction.h"
@@ -24,11 +24,11 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
   if ( qs )
   {
     queryString = QString( qs );
-    QgsMSDebugMsg( "query string is: " + queryString );
+    QgsDebugMsg( "query string is: " + queryString );
   }
   else
   {
-    QgsMSDebugMsg( "error, no query string found" );
+    QgsDebugMsg( "error, no query string found" );
     return parameters; //no query string? something must be wrong...
   }
 
@@ -84,7 +84,7 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
 
     }
     parameters.insert( std::make_pair( key.toUpper(), value ) );
-    QgsMSDebugMsg( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" );
+    QgsDebugMsg( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" );
   }
 
   //feature info format?
@@ -100,7 +100,7 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
     {
       QString formatString = formatIt->second;
 
-      QgsMapServerLogger::instance()->printMessage( "formatString is: " + formatString );
+      QgsDebugMsg( QString( "formatString is: %1" ).arg( formatString ) );
 
       //remove the image/ in front of the format
       if ( formatString.compare( "image/png", Qt::CaseInsensitive ) == 0 || formatString.compare( "png", Qt::CaseInsensitive ) == 0 )
@@ -164,7 +164,7 @@ void QgsGetRequestHandler::sendGetStyleResponse( const QDomDocument& doc ) const
 void QgsGetRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const
 {
   QByteArray ba;
-  QgsMSDebugMsg( "Info format is:" + infoFormat );
+  QgsDebugMsg( "Info format is:" + infoFormat );
 
   if ( infoFormat == "text/xml" )
   {
