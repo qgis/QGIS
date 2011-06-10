@@ -117,20 +117,34 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     return;
   }
 
-  QPointF off( context.outputLineWidth( mOffset.x() ), context.outputLineWidth( mOffset.y() ) );
+  //priority for rotation: 1. data defined, 2. symbol layer rotation (mRotation), 3. symbol rotation (mAngle)
+  double rotation = 0.0;
+  if( mRotationField.first != -1 )
+  {
+    rotation = f->attributeMap()[mRotationField.first].toDouble();
+  }
+  else
+  {
+    if( !doubleNear( mRotation, 0.0 ) )
+    {
+      rotation = mRotation;
+    }
+    else if( !doubleNear( mAngle, 0.0 ) )
+    {
+      rotation = mAngle;
+    }
+  }
 
   QMatrix transform;
-  transform.translate( point.x() + off.x(), point.y() + off.y() );
-
-  p->save();
-  if( !doubleNear( mRotation, 0.0 ) )
+  transform.translate( point.x(), point.y() );
+  if( !doubleNear( rotation, 0.0 ) )
   {
-    p->rotate( mRotation );
+    transform.rotate( rotation );
   }
+
   p->setPen( mPen );
   p->setBrush( mBrush );
   p->drawPath( transform.map( mPainterPath ) );
-  p->restore();
 }
 
 QString QgsEllipseSymbolLayerV2::layerType() const
