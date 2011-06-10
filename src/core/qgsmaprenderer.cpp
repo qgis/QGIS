@@ -836,6 +836,7 @@ void QgsMapRenderer::updateFullExtent()
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QStringList::iterator it = mLayerSet.begin();
+  QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
   while ( it != mLayerSet.end() )
   {
     QgsMapLayer * lyr = registry->mapLayer( *it );
