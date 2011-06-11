@@ -195,8 +195,12 @@ int QgsImageWarper::warpFile( const QString& input,
     if ( destResY > 0.0 ) destResY = -destResY;
 
     // Assert that the north-up convention is fullfiled by GDALSuggestedWarpOutput (should always be the case)
-    assert( adfGeoTransform[0] > 0.0 );
-    assert( adfGeoTransform[5] < 0.0 );
+    // Asserts are bad as they just crash out, changed to just return false. TS
+    if ( adfGeoTransform[0] <= 0.0  || adfGeoTransform[5] >= 0.0 )
+    {
+      QgsDebugMsg("Image is not north up after GDALSuggestedWarpOutput, bailing out.");
+      return false;
+    }
     // Find suggested output image extent (in georeferenced units)
     double minX = adfGeoTransform[0];
     double maxX = adfGeoTransform[0] + adfGeoTransform[1] * destPixels;
