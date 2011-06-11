@@ -16,7 +16,6 @@
 #include <cmath>
 #include <iostream>
 #include <cstdio>
-#include <assert.h>
 
 #include <cpl_conv.h>
 #include <cpl_string.h>
