@@ -45,13 +45,13 @@ pre, code { font-family: monospace }
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Sunday June 05, 2011</H3>
+<H3>Sunday June 12, 2011</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Sunday June 05, 2011
-Last Change : Thursday June 02, 2011
+Last Updated: Sunday June 12, 2011
+Last Change : Sunday June 05, 2011
 </P>
 <DIV CLASS="toc">
 
@@ -369,7 +369,7 @@ if you do not have edit privileges for the QGIS source repository, or use
 
 <div class="code"><PRE>
 cd ${HOME}/dev/cpp 
-svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
+git clone git://github.com/qgis/Quantum-GIS.git
 </PRE></div>
 
 <P>
@@ -378,25 +378,7 @@ svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
 
 <div class="code"><PRE>
 cd ${HOME}/dev/cpp 
-svn co --username &lt;yourusername&gt; https://svn.osgeo.org/qgis/trunk/qgis qgis
-</PRE></div>
-
-<P>
-The first time you check out the source you will be prompted to accept the
-qgis.org certificate. Press 'p' to accept it permanently:
-</P>
-
-<div class="code"><PRE>
-Error validating server certificate for 'https://svn.qgis.org:443':
-   - The certificate is not issued by a trusted authority. Use the
-     fingerprint to validate the certificate manually!  Certificate
-     information:
-   - Hostname: svn.qgis.org
-   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
-   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-   - Fingerprint:
-     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
-     accept (t)emporarily or accept (p)ermanently?  
+git clone git@github.com:qgis/Quantum-GIS.git
 </PRE></div>
 
 <A NAME="toc10"></A>
@@ -418,9 +400,9 @@ Now we create a build directory and run ccmake:
 </P>
 
 <div class="code"><PRE>
-cd qgis
-mkdir build
-cd build
+cd Quantum-GIS
+mkdir build-master
+cd build-master
 ccmake ..
 </PRE></div>
 
@@ -693,7 +675,7 @@ cd ..
 
 <P>
 Before downloading and compile GRASS source code you need to install a few
-other libraries and programs. We can do this trough apt
+other libraries and programs. We can do this through apt
 </P>
 
 <div class="code"><PRE>
@@ -707,7 +689,7 @@ tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
 
 <P>
 At this point we can get the GRASS source code: you may want to download it
-trough svn or maybe you want just to download the latest available source code arquive.
+through svn or maybe you want just to download the latest available source code arquive.
 For example the GRASS 6.4rc4 is available at <A HREF="http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz">http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz</A>
 </P>
 <P>
