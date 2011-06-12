@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Sunday May 29, 2011
+Sunday June 12, 2011
 
 
-Last Updated: Sunday May 29, 2011
-Last Change : Friday May 20, 2011
+Last Updated: Sunday June 12, 2011
+Last Change : Sunday June 05, 2011
 
 
   1. Introduction
@@ -234,26 +234,12 @@ if you do not have edit privaleges for the QGIS source repository, or use
 1. Anonymous Checkout
 
   cd ${HOME}/dev/cpp 
-  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
+  git clone git://github.com/qgis/Quantum-GIS.git
 
 2. Developer Checkout
 
   cd ${HOME}/dev/cpp 
-  svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
-
-The first time you check out the source you will be prompted to accept the
-qgis.org certificate. Press 'p' to accept it permanently:
-
-  Error validating server certificate for 'https://svn.qgis.org:443':
-     - The certificate is not issued by a trusted authority. Use the
-       fingerprint to validate the certificate manually!  Certificate
-       information:
-     - Hostname: svn.qgis.org
-     - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
-     - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-     - Fingerprint:
-       2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
-       accept (t)emporarily or accept (p)ermanently?  
+  git clone git@github.com:qgis/Quantum-GIS.git
 
 
   3.7. Starting the compile
@@ -268,9 +254,9 @@ development version. I suggest you do something similar:
 
 Now we create a build directory and run ccmake:
 
-  cd qgis
-  mkdir build
-  cd build
+  cd Quantum-GIS
+  mkdir build-master
+  cd build-master
   ccmake ..
 
 When you run ccmake (note the .. is required!), a menu will appear where 
@@ -450,7 +436,7 @@ leave the folder
     ========================================
 
 Before downloading and compile GRASS source code you need to install a few
-other libraries and programs. We can do this trough apt
+other libraries and programs. We can do this through apt
 
   sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
   tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
@@ -460,7 +446,7 @@ other libraries and programs. We can do this trough apt
   tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
 
 At this point we can get the GRASS source code: you may want to download it
-trough svn or maybe you want just to download the latest available source code arquive.
+through svn or maybe you want just to download the latest available source code arquive.
 For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
 
 Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
