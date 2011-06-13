@@ -472,12 +472,21 @@ ELSE (SVN_MARKER)
   IF (GIT_MARKER)
     FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
     IF(GIT)
-      ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        COMMAND echo \\\#define QGSSVNVERSION \\\"$$\( ${GIT} log -n1 --grep='git-svn-id' | sed -ne 's/^  *git-svn-id:.*@\\\([0-9]*\\\).*$$/\\1/p' \)$$\( ${GIT} log --oneline $$\( ${GIT} log -n1 --grep='git-svn-id' --pretty=%H \).. | wc -l | sed -e 's/^/+/' -e 's/+0$$//' \)\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        MAIN_DEPENDENCY ${GIT_MARKER}
-        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-      )
+      IF(MSVC)
+        ADD_CUSTOM_COMMAND(
+          OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+          COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GIT}\" log -n1 --oneline`)" do echo \#define QGSSVNVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+          MAIN_DEPENDENCY ${GIT_MARKER}
+          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        )
+      ELSE(MSVC)
+        ADD_CUSTOM_COMMAND(
+          OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+          COMMAND echo \\#define QGSSVNVERSION \\\"$$\( ${GIT} log -n1 --pretty=%h \)\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
+          MAIN_DEPENDENCY ${GIT_MARKER}
+          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+        )
+      ENDIF(MSVC)
     ELSE(GIT)
       MESSAGE(STATUS "git marker, but no git found - version will be unknown")
       FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"unknown\"")
