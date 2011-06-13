@@ -713,6 +713,7 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
+  QgsDebugMsg("PREPARE LAYER");
   Q_ASSERT( mMapRenderer != NULL );
 
   // start with a temporary settings class, find out labeling info
@@ -722,10 +723,22 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   if ( !lyrTmp.enabled )
     return 0;
 
-  // If we aren't an expression, we check to see if we can find the column.
+
   int fldIndex ;
-  if (!lyrTmp.isExpression)
+  if(lyrTmp.isExpression)
   {
+      QgsSearchString searchString;
+      searchString.setString( lyrTmp.fieldName );
+      searchString.tree()->referencedColumns();
+      foreach(QString name, searchString.tree()->referencedColumns() )
+      {
+          fldIndex =  layer->fieldNameIndex( name );
+          attrIndices.insert(fldIndex);
+      }
+  }
+  else
+  {
+      // If we aren't an expression, we check to see if we can find the column.
       fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
       if ( fldIndex == -1)
           return 0;

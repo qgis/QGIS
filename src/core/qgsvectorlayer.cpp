@@ -334,18 +334,21 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     QgsAttributeList attributes;
     if ( mRenderer )
     {
-      //attributes = mRenderer->classificationAttributes();
+      attributes = mRenderer->classificationAttributes();
     }
     else if ( mRendererV2 )
     {
-      // foreach( QString attrName, mRendererV2->usedAttributes() )
-      // {
-      //  int attrNum = fieldNameIndex( attrName );
-      //  attributes.append( attrNum );
-      // }
+      foreach( QString attrName, mRendererV2->usedAttributes() )
+      {
+        int attrNum = fieldNameIndex( attrName );
+        attributes.append( attrNum );
+      }
       // make sure the renderer is ready for classification ("symbolForFeature")
       mRendererV2->startRender( rendererContext, this );
     }
+
+    // Add fields required for labels
+    mLabel->addRequiredFields( attributes );
 
     QgsDebugMsg( "Selecting features based on view extent" );
 
@@ -355,7 +358,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
     {
       // select the records in the extent. The provider sets a spatial filter
       // and sets up the selection set for retrieval
-      select( pendingAllAttributesList(), rendererContext.extent() );
+      select( attributes, rendererContext.extent() );
 
       QgsFeature fet;
       while ( nextFeature( fet ) )
@@ -975,7 +978,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     //register label and diagram layer to the labeling engine
     prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
-    select( pendingAllAttributesList(), rendererContext.extent() );
+    select( attributes, rendererContext.extent() );
 
     if ( mRendererV2->usingSymbolLevels() )
       drawRendererV2Levels( rendererContext, labeling );
@@ -1022,7 +1025,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
     bool labeling = false;
     prepareLabelingAndDiagrams( rendererContext, attributes, labeling );
 
-    select( pendingAllAttributesList(), rendererContext.extent() );
+    select( attributes, rendererContext.extent() );
 
     try
     {

@@ -468,8 +468,10 @@ void QgsLabelingGui::showExpressionDialog()
     dlg->setLayout(layout);
     layout->addWidget(builder);
     layout->addWidget(buttonBox);
+    connect(buttonBox,SIGNAL( accepted() ),dlg,SLOT( accept() ) );
+    connect(buttonBox,SIGNAL( rejected() ),dlg,SLOT( reject() ) );
 
-    if ( dlg->exec() )
+    if ( dlg->exec() == QDialog::Accepted )
     { 
       QString expression =  builder->getExpressionString();
       //Do validation here first before applying
