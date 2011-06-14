@@ -44,9 +44,6 @@
 #define M_PI 4*atan(1.0)
 #endif
 
-static const char * const ident_ =
-  "$Id$";
-
 QgsLabel::QgsLabel( const QgsFieldMap & fields )
     : mMinScale( 0 ),
     mMaxScale( 100000000 ),

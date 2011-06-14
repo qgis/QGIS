@@ -18,7 +18,6 @@ email                : tim@linfiniti.com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 // includes
 
@@ -47,14 +46,9 @@ email                : tim@linfiniti.com
 //the gui subclass
 #include "plugingui.h"
 
-
-
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
 #endif
-
-//
-static const char * const ident_ = "$Id$";
 
 static const QString name_ = QObject::tr( "NorthArrow" );
 static const QString description_ = QObject::tr( "Displays a north arrow overlayed onto the map" );

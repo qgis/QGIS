@@ -1,5 +1,5 @@
 #include "qgsmsutils.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include <stdlib.h>
 #include <time.h>
 #include <QDir>
@@ -49,7 +49,7 @@ QString QgsMSUtils::createTempFilePath()
     tempFilePath += "1";
     testFile.setFile( tempFilePath );
   }
-  QgsMapServerLogger::instance()->printMessage( tempFilePath );
+  QgsDebugMsg( tempFilePath );
   return tempFilePath;
 }
 

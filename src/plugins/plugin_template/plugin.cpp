@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 //
 // QGIS Specific includes
@@ -34,7 +33,6 @@
 #include <QToolBar>
 
 
-static const char * const sIdent = "$Id$";
 static const QString sName = QObject::tr( "[menuitemname]" );
 static const QString sDescription = QObject::tr( "[plugindescription]" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );

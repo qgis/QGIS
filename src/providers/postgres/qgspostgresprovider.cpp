@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 // for htonl
 #ifdef WIN32
@@ -2891,7 +2890,10 @@ long QgsPostgresProvider::featureCount() const
   // get total number of features
   QString sql;
 
-  if ( !isQuery && mUseEstimatedMetadata )
+  // use estimated metadata even when there is a where clause,
+  // although we get an incorrect feature count for the subset
+  // - but make huge dataset usable.
+  if ( !isQuery && mUseEstimatedMetadata  )
   {
     sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
   }

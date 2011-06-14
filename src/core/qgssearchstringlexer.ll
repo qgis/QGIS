@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
  
 %option noyywrap
 %option case-insensitive
@@ -109,7 +108,7 @@ string      "'"{str_char}*"'"
 
 "||"   { return CONCAT; }
 
-[+-/*^]    { return yytext[0]; }
+[+-/*^%]    { return yytext[0]; }
 
 [()]      { return yytext[0]; }
 

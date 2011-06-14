@@ -21,9 +21,6 @@
 #include <QDomDocument>
 #include <QStringList>
 
-static const char * const ident_ = "$Id$";
-
-
 void QgsPropertyValue::dump( size_t tabs ) const
 {
   QString tabString;

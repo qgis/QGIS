@@ -81,12 +81,14 @@ class QgsMeasureDialog : public QDialog, private Ui::QgsMeasureBase
     void convertMeasurement( double &measure, QGis::UnitType &u, bool isArea );
 
     //! Configures distance area objects with ellipsoid / output crs
-    void configureDistanceArea( QgsDistanceArea& da );
+    void configureDistanceArea();
 
     double mTotal;
 
     //! indicates whether we're measuring distances or areas
     bool mMeasureArea;
+
+    QgsDistanceArea mDa;
 
     //! pointer to measure tool which owns this dialog
     QgsMeasureTool* mTool;

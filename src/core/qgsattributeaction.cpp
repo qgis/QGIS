@@ -21,7 +21,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #include <QList>
 
@@ -32,8 +31,6 @@
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
-
-static const char * const ident_ = "$Id$";
 
 void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, bool capture )
 {

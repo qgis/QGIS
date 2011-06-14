@@ -18,7 +18,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id$ */
 
 #ifndef QGSPROJECTPROPERTY_H
 #define QGSPROJECTPROPERTY_H

@@ -24,7 +24,6 @@
 ** National Oceanic and Atmospheric Administration or the Department of Commerce.
 **
 **/
-/*  $Id$ */
 #ifndef eVisDatabaseLayerFieldSelectionGui_H
 #define eVisDatabaseLayerFieldSelectionGui_H
 

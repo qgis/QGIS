@@ -59,9 +59,6 @@
 #include <qwt_plot_curve.h>
 #include <qwt_plot_grid.h>
 
-const char * const ident =
-  "$Id$";
-
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
     // Constant that signals property not used.

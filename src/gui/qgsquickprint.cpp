@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id: plugin.cpp 7796 2007-12-16 22:11:38Z homann $ */
 
 //
 // QGIS Specific includes

@@ -1813,8 +1813,6 @@ void QgsGrassEdit::displayDynamic( struct line_pnts *Points, double x, double y,
 
 void QgsGrassEdit::displayNode( int node, const QPen & pen, int size, QPainter *painter )
 {
-  QgsDebugMsg( QString( "node = %1" ).arg( node ) );
-
   if ( !mSymbDisplay[mNodeSymb[node]] )
     return;
 
@@ -1840,8 +1838,6 @@ QgsPoint QgsGrassEdit::transformLayerToMap( QgsPoint point )
 void QgsGrassEdit::displayIcon( double x, double y, const QPen & pen,
                                 int type, int size, QPainter *painter )
 {
-  QgsDebugMsg( "entered." );
-
   QgsPoint point;
   QPolygon pointArray( 2 );
 
@@ -1912,11 +1908,11 @@ void QgsGrassEdit::setCanvasPrompt( QString left, QString mid, QString right )
   QgsDebugMsg( "entered." );
   mCanvasPrompt = "";
   if ( left.length() > 0 )
-    mCanvasPrompt.append( tr( "Left: %1   " ).arg( left ) );
+    mCanvasPrompt.append( tr( "Left: %1" ).arg( left ) );
   if ( mid.length() > 0 )
-    mCanvasPrompt.append( tr( "Middle: %1" ).arg( mid ) );
+    mCanvasPrompt.append( tr( " -- Middle: %1" ).arg( mid ) );
   if ( right.length() > 0 )
-    mCanvasPrompt.append( tr( "Right: %1" ).arg( right ) );
+    mCanvasPrompt.append( tr( " -- Right: %1" ).arg( right ) );
 }
 
 void QgsGrassEdit::attributesClosed()

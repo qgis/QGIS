@@ -16,11 +16,22 @@
  ***************************************************************************/
 
 #include "qgsconfigcache.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsprojectparser.h"
 #include "qgssldparser.h"
 #include <QCoreApplication>
+
+QgsConfigCache* QgsConfigCache::mInstance = 0;
+
+QgsConfigCache* QgsConfigCache::instance()
+{
+  if ( !mInstance )
+  {
+    mInstance = new QgsConfigCache();
+  }
+  return mInstance;
+}
 
 QgsConfigCache::QgsConfigCache()
 {
@@ -43,12 +54,12 @@ QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
   QHash<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
   if ( configIt == mCachedConfigurations.constEnd() )
   {
-    QgsMSDebugMsg( "Create new configuration" );
+    QgsDebugMsg( "Create new configuration" );
     p = insertConfiguration( filePath );
   }
   else
   {
-    QgsMSDebugMsg( "Return configuration from cache" );
+    QgsDebugMsg( "Return configuration from cache" );
     p = configIt.value();
   }
 
@@ -78,7 +89,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   QFile* configFile = new QFile( filePath );
   if ( !configFile->exists() || !configFile->open( QIODevice::ReadOnly ) )
   {
-    QgsMSDebugMsg( "File unreadable: " + filePath );
+    QgsDebugMsg( "File unreadable: " + filePath );
     delete configFile;
     return 0;
   }
@@ -89,7 +100,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   int line, column;
   if ( !configDoc->setContent( configFile, true, &errorMsg, &line, &column ) )
   {
-    QgsMSDebugMsg( QString( "Parse error %1 at row %2, column %3 in %4 " )
+    QgsDebugMsg( QString( "Parse error %1 at row %2, column %3 in %4 " )
                    .arg( errorMsg ).arg( line ).arg( column ).arg( filePath ) );
     delete configFile;
     delete configDoc;
@@ -109,7 +120,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   }
   else
   {
-    QgsMSDebugMsg( "SLD or qgis expected in " + filePath );
+    QgsDebugMsg( "SLD or qgis expected in " + filePath );
     delete configDoc;
     return 0;
   }
@@ -122,7 +133,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
 
 void QgsConfigCache::removeChangedEntry( const QString& path )
 {
-  QgsMSDebugMsg( "Remove config cache entry because file changed" );
+  QgsDebugMsg( "Remove config cache entry because file changed" );
   QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.find( path );
   if ( configIt != mCachedConfigurations.end() )
   {

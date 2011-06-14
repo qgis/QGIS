@@ -17,7 +17,7 @@
  ***************************************************************************/
 
 #include "qgshostedrdsbuilder.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgscoordinatereferencesystem.h"
@@ -35,7 +35,7 @@ QgsHostedRDSBuilder::~QgsHostedRDSBuilder()
 
 QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "entering." );
+  QgsDebugMsg( "entering." );
 
   if ( elem.isNull() )
   {
@@ -45,12 +45,12 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem, const
   QString uri = elem.attribute( "uri", "not found" );
   if ( uri == "not found" )
   {
-    QgsMSDebugMsg( "Uri not found" );
+    QgsDebugMsg( "Uri not found" );
     return 0;
   }
   else
   {
-    QgsMSDebugMsg( "Trying to get hostedrds layer from cache with uri: " + uri );
+    QgsDebugMsg( "Trying to get hostedrds layer from cache with uri: " + uri );
     QgsRasterLayer* rl = 0;
     if ( allowCaching )
     {
@@ -58,7 +58,7 @@ QgsMapLayer* QgsHostedRDSBuilder::createMapLayer( const QDomElement& elem, const
     }
     if ( !rl )
     {
-      QgsMSDebugMsg( "hostedrds layer not in cache, so create and insert it" );
+      QgsDebugMsg( "hostedrds layer not in cache, so create and insert it" );
       rl = new QgsRasterLayer( uri, layerNameFromUri( uri ) );
       if ( allowCaching )
       {

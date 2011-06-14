@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"
@@ -35,9 +34,10 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
     void restorePosition();
   private slots:
     void saveWindowLocation();
+    void on_btnUpdate_clicked();
     void on_btnDelete_clicked();
     void on_btnZoomTo_clicked();
-    void on_lstBookmarks_doubleClicked( QTreeWidgetItem * );
+    void on_lstBookmarks_itemDoubleClicked( QTreeWidgetItem * );
     void refreshBookmarks();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

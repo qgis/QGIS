@@ -51,7 +51,6 @@
 
 // standard includes
 
-static const char * const sIdent = "$Id: roadgraphplugin.cpp 9327 2009-04-20 10:09:44Z YEKST $";
 static const QString sName = QObject::tr( "Road graph plugin" );
 static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
@@ -305,7 +304,8 @@ void RoadGraphPlugin::render( QPainter *painter )
   if ( graphDirector == NULL )
     return;
 
-  RgSimpleGraphBuilder builder( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs() );
+  RgSimpleGraphBuilder builder( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs(),
+                                mQGisIface->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
   QVector< QgsPoint > null;
   graphDirector->makeGraph( &builder , null, null );
   AdjacencyMatrix m = builder.adjacencyMatrix();

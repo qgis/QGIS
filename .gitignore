@@ -34,3 +34,6 @@ scripts/astyle.exe
 *.out
 *.tex
 *.toc
+doc/CODING.html
+doc/CODING.tex
+doc/INSTALL.tex

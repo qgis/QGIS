@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- /* $Id$ */
  
 %{
 #include <qglobal.h>
@@ -113,7 +112,7 @@ void addToTmpNodes(QgsSearchTreeNode* node);
 %left IN
 
 %left '+' '-'
-%left '*' '/'
+%left '*' '/' '%'
 %left '^'
 %left UMINUS  // fictitious symbol (for unary minus)
 
@@ -171,6 +170,7 @@ scalar_exp:
       }
     | scalar_exp '^' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPOW,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '*' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMUL,  $1, $3); joinTmpNodes($$,$1,$3); }
+    | scalar_exp '%' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMOD,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '/' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opDIV,  $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '+' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opPLUS, $1, $3); joinTmpNodes($$,$1,$3); }
     | scalar_exp '-' scalar_exp   { $$ = new QgsSearchTreeNode(QgsSearchTreeNode::opMINUS,$1, $3); joinTmpNodes($$,$1,$3); }

@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSOGRSUBLAYERSDIALOG_H
 #define QGSOGRSUBLAYERSDIALOG_H

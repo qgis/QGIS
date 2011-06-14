@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSGCP_LIST_TABLE_VIEW_H
 #define QGSGCP_LIST_TABLE_VIEW_H

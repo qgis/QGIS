@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSSEARCHTREENODE_H
 #define QGSSEARCHTREENODE_H
@@ -66,6 +65,7 @@ class CORE_EXPORT QgsSearchTreeNode
       opPLUS,
       opMINUS,
       opMUL,
+      opMOD,
       opDIV,
       opPOW,
       opSQRT,

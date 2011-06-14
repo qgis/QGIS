@@ -20,6 +20,7 @@ SET(QGIS_APP_SRCS
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
+  qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
   qgsdisplayangle.cpp
@@ -152,6 +153,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsdbtablemodel.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
+  qgsembedlayerdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
   qgsformannotationdialog.h
@@ -379,12 +381,7 @@ ENDIF (POSTGRES_FOUND)
 #############
 
 IF (WIN32)
-  # 'WIN32' removes console, which is Bad when debugging
-  IF (CMAKE_BUILD_TYPE MATCHES Debug)
-    ADD_EXECUTABLE(${QGIS_APP_NAME} ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
-  ELSE (CMAKE_BUILD_TYPE MATCHES Debug)
-    ADD_EXECUTABLE(${QGIS_APP_NAME} WIN32 ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
-  ENDIF (CMAKE_BUILD_TYPE MATCHES Debug)
+  ADD_EXECUTABLE(${QGIS_APP_NAME} WIN32 ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
 ELSE (WIN32)
   ADD_EXECUTABLE(${QGIS_APP_NAME} ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
 ENDIF (WIN32)
@@ -408,10 +405,6 @@ ENDIF( WIN32 )
 IF(NOT WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${SQLITE_LIBRARY})
 ENDIF(NOT WITH_INTERNAL_SPATIALITE)
-
-IF (${QTVERSION} STRLESS "4.3.0")
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${QT_QT3SUPPORT_LIBRARY} )
-ENDIF (${QTVERSION} STRLESS "4.3.0")
 
 IF (APPLE)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY} )

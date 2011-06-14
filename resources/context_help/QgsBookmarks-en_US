@@ -5,6 +5,7 @@ Spatial Bookmarks allow you to "bookmark" a geographic location and return to it
 <a href="#working">Working with Bookmarks</a><br/>
 <a href="#zooming">Zooming to a Bookmark</a><br/>
 <a href="#deleting">Deleting a Bookmark</a><br/>
+<a href="#updating">Updating a Bookmark</a><br/>
 
 <a name="creating">
 <h4>Creating a Bookmark</h4>
@@ -31,4 +32,8 @@ You can also zoom to a bookmark by double-clicking on it.
 <h5>Deleting a Bookmark</h5>
 </a>
 To delete a bookmark from the Bookmarks dialog, click on it then click the <label>Delete</label> button. Confirm your choice by clicking <label>OK</label> or cancel the delete by clicking <label>Cancel</label>.
+<a name="updating">
+<h5>Updating a Bookmark</h5>
+</a>
+To update the extent of a bookmark, click on it then click the <label>Update</label> button. Confirm your choice by clicking <label>OK</label> or cancel the update by clicking <label>Cancel</label>.
 

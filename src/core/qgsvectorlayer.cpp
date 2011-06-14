@@ -20,7 +20,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #include <cfloat>
 #include <cstring>
@@ -84,8 +83,6 @@
 #include <dlfcn.h>
 #endif
 
-
-static const char * const ident_ = "$Id$";
 
 // typedef for the QgsDataProvider class factory
 typedef QgsDataProvider * create_it( const QString* uri );
@@ -2641,7 +2638,7 @@ bool QgsVectorLayer::startEditing()
   return true;
 }
 
-bool QgsVectorLayer::readXml( QDomNode & layer_node )
+bool QgsVectorLayer::readXml( const QDomNode& layer_node )
 {
   QgsDebugMsg( QString( "Datasource in QgsVectorLayer::readXml: " ) + mDataSource.toLocal8Bit().data() );
 
@@ -2696,6 +2693,7 @@ bool QgsVectorLayer::readXml( QDomNode & layer_node )
   mJoinBuffer->readXml( layer_node );
 
   updateFieldMap();
+  connect( QgsMapLayerRegistry::instance(), SIGNAL( layerWillBeRemoved( QString ) ), this, SLOT( checkJoinLayerRemove( QString ) ) );
 
   QString errorMsg;
   if ( !readSymbology( layer_node, errorMsg ) )

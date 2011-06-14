@@ -17,7 +17,7 @@
 
 #include "qgshostedvdsbuilder.h"
 #include "qgsmslayercache.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayer.h"
 #include <QDomElement>
@@ -44,7 +44,7 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem, const
 
   if ( providerType == "not found" || uri == "not found" )
   {
-    QgsMSDebugMsg( "error, provider type not found" );
+    QgsDebugMsg( "error, provider type not found" );
     return 0;
   }
 
@@ -52,18 +52,18 @@ QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem, const
 
   if ( allowCaching ) //take layer from cache if allowed
   {
-    QgsMSDebugMsg( "Taking hostedvds layer from cash" );
+    QgsDebugMsg( "Taking hostedvds layer from cash" );
     ml = QgsMSLayerCache::instance()->searchLayer( uri, layerName );
   }
 
   if ( !ml )
   {
-    QgsMSDebugMsg( "hostedvds layer not in cash, so create and insert it" );
+    QgsDebugMsg( "hostedvds layer not in cash, so create and insert it" );
     ml = new QgsVectorLayer( uri, layerNameFromUri( uri ), providerType );
 
     if ( !ml || !ml->isValid() )
     {
-      QgsMSDebugMsg( "error, VectorLayer is 0 or invalid" );
+      QgsDebugMsg( "error, VectorLayer is 0 or invalid" );
       delete ml;
       return 0;
     }

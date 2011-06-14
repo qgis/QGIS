@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPROVIDERREGISTRY_H
 #define QGSPROVIDERREGISTRY_H

@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSGEOREFTOOLDELETEPOINT_H
 #define QGSGEOREFTOOLDELETEPOINT_H

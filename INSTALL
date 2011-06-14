@@ -1,9 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
+Sunday June 12, 2011
 
 
-Last update: 20110504
-Last change: 20110502
+Last Updated: Sunday June 12, 2011
+Last Change : Sunday June 05, 2011
 
 
   1. Introduction
@@ -22,14 +23,13 @@ Last change: 20110502
     4.1. Building with Microsoft Visual Studio
     4.2. Building using MinGW
     4.3. Creation of MSYS environment for compilation of Quantum GIS
-  5. MacOS X: building using frameworks and Cmake
-    5.1. Install Qt4 from .dmg
+  5. Building on MacOS X
+    5.1. Install Qt4 from disk image
     5.2. Install development frameworks for QGIS dependencies
     5.3. Install CMake for OSX
-    5.4. Install subversion for OSX
-    5.5. Check out QGIS from SVN
-    5.6. Configure the build
-    5.7. Building
+    5.4. QGIS source
+    5.5. Configure the build
+    5.6. Building
   6. Authors and Acknowledgments
 
 
@@ -235,26 +235,12 @@ if you do not have edit privileges for the QGIS source repository, or use
 1. Anonymous Checkout
 
   cd ${HOME}/dev/cpp 
-  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
+  git clone git://github.com/qgis/Quantum-GIS.git
 
 2. Developer Checkout
 
   cd ${HOME}/dev/cpp 
-  svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
-
-The first time you check out the source you will be prompted to accept the
-qgis.org certificate. Press 'p' to accept it permanently:
-
-  Error validating server certificate for 'https://svn.qgis.org:443':
-     - The certificate is not issued by a trusted authority. Use the
-       fingerprint to validate the certificate manually!  Certificate
-       information:
-     - Hostname: svn.qgis.org
-     - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
-     - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-     - Fingerprint:
-       2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
-       accept (t)emporarily or accept (p)ermanently?  
+  git clone git@github.com:qgis/Quantum-GIS.git
 
 
   3.7. Starting the compile
@@ -269,9 +255,9 @@ development version. I suggest you do something similar:
 
 Now we create a build directory and run ccmake:
 
-  cd qgis
-  mkdir build
-  cd build
+  cd Quantum-GIS
+  mkdir build-master
+  cd build-master
   ccmake ..
 
 When you run ccmake (note the .. is required!), a menu will appear where 
@@ -451,7 +437,7 @@ leave the folder
     ========================================
 
 Before downloading and compile GRASS source code you need to install a few
-other libraries and programs. We can do this trough apt
+other libraries and programs. We can do this through apt
 
   sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
   tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
@@ -461,7 +447,7 @@ other libraries and programs. We can do this trough apt
   tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
 
 At this point we can get the GRASS source code: you may want to download it
-trough svn or maybe you want just to download the latest available source code arquive.
+through svn or maybe you want just to download the latest available source code arquive.
 For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
 
 Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
@@ -629,8 +615,8 @@ installed in the default locations):
   call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
   
   @set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.0
-  @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\gdal-17\include;%OSGEO4W_ROOT%\include
-  @set LIB=%LIB%;%OSGEO4W_ROOT%\apps\gdal-17\lib;%OSGEO4W_ROOT%\lib
+  @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
+  @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
   
   @cmd
 
@@ -1161,26 +1147,27 @@ We're done with preparation of MSYS environment. Now you can delete all stuff in
 of space and it's not necessary at all.
 
 
-  5. MacOS X: building using frameworks and Cmake
-  ===============================================
+  5. Building on MacOS X
+  ======================
 
 In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
-The base system here is Mac OS X 10.4 (Tiger), with a single architecture build.
-Included are a few notes for building on Mac OS X 10.5 (Leopard) and 10.6 (Snow Leopard).
-Make sure to read each section completely before typing the first command you see.
+The base system here is Mac OS X 10.4 (Tiger), with a single architecture
+build.  Included are notes for building on Mac OS X 10.5 (Leopard) and 10.6
+(Snow Leopard).  Make sure to read each section completely before typing
+the first command you see.
 
 General note on Terminal usage:  When I say "cd" to a folder in a Terminal,
 it means type "cd " (without the quotes, make sure to type a space after) and
-then type the path to said folder, then <return>.  A simple way to do this without having to know
-and type the full path is, after type the "cd " part, drag the folder (use the icon
-in its window title bar, or drag a folder from within a window) from the Desktop
-to the Terminal, then tap <return>.
+then type the path to said folder, then <return>.  A simple way to do this
+without having to know and type the full path is, after type the "cd " part,
+drag the folder (use the icon in its window title bar, or drag a folder from
+within a window) from the Desktop to the Terminal, then tap <return>.
 
-Parallel Compilation: On multiprocessor/multicore Macs, it's possible to speed
-up compilation, but it's not automatic.  Whenever you type "make" (but NOT "make install"),
-instead type:
+Parallel Compilation: On multiprocessor/multicore Macs, it's possible to
+speed up compilation, but it's not automatic.  Whenever you type "make" (but
+NOT "make install"), instead type:
 
   make -j [n]
 
@@ -1193,25 +1180,28 @@ ie: Mac Pro "8 Core" model (2 quad core processors) = 8
 ie: Macbook Pro i5 (hyperthreading) = 2 cores X 2 = 4
 
 
-  5.1. Install Qt4 from .dmg
-  ==========================
+  5.1. Install Qt4 from disk image
+  ================================
 
-You need a minimum of Qt-4.4.0. I suggest getting the latest.
+You need a minimum of Qt-4.4.0. I suggest getting the latest.  There is no need
+for the full Qt SDK, so save yourself some download time and get the frameworks
+only.
 
 Snow Leopard note: If you are building on Snow Leopard, you will need to
 decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
 as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
 
-PPC note: There appear to be issues with Qt Cocoa on PPC Macs.  QT Carbon
-is recommended on PPC Macs.
+PPC note: The readymade Qt Cocoa installers don't include PPC support, you'd
+have to compile Qt yourself.  But, there appear to be issues with Qt Cocoa on
+PPC Macs anyways.  Qt Carbon is recommended on PPC Macs.
 
-  http://qt.nokia.com/downloads
+http://qt.nokia.com/downloads
 
-If you want debug frameworks, Qt also provides a dmg with these.  These are in
-addition to the non-debug frameworks.
+If you want debug frameworks, Qt also provides a separate download with these.
+These are in addition to the non-debug frameworks.
 
-Once downloaded open the dmg and run the installer. Note you need admin
+Once downloaded open the disk image and run the installer. Note you need admin
 privileges to install.
 
 Qt note: Starting in Qt 4.4, libQtCLucene was added, and in 4.5
@@ -1231,23 +1221,23 @@ CMAKE_MODULE_LINKER_FLAGS and CMAKE_EXE_LINKER_FLAGS in the cmake build.
   =========================================================
 
 Download William Kyngesburye's excellent GDAL Complete package that includes
-PROJ, GEOS, GDAL, SQLite3, and image libraries, as frameworks.  There is also
-a GSL framework.
+PROJ, GEOS, GDAL, SQLite3, Spatialite, and image libraries, as frameworks.
+There is also a GSL framework.
 
-  http://www.kyngchaos.com/wiki/software/frameworks
+http://www.kyngchaos.com/wiki/software/frameworks
 
 Once downloaded, open and install the frameworks.
 
-William provides an additional installer package for Postgresql (for PostGIS support).
-Qgis just needs the libpq client library, so unless you want to setup the full
-Postgres + PostGIS server, all you need is the client-only package.
-It's available here:
+William provides an additional installer package for Postgresql (for PostGIS
+support).  Qgis just needs the libpq client library, so unless you want to
+setup the full Postgres + PostGIS server, all you need is the client-only
+package.  It's available here:
 
-  http://www.kyngchaos.com/wiki/software/postgres 
+http://www.kyngchaos.com/wiki/software/postgres 
 
 Also available is a GRASS application:
 
-  http://www.kyngchaos.com/wiki/software/grass
+http://www.kyngchaos.com/wiki/software/grass
 
 
     5.2.1. Additional Dependencies: General compatibility note
@@ -1273,9 +1263,10 @@ not necessary on Snow Leopard.
 
 Get the expat sources:
 
-  http://sourceforge.net/project/showfiles.php?group_id=10127 
+http://sourceforge.net/project/showfiles.php?group_id=10127 
 
-Double-click the source tarball to unpack, then, in Terminal.app, cd to the source folder and:
+Double-click the source tarball to unpack, then, in Terminal.app, cd to the
+source folder and:
 
   ./configure
   make 
@@ -1287,13 +1278,16 @@ Double-click the source tarball to unpack, then, in Terminal.app, cd to the sour
 
 Leopard and Snow Leopard note: Leopard and Snow Leopard include a usable
 Python 2.5 and 2.6, respectively. So there is no need to install Python on
-Leopard and Snow Leopard. You can still install Python from python.org if preferred.
+Leopard and Snow Leopard. You can still install Python from python.org if
+preferred.
 
-If installing from python.org, make sure you install at least the latest Python 2.x from 
+If installing from python.org, make sure you install at least the latest Python
+2.x from 
 
-  http://www.python.org/download/
+http://www.python.org/download/
 
-Python 3 is a major change, and may have compatibility issues, so try it at your own risk.
+Python 3 is a major change, and may have compatibility issues, so try it at
+your own risk.
 
 
     5.2.4. Additional Dependencies: SIP
@@ -1301,31 +1295,33 @@ Python 3 is a major change, and may have compatibility issues, so try it at your
 
 Retrieve the python bindings toolkit SIP from
 
-  http://www.riverbankcomputing.com/software/sip/download
+http://www.riverbankcomputing.com/software/sip/download
 
-Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
-and (this installs by default into the Python framework, and is appropriate only for 
-python.org Python installs):
+Double-click the source tarball to unpack it, then, in Terminal.app,
+cd to the source folder.  Then for your chosen Python:
+
+python.org Python
 
   python configure.py 
   make 
   sudo make install 
 
-Leopard notes
+Leopard system Python
 
-If building on Leopard, using Leopard's bundled Python, SIP wants to install in the
-system path -- this is not a good idea.  Use this configure command instead of the 
-basic configure above:
+SIP wants to install in the system path -- this is not a good idea.
+More configuration is needed to install outside the system path:
 
   python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip -s MacOSX10.5.sdk
 
-Snow Leopard notes
+Snow Leopard system Python
 
 Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want (requires at least SIP 4.9),
-and make sure to run the versioned python binary (this one responds to the
-'arch' command, 'python' does not). If you are using 32-bit Qt (Qt Carbon):
+Also, you need to specify the architecture you want (requires at least SIP
+4.9), and make sure to run the versioned python binary (this one responds to
+the 'arch' command, 'python' does not).
+
+If you are using 32-bit Qt (Qt Carbon):
 
   python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip --arch=i386 -s MacOSX10.6.sdk
@@ -1335,23 +1331,56 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
   python2.6 configure.py -n -d /Library/Python/2.6/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip --arch=x86_64 -s MacOSX10.6.sdk
 
+continue...
+
+Then continue with compilation and installation:
+
+  make 
+  sudo make install 
+
 
     5.2.5. Additional Dependencies: PyQt
     ====================================
 
 Retrieve the python bindings toolkit for Qt from
 
-  http://www.riverbankcomputing.com/software/pyqt/download
+http://www.riverbankcomputing.com/software/pyqt/download
 
-Double-click the source tarball to unpack it, then, in Terminal.app, cd to the source folder
-and (this installs by default into the Python framework, and is appropriate only for
-python.org Python installs):
+Double-click the source tarball to unpack it, then, in Terminal.app,
+cd to the source folder.  Then for your chosen Python:
+
+python.org Python
 
   python configure.py 
   yes 
 
+Leopard system Python
+
+PyQt wants to install in the system path -- this is not a good idea.
+More configuration is needed to install outside the system path:
+
+  python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
+
+Snow Leopard system Python
+
+Similar to Leopard, you should install outside the system Python path.
+Also, you need to specify the architecture you want (requires at least PyQt 4.6),
+and make sure to run the versioned python binary (this one responds to the
+'arch' command, which is important for pyuic4, 'python' does not).
+
+If you are using 32-bit Qt (Qt Carbon):
+
+  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
+
+For 64-bit Qt (Qt Cocoa), use this configure line:
+
+  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
+
+continue...
+
 There is a problem with the configuration that needs to be fixed now
-(it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir line to:
+(it affects PyQwt compilation later).  Edit pyqtconfig.py and change the qt_dir
+line to:
 
       'qt_dir': '/usr',
 
@@ -1361,31 +1390,9 @@ parallel compilation, if you can):
   make 
   sudo make install 
 
-Leopard notes
-
-If building on Leopard, using Leopard's bundled Python, PyQt wants to install
-in the system path -- this is not a good idea.  Use this configure command
-instead of the basic configure above:
-
-  python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
-
 If there is a problem with undefined symbols in QtOpenGL on Leopard, edit
 QtOpenGL/makefile and add -undefined dynamic_lookup to LFLAGS.
 Then make again.
-
-Snow Leopard notes
-
-Similar to Leopard, you should install outside the system Python path.
-Also, you need to specify the architecture you want (requires at least PyQt 4.6),
-and make sure to run the versioned python binary (this one responds to the
-'arch' command, which is important for pyuic4, 'python' does not).
-If you are using 32-bit Qt (Qt Carbon):
-
-  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch i386
-
-For 64-bit Qt (Qt Cocoa), use this configure line:
-
-  python2.6 configure.py -d /Library/Python/2.6/site-packages -b /usr/local/bin --use-arch x86_64
 
 
     5.2.6. Additional Dependencies: Qwt/PyQwt
@@ -1394,43 +1401,31 @@ For 64-bit Qt (Qt Cocoa), use this configure line:
 The GPS tracking feature uses Qwt.  Some popular 3rd-party plugins use PyQwt.
 You can take care of both with the PyQwt source from:
 
-  http://pyqwt.sourceforge.net/
+http://pyqwt.sourceforge.net/
 
-Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0 (comes with Qwt 5.2.1).
-Normal compilation does both Qwt and PyQwt at the same time, but Qwt is statically linked
-into PyQwt, and Qgis can't use it.  So, we need to split the build.
+Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0
+(comes with Qwt 5.2.1).  Normal compilation does both Qwt and PyQwt at the same
+time, but Qwt is statically linked into PyQwt, and Qgis can't use it.  So, we
+need to split the build.
 
-First edit qwtconfig.pri in the qwt-5.2 subdir and change some settings so
-you don't get a bloated debug static library (too bad they are not configurable from
-qmake).  Scroll down to the 'release/debug mode' block.  Edit the last 'CONFIG +='
-line, within an 'else' block, and change 'debug' to 'release'.  Like so:
+Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build
+and install:
 
-      else {
-          CONFIG           += release     # release/debug
-      }
-
-Also uncomment (remove # prefix) the line 'CONFIG += QwtDll'.  Like so:
-
-  CONFIG           += QwtDll
-
-If you are building for Qt Carbon 32bit on Snow Leopard, add a line at the bottom:
-
-  CONFIG += x86
-
-Save and close.
-
-Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build and install:
-
+  cat >> qwtconfig.pri <<EOF
+  CONFIG += release QwtDll
+  EOF
   qmake -spec macx-g++
   make
   sudo make install
   sudo install_name_tool -id /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib \
   /usr/local/qwt-5.2.1-svn/lib/libqwt.5.dylib
 
-The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is the 
-minor.point version, and it may be an SVN version).  Remember this for QGIS and PyQwt configuration.
+The Qwt shared library is now installed in /usr/local/qwt-5.x.x[-svn] (x.x is
+the  minor.point version, and it may be an SVN version).  Remember this for
+QGIS and PyQwt configuration.
 
-Now for PyQwt.  Still in the Terminal:
+Now for PyQwt.  Still in the Terminal (for all Pythons, except see Snow Leopard
+Carbon note below):
 
   cd ../configure
   python configure.py --extra-include-dirs=/usr/local/qwt-5.2.1-svn/include \
@@ -1454,10 +1449,11 @@ This is not needed for Qt Cocoa. Configure as follows:
     5.2.7. Additional Dependencies: Bison
     =====================================
 
-Leopard and Snow Leopard note: Leopard and Snow Leopard include Bison 2.3, so this step can be skipped on Leopard and Snow Leopard.
+Leopard and Snow Leopard note: Leopard and Snow Leopard include Bison 2.3,
+so this step can be skipped on Leopard and Snow Leopard.
 
-The version of bison available by default on Mac OS X 10.4 is too old so you need to
-get a more recent one on your system. Download at least version 2.3 from:
+The version of bison available by default on Mac OS X 10.4 is too old so you
+need to get a more recent one on your system. Download at least version 2.3 from:
 
   ftp.gnu.org/gnu/bison/
 
@@ -1474,110 +1470,58 @@ tarball to unpack it, then cd to the source folder and:
 
 Get the latest source release from here:
 
-  http://www.cmake.org/cmake/resources/software.html
+http://www.cmake.org/cmake/resources/software.html
 
 Binary installers are available for OS X, but they are not recommended
-(2.4 versions install in /usr instead of /usr/local, and 2.6 versions are a
-strange application). Instead, download the source, double-click the source tarball,
-then cd to the source folder and:
+(2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
+strange application). Instead, download the source, double-click the source
+tarball, then cd to the source folder and:
 
   ./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
   make
   sudo make install
 
 
-  5.4. Install subversion for OSX
-  ===============================
+  5.4. QGIS source
+  ================
 
-Leopard and Snow Leopard note: Leopard and Snow Leopard (Xcode 3+)
-include SVN, so this step can be skipped on Leopard and Snow Leopard.
+Unzip the QGIS source tarball to a working folder of your choice
+(/usr/somewhere is not a good choice as it's hidden and requires root
+privileges).  If you are reading this from the source, you've already done
+this.
 
-The [http://sourceforge.net/projects/macsvn/MacSVN] project has a downloadable
-build of svn. If you are a GUI inclined person you may want to grab their gui
-client too. Get the command line client here:
+If you want to experiment with the latest development sources, go to the github
+QGIS project page:
 
-  curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Subversion_1.4.2.zip 
+http://github.com/qgis/Quantum-GIS
 
-Once downloaded open the zip file and run the installer.
+It should default to the master branch.  Click the Downloads button and
+select Download .tar.gz.
 
-You also need to install BerkleyDB available from the same
-http://sourceforge.net/projects/macsvn/ (website). At the time of writing the
-file was here:
-
-  curl -O http://ufpr.dl.sourceforge.net/sourceforge/macsvn/Berkeley_DB_4.5.20.zip 
-
-Once again unzip this and run the installer therein.
-
-Lastly we need to ensure that the svn commandline executeable is in the path.
-Add the following line to the end of /etc/bashrc using sudo:
-
-  sudo vim /etc/bashrc 
-
-And add this line to the bottom before saving and quiting:
-
-  export PATH=/usr/local/bin:$PATH:/usr/local/pgsql/bin 
-
-/usr/local/bin needs to be first in the path so that the newer bison (that will
-be built from source further down) is found before the bison (which is very
-old) that is installed by MacOSX
-
-Now close and reopen your shell to get the updated vars.
+Double-click the tarball to unzip it.
 
 
-  5.5. Check out QGIS from SVN
-  ============================
-
-Now we are going to check out the sources for QGIS. First we will create a
-directory for working in (or some folder of your choice):
-
-  mkdir -p ~/dev/cpp cd ~/dev/cpp 
-
-Now we check out the sources:
-
-Trunk:
-
-  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis 
-
-For a release branch version x.y.z:
-
-  svn co https://svn.qgis.org/qgis/branches/Release-x_y_z qgis-x.y.z
-
-The first time you check out QGIS sources you will probably get a message like
-this:
-
-   Error validating server certificate for 'https://svn.qgis.org:443':
-   - The certificate is not issued by a trusted authority. Use the fingerprint to
-     validate the certificate manually!  Certificate information:
-   - Hostname: svn.qgis.org
-   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
-   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-   - Fingerprint: 2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b
-     (R)eject, accept (t)emporarily or accept (p)ermanently?  
-
-I suggest you press 'p' to accept the key permanently.
-
-
-  5.6. Configure the build
+  5.5. Configure the build
   ========================
 
 CMake supports out of source build so we will create a 'build' dir for the
-build process. OS X uses ${HOME}/Applications as a standard user app folder (it gives it the system app folder icon).
-If you have the correct permissions you may want to build
-straight into your /Applications folder. The instructions below assume you are
-building into a pre-existing ${HOME}/Applications directory.
+build process. OS X uses ${HOME}/Applications as a standard user app folder (it
+gives it the system app folder icon).  If you have the correct permissions you
+may want to build straight into your /Applications folder. The instructions
+below assume you are building into a pre-existing ${HOME}/Applications directory.
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
   mkdir build
   cd build
-  cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+  cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MinSizeRel \
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
   ..
 
-This will automatically find and use the previously installed frameworks, and the GRASS
-application if installed.
+This will automatically find and use the previously installed frameworks, and
+the GRASS application if installed.
 
 Or, to use a Unix-style build of GRASS, use the following cmake invocation
 (minimum GRASS version as stated in the Qgis requirements, substitute the GRASS
@@ -1588,7 +1532,7 @@ path and version as required):
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
-  -D GRASS_PREFIX=/user/local/grass-6.4.0 \
+  -D GRASS_PREFIX=/user/local/grass-6.4.1 \
   ..
 
 Snow Leopard note: To handle 32-bit Qt (Carbon), create a 32bit python wrapper
@@ -1601,7 +1545,7 @@ script and add arch flags to the configuration:
   
   sudo chmod +x /usr/local/bin/python32
   
-  cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
+  cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
   -D CMAKE_BUILD_TYPE=MinSizeRel \
   -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
@@ -1609,18 +1553,24 @@ script and add arch flags to the configuration:
   -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
   ..
 
-Bundling note: Older Qt versions may have problems with some Qt plugins and Qgis.
-The way to handle this is to bundle Qt inside the Qgis application.  You can do this now
-or wait to see if there are immediate crashes when running Qgis.  It's also a good
-idea to bundle Qt if you need to copy Qgis to other Macs (where you would have to
-install Xcode just so Qt would install!).
+Bundling note: Older Qt versions may have problems with some Qt plugins and
+Qgis.  The way to handle this is to bundle Qt inside the Qgis application.  You
+can do this now or wait to see if there are immediate crashes when running Qgis.
+It's also a good idea to bundle Qt if you need to copy Qgis to other Macs (where
+you would have to install Xcode just so Qt would install!).
 
-To bundle Qt, add the following line before the last line in the above cmake configurations:
+To bundle Qt, add the following line before the last line (the ".." line) in
+the above cmake configurations:
 
   -D QGIS_MACAPP_BUNDLE=1 \
 
+Even better for distribution purposes, to also bundle any extra non-framework,
+non-standard, libs (ie postgres' libpq) bump the bundle number to 2:
 
-  5.7. Building
+  -D QGIS_MACAPP_BUNDLE=2 \
+
+
+  5.6. Building
   =============
 
 Now we can start the build process (remember the parallel compilation note at
@@ -1632,7 +1582,7 @@ If all built without errors you can then install it:
 
   make install 
 
-or, for a /Applications build:
+or, for an /Applications build:
 
   sudo make install
 
@@ -1665,4 +1615,7 @@ The following people have contributed to this document:
 - GNU/Linux Section
  - Tim Sutton 2006
  - Debian package section: Juergen Fischer 2008
+
+- Latex Generator
+ - Tim Sutton 2011
 

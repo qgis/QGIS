@@ -16,7 +16,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSFIELDVALIDATOR_H
 #define QGSFIELDVALIDATOR_H

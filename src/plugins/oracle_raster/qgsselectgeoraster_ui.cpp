@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsselectgeoraster_ui.h"
 #include "qgsoracleconnect_ui.h"

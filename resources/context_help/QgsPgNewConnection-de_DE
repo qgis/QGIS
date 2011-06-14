@@ -1,0 +1,32 @@
+<h3>Neue PostgreSQL-Verbindung erstellen</h3>
+In diesem Dialog kann eine Verbindung zu einer PostgreSQL-Datenbank eingestellt werden.
+<p>
+<ul>
+<li> <label>Name</label> Ein Name um die Verbindung zu identifizieren.
+
+<li> <label>Dienst</label> Der Name eines Dienstes aus der <a href="http://www.postgresql.org/docs/current/static/libpq-pgservice.html">Connection Service Datei (englisch)</a>.
+
+<li> <label>Host</label> Name oder IP-Adresse des Computers, der den Datenbankserver beherbergt (für lokale Verbindungen und Dienste frei lassen).
+
+<li> <label>Port</label> IP-Port des Datenbankservers (für lokale Verbindungen oder den voreingestellten Port 5432 frei lassen).
+
+<li> <label>Datenbank</label> Name der Datenbank (für die voreingestellte Datenbank leer lassen).
+
+<li> <label>SSL-Modus</label> <a href="http://www.postgresql.org/docs/9.0/static/libpq-ssl.html#LIBPQ-SSL-SSLMODE-STATEMENTS">SSL-Modus (englisch)</a> der Verbindung.
+
+<li> <label>Benutzername</label> Datenbankbenutzername.
+<li> <label>Passwort</label> Datenbankpasswort.
+
+<li> <label>Benutzername speichern</label> Legt fest, dass der Benutzername in der Verbindungseinstellungen gespeichert werden soll.
+
+<li> <label>Passwort speichern</label> Legt fest, dass das Passwort in den Verbindungseinstellungen gespeichert werden soll.  <font color="red">Passworte werden dann im <strong>Klartext</strong> in der Systemkonfiguration und Projektdateien gespeichert!</font>
+
+<li> <label>Nur in geometry_columns nachsehen</label> Legt fest, dass nur "gelistete" Geometriespalten benutzt werden sollen - statt alle Tabellen nach Geometriespalten zu durchsuchen.
+
+<li> <label>Nur im Schema 'public' nachsehen</label> Legt fest, dass nur das Schema 'public' berücksichtigt werden soll - statt alle zugänglichen Tabellen.
+
+<li> <label>Auch geometrielose Tabellen anzeigen</label>  Legt fest, dass normalerweise nicht nur Tabellen mit Geometrie, sondern alle Tabellen aufgelistet werden sollen.
+
+<li> <label>Geschätzte Tabellenmetadaten nutzen</label> Wenn die Layer initialisiert werden, k&ouml;nnen mehrere Abfragen n&ouml;tig sein, um die Eigenschaften der Geometrien der Datenbanktabelle zu bestimmen.  Wenn diese Option gew&auml;hlt ist werden die Abfragen nur einige Zeilen und die Tabellenstatistiken, statt der gesamten Tabelle, betrachten.  Dies beschleunigt die Benutzung Layer erheblich, kann aber auch zu falschen Ergebnissen f&uuml;hren (z.B. wird die <font color="red">Objektanzahl</font> von gefilterten Layern nicht genau bestimmt).
+
+</ul>

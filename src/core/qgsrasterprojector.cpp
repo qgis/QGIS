@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgsrasterprojector.cpp 15005 2011-01-08 16:35:21Z rblazek $ */
 
 #include "qgslogger.h"
 #include "qgsrasterprojector.h"

@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSHELPSERVER_H
 #define QGSHELPSERVER_H
 #include <QTcpServer>

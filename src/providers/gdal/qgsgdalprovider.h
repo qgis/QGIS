@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgdalprovider.h 12528 2009-12-20 12:29:07Z jef $ */
 
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H

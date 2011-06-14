@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 
 #ifndef QGISAPP_H
 #define QGISAPP_H
@@ -250,6 +249,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatialiteLayer; }
+    QAction *actionEmbedLayers() { return mActionEmbedLayers; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
@@ -542,6 +542,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNew( bool thePromptToSaveFlag );
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
+    void embedLayers();
 
     //! Create a new empty vector layer
     void newVectorLayer();
@@ -763,6 +764,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void rotateLabel();
     //! Activates label property tool
     void changeLabelProperties();
+
+
 
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able

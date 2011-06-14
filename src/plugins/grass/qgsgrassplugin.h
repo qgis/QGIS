@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*  $Id$ */
 #ifndef QGSGRASSPLUGIN_H
 #define QGSGRASSPLUGIN_H
 #include "../qgisplugin.h"
@@ -131,6 +130,7 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     //! update plugin icons when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
     void setTransform();
+    void editClosed();
   private:
     //! Name of the plugin
     QString pluginNameQString;

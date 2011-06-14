@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include <cmath>
 #include <cfloat>
@@ -191,9 +190,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX ).arg( mapUnitsPerPixelY ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth ).arg( myHeight ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width() ).arg( mExtent.height() ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX, 0, 'f', 8 ).arg( mapUnitsPerPixelY, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n"  ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width(), 0, 'f',8 ).arg( mExtent.height(), 0, 'f', 8 ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -205,7 +204,7 @@ void QgsMapRenderer::adjustExtentToSize()
   // update the scale
   updateScale();
 
-  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( mScale ) );
+  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( mScale, 0, 'f', 8 ) );
 
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
   mRenderContext.setMapToPixel( newCoordXForm );
@@ -837,6 +836,7 @@ void QgsMapRenderer::updateFullExtent()
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QStringList::iterator it = mLayerSet.begin();
+  QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
   while ( it != mLayerSet.end() )
   {
     QgsMapLayer * lyr = registry->mapLayer( *it );

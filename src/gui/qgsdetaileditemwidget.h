@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id:$ */
 #ifndef QGSDETAILEDITEMWIDGET_H
 #define QGSDETAILEDITEMWIDGET_H
 

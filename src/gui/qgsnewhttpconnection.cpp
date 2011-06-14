@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include "qgsnewhttpconnection.h"
 #include "qgscontexthelp.h"
 #include <QSettings>

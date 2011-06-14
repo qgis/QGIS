@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #include <QSettings>
 #include <QMessageBox>
 #include <QKeyEvent>
@@ -35,9 +34,12 @@
 
 
 QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
-    : QMainWindow( parent, flags ),
-    mDirtyMetadata( true ), mDirtyPreview( true ), mDirtyAttributes( true ),
-    mLayer( 0 ), mParamWidget( 0 )
+    : QMainWindow( parent, flags )
+    , mDirtyMetadata( true )
+    , mDirtyPreview( true )
+    , mDirtyAttributes( true )
+    , mLayer( 0 )
+    , mParamWidget( 0 )
 {
   setupUi( this );
 
@@ -87,9 +89,9 @@ void QgsBrowser::expand( QString path, const QModelIndex& index )
   for ( int i = 0; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
-    QgsDataItem* ptr = ( QgsDataItem* ) idx.internalPointer();
+    QgsDataItem *item = mModel->dataItem( idx );
 
-    if ( path.indexOf( ptr->path() ) == 0 )
+    if ( item && path.indexOf( item->path() ) == 0 )
     {
       treeView->expand( idx );
       treeView->scrollTo( idx, QAbstractItemView::PositionAtTop );
@@ -103,7 +105,9 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
 {
   mIndex = index;
 
-  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+  QgsDataItem *item = mModel->dataItem( index );
+  if ( !item )
+    return;
 
   // Disable preview, attributes tab
 
@@ -136,9 +140,7 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   mLayer = 0;
 
   // this should probably go to the model and only emit signal when a layer is clicked
-
-
-  mParamWidget = ptr->paramWidget();
+  mParamWidget = item->paramWidget();
   if ( mParamWidget )
   {
     paramLayout->addWidget( mParamWidget );
@@ -146,10 +148,10 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
     paramEnable = true;
   }
 
-  if ( ptr->type() == QgsDataItem::Layer )
+  QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( mModel->dataItem( index ) );
+  if ( layerItem )
   {
-    QgsLayerItem* item = static_cast<QgsLayerItem*>( ptr );
-    bool res = layerClicked( item );
+    bool res = layerClicked( layerItem );
 
     if ( res )
     {
@@ -170,9 +172,9 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   updateCurrentTab();
 
   int selected = -1;
-  if ( mLastTab.contains( ptr->metaObject()->className() ) )
+  if ( mLastTab.contains( item->metaObject()->className() ) )
   {
-    selected = mLastTab[ ptr->metaObject()->className() ];
+    selected = mLastTab[ item->metaObject()->className()];
   }
 
   // Enabling tabs call tabChanged !
@@ -184,22 +186,25 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   // select tab according last selection for this data item
   if ( selected >= 0 )
   {
-    qDebug( "set tab %s %d", ptr->metaObject()->className(), selected );
+    QgsDebugMsg( QString( "set tab %1 %2" ).arg( item->metaObject()->className() ).arg( selected ) );
     tabWidget->setCurrentIndex( selected );
   }
 
-  qDebug( "clicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data() );
+  QgsDebugMsg( QString( "clicked: %1 %2 %3" ).arg( index.row() ).arg( index.column() ).arg( item->name() ) );
 }
 
-bool QgsBrowser::layerClicked( QgsLayerItem* ptr )
+bool QgsBrowser::layerClicked( QgsLayerItem *item )
 {
-  mActionSetProjection->setEnabled( ptr->capabilities() & QgsLayerItem::SetCrs );
+  if ( !item )
+    return false;
 
-  QString uri = ptr->uri();
+  mActionSetProjection->setEnabled( item->capabilities() & QgsLayerItem::SetCrs );
+
+  QString uri = item->uri();
   if ( !uri.isEmpty() )
   {
-    QgsMapLayer::LayerType type = ptr->mapLayerType();
-    QString providerKey = ptr->providerKey();
+    QgsMapLayer::LayerType type = item->mapLayerType();
+    QString providerKey = item->providerKey();
 
     QgsDebugMsg( providerKey + " : " + uri );
     if ( type == QgsMapLayer::VectorLayer )
@@ -254,26 +259,32 @@ bool QgsBrowser::layerClicked( QgsLayerItem* ptr )
 
 void QgsBrowser::itemDoubleClicked( const QModelIndex& index )
 {
-  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+  QgsDataItem *item = mModel->dataItem( index );
+  if ( !item )
+    return;
 
   // Currently doing nothing
-  qDebug( "doubleclicked: %d %d %s", index.row(), index.column(), ptr->name().toAscii().data() );
+  QgsDebugMsg( QString( "%1 %2 %3" ).arg( index.row() ).arg( index.column() ).arg( item->name() ) );
 }
 
 void QgsBrowser::itemExpanded( const QModelIndex& index )
 {
   QSettings settings;
-  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
-  /*
-    if (ptr->mType == QgsDataItem::Directory || ptr->mType == QgsDataItem::Collection )
-    {
-      QgsDirectoryItem* i = (QgsDirectoryItem*) ptr;
-      settings.setValue ( "/Browser/lastExpandedDir", i->mPath );
-    }
-  */
+  QgsDataItem *item = mModel->dataItem( index );
+  if ( !item )
+    return;
+
+#if 0
+  if ( item->mType == QgsDataItem::Directory || item->mType == QgsDataItem::Collection )
+  {
+    QgsDirectoryItem *i = qobject_cast<QgsDirectoryItem*>( item );
+    settings.setValue( "/Browser/lastExpandedDir", i->mPath );
+  }
+#endif
+
   // TODO: save separately each type (FS, WMS)
-  settings.setValue( "/Browser/lastExpanded", ptr->path() );
-  QgsDebugMsg( "last expanded: " + ptr->path() );
+  settings.setValue( "/Browser/lastExpanded", item->path() );
+  QgsDebugMsg( "last expanded: " + item->path() );
 }
 
 void QgsBrowser::newVectorLayer()
@@ -316,22 +327,26 @@ void QgsBrowser::on_mActionSetProjection_triggered()
 {
   if ( !mLayer )
     return;
+
   QgsGenericProjectionSelector * mySelector = new QgsGenericProjectionSelector( this );
   mySelector->setMessage();
   mySelector->setSelectedCrsId( mLayer->crs().srsid() );
   if ( mySelector->exec() )
   {
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
+
     // TODO: open data source in write mode set crs and save
-    //mLayer->setCrs( srs );
+#if 0
+    mLayer->setCrs( srs );
     // Is this safe?
     // selectedIndexes() is protected
+#endif
 
-    QgsDataItem* ptr = ( QgsDataItem* ) mIndex.internalPointer();
-    if ( ptr->type() == QgsDataItem::Layer )
+    QgsDataItem *item = mModel->dataItem( mIndex );
+    QgsLayerItem *layerItem = qobject_cast<QgsLayerItem*>( item );
+    if ( layerItem )
     {
-      QgsLayerItem* layerItem = static_cast<QgsLayerItem*>( ptr );
-      if ( ! layerItem->setCrs( srs ) )
+      if ( !layerItem->setCrs( srs ) )
       {
         QMessageBox::critical( this, tr( "CRS" ), tr( "Cannot set layer CRS" ) );
       }
@@ -342,6 +357,7 @@ void QgsBrowser::on_mActionSetProjection_triggered()
   {
     QApplication::restoreOverrideCursor();
   }
+
   delete mySelector;
 }
 
@@ -453,6 +469,13 @@ void QgsBrowser::updateCurrentTab()
       fullExtent.scale( 1.05 ); // add some border
       mapCanvas->setExtent( fullExtent );
       mapCanvas->refresh();
+
+      QgsRasterLayer *rlayer = qobject_cast< QgsRasterLayer * >( mLayer );
+      if ( rlayer )
+      {
+        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), rlayer, SLOT( clearCacheImage() ) );
+        connect( rlayer->dataProvider(), SIGNAL( dataChanged() ), mapCanvas, SLOT( refresh() ) );
+      }
     }
     mDirtyPreview = false;
   }
@@ -480,9 +503,12 @@ void QgsBrowser::tabChanged()
   // Store last selected tab for selected data item
   if ( mIndex.isValid() )
   {
-    QObject* ptr = ( QObject* ) mIndex.internalPointer();
-    QgsDebugMsg( QString( "save last tab %1 : %2" ).arg( ptr->metaObject()->className() ).arg( tabWidget->currentIndex() ) );
-    mLastTab[ ptr->metaObject()->className() ] = tabWidget->currentIndex();
+    QgsDataItem *item = mModel->dataItem( mIndex );
+    if ( !item )
+      return;
+
+    QgsDebugMsg( QString( "save last tab %1 : %2" ).arg( item->metaObject()->className() ).arg( tabWidget->currentIndex() ) );
+    mLastTab[ item->metaObject()->className()] = tabWidget->currentIndex();
   }
 }
 
@@ -497,10 +523,15 @@ void QgsBrowser::refresh( const QModelIndex& index )
   QgsDebugMsg( "Entered" );
   if ( index.isValid() )
   {
-    QgsDataItem* item = ( QgsDataItem* ) index.internalPointer();
-    QgsDebugMsg( "path = " + item->path() );
+    QgsDataItem *item = mModel->dataItem( index );
+    if ( item )
+      QgsDebugMsg( "path = " + item->path() );
+    else
+      QgsDebugMsg( "invalid item" );
   }
+
   mModel->refresh( index );
+
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );

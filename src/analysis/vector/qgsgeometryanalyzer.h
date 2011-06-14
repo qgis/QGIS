@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgis.h 9774 2008-12-12 05:41:24Z timlinux $ */
 
 #ifndef QGSGEOMETRYANALYZERH
 #define QGSGEOMETRYANALYZERH

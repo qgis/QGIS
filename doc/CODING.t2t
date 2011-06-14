@@ -77,7 +77,7 @@ Developers guide for QGIS
 % format, then paste the procedure in below.  I have instated these changes so
 % that we can have a single central document that contains all the instructions
 % developers contributing to QGIS. This page should always reflect the most
-% current SVN trunk build procedure - for release versions the CODING document
+% current GIT master build procedure - for release versions the CODING document
 % in the sources will be generated according to the current build procedure at
 % the time.
 
@@ -184,22 +184,11 @@ example:
  ***************************************************************************/
 ```
 
-=== SVN Keyword ===
-Each source file should contain the $Id$ keyword. This will be expanded by SVN
-to contain useful information about the file, revision, last committer, and
-date/time of last checkin.
+=== Keyword Substitution ===
 
-Place the keyword right after the standard header/license that is found at the
-top of each source file:
-```
-  /* $Id$ */
-```
-
-You also need to set 
-
-svn propset svn:keywords "Id"
-
-for the new files.
+In the days of SVN we used to require that each source file should contain the
+$Id$ keyword. Keyword substitution is not supported by GIT and so should no
+longer be used.
 
 == Variable Names ==
 Variable names begin with a lower case letter and are formed using mixed case.
@@ -416,45 +405,82 @@ You should also really read this article from Qt Quarterly on
 
 
 
-= SVN Access =
+= GIT Access =
 
-This page describes how to get started using the QGIS Subversion repository
+This section describes how to get started using the QGIS GIT repository. Before you can do this, you need to first have a git client installed on your system.
+
+== Installation ==
+
+=== Install git for GNU/Linux ===
+
+Debian based distro users can do:
+
+```
+sudo apt-get install git
+```
+
+=== Install git for Windows ===
+
+Windows users can obtain [msys git http://code.google.com/p/msysgit/].
+
+=== Install git for OSX ===
+
+The [git http://git-scm.com/] project has a downloadable build of git.
+Make sure to get the package matching your processor (x86_64 most likely, only the first Intel Macs need the i386 package).
+
+Once downloaded open the disk image and run the installer.
+
+__PPC/source note__
+
+The git site does not offer PPC builds.  If you need a PPC build, or you just want
+a little more control over the installation, you need to compile it yourself.
+
+Download the source from http://git-scm.com/.  Unzip it, and in a Terminal cd to the source folder, then:
+
+```
+make prefix=/usr/local
+sudo make prefix=/usr/local install
+```
+
+If you don't need any of the extras, Perl, Python or TclTk (GUI), you can disable them before running make with:
+
+```
+export NO_PERL=
+export NO_TCLTK=
+export NO_PYTHON=
+```
+
 
 == Accessing the Repository ==
-To check out QGIS HEAD:
-```
-  svn --username [your user name] co https://svn.osgeo.org/qgis/trunk/qgis
-```
 
-
-== Anonymous Access ==
-You can use the following commands to perform an anonymous checkout from the
-QGIS Subversion repository.  Note we recommend checking out the trunk (unless
-you are a developer or really HAVE to have the latest changes and don't mind
-lots of crashing!).
-
-You must have a subversion client installed prior to checking out the code. See
-the Subversion website for more information. The Links page contains a good
-selection of SVN clients for various platforms.
-
-To check out a branch
-```
-  svn co https://svn.osgeo.org/qgis/branches/<branch name>
-```
-
-To check out SVN stable trunk:
+To clone QGIS master:
 
 ```
-  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis_trunk
+git://github.com/qgis/Quantum-GIS.git
 ```
 
-/!\ **Note:** If you are behind a proxy server, edit your ~/subversion/servers
-file to specify your proxy settings first!
+== Check out a branch ==
 
-/!\ **Note:** In QGIS we keep our most stable code in the version 1_0 branch.
-Trunk contains code for the so called 'unstable' release series. Periodically
-we will tag a release off trunk, and then continue stabilisation and selective
-incorporation of new features into trunk.
+To check out a branch, for example the release 1.7.0 branch do:
+```
+  cd Quantum-GIS
+  git fetch
+  git branch --track origin release-1_7_0
+  git checkout release-1_7_0
+  
+```
+
+To check out the master branch:
+
+```
+  cd Quantum-GIS
+  git checkout master
+```
+
+/!\ **Note:** In QGIS we keep our most stable code in the current release branch.
+Master contains code for the so called 'unstable' release series. Periodically
+we will branch a release off master, and then continue stabilisation and selective
+incorporation of new features into master.
 
 See the INSTALL file in the source tree for specific instructions on building
 development versions. 
@@ -466,19 +492,17 @@ If you're interested in checking out Quantum GIS documentation sources:
   svn co https://svn.osgeo.org/qgis/docs/trunk qgis_docs
 ```
 
+/!\ **Note:** This url will change to a git URL in the near future.
+
 You can also take a look at DocumentationWritersCorner for more information.
  
-== SVN Documentation ==
+== GIT Documentation ==
 
-The repository is organized as follows:
+See the following sites for information on becoming a GIT master.
 
-http://wiki.qgis.org/images/repo.png
-
-See the Subversion book http://svnbook.red-bean.com for information on becoming
-a SVN master.
-
-
-
+http://gitref.org
+http://progit.org
+http://gitready.com
 
 == Development in branches ==
 
@@ -488,8 +512,8 @@ last years. Therefore it is hard to anticipate the side effects that the
 addition of a feature will have. In the past, the QGIS project had very long
 release cycles because it was a lot of work to reetablish the stability of the
 software system after new features were added. To overcome these problems, QGIS
-switched to a development model where new features are coded in svn branches
-first and merged to trunk (the main branch) when they are finished and stable.
+switched to a development model where new features are coded in GIT branches
+first and merged to master (the main branch) when they are finished and stable.
 This section describes the procedure for branching and merging in the QGIS
 project.
 
@@ -503,75 +527,43 @@ technical advisor of the project steering committee (PSC). If the new feature
 requires any changes to the QGIS architecture, a request for comment (RFC) is
 needed. 
 
-- **Create a branch:** 
-Create a new svn branch for the development of the new feature (see
-UsingSubversion for the svn syntax). Now you can start developing.
+**Create a branch:** 
+Create a new GIT branch for the development of the new feature. 
 
-- **Merge from trunk regularly:**
-It is recommended to merge the changes in trunk to the branch on a regular
-basis. This makes it easier to merge the branch back to trunk later.
+```
+git branch newfeature
+git checkout newfeature
+```
 
-- **Documentation on wiki:** 
+Now you can start developing. If you plan to do extensive on that branch, would
+like to share the work with other developers, and have write access to the
+upstream repo, you can push your repo up to the QGIS official repo by doing:
+
+```
+git push origin newfeature
+```
+
+**Note:** if the branch already exists your changes will be pushed into it.
+
+**Merge from master regularly:**
+It is recommended to merge the changes in master to the branch on a regular
+basis. This makes it easier to merge the branch back to master later.
+
+```
+git merge master
+```
+
+**Documentation on wiki:** 
 It is also recommended to document the intended changes and the current status
 of the work on a wiki page.
 
-- **Testing before merging back to trunk:** 
+**Testing before merging back to master:** 
 When you are finished with the new feature and happy with the stability, make
 an announcement on the developer list.  Before merging back, the changes will
 be tested by developers and users. Binary packages (especially for OsX and
 Windows) will be generated to also involve non-developers. In trac, a new
 Component will be opened to file tickets against.  Once there are no remaining
-issues left, the technical advisor of the PSC merges the changes into trunk.
-
--
-
-=== Creating a branch ===
-
-We prefer that new feature developments happen out of trunk so that trunk
-remains in a stable state. To create a branch use the following command:
-
-```
-svn copy https://svn.osgeo.org/qgis/trunk/qgis https://svn.osgeo.org/qgis/branches/qgis_newfeature
-svn commit -m "New feature branch"
-```
-
-=== Merge regularly from trunk to branch ===
-
-When working in a branch you should regularly merge trunk into it so that your
-branch does not diverge more than necessary. In the top level dir of your
-branch, first type ```svn info``` to determine the revision numbers of your
-branch which will produce output something like this:
-
-```
-timlinux@timlinux-desktop:~/dev/cpp/qgis_raster_transparency_branch$ svn info
-Caminho: .
-URL: https://svn.osgeo.org/qgis/branches/raster_transparency_branch
-Raiz do Repositório: https://svn.osgeo.org/qgis
-UUID do repositório: c8812cc2-4d05-0410-92ff-de0c093fc19c
-Revisão: 6546
-Tipo de Nó: diretório
-Agendado: normal
-Autor da Última Mudança: timlinux
-Revisão da Última Mudança: 6495
-Data da Última Mudança: 2007-02-02 09:29:47 -0200 (Sex, 02 Fev 2007)
-Propriedades da Última Mudança: 2007-01-09 11:32:55 -0200 (Ter, 09 Jan 2007)
-```
-
-The second revision number shows the revision number of the start revision of
-your branch and the first the current revision. You can do a dry run of the
-merge like this:
-
-```
-svn merge --dry-run -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
-```
-
-After you are happy with the changes that will be made do the merge for real
-like this:
-
-```
-svn merge -r 6495:6546 https://svn.osgeo.org/qgis/trunk/qgis
-svn commit -m "Merged upstream changes from trunk to my branch"
-```
+issues left, the technical advisor of the PSC merges the changes into master.
 
 
 == Submitting Patches ==
@@ -582,37 +574,32 @@ easily, and help us deal with the patches that are sent to use easily.
 === Patch file naming ===
 
 If the patch is a fix for a specific bug, please name the file with the bug
-number in it e.g.  **bug777fix.diff**, and attach it to the original bug report
-in trac (https://trac.osgeo.org/qgis/).
+number in it e.g.  **bug777fix.patch**, and attach it to the original bug report
+in trac (http://hub.qgis.org/projects/quantum-gis).
 
 If the bug is an enhancement or new feature, its usually a good idea to create
-a ticket in trac (https://trac.osgeo.org/qgis/) first and then attach you 
+a ticket in trac (http://hub.qgis.org/projects/quantum-gis) first and then attach you 
 
 === Create your patch in the top level QGIS source dir ===
 
 This makes it easier for us to apply the patches since we don't need to
 navigate to a specific place in the source tree to apply the patch. Also when I
-receive patches I usually evaluate them using kompare, and having the patch
+receive patches I usually evaluate them using merge, and having the patch
 from the top level dir makes this much easier. Below is an example of how you
 can include multiple changed files into your patch from the top level
 directory:
 
 ```
-cd qgis
-svn diff src/ui/somefile.ui src/app/somefile2.cpp > bug872fix.diff
+cd Quantum-GIS
+git checkout master
+git pull origin master
+git checkout newfeature
+git format-patch master --stdout > bug777fix.patch
 ```
 
-=== Including non version controlled files in your patch ===
-
-If your improvements include new files that don't yet exist in the repository,
-you should indicate to svn that they need to be added before generating your
-patch e.g.
-
-```
-cd qgis
-svn add src/lib/somenewfile.cpp
-svn diff > bug7887fix.diff
-```
+This will make sure your master branch is in sync with the upstream repository,
+and then generate a patch which contains the delta between your feature branch
+and what is in the master branch.
 
 === Getting your patch noticed ===
 
@@ -632,7 +619,7 @@ under the GPL.
 
 
 
-== Obtaining SVN Write Access ==
+== Obtaining GIT Write Access ==
 
 Write access to QGIS source tree is by invitation. Typically when a person
 submits several (there is no fixed number here) substantial patches that
@@ -646,74 +633,25 @@ demonstrated ability to submit patches and should ideally have submitted several
 substantial patches that demonstrate their understanding of modifying the code
 base without breaking things, etc.
 
+**Note:** Since moving to GIT, we are less likely to grant write access to new
+developers since it is trivial to share code within github by forking QGIS and
+then issuing pull requests.
 
 
-=== Procedure once you have access ===
-
-
-Checkout the sources:
-
-```
-svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
-```
-
-
-Build the sources (see INSTALL document for proper detailed instructions)
-
-```
-cd qgis
-mkdir build
-ccmake ..    (set your preferred options)
-make
-make install  (maybe you need to do with sudo / root perms)
-```
-
-Make your edits
-
-```
-cd ..
-```
-
-Make your changes in sources. Always check that everything compiles before
-making any commits.  Try to be aware of possible breakages your commits may
-cause for people building on other platforms and with older / newer versions of
+Always check that everything compiles before making any commits / pull
+requests.  Try to be aware of possible breakages your commits may cause for
+people building on other platforms and with older / newer versions of
 libraries.
 
-
-Add files (if you added any new files). The svn status command can be used to
-quickly see if you have added new files.
-
-```
-svn status src/pluguns/grass/modules
-```
-
-Files listed with ? in front are not in SVN and possibly need to be added by
-you:
-
-```
-svn add src/pluguns/grass/modules/foo.xml
-```
-
-Commit your changes
-
-```
-svn commit src/pluguns/grass/modules/foo.xml
-```
-
-Your editor (as defined in $EDITOR environment variable) will appear and you
-should make a comment at the top of the file (above the area that says 'don't
-change this'. Put a descriptive comment and rather do several small commits if
-the changes across a number of files are unrelated. Conversely we prefer you to
-group related changes into a single commit.
-
-Save and close in your editor. The first time you do this, you should be
-prompted to put in your username and password. Just use the same ones as your
-trac account.
-
+When making a commit, your editor (as defined in $EDITOR environment variable)
+will appear and you should make a comment at the top of the file (above the
+area that says 'don't change this'. Put a descriptive comment and rather do
+several small commits if the changes across a number of files are unrelated.
+Conversely we prefer you to group related changes into a single commit.
 
 = Unit Testing =
 
-As of November 2007 we require all new features going into trunk to be
+As of November 2007 we require all new features going into master to be
 accompanied with a unit test. Initially we have limited this requirement to
 **qgis_core**, and we will extend this requirement to other parts of the code base
 once people are familiar with the procedures for unit testing explained in the
@@ -916,7 +854,7 @@ test **before** fixing the bug will let you automate the testing for bug
 resolution in an efficient manner.
 
 To implement your regression test, you should follow the naming convention of
-regression<TicketID> for your test functions. If no trac ticket exists for the
+regression<TicketID> for your test functions. If no redmine ticket exists for the
 regression, you should create one first.  Using this approach allows the person
 running a failed regression test easily go and find out more information.
 

@@ -19,7 +19,6 @@ back to QgsVectorLayer.
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"

@@ -30,7 +30,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgssldparser.h"
 #include "qgssymbol.h"
@@ -68,7 +68,7 @@ QgsWMSServer::QgsWMSServer()
 
 QDomDocument QgsWMSServer::getCapabilities()
 {
-  QgsMSDebugMsg( "Entering." );
+  QgsDebugMsg( "Entering." );
   QDomDocument doc;
   //wms:WMS_Capabilities element
   QDomElement wmsCapabilitiesElement = doc.createElement( "WMS_Capabilities"/*wms:WMS_Capabilities*/ );
@@ -203,12 +203,12 @@ QDomDocument QgsWMSServer::getCapabilities()
   }
 
   //add the xml content for the individual layers/styles
-  QgsMSDebugMsg( "calling layersAndStylesCapabilities" );
+  QgsDebugMsg( "calling layersAndStylesCapabilities" );
   if ( mConfigParser )
   {
     mConfigParser->layersAndStylesCapabilities( capabilityElement, doc );
   }
-  QgsMSDebugMsg( "layersAndStylesCapabilities returned" );
+  QgsDebugMsg( "layersAndStylesCapabilities returned" );
 
   //for debugging: save the document to disk
   /*QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
@@ -231,7 +231,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsMSDebugMsg( "error reading layers and styles" );
+    QgsDebugMsg( "error reading layers and styles" );
     return 0;
   }
 
@@ -505,7 +505,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
 
   for ( std::map<QString, QString>::iterator it = mParameterMap.begin(); it != mParameterMap.end(); ++it )
   {
-    QgsMapServerLogger::instance()->printMessage( it->first + "//" + it->second );
+    QgsDebugMsg( QString( "%1  // %2" ).arg( it->first ).arg( it->second ) );
   }
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
@@ -628,7 +628,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
     {
       continue;
     }
-    QgsMSDebugMsg( "Info point in layer crs: " + QString::number( infoPoint.x() ) + "//" + QString::number( infoPoint.y() ) );
+    QgsDebugMsg( "Info point in layer crs: " + QString::number( infoPoint.x() ) + "//" + QString::number( infoPoint.y() ) );
 
     QDomElement layerElement = result.createElement( "Layer" );
     layerElement.setAttribute( "name", currentLayer->name() );
@@ -682,19 +682,19 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 {
   if ( !mConfigParser )
   {
-    QgsMSDebugMsg( "Error: mSLDParser is 0" );
+    QgsDebugMsg( "Error: mSLDParser is 0" );
     return 0;
   }
 
   if ( !mMapRenderer )
   {
-    QgsMSDebugMsg( "Error: mMapRenderer is 0" );
+    QgsDebugMsg( "Error: mMapRenderer is 0" );
     return 0;
   }
 
   if ( readLayersAndStyles( layersList, stylesList ) != 0 )
   {
-    QgsMSDebugMsg( "error reading layers and styles" );
+    QgsDebugMsg( "error reading layers and styles" );
     return 0;
   }
 
@@ -702,7 +702,6 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   {
     return 0;
   }
-
   //pass external GML to the SLD parser.
   std::map<QString, QString>::const_iterator gmlIt = mParameterMap.find( "GML" );
   if ( gmlIt != mParameterMap.end() )
@@ -711,12 +710,12 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
     if ( gmlDoc->setContent( gmlIt->second, true ) )
     {
       QString layerName = gmlDoc->documentElement().attribute( "layerName" );
-      QgsMSDebugMsg( "Adding entry with key: " + layerName + " to external GML data" );
+      QgsDebugMsg( "Adding entry with key: " + layerName + " to external GML data" );
       mConfigParser->addExternalGMLData( layerName, gmlDoc );
     }
     else
     {
-      QgsMSDebugMsg( "Error, could not add external GML to QgsSLDParser" );
+      QgsDebugMsg( "Error, could not add external GML to QgsSLDParser" );
       delete gmlDoc;
     }
   }
@@ -741,7 +740,16 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 
   //create objects for qgis rendering
   layerIdList.clear();
+  QgsDebugMsg( "Layers to render" );  
+  QString myLayer;
+  foreach ( myLayer, layerIdList)
+  {
+    QgsDebugMsg( myLayer );
+  }
   layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
+#ifdef QGISDEBUG
+  QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
+#endif
   mMapRenderer->setLayerSet( layerIdList );
   return theImage;
 }
@@ -907,7 +915,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
   else
   {
     //enable on the fly projection
-    QgsMSDebugMsg( "enable on the fly projection" );
+    QgsDebugMsg( "enable on the fly projection" );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
     QString crsString = crsIt->second;
@@ -925,7 +933,7 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     outputCRS = QgsEPSGCache::instance()->searchCRS( epsgId );
     if ( !outputCRS.isValid() )
     {
-      QgsMSDebugMsg( "Error, could not create output CRS from EPSG" );
+      QgsDebugMsg( "Error, could not create output CRS from EPSG" );
       throw QgsMapServiceException( "InvalidCRS", "Could not create output CRS" );
       return 5;
     }
@@ -999,8 +1007,8 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
     if ( !theDocument->setContent( xml, true, &errorMsg, &errorLine, &errorColumn ) )
     {
       //std::cout << xml.toAscii().data() << std::endl;
-      QgsMapServerLogger::instance()->printMessage( "Error, could not create DomDocument from SLD" );
-      QgsMapServerLogger::instance()->printMessage( "The error message is: " + errorMsg );
+      QgsDebugMsg( "Error, could not create DomDocument from SLD" );
+      QgsDebugMsg( QString( "The error message is: %1" ).arg( errorMsg ) );
       delete theDocument;
       return 0;
     }
@@ -1015,7 +1023,7 @@ int QgsWMSServer::initializeSLDParser( QStringList& layersList, QStringList& sty
     QStringList stylesSTDList;
     if ( mConfigParser->layersAndStyles( layersSTDList, stylesSTDList ) != 0 )
     {
-      QgsMSDebugMsg( "Error, no layers and styles found in SLD" );
+      QgsDebugMsg( "Error, no layers and styles found in SLD" );
       return 0;
     }
     QStringList::const_iterator layersIt;
@@ -1165,15 +1173,16 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
   QStringList::const_iterator llstIt;
   QStringList::const_iterator slstIt;
   QgsMapLayer* theMapLayer = 0;
-
+  QgsDebugMsg( QString( "Calculating layerset using %1 layers, %2 styles and CRS %3" ).arg( layersList.count() ).arg( stylesList.count() ).arg( destCRS.description() ) );
   for ( llstIt = layersList.begin(), slstIt = stylesList.begin(); llstIt != layersList.end(); ++llstIt )
   {
+
     QString styleName;
     if ( slstIt != stylesList.end() )
     {
       styleName = *slstIt;
     }
-    QgsMSDebugMsg( "Trying to get layer " + *llstIt + "//" + styleName );
+    QgsDebugMsg( "Trying to get layer " + *llstIt + "//" + styleName );
 
     //does the layer name appear several times in the layer list?
     //if yes, layer caching must be disabled because several named layers could have
@@ -1184,12 +1193,14 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
       allowCaching = false;
     }
 
+    // Problem method here!
     QList<QgsMapLayer*> layerList = mConfigParser->mapLayerFromStyle( *llstIt, styleName, allowCaching );
     int listIndex;
 
     for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
     {
       theMapLayer = layerList.at( listIndex );
+      QgsDebugMsg( QString( "Checking layer: %1").arg( theMapLayer->name() ) ); 
       if ( theMapLayer )
       {
         layerKeys.push_front( theMapLayer->id() );
@@ -1197,6 +1208,7 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
       }
       else
       {
+        QgsDebugMsg( "Layer or style not defined, aborting" );
         throw QgsMapServiceException( "LayerNotDefined", "Layer '" + *llstIt + "' and/or style '" + styleName + "' not defined" );
       }
     }
@@ -1556,23 +1568,48 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
           QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
           if ( filteredLayer )
           {
-            QgsVectorDataProvider* dp = filteredLayer->dataProvider();
-            if ( dp )
+            if( filteredLayer )
             {
-              filterMap.insert( layerId, dp->subsetString() );
+              filterMap.insert( layerId, filteredLayer->subsetString() );
+              QString newSubsetString = eqSplit.at( 1 );
+              if ( !filteredLayer->subsetString().isEmpty() )
+              {
+                newSubsetString.prepend( " AND " );
+                newSubsetString.prepend( filteredLayer->subsetString() );
+              }
+              filteredLayer->setSubsetString( newSubsetString );
             }
-
-            QString newSubsetString = eqSplit.at( 1 );
-            if ( !dp->subsetString().isEmpty() )
-            {
-              newSubsetString.prepend( " AND " );
-              newSubsetString.prepend( dp->subsetString() );
-            }
-            dp->setSubsetString( newSubsetString );
           }
         }
         ++listPos;
       }
+    }
+
+    //No BBOX parameter in request. We use the union of the filtered layer
+    //to provide the functionality of zooming to selected records via (enhanced) WMS.
+    if( mMapRenderer && mMapRenderer->extent().isEmpty() )
+    {
+      QgsRectangle filterExtent;
+      QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+      for(; filterIt != filterMap.constEnd(); ++filterIt )
+      {
+        QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
+        if( !mapLayer )
+        {
+          continue;
+        }
+
+        QgsRectangle layerExtent = mapLayer->extent();
+        if( filterExtent.isEmpty() )
+        {
+          filterExtent = layerExtent;
+        }
+        else
+        {
+          filterExtent.combineExtentWith( &layerExtent );
+        }
+      }
+      mMapRenderer->setExtent( filterExtent );
     }
   }
   return filterMap;

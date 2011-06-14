@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSCOMPOSERVIEW_H
 #define QGSCOMPOSERVIEW_H
 

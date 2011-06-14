@@ -17,24 +17,27 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSPROJECT_H
 #define QGSPROJECT_H
 
 #include <memory>
 #include "qgsprojectversion.h"
-#include <QObject>
+#include <QHash>
 #include <QList>
+#include <QObject>
 #include <QPair>
 
 //#include <QDomDocument>
 
 class QFileInfo;
 class QDomDocument;
+class QDomElement;
 class QDomNode;
 
+class QgsMapLayer;
 class QgsProjectBadLayerHandler;
+class QgsVectorLayer;
 
 /** \ingroup core
  * Reads and writes project states.
@@ -273,6 +276,16 @@ class CORE_EXPORT QgsProject : public QObject
       @note added in 1.4 */
     void setBadLayerHandler( QgsProjectBadLayerHandler* handler );
 
+    /**Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded*/
+    QString layerIsEmbedded( const QString& id ) const;
+
+    /**Creates a maplayer instance defined in an arbitrary project file. Caller takes ownership
+      @return the layer or 0 in case of error
+      @note: added in version 1.8*/
+    //static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
+      bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
+                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+
   protected:
 
     /** Set error message from read/write operation
@@ -282,6 +295,9 @@ class CORE_EXPORT QgsProject : public QObject
     /** Clear error message
       @note added in 1.4 */
     void clearError();
+
+    //Creates layer and adds it to maplayer registry
+    bool addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList );
 
   signals:
 
@@ -317,6 +333,11 @@ class CORE_EXPORT QgsProject : public QObject
     QString mErrorMessage;
 
     QgsProjectBadLayerHandler* mBadLayerHandler;
+
+    /**Embeded layers which are defined in other projects. Key: layer id,
+    value: pair< project file path, save layer yes / no (e.g. if the layer is part of an embedded group, loading/saving is done by the legend)
+       If the project file path is empty, QgsProject is going to ignore the layer for saving (e.g. because it is part and managed by an embedded group)*/
+    QHash< QString, QPair< QString, bool> > mEmbeddedLayers;
 
 }; // QgsProject
 

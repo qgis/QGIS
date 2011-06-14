@@ -38,7 +38,7 @@ class RgSimpleGraphBuilder : public RgGraphBuilder
     /**
      * default constructor
      */
-    RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, double topologyTolerance = 0.0 );
+    RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled, double topologyTolerance = 0.0 );
 
     /**
      * MANDATORY BUILDER PROPERTY DECLARATION

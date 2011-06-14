@@ -12,8 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id */
-
 
 #ifndef QGSRESIDUALPLOTITEM_H
 #define QGSRESIDUALPLOTITEM_H

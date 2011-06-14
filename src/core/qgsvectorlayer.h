@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGSVECTORLAYER_H
 #define QGSVECTORLAYER_H
@@ -270,7 +269,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** reads vector layer specific state from project file Dom node.
      *  @note Called by QgsMapLayer::readXML().
      */
-    virtual bool readXml( QDomNode & layer_node );
+    virtual bool readXml( const QDomNode& layer_node );
 
     /** write vector layer specific state to project file Dom node.
      *  @note Called by QgsMapLayer::writeXML().

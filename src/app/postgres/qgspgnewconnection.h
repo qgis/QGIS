@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSPGNEWCONNECTION_H
 #define QGSPGNEWCONNECTION_H
 #include "ui_qgspgnewconnectionbase.h"

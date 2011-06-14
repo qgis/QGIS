@@ -12,7 +12,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id: qgscolorbutton.h 6251 2006-12-13 23:23:50Z telwertowski $ */
 #ifndef QGSCOLORBUTTON_H
 #define QGSCOLORBUTTON_H
 

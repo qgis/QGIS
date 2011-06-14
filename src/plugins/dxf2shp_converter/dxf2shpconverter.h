@@ -12,7 +12,6 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *  $Id$ *
  * **************************************************************************/
 #ifndef dxf2shpConverter_H
 #define dxf2shpConverter_H

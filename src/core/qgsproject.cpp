@@ -38,9 +38,6 @@
 #include <QObject>
 #include <QTextStream>
 
-
-static const char *const ident_ = "$Id$";
-
 // canonical project instance
 QgsProject * QgsProject::theProject_;
 
@@ -685,54 +682,17 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
     QDomNode node = nl.item( i );
     QDomElement element = node.toElement();
 
-    QString type = element.attribute( "type" );
-
-    QgsDebugMsg( "Layer type is " + type );
-
-    QgsMapLayer *mapLayer = NULL;
-
-    if ( type == "vector" )
+    if ( element.attribute( "embedded" ) == "1" )
     {
-      mapLayer = new QgsVectorLayer;
-    }
-    else if ( type == "raster" )
-    {
-      mapLayer = new QgsRasterLayer;
-    }
-    else if ( type == "plugin" )
-    {
-      QString typeName = element.attribute( "name" );
-      mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
-    }
-
-    Q_CHECK_PTR( mapLayer );
-
-    if ( !mapLayer )
-    {
-      QgsDebugMsg( "Unable to create layer" );
-
-      return qMakePair( false, brokenNodes );
-    }
-
-    // have the layer restore state that is stored in Dom node
-    if ( mapLayer->readXML( node ) && mapLayer->isValid() )
-    {
-      mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
-      QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
-      if ( vLayer && vLayer->vectorJoins().size() > 0 )
-      {
-        vLayerList.push_back( qMakePair( vLayer, element ) );
-      }
+      createEmbeddedLayer( element.attribute( "id" ), readPath( element.attribute( "project" ) ), brokenNodes, vLayerList );
+      continue;
     }
     else
     {
-      delete mapLayer;
-
-      QgsDebugMsg( "Unable to load " + type + " layer" );
-
-      returnStatus = false; // flag that we had problems loading layers
-
-      brokenNodes.push_back( node );
+      if ( !addLayer( element, brokenNodes, vLayerList ) )
+      {
+        returnStatus = false;
+      }
     }
     emit layerLoaded( i + 1, nl.count() );
   }
@@ -757,6 +717,55 @@ QPair< bool, QList<QDomNode> > QgsProject::_getMapLayers( QDomDocument const &do
 } // _getMapLayers
 
 
+bool QgsProject::addLayer( const QDomElement& layerElem, QList<QDomNode>& brokenNodes, QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList )
+{
+  QString type = layerElem.attribute( "type" );
+  QgsDebugMsg( "Layer type is " + type );
+  QgsMapLayer *mapLayer = NULL;
+
+  if ( type == "vector" )
+  {
+    mapLayer = new QgsVectorLayer;
+  }
+  else if ( type == "raster" )
+  {
+    mapLayer = new QgsRasterLayer;
+  }
+  else if ( type == "plugin" )
+  {
+    QString typeName = layerElem.attribute( "name" );
+    mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
+  }
+
+  Q_CHECK_PTR( mapLayer );
+
+  if ( !mapLayer )
+  {
+    QgsDebugMsg( "Unable to create layer" );
+
+    return false;
+  }
+
+  // have the layer restore state that is stored in Dom node
+  if ( mapLayer->readXML( layerElem ) && mapLayer->isValid() )
+  {
+    mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
+    QgsVectorLayer* vLayer = qobject_cast<QgsVectorLayer*>( mapLayer );
+    if ( vLayer && vLayer->vectorJoins().size() > 0 )
+    {
+      vectorLayerList.push_back( qMakePair( vLayer, layerElem ) );
+    }
+    return true;
+  }
+  else
+  {
+    delete mapLayer;
+
+    QgsDebugMsg( "Unable to load " + type + " layer" );
+    brokenNodes.push_back( layerElem );
+    return false;
+  }
+}
 
 
 /**
@@ -850,6 +859,7 @@ bool QgsProject::read()
   // project still hanging around
 
   imp_->clear();
+  mEmbeddedLayers.clear();
 
   // now get any properties
   _getProperties( *doc, imp_->properties_ );
@@ -902,50 +912,9 @@ bool QgsProject::read()
 
 bool QgsProject::read( QDomNode & layerNode )
 {
-  QString type = layerNode.toElement().attribute( "type" );
-
-  QgsMapLayer *mapLayer = NULL;
-
-  if ( type == "vector" )
-  {
-    mapLayer = new QgsVectorLayer;
-  }
-  else if ( type == "raster" )
-  {
-    mapLayer = new QgsRasterLayer;
-  }
-  else if ( type == "plugin" )
-  {
-    QString typeName = layerNode.toElement().attribute( "name" );
-    mapLayer = QgsPluginLayerRegistry::instance()->createLayer( typeName );
-  }
-  else
-  {
-    QgsDebugMsg( "bad layer type" );
-    return false;
-  }
-
-  if ( !mapLayer )
-  {
-    QgsDebugMsg( "unable to create layer" );
-    return false;
-  }
-
-  // have the layer restore state that is stored in Dom node
-  if ( mapLayer->readXML( layerNode ) )
-  {
-    mapLayer = QgsMapLayerRegistry::instance()->addMapLayer( mapLayer );
-  }
-  else
-  {
-    delete mapLayer;
-
-    QgsDebugMsg( "unable to load " + type + " layer" );
-
-    return false;
-  }
-
-  return  true;
+  QList<QDomNode> brokenNodes;
+  QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+  return addLayer( layerNode.toElement(), brokenNodes, vectorLayerList );
 } // QgsProject::read( QDomNode & layerNode )
 
 
@@ -1025,7 +994,24 @@ bool QgsProject::write()
 
     if ( ml )
     {
-      ml->writeXML( projectLayersNode, *doc );
+      QString externalProjectFile = layerIsEmbedded( ml->id() );
+      QHash< QString, QPair< QString, bool> >::const_iterator emIt = mEmbeddedLayers.find( ml->id() );
+      if ( emIt == mEmbeddedLayers.constEnd() )
+      {
+        ml->writeXML( projectLayersNode, *doc );
+      }
+      else //layer defined in an external project file
+      {
+        //only save embedded layer if not managed by a legend group
+        if ( emIt.value().second )
+        {
+          QDomElement mapLayerElem = doc->createElement( "maplayer" );
+          mapLayerElem.setAttribute( "embedded", 1 );
+          mapLayerElem.setAttribute( "project", writePath( emIt.value().first ) );
+          mapLayerElem.setAttribute( "id", ml->id() );
+          projectLayersNode.appendChild( mapLayerElem );
+        }
+      }
     }
     li++;
   }
@@ -1530,6 +1516,68 @@ void QgsProject::setBadLayerHandler( QgsProjectBadLayerHandler* handler )
 {
   delete mBadLayerHandler;
   mBadLayerHandler = handler;
+}
+
+QString QgsProject::layerIsEmbedded( const QString& id ) const
+{
+  QHash< QString, QPair< QString, bool > >::const_iterator it = mEmbeddedLayers.find( id );
+  if ( it == mEmbeddedLayers.constEnd() )
+  {
+    return QString();
+  }
+  return it.value().first;
+};
+
+bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
+                                      QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag )
+{
+  QFile projectFile( projectFilePath );
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
+  {
+    return false;
+  }
+
+  QDomDocument projectDocument;
+  if ( !projectDocument.setContent( &projectFile ) )
+  {
+    return false;
+  }
+
+  QDomElement projectLayersElem = projectDocument.documentElement().firstChildElement( "projectlayers" );
+  if ( projectLayersElem.isNull() )
+  {
+    return false;
+  }
+
+  QDomNodeList mapLayerNodes = projectLayersElem.elementsByTagName( "maplayer" );
+  for ( int i = 0; i < mapLayerNodes.size(); ++i )
+  {
+    //get layer id
+    QDomElement mapLayerElem = mapLayerNodes.at( i ).toElement();
+    QString id = mapLayerElem.firstChildElement( "id" ).text();
+    if ( id == layerId )
+    {
+      //layer can be embedded only once
+      if ( mapLayerElem.attribute( "embedded" ) == "1" )
+      {
+        return false;
+      }
+
+      mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
+      if ( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )
+      {
+        return true;
+      }
+      else
+      {
+        mEmbeddedLayers.remove( layerId );
+        return false;
+      }
+    }
+  }
+
+  //brokenNodes.push_back(  );
+  return false;
 }
 
 void QgsProjectBadLayerDefaultHandler::handleBadLayers( QList<QDomNode> /*layers*/, QDomDocument /*projectDom*/ )

@@ -12,12 +12,10 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #include <cmath>
 #include <iostream>
 #include <cstdio>
-#include <assert.h>
 
 #include <cpl_conv.h>
 #include <cpl_string.h>
@@ -30,6 +28,7 @@
 
 #include "qgsimagewarper.h"
 #include "qgsgeoreftransform.h"
+#include "qgslogger.h"
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
@@ -200,8 +199,12 @@ int QgsImageWarper::warpFile( const QString& input,
       destResY = -destResY;
 
     // Assert that the north-up convention is fullfiled by GDALSuggestedWarpOutput (should always be the case)
-    assert( adfGeoTransform[0] > 0.0 );
-    assert( adfGeoTransform[5] < 0.0 );
+    // Asserts are bad as they just crash out, changed to just return false. TS
+    if ( adfGeoTransform[0] <= 0.0  || adfGeoTransform[5] >= 0.0 )
+    {
+      QgsDebugMsg("Image is not north up after GDALSuggestedWarpOutput, bailing out.");
+      return false;
+    }
     // Find suggested output image extent (in georeferenced units)
     double minX = adfGeoTransform[0];
     double maxX = adfGeoTransform[0] + adfGeoTransform[1] * destPixels;

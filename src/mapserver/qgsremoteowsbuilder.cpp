@@ -17,7 +17,7 @@
 
 #include "qgsremoteowsbuilder.h"
 #include "qgshttptransaction.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmslayercache.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
@@ -50,7 +50,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
   QDomNode serviceNode = elem.namedItem( "Service" );
   if ( serviceNode.isNull() )
   {
-    QgsMSDebugMsg( "No <Service> node found, returning 0" );
+    QgsDebugMsg( "No <Service> node found, returning 0" );
     return 0; //service node is necessary
   }
 
@@ -58,7 +58,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
   QDomNode onlineResourceNode = elem.namedItem( "OnlineResource" );
   if ( onlineResourceNode.isNull() )
   {
-    QgsMSDebugMsg( "No <OnlineResource> element, returning 0" );
+    QgsDebugMsg( "No <OnlineResource> element, returning 0" );
     return 0;
   }
 
@@ -122,7 +122,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
   }
   else if ( serviceName == "WCS" )
   {
-    QgsMSDebugMsg( "Trying to get WCS layer" );
+    QgsDebugMsg( "Trying to get WCS layer" );
     result = wcsLayerFromUrl( url, layerName, filesToRemove, layersToRemove );
   }
   else if ( serviceName == "SOS" )
@@ -132,7 +132,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
 
   if ( !result || !result->isValid() )
   {
-    QgsMSDebugMsg( "Error, maplayer is 0 or invalid" );
+    QgsDebugMsg( "Error, maplayer is 0 or invalid" );
     if ( result )
     {
       delete result;
@@ -145,7 +145,7 @@ QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const
 
 QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "Entering" );
+  QgsDebugMsg( "Entering" );
   QgsRasterLayer* result = 0;
   QString baseUrl, format, crs;
   QStringList layerList, styleList;
@@ -193,11 +193,11 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
     }
   }
 
-  QgsMSDebugMsg( "baseUrl: " + baseUrl );
-  QgsMSDebugMsg( "format: " + format );
-  QgsMSDebugMsg( "crs: " + crs );
-  QgsMSDebugMsg( "layerList first item: " + layerList.at( 0 ) );
-  QgsMSDebugMsg( "styleList first item: " + styleList.at( 0 ) );
+  QgsDebugMsg( "baseUrl: " + baseUrl );
+  QgsDebugMsg( "format: " + format );
+  QgsDebugMsg( "crs: " + crs );
+  QgsDebugMsg( "layerList first item: " + layerList.at( 0 ) );
+  QgsDebugMsg( "styleList first item: " + styleList.at( 0 ) );
 
   result = new QgsRasterLayer( 0, baseUrl, "", "wms", layerList, styleList, format, crs );
   if ( !result->isValid() )
@@ -219,7 +219,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
 
 QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
-  QgsMSDebugMsg( "Entering" );
+  QgsDebugMsg( "Entering" );
 
   //write server url and coverage name to a temporary file
   QString fileName = createTempFile();
@@ -239,13 +239,13 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
 
   filesToRemove.push_back( tmpFile ); //make sure the temporary file gets deleted after each request
 
-  QgsMSDebugMsg( "opening successful" );
-  QgsMSDebugMsg( "url: " + url );
+  QgsDebugMsg( "opening successful" );
+  QgsDebugMsg( "url: " + url );
   //extract server url and coverage name from string
   QStringList serverSplit = url.split( "?" );
   if ( serverSplit.size() < 2 )
   {
-    QgsMSDebugMsg( "error, no '?' contained in url" );
+    QgsDebugMsg( "error, no '?' contained in url" );
     return 0;
   }
   QString serverUrl = serverSplit.at( 0 );
@@ -267,7 +267,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
 
   if ( coverageName.isEmpty() )
   {
-    QgsMSDebugMsg( "coverage name is empty" );
+    QgsDebugMsg( "coverage name is empty" );
     return 0;
   }
 
@@ -276,8 +276,8 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
     format = "GeoTIFF"; //use geotiff as default
   }
 
-  QgsMSDebugMsg( "wcs server url: " + serverUrl );
-  QgsMSDebugMsg( "coverage name: " + coverageName );
+  QgsDebugMsg( "wcs server url: " + serverUrl );
+  QgsDebugMsg( "coverage name: " + coverageName );
 
   //fetch WCS layer in the current resolution as geotiff
   QString wcsRequest = serverUrl + "?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=" + coverageName + "&FORMAT=" + format;
@@ -289,7 +289,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
     crsIt = mParameterMap.find( "SRS" );
     if ( crsIt == mParameterMap.end() )
     {
-      QgsMSDebugMsg( "No CRS or SRS parameter found for wcs layer, returning 0" );
+      QgsDebugMsg( "No CRS or SRS parameter found for wcs layer, returning 0" );
       return 0;
     }
   }
@@ -300,7 +300,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
   std::map<QString, QString>::const_iterator widthIt = mParameterMap.find( "WIDTH" );
   if ( widthIt == mParameterMap.end() )
   {
-    QgsMSDebugMsg( "No WIDTH parameter found for wcs layer, returning 0" );
+    QgsDebugMsg( "No WIDTH parameter found for wcs layer, returning 0" );
     return 0;
   }
   wcsRequest += "&WIDTH=";
@@ -310,7 +310,7 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
   std::map<QString, QString>::const_iterator heightIt = mParameterMap.find( "HEIGHT" );
   if ( heightIt == mParameterMap.end() )
   {
-    QgsMSDebugMsg( "No HEIGHT parameter found for wcs layer, returning 0" );
+    QgsDebugMsg( "No HEIGHT parameter found for wcs layer, returning 0" );
     return 0;
   }
   wcsRequest += "&HEIGHT=";
@@ -320,13 +320,13 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const 
   std::map<QString, QString>::const_iterator bboxIt = mParameterMap.find( "BBOX" );
   if ( bboxIt == mParameterMap.end() )
   {
-    QgsMSDebugMsg( "No BBOX parameter found for wcs layer, returning 0" );
+    QgsDebugMsg( "No BBOX parameter found for wcs layer, returning 0" );
     return 0;
   }
   wcsRequest += "&BBOX=";
   wcsRequest += bboxIt->second;
 
-  QgsMSDebugMsg( "WCS request is: " + wcsRequest );
+  QgsDebugMsg( "WCS request is: " + wcsRequest );
 
   //make request and store byte array into temporary file
   QgsHttpTransaction httpTransaction( wcsRequest );

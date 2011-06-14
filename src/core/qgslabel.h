@@ -13,7 +13,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 #ifndef QGSLABEL_H
 #define QGSLABEL_H
 
@@ -158,9 +157,6 @@ class CORE_EXPORT QgsLabel
 
     //! Set label field
     void setLabelField( int attr, int fieldIndex );
-
-    //! Set label field by name
-    bool setLabelFieldName( int attr, QString name );
 
     //! label field
     QString labelField( int attr ) const;
