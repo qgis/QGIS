@@ -1229,6 +1229,19 @@ QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
         }
         break;
       }
+    case PseudoColorShader:
+      {
+        //class breaks have fixed color for the pseudo color shader
+        const QgsPseudoColorShader* pcShader = dynamic_cast<QgsPseudoColorShader*>( mRasterShader->rasterShaderFunction() );
+        if( pcShader )
+        {
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMin1() ), QColor( 0, 0, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMax1() ), QColor( 0, 255, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMax2() ), QColor(255, 255, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMin2() ), QColor( 255, 0, 0 ) ) );
+        }
+        break;
+      }
     default:
       break;
   }
