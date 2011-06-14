@@ -45,6 +45,12 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="dragEnabled">
+        <bool>true</bool>
+       </property>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragOnly</enum>
+       </property>
       </widget>
       <widget class="QTabWidget" name="tabWidget">
        <property name="enabled">
