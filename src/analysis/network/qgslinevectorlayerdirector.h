@@ -33,14 +33,6 @@ class QgsVectorLayer;
 */
 class QgsLineVectorLayerDirector : public QgsGraphDirector
 {
-  private:
-    struct TiePointInfo
-    {
-      QgsPoint mTiedPoint;
-      double mLength;
-      QgsPoint mFirstPoint;
-      QgsPoint mLastPoint;
-    };
   public:
     /**
      * @param vl  source vector layer
@@ -86,4 +78,5 @@ class QgsLineVectorLayerDirector : public QgsGraphDirector
     //FIXME: need enum
     int mDefaultDirection;
 };
+
 #endif //QGSLINEVECTORLAYERGRAPHDIRECTORH

@@ -83,6 +83,22 @@ template <typename RandIter, typename Type, typename CompareOp > RandIter my_bin
   return not_found;
 }
 
+struct TiePointInfo
+{
+  QgsPoint mTiedPoint;
+  double mLength;
+  QgsPoint mFirstPoint;
+  QgsPoint mLastPoint;      
+};
+
+bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
+{
+  if ( a.mFirstPoint == b.mFirstPoint )
+    return a.mLastPoint.x() == b.mLastPoint.x() ? a.mLastPoint.y() < b.mLastPoint.y() : a.mLastPoint.x() < b.mLastPoint.x();
+
+  return a.mFirstPoint.x() == b.mFirstPoint.x() ? a.mFirstPoint.y() < b.mFirstPoint.y() : a.mFirstPoint.x() < b.mFirstPoint.x();
+}
+
 QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
     int directionFieldId,
     const QString& directDirectionValue,
@@ -208,18 +224,21 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       points.push_back( tiedPoint [ i ] );
     }
   }
-  
+ 
   QgsPointCompare pointCompare( builder->topologyTolerance() );
 
   qSort( points.begin(), points.end(), pointCompare );
   QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() ); 
   points.resize( tmp - points.begin() );
-  
+
+
   for (i=0;i<points.size();++i)
     builder->addVertex( i, points[ i ] );
   
   for ( i = 0; i < tiedPoint.size() ; ++i)
     tiedPoint[ i ] = *(my_binary_search( points.begin(), points.end(), tiedPoint[ i ], pointCompare ) );
+
+  qSort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
   { // fill attribute list 'la'
     QgsAttributeList tmpAttr;
@@ -254,7 +273,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       lastAttrId = *it2;
     }
   } // end fill attribute list 'la'
-  
+ 
   // begin graph construction
   vl->select( la );
   while ( vl->nextFeature( feature ) )
@@ -307,13 +326,28 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
           std::map< double, QgsPoint > pointsOnArc;
           pointsOnArc[ 0.0 ] = pt1;
           pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
-
-          for ( pointLengthIt = pointLengthMap.begin(); pointLengthIt != pointLengthMap.end(); ++pointLengthIt )
+          
+          TiePointInfo t;
+          t.mFirstPoint = pt1;
+          t.mLastPoint  = pt2;
+          pointLengthIt = my_binary_search( pointLengthMap.begin(), pointLengthMap.end(), t, TiePointInfoCompare );
+          
+          if ( pointLengthIt != pointLengthMap.end() )
           {
-            if ( pointLengthIt->mFirstPoint == pt1 && pointLengthIt->mLastPoint == pt2 )
+            QVector< TiePointInfo >::iterator it;
+            for ( it = pointLengthIt; it - pointLengthMap.begin() > 0; --it )
             {
-              QgsPoint tiedPoint = pointLengthIt->mTiedPoint;
-              pointsOnArc[ pt1.sqrDist( tiedPoint )] = tiedPoint;
+              if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
+              {
+                pointsOnArc[ pt1.sqrDist( it->mTiedPoint ) ] = it->mTiedPoint;
+              }
+            }
+            for ( it = pointLengthIt+1; it != pointLengthMap.end(); ++it )
+            {
+              if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
+              {
+                pointsOnArc[ pt2.sqrDist( it->mTiedPoint ) ] = it->mTiedPoint;
+              }
             }
           }
 
