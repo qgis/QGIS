@@ -1209,6 +1209,32 @@ QString QgsRasterLayer::lastErrorTitle()
   return mErrorCaption;
 }
 
+QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
+{
+  QList< QPair< QString, QColor > > symbolList;
+
+  switch ( mColorShadingAlgorithm )
+  {
+    case ColorRampShader:
+      {
+        const QgsColorRampShader* crShader = dynamic_cast<QgsColorRampShader*>( mRasterShader->rasterShaderFunction() );
+        if( crShader )
+        {
+          QList<QgsColorRampShader::ColorRampItem> shaderItems = crShader->colorRampItemList();
+          QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = shaderItems.constBegin();
+          for(; itemIt != shaderItems.constEnd(); ++itemIt )
+          {
+            symbolList.push_back( qMakePair( itemIt->label, itemIt->color ) );
+          }
+        }
+        break;
+      }
+    default:
+      break;
+  }
+  return symbolList;
+}
+
 /**
  * This is an overloaded version of the legendAsPixmap( bool ) assumes false for the legend name flag.
  * @return a pixmap representing a legend image

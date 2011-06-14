@@ -521,6 +521,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief [ data provider interface ] If an operation returns 0 (e.g. draw()), this function returns the text of the error associated with the failure */
     QString lastErrorTitle();
 
+    /**Returns a list with classification items (Text and color)
+      @note this method was added in version 1.8*/
+    QList< QPair< QString, QColor > > legendSymbologyItems() const;
+
     /** \brief Get a legend image for this layer */
     QPixmap legendAsPixmap();
 
