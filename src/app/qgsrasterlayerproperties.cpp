@@ -2406,6 +2406,7 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
     QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
     newItem->setText( 0, QString::number( *value_it, 'f' ) );
     newItem->setBackground( 1, QBrush( *color_it ) );
+    newItem->setText( 2, QString::number( *value_it, 'f' ) );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
 }
