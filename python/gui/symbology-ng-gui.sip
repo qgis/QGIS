@@ -7,7 +7,7 @@ class QgsSymbolV2PropertiesDialog : QDialog //, private Ui::DlgSymbolV2Propertie
 %End
 
 public:
-  QgsSymbolV2PropertiesDialog(QgsSymbolV2* symbol, const QgsVectorLayer*, QWidget* parent = NULL);
+  QgsSymbolV2PropertiesDialog(QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = NULL);
   
   
 public slots:
@@ -75,7 +75,7 @@ class QgsSymbolV2SelectorDialog : QDialog //, private Ui::QgsSymbolV2SelectorDia
 %End
 
 public:
-  QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer*, QWidget* parent = NULL, bool embedded = false);
+  QgsSymbolV2SelectorDialog(QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false);
   
 protected:
   void populateSymbolView();
@@ -106,7 +106,7 @@ class QgsSymbolLayerV2Widget : QWidget
 %End
 
   public:
-    QgsSymbolLayerV2Widget( const QgsVectorLayer* vl, Widget* parent );
+    QgsSymbolLayerV2Widget( QWidget* parent, const QgsVectorLayer* vl = 0 );
     virtual ~QgsSymbolLayerV2Widget();
 
     virtual void setSymbolLayer( QgsSymbolLayerV2* layer ) = 0;
