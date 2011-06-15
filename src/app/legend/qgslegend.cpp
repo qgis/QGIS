@@ -699,7 +699,7 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
           QString layerId = childElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" );
           QgsProject::instance()->createEmbeddedLayer( layerId, projectFilePath, brokenNodes, vectorLayerList, false );
           QTreeWidgetItem* cItem = 0;
-          if( settings.value("/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+          if ( settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
           {
             cItem = group->takeChild( 0 );
           }
@@ -709,7 +709,7 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
             removeItem( cItem );
           }
 
-          if( cItem )
+          if ( cItem )
           {
             group->insertChild( group->childCount(), cItem );
           }
@@ -776,8 +776,8 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   }
 
   setItemExpanded( llayer, true );
-
-  refreshLayerSymbology( layer->id() );
+  //don't expand raster items by default, there could be too many
+  refreshLayerSymbology( layer->id(), layer->type() != QgsMapLayer::RasterLayer );
 
   updateMapCanvasLayerSet();
 
@@ -1723,10 +1723,7 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   //restore the current item again
   setCurrentIndex( currentItemIndex );
   adjustIconSize();
-  if ( expandItem )
-  {
-    setItemExpanded( theLegendLayer, true );//make sure the symbology items are visible
-  }
+  setItemExpanded( theLegendLayer, expandItem );//make sure the symbology items are visible
 }
 
 
