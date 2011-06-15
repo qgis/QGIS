@@ -339,7 +339,6 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
               {
-                std::cout << "op1\n";
                 pointsOnArc[ pt1.sqrDist( it->mTiedPoint ) ] = it->mTiedPoint;
               }
             }
@@ -347,7 +346,6 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
               {
-                std::cout << "op2\n";
                 pointsOnArc[ pt1.sqrDist( it->mTiedPoint ) ] = it->mTiedPoint;
               }
             }
