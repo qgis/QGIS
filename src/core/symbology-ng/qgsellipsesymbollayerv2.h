@@ -23,6 +23,9 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setSymbolName( const QString& name ){ mSymbolName = name; }
     QString symbolName() const{ return mSymbolName; }
 
+    void setSymbolNameField( int index, const QString& field );
+    const QPair<int, QString>& symbolNameField() const { return mSymbolNameField; }
+
     void setSymbolWidth( double w ){ mSymbolWidth = w; }
     double symbolWidth() const { return mSymbolWidth; }
 
@@ -74,12 +77,13 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QPair<int, QString> mRotationField;
     /**Take outline width from attribute (-1 if fixed outline width)*/
     QPair<int, QString> mOutlineWidthField;
-
     /**Take fill color from attribute (-1 if fixed fill color)*/
     QPair<int, QString> mFillColorField;
-
     /**Take outline color from attribute (-1 if fixed outline color)*/
     QPair<int, QString> mOutlineColorField;
+    /**Take shape name from attribute (-1 if fixed shape type)*/
+    QPair<int, QString> mSymbolNameField;
+
     QPainterPath mPainterPath;
 
     QPen mPen;
@@ -87,7 +91,7 @@ class QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
 
     /**Setup mPainterPath
       @param feature to render (0 if no data defined rendering)*/
-    void preparePath( QgsSymbolV2RenderContext& context, const QgsFeature* f = 0 );
+    void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f = 0 );
 
     /**True if this symbol layer uses a data defined property*/
     bool hasDataDefinedProperty() const;

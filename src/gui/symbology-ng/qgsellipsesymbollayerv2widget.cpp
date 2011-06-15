@@ -78,6 +78,10 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     {
       mDDOutlineColorComboBox->setCurrentIndex( mDDOutlineColorComboBox->findText( mLayer->outlineColorField().second ) );
     }
+    if( mLayer->symbolNameField().first != -1 )
+    {
+      mDDShapeComboBox->setCurrentIndex( mDDShapeComboBox->findText( mLayer->symbolNameField().second ) );
+    }
   }
   blockComboSignals( false );
 }
@@ -255,7 +259,10 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineColorComboBox_currentIndexChang
 
 void QgsEllipseSymbolLayerV2Widget::on_mDDShapeComboBox_currentIndexChanged( int idx )
 {
-  //todo...
+  if( mLayer )
+  {
+    mLayer->setSymbolNameField( mDDShapeComboBox->itemData( idx ).toInt(), mDDShapeComboBox->itemText( idx ) );
+  }
 }
 
 void QgsEllipseSymbolLayerV2Widget::blockComboSignals( bool block )
