@@ -22,7 +22,7 @@ def name():
 def description():
   return "Integrate gdal tools into qgis"
 def version(): 
-  return "Version 1.2.26" 
+  return "Version 1.2.27" 
 def qgisMinimumVersion():
   return "1.0"
 def icon():
