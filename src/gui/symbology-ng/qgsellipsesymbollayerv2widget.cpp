@@ -21,7 +21,8 @@ QgsEllipseSymbolLayerV2Widget::QgsEllipseSymbolLayerV2Widget( const QgsVectorLay
     lyr->setSymbolWidth(4);
     lyr->setSymbolHeight(2);
     QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( lyr, QgsSymbolV2::MM, iconSize );
-    QListWidgetItem* item = new QListWidgetItem( icon, QString(), mShapeListWidget );
+    QListWidgetItem* item = new QListWidgetItem( icon, "", mShapeListWidget );
+    item->setToolTip( *nameIt );
     item->setData( Qt::UserRole, *nameIt );
     delete lyr;
   }
