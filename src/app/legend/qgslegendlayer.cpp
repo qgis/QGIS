@@ -306,13 +306,6 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 
 void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 {
-#if 0
-  SymbologyList itemList;
-  QPixmap legendpixmap = layer->legendAsPixmap( true ).scaled( 20, 20, Qt::KeepAspectRatio );
-  itemList.append( qMakePair( QString(), legendpixmap ) );
-
-  changeSymbologySettings( layer, itemList );
-#endif //0
   SymbologyList itemList;
   QList< QPair< QString, QColor > > rasterItemList = layer->legendSymbologyItems();
   QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();

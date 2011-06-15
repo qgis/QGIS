@@ -415,7 +415,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     // Non Static methods
     //
     /** \brief Get the number of bands in this layer  */
-    unsigned int bandCount();
+    unsigned int bandCount() const;
 
     /** \brief Get the name of a band given its number  */
     const  QString bandName( int theBandNoInt );
@@ -423,7 +423,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Get the number of a band given its name. The name is the rewritten name set
     *   up in the constructor, and will not necessarily be the same as the name retrieved directly from gdal!
     *   If no matching band is found zero will be returned! */
-    int bandNumber( const QString & theBandName );
+    int bandNumber( const QString & theBandName ) const;
 
     /** \brief Get RasterBandStats for a band given its number (read only)  */
     const  QgsRasterBandStats bandStatistics( int );
@@ -463,6 +463,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Get a pointer to the contrast enhancement for the selected band */
     QgsContrastEnhancement* contrastEnhancement( unsigned int theBand );
+
+    const QgsContrastEnhancement* constContrastEnhancement( unsigned int theBand ) const;
 
     /**Copies the symbology settings from another layer. Returns true in case of success*/
     bool copySymbologySettings( const QgsMapLayer& theOther );
