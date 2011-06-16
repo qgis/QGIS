@@ -30,6 +30,7 @@
 #include <QVector>
 #include <QList>
 #include <QMap>
+#include <QPair>
 
 #include "qgis.h"
 #include "qgspoint.h"
