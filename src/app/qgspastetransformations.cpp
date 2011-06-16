@@ -166,10 +166,12 @@ void QgsPasteTransformations::addTransfer( const QString& sourceSelectedFieldNam
 
 void QgsPasteTransformations::layerChanged( const QString& layerName, std::vector<QString>* fields )
 {
+  Q_UNUSED( fields );
+  Q_UNUSED( layerName );
   // Fetch the fields that will be populated into the Transfer rows.
   QgsDebugMsg( QString( "Layer changed to %1." ).arg( layerName ) );
 
-  restoreTransfers( sourceLayerComboBox     ->currentText(),
+  restoreTransfers( sourceLayerComboBox->currentText(),
                     destinationLayerComboBox->currentText() );
 }
 

@@ -108,6 +108,7 @@ void Builder::endBlock()
 
 void Builder::addLayer( const DL_LayerData& data )
 {
+  Q_UNUSED( data );
   QgsDebugMsg( QString( "Layer: %1" ).arg( data.name.c_str() ) );
 }
 

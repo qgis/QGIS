@@ -875,6 +875,7 @@ QgsGrassEditAttributes::QgsGrassEditAttributes( QgsGrassEdit* edit )
 
 void QgsGrassEditAttributes::mouseClick( QgsPoint & point, Qt::MouseButton button )
 {
+  Q_UNUSED( button );
   double thresh = e->threshold();
 
   // Redraw previously selected line

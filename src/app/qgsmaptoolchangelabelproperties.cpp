@@ -29,7 +29,7 @@ QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
 {
 }
 
-void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
 {
   deleteRubberBands();
 
@@ -47,8 +47,9 @@ void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent * e )
   createRubberBands();
 }
 
-void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   QgsVectorLayer* vlayer = currentLayer();
   if ( mLabelRubberBand && mCanvas && vlayer )
   {

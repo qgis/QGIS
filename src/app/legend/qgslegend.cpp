@@ -138,6 +138,8 @@ void QgsLegend::showItem( QString msg, QTreeWidgetItem *item )
 
 void QgsLegend::handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( previous );
   QgsMapLayer *layer = currentLayer();
 
   if ( mMapCanvas )
@@ -556,8 +558,10 @@ void QgsLegend::mouseReleaseEvent( QMouseEvent * e )
   checkLayerOrderUpdate();
 }
 
-void QgsLegend::mouseDoubleClickEvent( QMouseEvent* e )
+void QgsLegend::mouseDoubleClickEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
+
   QSettings settings;
 
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
@@ -1588,9 +1592,13 @@ void QgsLegend::moveItem( QTreeWidgetItem* move, QTreeWidgetItem* after )
 {
   QgsDebugMsg( QString( "Moving layer : %1 (%2)" ).arg( move->text( 0 ) ).arg( move->type() ) );
   if ( after )
+  {
     QgsDebugMsg( QString( "after layer  : %1 (%2)" ).arg( after->text( 0 ) ).arg( after->type() ) );
+  }
   else
+  {
     QgsDebugMsg( "as toplevel item" );
+  }
 
   static_cast<QgsLegendItem*>( move )->storeAppearanceSettings();//store settings in the moved item and its childern
 
@@ -1760,6 +1768,8 @@ void QgsLegend::removePixmapHeightValue( int height )
 
 void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
 {
+  Q_UNUSED( column );
+
   if ( !item )
   {
     return;

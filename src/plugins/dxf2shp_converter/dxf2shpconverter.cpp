@@ -124,6 +124,7 @@ void dxf2shpConverter::addMyLayer( QString myfname, QString mytitle )
 //! Set icons to the current theme
 void dxf2shpConverter::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/dxf2shp_converter.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/dxf2shp_converter.png";
   QString myQrcPath = ":/dxf2shp_converter.png";

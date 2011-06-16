@@ -255,6 +255,7 @@ void QgsBookmarks::on_btnZoomTo_clicked()
 
 void QgsBookmarks::on_lstBookmarks_itemDoubleClicked( QTreeWidgetItem *lvi )
 {
+  Q_UNUSED( lvi );
   zoomToBookmark();
 }
 

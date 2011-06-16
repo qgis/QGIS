@@ -77,6 +77,7 @@ void QgsWFSPlugin::showSourceDialog()
 //! Set icons to the current theme
 void QgsWFSPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/wfs.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/wfs.png";
   QString myQrcPath = ":/wfs.png";

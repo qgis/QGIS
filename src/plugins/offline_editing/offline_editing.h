@@ -64,10 +64,10 @@ class QgsOfflineEditing : public QObject
     int getOrCreateLayerId( sqlite3* db, const QString& qgisLayerId );
     int getCommitNo( sqlite3* db );
     void increaseCommitNo( sqlite3* db );
-    void addFidLookup( sqlite3* db, int layerId, int offlineFid, int remoteFid );
-    int remoteFid( sqlite3* db, int layerId, int offlineFid );
-    int offlineFid( sqlite3* db, int layerId, int remoteFid );
-    bool isAddedFeature( sqlite3* db, int layerId, int fid );
+    void addFidLookup( sqlite3* db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid );
+    QgsFeatureId remoteFid( sqlite3* db, int layerId, QgsFeatureId offlineFid );
+    QgsFeatureId offlineFid( sqlite3* db, int layerId, QgsFeatureId remoteFid );
+    bool isAddedFeature( sqlite3* db, int layerId, QgsFeatureId fid );
 
     int sqlExec( sqlite3* db, const QString& sql );
     int sqlQueryInt( sqlite3* db, const QString& sql, int defaultValue );
@@ -78,7 +78,7 @@ class QgsOfflineEditing : public QObject
 
     struct AttributeValueChange
     {
-      int fid;
+      QgsFeatureId fid;
       int attr;
       QString value;
     };
@@ -87,7 +87,7 @@ class QgsOfflineEditing : public QObject
 
     struct GeometryChange
     {
-      int fid;
+      QgsFeatureId fid;
       QString geom_wkt;
     };
     typedef QList<GeometryChange> GeometryChanges;

@@ -17,6 +17,7 @@
 
 // Qgis includes
 #include "qgspoint.h"
+#include "qgsfeature.h"
 
 // standard includes
 #include <map>
@@ -58,11 +59,11 @@ class ArcAttributes
 {
   public:
     ArcAttributes();
-    ArcAttributes( double cost, double time, int mFeatureId );
+    ArcAttributes( double cost, double time, QgsFeatureId mFeatureId );
   public:
     double mCost;
     double mTime;
-    int mFeatureId;
+    QgsFeatureId mFeatureId;
 };
 
 typedef std::map< QgsPoint, ArcAttributes, QgsPointCompare > AdjacencyMatrixString;

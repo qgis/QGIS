@@ -161,6 +161,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( co
 
 void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
 {
+  Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -903,4 +904,5 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 
 void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString & regexp )
 {
+  Q_UNUSED( regexp );
 }

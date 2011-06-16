@@ -85,7 +85,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     };
 
     // This will _write_ selected crs in data source
-    virtual bool setCrs( QgsCoordinateReferenceSystem crs ) { return false; }
+    virtual bool setCrs( QgsCoordinateReferenceSystem crs )
+    { Q_UNUSED( crs ); return false; }
 
     virtual Capability capabilities() { return NoCapabilities; }
 

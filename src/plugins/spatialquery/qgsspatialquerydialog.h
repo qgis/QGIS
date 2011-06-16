@@ -92,7 +92,7 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Show result of query
     void showResultQuery( QDateTime *datetimeStart, QDateTime *datetimeEnd );
     //! Get string subset with selected FID
-    QString getSubsetFIDs( const QSet< int > *fids, QString fieldFID );
+    QString getSubsetFIDs( const QgsFeatureIds *fids, QString fieldFID );
     //! Verify can create layer subset
     TypeVerifyCreateSubset verifyCreateSubset( QString &msg, QString &fieldFID );
     //! Add layer target with subset
@@ -130,11 +130,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Set selected GUI (lbStatusSelected and pbCreateLayerSelected)
     void setSelectedGui();
     //! Make action when change item in List feature
-    void changeLwFeature( QgsVectorLayer* lyr, int fid );
+    void changeLwFeature( QgsVectorLayer *lyr, QgsFeatureId fid );
     //! Zoom mapcanvas to current feature in listbox target
-    void zoomFeature( QgsVectorLayer* lyr, int fid );
+    void zoomFeature( QgsVectorLayer *lyr, QgsFeatureId fid );
     //! Show rubber from feature
-    void showRubberFeature( QgsVectorLayer* lyr, int id );
+    void showRubberFeature( QgsVectorLayer *lyr, QgsFeatureId id );
 
     //! Pointer to Interface QGIS
     QgisInterface* mIface;
@@ -143,11 +143,11 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     //! Reference Layer, the query will be based on it
     QgsVectorLayer* mLayerReference;
     //! Stores ID's from spatial query
-    QSet<int> mFeatureResult;
+    QgsFeatureIds mFeatureResult;
     //! Stores ID's invalid of target layer
-    QSet<int> mFeatureInvalidTarget;
+    QgsFeatureIds mFeatureInvalidTarget;
     //! Stores ID's invalid of reference layer
-    QSet<int> mFeatureInvalidReference;
+    QgsFeatureIds mFeatureInvalidReference;
     //! Map for Id name of vector layers (use in signal_qgis_layerWillBeRemoved)
     QMap<QString, QgsVectorLayer *> mMapIdVectorLayers;
     //! Rubber band for features result

@@ -235,6 +235,8 @@ void QgsComposerMap::cache( void )
 
 void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( pWidget );
+
   if ( !mComposition || !painter )
   {
     return;

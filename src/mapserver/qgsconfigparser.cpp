@@ -437,7 +437,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       continue;
     }
 
-    if( !titleIt.key().isEmpty() ) //no label text replacement with empty key
+    if ( !titleIt.key().isEmpty() ) //no label text replacement with empty key
     {
       currentLabel->setText( titleIt.value() );
       currentLabel->adjustSizeToText();
@@ -449,6 +449,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
 
 void QgsConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  Q_UNUSED( doc );
   QFile wmsService( "wms_metadata.xml" );
   if ( wmsService.open( QIODevice::ReadOnly ) )
   {

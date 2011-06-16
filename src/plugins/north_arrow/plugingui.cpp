@@ -86,7 +86,7 @@ void QgsNorthArrowPluginGui::setAutomaticDisabled()
 //overides function by the same name created in .ui
 void QgsNorthArrowPluginGui::on_spinAngle_valueChanged( int theInt )
 {
-
+  Q_UNUSED( theInt );
 }
 
 void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt )
@@ -157,7 +157,8 @@ void QgsNorthArrowPluginGui::rotatePixmap( int theRotationInt )
 // Called when the widget has been resized.
 //
 
-void QgsNorthArrowPluginGui::resizeEvent( QResizeEvent * theResizeEvent )
+void QgsNorthArrowPluginGui::resizeEvent( QResizeEvent *theResizeEvent )
 {
+  Q_UNUSED( theResizeEvent );
   rotatePixmap( sliderRotation->value() );
 }

@@ -50,7 +50,7 @@ class CORE_EXPORT QgsVectorOverlay
     virtual void drawOverlayObjects( QgsRenderContext& context ) const = 0;
 
     /**Gives direct access to oberlay objects*/
-    QMap<int, QgsOverlayObject*>* overlayObjects() {return &mOverlayObjects;}
+    QMap<QgsFeatureId, QgsOverlayObject*>* overlayObjects() {return &mOverlayObjects;}
 
     /**Describes the overlay type (e.g. "diagram" or "label")*/
     virtual QString typeName() const = 0;
@@ -80,7 +80,7 @@ class CORE_EXPORT QgsVectorOverlay
     QgsAttributeList mAttributes;
 
     /**Key: feature ids, value: the corresponding overlay objects. Normally, they are created for each redraw and deleted before the next redraw*/
-    QMap<int, QgsOverlayObject*> mOverlayObjects;
+    QMap<QgsFeatureId, QgsOverlayObject*> mOverlayObjects;
 
     /**Position constraints that may be set to be persistent after redraws. Key is the feature id, value the map point
         where the feature should be placed*/

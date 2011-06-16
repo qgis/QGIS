@@ -568,6 +568,7 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
     size_t size, int type, int nDims,
     int little_endian, int endian_arch )
 {
+  Q_UNUSED( size );
 // calculating the size required to store this WKB
   int rings;
   int points;
@@ -740,6 +741,7 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
     size_t size, int type, int nDims,
     int little_endian, int endian_arch )
 {
+  Q_UNUSED( size );
 // calculating the size required to store this WKB
   int rings;
   int points;
@@ -984,6 +986,8 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB2D( const unsigned char *blob,
     int little_endian,
     int endian_arch )
 {
+  Q_UNUSED( blob_size );
+  Q_UNUSED( geom_size );
 // attempting to convert from 2D GEOS own WKB
   int type;
   int entities;
@@ -1527,6 +1531,8 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
     int little_endian,
     int endian_arch )
 {
+  Q_UNUSED( blob_size );
+  Q_UNUSED( geom_size );
 // attempting to convert from 3D GEOS own WKB
   int type;
   int entities;
@@ -3420,7 +3426,7 @@ abort:
   return false;
 }
 
-bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds &id )
 {
   sqlite3_stmt *stmt = NULL;
   char *errMsg = NULL;
@@ -3452,7 +3458,8 @@ bool QgsSpatiaLiteProvider::deleteFeatures( const QgsFeatureIds & id )
     sqlite3_reset( stmt );
     sqlite3_clear_bindings( stmt );
 
-    sqlite3_bind_int( stmt, 1, *it );
+    qint64 fid = FID_TO_NUMBER( *it );
+    sqlite3_bind_int64( stmt, 1, fid );
 
     // performing actual row deletion
     ret = sqlite3_step( stmt );
@@ -3569,10 +3576,10 @@ bool QgsSpatiaLiteProvider::changeAttributeValues( const QgsChangedAttributesMap
 
   for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
   {
-    int fid = iter.key();
+    QgsFeatureId fid = iter.key();
 
     // skip added features
-    if ( fid < 0 )
+    if ( FID_IS_NEW( fid ) )
       continue;
 
     QString sql = QString( "UPDATE %1 SET " ).arg( quotedIdentifier( mTableName ) );
@@ -3696,7 +3703,7 @@ bool QgsSpatiaLiteProvider::changeGeometryValues( QgsGeometryMap & geometry_map 
         sqlite3_bind_null( stmt, 1 );
       else
         sqlite3_bind_blob( stmt, 1, wkb, wkb_size, free );
-      sqlite3_bind_int( stmt, 2, iter.key() );
+      sqlite3_bind_int64( stmt, 2, FID_TO_NUMBER( iter.key() ) );
 
       // performing actual row update
       ret = sqlite3_step( stmt );

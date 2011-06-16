@@ -20,21 +20,28 @@
 
 void ParametricLine::add( ParametricLine* pl )
 {
+  Q_UNUSED( pl );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
 void ParametricLine::calcFirstDer( float t, Vector3D* v )
 {
+  Q_UNUSED( t );
+  Q_UNUSED( v );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
 void ParametricLine::calcSecDer( float t, Vector3D* v )
 {
+  Q_UNUSED( t );
+  Q_UNUSED( v );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
-void ParametricLine::calcPoint( float t, Point3D* )
+void ParametricLine::calcPoint( float t, Point3D *p )
 {
+  Q_UNUSED( t );
+  Q_UNUSED( p );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
@@ -46,16 +53,19 @@ ParametricLine* ParametricLine::getParent() const
 
 void ParametricLine::remove( int i )
 {
+  Q_UNUSED( i );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
 void ParametricLine::setControlPoly( QVector<Point3D*>* cp )
 {
+  Q_UNUSED( cp );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
 void ParametricLine::setParent( ParametricLine* paral )
 {
+  Q_UNUSED( paral );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
 }
 
@@ -67,6 +77,7 @@ int ParametricLine::getDegree() const
 
 const Point3D* ParametricLine::getControlPoint( int number ) const
 {
+  Q_UNUSED( number );
   std::cout << "warning, derive a class from ParametricLine" << std::endl;
   return 0;
 }

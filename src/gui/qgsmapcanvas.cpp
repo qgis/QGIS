@@ -83,6 +83,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
     , mPainting( false )
     , mAntiAliasing( false )
 {
+  Q_UNUSED( name );
   //disable the update that leads to the resize crash
   if ( viewport() )
   {
@@ -1308,6 +1309,7 @@ void QgsMapCanvas::setRenderFlag( bool theFlag )
 
 void QgsMapCanvas::connectNotify( const char * signal )
 {
+  Q_UNUSED( signal );
   QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
 } //connectNotify
 
@@ -1368,6 +1370,8 @@ void QgsMapCanvas::panActionEnd( QPoint releasePoint )
 
 void QgsMapCanvas::panAction( QMouseEvent * e )
 {
+  Q_UNUSED( e );
+
   if ( mDrawing )
   {
     return;

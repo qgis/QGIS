@@ -53,8 +53,9 @@ class QgsIdentifyResultsDock : public QDockWidget
       setObjectName( "IdentifyResultsTableDock" ); // set object name so the position can be saved
     }
 
-    virtual void closeEvent( QCloseEvent * ev )
+    virtual void closeEvent( QCloseEvent *e )
     {
+      Q_UNUSED( e );
       deleteLater();
     }
 };
@@ -145,14 +146,15 @@ void QgsIdentifyResults::addFeature( QgsVectorLayer *vlayer,
 
     connect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
     connect( vlayer, SIGNAL( layerCrsChanged() ), this, SLOT( layerDestroyed() ) );
-    connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
-    connect( vlayer, SIGNAL( attributeValueChanged( int, int, const QVariant & ) ), this, SLOT( attributeValueChanged( int, int, const QVariant & ) ) );
+    connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+    connect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
+             this,   SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     connect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     connect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
 
   QTreeWidgetItem *featItem = new QTreeWidgetItem;
-  featItem->setData( 0, Qt::UserRole, f.id() );
+  featItem->setData( 0, Qt::UserRole, FID_TO_STRING( f.id() ) );
   featItem->setData( 0, Qt::UserRole + 1, mFeatures.size() );
   mFeatures << f;
   layItem->addChild( featItem );
@@ -395,6 +397,7 @@ void QgsIdentifyResults::closeEvent( QCloseEvent *e )
 
 void QgsIdentifyResults::itemClicked( QTreeWidgetItem *item, int column )
 {
+  Q_UNUSED( column );
   if ( item->data( 0, Qt::UserRole ).toString() == "edit" )
   {
     lstResults->setCurrentItem( item );
@@ -648,14 +651,16 @@ QTreeWidgetItem *QgsIdentifyResults::retrieveAttributes( QTreeWidgetItem *item, 
   return featItem;
 }
 
-void QgsIdentifyResults::itemExpanded( QTreeWidgetItem* item )
+void QgsIdentifyResults::itemExpanded( QTreeWidgetItem *item )
 {
+  Q_UNUSED( item );
   expandColumnsToFit();
 }
 
 void QgsIdentifyResults::handleCurrentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  if ( current == NULL )
+  Q_UNUSED( previous );
+  if ( !current )
   {
     emit selectedFeatureChanged( 0, 0 );
     return;
@@ -709,8 +714,9 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   if ( vlayer )
   {
     disconnect( vlayer, SIGNAL( layerDeleted() ), this, SLOT( layerDestroyed() ) );
-    disconnect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
-    disconnect( vlayer, SIGNAL( attributeValueChanged( int, int, const QVariant & ) ), this, SLOT( attributeValueChanged( int, int, const QVariant & ) ) );
+    disconnect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+    disconnect( vlayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ),
+                this,   SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant & ) ) );
     disconnect( vlayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
     disconnect( vlayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
   }
@@ -720,7 +726,7 @@ void QgsIdentifyResults::disconnectLayer( QObject *layer )
   }
 }
 
-void QgsIdentifyResults::featureDeleted( int fid )
+void QgsIdentifyResults::featureDeleted( QgsFeatureId fid )
 {
   QTreeWidgetItem *layItem = layerItem( sender() );
 
@@ -731,7 +737,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
-    if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
+    if ( featItem && featItem->data( 0, Qt::UserRole ).toString() == FID_TO_STRING( fid ) )
     {
       delete mHighlights.take( featItem );
       delete featItem;
@@ -750,7 +756,7 @@ void QgsIdentifyResults::featureDeleted( int fid )
   }
 }
 
-void QgsIdentifyResults::attributeValueChanged( int fid, int idx, const QVariant &val )
+void QgsIdentifyResults::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &val )
 {
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( sender() );
   QTreeWidgetItem *layItem = layerItem( sender() );
@@ -762,7 +768,7 @@ void QgsIdentifyResults::attributeValueChanged( int fid, int idx, const QVariant
   {
     QTreeWidgetItem *featItem = layItem->child( i );
 
-    if ( featItem && featItem->data( 0, Qt::UserRole ).toInt() == fid )
+    if ( featItem && featItem->data( 0, Qt::UserRole ).toString() == FID_TO_STRING( fid ) )
     {
       if ( featItem->data( 0, Qt::DisplayRole ).toString() == vlayer->displayField() )
         featItem->setData( 1, Qt::DisplayRole, val );

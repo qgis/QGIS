@@ -51,6 +51,7 @@ double QgsDiagramFactory::diagramSizeScaleFactor( const QgsRenderContext& contex
 
 bool QgsDiagramFactory::writeSizeUnits( QDomElement& factoryElem, QDomDocument& doc ) const
 {
+  Q_UNUSED( doc );
   if ( factoryElem.isNull() )
   {
     return false;

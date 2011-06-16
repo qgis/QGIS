@@ -35,6 +35,7 @@
 // object construction
 OsmHandler::OsmHandler( QFile *f, sqlite3 *database )
 {
+  Q_UNUSED( f );
   mDatabase = database;
   mCnt = 0;
   mPointCnt = mLineCnt = mPolygonCnt = 0;
@@ -114,6 +115,8 @@ QString OsmHandler::errorString()
 
 bool OsmHandler::startElement( const QString & pUri, const QString & pLocalName, const QString & pName, const QXmlAttributes & pAttrs )
 {
+  Q_UNUSED( pUri );
+  Q_UNUSED( pName );
   QString name = pLocalName;
 
   if ( name == "osm" )
@@ -309,6 +312,8 @@ bool OsmHandler::startElement( const QString & pUri, const QString & pLocalName,
 
 bool OsmHandler::endElement( const QString & pURI, const QString & pLocalName, const QString & pName )
 {
+  Q_UNUSED( pURI );
+  Q_UNUSED( pName );
   QString name = pLocalName;
   if ( name == "way" )
   {

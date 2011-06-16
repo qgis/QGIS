@@ -32,8 +32,13 @@ QgsHostedVDSBuilder::~QgsHostedVDSBuilder()
 
 }
 
-QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer* QgsHostedVDSBuilder::createMapLayer( const QDomElement& elem,
+    const QString& layerName,
+    QList<QTemporaryFile*> &filesToRemove,
+    QList<QgsMapLayer*> &layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( filesToRemove );
   if ( elem.isNull() )
   {
     return 0;

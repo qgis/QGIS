@@ -73,6 +73,7 @@ class CORE_EXPORT QgsLogger
     template <typename T> static void debug( const QString& var, T val, const char* file = 0, const char* function = 0,
         int line = -1, int debuglevel = 1 )
     {
+      Q_UNUSED( debuglevel );
       const char* dfile = debugFile();
       if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
       {

@@ -34,10 +34,10 @@ public:
   /* queries */
 
   /** returns features that intersect the specified rectangle */
-  QList<int> intersects(QgsRectangle rect);
+  QList<qint64> intersects(QgsRectangle rect);
 
   /** returns nearest neighbors (their count is specified by second parameter) */
-  QList<int> nearestNeighbor(QgsPoint point, int neighbors);
+  QList<qint64> nearestNeighbor(QgsPoint point, int neighbors);
 
 
 };

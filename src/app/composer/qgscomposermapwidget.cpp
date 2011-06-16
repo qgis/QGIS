@@ -110,6 +110,8 @@ void QgsComposerMapWidget::on_mHeightLineEdit_editingFinished()
 
 void QgsComposerMapWidget::on_mPreviewModeComboBox_activated( int i )
 {
+  Q_UNUSED( i );
+
   if ( !mComposerMap )
   {
     return;

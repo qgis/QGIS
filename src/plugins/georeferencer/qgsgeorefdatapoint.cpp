@@ -39,7 +39,9 @@ QgsGeorefDataPoint::QgsGeorefDataPoint( QgsMapCanvas* srcCanvas, QgsMapCanvas *d
 }
 
 QgsGeorefDataPoint::QgsGeorefDataPoint( const QgsGeorefDataPoint &p )
+    : QObject()
 {
+  Q_UNUSED( p );
   // we share item representation on canvas between all points
 //  mGCPSourceItem = new QgsGCPCanvasItem(p.srcCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());
 //  mGCPDestinationItem = new QgsGCPCanvasItem(p.dstCanvas(), p.pixelCoords(), p.mapCoords(), p.isEnabled());

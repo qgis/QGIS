@@ -293,11 +293,13 @@ bool QgsMemoryProvider::nextFeature( QgsFeature& feature )
 }
 
 
-bool QgsMemoryProvider::featureAtId( int featureId,
+bool QgsMemoryProvider::featureAtId( QgsFeatureId featureId,
                                      QgsFeature& feature,
                                      bool fetchGeometry,
                                      QgsAttributeList fetchAttributes )
 {
+  Q_UNUSED( fetchGeometry );
+  Q_UNUSED( fetchAttributes );
   feature.setValid( false );
   QgsFeatureMap::iterator it = mFeatures.find( featureId );
 
@@ -401,7 +403,6 @@ bool QgsMemoryProvider::addFeatures( QgsFeatureList & flist )
 
     mNextFeatureId++;
   }
-
 
   updateExtent();
 

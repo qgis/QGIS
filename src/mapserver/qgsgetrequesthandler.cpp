@@ -42,7 +42,7 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
   {
     element = *it;
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
-    if( sepidx == -1 )
+    if ( sepidx == -1 )
     {
       continue;
     }
@@ -131,6 +131,7 @@ std::map<QString, QString> QgsGetRequestHandler::parseInput()
 
 void QgsGetRequestHandler::sendGetMapResponse( const QString& service, QImage* img ) const
 {
+  Q_UNUSED( service );
   if ( img )
   {
     if ( mFormat != "PNG" && mFormat != "JPG" )

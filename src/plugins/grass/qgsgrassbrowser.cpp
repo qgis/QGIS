@@ -38,6 +38,7 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
                                   QWidget * parent, Qt::WFlags f )
     : QMainWindow( parent, Qt::Dialog ), mIface( iface )
 {
+  Q_UNUSED( f );
   QgsDebugMsg( "QgsGrassBrowser()" );
 
   QActionGroup *ag = new QActionGroup( this );
@@ -188,6 +189,7 @@ void QgsGrassBrowser::addMap()
 
 void QgsGrassBrowser::doubleClicked( const QModelIndex & index )
 {
+  Q_UNUSED( index );
   QgsDebugMsg( "entered." );
 
   addMap();
@@ -502,6 +504,7 @@ bool QgsGrassBrowser::getItemRegion( const QModelIndex & index, struct Cell_head
 
 void QgsGrassBrowser::selectionChanged( const QItemSelection & selected, const QItemSelection & deselected )
 {
+  Q_UNUSED( deselected );
   QgsDebugMsg( "entered." );
 
   mActionAddMap->setEnabled( false );
@@ -545,6 +548,8 @@ void QgsGrassBrowser::selectionChanged( const QItemSelection & selected, const Q
 
 void QgsGrassBrowser::currentChanged( const QModelIndex & current, const QModelIndex & previous )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( previous );
   QgsDebugMsg( "entered." );
 }
 

@@ -111,6 +111,10 @@ bool QgsFreakOutShader::shade( double theValue, int* theReturnRedValue, int* the
 
 bool QgsFreakOutShader::shade( double theRedValue, double theGreenValue, double theBlueValue, int* theReturnRedValue, int* theReturnGreenValue, int* theReturnBlueValue )
 {
+  Q_UNUSED( theRedValue );
+  Q_UNUSED( theGreenValue );
+  Q_UNUSED( theBlueValue );
+
   *theReturnRedValue = 0;
   *theReturnGreenValue = 0;
   *theReturnBlueValue = 0;

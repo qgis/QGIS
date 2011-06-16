@@ -1031,7 +1031,7 @@ void SpatialIndex::RTree::RTree::storeHeader()
     ptr += sizeof( unsigned long );
   }
 
-  assert( headerSize == ( ptr - header ) );
+  Q_ASSERT( headerSize == ( ptr - header ) );
 
   m_pStorageManager->storeByteArray( m_headerID, headerSize, header );
 
@@ -1088,7 +1088,7 @@ void SpatialIndex::RTree::RTree::loadHeader()
 
 void SpatialIndex::RTree::RTree::insertData_impl( unsigned long dataLength, byte* pData, Region& mbr, long id )
 {
-  assert( mbr.getDimension() == m_dimension );
+  Q_ASSERT( mbr.getDimension() == m_dimension );
 
   stack<long> pathBuffer;
   byte* overflowTable = 0;
@@ -1103,7 +1103,7 @@ void SpatialIndex::RTree::RTree::insertData_impl( unsigned long dataLength, byte
     NodePtr l = root->chooseSubtree( mbr, 0, pathBuffer );
     if ( l.get() == root.get() )
     {
-      assert( root.unique() );
+      Q_ASSERT( root.unique() );
       root.relinquish();
     }
     l->insertData( dataLength, pData, mbr, id, pathBuffer, overflowTable );
@@ -1120,17 +1120,17 @@ void SpatialIndex::RTree::RTree::insertData_impl( unsigned long dataLength, byte
 
 void SpatialIndex::RTree::RTree::insertData_impl( unsigned long dataLength, byte* pData, Region& mbr, long id, unsigned long level, byte* overflowTable )
 {
-  assert( mbr.getDimension() == m_dimension );
+  Q_ASSERT( mbr.getDimension() == m_dimension );
 
   stack<long> pathBuffer;
   NodePtr root = readNode( m_rootID );
   NodePtr n = root->chooseSubtree( mbr, level, pathBuffer );
 
-  assert( n->m_level == level );
+  Q_ASSERT( n->m_level == level );
 
   if ( n.get() == root.get() )
   {
-    assert( root.unique() );
+    Q_ASSERT( root.unique() );
     root.relinquish();
   }
   n->insertData( dataLength, pData, mbr, id, pathBuffer, overflowTable );
@@ -1138,14 +1138,14 @@ void SpatialIndex::RTree::RTree::insertData_impl( unsigned long dataLength, byte
 
 bool SpatialIndex::RTree::RTree::deleteData_impl( const Region& mbr, long id )
 {
-  assert( mbr.m_dimension == m_dimension );
+  Q_ASSERT( mbr.m_dimension == m_dimension );
 
   stack<long> pathBuffer;
   NodePtr root = readNode( m_rootID );
   NodePtr l = root->findLeaf( mbr, id, pathBuffer );
   if ( l.get() == root.get() )
   {
-    assert( root.unique() );
+    Q_ASSERT( root.unique() );
     root.relinquish();
   }
 
@@ -1371,7 +1371,7 @@ void SpatialIndex::RTree::RTree::selfJoinQuery( long id1, long id2, const Region
           {
             if ( n1->m_pIdentifier[cChild1] != n2->m_pIdentifier[cChild2] )
             {
-              assert( n2->m_level == 0 );
+              Q_ASSERT( n2->m_level == 0 );
 
               std::vector<const IData*> v;
               Data e1( n1->m_pDataLength[cChild1], n1->m_pData[cChild1], *( n1->m_ptrMBR[cChild1] ), n1->m_pIdentifier[cChild1] );

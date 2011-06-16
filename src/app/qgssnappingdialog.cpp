@@ -41,9 +41,10 @@ class QgsSnappingDock : public QDockWidget
       setObjectName( "Snapping and Digitizing Options" ); // set object name so the position can be saved
     }
 
-    virtual void closeEvent( QCloseEvent * ev )
+    virtual void closeEvent( QCloseEvent *e )
     {
-      //deleteLater();
+      Q_UNUSED( e );
+      // deleteLater();
     }
 
 };

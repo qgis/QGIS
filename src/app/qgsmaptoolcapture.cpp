@@ -124,8 +124,9 @@ void QgsMapToolCapture::canvasMoveEvent( QMouseEvent * e )
 } // mouseMoveEvent
 
 
-void QgsMapToolCapture::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolCapture::canvasPressEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   // nothing to be done
 }
 

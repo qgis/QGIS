@@ -284,7 +284,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           if ( !externCapDoc.setContent( &common, false, &parseError, &errorLineNo ) )
           {
             QgsDebugMsg( "parse error at setting content of external orchestra common capabilities: "
-                           + parseError + " at line " + QString::number( errorLineNo ) );
+                         + parseError + " at line " + QString::number( errorLineNo ) );
             common.close();
           }
           common.close();
@@ -358,7 +358,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           if ( !externServiceDoc.setContent( &wmsService, false, &parseError, &errorLineNo ) )
           {
             QgsDebugMsg( "parse error at setting content of external wms service capabilities: "
-                           + parseError + " at line " + QString::number( errorLineNo ) );
+                         + parseError + " at line " + QString::number( errorLineNo ) );
             wmsService.close();
           }
           wmsService.close();
@@ -405,7 +405,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
           if ( !externCapDoc.setContent( &common, false, &parseError, &errorLineNo ) )
           {
             QgsDebugMsg( "parse error at setting content of external orchestra common capabilities: "
-                           + parseError + " at line " + QString::number( errorLineNo ) );
+                         + parseError + " at line " + QString::number( errorLineNo ) );
             common.close();
           }
           common.close();
@@ -424,6 +424,7 @@ void QgsSOAPRequestHandler::sendGetCapabilitiesResponse( const QDomDocument& doc
 
 void QgsSOAPRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const
 {
+  Q_UNUSED( infoFormat );
   QDomDocument featureInfoResponseDoc;
 
   //Envelope
@@ -466,6 +467,7 @@ void QgsSOAPRequestHandler::sendGetStyleResponse( const QDomDocument& infoDoc ) 
 
 void QgsSOAPRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
 {
+  Q_UNUSED( ba );
   //soon...
 }
 

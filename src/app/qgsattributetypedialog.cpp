@@ -93,6 +93,7 @@ void QgsAttributeTypeDialog::setCheckedState( QString checked, QString unchecked
 
 void QgsAttributeTypeDialog::vCellChanged( int row, int column )
 {
+  Q_UNUSED( column );
   if ( row == tableWidget->rowCount() - 1 )
   {
     tableWidget->insertRow( row + 1 );
@@ -104,8 +105,8 @@ void QgsAttributeTypeDialog::removeSelectedButtonPushed()
   QList<QTableWidgetItem *> list = tableWidget->selectedItems();
   QSet<int> rowsToRemove;
   int removed = 0;
-  int i = 0;
-  for ( ; i < list.size(); i++ )
+  int i;
+  for ( i = 0; i < list.size(); i++ )
   {
     if ( list[i]->column() == 0 )
     {

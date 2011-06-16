@@ -1521,7 +1521,7 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
         ; ok && it != gmap.constEnd()
         ; it++ )
   {
-    int key = it.key();
+    QgsFeatureId key = it.key();
     QgsGeometry geom = *it;
     QString wkt = geom.exportToWkt();
     QByteArray wktBa = wkt.toUtf8();

@@ -44,7 +44,7 @@ QgsDiagramOverlay::QgsDiagramOverlay( QgsVectorLayer* vl ): QgsVectorOverlay( vl
 QgsDiagramOverlay::~QgsDiagramOverlay()
 {
   //memory cleanup
-  for ( QMap<int, QgsOverlayObject*>::iterator it = mOverlayObjects.begin(); it != mOverlayObjects.end(); ++it )
+  for ( QMap<QgsFeatureId, QgsOverlayObject*>::iterator it = mOverlayObjects.begin(); it != mOverlayObjects.end(); ++it )
   {
     delete it.value();
   }
@@ -70,7 +70,7 @@ void QgsDiagramOverlay::createOverlayObjects( const QgsRenderContext& renderCont
   }
 
   //memory cleanup
-  for ( QMap<int, QgsOverlayObject*>::iterator it = mOverlayObjects.begin(); it != mOverlayObjects.end(); ++it )
+  for ( QMap<QgsFeatureId, QgsOverlayObject*>::iterator it = mOverlayObjects.begin(); it != mOverlayObjects.end(); ++it )
   {
     delete it.value();
   }
@@ -145,7 +145,7 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
           continue;
         }
         //search for overlay object in the map
-        QMap<int, QgsOverlayObject*>::const_iterator it = mOverlayObjects.find( currentFeature.id() );
+        QMap<QgsFeatureId, QgsOverlayObject*>::const_iterator it = mOverlayObjects.find( currentFeature.id() );
         if ( it != mOverlayObjects.constEnd() )
         {
           if ( it.value() )
@@ -180,6 +180,7 @@ void QgsDiagramOverlay::drawOverlayObjects( QgsRenderContext& context ) const
 
 int QgsDiagramOverlay::getOverlayObjectSize( int& width, int& height, double value, const QgsFeature& f, const QgsRenderContext& renderContext ) const
 {
+  Q_UNUSED( value );
   return mDiagramRenderer->getDiagramDimensions( width, height, f, renderContext );
 }
 
@@ -332,6 +333,7 @@ bool QgsDiagramOverlay::writeXML( QDomNode& layer_node, QDomDocument& doc ) cons
 
 int QgsDiagramOverlay::createLegendContent( std::list<std::pair<QString, QImage*> >& content ) const
 {
+  Q_UNUSED( content );
 #if 0
   //first make sure the list is clean
   std::list<std::pair<QString, QImage*> >::iterator it;

@@ -117,6 +117,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
 
 QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
+  Q_UNUSED( section );
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     return QVariant( "header" );
@@ -142,7 +143,7 @@ int QgsBrowserModel::rowCount( const QModelIndex &parent ) const
   }
 }
 
-bool QgsBrowserModel::hasChildren( const QModelIndex & parent ) const
+bool QgsBrowserModel::hasChildren( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
     return true; // root item: its children are top level items
@@ -151,8 +152,9 @@ bool QgsBrowserModel::hasChildren( const QModelIndex & parent ) const
   return item && item->hasChildren();
 }
 
-int QgsBrowserModel::columnCount( const QModelIndex & parent ) const
+int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
 {
+  Q_UNUSED( parent );
   return 1;
 }
 

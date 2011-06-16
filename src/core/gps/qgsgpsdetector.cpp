@@ -145,7 +145,7 @@ void QgsGPSDetector::advance()
 
       Q_ASSERT( gpsParams.size() >= 3 );
 
-      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toInt(), gpsParams[2] );
+      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
     else
     {
@@ -177,6 +177,8 @@ void QgsGPSDetector::advance()
 
 void QgsGPSDetector::detected( const QgsGPSInformation& info )
 {
+  Q_UNUSED( info );
+
   if ( !mConn )
   {
     // advance if connection was destroyed

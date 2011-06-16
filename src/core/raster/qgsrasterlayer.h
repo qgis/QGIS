@@ -43,15 +43,6 @@
 #include "qgsrastershaderfunction.h"
 #include "qgsrasterdataprovider.h"
 
-#define CPL_SUPRESS_CPLUSPLUS
-#include <gdal.h>
-/** \ingroup core
- * A call back function for showing progress of gdal operations.
- */
-int CPL_STDCALL progressCallback( double dfComplete,
-                                  const char *pszMessage,
-                                  void * pProgressArg );
-
 //
 // Forward declarations
 //

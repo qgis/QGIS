@@ -43,8 +43,14 @@ QgsInterpolationLayerBuilder::~QgsInterpolationLayerBuilder()
 
 }
 
-QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
+    const QString &layerName,
+    QList<QTemporaryFile*> &filesToRemove,
+    QList<QgsMapLayer*> &layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( layerName );
+  Q_UNUSED( allowCaching );
   if ( !mVectorLayer )
   {
     return 0;

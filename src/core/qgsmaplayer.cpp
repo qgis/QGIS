@@ -133,11 +133,13 @@ QgsRectangle QgsMapLayer::extent() const
 
 bool QgsMapLayer::draw( QgsRenderContext& rendererContext )
 {
+  Q_UNUSED( rendererContext );
   return false;
 }
 
 void QgsMapLayer::drawLabels( QgsRenderContext& rendererContext )
 {
+  Q_UNUSED( rendererContext );
   // QgsDebugMsg("entered.");
 }
 
@@ -271,6 +273,7 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
 
 bool QgsMapLayer::readXml( const QDomNode& layer_node )
 {
+  Q_UNUSED( layer_node );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -378,6 +381,8 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
 
 bool QgsMapLayer::writeXml( QDomNode & layer_node, QDomDocument & document )
 {
+  Q_UNUSED( layer_node );
+  Q_UNUSED( document );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -411,6 +416,7 @@ QString QgsMapLayer::lastError()
 
 void QgsMapLayer::connectNotify( const char * signal )
 {
+  Q_UNUSED( signal );
   QgsDebugMsgLevel( "QgsMapLayer connected to " + QString( signal ), 3 );
 } //  QgsMapLayer::connectNotify
 
@@ -455,11 +461,14 @@ QStringList QgsMapLayer::subLayers()
 
 void QgsMapLayer::setLayerOrder( QStringList layers )
 {
+  Q_UNUSED( layers );
   // NOOP
 }
 
 void QgsMapLayer::setSubLayerVisibility( QString name, bool vis )
 {
+  Q_UNUSED( name );
+  Q_UNUSED( vis );
   // NOOP
 }
 

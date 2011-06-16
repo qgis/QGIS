@@ -523,6 +523,7 @@ QString QgsGdalProvider::metadata()
 // Not supported by GDAL
 QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
 {
+  Q_UNUSED( viewExtent );
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
@@ -1229,11 +1230,13 @@ bool QgsGdalProvider::isValid()
 
 QString QgsGdalProvider::identifyAsText( const QgsPoint& point )
 {
+  Q_UNUSED( point );
   return QString( "Not implemented" );
 }
 
 QString QgsGdalProvider::identifyAsHtml( const QgsPoint& point )
 {
+  Q_UNUSED( point );
   return QString( "Not implemented" );
 }
 

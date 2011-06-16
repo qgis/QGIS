@@ -42,7 +42,7 @@ class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
 
   private:
     QgsVectorLayer* mActiveLayer;
-    int mFeatureNumber;
+    QgsFeatureId mFeatureNumber;
     /**Last azimut between mouse and edited point*/
     double mCurrentMouseAzimut;
     /**Last feature rotation*/

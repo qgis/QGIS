@@ -702,6 +702,7 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 //void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *block )
 void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight, void *block )
 {
+  Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
   // TODO: optimize to avoid writing to QImage
   QImage* image = draw( viewExtent, pixelWidth, pixelHeight );
@@ -1063,8 +1064,10 @@ int QgsWmsProvider::dataType( int bandNo ) const
 {
   return srcDataType( bandNo );
 }
+
 int QgsWmsProvider::srcDataType( int bandNo ) const
 {
+  Q_UNUSED( bandNo );
   return QgsRasterDataProvider::ARGBDataType;
 }
 
@@ -1900,6 +1903,7 @@ void QgsWmsProvider::parseLayer( QDomElement const & e, QgsWmsLayerProperty& lay
 
 void QgsWmsProvider::parseTileSetProfile( QDomElement const &e, QVector<QgsWmsTileSetProfile> &tileSet )
 {
+  Q_UNUSED( tileSet );
   QgsWmsTileSetProfile tsp;
 
   QDomNode n1 = e.firstChild();
@@ -3261,8 +3265,8 @@ void QgsWMSRootItem::connectionsChanged()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  QgsWMSRootItem * root = new QgsWMSRootItem( parentItem, "WMS", "wms:" );
+  Q_UNUSED( thePath );
 
-  return root;
+  return new QgsWMSRootItem( parentItem, "WMS", "wms:" );
 }
 

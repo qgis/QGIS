@@ -67,6 +67,7 @@ void QgsInterpolationPlugin::showInterpolationDialog()
 //! Set icons to the current theme
 void QgsInterpolationPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/interpolation.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/interpolation.png";
   QString myQrcPath = ":/interpolation.png";

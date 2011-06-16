@@ -74,6 +74,7 @@ void QgsSimpleFillSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 
 void QgsSimpleFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 void QgsSimpleFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
@@ -403,6 +404,8 @@ void QgsCentroidFillSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context
 
 void QgsCentroidFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( rings );
+
   // calculate centroid
   double cx = 0, cy = 0;
   double area, sum = 0;

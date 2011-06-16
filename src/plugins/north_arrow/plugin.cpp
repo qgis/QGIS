@@ -393,6 +393,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 //! Set icons to the current theme
 void QgsNorthArrowPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/north_arrow.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/north_arrow.png";
   QString myQrcPath = ":/north_arrow.png";

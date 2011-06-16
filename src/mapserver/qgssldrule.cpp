@@ -29,9 +29,12 @@
 #include <QTextStream>
 #include <cmath>
 
-QgsSLDRule::QgsSLDRule( double minDenom, double maxDenom, const QgsSymbol& s, const QgsFilter* f ): mSymbol( s ), mMinScaleDenominator( minDenom ), mMaxScaleDenominator( maxDenom )
+QgsSLDRule::QgsSLDRule( double minDenom, double maxDenom, const QgsSymbol& s, const QgsFilter* f )
+    : mSymbol( s )
+    , mMinScaleDenominator( minDenom )
+    , mMaxScaleDenominator( maxDenom )
 {
-
+  Q_UNUSED( f );
 }
 
 QgsSLDRule::~QgsSLDRule()

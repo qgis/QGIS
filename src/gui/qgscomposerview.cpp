@@ -30,9 +30,17 @@
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
-    QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 ), mPaintingEnabled( true )
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
+    : QGraphicsView( parent )
+    , mShiftKeyPressed( false )
+    , mRubberBandItem( 0 )
+    , mRubberBandLineItem( 0 )
+    , mMoveContentItem( 0 )
+    , mPaintingEnabled( true )
 {
+  Q_UNUSED( f );
+  Q_UNUSED( name );
+
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );

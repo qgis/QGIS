@@ -48,7 +48,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
                               QWidget * parent, const char * name, Qt::WFlags f )
     : QDialog( parent, f ), QgsGrassToolsBase()
 {
-
+  Q_UNUSED( name );
   setupUi( this );
   QgsDebugMsg( "QgsGrassTools()" );
   qRegisterMetaType<QgsDetailedItemData>();
@@ -119,6 +119,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
 
 void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 {
+  Q_UNUSED( column );
   QgsDebugMsg( "entered." );
   if ( !item )
     return;

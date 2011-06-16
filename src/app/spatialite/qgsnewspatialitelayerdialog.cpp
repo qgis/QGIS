@@ -138,6 +138,7 @@ QString QgsNewSpatialiteLayerDialog::selectedType() const
 
 void QgsNewSpatialiteLayerDialog::on_leLayerName_textChanged( QString text )
 {
+  Q_UNUSED( text );
   bool created  = leLayerName->text().length() > 0 && mAttributeView->topLevelItemCount() > 0 && createDb();
   buttonBox->button( QDialogButtonBox::Ok )->setEnabled( created );
   buttonBox->button( QDialogButtonBox::Apply )->setEnabled( created );

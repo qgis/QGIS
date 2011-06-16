@@ -117,9 +117,13 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
   if ( it == mSymbolHash.end() )
   {
     if ( mSymbolHash.count() == 0 )
+    {
       QgsDebugMsg( "there are no hashed symbols!!!" );
+    }
     else
+    {
       QgsDebugMsg( "attribute value not found: " + value.toString() );
+    }
     return NULL;
   }
 

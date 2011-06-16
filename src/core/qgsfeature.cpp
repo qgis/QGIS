@@ -21,7 +21,7 @@ email                : sherman at mrcc.com
  * \brief Encapsulates a spatial feature with attributes
  */
 
-QgsFeature::QgsFeature( int id, QString typeName )
+QgsFeature::QgsFeature( QgsFeatureId id, QString typeName )
     : mFid( id )
     , mGeometry( 0 )
     , mOwnsGeometry( 0 )
@@ -88,7 +88,7 @@ QgsFeature::~QgsFeature()
  * Get the feature id for this feature
  * @return Feature id
  */
-int QgsFeature::id() const
+QgsFeatureId QgsFeature::id() const
 {
   return mFid;
 }
@@ -150,7 +150,7 @@ QgsGeometry *QgsFeature::geometryAndOwnership()
 
 /** Set the feature id
 */
-void QgsFeature::setFeatureId( int id )
+void QgsFeature::setFeatureId( QgsFeatureId id )
 {
   mFid = id;
 }

@@ -62,6 +62,8 @@ QgsComposerLegend::~QgsComposerLegend()
 
 void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   paintAndDetermineSize( painter );
 }
 
@@ -346,6 +348,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
 
 void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
 {
+  Q_UNUSED( layerOpacity );
   if ( !p || !s )
   {
     return;

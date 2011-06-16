@@ -255,6 +255,8 @@ inline int QgsRasterProjector::matrixCol( int theDestCol )
 
 QgsPoint QgsRasterProjector::srcPoint( int theDestRow, int theCol )
 {
+  Q_UNUSED( theDestRow );
+  Q_UNUSED( theCol );
   return QgsPoint();
 }
 

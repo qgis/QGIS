@@ -33,15 +33,15 @@ QgsMapToolAnnotation::QgsMapToolAnnotation( QgsMapCanvas* canvas ): QgsMapTool( 
 
 QgsMapToolAnnotation::~QgsMapToolAnnotation()
 {
-
 }
 
-QgsAnnotationItem* QgsMapToolAnnotation::createItem( QMouseEvent* e )
+QgsAnnotationItem* QgsMapToolAnnotation::createItem( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   return 0;
 }
 
-QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem* item )
+QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem *item )
 {
   if ( !item )
   {
@@ -63,8 +63,10 @@ QDialog* QgsMapToolAnnotation::createItemEditor( QgsAnnotationItem* item )
   return 0;
 }
 
-void QgsMapToolAnnotation::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolAnnotation::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
+
   mCurrentMoveAction = QgsAnnotationItem::NoAction;
   mCanvas->setCursor( mCursor );
 }

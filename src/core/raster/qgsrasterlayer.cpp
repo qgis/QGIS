@@ -130,6 +130,8 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     , mFormat( format )
     , mCrs( crs )
 {
+  Q_UNUSED( dummy );
+
   QgsDebugMsg( "(8 arguments) starting. with layer list of " +
                layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
                format +  " and CRS of " + crs );
@@ -2348,6 +2350,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QString const & crs,
                                       bool loadDefaultStyleFlag )
 {
+  Q_UNUSED( loadDefaultStyleFlag );
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
@@ -3409,6 +3412,7 @@ bool QgsRasterLayer::readXml( const QDomNode& layer_node )
  */
 bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & document, QString& errorMessage ) const
 {
+  Q_UNUSED( errorMessage );
   // <rasterproperties>
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
@@ -4237,6 +4241,10 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
 void QgsRasterLayer::drawPalettedMultiBandColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
+  Q_UNUSED( theQPainter );
+  Q_UNUSED( theRasterViewPort );
+  Q_UNUSED( theQgsMapToPixel );
+  Q_UNUSED( theBandNo );
   QgsDebugMsg( "Not supported at this time" );
 }
 

@@ -132,7 +132,7 @@ void QgsMapToolSelectUtils::setSelectFeatures( QgsMapCanvas* canvas,
 
   QgsFeatureIds newSelectedFeatures;
   QgsFeature f;
-  int closestFeatureId = 0;
+  QgsFeatureId closestFeatureId = 0;
   bool foundSingleFeature = false;
   double closestFeatureDist = std::numeric_limits<double>::max();
   while ( vlayer->nextFeature( f ) )

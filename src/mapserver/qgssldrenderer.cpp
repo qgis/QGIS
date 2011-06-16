@@ -47,6 +47,7 @@ void QgsSLDRenderer::addRule( QgsSLDRule* rule )
 
 void QgsSLDRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity )
 {
+  Q_UNUSED( opacity );
   //find a rule that matches the feature
   QList<QgsSLDRule*>::const_iterator rule_it = mRules.constBegin();
   for ( ; rule_it != mRules.constEnd(); ++rule_it )
@@ -108,6 +109,7 @@ const QList<QgsSymbol*> QgsSLDRenderer::symbols() const
 
 void QgsSLDRenderer::refreshLegend( std::list< std::pair<QString, QPixmap> >* symbologyList ) const
 {
+  Q_UNUSED( symbologyList );
   //soon...
 }
 

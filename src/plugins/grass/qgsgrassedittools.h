@@ -33,8 +33,10 @@ class QgsGrassEditTool : public QgsMapTool
     virtual void canvasMoveEvent( QMouseEvent * e );
 
     //! functions to be overridden by grass edit tools
-    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button ) { }
-    virtual void mouseMove( QgsPoint & point ) { }
+    virtual void mouseClick( QgsPoint & point, Qt::MouseButton button )
+    { Q_UNUSED( point ); Q_UNUSED( button ); }
+    virtual void mouseMove( QgsPoint & point )
+    { Q_UNUSED( point ); }
 
   protected:
     QgsGrassEdit* e;

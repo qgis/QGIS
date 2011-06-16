@@ -214,6 +214,7 @@ void QgsSimpleMarkerSymbolLayerV2::prepareCache( QgsSymbolV2RenderContext& conte
 
 void QgsSimpleMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 bool QgsSimpleMarkerSymbolLayerV2::prepareShape()
@@ -426,6 +427,8 @@ QgsSymbolLayerV2* QgsSimpleMarkerSymbolLayerV2::clone() const
 
 void QgsSimpleMarkerSymbolLayerV2::drawMarker( QPainter* p, QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
+
   if ( mPolygon.count() != 0 )
   {
     p->drawPolygon( mPolygon );
@@ -504,8 +507,8 @@ void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 
 void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
-
 
 void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
@@ -707,6 +710,7 @@ void QgsFontMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 
 void QgsFontMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 void QgsFontMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )

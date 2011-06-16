@@ -33,6 +33,7 @@ extern "C"
 QgsGrassShell::QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent, const char *name )
     : QFrame( parent ), mTools( tools ), mTabWidget( parent )
 {
+  Q_UNUSED( name );
   QVBoxLayout *mainLayout = new QVBoxLayout( this );
   QTermWidget *mTerminal = new QTermWidget( 0, this );
   initTerminal( mTerminal );

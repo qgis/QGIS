@@ -62,7 +62,7 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
       NO_ACTION //do nothing
     };
 
-    virtual LEGEND_ITEM_TYPE type() const {return mType;}
+    virtual LEGEND_ITEM_TYPE type() const { return mType; }
 
     /**Subclasses which allow insertion of other items may implement this method.
        @param theItem legend item to insert into this item
@@ -70,7 +70,7 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
        If false, such settings don't change (e.g. during mouse drags). If true, the layers and/or map canvas
        settings are allowed to change (e.g. if the mouse button is released).
        @return true in case of success and false if theItem cannot be inserted*/
-    virtual bool insert( QgsLegendItem* theItem ) {return false;}
+    virtual bool insert( QgsLegendItem *theItem ) { Q_UNUSED( theItem ); return false; }
     void print( QgsLegendItem * theItem );
     /**Returns a pointer to the first child or 0 if there is none*/
     QgsLegendItem* firstChild();
@@ -101,9 +101,9 @@ class QgsLegendItem : public QTreeWidgetItem, public QObject
       QTreeWidgetItem's and QObject's insertChild() function */
     void insertChild( int index, QTreeWidgetItem *child );
     /**Do preparations after a new child was inserted (default empty)*/
-    virtual void receive( QgsLegendItem* newChild ) {}
+    virtual void receive( QgsLegendItem *newChild ) { Q_UNUSED( newChild ); }
     /**Do cleanups after a child item leaves (default empty)*/
-    virtual void release( QgsLegendItem* formerChild ) {}
+    virtual void release( QgsLegendItem *formerChild ) { Q_UNUSED( formerChild ); }
 
   protected:
     LEGEND_ITEM_TYPE mType;

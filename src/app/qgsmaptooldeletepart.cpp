@@ -32,12 +32,13 @@ QgsMapToolDeletePart::~QgsMapToolDeletePart()
   delete mCross;
 }
 
-void QgsMapToolDeletePart::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolDeletePart::canvasMoveEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent *e )
 {
   delete mCross;
   mCross = 0;
@@ -64,8 +65,9 @@ void QgsMapToolDeletePart::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   delete mCross;
   mCross = 0;
 
@@ -89,7 +91,7 @@ void QgsMapToolDeletePart::canvasReleaseEvent( QMouseEvent * e )
 }
 
 
-void QgsMapToolDeletePart::deletePart( int fId, int beforeVertexNr, QgsVectorLayer* vlayer )
+void QgsMapToolDeletePart::deletePart( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer )
 {
   QgsFeature f;
   vlayer->featureAtId( fId, f );

@@ -54,9 +54,16 @@ QgsMapLayer* QgsRemoteDataSourceBuilder::createMapLayer( const QDomElement& elem
   return theLayer;
 }
 
-QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDomElement& remoteRDSElem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDomElement& remoteRDSElem,
+    const QString& layerName,
+    QList<QTemporaryFile*> &filesToRemove,
+    QList<QgsMapLayer*> &layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( layerName );
+  Q_UNUSED( allowCaching );
   QgsDebugMsg( "entering." );
+
   //load file with QgsHttpTransaction or QgsFtpTransaction
   QByteArray fileContents;
   QString uri = remoteRDSElem.text();
@@ -88,8 +95,14 @@ QgsRasterLayer* QgsRemoteDataSourceBuilder::rasterLayerFromRemoteRDS( const QDom
   return rl;
 }
 
-QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDomElement& remoteVDSElem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsVectorLayer* QgsRemoteDataSourceBuilder::vectorLayerFromRemoteVDS( const QDomElement& remoteVDSElem,
+    const QString& layerName,
+    QList<QTemporaryFile*>& filesToRemove,
+    QList<QgsMapLayer*>& layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( layerName );
+  Q_UNUSED( allowCaching );
   QString providerString;
   QString formatString = remoteVDSElem.attribute( "format" );
   if ( formatString.compare( "gml", Qt::CaseInsensitive ) == 0 )

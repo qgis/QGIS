@@ -72,11 +72,10 @@ NodePtr Index::chooseSubtree( const Region& mbr, unsigned long insertionLevel, s
     default:
       throw Tools::NotSupportedException( "Index::chooseSubtree: Tree variant not supported." );
   }
-  assert( child >= 0 );
 
   NodePtr n = m_pTree->readNode( m_pIdentifier[child] );
   NodePtr ret = n->chooseSubtree( mbr, insertionLevel, pathBuffer );
-  assert( n.unique() );
+  Q_ASSERT( n.unique() );
   if ( ret.get() == n.get() ) n.relinquish();
 
   return ret;
@@ -224,7 +223,7 @@ long Index::findLeastOverlap( const Region& r ) const
       ::qsort( entries, m_children,
                sizeof( OverlapEntry* ),
                OverlapEntry::compareEntries );
-      assert( entries[0]->m_enlargement <= entries[m_children - 1]->m_enlargement );
+      Q_ASSERT( entries[0]->m_enlargement <= entries[m_children - 1]->m_enlargement );
 
       cIterations = m_pTree->m_nearMinimumOverlapFactor;
     }

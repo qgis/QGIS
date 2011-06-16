@@ -66,7 +66,7 @@ bool QgsMapToolRotatePointSymbols::layerIsRotatable( QgsMapLayer* ml )
   return true;
 }
 
-void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent *e )
 {
   if ( !mCanvas )
   {
@@ -133,7 +133,7 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QMouseEvent * e )
   mRotating = true;
 }
 
-void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent *e )
 {
   if ( !mRotating )
   {
@@ -178,8 +178,10 @@ void QgsMapToolRotatePointSymbols::canvasMoveEvent( QMouseEvent * e )
   setPixmapItemRotation( displayValue );
 }
 
-void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
+
   if ( mRotating && mActiveLayer )
   {
     mActiveLayer->beginEditCommand( tr( "Rotate symbol" ) );

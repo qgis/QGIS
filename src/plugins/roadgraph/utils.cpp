@@ -77,10 +77,10 @@ ArcAttributes::ArcAttributes()
   mCost = infinity();
   mTime = infinity();
 }
-ArcAttributes::ArcAttributes( double cost, double time, int featureId ) :
+
+ArcAttributes::ArcAttributes( double cost, double time, QgsFeatureId featureId ) :
     mCost( cost ), mTime( time ), mFeatureId( featureId )
 {
-
 }
 
 

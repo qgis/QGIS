@@ -84,13 +84,21 @@ QgsOSMDataProvider::QgsOSMDataProvider( QString uri )
     if ( propName == "type" )
     {
       if ( propValue == "line" )
+      {
         mFeatureType = LineType;
+      }
       else if ( propValue == "point" )
+      {
         mFeatureType = PointType;
+      }
       else if ( propValue == "polygon" )
+      {
         mFeatureType = PolygonType;
+      }
       else
+      {
         QgsDebugMsg( "Unknown feature type: " + propValue );
+      }
     }
     if ( propName == "observer" )
     {

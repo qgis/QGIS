@@ -54,6 +54,7 @@ class QgsPgSourceSelectDelegate : public QItemDelegate
       const QStyleOptionViewItem &option,
       const QModelIndex &index ) const
     {
+      Q_UNUSED( option );
       if ( index.column() == QgsDbTableModel::dbtmSql )
       {
         QLineEdit *le = new QLineEdit( parent );

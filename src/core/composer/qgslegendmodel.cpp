@@ -485,6 +485,8 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
 
 bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocument& doc )
 {
+  Q_UNUSED( doc );
+
   if ( legendModelElem.isNull() )
   {
     return false;
@@ -617,6 +619,9 @@ QStringList QgsLegendModel::mimeTypes() const
 
 bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
+  Q_UNUSED( action );
+  Q_UNUSED( column );
+
   if ( !data->hasFormat( "text/xml" ) )
   {
     return false;

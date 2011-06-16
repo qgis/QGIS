@@ -46,6 +46,9 @@ Leaf::Leaf( RTree* pTree, long id ): Node( pTree, id, 0, pTree->m_leafCapacity )
 
 NodePtr Leaf::chooseSubtree( const Region& mbr, unsigned long level, std::stack<long>& pathBuffer )
 {
+  Q_UNUSED( mbr );
+  Q_UNUSED( level );
+  Q_UNUSED( pathBuffer );
   // should make sure to relinquish other PoolPointer lists that might be pointing to the
   // same leaf.
   return NodePtr( this, &( m_pTree->m_leafPool ) );
@@ -53,6 +56,7 @@ NodePtr Leaf::chooseSubtree( const Region& mbr, unsigned long level, std::stack<
 
 NodePtr Leaf::findLeaf( const Region& mbr, long id, std::stack<long>& pathBuffer )
 {
+  Q_UNUSED( pathBuffer );
   for ( unsigned long cChild = 0; cChild < m_children; cChild++ )
   {
     // should make sure to relinquish other PoolPointer lists that might be pointing to the

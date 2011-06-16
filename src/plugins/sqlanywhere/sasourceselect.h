@@ -63,6 +63,7 @@ class SaSourceSelectDelegate : public QItemDelegate
       const QStyleOptionViewItem &option,
       const QModelIndex &index ) const
     {
+      Q_UNUSED( option );
       if ( index.column() == SaDbTableModel::dbtmSql )
       {
         QLineEdit *le = new QLineEdit( parent );

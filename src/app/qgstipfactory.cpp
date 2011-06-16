@@ -244,8 +244,10 @@ QgsTip QgsTipFactory::getGuiTip()
   QgsTip myTip = mGuiTips.at( myValue );
   return myTip;
 }
+
 int QgsTipFactory::randomNumber( int theMax )
 {
+  Q_UNUSED( theMax );
   return 0;
 }
 

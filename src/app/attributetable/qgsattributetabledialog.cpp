@@ -48,6 +48,7 @@ class QgsAttributeTableDock : public QDockWidget
 
     virtual void closeEvent( QCloseEvent * ev )
     {
+      Q_UNUSED( ev );
       deleteLater();
     }
 };
@@ -196,23 +197,24 @@ void QgsAttributeTableDialog::on_mSelectedToTopButton_clicked()
     mModel->swapRows( mModel->rowToId( sourceIndex.row() ), *it );
   }
 
-  /*
-    while (it != fids.end())
-    { //map!!!!
-      //mModel->swapRows(mModel->rowToId(freeIndex), *it);
-      //QModelIndex index = mFilterModel->mapFromSource(mModel->index(mModel->idToRow(*it), 0));
-      QModelIndex sourceIndex = mFilterModel->mapToSource(mFilterModel->index(freeIndex, 0));
-      mModel->swapRows(mModel->rowToId(sourceIndex.row()), *it);
-      //mModel->swapRows(freeIndex, *it);
+#if 0
+  while ( it != fids.end() )
+  { //map!!!!
+    //mModel->swapRows(mModel->rowToId(freeIndex), *it);
+    //QModelIndex index = mFilterModel->mapFromSource(mModel->index(mModel->idToRow(*it), 0));
+    QModelIndex sourceIndex = mFilterModel->mapToSource( mFilterModel->index( freeIndex, 0 ) );
+    mModel->swapRows( mModel->rowToId( sourceIndex.row() ), *it );
+    //mModel->swapRows(freeIndex, *it);
 
-      if (fids.empty())
-        break;
-      else
-        ++it;
+    if ( fids.empty() )
+      break;
+    else
+      ++it;
 
-      ++freeIndex;
-    }
-  */
+    ++freeIndex;
+  }
+#endif
+
   // just select proper rows
   //mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount(), mModel->columnCount()));
   //mModel->changeLayout();
@@ -405,7 +407,7 @@ void QgsAttributeTableDialog::updateRowSelection( int first, int last, int click
 
   // Id must be mapped to table/view row
   QModelIndex index = mFilterModel->mapToSource( mFilterModel->index( first, 0 ) );
-  int fid = mModel->rowToId( index.row() );
+  QgsFeatureId fid = mModel->rowToId( index.row() );
   bool wasSelected = mSelectedFeatures.contains( fid );
 
   // new selection should be created

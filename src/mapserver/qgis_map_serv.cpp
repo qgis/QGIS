@@ -42,6 +42,8 @@ map service syntax for SOAP/HTTP POST
 
 void dummyMessageHandler( QtMsgType type, const char *msg )
 {
+  Q_UNUSED( type );
+  Q_UNUSED( msg );
 #ifdef QGSMSDEBUG
   QString output;
 

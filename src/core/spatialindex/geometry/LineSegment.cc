@@ -153,6 +153,7 @@ void Tools::Geometry::LineSegment::storeToByteArray( byte** data, unsigned long&
 //
 bool Tools::Geometry::LineSegment::intersectsShape( const IShape& s ) const
 {
+  Q_UNUSED( s );
   throw IllegalStateException(
     "Tools::Geometry::LineSegment::intersectsShape: Not implemented yet!"
   );
@@ -160,11 +161,13 @@ bool Tools::Geometry::LineSegment::intersectsShape( const IShape& s ) const
 
 bool Tools::Geometry::LineSegment::containsShape( const IShape& s ) const
 {
+  Q_UNUSED( s );
   return false;
 }
 
 bool Tools::Geometry::LineSegment::touchesShape( const IShape& s ) const
 {
+  Q_UNUSED( s );
   throw IllegalStateException(
     "Tools::Geometry::LineSegment::touchesShape: Not implemented yet!"
   );

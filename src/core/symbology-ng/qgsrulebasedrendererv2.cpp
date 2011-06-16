@@ -128,6 +128,7 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
 
 QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feature )
 {
+  Q_UNUSED( feature );
   return mCurrentSymbol;
 }
 

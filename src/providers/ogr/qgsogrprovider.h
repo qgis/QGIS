@@ -296,7 +296,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
-    bool deleteFeature( int id );
+    bool deleteFeature( QgsFeatureId id );
 
     QString quotedIdentifier( QString field );
 

@@ -426,8 +426,9 @@ void QgsFieldCalculator::on_mAllPushButton_clicked()
   getFieldValues( 0 );
 }
 
-void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString& text )
+void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString &text )
 {
+  Q_UNUSED( text );
   setOkButtonState();
 }
 
@@ -523,7 +524,9 @@ void QgsFieldCalculator::setOkButtonState()
 }
 
 
-void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged( QListWidgetItem * current, QListWidgetItem * previous )
+void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( previous );
   getFieldValues( 25 );
 }

@@ -49,5 +49,7 @@ void QgsGpsdConnection::error( QAbstractSocket::SocketError socketError )
 #if QGISDEBUG
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
   QgsDebugMsg( QString( "error: %1 %2" ).arg( socketError ).arg( socket->errorString() ) );
+#else
+  Q_UNUSED( socketError );
 #endif
 }

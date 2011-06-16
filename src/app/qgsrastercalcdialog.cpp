@@ -273,8 +273,9 @@ void QgsRasterCalcDialog::on_mExpressionTextEdit_textChanged()
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
-void QgsRasterCalcDialog::on_mOutputLayerLineEdit_textChanged( const QString& text )
+void QgsRasterCalcDialog::on_mOutputLayerLineEdit_textChanged( const QString &text )
 {
+  Q_UNUSED( text );
   setAcceptButtonState();
 }
 

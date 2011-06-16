@@ -461,6 +461,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
 
 void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 {
+  Q_UNUSED( index );
   QSettings s;
   s.setValue( "/Qgis/connections-wfs/selected", cmbConnections->currentText() );
 }

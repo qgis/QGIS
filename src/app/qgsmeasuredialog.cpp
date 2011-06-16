@@ -121,8 +121,10 @@ void QgsMeasureDialog::mouseMove( QgsPoint &point )
   }
 }
 
-void QgsMeasureDialog::addPoint( QgsPoint &point )
+void QgsMeasureDialog::addPoint( QgsPoint &p )
 {
+  Q_UNUSED( p );
+
   QSettings settings;
   int decimalPlaces = settings.value( "/qgis/measure/decimalplaces", "3" ).toInt();
 

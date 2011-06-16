@@ -202,7 +202,7 @@ int QgsImageWarper::warpFile( const QString& input,
     // Asserts are bad as they just crash out, changed to just return false. TS
     if ( adfGeoTransform[0] <= 0.0  || adfGeoTransform[5] >= 0.0 )
     {
-      QgsDebugMsg("Image is not north up after GDALSuggestedWarpOutput, bailing out.");
+      QgsDebugMsg( "Image is not north up after GDALSuggestedWarpOutput, bailing out." );
       return false;
     }
     // Find suggested output image extent (in georeferenced units)
@@ -346,6 +346,7 @@ void *QgsImageWarper::createWarpProgressArg( QProgressDialog *progressDialog ) c
 
 int CPL_STDCALL QgsImageWarper::updateWarpProgress( double dfComplete, const char *pszMessage, void *pProgressArg )
 {
+  Q_UNUSED( pszMessage );
   QProgressDialog *progress = static_cast<QProgressDialog*>( pProgressArg );
   progress->setValue( qMin( 100u, ( uint )( dfComplete*100.0 ) ) );
   qApp->processEvents();

@@ -53,6 +53,7 @@ void CoordinateCaptureMapTool::canvasMoveEvent( QMouseEvent * thepEvent )
 
 void CoordinateCaptureMapTool::canvasPressEvent( QMouseEvent * thepEvent )
 {
+  Q_UNUSED( thepEvent );
 }
 
 void CoordinateCaptureMapTool::canvasReleaseEvent( QMouseEvent * thepEvent )

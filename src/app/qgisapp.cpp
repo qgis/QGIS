@@ -3135,6 +3135,8 @@ void QgisApp::addWindow( QAction *action )
   mWindowMenu->addAction( action );
   action->setCheckable( true );
   action->setChecked( true );
+#else
+  Q_UNUSED( action );
 #endif
 }
 
@@ -3143,6 +3145,8 @@ void QgisApp::removeWindow( QAction *action )
 #ifdef Q_WS_MAC
   mWindowActions->removeAction( action );
   mWindowMenu->removeAction( action );
+#else
+  Q_UNUSED( action );
 #endif
 }
 
@@ -3736,7 +3740,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   const QgsAttributeMap &merged = d.mergedAttributesMap();
 
-  foreach( int fid, vl->selectedFeaturesIds() )
+  foreach( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
     for ( QgsAttributeMap::const_iterator it = merged.begin(); it != merged.end(); it++ )
     {
@@ -6500,6 +6504,7 @@ void QgisApp::updateUndoActions()
 // add project directory to python path
 void QgisApp::projectChanged( const QDomDocument &doc )
 {
+  Q_UNUSED( doc );
   QgsProject *project = qobject_cast<QgsProject*>( sender() );
   if ( !project )
     return;

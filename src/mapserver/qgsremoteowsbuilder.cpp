@@ -217,8 +217,14 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wmsLayerFromUrl( const QString& url, const 
   return result;
 }
 
-QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString& url, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
+    const QString &layerName,
+    QList<QTemporaryFile*> &filesToRemove,
+    QList<QgsMapLayer*> &layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( layerName );
+  Q_UNUSED( allowCaching );
   QgsDebugMsg( "Entering" );
 
   //write server url and coverage name to a temporary file

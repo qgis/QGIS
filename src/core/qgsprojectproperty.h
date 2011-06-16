@@ -165,7 +165,7 @@ class CORE_EXPORT QgsPropertyValue : public QgsProperty
     Since QgsPropertyValue isn't a key, don't do anything.
     */
     void entryList( QStringList & keyName, QStringList & entries ) const
-    { /* NOP */ }
+    { Q_UNUSED( keyName ); Q_UNUSED( entries ); /* NOP */ }
 
   private:
 

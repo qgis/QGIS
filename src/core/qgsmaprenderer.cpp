@@ -191,8 +191,8 @@ void QgsMapRenderer::adjustExtentToSize()
   }
 
   QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX, 0, 'f', 8 ).arg( mapUnitsPerPixelY, 0, 'f', 8 ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n"  ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width(), 0, 'f',8 ).arg( mExtent.height(), 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width(), 0, 'f', 8 ).arg( mExtent.height(), 0, 'f', 8 ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -634,12 +634,12 @@ QGis::UnitType QgsMapRenderer::mapUnits() const
 
 void QgsMapRenderer::onDrawingProgress( int current, int total )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( total );
   // TODO: emit signal with progress
 // QgsDebugMsg(QString("onDrawingProgress: %1 / %2").arg(current).arg(total));
   emit updateMap();
 }
-
-
 
 void QgsMapRenderer::setProjectionsEnabled( bool enabled )
 {

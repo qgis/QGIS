@@ -740,9 +740,9 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
 
   //create objects for qgis rendering
   layerIdList.clear();
-  QgsDebugMsg( "Layers to render" );  
+  QgsDebugMsg( "Layers to render" );
   QString myLayer;
-  foreach ( myLayer, layerIdList)
+  foreach( myLayer, layerIdList )
   {
     QgsDebugMsg( myLayer );
   }
@@ -1095,7 +1095,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     }
 
     QDomElement featureElement = infoDocument.createElement( "Feature" );
-    featureElement.setAttribute( "id", QString::number( feature.id() ) );
+    featureElement.setAttribute( "id", FID_TO_STRING( feature.id() ) );
     layerElement.appendChild( featureElement );
 
     //read all attribute values from the feature
@@ -1165,10 +1165,11 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   return 0;
 }
 
-QStringList QgsWMSServer::layerSet( const QStringList& layersList,
-                                    const QStringList& stylesList,
-                                    const QgsCoordinateReferenceSystem& destCRS ) const
+QStringList QgsWMSServer::layerSet( const QStringList &layersList,
+                                    const QStringList &stylesList,
+                                    const QgsCoordinateReferenceSystem &destCRS ) const
 {
+  Q_UNUSED( destCRS );
   QStringList layerKeys;
   QStringList::const_iterator llstIt;
   QStringList::const_iterator slstIt;
@@ -1200,7 +1201,7 @@ QStringList QgsWMSServer::layerSet( const QStringList& layersList,
     for ( listIndex = layerList.size() - 1; listIndex >= 0; listIndex-- )
     {
       theMapLayer = layerList.at( listIndex );
-      QgsDebugMsg( QString( "Checking layer: %1").arg( theMapLayer->name() ) ); 
+      QgsDebugMsg( QString( "Checking layer: %1" ).arg( theMapLayer->name() ) );
       if ( theMapLayer )
       {
         layerKeys.push_front( theMapLayer->id() );
@@ -1543,7 +1544,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
           QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
           if ( filteredLayer )
           {
-            if( filteredLayer )
+            if ( filteredLayer )
             {
               filterMap.insert( layerId, filteredLayer->subsetString() );
               QString newSubsetString = eqSplit.at( 1 );
@@ -1562,20 +1563,20 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
 
     //No BBOX parameter in request. We use the union of the filtered layer
     //to provide the functionality of zooming to selected records via (enhanced) WMS.
-    if( mMapRenderer && mMapRenderer->extent().isEmpty() )
+    if ( mMapRenderer && mMapRenderer->extent().isEmpty() )
     {
       QgsRectangle filterExtent;
       QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
-      for(; filterIt != filterMap.constEnd(); ++filterIt )
+      for ( ; filterIt != filterMap.constEnd(); ++filterIt )
       {
         QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
-        if( !mapLayer )
+        if ( !mapLayer )
         {
           continue;
         }
 
         QgsRectangle layerExtent = mapLayer->extent();
-        if( filterExtent.isEmpty() )
+        if ( filterExtent.isEmpty() )
         {
           filterExtent = layerExtent;
         }
