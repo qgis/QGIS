@@ -83,7 +83,7 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
-  if ( ptr->type() != QgsDataItem::Layer )
+  if ( ptr->type() == QgsDataItem::Layer )
   {
     flags |= Qt::ItemIsDragEnabled;
   }
