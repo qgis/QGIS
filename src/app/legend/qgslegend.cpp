@@ -1055,7 +1055,7 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
       if ( embedIt != mEmbeddedGroups.constEnd() )
       {
         legendgroupnode.setAttribute( "embedded", 1 );
-        legendgroupnode.setAttribute( "project", embedIt.value() );
+        legendgroupnode.setAttribute( "project", QgsProject::instance()->writePath( embedIt.value() ) );
       }
       else
       {
@@ -1174,7 +1174,7 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       QgsLegendGroup* theGroup = 0;
       if ( childelem.attribute( "embedded" ) == "1" )
       {
-        theGroup = addEmbeddedGroup( name, childelem.attribute( "project" ) );
+        theGroup = addEmbeddedGroup( name, QgsProject::instance()->readPath( childelem.attribute( "project" ) ) );
       }
       else
       {
