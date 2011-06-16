@@ -94,7 +94,7 @@ class CORE_EXPORT QgsContrastEnhancement
     /** \brief Return the minimum value for the contrast enhancement range. */
     double minimumValue() const { return mMinimumValue; }
 
-    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() { return mContrastEnhancementAlgorithm; }
+    ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const { return mContrastEnhancementAlgorithm; }
 
     /*
      *

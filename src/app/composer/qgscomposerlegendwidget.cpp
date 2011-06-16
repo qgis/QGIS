@@ -442,16 +442,21 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
     return;
   }
 
-  QModelIndex currentIndex = mItemTreeView->currentIndex();
-  if ( !currentIndex.isValid() )
+  mLegend->beginCommand( "Legend item removed" );
+
+  QItemSelectionModel* selectionModel = mItemTreeView->selectionModel();
+  if( !selectionModel )
   {
     return;
   }
 
-  QModelIndex parentIndex = currentIndex.parent();
+  QModelIndexList selection = selectionModel->selectedIndexes();
+  for( int i = selection.size() - 1; i >= 0; --i )
+  {
+    QModelIndex parentIndex = selection.at( i ).parent();
+    itemModel->removeRow( selection.at( i ).row(), parentIndex );
+  }
 
-  mLegend->beginCommand( "Legend item removed" );
-  itemModel->removeRow( currentIndex.row(), parentIndex );
   mLegend->adjustBoxSize();
   mLegend->update();
   mLegend->endCommand();

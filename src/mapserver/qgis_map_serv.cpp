@@ -62,7 +62,7 @@ void dummyMessageHandler( QtMsgType type, const char *msg )
 
   output += msg;
 
-  QgsDebugMsg( output );
+  QgsLogger::logMessageToFile( output );
 
   if ( type == QtFatalMsg )
     abort();

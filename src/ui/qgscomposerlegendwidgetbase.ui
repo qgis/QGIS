@@ -33,8 +33,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>369</width>
-        <height>474</height>
+        <width>367</width>
+        <height>472</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
@@ -48,8 +48,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>338</width>
-            <height>404</height>
+            <width>349</width>
+            <height>398</height>
            </rect>
           </property>
           <attribute name="label">
@@ -183,8 +183,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>351</width>
-            <height>394</height>
+            <width>349</width>
+            <height>398</height>
            </rect>
           </property>
           <attribute name="label">
@@ -214,6 +214,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::ContiguousSelection</enum>
              </property>
              <property name="wordWrap">
               <bool>false</bool>

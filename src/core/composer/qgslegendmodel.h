@@ -104,7 +104,7 @@ class CORE_EXPORT QgsLegendModel: public QStandardItemModel
 
     /**Adds item of raster layer
      @return 0 in case of success*/
-    int addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* rlayer );
+    int addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer );
 
     /**Creates a model item for a vector symbol. The calling function takes ownership*/
     QStandardItem* itemFromSymbol( QgsSymbol* s, int opacity, const QString& layerID );

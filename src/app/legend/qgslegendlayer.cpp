@@ -307,9 +307,14 @@ void QgsLegendLayer::vectorLayerSymbologyV2( QgsVectorLayer* layer )
 void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
 {
   SymbologyList itemList;
-  QPixmap legendpixmap = layer->legendAsPixmap( true ).scaled( 20, 20, Qt::KeepAspectRatio );
-  itemList.append( qMakePair( QString(), legendpixmap ) );
-
+  QList< QPair< QString, QColor > > rasterItemList = layer->legendSymbologyItems();
+  QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
+  for(; itemIt != rasterItemList.constEnd(); ++itemIt )
+  {
+    QPixmap itemPixmap( treeWidget()->iconSize() );
+    itemPixmap.fill( itemIt->second );
+    itemList.append( qMakePair( itemIt->first, itemPixmap ) );
+  }
   changeSymbologySettings( layer, itemList );
 }
 

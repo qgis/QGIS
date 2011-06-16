@@ -995,8 +995,8 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int theBan
         else if ( myColorInterpretation == GCI_PaletteIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.label = "";
           myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.label = QString::number( myColorRampItem.value );
           //Branch on palette interpretation
           if ( myPaletteInterpretation  == GPI_RGB )
           {

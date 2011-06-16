@@ -256,7 +256,7 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
 //
 /////////////////////////////////////////////////////////
 
-unsigned int QgsRasterLayer::bandCount()
+unsigned int QgsRasterLayer::bandCount() const
 {
   return mBandCount;
 }
@@ -274,7 +274,7 @@ const QString QgsRasterLayer::bandName( int theBandNo )
   }
 }
 
-int QgsRasterLayer::bandNumber( QString const & theBandName )
+int QgsRasterLayer::bandNumber( QString const & theBandName ) const
 {
   for ( int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator )
   {
@@ -670,6 +670,16 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double& t
  * @return Pointer to the contrast enhancement or 0 on failure
  */
 QgsContrastEnhancement* QgsRasterLayer::contrastEnhancement( unsigned int theBand )
+{
+  if ( 0 < theBand && theBand <= bandCount() )
+  {
+    return &mContrastEnhancementList[theBand - 1];
+  }
+
+  return 0;
+}
+
+const QgsContrastEnhancement* QgsRasterLayer::constContrastEnhancement( unsigned int theBand ) const
 {
   if ( 0 < theBand && theBand <= bandCount() )
   {
@@ -1207,6 +1217,86 @@ QString QgsRasterLayer::lastError()
 QString QgsRasterLayer::lastErrorTitle()
 {
   return mErrorCaption;
+}
+
+QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
+{
+  QList< QPair< QString, QColor > > symbolList;
+  if ( mDrawingStyle == SingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == MultiBandSingleBandGray )
+  {
+    //add min/max from contrast enhancement
+    QString grayBand = grayBandName();
+    if ( !grayBand.isEmpty() )
+    {
+      int grayBandNr = bandNumber( grayBand );
+      const QgsContrastEnhancement* ceh = constContrastEnhancement( grayBandNr );
+      if ( ceh )
+      {
+        QgsContrastEnhancement::ContrastEnhancementAlgorithm alg = ceh->contrastEnhancementAlgorithm();
+        if ( alg == QgsContrastEnhancement::NoEnhancement
+             || alg == QgsContrastEnhancement::ClipToMinimumMaximum )
+        {
+          //diffcult to display a meaningful item
+          symbolList.push_back( qMakePair( QString::number( ceh->minimumValue() ) + "-" + QString::number( ceh->maximumValue() ), QColor( 125, 125, 125 ) ) );
+        }
+        else
+        {
+          symbolList.push_back( qMakePair( QString::number( ceh->minimumValue() ), QColor( 0, 0, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( ceh->maximumValue() ), QColor( 255, 255, 255 ) ) );
+        }
+      }
+    }
+  }
+  else
+  {
+    switch ( mColorShadingAlgorithm )
+    {
+      case ColorRampShader:
+      {
+        const QgsColorRampShader* crShader = dynamic_cast<QgsColorRampShader*>( mRasterShader->rasterShaderFunction() );
+        if ( crShader )
+        {
+          QList<QgsColorRampShader::ColorRampItem> shaderItems = crShader->colorRampItemList();
+          QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = shaderItems.constBegin();
+          for ( ; itemIt != shaderItems.constEnd(); ++itemIt )
+          {
+            symbolList.push_back( qMakePair( itemIt->label, itemIt->color ) );
+          }
+        }
+        break;
+      }
+      case PseudoColorShader:
+      {
+        //class breaks have fixed color for the pseudo color shader
+        const QgsPseudoColorShader* pcShader = dynamic_cast<QgsPseudoColorShader*>( mRasterShader->rasterShaderFunction() );
+        if ( pcShader )
+        {
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMin1() ), QColor( 0, 0, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMax1() ), QColor( 0, 255, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMax2() ), QColor( 255, 255, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->maximumValue() ), QColor( 255, 0, 0 ) ) );
+        }
+        break;
+      }
+      case FreakOutShader:
+      {
+        const QgsFreakOutShader* foShader = dynamic_cast<QgsFreakOutShader*>( mRasterShader->rasterShaderFunction() );
+        if ( foShader )
+        {
+          symbolList.push_back( qMakePair( QString::number( foShader->classBreakMin1() ), QColor( 255, 0, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( foShader->classBreakMax1() ), QColor( 0, 255, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( foShader->classBreakMax2() ), QColor( 255, 0, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( foShader->maximumValue() ), QColor( 0, 255, 0 ) ) );
+        }
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    }
+  }
+  return symbolList;
 }
 
 /**
