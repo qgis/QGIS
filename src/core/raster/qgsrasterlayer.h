@@ -544,7 +544,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     double minimumValue( QString theBand );
 
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
-    QPixmap paletteAsPixmap( int theBand = 1 );
+    QPixmap paletteAsPixmap( int theBandNumber = 1 );
 
     /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
     QString providerKey() const;

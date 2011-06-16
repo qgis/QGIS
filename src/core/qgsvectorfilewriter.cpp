@@ -35,6 +35,7 @@
 
 #include <cassert>
 #include <cstdlib> // size_t
+#include <limits> // std::numeric_limits
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>

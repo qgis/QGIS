@@ -3081,8 +3081,10 @@ void QgsRasterLayer::updateProgress( int theProgress, int theMax )
   emit drawingProgress( theProgress, theMax );
 }
 
-void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMesssage )
+void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMessage )
 {
+  Q_UNUSED( theType );
+  Q_UNUSED( theMessage );
   QgsDebugMsg( QString( "theProgress = %1" ).arg( theProgress ) );
   emit progressUpdate(( int )theProgress );
 }
@@ -3099,6 +3101,7 @@ void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMes
  */
 bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMessage )
 {
+  Q_UNUSED( errorMessage );
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
   QDomNode snode = mnl.namedItem( "mDrawingStyle" );
   QDomElement myElement = snode.toElement();
@@ -4515,6 +4518,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
  */
 bool QgsRasterLayer::readFile( QString const &theFilename )
 {
+  Q_UNUSED( theFilename );
   mValid = false;
   return true;
 } // QgsRasterLayer::readFile

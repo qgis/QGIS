@@ -112,7 +112,7 @@ class CORE_EXPORT QgsLogger
     static int debugLevel();
 
     /** Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. **/
-    static const void logMessageToFile( QString theMessage );
+    static void logMessageToFile( QString theMessage );
 
   private:
     /**Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,

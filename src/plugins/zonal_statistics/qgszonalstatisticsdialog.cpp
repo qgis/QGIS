@@ -57,7 +57,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
       if(vl && vl->geometryType() == QGis::Polygon)
       {
-        mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->getLayerID() ) );
+        mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->id() ) );
       }
     }
   }

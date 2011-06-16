@@ -200,7 +200,7 @@ const QString QgsLogger::logFile()
   return logFile;
 }
 
-const void QgsLogger::logMessageToFile( QString theMessage )
+void QgsLogger::logMessageToFile( QString theMessage )
 {
   if ( ! logFile().isEmpty() )
   {
