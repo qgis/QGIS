@@ -1496,33 +1496,8 @@ void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, d
     return;
   }
 
-  QPen savedPen = p->pen();
-  p->setPen( QPen( Qt::NoPen ) );
-
-  QgsRasterLayer::DrawingStyle drawingStyle = layer->drawingStyle();
-  if ( drawingStyle == QgsRasterLayer::SingleBandGray
-       || drawingStyle == QgsRasterLayer::PalettedSingleBandGray
-       || drawingStyle == QgsRasterLayer::MultiBandSingleGandGray )
-  {
-    int grayValue = 0;
-    for ( int i = 0; i < symbolWidth; ++i )
-    {
-      grayValue = 255.0 * ( i / symbolWidth );
-      p->setBrush( QColor( grayValue, grayValue, grayValue ) );
-      p->drawRect( QRectF( boxSpace + i, currentY + yDownShift, 1, symbolHeight ) );
-    }
-  }
-  else
-  {
-    //red/green/blue
-    p->setBrush( Qt::red );
-    p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth / 3.0, symbolHeight ) );
-    p->setBrush( Qt::green );
-    p->drawRect( QRectF( boxSpace + symbolWidth / 3.0, currentY + yDownShift, symbolWidth / 3.0, symbolHeight ) );
-    p->setBrush( Qt::blue );
-    p->drawRect( QRectF( boxSpace + symbolWidth - symbolWidth / 3.0, currentY + yDownShift, symbolWidth / 3.0, symbolHeight ) );
-  }
-  p->setPen( savedPen );
+  p->setBrush( QBrush( rasterItem->color() ) );
+  p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth, symbolHeight ) );
 }
 
 QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const
