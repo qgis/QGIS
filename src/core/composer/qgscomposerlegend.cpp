@@ -241,7 +241,9 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
   }
 
   //standerd item height
-  double itemHeight = qMax( mSymbolHeight, fontAscentMillimeters( mItemFont ) );
+
+  double textHeight = fontHeightCharacterMM( mItemFont, QChar( '0' ) );
+  double itemHeight = qMax( mSymbolHeight, textHeight );
 
   QStandardItem* currentItem;
 
@@ -276,6 +278,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     {
       symbolNg = symbolV2Item->symbolV2();
     }
+    QgsComposerRasterSymbolItem* rasterItem = dynamic_cast<QgsComposerRasterSymbolItem*>( currentItem );
 
     if ( symbol )  //item with symbol?
     {
@@ -290,12 +293,22 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
       realItemHeight = qMax( realSymbolHeight, itemHeight );
       currentXCoord += mIconLabelSpace;
     }
+    else if ( rasterItem )
+    {
+      if ( p )
+      {
+        p->setBrush( rasterItem->color() );
+        p->drawRect( QRectF( currentXCoord, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+      }
+      currentXCoord += mSymbolWidth;
+      currentXCoord += mIconLabelSpace;
+    }
     else //item with icon?
     {
       QIcon symbolIcon = currentItem->icon();
       if ( !symbolIcon.isNull() && p )
       {
-        symbolIcon.paint( p, currentXCoord, currentYCoord, mSymbolWidth, mSymbolHeight );
+        symbolIcon.paint( p, currentXCoord, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight );
         currentXCoord += mSymbolWidth;
         currentXCoord += mIconLabelSpace;
       }
@@ -305,7 +318,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     if ( p )
     {
       p->setPen( QColor( 0, 0, 0 ) );
-      drawText( p, currentXCoord, currentYCoord + fontAscentMillimeters( mItemFont ) + ( realItemHeight - fontAscentMillimeters( mItemFont ) ) / 2, currentItem->text(), mItemFont );
+      drawText( p, currentXCoord, currentYCoord + textHeight + ( realItemHeight - textHeight ) / 2, currentItem->text(), mItemFont );
       currentXCoord += textWidthMillimeters( mItemFont, currentItem->text() );
     }
     currentXCoord += mBoxSpace;
