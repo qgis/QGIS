@@ -24,11 +24,11 @@
 
 #include <QHash>
 #include <QVariant>
+#include <QStringList>
 
 class QDomNode;
 class QDomElement;
 class QDomDocument;
-class QStringList;
 
 
 /** \ingroup core

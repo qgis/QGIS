@@ -759,7 +759,7 @@ QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
   return whereClause;
 }
 
-bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+bool QgsPostgresProvider::featureAtId( QgsFeatureId featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
   feature.setValid( false );
   QString cursorName = QString( "qgisfid%1" ).arg( providerId );

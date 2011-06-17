@@ -73,7 +73,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       *  @param useIntersect true if an accurate intersection test should be used,
       *                     false if a test based on bounding box is sufficient
       */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /** Accessor for sql where clause used to limit dataset */

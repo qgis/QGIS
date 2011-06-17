@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
 
 #include <QtXml/QXmlSimpleReader>
 #include <QtXml/QXmlInputSource>

@@ -17,6 +17,8 @@
  ***************************************************************************/
 
 #include "qgsrenderer.h"
+#include "qgsvectorlayer.h"
+
 #include <QPixmap>
 
 class QgsSLDRule;

@@ -28,12 +28,12 @@
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrasterbandstats.h"
 
 #include <cmath>
 
 class QImage;
 class QgsPoint;
-class QgsRasterBandStats;
 class QByteArray;
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20

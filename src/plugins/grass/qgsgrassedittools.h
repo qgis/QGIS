@@ -17,6 +17,7 @@
 #define QGSGRASSEDITTOOLS_H
 
 #include "qgsmaptool.h"
+#include "qgspoint.h"
 
 class QgsGrassEdit;
 

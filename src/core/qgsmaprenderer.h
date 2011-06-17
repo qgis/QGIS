@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
+#include "qgsfeature.h"
 
 class QDomDocument;
 class QDomNode;
@@ -36,7 +37,6 @@ class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
-class QgsFeature;
 
 struct QgsDiagramLayerSettings;
 

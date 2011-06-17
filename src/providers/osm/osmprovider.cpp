@@ -566,7 +566,7 @@ bool QgsOSMDataProvider::nextFeature( QgsFeature& feature )
 }
 
 
-bool QgsOSMDataProvider::featureAtId( int featureId,
+bool QgsOSMDataProvider::featureAtId( QgsFeatureId featureId,
                                       QgsFeature& feature,
                                       bool fetchGeometry,
                                       QgsAttributeList fetchAttributes )
@@ -574,7 +574,7 @@ bool QgsOSMDataProvider::featureAtId( int featureId,
   // load exact feature from sqlite3 database
   if ( mFeatureType == PointType )
   {
-    sqlite3_bind_int( mNodeStmt, 1, featureId );
+    sqlite3_bind_int64( mNodeStmt, 1, featureId );
 
     if ( sqlite3_step( mNodeStmt ) != SQLITE_ROW )
     {
@@ -590,7 +590,7 @@ bool QgsOSMDataProvider::featureAtId( int featureId,
   }
   else if (( mFeatureType == LineType ) || ( mFeatureType == PolygonType ) )
   {
-    sqlite3_bind_int( mWayStmt, 1, featureId );
+    sqlite3_bind_int64( mWayStmt, 1, featureId );
 
     if ( sqlite3_step( mWayStmt ) != SQLITE_ROW )
     {

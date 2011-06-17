@@ -35,6 +35,7 @@
 #include "qgssldrule.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgslabelattributes.h"
+
 #include <QDomDocument>
 #include <QDomElement>
 #include <QBrush>

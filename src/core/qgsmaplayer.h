@@ -23,6 +23,7 @@
 #include <QUndoStack>
 #include <QVariant>
 #include <QImage>
+#include <QDomNode>
 
 #include "qgis.h"
 #include "qgsrectangle.h"
@@ -30,7 +31,6 @@
 class QgsRenderContext;
 class QgsCoordinateReferenceSystem;
 
-class QDomNode;
 class QDomDocument;
 class QKeyEvent;
 class QPainter;

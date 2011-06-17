@@ -292,7 +292,7 @@ QString QgsSpatiaLiteProvider::storageType() const
 }
 
 
-bool QgsSpatiaLiteProvider::featureAtId( int featureId, QgsFeature & feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+bool QgsSpatiaLiteProvider::featureAtId( QgsFeatureId featureId, QgsFeature & feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
   sqlite3_stmt *stmt = NULL;
 

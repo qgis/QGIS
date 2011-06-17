@@ -21,13 +21,13 @@ class QgsFeature;
 class QgsVectorLayer;
 class QPainter;
 class QImage;
-class QDomNode;
 class QDomDocument;
 class QColor;
 
 #include "qgis.h"
 #include "qgsrendercontext.h"
 #include <QList>
+#include <QDomNode>
 
 class QgsSymbol;
 class QBrush;
