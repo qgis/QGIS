@@ -374,13 +374,27 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
     }
     rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
   }
+
+  //Consider symbol size for point markers
+  double height = mSymbolHeight;
+  double width = mSymbolWidth;
+  if ( s->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s );
+    if ( markerSymbol )
+    {
+      height = markerSymbol->size();
+      width = markerSymbol->size();
+    }
+  }
+
   p->save();
   p->translate( currentXPosition, currentYCoord );
   p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-  s->drawPreviewIcon( p, QSize( mSymbolWidth * rasterScaleFactor, mSymbolHeight * rasterScaleFactor ) );
+  s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
   p->restore();
-  currentXPosition += mSymbolWidth;
-  symbolHeight = mSymbolHeight;
+  currentXPosition += width;
+  symbolHeight = height;
 }
 
 void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const
