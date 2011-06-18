@@ -103,8 +103,10 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
   }
 
+
   maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
+  double currentItemMaxX = 0; //maximum x-coordinate for current item
   for ( int i = 0; i < numLayerItems; ++i )
   {
     currentLayerItem = rootItem->child( i );
@@ -114,11 +116,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
       if ( type == QgsComposerLegendItem::GroupItem )
       {
-        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, maxXCoord );
+        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
       else if ( type == QgsComposerLegendItem::LayerItem )
       {
-        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, maxXCoord );
+        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
     }
   }
@@ -165,7 +169,10 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
 
   p->setPen( QColor( 0, 0, 0 ) );
   drawText( p, mBoxSpace, currentYCoord, groupItem->text(), mGroupFont );
-  maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() ) );
+
+  //maximum x-coordinate of current item
+  double currentMaxXCoord = 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() );
+  maxXCoord = qMax( currentMaxXCoord, maxXCoord );
 
   //children can be other group items or layer items
   int numChildItems = groupItem->rowCount();
@@ -178,11 +185,13 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
     QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
     if ( type == QgsComposerLegendItem::GroupItem )
     {
-      drawGroupItem( p, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoord, maxXCoord );
+      drawGroupItem( p, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoord, currentMaxXCoord );
+      maxXCoord = qMax( currentMaxXCoord, maxXCoord );
     }
     else if ( type == QgsComposerLegendItem::LayerItem )
     {
-      drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoord, maxXCoord );
+      drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoord, currentMaxXCoord );
+      maxXCoord = qMax( currentMaxXCoord, maxXCoord );
     }
   }
 }
@@ -242,10 +251,14 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     return;
   }
 
-  //standerd item height
+  //Draw all symbols first and the texts after (to find out the x coordinate to have the text aligned)
+  QList<double> childYCoords;
+  QList<double> realItemHeights;
 
   double textHeight = fontHeightCharacterMM( mItemFont, QChar( '0' ) );
   double itemHeight = qMax( mSymbolHeight, textHeight );
+
+  double textAlignCoord = 0; //alignment for legend text
 
   QStandardItem* currentItem;
 
@@ -316,18 +329,21 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
       }
     }
 
-    //finally draw text
+    childYCoords.push_back( currentYCoord );
+    realItemHeights.push_back( realItemHeight );
+    currentYCoord += realItemHeight;
+    textAlignCoord = qMax( currentXCoord, textAlignCoord );
+  }
+
+  maxXCoord = textAlignCoord;
+  for ( int i = 0; i < numChildren; ++i )
+  {
     if ( p )
     {
       p->setPen( QColor( 0, 0, 0 ) );
-      drawText( p, currentXCoord, currentYCoord + textHeight + ( realItemHeight - textHeight ) / 2, currentItem->text(), mItemFont );
-      currentXCoord += textWidthMillimeters( mItemFont, currentItem->text() );
+      drawText( p, textAlignCoord, childYCoords.at( i ) + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2, layerItem->child( i, 0 )->text(), mItemFont );
+      maxXCoord = qMax( maxXCoord, textAlignCoord + mBoxSpace + textWidthMillimeters( mItemFont,  layerItem->child( i, 0 )->text() ) );
     }
-    currentXCoord += mBoxSpace;
-
-    maxXCoord = qMax( maxXCoord, currentXCoord );
-
-    currentYCoord += realItemHeight;
   }
 }
 
