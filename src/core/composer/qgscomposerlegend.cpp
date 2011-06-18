@@ -103,9 +103,10 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
   }
 
-  double currentMaxXCoord;
+
   maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
+  double currentItemMaxX = 0; //maximum x-coordinate for current item
   for ( int i = 0; i < numLayerItems; ++i )
   {
     currentLayerItem = rootItem->child( i );
@@ -115,13 +116,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
       if ( type == QgsComposerLegendItem::GroupItem )
       {
-        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentMaxXCoord );
-        maxXCoord = qMax( maxXCoord, currentMaxXCoord );
+        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
       else if ( type == QgsComposerLegendItem::LayerItem )
       {
-        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentMaxXCoord );
-        maxXCoord = qMax( maxXCoord, currentMaxXCoord );
+        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
     }
   }
@@ -168,6 +169,8 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
 
   p->setPen( QColor( 0, 0, 0 ) );
   drawText( p, mBoxSpace, currentYCoord, groupItem->text(), mGroupFont );
+
+  //maximum x-coordinate of current item
   double currentMaxXCoord = 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() );
   maxXCoord = qMax( currentMaxXCoord, maxXCoord );
 
@@ -188,7 +191,7 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
     else if ( type == QgsComposerLegendItem::LayerItem )
     {
       drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoord, currentMaxXCoord );
-      qMax( currentMaxXCoord, maxXCoord );
+      maxXCoord = qMax( currentMaxXCoord, maxXCoord );
     }
   }
 }
