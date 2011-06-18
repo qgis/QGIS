@@ -74,7 +74,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   populateFieldNames();
 
   //Add the current expression to the bottom of the list.
-  if (lyr.isExpression)
+  if (lyr.isExpression and !lyr.fieldName.isEmpty())
       cboFieldName->addItem(lyr.fieldName);
   populateDataDefinedCombos( lyr );
 
@@ -190,7 +190,6 @@ QgsLabelingGui::~QgsLabelingGui()
 void QgsLabelingGui::apply()
 {
     QgsPalLayerSettings settings = layerSettings();
-     // If we get here we are good to go.
     settings.writeToLayer( mLayer );
     // trigger refresh
     if ( mMapCanvas )
@@ -205,7 +204,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.fieldName = cboFieldName->currentText();
   // Check if we are an expression. Also treats expressions with just a column name as non expressions,
   // this saves time later so we don't have to parse the expression tree.
-  lyr.isExpression = mLayer->fieldNameIndex( lyr.fieldName ) == -1;
+  lyr.isExpression = mLayer->fieldNameIndex( lyr.fieldName ) == -1 && !lyr.fieldName.isEmpty();
 
   lyr.dist = 0;
   lyr.placementFlags = 0;
@@ -484,8 +483,12 @@ void QgsLabelingGui::showExpressionDialog()
           return;
       }
 
-      cboFieldName->addItem(expression);
-      cboFieldName->setCurrentIndex(cboFieldName->count() - 1);
+      // Only add the expression if the user has entered some text.
+      if (!expression.isEmpty())
+      {
+          cboFieldName->addItem(expression);
+          cboFieldName->setCurrentIndex(cboFieldName->count() - 1);
+      }
     }
  }
 

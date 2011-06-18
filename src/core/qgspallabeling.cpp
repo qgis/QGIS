@@ -727,6 +727,8 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   int fldIndex ;
   if(lyrTmp.isExpression)
   {
+      if (lyrTmp.fieldName.isEmpty())
+          return 0;
       QgsSearchString searchString;
       searchString.setString( lyrTmp.fieldName );
       searchString.tree()->referencedColumns();
