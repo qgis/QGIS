@@ -389,13 +389,6 @@ QString QgsHttpRequestHandler::readPostBody() const
       if ( input != NULL )
       {
         inputString = QString::fromLocal8Bit( input );
-#ifdef WIN32 //cut off any strange charactes at the end of the file
-        int lastClosedBracketPos = inputString.lastIndexOf( ">" );
-        if ( lastClosedBracketPos != -1 )
-        {
-          inputString.truncate( lastClosedBracketPos + 1 );
-        }
-#endif //WIN32
       }
       else
       {
