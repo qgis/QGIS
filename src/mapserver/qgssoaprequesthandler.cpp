@@ -40,51 +40,7 @@ QgsSOAPRequestHandler::~QgsSOAPRequestHandler()
 std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
 {
   std::map<QString, QString> result;
-
-  char* lengthString = NULL;
-  int length = 0;
-  char* input = NULL;
-  QString inputString;
-  QString lengthQString;
-
-  lengthString = getenv( "CONTENT_LENGTH" );
-  if ( lengthString != NULL )
-  {
-    bool conversionSuccess = false;
-    lengthQString = QString( lengthString );
-    length = lengthQString.toInt( &conversionSuccess );
-    QgsDebugMsg( "length is: " + lengthQString );
-    if ( conversionSuccess )
-    {
-      input = ( char* )malloc( length + 1 );
-      memset( input, 0, length + 1 );
-      for ( int i = 0; i < length; ++i )
-      {
-        input[i] = getchar();
-      }
-      //fgets(input, length+1, stdin);
-      if ( input != NULL )
-      {
-        inputString = QString::fromLocal8Bit( input );
-#ifdef WIN32 //cut off any strange charactes at the end of the file
-        int lastClosedBracketPos = inputString.lastIndexOf( ">" );
-        if ( lastClosedBracketPos != -1 )
-        {
-          inputString.truncate( lastClosedBracketPos + 1 );
-        }
-#endif //WIN32
-      }
-      else
-      {
-        QgsDebugMsg( "input is NULL " );
-      }
-      free( input );
-    }
-    else
-    {
-      QgsDebugMsg( "could not convert CONTENT_LENGTH to int" );
-    }
-  }
+  QString inputString = readPostBody();
 
   //QgsDebugMsg("input string is: " + inputString)
 

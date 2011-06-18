@@ -24,6 +24,7 @@ SET ( qgis_mapserv_SRCS
   qgsprojectparser.cpp
   qgshttprequesthandler.cpp 
   qgsgetrequesthandler.cpp
+  qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
   qgssldparser.cpp
   qgssldrenderer.cpp

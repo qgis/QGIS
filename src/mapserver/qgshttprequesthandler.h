@@ -28,11 +28,22 @@ class QgsHttpRequestHandler: public QgsRequestHandler
     QgsHttpRequestHandler();
     ~QgsHttpRequestHandler();
 
+    virtual void sendGetMapResponse( const QString& service, QImage* img ) const;
+    virtual void sendGetCapabilitiesResponse( const QDomDocument& doc ) const;
+    virtual void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
+    virtual void sendServiceException( const QgsMapServiceException& ex ) const;
+    virtual void sendGetStyleResponse( const QDomDocument& doc ) const;
+    virtual void sendGetPrintResponse( QByteArray* ba ) const;
+
   protected:
     void sendHttpResponse( QByteArray* ba, const QString& format ) const;
     /**Converts format to official mimetype (e.g. 'jpg' to 'image/jpeg')
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
+
+    void requestStringToParameterMap( const QString& request, std::map<QString, QString>& parameters );
+    /**Read CONTENT_LENGTH characters from stdin*/
+    QString readPostBody() const;
 };
 
 #endif

@@ -21,6 +21,7 @@ map service syntax for SOAP/HTTP POST
 #include "qgscapabilitiescache.h"
 #include "qgsconfigcache.h"
 #include "qgsgetrequesthandler.h"
+#include "qgspostrequesthandler.h"
 #include "qgssoaprequesthandler.h"
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
@@ -206,8 +207,9 @@ int main( int argc, char * argv[] )
     {
       if ( strcmp( requestMethod, "POST" ) == 0 )
       {
-        QgsDebugMsg( "Creating QgsSOAPRequestHandler" );
-        theRequestHandler = new QgsSOAPRequestHandler();
+        //QgsDebugMsg( "Creating QgsSOAPRequestHandler" );
+        //theRequestHandler = new QgsSOAPRequestHandler();
+        theRequestHandler = new QgsPostRequestHandler();
       }
       else
       {
