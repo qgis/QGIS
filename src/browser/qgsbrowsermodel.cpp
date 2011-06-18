@@ -85,7 +85,11 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
   if ( ptr->type() == QgsDataItem::Layer )
   {
-    flags |= Qt::ItemIsDragEnabled;
+    QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
+    if ( layer->providerKey() != "wms" )
+    {
+      flags |= Qt::ItemIsDragEnabled;
+    }
   }
   return flags;
 }
@@ -272,28 +276,45 @@ void QgsBrowserModel::connectItem( QgsDataItem* item )
 QStringList QgsBrowserModel::mimeTypes() const
 {
   QStringList types;
-  types << "text/uri-list";
+  // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
+  // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
+  types << "application/x-vnd.qgis.qgis.uri";
   return types;
 }
 
-QMimeData * QgsBrowserModel::mimeData(const QModelIndexList &indexes) const
+QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
   QMimeData *mimeData = new QMimeData();
   QByteArray encodedData;
 
-  QDataStream stream(&encodedData, QIODevice::WriteOnly);
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
 
-  foreach (const QModelIndex &index, indexes) {
-    if (index.isValid()) {
+  foreach( const QModelIndex &index, indexes )
+  {
+    if ( index.isValid() )
+    {
       QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
       if ( ptr->type() != QgsDataItem::Layer ) continue;
       QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
-      QString text = layer->uri();
-      stream << text;
+      if ( layer->providerKey() == "wms" ) continue;
+      QString layerType;
+      switch ( layer->mapLayerType() )
+      {
+        case QgsMapLayer::VectorLayer:
+          layerType = "vector";
+          break;
+        case QgsMapLayer::RasterLayer:
+          layerType = "raster";
+          break;
+        default:
+          continue;
+      }
+      QString xUri = layerType + ":" + layer->providerKey() + ":" + layer->name() + ":" + layer->uri();
+      stream << xUri;
     }
   }
 
-  mimeData->setData("text/uri-list", encodedData);
+  mimeData->setData( "application/x-vnd.qgis.qgis.uri", encodedData );
   return mimeData;
 }
 
