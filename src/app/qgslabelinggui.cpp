@@ -34,7 +34,6 @@
 #include <QApplication>
 #include <QMessageBox>
 
-
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
@@ -469,6 +468,9 @@ void QgsLabelingGui::showExpressionDialog()
     layout->addWidget(buttonBox);
     connect(buttonBox,SIGNAL( accepted() ),dlg,SLOT( accept() ) );
     connect(buttonBox,SIGNAL( rejected() ),dlg,SLOT( reject() ) );
+
+    // Set the current expression using the selected text in the combo box.
+    builder->setExpressionString(this->cboFieldName->currentText());
 
     if ( dlg->exec() == QDialog::Accepted )
     { 

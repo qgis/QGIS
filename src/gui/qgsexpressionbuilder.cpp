@@ -32,3 +32,9 @@ QString QgsExpressionBuilder::getExpressionString()
 {
     return this->txtExpressionString->toPlainText();
 }
+
+void QgsExpressionBuilder::setExpressionString(const QString expressionString)
+{
+    this->txtExpressionString->setPlainText(expressionString);
+}
+

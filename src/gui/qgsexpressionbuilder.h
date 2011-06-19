@@ -26,6 +26,7 @@ public:
     ~QgsExpressionBuilder();
 
     QString getExpressionString();
+    void setExpressionString(const QString expressionString);
 };
 
 #endif // QGSEXPRESSIONBUILDER_H
