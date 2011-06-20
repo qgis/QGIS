@@ -14,7 +14,9 @@
 #include <QAbstractButton>
 #include <QColorDialog>
 #include <QDir>
+#include <QFileDialog>
 #include <QPainter>
+#include <QSettings>
 #include <QStandardItemModel>
 #include <QSvgRenderer>
 
@@ -618,8 +620,9 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
 
 void QgsSvgMarkerSymbolLayerV2Widget::setName( const QModelIndex& idx )
 {
-  mLayer->setPath( idx.data( Qt::UserRole ).toString() );
-
+  QString name = idx.data( Qt::UserRole ).toString();
+  mLayer->setPath( name );
+  mFileLineEdit->setText( name );
   emit changed();
 }
 
@@ -638,6 +641,31 @@ void QgsSvgMarkerSymbolLayerV2Widget::setAngle()
 void QgsSvgMarkerSymbolLayerV2Widget::setOffset()
 {
   mLayer->setOffset( QPointF( spinOffsetX->value(), spinOffsetY->value() ) );
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
+{
+  QSettings s;
+  QString file = QFileDialog::getOpenFileName( 0, tr( "Select SVG file" ), s.value( "/UI/lastSVGMarkerDir" ).toString(), "SVG files (*.svg)" );
+  QFileInfo fi( file );
+  if ( file.isEmpty() || !fi.exists() )
+  {
+    return;
+  }
+  mFileLineEdit->setText( file );
+  mLayer->setPath( file );
+  s.setValue( "/UI/lastSVGMarkerDir", fi.absolutePath() );
+  emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_textEdited( const QString& text )
+{
+  if ( !QFileInfo( text ).exists() )
+  {
+    return;
+  }
+  mLayer->setPath( text );
   emit changed();
 }
 

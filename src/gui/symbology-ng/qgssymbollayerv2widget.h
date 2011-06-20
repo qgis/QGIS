@@ -179,6 +179,8 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
     void setSize();
     void setAngle();
     void setOffset();
+    void on_mFileToolButton_clicked();
+    void on_mFileLineEdit_textEdited( const QString& text );
 
   protected:
 
