@@ -218,29 +218,28 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 
 QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
-    QSet<QString> attributes;
+  QSet<QString> attributes;
+  attributes.insert( mAttrName );
+  if ( !mRotationField.isEmpty() )
+  {
+    attributes.insert( mRotationField );
+  }
+  if ( !mSizeScaleField.isEmpty() )
+  {
+    attributes.insert( mSizeScaleField );
+  }
 
-    QgsSymbolV2* symbol = 0;
-    QgsRangeList::const_iterator range_it = mRanges.constBegin();
-    for(; range_it != mRanges.constEnd(); ++range_it )
+  QgsSymbolV2* symbol = 0;
+  QgsRangeList::const_iterator range_it = mRanges.constBegin();
+  for ( ; range_it != mRanges.constEnd(); ++range_it )
+  {
+    symbol = range_it->symbol();
+    if ( symbol )
     {
-      symbol = range_it->symbol();
-      if ( symbol )
-      {
-        attributes.unite( symbol->usedAttributes() );
-      }
+      attributes.unite( symbol->usedAttributes() );
     }
-
-    if ( !mRotationField.isEmpty() )
-    {
-      attributes.insert( mRotationField );
-    }
-    if ( !mSizeScaleField.isEmpty() )
-    {
-      attributes.insert( mSizeScaleField );
-    }
-
-    return attributes.toList();
+  }
+  return attributes.toList();
 }
 
 bool QgsGraduatedSymbolRendererV2::updateRangeSymbol( int rangeIndex, QgsSymbolV2* symbol )

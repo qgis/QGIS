@@ -191,6 +191,10 @@ QList<QString> QgsRuleBasedRendererV2::usedAttributes()
   {
     Rule& rule = *it;
     attrs.unite( rule.needsFields().toSet() );
+    if ( rule.symbol() )
+    {
+      attrs.unite( rule.symbol()->usedAttributes() );
+    }
   }
   return attrs.values();
 }
