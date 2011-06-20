@@ -1543,6 +1543,18 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
     return false;
   }
 
+  //does project store pathes absolute or relative?
+  bool useAbsolutePathes = true;
+  QDomElement propertiesElem = projectDocument.documentElement().firstChildElement( "properties" );
+  if ( !propertiesElem.isNull() )
+  {
+    QDomElement absElem = propertiesElem.firstChildElement( "Paths" ).firstChildElement( "Absolute" );
+    if ( !absElem.isNull() )
+    {
+      useAbsolutePathes = absElem.text().compare( "true", Qt::CaseInsensitive ) == 0;
+    }
+  }
+
   QDomElement projectLayersElem = projectDocument.documentElement().firstChildElement( "projectlayers" );
   if ( projectLayersElem.isNull() )
   {
@@ -1564,6 +1576,20 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
       }
 
       mEmbeddedLayers.insert( layerId, qMakePair( projectFilePath, saveFlag ) );
+
+      //change datasource path from relative to absolute if necessary
+      if ( !useAbsolutePathes )
+      {
+        QDomElement dsElem = mapLayerElem.firstChildElement( "datasource" );
+        QString debug( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+        QFileInfo absoluteDs( QFileInfo( projectFilePath ).absolutePath() + "/" + dsElem.text() );
+        if ( absoluteDs.exists() )
+        {
+          dsElem.removeChild( dsElem.childNodes().at( 0 ) );
+          dsElem.appendChild( projectDocument.createTextNode( absoluteDs.absoluteFilePath() ) );
+        }
+      }
+
       if ( addLayer( mapLayerElem, brokenNodes, vectorLayerList ) )
       {
         return true;
@@ -1576,7 +1602,6 @@ bool QgsProject::createEmbeddedLayer( const QString& layerId, const QString& pro
     }
   }
 
-  //brokenNodes.push_back(  );
   return false;
 }
 
