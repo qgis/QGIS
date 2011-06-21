@@ -461,9 +461,10 @@ qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int co
   QString buf = "";
   for ( size_t i = 0; i < s; i++ )
   {
-    buf += QString( "%1 " ).arg( *( char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
+    buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
   }
-  QgsDebugMsg( QString( "int in hex:%1" ).arg( buf ) );
+
+  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 3 );
 
   switch ( s )
   {
@@ -530,7 +531,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
   try
   {
     QgsFeatureId oid = getBinaryInt( queryResult, row, 0 );
-    QgsDebugMsg( QString( "oid=%1" ).arg( oid ) );
+    QgsDebugMsgLevel( QString( "oid=%1" ).arg( oid ), 3 );
 
     feature.setFeatureId( oid );
     feature.clearAttributeMap();
@@ -3145,7 +3146,7 @@ bool QgsPostgresProvider::deduceEndian()
     QgsDebugMsg( QString( "First oid is %1" ).arg( oidValue ) );
 
     // compare the two oid values to determine if we need to do an endian swap
-    if ( oid == oidValue.toLongLong() )
+    if ( oid != oidValue.toLongLong() )
       swapEndian = false;
   }
   connectionRO->closeCursor( "oidcursor" );
