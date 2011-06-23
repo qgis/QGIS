@@ -155,12 +155,7 @@ void QgsFieldCalculator::accept()
     // block layerModified signals (that would trigger table update)
     mVectorLayer->blockSignals( true );
 
-    bool useGeometry =
-      calcString.contains( "$area" ) ||
-      calcString.contains( "$length" ) ||
-      calcString.contains( "$perimeter" ) ||
-      calcString.contains( "$x" ) ||
-      calcString.contains( "$y" );
+    bool useGeometry = searchTree->needsGeometry();
     int rownum = 1;
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );

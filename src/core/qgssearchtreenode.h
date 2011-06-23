@@ -85,6 +85,8 @@ class CORE_EXPORT QgsSearchTreeNode
       // coordinates
       opX,
       opY,
+      opXAT,
+      opYAT,
 
       // measuring
       opLENGTH,
