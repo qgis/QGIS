@@ -19443,8 +19443,8 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="603"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="665"/>
-        <source>Updating feature count for layer </source>
-        <translation>Objektanzahl des Layers aktualsieren</translation>
+        <source>Updating feature count for layer %1</source>
+        <translation>Objektanzahl des Layers %1 aktualsieren</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="603"/>

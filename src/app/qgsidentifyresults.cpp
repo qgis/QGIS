@@ -802,7 +802,7 @@ void QgsIdentifyResults::highlightFeature( QTreeWidgetItem *item )
   if ( mHighlights.contains( featItem ) )
     return;
 
-  int fid = featItem->data( 0, Qt::UserRole ).toInt();
+  QgsFeatureId fid = featItem->data( 0, Qt::UserRole ).toInt();
 
   QgsFeature feat;
   if ( !layer->featureAtId( fid, feat, true, false ) )
