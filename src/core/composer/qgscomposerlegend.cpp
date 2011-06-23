@@ -17,6 +17,7 @@
 
 #include "qgscomposerlegend.h"
 #include "qgscomposerlegenditem.h"
+#include "qgscomposermap.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
@@ -33,7 +34,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mBoxSpace( 2 )
     , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
-    , mIconLabelSpace( 2 )
+    , mIconLabelSpace( 2 ), mComposerMap( 0 )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -50,7 +51,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
   connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
 }
 
-QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 )
+QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 ), mComposerMap( 0 )
 {
 
 }
@@ -394,23 +395,49 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
     rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
   }
 
+  //consider relation to composer map for symbol sizes in mm
+  bool sizeInMapUnits = s->outputUnit() == QgsSymbolV2::MapUnit;
+  double mmPerMapUnit = 1;
+  if ( mComposerMap )
+  {
+    mmPerMapUnit = mComposerMap->mapUnitsToMM();
+  }
+  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s );
+
   //Consider symbol size for point markers
   double height = mSymbolHeight;
   double width = mSymbolWidth;
-  if ( s->type() == QgsSymbolV2::Marker )
+  double size = 0;
+
+  if ( markerSymbol )
   {
-    QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s );
-    if ( markerSymbol )
+    size = markerSymbol->size();
+    height = size;
+    width = size;
+    if ( mComposerMap && sizeInMapUnits )
     {
-      height = markerSymbol->size();
-      width = markerSymbol->size();
+      height *= mmPerMapUnit;
+      width *= mmPerMapUnit;
+      markerSymbol->setSize( width );
     }
   }
 
   p->save();
   p->translate( currentXPosition, currentYCoord );
   p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
+
+  if ( markerSymbol && sizeInMapUnits )
+  {
+    s->setOutputUnit( QgsSymbolV2::MM );
+  }
   s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
+
+  if ( markerSymbol && sizeInMapUnits )
+  {
+    s->setOutputUnit( QgsSymbolV2::MapUnit );
+    markerSymbol->setSize( size );
+  }
+
   p->restore();
   currentXPosition += width;
   symbolHeight = height;
@@ -609,6 +636,11 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolWidth", mSymbolWidth );
   composerLegendElem.setAttribute( "symbolHeight", mSymbolHeight );
 
+  if ( mComposerMap )
+  {
+    composerLegendElem.setAttribute( "map", mComposerMap->id() );
+  }
+
   //write model properties
   mLegendModel.writeXML( composerLegendElem, doc );
 
@@ -659,6 +691,12 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSymbolWidth = itemElem.attribute( "symbolWidth", "7.0" ).toDouble();
   mSymbolHeight = itemElem.attribute( "symbolHeight", "14.0" ).toDouble();
 
+  //composer map
+  if ( !itemElem.attribute( "map" ).isEmpty() )
+  {
+    mComposerMap = mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() );
+  }
+
   //read model properties
   QDomNodeList modelNodeList = itemElem.elementsByTagName( "Model" );
   if ( modelNodeList.size() > 0 )
@@ -677,4 +715,16 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   emit itemChanged();
   return true;
+}
+
+void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
+{
+  mComposerMap = map;
+  QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+}
+
+void QgsComposerLegend::invalidateCurrentMap()
+{
+  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  mComposerMap = 0;
 }
