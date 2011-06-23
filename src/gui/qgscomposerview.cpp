@@ -552,7 +552,7 @@ void QgsComposerView::addComposerMap( QgsComposerMap* map )
 
 void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 {
-  //take first available map...
+  //take first available map
   QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
   if ( mapItemList.size() > 0 )
   {
@@ -569,6 +569,12 @@ void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 
 void QgsComposerView::addComposerLegend( QgsComposerLegend* legend )
 {
+  //take first available map
+  QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    legend->setComposerMap( mapItemList.at( 0 ) );
+  }
   scene()->addItem( legend );
   emit composerLegendAdded( legend );
   scene()->clearSelection();

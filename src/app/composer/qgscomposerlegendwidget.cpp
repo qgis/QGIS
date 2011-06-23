@@ -20,6 +20,7 @@
 #include "qgscomposerlegenditemdialog.h"
 #include "qgscomposerlegendlayersdialog.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposermap.h"
 #include <QFontDialog>
 
 #include "qgsapplegendinterface.h"
@@ -87,6 +88,17 @@ void QgsComposerLegendWidget::setGuiElements()
   if ( mLegend->model() )
   {
     mCheckBoxAutoUpdate->setChecked( mLegend->model()->autoUpdate() );
+  }
+  refreshMapComboBox();
+
+  const QgsComposerMap* map = mLegend->composerMap();
+  if ( map )
+  {
+    mMapComboBox->setCurrentIndex( mMapComboBox->findData( map->id() ) );
+  }
+  else
+  {
+    mMapComboBox->setCurrentIndex( mMapComboBox->findData( -1 ) );
   }
 
   blockAllSignals( false );
@@ -391,6 +403,43 @@ void QgsComposerLegendWidget::on_mCheckBoxAutoUpdate_stateChanged( int state )
   }
 }
 
+void QgsComposerLegendWidget::on_mMapComboBox_currentIndexChanged( int index )
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  QVariant itemData = mMapComboBox->itemData( index );
+  if ( itemData.type() == QVariant::Invalid )
+  {
+    return;
+  }
+
+  const QgsComposition* comp = mLegend->composition();
+  if ( !comp )
+  {
+    return;
+  }
+
+  int mapNr = itemData.toInt();
+  if ( mapNr < 0 )
+  {
+    mLegend->setComposerMap( 0 );
+  }
+  else
+  {
+    const QgsComposerMap* map = comp->getComposerMapById( mapNr );
+    if ( map )
+    {
+      mLegend->beginCommand( tr( "Legend map changed" ) );
+      mLegend->setComposerMap( map );
+      mLegend->update();
+      mLegend->endCommand();
+    }
+  }
+}
+
 void QgsComposerLegendWidget::on_mAddToolButton_clicked()
 {
   if ( !mLegend )
@@ -445,13 +494,13 @@ void QgsComposerLegendWidget::on_mRemoveToolButton_clicked()
   mLegend->beginCommand( "Legend item removed" );
 
   QItemSelectionModel* selectionModel = mItemTreeView->selectionModel();
-  if( !selectionModel )
+  if ( !selectionModel )
   {
     return;
   }
 
   QModelIndexList selection = selectionModel->selectedIndexes();
-  for( int i = selection.size() - 1; i >= 0; --i )
+  for ( int i = selection.size() - 1; i >= 0; --i )
   {
     QModelIndex parentIndex = selection.at( i ).parent();
     itemModel->removeRow( selection.at( i ).row(), parentIndex );
@@ -588,4 +637,47 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
 {
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
+  mMapComboBox->blockSignals( b );
+}
+
+void QgsComposerLegendWidget::refreshMapComboBox()
+{
+  if ( !mLegend )
+  {
+    return;
+  }
+
+  const QgsComposition* composition = mLegend->composition();
+  if ( !composition )
+  {
+    return;
+  }
+
+  //save current entry
+  int currentMapId = mMapComboBox->itemData( mMapComboBox->currentIndex() ).toInt();
+  mMapComboBox->clear();
+
+  QList<const QgsComposerMap*> availableMaps = composition->composerMapItems();
+  QList<const QgsComposerMap*>::const_iterator mapItemIt = availableMaps.constBegin();
+  for ( ; mapItemIt != availableMaps.constEnd(); ++mapItemIt )
+  {
+    mMapComboBox->addItem( tr( "Map %1" ).arg(( *mapItemIt )->id() ), ( *mapItemIt )->id() );
+  }
+  mMapComboBox->addItem( tr( "None" ), -1 );
+
+  //the former entry is not there anymore
+  int entry = mMapComboBox->findData( currentMapId );
+  if ( entry == -1 )
+  {
+  }
+  else
+  {
+    mMapComboBox->setCurrentIndex( entry );
+  }
+}
+
+void QgsComposerLegendWidget::showEvent( QShowEvent * event )
+{
+  refreshMapComboBox();
+  QWidget::showEvent( event );
 }
