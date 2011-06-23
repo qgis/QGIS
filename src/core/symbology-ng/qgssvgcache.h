@@ -29,14 +29,25 @@ class QPicture;
 
 struct QgsSvgCacheEntry
 {
+  QgsSvgCacheEntry();
+  QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFctor, const QColor& fill, const QColor& outline );
+  ~QgsSvgCacheEntry();
+
   QString file;
   double size;
   double outlineWidth;
+  double widthScaleFactor;
+  double rasterScaleFactor;
   QColor fill;
   QColor outline;
   QImage* image;
   QPicture* picture;
   QDateTime lastUsed;
+  //content (with params replaced)
+  QByteArray svgContent;
+
+  /**Don't consider image, picture, last used timestamp for comparison*/
+  bool operator==( const QgsSvgCacheEntry& other ) const;
 };
 
 /**A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
@@ -49,21 +60,27 @@ class QgsSvgCache
     static QgsSvgCache* instance();
     ~QgsSvgCache();
 
-    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth ) const;
-    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth ) const;
+    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                              double widthScaleFactor, double rasterScaleFactor );
+    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                  double widthScaleFactor, double rasterScaleFactor );
 
   protected:
     QgsSvgCache();
 
-    void insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth );
-    void cacheImage( QgsSvgCacheEntry );
-    void cachePicture( QgsSvgCacheEntry );
+    /**Creates new cache entry and returns pointer to it*/
+    QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                 double widthScaleFactor, double rasterScaleFactor );
+
+    void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
+    void cacheImage( QgsSvgCacheEntry* entry );
+    void cachePicture( QgsSvgCacheEntry* entry );
 
   private:
     static QgsSvgCache* mInstance;
 
     /**Entries sorted by last used time*/
-    QMap< QDateTime, QgsSvgCacheEntry > mEntries;
+    QMap< QDateTime, QgsSvgCacheEntry* > mEntries;
     /**Entry pointers accessible by file name*/
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
     /**Estimated total size of all images and pictures*/
