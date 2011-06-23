@@ -6,6 +6,7 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsproject.h"
+#include "qgssvgcache.h"
 
 #include <QPainter>
 #include <QSvgRenderer>
@@ -533,8 +534,12 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( mAngle != 0 )
     p->rotate( mAngle );
 
-  QPicture &pct = context.selected() ? mSelPicture : mPicture;
+  const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, QColor( Qt::black )/*const QColor& fill*/, QColor( Qt::black ) /*const QColor& outline*/,
+                                                        1.0 /*outline width*/, context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
   p->drawPicture( 0, 0, pct );
+
+  /*QPicture &pct = context.selected() ? mSelPicture : mPicture;
+  p->drawPicture( 0, 0, pct );*/
 
   p->restore();
 }

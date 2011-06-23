@@ -19,7 +19,9 @@
 #include <QDomDocument>
 #include <QFile>
 #include <QImage>
+#include <QPainter>
 #include <QPicture>
+#include <QSvgRenderer>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
 outline( Qt::black ), image( 0 ), picture( 0 )
@@ -69,41 +71,35 @@ QgsSvgCache::QgsSvgCache()
 
 QgsSvgCache::~QgsSvgCache()
 {
+  QMap< QDateTime, QgsSvgCacheEntry* >::iterator it = mEntries.begin();
+  for(; it != mEntries.end(); ++it )
+  {
+    delete it.value();
+  }
 }
 
 
 const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                        double widthScaleFactor, double rasterScaleFactor )
 {
+  QgsSvgCacheEntry* currentEntry = this->cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
+  //if current entry image is 0: cache image for entry
+  //update stats for memory usage
+  if( !currentEntry->image )
+  {
+    cacheImage( currentEntry );
+  }
+
+  //update lastUsed with current date time
+
+  return *( currentEntry->image );
 }
 
 const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                            double widthScaleFactor, double rasterScaleFactor )
 {
-  //search entries in mEntryLookup
-  QgsSvgCacheEntry* currentEntry = 0;
-  QList<QgsSvgCacheEntry*> entries = mEntryLookup.values( file );
-
-  QList<QgsSvgCacheEntry*>::iterator entryIt = entries.begin();
-  for(; entryIt != entries.end(); ++entryIt )
-  {
-    QgsSvgCacheEntry* cacheEntry = *entryIt;
-    if( cacheEntry->file == file && cacheEntry->size == size && cacheEntry->fill == fill && cacheEntry->outline == outline &&
-        cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor)
-    {
-      currentEntry = cacheEntry;
-      break;
-    }
-  }
-
-
-  //if not found: create new entry
-  //cache and replace params in svg content
-  if( !currentEntry )
-  {
-    currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
-  }
+  QgsSvgCacheEntry* currentEntry = this->cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   //if current entry image is 0: cache image for entry
   //update stats for memory usage
@@ -156,9 +152,75 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
 
 void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
 {
+  if( !entry )
+  {
+    return;
+  }
+
+  delete entry->image;
+  entry->image = 0;
+
+  double imageSize = entry->size * entry->widthScaleFactor * entry->rasterScaleFactor;
+  QImage* image = new QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
+  image->fill( 0 ); // transparent background
+
+  //rasterise byte array to image
+  QPainter p( image );
+  QSvgRenderer r( entry->svgContent );
+  r.render( &p );
+
+  entry->image = image;
 }
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 {
+  if( !entry )
+  {
+    return;
+  }
+
+  delete entry->picture;
+  entry->picture = 0;
+
+  //correct QPictures dpi correction
+  QPicture* picture = new QPicture();
+  double dpi = entry->widthScaleFactor * 25.4 * entry->rasterScaleFactor;
+  double pictureSize = entry->size * entry->widthScaleFactor / dpi * picture->logicalDpiX();
+  QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
+
+
+  QSvgRenderer renderer( entry->svgContent );
+  QPainter painter( picture );
+  renderer.render( &painter, rect );
+  entry->picture = picture;
+}
+
+QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                             double widthScaleFactor, double rasterScaleFactor )
+{
+  //search entries in mEntryLookup
+  QgsSvgCacheEntry* currentEntry = 0;
+  QList<QgsSvgCacheEntry*> entries = mEntryLookup.values( file );
+
+  QList<QgsSvgCacheEntry*>::iterator entryIt = entries.begin();
+  for(; entryIt != entries.end(); ++entryIt )
+  {
+    QgsSvgCacheEntry* cacheEntry = *entryIt;
+    if( cacheEntry->file == file && cacheEntry->size == size && cacheEntry->fill == fill && cacheEntry->outline == outline &&
+        cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor)
+    {
+      currentEntry = cacheEntry;
+      break;
+    }
+  }
+
+
+  //if not found: create new entry
+  //cache and replace params in svg content
+  if( !currentEntry )
+  {
+    currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  }
+  return currentEntry;
 }
 

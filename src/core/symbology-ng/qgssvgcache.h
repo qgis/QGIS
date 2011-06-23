@@ -75,6 +75,9 @@ class QgsSvgCache
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry );
+    /**Returns entry from cache or creates a new entry if it does not exist already*/
+    QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+                                 double widthScaleFactor, double rasterScaleFactor );
 
   private:
     static QgsSvgCache* mInstance;
