@@ -738,14 +738,6 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
 
-  //create objects for qgis rendering
-  layerIdList.clear();
-  QgsDebugMsg( "Layers to render" );
-  QString myLayer;
-  foreach( myLayer, layerIdList )
-  {
-    QgsDebugMsg( myLayer );
-  }
   layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
 #ifdef QGISDEBUG
   QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
@@ -1194,7 +1186,6 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       allowCaching = false;
     }
 
-    // Problem method here!
     QList<QgsMapLayer*> layerList = mConfigParser->mapLayerFromStyle( *llstIt, styleName, allowCaching );
     int listIndex;
 
