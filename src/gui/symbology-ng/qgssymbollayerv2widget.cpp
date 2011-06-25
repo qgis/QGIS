@@ -8,6 +8,7 @@
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
 #include "qgssymbolv2propertiesdialog.h"
+#include "qgssvgcache.h"
 
 #include "qgsapplication.h"
 
@@ -595,6 +596,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     {
       selModel->select( idx, QItemSelectionModel::SelectCurrent );
       selModel->setCurrentIndex( idx, QItemSelectionModel::SelectCurrent );
+      setName( idx );
       break;
     }
   }
@@ -623,6 +625,14 @@ void QgsSvgMarkerSymbolLayerV2Widget::setName( const QModelIndex& idx )
   QString name = idx.data( Qt::UserRole ).toString();
   mLayer->setPath( name );
   mFileLineEdit->setText( name );
+
+  //activate gui for svg parameters only if supported by the svg file
+  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  QgsSvgCache::instance()->containsParams( name, hasFillParam, hasOutlineParam, hasOutlineWidthParam );
+  mChangeColorButton->setEnabled( hasFillParam );
+  mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
+
   emit changed();
 }
 

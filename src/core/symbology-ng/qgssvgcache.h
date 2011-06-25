@@ -66,6 +66,9 @@ class QgsSvgCache
     const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
+    /**Tests if an svg file contains parameters for fill, outline color, outline width*/
+    void containsParams( const QString& path, bool& hasFillParam, bool& hasOutlineParam, bool& hasOutlineWidthParam ) const;
+
   protected:
     QgsSvgCache();
 
@@ -83,14 +86,15 @@ class QgsSvgCache
   private:
     static QgsSvgCache* mInstance;
 
-    /**Entries sorted by last used time*/
-    QMap< QDateTime, QgsSvgCacheEntry* > mEntries;
     /**Entry pointers accessible by file name*/
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
-    /**Estimated total size of all images and pictures*/
-    double mTotalSize;
+    /**Estimated total size of all images, pictures and svgContent*/
+    long mTotalSize;
     /**Replaces parameters in elements of a dom node and calls method for all child nodes*/
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
+
+    /**Release memory and remove cache entry from mEntryLookup*/
+    void removeCacheEntry( QString s, QgsSvgCacheEntry* entry );
 };
 
 #endif // QGSSVGCACHE_H

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssvgcache.h"
+#include "qgslogger.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QFile>
@@ -66,14 +67,14 @@ QgsSvgCache* QgsSvgCache::instance()
   return mInstance;
 }
 
-QgsSvgCache::QgsSvgCache()
+QgsSvgCache::QgsSvgCache(): mTotalSize( 0 )
 {
 }
 
 QgsSvgCache::~QgsSvgCache()
 {
-  QMap< QDateTime, QgsSvgCacheEntry* >::iterator it = mEntries.begin();
-  for ( ; it != mEntries.end(); ++it )
+  QMultiHash< QString, QgsSvgCacheEntry* >::iterator it = mEntryLookup.begin();
+  for( ; it != mEntryLookup.end(); ++it )
   {
     delete it.value();
   }
@@ -92,7 +93,11 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
     cacheImage( currentEntry );
   }
 
-  //update lastUsed with current date time
+  //debug: display current cache usage
+  QgsDebugMsg("cache size: " + QString::number( mTotalSize ) );
+
+  //set entry timestamp to current time
+  currentEntry->lastUsed = QDateTime::currentDateTime();
 
   return *( currentEntry->image );
 }
@@ -109,7 +114,11 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
     cachePicture( currentEntry );
   }
 
-  //update lastUsed with current date time
+  //debug: display current cache usage
+  QgsDebugMsg("cache size: " + QString::number( mTotalSize ) );
+
+  //set entry timestamp to current time
+  currentEntry->lastUsed = QDateTime::currentDateTime();
 
   return *( currentEntry->picture );
 }
@@ -122,9 +131,42 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
 
   replaceParamsAndCacheSvg( entry );
 
-  mEntries.insert( entry->lastUsed, entry );
   mEntryLookup.insert( file, entry );
   return entry;
+}
+
+void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, bool& hasOutlineParam, bool& hasOutlineWidthParam ) const
+{
+  hasFillParam = false;
+  hasOutlineParam = false;
+  hasOutlineWidthParam = false;
+
+  QFile svgFile( path );
+  if ( !svgFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
+  }
+
+  QDomDocument svgDoc;
+  if ( !svgDoc.setContent( &svgFile ) )
+  {
+    return;
+  }
+
+  //there are surely faster ways to get this information
+  QString content = svgDoc.toString();
+  if( content.contains("param(fill") )
+  {
+    hasFillParam = true;
+  }
+  if( content.contains("param(outline") )
+  {
+    hasOutlineParam = true;
+  }
+  if( content.contains("param(outline-width)" ) )
+  {
+    hasOutlineWidthParam = true;
+  }
 }
 
 void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
@@ -151,6 +193,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
   replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth );
 
   entry->svgContent = svgDoc.toByteArray();
+  mTotalSize += entry->svgContent.size();
 }
 
 void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
@@ -172,6 +215,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   r.render( &p );
 
   entry->image = image;
+  mTotalSize += (image->width() * image->height() * 32);
 }
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
@@ -195,6 +239,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
   QPainter painter( picture );
   renderer.render( &painter, rect );
   entry->picture = picture;
+  mTotalSize += entry->picture->size();
 }
 
 QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
@@ -261,5 +306,11 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
     QDomElement childElem = childList.at( i ).toElement();
     replaceElemParams( childElem, fill, outline, outlineWidth );
   }
+}
+
+void QgsSvgCache::removeCacheEntry( QString s, QgsSvgCacheEntry* entry )
+{
+  delete entry;
+  mEntryLookup.remove( s , entry );
 }
 
