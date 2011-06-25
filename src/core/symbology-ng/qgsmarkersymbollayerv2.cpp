@@ -534,12 +534,18 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( mAngle != 0 )
     p->rotate( mAngle );
 
-  const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, QColor( Qt::black )/*const QColor& fill*/, QColor( Qt::black ) /*const QColor& outline*/,
-                                                        1.0 /*outline width*/, context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-  p->drawPicture( 0, 0, pct );
-
-  /*QPicture &pct = context.selected() ? mSelPicture : mPicture;
-  p->drawPicture( 0, 0, pct );*/
+  if( doubleNear( context.renderContext().rasterScaleFactor(), 1.0 ) )
+  {
+    const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, mSize, QColor( Qt::black )/*const QColor& fill*/, QColor( Qt::black ) /*const QColor& outline*/,
+                        1.0 /*outline width*/, context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+    p->drawImage( -img.width() / 2.0, -img.width() / 2.0, img );
+  }
+  else
+  {
+    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, QColor( Qt::black )/*const QColor& fill*/, QColor( Qt::black ) /*const QColor& outline*/,
+                          1.0 /*outline width*/, context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+    p->drawPicture( 0, 0, pct );
+  }
 
   p->restore();
 }

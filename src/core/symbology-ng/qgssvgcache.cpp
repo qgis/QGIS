@@ -17,6 +17,7 @@
 
 #include "qgssvgcache.h"
 #include <QDomDocument>
+#include <QDomElement>
 #include <QFile>
 #include <QImage>
 #include <QPainter>
@@ -145,7 +146,9 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
     return;
   }
 
-  //todo: replace params here
+  //replace fill color, outline color, outline with in all nodes
+  QDomElement docElem = svgDoc.documentElement();
+  replaceElemParams( docElem, entry->fill, entry->outline, entry->outlineWidth );
 
   entry->svgContent = svgDoc.toByteArray();
 }
@@ -164,7 +167,6 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   QImage* image = new QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
-  //rasterise byte array to image
   QPainter p( image );
   QSvgRenderer r( entry->svgContent );
   r.render( &p );
@@ -222,5 +224,42 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
     currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
   }
   return currentEntry;
+}
+
+void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth )
+{
+  if( elem.isNull() )
+  {
+    return;
+  }
+
+  //go through attributes
+  QDomNamedNodeMap attributes = elem.attributes();
+  int nAttributes = attributes.count();
+  for( int i = 0; i < nAttributes; ++i )
+  {
+    QDomAttr attribute = attributes.item( i ).toAttr();
+    QString value = attribute.value();
+    if( value.startsWith("params(fill)") )
+    {
+      elem.setAttribute( attribute.name(), fill.name() );
+    }
+    else if( value.startsWith("params(outline)") )
+    {
+      elem.setAttribute( attribute.name(), outline.name() );
+    }
+    else if( value.startsWith("params(outline-width)") )
+    {
+      elem.setAttribute( attribute.name(), QString::number( outlineWidth ) );
+    }
+  }
+
+  QDomNodeList childList = elem.childNodes();
+  int nChildren = childList.count();
+  for( int i = 0; i < nChildren; ++i )
+  {
+    QDomElement childElem = childList.at( i ).toElement();
+    replaceElemParams( childElem, fill, outline, outlineWidth );
+  }
 }
 

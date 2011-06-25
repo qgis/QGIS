@@ -24,6 +24,7 @@
 #include <QMultiHash>
 #include <QString>
 
+class QDomElement;
 class QImage;
 class QPicture;
 
@@ -88,6 +89,8 @@ class QgsSvgCache
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
     /**Estimated total size of all images and pictures*/
     double mTotalSize;
+    /**Replaces parameters in elements of a dom node and calls method for all child nodes*/
+    void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
 };
 
 #endif // QGSSVGCACHE_H
