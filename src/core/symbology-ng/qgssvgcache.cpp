@@ -25,12 +25,12 @@
 #include <QSvgRenderer>
 
 QgsSvgCacheEntry::QgsSvgCacheEntry(): file( QString() ), size( 0 ), outlineWidth( 0 ), widthScaleFactor( 1.0 ), rasterScaleFactor( 1.0 ), fill( Qt::black ),
-outline( Qt::black ), image( 0 ), picture( 0 )
+    outline( Qt::black ), image( 0 ), picture( 0 )
 {
 }
 
 QgsSvgCacheEntry::QgsSvgCacheEntry( const QString& f, double s, double ow, double wsf, double rsf, const QColor& fi, const QColor& ou ): file( f ), size( s ), outlineWidth( ow ),
-widthScaleFactor( wsf ), rasterScaleFactor( rsf ), fill( fi ), outline( ou ), image( 0 ), picture( 0 )
+    widthScaleFactor( wsf ), rasterScaleFactor( rsf ), fill( fi ), outline( ou ), image( 0 ), picture( 0 )
 {
 }
 
@@ -73,7 +73,7 @@ QgsSvgCache::QgsSvgCache()
 QgsSvgCache::~QgsSvgCache()
 {
   QMap< QDateTime, QgsSvgCacheEntry* >::iterator it = mEntries.begin();
-  for(; it != mEntries.end(); ++it )
+  for ( ; it != mEntries.end(); ++it )
   {
     delete it.value();
   }
@@ -83,11 +83,11 @@ QgsSvgCache::~QgsSvgCache()
 const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                        double widthScaleFactor, double rasterScaleFactor )
 {
-  QgsSvgCacheEntry* currentEntry = this->cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   //if current entry image is 0: cache image for entry
   //update stats for memory usage
-  if( !currentEntry->image )
+  if ( !currentEntry->image )
   {
     cacheImage( currentEntry );
   }
@@ -98,13 +98,13 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
 }
 
 const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                           double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor, double rasterScaleFactor )
 {
-  QgsSvgCacheEntry* currentEntry = this->cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
+  QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
 
   //if current entry image is 0: cache image for entry
   //update stats for memory usage
-  if( !currentEntry->picture )
+  if ( !currentEntry->picture )
   {
     cachePicture( currentEntry );
   }
@@ -115,7 +115,7 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
 }
 
 QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                          double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( file, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
   entry->lastUsed = QDateTime::currentDateTime();
@@ -129,19 +129,19 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
 
 void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
 {
-  if( !entry )
+  if ( !entry )
   {
     return;
   }
 
   QFile svgFile( entry->file );
-  if( !svgFile.open( QIODevice::ReadOnly ) )
+  if ( !svgFile.open( QIODevice::ReadOnly ) )
   {
     return;
   }
 
   QDomDocument svgDoc;
-  if( !svgDoc.setContent( &svgFile ) )
+  if ( !svgDoc.setContent( &svgFile ) )
   {
     return;
   }
@@ -155,7 +155,7 @@ void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
 
 void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
 {
-  if( !entry )
+  if ( !entry )
   {
     return;
   }
@@ -176,7 +176,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 {
-  if( !entry )
+  if ( !entry )
   {
     return;
   }
@@ -198,18 +198,18 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 }
 
 QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                             double widthScaleFactor, double rasterScaleFactor )
+    double widthScaleFactor, double rasterScaleFactor )
 {
   //search entries in mEntryLookup
   QgsSvgCacheEntry* currentEntry = 0;
   QList<QgsSvgCacheEntry*> entries = mEntryLookup.values( file );
 
   QList<QgsSvgCacheEntry*>::iterator entryIt = entries.begin();
-  for(; entryIt != entries.end(); ++entryIt )
+  for ( ; entryIt != entries.end(); ++entryIt )
   {
     QgsSvgCacheEntry* cacheEntry = *entryIt;
-    if( cacheEntry->file == file && cacheEntry->size == size && cacheEntry->fill == fill && cacheEntry->outline == outline &&
-        cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor)
+    if ( cacheEntry->file == file && cacheEntry->size == size && cacheEntry->fill == fill && cacheEntry->outline == outline &&
+         cacheEntry->outlineWidth == outlineWidth && cacheEntry->widthScaleFactor == widthScaleFactor && cacheEntry->rasterScaleFactor == rasterScaleFactor )
     {
       currentEntry = cacheEntry;
       break;
@@ -219,7 +219,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
 
   //if not found: create new entry
   //cache and replace params in svg content
-  if( !currentEntry )
+  if ( !currentEntry )
   {
     currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
   }
@@ -228,7 +228,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
 
 void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth )
 {
-  if( elem.isNull() )
+  if ( elem.isNull() )
   {
     return;
   }
@@ -236,19 +236,19 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
   //go through attributes
   QDomNamedNodeMap attributes = elem.attributes();
   int nAttributes = attributes.count();
-  for( int i = 0; i < nAttributes; ++i )
+  for ( int i = 0; i < nAttributes; ++i )
   {
     QDomAttr attribute = attributes.item( i ).toAttr();
     QString value = attribute.value();
-    if( value.startsWith("params(fill)") )
+    if ( value.startsWith( "param(fill)" ) )
     {
       elem.setAttribute( attribute.name(), fill.name() );
     }
-    else if( value.startsWith("params(outline)") )
+    else if ( value.startsWith( "param(outline)" ) )
     {
       elem.setAttribute( attribute.name(), outline.name() );
     }
-    else if( value.startsWith("params(outline-width)") )
+    else if ( value.startsWith( "param(outline-width)" ) )
     {
       elem.setAttribute( attribute.name(), QString::number( outlineWidth ) );
     }
@@ -256,7 +256,7 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
 
   QDomNodeList childList = elem.childNodes();
   int nChildren = childList.count();
-  for( int i = 0; i < nChildren; ++i )
+  for ( int i = 0; i < nChildren; ++i )
   {
     QDomElement childElem = childList.at( i ).toElement();
     replaceElemParams( childElem, fill, outline, outlineWidth );

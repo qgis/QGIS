@@ -450,6 +450,9 @@ QgsSvgMarkerSymbolLayerV2::QgsSvgMarkerSymbolLayerV2( QString name, double size,
   mSize = size;
   mAngle = angle;
   mOffset = QPointF( 0, 0 );
+  mOutlineWidth = 1.0;
+  mFillColor = QColor( Qt::black );
+  mOutlineColor = QColor( Qt::black );
 }
 
 
@@ -469,6 +472,12 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
+  if ( props.contains( "fill" ) )
+    m->setFillColor( QColor( props["fill"] ) );
+  if ( props.contains( "outline" ) )
+    m->setOutlineColor( QColor( props["outline"] ) );
+  if ( props.contains( "outline-width" ) )
+    m->setOutlineWidth( props["outline-width"].toDouble() );
   return m;
 }
 
@@ -534,16 +543,16 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if ( mAngle != 0 )
     p->rotate( mAngle );
 
-  if( doubleNear( context.renderContext().rasterScaleFactor(), 1.0 ) )
+  if ( doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 ) )
   {
-    const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, mSize, QColor( Qt::black )/*const QColor& fill*/, QColor( Qt::black ) /*const QColor& outline*/,
-                        1.0 /*outline width*/, context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+    const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, mSize, mFillColor, mOutlineColor, mOutlineWidth,
+                        context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
     p->drawImage( -img.width() / 2.0, -img.width() / 2.0, img );
   }
   else
   {
-    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, QColor( Qt::black )/*const QColor& fill*/, QColor( Qt::black ) /*const QColor& outline*/,
-                          1.0 /*outline width*/, context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, mFillColor, mOutlineColor, mOutlineWidth,
+                          context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
     p->drawPicture( 0, 0, pct );
   }
 
@@ -558,12 +567,18 @@ QgsStringMap QgsSvgMarkerSymbolLayerV2::properties() const
   map["size"] = QString::number( mSize );
   map["angle"] = QString::number( mAngle );
   map["offset"] = QgsSymbolLayerV2Utils::encodePoint( mOffset );
+  map["fill"] = mFillColor.name();
+  map["outline"] = mOutlineColor.name();
+  map["outline-width"] = QString::number( mOutlineWidth );
   return map;
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
 {
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( mPath, mSize, mAngle );
+  m->setFillColor( mFillColor );
+  m->setOutlineColor( mOutlineColor );
+  m->setOutlineWidth( 1.0 );
   m->setOffset( mOffset );
   return m;
 }

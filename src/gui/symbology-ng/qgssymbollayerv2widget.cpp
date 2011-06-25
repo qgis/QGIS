@@ -669,6 +669,40 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_textEdited( const QString
   emit changed();
 }
 
+void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QColor c = QColorDialog::getColor( mLayer->fillColor() );
+  if ( c.isValid() )
+  {
+    mLayer->setFillColor( c );
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeBorderColorButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QColor c = QColorDialog::getColor( mLayer->outlineColor() );
+  if ( c.isValid() )
+  {
+    mLayer->setOutlineColor( c );
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidth( d );
+  }
+}
+
 ///////////////
 
 QgsLineDecorationSymbolLayerV2Widget::QgsLineDecorationSymbolLayerV2Widget( QWidget* parent )
