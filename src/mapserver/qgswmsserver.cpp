@@ -738,14 +738,6 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   QgsRectangle mapExtent = mMapRenderer->extent();
   mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, theImage->width() ) );
 
-  //create objects for qgis rendering
-  layerIdList.clear();
-  QgsDebugMsg( "Layers to render" );
-  QString myLayer;
-  foreach( myLayer, layerIdList )
-  {
-    QgsDebugMsg( myLayer );
-  }
   layerIdList = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
 #ifdef QGISDEBUG
   QgsDebugMsg( QString( "Number of layers to be rendered. %1" ).arg( layerIdList.count() ) );
@@ -1194,7 +1186,6 @@ QStringList QgsWMSServer::layerSet( const QStringList &layersList,
       allowCaching = false;
     }
 
-    // Problem method here!
     QList<QgsMapLayer*> layerList = mConfigParser->mapLayerFromStyle( *llstIt, styleName, allowCaching );
     int listIndex;
 
@@ -1533,31 +1524,34 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
                                       "AND,OR,IN,<,>=,>,>=,!=,',',(,). Not allowed are semicolons in the filter expression." );
       }
 
-      //we know the layer name, but need to go through the list because a layer could be there several times...
-      int listPos = 1;
-      QStringList::const_iterator layerIt = layerList.constBegin();
-      for ( ; layerIt != layerList.constEnd(); ++layerIt )
+      //we need to find the maplayer objects matching the layer name
+      QList<QgsMapLayer*> layersToFilter;
+      QMap<QString, QgsMapLayer*>& layerMap = QgsMapLayerRegistry::instance()->mapLayers();
+
+      QMap<QString, QgsMapLayer*>::iterator layerIt = layerMap.begin();
+      for ( ; layerIt != layerMap.end(); ++layerIt )
       {
-        if ( *layerIt == eqSplit.at( 0 ) )
+        if ( layerIt.value() && layerIt.value()->name() == eqSplit.at( 0 ) )
         {
-          QString layerId = layerIds.at( layerIds.size() - listPos );
-          QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( layerId ) );
-          if ( filteredLayer )
-          {
-            if ( filteredLayer )
-            {
-              filterMap.insert( layerId, filteredLayer->subsetString() );
-              QString newSubsetString = eqSplit.at( 1 );
-              if ( !filteredLayer->subsetString().isEmpty() )
-              {
-                newSubsetString.prepend( " AND " );
-                newSubsetString.prepend( filteredLayer->subsetString() );
-              }
-              filteredLayer->setSubsetString( newSubsetString );
-            }
-          }
+          layersToFilter.push_back( layerIt.value() );
         }
-        ++listPos;
+      }
+
+      QList<QgsMapLayer*>::iterator filterIt = layersToFilter.begin();
+      for ( ; filterIt != layersToFilter.end(); ++filterIt )
+      {
+        QgsVectorLayer* filteredLayer = dynamic_cast<QgsVectorLayer*>( *filterIt );
+        if ( filteredLayer )
+        {
+          filterMap.insert( filteredLayer->id(), filteredLayer->subsetString() );
+          QString newSubsetString = eqSplit.at( 1 );
+          if ( !filteredLayer->subsetString().isEmpty() )
+          {
+            newSubsetString.prepend( " AND " );
+            newSubsetString.prepend( filteredLayer->subsetString() );
+          }
+          filteredLayer->setSubsetString( newSubsetString );
+        }
       }
     }
 
