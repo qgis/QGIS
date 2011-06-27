@@ -74,7 +74,7 @@ QgsSvgCache::QgsSvgCache(): mTotalSize( 0 )
 QgsSvgCache::~QgsSvgCache()
 {
   QMultiHash< QString, QgsSvgCacheEntry* >::iterator it = mEntryLookup.begin();
-  for( ; it != mEntryLookup.end(); ++it )
+  for ( ; it != mEntryLookup.end(); ++it )
   {
     delete it.value();
   }
@@ -94,7 +94,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
   }
 
   //debug: display current cache usage
-  QgsDebugMsg("cache size: " + QString::number( mTotalSize ) );
+  QgsDebugMsg( "cache size: " + QString::number( mTotalSize ) );
 
   //set entry timestamp to current time
   currentEntry->lastUsed = QDateTime::currentDateTime();
@@ -115,7 +115,7 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   }
 
   //debug: display current cache usage
-  QgsDebugMsg("cache size: " + QString::number( mTotalSize ) );
+  QgsDebugMsg( "cache size: " + QString::number( mTotalSize ) );
 
   //set entry timestamp to current time
   currentEntry->lastUsed = QDateTime::currentDateTime();
@@ -155,15 +155,15 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, bool&
 
   //there are surely faster ways to get this information
   QString content = svgDoc.toString();
-  if( content.contains("param(fill") )
+  if ( content.contains( "param(fill" ) )
   {
     hasFillParam = true;
   }
-  if( content.contains("param(outline") )
+  if ( content.contains( "param(outline" ) )
   {
     hasOutlineParam = true;
   }
-  if( content.contains("param(outline-width)" ) )
+  if ( content.contains( "param(outline-width)" ) )
   {
     hasOutlineWidthParam = true;
   }
@@ -215,7 +215,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   r.render( &p );
 
   entry->image = image;
-  mTotalSize += (image->width() * image->height() * 32);
+  mTotalSize += ( image->width() * image->height() * 32 );
 }
 
 void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
@@ -284,18 +284,54 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
   for ( int i = 0; i < nAttributes; ++i )
   {
     QDomAttr attribute = attributes.item( i ).toAttr();
-    QString value = attribute.value();
-    if ( value.startsWith( "param(fill)" ) )
+    //e.g. style="fill:param(fill);param(stroke)"
+    if ( attribute.name().compare( "style", Qt::CaseInsensitive ) == 0 )
     {
-      elem.setAttribute( attribute.name(), fill.name() );
+      //entries separated by ';'
+      QString newAttributeString;
+
+      QStringList entryList = attribute.value().split( ';' );
+      QStringList::const_iterator entryIt = entryList.constBegin();
+      for ( ; entryIt != entryList.constEnd(); ++entryIt )
+      {
+        QStringList keyValueSplit = entryIt->split( ':' );
+        if ( keyValueSplit.size() < 2 )
+        {
+          continue;
+        }
+        QString key = keyValueSplit.at( 0 );
+        QString value = keyValueSplit.at( 1 );
+        if ( value.startsWith( "param(fill" ) )
+        {
+          value = fill.name();
+        }
+        else if ( value.startsWith( "param(outline)" ) )
+        {
+          value = outline.name();
+        }
+        else if ( value.startsWith( "param(outline-width)" ) )
+        {
+          value = QString::number( outlineWidth );
+        }
+        newAttributeString.append( key + ":" + value + ";" );
+      }
+      elem.setAttribute( attribute.name(), newAttributeString );
     }
-    else if ( value.startsWith( "param(outline)" ) )
+    else
     {
-      elem.setAttribute( attribute.name(), outline.name() );
-    }
-    else if ( value.startsWith( "param(outline-width)" ) )
-    {
-      elem.setAttribute( attribute.name(), QString::number( outlineWidth ) );
+      QString value = attribute.value();
+      if ( value.startsWith( "param(fill)" ) )
+      {
+        elem.setAttribute( attribute.name(), fill.name() );
+      }
+      else if ( value.startsWith( "param(outline)" ) )
+      {
+        elem.setAttribute( attribute.name(), outline.name() );
+      }
+      else if ( value.startsWith( "param(outline-width)" ) )
+      {
+        elem.setAttribute( attribute.name(), QString::number( outlineWidth ) );
+      }
     }
   }
 

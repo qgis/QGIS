@@ -537,7 +537,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   if( context.selected() )
   {
     QPen pen( context.selectionColor() );
-    pen.setWidth( 2 );
+    pen.setWidth( context.outputLineWidth( 1.0 ) );
     p->setPen( pen );
     p->setBrush( Qt::NoBrush );
     double sizePixel = context.outputLineWidth( mSize );
