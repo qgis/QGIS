@@ -188,6 +188,8 @@ class GUI_EXPORT QgsSvgMarkerSymbolLayerV2Widget : public QgsSymbolLayerV2Widget
   protected:
 
     void populateList();
+    //update gui for svg file (insert new path, update activation of gui elements for svg params)
+    void setGuiForSvg( const QString& svgPath );
 
     QgsSvgMarkerSymbolLayerV2* mLayer;
 };

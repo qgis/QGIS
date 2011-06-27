@@ -134,10 +134,6 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QColor mFillColor;
     QColor mOutlineColor;
     double mOutlineWidth;
-
-
-    QPicture mPicture;
-    QPicture mSelPicture;
     double mOrigSize;
 };
 

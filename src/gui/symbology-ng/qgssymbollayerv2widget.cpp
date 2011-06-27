@@ -576,6 +576,20 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
   viewImages->setModel( m );
 }
 
+void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QString& svgPath )
+{
+  //activate gui for svg parameters only if supported by the svg file
+  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  QgsSvgCache::instance()->containsParams( svgPath, hasFillParam, hasOutlineParam, hasOutlineWidthParam );
+  mChangeColorButton->setEnabled( hasFillParam );
+  mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
+
+  mFileLineEdit->blockSignals( true );
+  mFileLineEdit->setText( svgPath );
+  mFileLineEdit->blockSignals( false );
+}
+
 
 void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
@@ -613,6 +627,8 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->blockSignals( true );
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
+
+  setGuiForSvg( mLayer->path() );
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -626,13 +642,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setName( const QModelIndex& idx )
   mLayer->setPath( name );
   mFileLineEdit->setText( name );
 
-  //activate gui for svg parameters only if supported by the svg file
-  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
-  QgsSvgCache::instance()->containsParams( name, hasFillParam, hasOutlineParam, hasOutlineWidthParam );
-  mChangeColorButton->setEnabled( hasFillParam );
-  mChangeBorderColorButton->setEnabled( hasOutlineParam );
-  mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
-
+  setGuiForSvg( name );
   emit changed();
 }
 
@@ -689,6 +699,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_clicked()
   if ( c.isValid() )
   {
     mLayer->setFillColor( c );
+    emit changed();
   }
 }
 
@@ -702,6 +713,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeBorderColorButton_clicked()
   if ( c.isValid() )
   {
     mLayer->setOutlineColor( c );
+    emit changed();
   }
 }
 
@@ -710,6 +722,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthSpinBox_valueChanged( doubl
   if ( mLayer )
   {
     mLayer->setOutlineWidth( d );
+    emit changed();
   }
 }
 

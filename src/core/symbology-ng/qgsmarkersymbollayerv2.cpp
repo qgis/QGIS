@@ -489,30 +489,8 @@ QString QgsSvgMarkerSymbolLayerV2::layerType() const
 
 void QgsSvgMarkerSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
 {
-  double pictureSize = 0;
-  QgsRenderContext& rc = context.renderContext();
-
-  if ( rc.painter() && rc.painter()->device() )
-  {
-    //correct QPictures DPI correction
-    pictureSize = context.outputLineWidth( mSize ) / rc.painter()->device()->logicalDpiX() * mPicture.logicalDpiX();
-  }
-  else
-  {
-    pictureSize = context.outputLineWidth( mSize );
-  }
-  QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
-  QSvgRenderer renderer( mPath );
-  QPainter painter( &mPicture );
-  renderer.render( &painter, rect );
-  QPainter selPainter( &mSelPicture );
-  selPainter.setRenderHint( QPainter::Antialiasing );
-  selPainter.setBrush( QBrush( context.selectionColor() ) );
-  selPainter.setPen( Qt::NoPen );
-  selPainter.drawEllipse( QPointF( 0, 0 ), pictureSize*0.6, pictureSize*0.6 );
-  renderer.render( &selPainter, rect );
-
   mOrigSize = mSize; // save in case the size would be data defined
+  Q_UNUSED( context );
 }
 
 void QgsSvgMarkerSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
@@ -554,6 +532,16 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, mFillColor, mOutlineColor, mOutlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
     p->drawPicture( 0, 0, pct );
+  }
+
+  if( context.selected() )
+  {
+    QPen pen( context.selectionColor() );
+    pen.setWidth( 2 );
+    p->setPen( pen );
+    p->setBrush( Qt::NoBrush );
+    double sizePixel = context.outputLineWidth( mSize );
+    p->drawRect( QRectF( -sizePixel / 2.0, -sizePixel / 2.0, sizePixel, sizePixel ) );
   }
 
   p->restore();
