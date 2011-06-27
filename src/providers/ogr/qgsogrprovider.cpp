@@ -518,7 +518,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   OGRFeatureH fet;
   QgsRectangle selectionRect;
 
-  setRelevantFields( mFetchGeom, mAttributesToFetch );
+  setRelevantFields( mFetchGeom || mUseIntersect, mAttributesToFetch );
 
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
