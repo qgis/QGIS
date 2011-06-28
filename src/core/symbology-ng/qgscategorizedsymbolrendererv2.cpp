@@ -122,7 +122,7 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
     }
     else
     {
-      QgsDebugMsg( "attribute value not found: " + value.toString() );
+      //QgsDebugMsg( "attribute value not found: " + value.toString() );
     }
     return NULL;
   }
