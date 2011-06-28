@@ -106,14 +106,32 @@ QDomDocument QgsWMSServer::getCapabilities()
   //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
   QString hrefString;
   QString requestUrl = getenv( "REQUEST_URI" );
+  QString mapUrl = requestUrl;
   requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
+  
+  // find out if a map parameter was specified and ensure
+  // it is propogated to the onlineresource
+  mapUrl.replace( requestUrl, "" );
+  QStringList myTokens = mapUrl.split( "&" );
+  QString myMap = "";
+  QStringListIterator myIterator( myTokens );
+  while ( myIterator.hasNext() )
+  {
+    QString myString = myIterator.next();
+    if ( myString.contains( "map=", Qt::CaseInsensitive ) )
+    {
+      myMap = myString;
+    }
+  }
+
+
   if ( requestUrl.contains( "http" ) )
   {
     hrefString = requestUrl;
   }
   else
   {
-    hrefString = "http://" + QString( getenv( "SERVER_NAME" ) ) + requestUrl;
+    hrefString = "http://" + QString( getenv( "SERVER_NAME" ) ) + requestUrl + myMap;
   }
 
 
