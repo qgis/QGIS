@@ -242,6 +242,11 @@ int main( int argc, char * argv[] )
     if ( mapFileIt != parameterMap.end() )
     {
       configFilePath = mapFileIt->second;
+      QgsDebugMsg( QString( "Configuration file path set to: %1" ).arg( defaultConfigFilePath ) );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
     }
 
     QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );

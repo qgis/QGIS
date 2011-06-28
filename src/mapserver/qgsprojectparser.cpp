@@ -149,6 +149,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       {
         //add layers from other project files and embed into this group
         QString project = convertToAbsolutePath( currentChildElem.attribute( "project" ) );
+        QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
         QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
         if ( p )
@@ -360,7 +361,9 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
     {
       if ( groupIt->attribute( "embedded" ) == "1" ) //requested group is embedded from another project
       {
-        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( convertToAbsolutePath( groupIt->attribute( "project" ) ) ) );
+        QString project = convertToAbsolutePath( groupIt->attribute( "project" ) );
+        QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
+        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project  ) );
         if ( p )
         {
           QList<QDomElement> pGroupElems = p->legendGroupElements();
@@ -417,6 +420,7 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
     {
       QString id = layerIt.value().attribute( "id" );
       QString project = layerIt.value().attribute( "project" );
+      QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
 
       //get config parser from cache
       QgsProjectParser* otherParser = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
@@ -443,7 +447,9 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   {
     if ( groupIt->attribute( "embedded" ) == "1" )
     {
-      QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( convertToAbsolutePath( groupIt->attribute( "project" ) ) ) );
+      QString project = convertToAbsolutePath( groupIt->attribute( "project" ) );
+      QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
+      QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
       if ( p )
       {
         QMap< QString, QDomElement > pLayers = p->projectLayerElementsByName();
@@ -889,7 +895,9 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem )
   }
   else if ( elem.attribute( "embedded" ) == "1" ) //layer is embedded from another project file
   {
-    QgsProjectParser* otherConfig = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( convertToAbsolutePath( elem.attribute( "project" ) ) ) );
+    QString project = convertToAbsolutePath( elem.attribute( "project" ) );
+    QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
+    QgsProjectParser* otherConfig = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
     if ( !otherConfig )
     {
       return 0;
