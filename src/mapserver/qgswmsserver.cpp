@@ -50,6 +50,7 @@
 #include <QBuffer>
 #include <QPrinter>
 #include <QSvgGenerator>
+#include <QUrl>
 
 QgsWMSServer::QgsWMSServer( std::map<QString, QString> parameters, QgsMapRenderer* renderer )
     : mParameterMap( parameters )
