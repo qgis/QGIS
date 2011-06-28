@@ -37,3 +37,4 @@ scripts/astyle.exe
 doc/CODING.html
 doc/CODING.tex
 doc/INSTALL.tex
+scripts/RelWithDebInfo
