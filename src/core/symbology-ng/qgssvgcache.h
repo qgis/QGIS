@@ -19,7 +19,6 @@
 #define QGSSVGCACHE_H
 
 #include <QColor>
-#include <QDateTime>
 #include <QMap>
 #include <QMultiHash>
 #include <QString>
@@ -43,12 +42,17 @@ struct QgsSvgCacheEntry
   QColor outline;
   QImage* image;
   QPicture* picture;
-  QDateTime lastUsed;
   //content (with params replaced)
   QByteArray svgContent;
 
+  //keep entries on a least, sorted by last access
+  QgsSvgCacheEntry* nextEntry;
+  QgsSvgCacheEntry* previousEntry;
+
   /**Don't consider image, picture, last used timestamp for comparison*/
   bool operator==( const QgsSvgCacheEntry& other ) const;
+  /**Return memory usage in bytes*/
+  int dataSize() const;
 };
 
 /**A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
@@ -81,7 +85,13 @@ class QgsSvgCache
     void cachePicture( QgsSvgCacheEntry* entry );
     /**Returns entry from cache or creates a new entry if it does not exist already*/
     QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
-                                 double widthScaleFactor, double rasterScaleFactor );
+                                  double widthScaleFactor, double rasterScaleFactor );
+
+    /**Removes the least used items until the maximum size is under the limit*/
+    void trimToMaximumSize();
+
+    //Removes entry from the ordered list (but does not delete the entry itself)
+    void takeEntryFromList( QgsSvgCacheEntry* entry );
 
   private:
     static QgsSvgCache* mInstance;
@@ -90,11 +100,23 @@ class QgsSvgCache
     QMultiHash< QString, QgsSvgCacheEntry* > mEntryLookup;
     /**Estimated total size of all images, pictures and svgContent*/
     long mTotalSize;
+
+    //The svg cache keeps the entries on a double connected list, moving the current entry to the front.
+    //That way, removing entries for more space can start with the least used objects.
+    QgsSvgCacheEntry* mLeastRecentEntry;
+    QgsSvgCacheEntry* mMostRecentEntry;
+
+    //Maximum cache size
+    static const long mMaximumSize = 20000000;
+
     /**Replaces parameters in elements of a dom node and calls method for all child nodes*/
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
 
     /**Release memory and remove cache entry from mEntryLookup*/
     void removeCacheEntry( QString s, QgsSvgCacheEntry* entry );
+
+    /**For debugging*/
+    void printEntryList();
 };
 
 #endif // QGSSVGCACHE_H

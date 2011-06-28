@@ -48,6 +48,20 @@ bool QgsSvgCacheEntry::operator==( const QgsSvgCacheEntry& other ) const
            && other.rasterScaleFactor == rasterScaleFactor && other.fill == fill && other.outline == outline );
 }
 
+int QgsSvgCacheEntry::dataSize() const
+{
+  int size = svgContent.size();
+  if ( picture )
+  {
+    size += picture->size();
+  }
+  if ( image )
+  {
+    size += ( image->width() * image->height() * 32 );
+  }
+  return size;
+}
+
 QString file;
 double size;
 double outlineWidth;
@@ -67,7 +81,7 @@ QgsSvgCache* QgsSvgCache::instance()
   return mInstance;
 }
 
-QgsSvgCache::QgsSvgCache(): mTotalSize( 0 )
+QgsSvgCache::QgsSvgCache(): mTotalSize( 0 ), mLeastRecentEntry( 0 ), mMostRecentEntry( 0 )
 {
 }
 
@@ -91,13 +105,8 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
   if ( !currentEntry->image )
   {
     cacheImage( currentEntry );
+    trimToMaximumSize();
   }
-
-  //debug: display current cache usage
-  QgsDebugMsg( "cache size: " + QString::number( mTotalSize ) );
-
-  //set entry timestamp to current time
-  currentEntry->lastUsed = QDateTime::currentDateTime();
 
   return *( currentEntry->image );
 }
@@ -112,13 +121,8 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   if ( !currentEntry->picture )
   {
     cachePicture( currentEntry );
+    trimToMaximumSize();
   }
-
-  //debug: display current cache usage
-  QgsDebugMsg( "cache size: " + QString::number( mTotalSize ) );
-
-  //set entry timestamp to current time
-  currentEntry->lastUsed = QDateTime::currentDateTime();
 
   return *( currentEntry->picture );
 }
@@ -127,11 +131,28 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( file, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
-  entry->lastUsed = QDateTime::currentDateTime();
 
   replaceParamsAndCacheSvg( entry );
 
   mEntryLookup.insert( file, entry );
+
+  //insert to most recent place in entry list
+  if ( !mMostRecentEntry ) //inserting first entry
+  {
+    mLeastRecentEntry = entry;
+    mMostRecentEntry = entry;
+    entry->previousEntry = 0;
+    entry->nextEntry = 0;
+  }
+  else
+  {
+    entry->previousEntry = mMostRecentEntry;
+    entry->nextEntry = 0;
+    mMostRecentEntry->nextEntry = entry;
+    mMostRecentEntry = entry;
+  }
+
+  trimToMaximumSize();
   return entry;
 }
 
@@ -268,6 +289,18 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   {
     currentEntry = insertSVG( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
   }
+  else
+  {
+    takeEntryFromList( currentEntry );
+    mMostRecentEntry->nextEntry = currentEntry;
+    currentEntry->previousEntry = mMostRecentEntry;
+    currentEntry->nextEntry = 0;
+    mMostRecentEntry = currentEntry;
+  }
+
+  //debugging
+  //printEntryList();
+
   return currentEntry;
 }
 
@@ -348,5 +381,60 @@ void QgsSvgCache::removeCacheEntry( QString s, QgsSvgCacheEntry* entry )
 {
   delete entry;
   mEntryLookup.remove( s , entry );
+}
+
+void QgsSvgCache::printEntryList()
+{
+  QgsDebugMsg( "****************svg cache entry list*************************" );
+  QgsDebugMsg( "Cache size: " + QString::number( mTotalSize ) );
+  QgsSvgCacheEntry* entry = mLeastRecentEntry;
+  while ( entry )
+  {
+    QgsDebugMsg( "***Entry:" );
+    QgsDebugMsg( "File:" + entry->file );
+    QgsDebugMsg( "Size:" + QString::number( entry->size ) );
+    QgsDebugMsg( "Width scale factor" + QString::number( entry->widthScaleFactor ) );
+    QgsDebugMsg( "Raster scale factor" + QString::number( entry->rasterScaleFactor ) );
+    entry = entry->nextEntry;
+  }
+}
+
+void QgsSvgCache::trimToMaximumSize()
+{
+  QgsSvgCacheEntry* entry = mLeastRecentEntry;
+  while ( entry && ( mTotalSize > mMaximumSize ) )
+  {
+    QgsSvgCacheEntry* bkEntry = entry;
+    entry = entry->nextEntry;
+
+    takeEntryFromList( bkEntry );
+    mTotalSize -= bkEntry->dataSize();
+    delete bkEntry;
+  }
+}
+
+void QgsSvgCache::takeEntryFromList( QgsSvgCacheEntry* entry )
+{
+  if ( !entry )
+  {
+    return;
+  }
+
+  if ( entry->previousEntry )
+  {
+    entry->previousEntry->nextEntry = entry->nextEntry;
+  }
+  else
+  {
+    mLeastRecentEntry = entry->nextEntry;
+  }
+  if ( entry->nextEntry )
+  {
+    entry->nextEntry->previousEntry = entry->previousEntry;
+  }
+  else
+  {
+    mMostRecentEntry = entry->previousEntry;
+  }
 }
 
