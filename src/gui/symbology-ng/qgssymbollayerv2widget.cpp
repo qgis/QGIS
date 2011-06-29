@@ -538,20 +538,17 @@ class QgsSvgListModel : public QAbstractListModel
 
       if ( role == Qt::DecorationRole ) // icon
       {
-
         QPixmap pixmap;
         if ( !QPixmapCache::find( entry, pixmap ) )
         {
           // render SVG file
-          QSvgRenderer renderer;
-          QPainter painter;
-          renderer.load( entry );
-          pixmap = QPixmap( QSize( 24, 24 ) );
-          pixmap.fill();
-          painter.begin( &pixmap );
-          renderer.render( &painter );
-          painter.end();
+          QColor fill, outline;
+          double outlineWidth;
+          bool fillParam, outlineParam, outlineWidthParam;
+          QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
+          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 8, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0 );
+          pixmap = QPixmap::fromImage( img );
           QPixmapCache::insert( entry, pixmap );
         }
 
