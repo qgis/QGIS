@@ -450,7 +450,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
             defaultOutline = QColor( valueSplit.at( 1 ) );
           }
         }
-        else if ( !hasOutlineWidthParam && value.startsWith( "param(outlineWidth)" ) )
+        else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
         {
           hasOutlineWidthParam = true;
           if ( valueSplit.size() > 1 )
@@ -480,7 +480,7 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
           defaultOutline = QColor( valueSplit.at( 1 ) );
         }
       }
-      else if ( !hasOutlineWidthParam && value.startsWith( "param(outlineWidth)" ) )
+      else if ( !hasOutlineWidthParam && value.startsWith( "param(outline-width)" ) )
       {
         hasOutlineWidthParam = true;
         if ( valueSplit.size() > 1 )

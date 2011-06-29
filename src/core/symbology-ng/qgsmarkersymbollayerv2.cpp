@@ -609,7 +609,7 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::clone() const
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( mPath, mSize, mAngle );
   m->setFillColor( mFillColor );
   m->setOutlineColor( mOutlineColor );
-  m->setOutlineWidth( 1.0 );
+  m->setOutlineWidth( mOutlineWidth );
   m->setOffset( mOffset );
   return m;
 }
