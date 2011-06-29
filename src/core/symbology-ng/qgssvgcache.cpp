@@ -156,9 +156,10 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
   return entry;
 }
 
-void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, bool& hasOutlineParam, bool& hasOutlineWidthParam ) const
+void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor,
+                                 bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
 {
-  hasFillParam = false;
+  /*hasFillParam = false;
   hasOutlineParam = false;
   hasOutlineWidthParam = false;
 
@@ -187,7 +188,26 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, bool&
   if ( content.contains( "param(outline-width)" ) )
   {
     hasOutlineWidthParam = true;
+  }*/
+
+  defaultFillColor = QColor( Qt::black );
+  defaultOutlineColor= QColor( Qt::black );
+  defaultOutlineWidth = 1.0;
+
+  QFile svgFile( path );
+  if ( !svgFile.open( QIODevice::ReadOnly ) )
+  {
+    return;
   }
+
+  QDomDocument svgDoc;
+  if ( !svgDoc.setContent( &svgFile ) )
+  {
+    return;
+  }
+
+  QDomElement docElem = svgDoc.documentElement();
+  containsElemParams( docElem, hasFillParam, defaultFillColor, hasOutlineParam, defaultOutlineColor, hasOutlineWidthParam, defaultOutlineWidth );
 }
 
 void QgsSvgCache::replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry )
@@ -374,6 +394,103 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
   {
     QDomElement childElem = childList.at( i ).toElement();
     replaceElemParams( childElem, fill, outline, outlineWidth );
+  }
+}
+
+void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
+                        bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
+{
+  if( elem.isNull() )
+  {
+    return;
+  }
+
+  //we already have all the information, no need to go deeper
+  if( hasFillParam && hasOutlineParam && hasOutlineWidthParam )
+  {
+    return;
+  }
+
+  //check this elements attribute
+  QDomNamedNodeMap attributes = elem.attributes();
+  int nAttributes = attributes.count();
+
+  QStringList valueSplit;
+  for ( int i = 0; i < nAttributes; ++i )
+  {
+    QDomAttr attribute = attributes.item( i ).toAttr();
+    if ( attribute.name().compare( "style", Qt::CaseInsensitive ) == 0 )
+    {
+      //entries separated by ';'
+      QStringList entryList = attribute.value().split( ';' );
+      QStringList::const_iterator entryIt = entryList.constBegin();
+      for ( ; entryIt != entryList.constEnd(); ++entryIt )
+      {
+        valueSplit = entryIt->split(" ");
+        if( !hasFillParam && entryIt->startsWith( "param(fill)" ) )
+        {
+          hasFillParam = true;
+          if( valueSplit.size() > 1 )
+          {
+            defaultFill = QColor( valueSplit.at( 1 ) );
+          }
+        }
+        else if( !hasOutlineParam && entryIt->startsWith( "param(outline)" ) )
+        {
+          hasOutlineParam = true;
+          if( valueSplit.size() > 1 )
+          {
+            defaultOutline = QColor( valueSplit.at( 1 ) );
+          }
+        }
+        else if( !hasOutlineWidthParam && entryIt->startsWith( "param(outlineWidth)" ) )
+        {
+          hasOutlineWidthParam = true;
+          if( valueSplit.size() > 1 )
+          {
+            defaultOutlineWidth = valueSplit.at( 1 ).toDouble();
+          }
+        }
+      }
+    }
+    else
+    {
+      QString value = attribute.value();
+      valueSplit = value.split(" ");
+      if ( !hasFillParam && value.startsWith( "param(fill)" ) )
+      {
+        hasFillParam = true;
+        if( valueSplit.size() > 1 )
+        {
+          defaultFill = QColor( valueSplit.at( 1 ) );
+        }
+      }
+      else if( !hasOutlineParam && value.startsWith( "param(outline)" ) )
+      {
+        hasOutlineParam = true;
+        if( valueSplit.size() > 1 )
+        {
+          defaultOutline = QColor( valueSplit.at( 1 ) );
+        }
+      }
+      else if( !hasOutlineWidthParam && value.startsWith( "param(outlineWidth)" ) )
+      {
+        hasOutlineWidthParam = true;
+        if( valueSplit.size() > 1 )
+        {
+          defaultOutlineWidth = valueSplit.at( 1 ).toDouble();
+        }
+      }
+    }
+  }
+
+  //pass it further to child items
+  QDomNodeList childList = elem.childNodes();
+  int nChildren = childList.count();
+  for ( int i = 0; i < nChildren; ++i )
+  {
+    QDomElement childElem = childList.at( i ).toElement();
+    containsElemParams( childElem, hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
   }
 }
 

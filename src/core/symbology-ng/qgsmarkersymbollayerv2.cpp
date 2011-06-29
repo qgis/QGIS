@@ -470,6 +470,28 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
     angle = props["angle"].toDouble();
 
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
+
+  //we only check the svg default parameters if necessary, since it could be expensive
+  if( !props.contains("fill") && !props.contains("outline") && !props.contains("outline-width") )
+  {
+    QColor fillColor, outlineColor;
+    double outlineWidth;
+    bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+    QgsSvgCache::instance()->containsParams( name, hasFillParam, fillColor, hasOutlineParam, outlineColor, hasOutlineWidthParam, outlineWidth );
+    if( hasFillParam )
+    {
+      m->setFillColor( fillColor );
+    }
+    if( hasOutlineParam )
+    {
+      m->setOutlineColor( outlineColor );
+    }
+    if( hasOutlineWidthParam )
+    {
+      m->setOutlineWidth( outlineWidth );
+    }
+  }
+
   if ( props.contains( "offset" ) )
     m->setOffset( QgsSymbolLayerV2Utils::decodePoint( props["offset"] ) );
   if ( props.contains( "fill" ) )
@@ -479,6 +501,27 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   if ( props.contains( "outline-width" ) )
     m->setOutlineWidth( props["outline-width"].toDouble() );
   return m;
+}
+
+void QgsSvgMarkerSymbolLayerV2::setPath( QString path )
+{
+  mPath = path;
+  QColor fillColor, outlineColor;
+  double outlineWidth;
+  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  QgsSvgCache::instance()->containsParams( path, hasFillParam, fillColor, hasOutlineParam, outlineColor, hasOutlineWidthParam, outlineWidth );
+  if( hasFillParam )
+  {
+    setFillColor( fillColor );
+  }
+  if( hasOutlineParam )
+  {
+    setOutlineColor( outlineColor );
+  }
+  if( hasOutlineWidthParam )
+  {
+    setOutlineWidth( outlineWidth );
+  }
 }
 
 

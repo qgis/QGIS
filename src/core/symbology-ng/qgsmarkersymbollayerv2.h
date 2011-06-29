@@ -112,7 +112,7 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
 
     QString path() const { return mPath; }
-    void setPath( QString path ) { mPath = path; }
+    void setPath( QString path );
 
     QColor fillColor() const { return mFillColor; }
     void setFillColor( const QColor& c ) { mFillColor = c; }

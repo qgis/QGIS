@@ -70,8 +70,10 @@ class QgsSvgCache
     const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
-    /**Tests if an svg file contains parameters for fill, outline color, outline width*/
-    void containsParams( const QString& path, bool& hasFillParam, bool& hasOutlineParam, bool& hasOutlineWidthParam ) const;
+    /**Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
+      default values in the svg file, only the first one is considered*/
+    void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor, bool& hasOutlineWidthParam,
+                        double& defaultOutlineWidth ) const;
 
   protected:
     QgsSvgCache();
@@ -111,6 +113,9 @@ class QgsSvgCache
 
     /**Replaces parameters in elements of a dom node and calls method for all child nodes*/
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
+
+    void containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
+                            bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const;
 
     /**Release memory and remove cache entry from mEntryLookup*/
     void removeCacheEntry( QString s, QgsSvgCacheEntry* entry );

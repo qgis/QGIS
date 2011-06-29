@@ -576,18 +576,29 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
   viewImages->setModel( m );
 }
 
-void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QString& svgPath )
+void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer )
 {
+  if( !layer )
+  {
+    return;
+  }
+
   //activate gui for svg parameters only if supported by the svg file
   bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
-  QgsSvgCache::instance()->containsParams( svgPath, hasFillParam, hasOutlineParam, hasOutlineWidthParam );
+  QColor defaultFill, defaultOutline;
+  double defaultOutlineWidth;
+  QgsSvgCache::instance()->containsParams( layer->path(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
   mChangeColorButton->setEnabled( hasFillParam );
   mChangeBorderColorButton->setEnabled( hasOutlineParam );
   mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
 
   mFileLineEdit->blockSignals( true );
-  mFileLineEdit->setText( svgPath );
+  mFileLineEdit->setText( layer->path() );
   mFileLineEdit->blockSignals( false );
+
+  mBorderWidthSpinBox->blockSignals( true );
+  mBorderWidthSpinBox->setValue( layer->outlineWidth() );
+  mBorderWidthSpinBox->blockSignals( false );
 }
 
 
@@ -628,7 +639,8 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
 
-  setGuiForSvg( mLayer->path() );
+  setGuiForSvg( mLayer );
+
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -642,7 +654,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setName( const QModelIndex& idx )
   mLayer->setPath( name );
   mFileLineEdit->setText( name );
 
-  setGuiForSvg( name );
+  setGuiForSvg( mLayer );
   emit changed();
 }
 
