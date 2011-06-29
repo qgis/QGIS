@@ -157,7 +157,7 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
 }
 
 void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor,
-                                 bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
+                                  bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
 {
   /*hasFillParam = false;
   hasOutlineParam = false;
@@ -191,7 +191,7 @@ void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColo
   }*/
 
   defaultFillColor = QColor( Qt::black );
-  defaultOutlineColor= QColor( Qt::black );
+  defaultOutlineColor = QColor( Qt::black );
   defaultOutlineWidth = 1.0;
 
   QFile svgFile( path );
@@ -398,15 +398,15 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
 }
 
 void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
-                        bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
+                                      bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
 {
-  if( elem.isNull() )
+  if ( elem.isNull() )
   {
     return;
   }
 
   //we already have all the information, no need to go deeper
-  if( hasFillParam && hasOutlineParam && hasOutlineWidthParam )
+  if ( hasFillParam && hasOutlineParam && hasOutlineWidthParam )
   {
     return;
   }
@@ -426,27 +426,34 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
       QStringList::const_iterator entryIt = entryList.constBegin();
       for ( ; entryIt != entryList.constEnd(); ++entryIt )
       {
-        valueSplit = entryIt->split(" ");
-        if( !hasFillParam && entryIt->startsWith( "param(fill)" ) )
+        QStringList keyValueSplit = entryIt->split( ':' );
+        if ( keyValueSplit.size() < 2 )
+        {
+          continue;
+        }
+        QString key = keyValueSplit.at( 0 );
+        QString value = keyValueSplit.at( 1 );
+        valueSplit = value.split( " " );
+        if ( !hasFillParam && value.startsWith( "param(fill)" ) )
         {
           hasFillParam = true;
-          if( valueSplit.size() > 1 )
+          if ( valueSplit.size() > 1 )
           {
             defaultFill = QColor( valueSplit.at( 1 ) );
           }
         }
-        else if( !hasOutlineParam && entryIt->startsWith( "param(outline)" ) )
+        else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
         {
           hasOutlineParam = true;
-          if( valueSplit.size() > 1 )
+          if ( valueSplit.size() > 1 )
           {
             defaultOutline = QColor( valueSplit.at( 1 ) );
           }
         }
-        else if( !hasOutlineWidthParam && entryIt->startsWith( "param(outlineWidth)" ) )
+        else if ( !hasOutlineWidthParam && value.startsWith( "param(outlineWidth)" ) )
         {
           hasOutlineWidthParam = true;
-          if( valueSplit.size() > 1 )
+          if ( valueSplit.size() > 1 )
           {
             defaultOutlineWidth = valueSplit.at( 1 ).toDouble();
           }
@@ -456,27 +463,27 @@ void QgsSvgCache::containsElemParams( const QDomElement& elem, bool& hasFillPara
     else
     {
       QString value = attribute.value();
-      valueSplit = value.split(" ");
+      valueSplit = value.split( " " );
       if ( !hasFillParam && value.startsWith( "param(fill)" ) )
       {
         hasFillParam = true;
-        if( valueSplit.size() > 1 )
+        if ( valueSplit.size() > 1 )
         {
           defaultFill = QColor( valueSplit.at( 1 ) );
         }
       }
-      else if( !hasOutlineParam && value.startsWith( "param(outline)" ) )
+      else if ( !hasOutlineParam && value.startsWith( "param(outline)" ) )
       {
         hasOutlineParam = true;
-        if( valueSplit.size() > 1 )
+        if ( valueSplit.size() > 1 )
         {
           defaultOutline = QColor( valueSplit.at( 1 ) );
         }
       }
-      else if( !hasOutlineWidthParam && value.startsWith( "param(outlineWidth)" ) )
+      else if ( !hasOutlineWidthParam && value.startsWith( "param(outlineWidth)" ) )
       {
         hasOutlineWidthParam = true;
-        if( valueSplit.size() > 1 )
+        if ( valueSplit.size() > 1 )
         {
           defaultOutlineWidth = valueSplit.at( 1 ).toDouble();
         }
