@@ -366,7 +366,12 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
         {
           value = QString::number( outlineWidth );
         }
-        newAttributeString.append( key + ":" + value + ";" );
+
+        if( entryIt != entryList.constBegin() )
+        {
+          newAttributeString.append(";");
+        }
+        newAttributeString.append( key + ":" + value );
       }
       elem.setAttribute( attribute.name(), newAttributeString );
     }
