@@ -29,6 +29,7 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
+#include "qgslogger.h"
 
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
@@ -497,6 +498,18 @@ void QgsComposerView::paintEvent( QPaintEvent* event )
   {
     event->ignore();
   }
+}
+
+void QgsComposerView::hideEvent( QHideEvent* e )
+{
+  emit( composerViewShow( this ) );
+  e->ignore();
+}
+
+void QgsComposerView::showEvent( QShowEvent* e )
+{
+  emit( composerViewHide( this ) );
+  e->ignore();
 }
 
 void QgsComposerView::setComposition( QgsComposition* c )
