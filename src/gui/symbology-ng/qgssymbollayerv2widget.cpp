@@ -8,6 +8,7 @@
 #include "characterwidget.h"
 #include "qgsdashspacedialog.h"
 #include "qgssymbolv2propertiesdialog.h"
+#include "qgssvgcache.h"
 
 #include "qgsapplication.h"
 
@@ -537,20 +538,17 @@ class QgsSvgListModel : public QAbstractListModel
 
       if ( role == Qt::DecorationRole ) // icon
       {
-
         QPixmap pixmap;
         if ( !QPixmapCache::find( entry, pixmap ) )
         {
           // render SVG file
-          QSvgRenderer renderer;
-          QPainter painter;
-          renderer.load( entry );
-          pixmap = QPixmap( QSize( 24, 24 ) );
-          pixmap.fill();
-          painter.begin( &pixmap );
-          renderer.render( &painter );
-          painter.end();
+          QColor fill, outline;
+          double outlineWidth;
+          bool fillParam, outlineParam, outlineWidthParam;
+          QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
+          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 8, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0 );
+          pixmap = QPixmap::fromImage( img );
           QPixmapCache::insert( entry, pixmap );
         }
 
@@ -575,6 +573,31 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
   viewImages->setModel( m );
 }
 
+void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer )
+{
+  if( !layer )
+  {
+    return;
+  }
+
+  //activate gui for svg parameters only if supported by the svg file
+  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  QColor defaultFill, defaultOutline;
+  double defaultOutlineWidth;
+  QgsSvgCache::instance()->containsParams( layer->path(), hasFillParam, defaultFill, hasOutlineParam, defaultOutline, hasOutlineWidthParam, defaultOutlineWidth );
+  mChangeColorButton->setEnabled( hasFillParam );
+  mChangeBorderColorButton->setEnabled( hasOutlineParam );
+  mBorderWidthSpinBox->setEnabled( hasOutlineWidthParam );
+
+  mFileLineEdit->blockSignals( true );
+  mFileLineEdit->setText( layer->path() );
+  mFileLineEdit->blockSignals( false );
+
+  mBorderWidthSpinBox->blockSignals( true );
+  mBorderWidthSpinBox->setValue( layer->outlineWidth() );
+  mBorderWidthSpinBox->blockSignals( false );
+}
+
 
 void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
@@ -595,6 +618,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
     {
       selModel->select( idx, QItemSelectionModel::SelectCurrent );
       selModel->setCurrentIndex( idx, QItemSelectionModel::SelectCurrent );
+      setName( idx );
       break;
     }
   }
@@ -611,6 +635,9 @@ void QgsSvgMarkerSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   spinOffsetY->blockSignals( true );
   spinOffsetY->setValue( mLayer->offset().y() );
   spinOffsetY->blockSignals( false );
+
+  setGuiForSvg( mLayer );
+
 }
 
 QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2Widget::symbolLayer()
@@ -623,6 +650,8 @@ void QgsSvgMarkerSymbolLayerV2Widget::setName( const QModelIndex& idx )
   QString name = idx.data( Qt::UserRole ).toString();
   mLayer->setPath( name );
   mFileLineEdit->setText( name );
+
+  setGuiForSvg( mLayer );
   emit changed();
 }
 
@@ -666,7 +695,45 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_textEdited( const QString
     return;
   }
   mLayer->setPath( text );
+  setGuiForSvg( mLayer );
   emit changed();
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeColorButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QColor c = QColorDialog::getColor( mLayer->fillColor() );
+  if ( c.isValid() )
+  {
+    mLayer->setFillColor( c );
+    emit changed();
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mChangeBorderColorButton_clicked()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+  QColor c = QColorDialog::getColor( mLayer->outlineColor() );
+  if ( c.isValid() )
+  {
+    mLayer->setOutlineColor( c );
+    emit changed();
+  }
+}
+
+void QgsSvgMarkerSymbolLayerV2Widget::on_mBorderWidthSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOutlineWidth( d );
+    emit changed();
+  }
 }
 
 ///////////////
