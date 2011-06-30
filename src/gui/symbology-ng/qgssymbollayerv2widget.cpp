@@ -695,6 +695,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::on_mFileLineEdit_textEdited( const QString
     return;
   }
   mLayer->setPath( text );
+  setGuiForSvg( mLayer );
   emit changed();
 }
 
