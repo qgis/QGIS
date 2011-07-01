@@ -34,7 +34,7 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
     virtual QgsFeatureRendererV2* createRenderer( QDomElement& elem ) = 0;
     /** Return new instance of settings widget for the renderer. Returns NULL on error. */
     virtual QgsRendererV2Widget* createRendererWidget( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
-    { return NULL; }
+    { Q_UNUSED( layer ); Q_UNUSED( style ); Q_UNUSED( renderer ); return NULL; }
 
   protected:
     //! name used within QGIS for identification (the same what renderer's type() returns)

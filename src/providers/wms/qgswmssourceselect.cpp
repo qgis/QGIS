@@ -776,6 +776,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
 
 void QgsWMSSourceSelect::on_lstTilesets_itemClicked( QTableWidgetItem *item )
 {
+  Q_UNUSED( item );
+
   QTableWidgetItem *rowItem = lstTilesets->item( lstTilesets->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;
 

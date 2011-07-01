@@ -29,10 +29,19 @@
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
 #include "qgscomposerattributetable.h"
+#include "qgslogger.h"
 
-QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f ) :
-    QGraphicsView( parent ), mShiftKeyPressed( false ), mRubberBandItem( 0 ), mRubberBandLineItem( 0 ), mMoveContentItem( 0 ), mPaintingEnabled( true )
+QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
+    : QGraphicsView( parent )
+    , mShiftKeyPressed( false )
+    , mRubberBandItem( 0 )
+    , mRubberBandLineItem( 0 )
+    , mMoveContentItem( 0 )
+    , mPaintingEnabled( true )
 {
+  Q_UNUSED( f );
+  Q_UNUSED( name );
+
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
   viewport()->setMouseTracking( true );
@@ -491,6 +500,18 @@ void QgsComposerView::paintEvent( QPaintEvent* event )
   }
 }
 
+void QgsComposerView::hideEvent( QHideEvent* e )
+{
+  emit( composerViewShow( this ) );
+  e->ignore();
+}
+
+void QgsComposerView::showEvent( QShowEvent* e )
+{
+  emit( composerViewHide( this ) );
+  e->ignore();
+}
+
 void QgsComposerView::setComposition( QgsComposition* c )
 {
   setScene( c );
@@ -544,7 +565,7 @@ void QgsComposerView::addComposerMap( QgsComposerMap* map )
 
 void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 {
-  //take first available map...
+  //take first available map
   QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
   if ( mapItemList.size() > 0 )
   {
@@ -561,6 +582,12 @@ void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
 
 void QgsComposerView::addComposerLegend( QgsComposerLegend* legend )
 {
+  //take first available map
+  QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    legend->setComposerMap( mapItemList.at( 0 ) );
+  }
   scene()->addItem( legend );
   emit composerLegendAdded( legend );
   scene()->clearSelection();

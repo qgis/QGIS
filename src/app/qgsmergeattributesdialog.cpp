@@ -96,7 +96,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
-    verticalHeaderLabels << QString::number( mFeatureList[i].id() );
+    verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
 
     const QgsAttributeMap &attrs = mFeatureList[i].attributeMap();
 
@@ -147,7 +147,8 @@ QComboBox* QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     newComboBox->addItem( tr( "Mean" ) );
   }
 
-  QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( comboValueChanged( const QString& ) ) );
+  QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ),
+                    this, SLOT( comboValueChanged( const QString& ) ) );
   return newComboBox;
 }
 
@@ -163,8 +164,9 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox* c ) const
   return -1;
 }
 
-void QgsMergeAttributesDialog::comboValueChanged( const QString & text )
+void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
 {
+  Q_UNUSED( text );
   QComboBox* senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {

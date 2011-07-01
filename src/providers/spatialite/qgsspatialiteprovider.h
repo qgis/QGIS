@@ -73,7 +73,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       *  @param useIntersect true if an accurate intersection test should be used,
       *                     false if a test based on bounding box is sufficient
       */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /** Accessor for sql where clause used to limit dataset */
@@ -380,6 +380,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
+    bool prepareStatement( sqlite3_stmt *&stmt,
+                                 const QgsAttributeList &fetchAttributes,
+                                 bool fetchGeometry,
+                                 QString whereClause );
+    bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
+                    QgsFeature &feature,
+                    const QgsAttributeList &fetchAttributes );
     void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
                            unsigned char **wkb, size_t *geom_size );
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,

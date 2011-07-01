@@ -32,16 +32,16 @@ QgsPoint RgSimpleGraphBuilder::addVertex( const QgsPoint& pt )
   if ( f > 0 )
   {
     QgsRectangle r( pt.x() - f, pt.y() - f, pt.x() + f, pt.y() + f );
-    QList< int > searchResult = mPointIndex.intersects( r );
+    QList< QgsFeatureId > searchResult = mPointIndex.intersects( r );
     if ( !searchResult.empty() )
     {
-      int i = searchResult.front();
+      QgsFeatureId i = searchResult.front();
       if ( mPointMap[ i ].sqrDist( pt ) < topologyTolerance() )
       {
         return mPointMap[ i ];
       }
     }
-    int newId = mPointMap.size() + 1;
+    QgsFeatureId newId = mPointMap.size() + 1;
 
     QgsFeature f( newId );
     f.setGeometry( QgsGeometry::fromPoint( pt ) );
@@ -53,7 +53,7 @@ QgsPoint RgSimpleGraphBuilder::addVertex( const QgsPoint& pt )
   return pt;
 }
 
-void RgSimpleGraphBuilder::addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed, int featureId )
+void RgSimpleGraphBuilder::addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed, QgsFeatureId featureId )
 {
   mMatrix[ pt1 ][ pt2 ] = ArcAttributes( cost, cost / speed, featureId );
 }

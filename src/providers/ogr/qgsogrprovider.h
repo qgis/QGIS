@@ -87,7 +87,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature& feature,
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -296,7 +296,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
-    bool deleteFeature( int id );
+    bool deleteFeature( QgsFeatureId id );
 
     QString quotedIdentifier( QString field );
 

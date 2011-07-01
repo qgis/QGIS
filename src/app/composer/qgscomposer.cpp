@@ -1106,10 +1106,16 @@ void QgsComposer::on_mActionRedo_triggered()
   }
 }
 
-void QgsComposer::moveEvent( QMoveEvent *e ) { saveWindowState(); }
+void QgsComposer::moveEvent( QMoveEvent *e )
+{
+  Q_UNUSED( e );
+  saveWindowState();
+}
 
 void QgsComposer::resizeEvent( QResizeEvent *e )
 {
+  Q_UNUSED( e );
+
   // Move size grip when window is resized
   mSizeGrip->move( rect().bottomRight() - mSizeGrip->rect().bottomRight() );
 

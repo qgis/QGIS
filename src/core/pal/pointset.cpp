@@ -38,6 +38,8 @@
 #include <config.h>
 #endif
 
+#include <qglobal.h>
+
 #include "pointset.h"
 #include "util.h"
 
@@ -197,6 +199,8 @@ namespace pal
   {
 #ifdef _DEBUG_
     std::cout << "splitPolygons: " << uid << std::endl;
+#else
+    Q_UNUSED( uid );
 #endif
     int i, j;
 

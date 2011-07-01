@@ -18,18 +18,14 @@
 #ifndef GPSDATA_H
 #define GPSDATA_H
 
-#include <iostream>
 #include <limits>
-#include <list>
-#include <map>
-#include <stack>
-#include <string>
-#include <vector>
 
 #include <expat.h>
 #include <QString>
 #include <QTextStream>
+#include <QStack>
 
+#include "qgsfeature.h"
 #include "qgsrectangle.h"
 
 // workaround for MSVC compiler which already has defined macro max
@@ -39,8 +35,6 @@
 #  undef max
 # endif
 #endif
-
-typedef QSet<int> QgsFeatureIds;
 
 /** This is the parent class for all GPS data classes (except tracksegment).
     It contains the variables that all GPS objects can have.
@@ -91,7 +85,7 @@ class QgsWaypoint : public QgsGPSPoint
 {
   public:
     virtual void writeXML( QTextStream& stream );
-    int id;
+    QgsFeatureId id;
 };
 
 
@@ -102,7 +96,7 @@ class QgsRoute : public QgsGPSExtended
   public:
     virtual void writeXML( QTextStream& stream );
     std::vector<QgsRoutepoint> points;
-    int id;
+    QgsFeatureId id;
 };
 
 
@@ -124,7 +118,7 @@ class QgsTrack : public QgsGPSExtended
   public:
     virtual void writeXML( QTextStream& stream );
     std::vector<QgsTrackSegment> segments;
-    int id;
+    QgsFeatureId id;
 };
 
 
@@ -310,7 +304,7 @@ class QgsGPXHandler
     };
 
     /** This is used to keep track of what kind of data we are parsing. */
-    std::stack<ParseMode> parseModes;
+    QStack<ParseMode> parseModes;
 
     QgsGPSData& mData;
     QgsWaypoint mWpt;

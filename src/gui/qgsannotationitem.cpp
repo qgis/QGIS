@@ -413,6 +413,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
 
 void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& annotationElem )
 {
+  Q_UNUSED( doc );
   if ( annotationElem.isNull() )
   {
     return;

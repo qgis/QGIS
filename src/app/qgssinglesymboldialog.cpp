@@ -44,8 +44,9 @@ class QgsMarkerListModel : public QAbstractListModel
       mMarkers = QgsMarkerCatalogue::instance()->list();
     }
 
-    int rowCount( const QModelIndex & parent = QModelIndex() ) const
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const
     {
+      Q_UNUSED( parent );
       return mMarkers.size();
     }
 
@@ -655,6 +656,8 @@ void QgsSingleSymbolDialog::setLabel( QString label )
 
 void QgsSingleSymbolDialog::symbolChanged( const QModelIndex &current, const QModelIndex &previous )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( previous );
   emit settingsChanged();
 }
 

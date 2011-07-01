@@ -452,25 +452,32 @@ bool QgsPostgresProvider::declareCursor(
   return true;
 }
 
-bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetchGeometry,
-                                      QgsFeature &feature,
-                                      const QgsAttributeList &fetchAttributes )
+qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int col )
 {
-  try
-  {
-    int oid;
+  qint64 oid;
+  char *p = PQgetvalue( queryResult, row, col );
+  size_t s = PQgetlength( queryResult, row, col );
 
-    if ( primaryKeyType != "tid" )
-    {
-      oid = *( int * )PQgetvalue( queryResult, row, 0 );
+  QString buf = "";
+  for ( size_t i = 0; i < s; i++ )
+  {
+    buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
+  }
+
+  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 3 );
+
+  switch ( s )
+  {
+    case 2:
+      oid = *( qint16 * )p;
       if ( swapEndian )
-        oid = ntohl( oid ); // convert oid to opposite endian
-    }
-    else if ( PQgetlength( queryResult, row, 0 ) == 6 )
+        oid = ntohs( oid );
+      break;
+
+    case 6:
     {
-      char *data = PQgetvalue( queryResult, row, 0 );
-      int block = *( int * )data;
-      int offset = *( short * )( data + sizeof( int ) );
+      qint64 block  = *( qint32 * ) p;
+      qint64 offset = *( qint16 * )( p + sizeof( qint32 ) );
 
       if ( swapEndian )
       {
@@ -478,19 +485,53 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
         offset = ntohs( offset );
       }
 
-      if ( block > 0xffff )
-      {
-        QgsDebugMsg( QString( "block number %1 exceeds 16 bit" ).arg( block ) );
-        return false;
-      }
-
       oid = ( block << 16 ) + offset;
     }
-    else
+    break;
+
+    case 8:
     {
-      QgsDebugMsg( QString( "expecting 6 bytes for tid (found %1 bytes)" ).arg( PQgetlength( queryResult, row, 0 ) ) );
-      return false;
+      qint32 oid0 = *( qint32 * ) p;
+      qint32 oid1 = *( qint32 * )( p + sizeof( qint32 ) );
+
+      if ( swapEndian )
+      {
+        QgsDebugMsg( QString( "swap oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ) );
+        oid0 = ntohl( oid0 );
+        oid1 = ntohl( oid1 );
+      }
+
+      QgsDebugMsg( QString( "oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ) );
+      oid   = oid0;
+      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      oid <<= 32;
+      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      oid  |= oid1;
+      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
     }
+    break;
+
+    default:
+      QgsDebugMsg( QString( "unexpected size %d" ).arg( s ) );
+
+    case 4:
+      oid = *( qint32 * )p;
+      if ( swapEndian )
+        oid = ntohl( oid );
+      break;
+  }
+
+  return oid;
+}
+
+bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetchGeometry,
+                                      QgsFeature &feature,
+                                      const QgsAttributeList &fetchAttributes )
+{
+  try
+  {
+    QgsFeatureId oid = getBinaryInt( queryResult, row, 0 );
+    QgsDebugMsgLevel( QString( "oid=%1" ).arg( oid ), 3 );
 
     feature.setFeatureId( oid );
     feature.clearAttributeMap();
@@ -528,7 +569,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
       if ( fld.name() == primaryKey )
       {
         // primary key was already processed
-        feature.addAttribute( *it, convertValue( fld.type(), QString::number( oid ) ) );
+        feature.addAttribute( *it, convertValue( fld.type(), FID_TO_STRING( oid ) ) );
         continue;
       }
 
@@ -692,7 +733,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   return true;
 }
 
-QString QgsPostgresProvider::whereClause( int featureId ) const
+QString QgsPostgresProvider::whereClause( QgsFeatureId featureId ) const
 {
   QString whereClause;
 
@@ -702,7 +743,10 @@ QString QgsPostgresProvider::whereClause( int featureId ) const
   }
   else
   {
-    whereClause = QString( "%1='(%2,%3)'" ).arg( quotedIdentifier( primaryKey ) ).arg( featureId >> 16 ).arg( featureId & 0xffff );
+    whereClause = QString( "%1='(%2,%3)'" )
+                  .arg( quotedIdentifier( primaryKey ) )
+                  .arg( FID_TO_NUMBER( featureId ) >> 16 )
+                  .arg( FID_TO_NUMBER( featureId ) & 0xffff );
   }
 
   if ( !sqlWhereClause.isEmpty() )
@@ -716,7 +760,7 @@ QString QgsPostgresProvider::whereClause( int featureId ) const
   return whereClause;
 }
 
-bool QgsPostgresProvider::featureAtId( int featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+bool QgsPostgresProvider::featureAtId( QgsFeatureId featureId, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
   feature.setValid( false );
   QString cursorName = QString( "qgisfid%1" ).arg( providerId );
@@ -1246,9 +1290,9 @@ QString QgsPostgresProvider::getPrimaryKey()
           showMessageBox( tr( "No suitable key column in table" ),
                           tr( "The table has no column suitable for use as a key.\n\n"
                               "Quantum GIS requires that the table either has a column of type\n"
-                              "int4 with a unique constraint on it (which includes the\n"
+                              "integer with an unique constraint on it (which includes the\n"
                               "primary key), has a PostgreSQL oid column or has a ctid\n"
-                              "column with a 16bit block number.\n" ) );
+                              "column.\n" ) );
         }
         else
         {
@@ -1284,7 +1328,7 @@ QString QgsPostgresProvider::getPrimaryKey()
           // mPrimaryKeyDefault stays null and is retrieved later on demand
           // if mUseEstimatedMetadata is on assume that the already keyfield is still unique
 
-          if (( type != "int4" && type != "oid" ) ||
+          if (( type != "int2" && type != "int4" && type != "int8" && type != "oid" ) ||
               ( !mUseEstimatedMetadata && !uniqueData( mQuery, primaryKey ) ) )
           {
             primaryKey = "";
@@ -1297,7 +1341,9 @@ QString QgsPostgresProvider::getPrimaryKey()
         }
       }
       else
+      {
         QgsDebugMsg( "Unexpected relation type of '" + type + "'." );
+      }
     }
     else // have some unique indices on the table. Now choose one...
     {
@@ -1319,9 +1365,9 @@ QString QgsPostgresProvider::getPrimaryKey()
             QString columnName = QString::fromUtf8( PQgetvalue( types, 0, 0 ) );
             QString columnType = QString::fromUtf8( PQgetvalue( types, 0, 1 ) );
 
-            if ( columnType != "int4" )
+            if ( columnType != "int2" && columnType != "int4" && columnType != "int8" )
               log.append( tr( "The unique index on column '%1' is unsuitable because Quantum GIS does not currently "
-                              "support non-int4 type columns as a key into the table.\n" ).arg( columnName ) );
+                              "support non-integer typed columns as a key into the table.\n" ).arg( columnName ) );
             else
             {
               mIsDbPrimaryKey = true;
@@ -1383,7 +1429,7 @@ QString QgsPostgresProvider::getPrimaryKey()
         {
           log.prepend( "There were no columns in the table that were suitable "
                        "as a qgis key into the table (either a column with a "
-                       "unique index and type int4 or a PostgreSQL oid column.\n" );
+                       "unique index and type integer or a PostgreSQL oid column.\n" );
         }
       }
 
@@ -1518,7 +1564,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
     // This sql returns one or more rows if the column 'tableCol' in
     // table 'tableName' and schema 'schemaName' has one or more
     // columns that satisfy the following conditions:
-    // 1) the column has data type of int4.
+    // 1) the column has data type of integer.
     // 2) the column has a unique constraint or primary key constraint
     //    on it.
     // 3) the constraint applies just to the column of interest (i.e.,
@@ -1529,12 +1575,14 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
                    "and array_dims(conkey)='[1:1]'" ).arg( quotedValue( tableCol ) ).arg( rel_oid );
 
     result = connectionRO->PQexec( sql );
-    if ( PQntuples( result ) == 1 && colType == "int4" )
+    if ( PQntuples( result ) == 1 &&
+         ( colType == "int2" || colType == "int4" || colType == "int8" ) )
       suitable[viewCol] = iter->second;
 
     QString details = tr( "'%1' derives from '%2.%3.%4' " ).arg( viewCol ).arg( schemaName ).arg( tableName ).arg( tableCol );
 
-    if ( PQntuples( result ) == 1 && colType == "int4" )
+    if ( PQntuples( result ) == 1 &&
+         ( colType == "int2" || colType == "int4" || colType == "int8" ) )
     {
       details += tr( "and is suitable." );
     }
@@ -1642,7 +1690,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
     log.prepend( tr( "The view '%1.%2' has no column suitable for use as a unique key.\n"
                      "Quantum GIS requires that the view has a column that can be used "
                      "as a unique key. Such a column should be derived from "
-                     "a table column of type int4 and be a primary key, "
+                     "a table column of type integer and be a primary key, "
                      "have a unique constraint on it, or be a PostgreSQL "
                      "oid column. To improve performance the column should also be indexed.\n"
                      "The view you selected has the following columns, none "
@@ -1655,6 +1703,7 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
 
 bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 {
+  Q_UNUSED( query );
   // Check to see if the given column contains unique data
   QString sql = QString( "select count(distinct %1)=count(%1) from %2" )
                 .arg( quotedIdentifier( colName ) )
@@ -1679,6 +1728,9 @@ bool QgsPostgresProvider::uniqueData( QString query, QString colName )
 
 int QgsPostgresProvider::SRCFromViewColumn( const QString& ns, const QString& relname, const QString& attname_table, const QString& attname_view, const QString& viewDefinition, SRC& result ) const
 {
+  Q_UNUSED( attname_table );
+  Q_UNUSED( attname_view );
+  Q_UNUSED( viewDefinition );
   QString newViewDefSql = QString( "SELECT definition FROM pg_views WHERE schemaname=%1 AND viewname=%2" )
                           .arg( quotedValue( ns ) ).arg( quotedValue( relname ) );
   Result newViewDefResult = connectionRO->PQexec( newViewDefSql );
@@ -2657,10 +2709,10 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
     // cycle through the features
     for ( QgsChangedAttributesMap::const_iterator iter = attr_map.begin(); iter != attr_map.end(); ++iter )
     {
-      int fid = iter.key();
+      QgsFeatureId fid = iter.key();
 
       // skip added features
-      if ( fid < 0 )
+      if ( FID_IS_NEW( fid ) )
         continue;
 
       QString sql = QString( "UPDATE %1 SET " ).arg( mQuery );
@@ -2777,7 +2829,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
       if ( iter->asWkb() )
       {
-        QgsDebugMsg( "iterating over feature id " + QString::number( iter.key() ) );
+        QgsDebugMsg( "iterating over feature id " + FID_TO_STRING( iter.key() ) );
 
         QString geomParam;
         appendGeomString( &*iter, geomParam );
@@ -2786,11 +2838,11 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
         params << geomParam;
         if ( primaryKeyType != "tid" )
         {
-          params << QString( "%1" ).arg( iter.key() );
+          params << FID_TO_STRING( iter.key() );
         }
         else
         {
-          params << QString( "(%1,%2)" ).arg( iter.key() >> 16 ).arg( iter.key() & 0xffff );
+          params << QString( "(%1,%2)" ).arg( FID_TO_NUMBER( iter.key() ) >> 16 ).arg( FID_TO_NUMBER( iter.key() ) & 0xffff );
         }
 
         PGresult *result = connectionRW->PQexecPrepared( "updatefeatures", params );
@@ -2890,6 +2942,9 @@ long QgsPostgresProvider::featureCount() const
   // get total number of features
   QString sql;
 
+  // use estimated metadata even when there is a where clause,
+  // although we get an incorrect feature count for the subset
+  // - but make huge dataset usable.
   if ( !isQuery && mUseEstimatedMetadata )
   {
     sql = QString( "select reltuples::int from pg_catalog.pg_class where oid=regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
@@ -3085,14 +3140,13 @@ bool QgsPostgresProvider::deduceEndian()
   if ( PQntuples( fResult ) > 0 )
   {
     // get the oid value from the binary cursor
-    int oid = *( int * )PQgetvalue( fResult, 0, 0 );
+    qint64 oid = getBinaryInt( fResult, 0, 0 );
 
-    //--std::cout << "Got oid of " << oid << " from the binary cursor" << std::endl;
-
-    //--std::cout << "First oid is " << oidValue << std::endl;
+    QgsDebugMsg( QString( "Got oid of %1 from the binary cursor" ).arg( oid ) );
+    QgsDebugMsg( QString( "First oid is %1" ).arg( oidValue ) );
 
     // compare the two oid values to determine if we need to do an endian swap
-    if ( oid == oidValue.toInt() )
+    if ( oid != oidValue.toLongLong() )
       swapEndian = false;
   }
   connectionRO->closeCursor( "oidcursor" );

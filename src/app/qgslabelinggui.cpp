@@ -545,6 +545,7 @@ void QgsLabelingGui::on_mFontSizeSpinBox_valueChanged( double d )
 
 void QgsLabelingGui::on_mFontSizeUnitComboBox_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   updateFont( lblFontPreview->font() );
 }
 

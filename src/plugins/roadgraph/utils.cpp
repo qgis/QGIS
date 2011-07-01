@@ -77,10 +77,10 @@ ArcAttributes::ArcAttributes()
   mCost = infinity();
   mTime = infinity();
 }
-ArcAttributes::ArcAttributes( double cost, double time, int featureId ) :
+
+ArcAttributes::ArcAttributes( double cost, double time, QgsFeatureId featureId ) :
     mCost( cost ), mTime( time ), mFeatureId( featureId )
 {
-
 }
 
 
@@ -150,6 +150,7 @@ AdjacencyMatrix DijkstraFinder::find( const QgsPoint& frontPoint, const QgsPoint
   }
 
   AdjacencyMatrix m;
+  m[ frontPoint ];
   QgsPoint nextPoint = backPoint;
   QgsPoint firstPoint = backPoint;
   while ( true )

@@ -44,6 +44,7 @@ SpatialIndex::IStorageManager* SpatialIndex::StorageManager::createNewMemoryStor
 
 MemoryStorageManager::MemoryStorageManager( Tools::PropertySet& ps )
 {
+  Q_UNUSED( ps );
 }
 
 MemoryStorageManager::~MemoryStorageManager()

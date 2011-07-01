@@ -140,7 +140,7 @@ namespace SpatialIndex
               RstarSplitEntry* pe1 = * ( RstarSplitEntry** ) pv1;
               RstarSplitEntry* pe2 = * ( RstarSplitEntry** ) pv2;
 
-              assert( pe1->m_sortDim == pe2->m_sortDim );
+              Q_ASSERT( pe1->m_sortDim == pe2->m_sortDim );
 
               if ( pe1->m_pRegion->m_pLow[pe1->m_sortDim] < pe2->m_pRegion->m_pLow[pe2->m_sortDim] ) return -1;
               if ( pe1->m_pRegion->m_pLow[pe1->m_sortDim] > pe2->m_pRegion->m_pLow[pe2->m_sortDim] ) return 1;
@@ -152,7 +152,7 @@ namespace SpatialIndex
               RstarSplitEntry* pe1 = * ( RstarSplitEntry** ) pv1;
               RstarSplitEntry* pe2 = * ( RstarSplitEntry** ) pv2;
 
-              assert( pe1->m_sortDim == pe2->m_sortDim );
+              Q_ASSERT( pe1->m_sortDim == pe2->m_sortDim );
 
               if ( pe1->m_pRegion->m_pHigh[pe1->m_sortDim] < pe2->m_pRegion->m_pHigh[pe2->m_sortDim] ) return -1;
               if ( pe1->m_pRegion->m_pHigh[pe1->m_sortDim] > pe2->m_pRegion->m_pHigh[pe2->m_sortDim] ) return 1;

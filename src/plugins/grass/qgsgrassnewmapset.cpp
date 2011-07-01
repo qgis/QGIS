@@ -350,6 +350,7 @@ void QgsGrassNewMapset::checkLocation()
 
 void QgsGrassNewMapset::existingLocationChanged( const QString &text )
 {
+  Q_UNUSED( text );
   QgsDebugMsg( "entered." );
 }
 
@@ -368,6 +369,7 @@ void QgsGrassNewMapset::setProjectionPage()
 
 void QgsGrassNewMapset::sridSelected( QString theSRID )
 {
+  Q_UNUSED( theSRID );
   QgsDebugMsg( "entered." );
   projectionSelected();
 }
@@ -449,16 +451,16 @@ void QgsGrassNewMapset::setGrassProjection()
         QgsDebugMsg( QString( "wkt = %1" ).arg( wkt ) );
       }
 
-      int ret;
       // Note: GPJ_osr_to_grass() defaults in PROJECTION_XY if projection
       //       cannot be set
 
       // There was a bug in GRASS, it is present in 6.0.x line
-      ret = GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt, 0 );
+      int ret = GPJ_wkt_to_grass( &mCellHead, &mProjInfo, &mProjUnits, wkt, 0 );
 
       // Note: It seems that GPJ_osr_to_grass()returns always 1,
       //   -> test if mProjInfo was set
 
+      Q_UNUSED( ret );
       QgsDebugMsg( QString( "ret = %1" ).arg( ret ) );
       QgsDebugMsg( QString( "mProjInfo = %1" ).arg( QString::number(( qulonglong )mProjInfo, 16 ).toLocal8Bit().constData() ) );
 
@@ -1385,6 +1387,7 @@ void QgsGrassNewMapset::setError( QLabel *line, const QString &err )
 // to next page if Key_Enter is pressed
 void QgsGrassNewMapset::keyPressEvent( QKeyEvent * e )
 {
+  Q_UNUSED( e );
 // QgsDebugMsg(QString("key = %1").arg(e->key()));
 }
 

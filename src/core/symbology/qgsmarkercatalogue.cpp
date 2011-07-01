@@ -271,6 +271,8 @@ bool QgsMarkerCatalogue::fontMarker( QPainter *thepPainter, QString fullName, do
 
 bool QgsMarkerCatalogue::svgMarker( QPainter * thepPainter, QString fileName, double scaleFactor )
 {
+  Q_UNUSED( scaleFactor );
+
   QSvgRenderer mySVG;
   if ( !mySVG.load( fileName ) )
     return false;

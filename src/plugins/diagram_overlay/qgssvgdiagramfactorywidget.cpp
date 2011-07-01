@@ -119,6 +119,7 @@ void QgsSVGDiagramFactoryWidget::on_mPictureBrowseButton_clicked()
 
 void QgsSVGDiagramFactoryWidget::on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
 {
+  Q_UNUSED( previous );
   if ( !current )
   {
     return;

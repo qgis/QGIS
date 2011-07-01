@@ -874,6 +874,7 @@ int QgsGrassModel::rowCount( const QModelIndex & parent ) const
 
 int QgsGrassModel::columnCount( const QModelIndex & parent ) const
 {
+  Q_UNUSED( parent );
 // QgsDebugMsg("entered.");
   return 1;
 }
@@ -1007,6 +1008,9 @@ void QgsGrassModel::setLocation( const QString &gisbase, const QString &location
 QVariant QgsGrassModel::headerData( int section,
                                     Qt::Orientation orientation, int role ) const
 {
+  Q_UNUSED( section );
+  Q_UNUSED( orientation );
+  Q_UNUSED( role );
 // QgsDebugMsg("entered.");
 
   //TODO

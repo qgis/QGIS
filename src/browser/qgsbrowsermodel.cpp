@@ -80,7 +80,18 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
   if ( !index.isValid() )
     return 0;
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+  QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+  if ( ptr->type() == QgsDataItem::Layer )
+  {
+    QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
+    if ( layer->providerKey() != "wms" )
+    {
+      flags |= Qt::ItemIsDragEnabled;
+    }
+  }
+  return flags;
 }
 
 QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
@@ -110,6 +121,7 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
 
 QVariant QgsBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
+  Q_UNUSED( section );
   if ( orientation == Qt::Horizontal && role == Qt::DisplayRole )
   {
     return QVariant( "header" );
@@ -135,7 +147,7 @@ int QgsBrowserModel::rowCount( const QModelIndex &parent ) const
   }
 }
 
-bool QgsBrowserModel::hasChildren( const QModelIndex & parent ) const
+bool QgsBrowserModel::hasChildren( const QModelIndex &parent ) const
 {
   if ( !parent.isValid() )
     return true; // root item: its children are top level items
@@ -144,8 +156,9 @@ bool QgsBrowserModel::hasChildren( const QModelIndex & parent ) const
   return item && item->hasChildren();
 }
 
-int QgsBrowserModel::columnCount( const QModelIndex & parent ) const
+int QgsBrowserModel::columnCount( const QModelIndex &parent ) const
 {
+  Q_UNUSED( parent );
   return 1;
 }
 
@@ -258,6 +271,51 @@ void QgsBrowserModel::connectItem( QgsDataItem* item )
            this, SLOT( beginRemoveItems( QgsDataItem*, int, int ) ) );
   connect( item, SIGNAL( endRemoveItems() ),
            this, SLOT( endRemoveItems() ) );
+}
+
+QStringList QgsBrowserModel::mimeTypes() const
+{
+  QStringList types;
+  // In theory the mime type convention is: application/x-vnd.<vendor>.<application>.<type>
+  // but it seems a bit over formalized. Would be an application/x-qgis-uri better?
+  types << "application/x-vnd.qgis.qgis.uri";
+  return types;
+}
+
+QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
+{
+  QMimeData *mimeData = new QMimeData();
+  QByteArray encodedData;
+
+  QDataStream stream( &encodedData, QIODevice::WriteOnly );
+
+  foreach( const QModelIndex &index, indexes )
+  {
+    if ( index.isValid() )
+    {
+      QgsDataItem* ptr = ( QgsDataItem* ) index.internalPointer();
+      if ( ptr->type() != QgsDataItem::Layer ) continue;
+      QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
+      if ( layer->providerKey() == "wms" ) continue;
+      QString layerType;
+      switch ( layer->mapLayerType() )
+      {
+        case QgsMapLayer::VectorLayer:
+          layerType = "vector";
+          break;
+        case QgsMapLayer::RasterLayer:
+          layerType = "raster";
+          break;
+        default:
+          continue;
+      }
+      QString xUri = layerType + ":" + layer->providerKey() + ":" + layer->name() + ":" + layer->uri();
+      stream << xUri;
+    }
+  }
+
+  mimeData->setData( "application/x-vnd.qgis.qgis.uri", encodedData );
+  return mimeData;
 }
 
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const

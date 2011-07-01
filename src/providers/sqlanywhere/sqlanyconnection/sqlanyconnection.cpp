@@ -93,6 +93,7 @@ SqlAnyConnection::~SqlAnyConnection()
  */
 void unload_dbcapi( SQLAnywhereInterface *theApi )
 {
+  Q_UNUSED( theApi );
   // For some reason, the code below causes crashes on Windows.
   // Therefore, leave the library loaded until the application terminates.
 

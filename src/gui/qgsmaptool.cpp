@@ -111,28 +111,34 @@ QAbstractButton* QgsMapTool::button()
 }
 
 
-void QgsMapTool::canvasMoveEvent( QMouseEvent * )
+void QgsMapTool::canvasMoveEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasDoubleClickEvent( QMouseEvent * )
+void QgsMapTool::canvasDoubleClickEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasPressEvent( QMouseEvent * )
+void QgsMapTool::canvasPressEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapTool::canvasReleaseEvent( QMouseEvent * )
+void QgsMapTool::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapTool::keyPressEvent( QKeyEvent* e )
+void QgsMapTool::keyPressEvent( QKeyEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapTool::keyReleaseEvent( QKeyEvent* e )
+void QgsMapTool::keyReleaseEvent( QKeyEvent *e )
 {
+  Q_UNUSED( e );
 }
 
 void QgsMapTool::renderComplete()

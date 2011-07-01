@@ -18,6 +18,7 @@ void QgsDiagram::setPenWidth( QPen& pen, const QgsDiagramSettings& s, const QgsR
 
 QSizeF QgsDiagram::sizePainterUnits( const QSizeF& size, const QgsDiagramSettings& s, const QgsRenderContext& c )
 {
+  Q_UNUSED( size );
   if ( s.sizeType == QgsDiagramSettings::MM )
   {
     return QSizeF( s.size.width() * c.scaleFactor(), s.size.height() * c.scaleFactor() );

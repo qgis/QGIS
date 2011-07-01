@@ -2288,6 +2288,8 @@ void QgsRasterLayerProperties::pixelSelected( const QgsPoint& canvasPoint )
 
 void QgsRasterLayerProperties::sboxSingleBandStdDev_valueChanged( double theValue )
 {
+  Q_UNUSED( theValue );
+
   if ( !ignoreSpinBoxEvent )
   {
     leGrayMin->setText( "" );
@@ -2299,6 +2301,7 @@ void QgsRasterLayerProperties::sboxSingleBandStdDev_valueChanged( double theValu
 
 void QgsRasterLayerProperties::sboxThreeBandStdDev_valueChanged( double theValue )
 {
+  Q_UNUSED( theValue );
   if ( !ignoreSpinBoxEvent )
   {
     leRedMin->setText( "" );
@@ -2321,6 +2324,7 @@ void QgsRasterLayerProperties::sliderTransparency_valueChanged( int theValue )
 
 void QgsRasterLayerProperties::userDefinedMinMax_textEdited( QString theString )
 {
+  Q_UNUSED( theString );
   /*
    * If all min max values are set and valid, then reset stdDev to 0.0
    */
@@ -2406,6 +2410,7 @@ void QgsRasterLayerProperties::on_mClassifyButton_clicked()
     QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
     newItem->setText( 0, QString::number( *value_it, 'f' ) );
     newItem->setBackground( 1, QBrush( *color_it ) );
+    newItem->setText( 2, QString::number( *value_it, 'f' ) );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
 }

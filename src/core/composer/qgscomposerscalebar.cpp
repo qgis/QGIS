@@ -41,6 +41,8 @@ QgsComposerScaleBar::~QgsComposerScaleBar()
 
 void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   if ( !mStyle || !painter )
   {
     return;

@@ -42,7 +42,8 @@ class QgsWKNDiagramFactory: public QgsDiagramFactory
     /**Writes the wkn diagram information into a <factory> tag*/
     bool writeXML( QDomNode& overlay_node, QDomDocument& doc ) const;
     /**Possibility for wkn subclasses to write specific information into the XML document*/
-    virtual bool _writeXML( QDomNode& factory_node, QDomDocument& doc ) const {return true;}
+    virtual bool _writeXML( QDomNode& factory_node, QDomDocument& doc ) const
+    { Q_UNUSED( factory_node ); Q_UNUSED( doc ); return true; }
     /**Returns the property described by the size (e.g. diameter or height). This can be important to
      know if e.g. size has to be calculated proportional to pie area*/
     virtual QgsDiagramFactory::SizeType sizeType() const = 0;

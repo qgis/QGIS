@@ -72,7 +72,7 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
     void closeEvent( QCloseEvent *e );
 
   signals:
-    void selectedFeatureChanged( QgsVectorLayer *, int featureId );
+    void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
   public slots:
     /** Remove results */
@@ -85,8 +85,8 @@ class QgsIdentifyResults: public QDialog, private Ui::QgsIdentifyResultsBase
 
     void layerDestroyed();
     void editingToggled();
-    void featureDeleted( int fid );
-    void attributeValueChanged( int fid, int idx, const QVariant & );
+    void featureDeleted( QgsFeatureId fid );
+    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
 
     void featureForm();
     void zoomToFeature();

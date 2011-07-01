@@ -234,5 +234,6 @@ void QgsVectorGradientColorRampV2Dialog::removeStop()
 
 void QgsVectorGradientColorRampV2Dialog::toggledStops( bool on )
 {
+  Q_UNUSED( on );
   updatePreview();
 }

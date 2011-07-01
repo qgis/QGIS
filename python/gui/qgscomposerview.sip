@@ -107,4 +107,9 @@ class QgsComposerView: QGraphicsView
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
+
+    /**Emitted before composerview is shown*/
+    void composerViewShow( QgsComposerView* );
+    /**Emitted before composerview is hidden*/
+    void composerViewHide( QgsComposerView* );
 };

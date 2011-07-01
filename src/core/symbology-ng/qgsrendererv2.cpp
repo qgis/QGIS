@@ -360,6 +360,7 @@ QDomElement QgsFeatureRendererV2::save( QDomDocument& doc )
 
 QgsLegendSymbologyList QgsFeatureRendererV2::legendSymbologyItems( QSize iconSize )
 {
+  Q_UNUSED( iconSize );
   // empty list by default
   return QgsLegendSymbologyList();
 }

@@ -20,6 +20,8 @@
 
 #include "qgspoint.h"
 #include "qgstolerance.h"
+#include "qgsfeature.h"
+
 #include <QList>
 #include <QMultiMap>
 
@@ -48,7 +50,7 @@ struct CORE_EXPORT QgsSnappingResult
    or -1 if no such vertex*/
   int afterVertexNr;
   /**Index of the snapped geometry*/
-  int snappedAtGeometry;
+  QgsFeatureId snappedAtGeometry;
   /**Layer where the snap occured*/
   const QgsVectorLayer* layer;
 };

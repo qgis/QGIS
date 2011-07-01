@@ -525,9 +525,13 @@ void QgsBrowser::refresh( const QModelIndex& index )
   {
     QgsDataItem *item = mModel->dataItem( index );
     if ( item )
+    {
       QgsDebugMsg( "path = " + item->path() );
+    }
     else
+    {
       QgsDebugMsg( "invalid item" );
+    }
   }
 
   mModel->refresh( index );

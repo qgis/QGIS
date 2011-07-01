@@ -149,6 +149,8 @@ void QgsCompositionWidget::createPaperEntries()
 
 void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QString& text )
 {
+  Q_UNUSED( text );
+
   if ( mPaperSizeComboBox->currentText() == tr( "Custom" ) )
   {
     mPaperWidthDoubleSpinBox->setEnabled( true );
@@ -166,6 +168,8 @@ void QgsCompositionWidget::on_mPaperSizeComboBox_currentIndexChanged( const QStr
 
 void QgsCompositionWidget::on_mPaperOrientationComboBox_currentIndexChanged( const QString& text )
 {
+  Q_UNUSED( text );
+
   if ( mPaperSizeComboBox->currentText() == tr( "Custom" ) )
   {
     adjustOrientation();
@@ -180,6 +184,8 @@ void QgsCompositionWidget::on_mPaperOrientationComboBox_currentIndexChanged( con
 
 void QgsCompositionWidget::on_mPaperUnitsComboBox_currentIndexChanged( const QString& text )
 {
+  Q_UNUSED( text );
+
   double width = size( mPaperWidthDoubleSpinBox );
   double height = size( mPaperHeightDoubleSpinBox );
 
@@ -468,6 +474,8 @@ void QgsCompositionWidget::on_mGridColorButton_clicked()
 
 void QgsCompositionWidget::on_mGridStyleComboBox_currentIndexChanged( const QString& text )
 {
+  Q_UNUSED( text );
+
   if ( mComposition )
   {
     if ( mGridStyleComboBox->currentText() == tr( "Solid" ) )

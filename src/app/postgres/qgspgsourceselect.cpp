@@ -272,6 +272,7 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
 
 void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
 {
+  Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -929,6 +930,7 @@ void QgsPgSourceSelect::setConnectionListPosition()
 
 void QgsPgSourceSelect::setSearchExpression( const QString& regexp )
 {
+  Q_UNUSED( regexp );
 }
 
 void QgsGeomColumnTypeThread::setConnInfo( QString conninfo, bool useEstimatedMetadata )

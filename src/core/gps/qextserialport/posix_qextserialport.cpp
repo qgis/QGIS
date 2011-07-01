@@ -959,4 +959,5 @@ qint64 QextSerialPort::writeData(const char * data, qint64 maxSize)
 
 void QextSerialPort::onWinEvent( HANDLE h )
 {
+  Q_UNUSED(h);
 }

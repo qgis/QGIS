@@ -223,7 +223,7 @@ int QgsLegendModel::addVectorLayerItems( QStandardItem* layerItem, QgsVectorLaye
   return 0;
 }
 
-int QgsLegendModel::addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* rlayer )
+int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* rlayer )
 {
   if ( !layerItem || !rlayer )
   {
@@ -236,15 +236,22 @@ int QgsLegendModel::addRasterLayerItem( QStandardItem* layerItem, QgsMapLayer* r
     return 2;
   }
 
-  QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem();
-  //use a vector symbol item without symbol
-  if ( mHasTopLevelWindow ) //only use QIcon / QPixmap if we have a running x-server
+  QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
+  QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
+  for(; itemIt != rasterItemList.constEnd(); ++itemIt )
   {
-    currentSymbolItem->setIcon( QIcon( rasterLayer->legendAsPixmap( true ) ) );
+    QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
+    if( mHasTopLevelWindow )
+    {
+      QPixmap itemPixmap( 20, 20 );
+      itemPixmap.fill( itemIt->second );
+      currentSymbolItem->setIcon( QIcon( itemPixmap ) );
+    }
+    currentSymbolItem->setLayerID( rasterLayer->id() );
+    currentSymbolItem->setColor( itemIt->second );
+    int currentRowCount = layerItem->rowCount();
+    layerItem->setChild( currentRowCount, 0, currentSymbolItem );
   }
-  currentSymbolItem->setLayerID( rasterLayer->id() );
-  int currentRowCount = layerItem->rowCount();
-  layerItem->setChild( currentRowCount, 0, currentSymbolItem );
 
   return 0;
 }
@@ -304,7 +311,7 @@ void QgsLegendModel::updateLayer( QStandardItem* layerItem )
       QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( mapLayer );
       if ( rLayer )
       {
-        addRasterLayerItem( lItem, rLayer );
+        addRasterLayerItems( lItem, rLayer );
       }
     }
   }
@@ -362,7 +369,7 @@ void QgsLegendModel::addLayer( QgsMapLayer* theMapLayer )
       break;
     }
     case QgsMapLayer::RasterLayer:
-      addRasterLayerItem( layerItem, theMapLayer );
+      addRasterLayerItems( layerItem, theMapLayer );
       break;
     default:
       break;
@@ -478,6 +485,8 @@ bool QgsLegendModel::writeXML( QDomElement& composerLegendElem, QDomDocument& do
 
 bool QgsLegendModel::readXML( const QDomElement& legendModelElem, const QDomDocument& doc )
 {
+  Q_UNUSED( doc );
+
   if ( legendModelElem.isNull() )
   {
     return false;
@@ -610,6 +619,9 @@ QStringList QgsLegendModel::mimeTypes() const
 
 bool QgsLegendModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent )
 {
+  Q_UNUSED( action );
+  Q_UNUSED( column );
+
   if ( !data->hasFormat( "text/xml" ) )
   {
     return false;

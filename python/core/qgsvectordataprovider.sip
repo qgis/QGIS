@@ -90,10 +90,10 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param fetchAttributes a list containing the indexes of the attribute fields to copy
        * @return True when feature was found, otherwise false
        */
-      virtual bool featureAtId(int featureId,
-                                  QgsFeature& feature,
-                                  bool fetchGeometry = true,
-                                  QList<int> fetchAttributes = QList<int>());
+      virtual bool featureAtId(qint64 featureId,
+                               QgsFeature& feature,
+                               bool fetchGeometry = true,
+                               QList<int> fetchAttributes = QList<int>());
 
       /**
        * Get the next feature resulting from a select operation.
@@ -182,7 +182,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param id list containing feature ids to delete
        * @return true in case of success and false in case of failure
        */
-      virtual bool deleteFeatures(const QSet<int> & id);
+      virtual bool deleteFeatures(const QSet<qint64> & id);
 
       /**
        * Adds new attributes
@@ -212,7 +212,7 @@ class QgsVectorDataProvider : QgsDataProvider
        * @param attr_map a map containing changed attributes
        * @return true in case of success and false in case of failure 
        */
-      virtual bool changeAttributeValues(const QMap<int, QMap<int, QVariant> > & attr_map);
+      virtual bool changeAttributeValues(const QMap<qint64, QMap<int, QVariant> > &attr_map );
 
       /**
        * Returns the default value for field specified by @c fieldId
@@ -225,7 +225,7 @@ class QgsVectorDataProvider : QgsDataProvider
        *                       the second map parameter being the new geometries themselves
        * @return               true in case of success and false in case of failure
        */
-      virtual bool changeGeometryValues(QMap<int, QgsGeometry> & geometry_map);
+      virtual bool changeGeometryValues(QMap<qint64, QgsGeometry> & geometry_map);
 
       /**
        * Creates a spatial index on the datasource (if supported by the provider type).

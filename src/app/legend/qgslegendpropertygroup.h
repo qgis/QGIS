@@ -37,7 +37,8 @@ class QgsLegendPropertyGroup : public QgsLegendItem
     /** Overloads cmpare function of QListViewItem
       * @note The property group must always be the first in the list
       */
-    int compare( QTreeWidgetItem* i, int col, bool ascending ) {return -1;}
+    int compare( QTreeWidgetItem* i, int col, bool ascending )
+    { Q_UNUSED( i ); Q_UNUSED( col ); Q_UNUSED( ascending ); return -1; }
 };
 
 #endif

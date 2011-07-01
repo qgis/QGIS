@@ -563,6 +563,8 @@ const char *finder( const char *name )
 #ifdef WIN32
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
+#else
+  Q_UNUSED( name );
 #endif
   return proj.toUtf8();
 }

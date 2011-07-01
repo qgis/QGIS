@@ -180,6 +180,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
 
 bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
+  Q_UNUSED( doc );
   if ( itemElem.isNull() )
   {
     return false;
@@ -479,8 +480,14 @@ QgsComposerItem::MouseMoveAction QgsComposerItem::mouseMoveActionForPosition( co
   return QgsComposerItem::MoveItem; //default
 }
 
-void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem )
+void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
+    const QPointF& mouseMoveStartPos,
+    const QGraphicsRectItem* originalItem,
+    double dx, double dy,
+    QGraphicsRectItem* changeItem )
 {
+  Q_UNUSED( dx );
+  Q_UNUSED( dy );
   if ( !changeItem || !originalItem || !mComposition )
   {
     return;

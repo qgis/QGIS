@@ -39,7 +39,8 @@ class QgsSVGDiagramFactory: public QgsDiagramFactory
     @param value diagram value that should be represented in the legend
     @param items generated items
     @return 0 in case of success*/
-    int createLegendContent( int size, const QgsRenderContext& renderContext, QString value, QMap<QString, QImage*>& items ) const {return 1;} //later...
+    int createLegendContent( int size, const QgsRenderContext& renderContext, QString value, QMap<QString, QImage*>& items ) const
+    { Q_UNUSED( size ); Q_UNUSED( renderContext ); Q_UNUSED( value ); Q_UNUSED( items ); return 1; } //later...
 
     /**Gets the width and height (in pixels) of the diagram image. Considers different width, height values, the maximum width of the drawing pen and the conversion from mm size to pixels according to render context.
     @param size diagram size calculated by diagram renderer

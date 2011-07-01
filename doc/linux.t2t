@@ -129,30 +129,14 @@ if you do not have edit privileges for the QGIS source repository, or use
 
 ``` 
 cd ${HOME}/dev/cpp 
-svn co https://svn.osgeo.org/qgis/trunk/qgis qgis
+git clone git://github.com/qgis/Quantum-GIS.git
 ```
 
 2. Developer Checkout
 
 ``` 
 cd ${HOME}/dev/cpp 
-svn co --username <yourusername> https://svn.osgeo.org/qgis/trunk/qgis qgis
-```
-
-The first time you check out the source you will be prompted to accept the
-qgis.org certificate. Press 'p' to accept it permanently:
-
-``` 
-Error validating server certificate for 'https://svn.qgis.org:443':
-   - The certificate is not issued by a trusted authority. Use the
-     fingerprint to validate the certificate manually!  Certificate
-     information:
-   - Hostname: svn.qgis.org
-   - Valid: from Apr  1 00:30:47 2006 GMT until Mar 21 00:30:47 2008 GMT
-   - Issuer: Developer Team, Quantum GIS, Anchorage, Alaska, US
-   - Fingerprint:
-     2f:cd:f1:5a:c7:64:da:2b:d1:34:a5:20:c6:15:67:28:33:ea:7a:9b (R)eject,
-     accept (t)emporarily or accept (p)ermanently?  
+git clone git@github.com:qgis/Quantum-GIS.git
 ```
 
 == Starting the compile ==
@@ -169,9 +153,9 @@ mkdir -p ${HOME}/apps
 Now we create a build directory and run ccmake:
 
 ```
-cd qgis
-mkdir build
-cd build
+cd Quantum-GIS
+mkdir build-master
+cd build-master
 ccmake ..
 ```
 
@@ -386,7 +370,7 @@ cd ..
 === Step 5: compile and install GRASS ===
 
 Before downloading and compile GRASS source code you need to install a few
-other libraries and programs. We can do this trough apt
+other libraries and programs. We can do this through apt
 
 ``` 
 sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
@@ -398,7 +382,7 @@ tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
 ```
 
 At this point we can get the GRASS source code: you may want to download it
-trough svn or maybe you want just to download the latest available source code arquive.
+through svn or maybe you want just to download the latest available source code arquive.
 For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
 
 Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters

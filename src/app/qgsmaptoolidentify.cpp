@@ -63,15 +63,17 @@ QgsIdentifyResults *QgsMapToolIdentify::results()
   return mResults;
 }
 
-void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasMoveEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapToolIdentify::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasPressEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
 }
 
-void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolIdentify::canvasReleaseEvent( QMouseEvent *e )
 {
   if ( !mCanvas || mCanvas->isDrawing() )
   {
@@ -251,7 +253,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   {
     featureCount++;
 
-    int fid = f_it->id();
+    QgsFeatureId fid = f_it->id();
     QMap<QString, QString> derivedAttributes;
 
     // Calculate derived attributes and insert:
@@ -297,7 +299,7 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
       derivedAttributes.insert( "Y", str );
     }
 
-    derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : QString::number( fid ) );
+    derivedAttributes.insert( tr( "feature id" ), fid < 0 ? tr( "new feature" ) : FID_TO_STRING( fid ) );
 
     results()->addFeature( layer, *f_it, derivedAttributes );
   }

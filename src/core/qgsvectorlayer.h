@@ -51,7 +51,6 @@ class QgsDiagramRendererV2;
 struct QgsDiagramLayerSettings;
 
 typedef QList<int> QgsAttributeList;
-typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
 /** @note added in 1.7 */
@@ -269,7 +268,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     /** reads vector layer specific state from project file Dom node.
      *  @note Called by QgsMapLayer::readXML().
      */
-    virtual bool readXml( QDomNode & layer_node );
+    virtual bool readXml( const QDomNode& layer_node );
 
     /** write vector layer specific state to project file Dom node.
      *  @note Called by QgsMapLayer::writeXML().
@@ -342,7 +341,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /**Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
      @return true in case of success*/
-    bool featureAtId( int featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
+    bool featureAtId( QgsFeatureId featureId, QgsFeature &f, bool fetchGeometries = true, bool fetchAttributes = true );
 
     /** Adds a feature
         @param f feature to add
@@ -356,17 +355,17 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      *  in the given ring, item (first number is index 0), and feature
      *  Not meaningful for Point geometries
      */
-    bool insertVertex( double x, double y, int atFeatureId, int beforeVertex );
+    bool insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex );
 
     /** Moves the vertex at the given position number,
      *  ring and item (first number is index 0), and feature
      *  to the given coordinates
      */
-    bool moveVertex( double x, double y, int atFeatureId, int atVertex );
+    bool moveVertex( double x, double y, QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes a vertex from a feature
      */
-    bool deleteVertex( int atFeatureId, int atVertex );
+    bool deleteVertex( QgsFeatureId atFeatureId, int atVertex );
 
     /** Deletes the selected features
      *  @return true in case of success and false otherwise
@@ -400,7 +399,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
        @param dx translation of x-coordinate
        @param dy translation of y-coordinate
        @return 0 in case of success*/
-    int translateFeature( int featureId, double dx, double dy );
+    int translateFeature( QgsFeatureId featureId, double dx, double dy );
 
     /**Splits features cut by the given line
        @param splitLine line that splits the layer features
@@ -468,8 +467,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     */
     int snapWithContext( const QgsPoint& startPoint,
                          double snappingTolerance,
-                         QMultiMap < double,
-                         QgsSnappingResult > & snappingResults,
+                         QMultiMap < double, QgsSnappingResult > &snappingResults,
                          QgsSnapper::SnappingType snap_to );
 
     /**Synchronises with changes in the datasource
@@ -507,10 +505,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
     /** change feature's geometry
       @note added in version 1.2 */
-    bool changeGeometry( int fid, QgsGeometry* geom );
+    bool changeGeometry( QgsFeatureId fid, QgsGeometry* geom );
 
     /** changed an attribute value (but does not commit it) */
-    bool changeAttributeValue( int fid, int field, QVariant value, bool emitSignal = true );
+    bool changeAttributeValue( QgsFeatureId fid, int field, QVariant value, bool emitSignal = true );
 
     /** add an attribute field (but does not commit it)
         returns true if the field was added
@@ -541,7 +539,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     bool addFeatures( QgsFeatureList features, bool makeSelected = true );
 
     /** delete a feature from the layer (but does not commit it) */
-    bool deleteFeature( int fid );
+    bool deleteFeature( QgsFeatureId fid );
 
     /**
       Attempts to commit any changes to disk.  Returns the result of the attempt.
@@ -687,10 +685,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
 
   public slots:
     /** Select feature by its ID, optionally emit signal selectionChanged() */
-    void select( int featureId, bool emitSignal = true );
+    void select( QgsFeatureId featureId, bool emitSignal = true );
 
     /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-    void deselect( int featureId, bool emitSignal = true );
+    void deselect( QgsFeatureId featureId, bool emitSignal = true );
 
     /** Clear selection */
     void removeSelection( bool emitSignal = true );
@@ -720,11 +718,11 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void editingStopped();
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
-    void featureAdded( int fid );  // added in 1.7
-    void featureDeleted( int fid );
+    void featureAdded( QgsFeatureId fid );  // added in 1.7
+    void featureDeleted( QgsFeatureId fid );
     void layerDeleted();
 
-    void attributeValueChanged( int fid, int idx, const QVariant & );
+    void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
 
     /** Signals emitted after committing changes
       \note added in v1.6 */
@@ -772,7 +770,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     unsigned char *drawPolygon( unsigned char *WKBpolygon, QgsRenderContext &renderContext );
 
     /** Goes through all features and finds a free id (e.g. to give it temporarily to a not-commited feature) */
-    int findFreeId();
+    QgsFeatureId findFreeId();
 
     /**Deletes the geometries in mCachedGeometries*/
     void deleteCachedGeometries();
@@ -785,8 +783,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      @param snappingResults list to which the result is appended
      @param snap_to snap to vertex or to segment
     */
-    void snapToGeometry( const QgsPoint& startPoint, int featureId, QgsGeometry* geom, double sqrSnappingTolerance,
-                         QMultiMap<double, QgsSnappingResult>& snappingResults, QgsSnapper::SnappingType snap_to ) const;
+    void snapToGeometry( const QgsPoint& startPoint,
+                         QgsFeatureId featureId,
+                         QgsGeometry* geom,
+                         double sqrSnappingTolerance,
+                         QMultiMap<double, QgsSnappingResult>& snappingResults,
+                         QgsSnapper::SnappingType snap_to ) const;
 
     /**Little helper function that gives bounding box from a list of points.
     @return 0 in case of success*/
@@ -815,16 +817,16 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void updateFeatureGeometry( QgsFeature &f );
 
     /** Record changed geometry, store in active command (if any) */
-    void editGeometryChange( int featureId, QgsGeometry& geometry );
+    void editGeometryChange( QgsFeatureId featureId, QgsGeometry& geometry );
 
     /** Record added feature, store in active command (if any) */
     void editFeatureAdd( QgsFeature& feature );
 
     /** Record deleted feature, store in active command (if any) */
-    void editFeatureDelete( int featureId );
+    void editFeatureDelete( QgsFeatureId featureId );
 
     /** Record changed attribute, store in active command (if any) */
-    void editAttributeChange( int featureId, int field, QVariant value );
+    void editAttributeChange( QgsFeatureId featureId, int field, QVariant value );
 
     /** Stop version 2 renderer and selected renderer (if required) */
     void stopRendererV2( QgsRenderContext& rendererContext, QgsSingleSymbolRendererV2* selRenderer );
@@ -960,7 +962,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     QgsAttributeList mFetchProvAttributes;
     bool mFetchGeometry;
 
-    QSet<int> mFetchConsidered;
+    QSet<QgsFeatureId> mFetchConsidered;
     QgsGeometryMap::iterator mFetchChangedGeomIt;
     QgsFeatureList::iterator mFetchAddedFeaturesIt;
 

@@ -491,7 +491,7 @@ void QgsGrassPlugin::closeEdit( QString layerId )
 
 void QgsGrassPlugin::editClosed()
 {
-  if( mEdit == sender() )
+  if ( mEdit == sender() )
     mEdit = 0;
 }
 
@@ -589,6 +589,7 @@ void QgsGrassPlugin::newVector()
 
 void QgsGrassPlugin::postRender( QPainter *painter )
 {
+  Q_UNUSED( painter );
   // We have to redraw rectangle, because canvas->mapRenderer()->destinationCrs is set after GRASS plugin constructor! This way it is redrawn also if canvas CRS has changed.
   displayRegion();
 // QgsDebugMsg("entered.");
@@ -849,6 +850,8 @@ void QgsGrassPlugin::unload()
 // Set icons to the current theme
 void QgsGrassPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
+
   mOpenMapsetAction->setIcon( getThemeIcon( "grass_open_mapset.png" ) );
   mNewMapsetAction->setIcon( getThemeIcon( "grass_new_mapset.png" ) );
   mCloseMapsetAction->setIcon( getThemeIcon( "grass_close_mapset.png" ) );

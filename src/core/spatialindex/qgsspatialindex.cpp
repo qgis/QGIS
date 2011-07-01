@@ -29,20 +29,22 @@ using namespace SpatialIndex;
 class QgisVisitor : public SpatialIndex::IVisitor
 {
   public:
-    QgisVisitor( QList<int> & list )
+    QgisVisitor( QList<QgsFeatureId> & list )
         : mList( list ) {}
 
-    void visitNode( const INode& n ) {}
+    void visitNode( const INode& n )
+    { Q_UNUSED( n ); }
 
     void visitData( const IData& d )
     {
       mList.append( d.getIdentifier() );
     }
 
-    void visitData( std::vector<const IData*>& v ) {}
+    void visitData( std::vector<const IData*>& v )
+    { Q_UNUSED( v ); }
 
   private:
-    QList<int>& mList;
+    QList<QgsFeatureId>& mList;
 };
 
 
@@ -87,7 +89,7 @@ Tools::Geometry::Region QgsSpatialIndex::rectToRegion( QgsRectangle rect )
   return Tools::Geometry::Region( pt1, pt2, 2 );
 }
 
-bool QgsSpatialIndex::featureInfo( QgsFeature& f, Tools::Geometry::Region& r, long& id )
+bool QgsSpatialIndex::featureInfo( QgsFeature& f, Tools::Geometry::Region& r, QgsFeatureId &id )
 {
   QgsGeometry *g = f.geometry();
   if ( !g )
@@ -101,14 +103,14 @@ bool QgsSpatialIndex::featureInfo( QgsFeature& f, Tools::Geometry::Region& r, lo
 bool QgsSpatialIndex::insertFeature( QgsFeature& f )
 {
   Tools::Geometry::Region r;
-  long id;
+  QgsFeatureId id;
   if ( !featureInfo( f, r, id ) )
     return false;
 
   // TODO: handle possible exceptions correctly
   try
   {
-    mRTree->insertData( 0, 0, r, id );
+    mRTree->insertData( 0, 0, r, FID_TO_NUMBER( id ) );
   }
   catch ( Tools::Exception &e )
   {
@@ -131,17 +133,17 @@ bool QgsSpatialIndex::insertFeature( QgsFeature& f )
 bool QgsSpatialIndex::deleteFeature( QgsFeature& f )
 {
   Tools::Geometry::Region r;
-  long id;
+  QgsFeatureId id;
   if ( !featureInfo( f, r, id ) )
     return false;
 
   // TODO: handle exceptions
-  return mRTree->deleteData( r, id );
+  return mRTree->deleteData( r, FID_TO_NUMBER( id ) );
 }
 
-QList<int> QgsSpatialIndex::intersects( QgsRectangle rect )
+QList<QgsFeatureId> QgsSpatialIndex::intersects( QgsRectangle rect )
 {
-  QList<int> list;
+  QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
   Tools::Geometry::Region r = rectToRegion( rect );
@@ -151,9 +153,9 @@ QList<int> QgsSpatialIndex::intersects( QgsRectangle rect )
   return list;
 }
 
-QList<int> QgsSpatialIndex::nearestNeighbor( QgsPoint point, int neighbors )
+QList<QgsFeatureId> QgsSpatialIndex::nearestNeighbor( QgsPoint point, int neighbors )
 {
-  QList<int> list;
+  QList<QgsFeatureId> list;
   QgisVisitor visitor( list );
 
   double pt[2];

@@ -100,6 +100,7 @@ QImage* QgsPieDiagramFactory::createDiagram( int size, const QgsFeature& f, cons
 
 int QgsPieDiagramFactory::getDiagramDimensions( int size, const QgsFeature& f, const QgsRenderContext& context, int& width, int& height ) const
 {
+  Q_UNUSED( f );
   double squareSide = size * diagramSizeScaleFactor( context ) * context.rasterScaleFactor() + 2 * mMaximumPenWidth + 2 * mMaximumGap;
   width = squareSide;
   height = squareSide;

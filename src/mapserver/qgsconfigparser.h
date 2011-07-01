@@ -54,7 +54,8 @@ class QgsConfigParser
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
-    virtual void setParameterMap( const std::map<QString, QString>& parameterMap ) {}
+    virtual void setParameterMap( const std::map<QString, QString>& parameterMap )
+    { Q_UNUSED( parameterMap ); }
 
     /**Returns if output are MM or PIXEL*/
     QgsMapRenderer::OutputUnits outputUnits() const { return mOutputUnits; }

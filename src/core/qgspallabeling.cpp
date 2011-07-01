@@ -58,9 +58,14 @@ using namespace pal;
 class QgsPalGeometry : public PalGeometry
 {
   public:
-    QgsPalGeometry( int id, QString text, GEOSGeometry* g ): mG( g ), mText( text ), mId( id ), mInfo( NULL ), mIsDiagram( false )
+    QgsPalGeometry( QgsFeatureId id, QString text, GEOSGeometry* g )
+        : mG( g )
+        , mText( text )
+        , mId( id )
+        , mInfo( NULL )
+        , mIsDiagram( false )
     {
-      mStrId = QByteArray::number( id );
+      mStrId = FID_TO_STRING( id ).toAscii();
     }
 
     ~QgsPalGeometry()
@@ -116,7 +121,7 @@ class QgsPalGeometry : public PalGeometry
     GEOSGeometry* mG;
     QString mText;
     QByteArray mStrId;
-    int mId;
+    QgsFeatureId mId;
     LabelInfo* mInfo;
     bool mIsDiagram;
     /**Stores attribute values for data defined properties*/

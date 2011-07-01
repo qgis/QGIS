@@ -130,6 +130,8 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     , mFormat( format )
     , mCrs( crs )
 {
+  Q_UNUSED( dummy );
+
   QgsDebugMsg( "(8 arguments) starting. with layer list of " +
                layers.join( ", " ) +  " and style list of " + styles.join( ", " ) + " and format of " +
                format +  " and CRS of " + crs );
@@ -256,7 +258,7 @@ typedef QgsDataProvider * classFactoryFunction_t( const QString * );
 //
 /////////////////////////////////////////////////////////
 
-unsigned int QgsRasterLayer::bandCount()
+unsigned int QgsRasterLayer::bandCount() const
 {
   return mBandCount;
 }
@@ -274,7 +276,7 @@ const QString QgsRasterLayer::bandName( int theBandNo )
   }
 }
 
-int QgsRasterLayer::bandNumber( QString const & theBandName )
+int QgsRasterLayer::bandNumber( QString const & theBandName ) const
 {
   for ( int myIterator = 0; myIterator < mRasterStatsList.size(); ++myIterator )
   {
@@ -670,6 +672,16 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double& t
  * @return Pointer to the contrast enhancement or 0 on failure
  */
 QgsContrastEnhancement* QgsRasterLayer::contrastEnhancement( unsigned int theBand )
+{
+  if ( 0 < theBand && theBand <= bandCount() )
+  {
+    return &mContrastEnhancementList[theBand - 1];
+  }
+
+  return 0;
+}
+
+const QgsContrastEnhancement* QgsRasterLayer::constContrastEnhancement( unsigned int theBand ) const
 {
   if ( 0 < theBand && theBand <= bandCount() )
   {
@@ -1207,6 +1219,86 @@ QString QgsRasterLayer::lastError()
 QString QgsRasterLayer::lastErrorTitle()
 {
   return mErrorCaption;
+}
+
+QList< QPair< QString, QColor > > QgsRasterLayer::legendSymbologyItems() const
+{
+  QList< QPair< QString, QColor > > symbolList;
+  if ( mDrawingStyle == SingleBandGray || mDrawingStyle == PalettedSingleBandGray || mDrawingStyle == MultiBandSingleBandGray )
+  {
+    //add min/max from contrast enhancement
+    QString grayBand = grayBandName();
+    if ( !grayBand.isEmpty() )
+    {
+      int grayBandNr = bandNumber( grayBand );
+      const QgsContrastEnhancement* ceh = constContrastEnhancement( grayBandNr );
+      if ( ceh )
+      {
+        QgsContrastEnhancement::ContrastEnhancementAlgorithm alg = ceh->contrastEnhancementAlgorithm();
+        if ( alg == QgsContrastEnhancement::NoEnhancement
+             || alg == QgsContrastEnhancement::ClipToMinimumMaximum )
+        {
+          //diffcult to display a meaningful item
+          symbolList.push_back( qMakePair( QString::number( ceh->minimumValue() ) + "-" + QString::number( ceh->maximumValue() ), QColor( 125, 125, 125 ) ) );
+        }
+        else
+        {
+          symbolList.push_back( qMakePair( QString::number( ceh->minimumValue() ), QColor( 0, 0, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( ceh->maximumValue() ), QColor( 255, 255, 255 ) ) );
+        }
+      }
+    }
+  }
+  else
+  {
+    switch ( mColorShadingAlgorithm )
+    {
+      case ColorRampShader:
+      {
+        const QgsColorRampShader* crShader = dynamic_cast<QgsColorRampShader*>( mRasterShader->rasterShaderFunction() );
+        if ( crShader )
+        {
+          QList<QgsColorRampShader::ColorRampItem> shaderItems = crShader->colorRampItemList();
+          QList<QgsColorRampShader::ColorRampItem>::const_iterator itemIt = shaderItems.constBegin();
+          for ( ; itemIt != shaderItems.constEnd(); ++itemIt )
+          {
+            symbolList.push_back( qMakePair( itemIt->label, itemIt->color ) );
+          }
+        }
+        break;
+      }
+      case PseudoColorShader:
+      {
+        //class breaks have fixed color for the pseudo color shader
+        const QgsPseudoColorShader* pcShader = dynamic_cast<QgsPseudoColorShader*>( mRasterShader->rasterShaderFunction() );
+        if ( pcShader )
+        {
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMin1() ), QColor( 0, 0, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMax1() ), QColor( 0, 255, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->classBreakMax2() ), QColor( 255, 255, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( pcShader->maximumValue() ), QColor( 255, 0, 0 ) ) );
+        }
+        break;
+      }
+      case FreakOutShader:
+      {
+        const QgsFreakOutShader* foShader = dynamic_cast<QgsFreakOutShader*>( mRasterShader->rasterShaderFunction() );
+        if ( foShader )
+        {
+          symbolList.push_back( qMakePair( QString::number( foShader->classBreakMin1() ), QColor( 255, 0, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( foShader->classBreakMax1() ), QColor( 0, 255, 255 ) ) );
+          symbolList.push_back( qMakePair( QString::number( foShader->classBreakMax2() ), QColor( 255, 0, 0 ) ) );
+          symbolList.push_back( qMakePair( QString::number( foShader->maximumValue() ), QColor( 0, 255, 0 ) ) );
+        }
+        break;
+      }
+      default:
+      {
+        break;
+      }
+    }
+  }
+  return symbolList;
 }
 
 /**
@@ -2258,6 +2350,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QString const & crs,
                                       bool loadDefaultStyleFlag )
 {
+  Q_UNUSED( loadDefaultStyleFlag );
   // XXX should I check for and possibly delete any pre-existing providers?
   // XXX How often will that scenario occur?
 
@@ -2347,7 +2440,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     myRasterBandStats.bandName = mDataProvider->generateBandName( i );
     myRasterBandStats.bandNumber = i;
     myRasterBandStats.statsGathered = false;
-    myRasterBandStats.histogramVector = new QgsRasterBandStats::HistogramVector();
+    myRasterBandStats.histogramVector->clear();
     //Store the default color table
     //readColorTable( i, &myRasterBandStats.colorTable );
     QList<QgsColorRampShader::ColorRampItem> ct;
@@ -2988,8 +3081,10 @@ void QgsRasterLayer::updateProgress( int theProgress, int theMax )
   emit drawingProgress( theProgress, theMax );
 }
 
-void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMesssage )
+void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMessage )
 {
+  Q_UNUSED( theType );
+  Q_UNUSED( theMessage );
   QgsDebugMsg( QString( "theProgress = %1" ).arg( theProgress ) );
   emit progressUpdate(( int )theProgress );
 }
@@ -3006,6 +3101,7 @@ void QgsRasterLayer::onProgress( int theType, double theProgress, QString theMes
  */
 bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMessage )
 {
+  Q_UNUSED( errorMessage );
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
   QDomNode snode = mnl.namedItem( "mDrawingStyle" );
   QDomElement myElement = snode.toElement();
@@ -3221,7 +3317,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 
   @note Called by QgsMapLayer::readXML().
 */
-bool QgsRasterLayer::readXml( QDomNode & layer_node )
+bool QgsRasterLayer::readXml( const QDomNode& layer_node )
 {
   //! @note Make sure to read the file first so stats etc are initialised properly!
 
@@ -3319,6 +3415,7 @@ bool QgsRasterLayer::readXml( QDomNode & layer_node )
  */
 bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & document, QString& errorMessage ) const
 {
+  Q_UNUSED( errorMessage );
   // <rasterproperties>
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
@@ -4147,6 +4244,10 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
 void QgsRasterLayer::drawPalettedMultiBandColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
     const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
+  Q_UNUSED( theQPainter );
+  Q_UNUSED( theRasterViewPort );
+  Q_UNUSED( theQgsMapToPixel );
+  Q_UNUSED( theBandNo );
   QgsDebugMsg( "Not supported at this time" );
 }
 
@@ -4417,6 +4518,7 @@ void *QgsRasterLayer::readData( int bandNo, QgsRasterViewPort *viewPort )
  */
 bool QgsRasterLayer::readFile( QString const &theFilename )
 {
+  Q_UNUSED( theFilename );
   mValid = false;
   return true;
 } // QgsRasterLayer::readFile

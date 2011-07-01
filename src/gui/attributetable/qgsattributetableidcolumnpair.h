@@ -18,20 +18,21 @@
 #define QGSATTRIBUTETABKEIDCOLUMNPAIR_H
 
 #include <QVariant>
+#include "qgsfeature.h"
 
 class QgsAttributeTableIdColumnPair
 {
-    int mId;
+    QgsFeatureId mId;
     QVariant mItem;
 
   public:
-    QgsAttributeTableIdColumnPair( int anId, QVariant anItem ) : mId( anId ), mItem( anItem ) {}
+    QgsAttributeTableIdColumnPair( QgsFeatureId anId, QVariant anItem ) : mId( anId ), mItem( anItem ) {}
     /**
      * Returns true if this id-column pair is less the the tested one
      * @param b the tested id-column pair
      */
     bool operator<( const QgsAttributeTableIdColumnPair &b ) const;
-    int id() { return mId; }
+    QgsFeatureId id() { return mId; }
 };
 
 #endif

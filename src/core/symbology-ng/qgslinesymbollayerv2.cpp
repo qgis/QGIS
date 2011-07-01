@@ -93,6 +93,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 
 void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
@@ -628,6 +629,7 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
 
 void QgsLineDecorationSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
@@ -645,7 +647,8 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   QPointF p1 = points.at( --cnt );
   while ( p2 == p1 && cnt )
     p1 = points.at( --cnt );
-  if ( p1 == p2 ) {
+  if ( p1 == p2 )
+  {
     // this is a collapsed line... don't bother drawing an arrow
     // with arbitrary orientation
     return;

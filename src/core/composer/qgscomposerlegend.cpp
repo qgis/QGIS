@@ -17,6 +17,7 @@
 
 #include "qgscomposerlegend.h"
 #include "qgscomposerlegenditem.h"
+#include "qgscomposermap.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaprenderer.h"
@@ -33,7 +34,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mBoxSpace( 2 )
     , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
-    , mIconLabelSpace( 2 )
+    , mIconLabelSpace( 2 ), mComposerMap( 0 )
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -50,7 +51,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
   connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
 }
 
-QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 )
+QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 ), mComposerMap( 0 )
 {
 
 }
@@ -62,6 +63,8 @@ QgsComposerLegend::~QgsComposerLegend()
 
 void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   paintAndDetermineSize( painter );
 }
 
@@ -101,8 +104,10 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
   }
 
+
   maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
+  double currentItemMaxX = 0; //maximum x-coordinate for current item
   for ( int i = 0; i < numLayerItems; ++i )
   {
     currentLayerItem = rootItem->child( i );
@@ -112,11 +117,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
       if ( type == QgsComposerLegendItem::GroupItem )
       {
-        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, maxXCoord );
+        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
       else if ( type == QgsComposerLegendItem::LayerItem )
       {
-        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, maxXCoord );
+        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
     }
   }
@@ -163,7 +170,10 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
 
   p->setPen( QColor( 0, 0, 0 ) );
   drawText( p, mBoxSpace, currentYCoord, groupItem->text(), mGroupFont );
-  maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() ) );
+
+  //maximum x-coordinate of current item
+  double currentMaxXCoord = 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() );
+  maxXCoord = qMax( currentMaxXCoord, maxXCoord );
 
   //children can be other group items or layer items
   int numChildItems = groupItem->rowCount();
@@ -176,11 +186,13 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
     QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
     if ( type == QgsComposerLegendItem::GroupItem )
     {
-      drawGroupItem( p, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoord, maxXCoord );
+      drawGroupItem( p, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoord, currentMaxXCoord );
+      maxXCoord = qMax( currentMaxXCoord, maxXCoord );
     }
     else if ( type == QgsComposerLegendItem::LayerItem )
     {
-      drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoord, maxXCoord );
+      drawLayerItem( p, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoord, currentMaxXCoord );
+      maxXCoord = qMax( currentMaxXCoord, maxXCoord );
     }
   }
 }
@@ -240,8 +252,14 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     return;
   }
 
-  //standerd item height
-  double itemHeight = qMax( mSymbolHeight, fontAscentMillimeters( mItemFont ) );
+  //Draw all symbols first and the texts after (to find out the x coordinate to have the text aligned)
+  QList<double> childYCoords;
+  QList<double> realItemHeights;
+
+  double textHeight = fontHeightCharacterMM( mItemFont, QChar( '0' ) );
+  double itemHeight = qMax( mSymbolHeight, textHeight );
+
+  double textAlignCoord = 0; //alignment for legend text
 
   QStandardItem* currentItem;
 
@@ -276,6 +294,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     {
       symbolNg = symbolV2Item->symbolV2();
     }
+    QgsComposerRasterSymbolItem* rasterItem = dynamic_cast<QgsComposerRasterSymbolItem*>( currentItem );
 
     if ( symbol )  //item with symbol?
     {
@@ -290,29 +309,42 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
       realItemHeight = qMax( realSymbolHeight, itemHeight );
       currentXCoord += mIconLabelSpace;
     }
+    else if ( rasterItem )
+    {
+      if ( p )
+      {
+        p->setBrush( rasterItem->color() );
+        p->drawRect( QRectF( currentXCoord, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
+      }
+      currentXCoord += mSymbolWidth;
+      currentXCoord += mIconLabelSpace;
+    }
     else //item with icon?
     {
       QIcon symbolIcon = currentItem->icon();
       if ( !symbolIcon.isNull() && p )
       {
-        symbolIcon.paint( p, currentXCoord, currentYCoord, mSymbolWidth, mSymbolHeight );
+        symbolIcon.paint( p, currentXCoord, currentYCoord + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight );
         currentXCoord += mSymbolWidth;
         currentXCoord += mIconLabelSpace;
       }
     }
 
-    //finally draw text
+    childYCoords.push_back( currentYCoord );
+    realItemHeights.push_back( realItemHeight );
+    currentYCoord += realItemHeight;
+    textAlignCoord = qMax( currentXCoord, textAlignCoord );
+  }
+
+  maxXCoord = textAlignCoord;
+  for ( int i = 0; i < numChildren; ++i )
+  {
     if ( p )
     {
       p->setPen( QColor( 0, 0, 0 ) );
-      drawText( p, currentXCoord, currentYCoord + fontAscentMillimeters( mItemFont ) + ( realItemHeight - fontAscentMillimeters( mItemFont ) ) / 2, currentItem->text(), mItemFont );
-      currentXCoord += textWidthMillimeters( mItemFont, currentItem->text() );
+      drawText( p, textAlignCoord, childYCoords.at( i ) + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2, layerItem->child( i, 0 )->text(), mItemFont );
+      maxXCoord = qMax( maxXCoord, textAlignCoord + mBoxSpace + textWidthMillimeters( mItemFont,  layerItem->child( i, 0 )->text() ) );
     }
-    currentXCoord += mBoxSpace;
-
-    maxXCoord = qMax( maxXCoord, currentXCoord );
-
-    currentYCoord += realItemHeight;
   }
 }
 
@@ -346,6 +378,7 @@ void QgsComposerLegend::drawSymbol( QPainter* p, QgsSymbol* s, double currentYCo
 
 void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int layerOpacity ) const
 {
+  Q_UNUSED( layerOpacity );
   if ( !p || !s )
   {
     return;
@@ -361,13 +394,53 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
     }
     rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
   }
+
+  //consider relation to composer map for symbol sizes in mm
+  bool sizeInMapUnits = s->outputUnit() == QgsSymbolV2::MapUnit;
+  double mmPerMapUnit = 1;
+  if ( mComposerMap )
+  {
+    mmPerMapUnit = mComposerMap->mapUnitsToMM();
+  }
+  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s );
+
+  //Consider symbol size for point markers
+  double height = mSymbolHeight;
+  double width = mSymbolWidth;
+  double size = 0;
+
+  if ( markerSymbol )
+  {
+    size = markerSymbol->size();
+    height = size;
+    width = size;
+    if ( mComposerMap && sizeInMapUnits )
+    {
+      height *= mmPerMapUnit;
+      width *= mmPerMapUnit;
+      markerSymbol->setSize( width );
+    }
+  }
+
   p->save();
   p->translate( currentXPosition, currentYCoord );
   p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-  s->drawPreviewIcon( p, QSize( mSymbolWidth * rasterScaleFactor, mSymbolHeight * rasterScaleFactor ) );
+
+  if ( markerSymbol && sizeInMapUnits )
+  {
+    s->setOutputUnit( QgsSymbolV2::MM );
+  }
+  s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
+
+  if ( markerSymbol && sizeInMapUnits )
+  {
+    s->setOutputUnit( QgsSymbolV2::MapUnit );
+    markerSymbol->setSize( size );
+  }
+
   p->restore();
-  currentXPosition += mSymbolWidth;
-  symbolHeight = mSymbolHeight;
+  currentXPosition += width;
+  symbolHeight = height;
 }
 
 void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const
@@ -563,6 +636,11 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "symbolWidth", mSymbolWidth );
   composerLegendElem.setAttribute( "symbolHeight", mSymbolHeight );
 
+  if ( mComposerMap )
+  {
+    composerLegendElem.setAttribute( "map", mComposerMap->id() );
+  }
+
   //write model properties
   mLegendModel.writeXML( composerLegendElem, doc );
 
@@ -613,6 +691,12 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSymbolWidth = itemElem.attribute( "symbolWidth", "7.0" ).toDouble();
   mSymbolHeight = itemElem.attribute( "symbolHeight", "14.0" ).toDouble();
 
+  //composer map
+  if ( !itemElem.attribute( "map" ).isEmpty() )
+  {
+    mComposerMap = mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() );
+  }
+
   //read model properties
   QDomNodeList modelNodeList = itemElem.elementsByTagName( "Model" );
   if ( modelNodeList.size() > 0 )
@@ -631,4 +715,16 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   emit itemChanged();
   return true;
+}
+
+void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
+{
+  mComposerMap = map;
+  QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+}
+
+void QgsComposerLegend::invalidateCurrentMap()
+{
+  disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+  mComposerMap = 0;
 }

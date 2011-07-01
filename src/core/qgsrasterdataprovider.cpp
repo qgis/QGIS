@@ -174,6 +174,7 @@ QString QgsRasterDataProvider::capabilitiesString() const
 
 bool QgsRasterDataProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>& theResults )
 {
+  Q_UNUSED( thePoint );
   theResults.clear();
   return false;
 }

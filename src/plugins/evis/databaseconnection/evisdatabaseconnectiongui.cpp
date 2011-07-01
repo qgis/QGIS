@@ -150,6 +150,7 @@ void eVisDatabaseConnectionGui::on_buttonBox_accepted( )
 */
 void eVisDatabaseConnectionGui::on_cboxDatabaseType_currentIndexChanged( int currentIndex )
 {
+  Q_UNUSED( currentIndex );
   if ( cboxDatabaseType->currentText( ) == "MYSQL" )
   {
     lblDatabaseHost->setEnabled( true );

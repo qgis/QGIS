@@ -129,6 +129,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
     {
       // NOP by default
       Q_UNUSED( subset );
+      Q_UNUSED( updateFeatureCount );
       return false;
     }
 

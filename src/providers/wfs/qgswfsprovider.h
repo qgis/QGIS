@@ -67,7 +67,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
      * Default implementation traverses all features until it finds the one with correct ID.
      * In case the provider supports reading the feature directly, override this function.
      */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature& feature,
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -170,13 +170,13 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /**A spatial index for fast access to a feature subset*/
     QgsSpatialIndex *mSpatialIndex;
     /**Vector where the ids of the selected features are inserted*/
-    QList<int> mSelectedFeatures;
+    QList<QgsFeatureId> mSelectedFeatures;
     /**Iterator on the feature vector for use in rewind(), nextFeature(), etc...*/
-    QList<int>::iterator mFeatureIterator;
+    QList<QgsFeatureId>::iterator mFeatureIterator;
     /**Map <feature Id / feature> */
-    QMap<int, QgsFeature* > mFeatures;
+    QMap<QgsFeatureId, QgsFeature* > mFeatures;
     /**Stores the relation between provider ids and WFS server ids*/
-    QMap<int, QString > mIdMap;
+    QMap<QgsFeatureId, QString > mIdMap;
     /**Geometry type of the features in this layer*/
     mutable QGis::WkbType mWKBType;
     /**Source CRS*/
@@ -278,7 +278,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /**Returns the inserted ids*/
     QStringList insertedFeatureIds( const QDomDocument& serverResponse ) const;
     /**Returns a key suitable for new items*/
-    int findNewKey() const;
+    QgsFeatureId findNewKey() const;
     /**Retrieve capabilities for this layer from GetCapabilities document (will be stored in mCapabilites)*/
     void getLayerCapabilities();
     /**Takes <Operations> element and updates the capabilities*/

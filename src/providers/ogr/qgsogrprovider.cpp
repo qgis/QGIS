@@ -454,14 +454,14 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 #endif
 }
 
-bool QgsOgrProvider::featureAtId( int featureId,
+bool QgsOgrProvider::featureAtId( QgsFeatureId featureId,
                                   QgsFeature& feature,
                                   bool fetchGeometry,
                                   QgsAttributeList fetchAttributes )
 {
   setRelevantFields( fetchGeometry, fetchAttributes );
 
-  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, featureId );
+  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( featureId ) );
   if ( !fet )
     return false;
 
@@ -518,7 +518,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   OGRFeatureH fet;
   QgsRectangle selectionRect;
 
-  setRelevantFields( mFetchGeom, mAttributesToFetch );
+  setRelevantFields( mFetchGeom || mUseIntersect, mAttributesToFetch );
 
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
@@ -960,14 +960,20 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
-    long fid = ( long ) it.key();
+    QgsFeatureId fid = it.key();
 
-    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, fid );
+    if ( FID_TO_NUMBER( fid ) > std::numeric_limits<long>::max() )
+    {
+      QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, feature id too large for OGR" );
+      continue;
+    }
+
+    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( fid ) ) );
 
     if ( !of )
     {
       QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, Cannot read feature, cannot change attributes" );
-      return false;
+      continue;
     }
 
     const QgsAttributeMap& attr = it.value();
@@ -1031,7 +1037,13 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
-    theOGRFeature = OGR_L_GetFeature( ogrLayer, it.key() );
+    if ( FID_TO_NUMBER( it.key() ) > std::numeric_limits<long>::max() )
+    {
+      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, fid too large for OGR" );
+      continue;
+    }
+
+    theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
     if ( !theOGRFeature )
     {
       QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, cannot find feature" );
@@ -1146,9 +1158,15 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   return returnvalue;
 }
 
-bool QgsOgrProvider::deleteFeature( int id )
+bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 {
-  return OGR_L_DeleteFeature( ogrLayer, id ) == OGRERR_NONE;
+  if ( FID_TO_NUMBER( id ) > std::numeric_limits<long>::max() )
+  {
+    QgsDebugMsg( "id too large for OGR" );
+    return false;
+  }
+
+  return OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) == OGRERR_NONE;
 }
 
 int QgsOgrProvider::capabilities() const

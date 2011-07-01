@@ -259,6 +259,7 @@ void QgsCopyrightLabelPlugin::setEnable( bool theBool )
 //! Set icons to the current theme
 void QgsCopyrightLabelPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/copyright_label.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/copyright_label.png";
   QString myQrcPath = ":/copyright_label.png";

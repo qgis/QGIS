@@ -208,11 +208,14 @@ class QgsGdalProvider : public QgsRasterDataProvider
     QString metadata();
 
     // Following methods specific for WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
-    void addLayers( QStringList const &  layers, QStringList const &  styles = QStringList() ) {}
-    QStringList supportedImageEncodings() { return QStringList();}
+    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() )
+    { Q_UNUSED( layers ); Q_UNUSED( styles ); }
+    QStringList supportedImageEncodings() { return QStringList(); }
     QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const & mimeType ) {}
-    void setImageCrs( QString const & crs ) {}
+    void setImageEncoding( QString const &mimeType )
+    { Q_UNUSED( mimeType ); }
+    void setImageCrs( QString const &crs )
+    { Q_UNUSED( crs ); }
 
     /** \brief ensures that GDAL drivers are registered, but only once */
     static void registerGdalDrivers();

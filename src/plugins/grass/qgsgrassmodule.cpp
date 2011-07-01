@@ -148,6 +148,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
                                 QString path, QWidget * parent, Qt::WFlags f )
     : QgsGrassModuleBase( ), mSuccess( false )
 {
+  Q_UNUSED( f );
   QgsDebugMsg( "called" );
 
   setupUi( this );
@@ -2668,6 +2669,7 @@ QString QgsGrassModuleInput::currentMap()
 
 void QgsGrassModuleInput::changed( int i )
 {
+  Q_UNUSED( i );
   emit valueChanged();
 }
 
@@ -2693,11 +2695,12 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 
 QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
-    : mModule( module ),
-    mKey( key ),
-    mHidden( false ),
-    mRequired( false )
+    : mModule( module )
+    , mKey( key )
+    , mHidden( false )
+    , mRequired( false )
 {
+  Q_UNUSED( gdesc );
   //mAnswer = qdesc.attribute("answer", "");
 
   if ( !qdesc.attribute( "answer" ).isNull() )
@@ -2787,6 +2790,7 @@ QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
 
 void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent * event )
 {
+  Q_UNUSED( event );
   adjustTitle();
   setToolTip( mToolTip );
 }
@@ -3431,6 +3435,7 @@ QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
 
 void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent * event )
 {
+  Q_UNUSED( event );
   adjustText();
 }
 void QgsGrassModuleCheckBox::setText( const QString & text )

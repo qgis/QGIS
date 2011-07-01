@@ -58,8 +58,10 @@ void QgsComposerArrow::initGraphicsSettings()
   setBrush( QBrush( QColor( 255, 255, 255, 0 ) ) );
 }
 
-void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerArrow::paint( QPainter* painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   if ( !painter )
   {
     return;
@@ -108,16 +110,18 @@ void QgsComposerArrow::setSceneRect( const QRectF& rectangle )
   adaptItemSceneRect();
 }
 
-void QgsComposerArrow::drawHardcodedMarker( QPainter* p, MarkerType type )
+void QgsComposerArrow::drawHardcodedMarker( QPainter *p, MarkerType type )
 {
+  Q_UNUSED( type );
   QBrush arrowBrush = p->brush();
   arrowBrush.setColor( mArrowColor );
   p->setBrush( arrowBrush );
   drawArrowHead( p, mStopPoint.x() - transform().dx(), mStopPoint.y() - transform().dy(), angle( mStartPoint, mStopPoint ), mArrowHeadWidth );
 }
 
-void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString& markerPath )
+void QgsComposerArrow::drawSVGMarker( QPainter* p, MarkerType type, const QString &markerPath )
 {
+  Q_UNUSED( markerPath );
   double ang = angle( mStartPoint, mStopPoint );
 
   double arrowHeadHeight;

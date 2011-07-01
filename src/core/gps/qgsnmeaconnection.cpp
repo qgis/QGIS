@@ -47,7 +47,7 @@ void QgsNMEAConnection::parseData()
   }
 
   //print out the data as a test
-  int numBytes = 0;
+  qint64 numBytes = 0;
   if ( mSource->isSequential() ) //necessary because of a bug in QExtSerialPort
   {
     numBytes = mSource->size();

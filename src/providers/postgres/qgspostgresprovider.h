@@ -98,7 +98,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       * @param fetchAttributes a list containing the indexes of the attribute fields to copy
       * @return True when feature was found, otherwise false
       */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature& feature,
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -161,7 +161,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFieldMap & fields() const;
+    const QgsFieldMap &fields() const;
 
     /**
      * Return a short comment for the data that this provider is
@@ -327,9 +327,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
 
-    QString whereClause( int featureId ) const;
+    QString whereClause( QgsFeatureId featureId ) const;
 
     bool hasSufficientPermsAndCapabilities();
+
+    qint64 getBinaryInt( PGresult *queryResult, int row, int col );
 
     const QgsField &field( int index ) const;
 

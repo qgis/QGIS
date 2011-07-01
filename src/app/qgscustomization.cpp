@@ -204,6 +204,7 @@ void QgsCustomizationDialog::cancel()
 
 void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   QSettings mySettings;
   QString lastDir = mySettings.value( mLastDirSettingsName, "." ).toString();
 
@@ -222,6 +223,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
 
 void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   QSettings mySettings;
   QString lastDir = mySettings.value( mLastDirSettingsName, "." ).toString();
 
@@ -240,16 +242,19 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
 
 void QgsCustomizationDialog::on_actionExpandAll_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   treeWidget->expandAll();
 }
 
 void QgsCustomizationDialog::on_actionCollapseAll_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   treeWidget->collapseAll();
 }
 
 void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   QList<QTreeWidgetItem*> items = treeWidget->findItems( "*", Qt::MatchWildcard | Qt::MatchRecursive, 0 );
 
   QList<QTreeWidgetItem*>::iterator i;
@@ -348,8 +353,9 @@ QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( QDomNode theNode )
   return myItem;
 }
 
-bool QgsCustomizationDialog::switchWidget( QWidget * widget, QMouseEvent *event )
+bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
+  Q_UNUSED( e );
   QgsDebugMsg( "Entered" );
   if ( !actionCatch->isChecked() )
     return false;
@@ -752,6 +758,7 @@ void QgsCustomization::openDialog()
 
 void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event )
 {
+  Q_UNUSED( event );
   // Test if the widget is child of QDialog
   if ( !widget->inherits( "QDialog" ) )
     return;

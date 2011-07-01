@@ -523,6 +523,7 @@ QString QgsGdalProvider::metadata()
 // Not supported by GDAL
 QImage* QgsGdalProvider::draw( QgsRectangle  const & viewExtent, int pixelWidth, int pixelHeight )
 {
+  Q_UNUSED( viewExtent );
   QgsDebugMsg( "pixelWidth = "  + QString::number( pixelWidth ) );
   QgsDebugMsg( "pixelHeight = "  + QString::number( pixelHeight ) );
   QgsDebugMsg( "viewExtent: " + viewExtent.toString() );
@@ -995,8 +996,8 @@ QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int theBan
         else if ( myColorInterpretation == GCI_PaletteIndex )
         {
           QgsColorRampShader::ColorRampItem myColorRampItem;
-          myColorRampItem.label = "";
           myColorRampItem.value = ( double )myIterator;
+          myColorRampItem.label = QString::number( myColorRampItem.value );
           //Branch on palette interpretation
           if ( myPaletteInterpretation  == GPI_RGB )
           {
@@ -1229,11 +1230,13 @@ bool QgsGdalProvider::isValid()
 
 QString QgsGdalProvider::identifyAsText( const QgsPoint& point )
 {
+  Q_UNUSED( point );
   return QString( "Not implemented" );
 }
 
 QString QgsGdalProvider::identifyAsHtml( const QgsPoint& point )
 {
+  Q_UNUSED( point );
   return QString( "Not implemented" );
 }
 
@@ -1324,8 +1327,16 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
 
     for ( int myBin = 0; myBin < theBinCount; myBin++ )
     {
-      theBandStats.histogramVector->push_back( myHistogramArray[myBin] );
-      QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
+      if ( myHistogramArray[myBin] < 0 ) //can't have less than 0 pixels of any value
+      {
+        theBandStats.histogramVector->push_back( 0 );
+        QgsDebugMsg( "Added 0 to histogram vector as freq was negative!" );
+      }
+      else
+      {
+        theBandStats.histogramVector->push_back( myHistogramArray[myBin] );
+        QgsDebugMsg( "Added " + QString::number( myHistogramArray[myBin] ) + " to histogram vector" );
+      }
     }
 
   }

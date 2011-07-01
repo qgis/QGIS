@@ -214,6 +214,7 @@ void QgsDiagramRendererV2::_readXML( const QDomElement& elem )
 
 void QgsDiagramRendererV2::_writeXML( QDomElement& rendererElem, QDomDocument& doc ) const
 {
+  Q_UNUSED( doc );
   if ( mDiagram )
   {
     rendererElem.setAttribute( "diagramType", mDiagram->diagramName() );
@@ -230,6 +231,7 @@ QgsSingleCategoryDiagramRenderer::~QgsSingleCategoryDiagramRenderer()
 
 bool QgsSingleCategoryDiagramRenderer::diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s )
 {
+  Q_UNUSED( c );
   s = mSettings;
   return true;
 }
@@ -296,6 +298,7 @@ QList<int> QgsLinearlyInterpolatedDiagramRenderer::diagramAttributes() const
 
 QSizeF QgsLinearlyInterpolatedDiagramRenderer::diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c )
 {
+  Q_UNUSED( c );
   QgsAttributeMap::const_iterator attIt = attributes.find( mClassificationAttribute );
   if ( attIt == attributes.constEnd() )
   {

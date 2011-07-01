@@ -86,6 +86,8 @@ void QgsWFSProvider::deleteData()
 
 void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
+  Q_UNUSED( fetchGeometry );
+
   if ( !f )
   {
     return;
@@ -111,12 +113,12 @@ void QgsWFSProvider::copyFeature( QgsFeature* f, QgsFeature& feature, bool fetch
   feature.setFeatureId( f->id() );
 }
 
-bool QgsWFSProvider::featureAtId( int featureId,
+bool QgsWFSProvider::featureAtId( QgsFeatureId featureId,
                                   QgsFeature& feature,
                                   bool fetchGeometry,
                                   QgsAttributeList fetchAttributes )
 {
-  QMap<int, QgsFeature* >::iterator it = mFeatures.find( featureId );
+  QMap<QgsFeatureId, QgsFeature* >::iterator it = mFeatures.find( featureId );
   if ( it == mFeatures.end() )
   {
     return false;
@@ -351,7 +353,7 @@ bool QgsWFSProvider::addFeatures( QgsFeatureList &flist )
 
       for ( ; idIt != idList.constEnd() && featureIt != flist.end(); ++idIt, ++featureIt )
       {
-        int newId = findNewKey();
+        QgsFeatureId newId = findNewKey();
         featureIt->setFeatureId( newId );
         mFeatures.insert( newId, new QgsFeature( *featureIt ) );
         mIdMap.insert( newId, *idIt );
@@ -396,7 +398,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
   for ( ; idIt != id.constEnd(); ++idIt )
   {
     //find out feature id
-    QMap< int, QString >::const_iterator fidIt = mIdMap.find( *idIt );
+    QMap< QgsFeatureId, QString >::const_iterator fidIt = mIdMap.find( *idIt );
     if ( fidIt == mIdMap.constEnd() )
     {
       continue;
@@ -421,7 +423,7 @@ bool QgsWFSProvider::deleteFeatures( const QgsFeatureIds &id )
     idIt = id.constBegin();
     for ( ; idIt != id.constEnd(); ++idIt )
     {
-      QMap<int, QgsFeature* >::iterator fIt = mFeatures.find( *idIt );
+      QMap<QgsFeatureId, QgsFeature* >::iterator fIt = mFeatures.find( *idIt );
       if ( fIt != mFeatures.end() )
       {
         if ( mSpatialIndex )
@@ -459,7 +461,7 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   for ( ; geomIt != geometry_map.end(); ++geomIt )
   {
     //find out feature id
-    QMap< int, QString >::const_iterator fidIt = mIdMap.find( geomIt.key() );
+    QMap< QgsFeatureId, QString >::const_iterator fidIt = mIdMap.find( geomIt.key() );
     if ( fidIt == mIdMap.constEnd() )
     {
       continue;
@@ -501,7 +503,7 @@ bool QgsWFSProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     geomIt = geometry_map.begin();
     for ( ; geomIt != geometry_map.end(); ++geomIt )
     {
-      QMap<int, QgsFeature* >::iterator fIt = mFeatures.find( geomIt.key() );
+      QMap<QgsFeatureId, QgsFeature* >::iterator fIt = mFeatures.find( geomIt.key() );
       if ( fIt == mFeatures.end() )
       {
         continue;
@@ -548,7 +550,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
   for ( ; attIt != attr_map.constEnd(); ++attIt )
   {
     //find out wfs server feature id
-    QMap< int, QString >::const_iterator fidIt = mIdMap.find( attIt.key() );
+    QMap< QgsFeatureId, QString >::const_iterator fidIt = mIdMap.find( attIt.key() );
     if ( fidIt == mIdMap.constEnd() )
     {
       continue;
@@ -606,7 +608,7 @@ bool QgsWFSProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_
     attIt = attr_map.constBegin();
     for ( ; attIt != attr_map.constEnd(); ++attIt )
     {
-      QMap<int, QgsFeature*>::iterator fIt = mFeatures.find( attIt.key() );
+      QMap<QgsFeatureId, QgsFeature*>::iterator fIt = mFeatures.find( attIt.key() );
       if ( fIt == mFeatures.end() )
       {
         continue;
@@ -694,9 +696,9 @@ int QgsWFSProvider::getFeatureGET( const QString& uri, const QString& geometryAt
   QgsDebugMsg( QString( "feature count after request is: %1" ).arg( mFeatures.size() ) );
   QgsDebugMsg( QString( "mExtent after request is: %1" ).arg( mExtent.toString() ) );
 
-  for ( QMap<int, QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
+  for ( QMap<QgsFeatureId, QgsFeature*>::iterator it = mFeatures.begin(); it != mFeatures.end(); ++it )
   {
-    QgsDebugMsg( "feature " + QString::number(( *it )->id() ) );
+    QgsDebugMsg( "feature " + FID_TO_STRING(( *it )->id() ) );
     mSpatialIndex->insertFeature( *( it.value() ) );
   }
 
@@ -2159,7 +2161,7 @@ QStringList QgsWFSProvider::insertedFeatureIds( const QDomDocument& serverRespon
   return ids;
 }
 
-int QgsWFSProvider::findNewKey() const
+QgsFeatureId QgsWFSProvider::findNewKey() const
 {
   if ( mFeatures.isEmpty() )
   {
@@ -2167,9 +2169,10 @@ int QgsWFSProvider::findNewKey() const
   }
 
   //else return highest key + 1
-  QMap<int, QgsFeature*>::const_iterator lastIt = mFeatures.end();
-  lastIt --;
-  return lastIt.key() + 1;
+  QMap<QgsFeatureId, QgsFeature*>::const_iterator lastIt = mFeatures.end();
+  lastIt--;
+  QgsFeatureId id = lastIt.key();
+  return ++id;
 }
 
 void QgsWFSProvider::getLayerCapabilities()

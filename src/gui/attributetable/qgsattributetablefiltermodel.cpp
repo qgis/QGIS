@@ -35,6 +35,7 @@ QgsAttributeTableFilterModel::QgsAttributeTableFilterModel( QgsVectorLayer *theL
 
 bool QgsAttributeTableFilterModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
+  Q_UNUSED( sourceParent );
   if ( mHideUnselected )
     return mLayer->selectedFeaturesIds().contains( tableModel()->rowToId( sourceRow ) );
 

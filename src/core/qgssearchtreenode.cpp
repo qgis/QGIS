@@ -205,7 +205,8 @@ QString QgsSearchTreeNode::makeSearchString()
          mOp == opASIN || mOp == opACOS || mOp == opATAN ||
          mOp == opTOINT || mOp == opTOREAL || mOp == opTOSTRING ||
          mOp == opLOWER || mOp == opUPPER || mOp == opSTRLEN ||
-         mOp == opATAN2 || mOp == opREPLACE || mOp == opSUBSTR )
+         mOp == opATAN2 || mOp == opREPLACE || mOp == opSUBSTR ||
+         mOp == opXAT || mOp == opYAT )
     {
       // functions
       switch ( mOp )
@@ -226,6 +227,8 @@ QString QgsSearchTreeNode::makeSearchString()
         case opSTRLEN: str += "length"; break;
         case opREPLACE: str += "replace"; break;
         case opSUBSTR: str += "substr"; break;
+        case opXAT: str += "xat"; break;
+        case opYAT: str += "yat"; break;
         default: str += "?";
       }
       // currently all functions take one parameter
@@ -364,13 +367,15 @@ bool QgsSearchTreeNode::needsGeometry()
 {
   if ( mType == tOperator )
   {
-    if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
+    if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY || mOp == opXAT || mOp == opYAT )
       return true;
 
     if ( mLeft && mLeft->needsGeometry() )
       return true;
+
     if ( mRight && mRight->needsGeometry() )
       return true;
+
     return false;
   }
   else
@@ -664,11 +669,11 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
           return value2;
       }
 
-      if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
+      if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY || mOp == opXAT || mOp == opYAT )
       {
         if ( !f.geometry() )
         {
-          return QgsSearchTreeValue( 2, "Geometry is 0" );
+          return QgsSearchTreeValue( 2, QObject::tr( "Geometry is 0" ) );
         }
 
         //check that we don't use area for lines or length for polygons
@@ -692,6 +697,24 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         {
           return QgsSearchTreeValue( f.geometry()->asPoint().y() );
         }
+        if (( mOp == opXAT || mOp == opYAT ) && f.geometry()->type() == QGis::Line && value1.isNumeric() )
+        {
+          QgsPolyline p = f.geometry()->asPolyline();
+
+          int idx = value1.number();
+          if ( idx < 0 )
+          {
+            idx += p.size();
+          }
+
+          if ( idx < 0 || idx >= p.size() )
+          {
+            return QgsSearchTreeValue( 2, QObject::tr( "Index %1 out of range [0;%2[" ).arg( idx ).arg( p.size() ) );
+          }
+
+          return QgsSearchTreeValue( mOp == opXAT ? p[idx].x() : p[idx].y() );
+        }
+
         return QgsSearchTreeValue( 0 );
       }
 
@@ -735,7 +758,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
       {
         if ( value1.isNumeric() && value2.isNumeric() )
         {
-          return QgsSearchTreeValue( 5, "Operator doesn't match the argument types." );
+          return QgsSearchTreeValue( 5, QObject::tr( "Operator doesn't match the argument types." ) );
         }
         else
         {
@@ -784,7 +807,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         case opMOD:
           // NOTE: we _might_ support float operators, like postgresql does
           // see 83c94a886c059 commit in postgresql git repo for more info
-          return QgsSearchTreeValue( int(val1) % int(val2) );
+          return QgsSearchTreeValue( int( val1 ) % int( val2 ) );
         case opDIV:
           if ( val2 == 0 )
             return QgsSearchTreeValue( 2, "" ); // division by zero
@@ -793,7 +816,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         case opPOW:
           if (( val1 == 0 && val2 < 0 ) || ( val2 < 0 && ( val2 - floor( val2 ) ) > 0 ) )
           {
-            return QgsSearchTreeValue( 4, "Error in power function" );
+            return QgsSearchTreeValue( 4, QObject::tr( "Error in power function" ) );
           }
           return QgsSearchTreeValue( pow( val1, val2 ) );
         case opSQRT:

@@ -24,12 +24,12 @@ SET ( qgis_mapserv_SRCS
   qgsprojectparser.cpp
   qgshttprequesthandler.cpp 
   qgsgetrequesthandler.cpp
+  qgspostrequesthandler.cpp
   qgssoaprequesthandler.cpp
   qgssldparser.cpp
   qgssldrenderer.cpp
   qgswmsserver.cpp
   qgsmapserviceexception.cpp
-  qgsmapserverlogger.cpp
   qgsmslayercache.cpp
   qgsfilter.cpp
   qgssldrule.cpp

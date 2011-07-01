@@ -81,7 +81,9 @@ class QgsSpatialQuery
     * \param lyrTarget          Pointer to Target Layer
     * \param lyrReference       Pointer to Reference Layer
     */
-    void runQuery( QSet<int> & qsetIndexResult, QSet<int> & qsetIndexInvalidTarget, QSet<int> & qsetIndexInvalidReference,
+    void runQuery( QgsFeatureIds &qsetIndexResult,
+                   QgsFeatureIds &qsetIndexInvalidTarget,
+                   QgsFeatureIds &qsetIndexInvalidReference,
                    int relation, QgsVectorLayer* lyrTarget, QgsVectorLayer* lyrReference );
 
     /**
@@ -117,14 +119,14 @@ class QgsSpatialQuery
     /**
     * \brief Build the Spatial Index
     */
-    void setSpatialIndexReference( QSet<int> & qsetIndexInvalidReference );
+    void setSpatialIndexReference( QgsFeatureIds &qsetIndexInvalidReference );
 
     /**
     * \brief Execute query
     * \param qsetIndexResult    Reference to QSet contains the result query
     * \param relation           Enum Topologic Relation
     */
-    void execQuery( QSet<int> & qsetIndexResult, QSet<int> & qsetIndexInvalidTarget, int relation );
+    void execQuery( QgsFeatureIds &qsetIndexResult, QgsFeatureIds &qsetIndexInvalidTarget, int relation );
 
     /**
     * \brief Populate index Result
@@ -134,7 +136,7 @@ class QgsSpatialQuery
     * \param operation          Pointer to function of GEOS operation
     */
     void populateIndexResult(
-      QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
+      QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
       bool ( QgsGeometry::* operation )( QgsGeometry * ) );
     /**
     * \brief Populate index Result Disjoint
@@ -144,7 +146,7 @@ class QgsSpatialQuery
     * \param operation          Pointer to function of GEOS operation
     */
     void populateIndexResultDisjoint(
-      QSet<int> & qsetIndexResult, int idTarget, QgsGeometry * geomTarget,
+      QgsFeatureIds &qsetIndexResult, QgsFeatureId idTarget, QgsGeometry *geomTarget,
       bool ( QgsGeometry::* operation )( QgsGeometry * ) );
 
     MngProgressBar *mPb;

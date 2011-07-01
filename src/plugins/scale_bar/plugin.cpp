@@ -608,6 +608,7 @@ void QgsScaleBarPlugin::setColor( QColor theQColor )
 //! Set icons to the current theme
 void QgsScaleBarPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/scale_bar.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/scale_bar.png";
   QString myQrcPath = ":/scale_bar.png";

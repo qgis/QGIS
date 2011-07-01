@@ -35,6 +35,7 @@
 
 #include <cassert>
 #include <cstdlib> // size_t
+#include <limits> // std::numeric_limits
 
 #include <ogr_api.h>
 #include <ogr_srs_api.h>
@@ -409,7 +410,13 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
   // create the feature
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
-  OGRErr err = OGR_F_SetFID( poFeature, feature.id() );
+  qint64 fid = FID_TO_NUMBER( feature.id() );
+  if ( fid > std::numeric_limits<int>::max() )
+  {
+    QgsDebugMsg( QString( "feature id %1 too large." ).arg( fid ) );
+  }
+
+  OGRErr err = OGR_F_SetFID( poFeature, static_cast<long>( fid ) );
   if ( err != OGRERR_NONE )
   {
     QgsDebugMsg( QString( "Failed to set feature id to %1: %2 (OGR error: %3)" )

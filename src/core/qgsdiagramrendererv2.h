@@ -37,8 +37,18 @@ struct CORE_EXPORT QgsDiagramLayerSettings
     MapOrientation = 8
   };
 
-  QgsDiagramLayerSettings(): placement( AroundPoint ), placementFlags( OnLine ), priority( 5 ), obstacle( false ), dist( 0.0 ), renderer( 0 ),
-      palLayer( 0 ), ct( 0 ), xform( 0 ), xPosColumn( -1 ), yPosColumn( -1 )
+  QgsDiagramLayerSettings()
+      : placement( AroundPoint )
+      , placementFlags( OnLine )
+      , priority( 5 )
+      , obstacle( false )
+      , dist( 0.0 )
+      , renderer( 0 )
+      , palLayer( 0 )
+      , ct( 0 )
+      , xform( 0 )
+      , xPosColumn( -1 )
+      , yPosColumn( -1 )
   {
   }
 
@@ -165,7 +175,8 @@ class CORE_EXPORT QgsSingleCategoryDiagramRenderer: public QgsDiagramRendererV2
   protected:
     bool diagramSettings( const QgsAttributeMap&, const QgsRenderContext& c, QgsDiagramSettings& s );
 
-    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c ) { return mSettings.size; }
+    QSizeF diagramSize( const QgsAttributeMap& attributes, const QgsRenderContext& c )
+    { Q_UNUSED( attributes ); Q_UNUSED( c ); return mSettings.size; }
 
   private:
     QgsDiagramSettings mSettings;

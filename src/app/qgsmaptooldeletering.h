@@ -42,7 +42,7 @@ class QgsMapToolDeleteRing : public QgsMapToolVertexEdit
     QgsVertexMarker* mCross;
 
     //! delete inner ring from the geometry
-    void deleteRing( int fId, int beforeVertexNr, QgsVectorLayer* vlayer );
+    void deleteRing( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
 
     //! return ring number in polygon
     int ringNumInPolygon( QgsGeometry* g, int vertexNr );

@@ -23,6 +23,7 @@
 #include "qgis.h"
 #include "qgsrectangle.h"
 #include "qgsrendercontext.h"
+#include "qgsfeature.h"
 
 class QDomDocument;
 class QDomNode;
@@ -36,7 +37,6 @@ class QgsCoordinateReferenceSystem;
 class QgsDistanceArea;
 class QgsOverlayObjectPositionManager;
 class QgsVectorLayer;
-class QgsFeature;
 
 struct QgsDiagramLayerSettings;
 
@@ -73,11 +73,13 @@ class QgsLabelingEngineInterface
     //! @note: this method was added in version 1.6
     virtual int prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx ) = 0;
     //! adds a diagram layer to the labeling engine
-    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s ) { return 0; }
+    virtual int addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings* s )
+    { Q_UNUSED( layer ); Q_UNUSED( s ); return 0; }
     //! called for every feature
     virtual void registerFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) = 0;
     //! called for every diagram feature
-    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() ) {};
+    virtual void registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context = QgsRenderContext() )
+    { Q_UNUSED( layer ); Q_UNUSED( feat ); Q_UNUSED( context ); }
     //! called when the map is drawn and labels should be placed
     virtual void drawLabeling( QgsRenderContext& context ) = 0;
     //! called when we're done with rendering

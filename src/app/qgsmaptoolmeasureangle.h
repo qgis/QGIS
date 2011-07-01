@@ -19,6 +19,7 @@
 #include "qgsmaptool.h"
 #include "qgsmapcanvassnapper.h"
 #include "qgspoint.h"
+#include "qgsdistancearea.h"
 
 class QgsDisplayAngle;
 class QgsRubberBand;
@@ -55,6 +56,9 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     /**Snaps point to background layers*/
     QgsPoint snapPoint( const QPoint& p );
 
+    /** tool for measuring */
+    QgsDistanceArea mDa;
+
   private slots:
     /**Deletes the rubber band and the dialog*/
     void stopMeasuring();
@@ -63,7 +67,7 @@ class QgsMapToolMeasureAngle: public QgsMapTool
     void changeProjectionEnabledState();
 
     //! Configures distance area objects with ellipsoid / output crs
-    void configureDistanceArea( QgsDistanceArea& da );
+    void configureDistanceArea();
 
 };
 

@@ -39,7 +39,10 @@ namespace Tools
 class QgsFeature;
 class QgsRectangle;
 class QgsPoint;
+
 #include <QList>
+
+#include "qgsfeature.h"
 
 class CORE_EXPORT QgsSpatialIndex
 {
@@ -73,17 +76,17 @@ class CORE_EXPORT QgsSpatialIndex
     /* queries */
 
     /** returns features that intersect the specified rectangle */
-    QList<int> intersects( QgsRectangle rect );
+    QList<QgsFeatureId> intersects( QgsRectangle rect );
 
     /** returns nearest neighbors (their count is specified by second parameter) */
-    QList<int> nearestNeighbor( QgsPoint point, int neighbors );
+    QList<QgsFeatureId> nearestNeighbor( QgsPoint point, int neighbors );
 
 
   protected:
 
     Tools::Geometry::Region rectToRegion( QgsRectangle rect );
 
-    bool featureInfo( QgsFeature& f, Tools::Geometry::Region& r, long& id );
+    bool featureInfo( QgsFeature& f, Tools::Geometry::Region& r, QgsFeatureId &id );
 
 
   private:

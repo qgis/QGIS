@@ -17,6 +17,7 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
 
 #include <QtXml/QXmlSimpleReader>
 #include <QtXml/QXmlInputSource>
@@ -85,12 +86,14 @@ QMap<QString, QString> OsmRenderer::parse_tags( QString tags )
 
 bool OsmRenderer::willRenderFeature( QgsFeature *f )
 {
+  Q_UNUSED( f );
   return true;
 }
 
 
 void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity )
 {
+  Q_UNUSED( selected );
   QPainter* p = renderContext.painter();
   QgsAttributeMap attr_map = f.attributeMap();
   QMap<QString, QString> tags = parse_tags( attr_map[2].toString() );
@@ -119,12 +122,17 @@ void OsmRenderer::renderFeature( QgsRenderContext &renderContext, QgsFeature& f,
 
 int OsmRenderer::readXML( const QDomNode &rnode, QgsVectorLayer &vl )
 {
+  Q_UNUSED( rnode );
+  Q_UNUSED( vl );
   return 0;
 }
 
 
 bool OsmRenderer::writeXML( QDomNode &layer_node, QDomDocument &document, const QgsVectorLayer &vl ) const
 {
+  Q_UNUSED( layer_node );
+  Q_UNUSED( document );
+  Q_UNUSED( vl );
   return true;
 }
 

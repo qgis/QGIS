@@ -163,9 +163,13 @@ void QgsPluginRegistry::unloadAll()
         it++ )
   {
     if ( it->plugin() )
+    {
       it->plugin()->unload();
+    }
     else
+    {
       QgsDebugMsg( "warning: plugin is NULL:" + it.key() );
+    }
   }
 
   if ( mPythonUtils && mPythonUtils->isEnabled() )

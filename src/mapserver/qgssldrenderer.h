@@ -17,6 +17,8 @@
  ***************************************************************************/
 
 #include "qgsrenderer.h"
+#include "qgsvectorlayer.h"
+
 #include <QPixmap>
 
 class QgsSLDRule;
@@ -36,9 +38,11 @@ class QgsSLDRenderer: public QgsRenderer
     /**Traverses the rule list until a suitable entry is found. If no rule matches, Qt::NoPen and Qt::NoBrush are set*/
     void renderFeature( QgsRenderContext &renderContext, QgsFeature& f, QImage* pic, bool selected, double opacity );
     /**This method is not needed because QgsSLDRenderer is not meant to provide reading from/ storing to project file*/
-    int readXML( const QDomNode& rnode, QgsVectorLayer& vl ) {return 1;}
+    int readXML( const QDomNode& rnode, QgsVectorLayer& vl )
+    { Q_UNUSED( rnode ); Q_UNUSED( vl ); return 1; }
     /**This method is not needed because QgsSLDRenderer is not meant to provide reading from/ storing to project file*/
-    bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const {return false;}
+    bool writeXML( QDomNode & layer_node, QDomDocument & document, const QgsVectorLayer& vl ) const
+    { Q_UNUSED( layer_node ); Q_UNUSED( document ); Q_UNUSED( vl ); return false; }
     /**Has to be decided at runtime depending upon mComparisonOperators and mClassificationFields*/
     bool needsAttributes() const;
     QgsAttributeList classificationAttributes() const;

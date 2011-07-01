@@ -63,7 +63,7 @@ class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     void setEmbeddedRenderer( QgsFeatureRendererV2* r );
     QgsFeatureRendererV2* embeddedRenderer() { return mRenderer;}
 
-    void setDisplacementGroups( const QList<QMap<int, QgsFeature> >& list );
+    void setDisplacementGroups( const QList<QMap<QgsFeatureId, QgsFeature> >& list );
 
     void setLabelFont( const QFont& f ) { mLabelFont = f; }
     QFont labelFont() const { return mLabelFont;}
@@ -122,9 +122,9 @@ class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     double mMaxLabelScaleDenominator;
 
     /**Groups of features that have the same position*/
-    QList<QMap<int, QgsFeature> > mDisplacementGroups;
+    QList<QMap<QgsFeatureId, QgsFeature> > mDisplacementGroups;
     /**Set that contains all the ids the display groups (for quicker lookup)*/
-    QSet<int> mDisplacementIds;
+    QSet<QgsFeatureId> mDisplacementIds;
 
     /**Create the displacement groups efficiently using a spatial index*/
     void createDisplacementGroups( QgsVectorLayer *vlayer, const QgsRectangle& viewExtent );

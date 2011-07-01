@@ -3,6 +3,7 @@
 
 #include <QAbstractItemModel>
 #include <QIcon>
+#include <QMimeData>
 
 #include "qgsdataitem.h"
 
@@ -46,6 +47,10 @@ class QgsBrowserModel : public QAbstractItemModel
      * If the item has no parent, an invalid QModelIndex is returned.
      */
     virtual QModelIndex parent( const QModelIndex &index ) const;
+
+    virtual QStringList mimeTypes() const;
+
+    QMimeData * mimeData(const QModelIndexList &indexes) const;
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 

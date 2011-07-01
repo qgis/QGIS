@@ -113,6 +113,7 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
 #include "qgsfeature.h"
@@ -635,7 +636,7 @@ QgisApp::~QgisApp()
 
 void QgisApp::dragEnterEvent( QDragEnterEvent *event )
 {
-  if ( event->mimeData()->hasUrls() )
+  if ( event->mimeData()->hasUrls() || event->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
   {
     event->acceptProposedAction();
   }
@@ -656,6 +657,32 @@ void QgisApp::dropEvent( QDropEvent *event )
       openFile( fileName );
     }
   }
+  if ( event->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  {
+    QByteArray encodedData = event->mimeData()->data( "application/x-vnd.qgis.qgis.uri" );
+    QDataStream stream( &encodedData, QIODevice::ReadOnly );
+    QString xUri; // extended uri: layer_type:provider_key:uri
+    stream >> xUri;
+    QgsDebugMsg( xUri );
+    QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
+    if ( rx.indexIn( xUri ) != -1 )
+    {
+      QString layerType = rx.cap( 1 );
+      QString providerKey = rx.cap( 2 );
+      QString name = rx.cap( 3 );
+      QString uri = rx.cap( 4 );
+      QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
+      if ( layerType == "vector" )
+      {
+        addVectorLayer( uri, name, providerKey );
+      }
+      else if ( layerType == "raster" )
+      {
+        addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
+      }
+    }
+  }
+
   event->acceptProposedAction();
 }
 
@@ -779,6 +806,7 @@ void QgisApp::createActions()
   connect( mActionNewVectorLayer, SIGNAL( triggered() ), this, SLOT( newVectorLayer() ) );
   connect( mActionNewSpatialiteLayer, SIGNAL( triggered() ), this, SLOT( newSpatialiteLayer() ) );
   connect( mActionShowRasterCalculator, SIGNAL( triggered() ), this, SLOT( showRasterCalculator() ) );
+  connect( mActionEmbedLayers, SIGNAL( triggered() ) , this, SLOT( embedLayers() ) );
   connect( mActionAddOgrLayer, SIGNAL( triggered() ), this, SLOT( addVectorLayer() ) );
   connect( mActionAddRasterLayer, SIGNAL( triggered() ), this, SLOT( addRasterLayer() ) );
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
@@ -3133,6 +3161,8 @@ void QgisApp::addWindow( QAction *action )
   mWindowMenu->addAction( action );
   action->setCheckable( true );
   action->setChecked( true );
+#else
+  Q_UNUSED( action );
 #endif
 }
 
@@ -3141,6 +3171,8 @@ void QgisApp::removeWindow( QAction *action )
 #ifdef Q_WS_MAC
   mWindowActions->removeAction( action );
   mWindowMenu->removeAction( action );
+#else
+  Q_UNUSED( action );
 #endif
 }
 
@@ -3734,7 +3766,7 @@ void QgisApp::mergeAttributesOfSelectedFeatures()
 
   const QgsAttributeMap &merged = d.mergedAttributesMap();
 
-  foreach( int fid, vl->selectedFeaturesIds() )
+  foreach( QgsFeatureId fid, vl->selectedFeaturesIds() )
   {
     for ( QgsAttributeMap::const_iterator it = merged.begin(); it != merged.end(); it++ )
     {
@@ -5046,6 +5078,39 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 // Let render() do its own cursor management
 //  QApplication::restoreOverrideCursor();
 
+}
+
+void QgisApp::embedLayers()
+{
+  //dialog to select groups/layers from other project files
+  QgsEmbedLayerDialog d;
+  if ( d.exec() == QDialog::Accepted )
+  {
+    mMapCanvas->freeze( true );
+    //groups
+    QList< QPair < QString, QString > > groups = d.embeddedGroups();
+    QList< QPair < QString, QString > >::const_iterator groupIt = groups.constBegin();
+    for ( ; groupIt != groups.constEnd(); ++groupIt )
+    {
+      mMapLegend->addEmbeddedGroup( groupIt->first, groupIt->second );
+    }
+
+    //layers
+    QList<QDomNode> brokenNodes;
+    QList< QPair< QgsVectorLayer*, QDomElement > > vectorLayerList;
+
+    QList< QPair < QString, QString > > layers = d.embeddedLayers();
+    QList< QPair < QString, QString > >::const_iterator layerIt = layers.constBegin();
+    for ( ; layerIt != layers.constEnd(); ++layerIt )
+    {
+      QgsProject::instance()->createEmbeddedLayer( layerIt->first, layerIt->second, brokenNodes, vectorLayerList );
+    }
+    mMapCanvas->freeze( false );
+    if ( groups.size() > 0 || layers.size() > 0 )
+    {
+      mMapCanvas->refresh();
+    }
+  }
 }
 
 void QgisApp::setExtent( QgsRectangle theRect )
@@ -6465,6 +6530,7 @@ void QgisApp::updateUndoActions()
 // add project directory to python path
 void QgisApp::projectChanged( const QDomDocument &doc )
 {
+  Q_UNUSED( doc );
   QgsProject *project = qobject_cast<QgsProject*>( sender() );
   if ( !project )
     return;
@@ -6513,6 +6579,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
   if ( !ml )
     return;
 
+  if ( !QgsProject::instance()->layerIsEmbedded( ml->id() ).isEmpty() )
+  {
+    return; //don't show properties of embedded layers
+  }
+
   if ( ml->type() == QgsMapLayer::RasterLayer )
   {
     QgsRasterLayerProperties *rlp = NULL; // See note above about reusing this
@@ -6525,6 +6596,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       rlp = new QgsRasterLayerProperties( ml, mMapCanvas );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
+
     rlp->exec();
     delete rlp; // delete since dialog cannot be reused without updating code
   }

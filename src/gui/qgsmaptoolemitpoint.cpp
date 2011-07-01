@@ -26,6 +26,7 @@ QgsMapToolEmitPoint::QgsMapToolEmitPoint( QgsMapCanvas* canvas )
 
 void QgsMapToolEmitPoint::canvasMoveEvent( QMouseEvent * e )
 {
+  Q_UNUSED( e );
 }
 
 void QgsMapToolEmitPoint::canvasPressEvent( QMouseEvent * e )
@@ -36,4 +37,5 @@ void QgsMapToolEmitPoint::canvasPressEvent( QMouseEvent * e )
 
 void QgsMapToolEmitPoint::canvasReleaseEvent( QMouseEvent * e )
 {
+  Q_UNUSED( e );
 }
