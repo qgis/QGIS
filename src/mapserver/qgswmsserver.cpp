@@ -50,6 +50,7 @@
 #include <QBuffer>
 #include <QPrinter>
 #include <QSvgGenerator>
+#include <QUrl>
 
 QgsWMSServer::QgsWMSServer( std::map<QString, QString> parameters, QgsMapRenderer* renderer )
     : mParameterMap( parameters )
@@ -106,15 +107,12 @@ QDomDocument QgsWMSServer::getCapabilities()
   //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
   QString hrefString;
   QString requestUrl = getenv( "REQUEST_URI" );
-  requestUrl.truncate( requestUrl.indexOf( "?" ) + 1 );
-  if ( requestUrl.contains( "http" ) )
-  {
-    hrefString = requestUrl;
-  }
-  else
-  {
-    hrefString = "http://" + QString( getenv( "SERVER_NAME" ) ) + requestUrl;
-  }
+  QUrl mapUrl( requestUrl );
+  mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
+  mapUrl.removeQueryItem( "REQUEST" );
+  mapUrl.removeQueryItem( "VERSION" );
+  mapUrl.removeQueryItem( "SERVICE" );
+  hrefString = mapUrl.toString();
 
 
   // SOAP platform

@@ -19,8 +19,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsmapserverlogger.h"
 
-//maximum number of layers in the cache (and upper limit for layers in one published project)
-#define DEFAULT_MAX_N_LAYERS 50
+//maximum number of layers in the cache
+#define DEFAULT_MAX_N_LAYERS 100
 
 QgsMSLayerCache* QgsMSLayerCache::mInstance = 0;
 
