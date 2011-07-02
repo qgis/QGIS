@@ -16,6 +16,7 @@
 #ifndef QGSMAPRENDER_H
 #define QGSMAPRENDER_H
 
+#include <QMutex>
 #include <QSize>
 #include <QStringList>
 #include <QVector>
@@ -318,6 +319,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Labeling engine (NULL by default)
     QgsLabelingEngineInterface* mLabelingEngine;
+
+    //! Locks rendering loop for concurrent draws
+    QMutex mRenderMutex;
 };
 
 #endif
