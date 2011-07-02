@@ -113,13 +113,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
       if ( type == QgsComposerLegendItem::GroupItem )
       {
-        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentMaxXCoord );
-        maxXCoord = qMax( maxXCoord, currentMaxXCoord );
+        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
       else if ( type == QgsComposerLegendItem::LayerItem )
       {
-        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentMaxXCoord );
-        maxXCoord = qMax( maxXCoord, currentMaxXCoord );
+        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
       }
     }
   }
