@@ -101,7 +101,6 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
     drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
   }
 
-
   maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
 
   double currentItemMaxX = 0; //maximum x-coordinate for current item
@@ -114,13 +113,13 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
       QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
       if ( type == QgsComposerLegendItem::GroupItem )
       {
-        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
-        maxXCoord = qMax( maxXCoord, currentItemMaxX );
+        drawGroupItem( painter, dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ), currentYCoordinate, currentMaxXCoord );
+        maxXCoord = qMax( maxXCoord, currentMaxXCoord );
       }
       else if ( type == QgsComposerLegendItem::LayerItem )
       {
-        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentItemMaxX );
-        maxXCoord = qMax( maxXCoord, currentItemMaxX );
+        drawLayerItem( painter, dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ), currentYCoordinate, currentMaxXCoord );
+        maxXCoord = qMax( maxXCoord, currentMaxXCoord );
       }
     }
   }
