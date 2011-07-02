@@ -260,6 +260,9 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void setDrawCanvasItems( bool b ) { mDrawCanvasItems = b; }
     bool drawCanvasItems() const { return mDrawCanvasItems; }
 
+    /**Returns the conversion factor map units -> mm*/
+    double mapUnitsToMM() const;
+
   signals:
     void extentChanged();
 
@@ -390,8 +393,6 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
     void mapPolygon( QPolygonF& poly ) const;
     /**Calculates the extent to request and the yShift of the top-left point in case of rotation.*/
     void requestedExtent( QgsRectangle& extent ) const;
-    /**Returns the conversion factor map units -> mm*/
-    double mapUnitsToMM() const;
     /**Scales a composer map shift (in MM) and rotates it by mRotation
         @param xShift in: shift in x direction (in item units), out: xShift in map units
         @param yShift in: shift in y direction (in item units), out: yShift in map units*/
