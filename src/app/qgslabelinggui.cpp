@@ -471,6 +471,7 @@ void QgsLabelingGui::showExpressionDialog()
 
     // Set the current expression using the selected text in the combo box.
     builder->setExpressionString(this->cboFieldName->currentText());
+    builder->loadFieldNames(mLayer);
 
     if ( dlg->exec() == QDialog::Accepted )
     { 

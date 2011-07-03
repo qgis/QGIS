@@ -16,16 +16,53 @@
 #include "qgsexpressionbuilder.h"
 #include "ui_qgsexpressionbuilder.h"
 
-QgsExpressionBuilder::QgsExpressionBuilder(QWidget *parent) :
-    QWidget(parent)
-    
+QgsExpressionBuilder::QgsExpressionBuilder(QWidget *parent, QgsVectorLayer *layer)
+    : QWidget(parent),
+    mLayer( layer )
 {
     setupUi(this);
+    if (!layer) return;
 }
 
 QgsExpressionBuilder::~QgsExpressionBuilder()
 {
     
+}
+
+void QgsExpressionBuilder::on_mAllPushButton_clicked()
+{
+
+}
+
+void QgsExpressionBuilder::loadFieldNames()
+{
+  if ( !mLayer )
+  {
+    return;
+  }
+ 
+  const QgsFieldMap fieldMap = mLayer->pendingFields();
+  QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
+  for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+  {
+    QString fieldName = fieldIt.value().name();
+
+    //insert into field list and field combo box
+    //mFieldMap.insert( fieldName, fieldIt.key() );
+    mFieldsListWidget->addItem( fieldName );
+  }
+}
+
+void QgsExpressionBuilder::fillFieldValues(int fieldIndex, int countLimit)
+{
+    // determine the field type
+    QList<QVariant> values;
+    mLayer->uniqueValues( fieldIndex, values, countLimit );
+
+    foreach(QVariant value, values)
+    {
+        mValueListWidget->addItem(value.toString());
+    }
 }
 
 QString QgsExpressionBuilder::getExpressionString()

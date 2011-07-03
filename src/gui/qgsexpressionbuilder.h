@@ -18,15 +18,22 @@
 
 #include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
+#include "qgsvectorlayer.h"
 
 class QgsExpressionBuilder : public QWidget, private Ui::QgsExpressionBuilder {
     Q_OBJECT
 public:
-    QgsExpressionBuilder(QWidget *parent = 0);
+    QgsExpressionBuilder(QWidget *parent = 0, QgsVectorLayer * layer=0);
     ~QgsExpressionBuilder();
 
+    void loadFieldNames();
+    void fillFieldValues(int fieldIndex, int countLimit);
     QString getExpressionString();
     void setExpressionString(const QString expressionString);
+public slots:
+    void on_mAllPushButton_clicked();
+private:
+    QgsVectorLayer* mLayer;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H
