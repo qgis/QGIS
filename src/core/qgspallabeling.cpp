@@ -786,7 +786,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     max_scale = lyr.scaleMax;
   }
 
-  Layer* l = mPal->addLayer( layer->id().toLocal8Bit().data(),
+  Layer* l = mPal->addLayer( layer->id().toUtf8().data(),
                              min_scale, max_scale, arrangement,
                              METER, priority, lyr.obstacle, true, true );
 
@@ -823,7 +823,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
 int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSettings *s )
 {
-  Layer* l = mPal->addLayer( layer->id().append( "d" ).toLocal8Bit().data(), -1, -1, pal::Arrangement( s->placement ), METER, s->priority, s->obstacle, true, true );
+  Layer* l = mPal->addLayer( layer->id().append( "d" ).toUtf8().data(), -1, -1, pal::Arrangement( s->placement ), METER, s->priority, s->obstacle, true, true );
   l->setArrangementFlags( s->placementFlags );
 
   s->palLayer = l;
@@ -1065,13 +1065,15 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       continue;
     }
 
+    //layer names
+    QString layerNameUtf8 = QString::fromUtf8(( *it )->getLayerName() );
     if ( palGeometry->isDiagram() )
     {
       //render diagram
       QHash<QgsVectorLayer*, QgsDiagramLayerSettings>::iterator dit = mActiveDiagramLayers.begin();
       for ( dit = mActiveDiagramLayers.begin(); dit != mActiveDiagramLayers.end(); ++dit )
       {
-        if ( dit.key() && dit.key()->id().append( "d" ) == ( *it )->getLayerName() )
+        if ( dit.key() && dit.key()->id().append( "d" ) == layerNameUtf8 )
         {
           QgsPoint outPt = xform->transform(( *it )->getX(), ( *it )->getY() );
           dit.value().renderer->renderDiagram( palGeometry->diagramAttributes(), context, QPointF( outPt.x(), outPt.y() ) );
@@ -1082,14 +1084,14 @@ void QgsPalLabeling::drawLabeling( QgsRenderContext& context )
       if ( mLabelSearchTree )
       {
         //for diagrams, remove the additional 'd' at the end of the layer id
-        QString layerId = ( *it )->getLayerName();
+        QString layerId = layerNameUtf8;
         layerId.chop( 1 );
         mLabelSearchTree->insertLabel( *it,  QString( palGeometry->strId() ).toInt(), layerId, true );
       }
       continue;
     }
 
-    const QgsPalLayerSettings& lyr = layer(( *it )->getLayerName() );
+    const QgsPalLayerSettings& lyr = layer( layerNameUtf8 );
     QFont fontForLabel = lyr.textFont;
     QColor fontColor = lyr.textColor;
     double bufferSize = lyr.bufferSize;
@@ -1268,7 +1270,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
   QgsPoint outPt = xform->transform( label->getX(), label->getY() );
 
   // TODO: optimize access :)
-  const QgsPalLayerSettings& lyr = layer( label->getLayerName() );
+  const QgsPalLayerSettings& lyr = layer( QString::fromUtf8( label->getLayerName() ) );
   QString text = (( QgsPalGeometry* )label->getFeaturePart()->getUserGeometry() )->text();
   QString txt = ( label->getPartId() == -1 ? text : QString( text[label->getPartId()] ) );
 
