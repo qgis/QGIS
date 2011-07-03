@@ -20,11 +20,11 @@
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsvectorlayer.h"
 
-class QgsExpressionBuilder : public QWidget, private Ui::QgsExpressionBuilder {
+class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
     Q_OBJECT
 public:
-    QgsExpressionBuilder(QWidget *parent = 0, QgsVectorLayer * layer=0);
-    ~QgsExpressionBuilder();
+    QgsExpressionBuilderWidget(QgsVectorLayer * layer);
+    ~QgsExpressionBuilderWidget();
 
     void loadFieldNames();
     void fillFieldValues(int fieldIndex, int countLimit);

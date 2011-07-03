@@ -461,8 +461,8 @@ void QgsLabelingGui::showExpressionDialog()
     QDialog* dlg = new QDialog();
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                                        | QDialogButtonBox::Cancel);
-    QgsExpressionBuilder* builder = new QgsExpressionBuilder();
     QGridLayout* layout = new QGridLayout();
+    QgsExpressionBuilderWidget* builder = new QgsExpressionBuilderWidget(mLayer);
     dlg->setLayout(layout);
     layout->addWidget(builder);
     layout->addWidget(buttonBox);
@@ -471,7 +471,7 @@ void QgsLabelingGui::showExpressionDialog()
 
     // Set the current expression using the selected text in the combo box.
     builder->setExpressionString(this->cboFieldName->currentText());
-    builder->loadFieldNames(mLayer);
+    builder->loadFieldNames();
 
     if ( dlg->exec() == QDialog::Accepted )
     { 

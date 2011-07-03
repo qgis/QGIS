@@ -16,25 +16,25 @@
 #include "qgsexpressionbuilder.h"
 #include "ui_qgsexpressionbuilder.h"
 
-QgsExpressionBuilder::QgsExpressionBuilder(QWidget *parent, QgsVectorLayer *layer)
-    : QWidget(parent),
+QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
+    : QWidget(),
     mLayer( layer )
 {
     setupUi(this);
     if (!layer) return;
 }
 
-QgsExpressionBuilder::~QgsExpressionBuilder()
+QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
     
 }
 
-void QgsExpressionBuilder::on_mAllPushButton_clicked()
+void QgsExpressionBuilderWidget::on_mAllPushButton_clicked()
 {
 
 }
 
-void QgsExpressionBuilder::loadFieldNames()
+void QgsExpressionBuilderWidget::loadFieldNames()
 {
   if ( !mLayer )
   {
@@ -53,7 +53,7 @@ void QgsExpressionBuilder::loadFieldNames()
   }
 }
 
-void QgsExpressionBuilder::fillFieldValues(int fieldIndex, int countLimit)
+void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
 {
     // determine the field type
     QList<QVariant> values;
@@ -65,12 +65,12 @@ void QgsExpressionBuilder::fillFieldValues(int fieldIndex, int countLimit)
     }
 }
 
-QString QgsExpressionBuilder::getExpressionString()
+QString QgsExpressionBuilderWidget::getExpressionString()
 {
     return this->txtExpressionString->toPlainText();
 }
 
-void QgsExpressionBuilder::setExpressionString(const QString expressionString)
+void QgsExpressionBuilderWidget::setExpressionString(const QString expressionString)
 {
     this->txtExpressionString->setPlainText(expressionString);
 }
