@@ -306,6 +306,11 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
     value += step;
     breaks.append( value );
   }
+
+  // floating point arithmetics is not precise:
+  // set the last break to be exactly maximum so we do not miss it
+  breaks[classes-1] = maximum;
+
   return breaks;
 }
 
