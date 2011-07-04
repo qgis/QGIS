@@ -147,7 +147,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
 
     /** \brief Set selected, selected item should be highlighted */
     virtual void setSelected( bool s );
-sipCppRet
+
     /** \brief Is selected */
     virtual bool selected();
 
