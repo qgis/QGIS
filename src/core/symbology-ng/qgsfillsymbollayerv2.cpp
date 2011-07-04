@@ -4,6 +4,7 @@
 
 #include "qgsrendercontext.h"
 #include "qgsproject.h"
+#include "qgssvgcache.h"
 
 #include <QPainter>
 #include <QFile>
@@ -201,6 +202,18 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
 
+  QColor fillColor( Qt::black );
+  QColor outlineColor( Qt::black );
+  double outlineWidth = 1;
+  int size = context.outputPixelSize( mPatternWidth );
+  const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, fillColor, outlineColor, outlineWidth,
+                                                                   context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+  QTransform brushTransform;
+  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
+  mBrush.setTextureImage( patternImage );
+  mBrush.setTransform( brushTransform );
+
+#if 0
   //create QImage with appropriate dimensions
   int pixelWidth = context.outputPixelSize( mPatternWidth );
   int pixelHeight = pixelWidth / mSvgViewBox.width() * mSvgViewBox.height();
@@ -227,6 +240,7 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
   mBrush.setTextureImage( textureImage );
   mBrush.setTransform( brushTransform );
+#endif //0
 
   if ( mOutline )
   {
