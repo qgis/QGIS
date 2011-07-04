@@ -79,71 +79,75 @@ IF(WIN32)
 ELSE(WIN32)
   IF(UNIX) 
     # try to use bundle on mac
+    SET (QGIS_MAC_PATH /Applications/QGIS.app/Contents)
+    #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
+    FIND_PATH(QGIS_PLUGIN_DIR
+      NAMES libnortharrowplugin.so
+      PATHS
+        /usr/lib64/qgis/plugins
+        /usr/lib/qgis
+        /usr/local/lib/qgis/plugins
+        ${QGIS_MAC_PATH}/PlugIns/qgis
+        "$ENV{LIB_DIR}/lib/qgis/plugins" 
+        "$ENV{LIB_DIR}/lib/qgis" 
+    )
+    FIND_PATH(QGIS_INCLUDE_DIR
+      NAMES qgis.h 
+      PATHS
+        /usr/include/qgis
+        /usr/local/include/qgis
+        ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
+        "$ENV{LIB_DIR}/include/qgis" 
+    )
+    # also get other frameworks' headers folders on OS X
     IF (APPLE)
-      #MESSAGE("Searching for QGIS in /Applications/QGIS.app/Contents/MacOS")
-      SET (QGIS_MAC_PATH /Applications/QGIS.app/Contents/MacOS)
-      SET (QGIS_LIB_DIR ${QGIS_MAC_PATH}/lib)
-      SET (QGIS_FW_DIR ${QGIS_MAC_PATH}/../Frameworks)
-      SET (QGIS_PLUGIN_DIR ${QGIS_MAC_PATH}/../PlugIns/qgis CACHE STRING INTERNAL)
-      # set INCLUDE_DIR to frameworks
+      FIND_PATH(QGIS_GUI_INCLUDE_DIR
+        NAMES qgisgui.h 
+        PATHS ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
+      )
+      FIND_PATH(QGIS_ANALYSIS_INCLUDE_DIR
+        NAMES qgsinterpolator.h 
+        PATHS ${QGIS_MAC_PATH}/Frameworks/qgis_analysis.framework/Headers
+      )
       SET(QGIS_INCLUDE_DIR
-        ${QGIS_FW_DIR}/qgis_core.framework/Headers
-        ${QGIS_FW_DIR}/qgis_gui.framework/Headers
-        ${QGIS_FW_DIR}/qgis_analysis.framework/Headers
-        CACHE STRING INTERNAL)
-      # extract link dirs 
-      SET(QGIS_CORE_LIBRARY ${QGIS_FW_DIR}/qgis_core.framework/qgis_core CACHE STRING INTERNAL)
-      SET(QGIS_GUI_LIBRARY ${QGIS_FW_DIR}/qgis_gui.framework/qgis_gui CACHE STRING INTERNAL)
-      SET(QGIS_ANALYSIS_LIBRARY ${QGIS_FW_DIR}/qgis_analysis.framework/qgis_analysis CACHE STRING INTERNAL)
-    ELSE (APPLE)
-      #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
-      FIND_PATH(QGIS_PLUGIN_DIR
-        NAMES libnortharrowplugin.so
-        PATHS
-          /usr/lib64/qgis/plugins
-          /usr/lib/qgis
-          /usr/local/lib/qgis/plugins
-          "$ENV{LIB_DIR}/lib/qgis/plugins" 
-          "$ENV{LIB_DIR}/lib/qgis" 
-      )
-      FIND_PATH(QGIS_INCLUDE_DIR
-        NAMES qgis.h 
-        PATHS
-          /usr/include/qgis
-          /usr/local/include/qgis
-          "$ENV{LIB_DIR}/include/qgis" 
-      )
-      FIND_LIBRARY(QGIS_CORE_LIBRARY
-        NAMES qgis_core
-        PATHS 
-          /usr/lib64
-          /usr/lib
-          /usr/local/lib
-          "$ENV{LIB_DIR}/lib/" 
-      )
-      FIND_LIBRARY(QGIS_GUI_LIBRARY
-        NAMES qgis_gui
-        PATHS 
-          /usr/lib64
-          /usr/lib
-          /usr/local/lib
-          "$ENV{LIB_DIR}/lib/" 
-      )
-      FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
-        NAMES qgis_analysis
-        PATHS 
-          /usr/lib64
-          /usr/lib
-          /usr/local/lib
-          "$ENV{LIB_DIR}/lib/" 
+        ${QGIS_INCLUDE_DIR}
+        ${QGIS_GUI_INCLUDE_DIR}
+        ${QGIS_ANALYSIS_INCLUDE_DIR}
       )
     ENDIF (APPLE)
+    FIND_LIBRARY(QGIS_CORE_LIBRARY
+      NAMES qgis_core
+      PATHS 
+        /usr/lib64
+        /usr/lib
+        /usr/local/lib
+        ${QGIS_MAC_PATH}/Frameworks
+        "$ENV{LIB_DIR}/lib/" 
+    )
+    FIND_LIBRARY(QGIS_GUI_LIBRARY
+      NAMES qgis_gui
+      PATHS 
+        /usr/lib64
+        /usr/lib
+        /usr/local/lib
+        ${QGIS_MAC_PATH}/Frameworks
+        "$ENV{LIB_DIR}/lib/" 
+    )
+    FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
+      NAMES qgis_analysis
+      PATHS 
+        /usr/lib64
+        /usr/lib
+        /usr/local/lib
+        ${QGIS_MAC_PATH}/Frameworks
+        "$ENV{LIB_DIR}/lib/" 
+    )
   ENDIF(UNIX)
 ENDIF(WIN32)
 
 IF (QGIS_INCLUDE_DIR AND QGIS_CORE_LIBRARY AND QGIS_GUI_LIBRARY AND QGIS_ANALYSIS_LIBRARY)
    SET(QGIS_FOUND TRUE)
-ENDIF (QGIS_INCLUDE_DIR AND QGIS_CORE_LIBRARY AND QGIS_GUI_LIBRARY AND QGIS_ANALYSIS_LIBRARY)
+ENDIF ()
 
 IF (QGIS_FOUND)
    IF (NOT QGIS_FIND_QUIETLY)
