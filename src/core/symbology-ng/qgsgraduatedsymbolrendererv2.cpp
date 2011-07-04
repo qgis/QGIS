@@ -690,6 +690,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp )
 {
+  if ( classes < 1 )
+    return NULL;
 
   int attrNum = vlayer->fieldNameIndex( attrName );
 
