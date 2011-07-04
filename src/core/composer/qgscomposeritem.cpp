@@ -141,7 +141,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation", mRotation );
-
+  composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
   {
@@ -188,6 +188,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //rotation
   mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
+
+  //id
+  mId = itemElem.attribute( "id", "" );
 
   //frame
   QString frame = itemElem.attribute( "frame" );
