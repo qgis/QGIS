@@ -557,7 +557,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   // assuring heterogeneity among classes.
 
   QList<double> breaks;
-  if ( classes < 1 )
+  if ( classes <= 1 )
   {
     breaks.append( maximum );
     return breaks;
@@ -769,7 +769,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
 
     QgsSymbolV2* newSymbol = symbol->clone();
-    newSymbol->setColor( ramp->color(( double ) i / ( breaks.count() - 1 ) ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
+    double colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
+    newSymbol->setColor( ramp->color( colorValue ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
 
     ranges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
   }
