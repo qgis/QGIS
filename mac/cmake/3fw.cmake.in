@@ -31,7 +31,7 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
     IF (LIBFROM)
         SET (LIB_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/${LIBTO}")
         # app - always @executable_path
-        INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QAPPDIR}/Qgis")
+        INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QAPPDIR}/@QGIS_APP_NAME@")
         # qgis_help - doesn't link anything else than Qt/Qgis
         # qgis-mapserver
         IF (@WITH_MAPSERVER@)

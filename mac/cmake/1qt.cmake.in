@@ -25,6 +25,13 @@ SET (ATLOADER "@loader_path")
 
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
 
+# message only if verbose makefiles
+FUNCTION (MYMESSAGE MSG)
+    IF (@CMAKE_VERBOSE_MAKEFILE@)
+        MESSAGE (STATUS "${MSG}")
+    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+ENDFUNCTION (MYMESSAGE)
+
 # build list of Qt frameworks to bundle
 
 SET (QTLISTQG QtCore QtGui phonon)
@@ -128,14 +135,11 @@ ENDFOREACH (QTC)
 MESSAGE (STATUS "Copying Qwt and updating library paths...")
 IF (NOT EXISTS "${QLIBDIR}/libqwt.dylib")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QWT_LIBRARY@" "${QLIBDIR}/libqwt.dylib")
-    GET_INSTALL_NAME ("@QWT_LIBRARY@" "libqwt" QLIB)
-    IF (QLIB)
-        SET (QWT_CHG "${QLIB}")
-        # default for Qgis and no loader_path
-        SET (QWT_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libqwt.dylib")
-        INSTALLNAMETOOL_CHANGE (${QWT_CHG} ${QWT_CHG_TO} "${QAPPDIR}/Qgis")
-    ENDIF (QLIB)
 ENDIF ()
+GET_INSTALL_NAME ("@QWT_LIBRARY@" "libqwt" QLIB)
+IF (QLIB)
+	INSTALLNAMETOOL_CHANGE ("${QLIB}" "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libqwt.dylib" "${QAPPDIR}/@QGIS_APP_NAME@")
+ENDIF (QLIB)
 
 # PyQt
 
@@ -199,8 +203,11 @@ ENDIF (QWT_CHG)
 # don't load plugins from system-installed Qt
 FILE (WRITE "${QAPPDIRC}/Resources/qt.conf" "")
 FILE (WRITE "${QBINDIR}/qgis_help.app/Contents/Resources/qt.conf" "")
+FILE (WRITE "${QBINDIR}/qbrowser.app/Contents/Resources/qt.conf" "")
 
-FILE (GLOB QGLIBLIST ${QLIBDIR}/libqgis*.dylib)
+FILE (GLOB QGFWLIST RELATIVE ${QFWDIR} ${QFWDIR}/qgis*.framework)
+# for some reason, REPLACE is stripping list seps
+STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
 FILE (GLOB QGPLUGLIST ${QPLUGDIR}/*.so)
 FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
 
@@ -215,10 +222,11 @@ FOREACH (QFW ${QTLISTQG})
     SET (QFW_CHG "${QQ}")
     SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
     # app - always @executable_path
-    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIR}/Qgis")
-    # qgis_help - use symlink, even when have loader_path,
+    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIR}/@QGIS_APP_NAME@")
+    # qgis_help, qbrowser - use symlink, even when have loader_path,
     # applications behave better that way
     INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QBINDIR}/qgis_help.app/Contents/MacOS/qgis_help")
+    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QBINDIR}/qbrowser.app/Contents/MacOS/qbrowser")
     # qgis-mapserver
     IF (@WITH_MAPSERVER@)
         IF (@OSX_HAVE_LOADERPATH@)
@@ -228,11 +236,19 @@ FOREACH (QFW ${QTLISTQG})
     ENDIF ()
     # libs
     IF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/../../../${QFW}.framework/${QFW}")
+    ENDIF (@OSX_HAVE_LOADERPATH@)
+    FOREACH (QL ${QGFWLIST})
+        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QFWDIR}/${QL}.framework/${QL}")
+    ENDFOREACH (QL)
+	# libqgispython is not a framework
+    IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
     ENDIF (@OSX_HAVE_LOADERPATH@)
-    FOREACH (QL ${QGLIBLIST})
-        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QL}")
-    ENDFOREACH (QL)
+	INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QLIBDIR}/libqgispython.dylib")
+    IF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
+    ENDIF (@OSX_HAVE_LOADERPATH@)
     # Qwt
     INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QLIBDIR}/libqwt.dylib")
     # GRASS libexec stuff

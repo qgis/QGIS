@@ -16,6 +16,7 @@ SET (QLIBXDIR "${QAPPDIR}/@QGIS_LIBEXEC_SUBDIR@")
 SET (QDATADIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@")
 SET (QPLUGDIR "${QAPPDIR}/@QGIS_PLUGIN_SUBDIR@")
 SET (QGISPYDIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@/python")
+SET (Q_FWVER @CPACK_PACKAGE_VERSION_MAJOR@.@CPACK_PACKAGE_VERSION_MINOR@)
 # Qt framework version is major version
 SET (QT_FWVER @QT_VERSION_MAJOR@)
 
@@ -25,7 +26,16 @@ SET (ATLOADER "@loader_path")
 
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
 
-FILE (GLOB QGLIBLIST RELATIVE ${QLIBDIR} ${QLIBDIR}/libqgis*.dylib)
+# message only if verbose makefiles
+FUNCTION (MYMESSAGE MSG)
+    IF (@CMAKE_VERBOSE_MAKEFILE@)
+        MESSAGE (STATUS "${MSG}")
+    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+ENDFUNCTION (MYMESSAGE)
+
+FILE (GLOB QGFWLIST RELATIVE ${QFWDIR} ${QFWDIR}/qgis*.framework)
+# for some reason, REPLACE is stripping list seps
+STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
 FILE (GLOB QGPLUGLIST ${QPLUGDIR}/*.so)
 FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
 
@@ -36,27 +46,29 @@ FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
 IF (@OSX_HAVE_LOADERPATH@)
     MESSAGE (STATUS "Updating QGIS library paths...")
     # inter-library links - do all combos, many will be noops
-    FOREACH (QL ${QGLIBLIST})
-        FOREACH (QLL ${QGLIBLIST})
-            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATLOADER}/${QLL} "${QLIBDIR}/${QL}")
+    FOREACH (QL ${QGFWLIST})
+        FOREACH (QLL ${QGFWLIST})
+            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} ${ATLOADER}/../../../${QLL}.framework/Versions/${Q_FWVER}/${QLL} "${QFWDIR}/${QL}.framework/${QL}")
         ENDFOREACH (QLL)
+        # libqgispython is not a framework
+        INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QL}.framework/Versions/${Q_FWVER}/${QL} ${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QL}.framework/Versions/${Q_FWVER}/${QL} "${QLIBDIR}/libqgispython.dylib")
     ENDFOREACH (QL)
     # plugins
     FOREACH (QP ${QGPLUGLIST})
-        FOREACH (QLL ${QGLIBLIST})
-            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${QLL} "${QP}")
+        FOREACH (QLL ${QGFWLIST})
+            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} ${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} "${QP}")
         ENDFOREACH (QLL)
     ENDFOREACH (QP)
     # qgis python
     FOREACH (PG ${QGPYLIST})
-        FOREACH (QLL ${QGLIBLIST})
-            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATLOADER}/../../@QGIS_DATA_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${QLL} "${PG}")
+        FOREACH (QLL ${QGFWLIST})
+            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} ${ATLOADER}/../../@QGIS_DATA_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} "${PG}")
         ENDFOREACH (QLL)
     ENDFOREACH (PG)
     # qgis-mapserver
     IF (@WITH_MAPSERVER@)
-        FOREACH (QLL ${QGLIBLIST})
-            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL} ${ATEXECUTABLE}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${QLL} "${QCGIDIR}/qgis_mapserv.fcgi")
+        FOREACH (QLL ${QGFWLIST})
+            INSTALLNAMETOOL_CHANGE (@CMAKE_INSTALL_NAME_DIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} ${ATLOADER}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QLL}.framework/Versions/${Q_FWVER}/${QLL} "${QCGIDIR}/qgis_mapserv.fcgi")
         ENDFOREACH (QLL)
     ENDIF ()
 ENDIF (@OSX_HAVE_LOADERPATH@)
