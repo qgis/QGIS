@@ -95,7 +95,7 @@ QgsSvgCache::~QgsSvgCache()
 }
 
 
-const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+const QImage& QgsSvgCache::svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                                        double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
@@ -111,7 +111,7 @@ const QImage& QgsSvgCache::svgAsImage( const QString& file, double size, const Q
   return *( currentEntry->image );
 }
 
-const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+const QPicture& QgsSvgCache::svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* currentEntry = cacheEntry( file, size, fill, outline, outlineWidth, widthScaleFactor, rasterScaleFactor );
@@ -127,7 +127,7 @@ const QPicture& QgsSvgCache::svgAsPicture( const QString& file, double size, con
   return *( currentEntry->picture );
 }
 
-QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   QgsSvgCacheEntry* entry = new QgsSvgCacheEntry( file, size, outlineWidth, widthScaleFactor, rasterScaleFactor, fill, outline );
@@ -159,37 +159,6 @@ QgsSvgCacheEntry* QgsSvgCache::insertSVG( const QString& file, double size, cons
 void QgsSvgCache::containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor,
                                   bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const
 {
-  /*hasFillParam = false;
-  hasOutlineParam = false;
-  hasOutlineWidthParam = false;
-
-  QFile svgFile( path );
-  if ( !svgFile.open( QIODevice::ReadOnly ) )
-  {
-    return;
-  }
-
-  QDomDocument svgDoc;
-  if ( !svgDoc.setContent( &svgFile ) )
-  {
-    return;
-  }
-
-  //there are surely faster ways to get this information
-  QString content = svgDoc.toString();
-  if ( content.contains( "param(fill" ) )
-  {
-    hasFillParam = true;
-  }
-  if ( content.contains( "param(outline" ) )
-  {
-    hasOutlineParam = true;
-  }
-  if ( content.contains( "param(outline-width)" ) )
-  {
-    hasOutlineWidthParam = true;
-  }*/
-
   defaultFillColor = QColor( Qt::black );
   defaultOutlineColor = QColor( Qt::black );
   defaultOutlineWidth = 1.0;
@@ -247,7 +216,7 @@ void QgsSvgCache::cacheImage( QgsSvgCacheEntry* entry )
   delete entry->image;
   entry->image = 0;
 
-  double imageSize = entry->size * entry->widthScaleFactor * entry->rasterScaleFactor;
+  int imageSize = entry->size;
   QImage* image = new QImage( imageSize, imageSize, QImage::Format_ARGB32_Premultiplied );
   image->fill( 0 ); // transparent background
 
@@ -271,8 +240,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
 
   //correct QPictures dpi correction
   QPicture* picture = new QPicture();
-  double dpi = entry->widthScaleFactor * 25.4 * entry->rasterScaleFactor;
-  double pictureSize = entry->size * entry->widthScaleFactor / dpi * picture->logicalDpiX();
+  double pictureSize = entry->size  /  25.4 / entry->rasterScaleFactor  * picture->logicalDpiX();
   QRectF rect( QPointF( -pictureSize / 2.0, -pictureSize / 2.0 ), QSizeF( pictureSize, pictureSize ) );
 
 
@@ -283,7 +251,7 @@ void QgsSvgCache::cachePicture( QgsSvgCacheEntry *entry )
   mTotalSize += entry->picture->size();
 }
 
-QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
     double widthScaleFactor, double rasterScaleFactor )
 {
   //search entries in mEntryLookup
@@ -302,7 +270,6 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
     }
   }
 
-
   //if not found: create new entry
   //cache and replace params in svg content
   if ( !currentEntry )
@@ -312,10 +279,18 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, double size, con
   else
   {
     takeEntryFromList( currentEntry );
-    mMostRecentEntry->nextEntry = currentEntry;
-    currentEntry->previousEntry = mMostRecentEntry;
-    currentEntry->nextEntry = 0;
-    mMostRecentEntry = currentEntry;
+    if( !mMostRecentEntry ) //list is empty
+    {
+      mMostRecentEntry = currentEntry;
+      mLeastRecentEntry = currentEntry;
+    }
+    else
+    {
+      mMostRecentEntry->nextEntry = currentEntry;
+      currentEntry->previousEntry = mMostRecentEntry;
+      currentEntry->nextEntry = 0;
+      mMostRecentEntry = currentEntry;
+    }
   }
 
   //debugging
@@ -537,6 +512,7 @@ void QgsSvgCache::trimToMaximumSize()
     entry = entry->nextEntry;
 
     takeEntryFromList( bkEntry );
+    mEntryLookup.remove( bkEntry->file, bkEntry );
     mTotalSize -= bkEntry->dataSize();
     delete bkEntry;
   }

@@ -547,7 +547,7 @@ class QgsSvgListModel : public QAbstractListModel
           bool fillParam, outlineParam, outlineWidthParam;
           QgsSvgCache::instance()->containsParams( entry, fillParam, fill, outlineParam, outline, outlineWidthParam, outlineWidth );
 
-          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 8, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0 );
+          const QImage& img = QgsSvgCache::instance()->svgAsImage( entry, 30, fill, outline, outlineWidth, 3.5 /*appr. 88 dpi*/, 1.0 );
           pixmap = QPixmap::fromImage( img );
           QPixmapCache::insert( entry, pixmap );
         }
