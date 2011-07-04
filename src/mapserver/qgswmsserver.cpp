@@ -209,13 +209,15 @@ QDomDocument QgsWMSServer::getCapabilities()
   }
   QgsDebugMsg( "layersAndStylesCapabilities returned" );
 
+#if 0
   //for debugging: save the document to disk
-  /*QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
+  QFile capabilitiesFile( QDir::tempPath() + "/capabilities.txt" );
   if ( capabilitiesFile.open( QIODevice::WriteOnly | QIODevice::Text ) )
   {
     QTextStream capabilitiesStream( &capabilitiesFile );
     doc.save( capabilitiesStream, 4 );
-  }*/
+  }
+#endif
   return doc;
 }
 
@@ -362,7 +364,9 @@ class QgsPaintEngineHack : public QPaintEngine
                   // | QPaintEngine::PerspectiveTransform
                   | QPaintEngine::BlendModes
                   // | QPaintEngine::ObjectBoundingModeGradients
+#if QT_VERSION >= 0x040500
                   | QPaintEngine::RasterOpModes
+#endif
                   | QPaintEngine::PaintOutsidePaintEvent
                 );
     }
