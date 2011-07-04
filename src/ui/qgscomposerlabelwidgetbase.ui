@@ -30,8 +30,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>513</width>
-        <height>402</height>
+        <width>529</width>
+        <height>376</height>
        </rect>
       </property>
       <attribute name="label">
@@ -139,16 +139,6 @@
            </widget>
           </item>
          </layout>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QLineEdit" name="mLabelIdLineEdit"/>
-       </item>
-       <item row="8" column="0">
-        <widget class="QLabel" name="mIdLabel">
-         <property name="text">
-          <string>Label id</string>
-         </property>
         </widget>
        </item>
       </layout>
