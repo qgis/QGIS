@@ -491,8 +491,8 @@ qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int co
 
     case 8:
     {
-      qint32 oid0 = htonl( *( qint32 * ) p );
-      qint32 oid1 = htonl( *( qint32 * )( p + sizeof( qint32 ) ) );
+      qint32 oid0 = *( qint32 * ) p;
+      qint32 oid1 = *( qint32 * )( p + sizeof( qint32 ) );
 
       if ( swapEndian )
       {
