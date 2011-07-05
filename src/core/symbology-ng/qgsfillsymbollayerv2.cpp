@@ -210,37 +210,17 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
                                                                    context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  mBrush.setTextureImage( patternImage );
-  mBrush.setTransform( brushTransform );
-
-#if 0
-  //create QImage with appropriate dimensions
-  int pixelWidth = context.outputPixelSize( mPatternWidth );
-  int pixelHeight = pixelWidth / mSvgViewBox.width() * mSvgViewBox.height();
-
-  QImage textureImage( pixelWidth, pixelHeight, QImage::Format_ARGB32_Premultiplied );
-  textureImage.fill( 0 ); // transparent background
-
-  //rasterise byte array to image
-  QPainter p( &textureImage );
-  QSvgRenderer r( mSvgData );
-  if ( !r.isValid() )
+  if( !doubleNear( context.alpha(), 1.0 ) )
   {
-    return;
+    QImage transparentImage = patternImage.copy();
+    QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+    mBrush.setTextureImage( transparentImage );
   }
-
-  r.render( &p );
-
-  if ( context.alpha() < 1.0 )
+  else
   {
-    QgsSymbolLayerV2Utils::multiplyImageOpacity( &textureImage, context.alpha() );
+    mBrush.setTextureImage( patternImage );
   }
-
-  QTransform brushTransform;
-  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  mBrush.setTextureImage( textureImage );
   mBrush.setTransform( brushTransform );
-#endif //0
 
   if ( mOutline )
   {
