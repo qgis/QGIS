@@ -67,7 +67,7 @@ typedef SInt32 SRefCon;
 #include "qgsmapcanvas.h"
 #include "qgsapplication.h"
 #include <qgsconfig.h>
-#include <qgssvnversion.h>
+#include <qgsversion.h>
 #include "qgsexception.h"
 #include "qgsproject.h"
 #include "qgsrectangle.h"
@@ -86,7 +86,7 @@ static const char * const ident_ = "$Id$";
 void usage( std::string const & appName )
 {
   std::cerr << "Quantum GIS - " << VERSION << " '" << RELEASE_NAME << "' ("
-            << QGSSVNVERSION << ")\n"
+            << QGis::QGIS_DEV_VERSION << ")\n"
             << "Quantum GIS (QGIS) is a viewer for spatial data sets, including\n"
             << "raster and vector data.\n"
             << "Usage: " << appName <<  " [options] [FILES]\n"

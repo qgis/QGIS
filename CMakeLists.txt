@@ -439,64 +439,43 @@ INCLUDE_DIRECTORIES(${CMAKE_BINARY_DIR})
 LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 #############################################################
-# create qgssvnversion.h
+# create qgsversion.h
 
-FIND_FILE(SVN_MARKER entries PATHS ${CMAKE_SOURCE_DIR}/.svn)
+
 FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
 
-IF (SVN_MARKER)
-  # See if we have svn installed
-  FIND_PROGRAM(SVNVERSION svnversion PATHS c:/cygwin/bin)
-
-  IF(SVNVERSION)
+IF (GIT_MARKER)
+  FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
+  IF(GIT)
     IF(MSVC)
       ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        COMMAND for /f usebackq %%a in "(`\"${SVNVERSION}\"`)" do echo \#define QGSSVNVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        MAIN_DEPENDENCY ${SVN_MARKER}
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GIT}\" log -n1 --oneline`)" do echo \#define QGSVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ELSE(MSVC)
+      MESSAGE(STATUS "writing ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h")
+      EXECUTE_PROCESS(COMMAND ${GIT} log -n1 --pretty=%h OUTPUT_VARIABLE REVISION)
+      STRING(STRIP "${REVISION}" REVISION)
       ADD_CUSTOM_COMMAND(
-        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        COMMAND echo \\\#define QGSSVNVERSION \\\"`${SVNVERSION}`\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-        MAIN_DEPENDENCY ${SVN_MARKER}
+        OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        COMMAND echo \\\#define QGSVERSION \\\"${REVISION}\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h
+        MAIN_DEPENDENCY ${GIT_MARKER}
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
       )
     ENDIF(MSVC)
-  ELSE(SVNVERSION)
-    MESSAGE(STATUS "svnversion not found - version will be unknown")
-    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"unknown\"")
-  ENDIF (SVNVERSION)
-ELSE (SVN_MARKER)
-  IF (GIT_MARKER)
-    FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
-    IF(GIT)
-      IF(MSVC)
-        ADD_CUSTOM_COMMAND(
-          OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-          COMMAND for /f \"usebackq tokens=1\" %%a in "(`\"${GIT}\" log -n1 --oneline`)" do echo \#define QGSSVNVERSION \"%%a\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-          MAIN_DEPENDENCY ${GIT_MARKER}
-          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
-      ELSE(MSVC)
-        ADD_CUSTOM_COMMAND(
-          OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-          COMMAND echo \\#define QGSSVNVERSION \\\"$$\( ${GIT} log -n1 --pretty=%h \)\\\" >${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h
-          MAIN_DEPENDENCY ${GIT_MARKER}
-          WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
-        )
-      ENDIF(MSVC)
-    ELSE(GIT)
-      MESSAGE(STATUS "git marker, but no git found - version will be unknown")
-      FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"unknown\"")
-    ENDIF(GIT)
-  ELSE (GIT_MARKER)
-    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h "#define QGSSVNVERSION \"exported\"")
-  ENDIF (GIT_MARKER)
-ENDIF (SVN_MARKER)
+  ELSE(GIT)
+    MESSAGE(STATUS "git marker, but no git found - version will be unknown")
+    SET(REVISION "unknown")
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"unknown\"")
+  ENDIF(GIT)
+ELSE (GIT_MARKER)
+  SET(REVISION "exported")
+  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h "#define QGSVERSION \"exported\"")
+ENDIF (GIT_MARKER)
 
-ADD_CUSTOM_TARGET(svnversion ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgssvnversion.h)
+ADD_CUSTOM_TARGET(version ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/qgsversion.h)
 
 #############################################################
 # process subdirs
