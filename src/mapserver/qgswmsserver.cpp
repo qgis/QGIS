@@ -324,12 +324,12 @@ QDomDocument QgsWMSServer::getStyle()
   std::map<QString, QString>::const_iterator style_it = mParameterMap.find( "STYLE" );
   if ( style_it == mParameterMap.end() )
   {
-    throw QgsMapServiceException( "StyleNotSpecified", "Style is manadatory for GetStyle operation" );
+    throw QgsMapServiceException( "StyleNotSpecified", "Style is mandatory for GetStyle operation" );
   }
   std::map<QString, QString>::const_iterator layer_it = mParameterMap.find( "LAYER" );
   if ( layer_it == mParameterMap.end() )
   {
-    throw QgsMapServiceException( "LayerNotSpecified", "Layer is manadatory for GetStyle operation" );
+    throw QgsMapServiceException( "LayerNotSpecified", "Layer is mandatory for GetStyle operation" );
   }
 
   QString styleName = style_it->second;
@@ -348,7 +348,7 @@ class QgsPaintEngineHack : public QPaintEngine
       gccaps |= ( QPaintEngine::PrimitiveTransform
                   // | QPaintEngine::PatternTransform
                   | QPaintEngine::PixmapTransform
-                  // | QPaintEngine::PatternBrush
+                  | QPaintEngine::PatternBrush
                   // | QPaintEngine::LinearGradientFill
                   // | QPaintEngine::RadialGradientFill
                   // | QPaintEngine::ConicalGradientFill
@@ -458,11 +458,10 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     QRectF paperRectPixel = printer.pageRect( QPrinter::DevicePixel );
 
     QPaintEngine *engine = printer.paintEngine();
-    if ( engine->hasFeature( QPaintEngine::PatternTransform ) )
+    if ( engine )
     {
       QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
       hack->fixFlags();
-      Q_ASSERT( !engine->hasFeature( QPaintEngine::PatternTransform ) );
     }
 
     QPainter p( &printer );

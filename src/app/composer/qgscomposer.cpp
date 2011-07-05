@@ -504,7 +504,7 @@ class QgsPaintEngineHack : public QPaintEngine
       gccaps |= ( QPaintEngine::PrimitiveTransform
                   // | QPaintEngine::PatternTransform
                   | QPaintEngine::PixmapTransform
-                  // | QPaintEngine::PatternBrush
+                  | QPaintEngine::PatternBrush
                   // | QPaintEngine::LinearGradientFill
                   // | QPaintEngine::RadialGradientFill
                   // | QPaintEngine::ConicalGradientFill
@@ -559,11 +559,10 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
   printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
 
   QPaintEngine *engine = printer.paintEngine();
-  if ( engine && engine->hasFeature( QPaintEngine::PatternTransform ) )
+  if ( engine )
   {
     QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
     hack->fixFlags();
-    Q_ASSERT( !engine->hasFeature( QPaintEngine::PatternTransform ) );
   }
 
   print( printer );
