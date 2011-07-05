@@ -76,6 +76,11 @@ IF (WITH_BINDINGS)
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
 
+SET (WITH_GLOBE TRUE CACHE BOOL "Determines whether Globe plugin should be built")
+IF (WITH_GLOBE)
+  FIND_PACKAGE(OSGEARTH)
+ENDIF (WITH_GLOBE)
+
 # Compile flag. Make it possible to turn it off.
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
