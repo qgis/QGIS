@@ -164,7 +164,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   spatialindex/qgsspatialindex.cpp
-  
+
   )
 
 IF(WIN32)
@@ -346,7 +346,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
-  
+
   renderer/qgscontinuouscolorrenderer.h
   renderer/qgsgraduatedsymbolrenderer.h
   renderer/qgsrenderer.h
@@ -379,11 +379,11 @@ SET(QGIS_CORE_HDRS
 )
 
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${CMAKE_CURRENT_SOURCE_DIR}
   composer
   pal
-  raster 
-  renderer 
+  raster
+  renderer
   symbology
   spatialindex/include
   symbology-ng
@@ -465,12 +465,12 @@ IF(APPLE)
 ENDIF(APPLE)
 
 TARGET_LINK_LIBRARIES(qgis_core
-  ${QT_QTMAIN_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTGUI_LIBRARY} 
-  ${QT_QTNETWORK_LIBRARY} 
-  ${QT_QTSVG_LIBRARY} 
+  ${QT_QTMAIN_LIBRARY}
+  ${QT_QTXML_LIBRARY}
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTGUI_LIBRARY}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTSVG_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
