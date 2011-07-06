@@ -403,6 +403,54 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
+  //create image
+  int height, width;
+  if( doubleNear( mAngle, 0 ) )
+  {
+    height = context.outputPixelSize( mDistance );
+    width = height; //width can be set to arbitrary value
+  }
+  else
+  {
+    height = context.outputPixelSize( mDistance );
+    width = height / tan( mAngle * M_PI / 180 );
+  }
+
+  double outlinePixelWidth = context.outputPixelSize( mLineWidth );
+
+  //find a suitable multiple of width and heigh
+
+  QImage patternImage( width, height, QImage::Format_ARGB32);
+  patternImage.fill( 0 );
+  QPainter p( &patternImage );
+  p.setRenderHint( QPainter::Antialiasing, true );
+  QPen pen( mColor );
+  pen.setWidthF( outlinePixelWidth );
+  pen.setCapStyle( Qt::FlatCap );
+  p.setPen( pen );
+
+  //draw line and dots in the border
+  p.drawLine( QPointF( 0, height ), QPointF( width, 0 ) );
+
+  //todo: calculate triangles more accurately
+  double d1 = (outlinePixelWidth / 2.0) / cos( mAngle * M_PI / 180 );
+  double d2 = (outlinePixelWidth / 2.0) / cos( (90 - mAngle) * M_PI / 180 );
+
+  p.setPen( QPen( Qt::NoPen ) );
+  p.setBrush( QBrush( mColor ) );
+  QPolygonF triangle1;
+  triangle1 << QPointF( 0, 0 ) << QPointF( 0, d1 ) << QPointF( d2, 0 ) << QPointF( 0, 0 );
+  p.drawPolygon( triangle1 );
+
+  QPolygonF triangle2;
+  triangle2 << QPointF( width, height ) << QPointF( width - d2, height ) << QPointF( width, height - d1 ) << QPointF( width, height );
+  p.drawPolygon( triangle2 );
+
+  p.end();
+
+  //set image to mBrush
+  mBrush.setTextureImage( patternImage );
+
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
@@ -411,6 +459,14 @@ void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& contex
 
 void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
 {
+  QPainter* p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+
+  p->setBrush( mBrush );
+  _renderPolygon( p, points, rings );
 }
 
 QgsStringMap QgsLinePatternFillSymbolLayer::properties() const

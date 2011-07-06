@@ -942,6 +942,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mAngleSpinBox_valueChanged( double 
   if( mLayer )
   {
     mLayer->setAngle( d );
+    emit changed();
   }
 }
 
@@ -950,6 +951,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mDistanceSpinBox_valueChanged( doub
   if( mLayer )
   {
     mLayer->setDistance( d );
+    emit changed();
   }
 }
 
@@ -958,6 +960,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthSpinBox_valueChanged( dou
   if( mLayer )
   {
     mLayer->setLineWidth( d );
+    emit changed();
   }
 }
 
@@ -969,6 +972,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
     if( c.isValid() )
     {
       mLayer->setColor( c );
+      emit changed();
     }
   }
 }

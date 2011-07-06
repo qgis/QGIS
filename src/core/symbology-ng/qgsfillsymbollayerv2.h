@@ -160,6 +160,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsFillSymbolLayerV2
     double mLineWidth;
     QColor mColor;
     //todo: line type
+    QBrush mBrush;
 };
 
 
