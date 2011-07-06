@@ -14,7 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/* $Id$ */
 
 #ifndef QGIS_H
 #define QGIS_H
@@ -39,8 +38,8 @@ class CORE_EXPORT QGis
     static const int QGIS_VERSION_INT;
     // Release name
     static const char* QGIS_RELEASE_NAME;
-    // The subversion version
-    static const char* QGIS_SVN_VERSION;
+    // The development version
+    static const char* QGIS_DEV_VERSION;
 
     // Enumerations
     //

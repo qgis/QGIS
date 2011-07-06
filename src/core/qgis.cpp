@@ -28,6 +28,9 @@
 // Version string
 const char* QGis::QGIS_VERSION = VERSION;
 
+// development version
+const char* QGis::QGIS_DEV_VERSION = QGSVERSION;
+
 // Version number used for comparing versions using the
 // "Check QGIS Version" function
 const int QGis::QGIS_VERSION_INT = VERSION_INT;

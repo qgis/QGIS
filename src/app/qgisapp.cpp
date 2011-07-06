@@ -274,7 +274,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 
   if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
   {
-    caption += QString( "r%1" ).arg( QGis::QGIS_SVN_VERSION );
+    caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
   else
   {
