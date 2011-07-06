@@ -1,0 +1,90 @@
+/* -*-c++-*- */
+/* osgEarth - Dynamic map generation toolkit for OpenSceneGraph
+ * Copyright 2008-2010 Pelican Mapping
+ * http://osgearth.org
+ *
+ * osgEarth is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
+#ifndef OSGEARTH_DRIVER_WORLDWIND_DRIVEROPTIONS
+#define OSGEARTH_DRIVER_WORLDWIND_DRIVEROPTIONS 1
+
+#include <osgEarth/Common>
+#include <osgEarth/TileSource>
+
+
+namespace osgEarth { namespace Drivers
+{
+    using namespace osgEarth;
+
+    class WorldWindOptions : public TileSourceOptions // NO EXPORT; header only
+    {
+    public:
+        optional<int>& maxLOD() { return _maxLOD; }
+        const optional<int>& maxLOD() const { return _maxLOD; }
+
+        optional<std::string>& elevationCachePath() { return _elevationCachePath; }
+        const optional<std::string>& elevationCachePath() const { return _elevationCachePath; }
+
+        optional<std::string>& elevationURL() { return _elevationURL; }
+        const optional<std::string>& elevationURL() const { return _elevationURL; }
+
+        // image support NYI ... use the "tileservice" plugin instead
+        //optional<std::string>& imageURL() { return _imageURL; }
+        //const optional<std::string>& imageURL() const { return _imageURL; }
+
+    public:
+        WorldWindOptions( const TileSourceOptions& opt =TileSourceOptions() ) : TileSourceOptions( opt ),
+            _maxLOD( 11 ),
+            _elevationURL( "http://worldwind25.arc.nasa.gov/wwelevation/wwelevation.aspx?T=srtm30pluszip" ),
+            _imageURL( "http://s0.tileservice.worldwindcentral.com/getTile?" )
+        {
+            setDriver( "worldwind" );
+            fromConfig( _conf );
+        }
+
+    public:
+        Config getConfig() const {
+            Config conf = TileSourceOptions::getConfig();
+            conf.updateIfSet("image_url", _imageURL);
+            conf.updateIfSet("elevation_url", _elevationURL);
+            conf.updateIfSet("max_lod", _maxLOD);
+            conf.updateIfSet("elevation_cache", _elevationCachePath);
+            return conf;
+        }
+
+    protected:
+        void mergeConfig( const Config& conf ) {
+            TileSourceOptions::mergeConfig( conf );
+            fromConfig( conf );
+        }
+
+    private:
+        void fromConfig( const Config& conf ) {
+            conf.getIfSet("image_url", _imageURL);
+            conf.getIfSet("elevation_url", _elevationURL);
+            conf.getIfSet("max_lod", _maxLOD);
+            conf.getIfSet("elevation_cache", _elevationCachePath);
+            conf.getIfSet("worldwind_cache", _elevationCachePath); // back compat
+        }
+
+        optional<std::string> _imageURL;
+        optional<std::string> _elevationURL;
+        optional<std::string> _elevationCachePath;
+        optional<int>         _maxLOD;
+    };
+
+} } // namespace osgEarth::Drivers
+
+#endif // OSGEARTH_DRIVER_WMS_DRIVEROPTIONS
+

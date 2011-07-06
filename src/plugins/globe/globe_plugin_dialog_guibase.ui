@@ -1,0 +1,654 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QgsGlobePluginDialogGuiBase</class>
+ <widget class="QDialog" name="QgsGlobePluginDialogGuiBase">
+  <property name="enabled">
+   <bool>true</bool>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>593</width>
+    <height>534</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>0</width>
+    <height>0</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Globe Settings</string>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../.designer/backup</normaloff>../../.designer/backup</iconset>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_3">
+   <item row="0" column="0">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="elevation">
+      <attribute name="title">
+       <string>Elevation</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <item>
+          <widget class="QLabel" name="label_10">
+           <property name="text">
+            <string>Type</string>
+           </property>
+           <property name="buddy">
+            <cstring>elevationCombo</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="elevationCombo">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <item>
+            <property name="text">
+             <string>Raster</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>TMS</string>
+            </property>
+           </item>
+           <item>
+            <property name="text">
+             <string>Worldwind</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="sizeConstraint">
+          <enum>QLayout::SetDefaultConstraint</enum>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_13">
+           <property name="text">
+            <string>URL/File</string>
+           </property>
+           <property name="buddy">
+            <cstring>elevationPath</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="elevationPath">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QStackedWidget" name="elevationActions">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <widget class="QWidget" name="elevationIsLocal">
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="0">
+              <widget class="QPushButton" name="elevationBrowse">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>27</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="text">
+                <string>...</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="elevationIsRemote">
+            <layout class="QGridLayout" name="gridLayout_6"/>
+           </widget>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QPushButton" name="elevationUp">
+           <property name="text">
+            <string>Up</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="elevationDown">
+           <property name="text">
+            <string>Down</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="elevationAdd">
+           <property name="text">
+            <string>Add</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="elevationRemove">
+           <property name="text">
+            <string>Remove</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="elevationDatasourcesWidget">
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
+         <property name="editTriggers">
+          <set>QAbstractItemView::NoEditTriggers</set>
+         </property>
+         <property name="tabKeyNavigation">
+          <bool>false</bool>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>false</bool>
+         </property>
+         <property name="dragEnabled">
+          <bool>false</bool>
+         </property>
+         <property name="dragDropOverwriteMode">
+          <bool>false</bool>
+         </property>
+         <property name="dragDropMode">
+          <enum>QAbstractItemView::NoDragDrop</enum>
+         </property>
+         <property name="defaultDropAction">
+          <enum>Qt::IgnoreAction</enum>
+         </property>
+         <property name="alternatingRowColors">
+          <bool>true</bool>
+         </property>
+         <property name="selectionMode">
+          <enum>QAbstractItemView::SingleSelection</enum>
+         </property>
+         <property name="selectionBehavior">
+          <enum>QAbstractItemView::SelectRows</enum>
+         </property>
+         <property name="showGrid">
+          <bool>true</bool>
+         </property>
+         <property name="gridStyle">
+          <enum>Qt::SolidLine</enum>
+         </property>
+         <property name="sortingEnabled">
+          <bool>true</bool>
+         </property>
+         <property name="rowCount">
+          <number>0</number>
+         </property>
+         <attribute name="horizontalHeaderCascadingSectionResizes">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderDefaultSectionSize">
+          <number>100</number>
+         </attribute>
+         <attribute name="horizontalHeaderHighlightSections">
+          <bool>false</bool>
+         </attribute>
+         <attribute name="horizontalHeaderShowSortIndicator" stdset="0">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="horizontalHeaderStretchLastSection">
+          <bool>true</bool>
+         </attribute>
+         <attribute name="verticalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
+         <column>
+          <property name="text">
+           <string>Type</string>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Cache</string>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Path</string>
+          </property>
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="model">
+      <attribute name="title">
+       <string>Model</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_11">
+         <property name="text">
+          <string>Point Layer</string>
+         </property>
+         <property name="buddy">
+          <cstring>modelLayerCombo</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label_14">
+         <property name="text">
+          <string>3D Model</string>
+         </property>
+         <property name="buddy">
+          <cstring>modelPathLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QLineEdit" name="modelPathLineEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QPushButton" name="modelBrowse">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>27</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QComboBox" name="modelLayerCombo">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="stereo">
+      <attribute name="title">
+       <string>Stereo</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="comboStereoModeLabel">
+         <property name="text">
+          <string>Stereo Mode</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="screenDistanceLabel">
+         <property name="text">
+          <string>Screen distance (m)</string>
+         </property>
+         <property name="buddy">
+          <cstring>screenDistance</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="2">
+        <widget class="QDoubleSpinBox" name="screenDistance">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <double>0.100000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QLabel" name="screenWidthLabel">
+         <property name="text">
+          <string>Screen width (m)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="2">
+        <widget class="QDoubleSpinBox" name="screenWidth">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0" colspan="2">
+        <widget class="QLabel" name="splitStereoHorizontalSeparationLabel">
+         <property name="text">
+          <string>Split stereo horizontal separation (px)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0" colspan="2">
+        <widget class="QLabel" name="splitStereoVerticalSeparationLabel">
+         <property name="text">
+          <string>Split stereo vertical separation (px)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="0" colspan="2">
+        <widget class="QLabel" name="splitStereoVerticalEyeMappingLabel">
+         <property name="text">
+          <string>Split stereo vertical eye mapping</string>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="2">
+        <widget class="QComboBox" name="splitStereoVerticalEyeMapping">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_TOP_VIEWPORT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_BOTTOM_VIEWPORT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="8" column="2">
+        <widget class="QDoubleSpinBox" name="screenHeight">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="singleStep">
+          <double>0.010000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QLabel" name="screenHeightLabel">
+         <property name="text">
+          <string>Screen height (m)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="2">
+        <widget class="QSpinBox" name="splitStereoVerticalSeparation">
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="2">
+        <widget class="QSpinBox" name="splitStereoHorizontalSeparation">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QComboBox" name="comboStereoMode">
+         <item>
+          <property name="text">
+           <string>OFF</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>ANAGLYPHIC</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>QUAD_BUFFER</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>HORIZONTAL_SPLIT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>VERTICAL_SPLIT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="eyeSeparationLabel">
+         <property name="text">
+          <string>Eye separation (m)</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="2">
+        <widget class="QDoubleSpinBox" name="eyeSeparation">
+         <property name="readOnly">
+          <bool>false</bool>
+         </property>
+         <property name="buttonSymbols">
+          <enum>QAbstractSpinBox::UpDownArrows</enum>
+         </property>
+         <property name="accelerated">
+          <bool>true</bool>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+         <property name="maximum">
+          <double>10.000000000000000</double>
+         </property>
+         <property name="singleStep">
+          <double>0.001000000000000</double>
+         </property>
+        </widget>
+       </item>
+       <item row="16" column="2">
+        <widget class="QPushButton" name="resetStereoDefaults">
+         <property name="text">
+          <string>Reset to defaults</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QLabel" name="splitStereoHorizontalEyeMappingLabel">
+         <property name="text">
+          <string>Split stereo horizontal eye mapping</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="2">
+        <widget class="QComboBox" name="splitStereoHorizontalEyeMapping">
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_LEFT_VIEWPORT</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>LEFT_EYE_RIGHT_VIEWPORT</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <tabstops>
+  <tabstop>comboStereoMode</tabstop>
+  <tabstop>eyeSeparation</tabstop>
+  <tabstop>screenDistance</tabstop>
+  <tabstop>screenWidth</tabstop>
+  <tabstop>screenHeight</tabstop>
+  <tabstop>splitStereoHorizontalSeparation</tabstop>
+  <tabstop>splitStereoHorizontalEyeMapping</tabstop>
+  <tabstop>splitStereoVerticalSeparation</tabstop>
+  <tabstop>splitStereoVerticalEyeMapping</tabstop>
+  <tabstop>resetStereoDefaults</tabstop>
+  <tabstop>buttonBox</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>QgsGlobePluginDialogGuiBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>446</x>
+     <y>529</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>481</x>
+     <y>297</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>QgsGlobePluginDialogGuiBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>387</x>
+     <y>529</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>281</x>
+     <y>339</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

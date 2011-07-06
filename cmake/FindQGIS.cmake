@@ -1,12 +1,12 @@
-## Once run this will define: 
-## 
+## Once run this will define:
+##
 ## QGIS_FOUND       = system has QGIS lib
 ##
 ## QGIS_CORE_LIBRARY     = full path to the CORE library
 ## QGIS_GUI_LIBRARY      = full path to the GUI library
 ## QGIS_ANALYSIS_LIBRARY = full path to the ANALYSIS library
 ## QGIS_PLUGIN_DIR       = full path to where QGIS plugins are installed
-## QGIS_INCLUDE_DIR      = where to find headers 
+## QGIS_INCLUDE_DIR      = where to find headers
 ##
 ## Tim Sutton
 
@@ -20,9 +20,9 @@ IF(WIN32)
         "$ENV{PROGRAMFILES}/Quantum GIS/plugins"
     )
     FIND_PATH(QGIS_INCLUDE_DIR
-      NAMES qgsapplication.h 
+      NAMES qgsapplication.h
       PATHS
-        "$ENV{PROGRAMFILES}/Quantum GIS/include" 
+        "$ENV{PROGRAMFILES}/Quantum GIS/include"
     )
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
@@ -43,41 +43,41 @@ IF(WIN32)
         "$ENV{OSGEO4W_ROOT}/apps/qgis/plugins"
         "$ENV{PROGRAMFILES}/Quantum GIS/plugins"
     )
-    FIND_PATH(QGIS_INCLUDE_DIR 
-      NAMES qgsapplication.h 
+    FIND_PATH(QGIS_INCLUDE_DIR
+      NAMES qgsapplication.h
       PATHS
-        "$ENV{INCLUDE}" 
-        "$ENV{LIB_DIR}/include/qgis" 
+        "$ENV{INCLUDE}"
+        "$ENV{LIB_DIR}/include/qgis"
         "$ENV{OSGEO4W_ROOT}/include"
         "$ENV{PROGRAMFILES}/Quantum GIS/include"
     )
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
-      PATHS 
-        "$ENV{LIB_DIR}/lib/" 
-        "$ENV{LIB}" 
+      PATHS
+        "$ENV{LIB_DIR}/lib/"
+        "$ENV{LIB}"
         "$ENV{OSGEO4W_ROOT}/lib"
         "$ENV{PROGRAMFILES}/Quantum GIS/lib"
     )
     FIND_LIBRARY(QGIS_GUI_LIBRARY
       NAMES qgis_gui
-      PATHS 
-        "$ENV{LIB_DIR}" 
-        "$ENV{LIB}" 
+      PATHS
+        "$ENV{LIB_DIR}"
+        "$ENV{LIB}"
         "$ENV{OSGEO4W_ROOT}/lib"
         "$ENV{PROGRAMFILES}/Quantum GIS/lib"
     )
     FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
       NAMES qgis_analysis
-      PATHS 
-        "$ENV{LIB_DIR}" 
-        "$ENV{LIB}" 
+      PATHS
+        "$ENV{LIB_DIR}"
+        "$ENV{LIB}"
         "$ENV{OSGEO4W_ROOT}/lib"
         "$ENV{PROGRAMFILES}/Quantum GIS/lib"
     )
   ENDIF (MSVC)
 ELSE(WIN32)
-  IF(UNIX) 
+  IF(UNIX)
     # try to use bundle on mac
     SET (QGIS_MAC_PATH /Applications/QGIS.app/Contents)
     #MESSAGE("Searching for QGIS in /usr/bin; /usr/local/bin")
@@ -88,25 +88,25 @@ ELSE(WIN32)
         /usr/lib/qgis
         /usr/local/lib/qgis/plugins
         ${QGIS_MAC_PATH}/PlugIns/qgis
-        "$ENV{LIB_DIR}/lib/qgis/plugins" 
-        "$ENV{LIB_DIR}/lib/qgis" 
+        "$ENV{LIB_DIR}/lib/qgis/plugins"
+        "$ENV{LIB_DIR}/lib/qgis"
     )
     FIND_PATH(QGIS_INCLUDE_DIR
-      NAMES qgis.h 
+      NAMES qgis.h
       PATHS
         /usr/include/qgis
         /usr/local/include/qgis
         ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
-        "$ENV{LIB_DIR}/include/qgis" 
+        "$ENV{LIB_DIR}/include/qgis"
     )
     # also get other frameworks' headers folders on OS X
     IF (APPLE)
       FIND_PATH(QGIS_GUI_INCLUDE_DIR
-        NAMES qgisgui.h 
+        NAMES qgisgui.h
         PATHS ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
       )
       FIND_PATH(QGIS_ANALYSIS_INCLUDE_DIR
-        NAMES qgsinterpolator.h 
+        NAMES qgsinterpolator.h
         PATHS ${QGIS_MAC_PATH}/Frameworks/qgis_analysis.framework/Headers
       )
       SET(QGIS_INCLUDE_DIR
@@ -117,30 +117,30 @@ ELSE(WIN32)
     ENDIF (APPLE)
     FIND_LIBRARY(QGIS_CORE_LIBRARY
       NAMES qgis_core
-      PATHS 
+      PATHS
         /usr/lib64
         /usr/lib
         /usr/local/lib
         ${QGIS_MAC_PATH}/Frameworks
-        "$ENV{LIB_DIR}/lib/" 
+        "$ENV{LIB_DIR}/lib/"
     )
     FIND_LIBRARY(QGIS_GUI_LIBRARY
       NAMES qgis_gui
-      PATHS 
+      PATHS
         /usr/lib64
         /usr/lib
         /usr/local/lib
         ${QGIS_MAC_PATH}/Frameworks
-        "$ENV{LIB_DIR}/lib/" 
+        "$ENV{LIB_DIR}/lib/"
     )
     FIND_LIBRARY(QGIS_ANALYSIS_LIBRARY
       NAMES qgis_analysis
-      PATHS 
+      PATHS
         /usr/lib64
         /usr/lib
         /usr/local/lib
         ${QGIS_MAC_PATH}/Frameworks
-        "$ENV{LIB_DIR}/lib/" 
+        "$ENV{LIB_DIR}/lib/"
     )
   ENDIF(UNIX)
 ENDIF(WIN32)
