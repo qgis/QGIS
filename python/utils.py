@@ -24,7 +24,7 @@ def showException(type, value, tb, msg):
   for s in lst:
     txt += s.decode('utf-8', 'replace')
   txt += '<br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python','Python version:'), sys.version)
-  txt += '<br>%s<br>%s %s, %s<br><br>' % (QCoreApplication.translate('Python','QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME, QGis.QGIS_SVN_VERSION)
+  txt += '<br>%s<br>%s %s, %s<br><br>' % (QCoreApplication.translate('Python','QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME, QGis.QGIS_DEV_VERSION)
   txt += '%s %s' % (QCoreApplication.translate('Python','Python path:'), str(sys.path))
   txt = txt.replace('\n', '<br>')
   txt = txt.replace('  ', '&nbsp; ') # preserve whitespaces for nicer output

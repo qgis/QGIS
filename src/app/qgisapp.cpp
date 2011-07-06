@@ -274,7 +274,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 
   if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
   {
-    caption += QString( "r%1" ).arg( QGis::QGIS_SVN_VERSION );
+    caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
   else
   {
@@ -1916,7 +1916,7 @@ void QgisApp::about()
     abt = new QgsAbout();
     QString versionString = tr( "You are using QGIS version %1 built against code revision %2." )
                             .arg( QGis::QGIS_VERSION )
-                            .arg( QGis::QGIS_SVN_VERSION );
+                            .arg( QGis::QGIS_DEV_VERSION );
 
     versionString += tr( "\nGDAL/OGR Version: %1." ).arg( GDAL_RELEASE_NAME );
 
