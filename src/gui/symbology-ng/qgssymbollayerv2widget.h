@@ -259,6 +259,34 @@ class GUI_EXPORT QgsSVGFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, pr
 
 //////////
 
+#include "ui_widget_linepatternfill.h"
+
+class QgsLinePatternFillSymbolLayer;
+
+class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetLinePatternFill
+{
+  Q_OBJECT
+
+  public:
+
+    QgsLinePatternFillSymbolLayerWidget( QWidget* parent = NULL );
+    static QgsSymbolLayerV2Widget* create() { return new QgsLinePatternFillSymbolLayerWidget(); }
+
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer);
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  protected:
+    QgsLinePatternFillSymbolLayer* mLayer;
+
+  private slots:
+    void on_mAngleSpinBox_valueChanged( double d );
+    void on_mDistanceSpinBox_valueChanged( double d );
+    void on_mLineWidthSpinBox_valueChanged( double d );
+    void on_mColorPushButton_clicked();
+};
+
+//////////
+
 
 #include "ui_widget_fontmarker.h"
 

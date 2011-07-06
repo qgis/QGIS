@@ -30,6 +30,8 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsSVGFillSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbolV2::Fill,
                       QgsCentroidFillSymbolLayerV2::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LinePatternFill", QObject::tr("Line pattern fill"), QgsSymbolV2::Fill,
+                      QgsLinePatternFillSymbolLayer::create ) );
 }
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()

@@ -352,6 +352,82 @@ bool QgsSVGFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
   return false;
 }
 
+QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
+{
+}
+
+QgsLinePatternFillSymbolLayer::~QgsLinePatternFillSymbolLayer()
+{
+}
+
+QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& properties )
+{
+  QgsLinePatternFillSymbolLayer* patternLayer = new QgsLinePatternFillSymbolLayer();
+
+  //default values
+  double angle = 45;
+  double distance = 5;
+  double lineWidth = 0.5;
+  QColor color( Qt::black );
+
+  if( properties.contains("angle") )
+  {
+    angle = properties["angle"].toDouble();
+  }
+  patternLayer->setAngle( angle );
+
+  if( properties.contains("distance") )
+  {
+    distance = properties["distance"].toDouble();
+  }
+  patternLayer->setDistance( distance );
+
+  if( properties.contains("linewidth") )
+  {
+    lineWidth = properties["linewidth"].toDouble();
+  }
+  patternLayer->setLineWidth( lineWidth );
+
+  if( properties.contains("color") )
+  {
+    color = QgsSymbolLayerV2Utils::decodeColor( properties["color"] );
+  }
+  patternLayer->setColor( color );
+  return patternLayer;
+}
+
+QString QgsLinePatternFillSymbolLayer::layerType() const
+{
+  return "LinePatternFill";
+}
+
+void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+{
+}
+
+void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+{
+}
+
+void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+}
+
+QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
+{
+  QgsStringMap map;
+  map.insert( "angle", QString::number( mAngle ) );
+  map.insert( "distance", QString::number( mDistance ) );
+  map.insert( "linewidth", QString::number( mLineWidth ) );
+  map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
+  return map;
+}
+
+QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
+{
+  return QgsLinePatternFillSymbolLayer::create( properties() );
+}
+
 
 //////////////
 

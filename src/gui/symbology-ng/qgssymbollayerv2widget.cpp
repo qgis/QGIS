@@ -910,6 +910,71 @@ void QgsSVGFillSymbolLayerWidget::updateOutlineIcon()
 
 /////////////
 
+QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( QWidget* parent ): QgsSymbolLayerV2Widget( parent ), mLayer( 0 )
+{
+  setupUi( this );
+}
+
+void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer)
+{
+  if( layer->layerType() != "LinePatternFill" )
+  {
+    return;
+  }
+
+  QgsLinePatternFillSymbolLayer* patternLayer = static_cast<QgsLinePatternFillSymbolLayer*>( layer );
+  if( patternLayer )
+  {
+    mLayer = patternLayer;
+    mAngleSpinBox->setValue( mLayer->angle() );
+    mDistanceSpinBox->setValue( mLayer->distance() );
+    mLineWidthSpinBox->setValue( mLayer->lineWidth() );
+  }
+}
+
+QgsSymbolLayerV2* QgsLinePatternFillSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mAngleSpinBox_valueChanged( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setAngle( d );
+  }
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mDistanceSpinBox_valueChanged( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setDistance( d );
+  }
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthSpinBox_valueChanged( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setLineWidth( d );
+  }
+}
+
+void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
+{
+  if( mLayer )
+  {
+    QColor c = QColorDialog::getColor( mLayer->color() );
+    if( c.isValid() )
+    {
+      mLayer->setColor( c );
+    }
+  }
+}
+
+/////////////
+
 QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( QWidget* parent )
     : QgsSymbolLayerV2Widget( parent )
 {

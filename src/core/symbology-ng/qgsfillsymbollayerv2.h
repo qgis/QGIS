@@ -121,6 +121,47 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
     void storeViewBox();
 };
 
+class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsFillSymbolLayerV2
+{
+  public:
+    QgsLinePatternFillSymbolLayer();
+    ~QgsLinePatternFillSymbolLayer();
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    //getters and setters
+    void setAngle( double a ){ mAngle = a; }
+    double angle() const { return mAngle; }
+    void setDistance( double d ){ mDistance = d; }
+    double distance() const { return mDistance; }
+    void setLineWidth( double w ){ mLineWidth = w; }
+    double lineWidth() const { return mLineWidth; }
+    void setColor( const QColor& c ){ mColor = c; }
+    QColor color() const{ return mColor; }
+
+  protected:
+    /**Line angle*/
+    double mAngle;
+    /**Distance (in mm or map units) between lines*/
+    double mDistance;
+    /**Line width (in mm or map units)*/
+    double mLineWidth;
+    QColor mColor;
+    //todo: line type
+};
+
 
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
