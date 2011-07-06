@@ -228,7 +228,7 @@ class PythonEdit(QTextEdit, code.InteractiveInterpreter):
                 self.cursor.movePosition(QTextCursor.End, QTextCursor.MoveAnchor)
         else:
             # if Return is pressed, then perform the commands
-            if e.key() == Qt.Key_Return:
+            if e.key() == Qt.Key_Return or e.key() == Qt.Key_Enter:
                 self.entered()
             # if Up or Down is pressed
             elif e.key() == Qt.Key_Down:

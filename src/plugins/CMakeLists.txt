@@ -36,4 +36,8 @@ IF (GRASS_FOUND)
   ADD_SUBDIRECTORY(grass)
 ENDIF (GRASS_FOUND)
 
-INSTALL(FILES qgisplugin.h qgsrendererplugin.h DESTINATION ${QGIS_INCLUDE_DIR})
+IF (OSGEARTH_FOUND)
+  SUBDIRS (globe)
+ENDIF (OSGEARTH_FOUND)
+
+# headers installed in qgis_core target

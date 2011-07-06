@@ -256,6 +256,16 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem();
 
+    /**Get label identification name
+      @note this method was added in version 1.7*/
+    QString id() const;
+
+    /**Set label identification name
+      @note this method was added in version 1.7
+                      This method was moved from qgscomposerlabel so that every object can have a
+                       id (NathanW)*/
+    void setId( const QString& id );
+
   public slots:
     virtual void setRotation( double r);
 

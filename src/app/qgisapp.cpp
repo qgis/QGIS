@@ -1029,19 +1029,7 @@ void QgisApp::createMenus()
     QAction* before = mActionNewPrintComposer;
     mFileMenu->insertAction( before, mActionProjectProperties );
     mFileMenu->insertSeparator( before );
-  }
-
-  // Edit Menu
-
-  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
-  {
-    mEditMenu->addSeparator();
-    mEditMenu->addAction( mActionOptions );
-    mEditMenu->addAction( mActionSnappingOptions );
-    mEditMenu->addAction( mActionConfigureShortcuts );
-    mEditMenu->addAction( mActionCustomization );
-    mEditMenu->addAction( mActionStyleManagerV2 );
-    mEditMenu->addAction( mActionCustomProjection );
+    mSettingsMenu->removeAction( mActionProjectProperties );
   }
 
   // View Menu

@@ -29,12 +29,19 @@ SET (ATLOADER "@loader_path")
 
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
 
+# message only if verbose makefiles
+FUNCTION (MYMESSAGE MSG)
+    IF (@CMAKE_VERBOSE_MAKEFILE@)
+        MESSAGE (STATUS "${MSG}")
+    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
+ENDFUNCTION (MYMESSAGE)
+
 FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
     IF (LIBFROM)
         SET (LIB_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/${LIBTO}")
         # app - always @executable_path
-        INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QAPPDIR}/Qgis")
-        # qgis_help - doesn't link anything else than Qt/Qgis
+        INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QAPPDIR}/@QGIS_APP_NAME@")
+        # qgis_help, qbrowser - doesn't link anything else than Qt/Qgis
         # qgis-mapserver
         IF (@WITH_MAPSERVER@)
             IF (@OSX_HAVE_LOADERPATH@)
@@ -46,8 +53,8 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         IF (@OSX_HAVE_LOADERPATH@)
             SET (LIB_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
         ENDIF (@OSX_HAVE_LOADERPATH@)
-        FOREACH (QL ${QGLIBLIST})
-            INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QL}")
+        FOREACH (QL ${QGFWLIST})
+            INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QFWDIR}/${QL}.framework/${QL}")
         ENDFOREACH (QL)
         # GRASS libexec stuff
         #IF (EXISTS "${QLIBXDIR}/grass/bin/qgis.g.browser")
@@ -85,7 +92,9 @@ FOREACH (QARCH @CMAKE_OSX_ARCHITECTURES@)
     SET (QARCHS ${QARCHS} "--arch" "${QARCH}")
 ENDFOREACH (QARCH)
 
-FILE (GLOB QGLIBLIST ${QLIBDIR}/libqgis*.dylib)
+FILE (GLOB QGFWLIST RELATIVE ${QFWDIR} ${QFWDIR}/qgis*.framework)
+# for some reason, REPLACE is stripping list seps
+STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
 FILE (GLOB QGPLUGLIST ${QPLUGDIR}/*.so)
 FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
 
@@ -93,7 +102,6 @@ FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
 
 IF (@POSTGRES_LIBRARY@ MATCHES ".*libpq.dylib")
     MESSAGE (STATUS "Copying libpq and updating library paths...")
-    MYMESSAGE ("ditto ${QARCHS} \"@POSTGRES_LIBRARY@\" \"${QLIBDIR}/libpq.dylib\"")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@POSTGRES_LIBRARY@" "${QLIBDIR}/libpq.dylib")
     GET_INSTALL_NAME ("@POSTGRES_LIBRARY@" "libpq" PQLIB)
     UPDATEQGISPATHS (${PQLIB} libpq.dylib)
@@ -113,7 +121,6 @@ ENDIF ()
 
 IF (@FCGI_LIBRARY@ MATCHES ".*libfcgi.dylib" AND NOT @FCGI_LIBRARY@ MATCHES "/usr/lib/.*")
     MESSAGE (STATUS "Copying libfcgi and updating library paths...")
-    MYMESSAGE ("ditto ${QARCHS} \"@FCGI_LIBRARY@\" \"${QLIBDIR}/libfcgi.dylib\"")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@FCGI_LIBRARY@" "${QLIBDIR}/libfcgi.dylib")
     GET_INSTALL_NAME ("@FCGI_LIBRARY@" "libfcgi" FCGILIB)
     UPDATEQGISPATHS (${FCGILIB} libfcgi.dylib)

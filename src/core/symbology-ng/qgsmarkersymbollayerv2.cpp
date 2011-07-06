@@ -555,24 +555,31 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
 
-  if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale )
-  {
-    double s = mSize / mOrigSize;
-    p->scale( s, s );
-  }
+  int size = (int)( context.outputLineWidth( mSize ) );
 
   if ( mAngle != 0 )
     p->rotate( mAngle );
 
   if ( doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 ) )
   {
-    const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, mSize, mFillColor, mOutlineColor, mOutlineWidth,
+    const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                         context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
-    p->drawImage( -img.width() / 2.0, -img.width() / 2.0, img );
+    //consider transparency
+    if( !doubleNear( context.alpha(), 1.0 ) )
+    {
+      QImage transparentImage = img.copy();
+      QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+      p->drawImage( -transparentImage.width() / 2.0, -transparentImage.height() / 2.0, transparentImage );
+    }
+    else
+    {
+      p->drawImage( -img.width() / 2.0, -img.height() / 2.0, img );
+    }
   }
   else
   {
-    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, mSize, mFillColor, mOutlineColor, mOutlineWidth,
+    p->setOpacity( context.alpha( ) );
+    const QPicture& pct = QgsSvgCache::instance()->svgAsPicture( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                           context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
     p->drawPicture( 0, 0, pct );
   }
