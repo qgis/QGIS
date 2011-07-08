@@ -281,10 +281,10 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   double outlineWidth = 1;
   int size = context.outputPixelSize( mPatternWidth );
   const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, fillColor, outlineColor, outlineWidth,
-                                                                   context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+                               context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  if( !doubleNear( context.alpha(), 1.0 ) )
+  if ( !doubleNear( context.alpha(), 1.0 ) )
   {
     QImage transparentImage = patternImage.copy();
     QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
@@ -380,25 +380,25 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   double lineWidth = 0.5;
   QColor color( Qt::black );
 
-  if( properties.contains("angle") )
+  if ( properties.contains( "angle" ) )
   {
     angle = properties["angle"].toDouble();
   }
   patternLayer->setAngle( angle );
 
-  if( properties.contains("distance") )
+  if ( properties.contains( "distance" ) )
   {
     distance = properties["distance"].toDouble();
   }
   patternLayer->setDistance( distance );
 
-  if( properties.contains("linewidth") )
+  if ( properties.contains( "linewidth" ) )
   {
     lineWidth = properties["linewidth"].toDouble();
   }
   patternLayer->setLineWidth( lineWidth );
 
-  if( properties.contains("color") )
+  if ( properties.contains( "color" ) )
   {
     color = QgsSymbolLayerV2Utils::decodeColor( properties["color"] );
   }
@@ -415,22 +415,22 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
 {
   //create image
   int height, width;
-  if( doubleNear( mAngle, 0 ) )
+  if ( doubleNear( mAngle, 0 ) || doubleNear( mAngle, 360 ) || doubleNear( mAngle, 90 ) || doubleNear( mAngle, 180 ) || doubleNear( mAngle, 270 ) )
   {
     height = context.outputPixelSize( mDistance );
     width = height; //width can be set to arbitrary value
   }
   else
   {
-    height = context.outputPixelSize( mDistance );
-    width = height / tan( mAngle * M_PI / 180 );
+    height = fabs( context.outputPixelSize( mDistance ) / cos( mAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
+    width = fabs( height / tan( mAngle * M_PI / 180 ) );
   }
 
   double outlinePixelWidth = context.outputPixelSize( mLineWidth );
 
   //find a suitable multiple of width and heigh
 
-  QImage patternImage( width, height, QImage::Format_ARGB32);
+  QImage patternImage( fabs( width ), height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
   QPainter p( &patternImage );
   p.setRenderHint( QPainter::Antialiasing, true );
@@ -440,22 +440,60 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   p.setPen( pen );
 
   //draw line and dots in the border
-  p.drawLine( QPointF( 0, height ), QPointF( width, 0 ) );
+  if ( doubleNear( mAngle, 0.0 ) || doubleNear( mAngle, 360.0 ) || doubleNear( mAngle, 180.0 ) )
+  {
+    p.drawLine( QPointF( 0, height / 2.0 ), QPointF( width, height / 2.0 ) );
+  }
+  else if ( doubleNear( mAngle, 90.0 ) || doubleNear( mAngle, 270.0 ) )
+  {
+    p.drawLine( QPointF( width / 2.0, 0 ), QPointF( width / 2.0, height ) );
+  }
+  else if (( mAngle > 0 && mAngle < 90 ) || ( mAngle > 180 && mAngle < 270 ) )
+  {
+    p.drawLine( QPointF( 0, height ), QPointF( width, 0 ) );
+  }
+  else if (( mAngle < 180 ) || ( mAngle > 270 && mAngle < 360 ) )
+  {
+    p.drawLine( QPointF( width, height ), QPointF( 0, 0 ) );
+  }
 
   //todo: calculate triangles more accurately
-  double d1 = (outlinePixelWidth / 2.0) / cos( mAngle * M_PI / 180 );
-  double d2 = (outlinePixelWidth / 2.0) / cos( (90 - mAngle) * M_PI / 180 );
+  double d1 = 0;
+  double d2 = 0;
+  QPolygonF triangle1, triangle2;
+  if ( mAngle > 0 && mAngle < 90 )
+  {
+    d1 = ( outlinePixelWidth / 2.0 ) / cos( mAngle * M_PI / 180 );
+    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 90 - mAngle ) * M_PI / 180 );
+    triangle1 << QPointF( 0, 0 ) << QPointF( 0, d1 ) << QPointF( d2, 0 ) << QPointF( 0, 0 );
+    triangle2 << QPointF( width, height ) << QPointF( width - d2, height ) << QPointF( width, height - d1 ) << QPointF( width, height );
+  }
+  else if ( mAngle > 90 && mAngle < 180 )
+  {
+    d1 = ( outlinePixelWidth / 2.0 ) / cos(( mAngle - 90 ) * M_PI / 180 );
+    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 180 - mAngle ) * M_PI / 180 );
+    triangle1 << QPointF( width, 0 ) << QPointF( width - d1, 0 ) << QPointF( width, d2 ) << QPointF( width, 0 );
+    triangle2 << QPointF( 0, height ) << QPointF( 0, height - d2 ) << QPointF( d1, height ) << QPointF( 0, height );
+  }
+  else if ( mAngle > 180 && mAngle < 270 )
+  {
+    d1 = ( outlinePixelWidth / 2.0 ) / cos(( mAngle - 180 ) * M_PI / 180 );
+    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 270 - mAngle ) * M_PI / 180 );
+    triangle1 << QPointF( 0, 0 ) << QPointF( 0, d1 ) << QPointF( d2, 0 ) << QPointF( 0, 0 );
+    triangle2 << QPointF( width, height ) << QPointF( width - d2, height ) << QPointF( width, height - d1 ) << QPointF( width, height );
+  }
+  else if ( mAngle > 270 && mAngle < 360 )
+  {
+    d1 = ( outlinePixelWidth / 2.0 ) / cos(( mAngle - 270 ) * M_PI / 180 );
+    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 360 - mAngle ) * M_PI / 180 );
+    triangle1 << QPointF( width, 0 ) << QPointF( width - d1, 0 ) << QPointF( width, d2 ) << QPointF( width, 0 );
+    triangle2 << QPointF( 0, height ) << QPointF( 0, height - d2 ) << QPointF( d1, height ) << QPointF( 0, height );
+  }
 
   p.setPen( QPen( Qt::NoPen ) );
   p.setBrush( QBrush( mColor ) );
-  QPolygonF triangle1;
-  triangle1 << QPointF( 0, 0 ) << QPointF( 0, d1 ) << QPointF( d2, 0 ) << QPointF( 0, 0 );
   p.drawPolygon( triangle1 );
-
-  QPolygonF triangle2;
-  triangle2 << QPointF( width, height ) << QPointF( width - d2, height ) << QPointF( width, height - d1 ) << QPointF( width, height );
   p.drawPolygon( triangle2 );
-
   p.end();
 
   //set image to mBrush
