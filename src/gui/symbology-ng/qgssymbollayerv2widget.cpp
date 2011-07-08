@@ -977,6 +977,21 @@ void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
   }
 }
 
+void QgsLinePatternFillSymbolLayerWidget::on_mOutlinePushButton_clicked()
+{
+  if( mLayer )
+  {
+    QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+    if ( dlg.exec() == QDialog::Rejected )
+    {
+      return;
+    }
+
+    //updateOutlineIcon();
+    emit changed();
+  }
+}
+
 /////////////
 
 QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( QWidget* parent )

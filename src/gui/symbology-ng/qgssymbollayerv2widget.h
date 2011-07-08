@@ -283,6 +283,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mDistanceSpinBox_valueChanged( double d );
     void on_mLineWidthSpinBox_valueChanged( double d );
     void on_mColorPushButton_clicked();
+    void on_mOutlinePushButton_clicked();
 };
 
 //////////

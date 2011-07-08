@@ -117,18 +117,92 @@ QgsSymbolLayerV2* QgsSimpleFillSymbolLayerV2::clone() const
   return sl;
 }
 
+//QgsImageFillSymbolLayer
+
+QgsImageFillSymbolLayer::QgsImageFillSymbolLayer(): mOutlineWidth( 0.0 ), mOutline( 0 )
+{
+  setSubSymbol( new QgsLineSymbolV2() );
+}
+
+QgsImageFillSymbolLayer::~QgsImageFillSymbolLayer()
+{
+}
+
+void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
+{
+  QPainter* p = context.renderContext().painter();
+  if ( !p )
+  {
+    return;
+  }
+  p->setPen( QPen( Qt::NoPen ) );
+  if ( context.selected() )
+  {
+    QColor selColor = context.selectionColor();
+    if ( ! selectionIsOpaque )
+      selColor.setAlphaF( context.alpha() );
+    p->setBrush( QBrush( selColor ) );
+    _renderPolygon( p, points, rings );
+  }
+
+  if ( doubleNear( mAngle, 0.0 ) )
+  {
+    p->setBrush( mBrush );
+  }
+  else
+  {
+    QTransform t = mBrush.transform();
+    t.rotate( mAngle );
+    QBrush rotatedBrush = mBrush;
+    rotatedBrush.setTransform( t );
+    p->setBrush( rotatedBrush );
+  }
+  _renderPolygon( p, points, rings );
+  if ( mOutline )
+  {
+    mOutline->renderPolyline( points, context.renderContext(), -1, selectFillBorder && context.selected() );
+    if ( rings )
+    {
+      QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
+      for ( ; ringIt != rings->constEnd(); ++ringIt )
+      {
+        mOutline->renderPolyline( *ringIt, context.renderContext(), -1, selectFillBorder && context.selected() );
+      }
+    }
+  }
+}
+
+bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+{
+  if ( !symbol || symbol->type() != QgsSymbolV2::Line )
+  {
+    delete symbol;
+    return false;
+  }
+
+  QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( symbol );
+  if ( lineSymbol )
+  {
+    delete mOutline;
+    mOutline = lineSymbol;
+    return true;
+  }
+
+  delete symbol;
+  return false;
+}
+
 //QgsSVGFillSymbolLayer
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): mPatternWidth( width ), mOutline( 0 )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width )
 {
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
   mAngle = angle;
-  setSubSymbol( new QgsLineSymbolV2() );
 }
 
-QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): mPatternWidth( width ),
-    mSvgData( svgData ), mOutline( 0 )
+QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width ),
+    mSvgData( svgData )
 {
   storeViewBox();
   mOutlineWidth = 0.3;
@@ -236,50 +310,6 @@ void QgsSVGFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
   }
 }
 
-void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
-{
-  QPainter* p = context.renderContext().painter();
-  if ( !p )
-  {
-    return;
-  }
-  p->setPen( QPen( Qt::NoPen ) );
-  if ( context.selected() )
-  {
-    QColor selColor = context.selectionColor();
-    if ( ! selectionIsOpaque )
-      selColor.setAlphaF( context.alpha() );
-    p->setBrush( QBrush( selColor ) );
-    _renderPolygon( p, points, rings );
-  }
-
-  if ( doubleNear( mAngle, 0.0 ) )
-  {
-    p->setBrush( mBrush );
-  }
-  else
-  {
-    QTransform t = mBrush.transform();
-    t.rotate( mAngle );
-    QBrush rotatedBrush = mBrush;
-    rotatedBrush.setTransform( t );
-    p->setBrush( rotatedBrush );
-  }
-  _renderPolygon( p, points, rings );
-  if ( mOutline )
-  {
-    mOutline->renderPolyline( points, context.renderContext(), -1, selectFillBorder && context.selected() );
-    if ( rings )
-    {
-      QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
-      for ( ; ringIt != rings->constEnd(); ++ringIt )
-      {
-        mOutline->renderPolyline( *ringIt, context.renderContext(), -1, selectFillBorder && context.selected() );
-      }
-    }
-  }
-}
-
 QgsStringMap QgsSVGFillSymbolLayer::properties() const
 {
   QgsStringMap map;
@@ -332,27 +362,7 @@ void QgsSVGFillSymbolLayer::storeViewBox()
   return;
 }
 
-bool QgsSVGFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
-{
-  if ( !symbol || symbol->type() != QgsSymbolV2::Line )
-  {
-    delete symbol;
-    return false;
-  }
-
-  QgsLineSymbolV2* lineSymbol = dynamic_cast<QgsLineSymbolV2*>( symbol );
-  if ( lineSymbol )
-  {
-    delete mOutline;
-    mOutline = lineSymbol;
-    return true;
-  }
-
-  delete symbol;
-  return false;
-}
-
-QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer()
+QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer()
 {
 }
 
@@ -451,22 +461,14 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   //set image to mBrush
   mBrush.setTextureImage( patternImage );
 
+  if ( mOutline )
+  {
+    mOutline->startRender( context.renderContext() );
+  }
 }
 
 void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
 {
-}
-
-void QgsLinePatternFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context )
-{
-  QPainter* p = context.renderContext().painter();
-  if ( !p )
-  {
-    return;
-  }
-
-  p->setBrush( mBrush );
-  _renderPolygon( p, points, rings );
 }
 
 QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
@@ -481,7 +483,12 @@ QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
 
 QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
 {
-  return QgsLinePatternFillSymbolLayer::create( properties() );
+  QgsSymbolLayerV2* clonedLayer = QgsLinePatternFillSymbolLayer::create( properties() );
+  if ( mOutline )
+  {
+    clonedLayer->setSubSymbol( mOutline->clone() );
+  }
+  return clonedLayer;
 }
 
 
