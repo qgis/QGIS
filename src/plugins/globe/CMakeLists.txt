@@ -1,4 +1,3 @@
-
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules ${CMAKE_MODULE_PATH})
 
@@ -50,7 +49,7 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(globeplugin
   qgis_core
   qgis_gui
-  QtOpenGL
+  ${QT_QTOPENGL_LIBRARY}
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
   ${OSG_LIBRARY}
