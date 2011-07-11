@@ -1917,6 +1917,7 @@ void QgsRasterLayerProperties::refreshHistogram()
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
     QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
+    mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
     mypCurve->setPen( QPen( myColors.at( myIteratorInt ) ) );
     QwtArray<double> myX2Data;//qwtarray is just a wrapped qvector

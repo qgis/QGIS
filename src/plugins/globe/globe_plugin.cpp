@@ -440,7 +440,7 @@ void GlobePlugin::setupControls()
   moveHControls->setFrame( new RoundedFrame() );
   moveHControls->getFrame()->setBackColor(1,1,1,0.5);
   moveHControls->setMargin( 0 );
-  moveHControls->setSpacing( 47 );
+  moveHControls->setChildSpacing( 47 );
   moveHControls->setVertAlign( Control::ALIGN_CENTER );
   moveHControls->setHorizAlign( Control::ALIGN_CENTER );
   moveHControls->setPosition( 5, 30 );
@@ -462,7 +462,7 @@ void GlobePlugin::setupControls()
   moveVControls->setFrame( new RoundedFrame() );
   moveVControls->getFrame()->setBackColor(1,1,1,0.5);
   moveVControls->setMargin( 0 );
-  moveVControls->setSpacing( 36 );
+  moveVControls->setChildSpacing( 36 );
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
   moveVControls->setPosition( 35, 5 );
@@ -492,7 +492,7 @@ void GlobePlugin::setupControls()
   rotateControls->setFrame( new RoundedFrame() );
   rotateControls->getFrame()->setBackColor(1,1,1,0.5);
   rotateControls->setMargin( 0 );
-  rotateControls->setSpacing( 10 );
+  rotateControls->setChildSpacing( 10 );
   rotateControls->setVertAlign( Control::ALIGN_CENTER );
   rotateControls->setHorizAlign( Control::ALIGN_CENTER );
   rotateControls->setPosition( 5, 113 );
@@ -526,7 +526,7 @@ void GlobePlugin::setupControls()
   tiltControls->setFrame( new RoundedFrame() );
   tiltControls->getFrame()->setBackColor(1,1,1,0.5);
   tiltControls->setMargin( 0 );
-  tiltControls->setSpacing( 30 );
+  tiltControls->setChildSpacing( 30 );
   tiltControls->setVertAlign( Control::ALIGN_CENTER );
   tiltControls->setHorizAlign( Control::ALIGN_CENTER );
   tiltControls->setPosition( 35, 90 );
@@ -554,7 +554,7 @@ void GlobePlugin::setupControls()
   zoomControls->setFrame( new RoundedFrame() );
   zoomControls->getFrame()->setBackColor(1,1,1,0.5);
   zoomControls->setMargin( 0 );
-  zoomControls->setSpacing( 5 );
+  zoomControls->setChildSpacing( 5 );
   zoomControls->setVertAlign( Control::ALIGN_CENTER );
   zoomControls->setHorizAlign( Control::ALIGN_CENTER );
   zoomControls->setPosition( 35, 170 );
@@ -582,7 +582,7 @@ void GlobePlugin::setupControls()
   extraControls->setFrame( new RoundedFrame() );
   extraControls->getFrame()->setBackColor(1,1,1,0.5);
   extraControls->setMargin( 0 );
-  extraControls->setSpacing( 10 );
+  extraControls->setChildSpacing( 10 );
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
   extraControls->setPosition( 5, 220 );
@@ -631,7 +631,11 @@ void GlobePlugin::setupProxy()
     if( !settings.value( "/proxyUser" ).toString().isEmpty() )
     {
       QString auth = settings.value( "/proxyUser" ).toString() + ":" + settings.value( "/proxyPassword" ).toString();
+#ifdef WIN32
+      putenv( QString( "OSGEARTH_CURL_PROXYAUTH=%1" ).arg( auth ).toAscii() );
+#else
       setenv( "OSGEARTH_CURL_PROXYAUTH", auth.toStdString().c_str(), 0 );
+#endif
     }
     //TODO: settings.value("/proxyType")
     //TODO: URL exlusions

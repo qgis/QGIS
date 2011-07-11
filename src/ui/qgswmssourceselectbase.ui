@@ -182,7 +182,6 @@
          <property name="title">
           <string>Image encoding</string>
          </property>
-         <zorder>gbCRS</zorder>
         </widget>
        </item>
        <item row="1" column="9">
@@ -274,15 +273,21 @@
       <layout class="QGridLayout">
        <item row="0" column="0">
         <widget class="QPushButton" name="mLayerUpButton">
+         <property name="toolTip">
+          <string>Move selected layer UP</string>
+         </property>
          <property name="text">
-          <string/>
+          <string>Up</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="mLayerDownButton">
+         <property name="toolTip">
+          <string>Move selected layer DOWN</string>
+         </property>
          <property name="text">
-          <string/>
+          <string>Down</string>
          </property>
         </widget>
        </item>

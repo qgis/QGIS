@@ -57,6 +57,7 @@ FIND_LIBRARY(${MYLIBRARY}
         $ENV{OSG_DIR}
         $ENV{OSGDIR}
         $ENV{OSG_ROOT}
+        $ENV{OSGEO4W_ROOT}
         ~/Library/Frameworks
         /Library/Frameworks
         /usr/local

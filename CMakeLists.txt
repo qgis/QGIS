@@ -76,9 +76,10 @@ IF (WITH_BINDINGS)
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
 
-SET (WITH_GLOBE TRUE CACHE BOOL "Determines whether Globe plugin should be built")
+SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
 IF (WITH_GLOBE)
-  FIND_PACKAGE(OSGEARTH)
+  SET(QT_USE_QTOPENGL 1)
+  FIND_PACKAGE(OSGEARTH REQUIRED)
 ENDIF (WITH_GLOBE)
 
 # Compile flag. Make it possible to turn it off.

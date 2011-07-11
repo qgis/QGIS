@@ -56,10 +56,6 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! show the help document
     void help();
 
-    //!  Called when the main canvas is about to be rendered
-    void renderStarting();
-    //!  Called when the main canvas has rendered.
-    void renderComplete( QPainter * );
     //! Emitted when a new set of layers has been received
     void layersChanged();
     //! Called when the extents of the map change
