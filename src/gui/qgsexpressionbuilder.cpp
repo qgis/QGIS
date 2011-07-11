@@ -16,12 +16,20 @@
 #include "qgsexpressionbuilder.h"
 #include "ui_qgsexpressionbuilder.h"
 
+
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     : QWidget(),
     mLayer( layer )
 {
     setupUi(this);
     if (!layer) return;
+    mModel = new QStandardItemModel();
+    expressionTree->setModel(mModel);
+    QStandardItem* operators = new QStandardItem('Operators');
+    mModel->appendRow(operators);
+    //mExpressionGroups.insert("Operators",operators);
+
+    //this->registerFunction("Operators","+"," + ");
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
@@ -49,7 +57,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
 
     //insert into field list and field combo box
     //mFieldMap.insert( fieldName, fieldIt.key() );
-    mFieldsListWidget->addItem( fieldName );
+    //mFieldsListWidget->addItem( fieldName );
   }
 }
 
@@ -61,7 +69,18 @@ void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
 
     foreach(QVariant value, values)
     {
-        mValueListWidget->addItem(value.toString());
+        //mValueListWidget->addItem(value.toString());
+    }
+}
+
+void QgsExpressionBuilderWidget::registerFunction(QString group, QString label, QString expressionText)
+{
+    // Look up the group and insert the new function.
+    if (mExpressionGroups.contains(group))
+    {
+        QStandardItem* groupNode = mExpressionGroups.value(group);
+        QStandardItem* item = new QStandardItem(label);
+        groupNode->appendRow(item);
     }
 }
 

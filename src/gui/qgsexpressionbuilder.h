@@ -20,6 +20,9 @@
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsvectorlayer.h"
 
+#include "QStandardItemModel"
+#include "QStandardItem"
+
 class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
     Q_OBJECT
 public:
@@ -30,10 +33,15 @@ public:
     void fillFieldValues(int fieldIndex, int countLimit);
     QString getExpressionString();
     void setExpressionString(const QString expressionString);
+    void registerFunction(QString group, QString label, QString expressionText);
+
 public slots:
     void on_mAllPushButton_clicked();
+
 private:
     QgsVectorLayer* mLayer;
+    QStandardItemModel* mModel;
+    QMap<QString, QStandardItem*> mExpressionGroups;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

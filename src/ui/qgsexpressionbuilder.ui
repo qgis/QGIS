@@ -27,12 +27,15 @@
        <number>0</number>
       </property>
       <item row="0" column="0">
-       <widget class="QTreeView" name="treeView">
+       <widget class="QTreeView" name="expressionTree">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Sunken</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
         </property>
         <property name="uniformRowHeights">
          <bool>false</bool>
