@@ -7,7 +7,7 @@
 
 #include "qgsdataitem.h"
 
-class QgsBrowserModel : public QAbstractItemModel
+class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 {
     Q_OBJECT
 
@@ -50,7 +50,7 @@ class QgsBrowserModel : public QAbstractItemModel
 
     virtual QStringList mimeTypes() const;
 
-    QMimeData * mimeData(const QModelIndexList &indexes) const;
+    QMimeData * mimeData( const QModelIndexList &indexes ) const;
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 
