@@ -16,6 +16,8 @@
 #include "qgsexpressionbuilder.h"
 #include "ui_qgsexpressionbuilder.h"
 
+#include "qgslogger.h"
+
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     : QWidget(),
     mLayer( layer )
@@ -37,9 +39,16 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
     
 }
 
+
 void QgsExpressionBuilderWidget::on_mAllPushButton_clicked()
 {
 
+}
+
+void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked(const QModelIndex &index)
+{
+   QgsExpressionItem* item = static_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
+   txtExpressionString->insertPlainText(item->getExpressionText());
 }
 
 void QgsExpressionBuilderWidget::loadFieldNames()

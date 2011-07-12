@@ -65,6 +65,7 @@ public:
 
 public slots:
     void on_mAllPushButton_clicked();
+    void on_expressionTree_doubleClicked(const QModelIndex &index);
 
 private:
     QgsVectorLayer *mLayer;
