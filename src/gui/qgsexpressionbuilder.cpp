@@ -32,6 +32,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     this->registerItem("Operators","-"," -");
     this->registerItem("Operators","*"," * ");
     this->registerItem("Operators","/"," / ");
+
+    this->registerItem("Geometry","Area"," $area ");
+    this->registerItem("Geometry","Length"," $length ");
+    this->registerItem("Geometry","Perimeter"," $perimeter ");
+    this->registerItem("Geometry","X"," $x ");
+     this->registerItem("Geometry","Y"," $y ");
+     this->registerItem("Geometry","XAt"," xat() ");
+     this->registerItem("Geometry","YAt"," yat() ");
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
@@ -45,9 +53,36 @@ void QgsExpressionBuilderWidget::on_mAllPushButton_clicked()
 
 }
 
+void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &index)
+{
+   // Get the item
+   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
+   if ( item == 0 )
+       return;
+   // Handle the special case for fields
+   // This is a bit hacky.  Should be done better.
+   QStandardItem* parent = mModel->itemFromIndex(index.parent());
+   if ( parent == 0 )
+       return;
+
+   if (parent->text() == "Fields")
+   {
+       int fieldIndex = mLayer->fieldNameIndex(item->text());
+       fillFieldValues(fieldIndex,10);
+   }
+   else
+   {
+       // We might be able to show help for the current selected item here.
+       mValueListWidget->clear();
+   }
+}
+
 void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked(const QModelIndex &index)
 {
-   QgsExpressionItem* item = static_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
+   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
+   if (item == 0)
+       return;
+
    txtExpressionString->insertPlainText(item->getExpressionText());
 }
 
@@ -67,20 +102,24 @@ void QgsExpressionBuilderWidget::loadFieldNames()
     //insert into field list and field combo box
     //mFieldMap.insert( fieldName, fieldIt.key() );
     this->registerItem("Fields", fieldName, " " + fieldName + " ");
-    //mFieldsListWidget->addItem( fieldName );
   }
 }
 
 void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
 {
-    // determine the field type
+    mValueListWidget->clear();
+    mValueListWidget->setUpdatesEnabled( false );
+    mValueListWidget->blockSignals( true );
+
     QList<QVariant> values;
     mLayer->uniqueValues( fieldIndex, values, countLimit );
-
     foreach(QVariant value, values)
     {
-        //mValueListWidget->addItem(value.toString());
+        mValueListWidget->addItem(value.toString());
     }
+
+    mValueListWidget->setUpdatesEnabled( true );
+    mValueListWidget->blockSignals( false );
 }
 
 void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QString expressionText)

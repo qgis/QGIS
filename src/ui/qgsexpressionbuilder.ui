@@ -55,7 +55,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QListView" name="listView"/>
+       <widget class="QListWidget" name="mValueListWidget"/>
       </item>
      </layout>
     </widget>
