@@ -5,14 +5,12 @@
 SET (BROWSER_SRCS
      main.cpp
      qgsbrowser.cpp
-     qgsbrowsermodel.cpp
 )
 
 SET (BROWSER_UIS qgsbrowserbase.ui)
 
 SET (BROWSER_MOC_HDRS
      qgsbrowser.h
-     qgsbrowsermodel.h
 )
 
 #SET (BROWSER_RCCS  qgsgps_plugin.qrc)

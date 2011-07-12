@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsattributetypeloaddialog.cpp
   qgsbookmarkitem.cpp
   qgsbookmarks.cpp
+  qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
   qgscontinuouscolordialog.cpp
   qgsconfigureshortcutsdialog.cpp
@@ -146,6 +147,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
   qgsbookmarks.h
+  qgsbrowserdockwidget.h
   qgsconfigureshortcutsdialog.h
   qgscontinuouscolordialog.h
   qgscustomization.h

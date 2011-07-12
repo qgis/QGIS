@@ -103,6 +103,7 @@
 #include "qgsattributetabledialog.h"
 #include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
+#include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
@@ -445,6 +446,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
+
+  mBrowserWidget = new QgsBrowserDockWidget( this );
+  mBrowserWidget->setObjectName( "Browser" );
+  addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
+  mBrowserWidget->hide();
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
