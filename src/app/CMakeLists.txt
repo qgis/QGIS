@@ -19,8 +19,6 @@ SET(QGIS_APP_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
-  qgsdbfilterproxymodel.cpp
-  qgsdbtablemodel.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
