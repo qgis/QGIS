@@ -16,20 +16,20 @@
 #include "qgsexpressionbuilder.h"
 #include "ui_qgsexpressionbuilder.h"
 
-
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     : QWidget(),
     mLayer( layer )
 {
     setupUi(this);
     if (!layer) return;
-    mModel = new QStandardItemModel();
-    expressionTree->setModel(mModel);
-    QStandardItem* operators = new QStandardItem('Operators');
-    mModel->appendRow(operators);
-    //mExpressionGroups.insert("Operators",operators);
 
-    //this->registerFunction("Operators","+"," + ");
+    mModel = new QStandardItemModel( );
+    expressionTree->setModel( mModel );
+
+    this->registerItem("Operators","+"," + ");
+    this->registerItem("Operators","-"," -");
+    this->registerItem("Operators","*"," * ");
+    this->registerItem("Operators","/"," / ");
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
@@ -57,6 +57,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
 
     //insert into field list and field combo box
     //mFieldMap.insert( fieldName, fieldIt.key() );
+    this->registerItem("Fields", fieldName, " " + fieldName + " ");
     //mFieldsListWidget->addItem( fieldName );
   }
 }
@@ -73,14 +74,21 @@ void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
     }
 }
 
-void QgsExpressionBuilderWidget::registerFunction(QString group, QString label, QString expressionText)
+void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QString expressionText)
 {
+    QgsExpressionItem* item = new QgsExpressionItem(label,expressionText);
     // Look up the group and insert the new function.
     if (mExpressionGroups.contains(group))
     {
-        QStandardItem* groupNode = mExpressionGroups.value(group);
-        QStandardItem* item = new QStandardItem(label);
+        QgsExpressionItem* groupNode = mExpressionGroups.value(group);
         groupNode->appendRow(item);
+    }
+    else
+    {
+        QgsExpressionItem* newgroupNode = new QgsExpressionItem(group,"");
+        newgroupNode->appendRow(item);
+        mModel->appendRow(newgroupNode);
+        mExpressionGroups.insert(group , newgroupNode );
     }
 }
 
