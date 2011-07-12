@@ -42,7 +42,7 @@
 
 //constructor
 QgsGlobePluginDialog::QgsGlobePluginDialog( QgsOsgViewer* viewer, QWidget* parent, Qt::WFlags fl )
-: mViewer(viewer), QDialog( parent, fl )
+    : mViewer( viewer ), QDialog( parent, fl )
 {
   setupUi( this );
   loadStereoConfig();  //values from settings, default values from OSG
@@ -63,12 +63,12 @@ QString QgsGlobePluginDialog::openRasterFile()
   const char* filter = "GDAL files (*.dem *.tif *.tiff *.jpg *.jpeg *.asc) \
   ;;DEM files (*.dem) \
   ;;All files (*.*)";
-QString path = QFileDialog::getOpenFileName( this,
-                                            tr( "Open raster file" ),
-                                            QDir::homePath (),
-                                            tr( filter ) );
+  QString path = QFileDialog::getOpenFileName( this,
+                 tr( "Open raster file" ),
+                 QDir::homePath(),
+                 tr( filter ) );
 
-return path;
+  return path;
 }
 
 bool QgsGlobePluginDialog::validateResource( QString type, QString uri, QString &error )
@@ -82,34 +82,34 @@ bool QgsGlobePluginDialog::validateResource( QString type, QString uri, QString 
     }
     else
     {
-      error = tr("Invalid Path: The file is either unreadable or does not exist");
+      error = tr( "Invalid Path: The file is either unreadable or does not exist" );
       return false;
     }
   }
   else
   {
-    QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+    QNetworkAccessManager *manager = new QNetworkAccessManager( this );
     QNetworkRequest request;
-    request.setUrl(QUrl(uri));
-    QNetworkReply *reply = manager->get(request);
+    request.setUrl( QUrl( uri ) );
+    QNetworkReply *reply = manager->get( request );
 
     //wait for response syncronously
     QEventLoop eLoop;
     connect( manager, SIGNAL( finished( QNetworkReply * ) ),
-            &eLoop, SLOT( quit() ) );
-    eLoop.exec(QEventLoop::ExcludeUserInputEvents);
+             &eLoop, SLOT( quit() ) );
+    eLoop.exec( QEventLoop::ExcludeUserInputEvents );
 
-    if (QNetworkReply::HostNotFoundError != reply->error())
+    if ( QNetworkReply::HostNotFoundError != reply->error() )
       //FIXME:should be the following line but reply->error() always give "unknown error"
-    //if (QNetworkReply::NoError == reply->error())
+      //if (QNetworkReply::NoError == reply->error())
     {
       QByteArray data = reply->readAll();
-      QString req(data);
+      QString req( data );
       return true;
     }
     else
     {
-      error = tr("Invalid URL: ") + reply->errorString();
+      error = tr( "Invalid URL: " ) + reply->errorString();
       return false;
     }
   }
@@ -118,7 +118,7 @@ bool QgsGlobePluginDialog::validateResource( QString type, QString uri, QString 
 void QgsGlobePluginDialog::showMessageBox( QString text )
 {
   QMessageBox msgBox;
-  msgBox.setText(text);
+  msgBox.setText( text );
   msgBox.exec();
 }
 
@@ -140,24 +140,24 @@ void QgsGlobePluginDialog::on_buttonBox_rejected()
 }
 
 //ELEVATION
-void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged(QString type)
+void QgsGlobePluginDialog::on_elevationCombo_currentIndexChanged( QString type )
 {
-  elevationPath->setEnabled(true);
-  if("Raster" == type)
+  elevationPath->setEnabled( true );
+  if ( "Raster" == type )
   {
-    elevationActions->setCurrentIndex(0);
+    elevationActions->setCurrentIndex( 0 );
     elevationPath->setText( QDir::homePath() );
   }
   else if ( "Worldwind" == type )
   {
-    elevationActions->setCurrentIndex(1);
-    elevationPath->setText("http://tileservice.worldwindcentral.com/getTile?bmng.topo.bathy.200401");
-    elevationPath->setEnabled(false);
+    elevationActions->setCurrentIndex( 1 );
+    elevationPath->setText( "http://tileservice.worldwindcentral.com/getTile?bmng.topo.bathy.200401" );
+    elevationPath->setEnabled( false );
   }
   else if ( "TMS" == type )
   {
-    elevationActions->setCurrentIndex(1);
-    elevationPath->setText("http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml");
+    elevationActions->setCurrentIndex( 1 );
+    elevationPath->setText( "http://demo.pelicanmapping.com/rmweb/data/srtm30_plus_tms/tms.xml" );
   }
 }
 
@@ -179,21 +179,21 @@ void QgsGlobePluginDialog::on_elevationAdd_clicked()
   msgBox.setText( errorText );
   msgBox.setInformativeText( tr( "Do you want to add the datasource anyway?" ) );
   msgBox.setIcon( QMessageBox::Warning );
-  msgBox.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-  msgBox.setDefaultButton(QMessageBox::Cancel);
+  msgBox.setStandardButtons( QMessageBox::Ok | QMessageBox::Cancel );
+  msgBox.setDefaultButton( QMessageBox::Cancel );
 
   if ( validationResult || msgBox.exec() == QMessageBox::Ok )
   {
     int i = elevationDatasourcesWidget->rowCount();
-    QTableWidgetItem *type = new QTableWidgetItem(elevationCombo->currentText());
-    QTableWidgetItem *uri = new QTableWidgetItem(elevationPath->text());
+    QTableWidgetItem *type = new QTableWidgetItem( elevationCombo->currentText() );
+    QTableWidgetItem *uri = new QTableWidgetItem( elevationPath->text() );
     QTableWidgetItem* cache = new QTableWidgetItem();
-    cache->setCheckState( (elevationCombo->currentText() == "Worldwind") ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
-    elevationDatasourcesWidget->setRowCount(1+i);
-    elevationDatasourcesWidget->setItem(i, 0, type);
-    elevationDatasourcesWidget->setItem(i, 1, cache);
-    elevationDatasourcesWidget->setItem(i, 2, uri);
-    elevationDatasourcesWidget->setCurrentItem(type, QItemSelectionModel::Clear);
+    cache->setCheckState(( elevationCombo->currentText() == "Worldwind" ) ? Qt::Checked : Qt::Unchecked ); //worldwind_cache will be active
+    elevationDatasourcesWidget->setRowCount( 1 + i );
+    elevationDatasourcesWidget->setItem( i, 0, type );
+    elevationDatasourcesWidget->setItem( i, 1, cache );
+    elevationDatasourcesWidget->setItem( i, 2, uri );
+    elevationDatasourcesWidget->setCurrentItem( type, QItemSelectionModel::Clear );
   }
 }
 
@@ -212,44 +212,44 @@ void QgsGlobePluginDialog::on_elevationDown_clicked()
   moveRow( elevationDatasourcesWidget, false );
 }
 
-void QgsGlobePluginDialog::moveRow(QTableWidget* widget, bool up)
+void QgsGlobePluginDialog::moveRow( QTableWidget* widget, bool up )
 {
   //moves QTableWidget row up or down
   if ( widget->selectedItems().count() > 0 )
   {
     const int sourceRow = widget->currentItem()->row();
-    const int destRow = (up ? sourceRow-1 : sourceRow+1);
+    const int destRow = ( up ? sourceRow - 1 : sourceRow + 1 );
     if ( destRow >= 0 && destRow < widget->rowCount() )
     {
       // take whole rows
-      QList<QTableWidgetItem*> sourceItems = takeRow(widget, sourceRow);
-      QList<QTableWidgetItem*> destItems = takeRow(widget, destRow);
+      QList<QTableWidgetItem*> sourceItems = takeRow( widget, sourceRow );
+      QList<QTableWidgetItem*> destItems = takeRow( widget, destRow );
 
       // set back in reverse order
-      setRow(widget, sourceRow, destItems);
-      setRow(widget, destRow, sourceItems);
-      widget->selectRow(destRow);
+      setRow( widget, sourceRow, destItems );
+      setRow( widget, destRow, sourceItems );
+      widget->selectRow( destRow );
     }
   }
 }
 
-QList<QTableWidgetItem*> QgsGlobePluginDialog::takeRow(QTableWidget* widget, int row)
+QList<QTableWidgetItem*> QgsGlobePluginDialog::takeRow( QTableWidget* widget, int row )
 {
   // takes and returns the whole row
   QList<QTableWidgetItem*> rowItems;
-  for (int col = 0; col < widget->columnCount(); ++col)
+  for ( int col = 0; col < widget->columnCount(); ++col )
   {
-    rowItems << widget->takeItem(row, col);
+    rowItems << widget->takeItem( row, col );
   }
   return rowItems;
 }
 
-void QgsGlobePluginDialog::setRow(QTableWidget* widget, int row, const QList<QTableWidgetItem*>& rowItems)
+void QgsGlobePluginDialog::setRow( QTableWidget* widget, int row, const QList<QTableWidgetItem*>& rowItems )
 {
   // sets the whole row
-  for (int col = 0; col < widget->columnCount(); ++col)
+  for ( int col = 0; col < widget->columnCount(); ++col )
   {
-    widget->setItem(row, col, rowItems.at(col));
+    widget->setItem( row, col, rowItems.at( col ) );
   }
 }
 
@@ -258,65 +258,68 @@ void QgsGlobePluginDialog::readElevationDatasources()
   //showMessageBox("reading");
   // clear the widget
   elevationDatasourcesWidget->clearContents();
-  int keysCount = QgsProject::instance()->subkeyList("Globe-Plugin", "/elevationDatasources/").count();
-  for (int i = 0; i < keysCount; ++i) {
+  int keysCount = QgsProject::instance()->subkeyList( "Globe-Plugin", "/elevationDatasources/" ).count();
+  for ( int i = 0; i < keysCount; ++i )
+  {
     QString iNum;
-    iNum.setNum(i);
+    iNum.setNum( i );
     QTableWidgetItem *type = new QTableWidgetItem(
-      QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/type"));
+      QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/type" ) );
     QTableWidgetItem *uri = new QTableWidgetItem(
-      QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/uri"));
-    bool cache = QgsProject::instance()->readBoolEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/cache");
+      QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/uri" ) );
+    bool cache = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
 
-    elevationDatasourcesWidget->setRowCount(1+i);
-    elevationDatasourcesWidget->setItem(i, 0, type);
+    elevationDatasourcesWidget->setRowCount( 1 + i );
+    elevationDatasourcesWidget->setItem( i, 0, type );
     QTableWidgetItem* chkBoxItem = new QTableWidgetItem();
     chkBoxItem->setCheckState( cache ? Qt::Checked : Qt::Unchecked );
-    elevationDatasourcesWidget->setItem(i, 1, chkBoxItem);
-    elevationDatasourcesWidget->setItem(i, 2, uri);
+    elevationDatasourcesWidget->setItem( i, 1, chkBoxItem );
+    elevationDatasourcesWidget->setItem( i, 2, uri );
   }
 }
 
 void QgsGlobePluginDialog::saveElevationDatasources()
 {
   bool somethingChanged = false;
-  int keysCount = QgsProject::instance()->subkeyList("Globe-Plugin", "/elevationDatasources/").count();
+  int keysCount = QgsProject::instance()->subkeyList( "Globe-Plugin", "/elevationDatasources/" ).count();
   int rowsCount = elevationDatasourcesWidget->rowCount();
 
-  for (int i = 0; i < rowsCount; ++i) {
+  for ( int i = 0; i < rowsCount; ++i )
+  {
     QString iNum;
-    iNum.setNum(i);
-    QString typeKey   = QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/type");
-    QString uriKey    =  QgsProject::instance()->readEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/uri");
-    bool    cacheKey  = QgsProject::instance()->readBoolEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/cache");
+    iNum.setNum( i );
+    QString typeKey   = QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/type" );
+    QString uriKey    =  QgsProject::instance()->readEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/uri" );
+    bool    cacheKey  = QgsProject::instance()->readBoolEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache" );
 
-    QString type  = elevationDatasourcesWidget->item(i, 0)->text();
-    QString uri   = elevationDatasourcesWidget->item(i, 2)->text();
-    bool    cache = elevationDatasourcesWidget->item(i, 1)->checkState();
+    QString type  = elevationDatasourcesWidget->item( i, 0 )->text();
+    QString uri   = elevationDatasourcesWidget->item( i, 2 )->text();
+    bool    cache = elevationDatasourcesWidget->item( i, 1 )->checkState();
 
     if ( typeKey != type || uriKey != uri || cacheKey != cache )
     {
       somethingChanged = true;
-      QgsProject::instance()->writeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/type", type);
-      QgsProject::instance()->writeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/uri", uri);
-      QgsProject::instance()->writeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/cache", cache);
-      QgsDebugMsg( "editing at "+iNum );
+      QgsProject::instance()->writeEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/type", type );
+      QgsProject::instance()->writeEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/uri", uri );
+      QgsProject::instance()->writeEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/cache", cache );
+      QgsDebugMsg( "editing at " + iNum );
     }
     else
     {
-      QgsDebugMsg( "nothing to do at "+iNum );
+      QgsDebugMsg( "nothing to do at " + iNum );
     }
   }
 
-  if (keysCount > rowsCount )
+  if ( keysCount > rowsCount )
   {
     //elminate superfluous keys
     somethingChanged = true;
-    for (int i = rowsCount; i < keysCount; ++i) {
+    for ( int i = rowsCount; i < keysCount; ++i )
+    {
       QString iNum;
-      iNum.setNum(i);
-      QgsDebugMsg( "deleting "+iNum );
-      QgsProject::instance()->removeEntry("Globe-Plugin", "/elevationDatasources/L"+iNum+"/");
+      iNum.setNum( i );
+      QgsDebugMsg( "deleting " + iNum );
+      QgsProject::instance()->removeEntry( "Globe-Plugin", "/elevationDatasources/L" + iNum + "/" );
     }
   }
 
@@ -333,19 +336,19 @@ QList<QgsVectorLayer*> QgsGlobePluginDialog::pointLayers()
 {
   QList<QgsVectorLayer*> list;
   QMap< QString, QgsMapLayer *> layers = QgsMapLayerRegistry::instance()->mapLayers();
-  QMapIterator<QString, QgsMapLayer *> it(layers);
-  while (it.hasNext())
+  QMapIterator<QString, QgsMapLayer *> it( layers );
+  while ( it.hasNext() )
   {
-     it.next();
-     QgsMapLayer* layer = it.value();
-     if (layer->type() == QgsMapLayer::VectorLayer)
-     {
-       QgsVectorLayer* vectorLayer = static_cast<QgsVectorLayer*>(layer);
-       if ( vectorLayer->geometryType() == QGis::Point )
-       {
-          list.append( vectorLayer );
-       }
-     }
+    it.next();
+    QgsMapLayer* layer = it.value();
+    if ( layer->type() == QgsMapLayer::VectorLayer )
+    {
+      QgsVectorLayer* vectorLayer = static_cast<QgsVectorLayer*>( layer );
+      if ( vectorLayer->geometryType() == QGis::Point )
+      {
+        list.append( vectorLayer );
+      }
+    }
   }
   return list;
 }
@@ -354,11 +357,11 @@ void QgsGlobePluginDialog::updatePointLayers()
 {
   modelLayerCombo->clear();
   QList<QgsVectorLayer*> layers = pointLayers();
-  QListIterator<QgsVectorLayer*> it(layers);
-  while (it.hasNext())
+  QListIterator<QgsVectorLayer*> it( layers );
+  while ( it.hasNext() )
   {
-     QgsVectorLayer* layer = it.next();
-     modelLayerCombo->addItem( layer->name() );
+    QgsVectorLayer* layer = it.next();
+    modelLayerCombo->addItem( layer->name() );
   }
 }
 
@@ -374,9 +377,9 @@ void QgsGlobePluginDialog::on_modelBrowse_clicked()
   const char* filter = "Model files (*.3dc *.asc *.3ds *.ac *.bsp *.dae *.dw *.dxf *.fbx *.gem *.geo *.iv *.wrl *.ive *.logo *.lwo *.lw *.geo *.lws *.md2 *.obj *.ogr *.flt *.osg *.shp *.stl *.sta *.wrl *.x) \
   ;;All files (*.*)";
   QString path = QFileDialog::getOpenFileName( this,
-                                            tr( "Open 3D model file" ),
-                                            QDir::homePath (),
-                                            tr( filter ) );
+                 tr( "Open 3D model file" ),
+                 QDir::homePath(),
+                 tr( filter ) );
 
   if ( ! path.isEmpty() )
   {
@@ -389,85 +392,85 @@ void QgsGlobePluginDialog::on_modelBrowse_clicked()
 void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()
 {
   //http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/StereoSettings
-  comboStereoMode->setCurrentIndex( comboStereoMode->findText("OFF") );
+  comboStereoMode->setCurrentIndex( comboStereoMode->findText( "OFF" ) );
   screenDistance->setValue( 0.5 );
   screenHeight->setValue( 0.26 );
   screenWidth->setValue( 0.325 );
-  eyeSeparation->setValue( 0.06);
+  eyeSeparation->setValue( 0.06 );
   splitStereoHorizontalSeparation->setValue( 42 );
   splitStereoVerticalSeparation->setValue( 42 );
   splitStereoHorizontalEyeMapping->setCurrentIndex( 0 );
   splitStereoVerticalEyeMapping->setCurrentIndex( 0 );
 }
 
-void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged(QString value)
+void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString value )
 {
   setStereoMode();
   updateStereoDialog();
 }
 
-void QgsGlobePluginDialog::on_eyeSeparation_valueChanged(double value)
+void QgsGlobePluginDialog::on_eyeSeparation_valueChanged( double value )
 {
   osg::DisplaySettings::instance()->setEyeSeparation( value );
 }
 
-void QgsGlobePluginDialog::on_screenDistance_valueChanged(double value)
+void QgsGlobePluginDialog::on_screenDistance_valueChanged( double value )
 {
   osg::DisplaySettings::instance()->setScreenDistance( value );
 }
 
-void QgsGlobePluginDialog::on_screenWidth_valueChanged(double value)
+void QgsGlobePluginDialog::on_screenWidth_valueChanged( double value )
 {
   osg::DisplaySettings::instance()->setScreenWidth( value );
 }
 
-void QgsGlobePluginDialog::on_screenHeight_valueChanged(double value)
+void QgsGlobePluginDialog::on_screenHeight_valueChanged( double value )
 {
   osg::DisplaySettings::instance()->setScreenHeight( value );
 }
 
-void QgsGlobePluginDialog::on_splitStereoHorizontalSeparation_valueChanged(int value)
+void QgsGlobePluginDialog::on_splitStereoHorizontalSeparation_valueChanged( int value )
 {
   osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( value );
 }
 
-void QgsGlobePluginDialog::on_splitStereoVerticalSeparation_valueChanged(int value)
+void QgsGlobePluginDialog::on_splitStereoVerticalSeparation_valueChanged( int value )
 {
   osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( value );
 }
 
-void QgsGlobePluginDialog::on_splitStereoHorizontalEyeMapping_currentIndexChanged(int value)
+void QgsGlobePluginDialog::on_splitStereoHorizontalEyeMapping_currentIndexChanged( int value )
 {
   osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping(
-    (osg::DisplaySettings::SplitStereoHorizontalEyeMapping) value );
+    ( osg::DisplaySettings::SplitStereoHorizontalEyeMapping ) value );
 }
 
-void QgsGlobePluginDialog::on_splitStereoVerticalEyeMapping_currentIndexChanged(int value)
+void QgsGlobePluginDialog::on_splitStereoVerticalEyeMapping_currentIndexChanged( int value )
 {
   osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
-    (osg::DisplaySettings::SplitStereoVerticalEyeMapping) value );
+    ( osg::DisplaySettings::SplitStereoVerticalEyeMapping ) value );
 }
 
 void QgsGlobePluginDialog::loadStereoConfig()
 {
   comboStereoMode->setCurrentIndex( comboStereoMode->findText( settings.value( "/Plugin-Globe/stereoMode",
-                                                                              "OFF" ).toString() ) );
+                                    "OFF" ).toString() ) );
   screenDistance->setValue( settings.value( "/Plugin-Globe/screenDistance",
-                                            osg::DisplaySettings::instance()->getScreenDistance() ).toDouble() );
+                            osg::DisplaySettings::instance()->getScreenDistance() ).toDouble() );
   screenWidth->setValue( settings.value( "/Plugin-Globe/screenWidth",
-                                        osg::DisplaySettings::instance()->getScreenWidth() ).toDouble() );
+                                         osg::DisplaySettings::instance()->getScreenWidth() ).toDouble() );
   screenHeight->setValue( settings.value( "/Plugin-Globe/screenHeight",
                                           osg::DisplaySettings::instance()->getScreenHeight() ).toDouble() );
   eyeSeparation->setValue( settings.value( "/Plugin-Globe/eyeSeparation",
-                                          osg::DisplaySettings::instance()->getEyeSeparation() ).toDouble() );
+                           osg::DisplaySettings::instance()->getEyeSeparation() ).toDouble() );
   splitStereoHorizontalSeparation->setValue( settings.value( "/Plugin-Globe/splitStereoHorizontalSeparation",
-                                                            osg::DisplaySettings::instance()->getSplitStereoHorizontalSeparation() ).toInt() );
+      osg::DisplaySettings::instance()->getSplitStereoHorizontalSeparation() ).toInt() );
   splitStereoVerticalSeparation->setValue( settings.value( "/Plugin-Globe/splitStereoVerticalSeparation",
-                                                          osg::DisplaySettings::instance()->getSplitStereoVerticalSeparation() ).toInt() );
+      osg::DisplaySettings::instance()->getSplitStereoVerticalSeparation() ).toInt() );
   splitStereoHorizontalEyeMapping->setCurrentIndex( settings.value( "/Plugin-Globe/splitStereoHorizontalEyeMapping",
-                                                                    osg::DisplaySettings::instance()->getSplitStereoHorizontalEyeMapping() ).toInt() );
+      osg::DisplaySettings::instance()->getSplitStereoHorizontalEyeMapping() ).toInt() );
   splitStereoVerticalEyeMapping->setCurrentIndex( settings.value( "/Plugin-Globe/splitStereoVerticalEyeMapping",
-                                                                  osg::DisplaySettings::instance()->getSplitStereoVerticalEyeMapping() ).toInt() );
+      osg::DisplaySettings::instance()->getSplitStereoVerticalEyeMapping() ).toInt() );
 }
 
 void QgsGlobePluginDialog::setStereoMode()
@@ -476,7 +479,7 @@ void QgsGlobePluginDialog::setStereoMode()
   //http://www.openscenegraph.org/documentation/OpenSceneGraphReferenceDocs/a00181.html
 
   QString stereoMode = comboStereoMode->currentText() ;
-  if("OFF" == stereoMode)
+  if ( "OFF" == stereoMode )
   {
     osg::DisplaySettings::instance()->setStereo( false );
   }
@@ -484,19 +487,19 @@ void QgsGlobePluginDialog::setStereoMode()
   {
     osg::DisplaySettings::instance()->setStereo( true );
 
-    if("ANAGLYPHIC" == stereoMode)
+    if ( "ANAGLYPHIC" == stereoMode )
     {
       osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::ANAGLYPHIC );
     }
-    else if("VERTICAL_SPLIT" == stereoMode)
+    else if ( "VERTICAL_SPLIT" == stereoMode )
     {
       osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::VERTICAL_SPLIT );
     }
-    else if("HORIZONTAL_SPLIT" == stereoMode)
+    else if ( "HORIZONTAL_SPLIT" == stereoMode )
     {
       osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::HORIZONTAL_SPLIT );
     }
-    else if("QUAD_BUFFER" == stereoMode)
+    else if ( "QUAD_BUFFER" == stereoMode )
     {
       osg::DisplaySettings::instance()->setStereoMode( osg::DisplaySettings::QUAD_BUFFER );
     }
@@ -504,7 +507,7 @@ void QgsGlobePluginDialog::setStereoMode()
     {
       //should never get here
       QMessageBox msgBox;
-      msgBox.setText("This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC");
+      msgBox.setText( "This stereo mode has not been implemented yet. Defaulting to ANAGLYPHIC" );
       msgBox.exec();
     }
   }
@@ -522,9 +525,9 @@ void QgsGlobePluginDialog::setStereoConfig()
   osg::DisplaySettings::instance()->setSplitStereoHorizontalSeparation( splitStereoHorizontalSeparation->value() );
   osg::DisplaySettings::instance()->setSplitStereoVerticalSeparation( splitStereoVerticalSeparation->value() );
   osg::DisplaySettings::instance()->setSplitStereoHorizontalEyeMapping(
-    (osg::DisplaySettings::SplitStereoHorizontalEyeMapping) splitStereoHorizontalEyeMapping->currentIndex() );
+    ( osg::DisplaySettings::SplitStereoHorizontalEyeMapping ) splitStereoHorizontalEyeMapping->currentIndex() );
   osg::DisplaySettings::instance()->setSplitStereoVerticalEyeMapping(
-    (osg::DisplaySettings::SplitStereoVerticalEyeMapping) splitStereoVerticalEyeMapping->currentIndex() );
+    ( osg::DisplaySettings::SplitStereoVerticalEyeMapping ) splitStereoVerticalEyeMapping->currentIndex() );
 
 }
 
@@ -553,28 +556,28 @@ void QgsGlobePluginDialog::updateStereoDialog()
   splitStereoHorizontalEyeMapping->setEnabled( false );
   splitStereoVerticalEyeMapping->setEnabled( false );
 
-  if("OFF" == stereoMode)
+  if ( "OFF" == stereoMode )
   {
     screenDistance->setEnabled( false );
     screenHeight->setEnabled( false );
     screenWidth->setEnabled( false );
     eyeSeparation->setEnabled( false );
   }
-  else if("ANAGLYPHIC" == stereoMode)
+  else if ( "ANAGLYPHIC" == stereoMode )
   {
     //nothing to do
   }
-  else if("VERTICAL_SPLIT" == stereoMode)
+  else if ( "VERTICAL_SPLIT" == stereoMode )
   {
     splitStereoVerticalSeparation->setEnabled( true );
     splitStereoVerticalEyeMapping->setEnabled( true );
   }
-  else if("HORIZONTAL_SPLIT" == stereoMode)
+  else if ( "HORIZONTAL_SPLIT" == stereoMode )
   {
     splitStereoHorizontalSeparation->setEnabled( true );
     splitStereoHorizontalEyeMapping->setEnabled( true );
   }
-  else if("QUAD_BUFFER" == stereoMode)
+  else if ( "QUAD_BUFFER" == stereoMode )
   {
     //nothing to do
   }
@@ -582,7 +585,7 @@ void QgsGlobePluginDialog::updateStereoDialog()
   {
     //should never get here
     QMessageBox msgBox;
-    msgBox.setText("This stereo mode has not been implemented yet.");
+    msgBox.setText( "This stereo mode has not been implemented yet." );
     msgBox.exec();
   }
 }

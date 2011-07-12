@@ -12,48 +12,51 @@ class QgisInterface;
 
 using namespace osgEarth;
 
-namespace osgEarth { namespace Drivers
+namespace osgEarth
 {
+  namespace Drivers
+  {
     class QgsOsgEarthTileSource : public TileSource
     {
-    public:
-        QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const TileSourceOptions& options =TileSourceOptions() );
+      public:
+        QgsOsgEarthTileSource( QgisInterface* theQgisInterface, const TileSourceOptions& options = TileSourceOptions() );
 
         void initialize( const std::string& referenceURI, const Profile* overrideProfile = NULL );
 
         osg::Image* createImage( const TileKey& key, ProgressCallback* progress );
 
         osg::HeightField* createHeightField( const TileKey* key,
-                                            ProgressCallback* progress)
+                                             ProgressCallback* progress )
         {
-            //NI
-            OE_WARN << "[QGIS] Driver does not support heightfields" << std::endl;
-            return NULL;
+          //NI
+          OE_WARN << "[QGIS] Driver does not support heightfields" << std::endl;
+          return NULL;
         }
 
         virtual std::string getExtension()  const
         {
-            //All QGIS tiles are in JPEG format
-            return "jpg";
+          //All QGIS tiles are in JPEG format
+          return "jpg";
         }
 
         virtual bool supportsPersistentCaching() const
         {
-            return false;
+          return false;
         }
 
-private:
+      private:
 
-    QImage* createImage( int width, int height ) const;
-    bool intersects(const TileKey* key);
+        QImage* createImage( int width, int height ) const;
+        bool intersects( const TileKey* key );
 
-    //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
-    QgsCoordinateTransform *mCoordTranform;
-    QgsMapRenderer* mMapRenderer;
+        //! Pointer to the QGIS interface object
+        QgisInterface *mQGisIface;
+        QgsCoordinateTransform *mCoordTranform;
+        QgsMapRenderer* mMapRenderer;
 
     };
-} } // namespace osgEarth::Drivers
+  }
+} // namespace osgEarth::Drivers
 
 #endif // OSGEARTH_DRIVER_QGIS_DRIVEROPTIONS
 

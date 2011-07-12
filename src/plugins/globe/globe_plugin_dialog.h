@@ -27,9 +27,9 @@
 #include <qgsproject.h>
 #include <qgsvectorlayer.h>
 
-class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBase
+class QgsGlobePluginDialog: public QDialog, private Ui::QgsGlobePluginDialogGuiBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsGlobePluginDialog( QgsOsgViewer* viewer, QWidget * parent = 0, Qt::WFlags fl = 0 );
@@ -45,12 +45,12 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
   private:
     QString openRasterFile();
     void updateStereoDialog();
-    bool validateResource( QString type, QString uri, QString& error);
+    bool validateResource( QString type, QString uri, QString& error );
     void saveElevationDatasources();
-    void moveRow( QTableWidget* widget, bool up);
-    QList<QTableWidgetItem*> takeRow( QTableWidget* widget, int row);
-    void setRow( QTableWidget* widget, int row, const QList< QTableWidgetItem* >& rowItems);
-    void showMessageBox( QString text);
+    void moveRow( QTableWidget* widget, bool up );
+    QList<QTableWidgetItem*> takeRow( QTableWidget* widget, int row );
+    void setRow( QTableWidget* widget, int row, const QList< QTableWidgetItem* >& rowItems );
+    void showMessageBox( QString text );
     QList<QgsVectorLayer*> pointLayers();
     //! Set osg/DisplaySettings
     void setStereoConfig();
@@ -66,22 +66,22 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void on_buttonBox_rejected();
 
     //STEREO
-    void on_comboStereoMode_currentIndexChanged(QString value);
-    void on_eyeSeparation_valueChanged(double value);
-    void on_screenDistance_valueChanged(double value);
-    void on_screenWidth_valueChanged(double value);
-    void on_screenHeight_valueChanged(double value);
-    void on_splitStereoHorizontalSeparation_valueChanged(int value);
-    void on_splitStereoVerticalSeparation_valueChanged(int value);
-    void on_splitStereoHorizontalEyeMapping_currentIndexChanged(int value);
-    void on_splitStereoVerticalEyeMapping_currentIndexChanged(int value);
+    void on_comboStereoMode_currentIndexChanged( QString value );
+    void on_eyeSeparation_valueChanged( double value );
+    void on_screenDistance_valueChanged( double value );
+    void on_screenWidth_valueChanged( double value );
+    void on_screenHeight_valueChanged( double value );
+    void on_splitStereoHorizontalSeparation_valueChanged( int value );
+    void on_splitStereoVerticalSeparation_valueChanged( int value );
+    void on_splitStereoHorizontalEyeMapping_currentIndexChanged( int value );
+    void on_splitStereoVerticalEyeMapping_currentIndexChanged( int value );
     void on_resetStereoDefaults_clicked();
 
     //MODEL
     void on_modelBrowse_clicked();
 
     //ELEVATION
-    void on_elevationCombo_currentIndexChanged(QString type);
+    void on_elevationCombo_currentIndexChanged( QString type );
     void on_elevationBrowse_clicked();
     void on_elevationAdd_clicked();
     void on_elevationRemove_clicked();
@@ -92,4 +92,4 @@ class QgsGlobePluginDialog:public QDialog, private Ui::QgsGlobePluginDialogGuiBa
     void elevationDatasourcesChanged();
 };
 
-#endif				// QGIS_GLOBE_PLUGIN_DIALOG_H
+#endif    // QGIS_GLOBE_PLUGIN_DIALOG_H
