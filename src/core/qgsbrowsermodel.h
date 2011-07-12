@@ -57,10 +57,13 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
     // Refresh item specified by path
-    void refresh( QString path, const QModelIndex &index = QModelIndex() );
+    void refresh( QString path );
 
     // Refresh item childs
     void refresh( const QModelIndex &index = QModelIndex() );
+
+    //! return index of a path
+    QModelIndex findPath( QString path );
 
     void connectItem( QgsDataItem *item );
 
@@ -78,7 +81,6 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
   protected:
     QVector<QgsDataItem*> mRootItems;
-    QIcon mIconDirectory;
 };
 
 #endif // QGSBROWSERMODEL_H
