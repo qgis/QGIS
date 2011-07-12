@@ -5,12 +5,14 @@
 SET(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconnection.cpp
-  ../../app/postgres/qgspgsourceselect.cpp
+  qgspgsourceselect.cpp
+  qgspgnewconnection.cpp
 )
 SET(PG_MOC_HDRS
   qgspostgresprovider.h
   qgspostgresconnection.h
-  ../../app/postgres/qgspgsourceselect.h
+  qgspgsourceselect.h
+  qgspgnewconnection.h
 )
 
 
@@ -26,7 +28,6 @@ INCLUDE_DIRECTORIES(
   ../../core
   ../../gui
   ../../app
-  ../../app/postgres
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
 )
 

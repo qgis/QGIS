@@ -460,6 +460,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a databaselayer to the map
     void addDatabaseLayer();
     //#endif
+	//! Add a list of database layers to the map
+    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();

@@ -116,6 +116,11 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //! Connection info (database, host, user, password)
     QString connectionInfo();
 
+  signals:
+    void addDatabaseLayers( QStringList const & layerPathList,
+                         QString const & providerKey );
+    void connectionsChanged();
+
   public slots:
     //! Determines the tables the user selected and closes the dialog
     void addTables();
@@ -155,12 +160,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
 
-    /**Inserts information about the spatial tables into mTableModel*/
-    bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
-
-    /** get primary key candidates (all int4 columns) */
-    QStringList pkCandidates( PGconn *pg, QString schemaName, QString viewName );
-
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column );
 
@@ -180,7 +179,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
-    PGconn *pd;
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsDbTableModel mTableModel;

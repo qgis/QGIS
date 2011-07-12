@@ -152,7 +152,6 @@ SET (QGIS_APP_MOC_HDRS
   qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
-  qgsdbtablemodel.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h
@@ -277,15 +276,6 @@ IF (POSTGRES_FOUND)
   IF(HAVE_PGCONFIG)
     ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
   ENDIF(HAVE_PGCONFIG)
-
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    postgres/qgspgsourceselect.cpp
-    postgres/qgspgnewconnection.cpp
-    )
-  SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    postgres/qgspgsourceselect.h
-    postgres/qgspgnewconnection.h
-    )
 ENDIF (POSTGRES_FOUND)
 
 IF (HAVE_SPATIALITE)
