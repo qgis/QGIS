@@ -44,7 +44,7 @@ void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const P
   mMapRenderer = new QgsMapRenderer();
 
   long epsgGlobe = 4326;
-  if ( mainRenderer->destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) == 0 )
+  if ( mainRenderer->destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) != 0 )
   {
     QgsCoordinateReferenceSystem srcCRS( mainRenderer->destinationCrs() ); //FIXME: crs from canvas or first layer?
     QgsCoordinateReferenceSystem destCRS;
