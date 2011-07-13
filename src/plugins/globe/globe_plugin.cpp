@@ -7,7 +7,7 @@
     Date                 : 08-Jul-2010
     Copyright            : (C) 2010 by Sourcepole
     Email                : info at sourcepole.ch
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -440,7 +440,11 @@ void GlobePlugin::setupControls()
   moveHControls->setFrame( new RoundedFrame() );
   moveHControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   moveHControls->setMargin( 0 );
-  moveHControls->setSpacing( 47 ); //OsgEarth >2.0: setChildSpacing( 47 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  moveHControls->setChildSpacing( 47 );
+#else
+  moveHControls->setSpacing( 47 );
+#endif
   moveHControls->setVertAlign( Control::ALIGN_CENTER );
   moveHControls->setHorizAlign( Control::ALIGN_CENTER );
   moveHControls->setPosition( 5, 30 );
@@ -462,7 +466,11 @@ void GlobePlugin::setupControls()
   moveVControls->setFrame( new RoundedFrame() );
   moveVControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   moveVControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  moveVControls->setChildSpacing( 36 );
+#else
   moveVControls->setSpacing( 36 );
+#endif
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
   moveVControls->setPosition( 35, 5 );
@@ -492,7 +500,11 @@ void GlobePlugin::setupControls()
   rotateControls->setFrame( new RoundedFrame() );
   rotateControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   rotateControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  rotateControls->setChildSpacing( 10 );
+#else
   rotateControls->setSpacing( 10 );
+#endif
   rotateControls->setVertAlign( Control::ALIGN_CENTER );
   rotateControls->setHorizAlign( Control::ALIGN_CENTER );
   rotateControls->setPosition( 5, 113 );
@@ -526,7 +538,11 @@ void GlobePlugin::setupControls()
   tiltControls->setFrame( new RoundedFrame() );
   tiltControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   tiltControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  tiltControls->setChildSpacing( 30 );
+#else
   tiltControls->setSpacing( 30 );
+#endif
   tiltControls->setVertAlign( Control::ALIGN_CENTER );
   tiltControls->setHorizAlign( Control::ALIGN_CENTER );
   tiltControls->setPosition( 35, 90 );
@@ -554,7 +570,11 @@ void GlobePlugin::setupControls()
   zoomControls->setFrame( new RoundedFrame() );
   zoomControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   zoomControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  zoomControls->setChildSpacing( 5 );
+#else
   zoomControls->setSpacing( 5 );
+#endif
   zoomControls->setVertAlign( Control::ALIGN_CENTER );
   zoomControls->setHorizAlign( Control::ALIGN_CENTER );
   zoomControls->setPosition( 35, 170 );
@@ -582,7 +602,11 @@ void GlobePlugin::setupControls()
   extraControls->setFrame( new RoundedFrame() );
   extraControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   extraControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  extraControls->setChildSpacing( 10 );
+#else
   extraControls->setSpacing( 10 );
+#endif
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
   extraControls->setPosition( 5, 220 );
