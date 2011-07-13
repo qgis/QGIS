@@ -8,7 +8,7 @@ class QDomElement;
 
 class QgsEmbedLayerDialog: public QDialog, private Ui::QgsEmbedLayerDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsEmbedLayerDialog( QWidget * parent = 0, Qt::WindowFlags f = 0 );
     ~QgsEmbedLayerDialog();

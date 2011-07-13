@@ -207,10 +207,10 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   double outlineWidth = 1;
   int size = context.outputPixelSize( mPatternWidth );
   const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, fillColor, outlineColor, outlineWidth,
-                                                                   context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
+                               context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
-  if( !doubleNear( context.alpha(), 1.0 ) )
+  if ( !doubleNear( context.alpha(), 1.0 ) )
   {
     QImage transparentImage = patternImage.copy();
     QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );

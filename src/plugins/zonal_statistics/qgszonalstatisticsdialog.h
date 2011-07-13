@@ -25,9 +25,9 @@ class QgsVectorLayer;
 
 class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDialogBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-    QgsZonalStatisticsDialog(QgisInterface* iface);
+    QgsZonalStatisticsDialog( QgisInterface* iface );
     ~QgsZonalStatisticsDialog();
 
     QString rasterFilePath() const;
@@ -42,7 +42,7 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
     /**Propose a valid prefix for the attributes*/
     QString proposeAttributePrefix() const;
     /**Check if a prefix can be used for the count, sum and mean attribute*/
-    bool prefixIsValid(const QString& prefix) const;
+    bool prefixIsValid( const QString& prefix ) const;
 
     QgisInterface* mIface;
 };

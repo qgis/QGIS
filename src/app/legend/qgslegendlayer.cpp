@@ -309,7 +309,7 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   SymbologyList itemList;
   QList< QPair< QString, QColor > > rasterItemList = layer->legendSymbologyItems();
   QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-  for(; itemIt != rasterItemList.constEnd(); ++itemIt )
+  for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
   {
     QPixmap itemPixmap( treeWidget()->iconSize() );
     itemPixmap.fill( itemIt->second );

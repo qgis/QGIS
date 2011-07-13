@@ -713,7 +713,7 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
             removeItem( cItem );
           }
 
-          if( cItem )
+          if ( cItem )
           {
             group->insertChild( group->childCount(), cItem );
           }

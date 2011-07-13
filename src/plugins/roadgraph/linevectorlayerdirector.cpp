@@ -107,7 +107,8 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
     if ( feature.geometry()->wkbType() == QGis::WKBLineString )
     {
       mpl.push_back( feature.geometry()->asPolyline() );
-    }else if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
+    }
+    else if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
     {
       mpl = feature.geometry()->asMultiPolyline();
     }
@@ -214,7 +215,8 @@ void RgLineVectorLayerDirector::makeGraph( RgGraphBuilder *builder, const QVecto
     if ( feature.geometry()->wkbType() == QGis::WKBLineString )
     {
       mpl.push_back( feature.geometry()->asPolyline() );
-    }else if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
+    }
+    else if ( feature.geometry()->wkbType() == QGis::WKBMultiLineString )
     {
       mpl = feature.geometry()->asMultiPolyline();
     }

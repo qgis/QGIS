@@ -354,8 +354,8 @@ bool QgsSpatiaLiteProvider::nextFeature( QgsFeature & feature )
 }
 
 bool QgsSpatiaLiteProvider::getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
-                                       QgsFeature &feature,
-                                       const QgsAttributeList &fetchAttributes)
+                                        QgsFeature &feature,
+                                        const QgsAttributeList &fetchAttributes )
 {
   int ret = sqlite3_step( stmt );
   if ( ret == SQLITE_DONE )
@@ -3856,7 +3856,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     sqlite3_free_table( results );
   }
   else if ( mQuery.startsWith( "(select", Qt::CaseInsensitive ) &&
-         mQuery.endsWith( ")" ) )
+            mQuery.endsWith( ")" ) )
   {
     // checking if this one is a select query
 
@@ -3898,11 +3898,11 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   {
     // checking if this one is a Table-based layer
     sql = QString( "SELECT read_only FROM geometry_columns "
-                           "LEFT JOIN geometry_columns_auth "
-                           "USING (f_table_name, f_geometry_column) "
-                           "WHERE f_table_name=%1 and f_geometry_column=%2" )
-                  .arg( quotedValue( mTableName ) )
-                  .arg( quotedValue( mGeometryColumn ) );
+                   "LEFT JOIN geometry_columns_auth "
+                   "USING (f_table_name, f_geometry_column) "
+                   "WHERE f_table_name=%1 and f_geometry_column=%2" )
+          .arg( quotedValue( mTableName ) )
+          .arg( quotedValue( mGeometryColumn ) );
 
     ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
