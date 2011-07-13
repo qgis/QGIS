@@ -101,7 +101,7 @@ QgsConfigParser* QgsConfigCache::insertConfiguration( const QString& filePath )
   if ( !configDoc->setContent( configFile, true, &errorMsg, &line, &column ) )
   {
     QgsDebugMsg( QString( "Parse error %1 at row %2, column %3 in %4 " )
-                   .arg( errorMsg ).arg( line ).arg( column ).arg( filePath ) );
+                 .arg( errorMsg ).arg( line ).arg( column ).arg( filePath ) );
     delete configFile;
     delete configDoc;
     return 0;

@@ -575,7 +575,7 @@ void QgsSvgMarkerSymbolLayerV2Widget::populateList()
 
 void QgsSvgMarkerSymbolLayerV2Widget::setGuiForSvg( const QgsSvgMarkerSymbolLayerV2* layer )
 {
-  if( !layer )
+  if ( !layer )
   {
     return;
   }

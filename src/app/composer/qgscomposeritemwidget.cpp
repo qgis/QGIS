@@ -189,12 +189,12 @@ void QgsComposerItemWidget::on_mPositionButton_clicked()
   }
 }
 
-void QgsComposerItemWidget::on_mItemIdLineEdit_textChanged(const QString &text)
+void QgsComposerItemWidget::on_mItemIdLineEdit_textChanged( const QString &text )
 {
-    if ( mItem )
-    {
-      mItem->beginCommand( tr( "Item id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
-      mItem->setId( text );
-      mItem->endCommand();
-    }
+  if ( mItem )
+  {
+    mItem->beginCommand( tr( "Item id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
+    mItem->setId( text );
+    mItem->endCommand();
+  }
 }

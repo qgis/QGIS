@@ -283,8 +283,8 @@ class CORE_EXPORT QgsProject : public QObject
       @return the layer or 0 in case of error
       @note: added in version 1.8*/
     //static QgsMapLayer* createEmbeddedLayer( const QString& layerId, const QString& projectFilePath );
-      bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
-                               QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
+    bool createEmbeddedLayer( const QString& layerId, const QString& projectFilePath, QList<QDomNode>& brokenNodes,
+                              QList< QPair< QgsVectorLayer*, QDomElement > >& vectorLayerList, bool saveFlag = true );
 
   protected:
 

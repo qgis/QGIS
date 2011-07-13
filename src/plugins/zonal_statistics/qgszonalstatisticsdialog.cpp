@@ -21,16 +21,16 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
-QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(QgisInterface* iface): QDialog(), mIface(iface)
+QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog(), mIface( iface )
 {
-  setupUi(this);
+  setupUi( this );
   insertAvailableLayers();
-  mColumnPrefixLineEdit->setText(proposeAttributePrefix());
+  mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
 }
 
-QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog(0), mIface(0)
+QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( 0 ), mIface( 0 )
 {
-  setupUi(this);
+  setupUi( this );
 }
 
 QgsZonalStatisticsDialog::~QgsZonalStatisticsDialog()
@@ -55,7 +55,7 @@ void QgsZonalStatisticsDialog::insertAvailableLayers()
     else
     {
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( layer_it.value() );
-      if(vl && vl->geometryType() == QGis::Polygon)
+      if ( vl && vl->geometryType() == QGis::Polygon )
       {
         mPolygonLayerComboBox->addItem( vl->name(), QVariant( vl->id() ) );
       }
@@ -76,11 +76,11 @@ QString QgsZonalStatisticsDialog::rasterFilePath() const
 QgsVectorLayer* QgsZonalStatisticsDialog::polygonLayer() const
 {
   int index = mPolygonLayerComboBox->currentIndex();
-  if(index == -1)
+  if ( index == -1 )
   {
     return 0;
   }
-  return dynamic_cast<QgsVectorLayer*>(QgsMapLayerRegistry::instance()->mapLayer(mPolygonLayerComboBox->itemData( index ).toString()));
+  return dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mPolygonLayerComboBox->itemData( index ).toString() ) );
 }
 
 QString QgsZonalStatisticsDialog::attributePrefix() const
@@ -90,28 +90,28 @@ QString QgsZonalStatisticsDialog::attributePrefix() const
 
 QString QgsZonalStatisticsDialog::proposeAttributePrefix() const
 {
-  if(!polygonLayer())
+  if ( !polygonLayer() )
   {
     return "";
   }
 
   QString proposedPrefix = "";
-  while(!prefixIsValid(proposedPrefix))
+  while ( !prefixIsValid( proposedPrefix ) )
   {
-    proposedPrefix.prepend("_");
+    proposedPrefix.prepend( "_" );
   }
   return proposedPrefix;
 }
 
-bool QgsZonalStatisticsDialog::prefixIsValid(const QString& prefix) const
+bool QgsZonalStatisticsDialog::prefixIsValid( const QString& prefix ) const
 {
   QgsVectorLayer* vl = polygonLayer();
-  if(!vl)
+  if ( !vl )
   {
     return false;
   }
   QgsVectorDataProvider* dp = vl->dataProvider();
-  if(!dp)
+  if ( !dp )
   {
     return false;
   }
@@ -120,13 +120,13 @@ bool QgsZonalStatisticsDialog::prefixIsValid(const QString& prefix) const
   QgsFieldMap::const_iterator it = providerFieldMap.constBegin();
   QString currentFieldName;
 
-  for(; it != providerFieldMap.constEnd(); ++it)
+  for ( ; it != providerFieldMap.constEnd(); ++it )
+  {
+    currentFieldName = it.value().name();
+    if ( currentFieldName == ( prefix + "mean" ) || currentFieldName == ( prefix + "sum" ) || currentFieldName == ( prefix + "count" ) )
     {
-      currentFieldName = it.value().name();
-      if(currentFieldName == (prefix + "mean") || currentFieldName == (prefix + "sum") || currentFieldName == (prefix + "count") )
-      {
-        return false;
-      }
+      return false;
     }
+  }
   return true;
 }

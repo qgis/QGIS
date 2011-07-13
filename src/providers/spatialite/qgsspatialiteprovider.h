@@ -381,12 +381,12 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getSridDetails();
     bool getTableSummary();
     bool prepareStatement( sqlite3_stmt *&stmt,
-                                 const QgsAttributeList &fetchAttributes,
-                                 bool fetchGeometry,
-                                 QString whereClause );
+                           const QgsAttributeList &fetchAttributes,
+                           bool fetchGeometry,
+                           QString whereClause );
     bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
-                    QgsFeature &feature,
-                    const QgsAttributeList &fetchAttributes );
+                     QgsFeature &feature,
+                     const QgsAttributeList &fetchAttributes );
     void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
                            unsigned char **wkb, size_t *geom_size );
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,

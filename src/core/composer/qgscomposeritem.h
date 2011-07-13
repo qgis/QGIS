@@ -330,7 +330,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void rotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
-private:
+  private:
     // Label id (unique within the same composition)
     QString mId;
 };
