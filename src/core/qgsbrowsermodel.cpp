@@ -18,7 +18,7 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
   // give the home directory a prominent first place
   QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
-  QIcon homeIcon( style->standardPixmap( QStyle::QStyle::SP_DirHomeIcon ) );
+  QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
   connectItem( item );
   mRootItems << item;
