@@ -7,7 +7,7 @@
     Date                 : 08-Jul-2010
     Copyright            : (C) 2010 by Sourcepole
     Email                : info at sourcepole.ch
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -156,7 +156,7 @@ class QueryCoordinatesHandler : public osgGA::GUIEventHandler
   public:
     QueryCoordinatesHandler( GlobePlugin* globe, osgEarth::Util::ElevationManager* elevMan,
                              const osgEarth::SpatialReference* mapSRS )
-        :  mGlobe( globe ), _elevMan( elevMan ), _mapSRS( mapSRS ), _mouseDown( false ) { }
+        :  mGlobe( globe ), _mapSRS( mapSRS ), _elevMan( elevMan ), _mouseDown( false ) { }
 
     bool handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa );
 
@@ -194,8 +194,8 @@ namespace osgEarth
       class NavigationControlHandler : public ControlEventHandler
       {
         public:
-          virtual void onMouseDown( class Control* control, int mouseButtonMask ) { }
-          virtual void onClick( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { }
+          virtual void onMouseDown( class Control* control, int mouseButtonMask ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); }
+          virtual void onClick( class Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa ) { Q_UNUSED( control ); Q_UNUSED( mouseButtonMask ); Q_UNUSED( ea ); Q_UNUSED( aa ); }
       };
 
       class NavigationControl : public ImageControl

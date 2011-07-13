@@ -36,19 +36,21 @@ QgsOsgEarthTileSource::QgsOsgEarthTileSource( QgisInterface* theQgisInterface, c
 
 void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const Profile* overrideProfile )
 {
+  Q_UNUSED( referenceURI );
+  Q_UNUSED( overrideProfile );
+
   setProfile( osgEarth::Registry::instance()->getGlobalGeodeticProfile() );
   QgsMapRenderer* mainRenderer = mQGisIface->mapCanvas()->mapRenderer();
   mMapRenderer = new QgsMapRenderer();
 
   long epsgGlobe = 4326;
-  if ( mainRenderer->destinationSrs().epsg() != epsgGlobe )
+  if ( mainRenderer->destinationCrs().authid().compare( QString( "EPSG:%1" ).arg( epsgGlobe ), Qt::CaseInsensitive ) == 0 )
   {
-    QgsCoordinateReferenceSystem srcCRS;
-    srcCRS.createFromEpsg( mainRenderer->destinationSrs().epsg() ); //FIXME: crs from canvas or first layer?
+    QgsCoordinateReferenceSystem srcCRS( mainRenderer->destinationCrs() ); //FIXME: crs from canvas or first layer?
     QgsCoordinateReferenceSystem destCRS;
-    destCRS.createFromEpsg( epsgGlobe );
+    destCRS.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsgGlobe ) );
     //QgsProject::instance()->writeEntry("SpatialRefSys","/ProjectionsEnabled",1);
-    mMapRenderer->setDestinationSrs( destCRS );
+    mMapRenderer->setDestinationCrs( destCRS );
     mMapRenderer->setProjectionsEnabled( true );
     mCoordTranform = new QgsCoordinateTransform( srcCRS, destCRS );
   }
@@ -60,6 +62,8 @@ void QgsOsgEarthTileSource::initialize( const std::string& referenceURI, const P
 
 osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCallback* progress )
 {
+  Q_UNUSED( key );
+  Q_UNUSED( progress );
   osg::ref_ptr<osg::Image> image;
   if ( intersects( &key ) )
   {

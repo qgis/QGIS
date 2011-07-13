@@ -1,13 +1,10 @@
-/*
-* $Id$
-*/
 /***************************************************************************
 *    globe_plugin_dialog.cpp - settings dialog for the globe plugin
 *     --------------------------------------
 *    Date                 : 11-Nov-2010
 *    Copyright            : (C) 2010 by Marco Bernasocchi
 *    Email                : marco at bernawebdesign.ch
-* /***************************************************************************
+***************************************************************************
 *                                                                         *
 *   This program is free software; you can redistribute it and/or modify  *
 *   it under the terms of the GNU General Public License as published by  *
@@ -42,7 +39,8 @@
 
 //constructor
 QgsGlobePluginDialog::QgsGlobePluginDialog( QgsOsgViewer* viewer, QWidget* parent, Qt::WFlags fl )
-    : mViewer( viewer ), QDialog( parent, fl )
+    : QDialog( parent, fl )
+    , mViewer( viewer )
 {
   setupUi( this );
   loadStereoConfig();  //values from settings, default values from OSG
@@ -405,6 +403,7 @@ void QgsGlobePluginDialog::on_resetStereoDefaults_clicked()
 
 void QgsGlobePluginDialog::on_comboStereoMode_currentIndexChanged( QString value )
 {
+  Q_UNUSED( value );
   setStereoMode();
   updateStereoDialog();
 }

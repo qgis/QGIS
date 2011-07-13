@@ -28,6 +28,8 @@ namespace osgEarth
         osg::HeightField* createHeightField( const TileKey* key,
                                              ProgressCallback* progress )
         {
+          Q_UNUSED( key );
+          Q_UNUSED( progress );
           //NI
           OE_WARN << "[QGIS] Driver does not support heightfields" << std::endl;
           return NULL;
