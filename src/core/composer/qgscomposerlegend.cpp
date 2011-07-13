@@ -336,7 +336,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     textAlignCoord = qMax( currentXCoord, textAlignCoord );
   }
 
-  maxXCoord = textAlignCoord;
+  maxXCoord = qMax( maxXCoord, textAlignCoord );
   for ( int i = 0; i < numChildren; ++i )
   {
     if ( p )
