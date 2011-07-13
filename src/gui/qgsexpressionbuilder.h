@@ -37,18 +37,26 @@
 class QgsExpressionItem : public QStandardItem
 {
     public:
+        QgsExpressionItem(QString label, QString expressionText, QString helpText)
+            : QStandardItem(label)
+        {
+            mExpressionText = expressionText;
+            mHelpText = helpText;
+        }
+
         QgsExpressionItem(QString label, QString expressionText)
             : QStandardItem(label)
         {
             mExpressionText = expressionText;
         }
 
-        QString getExpressionText()
-        {
-            return mExpressionText;
-        }
+        QString getExpressionText() {   return mExpressionText;  }
+
+        QString getHelpText() {  return mHelpText;  }
+
     private:
         QString mExpressionText;
+        QString mHelpText;
 };
 
 class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
@@ -62,6 +70,7 @@ public:
     QString getExpressionString();
     void setExpressionString(const QString expressionString);
     void registerItem(QString group, QString label, QString expressionText);
+    void registerItem(QString group, QString label, QString expressionText, QString helpText);
 
 public slots:
     void on_mAllPushButton_clicked();

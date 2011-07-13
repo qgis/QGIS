@@ -32,14 +32,17 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     this->registerItem("Operators","-"," -");
     this->registerItem("Operators","*"," * ");
     this->registerItem("Operators","/"," / ");
+    this->registerItem("Operators","^"," ^ ");
+    this->registerItem("Operators","="," = ");
+    this->registerItem("Operators","||"," || ","<b>|| (String Concatenation)</b> <br> Concats two values together into a string <br> <i>Usage:</i><br>'Dia' || Diameter");
 
-    this->registerItem("Geometry","Area"," $area ");
-    this->registerItem("Geometry","Length"," $length ");
+    this->registerItem("Geometry","Area"," $area ","<b>$area</b> <br> Returns the area the object. <br> Only applies to polygons.");
+    this->registerItem("Geometry","Length"," $length ","<b>$length</b> <br> Returns the length the object. <br> Only applies to polylines.");
     this->registerItem("Geometry","Perimeter"," $perimeter ");
     this->registerItem("Geometry","X"," $x ");
      this->registerItem("Geometry","Y"," $y ");
-     this->registerItem("Geometry","XAt"," xat() ");
-     this->registerItem("Geometry","YAt"," yat() ");
+     this->registerItem("Geometry","XAt"," xat( ");
+     this->registerItem("Geometry","YAt"," yat(  ");
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
@@ -72,8 +75,9 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &in
    }
    else
    {
-       // We might be able to show help for the current selected item here.
+       // Show the help for the current item.
        mValueListWidget->clear();
+       txtHelpText->setText(item->getHelpText());
    }
 }
 
@@ -124,7 +128,12 @@ void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
 
 void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QString expressionText)
 {
-    QgsExpressionItem* item = new QgsExpressionItem(label,expressionText);
+    this->registerItem(group,label,expressionText,"");
+}
+
+void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QString expressionText, QString helpText)
+{
+    QgsExpressionItem* item = new QgsExpressionItem(label,expressionText, helpText);
     // Look up the group and insert the new function.
     if (mExpressionGroups.contains(group))
     {
