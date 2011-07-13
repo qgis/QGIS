@@ -635,9 +635,16 @@ void QgsComposerLegendWidget::updateLegend()
 
 void QgsComposerLegendWidget::blockAllSignals( bool b )
 {
+  mTitleLineEdit->blockSignals( b );
   mItemTreeView->blockSignals( b );
   mCheckBoxAutoUpdate->blockSignals( b );
   mMapComboBox->blockSignals( b );
+  mSymbolWidthSpinBox->blockSignals( b );
+  mSymbolHeightSpinBox->blockSignals( b );
+  mLayerSpaceSpinBox->blockSignals( b );
+  mSymbolSpaceSpinBox->blockSignals( b );
+  mIconLabelSpaceSpinBox->blockSignals( b );
+  mBoxSpaceSpinBox->blockSignals( b );
 }
 
 void QgsComposerLegendWidget::refreshMapComboBox()
