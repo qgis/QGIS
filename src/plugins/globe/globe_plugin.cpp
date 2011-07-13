@@ -76,8 +76,8 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
     viewer(),
     mQDockWidget( tr( "Globe" ) ),
     mSettingsDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
-    mTileSource( 0 ),
     mQgisMapLayer( 0 ),
+    mTileSource( 0 ),
     mElevationManager( NULL ),
     mObjectPlacer( NULL )
 {
@@ -97,7 +97,7 @@ GlobePlugin::~GlobePlugin()
 struct PanControlHandler : public NavigationControlHandler
 {
   PanControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-  virtual void onMouseDown( Control* control, int mouseButtonMask )
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
   {
     _manip->pan( _dx, _dy );
   }
@@ -110,7 +110,7 @@ private:
 struct RotateControlHandler : public NavigationControlHandler
 {
   RotateControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-  virtual void onMouseDown( Control* control, int mouseButtonMask )
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
   {
     if ( 0 == _dx && 0 == _dy )
     {
@@ -130,7 +130,7 @@ private:
 struct ZoomControlHandler : public NavigationControlHandler
 {
   ZoomControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-  virtual void onMouseDown( Control* control, int mouseButtonMask )
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
   {
     _manip->zoom( _dx, _dy );
   }
@@ -143,7 +143,7 @@ private:
 struct HomeControlHandler : public NavigationControlHandler
 {
   HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
-  virtual void onClick( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
   {
     _manip->home( ea, aa );
   }
@@ -154,7 +154,7 @@ private:
 struct RefreshControlHandler : public ControlEventHandler
 {
   RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-  virtual void onClick( Control* control, int mouseButtonMask )
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
   {
     mGlobe->layersChanged();
   }
@@ -165,7 +165,7 @@ private:
 struct SyncExtentControlHandler : public ControlEventHandler
 {
   SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-  virtual void onClick( Control* control, int mouseButtonMask )
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
   {
     mGlobe->syncExtent();
   }
@@ -838,6 +838,8 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
       }
       _mouse_down_event = NULL;
       break;
+    default:
+      /* ignore */;
   }
   if ( _mouse_down_event )
   {
@@ -854,7 +856,7 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
   return Control::handle( ea, aa, cx );
 }
 
-bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/ )
 {
   /*
   osgEarth::Util::EarthManipulator::Settings* _manipSettings = _manip->getSettings();
@@ -961,7 +963,7 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
   return false;
 }
 
-bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/ )
 {
   if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
   {
@@ -1002,6 +1004,7 @@ bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::G
 osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view,  bool getElevation )
 {
   osgUtil::LineSegmentIntersector::Intersections results;
+  osg::Vec3d coords;
   if ( view->computeIntersections( x, y, results, 0x01 ) )
   {
     // find the first hit under the mouse:
@@ -1041,9 +1044,9 @@ osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View
       }
     }
 
-    osg::Vec3d coords = osg::Vec3d( lon_deg, lat_deg, elevation );
-    return coords;
+    coords = osg::Vec3d( lon_deg, lat_deg, elevation );
   }
+  return coords;
 }
 
 /**

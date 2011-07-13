@@ -96,7 +96,7 @@ class QgsOsgViewer : public osgViewer::Viewer, public QgsGLWidgetAdapter
 
     virtual void paintGL()
     {
-      frame();
+      if ( isVisible() ) frame();
     }
 
   protected:
