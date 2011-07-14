@@ -131,7 +131,7 @@ class QgsPalGeometry : public PalGeometry
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL ), fontMetrics( NULL ), ct( NULL )
+    : palLayer( NULL ), fontMetrics( NULL ), ct( NULL ), extentGeom( NULL )
 {
   placement = AroundPoint;
   placementFlags = 0;
@@ -185,6 +185,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   dataDefinedProperties = s.dataDefinedProperties;
   fontMetrics = NULL;
   ct = NULL;
+  extentGeom = NULL;
 }
 
 
@@ -194,6 +195,8 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 
   delete fontMetrics;
   delete ct;
+
+  delete extentGeom;
 }
 
 static QColor _readColor( QgsVectorLayer* layer, QString property )
@@ -466,14 +469,30 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
   if ( ct ) // reproject the geometry if necessary
     geom->transform( *ct );
 
-  GEOSGeometry* geos_geom = geom->asGeos();
-  if ( geos_geom == NULL )
-    return; // invalid geometry
-
   if ( !checkMinimumSizeMM( context, geom, minFeatureSize ) )
   {
     return;
   }
+
+  // CLIP the geometry if it is bigger than the extent
+  QgsGeometry* geomClipped = NULL;
+  GEOSGeometry* geos_geom;
+  bool do_clip = !extentGeom->contains( geom );
+  if ( do_clip )
+  {
+    geomClipped = geom->intersection( extentGeom ); // creates new geometry
+    geos_geom = geomClipped->asGeos();
+  }
+  else
+  {
+    geos_geom = geom->asGeos();
+  }
+
+  if ( geos_geom == NULL )
+    return; // invalid geometry
+  GEOSGeometry* geos_geom_clone = GEOSGeom_clone( geos_geom );
+  if ( do_clip )
+    delete geomClipped;
 
   //data defined position / alignment / rotation?
   bool dataDefinedPosition = false;
@@ -569,7 +588,7 @@ void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext
     }
   }
 
-  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, GEOSGeom_clone( geos_geom ) );
+  QgsPalGeometry* lbl = new QgsPalGeometry( f.id(), labelText, geos_geom_clone );
 
   // record the created geometry - it will be deleted at the end.
   geometries.append( lbl );
@@ -765,6 +784,9 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     lyr.ct = NULL;
   lyr.ptZero = lyr.xform->toMapCoordinates( 0, 0 );
   lyr.ptOne = lyr.xform->toMapCoordinates( 1, 0 );
+
+  // rect for clipping
+  lyr.extentGeom = QgsGeometry::fromRect( mMapRenderer->extent() );
 
   return 1; // init successful
 }

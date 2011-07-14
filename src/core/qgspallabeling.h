@@ -143,6 +143,7 @@ class CORE_EXPORT QgsPalLayerSettings
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
     QList<QgsPalGeometry*> geometries;
+    QgsGeometry* extentGeom;
 
     /**Stores field indices for data defined layer properties*/
     QMap< DataDefinedProperties, int > dataDefinedProperties;
