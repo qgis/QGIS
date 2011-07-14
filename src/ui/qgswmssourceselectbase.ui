@@ -184,6 +184,23 @@
          </property>
         </widget>
        </item>
+       <item row="1" column="9">
+        <widget class="QPushButton" name="btnSave">
+         <property name="text">
+          <string>Save</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="8">
+        <widget class="QPushButton" name="btnLoad">
+         <property name="toolTip">
+          <string>Load connections from file</string>
+         </property>
+         <property name="text">
+          <string>Load</string>
+         </property>
+        </widget>
+       </item>
        <item row="4" column="0" colspan="12">
         <widget class="QGroupBox" name="gbCRS">
          <property name="title">
@@ -252,15 +269,21 @@
       <layout class="QGridLayout">
        <item row="0" column="0">
         <widget class="QPushButton" name="mLayerUpButton">
+         <property name="toolTip">
+          <string>Move selected layer UP</string>
+         </property>
          <property name="text">
-          <string/>
+          <string>Up</string>
          </property>
         </widget>
        </item>
        <item row="0" column="1">
         <widget class="QPushButton" name="mLayerDownButton">
+         <property name="toolTip">
+          <string>Move selected layer DOWN</string>
+         </property>
          <property name="text">
-          <string/>
+          <string>Down</string>
          </property>
         </widget>
        </item>
