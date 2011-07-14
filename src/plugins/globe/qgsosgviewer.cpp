@@ -43,6 +43,7 @@ void QDockWidgetGlobe::closeEvent( QCloseEvent* event )
 QgsGLWidgetAdapter::QgsGLWidgetAdapter( QWidget * parent, const char * name, const QGLWidget * shareWidget, WindowFlags f ):
     QGLWidget( parent, shareWidget, f )
 {
+  Q_UNUSED( name );
   _gw = new osgViewer::GraphicsWindowEmbedded( 0, 0, width(), height() );
   setFocusPolicy( Qt::ClickFocus );
   setMouseTracking( true );
