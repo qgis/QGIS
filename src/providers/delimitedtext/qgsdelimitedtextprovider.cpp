@@ -168,6 +168,8 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
     mSkipLines = url.queryItemValue( "skipLines" ).toInt();
   if ( url.hasQueryItem( "crs" ) )
     mCrs.createFromString( url.queryItemValue( "crs" ) );
+  if ( url.hasQueryItem( "decimalPoint" ) )
+    mDecimalPoint = url.queryItemValue( "decimalPoint" );
 
   QgsDebugMsg( "Data source uri is " + uri );
   QgsDebugMsg( "Delimited text file is: " + mFileName );
@@ -367,6 +369,13 @@ QgsDelimitedTextProvider::QgsDelimitedTextProvider( QString uri )
         QString sX = parts[mXFieldIndex];
         QString sY = parts[mYFieldIndex];
 
+
+        if ( !mDecimalPoint.isEmpty() )
+        {
+          sX.replace( mDecimalPoint, "." );
+          sY.replace( mDecimalPoint, "." );
+        }
+
         bool xOk = false;
         bool yOk = false;
         double x = sX.toDouble( &xOk );
@@ -502,9 +511,18 @@ bool QgsDelimitedTextProvider::nextFeature( QgsFeature& feature )
     }
     else if ( mXFieldIndex >= 0 && mYFieldIndex >= 0 )
     {
+      QString sX = tokens[mXFieldIndex];
+      QString sY = tokens[mYFieldIndex];
+
+      if ( !mDecimalPoint.isEmpty() )
+      {
+        sX.replace( mDecimalPoint, "." );
+        sY.replace( mDecimalPoint, "." );
+      }
+
       bool xOk, yOk;
-      double x = tokens[mXFieldIndex].toDouble( &xOk );
-      double y = tokens[mYFieldIndex].toDouble( &yOk );
+      double x = sX.toDouble( &xOk );
+      double y = sY.toDouble( &yOk );
       if ( xOk && yOk )
       {
         mFid++;
