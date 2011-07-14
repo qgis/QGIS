@@ -69,17 +69,15 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //constructor
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface ),
-    mQActionPointer( NULL ),
-    mQActionSettingsPointer( NULL ),
-    viewer(),
-    mQDockWidget( tr( "Globe" ) ),
-    mSettingsDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
-    mQgisMapLayer( 0 ),
-    mTileSource( 0 ),
-    mElevationManager( NULL ),
-    mObjectPlacer( NULL )
+    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
+    , mQActionPointer( NULL )
+    , mQActionSettingsPointer( NULL )
+    , viewer()
+    , mQgisMapLayer( 0 )
+    , mTileSource( 0 )
+    , mElevationManager( NULL )
+    , mObjectPlacer( NULL )
 {
   mIsGlobeRunning = false;
   //needed to be "seen" by other plugins by doing
@@ -87,6 +85,9 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   //needed until https://trac.osgeo.org/qgis/changeset/15224
   this->setObjectName( "globePlugin" );
   this->setParent( theQgisInterface->mainWindow() );
+
+  mSettingsDialog = new QgsGlobePluginDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
+  mQDockWidget = new QDockWidgetGlobe( tr( "Globe" ), theQgisInterface->mainWindow() );
 }
 
 //destructor
@@ -190,19 +191,19 @@ void GlobePlugin::initGui()
   //Add menu
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
-  mQDockWidget.setWidget( &viewer );
+  mQDockWidget->setWidget( &viewer );
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
   connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
            this, SLOT( layersChanged() ) );
-  connect( &mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
+  connect( mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
            this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this,
            SLOT( blankProjectReady() ) );
-  connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
+  connect( mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
            mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
@@ -214,7 +215,7 @@ void GlobePlugin::run()
   if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
 
-  mQGisIface->addDockWidget( Qt::RightDockWidgetArea, &mQDockWidget );
+  mQGisIface->addDockWidget( Qt::RightDockWidgetArea, mQDockWidget );
 
   viewer.show();
 
@@ -266,8 +267,8 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
-  mSettingsDialog.updatePointLayers();
-  if ( mSettingsDialog.exec() )
+  mSettingsDialog->updatePointLayers();
+  if ( mSettingsDialog->exec() )
   {
     //viewer stereo settings set by mSettingsDialog and stored in QSettings
   }
@@ -324,12 +325,12 @@ void GlobePlugin::setupMap()
   mObjectPlacer = new osgEarth::Util::ObjectPlacer( mMapNode );
 
   // place 3D model on point layer
-  if ( mSettingsDialog.modelLayer() && !mSettingsDialog.modelPath().isEmpty() )
+  if ( mSettingsDialog->modelLayer() && !mSettingsDialog->modelPath().isEmpty() )
   {
-    osg::Node* model = osgDB::readNodeFile( mSettingsDialog.modelPath().toStdString() );
+    osg::Node* model = osgDB::readNodeFile( mSettingsDialog->modelPath().toStdString() );
     if ( model )
     {
-      QgsVectorLayer* layer = mSettingsDialog.modelLayer();
+      QgsVectorLayer* layer = mSettingsDialog->modelLayer();
       QgsAttributeList fetchAttributes;
       layer->select( fetchAttributes ); //TODO: select only visible features
       QgsFeature feature;
@@ -346,13 +347,13 @@ void GlobePlugin::setupMap()
 void GlobePlugin::projectReady()
 {
   blankProjectReady();
-  mSettingsDialog.readElevationDatasources();
+  mSettingsDialog->readElevationDatasources();
 }
 
 void GlobePlugin::blankProjectReady()
 { //needs at least http://trac.osgeo.org/qgis/changeset/14452
-  mSettingsDialog.elevationDatasources()->clearContents();
-  mSettingsDialog.elevationDatasources()->setRowCount( 0 );
+  mSettingsDialog->elevationDatasources()->clearContents();
+  mSettingsDialog->elevationDatasources()->setRowCount( 0 );
 }
 
 void GlobePlugin::showCurrentCoordinates( double lon, double lat )
@@ -696,7 +697,7 @@ void GlobePlugin::layersChanged()
     // Add elevation layers
     QSettings settings;
     QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-    QTableWidget* table = mSettingsDialog.elevationDatasources();
+    QTableWidget* table = mSettingsDialog->elevationDatasources();
     for ( int i = 0; i < table->rowCount(); ++i )
     {
       QString type = table->item( i, 0 )->text();

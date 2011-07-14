@@ -110,9 +110,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! OSG Viewer
     QgsOsgViewer viewer;
     //! Dock widget for viewer
-    QDockWidgetGlobe mQDockWidget;
+    QDockWidgetGlobe *mQDockWidget;
     //! Settings Dialog
-    QgsGlobePluginDialog mSettingsDialog;
+    QgsGlobePluginDialog *mSettingsDialog;
     //! OSG root node
     osg::Group* mRootNode;
     //! Map node

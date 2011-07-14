@@ -58,13 +58,13 @@ QgsGlobePluginDialog::~QgsGlobePluginDialog()
 QString QgsGlobePluginDialog::openRasterFile()
 {
   //see http://www.gdal.org/formats_list.html
-  const char* filter = "GDAL files (*.dem *.tif *.tiff *.jpg *.jpeg *.asc) \
-  ;;DEM files (*.dem) \
-  ;;All files (*.*)";
+  QString filter = tr( "GDAL files" ) + " (*.dem *.tif *.tiff *.jpg *.jpeg *.asc);;"
+                   + tr( "DEM files" ) + " (*.dem);;"
+                   + tr( "All files" ) + " (*.*)";
   QString path = QFileDialog::getOpenFileName( this,
                  tr( "Open raster file" ),
                  QDir::homePath(),
-                 tr( filter ) );
+                 filter );
 
   return path;
 }
