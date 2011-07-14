@@ -3160,7 +3160,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  sql = QString( "select type,srid from geometry_columns"
+  sql = QString( "select upper(type),srid from geometry_columns"
                  " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3" )
         .arg( quotedValue( tableName ) )
         .arg( quotedValue( geomCol ) )
@@ -3204,7 +3204,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select %1(%2),geometrytype(%2) from %3" )
+    sql = QString( "select %1(%2),upper(geometrytype(%2)) from %3" )
           .arg( connectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
           .arg( quotedIdentifier( geometryColumn ) )
           .arg( mQuery );
@@ -3234,9 +3234,9 @@ bool QgsPostgresProvider::getGeometryDetails()
       // check to see if there is a unique geometry type
       sql = QString( "select distinct "
                      "case"
-                     " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                     " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                     " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                     " when upper(geometrytype(%1)) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                     " when upper(geometrytype(%1)) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                     " when upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
                      "from " ).arg( quotedIdentifier( geometryColumn ) );
       if ( mUseEstimatedMetadata )
