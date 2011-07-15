@@ -174,7 +174,14 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
 
 bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 {
-  if ( !symbol || symbol->type() != QgsSymbolV2::Line )
+  if( !symbol ) //unset current outline
+  {
+    delete mOutline;
+    mOutline = 0;
+    return true;
+  }
+
+  if ( symbol->type() != QgsSymbolV2::Line )
   {
     delete symbol;
     return false;
@@ -499,6 +506,10 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   //set image to mBrush
   mBrush.setTextureImage( patternImage );
 
+  QTransform brushTransform;
+  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
+  mBrush.setTransform( brushTransform );
+
   if ( mOutline )
   {
     mOutline->startRender( context.renderContext() );
@@ -529,6 +540,132 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
   return clonedLayer;
 }
 
+////////////////////////
+
+QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
+  mDistanceY( 15 ), mDisplacementX( 0 ), mDisplacementY( 0 )
+{
+  mDistanceX = 15;
+  mDistanceY = 15;
+  mDisplacementX = 0;
+  mDisplacementY = 0;
+  setSubSymbol( new QgsMarkerSymbolV2() );
+  QgsImageFillSymbolLayer::setSubSymbol( 0 ); //no outline
+}
+
+QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
+{
+}
+
+QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& properties )
+{
+  QgsPointPatternFillSymbolLayer* layer = new QgsPointPatternFillSymbolLayer();
+  if( properties.contains("distance_x") )
+  {
+    layer->setDistanceX( properties["distance_x"].toDouble() );
+  }
+  if( properties.contains("distance_y") )
+  {
+    layer->setDistanceY( properties["distance_y"].toDouble() );
+  }
+  if( properties.contains("displacement_x") )
+  {
+    layer->setDisplacementX( properties["displacement_x"].toDouble() );
+  }
+  if( properties.contains("displacement_y") )
+  {
+    layer->setDisplacementY( properties["displacement_y"].toDouble() );
+  }
+  return layer;
+}
+
+QString QgsPointPatternFillSymbolLayer::layerType() const
+{
+  return "PointPatternFill";
+}
+
+void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
+{
+  double width = context.outputPixelSize( mDistanceX );
+  double height = context.outputPixelSize( mDistanceY );
+
+  QImage patternImage( width, height, QImage::Format_ARGB32 );
+  patternImage.fill( 0 );
+
+
+  //create render context for image
+  QgsRenderContext pointRenderContext;
+
+  if( mMarkerSymbol )
+  {
+    QPainter p( &patternImage );
+    pointRenderContext.setPainter( &p );
+    pointRenderContext.setRasterScaleFactor( context.renderContext().rasterScaleFactor() );
+    pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
+
+    //mMarkerSymbol->setOutputUnit( context.outputUnit() );
+    mMarkerSymbol->startRender( pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( width, 0 ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( 0, height ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( width, height ), pointRenderContext );
+    mMarkerSymbol->stopRender( pointRenderContext );
+  }
+
+  mBrush.setTextureImage( patternImage );
+  QTransform brushTransform;
+  brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
+  mBrush.setTransform( brushTransform );
+
+  if ( mOutline )
+  {
+    mOutline->startRender( context.renderContext() );
+  }
+}
+
+void QgsPointPatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+{
+  if ( mOutline )
+  {
+    mOutline->stopRender( context.renderContext() );
+  }
+}
+
+QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
+{
+  QgsStringMap propertyMap;
+  propertyMap["distance_x"] = QString::number( mDistanceX );
+  propertyMap["distance_y"] = QString::number( mDistanceY );
+  propertyMap["displacement_x"] = QString::number( mDisplacementX );
+  propertyMap["displacement_y"] = QString::number( mDisplacementY );
+  return propertyMap;
+}
+
+QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
+{
+  QgsSymbolLayerV2* clonedLayer = QgsPointPatternFillSymbolLayer::create( properties() );
+  if( mMarkerSymbol )
+  {
+    clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
+  }
+  return clonedLayer;
+}
+
+bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
+{
+  if( !symbol )
+  {
+    return false;
+  }
+
+  if(symbol->type() == QgsSymbolV2::Marker )
+  {
+    QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( symbol );
+    delete mMarkerSymbol;
+    mMarkerSymbol = markerSymbol;
+  }
+  return true;
+}
 
 //////////////
 

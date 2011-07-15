@@ -75,8 +75,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
     virtual ~QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
 
-    QgsSymbolV2* subSymbol() { return mOutline; }
-    bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual QgsSymbolV2* subSymbol() { return mOutline; }
+    virtual bool setSubSymbol( QgsSymbolV2* symbol );
 
   protected:
     QBrush mBrush;
@@ -168,7 +168,46 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
      double mAngle;
 };
 
+class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
+{
+  public:
+    QgsPointPatternFillSymbolLayer();
+    ~QgsPointPatternFillSymbolLayer();
 
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    //getters and setters
+    double distanceX() const { return mDistanceX; }
+    void setDistanceX( double d ) { mDistanceX = d; }
+
+    double distanceY() const { return mDistanceY; }
+    void setDistanceY( double d ) { mDistanceY = d; }
+
+    double displacementX() const { return mDisplacementX; }
+    void setDisplacementX( double d ){ mDisplacementX = d; }
+
+    double displacementY() const { return mDisplacementY; }
+    void setDisplacementY( double d ){ mDisplacementY = d; }
+
+    bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual QgsSymbolV2* subSymbol() { return mMarkerSymbol; }
+
+  protected:
+    QgsMarkerSymbolV2* mMarkerSymbol;
+    double mDistanceX;
+    double mDistanceY;
+    double mDisplacementX;
+    double mDisplacementY;
+};
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 {

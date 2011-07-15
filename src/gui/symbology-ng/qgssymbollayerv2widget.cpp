@@ -994,6 +994,96 @@ void QgsLinePatternFillSymbolLayerWidget::on_mOutlinePushButton_clicked()
 
 /////////////
 
+QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( QWidget* parent ): QgsSymbolLayerV2Widget( parent ), mLayer( 0 )
+{
+  setupUi( this );
+  updateMarkerIcon();
+}
+
+void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer)
+{
+  if( !layer || layer->layerType() != "PointPatternFill" )
+  {
+    return;
+  }
+
+  mLayer = static_cast<QgsPointPatternFillSymbolLayer*>( layer );
+  mHorizontalDistanceSpinBox->setValue( mLayer->distanceX() );
+  mVerticalDistanceSpinBox->setValue( mLayer->distanceY() );
+  mHorizontalDisplacementSpinBox->setValue( mLayer->displacementX() );
+  mVerticalDisplacementSpinBox->setValue( mLayer->displacementY() );
+  updateMarkerIcon();
+}
+
+QgsSymbolLayerV2* QgsPointPatternFillSymbolLayerWidget::symbolLayer()
+{
+  return mLayer;
+}
+
+void QgsPointPatternFillSymbolLayerWidget::updateMarkerIcon()
+{
+  if ( mLayer )
+  {
+    QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( mLayer->subSymbol(), mChangeMarkerButton->iconSize() );
+    mChangeMarkerButton->setIcon( icon );
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDistanceSpinBox_valueChanged ( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setDistanceX( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDistanceSpinBox_valueChanged ( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setDistanceY( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDisplacementSpinBox_valueChanged ( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setDisplacementX( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_valueChanged ( double d )
+{
+  if( mLayer )
+  {
+    mLayer->setDisplacementY( d );
+    emit changed();
+  }
+}
+
+void QgsPointPatternFillSymbolLayerWidget::on_mChangeMarkerButton_clicked()
+{
+  if( !mLayer )
+  {
+    return;
+  }
+
+  QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), this );
+  if ( dlg.exec() == QDialog::Rejected )
+  {
+    return;
+  }
+
+  updateMarkerIcon();
+  emit changed();
+}
+
+/////////////
+
 QgsFontMarkerSymbolLayerV2Widget::QgsFontMarkerSymbolLayerV2Widget( QWidget* parent )
     : QgsSymbolLayerV2Widget( parent )
 {

@@ -288,6 +288,34 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
 
 //////////
 
+#include "ui_widget_pointpatternfill.h"
+
+class QgsPointPatternFillSymbolLayer;
+
+class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::WidgetPointPatternFill
+{
+  Q_OBJECT
+
+  public:
+    QgsPointPatternFillSymbolLayerWidget( QWidget* parent = NULL );
+    static QgsSymbolLayerV2Widget* create() { return new QgsPointPatternFillSymbolLayerWidget(); }
+
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer);
+    virtual QgsSymbolLayerV2* symbolLayer();
+
+  protected:
+    QgsPointPatternFillSymbolLayer* mLayer;
+    void updateMarkerIcon();
+
+  private slots:
+    void on_mHorizontalDistanceSpinBox_valueChanged ( double d );
+    void on_mVerticalDistanceSpinBox_valueChanged ( double d );
+    void on_mHorizontalDisplacementSpinBox_valueChanged ( double d );
+    void on_mVerticalDisplacementSpinBox_valueChanged ( double d );
+    void on_mChangeMarkerButton_clicked();
+};
+
+/////////
 
 #include "ui_widget_fontmarker.h"
 
