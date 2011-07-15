@@ -220,7 +220,9 @@ void QgsAbout::init()
 
 void QgsAbout::setVersion( QString v )
 {
-  lblVersion->setText( v );
+  txtVersion->setBackgroundRole( QPalette::NoRole );
+  txtVersion->setAutoFillBackground( true );
+  txtVersion->setHtml( v );
 }
 
 void QgsAbout::setWhatsNew( QString txt )
