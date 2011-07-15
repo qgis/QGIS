@@ -36,7 +36,11 @@
     </widget>
    </item>
    <item row="1" column="1">
-    <widget class="QDoubleSpinBox" name="mDistanceSpinBox"/>
+    <widget class="QDoubleSpinBox" name="mDistanceSpinBox">
+     <property name="maximum">
+      <double>999999999.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="2" column="0">
     <widget class="QLabel" name="mLineWidthLabel">
@@ -46,7 +50,11 @@
     </widget>
    </item>
    <item row="2" column="1">
-    <widget class="QDoubleSpinBox" name="mLineWidthSpinBox"/>
+    <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
+     <property name="maximum">
+      <double>99999999.000000000000000</double>
+     </property>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="mColorLabel">
