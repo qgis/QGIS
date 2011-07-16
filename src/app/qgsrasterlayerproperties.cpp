@@ -50,10 +50,10 @@
 #include <QList>
 #include <QSettings>
 #include <QMouseEvent>
+#include <QVector>
 
 // QWT Charting widget
 #include <qwt_plot_canvas.h>
-#include <qwt_array.h>
 #include <qwt_legend.h>
 #include <qwt_plot.h>
 #include <qwt_plot_curve.h>
@@ -1920,8 +1920,8 @@ void QgsRasterLayerProperties::refreshHistogram()
     mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
     mypCurve->setPen( QPen( myColors.at( myIteratorInt ) ) );
-    QwtArray<double> myX2Data;//qwtarray is just a wrapped qvector
-    QwtArray<double> myY2Data;//qwtarray is just a wrapped qvector
+    QVector<double> myX2Data;
+    QVector<double> myY2Data;
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
       int myBinValue = myRasterBandStats.histogramVector->at( myBin );
