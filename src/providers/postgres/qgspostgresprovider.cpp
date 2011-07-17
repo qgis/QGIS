@@ -977,7 +977,7 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::Double;
 
         QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) && re.captureCount() == 2 )
+        if ( re.exactMatch( formattedFieldType ) )
         {
           fieldSize = re.cap( 1 ).toInt();
           fieldPrec = re.cap( 2 ).toInt();
@@ -1008,7 +1008,7 @@ bool QgsPostgresProvider::loadFields()
         fieldType = QVariant::String;
 
         QRegExp re( "char\\((\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) && re.captureCount() == 1 )
+        if ( re.exactMatch( formattedFieldType ) )
         {
           fieldSize = re.cap( 1 ).toInt();
         }
