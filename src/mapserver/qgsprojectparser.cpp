@@ -1284,6 +1284,18 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     serviceElem.appendChild( wmsAbstractElem );
   }
 
+  //OnlineResource element is mandatory according to the WMS specification
+  QDomElement wmsOnlineResourceElem = propertiesElem.firstChildElement( "WMSOnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  onlineResourceElem.setAttribute( "xlink:type", "simple" );
+  if ( !wmsOnlineResourceElem.isNull() )
+  {
+    onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+  }
+
+  serviceElem.appendChild( onlineResourceElem );
+
   //Contact information
   QDomElement contactInfoElem = doc.createElement( "ContactInformation" );
 
