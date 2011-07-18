@@ -42,8 +42,8 @@ The field calculator allows you to update fields with expressions.
 <tr><td>$id</td><td>feature id</td></tr>
 <tr><td>$x</td><td>x coordinate of point</td></tr>
 <tr><td>$y</td><td>y coordinate of point</td></tr>
-<tr><td>xat(n)</td>x coordinate of nth point of a line (indizes start at 0; negative values apply to the last index)</td></tr>
-<tr><td>yat(n)</td>y coordinate of nth point of a line (indizes start at 0; negative values apply to the last index)</td></tr>
+<tr><td>xat(n)</td><td>x coordinate of nth point of a line (indizes start at 0; negative values apply to the last index)</td></tr>
+<tr><td>yat(n)</td><td>y coordinate of nth point of a line (indizes start at 0; negative values apply to the last index)</td></tr>
 <tr><td><tt>a</tt> ^ <tt>b</tt></td><td><tt>a</tt> raised to the power of <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> multiplied by <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> / <tt>b</tt></td><td><tt>a</tt> divided by <tt>b</tt></td></tr>
