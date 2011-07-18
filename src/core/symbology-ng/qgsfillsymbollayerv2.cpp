@@ -592,18 +592,20 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
 
-
-  //create render context for image
-  QgsRenderContext pointRenderContext;
-
   if( mMarkerSymbol )
   {
     QPainter p( &patternImage );
-    pointRenderContext.setPainter( &p );
-    pointRenderContext.setRasterScaleFactor( context.renderContext().rasterScaleFactor() );
-    pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() );
 
-    //mMarkerSymbol->setOutputUnit( context.outputUnit() );
+    //marker rendering needs context for drawing on patternImage
+    QgsRenderContext pointRenderContext;
+    pointRenderContext.setPainter( &p );
+    pointRenderContext.setRasterScaleFactor( 1.0 );
+    pointRenderContext.setScaleFactor( context.renderContext().scaleFactor() * context.renderContext().rasterScaleFactor() );
+    QgsMapToPixel mtp( context.renderContext().mapToPixel().mapUnitsPerPixel() / context.renderContext().rasterScaleFactor() );
+    pointRenderContext.setMapToPixel( mtp );
+    pointRenderContext.setForceVectorOutput( false );
+
+    mMarkerSymbol->setOutputUnit( context.outputUnit() );
     mMarkerSymbol->startRender( pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( 0, 0 ), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width, 0 ), pointRenderContext );
