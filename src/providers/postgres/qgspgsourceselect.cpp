@@ -47,22 +47,35 @@ email                : sherman at mrcc.com
 // code this parameter is duplicated there.
 static const int sGeomTypeSelectLimit = 100;
 
-QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mColumnTypeThread( NULL )
+QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
+    : QDialog( parent, fl )
+    , mManagerMode( managerMode )
+    , mEmbeddedMode( embeddedMode )
+    , mColumnTypeThread( NULL )
 {
   setupUi( this );
 
+  if ( mEmbeddedMode )
+  {
+    buttonBox->button( QDialogButtonBox::Close )->hide();
+  }
+
   mAddButton = new QPushButton( tr( "&Add" ) );
-  buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
-  connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+  mAddButton->setEnabled( false );
 
   mBuildQueryButton = new QPushButton( tr( "&Build query" ) );
   mBuildQueryButton->setToolTip( tr( "Build query" ) );
-  buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
-  connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
   mBuildQueryButton->setDisabled( true );
 
-  mAddButton->setEnabled( false );
+  if ( !mManagerMode )
+  {
+    buttonBox->addButton( mAddButton, QDialogButtonBox::ActionRole );
+    connect( mAddButton, SIGNAL( clicked() ), this, SLOT( addTables() ) );
+
+    buttonBox->addButton( mBuildQueryButton, QDialogButtonBox::ActionRole );
+    connect( mBuildQueryButton, SIGNAL( clicked() ), this, SLOT( buildQuery() ) );
+  }
+
   populateConnectionList();
 
   mSearchModeComboBox->addItem( tr( "Wildcard" ) );
@@ -124,8 +137,8 @@ void QgsPgSourceSelect::on_btnNew_clicked()
   QgsPgNewConnection *nc = new QgsPgNewConnection( this );
   if ( nc->exec() )
   {
-    emit connectionsChanged();
     populateConnectionList();
+    emit connectionsChanged();
   }
   delete nc;
 }
@@ -155,8 +168,8 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/save" );
   settings.remove( key );
 
-  emit connectionsChanged();
   populateConnectionList();
+  emit connectionsChanged();
 }
 
 void QgsPgSourceSelect::on_btnSave_clicked()
@@ -185,8 +198,8 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
   QgsPgNewConnection *nc = new QgsPgNewConnection( this, cmbConnections->currentText() );
   if ( nc->exec() )
   {
-    emit connectionsChanged();
     populateConnectionList();
+    emit connectionsChanged();
   }
   delete nc;
 }
@@ -441,10 +454,6 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
     bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
-    QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
-
-    m_connInfo = uri.connectionInfo();
-
     QVector<QgsPostgresLayerProperty> layers;
     if ( pgProvider->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
     {
@@ -553,7 +562,7 @@ void QgsPgSourceSelect::addSearchGeometryColumn( const QString &schema, const QS
   if ( mColumnTypeThread == NULL )
   {
     mColumnTypeThread = new QgsGeomColumnTypeThread();
-    mColumnTypeThread->setConnInfo( m_privConnInfo, mUseEstimatedMetadata );
+    mColumnTypeThread->setConnInfo( m_connInfo, mUseEstimatedMetadata );
   }
   mColumnTypeThread->addGeometryColumn( schema, table, column );
 }
@@ -611,6 +620,29 @@ void QgsGeomColumnTypeThread::getLayerTypes()
   mStopped = false;
 
   PGconn *pd = PQconnectdb( mConnInfo.toLocal8Bit() );
+  // check the connection status
+  if ( PQstatus( pd ) != CONNECTION_OK )
+  {
+    PQfinish( pd );
+
+    QgsDataSourceURI uri( mConnInfo );
+    QString username = uri.username();
+    QString password = uri.password();
+
+    // use cached credentials
+    bool ok = QgsCredentials::instance()->get( mConnInfo, username, password, QString::fromUtf8( PQerrorMessage( pd ) ) );
+    if ( !ok )
+      return;
+
+    if ( !username.isEmpty() )
+      uri.setUsername( username );
+
+    if ( !password.isEmpty() )
+      uri.setPassword( password );
+
+    pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+  }
+
   if ( PQstatus( pd ) == CONNECTION_OK )
   {
     PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );

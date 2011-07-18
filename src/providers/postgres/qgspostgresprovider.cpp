@@ -4100,8 +4100,8 @@ QVector<QgsDataItem*>QgsPGRootItem::createChildren()
 
 QWidget * QgsPGRootItem::paramWidget()
 {
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( 0, 0 );
-  //connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  QgsPgSourceSelect *select = new QgsPgSourceSelect( 0, 0, true, true );
+  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }
 void QgsPGRootItem::connectionsChanged()

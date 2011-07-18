@@ -106,7 +106,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
 
     //! Constructor
-    QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
@@ -160,6 +160,12 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
 
+    //! Connections manager mode
+    bool mManagerMode;
+
+    //! Embedded mode, without 'Close'
+    bool mEmbeddedMode;
+
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column );
 
@@ -174,7 +180,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
     QString m_connInfo;
-    QString m_privConnInfo;
     QStringList m_selectedTables;
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
