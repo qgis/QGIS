@@ -272,9 +272,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       titleElem.appendChild( titleText );
       layerElem.appendChild( titleElem );
 
-      QDomElement abstractElem = doc.createElement( "Abstract" );
-      layerElem.appendChild( abstractElem );
-
       //CRS
       QStringList crsList = createCRSListForLayer( currentLayer );
       appendCRSElementsToLayer( layerElem, doc, crsList );
@@ -306,13 +303,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       QgsDebugMsg( "unexpected child element" );
       continue;
     }
-
-#if 0
-    QString buf;
-    QTextStream s( &buf );
-    layerElem.save( s, 0 );
-    QgsDebugMsg( QString( "adding layer: %1" ).arg( buf ) );
-#endif
 
     parentElem.appendChild( layerElem );
   }
