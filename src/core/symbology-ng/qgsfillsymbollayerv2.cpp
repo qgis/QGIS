@@ -586,8 +586,9 @@ QString QgsPointPatternFillSymbolLayer::layerType() const
 
 void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
-  double width = context.outputPixelSize( mDistanceX );
-  double height = context.outputPixelSize( mDistanceY );
+  //render 3 rows and columns in one go to easily incorporate displacement
+  double width = context.outputPixelSize( mDistanceX ) * 2.0;
+  double height = context.outputPixelSize( mDistanceY ) * 2.0;
 
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
@@ -607,10 +608,22 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
 
     mMarkerSymbol->setOutputUnit( context.outputUnit() );
     mMarkerSymbol->startRender( pointRenderContext );
+
+    //render corner points
     mMarkerSymbol->renderPoint( QPointF( 0, 0 ), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width, 0 ), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( 0, height ), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width, height ), pointRenderContext );
+
+    //render displaced points
+    double displacementPixelX = context.outputPixelSize( mDisplacementX );
+    double displacementPixelY = context.outputPixelSize( mDisplacementY );
+    mMarkerSymbol->renderPoint( QPointF( width / 2.0, -displacementPixelY ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( displacementPixelX, height / 2.0 ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( width / 2.0 + displacementPixelX, height / 2.0 - displacementPixelY ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( width + displacementPixelX, height / 2.0 ), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( width / 2.0, height - displacementPixelY), pointRenderContext );
+
     mMarkerSymbol->stopRender( pointRenderContext );
   }
 
