@@ -17,9 +17,6 @@
    <iconset>
     <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
   </property>
-  <property name="toolTip">
-   <string>Save connections to file</string>
-  </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
   </property>
@@ -186,6 +183,9 @@
        </item>
        <item row="1" column="9">
         <widget class="QPushButton" name="btnSave">
+         <property name="toolTip">
+          <string>Save connections to file</string>
+         </property>
          <property name="text">
           <string>Save</string>
          </property>
