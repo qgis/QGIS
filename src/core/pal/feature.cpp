@@ -40,7 +40,6 @@
 
 #include <qglobal.h>
 
-
 #include <cmath>
 #include <cstring>
 #include <cfloat>

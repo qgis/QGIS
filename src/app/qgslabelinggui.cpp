@@ -145,6 +145,20 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   btnTextColor->setColor( lyr.textColor );
   btnBufferColor->setColor( lyr.bufferColor );
 
+  bool formattedNumbers = lyr.formatNumbers;
+  bool plusSign = lyr.plusSign;
+
+  chkFormattedNumbers->setChecked( formattedNumbers );
+  if ( formattedNumbers )
+  {
+    spinDecimals->setValue( lyr.decimals );
+  }
+  if ( plusSign )
+  {
+    chkPlusSign->setChecked( plusSign );
+  }
+
+
   if ( lyr.fontSizeInMapUnits )
   {
     mFontSizeUnitComboBox->setCurrentIndex( 1 );
@@ -163,6 +177,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
 
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkScaleBasedVisibility, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkFormattedNumbers, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
 
   // setup connection to changes in the placement
   QRadioButton* placementRadios[] =
@@ -268,6 +283,18 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   else
   {
     lyr.bufferSize = 0;
+  }
+  if ( chkFormattedNumbers->isChecked() )
+  {
+    lyr.formatNumbers = true;
+    lyr.decimals = spinDecimals->value();
+    lyr.plusSign = chkPlusSign->isChecked();
+  }
+  else
+  {
+    lyr.formatNumbers = false;
+    lyr.decimals = spinDecimals->value();
+    lyr.plusSign = true;
   }
   if ( chkAddDirectionSymbol->isChecked() )
   {
@@ -451,7 +478,7 @@ void QgsLabelingGui::showEngineConfigDialog()
 
 void QgsLabelingGui::updateUi()
 {
-  // enable/disable scale-based, buffer
+  // enable/disable scale-based, buffer, decimals
   bool buf = chkBuffer->isChecked();
   spinBufferSize->setEnabled( buf );
   btnBufferColor->setEnabled( buf );
@@ -459,6 +486,8 @@ void QgsLabelingGui::updateUi()
   bool scale = chkScaleBasedVisibility->isChecked();
   spinScaleMin->setEnabled( scale );
   spinScaleMax->setEnabled( scale );
+
+  spinDecimals->setEnabled( chkFormattedNumbers->isChecked() );
 }
 
 void QgsLabelingGui::changeBufferColor()

@@ -145,6 +145,9 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   scaleMax = 0;
   bufferSize = 1;
   bufferColor = Qt::white;
+  formatNumbers = false;
+  decimals = 3;
+  plusSign = false;
   labelPerPart = false;
   mergeLines = false;
   multiLineLabels = false;
@@ -172,6 +175,9 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   scaleMax = s.scaleMax;
   bufferSize = s.bufferSize;
   bufferColor = s.bufferColor;
+  formatNumbers = s.formatNumbers;
+  decimals = s.decimals;
+  plusSign = s.plusSign;
   labelPerPart = s.labelPerPart;
   mergeLines = s.mergeLines;
   multiLineLabels = s.multiLineLabels;
@@ -303,6 +309,9 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   scaleMax = layer->customProperty( "labeling/scaleMax" ).toInt();
   bufferSize = layer->customProperty( "labeling/bufferSize" ).toDouble();
   bufferColor = _readColor( layer, "labeling/bufferColor" );
+  formatNumbers = layer->customProperty( "labeling/formatNumbers" ).toBool();
+  decimals = layer->customProperty( "labeling/decimals" ).toInt();
+  plusSign = layer->customProperty( "labeling/plussign" ).toInt();
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
   multiLineLabels = layer->customProperty( "labeling/multiLineLabels" ).toBool();
@@ -338,6 +347,9 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/scaleMax", scaleMax );
   layer->setCustomProperty( "labeling/bufferSize", bufferSize );
   _writeColor( layer, "labeling/bufferColor", bufferColor );
+  layer->setCustomProperty( "labeling/formatNumbers", formatNumbers );
+  layer->setCustomProperty( "labeling/decimals", decimals );
+  layer->setCustomProperty( "labeling/plussign", plusSign );
   layer->setCustomProperty( "labeling/labelPerPart", labelPerPart );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
   layer->setCustomProperty( "labeling/multiLineLabels", multiLineLabels );
@@ -437,7 +449,25 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 
 void QgsPalLayerSettings::registerFeature( QgsFeature& f, const QgsRenderContext& context )
 {
-  QString labelText = f.attributeMap()[fieldIndex].toString();
+
+  QString labelText;
+  if ( formatNumbers == true
+       && ( f.attributeMap()[fieldIndex].type() == QVariant::Int || f.attributeMap()[fieldIndex].type() == QVariant::Double ) )
+  {
+    QString numberFormat;
+    double d = f.attributeMap()[fieldIndex].toDouble();
+    if ( d > 0 && plusSign == true )
+    {
+      numberFormat.append( "+" );
+    }
+    numberFormat.append( "%1" );
+    labelText = numberFormat.arg( d, 0, 'f', decimals );
+  }
+  else
+  {
+    labelText = f.attributeMap()[fieldIndex].toString();
+  }
+
   double labelX, labelY; // will receive label size
   QFont labelFont = textFont;
 
