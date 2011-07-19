@@ -143,7 +143,7 @@ class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     //helper functions
     void calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius, double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts ) const;
     void drawCircle( double radiusPainterUnits, QgsSymbolV2RenderContext& context, const QPointF& centerPoint, int nSymbols );
-    void drawSymbols( QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
+    void drawSymbols( QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected = false );
     void drawLabels( const QPointF& centerPoint, QgsSymbolV2RenderContext& context, const QList<QPointF>& labelShifts, const QStringList& labelList );
 };
 

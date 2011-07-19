@@ -1622,6 +1622,33 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
       }
       mMapRenderer->setExtent( filterExtent );
     }
+
+    //No BBOX parameter in request. We use the union of the filtered layer
+    //to provide the functionality of zooming to selected records via (enhanced) WMS.
+    if( mMapRenderer && mMapRenderer->extent().isEmpty() )
+    {
+      QgsRectangle filterExtent;
+      QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+      for(; filterIt != filterMap.constEnd(); ++filterIt )
+      {
+        QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
+        if( !mapLayer )
+        {
+          continue;
+        }
+
+        QgsRectangle layerExtent = mapLayer->extent();
+        if( filterExtent.isEmpty() )
+        {
+          filterExtent = layerExtent;
+        }
+        else
+        {
+          filterExtent.combineExtentWith( &layerExtent );
+        }
+      }
+      mMapRenderer->setExtent( filterExtent );
+    }
   }
   return filterMap;
 }

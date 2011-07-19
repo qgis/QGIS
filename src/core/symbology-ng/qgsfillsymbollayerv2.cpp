@@ -268,13 +268,13 @@ void QgsSVGFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPolyg
   _renderPolygon( p, points, rings );
   if ( mOutline )
   {
-    mOutline->renderPolyline( points, context.renderContext(), -1, selectFillBorder && context.selected() );
+    mOutline->renderPolyline( points, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
     if ( rings )
     {
       QList<QPolygonF>::const_iterator ringIt = rings->constBegin();
       for ( ; ringIt != rings->constEnd(); ++ringIt )
       {
-        mOutline->renderPolyline( *ringIt, context.renderContext(), -1, selectFillBorder && context.selected() );
+        mOutline->renderPolyline( *ringIt, context.feature(), context.renderContext(), -1, selectFillBorder && context.selected() );
       }
     }
   }
@@ -416,7 +416,7 @@ void QgsCentroidFillSymbolLayerV2::renderPolygon( const QPolygonF& points, QList
   cx /= sum;
   cy /= sum;
 
-  mMarker->renderPoint( QPointF( cx, cy ), context.renderContext(), -1, context.selected() );
+  mMarker->renderPoint( QPointF( cx, cy ), context.feature(), context.renderContext(), -1, context.selected() );
 }
 
 QgsStringMap QgsCentroidFillSymbolLayerV2::properties() const

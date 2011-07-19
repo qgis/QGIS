@@ -38,6 +38,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
+  symbology-ng/qgsellipsesymbollayerv2.cpp
 
   qgis.cpp
   qgsapplication.cpp

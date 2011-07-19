@@ -316,7 +316,7 @@ QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( const QgsRuleBasedRender
     spinMaxScale->setValue( rule.scaleMaxDenom() );
   }
 
-  QgsSymbolV2SelectorDialog* symbolSel = new QgsSymbolV2SelectorDialog( mRule.symbol(), style, this, true );
+  QgsSymbolV2SelectorDialog* symbolSel = new QgsSymbolV2SelectorDialog( mRule.symbol(), style, mLayer, this, true );
   QVBoxLayout* l = new QVBoxLayout;
   l->addWidget( symbolSel );
   groupSymbol->setLayout( l );

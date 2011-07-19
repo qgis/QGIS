@@ -122,7 +122,7 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mCategorizedSymbol, mStyle, this );
+  QgsSymbolV2SelectorDialog dlg( mCategorizedSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
     return;
 
@@ -207,7 +207,7 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
   int catIdx = mRenderer->categoryIndexForValue( k );
   QgsSymbolV2* newSymbol = mRenderer->categories()[catIdx].symbol()->clone();
 
-  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, this );
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
   {
     delete newSymbol;

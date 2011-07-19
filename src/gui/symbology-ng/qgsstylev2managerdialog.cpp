@@ -238,7 +238,7 @@ bool QgsStyleV2ManagerDialog::addSymbol()
   }
 
   // get symbol design
-  QgsSymbolV2PropertiesDialog dlg( symbol, this );
+  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
@@ -384,7 +384,7 @@ bool QgsStyleV2ManagerDialog::editSymbol()
   QgsSymbolV2* symbol = mStyle->symbol( symbolName );
 
   // let the user edit the symbol and update list when done
-  QgsSymbolV2PropertiesDialog dlg( symbol, this );
+  QgsSymbolV2PropertiesDialog dlg( symbol, 0, this );
   if ( dlg.exec() == 0 )
   {
     delete symbol;
