@@ -62,7 +62,7 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
 
 QString QgsRuleBasedRendererV2::Rule::dump() const
 {
-  return QString( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5" )
+  return QString( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5\n" )
          .arg( mLabel ).arg( mScaleMinDenom ).arg( mScaleMaxDenom )
          .arg( mFilterExp ).arg( mSymbol->dump() );
 
@@ -408,4 +408,14 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2::refineRuleScales( Qg
   // last rule
   rules.append( Rule( initialRule.symbol()->clone(), oldScale, maxDenom, initialRule.filterExpression(), initialRule.label(), initialRule.description() ) );
   return rules;
+}
+
+QString QgsRuleBasedRendererV2::dump()
+{
+  QString msg( "Rule-based renderer:\n" );
+  foreach( const Rule& rule, mRules )
+  {
+    msg += rule.dump();
+  }
+  return msg;
 }
