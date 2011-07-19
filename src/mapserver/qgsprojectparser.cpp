@@ -1304,29 +1304,29 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
 
   //Contact person
   QDomElement contactPersonElem = propertiesElem.firstChildElement( "WMSContactPerson" );
+  QString contactPersonString;
   if ( !contactPersonElem.isNull() )
   {
-    QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
-    QDomText contactPersonText = doc.createTextNode( contactPersonElem.text() );
-    wmsContactPersonElem.appendChild( contactPersonText );
-    contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+    contactPersonString = contactPersonElem.text();
   }
+  QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
+  QDomText contactPersonText = doc.createTextNode( contactPersonString );
+  wmsContactPersonElem.appendChild( contactPersonText );
+  contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+
 
   //Contact organisation
-  QDomElement contactOrganisationElem = propertiesElem.firstChildElement( "WMSContactOrganisation" );
-  if ( !contactOrganisationElem.isNull() )
+  QDomElement contactOrganizationElem = propertiesElem.firstChildElement( "WMSContactOrganization" );
+  QString contactOrganizationString;
+  if ( !contactOrganizationElem.isNull() )
   {
-    QDomElement wmsContactOrganisationElem = doc.createElement( "ContactOrganization" );
-    QDomText contactOrganisationText = doc.createTextNode( contactOrganisationElem.text() );
-    wmsContactOrganisationElem.appendChild( contactOrganisationText );
-    contactPersonPrimaryElem.appendChild( wmsContactOrganisationElem );
+    contactOrganizationString = contactOrganizationElem.text();
   }
-
+  QDomElement wmsContactOrganizationElem = doc.createElement( "ContactOrganization" );
+  QDomText contactOrganizationText = doc.createTextNode( contactOrganizationString );
+  wmsContactOrganizationElem.appendChild( contactOrganizationText );
+  contactPersonPrimaryElem.appendChild( wmsContactOrganizationElem );
   contactInfoElem.appendChild( contactPersonPrimaryElem );
-
-  //Contact address
-  //QDomElement contactAddressElem = doc.createElement( "ContactAddress" );
-  //contactInfoElem.appendChild( contactAddressElem );
 
   //phone
   QDomElement phoneElem = propertiesElem.firstChildElement( "WMSContactPhone" );
