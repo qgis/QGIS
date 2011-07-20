@@ -33,6 +33,7 @@ The field calculator allows you to update fields with expressions.
 <tr><td>length(<tt>a</tt>)</td><td>length of string <tt>a</tt></td></tr>
 <tr><td>atan2(y,x)</td><td>arcustangens of y/x using the signs of the two arguments to determine the quadrant of the result.</td></tr>
 <tr><td>replace(<tt>a</tt>,<i>replacethis</i>,<i>withthat</i>)</td><td>replace <i>replacethis</i> with <i>withthat</i> in string <tt>a</tt></td></td>
+<tr><td>regexp_replace(<tt>a</tt>,<i>replacethis</i>,<i>withthat</i>)</td><td>replace the regular expression <i>replacethis</i> with <i>withthat</i> in string <tt>a</tt></td></td>
 <tr><td>substr(<tt>a</tt>,from,len)</td><td>len characters of string <tt>a</tt> starting from from (first character index is 1)</td></td>
 <tr><td><tt>a</tt> || <tt>b</tt></td><td>concatenate strings <tt>a</tt> and <tt>b</tt></td></tr>
 <tr><td>$rownum</td><td>number current row</td></tr>

@@ -54,7 +54,8 @@ Der Feldrechner erlaubt Ihnen Felder mit Ausdr√ºcken zu setzen.
 <tr><td>upper(<tt>a</tt>)</td><td>Zeichenkette <tt>a</tt> in Gro&szlig;buchstaben umwandeln</td></tr>
 <tr><td>length(<tt>a</tt>)</td><td>L&auml;nge der Zeichenkette <tt>a</tt></td></tr>
 <tr><td>atan2(y,x)</td><td>Arcustangens von y/x mit Vorzeichen der beiden Argumenten, um den Quadranten des Ergebnisses zu bestimmen.</td></tr>
-<tr><td>replace(<tt>a</tt>,<i>ersetzedieses</i>,<i>durchjenes</i>)</td><td>In der Zeichenkette <tt>a</tt> <i>ersetzedieses</i> durch <i>durchjenes</i> ersetzen.</td></td>
+<tr><td>replace(<tt>a</tt>,<i>streiche</i>,<i>setze</i>)</td><td>In der Zeichenkette <tt>a</tt> <i>streiche</i> durch <i>setze</i> ersetzen.</td></td>
+<tr><td>regexp_replace(<tt>a</tt>,<i>streiche</i>,<i>setze</i>)</td><td>In der Zeichenkette <tt>a</tt> den regul‰ren Ausdruck <i>streiche</i> durch <i>setze</i> ersetzen.</td></td>
 <tr><td>substr(<tt>a</tt>,<i>von</i>,<i>l&auml;nge</i>)</td><td><i>l&uuml;nge</i> Zeichen der Zeichenkette <tt>a</tt> ab Stelle <i>von</i> (Das erste Zeichen hat den Index 1)</td></td>
 <tr><td><tt>a</tt> || <tt>b</tt></td><td>Zeichenkette <tt>a</tt> and <tt>b</tt> zusammenziehen</td></tr>
 <tr><td>$rownum</td><td>Aktuelle Zeilennummer</td></tr>
