@@ -344,7 +344,7 @@ const QString QgsApplication::qgisUserDbFilePath()
 */
 const QString QgsApplication::splashPath()
 {
-  return mPkgDataPath + QString( "/images/splash/" );
+  return QString( ":/images/splash/" );
 }
 
 /*!
