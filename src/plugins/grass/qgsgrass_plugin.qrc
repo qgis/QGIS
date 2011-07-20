@@ -43,7 +43,6 @@
         <file alias="mapcalc_save_as.png">themes/default/mapcalc_save_as.png</file>
         <file alias="mapcalc_save.png">themes/default/mapcalc_save.png</file>
         <file alias="mapcalc_select.png">themes/default/mapcalc_select.png</file>
-        <file alias="world.png">themes/default/world.png</file>
     </qresource>
     <qresource prefix="/images/themes/classic/grass">
         <file alias="grass_add_map.png">themes/classic/grass_add_map.png</file>
@@ -89,7 +88,6 @@
         <file alias="mapcalc_save_as.png">themes/classic/mapcalc_save_as.png</file>
         <file alias="mapcalc_save.png">themes/classic/mapcalc_save.png</file>
         <file alias="mapcalc_select.png">themes/classic/mapcalc_select.png</file>
-        <file alias="world.png">themes/classic/world.png</file>
     </qresource>
     <qresource prefix="/images/themes/gis/grass">
         <file alias="grass_add_raster.png">themes/gis/grass_add_raster.png</file>
@@ -114,5 +112,8 @@
         <file alias="grass_new_line.png">themes/gis/grass_new_line.png</file>
         <file alias="grass_new_point.png">themes/gis/grass_new_point.png</file>
         <file alias="grass_split_line.png">themes/gis/grass_split_line.png</file>
+    </qresource>
+    <qresource prefix="/images/grass">
+        <file alias="world.png">images/world.png</file>
     </qresource>
 </RCC>

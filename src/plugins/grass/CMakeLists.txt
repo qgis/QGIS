@@ -174,7 +174,7 @@ INSTALL(TARGETS grassplugin
 
 
 FILE (GLOB GMLS *.gml)
-INSTALL (FILES ${GMLS} images/world.png
+INSTALL (FILES ${GMLS}
          DESTINATION ${QGIS_DATA_DIR}/grass)
 
 INSTALL (FILES themes/gis/grass_arrow.svg themes/gis/grass_plus.svg themes/gis/grass_arrow.png themes/gis/grass_plus.png
