@@ -110,6 +110,14 @@ QDomDocument QgsWMSServer::getCapabilities()
   QString requestUrl = getenv( "REQUEST_URI" );
   QUrl mapUrl( requestUrl );
   mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
+  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  {
+    mapUrl.setScheme( "https" );
+  }
+  else
+  {
+    mapUrl.setScheme( "http" );
+  }
   mapUrl.removeQueryItem( "REQUEST" );
   mapUrl.removeQueryItem( "VERSION" );
   mapUrl.removeQueryItem( "SERVICE" );
@@ -1625,20 +1633,20 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
 
     //No BBOX parameter in request. We use the union of the filtered layer
     //to provide the functionality of zooming to selected records via (enhanced) WMS.
-    if( mMapRenderer && mMapRenderer->extent().isEmpty() )
+    if ( mMapRenderer && mMapRenderer->extent().isEmpty() )
     {
       QgsRectangle filterExtent;
       QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
-      for(; filterIt != filterMap.constEnd(); ++filterIt )
+      for ( ; filterIt != filterMap.constEnd(); ++filterIt )
       {
         QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
-        if( !mapLayer )
+        if ( !mapLayer )
         {
           continue;
         }
 
         QgsRectangle layerExtent = mapLayer->extent();
-        if( filterExtent.isEmpty() )
+        if ( filterExtent.isEmpty() )
         {
           filterExtent = layerExtent;
         }
