@@ -118,9 +118,28 @@ QDomDocument QgsWMSServer::getCapabilities()
   {
     mapUrl.setScheme( "http" );
   }
-  mapUrl.removeQueryItem( "REQUEST" );
-  mapUrl.removeQueryItem( "VERSION" );
-  mapUrl.removeQueryItem( "SERVICE" );
+
+  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+  for(; queryIt != queryItems.constEnd(); ++queryIt )
+  {
+    if( queryIt->first.compare("REQUEST", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if( queryIt->first.compare("VERSION", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if( queryIt->first.compare("SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if( queryIt->first.compare("_DC", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+  }
   hrefString = mapUrl.toString();
 
 
