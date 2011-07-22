@@ -970,7 +970,7 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Double;
         fieldSize = -1;
-        fieldPrec = 0;
+        fieldPrec = -1;
       }
       else if ( fieldTypeName == "numeric" )
       {
@@ -997,6 +997,7 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "money" ||
+                fieldTypeName == "ltree" ||
                 fieldTypeName.startsWith( "time" ) ||
                 fieldTypeName.startsWith( "date" ) )
       {
