@@ -185,8 +185,8 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       QMap< QString, QString > map;
       if ( layer )
       {
-        int ki = layer->fieldNameIndex( data.mKey );
-        int vi = layer->fieldNameIndex( data.mValue );
+        int ki = layer->fieldNameIndex( data.mOrderByValue ? data.mValue : data.mKey );
+        int vi = layer->fieldNameIndex( data.mOrderByValue ? data.mKey : data.mValue );
 
         if ( data.mAllowNull )
           map.insert( nullValue, tr( "(no selection)" ) );
@@ -207,7 +207,10 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
       {
         for ( QMap< QString, QString >::const_iterator it = map.begin(); it != map.end(); it++ )
         {
-          cb->addItem( it.value(), it.key() );
+          if ( data.mOrderByValue )
+            cb->addItem( it.key(), it.value() );
+          else
+            cb->addItem( it.value(), it.key() );
         }
 
         myWidget = cb;
