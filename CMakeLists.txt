@@ -286,6 +286,7 @@ ELSE (WIN32)
     #   2  non-system libraries, "standard"
     #   3  non-system frameworks, "standalone"
     SET (QGIS_MACAPP_BUNDLE 1 CACHE STRING "What to bundle into app package")
+    SET (QGIS_MACAPP_BUNDLE_USER "" CACHE STRING "Path to user bundling script")
     SET (QGIS_MACAPP_INSTALL_DEV FALSE CACHE BOOL "Install developer frameworks")
     SET (QGIS_MACAPP_DEV_PREFIX "/Library/Frameworks" CACHE STRING "Path to install developer frameworks")
     # if we have @loader_path, >=OSX 10.5 (darwin 9+)
