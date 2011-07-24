@@ -125,7 +125,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
                      .arg( viewExtent.xMaximum() ).arg( viewExtent.yMaximum() )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   QProcess process( this );
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {
@@ -177,7 +177,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
 
   arguments.append( "format=value" );
   QProcess process( this );
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {
@@ -223,7 +223,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   arguments.append( "format=value" );
   QProcess process( this );
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {
@@ -558,7 +558,7 @@ void QgsGrassRasterValue::start( QString gisdbase, QString location,
   mMapset = mapset;
   mMapName = map;
   // TODO: catch exceptions
-  QString module = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.g.info";
+  QString module = QgsApplication::libexecPath() + "grass/modules/qgis.g.info";
   QStringList arguments;
 
   arguments.append( "info=query" );

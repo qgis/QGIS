@@ -399,6 +399,16 @@ const QString QgsApplication::defaultStyleV2Path()
   return mPkgDataPath + QString( "/resources/symbology-ng-style.xml" );
 }
 
+const QString QgsApplication::libraryPath()
+{
+  return QgsApplication::prefixPath() + "/" + QGIS_LIB_SUBDIR + "/";
+}
+
+const QString QgsApplication::libexecPath()
+{
+  return QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR + "/";
+}
+
 QgsApplication::endian_t QgsApplication::endian()
 {
   return ( htonl( 1 ) == 1 ) ? XDR : NDR ;

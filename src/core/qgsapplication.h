@@ -144,6 +144,14 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
     static const QString defaultStyleV2Path();
 
+    //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
+    //! @note Added in 2.0
+    static const QString libraryPath();
+
+    //! Returns the path with utility executables (help viewer, crssync, ...)
+    //! @note Added in 2.0
+    static const QString libexecPath();
+
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
 
