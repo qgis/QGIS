@@ -114,7 +114,7 @@ ENDIF (NOT BISON_EXECUTABLE)
 #############################################################
 # search for dependencies
 
-IF(NOT WIN32)
+IF(NOT WIN32 AND NOT ANDROID)
   INCLUDE(CheckFunctionExists)
   CHECK_FUNCTION_EXISTS(openpty OPENPTY_IN_LIBC)
   IF(NOT OPENPTY_IN_LIBC)
@@ -127,7 +127,7 @@ IF(NOT WIN32)
       MESSAGE (SEND_ERROR "openpty not found!")
     ENDIF(NEED_LIBUTIL)
   ENDIF(NOT OPENPTY_IN_LIBC)
-ENDIF(NOT WIN32)
+ENDIF(NOT WIN32 AND NOT ANDROID)
 
 # required
 FIND_PACKAGE(Proj)
