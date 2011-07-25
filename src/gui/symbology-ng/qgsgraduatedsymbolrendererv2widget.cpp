@@ -192,7 +192,7 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, this );
+  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
     return;
 
@@ -275,7 +275,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
 {
   QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
 
-  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, this );
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
   {
     delete newSymbol;

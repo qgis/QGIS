@@ -38,10 +38,12 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
+  symbology-ng/qgsellipsesymbollayerv2.cpp
 
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgsbrowsermodel.cpp
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
@@ -220,6 +222,7 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h

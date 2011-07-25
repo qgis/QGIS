@@ -70,7 +70,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
   mPreviousPage = -1;
   mRegionModified = false;
 
-  QString mapPath = QgsApplication::pkgDataPath() + "/grass/world.png";
+  QString mapPath = ":/images/grass/world.png";
   QgsDebugMsg( QString( "mapPath = %1" ).arg( mapPath ) );
 
   //mPixmap = QPixmap( *(mRegionMap->pixmap()) );

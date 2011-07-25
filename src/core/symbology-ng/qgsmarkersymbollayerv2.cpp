@@ -472,21 +472,21 @@ QgsSymbolLayerV2* QgsSvgMarkerSymbolLayerV2::create( const QgsStringMap& props )
   QgsSvgMarkerSymbolLayerV2* m = new QgsSvgMarkerSymbolLayerV2( name, size, angle );
 
   //we only check the svg default parameters if necessary, since it could be expensive
-  if( !props.contains("fill") && !props.contains("outline") && !props.contains("outline-width") )
+  if ( !props.contains( "fill" ) && !props.contains( "outline" ) && !props.contains( "outline-width" ) )
   {
     QColor fillColor, outlineColor;
     double outlineWidth;
     bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
     QgsSvgCache::instance()->containsParams( name, hasFillParam, fillColor, hasOutlineParam, outlineColor, hasOutlineWidthParam, outlineWidth );
-    if( hasFillParam )
+    if ( hasFillParam )
     {
       m->setFillColor( fillColor );
     }
-    if( hasOutlineParam )
+    if ( hasOutlineParam )
     {
       m->setOutlineColor( outlineColor );
     }
-    if( hasOutlineWidthParam )
+    if ( hasOutlineWidthParam )
     {
       m->setOutlineWidth( outlineWidth );
     }
@@ -510,15 +510,15 @@ void QgsSvgMarkerSymbolLayerV2::setPath( QString path )
   double outlineWidth;
   bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
   QgsSvgCache::instance()->containsParams( path, hasFillParam, fillColor, hasOutlineParam, outlineColor, hasOutlineWidthParam, outlineWidth );
-  if( hasFillParam )
+  if ( hasFillParam )
   {
     setFillColor( fillColor );
   }
-  if( hasOutlineParam )
+  if ( hasOutlineParam )
   {
     setOutlineColor( outlineColor );
   }
-  if( hasOutlineWidthParam )
+  if ( hasOutlineWidthParam )
   {
     setOutlineWidth( outlineWidth );
   }
@@ -555,7 +555,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     outputOffset = _rotatedOffset( outputOffset, mAngle );
   p->translate( point + outputOffset );
 
-  int size = (int)( context.outputLineWidth( mSize ) );
+  int size = ( int )( context.outputLineWidth( mSize ) );
 
   if ( mAngle != 0 )
     p->rotate( mAngle );
@@ -565,7 +565,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                         context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
     //consider transparency
-    if( !doubleNear( context.alpha(), 1.0 ) )
+    if ( !doubleNear( context.alpha(), 1.0 ) )
     {
       QImage transparentImage = img.copy();
       QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
@@ -584,7 +584,7 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     p->drawPicture( 0, 0, pct );
   }
 
-  if( context.selected() )
+  if ( context.selected() )
   {
     QPen pen( context.selectionColor() );
     pen.setWidth( context.outputLineWidth( 1.0 ) );

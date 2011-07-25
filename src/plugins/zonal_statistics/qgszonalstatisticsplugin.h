@@ -26,15 +26,15 @@ class QAction;
 
 class QgsZonalStatisticsPlugin: public QObject, public QgisPlugin
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
-  QgsZonalStatisticsPlugin( QgisInterface* iface );
-  ~QgsZonalStatisticsPlugin();
+    QgsZonalStatisticsPlugin( QgisInterface* iface );
+    ~QgsZonalStatisticsPlugin();
 
-  /**initialize connection to GUI*/
-  void initGui();
-  /**Unload the plugin and cleanup the GUI*/
-  void unload();
+    /**initialize connection to GUI*/
+    void initGui();
+    /**Unload the plugin and cleanup the GUI*/
+    void unload();
 
   private slots:
     /**Select input file, output file, format and analysis method*/

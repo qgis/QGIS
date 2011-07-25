@@ -76,7 +76,7 @@ ENDIF(NOT OPENTHREADS_INCLUDE_DIR)
 
 
 FIND_LIBRARY(OPENTHREADS_LIBRARY 
-    NAMES OpenThreads OpenThreadsWin32 
+    NAMES OpenThreads OpenThreadsWin32
     PATHS
     $ENV{OPENTHREADS_LIBRARY_DIR}
     $ENV{OPENTHREADS_DIR}/lib64
@@ -99,7 +99,7 @@ ENDIF(NOT OPENTHREADS_LIBRARY)
 
 IF(NOT OPENTHREADS_LIBRARY)
     FIND_LIBRARY(OPENTHREADS_LIBRARY 
-        NAMES OpenThreads OpenThreadsWin32 
+        NAMES OpenThreads OpenThreadsWin32
         PATHS
         ~/Library/Frameworks
         /Library/Frameworks

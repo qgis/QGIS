@@ -279,7 +279,7 @@ QgsSvgCacheEntry* QgsSvgCache::cacheEntry( const QString& file, int size, const 
   else
   {
     takeEntryFromList( currentEntry );
-    if( !mMostRecentEntry ) //list is empty
+    if ( !mMostRecentEntry ) //list is empty
     {
       mMostRecentEntry = currentEntry;
       mLeastRecentEntry = currentEntry;
@@ -342,9 +342,9 @@ void QgsSvgCache::replaceElemParams( QDomElement& elem, const QColor& fill, cons
           value = QString::number( outlineWidth );
         }
 
-        if( entryIt != entryList.constBegin() )
+        if ( entryIt != entryList.constBegin() )
         {
-          newAttributeString.append(";");
+          newAttributeString.append( ";" );
         }
         newAttributeString.append( key + ":" + value );
       }

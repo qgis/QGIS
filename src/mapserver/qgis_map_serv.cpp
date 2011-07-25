@@ -261,15 +261,19 @@ int main( int argc, char * argv[] )
     adminConfigParser->setParameterMap( parameterMap );
 
     //request to WMS?
+    QString serviceString( "WMS" );
     std::map<QString, QString>::const_iterator serviceIt = parameterMap.find( "SERVICE" );
-    if ( serviceIt == parameterMap.end() )
+    if ( serviceIt != parameterMap.end() )
     {
-      //tell the user that service parameter is mandatory
+      serviceString = serviceIt->second;
+    }
+    /*else
+    {
       QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
-    }
+    }*/
 
     QgsWMSServer* theServer = 0;
     try
@@ -350,7 +354,7 @@ int main( int argc, char * argv[] )
       if ( result )
       {
         QgsDebugMsg( "Sending GetMap response" );
-        theRequestHandler->sendGetMapResponse( serviceIt->second, result );
+        theRequestHandler->sendGetMapResponse( serviceString, result );
       }
       else
       {
@@ -427,7 +431,7 @@ int main( int argc, char * argv[] )
       {
         QgsDebugMsg( "Sending GetLegendGraphics response" );
         //sending is the same for GetMap and GetLegendGraphics
-        theRequestHandler->sendGetMapResponse( serviceIt->second, result );
+        theRequestHandler->sendGetMapResponse( serviceString, result );
       }
       else
       {

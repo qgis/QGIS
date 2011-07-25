@@ -285,6 +285,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
 
     key = element.left( sepidx );
     value = element.mid( sepidx + 1 );
+    value.replace( "+", " " );
     value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
 
 

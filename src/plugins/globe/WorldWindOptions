@@ -44,10 +44,11 @@ namespace osgEarth { namespace Drivers
         //const optional<std::string>& imageURL() const { return _imageURL; }
 
     public:
-        WorldWindOptions( const TileSourceOptions& opt =TileSourceOptions() ) : TileSourceOptions( opt ),
-            _maxLOD( 11 ),
-            _elevationURL( "http://worldwind25.arc.nasa.gov/wwelevation/wwelevation.aspx?T=srtm30pluszip" ),
-            _imageURL( "http://s0.tileservice.worldwindcentral.com/getTile?" )
+        WorldWindOptions( const TileSourceOptions& opt =TileSourceOptions() )
+	    : TileSourceOptions( opt )
+	    , _imageURL( "http://s0.tileservice.worldwindcentral.com/getTile?" )
+            , _elevationURL( "http://worldwind25.arc.nasa.gov/wwelevation/wwelevation.aspx?T=srtm30pluszip" )
+	    , _maxLOD( 11 )
         {
             setDriver( "worldwind" );
             fromConfig( _conf );

@@ -6,31 +6,11 @@
 # kill boolean warnings
 CMAKE_POLICY (SET CMP0012 NEW)
 
-SET (QAPPDIRC "$ENV{DESTDIR}@QGIS_MACAPP_PREFIX@")
-SET (QAPPDIR "$ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@")
-SET (QFWDIR "${QAPPDIR}/@QGIS_FW_SUBDIR@")
-SET (QBINDIR "${QAPPDIR}/@QGIS_BIN_SUBDIR@")
-SET (QCGIDIR "${QAPPDIR}/@QGIS_CGIBIN_SUBDIR@")
-SET (QLIBDIR "${QAPPDIR}/@QGIS_LIB_SUBDIR@")
-SET (QLIBXDIR "${QAPPDIR}/@QGIS_LIBEXEC_SUBDIR@")
-SET (QDATADIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@")
-SET (QPLUGDIR "${QAPPDIR}/@QGIS_PLUGIN_SUBDIR@")
-SET (QGISPYDIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@/python")
-# Qt framework version is major version
-SET (QT_FWVER @QT_VERSION_MAJOR@)
-
-# so config-file doesn't try to replace @
-SET (ATEXECUTABLE "@executable_path")
-SET (ATLOADER "@loader_path")
-
+INCLUDE (@CMAKE_BINARY_DIR@/mac/0vars.cmake)
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
 
-# message only if verbose makefiles
-FUNCTION (MYMESSAGE MSG)
-    IF (@CMAKE_VERBOSE_MAKEFILE@)
-        MESSAGE (STATUS "${MSG}")
-    ENDIF (@CMAKE_VERBOSE_MAKEFILE@)
-ENDFUNCTION (MYMESSAGE)
+# Qt framework version is major version
+SET (QT_FWVER @QT_VERSION_MAJOR@)
 
 # build list of Qt frameworks to bundle
 
@@ -69,13 +49,11 @@ IF (@QT_USE_QTWEBKIT@)
         SET (PYQTLIST ${PYQTLIST} QtXmlPatterns)
     ENDIF ()
 ENDIF (@QT_USE_QTWEBKIT@)
+IF (@OSGEARTH_FOUND@)
+    SET (QTLISTQG ${QTLISTQG} QtOpenGL)
+    SET (PYQTLIST ${PYQTLIST} QtOpenGL)
+ENDIF (@OSGEARTH_FOUND@)
 MYMESSAGE ("Qt list: ${QTLISTQG}")
-
-# qt arches
-FOREACH (QARCH @CMAKE_OSX_ARCHITECTURES@)
-    SET (QARCHS ${QARCHS} "--arch" "${QARCH}")
-ENDFOREACH (QARCH)
-MYMESSAGE("Archs: ${QARCHS}")
 
 # symlinks when only @executable_path used
 
@@ -87,32 +65,15 @@ IF (NOT @OSX_HAVE_LOADERPATH@)
     EXECUTE_PROCESS (COMMAND ln -sfh @QGIS_CGIBIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@ "${QCGIDIR}/lib")
 ENDIF (NOT @OSX_HAVE_LOADERPATH@)
 
+### copy files
+
 # Qt frameworks
 
 MESSAGE (STATUS "Copying Qt frameworks...")
 EXECUTE_PROCESS (COMMAND mkdir -p "${QFWDIR}")
 FOREACH (QFW ${QTLISTQG})
     IF (NOT IS_DIRECTORY "${QFWDIR}/${QFW}.framework")
-        # reconstruct framework to avoid excessive copying, then deleting
-        #   especially when debug variants are present
-        EXECUTE_PROCESS (COMMAND mkdir -p "${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}")
-        EXECUTE_PROCESS (COMMAND ln -sfh ${QT_FWVER} "${QFWDIR}/${QFW}.framework/Versions/Current")
-        MYMESSAGE ("ditto ${QARCHS} \"@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFW}\" \"${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}/${QFW}\"")
-        EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFW}" "${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}/${QFW}")
-        EXECUTE_PROCESS (COMMAND ln -sf Versions/Current/${QFW} "${QFWDIR}/${QFW}.framework/${QFW}")
-        IF (IS_DIRECTORY "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/Resources")
-            EXECUTE_PROCESS (COMMAND cp -Rfp "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/Resources" "${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}")
-            EXECUTE_PROCESS (COMMAND ln -sfh Versions/Current/Resources "${QFWDIR}/${QFW}.framework/Resources")
-        ENDIF (IS_DIRECTORY "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/Resources")
-        # debug variants
-        SET (QFWD "${QFW}_debug")
-        IF ("@CMAKE_BUILD_TYPE@" STREQUAL "Debug" AND EXISTS "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}")
-            EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}" "${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}/${QFWD}")
-            EXECUTE_PROCESS (COMMAND ln -sf Versions/Current/${QFWD} "${QFWDIR}/${QFW}.framework/${QFWD}")
-            IF (IS_DIRECTORY "@QT_LIBRARY_DIR@/${QFW}.framework/${QFWD}.dSYM")
-                EXECUTE_PROCESS (COMMAND ditto -X ${QARCHS} "@QT_LIBRARY_DIR@/${QFW}.framework/${QFWD}.dSYM" "${QFWDIR}/${QFW}.framework")
-            ENDIF ()
-        ENDIF ()
+        COPY_FRAMEWORK("@QT_LIBRARY_DIR@" ${QFW} "${QFWDIR}")
     ENDIF ()
 ENDFOREACH (QFW)
 
@@ -138,7 +99,7 @@ IF (NOT EXISTS "${QLIBDIR}/libqwt.dylib")
 ENDIF ()
 GET_INSTALL_NAME ("@QWT_LIBRARY@" "libqwt" QLIB)
 IF (QLIB)
-	INSTALLNAMETOOL_CHANGE ("${QLIB}" "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libqwt.dylib" "${QAPPDIR}/@QGIS_APP_NAME@")
+    INSTALLNAMETOOL_CHANGE ("${QLIB}" "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libqwt.dylib" "${QAPPDIR}/@QGIS_APP_NAME@")
 ENDIF (QLIB)
 
 # PyQt
@@ -205,13 +166,7 @@ FILE (WRITE "${QAPPDIRC}/Resources/qt.conf" "")
 FILE (WRITE "${QBINDIR}/qgis_help.app/Contents/Resources/qt.conf" "")
 FILE (WRITE "${QBINDIR}/qbrowser.app/Contents/Resources/qt.conf" "")
 
-FILE (GLOB QGFWLIST RELATIVE ${QFWDIR} ${QFWDIR}/qgis*.framework)
-# for some reason, REPLACE is stripping list seps
-STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
-FILE (GLOB QGPLUGLIST ${QPLUGDIR}/*.so)
-FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
-
-# main Qt framework loop
+### update lib paths
 
 MESSAGE (STATUS "Updating Qt library paths...")
 
@@ -220,83 +175,46 @@ FOREACH (QFW ${QTLISTQG})
     # from a previous install attempt
     GET_INSTALL_NAME ("@QT_LIBRARY_DIR@/${QFW}.framework/${QFW}" ${QFW}.framework QQ)
     SET (QFW_CHG "${QQ}")
-    SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    # app - always @executable_path
-    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIR}/@QGIS_APP_NAME@")
-    # qgis_help, qbrowser - use symlink, even when have loader_path,
-    # applications behave better that way
-    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QBINDIR}/qgis_help.app/Contents/MacOS/qgis_help")
-    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QBINDIR}/qbrowser.app/Contents/MacOS/qbrowser")
-    # qgis-mapserver
-    IF (@WITH_MAPSERVER@)
-        IF (@OSX_HAVE_LOADERPATH@)
-            SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-        ENDIF (@OSX_HAVE_LOADERPATH@)
-        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QCGIDIR}/qgis_mapserv.fcgi")
-    ENDIF ()
-    # libs
-    IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/../../../${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
-    FOREACH (QL ${QGFWLIST})
-        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QFWDIR}/${QL}.framework/${QL}")
-    ENDFOREACH (QL)
-	# libqgispython is not a framework
-    IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
-	INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QLIBDIR}/libqgispython.dylib")
-    IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
+    # qgis stuff
+    UPDATEQGISPATHS ("${QFW_CHG}" ${QFW})
+
+    SET (LIBPOST "${QFW}.framework/${QFW}")
     # Qwt
-    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QLIBDIR}/libqwt.dylib")
-    # GRASS libexec stuff
-    IF (EXISTS "${QLIBXDIR}/grass/bin/qgis.g.browser")
-        IF (@OSX_HAVE_LOADERPATH@)
-            SET (QFW_CHG_TO "${ATLOADER}/../../@QGIS_LIBEXEC_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-        ENDIF (@OSX_HAVE_LOADERPATH@)
-        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QLIBXDIR}/grass/bin/qgis.g.browser")
-    ENDIF ()
-    # plugins
     IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
-    FOREACH (QP ${QGPLUGLIST})
-        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QP}")
-    ENDFOREACH (QP)
-    # qt plugs - same relative path
+        SET (QFW_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${QGIS_FW_SUBDIR}/${LIBPOST}")
+    ENDIF ()
+    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QLIBDIR}/libqwt.dylib")
+    # qt plugs
+    IF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/${QGIS_FW_SUBDIR}/${LIBPOST}")
+    ENDIF ()
     INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIRC}/PlugIns/imageformats/libqjpeg.dylib")
     FOREACH (QC cn;jp;kr;tw)
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIRC}/PlugIns/codecs/libq${QC}codecs.dylib")
     ENDFOREACH (QC)
     # qt fw
     IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/../../../${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
+    ENDIF ()
     FOREACH (QF ${QTLISTQG})
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QFWDIR}/${QF}.framework/${QF}")
     ENDFOREACH (QF)
     # PyQt
     IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/../../@QGIS_DATA_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/../../@QGIS_DATA_SUBDIR_REV@/${QGIS_FW_SUBDIR}/${LIBPOST}")
+    ENDIF ()
     FOREACH (PQ ${PYQTLIST})
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QGISPYDIR}/PyQt${QT_FWVER}/${PQ}.so")
     ENDFOREACH (PQ)
-    # qgis python
-    FOREACH (PG ${QGPYLIST})
-        INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${PG}")
-    ENDFOREACH (PG)
     # PyQwt
     IF (@OSX_HAVE_LOADERPATH@)
-        SET (QFW_CHG_TO "${ATLOADER}/../../../@QGIS_DATA_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
-    ENDIF (@OSX_HAVE_LOADERPATH@)
+        SET (QFW_CHG_TO "${ATLOADER}/../../../@QGIS_DATA_SUBDIR_REV@/${QGIS_FW_SUBDIR}/${LIBPOST}")
+    ENDIF ()
     FOREACH (PW _iqt;Qwt)
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QGISPYDIR}/PyQt${QT_FWVER}/Qwt5/${PW}.so")
     ENDFOREACH (PW)
     # bin - PyQt utils
-    SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_BIN_SUBDIR_REV@/@QGIS_FW_SUBDIR@/${QFW}.framework/${QFW}")
+    SET (QFW_CHG_TO "${ATEXECUTABLE}/@QGIS_BIN_SUBDIR_REV@/${QGIS_FW_SUBDIR}/${LIBPOST}")
     FOREACH (PB pylupdate4;pyrcc4)
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QBINDIR}/${PB}")
     ENDFOREACH (PB)

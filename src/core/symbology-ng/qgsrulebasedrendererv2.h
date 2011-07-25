@@ -113,6 +113,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! @note: this method was added in version 1.5
     virtual QgsLegendSymbolList legendSymbolItems();
 
+    //! for debugging
+    virtual QString dump();
+
     /////
 
     //! return the total number of rules

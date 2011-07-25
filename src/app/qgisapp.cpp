@@ -103,6 +103,7 @@
 #include "qgsattributetabledialog.h"
 #include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
+#include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
@@ -293,7 +294,7 @@ static void setTitleBarText_( QWidget & qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += " - " + projectFileInfo.baseName();
+      caption += " - " + projectFileInfo.completeBaseName();
     }
   }
   else
@@ -445,6 +446,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
+
+  mBrowserWidget = new QgsBrowserDockWidget( this );
+  mBrowserWidget->setObjectName( "Browser" );
+  addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
+  mBrowserWidget->hide();
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
@@ -1920,36 +1926,52 @@ void QgisApp::about()
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     abt = new QgsAbout();
-    QString versionString = tr( "You are using QGIS version %1 built against code revision %2." )
-                            .arg( QGis::QGIS_VERSION )
-                            .arg( QGis::QGIS_DEV_VERSION );
+    QString versionString = "<html><body><div align='center'><table width='100%'>";
 
-    versionString += tr( "\nGDAL/OGR Version: %1." ).arg( GDAL_RELEASE_NAME );
+    versionString += "<tr>";
+    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td>";
+    versionString += "<td>" + tr( "QGIS code revision" ) + "</td><td>" + QGis::QGIS_DEV_VERSION + "</td>";
 
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
+    versionString += "<td>" + tr( "Running against Qt" ) + "</td><td>" + qVersion() + "</td>";
+
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "GDAL/OGR Version" )  + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
+    versionString += "<td>" + tr( "GEOS Version" )      + "</td><td>" + GEOS_VERSION + "</td>";
+
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
-    versionString += tr( "\nPostgreSQL Client Version: %1." ).arg( PG_VERSION );
+    versionString += PG_VERSION;
 #else
-    versionString += tr( "\nNo PostgreSQL support." );
+    versionString += tr( "No support." );
 #endif
+    versionString += "</td>";
 
+    versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
 #ifdef HAVE_SPATIALITE
-    versionString += tr( "\nSpatiaLite Version: %1." ).arg( spatialite_version() );
+    versionString += spatialite_version();
 #else
-    versionString += tr( "\nNo SpatiaLite support." );
+    versionString += tr( "No support." );
 #endif
+    versionString += "</td>";
 
-    versionString += tr( "\nQWT Version: %1." ).arg( QWT_VERSION_STR );
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
 
 #ifdef QGISDEBUG
-    versionString += tr( "\nThis copy of QGIS writes debugging output." );
+    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
-    versionString += tr( "\nThis binary was compiled against Qt %1,"
-                         "and is currently running against Qt %2" )
-                     .arg( QT_VERSION_STR )
-                     .arg( qVersion() );
+    versionString += "</tr></table></div></body></html>";
 
     abt->setVersion( versionString );
+
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h3>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h3>";
     whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.7.0 'Wrocław'?" ) + "</h2>";

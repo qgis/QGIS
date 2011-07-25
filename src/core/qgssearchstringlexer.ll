@@ -106,6 +106,7 @@ string      "'"{str_char}*"'"
 "atan2" { yylval.op = QgsSearchTreeNode::opATAN2; return FUNCTION2;}
 
 "replace" { yylval.op = QgsSearchTreeNode::opREPLACE; return FUNCTION3;}
+"regexp_replace" { yylval.op = QgsSearchTreeNode::opREGEXPREPLACE; return FUNCTION3;}
 "substr" { yylval.op = QgsSearchTreeNode::opSUBSTR; return FUNCTION3;}
 
 "||"   { return CONCAT; }

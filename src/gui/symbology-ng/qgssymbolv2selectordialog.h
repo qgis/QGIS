@@ -8,6 +8,7 @@
 
 class QgsStyleV2;
 class QgsSymbolV2;
+class QgsVectorLayer;
 
 class QMenu;
 
@@ -16,7 +17,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     Q_OBJECT
 
   public:
-    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent = NULL, bool embedded = false );
+    QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -54,6 +55,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     QgsStyleV2* mStyle;
     QgsSymbolV2* mSymbol;
     QMenu* mAdvancedMenu;
+    const QgsVectorLayer* mVectorLayer;
 };
 
 #endif

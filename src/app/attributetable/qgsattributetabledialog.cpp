@@ -602,6 +602,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   {
     w->setWindowTitle( tr( "Attribute table - %1 (No matching features)" ).arg( mLayer->name() ) );
   }
+  mView->setFocus();
 }
 
 void QgsAttributeTableDialog::search()

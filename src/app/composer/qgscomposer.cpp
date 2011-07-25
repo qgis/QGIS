@@ -525,6 +525,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       file.path(), tr( "PDF Format" ) + " (*.pdf *PDF)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setConfirmOverwrite( true );
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   int result = myQFileDialog->exec();
@@ -733,6 +734,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   );
 
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setConfirmOverwrite( true );
 
   // set the filter to the last one used
   myQFileDialog->selectFilter( myLastUsedFilter );
@@ -834,6 +836,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
       file.path(), tr( "SVG Format" ) + " (*.svg *SVG)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setConfirmOverwrite( true );
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   int result = myQFileDialog->exec();

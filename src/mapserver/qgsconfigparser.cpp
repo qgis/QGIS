@@ -103,7 +103,6 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   QDomText nBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMaximum() ) );
   nBoundLatitudeElement.appendChild( nBoundLatitudeText );
   ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
-  layerElem.appendChild( ExGeoBBoxElement );
 
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
@@ -116,7 +115,18 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
   bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
   bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
-  layerElem.appendChild( bBoxElement );
+
+  QDomElement lastCRSElem = layerElem.lastChildElement( "CRS" );
+  if ( !lastCRSElem.isNull() )
+  {
+    layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
+    layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
+  }
+  else
+  {
+    layerElem.appendChild( ExGeoBBoxElement );
+    layerElem.appendChild( bBoxElement );
+  }
 }
 
 QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) const
@@ -242,6 +252,9 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
     return;
   }
 
+  //insert the CRS elements after the title element to be in accordance with the WMS 1.3 specification
+  QDomElement titleElement = layerElement.firstChildElement( "Title" );
+
   //In case the number of advertised CRS is constrained
   QSet<QString> crsSet = supportedOutputCrsSet();
 
@@ -255,7 +268,7 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
     QDomElement crsElement = doc.createElement( "CRS" );
     QDomText crsText = doc.createTextNode( *crsIt );
     crsElement.appendChild( crsText );
-    layerElement.appendChild( crsElement );
+    layerElement.insertAfter( crsElement, titleElement );
   }
 }
 

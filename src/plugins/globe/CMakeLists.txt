@@ -1,10 +1,13 @@
-
 # set path to additional CMake modules
 SET(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/CMakeModules ${CMAKE_MODULE_PATH})
 
 FIND_PACKAGE(OSG REQUIRED)
 FIND_PACKAGE(OSGEARTH REQUIRED)
 FIND_PACKAGE(Threads)
+
+IF(HAVE_OSGEARTH_CHILD_SPACING)
+  ADD_DEFINITIONS(-DHAVE_OSGEARTH_CHILD_SPACING)
+ENDIF(HAVE_OSGEARTH_CHILD_SPACING)
 
 ########################################################
 # Files
@@ -42,6 +45,7 @@ ADD_LIBRARY (globeplugin MODULE ${globe_plugin_SRCS} ${globe_plugin_MOC_SRCS} ${
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ${OSGEARTH_INCLUDE_DIR}
+     ${GEOS_INCLUDE_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
      ../../gui
      ..
@@ -50,7 +54,7 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(globeplugin
   qgis_core
   qgis_gui
-  QtOpenGL
+  ${QT_QTOPENGL_LIBRARY}
   ${OSGDB_LIBRARY}
   ${OSGGA_LIBRARY}
   ${OSG_LIBRARY}

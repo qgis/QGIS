@@ -65,6 +65,7 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
+class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
@@ -1048,6 +1049,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     static QgisApp *smInstance;
 
     QgsUndoWidget* mUndoWidget;
+
+    QgsBrowserDockWidget* mBrowserWidget;
 
     QgsSnappingDialog* mSnappingDialog;
 

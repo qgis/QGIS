@@ -7,7 +7,7 @@
     Date                 : 08-Jul-2010
     Copyright            : (C) 2010 by Sourcepole
     Email                : info at sourcepole.ch
-/***************************************************************************
+ ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -69,24 +69,25 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 //constructor
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
-  : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface ),
-    mQActionPointer( NULL ),
-    mQActionSettingsPointer( NULL ),
-    viewer(),
-    mQDockWidget( tr( "Globe" ) ),
-    mSettingsDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags ),
-    mTileSource( 0 ),
-    mQgisMapLayer( 0 ),
-    mElevationManager( NULL ),
-    mObjectPlacer( NULL )
+    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
+    , mQActionPointer( NULL )
+    , mQActionSettingsPointer( NULL )
+    , viewer()
+    , mQgisMapLayer( 0 )
+    , mTileSource( 0 )
+    , mElevationManager( NULL )
+    , mObjectPlacer( NULL )
 {
   mIsGlobeRunning = false;
   //needed to be "seen" by other plugins by doing
   //iface.mainWindow().findChild( QObject, "globePlugin" )
   //needed until https://trac.osgeo.org/qgis/changeset/15224
-  this->setObjectName("globePlugin");
-  this->setParent(theQgisInterface->mainWindow());
+  this->setObjectName( "globePlugin" );
+  this->setParent( theQgisInterface->mainWindow() );
+
+  mSettingsDialog = new QgsGlobePluginDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
+  mQDockWidget = new QDockWidgetGlobe( tr( "Globe" ), theQgisInterface->mainWindow() );
 }
 
 //destructor
@@ -96,81 +97,81 @@ GlobePlugin::~GlobePlugin()
 
 struct PanControlHandler : public NavigationControlHandler
 {
-    PanControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
-    {
-      _manip->pan( _dx, _dy );
-    }
-  private:
-    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
-    double _dx;
-    double _dy;
+  PanControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
+  {
+    _manip->pan( _dx, _dy );
+  }
+private:
+  osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
+  double _dx;
+  double _dy;
 };
 
 struct RotateControlHandler : public NavigationControlHandler
 {
-    RotateControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
+  RotateControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
+  {
+    if ( 0 == _dx && 0 == _dy )
     {
-      if( 0 == _dx && 0 == _dy )
-      {
-        _manip->setRotation( osg::Quat() );
-      }
-      else
-      {
-        _manip->rotate( _dx, _dy );
-      }
+      _manip->setRotation( osg::Quat() );
     }
-  private:
-    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
-    double _dx;
-    double _dy;
+    else
+    {
+      _manip->rotate( _dx, _dy );
+    }
+  }
+private:
+  osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
+  double _dx;
+  double _dy;
 };
 
 struct ZoomControlHandler : public NavigationControlHandler
 {
-    ZoomControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
-    virtual void onMouseDown( Control* control, int mouseButtonMask )
-    {
-      _manip->zoom( _dx, _dy );
-    }
-  private:
-    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
-    double _dx;
-    double _dy;
+  ZoomControlHandler( osgEarth::Util::EarthManipulator* manip, double dx, double dy ) : _manip( manip ), _dx( dx ), _dy( dy ) { }
+  virtual void onMouseDown( Control* /*control*/, int /*mouseButtonMask*/ )
+  {
+    _manip->zoom( _dx, _dy );
+  }
+private:
+  osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
+  double _dx;
+  double _dy;
 };
 
 struct HomeControlHandler : public NavigationControlHandler
 {
-    HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
-    virtual void onClick( Control* control, int mouseButtonMask, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
-    {
-      _manip->home( ea, aa );
-    }
-  private:
-    osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
+  HomeControlHandler( osgEarth::Util::EarthManipulator* manip ) : _manip( manip ) { }
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/, const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+  {
+    _manip->home( ea, aa );
+  }
+private:
+  osg::observer_ptr<osgEarth::Util::EarthManipulator> _manip;
 };
 
 struct RefreshControlHandler : public ControlEventHandler
 {
-    RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-    virtual void onClick( Control* control, int mouseButtonMask )
-    {
-      mGlobe->layersChanged();
-    }
-  private:
-    GlobePlugin* mGlobe;
+  RefreshControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
+  {
+    mGlobe->layersChanged();
+  }
+private:
+  GlobePlugin* mGlobe;
 };
 
 struct SyncExtentControlHandler : public ControlEventHandler
 {
-    SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
-    virtual void onClick( Control* control, int mouseButtonMask )
-    {
-      mGlobe->syncExtent();
-    }
-  private:
-    GlobePlugin* mGlobe;
+  SyncExtentControlHandler( GlobePlugin* globe ) : mGlobe( globe ) { }
+  virtual void onClick( Control* /*control*/, int /*mouseButtonMask*/ )
+  {
+    mGlobe->syncExtent();
+  }
+private:
+  GlobePlugin* mGlobe;
 };
 
 void GlobePlugin::initGui()
@@ -190,19 +191,19 @@ void GlobePlugin::initGui()
   //Add menu
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionPointer );
   mQGisIface->addPluginToMenu( tr( "&Globe" ), mQActionSettingsPointer );
-  mQDockWidget.setWidget( &viewer );
+  mQDockWidget->setWidget( &viewer );
 
   connect( mQGisIface->mapCanvas() , SIGNAL( extentsChanged() ),
            this, SLOT( extentsChanged() ) );
   connect( mQGisIface->mapCanvas(), SIGNAL( layersChanged() ),
            this, SLOT( layersChanged() ) );
-  connect( &mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
+  connect( mSettingsDialog, SIGNAL( elevationDatasourcesChanged() ),
            this, SLOT( layersChanged() ) );
   connect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this,
            SLOT( projectReady() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this,
            SLOT( blankProjectReady() ) );
-  connect( &mQDockWidget, SIGNAL( globeClosed() ), this,
+  connect( mQDockWidget, SIGNAL( globeClosed() ), this,
            SLOT( setGlobeNotRunning() ) );
   connect( this, SIGNAL( xyCoordinates( const QgsPoint & ) ),
            mQGisIface->mapCanvas(), SIGNAL( xyCoordinates( const QgsPoint & ) ) );
@@ -211,10 +212,10 @@ void GlobePlugin::initGui()
 void GlobePlugin::run()
 {
 #ifdef QGISDEBUG
-  if( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
+  if ( !getenv( "OSGNOTIFYLEVEL" ) ) osgEarth::setNotifyLevel( osg::DEBUG_INFO );
 #endif
 
-  mQGisIface->addDockWidget( Qt::RightDockWidgetArea, &mQDockWidget );
+  mQGisIface->addDockWidget( Qt::RightDockWidgetArea, mQDockWidget );
 
   viewer.show();
 
@@ -250,8 +251,8 @@ void GlobePlugin::run()
   viewer.addEventHandler( new KeyboardControlHandler( manip, mQGisIface ) );
 
   viewer.addEventHandler( new QueryCoordinatesHandler( this, mElevationManager,
-          mMapNode->getMap()->getProfile()->getSRS() )
-          );
+                          mMapNode->getMap()->getProfile()->getSRS() )
+                        );
 
   // add some stock OSG handlers:
   viewer.addEventHandler( new osgViewer::StatsHandler() );
@@ -266,8 +267,8 @@ void GlobePlugin::run()
 
 void GlobePlugin::settings()
 {
-  mSettingsDialog.updatePointLayers();
-  if( mSettingsDialog.exec() )
+  mSettingsDialog->updatePointLayers();
+  if ( mSettingsDialog->exec() )
   {
     //viewer stereo settings set by mSettingsDialog and stored in QSettings
   }
@@ -278,11 +279,11 @@ void GlobePlugin::setupMap()
   QSettings settings;
   QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
   TMSCacheOptions cacheOptions;
-  cacheOptions.setPath(cacheDirectory.toStdString());
+  cacheOptions.setPath( cacheDirectory.toStdString() );
 
   MapOptions mapOptions;
   mapOptions.cache() = cacheOptions;
-  osgEarth::Map *map = new osgEarth::Map(mapOptions);
+  osgEarth::Map *map = new osgEarth::Map( mapOptions );
 
   //Default image layer
   GDALOptions driverOptions;
@@ -305,7 +306,7 @@ void GlobePlugin::setupMap()
   mMapNode = new osgEarth::MapNode( map, nodeOptions );
 
   //prefill cache
-  if( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
+  if ( !QFile::exists( cacheDirectory + "/worldwind_srtm" ) )
   {
     copyFolder( QgsApplication::pkgDataPath() + "/globe/data/worldwind_srtm", cacheDirectory + "/globe/worldwind_srtm" );
   }
@@ -324,12 +325,12 @@ void GlobePlugin::setupMap()
   mObjectPlacer = new osgEarth::Util::ObjectPlacer( mMapNode );
 
   // place 3D model on point layer
-  if ( mSettingsDialog.modelLayer() && !mSettingsDialog.modelPath().isEmpty() )
+  if ( mSettingsDialog->modelLayer() && !mSettingsDialog->modelPath().isEmpty() )
   {
-    osg::Node* model = osgDB::readNodeFile( mSettingsDialog.modelPath().toStdString() );
+    osg::Node* model = osgDB::readNodeFile( mSettingsDialog->modelPath().toStdString() );
     if ( model )
     {
-      QgsVectorLayer* layer = mSettingsDialog.modelLayer();
+      QgsVectorLayer* layer = mSettingsDialog->modelLayer();
       QgsAttributeList fetchAttributes;
       layer->select( fetchAttributes ); //TODO: select only visible features
       QgsFeature feature;
@@ -346,62 +347,62 @@ void GlobePlugin::setupMap()
 void GlobePlugin::projectReady()
 {
   blankProjectReady();
-  mSettingsDialog.readElevationDatasources();
+  mSettingsDialog->readElevationDatasources();
 }
 
 void GlobePlugin::blankProjectReady()
 { //needs at least http://trac.osgeo.org/qgis/changeset/14452
-  mSettingsDialog.elevationDatasources()->clearContents();
-  mSettingsDialog.elevationDatasources()->setRowCount(0);
+  mSettingsDialog->elevationDatasources()->clearContents();
+  mSettingsDialog->elevationDatasources()->setRowCount( 0 );
 }
 
-void GlobePlugin::showCurrentCoordinates(double lon, double lat)
+void GlobePlugin::showCurrentCoordinates( double lon, double lat )
 {
-      // show x y on status bar
-    //OE_NOTICE << "lon: " << lon << " lat: " << lat <<std::endl;
-      QgsPoint coord = QgsPoint( lon, lat );
-      emit xyCoordinates( coord );
+  // show x y on status bar
+  //OE_NOTICE << "lon: " << lon << " lat: " << lat <<std::endl;
+  QgsPoint coord = QgsPoint( lon, lat );
+  emit xyCoordinates( coord );
 }
 
-void GlobePlugin::setSelectedCoordinates( osg::Vec3d coords)
+void GlobePlugin::setSelectedCoordinates( osg::Vec3d coords )
 {
-    mSelectedLon = coords.x();
-    mSelectedLat = coords.y();
-    mSelectedElevation = coords.z();
-    QgsPoint coord = QgsPoint( mSelectedLon, mSelectedLat );
-    emit newCoordinatesSelected( coord );
+  mSelectedLon = coords.x();
+  mSelectedLat = coords.y();
+  mSelectedElevation = coords.z();
+  QgsPoint coord = QgsPoint( mSelectedLon, mSelectedLat );
+  emit newCoordinatesSelected( coord );
 }
 
 osg::Vec3d GlobePlugin::getSelectedCoordinates()
 {
-    osg::Vec3d coords = osg::Vec3d(mSelectedLon, mSelectedLat, mSelectedElevation);
-    return coords;
+  osg::Vec3d coords = osg::Vec3d( mSelectedLon, mSelectedLat, mSelectedElevation );
+  return coords;
 }
 
 void GlobePlugin::showSelectedCoordinates()
 {
-    QString lon, lat, elevation;
-    lon.setNum(mSelectedLon);
-    lat.setNum(mSelectedLat);
-    elevation.setNum(mSelectedElevation);
-    QMessageBox m;
-    m.setText("selected coordinates are:\nlon: " + lon + "\nlat: " + lat + "\nelevation: " + elevation);
-    m.exec();
+  QString lon, lat, elevation;
+  lon.setNum( mSelectedLon );
+  lat.setNum( mSelectedLat );
+  elevation.setNum( mSelectedElevation );
+  QMessageBox m;
+  m.setText( "selected coordinates are:\nlon: " + lon + "\nlat: " + lat + "\nelevation: " + elevation );
+  m.exec();
 }
 
 double GlobePlugin::getSelectedLon()
 {
-    return mSelectedLon;
+  return mSelectedLon;
 }
 
 double GlobePlugin::getSelectedLat()
 {
-    return mSelectedLat;
+  return mSelectedLat;
 }
 
 double GlobePlugin::getSelectedElevation()
 {
-    return mSelectedElevation;
+  return mSelectedElevation;
 }
 
 void GlobePlugin::syncExtent()
@@ -413,10 +414,10 @@ void GlobePlugin::syncExtent()
   //get mapCanvas->extent().height() in meters
   QgsRectangle extent = mQGisIface->mapCanvas()->extent();
   QgsDistanceArea dist;
-  dist.setProjectionsEnabled(true);
-  QgsPoint ll = QgsPoint(extent.xMinimum(), extent.yMinimum());
-  QgsPoint ul = QgsPoint(extent.xMinimum(), extent.yMaximum());
-  double height = dist.measureLine(ll, ul);
+  dist.setProjectionsEnabled( true );
+  QgsPoint ll = QgsPoint( extent.xMinimum(), extent.yMinimum() );
+  QgsPoint ul = QgsPoint( extent.xMinimum(), extent.yMaximum() );
+  double height = dist.measureLine( ll, ul );
 
   //camera viewing angle
   double viewAngle = 30;
@@ -438,9 +439,13 @@ void GlobePlugin::setupControls()
   //Horizontal container
   HBox* moveHControls = new HBox();
   moveHControls->setFrame( new RoundedFrame() );
-  moveHControls->getFrame()->setBackColor(1,1,1,0.5);
+  moveHControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   moveHControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  moveHControls->setChildSpacing( 47 );
+#else
   moveHControls->setSpacing( 47 );
+#endif
   moveHControls->setVertAlign( Control::ALIGN_CENTER );
   moveHControls->setHorizAlign( Control::ALIGN_CENTER );
   moveHControls->setPosition( 5, 30 );
@@ -460,9 +465,13 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* moveVControls = new VBox();
   moveVControls->setFrame( new RoundedFrame() );
-  moveVControls->getFrame()->setBackColor(1,1,1,0.5);
+  moveVControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   moveVControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  moveVControls->setChildSpacing( 36 );
+#else
   moveVControls->setSpacing( 36 );
+#endif
   moveVControls->setVertAlign( Control::ALIGN_CENTER );
   moveVControls->setHorizAlign( Control::ALIGN_CENTER );
   moveVControls->setPosition( 35, 5 );
@@ -490,9 +499,13 @@ void GlobePlugin::setupControls()
   //Horizontal container
   HBox* rotateControls = new HBox();
   rotateControls->setFrame( new RoundedFrame() );
-  rotateControls->getFrame()->setBackColor(1,1,1,0.5);
+  rotateControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   rotateControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  rotateControls->setChildSpacing( 10 );
+#else
   rotateControls->setSpacing( 10 );
+#endif
   rotateControls->setVertAlign( Control::ALIGN_CENTER );
   rotateControls->setHorizAlign( Control::ALIGN_CENTER );
   rotateControls->setPosition( 5, 113 );
@@ -524,9 +537,13 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* tiltControls = new VBox();
   tiltControls->setFrame( new RoundedFrame() );
-  tiltControls->getFrame()->setBackColor(1,1,1,0.5);
+  tiltControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   tiltControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  tiltControls->setChildSpacing( 30 );
+#else
   tiltControls->setSpacing( 30 );
+#endif
   tiltControls->setVertAlign( Control::ALIGN_CENTER );
   tiltControls->setHorizAlign( Control::ALIGN_CENTER );
   tiltControls->setPosition( 35, 90 );
@@ -552,9 +569,13 @@ void GlobePlugin::setupControls()
   //Vertical container
   VBox* zoomControls = new VBox();
   zoomControls->setFrame( new RoundedFrame() );
-  zoomControls->getFrame()->setBackColor(1,1,1,0.5);
+  zoomControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   zoomControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  zoomControls->setChildSpacing( 5 );
+#else
   zoomControls->setSpacing( 5 );
+#endif
   zoomControls->setVertAlign( Control::ALIGN_CENTER );
   zoomControls->setHorizAlign( Control::ALIGN_CENTER );
   zoomControls->setPosition( 35, 170 );
@@ -580,9 +601,13 @@ void GlobePlugin::setupControls()
   //Horizontal container
   HBox* extraControls = new HBox();
   extraControls->setFrame( new RoundedFrame() );
-  extraControls->getFrame()->setBackColor(1,1,1,0.5);
+  extraControls->getFrame()->setBackColor( 1, 1, 1, 0.5 );
   extraControls->setMargin( 0 );
+#if HAVE_OSGEARTH_CHILD_SPACING
+  extraControls->setChildSpacing( 10 );
+#else
   extraControls->setSpacing( 10 );
+#endif
   extraControls->setVertAlign( Control::ALIGN_CENTER );
   extraControls->setHorizAlign( Control::ALIGN_CENTER );
   extraControls->setPosition( 5, 220 );
@@ -624,14 +649,18 @@ void GlobePlugin::setupProxy()
 {
   QSettings settings;
   settings.beginGroup( "proxy" );
-  if( settings.value( "/proxyEnabled" ).toBool() )
+  if ( settings.value( "/proxyEnabled" ).toBool() )
   {
     ProxySettings proxySettings( settings.value( "/proxyHost" ).toString().toStdString(),
                                  settings.value( "/proxyPort" ).toInt() );
-    if( !settings.value( "/proxyUser" ).toString().isEmpty() )
+    if ( !settings.value( "/proxyUser" ).toString().isEmpty() )
     {
       QString auth = settings.value( "/proxyUser" ).toString() + ":" + settings.value( "/proxyPassword" ).toString();
+#ifdef WIN32
+      putenv( QString( "OSGEARTH_CURL_PROXYAUTH=%1" ).arg( auth ).toAscii() );
+#else
       setenv( "OSGEARTH_CURL_PROXYAUTH", auth.toStdString().c_str(), 0 );
+#endif
     }
     //TODO: settings.value("/proxyType")
     //TODO: URL exlusions
@@ -647,11 +676,12 @@ void GlobePlugin::extentsChanged()
 
 void GlobePlugin::layersChanged()
 {
-  if ( mIsGlobeRunning ){
+  if ( mIsGlobeRunning )
+  {
     QgsDebugMsg( "layersChanged: Globe Running, executing" );
     osg::ref_ptr<Map> map = mMapNode->getMap();
 
-    if( map->getNumImageLayers() > 1 || map->getNumElevationLayers() > 1)
+    if ( map->getNumImageLayers() > 1 || map->getNumElevationLayers() > 1 )
     {
       viewer.getDatabasePager()->clear();
     }
@@ -659,7 +689,7 @@ void GlobePlugin::layersChanged()
     // Remove elevation layers
     ElevationLayerVector list;
     map->getElevationLayers( list );
-    for( ElevationLayerVector::iterator i = list.begin(); i != list.end(); i++ )
+    for ( ElevationLayerVector::iterator i = list.begin(); i != list.end(); i++ )
     {
       map->removeElevationLayer( *i );
     }
@@ -667,15 +697,15 @@ void GlobePlugin::layersChanged()
     // Add elevation layers
     QSettings settings;
     QString cacheDirectory = settings.value( "cache/directory", QgsApplication::qgisSettingsDirPath() + "cache" ).toString();
-    QTableWidget* table = mSettingsDialog.elevationDatasources();
-    for(int i = 0; i < table->rowCount(); ++i)
+    QTableWidget* table = mSettingsDialog->elevationDatasources();
+    for ( int i = 0; i < table->rowCount(); ++i )
     {
-      QString type = table->item(i, 0)->text();
-      bool cache = table->item(i, 1)->checkState();
-      QString uri = table->item(i, 2)->text();
+      QString type = table->item( i, 0 )->text();
+      bool cache = table->item( i, 1 )->checkState();
+      QString uri = table->item( i, 2 )->text();
       ElevationLayer* layer = 0;
 
-      if( "Raster" == type)
+      if ( "Raster" == type )
       {
         GDALOptions options;
         options.url() = uri.toStdString();
@@ -687,8 +717,8 @@ void GlobePlugin::layersChanged()
         options.elevationCachePath() = cacheDirectory.toStdString() + "/globe/worldwind_srtm";
         layer = new osgEarth::ElevationLayer( "WorldWind bil", options );
         TerrainEngineNode* terrainEngineNode = mMapNode->getTerrainEngine();
-        terrainEngineNode->setVerticalScale(2);
-        terrainEngineNode->setElevationSamplingRatio(0.25);
+        terrainEngineNode->setVerticalScale( 2 );
+        terrainEngineNode->setElevationSamplingRatio( 0.25 );
       }
       else if ( "TMS" == type )
       {
@@ -702,7 +732,7 @@ void GlobePlugin::layersChanged()
     }
 
     //remove QGIS layer
-    if( mQgisMapLayer )
+    if ( mQgisMapLayer )
     {
       QgsDebugMsg( "removeMapLayer" );
       map->removeImageLayer( mQgisMapLayer );
@@ -755,15 +785,15 @@ void GlobePlugin::placeNode( osg::Node* node, double lat, double lon, double alt
 void GlobePlugin::copyFolder( QString sourceFolder, QString destFolder )
 {
   QDir sourceDir( sourceFolder );
-  if( !sourceDir.exists() )
+  if ( !sourceDir.exists() )
     return;
   QDir destDir( destFolder );
-  if( !destDir.exists() )
+  if ( !destDir.exists() )
   {
     destDir.mkpath( destFolder );
   }
   QStringList files = sourceDir.entryList( QDir::Files );
-  for( int i = 0; i < files.count(); i++ )
+  for ( int i = 0; i < files.count(); i++ )
   {
     QString srcName = sourceFolder + "/" + files[i];
     QString destName = destFolder + "/" + files[i];
@@ -771,7 +801,7 @@ void GlobePlugin::copyFolder( QString sourceFolder, QString destFolder )
   }
   files.clear();
   files = sourceDir.entryList( QDir::AllDirs | QDir::NoDotAndDotDot );
-  for( int i = 0; i < files.count(); i++ )
+  for ( int i = 0; i < files.count(); i++ )
   {
     QString srcName = sourceFolder + "/" + files[i];
     QString destName = destFolder + "/" + files[i];
@@ -787,36 +817,38 @@ void GlobePlugin::setGlobeNotRunning()
 
 bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa, ControlContext& cx )
 {
-  switch( ea.getEventType() )
+  switch ( ea.getEventType() )
   {
     case osgGA::GUIEventAdapter::PUSH:
       _mouse_down_event = &ea;
       break;
     case osgGA::GUIEventAdapter::FRAME:
-      if( _mouse_down_event )
+      if ( _mouse_down_event )
       {
         _mouse_down_event = &ea;
       }
       break;
     case osgGA::GUIEventAdapter::RELEASE:
-      for( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
+      for ( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
       {
         NavigationControlHandler* handler = dynamic_cast<NavigationControlHandler*>( i->get() );
-        if( handler )
+        if ( handler )
         {
-          handler->onClick( this, ea.getButtonMask(), ea, aa  );
+          handler->onClick( this, ea.getButtonMask(), ea, aa );
         }
       }
       _mouse_down_event = NULL;
       break;
+    default:
+      /* ignore */;
   }
-  if( _mouse_down_event )
+  if ( _mouse_down_event )
   {
     //OE_NOTICE << "NavigationControl::handle getEventType " << ea.getEventType() << std::endl;
-    for( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
+    for ( ControlEventHandlerList::const_iterator i = _eventHandlers.begin(); i != _eventHandlers.end(); ++i )
     {
       NavigationControlHandler* handler = dynamic_cast<NavigationControlHandler*>( i->get() );
-      if( handler )
+      if ( handler )
       {
         handler->onMouseDown( this, ea.getButtonMask() );
       }
@@ -825,7 +857,7 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
   return Control::handle( ea, aa, cx );
 }
 
-bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/ )
 {
   /*
   osgEarth::Util::EarthManipulator::Settings* _manipSettings = _manip->getSettings();
@@ -870,56 +902,56 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
 
   */
 
-  switch( ea.getEventType() )
+  switch ( ea.getEventType() )
   {
     case( osgGA::GUIEventAdapter::KEYDOWN ) :
     {
       //move map
-      if( ea.getKey() == '4' )
+      if ( ea.getKey() == '4' )
       {
         _manip->pan( -MOVE_OFFSET, 0 );
       }
-      if( ea.getKey() == '6' )
+      if ( ea.getKey() == '6' )
       {
         _manip->pan( MOVE_OFFSET, 0 );
       }
-      if( ea.getKey() == '2' )
+      if ( ea.getKey() == '2' )
       {
         _manip->pan( 0, MOVE_OFFSET );
       }
-      if( ea.getKey() == '8' )
+      if ( ea.getKey() == '8' )
       {
         _manip->pan( 0, -MOVE_OFFSET );
       }
       //rotate
-      if( ea.getKey() == '/' )
+      if ( ea.getKey() == '/' )
       {
         _manip->rotate( MOVE_OFFSET, 0 );
       }
-      if( ea.getKey() == '*' )
+      if ( ea.getKey() == '*' )
       {
         _manip->rotate( -MOVE_OFFSET, 0 );
       }
       //tilt
-      if( ea.getKey() == '9' )
+      if ( ea.getKey() == '9' )
       {
         _manip->rotate( 0, MOVE_OFFSET );
       }
-      if( ea.getKey() == '3' )
+      if ( ea.getKey() == '3' )
       {
         _manip->rotate( 0, -MOVE_OFFSET );
       }
       //zoom
-      if( ea.getKey() == '-' )
+      if ( ea.getKey() == '-' )
       {
         _manip->zoom( 0, MOVE_OFFSET );
       }
-      if( ea.getKey() == '+' )
+      if ( ea.getKey() == '+' )
       {
         _manip->zoom( 0, -MOVE_OFFSET );
       }
       //reset
-      if( ea.getKey() == '5' )
+      if ( ea.getKey() == '5' )
       {
         //_manip->zoom( 0, 0 );
       }
@@ -932,9 +964,9 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
   return false;
 }
 
-bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
+bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/ )
 {
-  if( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
+  if ( ea.getEventType() == ea.KEYDOWN && ea.getKey() == '1' )
   {
     mGlobe->syncExtent();
   }
@@ -943,78 +975,79 @@ bool FlyToExtentHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIAct
 
 bool QueryCoordinatesHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa )
 {
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::MOVE)
-        {
-            osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
-            osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view, false );
-            mGlobe->showCurrentCoordinates( coords.x(), coords.y() );
-        }
-    if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH
-         && ea.getButtonMask() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON)
+  if ( ea.getEventType() == osgGA::GUIEventAdapter::MOVE )
+  {
+    osgViewer::View* view = static_cast<osgViewer::View*>( aa.asView() );
+    osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view, false );
+    mGlobe->showCurrentCoordinates( coords.x(), coords.y() );
+  }
+  if ( ea.getEventType() == osgGA::GUIEventAdapter::PUSH
+       && ea.getButtonMask() == osgGA::GUIEventAdapter::RIGHT_MOUSE_BUTTON )
+  {
+    osgViewer::View* view = static_cast<osgViewer::View*>( aa.asView() );
+    osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view, false );
+
+    OE_NOTICE << "SelectedCoordinates set to:\nLon: " << coords.x() << " Lat: " << coords.y()
+    << " Ele: " << coords.z() << std::endl;
+
+    mGlobe->setSelectedCoordinates( coords );
+
+    if ( ea.getModKeyMask() == osgGA::GUIEventAdapter::MODKEY_CTRL )
+      //ctrl + rightclick pops up a QMessageBox
     {
-        osgViewer::View* view = static_cast<osgViewer::View*>(aa.asView());
-        osg::Vec3d coords = getCoords( ea.getX(), ea.getY(), view, false );
-
-        OE_NOTICE << "SelectedCoordinates set to:\nLon: " << coords.x() << " Lat: " << coords.y()
-                << " Ele: " << coords.z() << std::endl;
-
-        mGlobe->setSelectedCoordinates( coords );
-
-        if (ea.getModKeyMask() == osgGA::GUIEventAdapter::MODKEY_CTRL)
-            //ctrl + rightclick pops up a QMessageBox
-            {
-                mGlobe->showSelectedCoordinates();
-            }
+      mGlobe->showSelectedCoordinates();
     }
+  }
 
-    return false;
+  return false;
 }
 
-osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view,  bool getElevation)
+osg::Vec3d QueryCoordinatesHandler::getCoords( float x, float y, osgViewer::View* view,  bool getElevation )
 {
-    osgUtil::LineSegmentIntersector::Intersections results;
-    if ( view->computeIntersections( x, y, results, 0x01 ) )
+  osgUtil::LineSegmentIntersector::Intersections results;
+  osg::Vec3d coords;
+  if ( view->computeIntersections( x, y, results, 0x01 ) )
+  {
+    // find the first hit under the mouse:
+    osgUtil::LineSegmentIntersector::Intersection first = *( results.begin() );
+    osg::Vec3d point = first.getWorldIntersectPoint();
+
+    // transform it to map coordinates:
+    double lat_rad, lon_rad, height;
+    _mapSRS->getEllipsoid()->convertXYZToLatLongHeight( point.x(), point.y(), point.z(), lat_rad, lon_rad, height );
+
+    // query the elevation at the map point:
+    double lon_deg = osg::RadiansToDegrees( lon_rad );
+    double lat_deg = osg::RadiansToDegrees( lat_rad );
+    double elevation = -99999;
+
+    if ( getElevation )
     {
-        // find the first hit under the mouse:
-        osgUtil::LineSegmentIntersector::Intersection first = *(results.begin());
-        osg::Vec3d point = first.getWorldIntersectPoint();
+      osg::Matrixd out_mat;
+      double query_resolution = 0.1; // 1/10th of a degree
+      double out_resolution = 0.0;
 
-        // transform it to map coordinates:
-        double lat_rad, lon_rad, height;
-        _mapSRS->getEllipsoid()->convertXYZToLatLongHeight( point.x(), point.y(), point.z(), lat_rad, lon_rad, height );
-
-        // query the elevation at the map point:
-        double lon_deg = osg::RadiansToDegrees( lon_rad );
-        double lat_deg = osg::RadiansToDegrees( lat_rad );
-        double elevation = -99999;
-
-        if(getElevation)
-        {
-                osg::Matrixd out_mat;
-                double query_resolution = 0.1; // 1/10th of a degree
-                double out_resolution = 0.0;
-
-                //TODO test elevation calculation
-                //@see https://github.com/gwaldron/osgearth/blob/master/src/applications/osgearth_elevation/osgearth_elevation.cpp
-                if (_elevMan->getPlacementMatrix(
-                        lon_deg, lat_deg, 0,
-                        query_resolution, _mapSRS,
-                        //query_resolution, NULL,
-                        out_mat, elevation, out_resolution ) )
-                    {
-                        OE_NOTICE << "Elevation at " << lon_deg << ", " << lat_deg
-                                << " is " << elevation << std::endl;
-                    }
-                else
-                    {
-                        OE_NOTICE << "getElevation FAILED! at (" << lon_deg << ", "
-                                << lat_deg << ")" << std::endl;
-                    }
-        }
-
-        osg::Vec3d coords = osg::Vec3d(lon_deg, lat_deg, elevation);
-        return coords;
+      //TODO test elevation calculation
+      //@see https://github.com/gwaldron/osgearth/blob/master/src/applications/osgearth_elevation/osgearth_elevation.cpp
+      if ( _elevMan->getPlacementMatrix(
+             lon_deg, lat_deg, 0,
+             query_resolution, _mapSRS,
+             //query_resolution, NULL,
+             out_mat, elevation, out_resolution ) )
+      {
+        OE_NOTICE << "Elevation at " << lon_deg << ", " << lat_deg
+        << " is " << elevation << std::endl;
+      }
+      else
+      {
+        OE_NOTICE << "getElevation FAILED! at (" << lon_deg << ", "
+        << lat_deg << ")" << std::endl;
+      }
     }
+
+    coords = osg::Vec3d( lon_deg, lat_deg, elevation );
+  }
+  return coords;
 }
 
 /**

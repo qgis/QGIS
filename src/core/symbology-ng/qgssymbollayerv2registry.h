@@ -5,6 +5,8 @@
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2.h"
 
+class QgsVectorLayer;
+
 /**
  Stores metadata about one symbol layer class.
 
@@ -24,7 +26,7 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
     /** create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0;
     /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget() { return NULL; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) { return NULL; }
 
   protected:
     QString mName;
@@ -33,7 +35,7 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
 };
 
 typedef QgsSymbolLayerV2*( *QgsSymbolLayerV2CreateFunc )( const QgsStringMap& );
-typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )();
+typedef QgsSymbolLayerV2Widget*( *QgsSymbolLayerV2WidgetFunc )( const QgsVectorLayer* );
 
 /**
  Convenience metadata class that uses static functions to create symbol layer and its widget.
@@ -53,7 +55,7 @@ class CORE_EXPORT QgsSymbolLayerV2Metadata : public QgsSymbolLayerV2AbstractMeta
     void setWidgetFunction( QgsSymbolLayerV2WidgetFunc f ) { mWidgetFunc = f; }
 
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) { return mCreateFunc ? mCreateFunc( map ) : NULL; }
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget() { return mWidgetFunc ? mWidgetFunc() : NULL; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) { return mWidgetFunc ? mWidgetFunc( vl ) : NULL; }
 
   protected:
     QgsSymbolLayerV2CreateFunc mCreateFunc;

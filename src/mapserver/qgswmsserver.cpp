@@ -110,9 +110,36 @@ QDomDocument QgsWMSServer::getCapabilities()
   QString requestUrl = getenv( "REQUEST_URI" );
   QUrl mapUrl( requestUrl );
   mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
-  mapUrl.removeQueryItem( "REQUEST" );
-  mapUrl.removeQueryItem( "VERSION" );
-  mapUrl.removeQueryItem( "SERVICE" );
+  if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
+  {
+    mapUrl.setScheme( "https" );
+  }
+  else
+  {
+    mapUrl.setScheme( "http" );
+  }
+
+  QList<QPair<QString, QString> > queryItems = mapUrl.queryItems();
+  QList<QPair<QString, QString> >::const_iterator queryIt = queryItems.constBegin();
+  for(; queryIt != queryItems.constEnd(); ++queryIt )
+  {
+    if( queryIt->first.compare("REQUEST", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if( queryIt->first.compare("VERSION", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if( queryIt->first.compare("SERVICE", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+    else if( queryIt->first.compare("_DC", Qt::CaseInsensitive ) == 0 )
+    {
+      mapUrl.removeQueryItem( queryIt->first );
+    }
+  }
   hrefString = mapUrl.toString();
 
 
@@ -1594,6 +1621,33 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
           filteredLayer->setSubsetString( newSubsetString );
         }
       }
+    }
+
+    //No BBOX parameter in request. We use the union of the filtered layer
+    //to provide the functionality of zooming to selected records via (enhanced) WMS.
+    if ( mMapRenderer && mMapRenderer->extent().isEmpty() )
+    {
+      QgsRectangle filterExtent;
+      QMap<QString, QString>::const_iterator filterIt = filterMap.constBegin();
+      for ( ; filterIt != filterMap.constEnd(); ++filterIt )
+      {
+        QgsMapLayer* mapLayer = QgsMapLayerRegistry::instance()->mapLayer( filterIt.key() );
+        if ( !mapLayer )
+        {
+          continue;
+        }
+
+        QgsRectangle layerExtent = mapLayer->extent();
+        if ( filterExtent.isEmpty() )
+        {
+          filterExtent = layerExtent;
+        }
+        else
+        {
+          filterExtent.combineExtentWith( &layerExtent );
+        }
+      }
+      mMapRenderer->setExtent( filterExtent );
     }
 
     //No BBOX parameter in request. We use the union of the filtered layer

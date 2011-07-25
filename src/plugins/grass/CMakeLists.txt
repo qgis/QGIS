@@ -14,7 +14,6 @@ ENDIF (NOT IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${GRASS_MODULES_DIR}")
 ADD_SUBDIRECTORY(modules-common)
 ADD_SUBDIRECTORY(${GRASS_MODULES_DIR})
 ADD_SUBDIRECTORY(scripts)
-ADD_SUBDIRECTORY(themes)
 
 ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
 ADD_DEFINITIONS(-DHAVE_OPENPTY=${HAVE_OPENPTY})
@@ -175,7 +174,7 @@ INSTALL(TARGETS grassplugin
 
 
 FILE (GLOB GMLS *.gml)
-INSTALL (FILES ${GMLS} images/world.png
+INSTALL (FILES ${GMLS}
          DESTINATION ${QGIS_DATA_DIR}/grass)
 
 INSTALL (FILES themes/gis/grass_arrow.svg themes/gis/grass_plus.svg themes/gis/grass_arrow.png themes/gis/grass_plus.png

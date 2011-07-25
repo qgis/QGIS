@@ -106,6 +106,8 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString name() const { return mName; }
     QString path() const { return mPath; }
 
+    void setIcon( QIcon icon ) { mIcon = icon; }
+
   protected:
 
     Type mType;

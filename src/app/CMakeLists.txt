@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsattributetypeloaddialog.cpp
   qgsbookmarkitem.cpp
   qgsbookmarks.cpp
+  qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
   qgscontinuouscolordialog.cpp
   qgsconfigureshortcutsdialog.cpp
@@ -146,6 +147,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
   qgsbookmarks.h
+  qgsbrowserdockwidget.h
   qgsconfigureshortcutsdialog.h
   qgscontinuouscolordialog.h
   qgscustomization.h
@@ -419,13 +421,13 @@ IF (SPATIALITE_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${SPATIALITE_LIBRARY})
 ENDIF (SPATIALITE_FOUND)
 
+IF(MSVC)
+  INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
+ENDIF(MSVC)
+
 INSTALL(TARGETS ${QGIS_APP_NAME}
   BUNDLE DESTINATION ${QGIS_INSTALL_PREFIX}
   RUNTIME DESTINATION ${QGIS_BIN_DIR})
-
-IF (MSVC)
-  INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
-ENDIF (MSVC)
 
 IF (APPLE)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND /bin/echo -n \"APPLQGIS\" OUTPUT_FILE \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../PkgInfo\")")

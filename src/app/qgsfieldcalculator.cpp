@@ -148,6 +148,7 @@ void QgsFieldCalculator::accept()
     //go through all the features and change the new attribute
     QgsFeature feature;
     bool calculationSuccess = true;
+    QString error;
 
     bool onlySelected = ( mOnlyUpdateSelectedCheckBox->checkState() == Qt::Checked );
     QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
@@ -183,6 +184,7 @@ void QgsFieldCalculator::accept()
         else
         {
           calculationSuccess = false;
+          error = searchTree->errorMsg();
           break;
         }
       }
@@ -225,7 +227,7 @@ void QgsFieldCalculator::accept()
 
     if ( !calculationSuccess )
     {
-      QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string." ) );
+      QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string:\n%1" ).arg( error ) );
       mVectorLayer->destroyEditCommand();
       return;
     }

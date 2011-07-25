@@ -10,7 +10,7 @@
 QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
-  QObject::connect( mButtonBox, SIGNAL(rejected() ), this, SLOT(reject() ) );
+  QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
 
 QgsEmbedLayerDialog::~QgsEmbedLayerDialog()
@@ -23,11 +23,11 @@ QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedGroups() const
 
   QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
   QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
-  for(; itemIt != items.end(); ++itemIt )
+  for ( ; itemIt != items.end(); ++itemIt )
   {
-    if( (*itemIt)->data(0, Qt::UserRole).toString() == "group" )
+    if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "group" )
     {
-      result.push_back( qMakePair( (*itemIt)->text( 0 ), mProjectPath ) );
+      result.push_back( qMakePair(( *itemIt )->text( 0 ), mProjectPath ) );
     }
   }
 
@@ -40,11 +40,11 @@ QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedLayers() const
 
   QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
   QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
-  for(; itemIt != items.end(); ++itemIt )
+  for ( ; itemIt != items.end(); ++itemIt )
   {
-    if( (*itemIt)->data(0, Qt::UserRole).toString() == "layer" )
+    if (( *itemIt )->data( 0, Qt::UserRole ).toString() == "layer" )
     {
-      result.push_back( qMakePair( (*itemIt)->data(0, Qt::UserRole + 1).toString(), mProjectPath ) );
+      result.push_back( qMakePair(( *itemIt )->data( 0, Qt::UserRole + 1 ).toString(), mProjectPath ) );
     }
   }
   return result;
@@ -56,8 +56,8 @@ void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( true );
 
   QSettings s;
-  QString projectFile = QFileDialog::getOpenFileName( 0, tr("Select project file"), s.value("/qgis/last_embedded_project_path").toString() ,tr("QGIS project files (*.qgs)") );
-  if( !projectFile.isEmpty() )
+  QString projectFile = QFileDialog::getOpenFileName( 0, tr( "Select project file" ), s.value( "/qgis/last_embedded_project_path" ).toString() , tr( "QGIS project files (*.qgs)" ) );
+  if ( !projectFile.isEmpty() )
   {
     mProjectFileLineEdit->setText( projectFile );
   }
@@ -73,40 +73,40 @@ void QgsEmbedLayerDialog::on_mProjectFileLineEdit_editingFinished()
 void QgsEmbedLayerDialog::changeProjectFile()
 {
   QFile projectFile( mProjectFileLineEdit->text() );
-  if( !projectFile.exists() )
+  if ( !projectFile.exists() )
   {
     return;
   }
 
-  if( mProjectPath == mProjectFileLineEdit->text() )
+  if ( mProjectPath == mProjectFileLineEdit->text() )
   {
     //already up to date
     return;
   }
 
   //check we are not embedding from/to the same project
-  if( mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
+  if ( mProjectFileLineEdit->text() == QgsProject::instance()->fileName() )
   {
-    QMessageBox::critical( 0, tr("Recursive embeding not possible"), tr("It is not possible to embed layers / groups from the current project") );
+    QMessageBox::critical( 0, tr( "Recursive embeding not possible" ), tr( "It is not possible to embed layers / groups from the current project" ) );
     return;
   }
 
   mTreeWidget->clear();
 
   //parse project file and fill tree
-  if( !projectFile.open( QIODevice::ReadOnly ) )
+  if ( !projectFile.open( QIODevice::ReadOnly ) )
   {
     return;
   }
 
   QDomDocument projectDom;
-  if( !projectDom.setContent( &projectFile ) )
+  if ( !projectDom.setContent( &projectFile ) )
   {
     return;
   }
 
-  QDomElement legendElem = projectDom.documentElement().firstChildElement("legend");
-  if( legendElem.isNull() )
+  QDomElement legendElem = projectDom.documentElement().firstChildElement( "legend" );
+  if ( legendElem.isNull() )
   {
     return;
   }
@@ -114,14 +114,14 @@ void QgsEmbedLayerDialog::changeProjectFile()
   QDomNodeList legendChildren = legendElem.childNodes();
   QDomElement currentChildElem;
 
-  for( int i = 0; i < legendChildren.size(); ++i )
+  for ( int i = 0; i < legendChildren.size(); ++i )
   {
     currentChildElem = legendChildren.at( i ).toElement();
-    if( currentChildElem.tagName() == "legendlayer" )
+    if ( currentChildElem.tagName() == "legendlayer" )
     {
       addLegendLayerToTreeWidget( currentChildElem );
     }
-    else if( currentChildElem.tagName() == "legendgroup" )
+    else if ( currentChildElem.tagName() == "legendgroup" )
     {
       addLegendGroupToTreeWidget( currentChildElem );
     }
@@ -135,13 +135,13 @@ void QgsEmbedLayerDialog::addLegendGroupToTreeWidget( const QDomElement& groupEl
   QDomNodeList groupChildren = groupElem.childNodes();
   QDomElement currentChildElem;
 
-  if(groupElem.attribute("embedded") == "1" )
+  if ( groupElem.attribute( "embedded" ) == "1" )
   {
     return;
   }
 
   QTreeWidgetItem* groupItem = 0;
-  if( !parent )
+  if ( !parent )
   {
     groupItem = new QTreeWidgetItem( mTreeWidget );
   }
@@ -149,18 +149,18 @@ void QgsEmbedLayerDialog::addLegendGroupToTreeWidget( const QDomElement& groupEl
   {
     groupItem = new QTreeWidgetItem( parent );
   }
-  groupItem->setIcon( 0, QgisApp::getThemeIcon("mActionFolder.png") );
-  groupItem->setText( 0, groupElem.attribute("name") );
+  groupItem->setIcon( 0, QgisApp::getThemeIcon( "mActionFolder.png" ) );
+  groupItem->setText( 0, groupElem.attribute( "name" ) );
   groupItem->setData( 0, Qt::UserRole, "group" );
 
-  for( int i = 0; i < groupChildren.size(); ++i )
+  for ( int i = 0; i < groupChildren.size(); ++i )
   {
     currentChildElem = groupChildren.at( i ).toElement();
-    if( currentChildElem.tagName() == "legendlayer" )
+    if ( currentChildElem.tagName() == "legendlayer" )
     {
       addLegendLayerToTreeWidget( currentChildElem, groupItem );
     }
-    else if( currentChildElem.tagName() == "legendgroup" )
+    else if ( currentChildElem.tagName() == "legendgroup" )
     {
       addLegendGroupToTreeWidget( currentChildElem, groupItem );
     }
@@ -169,13 +169,13 @@ void QgsEmbedLayerDialog::addLegendGroupToTreeWidget( const QDomElement& groupEl
 
 void QgsEmbedLayerDialog::addLegendLayerToTreeWidget( const QDomElement& layerElem, QTreeWidgetItem* parent )
 {
-  if(layerElem.attribute("embedded") == "1" )
+  if ( layerElem.attribute( "embedded" ) == "1" )
   {
     return;
   }
 
   QTreeWidgetItem* item = 0;
-  if( parent )
+  if ( parent )
   {
     item = new QTreeWidgetItem( parent );
   }
@@ -183,9 +183,9 @@ void QgsEmbedLayerDialog::addLegendLayerToTreeWidget( const QDomElement& layerEl
   {
     item = new QTreeWidgetItem( mTreeWidget );
   }
-  item->setText( 0, layerElem.attribute("name") );
+  item->setText( 0, layerElem.attribute( "name" ) );
   item->setData( 0, Qt::UserRole, "layer" );
-  item->setData( 0, Qt::UserRole + 1, layerElem.firstChildElement("filegroup").firstChildElement("legendlayerfile").attribute("layerid") );
+  item->setData( 0, Qt::UserRole + 1, layerElem.firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" ) );
 }
 
 void QgsEmbedLayerDialog::on_mTreeWidget_itemSelectionChanged()
@@ -193,7 +193,7 @@ void QgsEmbedLayerDialog::on_mTreeWidget_itemSelectionChanged()
   mTreeWidget->blockSignals( true );
   QList<QTreeWidgetItem*> items = mTreeWidget->selectedItems();
   QList<QTreeWidgetItem*>::iterator itemIt = items.begin();
-  for(; itemIt != items.end(); ++itemIt )
+  for ( ; itemIt != items.end(); ++itemIt )
   {
     //deselect children recursively
     unselectChildren( *itemIt );
@@ -203,13 +203,13 @@ void QgsEmbedLayerDialog::on_mTreeWidget_itemSelectionChanged()
 
 void QgsEmbedLayerDialog::unselectChildren( QTreeWidgetItem* item )
 {
-  if( !item )
+  if ( !item )
   {
     return;
   }
 
   QTreeWidgetItem* currentChild = 0;
-  for( int i = 0; i < item->childCount(); ++i )
+  for ( int i = 0; i < item->childCount(); ++i )
   {
     currentChild = item->child( i );
     currentChild->setSelected( false );
@@ -221,9 +221,9 @@ void QgsEmbedLayerDialog::on_mButtonBox_accepted()
 {
   QSettings s;
   QFileInfo fi( mProjectPath );
-  if( fi.exists() )
+  if ( fi.exists() )
   {
-    s.setValue("/qgis/last_embedded_project_path", fi.absolutePath() );
+    s.setValue( "/qgis/last_embedded_project_path", fi.absolutePath() );
   }
   accept();
 }

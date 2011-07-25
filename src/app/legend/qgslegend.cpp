@@ -697,6 +697,7 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
       for ( int j = 0; j < groupChildren.size(); ++j )
       {
         QDomElement childElem = groupChildren.at( j ).toElement();
+        bool visible = ( childElem.attribute( "checked" ).compare( "Qt::Checked", Qt::CaseInsensitive ) == 0 );
         QString tagName = childElem.tagName();
         if ( tagName == "legendlayer" )
         {
@@ -713,9 +714,14 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
             removeItem( cItem );
           }
 
-          if( cItem )
+          if ( cItem )
           {
             group->insertChild( group->childCount(), cItem );
+          }
+
+          if( !visible )
+          {
+            cItem->setCheckState( 0, Qt::Unchecked );
           }
         }
         else if ( tagName == "legendgroup" )
@@ -1175,6 +1181,7 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
       if ( childelem.attribute( "embedded" ) == "1" )
       {
         theGroup = addEmbeddedGroup( name, QgsProject::instance()->readPath( childelem.attribute( "project" ) ) );
+        updateGroupCheckStates( theGroup );
       }
       else
       {

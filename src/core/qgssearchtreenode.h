@@ -54,6 +54,7 @@ class CORE_EXPORT QgsSearchTreeNode
     };
 
     //! possible operators
+    //! TODO: sync the python bindings
     enum Operator
     {
       // binary
@@ -116,6 +117,7 @@ class CORE_EXPORT QgsSearchTreeNode
       opLOWER,
       opUPPER,
       opREPLACE,
+      opREGEXPREPLACE,
       opSTRLEN,
       opSUBSTR,
 
@@ -269,8 +271,8 @@ class CORE_EXPORT QgsSearchTreeValue
     QgsSearchTreeValue( double number ) { mType = valNumber; mNumber = number; }
     QgsSearchTreeValue( int error, QString errorMsg ) { mType = valError; mNumber = error; mString = errorMsg; }
 
-    static int compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
-                        Qt::CaseSensitivity = Qt::CaseSensitive );
+    static QgsSearchTreeValue compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
+                                       Qt::CaseSensitivity = Qt::CaseSensitive );
 
     bool isNumeric() { return mType == valNumber; }
     bool isError() { return mType == valError; }

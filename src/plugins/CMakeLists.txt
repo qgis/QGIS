@@ -37,7 +37,7 @@ IF (GRASS_FOUND)
 ENDIF (GRASS_FOUND)
 
 IF (OSGEARTH_FOUND)
-  SUBDIRS (globe)
+  ADD_SUBDIRECTORY(globe)
 ENDIF (OSGEARTH_FOUND)
 
 # headers installed in qgis_core target

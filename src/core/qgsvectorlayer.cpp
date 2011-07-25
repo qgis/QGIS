@@ -2800,7 +2800,6 @@ bool QgsVectorLayer::setDataProvider( QString const & provider )
   else
   {
     QgsDebugMsg( " unable to get data provider" );
-
     return false;
   }
 
@@ -3037,7 +3036,8 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
         QString key = editTypeElement.attribute( "key" );
         QString value = editTypeElement.attribute( "value" );
         bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
-        mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull );
+        bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
+        mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue );
       }
     }
   }
@@ -3242,6 +3242,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
             editTypeElement.setAttribute( "key", data.mKey );
             editTypeElement.setAttribute( "value", data.mValue );
             editTypeElement.setAttribute( "allowNull", data.mAllowNull ? "true" : "false" );
+            editTypeElement.setAttribute( "orderByValue", data.mOrderByValue ? "true" : "false" );
           }
           break;
 

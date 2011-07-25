@@ -3,6 +3,7 @@
 IF (APPLE)
   # for included scripts that set policies (ie OS X bundling)
   INSTALL (CODE "cmake_policy(SET CMP0011 NEW)")
+  CONFIGURE_FILE (cmake/0vars.cmake.in 0vars.cmake @ONLY)
   CONFIGURE_FILE (cmake/0qgis.cmake.in 0qgis.cmake @ONLY)
   INSTALL (SCRIPT ${CMAKE_BINARY_DIR}/mac/0qgis.cmake)
   IF (QGIS_MACAPP_BUNDLE GREATER 0)

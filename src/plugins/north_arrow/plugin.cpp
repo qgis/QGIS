@@ -167,8 +167,7 @@ void QgsNorthArrowPlugin::renderNorthArrow( QPainter * theQPainter )
 
     QPixmap myQPixmap; //to store the north arrow image in
 
-    QString myFileNameQString = QDir::cleanPath( QgsApplication::pkgDataPath() +
-                                "/images/north_arrows/default.png" );
+    QString myFileNameQString = ":/images/north_arrows/default.png";
 
     //QgsDebugMsg("Trying to load " + myFileNameQString);
     if ( myQPixmap.load( myFileNameQString ) )

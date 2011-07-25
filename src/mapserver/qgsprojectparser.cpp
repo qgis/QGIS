@@ -272,9 +272,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       titleElem.appendChild( titleText );
       layerElem.appendChild( titleElem );
 
-      QDomElement abstractElem = doc.createElement( "Abstract" );
-      layerElem.appendChild( abstractElem );
-
       //CRS
       QStringList crsList = createCRSListForLayer( currentLayer );
       appendCRSElementsToLayer( layerElem, doc, crsList );
@@ -306,13 +303,6 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       QgsDebugMsg( "unexpected child element" );
       continue;
     }
-
-#if 0
-    QString buf;
-    QTextStream s( &buf );
-    layerElem.save( s, 0 );
-    QgsDebugMsg( QString( "adding layer: %1" ).arg( buf ) );
-#endif
 
     parentElem.appendChild( layerElem );
   }
@@ -363,7 +353,7 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
       {
         QString project = convertToAbsolutePath( groupIt->attribute( "project" ) );
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
-        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project  ) );
+        QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
         if ( p )
         {
           QList<QDomElement> pGroupElems = p->legendGroupElements();
@@ -1252,6 +1242,8 @@ QDomElement QgsProjectParser::composerByName( const QString& composerName ) cons
 
 void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  QDomElement serviceElem = doc.createElement( "Service" );
+
   QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
   if ( propertiesElem.isNull() )
   {
@@ -1270,7 +1262,7 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   QDomElement wmsNameElem = doc.createElement( "Name" );
   QDomText wmsNameText = doc.createTextNode( "WMS" );
   wmsNameElem.appendChild( wmsNameText );
-  parentElement.appendChild( wmsNameElem );
+  serviceElem.appendChild( wmsNameElem );
 
   //WMS title
   QDomElement titleElem = propertiesElem.firstChildElement( "WMSServiceTitle" );
@@ -1279,7 +1271,7 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     QDomElement wmsTitleElem = doc.createElement( "Title" );
     QDomText wmsTitleText = doc.createTextNode( titleElem.text() );
     wmsTitleElem.appendChild( wmsTitleText );
-    parentElement.appendChild( wmsTitleElem );
+    serviceElem.appendChild( wmsTitleElem );
   }
 
   //WMS abstract
@@ -1289,8 +1281,20 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     QDomElement wmsAbstractElem = doc.createElement( "Abstract" );
     QDomText wmsAbstractText = doc.createTextNode( abstractElem.text() );
     wmsAbstractElem.appendChild( wmsAbstractText );
-    parentElement.appendChild( wmsAbstractElem );
+    serviceElem.appendChild( wmsAbstractElem );
   }
+
+  //OnlineResource element is mandatory according to the WMS specification
+  QDomElement wmsOnlineResourceElem = propertiesElem.firstChildElement( "WMSOnlineResource" );
+  QDomElement onlineResourceElem = doc.createElement( "OnlineResource" );
+  onlineResourceElem.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  onlineResourceElem.setAttribute( "xlink:type", "simple" );
+  if ( !wmsOnlineResourceElem.isNull() )
+  {
+    onlineResourceElem.setAttribute( "xlink:href", wmsOnlineResourceElem.text() );
+  }
+
+  serviceElem.appendChild( onlineResourceElem );
 
   //Contact information
   QDomElement contactInfoElem = doc.createElement( "ContactInformation" );
@@ -1300,29 +1304,29 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
 
   //Contact person
   QDomElement contactPersonElem = propertiesElem.firstChildElement( "WMSContactPerson" );
+  QString contactPersonString;
   if ( !contactPersonElem.isNull() )
   {
-    QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
-    QDomText contactPersonText = doc.createTextNode( contactPersonElem.text() );
-    wmsContactPersonElem.appendChild( contactPersonText );
-    contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+    contactPersonString = contactPersonElem.text();
   }
+  QDomElement wmsContactPersonElem = doc.createElement( "ContactPerson" );
+  QDomText contactPersonText = doc.createTextNode( contactPersonString );
+  wmsContactPersonElem.appendChild( contactPersonText );
+  contactPersonPrimaryElem.appendChild( wmsContactPersonElem );
+
 
   //Contact organisation
-  QDomElement contactOrganisationElem = propertiesElem.firstChildElement( "WMSContactOrganisation" );
-  if ( !contactOrganisationElem.isNull() )
+  QDomElement contactOrganizationElem = propertiesElem.firstChildElement( "WMSContactOrganization" );
+  QString contactOrganizationString;
+  if ( !contactOrganizationElem.isNull() )
   {
-    QDomElement wmsContactOrganisationElem = doc.createElement( "ContactOrganization" );
-    QDomText contactOrganisationText = doc.createTextNode( contactOrganisationElem.text() );
-    wmsContactOrganisationElem.appendChild( contactOrganisationText );
-    contactPersonPrimaryElem.appendChild( wmsContactOrganisationElem );
+    contactOrganizationString = contactOrganizationElem.text();
   }
-
+  QDomElement wmsContactOrganizationElem = doc.createElement( "ContactOrganization" );
+  QDomText contactOrganizationText = doc.createTextNode( contactOrganizationString );
+  wmsContactOrganizationElem.appendChild( contactOrganizationText );
+  contactPersonPrimaryElem.appendChild( wmsContactOrganizationElem );
   contactInfoElem.appendChild( contactPersonPrimaryElem );
-
-  //Contact address
-  //QDomElement contactAddressElem = doc.createElement( "ContactAddress" );
-  //contactInfoElem.appendChild( contactAddressElem );
 
   //phone
   QDomElement phoneElem = propertiesElem.firstChildElement( "WMSContactPhone" );
@@ -1344,7 +1348,8 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
     contactInfoElem.appendChild( wmsMailElem );
   }
 
-  parentElement.appendChild( contactInfoElem );
+  serviceElem.appendChild( contactInfoElem );
+  parentElement.appendChild( serviceElem );
 }
 
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const

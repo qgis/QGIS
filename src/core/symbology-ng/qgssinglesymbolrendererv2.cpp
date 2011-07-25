@@ -122,12 +122,20 @@ void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
 
 QList<QString> QgsSingleSymbolRendererV2::usedAttributes()
 {
-  QList<QString> lst;
+  QSet<QString> attributes;
+  if( mSymbol )
+  {
+    attributes.unite( mSymbol->usedAttributes() );
+  }
   if ( !mRotationField.isEmpty() )
-    lst.append( mRotationField );
+  {
+    attributes.insert( mRotationField );
+  }
   if ( !mSizeScaleField.isEmpty() )
-    lst.append( mSizeScaleField );
-  return lst;
+  {
+    attributes.insert( mSizeScaleField );
+  }
+  return attributes.toList();
 }
 
 QgsSymbolV2* QgsSingleSymbolRendererV2::symbol() const
