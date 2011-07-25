@@ -243,5 +243,22 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      */
     static void registerOgrDrivers();
 
+    /**Converts absolute path to path relative to target
+      @note: this method was added in version 1.6*/
+    static QString absolutePathToRelativePath( QString apath, QString targetPath );
+    /**Converts path relative to target to an absolute path
+      @note: this method was added in version 1.6*/
+    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
+
+    /** Indicates whether running from build directory (not installed)
+       @note added in 2.0 */
+    static bool isRunningFromBuildDir();
+    /** Returns path to the source directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildSourcePath();
+    /** Returns path to the build output directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildOutputPath();
+
 };
 

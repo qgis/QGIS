@@ -60,6 +60,10 @@ ADD_LIBRARY(grassrasterprovider MODULE qgsgrassrasterprovider.cpp ${GRASS_RASTER
 SET_TARGET_PROPERTIES(grassrasterprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
 TARGET_LINK_LIBRARIES(grassrasterprovider qgisgrass qgis_core)
 
+# override default path where built files are put to allow running qgis without installing
+# the modules go under libexec subdir
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/modules)
+
 #
 # grass raster display module
 #

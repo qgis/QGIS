@@ -1,3 +1,6 @@
+# override default path where built files are put to allow running qgis without installing
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR})
+
 ADD_EXECUTABLE(crssync main.cpp)
 INCLUDE_DIRECTORIES(
   ../core

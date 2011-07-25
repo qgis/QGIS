@@ -378,6 +378,16 @@ SET (QGIS_DATA_DIR    ${QGIS_DATA_SUBDIR})
 SET (QGIS_PLUGIN_DIR  ${QGIS_PLUGIN_SUBDIR})
 SET (QGIS_INCLUDE_DIR ${QGIS_INCLUDE_SUBDIR})
 
+# set the default locations where the targets (executables, libraries) will land when compiled
+# this is to allow running qgis from the source tree without having to actually do a "make install"
+SET (QGIS_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/output)
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR})
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIB_SUBDIR})
+
+# write a marker with source directory path into the output's bin directory
+# if run from the build directory QGIS will detect it and alter the paths
+FILE(WRITE ${QGIS_OUTPUT_DIRECTORY}/${QGIS_BIN_SUBDIR}/source_path.txt "${CMAKE_SOURCE_DIR}")
+
 # manual page - makes sense only on unix systems
 IF (UNIX AND NOT APPLE)
   SET (DEFAULT_MANUAL_SUBDIR  man)

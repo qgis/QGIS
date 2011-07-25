@@ -84,6 +84,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static const QString translatorsFilePath();
 
     //! Returns the path to the developer image directory.
+    //! @deprecated images are not provided anymore :-P
     static const QString developerPath();
 
     //! Returns the path to the help application.
@@ -208,6 +209,16 @@ class CORE_EXPORT QgsApplication: public QApplication
       @note: this method was added in version 1.6*/
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
+    /** Indicates whether running from build directory (not installed)
+       @note added in 2.0 */
+    static bool isRunningFromBuildDir() { return mRunningFromBuildDir; }
+    /** Returns path to the source directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildSourcePath() { return mBuildSourcePath; }
+    /** Returns path to the build output directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildOutputPath() { return mBuildOutputPath; }
+
   signals:
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
@@ -218,10 +229,19 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString mPrefixPath;
     static QString mPluginPath;
     static QString mPkgDataPath;
+    static QString mLibraryPath;
+    static QString mLibexecPath;
     static QString mThemeName;
     static QStringList mDefaultSvgPaths;
 
     static QString mConfigPath;
+
+    /** true when running from build directory, i.e. without 'make install' */
+    static bool mRunningFromBuildDir;
+    /** path to the source directory. valid only when running from build directory. */
+    static QString mBuildSourcePath;
+    /** path to the output directory of the build. valid only when running from build directory */
+    static QString mBuildOutputPath;
 };
 
 #endif

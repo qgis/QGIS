@@ -1,3 +1,14 @@
+
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
+file(COPY
+  lib/__init__.py
+  lib/dbapi2.py
+  lib/dump.py
+  DESTINATION
+  ${PYTHON_OUTPUT_DIRECTORY}/pyspatialite)
+
+
 INCLUDE_DIRECTORIES(
   ../../src/core/spatialite/headers
   ../../src/core/spatialite/headers/spatialite
