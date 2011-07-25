@@ -133,7 +133,6 @@ ENDIF(NOT WIN32 AND NOT ANDROID)
 # required
 FIND_PACKAGE(Proj)
 FIND_PACKAGE(Expat)    # GPS importer plugin
-FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
 FIND_PACKAGE(Qwt REQUIRED)
@@ -149,6 +148,11 @@ IF (NOT WITH_INTERNAL_SPATIALITE)
 ENDIF (NOT WITH_INTERNAL_SPATIALITE)
 
 # optional
+SET (WITH_GSL TRUE CACHE BOOL "Determines whether to load GSL (and thus the georeferencer plugin)")
+IF (WITH_GSL)
+  FIND_PACKAGE(GSL)      # Georeferencer
+ENDIF (WITH_GSL)
+
 IF (WITH_POSTGRESQL)
   FIND_PACKAGE(Postgres) # PostgreSQL provider, SPIT plugin
 ENDIF (WITH_POSTGRESQL)
