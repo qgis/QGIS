@@ -53,40 +53,18 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     : QObject( 0 )
     , QGraphicsRectItem( 0, 0, width, height, 0 )
     , mComposition( composition )
-//    , mBoundingResizeRectangle( 0 )
+    , mBoundingResizeRectangle( 0 )
     , m_rubberDrag(false)
     , mFrame( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-//  setFlag( QGraphicsItem::ItemIsSelectable, true );
-//  setAcceptsHoverEvents( true );
-
 	init(manageZValue);
 	
   QTransform t;
   t.translate( x, y );
   setTransform( t );
-
-  //set default pen and brush
-//  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-//  QPen defaultPen( QColor( 0, 0, 0 ) );
-//  defaultPen.setWidthF( 0.3 );
-//  setPen( defaultPen );
-
-//let z-Value be managed by composition
-//  if ( mComposition && manageZValue )
-//  {
-//    mComposition->addItemToZList( this );
-//  }
-  
-//  mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
-//  scene()->addItem( mBoundingResizeRectangle );
-
-//  mBoundingResizeRectangle->setBrush( Qt::NoBrush );
-//  mBoundingResizeRectangle->setPen( QPen( QColor( 0, 0, 0 ), 0 ) );
-//  mBoundingResizeRectangle->setZValue( 90 );
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -368,30 +346,6 @@ Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos 
 {
   QgsComposerItem::MouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
 
-//  if ( mouseAction == QgsComposerItem::NoAction )
-//  {
-//    return Qt::ForbiddenCursor;
-//  }
-//  if ( mouseAction == QgsComposerItem::MoveItem )
-//  {
-//    return Qt::ClosedHandCursor;
-//  }
-//  else if ( mouseAction == QgsComposerItem::ResizeLeftUp || mouseAction == QgsComposerItem::ResizeRightDown )
-//  {
-//    return Qt::SizeFDiagCursor;
-//  }
-//  else if ( mouseAction == QgsComposerItem::ResizeLeftDown || mouseAction == QgsComposerItem::ResizeRightUp )
-//  {
-//    return Qt::SizeBDiagCursor;
-//  }
-//  else if ( mouseAction == QgsComposerItem::ResizeUp || mouseAction == QgsComposerItem::ResizeDown )
-//  {
-//    return Qt::SizeVerCursor;
-//  }
-//  else //if(mouseAction == QgsComposerItem::ResizeLeft || mouseAction == QgsComposerItem::ResizeRight)
-//  {
-//    return Qt::SizeHorCursor;
-//  }
   switch (mouseAction)
   {
   case NoAction: return Qt::ForbiddenCursor;
