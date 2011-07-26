@@ -40,55 +40,53 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , QGraphicsRectItem( 0 )
     , mComposition( composition )
     , mBoundingResizeRectangle( 0 )
+    , m_rubberDrag(false)
     , mFrame( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, true );
-  setAcceptsHoverEvents( true );
-
-  //set default pen and brush
-  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-  QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidthF( 0.3 );
-  setPen( defaultPen );
-
-  //let z-Value be managed by composition
-  if ( mComposition && manageZValue )
-  {
-    mComposition->addItemToZList( this );
-  }
+	init(manageZValue);
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
     : QObject( 0 )
     , QGraphicsRectItem( 0, 0, width, height, 0 )
     , mComposition( composition )
-    , mBoundingResizeRectangle( 0 )
+//    , mBoundingResizeRectangle( 0 )
+    , m_rubberDrag(false)
     , mFrame( true )
     , mItemPositionLocked( false )
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, true );
-  setAcceptsHoverEvents( true );
+//  setFlag( QGraphicsItem::ItemIsSelectable, true );
+//  setAcceptsHoverEvents( true );
 
+	init(manageZValue);
+	
   QTransform t;
   t.translate( x, y );
   setTransform( t );
 
   //set default pen and brush
-  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-  QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidthF( 0.3 );
-  setPen( defaultPen );
+//  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
+//  QPen defaultPen( QColor( 0, 0, 0 ) );
+//  defaultPen.setWidthF( 0.3 );
+//  setPen( defaultPen );
 
 //let z-Value be managed by composition
-  if ( mComposition && manageZValue )
-  {
-    mComposition->addItemToZList( this );
-  }
+//  if ( mComposition && manageZValue )
+//  {
+//    mComposition->addItemToZList( this );
+//  }
+  
+//  mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
+//  scene()->addItem( mBoundingResizeRectangle );
+
+//  mBoundingResizeRectangle->setBrush( Qt::NoBrush );
+//  mBoundingResizeRectangle->setPen( QPen( QColor( 0, 0, 0 ), 0 ) );
+//  mBoundingResizeRectangle->setZValue( 90 );
 }
 
 QgsComposerItem::~QgsComposerItem()
@@ -98,7 +96,7 @@ QgsComposerItem::~QgsComposerItem()
     mComposition->removeItemFromZList( this );
   }
 
-  delete mBoundingResizeRectangle;
+//  delete mBoundingResizeRectangle;
 }
 
 void QgsComposerItem::setSelected( bool s )
@@ -306,7 +304,8 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
-  if ( mBoundingResizeRectangle )
+//  if ( mBoundingResizeRectangle )
+  if ( m_rubberDrag )
   {
     double diffX = event->lastScenePos().x() - mLastMouseEventPos.x();
     double diffY = event->lastScenePos().y() - mLastMouseEventPos.y();
@@ -328,25 +327,12 @@ void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
   mLastMouseEventPos = event->lastScenePos();
   mCurrentMouseMoveAction = mouseMoveActionForPosition( event->pos() );
 
-  //remove the old rubber band item if it is still there
-  if ( mBoundingResizeRectangle )
-  {
-    scene()->removeItem( mBoundingResizeRectangle );
-    delete mBoundingResizeRectangle;
-    mBoundingResizeRectangle = 0;
-  }
-  //create and show bounding rectangle
-  mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
-  scene()->addItem( mBoundingResizeRectangle );
   mBoundingResizeRectangle->setRect( QRectF( 0, 0, rect().width(), rect().height() ) );
   QTransform resizeTransform;
   resizeTransform.translate( transform().dx(), transform().dy() );
   mBoundingResizeRectangle->setTransform( resizeTransform );
-
-  mBoundingResizeRectangle->setBrush( Qt::NoBrush );
-  mBoundingResizeRectangle->setPen( QPen( QColor( 0, 0, 0 ), 0 ) );
-  mBoundingResizeRectangle->setZValue( 90 );
-  mBoundingResizeRectangle->show();
+  
+  setVisibleResizeRect(true);
 }
 
 void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
@@ -357,13 +343,7 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
-  //delete frame rectangle
-  if ( mBoundingResizeRectangle )
-  {
-    scene()->removeItem( mBoundingResizeRectangle );
-    delete mBoundingResizeRectangle;
-    mBoundingResizeRectangle = 0;
-  }
+  setVisibleResizeRect(false);
 
   QPointF mouseMoveStopPoint = event->lastScenePos();
   double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
@@ -388,29 +368,43 @@ Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos 
 {
   QgsComposerItem::MouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
 
-  if ( mouseAction == QgsComposerItem::NoAction )
+//  if ( mouseAction == QgsComposerItem::NoAction )
+//  {
+//    return Qt::ForbiddenCursor;
+//  }
+//  if ( mouseAction == QgsComposerItem::MoveItem )
+//  {
+//    return Qt::ClosedHandCursor;
+//  }
+//  else if ( mouseAction == QgsComposerItem::ResizeLeftUp || mouseAction == QgsComposerItem::ResizeRightDown )
+//  {
+//    return Qt::SizeFDiagCursor;
+//  }
+//  else if ( mouseAction == QgsComposerItem::ResizeLeftDown || mouseAction == QgsComposerItem::ResizeRightUp )
+//  {
+//    return Qt::SizeBDiagCursor;
+//  }
+//  else if ( mouseAction == QgsComposerItem::ResizeUp || mouseAction == QgsComposerItem::ResizeDown )
+//  {
+//    return Qt::SizeVerCursor;
+//  }
+//  else //if(mouseAction == QgsComposerItem::ResizeLeft || mouseAction == QgsComposerItem::ResizeRight)
+//  {
+//    return Qt::SizeHorCursor;
+//  }
+  switch (mouseAction)
   {
-    return Qt::ForbiddenCursor;
-  }
-  if ( mouseAction == QgsComposerItem::MoveItem )
-  {
-    return Qt::ClosedHandCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeLeftUp || mouseAction == QgsComposerItem::ResizeRightDown )
-  {
-    return Qt::SizeFDiagCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeLeftDown || mouseAction == QgsComposerItem::ResizeRightUp )
-  {
-    return Qt::SizeBDiagCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeUp || mouseAction == QgsComposerItem::ResizeDown )
-  {
-    return Qt::SizeVerCursor;
-  }
-  else //if(mouseAction == QgsComposerItem::ResizeLeft || mouseAction == QgsComposerItem::ResizeRight)
-  {
-    return Qt::SizeHorCursor;
+  case NoAction: return Qt::ForbiddenCursor;
+  case MoveItem: return Qt::SizeAllCursor;
+  case ResizeUp:
+  case ResizeDown: return Qt::SizeVerCursor;
+  case ResizeLeft:
+  case ResizeRight: return Qt::SizeHorCursor;
+  case ResizeLeftUp:
+  case ResizeRightDown: return Qt::SizeFDiagCursor;
+  case ResizeRightUp:
+  case ResizeLeftDown: return Qt::SizeBDiagCursor;
+  default: return Qt::ArrowCursor;
   }
 }
 
@@ -1109,5 +1103,36 @@ void QgsComposerItem::rotate( double angle, double& x, double& y ) const
 
 void QgsComposerItem::repaint()
 {
-  update();
+	update();
+}
+
+void QgsComposerItem::init(bool manageZValue)
+{
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  setAcceptsHoverEvents( true );
+
+  //set default pen and brush
+  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
+  QPen defaultPen( QColor( 0, 0, 0 ) );
+  defaultPen.setWidthF( 0.3 );
+  setPen( defaultPen );
+
+  //let z-Value be managed by composition
+  if ( mComposition && manageZValue )
+  {
+    mComposition->addItemToZList( this );
+  }
+  
+  mBoundingResizeRectangle = new QGraphicsRectItem( 0 );
+  mComposition->addItem( mBoundingResizeRectangle );
+
+  mBoundingResizeRectangle->setBrush( Qt::NoBrush );
+  mBoundingResizeRectangle->setPen( QPen( QColor( 0, 0, 0 ), 0 ) );
+  mBoundingResizeRectangle->setZValue( 90 );
+}
+
+void QgsComposerItem::setVisibleResizeRect(bool visible)
+{
+  m_rubberDrag = visible;
+  mBoundingResizeRectangle->setVisible(visible);
 }

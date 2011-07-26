@@ -31,6 +31,10 @@
 #include "qgscomposerattributetable.h"
 #include "qgslogger.h"
 
+#ifndef QT_NO_OPENGL
+#include <QtOpenGL/QGLWidget>
+#endif
+
 QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags f )
     : QGraphicsView( parent )
     , mShiftKeyPressed( false )
@@ -44,7 +48,14 @@ QgsComposerView::QgsComposerView( QWidget* parent, const char* name, Qt::WFlags 
 
   setResizeAnchor( QGraphicsView::AnchorViewCenter );
   setMouseTracking( true );
-  viewport()->setMouseTracking( true );
+  
+#ifndef QT_NO_OPENGL
+  setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+  viewport()->setMouseTracking(true);
+  setRenderHint(QPainter::HighQualityAntialiasing, true);
+#endif
+  
+//  viewport()->setMouseTracking( true );
 }
 
 void QgsComposerView::mousePressEvent( QMouseEvent* e )

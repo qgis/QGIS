@@ -53,6 +53,10 @@ email                : sherman at mrcc.com
 #include "qgsvectorlayer.h"
 #include <math.h>
 
+#ifndef QT_NO_OPENGL
+#include <QtOpenGL/QGLWidget>
+#endif
+
 /**  @deprecated to be deleted, stuff from here should be moved elsewhere */
 class QgsMapCanvas::CanvasProperties
 {
@@ -89,6 +93,12 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   {
     viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
   }
+  
+#ifndef QT_NO_OPENGL
+  setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+  viewport()->setMouseTracking(true);
+  setRenderHint(QPainter::HighQualityAntialiasing, true);
+#endif
 
   mScene = new QGraphicsScene();
   setScene( mScene );
