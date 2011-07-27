@@ -53,7 +53,8 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   wkb += sizeof( unsigned int );
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
-  double x, y, z;
+  double x, y;
+  qreal z;
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
@@ -116,7 +117,7 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
-  double z = 0; // dummy variable for coordiante transform
+  qreal z = 0; // dummy variable for coordiante transform
 
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10; double ch = e.height() / 10;

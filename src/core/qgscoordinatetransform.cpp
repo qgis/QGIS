@@ -343,6 +343,80 @@ void QgsCoordinateTransform::transformInPlace( std::vector<double>& x,
   }
 }
 
+#ifdef ANDROID
+void QgsCoordinateTransform::transformInPlace( float& x, float& y, float& z,
+    TransformDirection direction ) const
+{
+  if ( mShortCircuit || !mInitialisedFlag )
+    return;
+#ifdef QGISDEBUG
+// QgsDebugMsg(QString("Using transform in place %1 %2").arg(__FILE__).arg(__LINE__));
+#endif
+  // transform x
+  try
+  {
+    double xd = x;
+    double yd = y;
+    double zd = z;
+    transformCoords( 1, &xd, &yd, &zd, direction );
+    x = xd;
+    y = yd;
+    z = zd;
+  }
+  catch ( QgsCsException &cse )
+  {
+    // rethrow the exception
+    QgsDebugMsg( "rethrowing exception" );
+    throw cse;
+  }
+}
+
+void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
+    std::vector<float>& y, std::vector<float>& z,
+    TransformDirection direction ) const
+{
+  if ( mShortCircuit || !mInitialisedFlag )
+    return;
+
+  Q_ASSERT( x.size() == y.size() );
+
+  // Apparently, if one has a std::vector, it is valid to use the
+  // address of the first element in the vector as a pointer to an
+  // array of the vectors data, and hence easily interface with code
+  // that wants C-style arrays.
+
+  try
+  {
+    //copy everything to double vectors since proj needs double
+    int vectorSize = x.size();
+    std::vector<double> xd( x.size() );
+    std::vector<double> yd( y.size() );
+    std::vector<double> zd( z.size() );
+    for( int i = 0; i < vectorSize; ++i )
+    {
+        xd[i] = x[i];
+        yd[i] = y[i];
+        zd[i] = z[i];
+    }
+    transformCoords( x.size(), &xd[0], &yd[0], &zd[0], direction );
+
+    //copy back
+    for( int i = 0; i < vectorSize; ++i )
+    {
+        x[i] = xd[i];
+        y[i] = yd[i];
+        z[i] = zd[i];
+    }
+  }
+  catch ( QgsCsException &cse )
+  {
+    // rethrow the exception
+    QgsDebugMsg( "rethrowing exception" );
+    throw cse;
+  }
+}
+#endif //ANDROID
+
 
 QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle rect, TransformDirection direction ) const
 {
