@@ -504,7 +504,16 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   p.end();
 
   //set image to mBrush
-  mBrush.setTextureImage( patternImage );
+  if ( !doubleNear( context.alpha(), 1.0 ) )
+  {
+    QImage transparentImage = patternImage.copy();
+    QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+    mBrush.setTextureImage( transparentImage );
+  }
+  else
+  {
+    mBrush.setTextureImage( patternImage );
+  }
 
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
@@ -627,7 +636,16 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
     mMarkerSymbol->stopRender( pointRenderContext );
   }
 
-  mBrush.setTextureImage( patternImage );
+  if ( !doubleNear( context.alpha(), 1.0 ) )
+  {
+    QImage transparentImage = patternImage.copy();
+    QgsSymbolLayerV2Utils::multiplyImageOpacity( &transparentImage, context.alpha() );
+    mBrush.setTextureImage( transparentImage );
+  }
+  else
+  {
+    mBrush.setTextureImage( patternImage );
+  }
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
   mBrush.setTransform( brushTransform );
