@@ -85,7 +85,7 @@ class CORE_EXPORT QgsApplication: public QApplication
 
     //! Returns the path to the developer image directory.
     //! @deprecated images are not provided anymore :-P
-    static const QString developerPath();
+    Q_DECL_DEPRECATED static const QString developerPath();
 
     //! Returns the path to the help application.
     static const QString helpAppPath();

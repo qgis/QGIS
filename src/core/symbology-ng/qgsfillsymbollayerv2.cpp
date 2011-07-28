@@ -525,7 +525,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   }
 }
 
-void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
+void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext & )
 {
 }
 
