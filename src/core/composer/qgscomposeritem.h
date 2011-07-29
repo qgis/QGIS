@@ -244,9 +244,10 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Rectangle used during move and resize actions*/
     QGraphicsRectItem* mBoundingResizeRectangle;
-	
-	bool m_rubberDrag;
-	
+
+    /**Used to know whether to move and resize actions*/
+    bool mResizeRectAction;
+
     /**True if item fram needs to be painted*/
     bool mFrame;
 
@@ -332,11 +333,15 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void rotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
-	
+
 private:
-	void init(bool manageZValue);
-	void setVisibleResizeRect(bool visible);
-	
+    //initialization in ctor
+    void init(bool manageZValue);
+    //set mBoundingResizeRectangle and 
+    void setVisibleResizeRect(bool visible);
+    //return false if it was only a click
+    bool isDragDistanceGood(const QPointF& mouseMoveStopPoint) const;
+
 private:
     // Label id (unique within the same composition)
     QString mId;

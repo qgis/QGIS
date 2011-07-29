@@ -26,7 +26,7 @@
 #include "qgscomposeritem.h"
 
 
-#include <limits>
+//#include <limits>
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
@@ -39,29 +39,17 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     : QObject( 0 )
     , QGraphicsRectItem( 0 )
     , mComposition( composition )
-    , mBoundingResizeRectangle( 0 )
-    , m_rubberDrag(false)
-    , mFrame( true )
-    , mItemPositionLocked( false )
-    , mLastValidViewScaleFactor( -1 )
-    , mRotation( 0 )
 {
-	init(manageZValue);
+  init(manageZValue);
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
     : QObject( 0 )
     , QGraphicsRectItem( 0, 0, width, height, 0 )
     , mComposition( composition )
-    , mBoundingResizeRectangle( 0 )
-    , m_rubberDrag(false)
-    , mFrame( true )
-    , mItemPositionLocked( false )
-    , mLastValidViewScaleFactor( -1 )
-    , mRotation( 0 )
 {
-	init(manageZValue);
-	
+  init(manageZValue);
+
   QTransform t;
   t.translate( x, y );
   setTransform( t );
@@ -73,8 +61,6 @@ QgsComposerItem::~QgsComposerItem()
   {
     mComposition->removeItemFromZList( this );
   }
-
-//  delete mBoundingResizeRectangle;
 }
 
 void QgsComposerItem::setSelected( bool s )
@@ -282,11 +268,13 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
-//  if ( mBoundingResizeRectangle )
-  if ( m_rubberDrag )
+  QPointF mouseMoveStopPoint = event->lastScenePos();
+  //it was only a click
+  bool startDragDistance = isDragDistanceGood(mouseMoveStopPoint);
+  if ( mResizeRectAction && startDragDistance)
   {
-    double diffX = event->lastScenePos().x() - mLastMouseEventPos.x();
-    double diffY = event->lastScenePos().y() - mLastMouseEventPos.y();
+    double diffX = mouseMoveStopPoint.x() - mLastMouseEventPos.x();
+    double diffY = mouseMoveStopPoint.y() - mLastMouseEventPos.y();
 
     changeItemRectangle( event->lastScenePos(), mMouseMoveStartPos, this, diffX, diffY, mBoundingResizeRectangle );
   }
@@ -324,17 +312,16 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
   setVisibleResizeRect(false);
 
   QPointF mouseMoveStopPoint = event->lastScenePos();
-  double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
-  double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
-
   //it was only a click
-  if ( qAbs( diffX ) < std::numeric_limits<double>::min() && qAbs( diffY ) < std::numeric_limits<double>::min() )
-  {
+  if (!isDragDistanceGood(mouseMoveStopPoint))
     return;
-  }
 
   beginCommand( tr( "Change item position" ) );
+  
+  double diffX = mouseMoveStopPoint.x() - mMouseMoveStartPos.x();
+  double diffY = mouseMoveStopPoint.y() - mMouseMoveStartPos.y();
   changeItemRectangle( mouseMoveStopPoint, mMouseMoveStartPos, this, diffX, diffY, this );
+  
   endCommand();
 
   //reset default action
@@ -1057,11 +1044,18 @@ void QgsComposerItem::rotate( double angle, double& x, double& y ) const
 
 void QgsComposerItem::repaint()
 {
-	update();
+  update();
 }
 
 void QgsComposerItem::init(bool manageZValue)
 {
+  mBoundingResizeRectangle = 0;
+  mResizeRectAction = false;
+  mFrame = true;
+  mItemPositionLocked = false;
+  mLastValidViewScaleFactor = -1;
+  mRotation = 0;
+  
   setFlag( QGraphicsItem::ItemIsSelectable, true );
   setAcceptsHoverEvents( true );
 
@@ -1087,6 +1081,11 @@ void QgsComposerItem::init(bool manageZValue)
 
 void QgsComposerItem::setVisibleResizeRect(bool visible)
 {
-  m_rubberDrag = visible;
+  mResizeRectAction = visible;
   mBoundingResizeRectangle->setVisible(visible);
+}
+
+bool QgsComposerItem::isDragDistanceGood(const QPointF &mouseMoveStopPoint) const
+{
+  return (mouseMoveStopPoint - mMouseMoveStartPos).manhattanLength() > QApplication::startDragDistance();
 }
