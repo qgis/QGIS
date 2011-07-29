@@ -479,21 +479,6 @@ int main( int argc, char *argv[] )
   QApplication::setStyle( new QPlastiqueStyle );
 #endif
 
-  // Check to see if qgis was started from the source directory.
-  // This is done by checking whether qgis binary is in 'src/app'
-  // directory. If running from there, exit gracefully.
-  // (QGIS might work incorrectly when run from the sources)
-  QString appDir = qApp->applicationDirPath();
-
-  if ( appDir.endsWith( "/src/app" ) )
-  {
-    QMessageBox::critical( 0, "QGIS Not Installed",
-                           "You appear to be running QGIS from the source directory.\n"
-                           "You must install QGIS using make install and run it from the "
-                           "installed directory." );
-    exit( 1 );
-  }
-
   QString i18nPath = QgsApplication::i18nPath();
 
   /* Translation file for QGIS.

@@ -6,7 +6,7 @@ MACRO(ADD_TRANSLATION_FILES _sources )
       GET_FILENAME_COMPONENT(_in ${_current_FILE} ABSOLUTE)
       GET_FILENAME_COMPONENT(_basename ${_current_FILE} NAME_WE)
 
-      SET(_out ${CMAKE_CURRENT_BINARY_DIR}/${_basename}.qm)
+      SET(_out ${QGIS_OUTPUT_DIRECTORY}/i18n/${_basename}.qm)
 
       ADD_CUSTOM_COMMAND(
          OUTPUT ${_out}
@@ -19,6 +19,8 @@ MACRO(ADD_TRANSLATION_FILES _sources )
    ENDFOREACH (_current_FILE)
 ENDMACRO(ADD_TRANSLATION_FILES)
 
+# make sure the output directory exists
+file(MAKE_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/i18n)
 
 FILE (GLOB TS_FILES *.ts)
 

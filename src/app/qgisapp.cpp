@@ -668,23 +668,26 @@ void QgisApp::dropEvent( QDropEvent *event )
     QByteArray encodedData = event->mimeData()->data( "application/x-vnd.qgis.qgis.uri" );
     QDataStream stream( &encodedData, QIODevice::ReadOnly );
     QString xUri; // extended uri: layer_type:provider_key:uri
-    stream >> xUri;
-    QgsDebugMsg( xUri );
-    QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
-    if ( rx.indexIn( xUri ) != -1 )
+    while ( !stream.atEnd() )
     {
-      QString layerType = rx.cap( 1 );
-      QString providerKey = rx.cap( 2 );
-      QString name = rx.cap( 3 );
-      QString uri = rx.cap( 4 );
-      QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
-      if ( layerType == "vector" )
+      stream >> xUri;
+      QgsDebugMsg( xUri );
+      QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
+      if ( rx.indexIn( xUri ) != -1 )
       {
-        addVectorLayer( uri, name, providerKey );
-      }
-      else if ( layerType == "raster" )
-      {
-        addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
+        QString layerType = rx.cap( 1 );
+        QString providerKey = rx.cap( 2 );
+        QString name = rx.cap( 3 );
+        QString uri = rx.cap( 4 );
+        QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
+        if ( layerType == "vector" )
+        {
+          addVectorLayer( uri, name, providerKey );
+        }
+        else if ( layerType == "raster" )
+        {
+          addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
+        }
       }
     }
   }
@@ -4616,7 +4619,7 @@ void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( "qgispython" );
 #if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
-  pythonlibName.prepend( QgsApplication::prefixPath() + "/" + QGIS_LIB_SUBDIR + "/" );
+  pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );

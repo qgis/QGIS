@@ -412,15 +412,20 @@ bool QgsPythonUtilsImpl::evalString( const QString& command, QString& result )
   return success;
 }
 
-
 QString QgsPythonUtilsImpl::pythonPath()
 {
-  return QgsApplication::pkgDataPath() + "/python";
+  if ( QgsApplication::isRunningFromBuildDir() )
+    return QgsApplication::buildOutputPath() + "/python";
+  else
+    return QgsApplication::pkgDataPath() + "/python";
 }
 
 QString QgsPythonUtilsImpl::pluginsPath()
 {
-  return pythonPath() + "/plugins";
+  if ( QgsApplication::isRunningFromBuildDir() )
+    return QString(); // plugins not used
+  else
+    return pythonPath() + "/plugins";
 }
 
 QString QgsPythonUtilsImpl::homePythonPath()

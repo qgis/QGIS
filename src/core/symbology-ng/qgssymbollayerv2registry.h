@@ -26,7 +26,7 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
     /** create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0;
     /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) { return NULL; }
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer * ) { return NULL; }
 
   protected:
     QString mName;

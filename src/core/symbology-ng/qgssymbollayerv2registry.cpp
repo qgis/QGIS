@@ -33,6 +33,10 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsSVGFillSymbolLayer::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "CentroidFill", QObject::tr( "Centroid fill" ), QgsSymbolV2::Fill,
                       QgsCentroidFillSymbolLayerV2::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "LinePatternFill", QObject::tr("Line pattern fill"), QgsSymbolV2::Fill,
+                      QgsLinePatternFillSymbolLayer::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "PointPatternFill", QObject::tr("Point pattern fill"), QgsSymbolV2::Fill,
+                      QgsPointPatternFillSymbolLayer::create ) );
 }
 
 QgsSymbolLayerV2Registry::~QgsSymbolLayerV2Registry()

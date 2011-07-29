@@ -90,7 +90,9 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QBrush mBrush;
 
     /**Setup mPainterPath
-      @param feature to render (0 if no data defined rendering)*/
+      @param symbolName name of symbol
+      @param context render context
+      @param f feature f to render (0 if no data defined rendering)*/
     void preparePath( const QString& symbolName, QgsSymbolV2RenderContext& context, const QgsFeature* f = 0 );
 
     /**True if this symbol layer uses a data defined property*/

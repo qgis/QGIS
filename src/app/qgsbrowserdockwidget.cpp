@@ -15,6 +15,9 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   setWindowTitle( tr( "Browser" ) );
 
   mBrowserView = new QTreeView( this );
+  mBrowserView->setDragEnabled( true );
+  mBrowserView->setDragDropMode( QTreeView::DragOnly );
+  mBrowserView->setSelectionMode( QAbstractItemView::ExtendedSelection );
   setWidget( mBrowserView );
 
   //connect( mBrowserView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );

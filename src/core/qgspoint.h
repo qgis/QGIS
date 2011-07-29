@@ -62,7 +62,7 @@ class CORE_EXPORT QgsPoint
 {
   public:
     /// Default constructor
-    QgsPoint()
+    QgsPoint() : m_x( 0.0 ), m_y( 0.0 )
     {}
 
     /*! Create a point from another point */

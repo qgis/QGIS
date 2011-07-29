@@ -1395,7 +1395,7 @@ void QgsGrassModule::run()
     mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
 
     QStringList environment = QProcess::systemEnvironment();
-    environment.append( "GRASS_HTML_BROWSER=" + QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/bin/qgis.g.browser" );
+    environment.append( "GRASS_HTML_BROWSER=" + QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
 
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before

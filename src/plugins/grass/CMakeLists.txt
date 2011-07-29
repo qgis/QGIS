@@ -158,6 +158,10 @@ TARGET_LINK_LIBRARIES(grassplugin
   ${OPENPTY_LIBRARY}
 )
 
+# override default path where built files are put to allow running qgis without installing
+# the binary goes under libexec subdir
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR}/grass/bin)
+
 ADD_EXECUTABLE(qgis.g.browser ${GRASS_BROWSER_SRCS})
 
 TARGET_LINK_LIBRARIES (qgis.g.browser

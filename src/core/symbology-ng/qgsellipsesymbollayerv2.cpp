@@ -164,7 +164,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
   mBrush.setColor( mFillColor );
 }
 
-void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
+void QgsEllipseSymbolLayerV2::stopRender( QgsSymbolV2RenderContext & )
 {
 }
 

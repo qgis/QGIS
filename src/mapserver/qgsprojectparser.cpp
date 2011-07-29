@@ -101,6 +101,16 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   layerParentTitleElem.appendChild( layerParentTitleText );
   layerParentElem.appendChild( layerParentTitleElem );
 
+  QSet<QString> crsSet = supportedOutputCrsSet();
+  QSet<QString>::const_iterator crsIt = crsSet.constBegin();
+  for(; crsIt != crsSet.constEnd(); ++crsIt )
+  {
+    QDomElement crsElem = doc.createElement("CRS");
+    QDomText crsText = doc.createTextNode( *crsIt );
+    crsElem.appendChild( crsText );
+    layerParentElem.appendChild( crsElem );
+   }
+
   //Map rectangle. If not empty, this will be set for every layer (instead of the bbox that comes from the data)
   QgsRectangle mapExtent = mapRectangle();
   QgsCoordinateReferenceSystem mapCRS;

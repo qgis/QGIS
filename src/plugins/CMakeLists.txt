@@ -1,3 +1,7 @@
+# override default path where built files are put to allow running qgis without installing
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
+
 ADD_SUBDIRECTORY(copyright_label)
 ADD_SUBDIRECTORY(delimited_text)
 ADD_SUBDIRECTORY(diagram_overlay)
