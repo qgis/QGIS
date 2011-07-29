@@ -132,7 +132,7 @@ class Dialog(QDialog, Ui_Dialog):
         if self.shapefileName is None or self.encoding is None:
             return
         self.outShape.setText( QString( self.shapefileName ) )
-    
+
 # combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
         provider = vlayer.dataProvider()
@@ -153,13 +153,15 @@ class Dialog(QDialog, Ui_Dialog):
             count = count + add
             self.progressBar.setValue(count)
         return geom
-    
+
 # Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
         seed()
         points = []
         i = 1
         count = 40.00
+        if n == 0:
+          return []
         add = ( 70.00 - 40.00 ) / n
         while i <= n:
             pGeom = QgsGeometry().fromPoint(QgsPoint(xmin + (xmax-xmin) * random(), ymin + (ymax-ymin) * random()))
@@ -225,8 +227,8 @@ class Dialog(QDialog, Ui_Dialog):
             count = count + add
             self.progressBar.setValue(count)
         del writer
-    
-#   
+
+#
     def loopThruPolygons(self, inLayer, numRand, design):
         sProvider = inLayer.dataProvider()
         sAllAttrs = sProvider.attributeIndexes()
