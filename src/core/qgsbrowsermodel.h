@@ -56,6 +56,9 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
 
     bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
+    // Reload the whole model
+    void reload();
+
     // Refresh item specified by path
     void refresh( QString path );
 
@@ -80,6 +83,11 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void endRemoveItems();
 
   protected:
+
+    // populates the model
+    void addRootItems();
+    void removeRootItems();
+
     QVector<QgsDataItem*> mRootItems;
 };
 

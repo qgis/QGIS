@@ -1,6 +1,8 @@
 #include "qgsbrowserdockwidget.h"
 
 #include <QTreeView>
+#include <QMenu>
+#include <QSettings>
 
 #include "qgsbrowsermodel.h"
 #include "qgsdataitem.h"
@@ -18,8 +20,10 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   mBrowserView->setDragEnabled( true );
   mBrowserView->setDragDropMode( QTreeView::DragOnly );
   mBrowserView->setSelectionMode( QAbstractItemView::ExtendedSelection );
+  mBrowserView->setContextMenuPolicy( Qt::CustomContextMenu );
   setWidget( mBrowserView );
 
+  connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   //connect( mBrowserView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
   connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
 }
@@ -100,4 +104,78 @@ void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
 
   // add layer to the application
   QgsMapLayerRegistry::instance()->addMapLayer( layer );
+}
+
+void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
+{
+  QModelIndex idx = mBrowserView->indexAt( pt );
+  QgsDataItem* item = mModel->dataItem( idx );
+  if ( !item )
+    return;
+
+  QMenu* menu = new QMenu( this );
+
+  if ( item->type() == QgsDataItem::Directory )
+  {
+    QSettings settings;
+    QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
+    bool inFavDirs = favDirs.contains( item->path() );
+
+    if ( item->parent() != NULL && !inFavDirs )
+    {
+      // only non-root directories can be added as favourites
+      menu->addAction( tr( "Add as a favourite" ), this, SLOT( addFavourite() ) );
+    }
+    else if ( inFavDirs )
+    {
+      // only favourites can be removed
+      menu->addAction( tr( "Remove favourite" ), this, SLOT( removeFavourite() ) );
+    }
+  }
+
+  if ( menu->actions().count() == 0 )
+  {
+    delete menu;
+    return;
+  }
+
+  menu->popup( mBrowserView->mapToGlobal( pt ) );
+}
+
+void QgsBrowserDockWidget::addFavourite()
+{
+  QgsDataItem* item = mModel->dataItem( mBrowserView->currentIndex() );
+  if ( !item )
+    return;
+  if ( item->type() != QgsDataItem::Directory )
+    return;
+
+  QString newFavDir = item->path();
+
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
+  favDirs.append( newFavDir );
+  settings.setValue( "/browser/favourites", favDirs );
+
+  // reload the browser model so that the newly added favourite directory is shown
+  mModel->reload();
+}
+
+void QgsBrowserDockWidget::removeFavourite()
+{
+  QgsDataItem* item = mModel->dataItem( mBrowserView->currentIndex() );
+  if ( !item )
+    return;
+  if ( item->type() != QgsDataItem::Directory )
+    return;
+
+  QString favDir  = item->path();
+
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites" ).toStringList();
+  favDirs.removeAll( favDir );
+  settings.setValue( "/browser/favourites", favDirs );
+
+  // reload the browser model so that the favourite directory is not shown anymore
+  mModel->reload();
 }

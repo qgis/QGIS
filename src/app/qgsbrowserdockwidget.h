@@ -17,6 +17,10 @@ class QgsBrowserDockWidget : public QDockWidget
 
   public slots:
     void itemClicked( const QModelIndex& index );
+    void showContextMenu( const QPoint & );
+
+    void addFavourite();
+    void removeFavourite();
 
   protected:
 
