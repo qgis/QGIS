@@ -92,6 +92,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   //So we create an artificial one here to be in accordance with the schema
   QString projTitle = projectTitle();
   QDomElement layerParentElem = doc.createElement( "Layer" );
+  layerParentElem.setAttribute( "queryable", "1" );
   QDomElement layerParentNameElem = doc.createElement( "Name" );
   QDomText layerParentNameText = doc.createTextNode( projTitle );
   layerParentNameElem.appendChild( layerParentNameText );
@@ -144,6 +145,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
     if ( currentChildElem.tagName() == "legendgroup" )
     {
+      layerElem.setAttribute( "queryable", "1" );
       QString name = currentChildElem.attribute( "name" );
       QDomElement nameElem = doc.createElement( "Name" );
       QDomText nameText = doc.createTextNode( name );
