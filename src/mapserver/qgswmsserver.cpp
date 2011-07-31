@@ -685,62 +685,66 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
   QStringList::const_iterator layerIt;
   for ( layerIt = queryLayerList.constBegin(); layerIt != queryLayerList.constEnd(); ++layerIt )
   {
-    //create maplayer from sld parser
+    //create maplayers from sld parser (several layers are possible in case of feature info on a group)
     layerList = mConfigParser->mapLayerFromStyle( *layerIt, "" );
-    currentLayer = layerList.at( 0 );
-    if ( !currentLayer || nonIdentifiableLayers.contains( currentLayer->id() ) )
+    QList<QgsMapLayer*>::iterator layerListIt = layerList.begin();
+    for(; layerListIt != layerList.end(); ++layerListIt )
     {
-      continue;
-    }
-    if ( infoPointToLayerCoordinates( i, j, infoPoint, mMapRenderer, currentLayer ) != 0 )
-    {
-      continue;
-    }
-    QgsDebugMsg( "Info point in layer crs: " + QString::number( infoPoint.x() ) + "//" + QString::number( infoPoint.y() ) );
-
-    QDomElement layerElement = result.createElement( "Layer" );
-    layerElement.setAttribute( "name", currentLayer->name() );
-    getFeatureInfoElement.appendChild( layerElement );
-
-    //switch depending on vector or raster
-    QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
-    if ( vectorLayer )
-    {
-      //is there alias info for this vector layer?
-      QMap< int, QString > layerAliasInfo;
-      QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
-      if ( aliasIt != aliasInfo.constEnd() )
-      {
-        layerAliasInfo = aliasIt.value();
-      }
-
-      //hidden attributes for this layer
-      QSet<QString> layerHiddenAttributes;
-      QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->id() );
-      if ( hiddenIt != hiddenAttributes.constEnd() )
-      {
-        layerHiddenAttributes = hiddenIt.value();
-      }
-
-      if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, layerAliasInfo, layerHiddenAttributes ) != 0 )
-      {
-        return 9;
-      }
-    }
-    else //raster layer
-    {
-      QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
-      if ( rasterLayer )
-      {
-        if ( featureInfoFromRasterLayer( rasterLayer, infoPoint, result, layerElement ) != 0 )
+        currentLayer = *layerListIt;
+        if ( !currentLayer || nonIdentifiableLayers.contains( currentLayer->id() ) )
         {
-          return 10;
+        continue;
         }
-      }
-      else
-      {
-        return 11;
-      }
+        if ( infoPointToLayerCoordinates( i, j, infoPoint, mMapRenderer, currentLayer ) != 0 )
+        {
+        continue;
+        }
+        QgsDebugMsg( "Info point in layer crs: " + QString::number( infoPoint.x() ) + "//" + QString::number( infoPoint.y() ) );
+
+        QDomElement layerElement = result.createElement( "Layer" );
+        layerElement.setAttribute( "name", currentLayer->name() );
+        getFeatureInfoElement.appendChild( layerElement );
+
+        //switch depending on vector or raster
+        QgsVectorLayer* vectorLayer = dynamic_cast<QgsVectorLayer*>( currentLayer );
+        if ( vectorLayer )
+        {
+            //is there alias info for this vector layer?
+            QMap< int, QString > layerAliasInfo;
+            QMap< QString, QMap< int, QString > >::const_iterator aliasIt = aliasInfo.find( currentLayer->id() );
+            if ( aliasIt != aliasInfo.constEnd() )
+            {
+                layerAliasInfo = aliasIt.value();
+            }
+
+            //hidden attributes for this layer
+            QSet<QString> layerHiddenAttributes;
+            QMap< QString, QSet<QString> >::const_iterator hiddenIt = hiddenAttributes.find( currentLayer->id() );
+            if ( hiddenIt != hiddenAttributes.constEnd() )
+            {
+                layerHiddenAttributes = hiddenIt.value();
+            }
+
+            if ( featureInfoFromVectorLayer( vectorLayer, infoPoint, featureCount, result, layerElement, mMapRenderer, layerAliasInfo, layerHiddenAttributes ) != 0 )
+            {
+                continue;
+            }
+        }
+        else //raster layer
+        {
+            QgsRasterLayer* rasterLayer = dynamic_cast<QgsRasterLayer*>( currentLayer );
+            if ( rasterLayer )
+            {
+                if ( featureInfoFromRasterLayer( rasterLayer, infoPoint, result, layerElement ) != 0 )
+                {
+                    continue;
+                }
+            }
+            else
+            {
+            continue;
+            }
+        }
     }
   }
   return 0;
