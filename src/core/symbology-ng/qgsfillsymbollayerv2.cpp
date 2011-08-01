@@ -437,7 +437,7 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
 
   //find a suitable multiple of width and heigh
 
-  QImage patternImage( fabs( width ), height, QImage::Format_ARGB32 );
+  QImage patternImage( qAbs( width ), height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
   QPainter p( &patternImage );
   p.setRenderHint( QPainter::Antialiasing, true );

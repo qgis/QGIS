@@ -217,7 +217,7 @@ bool QgsRasterMatrix::oneArgumentOperation( OneArgOperator op )
           mData[i] = static_cast<float>( atan( value ) );
           break;
         case opSIGN:
-          mData[i] = -value;
+          mData[i] = static_cast<float>( -value );
       }
     }
   }
