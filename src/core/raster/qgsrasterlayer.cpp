@@ -2459,7 +2459,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   //Try to read the default contrast enhancement from the config file
 
   QSettings myQSettings;
-  setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "StretchToMinimumMaximum" ).toString() );
+  setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
 
   //decide what type of layer this is...
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
@@ -2556,7 +2556,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toInt() );
     }
   }
   else                        //GrayOrUndefined
@@ -2571,7 +2571,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toInt() );
     }
   }
   // Debug
