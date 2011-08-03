@@ -439,9 +439,14 @@ bool QgsPostgresProvider::declareCursor(
 
     if ( !connectionRO->openCursor( cursorName, query ) )
     {
-      // reloading the fields might help next time around
-      rewind();
-      return false;
+      //try to re-etablish broken connection
+      ::PQreset( connectionRO->pgConnection() );
+      if ( !connectionRO->openCursor( cursorName, query ) )
+      {
+        // reloading the fields might help next time around
+        rewind();
+        return false;
+      }
     }
   }
   catch ( PGFieldNotFound )
