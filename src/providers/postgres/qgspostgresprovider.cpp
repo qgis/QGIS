@@ -439,14 +439,9 @@ bool QgsPostgresProvider::declareCursor(
 
     if ( !connectionRO->openCursor( cursorName, query ) )
     {
-      //try to re-etablish broken connection
-      ::PQreset( connectionRO->pgConnection() );
-      if ( !connectionRO->openCursor( cursorName, query ) )
-      {
-        // reloading the fields might help next time around
-        rewind();
-        return false;
-      }
+      // reloading the fields might help next time around
+      rewind();
+      return false;
     }
   }
   catch ( PGFieldNotFound )
@@ -3494,7 +3489,7 @@ bool QgsPostgresProvider::Conn::closeCursor( QString cursorName )
   return true;
 }
 
-bool QgsPostgresProvider::Conn::PQexecNR( QString query )
+bool QgsPostgresProvider::Conn::PQexecNR( QString query, bool retry )
 {
   Result res = ::PQexec( conn, query.toUtf8() );
   if ( !res )
@@ -3524,7 +3519,24 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
     openCursors = 0;
   }
 
-  PQexecNR( "ROLLBACK" );
+  if ( PQstatus( conn ) == CONNECTION_OK )
+  {
+    PQexecNR( "ROLLBACK" );
+  }
+  else if ( retry )
+  {
+    QgsDebugMsg( "connection bad - resetting" );
+    ::PQreset( conn );
+    if ( PQstatus( conn ) == CONNECTION_OK )
+    {
+      QgsDebugMsg( "reconnected - retrying" );
+      return PQexecNR( query, false );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "connection bad - giving up" );
+  }
 
   return false;
 }
