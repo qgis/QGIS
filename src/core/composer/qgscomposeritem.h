@@ -333,6 +333,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
   private:
     // Label id (unique within the same composition)
     QString mId;
+
+    void init( bool manageZValue );
 };
 
 #endif
