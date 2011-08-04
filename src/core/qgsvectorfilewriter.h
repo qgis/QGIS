@@ -53,6 +53,7 @@ class CORE_EXPORT QgsVectorFileWriter
       ErrAttributeCreationFailed,
       ErrProjection,  // added in 1.5
       ErrFeatureWriteFailed, // added in 1.6
+      ErrInvalidLayer, // added in 2.0
     };
 
     /** Write contents of vector layer to a shapefile
