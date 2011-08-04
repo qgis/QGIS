@@ -168,6 +168,8 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
     applySelection();
   }
 
+  lstRecent->clear();
+
   for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
     insertRecent( mRecentProjections.at( i ).toLong() );
 
