@@ -1882,7 +1882,7 @@ void QgsRasterLayerProperties::refreshHistogram()
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
-  const int BINCOUNT = 255;
+  const int BINCOUNT = 256;
   bool myIgnoreOutOfRangeFlag = true;
   bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();

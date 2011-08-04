@@ -65,6 +65,10 @@ QString QgsApplication::mBuildOutputPath;
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath )
     : QApplication( argc, argv, GUIenabled )
 {
+  init( customConfigPath ); //initi can also be called directly by e.g. unit tests that dont inherit QApplication.
+}
+void QgsApplication::init( QString customConfigPath )
+{
   // check if QGIS is run from build directory (not the install directory)
   QDir appDir( applicationDirPath() );
   if ( appDir.exists( "source_path.txt" ) )

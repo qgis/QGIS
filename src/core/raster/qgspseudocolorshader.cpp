@@ -44,7 +44,7 @@ bool QgsPseudoColorShader::shade( double theValue, int* theReturnRedValue, int* 
   }
 
   //check if we are in the first class break
-  if (( myPixelValue >= mClassBreakMin1 ) && ( myPixelValue < mClassBreakMax1 ) )
+  if ( ( myPixelValue >= mClassBreakMin1 ) && ( myPixelValue < mClassBreakMax1 ) )
   {
     *theReturnRedValue = 0;
     *theReturnGreenValue = static_cast < int >((( 255 / mMinimumMaximumRange ) * ( myPixelValue - mClassBreakMin1 ) ) * 3 );

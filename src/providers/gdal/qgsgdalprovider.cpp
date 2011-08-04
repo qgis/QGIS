@@ -105,7 +105,9 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
 
   // To get buildSupportedRasterFileFilter the provider is called with empty uri
   if ( uri.isEmpty() )
+  {
     return;
+  }
 
   mGdalDataset = NULL;
 
@@ -287,51 +289,6 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
     QgsDebugMsg( QString( "mNoDataValue[%1] = %1" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
   }
 
-  // This block of code was in old version in QgsRasterLayer::bandStatistics
-  //ifdefs below to remove compiler warning about unused vars
-#ifdef QGISDEBUG
-#if 0
-  int success;
-  double GDALminimum = GDALGetRasterMinimum( myGdalBand, &success );
-
-  if ( ! success )
-  {
-    QgsDebugMsg( "myGdalBand->GetMinimum() failed" );
-  }
-
-  double GDALmaximum = GDALGetRasterMaximum( myGdalBand, &success );
-
-  if ( ! success )
-  {
-    QgsDebugMsg( "myGdalBand->GetMaximum() failed" );
-  }
-
-  double GDALnodata = GDALGetRasterNoDataValue( myGdalBand, &success );
-
-  if ( ! success )
-  {
-    QgsDebugMsg( "myGdalBand->GetNoDataValue() failed" );
-  }
-
-  QgsLogger::debug( "GDALminium: ", GDALminimum, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "GDALmaximum: ", GDALmaximum, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "GDALnodata: ", GDALnodata, __FILE__, __FUNCTION__, __LINE__ );
-
-  double GDALrange[2];          // calculated min/max, as opposed to the
-  // dataset provided
-
-  GDALComputeRasterMinMax( myGdalBand, 1, GDALrange );
-  QgsLogger::debug( "approximate computed GDALminium:", GDALrange[0], __FILE__, __FUNCTION__, __LINE__, 1 );
-  QgsLogger::debug( "approximate computed GDALmaximum:", GDALrange[1], __FILE__, __FUNCTION__, __LINE__, 1 );
-
-  GDALComputeRasterMinMax( myGdalBand, 0, GDALrange );
-  QgsLogger::debug( "exactly computed GDALminium:", GDALrange[0] );
-  QgsLogger::debug( "exactly computed GDALmaximum:", GDALrange[1] );
-
-  QgsDebugMsg( "starting manual stat computation" );
-#endif
-#endif
-
   mValid = true;
   QgsDebugMsg( "end" );
 }
@@ -391,7 +348,9 @@ QgsGdalProvider::~QgsGdalProvider()
 void QgsGdalProvider::closeDataset()
 {
   if ( !mValid )
+  {
     return;
+  }
   mValid = false;
 
   GDALDereferenceDataset( mGdalBaseDataset );
@@ -921,25 +880,37 @@ void QgsGdalProvider::computeMinMax( int theBandNo )
 {
   QgsDebugMsg( QString( "theBandNo = %1 mMinMaxComputed = %2" ).arg( theBandNo ).arg( mMinMaxComputed[theBandNo-1] ) );
   if ( mMinMaxComputed[theBandNo-1] )
+  {
     return;
-  double GDALrange[2];
+  }
+  int bApproxOK=false;
+  double pdfMin;
+  double pdfMax;
+  double pdfMean;
+  double pdfStdDev;
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  GDALComputeRasterMinMax( myGdalBand, 1, GDALrange ); //Approximate
-  QgsDebugMsg( QString( "GDALrange[0] = %1 GDALrange[1] = %2" ).arg( GDALrange[0] ).arg( GDALrange[1] ) );
-  mMinimum[theBandNo-1] = GDALrange[0];
-  mMaximum[theBandNo-1] = GDALrange[1];
+  double myerval =  GDALGetRasterStatistics ( 
+      myGdalBand, 
+      bApproxOK, 
+      TRUE, 
+      &pdfMin, 
+      &pdfMax, 
+      &pdfMean, 
+      &pdfStdDev
+      );
+  Q_UNUSED(myerval);
+  mMinimum[theBandNo-1] = pdfMin;
+  mMaximum[theBandNo-1] = pdfMax;
 }
 
 double  QgsGdalProvider::minimumValue( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  //computeMinMax ( theBandNo );
   return  mMinimum[theBandNo-1];
 }
 double  QgsGdalProvider::maximumValue( int theBandNo ) const
 {
   QgsDebugMsg( QString( "theBandNo = %1" ).arg( theBandNo ) );
-  //computeMinMax ( theBandNo );
   return  mMaximum[theBandNo-1];
 }
 
@@ -1294,7 +1265,9 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
   //vector is not equal to the number of bins
   //i.e if the histogram has never previously been generated or the user has
   //selected a new number of bins.
-  if ( theBandStats.histogramVector->size() != theBinCount ||
+  bool myCollectHistogramFlag = true;
+  if ( theBandStats.histogramVector == 0 ||
+       theBandStats.histogramVector->size() != theBinCount ||
        theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
        theHistogramEstimatedFlag != theBandStats.isHistogramEstimated )
   {
@@ -1864,6 +1837,74 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
     return true;
   }
 }
+
+
+
+QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
+{
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
+  QgsRasterBandStats myRasterBandStats;
+  int bApproxOK=false;
+  double pdfMin;
+  double pdfMax;
+  double pdfMean;
+  double pdfStdDev;
+  QgsGdalProgress myProg;
+  myProg.type = ProgressHistogram;
+  myProg.provider = this;
+
+  // Suggested by Etienne Sky to use getrasterstatistics instead of compute
+  // since computerasterstatistics forces collection each time
+  // where as getrasterstatistics uses aux.xml cached copy if available
+  // Note: there is currently no progress callback in this method
+  double myerval =  GDALGetRasterStatistics ( 
+      myGdalBand, 
+      bApproxOK, 
+      TRUE, 
+      &pdfMin, 
+      &pdfMax, 
+      &pdfMean, 
+      &pdfStdDev
+      );
+  //double myerval = GDALComputeRasterStatistics 	( myGdalBand,
+  //  bApproxOK,
+  //  &pdfMin,
+  //  &pdfMax,
+  //  &pdfMean,
+  //  &pdfStdDev,
+  //  progressCallback,
+  //  &myProg
+  //) ;
+  //end of first pass through data now calculate the range
+  myRasterBandStats.bandName = generateBandName( theBandNo );
+  myRasterBandStats.bandNumber = theBandNo;
+  myRasterBandStats.range =  pdfMax - pdfMin;
+  myRasterBandStats.minimumValue = pdfMin;
+  myRasterBandStats.maximumValue = pdfMax;
+  //calculate the mean
+  myRasterBandStats.mean = pdfMean;
+  myRasterBandStats.sum = 0; //not available via gdal
+  myRasterBandStats.elementCount = mWidth * mHeight;
+  myRasterBandStats.sumOfSquares = 0; //not available via gdal
+  myRasterBandStats.stdDev = pdfStdDev;
+  myRasterBandStats.statsGathered = true;
+
+#ifdef QGISDEBUG
+  QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
+#endif
+
+  myRasterBandStats.statsGathered = true;
+
+  return myRasterBandStats;
+
+} // QgsGdalProvider::bandStatistics
+
 
 /**
   Builds the list of file filter strings to later be used by

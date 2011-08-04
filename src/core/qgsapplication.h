@@ -32,6 +32,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
 
+    /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
+        when your app does not extend the QApplication class. */
+    static void init( QString customConfigPath = QString() );
+
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent * event );
 
