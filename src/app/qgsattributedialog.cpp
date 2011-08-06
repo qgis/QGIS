@@ -94,12 +94,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
     mDialog->resize( 447, 343 );
     gridLayout = new QGridLayout( mDialog );
     gridLayout->setSpacing( 6 );
-    gridLayout->setMargin( 11 );
+    gridLayout->setMargin( 2 );
     gridLayout->setObjectName( QString::fromUtf8( "gridLayout" ) );
     mFrame = new QFrame( mDialog );
     mFrame->setObjectName( QString::fromUtf8( "mFrame" ) );
-    mFrame->setFrameShape( QFrame::StyledPanel );
-    mFrame->setFrameShadow( QFrame::Raised );
+    mFrame->setFrameShape( QFrame::NoFrame );
+    mFrame->setFrameShadow( QFrame::Plain );
 
     gridLayout->addWidget( mFrame, 0, 0, 1, 1 );
 
@@ -116,6 +116,8 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
 
     mFrame->setLayout( mypOuterLayout );
     QScrollArea *mypScrollArea = new QScrollArea();
+    mypScrollArea->setFrameShape( QFrame::NoFrame );
+    mypScrollArea->setFrameShadow( QFrame::Plain );
     //transfers scroll area ownership so no need to call delete
     mypOuterLayout->addWidget( mypScrollArea );
     QFrame *mypInnerFrame = new QFrame();
@@ -169,6 +171,7 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       mpWidgets << myWidget;
       ++index;
     }
+
     // Set focus to first widget in list, to help entering data without moving the mouse.
     if ( mpWidgets.size() > 0 )
     {
