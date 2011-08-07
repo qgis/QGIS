@@ -67,6 +67,7 @@ ENDMACRO (ADD_QGIS_TEST)
 # Tests:
 
 ADD_QGIS_TEST(applicationtest testqgsapplication.cpp)
+ADD_QGIS_TEST(expressiontest testqgsexpression.cpp)
 ADD_QGIS_TEST(filewritertest testqgsvectorfilewriter.cpp)
 ADD_QGIS_TEST(regression992 regression992.cpp)
 ADD_QGIS_TEST(regression1141 regression1141.cpp)
