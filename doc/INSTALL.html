@@ -45,12 +45,12 @@ pre, code { font-family: monospace }
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Thursday August 04, 2011</H3>
+<H3>Sunday August 07, 2011</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Thursday August 04, 2011
+Last Updated: Sunday August 07, 2011
 Last Change : Tuesday June 28, 2011
 </P>
 <DIV CLASS="toc">
@@ -410,8 +410,8 @@ ccmake ..
 When you run ccmake (note the .. is required!), a menu will appear where 
 you can configure various aspects of the build. If you do not have root
 access or do not want to overwrite existing QGIS installs (by your
-packagemanager for example), set the CMAKE_BUILD_PREFIX to somewhere you
-have write access to (I usually use /home/timlinux/apps). Now press
+packagemanager for example), set the CMAKE_INSTALL_PREFIX to somewhere you
+have write access to (I usually use ${HOME}/apps). Now press
 'c' to configure, 'e' to dismiss any error messages that may appear.
 and 'g' to generate the make files. Note that sometimes 'c' needs to 
 be pressed several times before the 'g' option becomes available.
