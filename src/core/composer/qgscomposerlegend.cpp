@@ -408,6 +408,9 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
   double height = mSymbolHeight;
   double width = mSymbolWidth;
   double size = 0;
+  //Center small marker symbols
+  double widthOffset = 0;
+  double heightOffset = 0;
 
   if ( markerSymbol )
   {
@@ -420,10 +423,18 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
       width *= mmPerMapUnit;
       markerSymbol->setSize( width );
     }
+    if ( width < mSymbolWidth )
+    {
+      widthOffset = ( mSymbolWidth - width ) / 2.0;
+    }
+    if ( height < mSymbolHeight )
+    {
+      heightOffset = ( mSymbolHeight - height ) / 2.0;
+    }
   }
 
   p->save();
-  p->translate( currentXPosition, currentYCoord );
+  p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
   p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
 
   if ( markerSymbol && sizeInMapUnits )
@@ -440,7 +451,8 @@ void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double curren
 
   p->restore();
   currentXPosition += width;
-  symbolHeight = height;
+  currentXPosition += 2 * widthOffset;
+  symbolHeight = height + 2 * heightOffset;
 }
 
 void QgsComposerLegend::drawPointSymbol( QPainter* p, QgsSymbol* s, double currentYCoord, double& currentXPosition, double& symbolHeight, int opacity ) const
