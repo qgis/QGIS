@@ -609,7 +609,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
         int pgVersion() { return postgresqlVersion; }
 
         //! run a query and free result buffer
-        bool PQexecNR( QString query );
+        bool PQexecNR( QString query, bool retry = true );
 
         //! cursor handling
         bool openCursor( QString cursorName, QString declare );

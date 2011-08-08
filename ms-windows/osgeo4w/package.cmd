@@ -89,6 +89,7 @@ cmake -G "Visual Studio 9 2008" ^
 	-D PEDANTIC=TRUE ^
 	-D WITH_SPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
+	-D WITH_GLOBE=TRUE ^
 	-D WITH_INTERNAL_SPATIALITE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
@@ -157,6 +158,7 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude "apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
 	--exclude "apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
 	--exclude "apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
+	--exclude "apps/%PACKAGENAME%/plugins/globeplugin.dll" ^
 	apps/%PACKAGENAME% ^
 	bin/%PACKAGENAME%.bat.tmpl ^
 	bin/%PACKAGENAME%-browser.bat.tmpl ^
@@ -176,6 +178,12 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz
 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
+	>>%LOG% 2>&1
+if errorlevel 1 goto error
+
+tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-globe-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
+	"apps/%PACKAGENAME%/globe" ^
+	"apps/%PACKAGENAME%/plugins/globeplugin.dll" ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 

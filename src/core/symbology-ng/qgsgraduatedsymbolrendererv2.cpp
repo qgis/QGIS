@@ -218,13 +218,28 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 
 QList<QString> QgsGraduatedSymbolRendererV2::usedAttributes()
 {
-  QList<QString> lst;
-  lst.append( mAttrName );
+  QSet<QString> attributes;
+  attributes.insert( mAttrName );
   if ( !mRotationField.isEmpty() )
-    lst.append( mRotationField );
+  {
+    attributes.insert( mRotationField );
+  }
   if ( !mSizeScaleField.isEmpty() )
-    lst.append( mSizeScaleField );
-  return lst;
+  {
+    attributes.insert( mSizeScaleField );
+  }
+
+  QgsSymbolV2* symbol = 0;
+  QgsRangeList::const_iterator range_it = mRanges.constBegin();
+  for ( ; range_it != mRanges.constEnd(); ++range_it )
+  {
+    symbol = range_it->symbol();
+    if ( symbol )
+    {
+      attributes.unite( symbol->usedAttributes() );
+    }
+  }
+  return attributes.toList();
 }
 
 bool QgsGraduatedSymbolRendererV2::updateRangeSymbol( int rangeIndex, QgsSymbolV2* symbol )
@@ -306,6 +321,11 @@ static QList<double> _calcEqualIntervalBreaks( double minimum, double maximum, i
     value += step;
     breaks.append( value );
   }
+
+  // floating point arithmetics is not precise:
+  // set the last break to be exactly maximum so we do not miss it
+  breaks[classes-1] = maximum;
+
   return breaks;
 }
 
@@ -552,7 +572,7 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   // assuring heterogeneity among classes.
 
   QList<double> breaks;
-  if ( classes < 1 )
+  if ( classes <= 1 )
   {
     breaks.append( maximum );
     return breaks;
@@ -685,6 +705,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsSymbolV2* symbol,
   QgsVectorColorRampV2* ramp )
 {
+  if ( classes < 1 )
+    return NULL;
 
   int attrNum = vlayer->fieldNameIndex( attrName );
 
@@ -762,7 +784,8 @@ QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
     }
 
     QgsSymbolV2* newSymbol = symbol->clone();
-    newSymbol->setColor( ramp->color(( double ) i / ( breaks.count() - 1 ) ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
+    double colorValue = ( breaks.count() > 1 ? ( double ) i / ( breaks.count() - 1 ) : 0 );
+    newSymbol->setColor( ramp->color( colorValue ) ); // color from (0 / cl-1) to (cl-1 / cl-1)
 
     ranges.append( QgsRendererRangeV2( lower, upper, newSymbol, label ) );
   }

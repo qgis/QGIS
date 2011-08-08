@@ -67,9 +67,29 @@ class CORE_EXPORT QgsSimpleFillSymbolLayerV2 : public QgsFillSymbolLayerV2
     QPointF mOffset;
 };
 
+/**Base class for polygon renderers generating texture images*/
+class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayerV2
+{
+  public:
+    QgsImageFillSymbolLayer();
+    virtual ~QgsImageFillSymbolLayer();
+    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
+
+    virtual QgsSymbolV2* subSymbol() { return mOutline; }
+    virtual bool setSubSymbol( QgsSymbolV2* symbol );
+
+  protected:
+    QBrush mBrush;
+
+    /**Outline width*/
+    double mOutlineWidth;
+    /**Custom outline*/
+    QgsLineSymbolV2* mOutline;
+};
+
 /**A class for svg fill patterns. The class automatically scales the pattern to
    the appropriate pixel dimensions of the output device*/
-class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
+class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
     QgsSVGFillSymbolLayer( const QString& svgFilePath = "", double width = 20, double rotation = 0.0 );
@@ -85,8 +105,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
     void startRender( QgsSymbolV2RenderContext& context );
     void stopRender( QgsSymbolV2RenderContext& context );
 
-    void renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsSymbolV2RenderContext& context );
-
     QgsStringMap properties() const;
 
     QgsSymbolLayerV2* clone() const;
@@ -97,9 +115,6 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
     void setPatternWidth( double width ) { mPatternWidth = width;}
     double patternWidth() const { return mPatternWidth; }
 
-    QgsSymbolV2* subSymbol() { return mOutline; }
-    bool setSubSymbol( QgsSymbolV2* symbol );
-
   protected:
     /**Width of the pattern (in QgsSymbolV2 output units)*/
     double mPatternWidth;
@@ -109,19 +124,90 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsFillSymbolLayerV2
     QString mSvgFilePath;
     /**SVG view box (to keep the aspect ratio */
     QRectF mSvgViewBox;
-    /**Brush that receives rendered pixel image in startRender() method*/
-    QBrush mBrush;
-    /**Outline width*/
-    double mOutlineWidth;
-    /**Custom outline*/
-    QgsLineSymbolV2* mOutline;
 
   private:
     /**Helper function that gets the view box from the byte array*/
     void storeViewBox();
 };
 
+class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
+{
+  public:
+    QgsLinePatternFillSymbolLayer();
+    ~QgsLinePatternFillSymbolLayer();
 
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    //getters and setters
+    void setAngle( double a ){ mAngle = a; }
+    double angle() const { return mAngle; }
+    void setDistance( double d ){ mDistance = d; }
+    double distance() const { return mDistance; }
+    void setLineWidth( double w ){ mLineWidth = w; }
+    double lineWidth() const { return mLineWidth; }
+    void setColor( const QColor& c ){ mColor = c; }
+    QColor color() const{ return mColor; }
+
+  protected:
+    /**Distance (in mm or map units) between lines*/
+    double mDistance;
+    /**Line width (in mm or map units)*/
+    double mLineWidth;
+    QColor mColor;
+    //todo: line type
+     double mAngle;
+};
+
+class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
+{
+  public:
+    QgsPointPatternFillSymbolLayer();
+    ~QgsPointPatternFillSymbolLayer();
+
+    static QgsSymbolLayerV2* create( const QgsStringMap& properties = QgsStringMap() );
+    QString layerType() const;
+
+    void startRender( QgsSymbolV2RenderContext& context );
+
+    void stopRender( QgsSymbolV2RenderContext& context );
+
+    QgsStringMap properties() const;
+
+    QgsSymbolLayerV2* clone() const;
+
+    //getters and setters
+    double distanceX() const { return mDistanceX; }
+    void setDistanceX( double d ) { mDistanceX = d; }
+
+    double distanceY() const { return mDistanceY; }
+    void setDistanceY( double d ) { mDistanceY = d; }
+
+    double displacementX() const { return mDisplacementX; }
+    void setDisplacementX( double d ){ mDisplacementX = d; }
+
+    double displacementY() const { return mDisplacementY; }
+    void setDisplacementY( double d ){ mDisplacementY = d; }
+
+    bool setSubSymbol( QgsSymbolV2* symbol );
+    virtual QgsSymbolV2* subSymbol() { return mMarkerSymbol; }
+
+  protected:
+    QgsMarkerSymbolV2* mMarkerSymbol;
+    double mDistanceX;
+    double mDistanceY;
+    double mDisplacementX;
+    double mDisplacementY;
+};
 
 class CORE_EXPORT QgsCentroidFillSymbolLayerV2 : public QgsFillSymbolLayerV2
 {

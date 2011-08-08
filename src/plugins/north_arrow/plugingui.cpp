@@ -97,7 +97,7 @@ void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt )
 void QgsNorthArrowPluginGui::rotatePixmap( int theRotationInt )
 {
   QPixmap myQPixmap;
-  QString myFileNameQString = QgsApplication::pkgDataPath() + "/images/north_arrows/default.png";
+  QString myFileNameQString = ":/images/north_arrows/default.png";
 // QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
   if ( myQPixmap.load( myFileNameQString ) )
   {

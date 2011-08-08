@@ -33,6 +33,7 @@
 
 #include <QDomDocument>
 #include <QDomNode>
+#include <QMutexLocker>
 #include <QPainter>
 #include <QListIterator>
 #include <QSettings>
@@ -214,6 +215,9 @@ void QgsMapRenderer::adjustExtentToSize()
 
 void QgsMapRenderer::render( QPainter* painter )
 {
+  //Lock render method for concurrent threads (e.g. from globe)
+  QMutexLocker renderLock( &mRenderMutex );
+
   //flag to see if the render context has changed
   //since the last time we rendered. If it hasnt changed we can
   //take some shortcuts with rendering

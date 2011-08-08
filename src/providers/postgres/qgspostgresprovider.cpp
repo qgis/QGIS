@@ -909,7 +909,7 @@ bool QgsPostgresProvider::loadFields()
 
     int fldtyp = PQftype( result, i );
     QString typOid = QString().setNum( fldtyp );
-    int fieldModifier = PQfmod( result, i );
+    int fieldPrec = -1;
     QString fieldComment( "" );
     int tableoid = PQftable( result, i );
 
@@ -924,13 +924,15 @@ bool QgsPostgresProvider::loadFields()
     QString fieldElem = QString::fromUtf8( PQgetvalue( oidResult, 0, 2 ) );
     int fieldSize = QString::fromUtf8( PQgetvalue( oidResult, 0, 3 ) ).toInt();
 
+    QString formattedFieldType;
     if ( tableoid > 0 )
     {
-      sql = QString( "SELECT attnum FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
+      sql = QString( "SELECT attnum,pg_catalog.format_type(atttypid,atttypmod) FROM pg_attribute WHERE attrelid=%1 AND attname=%2" )
             .arg( tableoid ).arg( quotedValue( fieldName ) );
 
       Result tresult = connectionRO->PQexec( sql );
       QString attnum = QString::fromUtf8( PQgetvalue( tresult, 0, 0 ) );
+      formattedFieldType = QString::fromUtf8( PQgetvalue( tresult, 0, 1 ) );
 
       sql = QString( "SELECT description FROM pg_description WHERE objoid=%1 AND objsubid=%2" )
             .arg( tableoid ).arg( attnum );
@@ -953,20 +955,41 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::LongLong;
         fieldSize = -1;
+        fieldPrec = 0;
       }
       else if ( fieldTypeName.startsWith( "int" ) ||
                 fieldTypeName == "serial" )
       {
         fieldType = QVariant::Int;
         fieldSize = -1;
+        fieldPrec = 0;
       }
       else if ( fieldTypeName == "real" ||
                 fieldTypeName == "double precision" ||
-                fieldTypeName.startsWith( "float" ) ||
-                fieldTypeName == "numeric" )
+                fieldTypeName.startsWith( "float" ) )
       {
         fieldType = QVariant::Double;
         fieldSize = -1;
+        fieldPrec = -1;
+      }
+      else if ( fieldTypeName == "numeric" )
+      {
+        fieldType = QVariant::Double;
+
+        QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
+        if ( re.exactMatch( formattedFieldType ) )
+        {
+          fieldSize = re.cap( 1 ).toInt();
+          fieldPrec = re.cap( 2 ).toInt();
+        }
+        else
+        {
+          QgsDebugMsg( QString( "unexpected formatted field type '%1' for field %2" )
+                       .arg( formattedFieldType )
+                       .arg( fieldName ) );
+          fieldSize = -1;
+          fieldPrec = -1;
+        }
       }
       else if ( fieldTypeName == "text" ||
                 fieldTypeName == "bpchar" ||
@@ -974,6 +997,7 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "money" ||
+                fieldTypeName == "ltree" ||
                 fieldTypeName.startsWith( "time" ) ||
                 fieldTypeName.startsWith( "date" ) )
       {
@@ -983,6 +1007,20 @@ bool QgsPostgresProvider::loadFields()
       else if ( fieldTypeName == "char" )
       {
         fieldType = QVariant::String;
+
+        QRegExp re( "char\\((\\d+)\\)" );
+        if ( re.exactMatch( formattedFieldType ) )
+        {
+          fieldSize = re.cap( 1 ).toInt();
+        }
+        else
+        {
+          QgsDebugMsg( QString( "unexpected formatted field type '%1' for field %2" )
+                       .arg( formattedFieldType )
+                       .arg( fieldName ) );
+          fieldSize = -1;
+          fieldPrec = -1;
+        }
       }
       else
       {
@@ -1018,7 +1056,7 @@ bool QgsPostgresProvider::loadFields()
 
     fields << fieldName;
 
-    attributeFields.insert( i, QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldModifier, fieldComment ) );
+    attributeFields.insert( i, QgsField( fieldName, fieldType, fieldTypeName, fieldSize, fieldPrec, fieldComment ) );
   }
 
   return true;
@@ -3213,7 +3251,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     }
   }
 
-  sql = QString( "select type,srid from geometry_columns"
+  sql = QString( "select upper(type),srid from geometry_columns"
                  " where f_table_name=%1 and f_geometry_column=%2 and f_table_schema=%3" )
         .arg( quotedValue( tableName ) )
         .arg( quotedValue( geomCol ) )
@@ -3257,7 +3295,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select %1(%2),geometrytype(%2) from %3" )
+    sql = QString( "select %1(%2),upper(geometrytype(%2)) from %3" )
           .arg( connectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
           .arg( quotedIdentifier( geometryColumn ) )
           .arg( mQuery );
@@ -3287,9 +3325,9 @@ bool QgsPostgresProvider::getGeometryDetails()
       // check to see if there is a unique geometry type
       sql = QString( "select distinct "
                      "case"
-                     " when geometrytype(%1) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                     " when geometrytype(%1) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                     " when geometrytype(%1) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                     " when upper(geometrytype(%1)) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                     " when upper(geometrytype(%1)) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                     " when upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
                      "from " ).arg( quotedIdentifier( geometryColumn ) );
       if ( mUseEstimatedMetadata )
@@ -3451,7 +3489,7 @@ bool QgsPostgresProvider::Conn::closeCursor( QString cursorName )
   return true;
 }
 
-bool QgsPostgresProvider::Conn::PQexecNR( QString query )
+bool QgsPostgresProvider::Conn::PQexecNR( QString query, bool retry )
 {
   Result res = ::PQexec( conn, query.toUtf8() );
   if ( !res )
@@ -3481,7 +3519,24 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query )
     openCursors = 0;
   }
 
-  PQexecNR( "ROLLBACK" );
+  if ( PQstatus( conn ) == CONNECTION_OK )
+  {
+    PQexecNR( "ROLLBACK" );
+  }
+  else if ( retry )
+  {
+    QgsDebugMsg( "connection bad - resetting" );
+    ::PQreset( conn );
+    if ( PQstatus( conn ) == CONNECTION_OK )
+    {
+      QgsDebugMsg( "reconnected - retrying" );
+      return PQexecNR( query, false );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( "connection bad - giving up" );
+  }
 
   return false;
 }

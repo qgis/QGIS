@@ -406,6 +406,8 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
       {
         QgsLogger::warning( "Unable to instantiate the data provider plugin" );
 
+        delete dataProvider;
+
         myLib->unload();
         delete myLib;
         return 0;

@@ -45,20 +45,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, true );
-  setAcceptsHoverEvents( true );
-
-  //set default pen and brush
-  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-  QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidthF( 0.3 );
-  setPen( defaultPen );
-
-  //let z-Value be managed by composition
-  if ( mComposition && manageZValue )
-  {
-    mComposition->addItemToZList( this );
-  }
+  init( manageZValue );
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
@@ -71,20 +58,22 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, true );
-  setAcceptsHoverEvents( true );
-
+  init( manageZValue );
   QTransform t;
   t.translate( x, y );
   setTransform( t );
+}
 
+void QgsComposerItem::init( bool manageZValue )
+{
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  setAcceptsHoverEvents( true );
   //set default pen and brush
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidthF( 0.3 );
   setPen( defaultPen );
-
-//let z-Value be managed by composition
+  //let z-Value be managed by composition
   if ( mComposition && manageZValue )
   {
     mComposition->addItemToZList( this );
@@ -141,7 +130,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation", mRotation );
-
+  composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
   {
@@ -188,6 +177,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //rotation
   mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
+
+  //id
+  mId = itemElem.attribute( "id", "" );
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -384,30 +376,26 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos )
 {
   QgsComposerItem::MouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
-
-  if ( mouseAction == QgsComposerItem::NoAction )
+  switch ( mouseAction )
   {
-    return Qt::ForbiddenCursor;
-  }
-  if ( mouseAction == QgsComposerItem::MoveItem )
-  {
-    return Qt::ClosedHandCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeLeftUp || mouseAction == QgsComposerItem::ResizeRightDown )
-  {
-    return Qt::SizeFDiagCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeLeftDown || mouseAction == QgsComposerItem::ResizeRightUp )
-  {
-    return Qt::SizeBDiagCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeUp || mouseAction == QgsComposerItem::ResizeDown )
-  {
-    return Qt::SizeVerCursor;
-  }
-  else //if(mouseAction == QgsComposerItem::ResizeLeft || mouseAction == QgsComposerItem::ResizeRight)
-  {
-    return Qt::SizeHorCursor;
+    case NoAction:
+      return Qt::ForbiddenCursor;
+    case MoveItem:
+      return Qt::SizeAllCursor;
+    case ResizeUp:
+    case ResizeDown:
+      return Qt::SizeVerCursor;
+    case ResizeLeft:
+    case ResizeRight:
+      return Qt::SizeHorCursor;
+    case ResizeLeftUp:
+    case ResizeRightDown:
+      return Qt::SizeFDiagCursor;
+    case ResizeRightUp:
+    case ResizeLeftDown:
+      return Qt::SizeBDiagCursor;
+    default:
+      return Qt::ArrowCursor;
   }
 }
 

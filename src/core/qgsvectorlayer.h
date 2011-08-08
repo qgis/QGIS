@@ -121,13 +121,14 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     struct ValueRelationData
     {
       ValueRelationData() {}
-      ValueRelationData( QString layer, QString key, QString value, bool allowNull )
-          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ) {}
+      ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue )
+          : mLayer( layer ), mKey( key ), mValue( value ), mAllowNull( allowNull ), mOrderByValue( orderByValue ) {}
 
       QString mLayer;
       QString mKey;
       QString mValue;
       bool mAllowNull;
+      bool mOrderByValue;
     };
 
     /** Constructor */

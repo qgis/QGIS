@@ -644,7 +644,7 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0" colspan="2">
+       <item row="8" column="0" colspan="2">
         <spacer name="verticalSpacer_10">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -657,13 +657,23 @@
          </property>
         </spacer>
        </item>
-       <item row="4" column="0" colspan="2">
+       <item row="4" column="1">
         <widget class="QCheckBox" name="valueRelationAllowNull">
          <property name="layoutDirection">
           <enum>Qt::RightToLeft</enum>
          </property>
          <property name="text">
           <string>Allow null value</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QCheckBox" name="valueRelationOrderByValue">
+         <property name="layoutDirection">
+          <enum>Qt::RightToLeft</enum>
+         </property>
+         <property name="text">
+          <string>Order by value</string>
          </property>
         </widget>
        </item>

@@ -74,7 +74,7 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
   QgsDebugMsg( "lastPath = " + lastPath );
   if ( !lastPath.isEmpty() )
   {
-    expand( lastPath );
+    expandPath( lastPath );
   }
 }
 
@@ -83,21 +83,13 @@ QgsBrowser::~QgsBrowser()
 
 }
 
-void QgsBrowser::expand( QString path, const QModelIndex& index )
+void QgsBrowser::expandPath( QString path )
 {
-  QStringList paths = path.split( '/' );
-  for ( int i = 0; i < mModel->rowCount( index ); i++ )
+  QModelIndex idx = mModel->findPath( path );
+  if ( idx.isValid() )
   {
-    QModelIndex idx = mModel->index( i, 0, index );
-    QgsDataItem *item = mModel->dataItem( idx );
-
-    if ( item && path.indexOf( item->path() ) == 0 )
-    {
-      treeView->expand( idx );
-      treeView->scrollTo( idx, QAbstractItemView::PositionAtTop );
-      expand( path, idx );
-      break;
-    }
+    treeView->expand( idx );
+    treeView->scrollTo( idx, QAbstractItemView::PositionAtTop );
   }
 }
 
@@ -302,7 +294,7 @@ void QgsBrowser::newVectorLayer()
   if ( !fileName.isEmpty() )
   {
     QgsDebugMsg( "New vector layer: " + fileName );
-    expand( fileName );
+    expandPath( fileName );
     QFileInfo fileInfo( fileName );
     QString dirPath = fileInfo.absoluteDir().path();
     mModel->refresh( dirPath );

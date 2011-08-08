@@ -27,14 +27,14 @@ class QDomElement;
 class QImage;
 class QPicture;
 
-struct QgsSvgCacheEntry
+struct CORE_EXPORT QgsSvgCacheEntry
 {
   QgsSvgCacheEntry();
   QgsSvgCacheEntry( const QString& file, double size, double outlineWidth, double widthScaleFactor, double rasterScaleFctor, const QColor& fill, const QColor& outline );
   ~QgsSvgCacheEntry();
 
   QString file;
-  double size;
+  int size; //size in pixel
   double outlineWidth;
   double widthScaleFactor;
   double rasterScaleFactor;
@@ -58,35 +58,35 @@ struct QgsSvgCacheEntry
 /**A cache for images / pictures derived from svg files. This class supports parameter replacement in svg files
 according to the svg params specification (http://www.w3.org/TR/2009/WD-SVGParamPrimer-20090616/). Supported are
 the parameters 'fill-color', 'pen-color', 'outline-width', 'stroke-width'. E.g. <circle fill="param(fill-color red)" stroke="param(pen-color black)" stroke-width="param(outline-width 1)"*/
-class QgsSvgCache
+class CORE_EXPORT QgsSvgCache
 {
   public:
 
     static QgsSvgCache* instance();
     ~QgsSvgCache();
 
-    const QImage& svgAsImage( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    const QImage& svgAsImage( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                               double widthScaleFactor, double rasterScaleFactor );
-    const QPicture& svgAsPicture( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    const QPicture& svgAsPicture( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
     /**Tests if an svg file contains parameters for fill, outline color, outline width. If yes, possible default values are returned. If there are several
       default values in the svg file, only the first one is considered*/
     void containsParams( const QString& path, bool& hasFillParam, QColor& defaultFillColor, bool& hasOutlineParam, QColor& defaultOutlineColor, bool& hasOutlineWidthParam,
-                        double& defaultOutlineWidth ) const;
+                         double& defaultOutlineWidth ) const;
 
   protected:
     QgsSvgCache();
 
     /**Creates new cache entry and returns pointer to it*/
-    QgsSvgCacheEntry* insertSVG( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QgsSvgCacheEntry* insertSVG( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                                  double widthScaleFactor, double rasterScaleFactor );
 
     void replaceParamsAndCacheSvg( QgsSvgCacheEntry* entry );
     void cacheImage( QgsSvgCacheEntry* entry );
     void cachePicture( QgsSvgCacheEntry* entry );
     /**Returns entry from cache or creates a new entry if it does not exist already*/
-    QgsSvgCacheEntry* cacheEntry( const QString& file, double size, const QColor& fill, const QColor& outline, double outlineWidth,
+    QgsSvgCacheEntry* cacheEntry( const QString& file, int size, const QColor& fill, const QColor& outline, double outlineWidth,
                                   double widthScaleFactor, double rasterScaleFactor );
 
     /**Removes the least used items until the maximum size is under the limit*/
@@ -115,7 +115,7 @@ class QgsSvgCache
     void replaceElemParams( QDomElement& elem, const QColor& fill, const QColor& outline, double outlineWidth );
 
     void containsElemParams( const QDomElement& elem, bool& hasFillParam, QColor& defaultFill, bool& hasOutlineParam, QColor& defaultOutline,
-                            bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const;
+                             bool& hasOutlineWidthParam, double& defaultOutlineWidth ) const;
 
     /**Release memory and remove cache entry from mEntryLookup*/
     void removeCacheEntry( QString s, QgsSvgCacheEntry* entry );

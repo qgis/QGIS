@@ -112,6 +112,9 @@ class CORE_EXPORT QgsPalLayerSettings
     int scaleMin, scaleMax; // disabled if both are zero
     double bufferSize; //buffer size (in mm)
     QColor bufferColor;
+    bool formatNumbers;
+    int decimals;
+    bool plusSign;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
     bool mergeLines;
     bool multiLineLabels; //draw labels on multiple lines if they contain '\n'
@@ -144,6 +147,7 @@ class CORE_EXPORT QgsPalLayerSettings
     const QgsCoordinateTransform* ct;
     QgsPoint ptZero, ptOne;
     QList<QgsPalGeometry*> geometries;
+    QgsGeometry* extentGeom;
 
     /**Stores field indices for data defined layer properties*/
     QMap< DataDefinedProperties, int > dataDefinedProperties;

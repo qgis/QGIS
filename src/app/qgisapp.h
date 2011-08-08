@@ -65,6 +65,7 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
+class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
@@ -430,6 +431,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                     QStringList const & styles,
                                     QString const & format,
                                     QString const & crs );
+
+    void versionReplyFinished();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -591,10 +595,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void options();
     //! Whats-this help slot
     void whatsThis();
-    void socketConnected();
-    void socketConnectionClosed();
-    void socketReadyRead();
-    void socketError( QAbstractSocket::SocketError e );
     //! Set project properties, including map untis
     void projectProperties();
     //! Open project properties dialog and show the projections tab
@@ -997,8 +997,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgisAppInterface *mQgisInterface;
     friend class QgisAppInterface;
 
-    QTcpSocket *mSocket;
-    QString mVersionMessage;
     QSplashScreen *mSplash;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
@@ -1048,6 +1046,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     static QgisApp *smInstance;
 
     QgsUndoWidget* mUndoWidget;
+
+    QgsBrowserDockWidget* mBrowserWidget;
 
     QgsSnappingDialog* mSnappingDialog;
 

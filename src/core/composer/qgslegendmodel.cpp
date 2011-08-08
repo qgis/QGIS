@@ -238,10 +238,10 @@ int QgsLegendModel::addRasterLayerItems( QStandardItem* layerItem, QgsMapLayer* 
 
   QList< QPair< QString, QColor > > rasterItemList = rasterLayer->legendSymbologyItems();
   QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-  for(; itemIt != rasterItemList.constEnd(); ++itemIt )
+  for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
   {
     QgsComposerRasterSymbolItem* currentSymbolItem = new QgsComposerRasterSymbolItem( itemIt->first );
-    if( mHasTopLevelWindow )
+    if ( mHasTopLevelWindow )
     {
       QPixmap itemPixmap( 20, 20 );
       itemPixmap.fill( itemIt->second );

@@ -34,7 +34,7 @@ class QgsBrowser : public QMainWindow, private Ui::QgsBrowserBase
     ~QgsBrowser();
 
     // Expand to given path
-    void expand( QString path, const QModelIndex& index = QModelIndex() );
+    void expandPath( QString path );
 
 
 

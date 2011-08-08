@@ -38,10 +38,12 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
+  symbology-ng/qgsellipsesymbollayerv2.cpp
 
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgsbrowsermodel.cpp
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
@@ -164,7 +166,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   spatialindex/qgsspatialindex.cpp
-  
+
   )
 
 IF(WIN32)
@@ -220,6 +222,7 @@ ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
@@ -263,120 +266,14 @@ SET(QGIS_CORE_MOC_HDRS
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
-INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} 
-  composer
-  pal
-  raster 
-  renderer 
-  symbology
-  spatialindex/include
-  symbology-ng
-  gps/qextserialport
-  ${PROJ_INCLUDE_DIR}
-  ${GEOS_INCLUDE_DIR}
-  ${GDAL_INCLUDE_DIR}
-)
-
-IF (NOT WITH_INTERNAL_SPATIALITE)
-  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
-ENDIF (NOT WITH_INTERNAL_SPATIALITE)
-
-IF (WIN32)
-  IF (MSVC)
-    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
-  ELSE (MSVC)
-    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
-  ENDIF (MSVC)
-ENDIF (WIN32)
-
-#for PAL classes
-IF (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
-ELSE (WIN32)
-    ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
-ENDIF (WIN32)
-
-#############################################################
-# spatial indexing library
-
-# add path prefix to every specified file
-MACRO(PATH_PREFIX OUTPUT PREFIX)
-  FOREACH(F ${ARGN})
-    SET(${OUTPUT} ${${OUTPUT}} ${PREFIX}/${F})
-  ENDFOREACH(F)
-ENDMACRO(PATH_PREFIX)
-
-# tools library
-PATH_PREFIX(TOOLS_SRC tools   ExternalSort.cc ExternalSort.h TemporaryFile.cc Tools.cc)
-PATH_PREFIX(GEOM_SRC geometry LineSegment.cc Point.cc Region.cc)
-
-# spatial index library
-PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc)
-PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
-PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
-
-SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
-
-PATH_PREFIX(INDEX_SRC spatialindex ${SPINDEX_SRC})
-
-#############################################################
-# qgis_core library
-
-ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC})
-
-SET_TARGET_PROPERTIES(qgis_core PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
-
-# make sure to create qgsversion.h before compiling
-ADD_DEPENDENCIES(qgis_core version)
-
-# because of htonl
-IF (WIN32)
-  FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
-  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY})
-ENDIF (WIN32)
-
-IF(APPLE)
-  TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
-ENDIF(APPLE)
-
-TARGET_LINK_LIBRARIES(qgis_core
-  ${QT_QTMAIN_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTGUI_LIBRARY} 
-  ${QT_QTNETWORK_LIBRARY} 
-  ${QT_QTSVG_LIBRARY} 
-
-  ${PROJ_LIBRARY}
-  ${GEOS_LIBRARY}
-  ${GDAL_LIBRARY}
-)
-
-IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE)
-    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
-  ENDIF (WIN32 OR APPLE)
-  IF (UNIX)
-    TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
-  ENDIF (UNIX)
-ELSE (WITH_INTERNAL_SPATIALITE)
-  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
-ENDIF (WITH_INTERNAL_SPATIALITE)
-
-IF (APPLE)
-  SET_TARGET_PROPERTIES(qgis_core PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
-ENDIF (APPLE)
-
-INSTALL(TARGETS qgis_core
-  RUNTIME DESTINATION ${QGIS_BIN_DIR}
-  LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR})
-
-
-# Added by Tim to install headers
+# install headers
+# install qgsconfig.h and plugin.h here so they can get into
+# the OS X framework target
 
 SET(QGIS_CORE_HDRS
+  ${CMAKE_BINARY_DIR}/qgsconfig.h
+  ../plugins/qgisplugin.h
+  ../plugins/qgsrendererplugin.h
   qgis.h
   qgsapplication.h
   qgsattributeaction.h
@@ -452,7 +349,7 @@ SET(QGIS_CORE_HDRS
   raster/qgsrastershader.h
   raster/qgsrastershaderfunction.h
   raster/qgsrasterviewport.h
-  
+
   renderer/qgscontinuouscolorrenderer.h
   renderer/qgsgraduatedsymbolrenderer.h
   renderer/qgsrenderer.h
@@ -484,5 +381,132 @@ SET(QGIS_CORE_HDRS
   spatialindex/qgsspatialindex.h
 )
 
-INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
-INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
+INCLUDE_DIRECTORIES(
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  composer
+  pal
+  raster
+  renderer
+  symbology
+  spatialindex/include
+  symbology-ng
+  gps/qextserialport
+  ${PROJ_INCLUDE_DIR}
+  ${GEOS_INCLUDE_DIR}
+  ${GDAL_INCLUDE_DIR}
+)
+
+IF (NOT WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+
+IF (WIN32)
+  IF (MSVC)
+    ADD_DEFINITIONS("-DCORE_EXPORT=__declspec(dllexport)")
+  ELSE (MSVC)
+    ADD_DEFINITIONS("-UCORE_EXPORT \"-DCORE_EXPORT=__declspec(dllexport)\"")
+  ENDIF (MSVC)
+ENDIF (WIN32)
+
+#for PAL classes
+IF (WIN32)
+    ADD_DEFINITIONS("-D_HAVE_WINDOWS_H_")
+ELSE (WIN32)
+    ADD_DEFINITIONS("-D_HAVE_PTHREAD_")
+ENDIF (WIN32)
+
+#############################################################
+# spatial indexing library
+
+# add path prefix to every specified file
+MACRO(PATH_PREFIX OUTPUT PREFIX)
+  FOREACH(F ${ARGN})
+    SET(${OUTPUT} ${${OUTPUT}} ${PREFIX}/${F})
+  ENDFOREACH(F)
+ENDMACRO(PATH_PREFIX)
+
+# tools library
+PATH_PREFIX(TOOLS_SRC tools   ExternalSort.cc ExternalSort.h TemporaryFile.cc Tools.cc)
+PATH_PREFIX(GEOM_SRC geometry LineSegment.cc Point.cc Region.cc)
+
+# spatial index library
+PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc)
+PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
+PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
+
+SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
+
+PATH_PREFIX(INDEX_SRC spatialindex ${SPINDEX_SRC})
+
+#############################################################
+# qgis_core library
+
+ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
+
+SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+  VERSION ${COMPLETE_VERSION}
+  SOVERSION ${COMPLETE_VERSION}
+  PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
+  CLEAN_DIRECT_OUTPUT 1
+  FRAMEWORK 1
+  FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+  MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+  MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_core)
+
+# make sure to create qgsversion.h before compiling
+ADD_DEPENDENCIES(qgis_core version)
+
+# because of htonl
+IF (WIN32)
+  FIND_LIBRARY(SETUPAPI_LIBRARY NAMES setupapi PATHS $ENV{LIB})
+  TARGET_LINK_LIBRARIES(qgis_core wsock32 ${SETUPAPI_LIBRARY})
+ENDIF (WIN32)
+
+IF(APPLE)
+  TARGET_LINK_LIBRARIES(qgis_core "-framework CoreFoundation -framework IOKit")
+ENDIF(APPLE)
+
+TARGET_LINK_LIBRARIES(qgis_core
+  ${QT_QTMAIN_LIBRARY}
+  ${QT_QTXML_LIBRARY}
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTGUI_LIBRARY}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTSVG_LIBRARY}
+
+  ${PROJ_LIBRARY}
+  ${GEOS_LIBRARY}
+  ${GDAL_LIBRARY}
+)
+
+IF (WITH_INTERNAL_SPATIALITE)
+  IF (WIN32 OR APPLE)
+    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
+  ENDIF (WIN32 OR APPLE)
+  IF (UNIX)
+    TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
+  ENDIF (UNIX)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
+ENDIF (WITH_INTERNAL_SPATIALITE)
+
+IF (APPLE)
+  SET_TARGET_PROPERTIES(qgis_core PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
+ENDIF (APPLE)
+
+# install
+
+INSTALL(TARGETS qgis_core
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR}
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
+
+# Mac dev frameworks
+
+IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
+ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)

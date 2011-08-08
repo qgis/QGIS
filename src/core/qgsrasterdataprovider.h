@@ -30,6 +30,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
 
+#include "cpl_conv.h"
 #include <cmath>
 
 class QImage;
@@ -109,10 +110,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     };
 
     // Progress types
-    enum Progress
+    enum RasterProgressType
     {
       ProgressHistogram = 0,
-      ProgressPyramids  = 1
+      ProgressPyramids  = 1,
+      ProgressStatistics = 2
     };
 
     QgsRasterDataProvider();
@@ -325,6 +327,9 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** read block of data using give extent and size */
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
+    
+    /* Read a value from a data block at a given index. */
+    virtual double readValue( void *data, int type, int index );
 
     /** value representing null data */
     virtual double noDataValue() const { return 0; }
@@ -365,13 +370,16 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
      */
     virtual QList<QgsRasterPyramid> buildPyramidList() { return QList<QgsRasterPyramid>(); };
 
+    /** If the provider supports it, return band stats for the
+        given band. Default behaviour is to blockwise read the data
+        and generate the stats unless the provider overloads this function. */
+    virtual QgsRasterBandStats bandStatistics( int theBandNo );
 
     /** \brief helper function to create zero padded band names */
     QString  generateBandName( int theBandNumber )
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
-    }
-
+    };
 
     /**
      * Get metadata in a format suitable for feeding directly

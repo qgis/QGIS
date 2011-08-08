@@ -66,9 +66,7 @@
 #include <QToolBar>
 #include <QToolButton>
 #include <QUndoView>
-
-
-
+#include <QPaintEngine>
 
 
 QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), mTitle( title ), mUndoView( 0 )
@@ -486,6 +484,38 @@ void QgsComposer::on_mActionRefreshView_triggered()
   mComposition->update();
 }
 
+// Hack to workaround Qt #5114 by disabling PatternTransform
+class QgsPaintEngineHack : public QPaintEngine
+{
+  public:
+    void fixFlags()
+    {
+      gccaps = 0;
+      gccaps |= ( QPaintEngine::PrimitiveTransform
+                  // | QPaintEngine::PatternTransform
+                  | QPaintEngine::PixmapTransform
+                  | QPaintEngine::PatternBrush
+                  // | QPaintEngine::LinearGradientFill
+                  // | QPaintEngine::RadialGradientFill
+                  // | QPaintEngine::ConicalGradientFill
+                  | QPaintEngine::AlphaBlend
+                  // | QPaintEngine::PorterDuff
+                  | QPaintEngine::PainterPaths
+                  | QPaintEngine::Antialiasing
+                  | QPaintEngine::BrushStroke
+                  | QPaintEngine::ConstantOpacity
+                  | QPaintEngine::MaskedBrush
+                  // | QPaintEngine::PerspectiveTransform
+                  | QPaintEngine::BlendModes
+                  // | QPaintEngine::ObjectBoundingModeGradients
+#if QT_VERSION >= 0x040500
+                  | QPaintEngine::RasterOpModes
+#endif
+                  | QPaintEngine::PaintOutsidePaintEvent
+                );
+    }
+};
+
 void QgsComposer::on_mActionExportAsPDF_triggered()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
@@ -495,6 +525,7 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
       file.path(), tr( "PDF Format" ) + " (*.pdf *PDF)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setConfirmOverwrite( true );
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   int result = myQFileDialog->exec();
@@ -520,6 +551,13 @@ void QgsComposer::on_mActionExportAsPDF_triggered()
   printer.setOutputFormat( QPrinter::PdfFormat );
   printer.setOutputFileName( myOutputFileNameQString );
   printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
+
+  QPaintEngine *engine = printer.paintEngine();
+  if ( engine )
+  {
+    QgsPaintEngineHack *hack = static_cast<QgsPaintEngineHack*>( engine );
+    hack->fixFlags();
+  }
 
   print( printer );
 }
@@ -696,6 +734,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   );
 
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setConfirmOverwrite( true );
 
   // set the filter to the last one used
   myQFileDialog->selectFilter( myLastUsedFilter );
@@ -797,6 +836,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
       file.path(), tr( "SVG Format" ) + " (*.svg *SVG)" );
   myQFileDialog->selectFile( file.fileName() );
   myQFileDialog->setFileMode( QFileDialog::AnyFile );
+  myQFileDialog->setConfirmOverwrite( true );
   myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
   int result = myQFileDialog->exec();

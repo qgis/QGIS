@@ -13,6 +13,7 @@ SET(QGIS_APP_SRCS
   qgsattributetypeloaddialog.cpp
   qgsbookmarkitem.cpp
   qgsbookmarks.cpp
+  qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
   qgscontinuouscolordialog.cpp
   qgsconfigureshortcutsdialog.cpp
@@ -146,6 +147,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
   qgsbookmarks.h
+  qgsbrowserdockwidget.h
   qgsconfigureshortcutsdialog.h
   qgscontinuouscolordialog.h
   qgscustomization.h
@@ -380,11 +382,7 @@ ENDIF (POSTGRES_FOUND)
 
 #############
 
-IF (WIN32)
-  ADD_EXECUTABLE(${QGIS_APP_NAME} WIN32 ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
-ELSE (WIN32)
-  ADD_EXECUTABLE(${QGIS_APP_NAME} ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
-ENDIF (WIN32)
+ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QWT_LIBRARY}
@@ -413,7 +411,7 @@ ENDIF (APPLE)
 SET_TARGET_PROPERTIES(${QGIS_APP_NAME} PROPERTIES
   INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   INSTALL_RPATH_USE_LINK_PATH true
-  )
+  MACOSX_BUNDLE_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/app.info.plist.in")
 
 IF (POSTGRES_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${POSTGRES_LIBRARY})
@@ -423,18 +421,14 @@ IF (SPATIALITE_FOUND)
   TARGET_LINK_LIBRARIES (${QGIS_APP_NAME} ${SPATIALITE_LIBRARY})
 ENDIF (SPATIALITE_FOUND)
 
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  INSTALL(TARGETS ${QGIS_APP_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-ELSE (APPLE)
-  INSTALL(TARGETS ${QGIS_APP_NAME} RUNTIME DESTINATION ${QGIS_BIN_DIR})
-ENDIF (APPLE)
-
 IF(MSVC)
   INSTALL(FILES qgis.ico DESTINATION ${CMAKE_INSTALL_PREFIX}/icons)
 ENDIF(MSVC)
 
-########## Install headers for developers to use against qgis libs
-#commented out since app classes don't go into any lib there is little point
-#INSTALL(FILES ${CMAKE_BINARY_DIR}/src/ui/ui_qgsmeasurebase.h DESTINATION ${QGIS_INCLUDE_DIR})
-#INSTALL(FILES ${QGIS_APP_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR})
+INSTALL(TARGETS ${QGIS_APP_NAME}
+  BUNDLE DESTINATION ${QGIS_INSTALL_PREFIX}
+  RUNTIME DESTINATION ${QGIS_BIN_DIR})
+
+IF (APPLE)
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND /bin/echo -n \"APPLQGIS\" OUTPUT_FILE \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../PkgInfo\")")
+ENDIF (APPLE)

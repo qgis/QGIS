@@ -103,6 +103,7 @@
 #include "qgsattributetabledialog.h"
 #include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
+#include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
 #include "qgscomposer.h"
 #include "qgscomposermanager.h"
@@ -293,7 +294,7 @@ static void setTitleBarText_( QWidget & qgisApp )
     else
     {
       QFileInfo projectFileInfo( QgsProject::instance()->fileName() );
-      caption += " - " + projectFileInfo.baseName();
+      caption += " - " + projectFileInfo.completeBaseName();
     }
   }
   else
@@ -445,6 +446,11 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSnappingDialog = new QgsSnappingDialog( this, mMapCanvas );
   mSnappingDialog->setObjectName( "SnappingOption" );
+
+  mBrowserWidget = new QgsBrowserDockWidget( this );
+  mBrowserWidget->setObjectName( "Browser" );
+  addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
+  mBrowserWidget->hide();
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
@@ -662,23 +668,26 @@ void QgisApp::dropEvent( QDropEvent *event )
     QByteArray encodedData = event->mimeData()->data( "application/x-vnd.qgis.qgis.uri" );
     QDataStream stream( &encodedData, QIODevice::ReadOnly );
     QString xUri; // extended uri: layer_type:provider_key:uri
-    stream >> xUri;
-    QgsDebugMsg( xUri );
-    QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
-    if ( rx.indexIn( xUri ) != -1 )
+    while ( !stream.atEnd() )
     {
-      QString layerType = rx.cap( 1 );
-      QString providerKey = rx.cap( 2 );
-      QString name = rx.cap( 3 );
-      QString uri = rx.cap( 4 );
-      QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
-      if ( layerType == "vector" )
+      stream >> xUri;
+      QgsDebugMsg( xUri );
+      QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
+      if ( rx.indexIn( xUri ) != -1 )
       {
-        addVectorLayer( uri, name, providerKey );
-      }
-      else if ( layerType == "raster" )
-      {
-        addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
+        QString layerType = rx.cap( 1 );
+        QString providerKey = rx.cap( 2 );
+        QString name = rx.cap( 3 );
+        QString uri = rx.cap( 4 );
+        QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
+        if ( layerType == "vector" )
+        {
+          addVectorLayer( uri, name, providerKey );
+        }
+        else if ( layerType == "raster" )
+        {
+          addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
+        }
       }
     }
   }
@@ -1029,19 +1038,7 @@ void QgisApp::createMenus()
     QAction* before = mActionNewPrintComposer;
     mFileMenu->insertAction( before, mActionProjectProperties );
     mFileMenu->insertSeparator( before );
-  }
-
-  // Edit Menu
-
-  if ( layout == QDialogButtonBox::GnomeLayout || layout == QDialogButtonBox::MacLayout )
-  {
-    mEditMenu->addSeparator();
-    mEditMenu->addAction( mActionOptions );
-    mEditMenu->addAction( mActionSnappingOptions );
-    mEditMenu->addAction( mActionConfigureShortcuts );
-    mEditMenu->addAction( mActionCustomization );
-    mEditMenu->addAction( mActionStyleManagerV2 );
-    mEditMenu->addAction( mActionCustomProjection );
+    mSettingsMenu->removeAction( mActionProjectProperties );
   }
 
   // View Menu
@@ -1932,36 +1929,52 @@ void QgisApp::about()
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
     abt = new QgsAbout();
-    QString versionString = tr( "You are using QGIS version %1 built against code revision %2." )
-                            .arg( QGis::QGIS_VERSION )
-                            .arg( QGis::QGIS_DEV_VERSION );
+    QString versionString = "<html><body><div align='center'><table width='100%'>";
 
-    versionString += tr( "\nGDAL/OGR Version: %1." ).arg( GDAL_RELEASE_NAME );
+    versionString += "<tr>";
+    versionString += "<td>" + tr( "QGIS version" )       + "</td><td>" + QGis::QGIS_VERSION + "</td>";
+    versionString += "<td>" + tr( "QGIS code revision" ) + "</td><td>" + QGis::QGIS_DEV_VERSION + "</td>";
 
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "Compiled against Qt" ) + "</td><td>" + QT_VERSION_STR + "</td>";
+    versionString += "<td>" + tr( "Running against Qt" ) + "</td><td>" + qVersion() + "</td>";
+
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "GDAL/OGR Version" )  + "</td><td>" + GDAL_RELEASE_NAME + "</td>";
+    versionString += "<td>" + tr( "GEOS Version" )      + "</td><td>" + GEOS_VERSION + "</td>";
+
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "PostgreSQL Client Version" ) + "</td><td>";
 #ifdef HAVE_POSTGRESQL
-    versionString += tr( "\nPostgreSQL Client Version: %1." ).arg( PG_VERSION );
+    versionString += PG_VERSION;
 #else
-    versionString += tr( "\nNo PostgreSQL support." );
+    versionString += tr( "No support." );
 #endif
+    versionString += "</td>";
 
+    versionString += "<td>" +  tr( "SpatiaLite Version" ) + "</td><td>";
 #ifdef HAVE_SPATIALITE
-    versionString += tr( "\nSpatiaLite Version: %1." ).arg( spatialite_version() );
+    versionString += spatialite_version();
 #else
-    versionString += tr( "\nNo SpatiaLite support." );
+    versionString += tr( "No support." );
 #endif
+    versionString += "</td>";
 
-    versionString += tr( "\nQWT Version: %1." ).arg( QWT_VERSION_STR );
+    versionString += "</tr><tr>";
+
+    versionString += "<td>" + tr( "QWT Version" ) + "</td><td>" + QWT_VERSION_STR + "</td>";
 
 #ifdef QGISDEBUG
-    versionString += tr( "\nThis copy of QGIS writes debugging output." );
+    versionString += "<td colspan=2>" + tr( "This copy of QGIS writes debugging output." ) + "</td>";
 #endif
 
-    versionString += tr( "\nThis binary was compiled against Qt %1,"
-                         "and is currently running against Qt %2" )
-                     .arg( QT_VERSION_STR )
-                     .arg( qVersion() );
+    versionString += "</tr></table></div></body></html>";
 
     abt->setVersion( versionString );
+
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h3>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h3>";
     whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.7.0 'Wrocław'?" ) + "</h2>";
@@ -4606,7 +4619,7 @@ void QgisApp::loadPythonSupport()
 {
   QString pythonlibName( "qgispython" );
 #if defined(Q_WS_MAC) || defined(Q_OS_LINUX)
-  pythonlibName.prepend( QgsApplication::prefixPath() + "/" + QGIS_LIB_SUBDIR + "/" );
+  pythonlibName.prepend( QgsApplication::libraryPath() );
 #endif
 #ifdef __MINGW32__
   pythonlibName.prepend( "lib" );
@@ -4662,55 +4675,45 @@ void QgisApp::loadPythonSupport()
 void QgisApp::checkQgisVersion()
 {
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  /* QUrlOperator op = new QUrlOperator( "http://mrcc.com/qgis/version.txt" );
-     connect(op, SIGNAL(data()), SLOT(urlData()));
-     connect(op, SIGNAL(finished(QNetworkOperation)), SLOT(urlFinished(QNetworkOperation)));
 
-     op.get(); */
-  mSocket = new QTcpSocket( this );
-  connect( mSocket, SIGNAL( connected() ), SLOT( socketConnected() ) );
-  connect( mSocket, SIGNAL( connectionClosed() ), SLOT( socketConnectionClosed() ) );
-  connect( mSocket, SIGNAL( readyRead() ), SLOT( socketReadyRead() ) );
-  connect( mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ),
-           SLOT( socketError( QAbstractSocket::SocketError ) ) );
-  mSocket->connectToHost( "mrcc.com", 80 );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "http://qgis.org/version.txt" ) ) );
+  connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
 }
 
-void QgisApp::socketConnected()
-{
-  QTextStream os( mSocket );
-  mVersionMessage = "";
-  // send the qgis version string
-  // os << QGIS_VERSION << "\r\n";
-  os << "GET /qgis/version.txt HTTP/1.0\n\n";
-
-
-}
-
-void QgisApp::socketConnectionClosed()
+void QgisApp::versionReplyFinished()
 {
   QApplication::restoreOverrideCursor();
-  // strip the header
-  QString contentFlag = "#QGIS Version";
-  int pos = mVersionMessage.indexOf( contentFlag );
-  if ( pos > -1 )
+
+  QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
+  if ( !reply )
+    return;
+
+  QNetworkReply::NetworkError error = reply->error();
+
+  if ( error == QNetworkReply::NoError )
   {
-    pos += contentFlag.length();
-// QgsDebugMsg(mVersionMessage);
-// QgsDebugMsg(QString("Pos is %1").arg(pos));
-    mVersionMessage = mVersionMessage.mid( pos );
-    QStringList parts = mVersionMessage.split( "|", QString::SkipEmptyParts );
-    // check the version from the  server against our version
-    QString versionInfo;
-    int currentVersion = parts[0].toInt();
-    if ( currentVersion > QGis::QGIS_VERSION_INT )
+    QString versionMessage = reply->readAll();
+    QgsDebugMsg( QString( "version message: %1" ).arg( versionMessage ) );
+
+    // strip the header
+    QString contentFlag = "#QGIS Version";
+    int pos = versionMessage.indexOf( contentFlag );
+    if ( pos > -1 )
     {
-      // show version message from server
-      versionInfo = tr( "There is a new version of QGIS available" ) + "\n";
-    }
-    else
-    {
-      if ( QGis::QGIS_VERSION_INT > currentVersion )
+      pos += contentFlag.length();
+      QgsDebugMsg( QString( "Pos is %1" ).arg( pos ) );
+
+      versionMessage = versionMessage.mid( pos );
+      QStringList parts = versionMessage.split( "|", QString::SkipEmptyParts );
+      // check the version from the  server against our version
+      QString versionInfo;
+      int currentVersion = parts[0].toInt();
+      if ( currentVersion > QGis::QGIS_VERSION_INT )
+      {
+        // show version message from server
+        versionInfo = tr( "There is a new version of QGIS available" ) + "\n";
+      }
+      else if ( QGis::QGIS_VERSION_INT > currentVersion )
       {
         versionInfo = tr( "You are running a development version of QGIS" ) + "\n";
       }
@@ -4718,72 +4721,55 @@ void QgisApp::socketConnectionClosed()
       {
         versionInfo = tr( "You are running the current version of QGIS" ) + "\n";
       }
-    }
-    if ( parts.count() > 1 )
-    {
-      versionInfo += parts[1] + "\n\n" + tr( "Would you like more information?" );
-      ;
-      QMessageBox::StandardButton result = QMessageBox::information( this,
-                                           tr( "QGIS Version Information" ), versionInfo, QMessageBox::Ok |
-                                           QMessageBox::Cancel );
-      if ( result == QMessageBox::Ok )
+
+      if ( parts.count() > 1 )
       {
-        // show more info
-        QgsMessageViewer *mv = new QgsMessageViewer( this );
-        mv->setWindowTitle( tr( "QGIS - Changes since last release" ) );
-        mv->setMessageAsHtml( parts[2] );
-        mv->exec();
+        versionInfo += parts[1] + "\n\n" + tr( "Would you like more information?" );
+
+        QMessageBox::StandardButton result = QMessageBox::information( this,
+                                             tr( "QGIS Version Information" ), versionInfo, QMessageBox::Ok |
+                                             QMessageBox::Cancel );
+        if ( result == QMessageBox::Ok )
+        {
+          // show more info
+          QgsMessageViewer *mv = new QgsMessageViewer( this );
+          mv->setWindowTitle( tr( "QGIS - Changes since last release" ) );
+          mv->setMessageAsHtml( parts[2] );
+          mv->exec();
+        }
+      }
+      else
+      {
+        QMessageBox::information( this, tr( "QGIS Version Information" ), versionInfo );
       }
     }
     else
     {
-      QMessageBox::information( this, tr( "QGIS Version Information" ), versionInfo );
+      QMessageBox::warning( this, tr( "QGIS Version Information" ), tr( "Unable to get current version information from server" ) );
     }
   }
   else
   {
-    QMessageBox::warning( this, tr( "QGIS Version Information" ), tr( "Unable to get current version information from server" ) );
-  }
-}
-void QgisApp::socketError( QAbstractSocket::SocketError e )
-{
-  if ( e == QAbstractSocket::RemoteHostClosedError )
-    return;
+    // get error type
+    QString detail;
+    switch ( error )
+    {
+      case QNetworkReply::ConnectionRefusedError:
+        detail = tr( "Connection refused - server may be down" );
+        break;
+      case QNetworkReply::HostNotFoundError:
+        detail = tr( "QGIS server was not found" );
+        break;
+      default:
+        detail = tr( "Unknown network socket error: %1" ).arg( error );
+        break;
+    }
 
-  QApplication::restoreOverrideCursor();
-  // get error type
-  QString detail;
-  switch ( e )
-  {
-    case QAbstractSocket::ConnectionRefusedError:
-      detail = tr( "Connection refused - server may be down" );
-      break;
-    case QAbstractSocket::HostNotFoundError:
-      detail = tr( "QGIS server was not found" );
-      break;
-    case QAbstractSocket::NetworkError:
-      detail = tr( "Network error while communicating with server" );
-      break;
-    default:
-      detail = tr( "Unknown network socket error" );
-      break;
+    // show version message from server
+    QMessageBox::critical( this, tr( "QGIS Version Information" ), tr( "Unable to communicate with QGIS Version server\n%1" ).arg( detail ) );
   }
 
-  // show version message from server
-  QMessageBox::critical( this, tr( "QGIS Version Information" ), tr( "Unable to communicate with QGIS Version server\n%1" ).arg( detail ) );
-}
-
-void QgisApp::socketReadyRead()
-{
-  while ( mSocket->bytesAvailable() > 0 )
-  {
-    char *data = new char[mSocket->bytesAvailable() + 1];
-    memset( data, '\0', mSocket->bytesAvailable() + 1 );
-    mSocket->read( data, mSocket->bytesAvailable() );
-    mVersionMessage += data;
-    delete[]data;
-  }
-
+  reply->deleteLater();
 }
 
 void QgisApp::configureShortcuts()

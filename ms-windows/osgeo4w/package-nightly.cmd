@@ -18,6 +18,7 @@ if "%PACKAGENAME%"=="" set PACKAGENAME=qgis-dev
 path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin
 set PYTHONPATH=
 
+if "%PROGRAMFILES%"=="" set PROGRAMFILES=C:\Programme
 set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
 call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
 
@@ -90,6 +91,7 @@ cmake -G "Visual Studio 9 2008" ^
 	-D WITH_SPATIALITE=TRUE ^
 	-D WITH_MAPSERVER=TRUE ^
 	-D WITH_ASTYLE=TRUE ^
+	-D WITH_GLOBE=TRUE ^
 	-D WITH_INTERNAL_SPATIALITE=TRUE ^
 	-D CMAKE_BUILD_TYPE=%BUILDCONF% ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
@@ -157,26 +159,12 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
 
-REM tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-%VERSION%-%PACKAGE%.tar.bz2 ^
-REM 	--exclude-from exclude ^
-REM 	"apps/%PACKAGENAME%/themes/classic/grass" ^
-REM 	"apps/%PACKAGENAME%/themes/default/grass" ^
-REM 	"apps/%PACKAGENAME%/themes/gis/grass" ^
-REM 	"apps/%PACKAGENAME%/grass" ^
-REM 	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
-REM 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
-REM 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-REM 	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
-REM 	>>%LOG% 2>&1
-REM if errorlevel 1 goto error
-
 goto end
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%>>%LOG% 2>&1
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
-REM if exist %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2
 
 :end
 echo FINISHED: %DATE% %TIME% >>%LOG% 2>&1

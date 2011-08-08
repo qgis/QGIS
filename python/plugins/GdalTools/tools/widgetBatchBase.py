@@ -55,12 +55,6 @@ class GdalToolsBaseBatchWidget(BasePluginWidget):
 
       inDir = self.getInputFileName()
 
-      filter = Utils.getRasterExtensions()
-      workDir = QDir( inDir )
-      workDir.setFilter( QDir.Files | QDir.NoSymLinks | QDir.NoDotAndDotDot )
-      workDir.setNameFilters( filter )
-      workFiles = workDir.entryList()
-
       self.inFiles = Utils.getRasterFiles( inDir, self.isRecursiveScanEnabled() )
       self.outFiles = []
 

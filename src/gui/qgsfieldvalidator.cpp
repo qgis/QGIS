@@ -58,7 +58,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field )
       }
       else if ( mField.precision() > 0 )
       {
-        QString re = QString( "-?\\d*(\\.\\d{0,%1))?" ).arg( mField.precision() );
+        QString re = QString( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else

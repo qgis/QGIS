@@ -276,6 +276,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! layer index
     int mLayerIndex;
 
+    //! current spatial filter
+    QgsRectangle mFetchRect;
+
     //! String used to define a subset of the layer
     QString mSubsetString;
 

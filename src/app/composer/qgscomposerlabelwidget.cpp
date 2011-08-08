@@ -183,7 +183,6 @@ void QgsComposerLabelWidget::setGuiElementValues()
   mLeftRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignLeft );
   mCenterRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignHCenter );
   mRightRadioButton->setChecked( mComposerLabel->hAlign() == Qt::AlignRight );
-  mLabelIdLineEdit->setText( mComposerLabel->id() );
   blockAllSignals( false );
 }
 
@@ -197,5 +196,5 @@ void QgsComposerLabelWidget::blockAllSignals( bool block )
   mLeftRadioButton->blockSignals( block );
   mCenterRadioButton->blockSignals( block );
   mRightRadioButton->blockSignals( block );
-  mLabelIdLineEdit->blockSignals( block );
+
 }

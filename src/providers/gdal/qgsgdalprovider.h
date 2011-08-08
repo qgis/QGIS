@@ -26,6 +26,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterbandstats.h"
 
 #include <QString>
 #include <QStringList>
@@ -222,6 +223,13 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
+    /** \brief If the provider supports it, return band stats for the
+        given band.
+        @note added in QGIS 1.7
+        @note overloads virtual method from QgsRasterProvider::bandStatistics
+
+    */
+    QgsRasterBandStats bandStatistics( int theBandNo );
 
     void populateHistogram( int theBandNoInt,
                             QgsRasterBandStats & theBandStats,

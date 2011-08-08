@@ -21,7 +21,12 @@ public:
       NoError = 0,
       ErrDriverNotFound,
       ErrCreateDataSource,
-      ErrCreateLayer
+      ErrCreateLayer,
+      ErrAttributeTypeUnsupported,
+      ErrAttributeCreationFailed,
+      ErrProjection,  // added in 1.5
+      ErrFeatureWriteFailed, // added in 1.6
+      ErrInvalidLayer, // added in 2.0
     };
 
     /** Write contents of vector layer to a shapefile 

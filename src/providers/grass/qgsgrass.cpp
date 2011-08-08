@@ -1213,7 +1213,7 @@ QString GRASS_LIB_EXPORT QgsGrass::getInfo( QString info, QString gisdbase, QStr
 
   QStringList arguments;
 
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.g.info";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.g.info";
 
   arguments.append( "info=" + info );
   if ( !map.isEmpty() )

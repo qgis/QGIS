@@ -518,7 +518,8 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   OGRFeatureH fet;
   QgsRectangle selectionRect;
 
-  setRelevantFields( mFetchGeom || mUseIntersect, mAttributesToFetch );
+  setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
+                     mAttributesToFetch );
 
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
@@ -616,6 +617,7 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
+  mFetchRect = rect;
 
   // spatial query to select features
   if ( rect.isEmpty() )

@@ -27,7 +27,7 @@ static const QString name_ = QObject::tr( "Zonal statistics plugin" );
 static const QString description_ = QObject::tr( "A plugin to calculate count, sum, mean of rasters for each polygon of a vector layer" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 
-QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface ): mIface(iface), mAction(0)
+QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface ): mIface( iface ), mAction( 0 )
 {
 
 }
@@ -52,23 +52,23 @@ void QgsZonalStatisticsPlugin::unload()
 
 void QgsZonalStatisticsPlugin::run()
 {
-  QgsZonalStatisticsDialog d(mIface);
-  if(d.exec() == QDialog::Rejected)
+  QgsZonalStatisticsDialog d( mIface );
+  if ( d.exec() == QDialog::Rejected )
   {
     return;
   }
 
   QString rasterFile = d.rasterFilePath();
   QgsVectorLayer* vl = d.polygonLayer();
-  if(!vl)
+  if ( !vl )
   {
     return;
   }
 
-  QgsZonalStatistics zs(vl, rasterFile, d.attributePrefix(), 1); //atm hardcode first band
-  QProgressDialog p(tr("Calculating zonal statistics..."), tr("Abort..."), 0, 0);
-  p.setWindowModality(Qt::WindowModal);
-  zs.calculateStatistics(&p);
+  QgsZonalStatistics zs( vl, rasterFile, d.attributePrefix(), 1 ); //atm hardcode first band
+  QProgressDialog p( tr( "Calculating zonal statistics..." ), tr( "Abort..." ), 0, 0 );
+  p.setWindowModality( Qt::WindowModal );
+  zs.calculateStatistics( &p );
 }
 
 //global methods for the plugin manager

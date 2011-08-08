@@ -309,7 +309,7 @@ void QgsLegendLayer::rasterLayerSymbology( QgsRasterLayer* layer )
   SymbologyList itemList;
   QList< QPair< QString, QColor > > rasterItemList = layer->legendSymbologyItems();
   QList< QPair< QString, QColor > >::const_iterator itemIt = rasterItemList.constBegin();
-  for(; itemIt != rasterItemList.constEnd(); ++itemIt )
+  for ( ; itemIt != rasterItemList.constEnd(); ++itemIt )
   {
     QPixmap itemPixmap( treeWidget()->iconSize() );
     itemPixmap.fill( itemIt->second );
@@ -662,7 +662,7 @@ void QgsLegendLayer::updateItemListCount( QgsVectorLayer* layer, const QList<Qgs
 
   //go through all features and count the number of occurrences
   int nFeatures = layer->pendingFeatureCount();
-  QProgressDialog p( tr( "Updating feature count for layer " ) + layer->name(), tr( "Abort" ), 0, nFeatures );
+  QProgressDialog p( tr( "Updating feature count for layer %1" ).arg( layer->name() ), tr( "Abort" ), 0, nFeatures );
   p.setWindowModality( Qt::WindowModal );
   int featuresCounted = 0;
 

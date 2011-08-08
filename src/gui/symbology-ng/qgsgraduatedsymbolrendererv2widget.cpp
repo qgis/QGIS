@@ -176,16 +176,23 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
   // create and set new renderer
+  QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
+                                      mLayer, attrName, classes, mode, mGraduatedSymbol, ramp );
+  if ( !r )
+  {
+    QMessageBox::critical( this, tr( "Error" ), tr( "Renderer creation has failed." ) );
+    return;
+  }
+
   delete mRenderer;
-  mRenderer = QgsGraduatedSymbolRendererV2::createRenderer(
-                mLayer, attrName, classes, mode, mGraduatedSymbol, ramp );
+  mRenderer = r;
 
   populateRanges();
 }
 
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, this );
+  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
     return;
 
@@ -268,7 +275,7 @@ void QgsGraduatedSymbolRendererV2Widget::changeRangeSymbol( int rangeIdx )
 {
   QgsSymbolV2* newSymbol = mRenderer->ranges()[rangeIdx].symbol()->clone();
 
-  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, this );
+  QgsSymbolV2SelectorDialog dlg( newSymbol, mStyle, mLayer, this );
   if ( !dlg.exec() )
   {
     delete newSymbol;

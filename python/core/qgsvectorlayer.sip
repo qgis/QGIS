@@ -59,12 +59,15 @@ public:
     Classification,
     EditRange,
     SliderRange
-    CheckBox,    /* @note added in 1.4 */
+    CheckBox,      /* @note added in 1.4 */
     FileName,
-    Enumeration, /* @note added in 1.4 */
-    Immutable,   /* @note added in 1.4 */
-    Hidden,      /* @note added in 1.4 */
-    TextEdit     /* @note added in 1.4 */
+    Enumeration,   /* @note added in 1.4 */
+    Immutable,     /* @note added in 1.4 */
+    Hidden,        /* @note added in 1.4 */
+    TextEdit       /* @note added in 1.4 */
+    Calendar,      /* calendar widget @added in 1.5 */
+    DialRange,     /* dial range @added in 1.5 */
+    ValueRelation, /* value map from an table @added in 1.8 */
   };
    
   struct RangeData {
@@ -74,6 +77,18 @@ public:
     QVariant mMin;
     QVariant mMax;
     QVariant mStep;
+  };
+
+  struct ValueRelationData
+  {
+    ValueRelationData();
+    ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue );
+
+    QString mLayer;
+    QString mKey;
+    QString mValue;
+    bool mAllowNull;
+    bool mOrderByValue;
   };
 
   /** Constructor */
@@ -527,6 +542,11 @@ public:
 
   /**access range */
   RangeData &range(int idx);
+
+  /**access relations
+   * @note added in 1.8
+   **/
+  ValueRelationData &valueRelation( int idx );
 
   /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
   @note this method was added in version 1.1
