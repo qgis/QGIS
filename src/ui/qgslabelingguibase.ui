@@ -445,13 +445,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-<<<<<<< HEAD
-            <width>645</width>
-            <height>488</height>
-=======
             <width>643</width>
             <height>478</height>
->>>>>>> upstream/master
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
