@@ -55,7 +55,7 @@ to find out indices of columns and then repeatedly call evaluate(feature).
 
 @note added in 2.0
 */
-class QgsExpression
+class CORE_EXPORT QgsExpression
 {
   public:
     QgsExpression( const QString& expr );
@@ -164,6 +164,9 @@ class QgsExpression
 
     // return index of the function in BuiltinFunctions array
     static int functionIndex( QString name );
+
+    //! return quoted column reference (in double quotes)
+    static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }
 
     //////
 

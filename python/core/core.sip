@@ -35,6 +35,7 @@
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdistancearea.sip
+%Include qgsexpression.sip
 %Include qgsfeature.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
