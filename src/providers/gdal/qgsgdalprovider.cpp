@@ -883,24 +883,18 @@ void QgsGdalProvider::computeMinMax( int theBandNo )
   {
     return;
   }
-  int bApproxOK=false;
-  double pdfMin;
-  double pdfMax;
-  double pdfMean;
-  double pdfStdDev;
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  double myerval =  GDALGetRasterStatistics ( 
-      myGdalBand, 
-      bApproxOK, 
-      TRUE, 
-      &pdfMin, 
-      &pdfMax, 
-      &pdfMean, 
-      &pdfStdDev
-      );
-  Q_UNUSED(myerval);
-  mMinimum[theBandNo-1] = pdfMin;
-  mMaximum[theBandNo-1] = pdfMax;
+  int bApproxOK=false;
+  int             bGotMin, bGotMax;
+  double          adfMinMax[2];
+  adfMinMax[0] = GDALGetRasterMinimum( myGdalBand, &bGotMin );
+  adfMinMax[1] = GDALGetRasterMaximum( myGdalBand, &bGotMax );
+  if( ! ( bGotMin && bGotMax ) )
+  {
+    GDALComputeRasterMinMax( myGdalBand, TRUE, adfMinMax );
+  }
+  mMinimum[theBandNo-1] = adfMinMax[0];
+  mMaximum[theBandNo-1] = adfMinMax[1];
 }
 
 double  QgsGdalProvider::minimumValue( int theBandNo ) const
@@ -1853,58 +1847,62 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
   myProg.type = ProgressHistogram;
   myProg.provider = this;
 
-  // Suggested by Etienne Sky to use getrasterstatistics instead of compute
-  // since computerasterstatistics forces collection each time
-  // where as getrasterstatistics uses aux.xml cached copy if available
-  // Note: there is currently no progress callback in this method
-  double myerval =  GDALGetRasterStatistics ( 
-      myGdalBand, 
-      bApproxOK, 
-      TRUE, 
-      &pdfMin, 
-      &pdfMax, 
-      &pdfMean, 
-      &pdfStdDev
-      );
-  //double myerval = GDALComputeRasterStatistics 	( myGdalBand,
-  //  bApproxOK,
-  //  &pdfMin,
-  //  &pdfMax,
-  //  &pdfMean,
-  //  &pdfStdDev,
-  //  progressCallback,
-  //  &myProg
-  //) ;
-  //end of first pass through data now calculate the range
-  myRasterBandStats.bandName = generateBandName( theBandNo );
-  myRasterBandStats.bandNumber = theBandNo;
-  myRasterBandStats.range =  pdfMax - pdfMin;
-  myRasterBandStats.minimumValue = pdfMin;
-  myRasterBandStats.maximumValue = pdfMax;
-  //calculate the mean
-  myRasterBandStats.mean = pdfMean;
-  myRasterBandStats.sum = 0; //not available via gdal
-  myRasterBandStats.elementCount = mWidth * mHeight;
-  myRasterBandStats.sumOfSquares = 0; //not available via gdal
-  myRasterBandStats.stdDev = pdfStdDev;
-  myRasterBandStats.statsGathered = true;
+  // double myerval = 
+  //   GDALComputeRasterStatistics ( 
+  // 				 myGdalBand, bApproxOK, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
+  // 				 progressCallback, &myProg ) ;
+  // double myerval = 
+  //   GDALGetRasterStatistics ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev);
+  // double myerval = 
+  //   GDALGetRasterStatisticsProgress ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
+  // 				      progressCallback, &myProg );
+
+  // try to fetch the cached stats (bForce=FALSE)
+  CPLErr myerval = 
+    GDALGetRasterStatistics ( myGdalBand, bApproxOK, FALSE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev);
+
+  // if cached stats are not found, compute them
+  if ( CE_Warning == myerval )
+  {
+      myerval = GDALComputeRasterStatistics ( myGdalBand, bApproxOK, 
+					      &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
+					      progressCallback, &myProg ) ;
+  }
+
+  // if stats are found populate the QgsRasterBandStats object
+  if ( CE_None == myerval )
+  {
+
+    myRasterBandStats.bandName = generateBandName( theBandNo );
+    myRasterBandStats.bandNumber = theBandNo;
+    myRasterBandStats.range =  pdfMax - pdfMin;
+    myRasterBandStats.minimumValue = pdfMin;
+    myRasterBandStats.maximumValue = pdfMax;
+    //calculate the mean
+    myRasterBandStats.mean = pdfMean;
+    myRasterBandStats.sum = 0; //not available via gdal
+    myRasterBandStats.elementCount = mWidth * mHeight;
+    myRasterBandStats.sumOfSquares = 0; //not available via gdal
+    myRasterBandStats.stdDev = pdfStdDev;
+    myRasterBandStats.statsGathered = true;
 
 #ifdef QGISDEBUG
-  QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
+    QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
 #endif
 
-  myRasterBandStats.statsGathered = true;
+    myRasterBandStats.statsGathered = true;
+
+  }
 
   return myRasterBandStats;
 
 } // QgsGdalProvider::bandStatistics
-
 
 /**
   Builds the list of file filter strings to later be used by
