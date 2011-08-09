@@ -174,17 +174,17 @@ class GdalTools:
       QObject.connect( self.sieve, SIGNAL( "triggered()" ), self.doSieve )
       self.analysisMenu.addAction( self.sieve )
 
-    if self.GdalVersion >= "1.6":
-      self.proximity = QAction( QIcon(":/icons/proximity.png"),  QCoreApplication.translate( "GdalTools", "Proximity (Raster distance)" ), self.iface.mainWindow() )
-      self.proximity.setStatusTip( QCoreApplication.translate( "GdalTools", "Produces a raster proximity map") )
-      QObject.connect( self.proximity, SIGNAL( "triggered()" ), self.doProximity )
-      self.analysisMenu.addAction( self.proximity )
-
     if self.GdalVersion >= "1.5":
       self.nearBlack = QAction( QIcon(":/icons/nearblack.png"),  QCoreApplication.translate( "GdalTools", "Near black" ), self.iface.mainWindow() )
       self.nearBlack.setStatusTip( QCoreApplication.translate( "GdalTools", "Convert nearly black/white borders to exact value") )
       QObject.connect( self.nearBlack, SIGNAL( "triggered()" ), self.doNearBlack )
       self.analysisMenu.addAction( self.nearBlack )
+
+    if self.GdalVersion >= "1.6":
+      self.proximity = QAction( QIcon(":/icons/proximity.png"),  QCoreApplication.translate( "GdalTools", "Proximity (Raster distance)" ), self.iface.mainWindow() )
+      self.proximity.setStatusTip( QCoreApplication.translate( "GdalTools", "Produces a raster proximity map") )
+      QObject.connect( self.proximity, SIGNAL( "triggered()" ), self.doProximity )
+      self.analysisMenu.addAction( self.proximity )
 
     if self.GdalVersion >= "1.5":
       self.grid = QAction( QIcon(":/icons/grid.png"), QCoreApplication.translate( "GdalTools", "Grid (Interpolation)" ), self.iface.mainWindow() )
