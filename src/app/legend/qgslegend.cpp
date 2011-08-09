@@ -655,6 +655,18 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
     return 0;
   }
 
+  //store identify disabled layers of the embedded project
+  QSet<QString> embeddedIdentifyDisabledLayers;
+  QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( "properties" ).firstChildElement( "Identify" ).firstChildElement( "disabledLayers" );
+  if ( !disabledLayersElem.isNull() )
+  {
+    QDomNodeList valueList = disabledLayersElem.elementsByTagName( "value" );
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      embeddedIdentifyDisabledLayers.insert( valueList.at( i ).toElement().text() );
+    }
+  }
+
   QDomElement legendElem = projectDocument.documentElement().firstChildElement( "legend" );
   if ( legendElem.isNull() )
   {
@@ -719,9 +731,17 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
             group->insertChild( group->childCount(), cItem );
           }
 
-          if( !visible )
+          if ( !visible )
           {
             cItem->setCheckState( 0, Qt::Unchecked );
+          }
+
+          //consider the layer might be identify disabled in its project
+          if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
+          {
+            QStringList thisProjectIdentifyDisabledLayers = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+            thisProjectIdentifyDisabledLayers.append( layerId );
+            QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", thisProjectIdentifyDisabledLayers );
           }
         }
         else if ( tagName == "legendgroup" )
