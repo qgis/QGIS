@@ -109,13 +109,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "div double" ) << "11.0/2" << false << QVariant( 5.5 );
       QTest::newRow( "mod double" ) << "6.1 % 2.5" << false << QVariant( 1.1 );
       QTest::newRow( "pow" ) << "2^8" << false << QVariant( 256. );
+      QTest::newRow( "division by zero" ) << "1/0" << false << QVariant();
+      QTest::newRow( "division by zero" ) << "1.0/0.0" << false << QVariant();
 
       // comparison
       QTest::newRow( "eq int" ) << "1+1 = 2" << false << QVariant( 1 );
       QTest::newRow( "eq double" ) << "3.2 = 2.2+1" << false << QVariant( 1 );
       QTest::newRow( "eq string" ) << "'a' = 'b'" << false << QVariant( 0 );
       QTest::newRow( "eq null" ) << "2 = null" << false << QVariant();
-      QTest::newRow( "eq invalid" ) << "'a' = 1" << true << QVariant();
+      QTest::newRow( "eq mixed" ) << "'a' = 1" << false << QVariant( 0 );
       QTest::newRow( "ne int 1" ) << "3 != 4" << false << QVariant( 1 );
       QTest::newRow( "ne int 2" ) << "3 != 3" << false << QVariant( 0 );
       QTest::newRow( "lt int 1" ) << "3 < 4" << false << QVariant( 1 );
@@ -176,7 +178,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "concat with int" ) << "'a' || 1" << false << QVariant( "a1" );
       QTest::newRow( "concat with int" ) << "2 || 'b'" << false << QVariant( "2b" );
       QTest::newRow( "concat with null" ) << "'a' || null" << false << QVariant();
-      QTest::newRow( "invalid concat" ) << "1 || 2" << true << QVariant();
+      QTest::newRow( "concat numbers" ) << "1 || 2" << false << QVariant( "12" );
 
       // math functions
       QTest::newRow( "sqrt" ) << "sqrt(16)" << false << QVariant( 4. );
@@ -210,6 +212,15 @@ class TestQgsExpression: public QObject
       QTest::newRow( "regexp_replace invalid" ) << "regexp_replace('HeLLo','[[[', '-')" << true << QVariant();
       QTest::newRow( "substr" ) << "substr('HeLLo', 3,2)" << false << QVariant( "LL" );
       QTest::newRow( "substr outside" ) << "substr('HeLLo', -5,2)" << false << QVariant( "" );
+
+      // implicit conversions
+      QTest::newRow( "implicit int->text" ) << "length(123)" << false << QVariant( 3 );
+      QTest::newRow( "implicit double->text" ) << "length(1.23)" << false << QVariant( 4 );
+      QTest::newRow( "implicit int->bool" ) << "1 or 0" << false << QVariant( 1 );
+      QTest::newRow( "implicit double->bool" ) << "0.1 or 0" << false << QVariant( 1 );
+      QTest::newRow( "implicit text->int" ) << "'5'+2" << false << QVariant( 7 );
+      QTest::newRow( "implicit text->double" ) << "'5.1'+2" << false << QVariant( 7.1 );
+      QTest::newRow( "implicit text->bool" ) << "'0.1' or 0" << false << QVariant( 1 );
     }
 
     void evaluation()
@@ -224,6 +235,10 @@ class TestQgsExpression: public QObject
       QVariant res = exp.evaluate();
       if ( exp.hasEvalError() )
         qDebug() << exp.evalErrorString();
+      if ( res.type() != result.type() )
+      {
+        qDebug() << "got " << res.typeName() << " instead of " << result.typeName();
+      }
       //qDebug() << res.type() << " " << result.type();
       //qDebug() << "type " << res.typeName();
       QCOMPARE( exp.hasEvalError(), evalError );

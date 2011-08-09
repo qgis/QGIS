@@ -86,24 +86,28 @@ Q_DECLARE_METATYPE( TVL )
 ///////////////////////////////////////////////
 // QVariant checks and conversions
 
-inline bool isInt( const QVariant& v ) { return v.type() == QVariant::Int; }
-inline bool isDouble( const QVariant& v ) { return v.type() == QVariant::Double; }
-inline bool isNumeric( const QVariant& v ) { return v.type() == QVariant::Int || v.type() == QVariant::Double; }
-inline bool isString( const QVariant& v ) { return v.type() == QVariant::String; }
-inline bool isNull( const QVariant& v ) { return v.type() == QVariant::Invalid; }
-inline bool isLogic( const QVariant& v ) { return v.canConvert<TVL>(); }
-inline bool isNumericOrNull( const QVariant& v ) { return v.type() == QVariant::Int || v.type() == QVariant::Double; }
+inline bool isIntSafe( const QVariant& v )
+{
+  if ( v.type() == QVariant::Int || v.canConvert<TVL>() ) return true;
+  if ( v.type() == QVariant::Double ) return false;
+  if ( v.type() == QVariant::String ) { bool ok; v.toString().toInt( &ok ); return ok; }
+  return false;
+}
+inline bool isDoubleSafe( const QVariant& v )
+{
+  if ( v.type() == QVariant::Double || v.type() == QVariant::Int || v.canConvert<TVL>() ) return true;
+  if ( v.type() == QVariant::String ) { bool ok; v.toString().toDouble( &ok ); return ok; }
+  return false;
+}
 
-inline int qvInt( const QVariant& v ) { return v.toInt(); }
-inline double qvDouble( const QVariant& v ) { return v.toDouble(); }
-inline QString qvString( const QVariant& v ) { return v.toString(); }
-inline TVL qvLogic( const QVariant& v ) { return v.value<TVL>(); }
+inline bool isNull( const QVariant& v ) { return v.type() == QVariant::Invalid || ( v.canConvert<TVL>() && v.value<TVL>().val == TVL::Unknown ); }
+inline bool isTVL( const QVariant & v ) { return v.canConvert<TVL>(); }
 
 ///////////////////////////////////////////////
 // evaluation error macros
 
-#define ENSURE_NO_EVAL_ERROR   {  if (!parent->mEvalErrorString.isNull()) return QVariant(); }
-#define SET_EVAL_ERROR(x)   { parent->mEvalErrorString = x; return QVariant(); }
+#define ENSURE_NO_EVAL_ERROR   {  if (parent->hasEvalError()) return QVariant(); }
+#define SET_EVAL_ERROR(x)   { parent->setEvalErrorString(x); return QVariant(); }
 
 ///////////////////////////////////////////////
 // operators
@@ -124,131 +128,159 @@ const char* QgsExpression::UnaryOperatorText[] =
 ///////////////////////////////////////////////
 // functions
 
-static int getIntArg( int i, const QVariantList& values, QgsExpression* parent )
+// implicit conversion to string
+static QString getStringValue( const QVariant& value, QgsExpression* )
 {
-  QVariant v = values.at( i );
-  if ( !isInt( v ) )
+  if ( value.canConvert<TVL>() )
   {
-    parent->setEvalErrorString( "Function needs integer value" );
+    TVL::Value tvl = value.value<TVL>().val;
+    Q_ASSERT( tvl != TVL::Unknown ); // null should be handled before calling this function
+    return ( tvl == TVL::True ? "1" : "0" );
+  }
+  return value.toString();
+}
+
+static double getDoubleValue( const QVariant& value, QgsExpression* parent )
+{
+  if ( value.canConvert<TVL>() )
+  {
+    TVL::Value tvl = value.value<TVL>().val;
+    Q_ASSERT( tvl != TVL::Unknown ); // null should be handled before calling this function
+    return ( tvl == TVL::True ? 1 : 0 );
+  }
+
+  bool ok;
+  double x = value.toDouble( &ok );
+  if ( !ok )
+  {
+    parent->setEvalErrorString( QString( "Cannot convert '%1' to double" ).arg( value.toString() ) );
     return 0;
   }
-  return v.toInt();
+  return x;
 }
 
-static double getNumericArg( int i, const QVariantList& values, QgsExpression* parent )
+static int getIntValue( const QVariant& value, QgsExpression* parent )
 {
-  QVariant v = values.at( i );
-  if ( !isNumeric( v ) )
+  if ( value.canConvert<TVL>() )
   {
-    parent->setEvalErrorString( "Function needs numeric value" );
-    return NAN;
+    TVL::Value tvl = value.value<TVL>().val;
+    Q_ASSERT( tvl != TVL::Unknown ); // null should be handled before calling this function
+    return ( tvl == TVL::True ? 1 : 0 );
   }
-  return v.toDouble();
+
+  bool ok;
+  int x = value.toInt( &ok );
+  if ( !ok )
+  {
+    parent->setEvalErrorString( QString( "Cannot convert '%1' to int" ).arg( value.toString() ) );
+    return 0;
+  }
+  return x;
 }
 
-static QString getStringArg( int i, const QVariantList& values, QgsExpression* parent )
+
+// this handles also NULL values
+static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
 {
-  QVariant v = values.at( i );
-  if ( !isString( v ) )
+  if ( isTVL( value ) )
+    return value.value<TVL>();
+
+  // we need to convert to TVL
+  if ( value.type() == QVariant::Invalid )
+    return TVL();
+
+  bool ok;
+  double x = value.toDouble( &ok );
+  if ( !ok )
   {
-    parent->setEvalErrorString( "Function needs string value" );
-    return QString();
+    parent->setEvalErrorString( QString( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
+    return TVL();
   }
-  return v.toString();
+  return x != 0 ? TVL( true ) : TVL( false );
 }
+
+//////
 
 QVariant fcnSqrt( const QVariantList& values, QgsFeature* /*f*/, QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( sqrt( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( sqrt( x ) );
 }
 QVariant fcnSin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( sin( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( sin( x ) );
 }
 QVariant fcnCos( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( cos( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( cos( x ) );
 }
 QVariant fcnTan( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( tan( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( tan( x ) );
 }
 QVariant fcnAsin( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( asin( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( asin( x ) );
 }
 QVariant fcnAcos( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( acos( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( acos( x ) );
 }
 QVariant fcnAtan( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double x = getNumericArg( 0, values, parent );
-  return isnan( x ) ? QVariant() : QVariant( atan( x ) );
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( atan( x ) );
 }
 QVariant fcnAtan2( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  double y = getNumericArg( 0, values, parent );
-  double x = getNumericArg( 1, values, parent );
-  if ( isnan( y ) || isnan( x ) ) return QVariant();
+  double y = getDoubleValue( values.at( 0 ), parent );
+  double x = getDoubleValue( values.at( 1 ), parent );
   return QVariant( atan2( y, x ) );
 }
-QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* /*parent*/ )
+QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QVariant v = values.at( 0 );
-  if ( v.type() == QVariant::Invalid ) return QVariant();
-  return QVariant( v.toInt() );
+  return QVariant( getIntValue( values.at( 0 ), parent ) );
 }
-QVariant fcnToReal( const QVariantList& values, QgsFeature* , QgsExpression* /*parent*/ )
+QVariant fcnToReal( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QVariant v = values.at( 0 );
-  if ( v.type() == QVariant::Invalid ) return QVariant();
-  return QVariant( v.toDouble() );
+  return QVariant( getDoubleValue( values.at( 0 ), parent ) );
 }
-QVariant fcnToString( const QVariantList& values, QgsFeature* , QgsExpression* /*parent*/ )
+QVariant fcnToString( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QVariant v = values.at( 0 );
-  if ( v.type() == QVariant::Invalid ) return QVariant();
-  return QVariant( v.toString() );
+  return QVariant( getStringValue( values.at( 0 ), parent ) );
 }
 QVariant fcnLower( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringArg( 0, values, parent );
-  if ( str.isNull() ) return QVariant(); // error or null string
+  QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.toLower() );
 }
 QVariant fcnUpper( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringArg( 0, values, parent );
-  if ( str.isNull() ) return QVariant(); // error or null string
+  QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.toUpper() );
 }
 QVariant fcnLength( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringArg( 0, values, parent );
-  if ( str.isNull() ) return QVariant(); // error or null string
+  QString str = getStringValue( values.at( 0 ), parent );
   return QVariant( str.length() );
 }
 QVariant fcnReplace( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringArg( 0, values, parent );
-  QString before = getStringArg( 1, values, parent );
-  QString after = getStringArg( 2, values, parent );
-  if ( str.isNull() || before.isNull() || after.isNull() ) return QVariant(); // error or null string
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString before = getStringValue( values.at( 1 ), parent );
+  QString after = getStringValue( values.at( 2 ), parent );
   return QVariant( str.replace( before, after ) );
 }
 QVariant fcnRegexpReplace( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringArg( 0, values, parent );
-  QString regexp = getStringArg( 1, values, parent );
-  QString after = getStringArg( 2, values, parent );
-  if ( str.isNull() || regexp.isNull() || after.isNull() ) return QVariant(); // error or null string
+  QString str = getStringValue( values.at( 0 ), parent );
+  QString regexp = getStringValue( values.at( 1 ), parent );
+  QString after = getStringValue( values.at( 2 ), parent );
 
   QRegExp re( regexp );
   if ( !re.isValid() )
@@ -260,12 +292,9 @@ QVariant fcnRegexpReplace( const QVariantList& values, QgsFeature* , QgsExpressi
 }
 QVariant fcnSubstr( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
-  QString str = getStringArg( 0, values, parent );
-  if ( str.isNull() ) return QVariant(); // error or null string
-  int from = getIntArg( 1, values, parent );
-  if ( parent->hasEvalError() ) return QVariant();
-  int  len = getIntArg( 2, values, parent );
-  if ( parent->hasEvalError() ) return QVariant();
+  QString str = getStringValue( values.at( 0 ), parent );
+  int from = getIntValue( values.at( 1 ), parent );
+  int len = getIntValue( values.at( 2 ), parent );
   return QVariant( str.mid( from -1, len ) );
 }
 
@@ -298,7 +327,7 @@ QVariant fcnY( const QVariantList& , QgsFeature* f, QgsExpression* )
 
 static QVariant pointAt( const QVariantList& values, QgsFeature* f, QgsExpression* parent ) // helper function
 {
-  int idx = getIntArg( 0, values, parent );
+  int idx = getIntValue( values.at( 0 ), parent );
   ENSURE_GEOM_TYPE( f, g, QGis::Line );
   QgsPolyline polyline = g->asPolyline();
   if ( idx < 0 )
@@ -532,25 +561,24 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression* parent, QgsFeatu
   switch ( mOp )
   {
     case uoNot:
-      if ( isLogic( val ) )
-        val.setValue( ! qvLogic( val ) );
-      else
-        SET_EVAL_ERROR( "NOT applicable only on boolean" );
-      break;
+    {
+      TVL tvl = getTVLValue( val, parent );
+      ENSURE_NO_EVAL_ERROR;
+      return QVariant::fromValue( ! tvl );
+    }
 
     case uoMinus:
-      if ( isInt( val ) )
-        val.setValue( - qvInt( val ) );
-      else if ( isDouble( val ) )
-        val.setValue( - qvDouble( val ) );
+      if ( isIntSafe( val ) )
+        return QVariant( - getIntValue( val, parent ) );
+      else if ( isDoubleSafe( val ) )
+        return QVariant( - getDoubleValue( val, parent ) );
       else
         SET_EVAL_ERROR( "Unary minus only for numeric values." );
       break;
     default:
       Q_ASSERT( 0 && "unknown unary operation" );
   }
-
-  return val;
+  return QVariant();
 }
 
 bool QgsExpression::NodeUnaryOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
@@ -581,37 +609,47 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
     case boMod:
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
-      else if ( isNumeric( vL ) && isNumeric( vR ) )
+      else if ( isIntSafe( vL ) && isIntSafe( vR ) )
       {
-        if ( mOp == boDiv && qvDouble( vR ) == 0 )
-          return QVariant(); // silently handle division by zero and return NULL
-        if ( isInt( vL ) && isInt( vR ) )
-          return QVariant( computeInt( qvInt( vL ), qvInt( vR ) ) );
-        else
-          return QVariant( computeDouble( qvDouble( vL ), qvDouble( vR ) ) );
+        // both are integers - let's use integer arithmetics
+        int iL = getIntValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        int iR = getIntValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        if ( mOp == boDiv && iR == 0 ) return QVariant(); // silently handle division by zero and return NULL
+        return QVariant( computeInt( iL, iR ) );
       }
       else
-        SET_EVAL_ERROR( "Arithmetic possible only with numeric values" );
+      {
+        // general floating point arithmetic
+        double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        if ( mOp == boDiv && fR == 0 )
+          return QVariant(); // silently handle division by zero and return NULL
+        return QVariant( computeDouble( fL, fR ) );
+      }
 
     case boPow:
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
-      else if ( isNumeric( vL ) && isNumeric( vR ) )
-        return QVariant( pow( qvDouble( vL ), qvDouble( vR ) ) );
       else
-        SET_EVAL_ERROR( "Arithmetic possible only with numeric values" );
+      {
+        double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        return QVariant( pow( fL, fR ) );
+      }
 
     case boAnd:
-      if ( isLogic( vL ) && isLogic( vR ) )
-        return QVariant::fromValue( qvLogic( vL ) & qvLogic( vR ) );
-      else
-        SET_EVAL_ERROR( "AND applicable only on boolean" );
+    {
+      TVL tvlL = getTVLValue( vL, parent ), tvlR = getTVLValue( vR, parent );
+      ENSURE_NO_EVAL_ERROR;
+      return QVariant::fromValue( tvlL & tvlR );
+    }
 
     case boOr:
-      if ( isLogic( vL ) && isLogic( vR ) )
-        return QVariant::fromValue( qvLogic( vL ) | qvLogic( vR ) );
-      else
-        SET_EVAL_ERROR( "OR applicable only on boolean" );
+    {
+      TVL tvlL = getTVLValue( vL, parent ), tvlR = getTVLValue( vR, parent );
+      ENSURE_NO_EVAL_ERROR;
+      return QVariant::fromValue( tvlL | tvlR );
+    }
 
     case boEQ:
     case boNE:
@@ -623,18 +661,21 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
       {
         return TVL_Unknown;
       }
-      else if ( isNumeric( vL ) && isNumeric( vR ) )
+      else if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) )
       {
-        double diff = qvDouble( vL ) - qvDouble( vR );
-        return compare( diff ) ? TVL_True : TVL_False;
-      }
-      else if ( isString( vL ) && isString( vR ) )
-      {
-        int diff = QString::compare( qvString( vL ), qvString( vR ) );
-        return compare( diff ) ? TVL_True : TVL_False;
+        // do numeric comparison if both operators can be converted to numbers
+        double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        return compare( fL - fR ) ? TVL_True : TVL_False;
       }
       else
-        SET_EVAL_ERROR( "Invalid arguments for comparison" );
+      {
+        // do string comparison otherwise
+        QString sL = getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        QString sR = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        int diff = QString::compare( sL, sR );
+        return compare( diff ) ? TVL_True : TVL_False;
+      }
 
     case boIs:
     case boIsNot:
@@ -645,12 +686,18 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
       else // both operators non-null
       {
         bool equal = false;
-        if ( isNumeric( vL ) && isNumeric( vR ) )
-          equal = qvDouble( vL ) == qvDouble( vR );
-        else if ( isString( vL ) && isString( vR ) )
-          equal = QString::compare( qvString( vL ), qvString( vR ) ) == 0;
+        if ( isDoubleSafe( vL ) && isDoubleSafe( vR ) )
+        {
+          double fL = getDoubleValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+          double fR = getDoubleValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+          equal = fL == fR;
+        }
         else
-          SET_EVAL_ERROR( "Invalid arguments for comparison" );
+        {
+          QString sL = getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+          QString sR = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+          equal = QString::compare( sL, sR ) == 0;
+        }
         if ( equal )
           return mOp == boIs ? TVL_True : TVL_False;
         else
@@ -662,9 +709,10 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
     case boILike:
       if ( isNull( vL ) || isNull( vR ) )
         return TVL_Unknown;
-      else if ( isString( vL ) && isString( vR ) )
+      else
       {
-        QString str = qvString( vL ), regexp = qvString( vR );
+        QString str    = getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        QString regexp = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
         // TODO: cache QRegExp in case that regexp is a literal string (i.e. it will stay constant)
         bool matches;
         if ( mOp == boLike || mOp == boILike ) // change from LIKE syntax to regexp
@@ -680,18 +728,16 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         }
         return matches ? TVL_True : TVL_False;
       }
-      else
-        SET_EVAL_ERROR( "Invalid arguments for regexp" );
 
     case boConcat:
       if ( isNull( vL ) || isNull( vR ) )
         return QVariant();
-      else if ( isString( vL ) || isString( vR ) )
-      {
-        return QVariant( qvString( vL ) + qvString( vR ) );
-      }
       else
-        SET_EVAL_ERROR( "Invalid arguments for concatenation" );
+      {
+        QString sL = getStringValue( vL, parent ); ENSURE_NO_EVAL_ERROR;
+        QString sR = getStringValue( vR, parent ); ENSURE_NO_EVAL_ERROR;
+        return QVariant( sL + sR );
+      }
 
     default: break;
   }
@@ -775,12 +821,18 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
     {
       bool equal = false;
       // check whether they are equal
-      if ( isNumeric( v1 ) && isNumeric( v2 ) )
-        equal = ( qvDouble( v1 ) == qvDouble( v2 ) );
-      else if ( isString( v1 ) && isString( v2 ) )
-        equal = ( QString::compare( qvString( v1 ), qvString( v2 ) ) == 0 );
+      if ( isDoubleSafe( v1 ) && isDoubleSafe( v2 ) )
+      {
+        double f1 = getDoubleValue( v1, parent ); ENSURE_NO_EVAL_ERROR;
+        double f2 = getDoubleValue( v2, parent ); ENSURE_NO_EVAL_ERROR;
+        equal = f1 == f2;
+      }
       else
-        SET_EVAL_ERROR( "Invalid arguments for comparison (IN operator)" );
+      {
+        QString s1 = getStringValue( v1, parent ); ENSURE_NO_EVAL_ERROR;
+        QString s2 = getStringValue( v2, parent ); ENSURE_NO_EVAL_ERROR;
+        equal = QString::compare( s1, s2 ) == 0;
+      }
 
       if ( equal ) // we know the result
         return mNotIn ? TVL_False : TVL_True;
@@ -821,8 +873,11 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
   {
     foreach( Node* n, mArgs->list() )
     {
-      argValues.append( n->eval( parent, f ) );
+      QVariant v = n->eval( parent, f );
       ENSURE_NO_EVAL_ERROR;
+      if ( isNull( v ) )
+        return QVariant(); // all "normal" functions return NULL when any parameter is NULL
+      argValues.append( v );
     }
   }
 
