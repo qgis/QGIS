@@ -583,6 +583,8 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
         return QVariant();
       else if ( isNumeric( vL ) && isNumeric( vR ) )
       {
+        if ( mOp == boDiv && qvDouble( vR ) == 0 )
+          return QVariant(); // silently handle division by zero and return NULL
         if ( isInt( vL ) && isInt( vR ) )
           return QVariant( computeInt( qvInt( vL ), qvInt( vR ) ) );
         else
