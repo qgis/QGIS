@@ -32,11 +32,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     this->registerItem("Operators","/"," / ");
     this->registerItem("Operators","^"," ^ ");
     this->registerItem("Operators","="," = ");
-    this->registerItem("Operators","||"," || ","<b>|| (String Concatenation)</b> "/
-                                                "<br> Joins two values together into a string " /
+    this->registerItem("Operators","||"," || ","<b>|| (String Concatenation)</b> "\
+                                                "<br> Joins two values together into a string " \
                                                 "<br> <i>Usage:</i><br>'Dia' || Diameter");
 
-    this->registerItem("Geometry","Area"," $area ","<b>$area</b> <br> Returns the area the object." /
+    this->registerItem("Geometry","Area"," $area ","<b>$area</b> <br> Returns the area the object." \
                                                                 "<br> Only applies to polygons.");
     this->registerItem("Geometry","Length"," $length ","<b>$length</b> <br> Returns the length the object. <br> Only applies to polylines.");
     this->registerItem("Geometry","Perimeter"," $perimeter ");
