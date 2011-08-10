@@ -34,6 +34,7 @@
 #include "qgsconfig.h"
 
 #include <ogr_api.h>
+#include <cpl_conv.h> // for setting gdal options
 
 QObject * QgsApplication::mFileOpenEventReceiver;
 QStringList QgsApplication::mFileOpenEventList;
@@ -126,8 +127,16 @@ void QgsApplication::init( QString customConfigPath )
   {
     myDir.mkpath( myPamPath ); //fail silently
   }
+  
+  
+#if defined(Q_WS_WIN32) || defined(WIN32)
+  CPLSetConfigOption("GDAL_PAM_PROXY_DIR", myPamPath.toUtf8());
+#else
+  //under other OS's we use an environment var so the user can 
+  //override the path if he likes
   int myChangeFlag = 0; //whether we want to force the env var to change
   setenv( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8(), myChangeFlag );
+#endif
 }
 
 QgsApplication::~QgsApplication()
