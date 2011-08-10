@@ -116,6 +116,18 @@ void QgsApplication::init( QString customConfigPath )
   }
 
   mDefaultSvgPaths << qgisSettingsDirPath() + QString( "svg/" );
+
+  // set a working directory up for gdal to write .aux.xml files into
+  // for cases where the raster dir is read only to the user
+  // if the env var is already set it will be used preferentially
+  QString myPamPath = qgisSettingsDirPath() + QString( "gdal_pam/" );
+  QDir myDir( myPamPath );
+  if ( !myDir.exists() )
+  {
+    myDir.mkpath( myPamPath ); //fail silently
+  }
+  int myChangeFlag = 0; //whether we want to force the env var to change
+  setenv( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8(), myChangeFlag );
 }
 
 QgsApplication::~QgsApplication()
