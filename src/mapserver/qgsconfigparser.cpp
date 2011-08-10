@@ -140,7 +140,7 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
 
   //check the db is available
   myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
-  if ( myResult )
+  if ( myResult && theMapLayer )
   {
     //if the database cannot be opened, add at least the epsg number of the source coordinate system
     crsNumbers.push_back( theMapLayer->crs().authid() );
