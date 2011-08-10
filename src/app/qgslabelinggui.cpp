@@ -488,7 +488,7 @@ void QgsLabelingGui::showExpressionDialog()
     QDialog* dlg = new QDialog();
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                                        | QDialogButtonBox::Cancel);
-    QGridLayout* layout = new QGridLayout();
+    QGridLayout* *layout = new QGridLayout();
     QgsExpressionBuilderWidget* builder = new QgsExpressionBuilderWidget(mLayer);
     dlg->setLayout(layout);
     layout->addWidget(builder);

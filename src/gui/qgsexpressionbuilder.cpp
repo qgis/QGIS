@@ -14,8 +14,6 @@
  ***************************************************************************/
 
 #include "qgsexpressionbuilder.h"
-#include "ui_qgsexpressionbuilder.h"
-
 #include "qgslogger.h"
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
@@ -34,15 +32,18 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     this->registerItem("Operators","/"," / ");
     this->registerItem("Operators","^"," ^ ");
     this->registerItem("Operators","="," = ");
-    this->registerItem("Operators","||"," || ","<b>|| (String Concatenation)</b> <br> Concats two values together into a string <br> <i>Usage:</i><br>'Dia' || Diameter");
+    this->registerItem("Operators","||"," || ","<b>|| (String Concatenation)</b> "/
+                                                "<br> Joins two values together into a string " /
+                                                "<br> <i>Usage:</i><br>'Dia' || Diameter");
 
-    this->registerItem("Geometry","Area"," $area ","<b>$area</b> <br> Returns the area the object. <br> Only applies to polygons.");
+    this->registerItem("Geometry","Area"," $area ","<b>$area</b> <br> Returns the area the object." /
+                                                                "<br> Only applies to polygons.");
     this->registerItem("Geometry","Length"," $length ","<b>$length</b> <br> Returns the length the object. <br> Only applies to polylines.");
     this->registerItem("Geometry","Perimeter"," $perimeter ");
     this->registerItem("Geometry","X"," $x ");
-     this->registerItem("Geometry","Y"," $y ");
-     this->registerItem("Geometry","XAt"," xat( ");
-     this->registerItem("Geometry","YAt"," yat(  ");
+    this->registerItem("Geometry","Y"," $y ");
+    this->registerItem("Geometry","XAt"," xat( ");
+    this->registerItem("Geometry","YAt"," yat(  ");
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
@@ -53,7 +54,8 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 
 void QgsExpressionBuilderWidget::on_mAllPushButton_clicked()
 {
-
+    // We don't use this yet.
+    // TODO
 }
 
 void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &index)
@@ -62,8 +64,10 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &in
    QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
    if ( item == 0 )
        return;
+
+
    // Handle the special case for fields
-   // This is a bit hacky.  Should be done better.
+   // This is a bit hacky.  Should be done better. Handle it with a enum on QgsExpressionItem.
    QStandardItem* parent = mModel->itemFromIndex(index.parent());
    if ( parent == 0 )
        return;

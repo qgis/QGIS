@@ -75,7 +75,23 @@
          <number>0</number>
         </property>
         <item>
-         <widget class="QListWidget" name="mValueListWidget"/>
+         <widget class="QListWidget" name="mValueListWidget">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="autoFillBackground">
+           <bool>false</bool>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="viewMode">
+           <enum>QListView::ListMode</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="QLabel" name="label">
@@ -89,16 +105,10 @@
         </item>
         <item>
          <widget class="QScrollArea" name="scrollArea">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="maximumSize">
            <size>
             <width>16777215</width>
-            <height>300</height>
+            <height>16777215</height>
            </size>
           </property>
           <property name="frameShape">
@@ -113,7 +123,7 @@
              <x>0</x>
              <y>0</y>
              <width>261</width>
-             <height>82</height>
+             <height>362</height>
             </rect>
            </property>
            <layout class="QGridLayout" name="gridLayout_4">

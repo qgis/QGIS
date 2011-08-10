@@ -456,13 +456,14 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
 void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
   QString labelText;
+  // Check to see if we are a expression string.
   if (isExpression)
   {
     QgsSearchString searchString;
     // We don't do any validating here as we should only have a vaild expression at this point.
     searchString.setString( fieldName );
 
-   QgsSearchTreeNode* searchTree = searchString.tree();
+    QgsSearchTreeNode* searchTree = searchString.tree();
     if ( !searchTree )
     {
       return;
@@ -473,11 +474,10 @@ void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f,
 
     if (outValue.isError())
     {
-        QgsDebugMsg("EXPRESSION ERROR = " + outValue.string());
+        QgsDebugMsg("Expression Label Error = " + outValue.string());
        return;
     }
-    QgsDebugMsg("EXPRESSION OUT VALUE = " + outValue.string());
-     labelText  = outValue.string();
+    labelText  = outValue.string();
   }
   else if ( formatNumbers == true && ( f.attributeMap()[fieldIndex].type() == QVariant::Int ||
                                        f.attributeMap()[fieldIndex].type() == QVariant::Double ) )

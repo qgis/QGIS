@@ -23,16 +23,6 @@
 #include "QStandardItemModel"
 #include "QStandardItem"
 
-//class QgsExpressionItem : public QStandardItem
-//{
-//public:
-//    QgsExpressionItem(QString label, QString expressionText);
-//    ~QgsExpressionItem();
-
-//    QString getExpressionText();
-//private:
-//    QString mExpressionText;
-//};
 
 class QgsExpressionItem : public QStandardItem
 {

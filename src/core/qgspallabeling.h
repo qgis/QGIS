@@ -98,7 +98,7 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
     QString fieldName;
-    bool isExpression;
+    bool isExpression; // is this label made from a expression string eg FieldName || 'mm'
     Placement placement;
     unsigned int placementFlags;
     QFont textFont;
