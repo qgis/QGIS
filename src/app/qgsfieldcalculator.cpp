@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfieldcalculator.h"
-#include "qgssearchtreenode.h"
-#include "qgssearchstring.h"
+#include "qgsexpression.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -81,19 +80,18 @@ void QgsFieldCalculator::accept()
   {
     QString calcString = mExpressionTextEdit->toPlainText();
 
-    //create QgsSearchString
-    QgsSearchString searchString;
-    if ( !searchString.setString( calcString ) )
+    //create QgsExpression
+    QgsExpression exp( calcString );
+    if ( exp.hasParserError() )
     {
       //expression not valid
-      QMessageBox::critical( 0, tr( "Syntax error" ), tr( QString( "Invalid expression syntax. The error message of the parser is: '" + searchString.parserErrorMsg() + "'" ).toLocal8Bit().data() ) );
+      QMessageBox::critical( 0, tr( "Syntax error" ), tr( QString( "Invalid expression syntax. The error message of the parser is: '" + exp.parserErrorString() + "'" ).toLocal8Bit().data() ) );
       return;
     }
 
-    //get QgsSearchTreeNode
-    QgsSearchTreeNode* searchTree = searchString.tree();
-    if ( !searchTree )
+    if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
     {
+      QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
       return;
     }
 
@@ -156,7 +154,7 @@ void QgsFieldCalculator::accept()
     // block layerModified signals (that would trigger table update)
     mVectorLayer->blockSignals( true );
 
-    bool useGeometry = searchTree->needsGeometry();
+    bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
@@ -170,52 +168,18 @@ void QgsFieldCalculator::accept()
         }
       }
 
-      searchTree->setCurrentRowNumber( rownum );
+      exp.setCurrentRowNumber( rownum );
 
-      QgsSearchTreeValue value;
-      searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature );
-      if ( value.isError() )
+      QVariant value = exp.evaluate( &feature );
+      if ( exp.hasEvalError() )
       {
-        //insert NULL value for this feature and continue the calculation
-        if ( searchTree->errorMsg() == QObject::tr( "Division by zero." ) )
-        {
-          mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, QVariant(), false );
-        }
-        else
-        {
-          calculationSuccess = false;
-          error = searchTree->errorMsg();
-          break;
-        }
-      }
-      else if ( value.isNumeric() )
-      {
-        const QgsField &f = mVectorLayer->pendingFields()[ mAttributeId ];
-        QVariant v;
-
-        if ( f.type() == QVariant::Double && f.precision() > 0 )
-        {
-          v = QString::number( value.number(), 'f', f.precision() );
-        }
-        else if ( f.type() == QVariant::Double && f.precision() == 0 )
-        {
-          v = QString::number( qRound( value.number() ) );
-        }
-        else
-        {
-          v = value.number();
-        }
-
-        v.convert( f.type() );
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, v, false );
-      }
-      else if ( value.isNull() )
-      {
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, QVariant(), false );
+        calculationSuccess = false;
+        error = exp.evalErrorString();
+        break;
       }
       else
       {
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value.string(), false );
+        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, false );
       }
 
       rownum++;
