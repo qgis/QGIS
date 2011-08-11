@@ -30,78 +30,60 @@ extern QgsExpression::Node* parseExpression( const QString& str, QString& parser
 ///////////////////////////////////////////////
 // three-value logic
 
-class TVL
+enum TVL
 {
-  public:
-    enum Value
-    {
-      False,
-      True,
-      Unknown
-    };
-
-    static TVL::Value AND[3][3];
-    static TVL::Value OR[3][3];
-    static TVL::Value NOT[3];
-
-    TVL() : val( Unknown ) {}
-    TVL( bool v ) : val( v ? True : False ) {}
-    TVL( Value v ) : val( v ) {}
-
-    TVL operator!() { return NOT[val]; }
-    TVL operator&( const TVL& other ) { return AND[val][other.val]; }
-    TVL operator|( const TVL& other ) { return OR[val][other.val]; }
-
-    // conversion for result
-    QVariant toVariant()
-    {
-      if ( val == Unknown )
-        return QVariant();
-      else
-        return ( val == True ? 1 : 0 );
-    }
-
-    Value val;
+  False,
+  True,
+  Unknown
 };
 
-// false       true        unknown
-TVL::Value TVL::AND[3][3] = { { TVL::False, TVL::False,   TVL::False },  // false
-  { TVL::False, TVL::True,    TVL::Unknown },  // true
-  { TVL::False, TVL::Unknown, TVL::Unknown }
-};// unknown
+static TVL AND[3][3] = {
+  // false  true    unknown
+  { False, False,   False },   // false
+  { False, True,    Unknown }, // true
+  { False, Unknown, Unknown }  // unknown
+};
 
-TVL::Value TVL::OR[3][3] = { { TVL::False,   TVL::True, TVL::Unknown }, // false
-  { TVL::True,    TVL::True, TVL::True },     // true
-  { TVL::Unknown, TVL::True, TVL::Unknown }
-};// unknown
+static TVL OR[3][3] = {
+  { False,   True, Unknown },  // false
+  { True,    True, True },     // true
+  { Unknown, True, Unknown }   // unknown
+};
 
-TVL::Value TVL::NOT[3] = { TVL::True, TVL::False, TVL::Unknown };
+static TVL NOT[3] = { True, False, Unknown };
 
-Q_DECLARE_METATYPE( TVL )
+QVariant tvl2variant( TVL v )
+{
+  switch ( v )
+  {
+    case False: return 0;
+    case True: return 1;
+    case Unknown:  return QVariant();
+  }
+}
 
-#define TVL_True     QVariant::fromValue(TVL(true))
-#define TVL_False    QVariant::fromValue(TVL(false))
-#define TVL_Unknown  QVariant::fromValue(TVL())
+#define TVL_True     QVariant(1)
+#define TVL_False    QVariant(0)
+#define TVL_Unknown  QVariant()
 
 ///////////////////////////////////////////////
 // QVariant checks and conversions
 
 inline bool isIntSafe( const QVariant& v )
 {
-  if ( v.type() == QVariant::Int || v.canConvert<TVL>() ) return true;
+  if ( v.type() == QVariant::Int ) return true;
   if ( v.type() == QVariant::Double ) return false;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toInt( &ok ); return ok; }
   return false;
 }
 inline bool isDoubleSafe( const QVariant& v )
 {
-  if ( v.type() == QVariant::Double || v.type() == QVariant::Int || v.canConvert<TVL>() ) return true;
+  if ( v.type() == QVariant::Double || v.type() == QVariant::Int ) return true;
   if ( v.type() == QVariant::String ) { bool ok; v.toString().toDouble( &ok ); return ok; }
   return false;
 }
 
-inline bool isNull( const QVariant& v ) { return v.type() == QVariant::Invalid || ( v.canConvert<TVL>() && v.value<TVL>().val == TVL::Unknown ); }
-inline bool isTVL( const QVariant & v ) { return v.canConvert<TVL>(); }
+inline bool isNull( const QVariant& v ) { return v.type() == QVariant::Invalid; }
 
 ///////////////////////////////////////////////
 // evaluation error macros
@@ -131,24 +113,11 @@ const char* QgsExpression::UnaryOperatorText[] =
 // implicit conversion to string
 static QString getStringValue( const QVariant& value, QgsExpression* )
 {
-  if ( value.canConvert<TVL>() )
-  {
-    TVL::Value tvl = value.value<TVL>().val;
-    Q_ASSERT( tvl != TVL::Unknown ); // null should be handled before calling this function
-    return ( tvl == TVL::True ? "1" : "0" );
-  }
   return value.toString();
 }
 
 static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 {
-  if ( value.canConvert<TVL>() )
-  {
-    TVL::Value tvl = value.value<TVL>().val;
-    Q_ASSERT( tvl != TVL::Unknown ); // null should be handled before calling this function
-    return ( tvl == TVL::True ? 1 : 0 );
-  }
-
   bool ok;
   double x = value.toDouble( &ok );
   if ( !ok )
@@ -161,13 +130,6 @@ static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 
 static int getIntValue( const QVariant& value, QgsExpression* parent )
 {
-  if ( value.canConvert<TVL>() )
-  {
-    TVL::Value tvl = value.value<TVL>().val;
-    Q_ASSERT( tvl != TVL::Unknown ); // null should be handled before calling this function
-    return ( tvl == TVL::True ? 1 : 0 );
-  }
-
   bool ok;
   int x = value.toInt( &ok );
   if ( !ok )
@@ -182,21 +144,21 @@ static int getIntValue( const QVariant& value, QgsExpression* parent )
 // this handles also NULL values
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
 {
-  if ( isTVL( value ) )
-    return value.value<TVL>();
-
   // we need to convert to TVL
   if ( value.type() == QVariant::Invalid )
-    return TVL();
+    return Unknown;
+
+  if ( value.type() == QVariant::Int )
+    return value.toInt() != 0 ? True : False;
 
   bool ok;
   double x = value.toDouble( &ok );
   if ( !ok )
   {
     parent->setEvalErrorString( QString( "Cannot convert '%1' to boolean" ).arg( value.toString() ) );
-    return TVL();
+    return Unknown;
   }
-  return x != 0 ? TVL( true ) : TVL( false );
+  return x != 0 ? True : False;
 }
 
 //////
@@ -509,13 +471,7 @@ QVariant QgsExpression::evaluate( QgsFeature* f )
     return QVariant();
   }
 
-  QVariant res = mRootNode->eval( this, f );
-  if ( res.canConvert<TVL>() )
-  {
-    // convert 3-value logic to int (0/1) or null
-    return res.value<TVL>().toVariant();
-  }
-  return res;
+  return mRootNode->eval( this, f );
 }
 
 QVariant QgsExpression::evaluate( QgsFeature* f, const QgsFieldMap& fields )
@@ -564,7 +520,7 @@ QVariant QgsExpression::NodeUnaryOperator::eval( QgsExpression* parent, QgsFeatu
     {
       TVL tvl = getTVLValue( val, parent );
       ENSURE_NO_EVAL_ERROR;
-      return QVariant::fromValue( ! tvl );
+      return tvl2variant( NOT[tvl] );
     }
 
     case uoMinus:
@@ -641,14 +597,14 @@ QVariant QgsExpression::NodeBinaryOperator::eval( QgsExpression* parent, QgsFeat
     {
       TVL tvlL = getTVLValue( vL, parent ), tvlR = getTVLValue( vR, parent );
       ENSURE_NO_EVAL_ERROR;
-      return QVariant::fromValue( tvlL & tvlR );
+      return tvl2variant( AND[tvlL][tvlR] );
     }
 
     case boOr:
     {
       TVL tvlL = getTVLValue( vL, parent ), tvlR = getTVLValue( vR, parent );
       ENSURE_NO_EVAL_ERROR;
-      return QVariant::fromValue( tvlL | tvlR );
+      return tvl2variant( OR[tvlL][tvlR] );
     }
 
     case boEQ:

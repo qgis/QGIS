@@ -148,6 +148,7 @@ class TestQgsExpression: public QObject
       QTest::newRow( "T and T" ) << "1=1 and 2=2" << false << QVariant( 1 );
       QTest::newRow( "not T" ) << "not 1=1" << false << QVariant( 0 );
       QTest::newRow( "not F" ) << "not 2=3" << false << QVariant( 1 );
+      QTest::newRow( "null" ) << "null=1" << false << QVariant();
       QTest::newRow( "U or F" ) << "null=1 or 2=3" << false << QVariant();
       QTest::newRow( "U and F" ) << "null=1 and 2=3" << false << QVariant( 0 );
       QTest::newRow( "invalid and" ) << "'foo' and 2=3" << true << QVariant();
