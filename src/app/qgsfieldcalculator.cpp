@@ -349,17 +349,17 @@ void QgsFieldCalculator::on_mCloseBracketPushButton_clicked()
 
 void QgsFieldCalculator::on_mToRealButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( " to real ( " );
+  mExpressionTextEdit->insertPlainText( " toreal ( " );
 }
 
 void QgsFieldCalculator::on_mToIntButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( " to int ( " );
+  mExpressionTextEdit->insertPlainText( " toint ( " );
 }
 
 void QgsFieldCalculator::on_mToStringButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( " to string ( " );
+  mExpressionTextEdit->insertPlainText( " tostring ( " );
 }
 
 void QgsFieldCalculator::on_mLengthButton_clicked()
