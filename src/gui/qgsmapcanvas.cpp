@@ -1499,3 +1499,11 @@ void QgsMapCanvas::selectionChangedSlot()
   emit selectionChanged( layer );
   refresh();
 }
+
+void QgsMapCanvas::dragEnterEvent( QDragEnterEvent * e )
+{
+  // By default graphics view delegates the drag events to graphics items.
+  // But we do not want that and by ignoring the drag enter we let the
+  // parent (e.g. QgisApp) to handle drops of map layers etc.
+  e->ignore();
+}
