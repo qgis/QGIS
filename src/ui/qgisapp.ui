@@ -118,7 +118,6 @@
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
     <addaction name="mActionTileScale"/>
-    <addaction name="mActionGpsTool"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -1185,11 +1184,6 @@
   <action name="mActionTileScale">
    <property name="text">
     <string>Tile scale slider</string>
-   </property>
-  </action>
-  <action name="mActionGpsTool">
-   <property name="text">
-    <string>Live GPS tracking</string>
    </property>
   </action>
   <action name="mActionLayerProperties">

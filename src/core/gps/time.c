@@ -38,7 +38,7 @@ void nmea_time_now( nmeaTIME *stm )
   stm->hour = st.wHour;
   stm->min = st.wMinute;
   stm->sec = st.wSecond;
-  stm->hsec = st.wMilliseconds / 10;
+  stm->msec = st.wMilliseconds;
 }
 
 #else /* NMEA_WIN */
@@ -57,7 +57,7 @@ void nmea_time_now( nmeaTIME *stm )
   stm->hour = tt->tm_hour;
   stm->min = tt->tm_min;
   stm->sec = tt->tm_sec;
-  stm->hsec = 0;
+  stm->msec = 0;
 }
 
 #endif

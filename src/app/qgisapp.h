@@ -265,7 +265,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionTileScale() { return mActionTileScale; }
-    QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -483,8 +482,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
-    //! Show GPS tool
-    void showGpsTool();
     //! Show tile scale slider
     void showTileScale();
     //! zoom to extent of layer

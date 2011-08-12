@@ -452,6 +452,18 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
 
+  // create the GPS tool on starting QGIS - this is like the Browser
+  mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
+  //create the dock widget
+  mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
+  mpGpsDock->setObjectName( "GPSInformation" );
+  mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
+  // add to the Panel submenu
+  // now add our widget to the dock - ownership of the widget is passed to the dock
+  mpGpsDock->setWidget( mpGpsWidget );
+  mpGpsDock->hide();
+
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
@@ -630,6 +642,8 @@ QgisApp::~QgisApp()
 
   delete mPythonUtils;
 
+  delete mpGpsWidget;
+
   deletePrintComposers();
   removeAnnotationItems();
 
@@ -729,11 +743,6 @@ void QgisApp::readSettings()
   {
     showTileScale();
   }
-  // Restore state of GPS Tracker
-  if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
-  {
-    showGpsTool();
-  }
 }
 
 
@@ -830,7 +839,6 @@ void QgisApp::createActions()
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
   connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
   connect( mActionTileScale, SIGNAL( triggered() ), this, SLOT( showTileScale() ) );
-  connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
   connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
   connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
@@ -1869,17 +1877,6 @@ void QgisApp::saveWindowState()
   else
   {
     settings.setValue( "/UI/tileScaleEnabled", false );
-  }
-
-  // Persist state of GPS Tracker
-  if ( mpGpsWidget )
-  {
-    settings.setValue( "/gps/widgetEnabled", true );
-    delete mpGpsWidget;
-  }
-  else
-  {
-    settings.setValue( "/gps/widgetEnabled", false );
   }
 
   QgsPluginRegistry::instance()->unloadAll();
@@ -4516,28 +4513,6 @@ void QgisApp::setProjectCRSFromLayer()
     myRenderer->setMapUnits( crs.mapUnits() );
   }
   mMapCanvas->refresh();
-}
-
-void QgisApp::showGpsTool()
-{
-  if ( !mpGpsWidget )
-  {
-    mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
-    //create the dock widget
-    mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
-    mpGpsDock->setObjectName( "GPSInformation" );
-    mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
-    // add to the Panel submenu
-    mPanelMenu->addAction( mpGpsDock->toggleViewAction() );
-    // now add our widget to the dock - ownership of the widget is passed to the dock
-    mpGpsDock->setWidget( mpGpsWidget );
-    mpGpsWidget->show();
-  }
-  else
-  {
-    mpGpsDock->setVisible( mpGpsDock->isHidden() );
-  }
 }
 
 void QgisApp::showTileScale()
