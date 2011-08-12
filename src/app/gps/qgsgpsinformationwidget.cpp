@@ -34,13 +34,17 @@
 #include "qgsmaptooladdfeature.h"
 
 // QWT Charting widget
+#include <qwt_global.h>
+#if (QWT_VERSION<0x060000)
 #include <qwt_array.h>
+#include <qwt_data.h>
+#endif
 #include <qwt_legend.h>
 #include <qwt_plot.h>
 #include <qwt_plot_grid.h>
+
 // QWT Polar plot add on
 #include <qpen.h>
-#include <qwt_data.h>
 #include <qwt_symbol.h>
 #include <qwt_polar_grid.h>
 #include <qwt_polar_curve.h>
@@ -374,8 +378,12 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
 {
   mGPSTextEdit->clear();
 
+#if QWT_VERSION<0x060000
   QwtArray<double> myXData;//qwtarray is just a wrapped qvector
   QwtArray<double> mySignalData;//qwtarray is just a wrapped qvector
+#else
+  QVector<QPointF> data;
+#endif
   mpPlot->setAxisScale( QwtPlot::xBottom, 0, info.satellitesInView.size() );
   while ( !mMarkerList.isEmpty() )
   {
@@ -386,6 +394,7 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
   {
     QgsSatelliteInfo currentInfo = info.satellitesInView.at( i );
 
+#if QWT_VERSION<0x060000
     myXData.append( i );
     mySignalData.append( 0 );
     myXData.append( i );
@@ -394,6 +403,12 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mySignalData.append( currentInfo.signal );
     myXData.append( i + 1 );
     mySignalData.append( 0 );
+#else
+    data << QPointF( i, 0 );
+    data << QPointF( i, currentInfo.signal );
+    data << QPointF( i + 1, currentInfo.signal );
+    data << QPointF( i + 1, currentInfo.signal );
+#endif
     mGPSTextEdit->append( "Satellite" );
     if ( currentInfo.inUse )
     {
@@ -409,7 +424,11 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mGPSTextEdit->append( "signal: " + QString::number( currentInfo.signal ) );
     // Add a marker to the polar plot
     QwtPolarMarker *mypMarker = new QwtPolarMarker();
+#if (QWT_POLAR_VERSION<0x010000)
     mypMarker->setPosition( QwtPolarPoint( currentInfo.azimuth, currentInfo.elevation ) );
+#else
+    mypMarker->setPosition( QwtPointPolar( currentInfo.azimuth, currentInfo.elevation ) );
+#endif
     QColor myColour;
     if ( currentInfo.signal < 30 ) //weak signal
     {
@@ -419,8 +438,13 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     {
       myColour = Qt::black; //strong signal
     }
+#if (QWT_POLAR_VERSION<0x010000)
     mypMarker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,
                                      QBrush( Qt::black ), QPen( myColour ), QSize( 9, 9 ) ) );
+#else
+    mypMarker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,
+                                     QBrush( Qt::black ), QPen( myColour ), QSize( 9, 9 ) ) );
+#endif
     mypMarker->setLabelAlignment( Qt::AlignHCenter | Qt::AlignTop );
     QwtText text( QString::number( currentInfo.id ) );
     text.setColor( myColour );
@@ -431,7 +455,11 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mypMarker->attach( mpSatellitesWidget );
     mMarkerList << mypMarker;
   }
+#if (QWT_VERSION<0x060000)
   mpCurve->setData( myXData, mySignalData );
+#else
+  mpCurve->setSamples( data );
+#endif
   mpPlot->replot();
   if ( mpMapMarker )
     delete mpMapMarker;

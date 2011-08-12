@@ -17,7 +17,7 @@ Build-Depends:
  libproj-dev,
  libqt4-dev (>=4.4.0),
  libqtwebkit-dev,
- libqwt5-qt4-dev,
+ libqwt-dev,
  libspatialite-dev,
  libsqlite3-dev,
  pkg-config,
