@@ -22,26 +22,27 @@ items on the tree view although the drop is actually managed by qgis app.
  */
 class QgsBrowserTreeView : public QTreeView
 {
-public:
-  QgsBrowserTreeView( QWidget* parent ) : QTreeView(parent)
-  {
-    setDragDropMode( QTreeView::DragDrop ); // sets also acceptDrops + dragEnabled
-    setSelectionMode( QAbstractItemView::ExtendedSelection );
-    setContextMenuPolicy( Qt::CustomContextMenu );
-  }
+  public:
+    QgsBrowserTreeView( QWidget* parent ) : QTreeView( parent )
+    {
+      setDragDropMode( QTreeView::DragDrop ); // sets also acceptDrops + dragEnabled
+      setSelectionMode( QAbstractItemView::ExtendedSelection );
+      setContextMenuPolicy( Qt::CustomContextMenu );
+      setHeaderHidden( true );
+    }
 
-  void dragEnterEvent(QDragEnterEvent* e)
-  {
-    // accept drag enter so that our widget will not get ignored
-    // and drag events will not get passed to QgisApp
-    e->accept();
-  }
-  void dragMoveEvent(QDragMoveEvent* e)
-  {
-    // ignore all possibilities where an item could be dropped
-    // because we want that user drops the item on canvas / legend / app
-    e->ignore();
-  }
+    void dragEnterEvent( QDragEnterEvent* e )
+    {
+      // accept drag enter so that our widget will not get ignored
+      // and drag events will not get passed to QgisApp
+      e->accept();
+    }
+    void dragMoveEvent( QDragMoveEvent* e )
+    {
+      // ignore all possibilities where an item could be dropped
+      // because we want that user drops the item on canvas / legend / app
+      e->ignore();
+    }
 };
 
 QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :

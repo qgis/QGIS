@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>714</width>
-    <height>471</height>
+    <width>712</width>
+    <height>469</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,6 +51,9 @@
        <property name="dragDropMode">
         <enum>QAbstractItemView::DragOnly</enum>
        </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
       </widget>
       <widget class="QTabWidget" name="tabWidget">
        <property name="enabled">
