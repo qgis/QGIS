@@ -1291,7 +1291,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     info.memoryCache = d.cacheInMemory();
     if ( layer )
     {
-      //create attribute index if possible. Todo: ask user if this should be done (e.g. in QgsAddJoinDialog)
+      //create attribute index if possible
       if ( d.createAttributeIndex() )
       {
         QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );
