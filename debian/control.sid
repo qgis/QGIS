@@ -16,6 +16,7 @@ Build-Depends:
  libpq-dev,
  libproj-dev,
  libqt4-dev (>=4.4.0),
+ libqt4-opengl-dev,
  libqtwebkit-dev,
  libqwt-dev,
  libspatialite-dev,
