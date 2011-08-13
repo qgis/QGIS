@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>352</width>
-    <height>281</height>
+    <width>343</width>
+    <height>279</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QFormLayout" name="formLayout">
+   <property name="horizontalSpacing">
+    <number>3</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>3</number>
+   </property>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="text">
@@ -28,23 +34,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="sizeType">
-      <enum>QSizePolicy::Preferred</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>109</width>
-       <height>20</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="1" column="0" colspan="2">
+   <item row="1" column="0">
     <widget class="QLabel" name="label_2">
      <property name="text">
       <string>Marker placement</string>
@@ -74,7 +64,7 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0" colspan="2">
+   <item row="3" column="0">
     <widget class="QRadioButton" name="radVertex">
      <property name="text">
       <string>on every vertex</string>
@@ -95,7 +85,21 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
+   <item row="6" column="0">
+    <widget class="QRadioButton" name="radCentralPoint">
+     <property name="text">
+      <string>on central point</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
     <widget class="QCheckBox" name="chkRotateMarker">
      <property name="text">
       <string>Rotate marker</string>
@@ -119,33 +123,6 @@
      </property>
      <property name="maximum">
       <double>100000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="3">
-    <spacer>
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>261</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="7" column="0" colspan="3">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QRadioButton" name="radCentralPoint">
-     <property name="text">
-      <string>on central point</string>
      </property>
     </widget>
    </item>

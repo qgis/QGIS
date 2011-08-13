@@ -7,13 +7,22 @@
     <x>0</x>
     <y>0</y>
     <width>336</width>
-    <height>326</height>
+    <height>355</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
+   <property name="horizontalSpacing">
+    <number>0</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>3</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -23,7 +32,13 @@
       <attribute name="title">
        <string>Settings</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QFormLayout" name="formLayout">
+       <property name="horizontalSpacing">
+        <number>3</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>3</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="label">
          <property name="text">
@@ -86,6 +101,16 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="0">
+        <widget class="QLabel" name="mRotationLabel">
+         <property name="text">
+          <string>Rotation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
+       </item>
        <item row="5" column="0">
         <widget class="QLabel" name="mSymbolHeightLabel">
          <property name="text">
@@ -106,7 +131,7 @@
        <item row="6" column="0" colspan="2">
         <widget class="QListWidget" name="mShapeListWidget">
          <property name="dragDropMode">
-          <enum>QAbstractItemView::DropOnly</enum>
+          <enum>QAbstractItemView::NoDragDrop</enum>
          </property>
          <property name="iconSize">
           <size>
@@ -143,23 +168,19 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
-       </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="mRotationLabel">
-         <property name="text">
-          <string>Rotation</string>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="tab_2">
       <attribute name="title">
        <string>Data defined settings</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_3">
+      <layout class="QFormLayout" name="formLayout_2">
+       <property name="horizontalSpacing">
+        <number>3</number>
+       </property>
+       <property name="verticalSpacing">
+        <number>3</number>
+       </property>
        <item row="0" column="0">
         <widget class="QLabel" name="mDdSymbolWidthLabel">
          <property name="text">
@@ -179,6 +200,16 @@
        </item>
        <item row="1" column="1">
         <widget class="QComboBox" name="mDDSymbolHeightComboBox"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mDDRotationLabel">
+         <property name="text">
+          <string>Rotation</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QComboBox" name="mDDRotationComboBox"/>
        </item>
        <item row="3" column="0">
         <widget class="QLabel" name="mDDOutlineWidthLabel">
@@ -219,16 +250,6 @@
        </item>
        <item row="6" column="1">
         <widget class="QComboBox" name="mDDShapeComboBox"/>
-       </item>
-       <item row="2" column="1">
-        <widget class="QComboBox" name="mDDRotationComboBox"/>
-       </item>
-       <item row="2" column="0">
-        <widget class="QLabel" name="mDDRotationLabel">
-         <property name="text">
-          <string>Rotation</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

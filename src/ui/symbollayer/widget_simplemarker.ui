@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>394</width>
-    <height>275</height>
+    <height>283</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,16 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QGridLayout" name="gridLayout">
+    <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+     </property>
+     <property name="horizontalSpacing">
+      <number>3</number>
+     </property>
+     <property name="verticalSpacing">
+      <number>3</number>
+     </property>
      <item row="0" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
@@ -29,22 +38,6 @@
         <string>Change</string>
        </property>
       </widget>
-     </item>
-     <item row="0" column="2" rowspan="2">
-      <spacer>
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Preferred</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>61</width>
-         <height>61</height>
-        </size>
-       </property>
-      </spacer>
      </item>
      <item row="1" column="0">
       <widget class="QLabel" name="label_2">
@@ -64,6 +57,19 @@
       <widget class="QLabel" name="label_3">
        <property name="text">
         <string>Size</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="spinSize">
+       <property name="decimals">
+        <number>2</number>
+       </property>
+       <property name="maximum">
+        <double>100000.000000000000000</double>
+       </property>
+       <property name="value">
+        <double>1.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -117,19 +123,6 @@
         </widget>
        </item>
       </layout>
-     </item>
-     <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="spinSize">
-       <property name="decimals">
-        <number>2</number>
-       </property>
-       <property name="maximum">
-        <double>100000.000000000000000</double>
-       </property>
-       <property name="value">
-        <double>1.000000000000000</double>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>
