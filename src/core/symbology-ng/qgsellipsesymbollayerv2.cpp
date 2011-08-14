@@ -101,7 +101,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     if ( mOutlineWidthField.first != -1 )
     {
       double width = context.outputLineWidth( f->attributeMap()[mOutlineWidthField.first].toDouble() );
-      mPen.setWidth( width );
+      mPen.setWidthF( width );
     }
     if ( mFillColorField.first != -1 )
     {
@@ -160,7 +160,7 @@ void QgsEllipseSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context )
     preparePath( mSymbolName, context );
   }
   mPen.setColor( mOutlineColor );
-  mPen.setWidth( context.outputLineWidth( mOutlineWidth ) );
+  mPen.setWidthF( context.outputLineWidth( mOutlineWidth ) );
   mBrush.setColor( mFillColor );
 }
 
