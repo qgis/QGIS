@@ -28,7 +28,8 @@
 
 class QgsDataProvider;
 class QgsProviderMetadata;
-
+class QgsVectorLayer;
+class QgsCoordinateReferenceSystem;
 
 
 /** \ingroup core
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsProviderRegistry
     void *function( const QString & providerKey,
                     const QString & functionName );
 
-    QLibrary *providerLibrary( const QString & providerKey );
+    QLibrary *providerLibrary( const QString & providerKey ) const;
 
     /** Return list of available providers by their keys */
     QStringList providerList() const;
@@ -138,6 +139,16 @@ class CORE_EXPORT QgsProviderRegistry
 
     /** type for data provider metadata associative container */
     typedef std::map<QString, QgsProviderMetadata*> Providers;
+
+    /** allows to import a vector layer using the provider */
+    int importVector( QgsVectorLayer* layer,
+                      const QString& providerKey,
+                      const QString& uri,
+                      const QgsCoordinateReferenceSystem *destCRS,
+                      bool onlySelected = false,
+                      QString *errorMessage = 0,
+                      bool skipAttributeCreation = false
+                    ) const;
 
   private:
 

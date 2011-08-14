@@ -30,6 +30,7 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectorlayer.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -42,6 +43,12 @@ typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
+typedef int importVector_t(QgsVectorLayer* layer,
+                           const QString& uri,
+                           const QgsCoordinateReferenceSystem *destCRS,
+                           bool onlySelected = false,
+                           QString *errorMessage = 0,
+                           bool skipAttributeCreation = false);
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
@@ -468,7 +475,7 @@ void * QgsProviderRegistry::function( QString const & providerKey,
   return 0;
 }
 
-QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey )
+QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
 {
   QString lib = library( providerKey );
 
@@ -531,3 +538,34 @@ QgsProviderRegistry::openVector( QString const & dataSource, QString const & pro
     return getProvider( providerKey, dataSource );
 } // QgsProviderRegistry::openVector
 */
+
+
+int QgsProviderRegistry::importVector( QgsVectorLayer* layer,
+                                       const QString& providerKey,
+                                       const QString& uri,
+                                       const QgsCoordinateReferenceSystem *destCRS,
+                                       bool onlySelected,
+                                       QString *errorMessage,
+                                       bool skipAttributeCreation
+                                     ) const
+{
+  QLibrary *myLib = providerLibrary( providerKey );
+  if ( !myLib )
+  {
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "unable to load %1 provider" ).arg( providerKey );
+    return -1;
+  }
+
+  importVector_t * pImport = ( importVector_t * ) cast_to_fptr( myLib->resolve( "importVector" ) );
+  if ( !pImport )
+  {
+    delete myLib;
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "provider %1 has no importVector feature" ).arg( providerKey );
+    return -2;
+  }
+
+  delete myLib;
+  return pImport( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation );
+}
