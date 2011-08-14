@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>777</width>
-    <height>650</height>
+    <height>669</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -26,7 +26,7 @@
      <item>
       <widget class="QPushButton" name="pbnLoadDefaultStyle">
        <property name="text">
-        <string>Restore Default Style</string>
+        <string>Restore Default Properties</string>
        </property>
       </widget>
      </item>
@@ -40,14 +40,14 @@
      <item>
       <widget class="QPushButton" name="pbnLoadStyle">
        <property name="text">
-        <string>Load Style ...</string>
+        <string>Load Properties ...</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="pbnSaveStyleAs">
        <property name="text">
-        <string>Save Style ...</string>
+        <string>Save Properties ...</string>
        </property>
       </widget>
      </item>
@@ -66,7 +66,7 @@
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>7</number>
      </property>
      <property name="iconSize">
       <size>
@@ -171,7 +171,7 @@
           <enum>QFrame::Sunken</enum>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page"/>
          <widget class="QWidget" name="page_2"/>
@@ -373,7 +373,7 @@
             <x>0</x>
             <y>0</y>
             <width>755</width>
-            <height>526</height>
+            <height>545</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -768,6 +768,36 @@
           <string>Appearance</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_13">
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_11">
+            <item>
+             <widget class="QLabel" name="mPenColorLabel">
+              <property name="text">
+               <string>Pen color</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QgsColorButton" name="mDiagramPenColorButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>25</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
           <item row="1" column="2">
            <layout class="QHBoxLayout" name="horizontalLayout_16">
             <item>
@@ -817,6 +847,19 @@
             </item>
            </layout>
           </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mDiagramFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font...</string>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
@@ -848,49 +891,6 @@
                </widget>
               </item>
              </layout>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="mDiagramFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_11">
-            <item>
-             <widget class="QLabel" name="mPenColorLabel">
-              <property name="text">
-               <string>Pen color</string>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsColorButton" name="mDiagramPenColorButton">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>25</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-             </widget>
             </item>
            </layout>
           </item>
