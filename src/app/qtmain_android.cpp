@@ -113,19 +113,19 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
     jclass clazz=env->FindClass(className);
     if (clazz == NULL)
     {
-        //__android_log_print(ANDROID_LOG_FATAL,"Qt", "Native registration unable to find class '%s'", className);
+        __android_log_print(ANDROID_LOG_FATAL,"Qt", "Native registration unable to find class '%s'", className);
         return JNI_FALSE;
     }
     jmethodID constr = env->GetMethodID(clazz, "<init>", "()V");
     if(!constr) {
-        //__android_log_print(ANDROID_LOG_FATAL,"Qt", "Native registration unable to find  constructor for class '%s'", className);
+        __android_log_print(ANDROID_LOG_FATAL,"Qt", "Native registration unable to find  constructor for class '%s'", className);
         return JNI_FALSE;;
     }
     jobject obj = env->NewObject(clazz, constr);
     objptr = env->NewGlobalRef(obj);
     if (env->RegisterNatives(clazz, gMethods, numMethods) < 0)
     {
-        //__android_log_print(ANDROID_LOG_FATAL,"Qt", "RegisterNatives failed for '%s'", className);
+        __android_log_print(ANDROID_LOG_FATAL,"Qt", "RegisterNatives failed for '%s'", className);
         return JNI_FALSE;
     }
     return JNI_TRUE;
@@ -149,22 +149,23 @@ typedef union {
 
 Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
 {
-    //__android_log_print(ANDROID_LOG_INFO,"Qt", "qt start");
+    __android_log_print(ANDROID_LOG_INFO,"Qt", "qt start");
     UnionJNIEnvToVoid uenv;
     uenv.venv = NULL;
     m_javaVM = 0;
 
     if (vm->GetEnv(&uenv.venv, JNI_VERSION_1_4) != JNI_OK)
     {
-        //__android_log_print(ANDROID_LOG_FATAL,"Qt","GetEnv failed");
+        __android_log_print(ANDROID_LOG_FATAL,"Qt","GetEnv failed");
         return -1;
     }
     m_env = uenv.nativeEnvironment;
     if (!registerNatives(m_env))
     {
-        //__android_log_print(ANDROID_LOG_FATAL, "Qt", "registerNatives failed");
+        __android_log_print(ANDROID_LOG_FATAL, "Qt", "registerNatives failed");
         return -1;
     }
     m_javaVM = vm;
+    __android_log_print(ANDROID_LOG_INFO,"Qt", "JNI OK");
     return JNI_VERSION_1_4;
 }
