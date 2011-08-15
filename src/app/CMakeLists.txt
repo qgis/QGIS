@@ -1,6 +1,5 @@
 SET(QGIS_APP_SRCS
   main.cpp
-  qtmain_android.cpp
   qgisapp.cpp
   qgisappinterface.cpp
   qgsabout.cpp
