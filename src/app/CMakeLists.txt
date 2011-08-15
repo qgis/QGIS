@@ -1,5 +1,6 @@
 SET(QGIS_APP_SRCS
   main.cpp
+  qtmain_android.cpp
   qgisapp.cpp
   qgisappinterface.cpp
   qgsabout.cpp
@@ -133,6 +134,13 @@ SET(QGIS_APP_SRCS
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 ) 
+
+IF (ANDROID)
+    SET(QGIS_APP_SRCS 
+        ${QGIS_APP_SRCS}
+        qtmain_android.cpp
+        )
+ENDIF (ANDROID)
 
 
 SET (QGIS_APP_MOC_HDRS
@@ -357,6 +365,10 @@ INCLUDE_DIRECTORIES(
   ../python
   gps
   )
+
+IF (ANDROID)
+    INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
+ENDIF (ANDROID)
 
 IF (HAVE_SPATIALITE)
   IF (WITH_INTERNAL_SPATIALITE)
