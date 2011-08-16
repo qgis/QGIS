@@ -166,6 +166,6 @@ Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         return -1;
     }
     m_javaVM = vm;
-    __android_log_print(ANDROID_LOG_INFO,"Qt", "JNI OK");
+    __android_log_print(ANDROID_LOG_INFO,"Qt", "JNI_OnLoad OK");
     return JNI_VERSION_1_4;
 }

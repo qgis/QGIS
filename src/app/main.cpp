@@ -181,6 +181,8 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
 int main( int argc, char *argv[] )
 {
+    qDebug("running qgis main");
+    QgsDebugMsg( QString( "running qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -395,7 +397,7 @@ int main( int argc, char *argv[] )
     {
       myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
-    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
+    else if ( i + 1 < argQgsDebugMsgc && ( arg == "--extent" || arg == "-e" ) )
     {
       myInitialExtent = argv[++i];
     }
