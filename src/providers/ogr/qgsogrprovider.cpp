@@ -2288,7 +2288,10 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
     if ( numLayers == 0 )
+    {
+      OGR_DS_Destroy( hDataSource );
       return 0;
+    }
 
     QgsDataCollectionItem * collection = 0;
     if ( numLayers > 1 )
@@ -2352,10 +2355,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
       QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );
       if ( numLayers == 1 )
+      {
+        OGR_DS_Destroy( hDataSource );
         return item;
+      }
       collection->addChild( item );
     }
     collection->setPopulated();
+    OGR_DS_Destroy( hDataSource );
     return collection;
   }
 

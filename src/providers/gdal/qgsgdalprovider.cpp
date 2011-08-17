@@ -884,12 +884,12 @@ void QgsGdalProvider::computeMinMax( int theBandNo )
     return;
   }
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  int bApproxOK=false;
+  int bApproxOK = false;
   int             bGotMin, bGotMax;
   double          adfMinMax[2];
   adfMinMax[0] = GDALGetRasterMinimum( myGdalBand, &bGotMin );
   adfMinMax[1] = GDALGetRasterMaximum( myGdalBand, &bGotMax );
-  if( ! ( bGotMin && bGotMax ) )
+  if ( !( bGotMin && bGotMax ) )
   {
     GDALComputeRasterMinMax( myGdalBand, TRUE, adfMinMax );
   }
@@ -1838,7 +1838,7 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
 {
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   QgsRasterBandStats myRasterBandStats;
-  int bApproxOK=false;
+  int bApproxOK = false;
   double pdfMin;
   double pdfMax;
   double pdfMean;
@@ -1847,26 +1847,26 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int theBandNo )
   myProg.type = ProgressHistogram;
   myProg.provider = this;
 
-  // double myerval = 
-  //   GDALComputeRasterStatistics ( 
-  // 				 myGdalBand, bApproxOK, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-  // 				 progressCallback, &myProg ) ;
-  // double myerval = 
+  // double myerval =
+  //   GDALComputeRasterStatistics (
+  //      myGdalBand, bApproxOK, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
+  //      progressCallback, &myProg ) ;
+  // double myerval =
   //   GDALGetRasterStatistics ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev);
-  // double myerval = 
+  // double myerval =
   //   GDALGetRasterStatisticsProgress ( myGdalBand, bApproxOK, TRUE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-  // 				      progressCallback, &myProg );
+  //           progressCallback, &myProg );
 
   // try to fetch the cached stats (bForce=FALSE)
-  CPLErr myerval = 
-    GDALGetRasterStatistics ( myGdalBand, bApproxOK, FALSE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev);
+  CPLErr myerval =
+    GDALGetRasterStatistics( myGdalBand, bApproxOK, FALSE, &pdfMin, &pdfMax, &pdfMean, &pdfStdDev );
 
   // if cached stats are not found, compute them
   if ( CE_Warning == myerval )
   {
-      myerval = GDALComputeRasterStatistics ( myGdalBand, bApproxOK, 
-					      &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
-					      progressCallback, &myProg ) ;
+    myerval = GDALComputeRasterStatistics( myGdalBand, bApproxOK,
+                                           &pdfMin, &pdfMax, &pdfMean, &pdfStdDev,
+                                           progressCallback, &myProg ) ;
   }
 
   // if stats are found populate the QgsRasterBandStats object
@@ -2009,6 +2009,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
     if ( !hDS )
       return 0;
+
+    GDALClose( hDS );
 
     QgsDebugMsg( "GdalDataset opened " + thePath );
 
