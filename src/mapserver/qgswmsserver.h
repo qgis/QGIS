@@ -27,11 +27,12 @@ class QgsCoordinateReferenceSystem;
 class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
+class QgsConfigParser;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
-class QgsConfigParser;
+class QgsRectangle;
 class QgsVectorLayer;
 class QgsSymbol;
 class QFile;
@@ -106,14 +107,15 @@ class QgsWMSServer
     @param j pixel y-coordinate
     @param layerCoords calculated layer coordinates are assigned to this point
     @return 0 in case of success*/
-    int infoPointToLayerCoordinates( int i, int j, QgsPoint& layerCoords, QgsMapRenderer* mapRender,
+    int infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoords, QgsMapRenderer* mapRender,
                                      QgsMapLayer* layer ) const;
     /**Appends feature info xml for the layer to the layer element of the feature info dom document
-     @return 0 in case of success*/
-    int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint& infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
-                                    QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes ) const;
+    @param featureBBox the bounding box of the selected features in output CRS
+    @return 0 in case of success*/
+    int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint* infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
+                                    QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes, QgsRectangle* featureBBox = 0 ) const;
     /**Appends feature info xml for the layer to the layer element of the dom document*/
-    int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint& infoPoint, QDomDocument& infoDocument, QDomElement& layerElement ) const;
+    int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint* infoPoint, QDomDocument& infoDocument, QDomElement& layerElement ) const;
 
     /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles*/
     QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS ) const;
