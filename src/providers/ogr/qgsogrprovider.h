@@ -18,6 +18,7 @@ email                : sherman at mrcc.com
 #include "qgsdataitem.h"
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
 
 class QgsFeature;
 class QgsField;
@@ -33,6 +34,17 @@ class QgsOgrProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    /** convert a vector layer to a vector file */
+    static QgsVectorFileWriter::WriterError importVector(
+                QgsVectorLayer *layer,
+                const QString& fileName,
+                const QgsCoordinateReferenceSystem *destCRS,
+                bool onlySelected,
+                QString *errorMessage,
+                bool skipAttributeCreation,
+                const QMap<QString,QVariant> *options
+              );
 
     /**
      * Constructor of the vector provider

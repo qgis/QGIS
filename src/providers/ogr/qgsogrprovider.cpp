@@ -42,7 +42,6 @@ email                : sherman at mrcc.com
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
@@ -82,6 +81,43 @@ class QgsCPLErrorHandler
       CPLPopErrorHandler();
     }
 };
+
+
+
+QgsVectorFileWriter::WriterError
+QgsOgrProvider::importVector(
+    QgsVectorLayer *layer,
+    const QString& fileName,
+    const QgsCoordinateReferenceSystem *destCRS,
+    bool onlySelected,
+    QString *errorMessage,
+    bool skipAttributeCreation,
+    const QMap<QString,QVariant> *options )
+{
+  QString encoding;
+  QString driverName = "ESRI Shapefile";
+  QStringList dsOptions, layerOptions;
+
+  if ( options )
+  {
+    if ( options->contains( "fileEncoding" ) )
+      encoding = options->value( "fileEncoding" ).toString();
+
+    if ( options->contains( "driverName" ) )
+      driverName = options->value( "driverName" ).toString();
+
+    if ( options->contains( "datasourceOptions" ) )
+      dsOptions << options->value( "datasourceOptions" ).toStringList();
+
+    if ( options->contains( "layerOptions" ) )
+      layerOptions << options->value( "layerOptions" ).toStringList();
+  }
+
+  return QgsVectorFileWriter::writeAsVectorFormat(
+        layer, fileName, encoding, destCRS, driverName, onlySelected,
+        errorMessage, dsOptions, layerOptions, skipAttributeCreation );
+}
+
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
@@ -2362,3 +2398,14 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   return 0;
 }
 
+QGISEXTERN int importVector(
+    QgsVectorLayer *layer,
+    const QString& uri,
+    const QgsCoordinateReferenceSystem *destCRS,
+    bool onlySelected,
+    QString *errorMessage,
+    bool skipAttributeCreation,
+    const QMap<QString,QVariant> *options )
+{
+  return QgsOgrProvider::importVector( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation, options );
+}
