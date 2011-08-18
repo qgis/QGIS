@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -42,6 +43,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
 {
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
+  QgsRenderer::setSelectionColor( QColor( 255, 255, 0 ) );
 }
 
 QgsProjectParser::~QgsProjectParser()

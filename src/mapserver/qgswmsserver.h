@@ -142,12 +142,18 @@ class QgsWMSServer
 
     /**Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        @return a map with the original filters ( layer id / filter string )*/
-    QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const;
+    QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList ) const;
     /**Restores the original layer filters*/
     void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
     /**Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+
+    /**Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
+      @return list with layer ids where selections have been created*/
+    QStringList applyFeatureSelections( const QStringList& layerList ) const;
+    /**Clear all feature selections in the given layers*/
+    void clearFeatureSelections( const QStringList& layerIds ) const;
 
     /**Map containing the WMS parameters*/
     std::map<QString, QString> mParameterMap;

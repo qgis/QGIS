@@ -410,7 +410,8 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   }
   delete theImage;
 
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList, layerIdList );
+  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
+  QStringList selectedLayerIdList = applyFeatureSelections( layersList );
 
   //GetPrint request needs a template parameter
   std::map<QString, QString>::const_iterator templateIt = mParameterMap.find( "TEMPLATE" );
@@ -423,6 +424,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
   if ( !c )
   {
     restoreLayerFilters( originalLayerFilters );
+    clearFeatureSelections( selectedLayerIdList );
     return 0;
   }
 
@@ -480,6 +482,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     {
       delete c;
       restoreLayerFilters( originalLayerFilters );
+      clearFeatureSelections( selectedLayerIdList );
       return 0;
     }
 
@@ -523,6 +526,7 @@ QByteArray* QgsWMSServer::getPrint( const QString& formatString )
     throw QgsMapServiceException( "InvalidFormat", "Output format '" + formatString + "' is not supported in the GetPrint request" );
   }
   restoreLayerFilters( originalLayerFilters );
+  clearFeatureSelections( selectedLayerIdList );
 
   delete c;
   return ba;
@@ -552,9 +556,13 @@ QImage* QgsWMSServer::getMap()
   QPainter thePainter( theImage );
   thePainter.setRenderHint( QPainter::Antialiasing ); //make it look nicer
 
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList, layerIdList );
+  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
+  QStringList selectedLayerIdList = applyFeatureSelections( layersList );
+
   mMapRenderer->render( &thePainter );
+
   restoreLayerFilters( originalLayerFilters );
+  clearFeatureSelections( selectedLayerIdList );
 
   QgsMapLayerRegistry::instance()->mapLayers().clear();
   return theImage;
@@ -693,7 +701,7 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
 
   //get the layer registered in QgsMapLayerRegistry and apply possible filters
   QStringList layerIds = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
-  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList, layerIds );
+  QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
   QDomElement getFeatureInfoElement = result.createElement( "GetFeatureInfoResponse" );
   result.appendChild( getFeatureInfoElement );
@@ -1617,11 +1625,11 @@ void QgsWMSServer::drawRasterSymbol( QgsComposerLegendItem* item, QPainter* p, d
   p->drawRect( QRectF( boxSpace, currentY + yDownShift, symbolWidth, symbolHeight ) );
 }
 
-QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const
+QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringList& layerList ) const
 {
   QMap<QString, QString> filterMap;
 
-  if ( layerList.isEmpty() || layerIds.isEmpty() )
+  if ( layerList.isEmpty() )
   {
     return filterMap;
   }
@@ -1817,4 +1825,87 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
   }
 
   return true;
+}
+
+QStringList QgsWMSServer::applyFeatureSelections( const QStringList& layerList ) const
+{
+  QStringList layersWithSelections;
+  if ( layerList.isEmpty() )
+  {
+    return layersWithSelections;
+  }
+
+  std::map<QString, QString>::const_iterator selectionIt = mParameterMap.find( "SELECTION" );
+  if ( selectionIt == mParameterMap.end() )
+  {
+    return layersWithSelections;
+  }
+
+  QString selectionString = selectionIt->second;
+  QStringList selectionLayerList = selectionString.split( ";" );
+  QStringList::const_iterator selectionLayerIt = selectionLayerList.constBegin();
+  for ( ; selectionLayerIt != selectionLayerList.constEnd(); ++selectionLayerIt )
+  {
+    //separate layer name from id list
+    QStringList layerIdSplit = selectionLayerIt->split( ":" );
+    if ( layerIdSplit.size() < 2 )
+    {
+      continue;
+    }
+
+    //find layerId for layer name
+    QString layerName = layerIdSplit.at( 0 );
+    QgsVectorLayer* vLayer = 0;
+
+    QMap<QString, QgsMapLayer*>& layerMap = QgsMapLayerRegistry::instance()->mapLayers();
+    QMap<QString, QgsMapLayer*>::iterator layerIt = layerMap.begin();
+    for ( ; layerIt != layerMap.end(); ++layerIt )
+    {
+      if ( layerIt.value() && layerIt.value()->name() == layerName )
+      {
+        vLayer = qobject_cast<QgsVectorLayer*>( layerIt.value() );
+        layersWithSelections.push_back( vLayer->id() );
+        break;
+      }
+    }
+
+    if ( !vLayer )
+    {
+      continue;
+    }
+
+    QStringList idList = layerIdSplit.at( 1 ).split( "," );
+    QgsFeatureIds selectedIds;
+
+    QStringList::const_iterator idIt = idList.constBegin();
+    for ( ; idIt != idList.constEnd(); ++idIt )
+    {
+      selectedIds.insert( STRING_TO_FID( *idIt ) );
+    }
+
+    vLayer->setSelectedFeatures( selectedIds );
+  }
+
+
+  return layersWithSelections;
+}
+
+void QgsWMSServer::clearFeatureSelections( const QStringList& layerIds ) const
+{
+  QMap<QString, QgsMapLayer*>& layerMap = QgsMapLayerRegistry::instance()->mapLayers();
+
+  QStringList::const_iterator layerIdIt = layerIds.constBegin();
+  for ( ; layerIdIt != layerIds.constEnd(); ++layerIdIt )
+  {
+    QMap<QString, QgsMapLayer*>::iterator layerIt = layerMap.find( *layerIdIt );
+    if ( layerIt != layerMap.end() )
+    {
+      QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( layerIt.value() );
+      if ( vlayer )
+      {
+        vlayer->setSelectedFeatures( QgsFeatureIds() );
+      }
+    }
+  }
+  return;
 }
