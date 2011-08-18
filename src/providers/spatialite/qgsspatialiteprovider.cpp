@@ -16,6 +16,7 @@ email                : a.furieri@lqt.it
 
 #include <qgis.h>
 #include <qgsapplication.h>
+#include <qgsvectorlayer.h>
 #include <qgsfeature.h>
 #include <qgsfield.h>
 #include <qgsgeometry.h>
@@ -35,6 +36,540 @@ const QString SPATIALITE_KEY = "spatialite";
 const QString SPATIALITE_DESCRIPTION = "SpatiaLite data provider";
 
 QMap < QString, QgsSpatiaLiteProvider::SqliteHandles * >QgsSpatiaLiteProvider::SqliteHandles::handles;
+
+
+
+bool QgsSpatiaLiteProvider::convertField( QgsField &field )
+{
+  QString fieldType = "TEXT"; //default to string
+  int fieldSize = field.length();
+  int fieldPrec = field.precision();
+
+  switch ( field.type() )
+  {
+    case QVariant::LongLong:
+      fieldType = "BIGINT";
+      fieldSize = -1;
+      fieldPrec = 0;
+      break;
+
+    case QVariant::String:
+      fieldType = "TEXT";
+      fieldPrec = -1;
+      break;
+
+    case QVariant::Int:
+      fieldType = "INTEGER";
+      fieldSize = -1;
+      fieldPrec = 0;
+      break;
+
+    case QVariant::Double:
+      if ( fieldSize <= 0 || fieldPrec <= 0)
+      {
+        fieldType = "REAL";
+        fieldSize = -1;
+        fieldPrec = -1;
+      }
+      else
+      {
+        fieldType = "NUMERIC";
+      }
+      break;
+
+    default:
+      return false;
+  }
+
+  field.setTypeName( fieldType );
+  field.setLength( fieldSize );
+  field.setPrecision( fieldPrec );
+  return true;
+}
+
+QgsSpatiaLiteProvider::WriterError
+QgsSpatiaLiteProvider::importVector(
+    QgsVectorLayer *layer,
+    const QString& uri,
+    const QgsCoordinateReferenceSystem *destCRS,
+    bool onlySelected,
+    QString *errorMessage,
+    bool skipAttributeCreation,
+    const QMap<QString,QVariant> *options )
+{
+  const QgsCoordinateReferenceSystem* outputCRS;
+  QgsCoordinateTransform* ct = 0;
+  int shallTransform = false;
+
+  if ( !layer )
+  {
+    return ErrInvalidLayer;
+  }
+
+  if ( destCRS && destCRS->isValid() )
+  {
+    // This means we should transform
+    outputCRS = destCRS;
+    shallTransform = true;
+  }
+  else
+  {
+    // This means we shouldn't transform, use source CRS as output (if defined)
+    outputCRS = &layer->crs();
+  }
+
+  QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
+
+  // populate members from the uri structure
+  QgsDataSourceURI dsUri( uri );
+  QString sqlitePath = dsUri.database();
+  QString tableName = dsUri.table();
+
+  QString geometryColumn = dsUri.geometryColumn();
+  QString geometryType;
+
+  QString primaryKey = dsUri.keyColumn();
+  QString primaryKeyType;
+
+  QgsDebugMsg( "Database is: " + sqlitePath );
+  QgsDebugMsg( "Table name is: " + tableName );
+  QgsDebugMsg( "Geometry column is: " + geometryColumn );
+
+  // create the table
+  {
+    SqliteHandles *handle;
+    sqlite3 *sqliteHandle = NULL;
+    char *errMsg = NULL;
+    int toCommit = false;
+
+    // trying to open the SQLite DB
+    spatialite_init( 0 );
+    handle = SqliteHandles::openDb( sqlitePath );
+    if ( handle == NULL )
+    {
+      QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "Connection to database failed" );
+      return ErrConnectionFailed;
+    }
+
+    sqliteHandle = handle->handle();
+
+    // get the pk's name and type
+    if ( primaryKey.isEmpty() )
+    {
+      // if no pk name was passed, define the new pk field name
+      int index = 0;
+      QString pk = primaryKey = "pk";
+      for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+      {
+        if ( fldIt.value().name() == pk )
+        {
+          // it already exists, try again with a new name
+          primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
+          fldIt = fields.begin();
+        }
+      }
+    }
+    else
+    {
+      // search for the passed field
+      for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+      {
+        if ( fldIt.value().name() == primaryKey )
+        {
+          // found, get the field type
+          QgsField &fld = fldIt.value();
+          if ( convertField( fld ) )
+          {
+            primaryKeyType = fld.typeName();
+          }
+        }
+      }
+    }
+
+    // if the field doesn't not exist yet, create it as a int field
+    if ( primaryKeyType.isEmpty() )
+    {
+      primaryKeyType = "INTEGER";
+      // check the feature count to choose if create a bigint pk field
+      if ( layer->featureCount() > 0xFFFFFF )
+      {
+        primaryKeyType = "BIGINT";
+      }
+    }
+
+    try
+    {
+      int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+      if ( ret != SQLITE_OK )
+        throw SLException( errMsg );
+
+      toCommit = true;
+
+      // delete the table if exists and the related entry in geometry_columns, then re-create it
+      QString sql = QString( "DROP TABLE IF EXISTS %1" )
+                    .arg( quotedIdentifier( tableName ) );
+
+      ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+      if ( ret != SQLITE_OK )
+        throw SLException( errMsg );
+
+      sql = QString( "DELETE FROM geometry_columns WHERE f_table_name = %1" )
+                    .arg( quotedValue( tableName ) );
+
+      ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+      if ( ret != SQLITE_OK )
+        throw SLException( errMsg );
+
+
+      sql = QString( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
+                    .arg( quotedIdentifier( tableName ) )
+                    .arg( quotedIdentifier( primaryKey ) )
+                    .arg( primaryKeyType );
+
+      ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+      if ( ret != SQLITE_OK )
+        throw SLException( errMsg );
+
+      // get geometry type, dim and srid
+      int dim = 2;
+      long srid = outputCRS->postgisSrid();
+
+      switch( layer->wkbType() )
+      {
+        case QGis::WKBPoint25D:
+          dim = 3;
+        case QGis::WKBPoint:
+          geometryType = "POINT";
+          break;
+
+        case QGis::WKBLineString25D:
+          dim = 3;
+        case QGis::WKBLineString:
+          geometryType = "LINESTRING";
+          break;
+
+        case QGis::WKBPolygon25D:
+          dim = 3;
+        case QGis::WKBPolygon:
+          geometryType = "POLYGON";
+          break;
+
+        case QGis::WKBMultiPoint25D:
+          dim = 3;
+        case QGis::WKBMultiPoint:
+          geometryType = "MULTIPOINT";
+          break;
+
+        case QGis::WKBMultiLineString25D:
+          dim = 3;
+        case QGis::WKBMultiLineString:
+          geometryType = "MULTILINESTRING";
+          break;
+
+        case QGis::WKBMultiPolygon25D:
+          dim = 3;
+        case QGis::WKBMultiPolygon:
+          geometryType = "MULTIPOLYGON";
+          break;
+
+        case QGis::WKBUnknown:
+          geometryType = "GEOMETRY";
+          break;
+
+        case QGis::WKBNoGeometry:
+        default:
+          dim = 0;
+          break;
+      }
+
+      // create geometry column
+      if ( !geometryType.isEmpty() && dim > 0 )
+      {
+        sql = QString( "SELECT AddGeometryColumn(%1, %2, %3, %4, %5)" )
+              .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) )
+              .arg( QgsSpatiaLiteProvider::quotedValue( geometryColumn ) )
+              .arg( srid )
+              .arg( QgsSpatiaLiteProvider::quotedValue( geometryType ) )
+              .arg( dim );
+
+        ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+        if ( ret != SQLITE_OK )
+          throw SLException( errMsg );
+
+      }
+      else
+      {
+        geometryColumn = QString();
+        geometryType = QString();
+        dim = 0;
+      }
+
+      ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+      if ( ret != SQLITE_OK )
+        throw SLException( errMsg );
+
+    }
+    catch( SLException &e )
+    {
+      QgsDebugMsg( QString( "creation of data source %1 failed. %2" )
+                   .arg( tableName )
+                   .arg( e.errorMessage() )
+                 );
+
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "creation of data source %1 failed. %2" )
+                        .arg( tableName )
+                        .arg( e.errorMessage() );
+
+
+      if ( toCommit )
+      {
+        // ROLLBACK after some previous error
+        sqlite3_exec( sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+      }
+
+      SqliteHandles::closeDb( handle );
+      return ErrCreateLayer;
+    }
+
+    SqliteHandles::closeDb( handle );
+    QgsDebugMsg( "layer " + tableName  + " created." );
+  }
+
+  // use the provider to edit the table
+  dsUri.setDataSource( "", tableName, geometryColumn, QString(), primaryKey );
+  QgsSpatiaLiteProvider *provider = new QgsSpatiaLiteProvider( dsUri.uri() );
+  if ( !provider->isValid() )
+  {
+    QgsDebugMsg( "The layer " + tableName + " just created is not valid or not supported by the provider." );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "loading of the layer %1 failed" )
+                      .arg( tableName );
+
+    delete provider;
+    return ErrCreateLayer;
+  }
+
+  QgsDebugMsg( "layer loaded" );
+
+  // add fields to the layer
+  if ( fields.size() > 0 )
+  {
+    // get the list of fields
+    QList<QgsField> flist;
+    for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    {
+      QgsField &fld = fldIt.value();
+      if ( fld.name() == primaryKey )
+        continue;
+
+       if ( fld.name() == geometryColumn )
+       {
+         QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
+         continue;
+       }
+
+      // convert field type only if the source provider is different from the destination one
+      // because if both source and destination use the same provider,
+      // the field type should be natively supported
+      if ( layer->dataProvider()->name() != provider->name() )
+      {
+        if ( !convertField( fld ) )
+        {
+          QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "unsupported type for field %1" )
+                            .arg( fld.name() );
+
+          delete provider;
+          return ErrAttributeTypeUnsupported;
+        }
+      }
+
+      flist.append( fld );
+      QgsDebugMsg( "creating field " + fld.name() +
+                   " type " + QString( QVariant::typeToName( fld.type() ) ) +
+                   " width " + QString::number( fld.length() ) +
+                   " precision " + QString::number( fld.precision() ) );
+    }
+
+    if ( !provider->addAttributes( flist ) )
+    {
+      QgsDebugMsg( "error creating fields " );
+      if ( errorMessage )
+        *errorMessage = QObject::tr( "creation of fields failed" );
+
+      delete provider;
+      return ErrAttributeCreationFailed;
+    }
+
+    QgsDebugMsg( "Done creating fields" );
+  }
+
+  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
+  QgsFeature fet;
+
+  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
+
+  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
+
+  // Create our transform
+  if ( destCRS )
+  {
+    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
+  }
+
+  // Check for failure
+  if ( ct == NULL )
+  {
+    shallTransform = false;
+  }
+
+  int n = 0, errors = 0;
+  char *errMsg = NULL;
+
+
+  // make all the changes using one transaction only
+  int ret = sqlite3_exec( provider->sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( "unable to start a new transaction" );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "unable to start a new transaction. Writing of features failed" );
+
+    if ( errMsg )
+      sqlite3_free( errMsg );
+
+    delete provider;
+    return ErrFeatureWriteFailed;
+  }
+
+  if ( errorMessage )
+    errorMessage->clear();
+
+  // write all features
+  QgsFeatureList flist;
+  while (1)
+  {
+    while ( layer->nextFeature( fet ) )
+    {
+      if ( onlySelected && !ids.contains( fet.id() ) )
+        continue;
+
+      if ( shallTransform )
+      {
+        try
+        {
+          if ( fet.geometry() )
+          {
+            fet.geometry()->transform( *ct );
+          }
+        }
+        catch ( QgsCsException &e )
+        {
+          delete ct;
+
+          QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
+                        .arg( fet.typeName() ).arg( e.what() );
+          QgsLogger::warning( msg );
+          if ( errorMessage )
+            *errorMessage = msg;
+
+          sqlite3_exec( provider->sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+          delete provider;
+          return ErrProjection;
+        }
+      }
+      if ( skipAttributeCreation )
+      {
+        fet.clearAttributeMap();
+      }
+      else
+      {
+        // fix attributes position based on how the table was created.
+        // The first field is reserved to the primary key, so move the
+        // other attributes after this field
+        int offset = 1;
+
+        const QgsAttributeMap &attrs = fet.attributeMap();
+        QgsAttributeMap newAttrs;
+        for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
+        {
+          const QgsField &fld = fields[ it.key() ];
+          if ( fld.name() == primaryKey || fld.name() == geometryColumn )
+            continue;
+
+          newAttrs.insert( offset++, *it );
+        }
+        fet.setAttributeMap( newAttrs );
+
+      }
+
+      flist.append( fet );
+
+      // add 100 features at the same time
+      if ( flist.size() == 100 )
+        break;
+    }
+
+    if ( !provider->addFeatures( flist, false ) )
+    {
+      QgsDebugMsg( QString( "failed while adding features from %1 to %2" )
+                  .arg( flist.first().id() )
+                  .arg( flist.last().id() )
+                 );
+      if ( errorMessage )
+        *errorMessage += QObject::tr( "failed while adding features from %1 to %2\n" )
+                         .arg( flist.first().id() )
+                         .arg( flist.last().id() );
+    }
+    n += flist.size();
+
+    if ( flist.size() < 100 )
+      break;
+    flist.clear();
+  }
+
+  ret = sqlite3_exec( provider->sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( QString( "unable to write features on the database: failed to commit the transaction. %1" )
+                 .arg( errMsg ? QString::fromUtf8( errMsg ) : "unknown cause" )
+               );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "unable to write features on the database: failed to commit the transaction. %1" )
+                      .arg( errMsg ? QString::fromUtf8( errMsg ) : "unknown cause" );
+
+    if ( errMsg )
+      sqlite3_free( errMsg );
+
+    sqlite3_exec( provider->sqliteHandle, "ROLLBACK", NULL, NULL, NULL );
+    delete provider;
+    return ErrFeatureWriteFailed;
+  }
+
+  delete provider;
+
+  if ( shallTransform )
+  {
+    delete ct;
+  }
+
+  if ( errors > 0 && n > 0 )
+  {
+    if ( errorMessage )
+    {
+      *errorMessage += QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
+    }
+    return ErrFeatureWriteFailed;
+  }
+
+  return NoError;  
+}
+
+
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     : QgsVectorDataProvider( uri )
@@ -3181,41 +3716,53 @@ void QgsSpatiaLiteProvider::uniqueValues( int index, QList < QVariant > &uniqueV
   return;
 }
 
+
 bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
+{
+  return addFeatures( flist, true );
+}
+
+bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist, bool useNewTransaction )
 {
   sqlite3_stmt *stmt = NULL;
   char *errMsg = NULL;
   bool toCommit = false;
   QString sql;
   QString values;
-  int ia;
+  QString separator;
+  int ia, ret;
 
   if ( flist.size() == 0 )
     return true;
   const QgsAttributeMap & attributevec = flist[0].attributeMap();
 
-  int ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
-  if ( ret != SQLITE_OK )
+  if ( useNewTransaction )
   {
-    // some error occurred
-    goto abort;
+    ret = sqlite3_exec( sqliteHandle, "BEGIN", NULL, NULL, &errMsg );
+    if ( ret != SQLITE_OK )
+    {
+      // some error occurred
+      goto abort;
+    }
+    toCommit = true;
   }
-  toCommit = true;
+
+  sql = QString( "INSERT INTO %1(" ).arg( quotedIdentifier( mTableName ) );
+  values = QString( ") VALUES (" );
+  separator = "";
 
   if ( !mPrimaryKey.isEmpty() )
   {
-    sql = QString( "INSERT INTO %1(%2,%3" )
-          .arg( quotedIdentifier( mTableName ) )
-          .arg( quotedIdentifier( mPrimaryKey ) )
-          .arg( quotedIdentifier( mGeometryColumn ) );
-    values = QString( ") VALUES (NULL, GeomFromWKB(?,%1)" ).arg( mSrid );
+    sql += separator + quotedIdentifier( mPrimaryKey );
+    values += separator + "NULL";
+    separator = ",";
   }
-  else
+
+  if ( !mGeometryColumn.isNull() )
   {
-    sql = QString( "INSERT INTO %1(%2" )
-          .arg( quotedIdentifier( mTableName ) )
-          .arg( quotedIdentifier( mGeometryColumn ) );
-    values = QString( ") VALUES (GeomFromWKB(?, %1)" ).arg( mSrid );
+    sql += separator + quotedIdentifier( mGeometryColumn );
+    values += separator + QString( "GeomFromWKB(?, %2)" ).arg( mSrid );
+    separator = ",";
   }
 
   for ( QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); it++ )
@@ -3228,8 +3775,8 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     if ( fieldname.isEmpty() || fieldname == mGeometryColumn || fieldname == mPrimaryKey )
       continue;
 
-    sql += "," + quotedIdentifier( fieldname );
-    values += ",?";
+    sql += separator + quotedIdentifier( fieldname );
+    values += separator + "?";
   }
 
   sql += values;
@@ -3252,19 +3799,22 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
     sqlite3_reset( stmt );
     sqlite3_clear_bindings( stmt );
 
-    // binding GEOMETRY to Prepared Statement
-    unsigned char *wkb = NULL;
-    size_t wkb_size;
-    convertFromGeosWKB( features->geometry()->asWkb(),
-                        features->geometry()->wkbSize(),
-                        &wkb, &wkb_size, nDims );
-    if ( !wkb )
-      sqlite3_bind_null( stmt, 1 );
-    else
-      sqlite3_bind_blob( stmt, 1, wkb, wkb_size, free );
-
     // initializing the column counter
-    ia = 1;
+    ia = 0;
+
+    if ( !mGeometryColumn.isNull() )
+    {
+      // binding GEOMETRY to Prepared Statement
+      unsigned char *wkb = NULL;
+      size_t wkb_size;
+      convertFromGeosWKB( features->geometry()->asWkb(),
+                          features->geometry()->wkbSize(),
+                          &wkb, &wkb_size, nDims );
+      if ( !wkb )
+        sqlite3_bind_null( stmt, ++ia );
+      else
+        sqlite3_bind_blob( stmt, ++ia, wkb, wkb_size, free );
+    }
 
     for ( QgsAttributeMap::const_iterator it = attributevec.begin(); it != attributevec.end(); it++ )
     {
@@ -3327,11 +3877,14 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList & flist )
   }
   sqlite3_finalize( stmt );
 
-  ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
-  if ( ret != SQLITE_OK )
+  if ( useNewTransaction )
   {
-    // some error occurred
-    goto abort;
+    ret = sqlite3_exec( sqliteHandle, "COMMIT", NULL, NULL, &errMsg );
+    if ( ret != SQLITE_OK )
+    {
+      // some error occurred
+      goto abort;
+    }
   }
   return true;
 
@@ -3792,13 +4345,13 @@ void QgsSpatiaLiteProvider::SqliteHandles::sqliteClose()
   }
 }
 
-QString QgsSpatiaLiteProvider::quotedIdentifier( QString id ) const
+QString QgsSpatiaLiteProvider::quotedIdentifier( QString id )
 {
   id.replace( "\"", "\"\"" );
   return id.prepend( "\"" ).append( "\"" );
 }
 
-QString QgsSpatiaLiteProvider::quotedValue( QString value ) const
+QString QgsSpatiaLiteProvider::quotedValue( QString value )
 {
   if ( value.isNull() )
     return "NULL";
@@ -4509,4 +5062,16 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+
+QGISEXTERN int importVector(
+    QgsVectorLayer *layer,
+    const QString& uri,
+    const QgsCoordinateReferenceSystem *destCRS,
+    bool onlySelected,
+    QString *errorMessage,
+    bool skipAttributeCreation,
+    const QMap<QString,QVariant> *options )
+{
+  return QgsSpatiaLiteProvider::importVector( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation, options );
 }

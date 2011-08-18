@@ -31,6 +31,7 @@ extern "C"
 
 class QgsFeature;
 class QgsField;
+class QgsVectorLayer;
 
 #include "qgsdatasourceuri.h"
 
@@ -45,6 +46,31 @@ class QgsField;
 class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 {
   Q_OBJECT public:
+
+    enum WriterError
+    {
+      NoError = 0,
+      ErrDriverNotFound,
+      ErrCreateDataSource,
+      ErrCreateLayer,
+      ErrAttributeTypeUnsupported,
+      ErrAttributeCreationFailed,
+      ErrProjection,
+      ErrFeatureWriteFailed,
+      ErrInvalidLayer,
+      ErrConnectionFailed,
+    };
+
+    /** Import a vector layer into the database */
+    static WriterError importVector( QgsVectorLayer* layer,
+                              const QString& uri,
+                              const QgsCoordinateReferenceSystem *destCRS,
+                              bool onlySelected = false,
+                              QString *errorMessage = 0,
+                              bool skipAttributeCreation = false,
+                              const QMap<QString,QVariant> *options = 0
+                            );
+
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
@@ -262,6 +288,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
+    /** convert a QgsField to work with SL
+    */
+    static bool convertField( QgsField &field );
+
     QgsFieldMap attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
@@ -365,13 +395,18 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     const QgsField & field( int index ) const;
 
+    /**Adds a list of features
+      @param useNewTransaction create a new transaction
+      @return true in case of success and false in case of failure*/
+    bool addFeatures( QgsFeatureList & flist, bool useNewTransaction = true );
+
     /**
     * internal utility functions used to handle common SQLite tasks
     */
     //void sqliteOpen();
     void closeDb();
-    QString quotedIdentifier( QString id ) const;
-    QString quotedValue( QString value ) const;
+    static QString quotedIdentifier( QString id );
+    static QString quotedValue( QString value );
     bool checkLayerType();
     bool getGeometryDetails();
     bool getTableGeometryDetails();
@@ -456,6 +491,31 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
         sqlite3 *sqlite_handle;
 
         static QMap < QString, SqliteHandles * >handles;
+    };
+
+    struct SLException
+    {
+      SLException( char *msg ) : errMsg( msg )
+      {
+      }
+
+      SLException( const SLException &e ) : errMsg( e.errMsg )
+      {
+      }
+
+      ~SLException()
+      {
+        if ( errMsg )
+          sqlite3_free( errMsg );
+      }
+
+      QString errorMessage() const
+      {
+        return errMsg ? QString::fromUtf8( errMsg ) : "unknown cause";
+      }
+
+    private:
+      char *errMsg;
     };
 
     /**
