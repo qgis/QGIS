@@ -56,6 +56,52 @@ QMap<QString, QString> QgsPostgresProvider::Conn::passwordCache;
 int QgsPostgresProvider::providerIds = 0;
 
 
+bool QgsPostgresProvider::convertField( QgsField &field )
+{
+  QString fieldType = "varchar"; //default to string
+  int fieldSize = field.length();
+  int fieldPrec = field.precision();
+  switch ( field.type() )
+  {
+    case QVariant::LongLong:
+      fieldType = "int8";
+      fieldSize = -1;
+      fieldPrec = 0;
+      break;
+
+    case QVariant::String:
+      fieldType = "varchar";
+      fieldPrec = -1;
+      break;
+
+    case QVariant::Int:
+      fieldType = "int";
+      fieldSize = -1;
+      fieldPrec = 0;
+      break;
+
+    case QVariant::Double:
+      if ( fieldSize <= 0 || fieldPrec < 0)
+      {
+        fieldType = "real8";
+        fieldSize = -1;
+        fieldPrec = -1;
+      }
+      else
+      {
+        fieldType = "decimal";
+      }
+      break;
+
+    default:
+      return false;
+  }
+
+  field.setTypeName( fieldType );
+  field.setLength( fieldSize );
+  field.setPrecision( fieldPrec );
+  return true;
+}
 
 QgsPostgresProvider::WriterError
 QgsPostgresProvider::importVector(
@@ -64,7 +110,8 @@ QgsPostgresProvider::importVector(
     const QgsCoordinateReferenceSystem *destCRS,
     bool onlySelected,
     QString *errorMessage,
-    bool skipAttributeCreation )
+    bool skipAttributeCreation,
+    const QMap<QString,QVariant> *options )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;
@@ -142,12 +189,16 @@ QgsPostgresProvider::importVector(
     else
     {
       // search for the passed field
-      for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+      for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
       {
         if ( fldIt.value().name() == primaryKey )
         {
           // found, get the field type
-          primaryKeyType = fldIt.value().typeName();
+          QgsField &fld = fldIt.value();
+          if ( convertField( fld ) )
+          {
+            primaryKeyType = fld.typeName();
+          }
         }
       }
     }
@@ -157,7 +208,7 @@ QgsPostgresProvider::importVector(
     {
       primaryKeyType = "serial";
       // check the feature count to choose if create a serial8 pk field
-      if ( layer->featureCount() > 0x10000 - 0x00FF )
+      if ( layer->featureCount() > 0xFFFFFF )
       {
         primaryKeyType = "serial8";
       }
@@ -305,6 +356,7 @@ QgsPostgresProvider::importVector(
   QgsDebugMsg( "layer loaded" );
 
   // add fields to the layer
+  if ( fields.size() > 0 )
   {
     // get the list of fields
     QList<QgsField> flist;
@@ -325,54 +377,16 @@ QgsPostgresProvider::importVector(
       // the field type should be natively supported
       if ( layer->dataProvider()->name() != provider->name() )
       {
-        QString fieldType = "varchar"; //default to string
-        int fieldSize = fld.length();
-        int fieldPrec = fld.precision();
-        switch ( fld.type() )
+        if ( !convertField( fld ) )
         {
-          case QVariant::LongLong:
-            fieldType = "int8";
-            fieldSize = -1;
-            fieldPrec = 0;
-            break;
-
-          case QVariant::String:
-            fieldType = "varchar";
-            fieldPrec = -1;
-            break;
-
-          case QVariant::Int:
-            fieldType = "int";
-            fieldSize = -1;
-            fieldPrec = 0;
-            break;
-
-          case QVariant::Double:
-            if ( fieldSize <= 0 || fieldPrec < 0)
-            {
-              fieldType = "real8";
-              fieldSize = -1;
-              fieldPrec = -1;
-            }
-            else
-            {
-              fieldType = "decimal";
-            }
-            break;
-
-          default:
-            QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
-            if ( errorMessage )
-              *errorMessage = QObject::tr( "unsupported type for field %1" )
+          QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
+          if ( errorMessage )
+            *errorMessage = QObject::tr( "unsupported type for field %1" )
                             .arg( fld.name() );
 
-            delete provider;
-            return ErrAttributeTypeUnsupported;
+          delete provider;
+          return ErrAttributeTypeUnsupported;
         }
-
-        fld.setTypeName( fieldType );
-        fld.setLength( fieldSize );
-        fld.setPrecision( fieldPrec );
       }
 
       flist.append( fld );
@@ -414,9 +428,7 @@ QgsPostgresProvider::importVector(
     shallTransform = false;
   }
 
-  int n = 0;
-  QStringList errors;
-
+  int n = 0, errors = 0;
 
   // make all the changes using one transaction only
   if ( provider->connectRW() )
@@ -454,7 +466,6 @@ QgsPostgresProvider::importVector(
         catch ( QgsCsException &e )
         {
           delete ct;
-          delete provider;
 
           QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
                         .arg( fet.typeName() ).arg( e.what() );
@@ -505,9 +516,10 @@ QgsPostgresProvider::importVector(
                   .arg( flist.first().id() )
                   .arg( flist.last().id() )
                  );
-      errors << QObject::tr( "failed while adding features from %1 to %2" )
-                .arg( flist.first().id() )
-                .arg( flist.last().id() );
+      if ( errorMessage )
+        *errorMessage += QObject::tr( "failed while adding features from %1 to %2\n" )
+                         .arg( flist.first().id() )
+                         .arg( flist.last().id() );
     }
     n += flist.size();
 
@@ -524,18 +536,14 @@ QgsPostgresProvider::importVector(
     delete ct;
   }
 
-  if ( errors.size() > 0 )
+  if ( errors > 0 && n > 0 )
   {
-    if ( errorMessage && n > 0 )
+    if ( errorMessage )
     {
-      errors << QObject::tr( "Only %1 of %2 features written." ).arg( n - errors.size() ).arg( n );
-      *errorMessage = errors.join( "\n" );
+      *errorMessage += QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
     }
     return ErrFeatureWriteFailed;
   }
-
-  if ( errorMessage )
-    errorMessage->clear();
 
   return NoError;
 }
@@ -3258,27 +3266,17 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
 
 bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 {
-  return addAttributes( attributes, true );
-}
-
-bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes, bool useNewTransaction )
-{
   bool returnvalue = true;
 
   if ( isQuery )
     return false;
-
-  // if there's no rw connection opened then create a new transaction
-  if ( !connectionRW )
-    useNewTransaction = true;
 
   if ( !connectRW() )
     return false;
 
   try
   {
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "BEGIN" );
+    connectionRW->PQexecNR( "BEGIN" );
 
     for ( QList<QgsField>::const_iterator iter = attributes.begin(); iter != attributes.end(); ++iter )
     {
@@ -3319,19 +3317,16 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes, bool
       }
     }
 
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "COMMIT" );
+    connectionRW->PQexecNR( "COMMIT" );
   }
   catch ( PGException &e )
   {
     e.showErrorMessage( tr( "Error while adding attributes" ) );
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "ROLLBACK" );
+    connectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
 
-  if ( useNewTransaction )
-    rewind();
+  rewind();
   return returnvalue;
 }
 
@@ -4329,7 +4324,8 @@ QGISEXTERN int importVector(
     const QgsCoordinateReferenceSystem *destCRS,
     bool onlySelected,
     QString *errorMessage,
-    bool skipAttributeCreation )
+    bool skipAttributeCreation,
+    const QMap<QString,QVariant> *options )
 {
-  return QgsPostgresProvider::importVector( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation );
+  return QgsPostgresProvider::importVector( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation, options );
 }

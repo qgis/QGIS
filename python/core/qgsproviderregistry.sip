@@ -70,7 +70,8 @@ class QgsProviderRegistry
                       const QgsCoordinateReferenceSystem *destCRS,
                       bool onlySelected = FALSE,
                       QString *errorMessage /Out/ = 0,
-                      bool skipAttributeCreation = FALSE
+                      bool skipAttributeCreation = FALSE, 
+					  const QMap<QString, QVariant> *options = 0
                     ) const;
     
 
