@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -42,6 +43,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
 {
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
+  setSelectionColor();
 }
 
 QgsProjectParser::~QgsProjectParser()
@@ -1407,5 +1409,52 @@ QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 #endif
 
   return projElems.join( "/" );
+}
+
+void QgsProjectParser::setSelectionColor()
+{
+  int red = 255;
+  int green = 255;
+  int blue = 0;
+  int alpha = 255;
+
+  //overwrite default selection color with settings from the project
+  if ( mXMLDoc )
+  {
+    QDomElement qgisElem = mXMLDoc->documentElement();
+    if ( !qgisElem.isNull() )
+    {
+      QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+      if ( !propertiesElem.isNull() )
+      {
+        QDomElement guiElem = propertiesElem.firstChildElement( "Gui" );
+        if ( !guiElem.isNull() )
+        {
+          QDomElement redElem = guiElem.firstChildElement( "SelectionColorRedPart" );
+          if ( !redElem.isNull() )
+          {
+            red = redElem.text().toInt();
+          }
+          QDomElement greenElem = guiElem.firstChildElement( "SelectionColorGreenPart" );
+          if ( !greenElem.isNull() )
+          {
+            green = greenElem.text().toInt();
+          }
+          QDomElement blueElem = guiElem.firstChildElement( "SelectionColorBluePart" );
+          if ( !blueElem.isNull() )
+          {
+            blue = blueElem.text().toInt();
+          }
+          QDomElement alphaElem = guiElem.firstChildElement( "SelectionColorAlphaPart" );
+          if ( !alphaElem.isNull() )
+          {
+            alpha = alphaElem.text().toInt();
+          }
+        }
+      }
+    }
+  }
+
+  QgsRenderer::setSelectionColor( QColor( red, green, blue, alpha ) );
 }
 

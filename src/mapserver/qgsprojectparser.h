@@ -145,6 +145,9 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Converts a (possibly relative) path to absolute*/
     QString convertToAbsolutePath( const QString& file ) const;
+
+    /**Sets global selection color from the project or yellow if not defined in project*/
+    void setSelectionColor();
 };
 
 #endif // QGSPROJECTPARSER_H
