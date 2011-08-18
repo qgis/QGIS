@@ -70,7 +70,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                               const QgsCoordinateReferenceSystem *destCRS,
                               bool onlySelected = false,
                               QString *errorMessage = 0,
-                              bool skipAttributeCreation = false
+                              bool skipAttributeCreation = false,
+                              const QMap<QString,QVariant> *options = 0
                             );
 
     /**
@@ -378,11 +379,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool loadFields();
 
-    /**Adds new attributes
-      @param name map with attribute name as key and type as value
-      @param useNewTransaction create a new transaction
-      @return true in case of success and false in case of failure*/
-    bool addAttributes( const QList<QgsField> &attributes, bool useNewTransaction );
+    /** convert a QgsField to work with PG
+    */
+    static bool convertField( QgsField &field );
 
     /**Adds a list of features
       @param useNewTransaction create a new transaction

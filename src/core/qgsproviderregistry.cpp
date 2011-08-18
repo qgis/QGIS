@@ -43,12 +43,14 @@ typedef QString directoryDrivers_t();
 typedef QString protocolDrivers_t();
 //typedef int dataCapabilities_t();
 //typedef QgsDataItem * dataItem_t(QString);
-typedef int importVector_t(QgsVectorLayer* layer,
-                           const QString& uri,
-                           const QgsCoordinateReferenceSystem *destCRS,
-                           bool onlySelected = false,
-                           QString *errorMessage = 0,
-                           bool skipAttributeCreation = false);
+typedef int importVector_t( QgsVectorLayer* layer,
+                            const QString& uri,
+                            const QgsCoordinateReferenceSystem *destCRS,
+                            bool onlySelected = false,
+                            QString *errorMessage = 0,
+                            bool skipAttributeCreation = false,
+                            const QMap<QString, QVariant> *options = 0
+                          );
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
@@ -546,7 +548,8 @@ int QgsProviderRegistry::importVector( QgsVectorLayer* layer,
                                        const QgsCoordinateReferenceSystem *destCRS,
                                        bool onlySelected,
                                        QString *errorMessage,
-                                       bool skipAttributeCreation
+                                       bool skipAttributeCreation,
+                                       const QMap<QString, QVariant> *options
                                      ) const
 {
   QLibrary *myLib = providerLibrary( providerKey );
@@ -567,5 +570,5 @@ int QgsProviderRegistry::importVector( QgsVectorLayer* layer,
   }
 
   delete myLib;
-  return pImport( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation );
+  return pImport( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation, options );
 }

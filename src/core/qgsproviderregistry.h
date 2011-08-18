@@ -147,7 +147,8 @@ class CORE_EXPORT QgsProviderRegistry
                       const QgsCoordinateReferenceSystem *destCRS,
                       bool onlySelected = false,
                       QString *errorMessage = 0,
-                      bool skipAttributeCreation = false
+                      bool skipAttributeCreation = false,
+                      const QMap<QString, QVariant> *options = 0
                     ) const;
 
   private:
