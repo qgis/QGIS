@@ -329,6 +329,10 @@ ELSE (WIN32)
 
 ENDIF (WIN32)
 
+IF (ANDROID)
+    SET (DEFAULT_PLUGIN_SUBDIR  lib)
+    SET (DEFAULT_DATA_SUBDIR    files/share)
+ENDIF (ANDROID)
 
 #assume we have escaped compiler directives
 #eventually we want to change this to new

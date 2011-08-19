@@ -53,8 +53,8 @@ static void * startMainMethod(void * /*data*/)
         params[i]= (char*)m_applicationParams[i].constData();
 
     int ret = main(m_applicationParams.length(), params);
-
-    qDebug()<<"MainMethod finished, it's time to cleanup";
+    
+    qDebug()<<"MainMethod finished, it's time to cleanup ";
     free(params);
     Q_UNUSED(ret);
 
