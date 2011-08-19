@@ -12,42 +12,29 @@
 #ifndef QGSCOPYRIGHTLABELPLUGINGUI_H
 #define QGSCOPYRIGHTLABELPLUGINGUI_H
 
-#include <ui_pluginguibase.h>
-#include <QColor>
-#include <QFont>
-#include "qgscontexthelp.h"
+#include "ui_qgsdecorationcopyrightdialog.h"
 
-/**
-@author Tim Sutton
-*/
-class QgsCopyrightLabelPluginGui : public QDialog, private Ui::QgsCopyrightLabelPluginGuiBase
+class QColor;
+class QFont;
+
+class QgsDecorationCopyright;
+
+class QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsDecorationCopyrightDialog
 {
     Q_OBJECT
 
   public:
-    QgsCopyrightLabelPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
-    ~QgsCopyrightLabelPluginGui();
-    void setText( QString );
-    void setPlacementLabels( QStringList& );
-    void setPlacement( int );
-    void setColor( QColor );
-    void setEnabled( bool );
+    QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent = 0 );
+    ~QgsDecorationCopyrightDialog();
 
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void on_buttonBox_helpRequested();
     void on_pbnColorChooser_clicked();
 
-  signals:
-    //void drawRasterLayer(QString);
-    //void drawVectorrLayer(QString,QString,QString);
-    void changeFont( QFont );
-    void changeLabel( QString );
-    void changeColor( QColor );
-    void changePlacement( int );
-    void enableCopyrightLabel( bool );
-
+  protected:
+    QgsDecorationCopyright& mDeco;
 };
 
 #endif

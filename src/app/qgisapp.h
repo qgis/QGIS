@@ -69,6 +69,8 @@ class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
+class QgsDecorationCopyright;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -864,6 +866,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool createDB();
     void createMapTips();
     void updateCRSStatusBar();
+    void createDecorations();
 
     // actions for menus and toolbars -----------------
 
@@ -1050,6 +1053,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
+
+    QgsDecorationCopyright* mDecorationCopyright;
 
     int mLastComposerId;
 

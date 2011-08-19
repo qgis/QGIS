@@ -18,7 +18,6 @@
  ***************************************************************************/
 #ifndef QGSCOPYRIGHTLABELPLUGIN
 #define QGSCOPYRIGHTLABELPLUGIN
-#include "../qgisplugin.h"
 
 #include <QColor>
 #include <QFont>
@@ -26,53 +25,28 @@
 class QAction;
 class QPainter;
 
-class QgisInterface;
+class QgsDecorationCopyrightDialog;
 
-/**
-* \class Plugin
-* \brief OpenModeller plugin for QGIS
-*
-*/
-class QgsCopyrightLabelPlugin: public QObject, public QgisPlugin
+class QgsDecorationCopyright : public QObject
 {
-  Q_OBJECT public:
-    /**
-     * Constructor for a plugin. The QgisInterface pointer is passed by
-     * QGIS when it attempts to instantiate the plugin.
-     * @param qI Pointer to the QgisInterface object.
-     */
-    QgsCopyrightLabelPlugin( QgisInterface * );
+  Q_OBJECT
+public:
+
+    //! Constructor
+    QgsDecorationCopyright( QObject* parent = NULL );
     //! Destructor
-    virtual ~ QgsCopyrightLabelPlugin();
-    void writeEntry( QString theScope, QString theProperty, QVariant theValue );
+    virtual ~QgsDecorationCopyright();
+
   public slots:
-    //! init the gui
-    void initGui();
-    //!set values on the gui when a project is read or the gui first loaded
+    //! set values on the gui when a project is read or the gui first loaded
     void projectRead();
+    //! save values to the project
+    void saveToProject();
+
     //! Show the dialog box
     void run();
+    //! render the copyright label
     void renderLabel( QPainter * );
-    //! Refresh the map display using the mapcanvas exported via the plugin interface
-    void refreshCanvas();
-    //! unload the plugin
-    void unload();
-    //! show the help document
-    void help();
-    //! change the copyright font
-    void setFont( QFont );
-    //! change the copyright text
-    void setLabel( QString );
-    //! change the copyright font color
-    void setColor( QColor );
-    //! set copyright label placement
-    void setPlacement( int );
-    //! set copyright label enabled
-    void setEnable( bool );
-    //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
-
-
 
   private:
     //! This is the font that will be used for the copyright label
@@ -87,11 +61,7 @@ class QgsCopyrightLabelPlugin: public QObject, public QgisPlugin
     //! Copyright label enabled
     bool mEnable;
 
-    int pluginType;
-    //! Pointer to the QGIS interface object
-    QgisInterface *qGisInterface;
-    //! Pointer to the QAction object used in the menu and toolbar
-    QAction *myQActionPointer;
+    friend class QgsDecorationCopyrightDialog;
 };
 
 #endif

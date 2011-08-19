@@ -114,6 +114,7 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsdecorationcopyright.h"
 #include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
@@ -437,6 +438,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   initLegend();
   createOverview();
   createMapTips();
+  createDecorations();
   readSettings();
   updateRecentProjectPaths();
   activateDeactivateLayerRelatedActions( NULL );
@@ -1470,6 +1472,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMoveLabel->setIcon( getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( getThemeIcon( "/mActionRotateLabel.png" ) );
   mActionChangeLabelProperties->setIcon( getThemeIcon( "/mActionChangeLabelProperties.png" ) );
+  mActionDecorationCopyright->setIcon( getThemeIcon( "/plugins/copyright_label.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -1801,6 +1804,14 @@ void QgisApp::createMapTips()
   mpMapTipsTimer->setInterval( 850 );
   // Create the maptips object
   mpMaptip = new QgsMapTip();
+}
+
+void QgisApp::createDecorations()
+{
+  mDecorationCopyright = new QgsDecorationCopyright(this);
+  connect( mActionDecorationCopyright, SIGNAL( triggered() ), mDecorationCopyright, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationCopyright, SLOT( renderLabel( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationCopyright, SLOT( projectRead() ) );
 }
 
 // Update file menu with the current list of recently accessed projects
