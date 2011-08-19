@@ -25,7 +25,8 @@ class QgsDistanceArea;
 class QgsFeature;
 
 /**
-Class for parsing and evaluation of expressions (formerly called "search strings")
+Class for parsing and evaluation of expressions (formerly called "search strings").
+The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
 
@@ -50,8 +51,28 @@ Possible QVariant value types:
 - double
 - string
 
+Similarly to SQL, this class supports three-value logic: true/false/unknown.
+Unknown value may be a result of operations with missing data (NULL). Please note
+that NULL is different value than zero or an empty string. For example
+3 > NULL returns unknown.
+
+There is no special (three-value) 'boolean' type: true/false is represented as
+1/0 integer, unknown value is represented the same way as NULL values: invalid QVariant.
+
 For better performance with many evaluations you may first call prepare(fields) function
 to find out indices of columns and then repeatedly call evaluate(feature).
+
+Type conversion: operators and functions that expect arguments to be of particular
+type automatically convert the arguments to that type, e.g. sin('2.1') will convert
+the argument to a double, length(123) will first convert the number to a string.
+Explicit conversion can be achieved with toint, toreal, tostring functions.
+If implicit or explicit conversion is invalid, the evaluation returns an error.
+Comparison operators do numeric comparison in case both operators are numeric (int/double)
+or they can be converted to numeric types.
+
+Arithmetic operators do integer arithmetics if both operands are integer. That is
+2+2 yields integer 4, but 2.0+2 returns real number 4.0. There are also two versions of
+division and modulo operators: 1.0/2 returns 0.5 while 1/2 returns 0.
 
 @note added in 2.0
 */
