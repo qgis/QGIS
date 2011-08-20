@@ -201,8 +201,8 @@ void QgsRendererV2PropertiesDialog::showSymbolLevels()
   QgsSymbolV2List symbols = r->symbols();
 
   QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
-  connect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ), Qt::UniqueConnection );
-  connect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ), Qt::UniqueConnection );
+  connect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ) );
+  connect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ) );
 
   if ( dlg.exec() )
   {
@@ -222,6 +222,8 @@ void QgsRendererV2PropertiesDialog::showSymbolLevels()
     }
   }
 
+  disconnect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ) );
+  disconnect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ) );
 }
 
 

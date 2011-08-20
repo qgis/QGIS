@@ -884,7 +884,6 @@ void QgsGdalProvider::computeMinMax( int theBandNo )
     return;
   }
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
-  int bApproxOK = false;
   int             bGotMin, bGotMax;
   double          adfMinMax[2];
   adfMinMax[0] = GDALGetRasterMinimum( myGdalBand, &bGotMin );
@@ -1259,7 +1258,6 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
   //vector is not equal to the number of bins
   //i.e if the histogram has never previously been generated or the user has
   //selected a new number of bins.
-  bool myCollectHistogramFlag = true;
   if ( theBandStats.histogramVector == 0 ||
        theBandStats.histogramVector->size() != theBinCount ||
        theIgnoreOutOfRangeFlag != theBandStats.isHistogramOutOfRange ||
