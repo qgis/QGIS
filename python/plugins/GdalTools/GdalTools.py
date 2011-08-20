@@ -115,7 +115,7 @@ class GdalTools:
     self.projection.setStatusTip( QCoreApplication.translate( "GdalTools", "Add projection info to the raster" ) )
     QObject.connect( self.projection, SIGNAL( "triggered()" ), self.doProjection )
 
-    self.extractProj = QAction( QIcon( ":icons/extract-projection.png" ), QCoreApplication.translate( "GdalTools", "Extract projection" ), self.iface.mainWindow() )
+    self.extractProj = QAction( QIcon( ":icons/projection-export.png" ), QCoreApplication.translate( "GdalTools", "Extract projection" ), self.iface.mainWindow() )
     self.extractProj.setStatusTip( QCoreApplication.translate( "GdalTools", "Extract projection information from raster(s)" ) )
     QObject.connect( self.extractProj, SIGNAL( "triggered()" ), self.doExtractProj )
 

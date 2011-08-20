@@ -20,6 +20,6 @@
         <file>icons/tileindex.png</file>
         <file>icons/about.png</file>
         <file>icons/dem.png</file>
-        <file>icons/extract-projection.png</file>
+        <file>icons/projection-export.png</file>
     </qresource>
 </RCC>
