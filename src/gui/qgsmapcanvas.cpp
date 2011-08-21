@@ -87,7 +87,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   //disable the update that leads to the resize crash
   if ( viewport() )
   {
-    viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+      #ifndef ANDROID
+        viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+      #endif //ANDROID
   }
 
   mScene = new QGraphicsScene();
