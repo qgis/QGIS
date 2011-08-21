@@ -116,6 +116,7 @@
 #include "qgsdatasourceuri.h"
 #include "qgsdecorationcopyright.h"
 #include "qgsdecorationnortharrow.h"
+#include "qgsdecorationscalebar.h"
 #include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
@@ -1475,6 +1476,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionChangeLabelProperties->setIcon( getThemeIcon( "/mActionChangeLabelProperties.png" ) );
   mActionDecorationCopyright->setIcon( getThemeIcon( "/plugins/copyright_label.png" ) );
   mActionDecorationNorthArrow->setIcon( getThemeIcon( "/plugins/north_arrow.png" ) );
+  mActionDecorationScaleBar->setIcon( getThemeIcon( "/plugins/scale_bar.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -1819,6 +1821,11 @@ void QgisApp::createDecorations()
   connect( mActionDecorationNorthArrow, SIGNAL( triggered() ), mDecorationNorthArrow, SLOT( run() ) );
   connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationNorthArrow, SLOT( renderNorthArrow( QPainter * ) ) );
   connect( this, SIGNAL( projectRead() ), mDecorationNorthArrow, SLOT( projectRead() ) );
+
+  mDecorationScaleBar = new QgsDecorationScaleBar( this );
+  connect( mActionDecorationScaleBar, SIGNAL( triggered() ), mDecorationScaleBar, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationScaleBar, SLOT( renderScaleBar( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationScaleBar, SLOT( projectRead() ) );
 }
 
 // Update file menu with the current list of recently accessed projects

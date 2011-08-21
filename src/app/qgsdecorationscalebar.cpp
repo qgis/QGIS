@@ -19,18 +19,18 @@ email                : sbr00pwb@users.sourceforge.net
  *                                                                         *
  ***************************************************************************/
 
-// includes
+#include "qgsdecorationscalebar.h"
 
-#include "qgisinterface.h"
-#include "qgisgui.h"
-#include "qgsapplication.h"
+#include "qgsdecorationscalebardialog.h"
+
+#include "qgisapp.h"
+#include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproject.h"
 
-#include "plugin.h"
 
 #include <QPainter>
 #include <QAction>
@@ -47,32 +47,14 @@ email                : sbr00pwb@users.sourceforge.net
 //non qt includes
 #include <cmath>
 
-//the gui subclass
-#include "plugingui.h"
-#include "qgslogger.h"
-
-//
 
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
 #endif
 
-static const QString name_ = QObject::tr( "ScaleBar" );
-static const QString description_ = QObject::tr( "Draws a scale bar" );
-static const QString version_ = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
-static const QString icon_ = ":/scale_bar.png";
 
-
-/**
- * Constructor for the plugin. The plugin is passed a pointer to the main app
- * and an interface object that provides access to exposed functions in QGIS.
- * @param qgis Pointer to the QGIS main window
- * @param _qI Pointer to the QGIS interface object
- */
-QgsScaleBarPlugin::QgsScaleBarPlugin( QgisInterface * theQgisInterFace ):
-    QgisPlugin( name_, description_, version_, type_ ),
-    qGisInterface( theQgisInterFace )
+QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
+    : QObject( parent )
 {
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
@@ -87,37 +69,14 @@ QgsScaleBarPlugin::QgsScaleBarPlugin( QgisInterface * theQgisInterFace ):
   mColor = Qt::black;
 }
 
-QgsScaleBarPlugin::~QgsScaleBarPlugin()
+QgsDecorationScaleBar::~QgsDecorationScaleBar()
 {
 
 }
 
-/*
- * Initialize the GUI interface for the plugin
- */
-void QgsScaleBarPlugin::initGui()
-{
-  // Create the action for tool
-  myQActionPointer = new QAction( QIcon(), tr( "&Scale Bar" ), this );
-  setCurrentTheme( "" );
-  myQActionPointer->setWhatsThis( tr( "Creates a scale bar that is displayed on the map canvas" ) );
-  // Connect the action to the run
-  connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  //render the scale bar each time the map is rendered
-  connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderScaleBar( QPainter * ) ) );
-  //this resets this plugin up if a project is loaded
-  connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
-  // Add the icon to the toolbar
-  qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
-  // this is called when the icon theme is changed
-  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
-}
-
-void QgsScaleBarPlugin::projectRead()
+void QgsDecorationScaleBar::projectRead()
 {
   QgsDebugMsg( "+++++++++ scalebar plugin - project read slot called...." );
-
 
   mPreferredSize = QgsProject::instance()->readNumEntry( "ScaleBar", "/PreferredSize", 30 );
   mStyleIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Style", 0 );
@@ -129,63 +88,36 @@ void QgsScaleBarPlugin::projectRead()
   int myBlueInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorBluePart", 0 );
   mColor = QColor( myRedInt, myGreenInt, myBlueInt );
 }
-//method defined in interface
-void QgsScaleBarPlugin::help()
+
+void QgsDecorationScaleBar::saveToProject()
 {
-  //implement me!
+  QgsProject::instance()->writeEntry( "ScaleBar", "/Placement", mPlacementIndex );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/PreferredSize", mPreferredSize );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/Snapping", mSnapping );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/Style", mStyleIndex );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorRedPart", mColor.red() );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorGreenPart", mColor.green() );
+  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColor.blue() );
 }
 
-// Slot called when the  menu item is activated
-void QgsScaleBarPlugin::run()
-{
-  QgsScaleBarPluginGui *myPluginGui = new QgsScaleBarPluginGui( qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
-  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
-  myPluginGui->setPreferredSize( mPreferredSize );
-  myPluginGui->setSnapping( mSnapping );
-  myPluginGui->setPlacementLabels( mPlacementLabels );
-  myPluginGui->setPlacement( mPlacementIndex );
-  myPluginGui->setEnabled( mEnabled );
-  myPluginGui->setStyleLabels( mStyleLabels );
-  myPluginGui->setStyle( mStyleIndex );
-  myPluginGui->setColor( mColor );
 
-  connect( myPluginGui, SIGNAL( changePreferredSize( int ) ), this, SLOT( setPreferredSize( int ) ) );
-  connect( myPluginGui, SIGNAL( changeSnapping( bool ) ), this, SLOT( setSnapping( bool ) ) );
-  connect( myPluginGui, SIGNAL( changePlacement( int ) ), this, SLOT( setPlacement( int ) ) );
-  connect( myPluginGui, SIGNAL( changeEnabled( bool ) ), this, SLOT( setEnabled( bool ) ) );
-  connect( myPluginGui, SIGNAL( changeStyle( int ) ), this, SLOT( setStyle( int ) ) );
-  connect( myPluginGui, SIGNAL( changeColor( QColor ) ), this, SLOT( setColor( QColor ) ) );
-  connect( myPluginGui, SIGNAL( refreshCanvas() ), this, SLOT( refreshCanvas() ) );
-  myPluginGui->show();
-  //set the map units in the spin box
-  int myUnits = qGisInterface->mapCanvas()->mapUnits();
-  switch ( myUnits )
+void QgsDecorationScaleBar::run()
+{
+  QgsDecorationScaleBarDialog dlg( *this, QgisApp::instance()->mapCanvas()->mapUnits(), QgisApp::instance() );
+
+  if ( dlg.exec() )
   {
-    case 0:
-      myPluginGui->getSpinSize()->setSuffix( tr( " metres/km" ) );
-      break;
-    case 1:
-      myPluginGui->getSpinSize()->setSuffix( tr( " feet/miles" ) );
-      break;
-    case 2:
-      myPluginGui->getSpinSize()->setSuffix( tr( " degrees" ) );
-      break;
-    default:
-      QgsDebugMsg( QString( "Error: not picked up map units - actual value = %1" ).arg( myUnits ) );
-  };
+    saveToProject();
+    QgisApp::instance()->mapCanvas()->refresh();
+  }
 }
 
 
-void QgsScaleBarPlugin::refreshCanvas()
+void QgsDecorationScaleBar::renderScaleBar( QPainter * theQPainter )
 {
-  qGisInterface->mapCanvas()->refresh();
-}
+  QgsMapCanvas* canvas = QgisApp::instance()->mapCanvas();
 
-
-
-// Actual drawing of Scale Bar
-void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
-{
   int myBufferSize = 1; //softcode this later
 
   //Get canvas dimensions
@@ -195,10 +127,10 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
   //Get map units per pixel. This can be negative at times (to do with
   //projections) and that just confuses the rest of the code in this
   //function, so force to a positive number.
-  double myMapUnitsPerPixelDouble = qAbs( qGisInterface->mapCanvas()->mapUnitsPerPixel() );
+  double myMapUnitsPerPixelDouble = qAbs( canvas->mapUnitsPerPixel() );
 
   // Exit if the canvas width is 0 or layercount is 0 or QGIS will freeze
-  int myLayerCount = qGisInterface->mapCanvas()->layerCount();
+  int myLayerCount = canvas->layerCount();
   if ( !myLayerCount || !myCanvasWidth || !myMapUnitsPerPixelDouble )
     return;
 
@@ -241,7 +173,7 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
     }
 
     //Get type of map units and set scale bar unit label text
-    QGis::UnitType myMapUnits = qGisInterface->mapCanvas()->mapUnits();
+    QGis::UnitType myMapUnits = canvas->mapUnits();
     QString myScaleBarUnitLabel;
     switch ( myMapUnits )
     {
@@ -544,135 +476,4 @@ void QgsScaleBarPlugin::renderScaleBar( QPainter * theQPainter )
       myScaleBarUnitLabel
     );
   }
-}
-
-
-
-// Unload the plugin by cleaning up the GUI
-void QgsScaleBarPlugin::unload()
-{
-  // remove the GUI
-  qGisInterface->removePluginMenu( tr( "&Decorations" ), myQActionPointer );
-  qGisInterface->removeToolBarIcon( myQActionPointer );
-
-  // remove the northarrow from the canvas
-  disconnect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
-              this, SLOT( renderScaleBar( QPainter * ) ) );
-  refreshCanvas();
-
-  delete myQActionPointer;
-}
-
-//! set placement of scale bar
-void QgsScaleBarPlugin::setPlacement( int placementIndex )
-{
-  mPlacementIndex = placementIndex;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Placement", mPlacementIndex );
-}
-
-//! set preferred size of scale bar
-void QgsScaleBarPlugin::setPreferredSize( int thePreferredSize )
-{
-  mPreferredSize = thePreferredSize;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/PreferredSize", mPreferredSize );
-}
-
-//! set whether the scale bar length should snap to the closes A*10^B
-void QgsScaleBarPlugin::setSnapping( bool theSnapping )
-{
-  mSnapping = theSnapping;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Snapping", mSnapping );
-}
-
-//! set scale bar enable
-void QgsScaleBarPlugin::setEnabled( bool theBool )
-{
-  mEnabled = theBool;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Enabled", mEnabled );
-}
-//! set scale bar enable
-void QgsScaleBarPlugin::setStyle( int styleIndex )
-{
-  mStyleIndex = styleIndex;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/Style", mStyleIndex );
-}
-//! set the scale bar color
-void QgsScaleBarPlugin::setColor( QColor theQColor )
-{
-  mColor = theQColor;
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorRedPart", mColor.red() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorGreenPart", mColor.green() );
-  QgsProject::instance()->writeEntry( "ScaleBar", "/ColorBluePart", mColor.blue() );
-}
-
-//! Set icons to the current theme
-void QgsScaleBarPlugin::setCurrentTheme( QString theThemeName )
-{
-  Q_UNUSED( theThemeName );
-  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/scale_bar.png";
-  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/scale_bar.png";
-  QString myQrcPath = ":/scale_bar.png";
-  if ( QFile::exists( myCurThemePath ) )
-  {
-    myQActionPointer->setIcon( QIcon( myCurThemePath ) );
-  }
-  else if ( QFile::exists( myDefThemePath ) )
-  {
-    myQActionPointer->setIcon( QIcon( myDefThemePath ) );
-  }
-  else if ( QFile::exists( myQrcPath ) )
-  {
-    myQActionPointer->setIcon( QIcon( myQrcPath ) );
-  }
-  else
-  {
-    myQActionPointer->setIcon( QIcon() );
-  }
-}
-
-/**
- * Required extern functions needed  for every plugin
- * These functions can be called prior to creating an instance
- * of the plugin class
- */
-// Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
-{
-  return new QgsScaleBarPlugin( theQgisInterfacePointer );
-}
-
-// Return the name of the plugin - note that we do not user class members as
-// the class may not yet be insantiated when this method is called.
-QGISEXTERN QString name()
-{
-  return name_;
-}
-
-// Return the description
-QGISEXTERN QString description()
-{
-  return description_;
-}
-
-// Return the type (either UI or MapLayer plugin)
-QGISEXTERN int type()
-{
-  return type_;
-}
-
-// Return the version number for the plugin
-QGISEXTERN QString version()
-{
-  return version_;
-}
-
-QGISEXTERN QString icon()
-{
-  return icon_;
-}
-
-// Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
-{
-  delete thePluginPointer;
 }

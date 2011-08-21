@@ -71,6 +71,7 @@ class QgsGPSInformationWidget;
 
 class QgsDecorationCopyright;
 class QgsDecorationNorthArrow;
+class QgsDecorationScaleBar;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -1057,6 +1058,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsDecorationCopyright* mDecorationCopyright;
     QgsDecorationNorthArrow* mDecorationNorthArrow;
+    QgsDecorationScaleBar* mDecorationScaleBar;
 
     int mLastComposerId;
 

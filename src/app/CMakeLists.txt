@@ -25,6 +25,8 @@ SET(QGIS_APP_SRCS
   qgsdecorationcopyrightdialog.cpp
   qgsdecorationnortharrow.cpp
   qgsdecorationnortharrowdialog.cpp
+  qgsdecorationscalebar.cpp
+  qgsdecorationscalebardialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -161,6 +163,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsdecorationcopyrightdialog.h
   qgsdecorationnortharrow.h
   qgsdecorationnortharrowdialog.h
+  qgsdecorationscalebar.h
+  qgsdecorationscalebardialog.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h

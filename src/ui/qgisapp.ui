@@ -104,6 +104,7 @@
      </property>
      <addaction name="mActionDecorationCopyright"/>
      <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationScaleBar"/>
     </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionZoomIn"/>
@@ -1513,6 +1514,18 @@
    </property>
    <property name="whatsThis">
     <string>&quot;Creates a north arrow that is displayed on the map canvas&quot;</string>
+   </property>
+  </action>
+  <action name="mActionDecorationScaleBar">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/plugins/scale_bar.png</normaloff>:/images/themes/default/plugins/scale_bar.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Scale Bar</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a scale bar that is displayed on the map canvas</string>
    </property>
   </action>
  </widget>

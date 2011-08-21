@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsScaleBarPluginGuiBase</class>
- <widget class="QDialog" name="QgsScaleBarPluginGuiBase">
+ <class>QgsDecorationScaleBarDialog</class>
+ <widget class="QDialog" name="QgsDecorationScaleBarDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Scale Bar Plugin</string>
+   <string>Scale Bar Decoration</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -236,8 +236,6 @@
   <tabstop>chkSnapping</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources>
-  <include location="scalebar_plugin.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
