@@ -6,18 +6,27 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>248</height>
+    <width>289</width>
+    <height>199</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <property name="margin">
+    <number>3</number>
+   </property>
    <item>
     <layout class="QFormLayout" name="formLayout">
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+     </property>
      <property name="horizontalSpacing">
-      <number>3</number>
+      <number>6</number>
      </property>
      <property name="verticalSpacing">
       <number>3</number>
@@ -31,6 +40,18 @@
      </item>
      <item row="0" column="1">
       <widget class="QgsColorButtonV2" name="btnChangeColor">
+       <property name="minimumSize">
+        <size>
+         <width>89</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>89</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string>Change</string>
        </property>
@@ -44,7 +65,20 @@
       </widget>
      </item>
      <item row="1" column="1">
-      <widget class="QgsBrushStyleComboBox" name="cboFillStyle"/>
+      <widget class="QgsBrushStyleComboBox" name="cboFillStyle">
+       <property name="minimumSize">
+        <size>
+         <width>89</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>89</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item row="2" column="0">
       <widget class="QLabel" name="label_3">
@@ -55,6 +89,18 @@
      </item>
      <item row="2" column="1">
       <widget class="QgsColorButtonV2" name="btnChangeBorderColor">
+       <property name="minimumSize">
+        <size>
+         <width>89</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>89</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="text">
         <string>Change</string>
        </property>
@@ -68,7 +114,20 @@
       </widget>
      </item>
      <item row="3" column="1">
-      <widget class="QgsPenStyleComboBox" name="cboBorderStyle"/>
+      <widget class="QgsPenStyleComboBox" name="cboBorderStyle">
+       <property name="minimumSize">
+        <size>
+         <width>89</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>89</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </item>
      <item row="4" column="0">
       <widget class="QLabel" name="label_5">
@@ -79,6 +138,18 @@
      </item>
      <item row="4" column="1">
       <widget class="QDoubleSpinBox" name="spinBorderWidth">
+       <property name="minimumSize">
+        <size>
+         <width>89</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>89</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="decimals">
         <number>2</number>
        </property>
@@ -98,6 +169,18 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
+         <property name="minimumSize">
+          <size>
+           <width>89</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>89</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="minimum">
           <double>-999.000000000000000</double>
          </property>
@@ -108,6 +191,18 @@
        </item>
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetY">
+         <property name="minimumSize">
+          <size>
+           <width>89</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>89</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="minimum">
           <double>-999.000000000000000</double>
          </property>

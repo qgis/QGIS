@@ -6,16 +6,19 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>242</height>
+    <width>233</width>
+    <height>130</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::ExpandingFieldsGrow</enum>
+   </property>
    <property name="horizontalSpacing">
-    <number>3</number>
+    <number>6</number>
    </property>
    <property name="verticalSpacing">
     <number>3</number>

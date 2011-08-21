@@ -6,18 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>285</width>
-    <height>162</height>
+    <width>174</width>
+    <height>159</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+   </property>
    <property name="horizontalSpacing">
-    <number>3</number>
+    <number>6</number>
    </property>
    <property name="verticalSpacing">
+    <number>3</number>
+   </property>
+   <property name="margin">
     <number>3</number>
    </property>
    <item row="0" column="0">
@@ -29,6 +35,18 @@
    </item>
    <item row="0" column="1">
     <widget class="QDoubleSpinBox" name="mAngleSpinBox">
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>85</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="maximum">
       <double>360.000000000000000</double>
      </property>
@@ -43,6 +61,18 @@
    </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="mDistanceSpinBox">
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>85</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="maximum">
       <double>999999999.000000000000000</double>
      </property>
@@ -57,6 +87,18 @@
    </item>
    <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
+     <property name="minimumSize">
+      <size>
+       <width>85</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>85</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="maximum">
       <double>99999999.000000000000000</double>
      </property>

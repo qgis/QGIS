@@ -33,8 +33,11 @@
        <string>Settings</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+       </property>
        <property name="horizontalSpacing">
-        <number>3</number>
+        <number>6</number>
        </property>
        <property name="verticalSpacing">
         <number>3</number>
@@ -76,8 +79,26 @@
        </item>
        <item row="2" column="1">
         <widget class="QDoubleSpinBox" name="mWidthSpinBox">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>85</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="decimals">
-          <number>6</number>
+          <number>3</number>
          </property>
          <property name="maximum">
           <double>999999999.000000000000000</double>
@@ -93,8 +114,14 @@
        </item>
        <item row="3" column="1">
         <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox">
+         <property name="maximumSize">
+          <size>
+           <width>85</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="decimals">
-          <number>6</number>
+          <number>3</number>
          </property>
          <property name="maximum">
           <double>999999999.000000000000000</double>
@@ -109,7 +136,23 @@
         </widget>
        </item>
        <item row="4" column="1">
-        <widget class="QDoubleSpinBox" name="mRotationSpinBox"/>
+        <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+         <property name="minimumSize">
+          <size>
+           <width>85</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>85</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="decimals">
+          <number>3</number>
+         </property>
+        </widget>
        </item>
        <item row="5" column="0">
         <widget class="QLabel" name="mSymbolHeightLabel">
@@ -120,8 +163,14 @@
        </item>
        <item row="5" column="1">
         <widget class="QDoubleSpinBox" name="mHeightSpinBox">
+         <property name="maximumSize">
+          <size>
+           <width>85</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="decimals">
-          <number>6</number>
+          <number>3</number>
          </property>
          <property name="maximum">
           <double>999999999.000000000000000</double>
@@ -175,8 +224,11 @@
        <string>Data defined settings</string>
       </attribute>
       <layout class="QFormLayout" name="formLayout_2">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+       </property>
        <property name="horizontalSpacing">
-        <number>3</number>
+        <number>6</number>
        </property>
        <property name="verticalSpacing">
         <number>3</number>

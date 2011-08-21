@@ -6,18 +6,24 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>90</height>
+    <width>170</width>
+    <height>62</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QFormLayout" name="formLayout">
+   <property name="fieldGrowthPolicy">
+    <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+   </property>
    <property name="horizontalSpacing">
-    <number>3</number>
+    <number>6</number>
    </property>
    <property name="verticalSpacing">
+    <number>3</number>
+   </property>
+   <property name="margin">
     <number>3</number>
    </property>
    <item row="0" column="0">
@@ -49,6 +55,12 @@
    </item>
    <item row="1" column="1">
     <widget class="QDoubleSpinBox" name="spinWidth">
+     <property name="maximumSize">
+      <size>
+       <width>85</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>

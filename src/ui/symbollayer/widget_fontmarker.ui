@@ -6,21 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>300</height>
+    <width>437</width>
+    <height>403</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>3</number>
+   </property>
+   <property name="leftMargin">
+    <number>2</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
+    <number>3</number>
+   </property>
    <item>
     <layout class="QFormLayout" name="formLayout">
      <property name="sizeConstraint">
       <enum>QLayout::SetDefaultConstraint</enum>
      </property>
+     <property name="fieldGrowthPolicy">
+      <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+     </property>
      <property name="horizontalSpacing">
-      <number>3</number>
+      <number>6</number>
      </property>
      <property name="verticalSpacing">
       <number>3</number>
@@ -62,13 +80,6 @@
        </property>
       </widget>
      </item>
-     <item row="2" column="1">
-      <widget class="QDoubleSpinBox" name="spinSize">
-       <property name="value">
-        <double>12.000000000000000</double>
-       </property>
-      </widget>
-     </item>
      <item row="3" column="0">
       <widget class="QLabel" name="label_4">
        <property name="text">
@@ -78,6 +89,24 @@
      </item>
      <item row="3" column="1">
       <widget class="QDoubleSpinBox" name="spinAngle">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>85</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>87</width>
+         <height>16777215</height>
+        </size>
+       </property>
        <property name="suffix">
         <string>°</string>
        </property>
@@ -100,6 +129,24 @@
       <layout class="QHBoxLayout" name="horizontalLayout">
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>85</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>87</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="minimum">
           <double>-100000.000000000000000</double>
          </property>
@@ -110,6 +157,24 @@
        </item>
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetY">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>85</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>87</width>
+           <height>16777215</height>
+          </size>
+         </property>
          <property name="minimum">
           <double>-100000.000000000000000</double>
          </property>
@@ -119,6 +184,31 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDoubleSpinBox" name="spinSize">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>85</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>87</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="value">
+        <double>12.000000000000000</double>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
