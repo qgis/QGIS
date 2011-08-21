@@ -115,6 +115,7 @@
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
 #include "qgsdecorationcopyright.h"
+#include "qgsdecorationnortharrow.h"
 #include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
@@ -1473,6 +1474,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionRotateLabel->setIcon( getThemeIcon( "/mActionRotateLabel.png" ) );
   mActionChangeLabelProperties->setIcon( getThemeIcon( "/mActionChangeLabelProperties.png" ) );
   mActionDecorationCopyright->setIcon( getThemeIcon( "/plugins/copyright_label.png" ) );
+  mActionDecorationNorthArrow->setIcon( getThemeIcon( "/plugins/north_arrow.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -1808,10 +1810,15 @@ void QgisApp::createMapTips()
 
 void QgisApp::createDecorations()
 {
-  mDecorationCopyright = new QgsDecorationCopyright(this);
+  mDecorationCopyright = new QgsDecorationCopyright( this );
   connect( mActionDecorationCopyright, SIGNAL( triggered() ), mDecorationCopyright, SLOT( run() ) );
   connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationCopyright, SLOT( renderLabel( QPainter * ) ) );
   connect( this, SIGNAL( projectRead() ), mDecorationCopyright, SLOT( projectRead() ) );
+
+  mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
+  connect( mActionDecorationNorthArrow, SIGNAL( triggered() ), mDecorationNorthArrow, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationNorthArrow, SLOT( renderNorthArrow( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationNorthArrow, SLOT( projectRead() ) );
 }
 
 // Update file menu with the current list of recently accessed projects

@@ -9,92 +9,77 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
-#include "plugingui.h"
-#include "qgsapplication.h"
+
+#include "qgsdecorationnortharrowdialog.h"
+
+#include "qgsdecorationnortharrow.h"
+
+#include "qgslogger.h"
 #include "qgscontexthelp.h"
 
 #include <QPainter>
 #include <cmath>
-#include "qgslogger.h"
 
 
-QgsNorthArrowPluginGui::QgsNorthArrowPluginGui( QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl )
+QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
+    : QDialog( parent ), mDeco( deco )
 {
   setupUi( this );
+
+  // rotation
+  rotatePixmap( mDeco.mRotationInt );
+  // signal/slot connection defined in 'designer' causes the slider to
+  // be moved to reflect the change in the spinbox.
+  spinAngle->setValue( mDeco.mRotationInt );
+
+  // placement
+  cboPlacement->clear();
+  cboPlacement->addItems( mDeco.mPlacementLabels );
+  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+
+  // enabled
+  cboxShow->setChecked( mDeco.mEnable );
+
+  // automatic
+  cboxAutomatic->setChecked( mDeco.mAutomatic );
 }
 
-QgsNorthArrowPluginGui::~QgsNorthArrowPluginGui()
+QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
 }
 
-void QgsNorthArrowPluginGui::on_buttonBox_accepted()
+void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
 {
-  // Hide the dialog
-  hide();
-  //close the dialog
-  emit rotationChanged( sliderRotation->value() );
-  emit enableAutomatic( cboxAutomatic->isChecked() );
-  emit changePlacement( cboPlacement->currentIndex() );
-  emit enableNorthArrow( cboxShow->isChecked() );
-  emit needToRefresh();
+  QgsContextHelp::run( metaObject()->className() );
+}
+
+void QgsDecorationNorthArrowDialog::on_buttonBox_accepted()
+{
+  mDeco.mRotationInt = sliderRotation->value();
+  mDeco.mPlacementIndex = cboPlacement->currentIndex();
+  mDeco.mEnable = cboxShow->isChecked();
+  mDeco.mAutomatic = cboxAutomatic->isChecked();
 
   accept();
 }
 
-void QgsNorthArrowPluginGui::on_buttonBox_rejected()
+void QgsDecorationNorthArrowDialog::on_buttonBox_rejected()
 {
   reject();
 }
 
-void QgsNorthArrowPluginGui::setRotation( int theInt )
-{
-  rotatePixmap( theInt );
-  //sliderRotation->setValue(theInt);
-  // signal/slot connection defined in 'designer' causes the slider to
-  // be moved to reflect the change in the spinbox.
-  spinAngle->setValue( theInt );
-}
 
-void QgsNorthArrowPluginGui::setPlacementLabels( QStringList& labels )
-{
-  cboPlacement->clear();
-  cboPlacement->addItems( labels );
-}
-
-void QgsNorthArrowPluginGui::setPlacement( int placementIndex )
-{
-  cboPlacement->setCurrentIndex( placementIndex );
-}
-
-void QgsNorthArrowPluginGui::setEnabled( bool theBool )
-{
-  cboxShow->setChecked( theBool );
-}
-
-void QgsNorthArrowPluginGui::setAutomatic( bool theBool )
-{
-  cboxAutomatic->setChecked( theBool );
-}
-
-void QgsNorthArrowPluginGui::setAutomaticDisabled()
-{
-  cboxAutomatic->setEnabled( false );
-}
-
-
-//overides function by the same name created in .ui
-void QgsNorthArrowPluginGui::on_spinAngle_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::on_spinAngle_valueChanged( int theInt )
 {
   Q_UNUSED( theInt );
 }
 
-void QgsNorthArrowPluginGui::on_sliderRotation_valueChanged( int theInt )
+void QgsDecorationNorthArrowDialog::on_sliderRotation_valueChanged( int theInt )
 {
   rotatePixmap( theInt );
 }
 
-void QgsNorthArrowPluginGui::rotatePixmap( int theRotationInt )
+void QgsDecorationNorthArrowDialog::rotatePixmap( int theRotationInt )
 {
   QPixmap myQPixmap;
   QString myFileNameQString = ":/images/north_arrows/default.png";
@@ -157,7 +142,7 @@ void QgsNorthArrowPluginGui::rotatePixmap( int theRotationInt )
 // Called when the widget has been resized.
 //
 
-void QgsNorthArrowPluginGui::resizeEvent( QResizeEvent *theResizeEvent )
+void QgsDecorationNorthArrowDialog::resizeEvent( QResizeEvent *theResizeEvent )
 {
   Q_UNUSED( theResizeEvent );
   rotatePixmap( sliderRotation->value() );

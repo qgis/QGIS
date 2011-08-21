@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsNorthArrowPluginGuiBase</class>
- <widget class="QDialog" name="QgsNorthArrowPluginGuiBase">
+ <class>QgsDecorationNorthArrowDialog</class>
+ <widget class="QDialog" name="QgsDecorationNorthArrowDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>North Arrow Plugin</string>
+   <string>North Arrow Decoration</string>
   </property>
   <property name="windowIcon">
    <iconset>
@@ -35,7 +35,7 @@
        <string>Preview of north arrow</string>
       </property>
       <property name="frameShape">
-       <enum>QFrame::Box</enum>
+       <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="scaledContents">
        <bool>false</bool>
@@ -44,7 +44,7 @@
        <set>Qt::AlignCenter</set>
       </property>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="textLabel6">
@@ -189,9 +189,7 @@
   <tabstop>cboxAutomatic</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
- <resources>
-  <include location="northarrow_plugin.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>sliderRotation</sender>

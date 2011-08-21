@@ -70,6 +70,7 @@ class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
 class QgsDecorationCopyright;
+class QgsDecorationNorthArrow;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -1055,6 +1056,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsTileScaleWidget * mpTileScaleWidget;
 
     QgsDecorationCopyright* mDecorationCopyright;
+    QgsDecorationNorthArrow* mDecorationNorthArrow;
 
     int mLastComposerId;
 

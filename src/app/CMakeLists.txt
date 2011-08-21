@@ -23,6 +23,8 @@ SET(QGIS_APP_SRCS
   qgsdbtablemodel.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
+  qgsdecorationnortharrow.cpp
+  qgsdecorationnortharrowdialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -157,6 +159,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsdbtablemodel.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
+  qgsdecorationnortharrow.h
+  qgsdecorationnortharrowdialog.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h

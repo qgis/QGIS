@@ -103,6 +103,7 @@
       <string>&amp;Decorations</string>
      </property>
      <addaction name="mActionDecorationCopyright"/>
+     <addaction name="mActionDecorationNorthArrow"/>
     </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionZoomIn"/>
@@ -1500,6 +1501,18 @@
    </property>
    <property name="whatsThis">
     <string>Creates a copyright label that is displayed on the map canvas.</string>
+   </property>
+  </action>
+  <action name="mActionDecorationNorthArrow">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/plugins/north_arrow.png</normaloff>:/images/themes/default/plugins/north_arrow.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;North Arrow</string>
+   </property>
+   <property name="whatsThis">
+    <string>&quot;Creates a north arrow that is displayed on the map canvas&quot;</string>
    </property>
   </action>
  </widget>

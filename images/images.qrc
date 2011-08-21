@@ -351,6 +351,7 @@
         <file>themes/default/locked.png</file>
         <file>themes/default/unlocked.png</file>
         <file>themes/default/plugins/copyright_label.png</file>
+        <file>themes/default/plugins/north_arrow.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

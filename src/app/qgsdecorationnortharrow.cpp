@@ -20,17 +20,17 @@ email                : tim@linfiniti.com
  ***************************************************************************/
 
 // includes
+#include "qgsdecorationnortharrow.h"
 
-#include "qgisinterface.h"
-#include "qgisgui.h"
+#include "qgsdecorationnortharrowdialog.h"
+
+#include "qgisapp.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmaplayer.h"
-#include "plugin.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
-#include "qgsapplication.h"
 
 // qt includes
 #include <QPainter>
@@ -43,22 +43,14 @@ email                : tim@linfiniti.com
 #include <cmath>
 #include <cassert>
 
-//the gui subclass
-#include "plugingui.h"
 
 #ifdef _MSC_VER
 #define round(x)  ((x) >= 0 ? floor((x)+0.5) : floor((x)-0.5))
 #endif
 
-static const QString name_ = QObject::tr( "NorthArrow" );
-static const QString description_ = QObject::tr( "Displays a north arrow overlayed onto the map" );
-static const QString version_ = QObject::tr( "Version 0.1" );
-static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
-static const QString icon_ = ":/north_arrow.png";
-
-const double QgsNorthArrowPlugin::PI = 3.14159265358979323846;
+const double QgsDecorationNorthArrow::PI = 3.14159265358979323846;
 //  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
-const double QgsNorthArrowPlugin::TOL = 1e-8;
+const double QgsDecorationNorthArrow::TOL = 1e-8;
 
 
 /**
@@ -67,47 +59,22 @@ const double QgsNorthArrowPlugin::TOL = 1e-8;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsNorthArrowPlugin::QgsNorthArrowPlugin( QgisInterface * theQgisInterFace ):
-    QgisPlugin( name_, description_, version_, type_ ),
-    qGisInterface( theQgisInterFace )
+QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
+    : QObject( parent )
 {
   mRotationInt = 0;
   mAutomatic = true;
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
-}
-
-QgsNorthArrowPlugin::~QgsNorthArrowPlugin()
-{
-}
-
-/*
-* Initialize the GUI interface for the plugin
-*/
-void QgsNorthArrowPlugin::initGui()
-{
-  // Create the action for tool
-  myQActionPointer = new QAction( QIcon(), tr( "&North Arrow" ), this );
-  setCurrentTheme( "" );
-  myQActionPointer->setWhatsThis( tr( "Creates a north arrow that is displayed on the map canvas" ) );
-  // Connect the action to the run
-  connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  //render the arrow each time the map is rendered
-  connect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ), this, SLOT( renderNorthArrow( QPainter * ) ) );
-  //this resets this plugin up if a project is loaded
-  connect( qGisInterface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
-  // Add the icon to the toolbar & appropriate menu
-  qGisInterface->addToolBarIcon( myQActionPointer );
-  qGisInterface->addPluginToMenu( tr( "&Decorations" ), myQActionPointer );
-  // this is called when the icon theme is changed
-  connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   projectRead();
-  refreshCanvas();
-
 }
 
-void QgsNorthArrowPlugin::projectRead()
+QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
+{
+}
+
+void QgsDecorationNorthArrow::projectRead()
 {
   //default text to start with - try to fetch it from qgsproject
 
@@ -117,40 +84,27 @@ void QgsNorthArrowPlugin::projectRead()
   mAutomatic = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Automatic", true );
 }
 
-//method defined in interface
-void QgsNorthArrowPlugin::help()
+void QgsDecorationNorthArrow::saveToProject()
 {
-  //implement me!
+  QgsProject::instance()->writeEntry( "NorthArrow", "/Rotation", mRotationInt );
+  QgsProject::instance()->writeEntry( "NorthArrow", "/Placement", mPlacementIndex );
+  QgsProject::instance()->writeEntry( "NorthArrow", "/Enabled", mEnable );
+  QgsProject::instance()->writeEntry( "NorthArrow", "/Automatic", mAutomatic );
 }
 
 // Slot called when the buffer menu item is activated
-void QgsNorthArrowPlugin::run()
+void QgsDecorationNorthArrow::run()
 {
-  QgsNorthArrowPluginGui *myPluginGui = new QgsNorthArrowPluginGui( qGisInterface->mainWindow(), QgisGui::ModalDialogFlags );
-  myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
-  //overides function by the same name created in .ui
-  myPluginGui->setRotation( mRotationInt );
-  myPluginGui->setPlacementLabels( mPlacementLabels );
-  myPluginGui->setPlacement( mPlacementIndex );
-  myPluginGui->setEnabled( mEnable );
-  myPluginGui->setAutomatic( mAutomatic );
+  QgsDecorationNorthArrowDialog dlg( *this, QgisApp::instance() );
 
-  //listen for when the layer has been made so we can draw it
-  connect( myPluginGui, SIGNAL( rotationChanged( int ) ), this, SLOT( rotationChanged( int ) ) );
-  connect( myPluginGui, SIGNAL( changePlacement( int ) ), this, SLOT( setPlacement( int ) ) );
-  connect( myPluginGui, SIGNAL( enableAutomatic( bool ) ), this, SLOT( setAutomatic( bool ) ) );
-  connect( myPluginGui, SIGNAL( enableNorthArrow( bool ) ), this, SLOT( setEnabled( bool ) ) );
-  connect( myPluginGui, SIGNAL( needToRefresh() ), this, SLOT( refreshCanvas() ) );
-  myPluginGui->show();
+  if ( dlg.exec() )
+  {
+    saveToProject();
+    QgisApp::instance()->mapCanvas()->refresh();
+  }
 }
 
-//! Refresh the map display using the mapcanvas exported via the plugin interface
-void QgsNorthArrowPlugin::refreshCanvas()
-{
-  qGisInterface->mapCanvas()->refresh();
-}
-
-void QgsNorthArrowPlugin::renderNorthArrow( QPainter * theQPainter )
+void QgsDecorationNorthArrow::renderNorthArrow( QPainter * theQPainter )
 {
 
   //Large IF statement controlled by enable check box
@@ -245,57 +199,16 @@ void QgsNorthArrowPlugin::renderNorthArrow( QPainter * theQPainter )
   }
 
 }
-// Unload the plugin by cleaning up the GUI
-void QgsNorthArrowPlugin::unload()
+
+bool QgsDecorationNorthArrow::calculateNorthDirection()
 {
-  // remove the GUI
-  qGisInterface->removePluginMenu( tr( "&Decorations" ), myQActionPointer );
-  qGisInterface->removeToolBarIcon( myQActionPointer );
-  // remove the northarrow from the canvas
-  disconnect( qGisInterface->mapCanvas(), SIGNAL( renderComplete( QPainter * ) ),
-              this, SLOT( renderNorthArrow( QPainter * ) ) );
-  refreshCanvas();
-
-  delete myQActionPointer;
-}
-
-
-void QgsNorthArrowPlugin::rotationChanged( int theInt )
-{
-  mRotationInt = theInt;
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Rotation", mRotationInt );
-}
-
-//! set placement of north arrow
-void QgsNorthArrowPlugin::setPlacement( int placementIndex )
-{
-  mPlacementIndex = placementIndex;
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Placement", mPlacementIndex );
-}
-
-void QgsNorthArrowPlugin::setEnabled( bool theBool )
-{
-  mEnable = theBool;
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Enabled", mEnable );
-}
-
-void QgsNorthArrowPlugin::setAutomatic( bool theBool )
-{
-  mAutomatic = theBool;
-  QgsProject::instance()->writeEntry( "NorthArrow", "/Automatic", mAutomatic );
-  if ( mAutomatic )
-    calculateNorthDirection();
-}
-
-bool QgsNorthArrowPlugin::calculateNorthDirection()
-{
-  QgsMapCanvas& mapCanvas = *( qGisInterface->mapCanvas() );
+  QgsMapCanvas* mapCanvas = QgisApp::instance()->mapCanvas();
 
   bool goodDirn = false;
 
-  if ( mapCanvas.layerCount() > 0 )
+  if ( mapCanvas->layerCount() > 0 )
   {
-    QgsCoordinateReferenceSystem outputCRS = mapCanvas.mapRenderer()->destinationCrs();
+    QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapRenderer()->destinationCrs();
 
     if ( outputCRS.isValid() && !outputCRS.geographicFlag() )
     {
@@ -306,7 +219,7 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
 
       QgsCoordinateTransform transform( outputCRS, ourCRS );
 
-      QgsRectangle extent = mapCanvas.extent();
+      QgsRectangle extent = mapCanvas->extent();
       QgsPoint p1( extent.center() );
       // A point a bit above p1. XXX assumes that y increases up!!
       // May need to involve the maptopixel transform if this proves
@@ -387,76 +300,4 @@ bool QgsNorthArrowPlugin::calculateNorthDirection()
     }
   }
   return goodDirn;
-}
-
-//! Set icons to the current theme
-void QgsNorthArrowPlugin::setCurrentTheme( QString theThemeName )
-{
-  Q_UNUSED( theThemeName );
-  QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/north_arrow.png";
-  QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/north_arrow.png";
-  QString myQrcPath = ":/north_arrow.png";
-  if ( QFile::exists( myCurThemePath ) )
-  {
-    myQActionPointer->setIcon( QIcon( myCurThemePath ) );
-  }
-  else if ( QFile::exists( myDefThemePath ) )
-  {
-    myQActionPointer->setIcon( QIcon( myDefThemePath ) );
-  }
-  else if ( QFile::exists( myQrcPath ) )
-  {
-    myQActionPointer->setIcon( QIcon( myQrcPath ) );
-  }
-  else
-  {
-    myQActionPointer->setIcon( QIcon() );
-  }
-}
-
-/**
- * Required extern functions needed  for every plugin
- * These functions can be called prior to creating an instance
- * of the plugin class
- */
-// Class factory to return a new instance of the plugin class
-QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
-{
-  return new QgsNorthArrowPlugin( theQgisInterfacePointer );
-}
-
-// Return the name of the plugin - note that we do not user class members as
-// the class may not yet be insantiated when this method is called.
-QGISEXTERN QString name()
-{
-  return name_;
-}
-
-// Return the description
-QGISEXTERN QString description()
-{
-  return description_;
-}
-
-// Return the type (either UI or MapLayer plugin)
-QGISEXTERN int type()
-{
-  return type_;
-}
-
-// Return the version number for the plugin
-QGISEXTERN QString version()
-{
-  return version_;
-}
-
-QGISEXTERN QString icon()
-{
-  return icon_;
-}
-
-// Delete ourself
-QGISEXTERN void unload( QgisPlugin * thePluginPointer )
-{
-  delete thePluginPointer;
 }
