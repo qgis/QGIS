@@ -41,8 +41,7 @@
 #include "qgsdiagram.h"
 #include "qgsdiagramrendererv2.h"
 #include "qgslabelsearchtree.h"
-#include "qgssearchtreenode.h"
-#include "qgssearchstring.h"
+#include "qgsexpression.h"
 
 #include <qgslogger.h>
 #include <qgsvectorlayer.h>
@@ -459,25 +458,20 @@ void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f,
   // Check to see if we are a expression string.
   if (isExpression)
   {
-    QgsSearchString searchString;
-    // We don't do any validating here as we should only have a vaild expression at this point.
-    searchString.setString( fieldName );
-
-    QgsSearchTreeNode* searchTree = searchString.tree();
-    if ( !searchTree )
+    QgsExpression exp( fieldName );
+    if ( exp.hasParserError() )
     {
+      QgsDebugMsg("PASER HAS ERROR:" + exp.parserErrorString());
       return;
     }
-
-    QgsSearchTreeValue outValue;
-    searchTree->getValue( outValue, searchTree, layer->dataProvider()->fields() , f );
-
-    if (outValue.isError())
+    QVariant result = exp.evaluate(&f,layer->dataProvider()->fields());
+    QgsDebugMsg("VALUE = " + result.toString());
+    if (exp.hasEvalError())
     {
-        QgsDebugMsg("Expression Label Error = " + outValue.string());
+       QgsDebugMsg("Expression Label Error = " + exp.evalErrorString());
        return;
     }
-    labelText  = outValue.string();
+    labelText  = result.toString();
   }
   else if ( formatNumbers == true && ( f.attributeMap()[fieldIndex].type() == QVariant::Int ||
                                        f.attributeMap()[fieldIndex].type() == QVariant::Double ) )
@@ -778,11 +772,10 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
   {
       if (lyrTmp.fieldName.isEmpty())
           return 0;
-      QgsSearchString searchString;
-      searchString.setString( lyrTmp.fieldName );
-      searchString.tree()->referencedColumns();
-      foreach(QString name, searchString.tree()->referencedColumns() )
+      QgsExpression exp( lyrTmp.fieldName );
+      foreach(QString name, exp.referencedColumns() )
       {
+          QgsDebugMsg("REFERENCED COLUMN = " + name );
           fldIndex =  layer->fieldNameIndex( name );
           attrIndices.insert(fldIndex);
       }

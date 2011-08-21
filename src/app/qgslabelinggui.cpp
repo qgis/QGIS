@@ -24,8 +24,8 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelengineconfigdialog.h"
-#include "qgssearchstring.h"
 #include "qgsexpressionbuilder.h"
+#include "qgsexpression.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
@@ -504,12 +504,12 @@ void QgsLabelingGui::showExpressionDialog()
     { 
       QString expression =  builder->getExpressionString();
       //Do validation here first before applying
-      QgsSearchString searchString;
-      if ( !searchString.setString( expression ) )
+      QgsExpression exp( expression );
+      if ( exp.hasParserError() )
       {
         //expression not valid
           QMessageBox::critical( 0, "Syntax error",
-                                 "Invalid expression syntax. The error message of the parser is: '" + searchString.parserErrorMsg() + "'" );
+                                 "Invalid expression syntax. The error message of the parser is: '" + exp.parserErrorString() + "'" );
           return;
       }
 
