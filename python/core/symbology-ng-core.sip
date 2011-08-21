@@ -407,7 +407,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         ~Rule();
         QString dump() const;
         QStringList needsFields() const;
-        bool isFilterOK( const QgsFieldMap& fields, QgsFeature& f ) const;
+        bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol();
@@ -415,6 +415,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         int scaleMinDenom() const;
         int scaleMaxDenom() const;
         QString filterExpression() const;
+        QgsExpression* filter() const;
 
         void setScaleMinDenom( int scaleMinDenom );
         void setScaleMaxDenom( int scaleMaxDenom );

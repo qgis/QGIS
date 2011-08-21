@@ -53,6 +53,7 @@ SET(QGIS_CORE_SRCS
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgsexpression.cpp
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp
@@ -216,9 +217,9 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
 
-ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
+ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
@@ -286,6 +287,7 @@ SET(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgscsexception.h
   qgsexception.h
+  qgsexpression.h
   qgsfeature.h
   qgsfield.h
   qgsgeometry.h

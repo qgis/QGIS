@@ -24,8 +24,7 @@
 #include "qgssymbol.h"
 #include "qgsattributeeditor.h"
 #include "qgshighlight.h"
-#include "qgssearchstring.h"
-#include "qgssearchtreenode.h"
+#include "qgsexpression.h"
 #include "qgspythonrunner.h"
 
 #include "qgisapp.h"
@@ -205,15 +204,12 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
       QString expr = le->text();
       le->setText( tr( "Error" ) );
 
-      QgsSearchString ss;
-      if ( !ss.setString( expr ) )
+      QgsExpression exp( expr );
+      if ( exp.hasParserError() )
         continue;
 
-      QgsSearchTreeNode *st = ss.tree();
-      if ( !st )
-        continue;
 
-      if ( !mFeature->geometry() && st->needsGeometry() )
+      if ( !mFeature->geometry() && exp.needsGeometry() )
       {
         QgsFeature f;
         if ( vl->featureAtId( mFeature->id(), f, true, false ) && f.geometry() )
@@ -222,19 +218,24 @@ QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeat
         }
       }
 
-      QgsSearchTreeValue value;
-      st->getValue( value, st, vl->pendingFields(), *mFeature );
+      QVariant value = exp.evaluate( mFeature, vl->pendingFields() );
 
-      if ( !value.isError() )
+      if ( !exp.hasEvalError() )
       {
-        if ( value.isNumeric() )
-          le->setText( QString::number( value.number() ) );
-        else
-          le->setText( value.string() );
+        QString text;
+        switch ( value.type() )
+        {
+          case QVariant::Invalid: text = "NULL"; break;
+          case QVariant::Int: text = QString::number( value.toInt() ); break;
+          case QVariant::Double: text = QString::number( value.toDouble() ); break;
+          case QVariant::String:
+          default: text = value.toString();
+        }
+        le->setText( text );
       }
       else
       {
-        le->setText( tr( "Error: %1" ).arg( st->errorMsg() ) );
+        le->setText( tr( "Error: %1" ).arg( exp.evalErrorString() ) );
       }
     }
   }

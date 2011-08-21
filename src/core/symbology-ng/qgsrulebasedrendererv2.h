@@ -17,9 +17,10 @@
 #define QGSRULEBASEDRENDERERV2_H
 
 #include "qgsfield.h"
-#include "qgssearchstring.h"
 
 #include "qgsrendererv2.h"
+
+class QgsExpression;
 
 class QgsCategorizedSymbolRendererV2;
 class QgsGraduatedSymbolRendererV2;
@@ -49,13 +50,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         ~Rule();
         QString dump() const;
         QStringList needsFields() const;
-        bool isFilterOK( const QgsFieldMap& fields, QgsFeature& f ) const;
+        bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol() { return mSymbol; }
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
         int scaleMinDenom() const { return mScaleMinDenom; }
         int scaleMaxDenom() const { return mScaleMaxDenom; }
+        QgsExpression* filter() const { return mFilter; }
         QString filterExpression() const { return mFilterExp; }
         QString label() const { return mLabel; }
         QString description() const { return mDescription; }
@@ -77,8 +79,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QString mFilterExp, mLabel, mDescription;
 
         // temporary
-        QgsSearchString mFilterParsed;
-        QgsSearchTreeNode* mFilterTree;
+        QgsExpression* mFilter;
     };
 
     /////
@@ -148,7 +149,6 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     // temporary
     QList<Rule*> mCurrentRules;
-    QgsFieldMap mCurrentFields;
     QgsSymbolV2* mCurrentSymbol;
 };
 
