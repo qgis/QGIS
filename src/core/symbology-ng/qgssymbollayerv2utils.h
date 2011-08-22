@@ -5,6 +5,7 @@
 
 #include <QMap>
 #include <Qt>
+#include <QtCore>
 #include "qgssymbolv2.h"
 
 class QgsSymbolV2;
@@ -81,6 +82,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
+
+	/**Sorts the passed list in requested order*/
+	static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
 };
 
 class QPolygonF;

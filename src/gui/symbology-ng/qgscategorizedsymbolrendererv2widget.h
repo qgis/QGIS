@@ -1,6 +1,7 @@
 #ifndef QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
 #define QGSCATEGORIZEDSYMBOLRENDERERV2WIDGET_H
 
+#include "qgscategorizedsymbolrendererv2.h"
 #include "qgsrendererv2widget.h"
 #include <QStandardItem>
 
