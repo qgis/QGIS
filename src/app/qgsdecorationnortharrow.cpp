@@ -80,7 +80,7 @@ void QgsDecorationNorthArrow::projectRead()
 
   mRotationInt = QgsProject::instance()->readNumEntry( "NorthArrow", "/Rotation", 0 );
   mPlacementIndex = QgsProject::instance()->readNumEntry( "NorthArrow", "/Placement", 0 );
-  mEnable = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Enabled", true );
+  mEnable = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Enabled", false );
   mAutomatic = QgsProject::instance()->readBoolEntry( "NorthArrow", "/Automatic", true );
 }
 

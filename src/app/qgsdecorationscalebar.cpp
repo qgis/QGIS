@@ -62,11 +62,7 @@ QgsDecorationScaleBar::QgsDecorationScaleBar( QObject* parent )
   mStyleLabels << tr( "Tick Down" ) << tr( "Tick Up" )
   << tr( "Bar" ) << tr( "Box" );
 
-  mPreferredSize = 30;
-  mStyleIndex = 0;
-  mEnabled = true;
-  mSnapping = true;
-  mColor = Qt::black;
+  projectRead();
 }
 
 QgsDecorationScaleBar::~QgsDecorationScaleBar()
@@ -76,12 +72,10 @@ QgsDecorationScaleBar::~QgsDecorationScaleBar()
 
 void QgsDecorationScaleBar::projectRead()
 {
-  QgsDebugMsg( "+++++++++ scalebar plugin - project read slot called...." );
-
   mPreferredSize = QgsProject::instance()->readNumEntry( "ScaleBar", "/PreferredSize", 30 );
   mStyleIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Style", 0 );
   mPlacementIndex = QgsProject::instance()->readNumEntry( "ScaleBar", "/Placement", 2 );
-  mEnabled = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Enabled", true );
+  mEnabled = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Enabled", false );
   mSnapping = QgsProject::instance()->readBoolEntry( "ScaleBar", "/Snapping", true );
   int myRedInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorRedPart", 0 );
   int myGreenInt = QgsProject::instance()->readNumEntry( "ScaleBar", "/ColorGreenPart", 0 );

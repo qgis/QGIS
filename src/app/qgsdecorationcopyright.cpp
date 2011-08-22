@@ -68,7 +68,7 @@ void QgsDecorationCopyright::projectRead()
   QgsProject* prj = QgsProject::instance();
   mLabelQString = prj->readEntry( "CopyrightLabel", "/Label", defString );
   mPlacementIndex = prj->readNumEntry( "CopyrightLabel", "/Placement", 3 );
-  mEnable = prj->readBoolEntry( "CopyrightLabel", "/Enabled", true );
+  mEnable = prj->readBoolEntry( "CopyrightLabel", "/Enabled", false );
   mLabelQColor.setNamedColor( prj->readEntry( "CopyrightLabel", "/Color", "#000000" ) ); // default color is black
 }
 
