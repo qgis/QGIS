@@ -1,9 +1,6 @@
-usr/lib/qgis/plugins/libcopyrightlabelplugin.so
 usr/lib/qgis/plugins/libdelimitedtextplugin.so
 usr/lib/qgis/plugins/libgeorefplugin.so
 usr/lib/qgis/plugins/libgpsimporterplugin.so
-usr/lib/qgis/plugins/libnortharrowplugin.so
-usr/lib/qgis/plugins/libscalebarplugin.so
 usr/lib/qgis/plugins/libspitplugin.so
 usr/lib/qgis/plugins/libwfsplugin.so
 usr/lib/qgis/plugins/libdxf2shpconverterplugin.so
