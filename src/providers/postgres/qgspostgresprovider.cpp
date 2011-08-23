@@ -83,7 +83,7 @@ bool QgsPostgresProvider::convertField( QgsField &field )
     case QVariant::Double:
       if ( fieldSize <= 0 || fieldPrec < 0)
       {
-        fieldType = "real8";
+        fieldType = "float";
         fieldSize = -1;
         fieldPrec = -1;
       }
@@ -2895,116 +2895,6 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
 
   return fieldValue;
 }
-
-/*
-bool QgsPostgresProvider::createAddFeaturesPreparedStmt( const QgsFieldMap &fields, bool useNewTransaction, QString preparedStmtName )
-{
-  if ( isQuery )
-    return false;
-
-  // if there's no rw connection opened then create a new transaction
-  if ( !connectionRW )
-    useNewTransaction = true;
-
-  if ( !connectRW() )
-    return false;
-
-  try
-  {
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "BEGIN" );
-
-    // Prepare the INSERT statement
-    QString insert = QString( "INSERT INTO %1 (" ).arg( mQuery );
-    QString values = ") VALUES (";
-    QString delim = ",";
-    int offset = 1;
-
-    if ( !geometryColumn.isNull() )
-    {
-      insert += quotedIdentifier( geometryColumn );
-      values += QString( "%1($%2%3,%4)" )
-                .arg( connectionRO->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
-                .arg( offset )
-                .arg( connectionRW->useWkbHex() ? "" : "::bytea" )
-                .arg( srid );
-      offset += 1;
-      delim = ",";
-    }
-    else
-    {
-      delim = "";
-    }
-
-    if ( primaryKeyType != "tid" && primaryKeyType != "oid" )
-    {
-      insert += delim + quotedIdentifier( primaryKey );
-      values += delim + QString( "$%1" ).arg( offset );
-      offset += 1;
-      delim = ",";
-    }
-
-    QStringList defaultValues;
-    QList<int> fieldId;
-
-    for ( QgsFieldMap::const_iterator it = fields.begin(); it != fields.end(); it++ )
-    {
-      QgsDebugMsg( QString( "field: %1" ).arg( it->name() ) );
-
-      QgsFieldMap::const_iterator fit = attributeFields.find( it.key() );
-      if ( fit == attributeFields.end() )
-        continue;
-
-      QString fieldname = fit->name();
-
-      if ( fieldname.isEmpty() || fieldname == geometryColumn || fieldname == primaryKey )
-        continue;
-
-      insert += delim + quotedIdentifier( fieldname );
-
-      if ( fit->typeName() == "geometry" )
-      {
-        values += QString( "%1%2($%3)" )
-                  .arg( delim )
-                  .arg( connectionRO->majorVersion() < 2 ? "geomfromewkt" : "st_geomfromewkt" )
-                  .arg( fieldId.size() + offset );
-      }
-      else if ( fit->typeName() == "geography" )
-      {
-        values += QString( "%1st_geographyfromewkt($%2)" )
-                  .arg( delim )
-                  .arg( fieldId.size() + offset );
-      }
-      else
-      {
-        values += QString( "%1$%2" )
-                  .arg( delim )
-                  .arg( fieldId.size() + offset );
-      }
-      fieldId.append( it.key() );
-
-      delim = ",";
-    }
-
-    insert += values + ")";
-
-    QgsDebugMsg( QString( "prepare %1: %2" ).arg( preparedStmtName ).arg( insert ) );
-    PGresult *stmt = connectionRW->PQprepare( preparedStmtName, insert, fieldId.size() + offset - 1, NULL );
-    if ( stmt == 0 || PQresultStatus( stmt ) == PGRES_FATAL_ERROR )
-      throw PGException( stmt );
-    PQclear( stmt );
-
-  }
-  catch ( PGException &e )
-  {
-    e.showErrorMessage( tr( "Error while creating %1 prepared statement" ).arg( preparedStmtName ) );
-    connectionRW->PQexecNR( "ROLLBACK" );
-    return false;
-  }
-
-  return true;
-}
-*/
 
 bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 {
