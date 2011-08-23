@@ -4,8 +4,9 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * add qgis browser (qbrowser)
   * add zonal statistics plugins and globe plugin
   * migrate unstable package to dh_python2
+  * add ubuntu oneiric
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 11 Aug 2011 14:22:11 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Tue, 23 Aug 2011 22:25:08 +0200
 
 qgis (1.7.0) UNRELEASED; urgency=low
 
