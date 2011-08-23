@@ -641,6 +641,9 @@ void QgsGeomColumnTypeThread::getLayerTypes()
       uri.setPassword( password );
 
     pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
+    if ( PQstatus( pd ) == CONNECTION_OK )
+      QgsCredentials::instance()->put( mConnInfo, username, password );
+
   }
 
   if ( PQstatus( pd ) == CONNECTION_OK )
