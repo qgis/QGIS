@@ -529,6 +529,9 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
     self.setWindowTitle(self.tr("QGIS Python Plugin Installer") + self.tr(" - %d plugins available" % len(plugins.all())))
     self.buttonUpgradeAll.setEnabled( len(self.upgradeablePlugins) )
     
+    # initially, keep insert order
+    self.treePlugins.sortItems(100,Qt.AscendingOrder)
+
     # resize the columns
     for i in [0,1,2,3,4,5]:
       self.treePlugins.resizeColumnToContents(i)
@@ -537,8 +540,6 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
         self.treePlugins.setColumnWidth(i, 260)
     if self.treePlugins.columnWidth(3) > 560:
       self.treePlugins.setColumnWidth(3, 560)
-    # initially, keep order of inserting
-    self.treePlugins.sortItems(100,Qt.AscendingOrder)
 
 
   # ----------------------------------------- #
