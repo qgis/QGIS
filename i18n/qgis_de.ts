@@ -1646,10 +1646,6 @@ Wollen Sie ihn trotzdem abbrechen?</translation>
         <translation>Eingabedatei für Entzerrung wählen</translation>
     </message>
     <message>
-        <source>Select the cutline file</source>
-        <translation type="obsolete">Schnittkantendatei wählen</translation>
-    </message>
-    <message>
         <source>Select the input directory with files to Warp</source>
         <translation>Eingabeverzeichnis der zu entzerrenden Dateien wählen</translation>
     </message>
@@ -1710,10 +1706,6 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <translation>Ort für Speicherung der Kontur wählen</translation>
     </message>
     <message>
-        <source>No active raster layers. You must add almost one raster layer to continue.</source>
-        <translation type="obsolete">Keine aktiven Rasterlayer. Sie müssen zumindest einen Rasterlayer hinzufügen, um fortzufahren.</translation>
-    </message>
-    <message>
         <source>Select the input file for Translate</source>
         <translation>Eingabedatei für Konvertierung wählen</translation>
     </message>
@@ -1744,10 +1736,6 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     <message>
         <source>Convert paletted image to RGB</source>
         <translation>Palettenbild in RGB umwandeln</translation>
-    </message>
-    <message>
-        <source>Band to convert:</source>
-        <translation type="obsolete">Zu konvertierender Kanal:</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
@@ -2780,10 +2768,6 @@ Der &apos;Grau&apos;-wert (aus GDAL 1.7) ermöglicht Datensätze mit einer Farbt
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="168"/>
         <source>MB</source>
         <translation>MB</translation>
-    </message>
-    <message>
-        <source>Cutline</source>
-        <translation type="obsolete">Schnittkante</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="55"/>
@@ -22854,10 +22838,6 @@ mit PostGIS-Geometrie haben.</translation>
 <context>
     <name>QgsPluginInstaller</name>
     <message>
-        <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="obsolete">Konnte Ausgabe des Repositorys nicht interpretieren</translation>
-    </message>
-    <message>
         <source>Couldn&apos;t open the local plugin directory</source>
         <translation>Konnte lokales Erweiterungsverzeichnis nicht öffnen</translation>
     </message>
@@ -26804,18 +26784,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="183"/>
         <source>Rule grouping</source>
         <translation>Regelgruppierung</translation>
-    </message>
-    <message>
-        <source>No grouping</source>
-        <translation type="obsolete">Keine</translation>
-    </message>
-    <message>
-        <source>Group by filter</source>
-        <translation type="obsolete">nach Filter</translation>
-    </message>
-    <message>
-        <source>Group by scale</source>
-        <translation type="obsolete">nach Maßstab</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="63"/>
@@ -31535,22 +31503,22 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="273"/>
         <source>Move selected layer UP</source>
-        <translation>Gewählten Layer nach oben schieben</translation>
+        <translation>Gewählten Layer hochschieben</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="276"/>
         <source>Up</source>
-        <translation>Hoch</translation>
+        <translation>Auf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="283"/>
         <source>Move selected layer DOWN</source>
-        <translation>Gewählten Layer nach unten schieben</translation>
+        <translation>Gewählten Layer herunterschieben</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="286"/>
         <source>Down</source>
-        <translation>Runter</translation>
+        <translation>Ab</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="310"/>
@@ -32150,14 +32118,6 @@ Antwort war:
             <numerusform>, ein Fehler.</numerusform>
             <numerusform>, %n Fehler.</numerusform>
         </translation>
-    </message>
-    <message>
-        <source>tile request err %1: %2</source>
-        <translation type="obsolete">Tile-Anfragefehler %1: %2</translation>
-    </message>
-    <message>
-        <source>map request error %1: %2</source>
-        <translation type="obsolete">Kartenanfragefehler %1: %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2447"/>
