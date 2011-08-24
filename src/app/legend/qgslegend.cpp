@@ -1253,6 +1253,13 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
         continue;
       }
 
+      if ( currentLayer->layer() && !QgsProject::instance()->layerIsEmbedded( currentLayer->layer()->id() ).isEmpty() )
+      {
+        QFont itemFont;
+        itemFont.setItalic( true );
+        currentLayer->setFont( 0, itemFont );
+      }
+
       // add to tree - either as a top-level node or a child of a group
       if ( parent )
       {
