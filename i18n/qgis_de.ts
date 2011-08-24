@@ -32569,12 +32569,12 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="274"/>
         <source>Up</source>
-        <translation>Ab</translation>
+        <translation>Auf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="281"/>
         <source>Move selected layer DOWN</source>
-        <translation>Gewählten layer herunter bewegen</translation>
+        <translation>Gewählten Layer herunterschieben</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="284"/>
