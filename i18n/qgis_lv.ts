@@ -8688,6 +8688,27 @@ Kļūda bija %2</translation>
         <translation>Grāmatzīmes %1 dzēšana no datubāzes bija neveiksmīga. Datubāzes atbilde:
 %2</translation>
     </message>
+    <message>
+        <source>&amp;Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Really Update?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Are you sure you want to update the %1 bookmark?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error updating bookmark</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to update the %1 bookmark. The database said:
+%2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsBookmarksBase</name>
@@ -9589,6 +9610,18 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>Legend group added</source>
         <translation>Leģendas grupa ir pievienota</translation>
     </message>
+    <message>
+        <source>Legend map changed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Map %1</source>
+        <translation type="unfinished">Karte %1</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsComposerLegendWidgetBase</name>
@@ -9683,6 +9716,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Auto Update</source>
         <translation>Automātiksi atjaunot</translation>
+    </message>
+    <message>
+        <source>Map</source>
+        <translation type="unfinished">Karte</translation>
     </message>
 </context>
 <context>
@@ -17671,6 +17708,10 @@ Tā varētu būt problēma ar jūsu tīkla savienojumu vai arī ar WMS serveri.
         <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>The geometry is invalid. Please repair before trying to split it.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMapToolVertexEdit</name>
@@ -20108,7 +20149,7 @@ Pārliecinieties, ka jums ir SELECT tiesības tai tabulai, kas satur PostGIS ģe
     </message>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation>Nebija iespējams parsēt repozitorija izvadi</translation>
+        <translation type="obsolete">Nebija iespējams parsēt repozitorija izvadi</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -23344,15 +23385,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>No grouping</source>
-        <translation>Negrupēt</translation>
+        <translation type="obsolete">Negrupēt</translation>
     </message>
     <message>
         <source>Group by filter</source>
-        <translation>Grupēt pēc filtra</translation>
+        <translation type="obsolete">Grupēt pēc filtra</translation>
     </message>
     <message>
         <source>Group by scale</source>
-        <translation>Grupēt pēc mēroga</translation>
+        <translation type="obsolete">Grupēt pēc mēroga</translation>
     </message>
     <message>
         <source>Error</source>
@@ -23408,6 +23449,49 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>&quot;%1&quot; is not valid scale denominator, ignoring it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Priority</source>
+        <translation type="unfinished">Prioritāte</translation>
+    </message>
+    <message>
+        <source>Priority when symbol levels are enabled (only first matching rule will be applied)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Increase priority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Decrease priority</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enable symbol levels</source>
+        <translation type="unfinished">Pielietot simbolu līmeņus</translation>
+    </message>
+    <message>
+        <source>Use only first matched rule</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Behavior</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <comment>No grouping for displaying rules</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By filter</source>
+        <comment>Group rules by filter</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>By scale</source>
+        <comment>Group rules by scale</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26472,6 +26556,10 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
         <source>None</source>
         <translation>Neviens</translation>
     </message>
+    <message>
+        <source>Empty</source>
+        <translation type="unfinished">Tukšs</translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerPropertiesBase</name>
@@ -27338,6 +27426,22 @@ Vai dzēst esošās klases pirms klasificēšanas?</translation>
     <message>
         <source>Load</source>
         <translation>Ielādēt</translation>
+    </message>
+    <message>
+        <source>Move selected layer UP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Up</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Move selected layer DOWN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Down</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
