@@ -110,6 +110,22 @@ QDomDocument QgsWMSServer::getCapabilities()
   QString requestUrl = getenv( "REQUEST_URI" );
   QUrl mapUrl( requestUrl );
   mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
+
+  //Add non-default ports to url
+  QString portString = getenv( "SERVER_PORT" );
+  if ( !portString.isEmpty() )
+  {
+    bool portOk;
+    int portNumber = portString.toInt( &portOk );
+    if ( portOk )
+    {
+      if ( portNumber != 80 )
+      {
+        mapUrl.setPort( portNumber );
+      }
+    }
+  }
+
   if ( QString( getenv( "HTTPS" ) ).compare( "on", Qt::CaseInsensitive ) == 0 )
   {
     mapUrl.setScheme( "https" );
