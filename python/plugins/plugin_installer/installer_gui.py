@@ -528,10 +528,10 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           n +=1
     self.setWindowTitle(self.tr("QGIS Python Plugin Installer") + self.tr(" - %d plugins available" % len(plugins.all())))
     self.buttonUpgradeAll.setEnabled( len(self.upgradeablePlugins) )
-    
+
     # initially, keep insert order
     self.treePlugins.sortItems(100,Qt.AscendingOrder)
-
+    
     # resize the columns
     for i in [0,1,2,3,4,5]:
       self.treePlugins.resizeColumnToContents(i)
@@ -630,7 +630,7 @@ class QgsPluginInstallerDialog(QDialog, Ui_QgsPluginInstallerDialogBase):
           exec ("reload (%s)" % plugin["localdir"])
         except:
           pass
-      plugins.getAllInstalled()
+      plugins.getAllInstalled(testLoad=True)
       plugins.rebuild()
       plugin = plugins.all()[key]
       if not plugin["error"]:
