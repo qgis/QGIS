@@ -136,7 +136,7 @@ QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feature )
   {
     Rule* rule = *it;
 
-    if ( rule->isFilterOK( mCurrentFields, feature ) )
+    if ( rule->isFilterOK( feature ) )
     {
       return rule->symbol(); //works with levels but takes only first rule
     }
