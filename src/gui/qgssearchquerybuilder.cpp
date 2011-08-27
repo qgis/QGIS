@@ -26,8 +26,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgssearchquerybuilder.h"
-#include "qgssearchstring.h"
-#include "qgssearchtreenode.h"
+#include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 
@@ -81,7 +80,7 @@ void QgsSearchQueryBuilder::populateFields()
     QString fieldName = it->name();
     mFieldMap[fieldName] = it.key();
     if ( !reQuote.exactMatch( fieldName ) ) // quote if necessary
-      fieldName = QgsSearchTreeNode::quotedColumnRef( fieldName );
+      fieldName = QgsExpression::quotedColumnRef( fieldName );
     QStandardItem *myItem = new QStandardItem( fieldName );
     myItem->setEditable( false );
     mModelFields->insertRow( mModelFields->rowCount(), myItem );
@@ -190,50 +189,51 @@ void QgsSearchQueryBuilder::on_btnTest_clicked()
 // This method tests the number of records that would be returned
 long QgsSearchQueryBuilder::countRecords( QString searchString )
 {
-  QgsSearchString search;
-  if ( !search.setString( searchString ) )
+  QgsExpression search( searchString );
+  if ( search.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorMsg() );
+    QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorString() );
     return -1;
   }
 
   if ( !mLayer )
     return -1;
 
-  QgsSearchTreeNode* searchTree = search.tree();
-  if ( !searchTree )
-  {
-    // entered empty search string
-    return mLayer->featureCount();
-  }
-
-  bool fetchGeom = searchTree->needsGeometry();
-
-  QApplication::setOverrideCursor( Qt::WaitCursor );
+  bool fetchGeom = search.needsGeometry();
 
   int count = 0;
   QgsFeature feat;
   const QgsFieldMap& fields = mLayer->pendingFields();
+
+  if ( !search.prepare( fields ) )
+  {
+    QMessageBox::critical( this, tr( "Evaluation error" ), search.evalErrorString() );
+    return -1;
+  }
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
   QgsAttributeList allAttributes = mLayer->pendingAllAttributesList();
   mLayer->select( allAttributes, QgsRectangle(), fetchGeom );
 
   while ( mLayer->nextFeature( feat ) )
   {
-    if ( searchTree->checkAgainst( fields, feat ) )
+    QVariant value = search.evaluate( &feat );
+    if ( value.toInt() != 0 )
     {
       count++;
     }
 
     // check if there were errors during evaulating
-    if ( searchTree->hasError() )
+    if ( search.hasEvalError() )
       break;
   }
 
   QApplication::restoreOverrideCursor();
 
-  if ( searchTree->hasError() )
+  if ( search.hasEvalError() )
   {
-    QMessageBox::critical( this, tr( "Error during search" ), searchTree->errorMsg() );
+    QMessageBox::critical( this, tr( "Error during search" ), search.evalErrorString() );
     return -1;
   }
 
@@ -432,19 +432,17 @@ void QgsSearchQueryBuilder::loadQuery()
   QString query = queryElem.text();
 
   //todo: test if all the attributes are valid
-  QgsSearchString search;
-  if ( !search.setString( query ) )
+  QgsExpression search( query );
+  if ( search.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorMsg() );
+    QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorString() );
     return;
   }
 
-  QgsSearchTreeNode* searchTree = search.tree();
-  if ( !searchTree )
-  {
-    QMessageBox::critical( this, tr( "Error creating search tree" ), search.parserErrorMsg() );
-    return;
-  }
+  QString newQueryText = query;
+
+#if 0
+  // TODO: QgsExpression does not support overwriting of existing expressions
 
   QStringList attributes = searchTree->referencedColumns();
   QMap< QString, QString> attributesToReplace;
@@ -487,12 +485,13 @@ void QgsSearchQueryBuilder::loadQuery()
     }
   }
 
-  txtSQL->clear();
-  QString newQueryText = query;
   if ( attributesToReplace.size() > 0 )
   {
-    newQueryText = searchTree->makeSearchString();
+    newQueryText = query;
   }
+#endif
+
+  txtSQL->clear();
   txtSQL->insertPlainText( newQueryText );
 }
 

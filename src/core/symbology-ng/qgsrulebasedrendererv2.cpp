@@ -15,7 +15,7 @@
 
 #include "qgsrulebasedrendererv2.h"
 #include "qgssymbollayerv2.h"
-#include "qgssearchtreenode.h"
+#include "qgsexpression.h"
 #include "qgssymbollayerv2utils.h"
 #include "qgsrendercontext.h"
 #include "qgsvectorlayer.h"
@@ -31,13 +31,14 @@
 QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description )
     : mSymbol( symbol ),
     mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom ),
-    mFilterExp( filterExp ), mLabel( label ), mDescription( description )
+    mFilterExp( filterExp ), mLabel( label ), mDescription( description ),
+    mFilter( NULL )
 {
   initFilter();
 }
 
 QgsRuleBasedRendererV2::Rule::Rule( const QgsRuleBasedRendererV2::Rule& other )
-    : mSymbol( NULL )
+    : mSymbol( NULL ), mFilter( NULL )
 {
   *this = other;
 }
@@ -45,18 +46,19 @@ QgsRuleBasedRendererV2::Rule::Rule( const QgsRuleBasedRendererV2::Rule& other )
 QgsRuleBasedRendererV2::Rule::~Rule()
 {
   delete mSymbol;
+  delete mFilter;
 }
 
 void QgsRuleBasedRendererV2::Rule::initFilter()
 {
   if ( !mFilterExp.isEmpty() )
   {
-    mFilterParsed.setString( mFilterExp );
-    mFilterTree = mFilterParsed.tree(); // may be NULL if there's no input
+    delete mFilter;
+    mFilter = new QgsExpression( mFilterExp );
   }
   else
   {
-    mFilterTree = NULL;
+    mFilter = NULL;
   }
 }
 
@@ -70,20 +72,19 @@ QString QgsRuleBasedRendererV2::Rule::dump() const
 
 QStringList QgsRuleBasedRendererV2::Rule::needsFields() const
 {
-  if ( ! mFilterTree )
+  if ( ! mFilter )
     return QStringList();
 
-  return mFilterTree->referencedColumns();
+  return mFilter->referencedColumns();
 }
 
-bool QgsRuleBasedRendererV2::Rule::isFilterOK( const QgsFieldMap& fields, QgsFeature& f ) const
+bool QgsRuleBasedRendererV2::Rule::isFilterOK( QgsFeature& f ) const
 {
-  if ( ! mFilterTree )
+  if ( ! mFilter )
     return true;
 
-  bool res = mFilterTree->checkAgainst( fields, f );
-  //print "is_ok", res, feature.id(), feature.attributeMap()
-  return res;
+  QVariant res = mFilter->evaluate( &f );
+  return res.toInt() != 0;
 }
 
 bool QgsRuleBasedRendererV2::Rule::isScaleOK( double scale ) const
@@ -152,7 +153,7 @@ void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
   for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
   {
     Rule* rule = *it;
-    if ( rule->isFilterOK( mCurrentFields, feature ) )
+    if ( rule->isFilterOK( feature ) )
     {
       mCurrentSymbol = rule->symbol();
       // will ask for mCurrentSymbol
@@ -175,11 +176,14 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVe
       mCurrentRules.append( &rule );
   }
 
-  mCurrentFields = vlayer->pendingFields();
+  QgsFieldMap pendingFields = vlayer->pendingFields();
 
   for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
   {
     Rule* rule = *it;
+    QgsExpression* exp = rule->filter();
+    if ( exp )
+      exp->prepare( pendingFields );
     rule->symbol()->startRender( context );
   }
 }
@@ -193,7 +197,6 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
   }
 
   mCurrentRules.clear();
-  mCurrentFields.clear();
 }
 
 QList<QString> QgsRuleBasedRendererV2::usedAttributes()

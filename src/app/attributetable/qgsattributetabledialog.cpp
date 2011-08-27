@@ -24,8 +24,7 @@
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-#include <qgssearchstring.h>
-#include <qgssearchtreenode.h>
+#include <qgsexpression.h>
 
 #include "qgisapp.h"
 #include "qgsaddattrdialog.h"
@@ -532,23 +531,21 @@ void QgsAttributeTableDialog::updateSelectionFromLayer()
 void QgsAttributeTableDialog::doSearch( QString searchString )
 {
   // parse search string and build parsed tree
-  QgsSearchString search;
-  if ( !search.setString( searchString ) )
+  QgsExpression search( searchString );
+  if ( search.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorMsg() );
+    QMessageBox::critical( this, tr( "Parsing error" ), search.parserErrorString() );
     return;
   }
 
-  QgsSearchTreeNode* searchTree = search.tree();
-  if ( searchTree == NULL )
+  if ( ! search.prepare( mLayer->pendingFields() ) )
   {
-    QMessageBox::information( this, tr( "Search results" ), tr( "You've supplied an empty search string." ) );
-    return;
+    QMessageBox::critical( this, tr( "Evaluation error" ), search.evalErrorString() );
   }
 
   // TODO: fetch only necessary columns
-  // QStringList columns = searchTree->referencedColumns();
-  bool fetchGeom = searchTree->needsGeometry();
+  //QStringList columns = search.referencedColumns();
+  bool fetchGeom = search.needsGeometry();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mSelectedFeatures.clear();
@@ -558,11 +555,12 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
     for ( QgsFeatureList::Iterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), *it ) )
-        mSelectedFeatures << it->id();
+      QgsFeature& feat = *it;
+      if ( search.evaluate( &feat ).toInt() != 0 )
+        mSelectedFeatures << feat.id();
 
       // check if there were errors during evaluating
-      if ( searchTree->hasError() )
+      if ( search.hasEvalError() )
         break;
     }
   }
@@ -573,20 +571,20 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
 
     while ( mLayer->nextFeature( f ) )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), f ) )
+      if ( search.evaluate( &f ).toInt() != 0 )
         mSelectedFeatures << f.id();
 
       // check if there were errors during evaluating
-      if ( searchTree->hasError() )
+      if ( search.hasEvalError() )
         break;
     }
   }
 
   QApplication::restoreOverrideCursor();
 
-  if ( searchTree->hasError() )
+  if ( search.hasEvalError() )
   {
-    QMessageBox::critical( this, tr( "Error during search" ), searchTree->errorMsg() );
+    QMessageBox::critical( this, tr( "Error during search" ), search.evalErrorString() );
     return;
   }
 
@@ -625,12 +623,12 @@ void QgsAttributeTableDialog::search()
   QString str;
   if ( mQuery->displayText() == nullValue )
   {
-    str = QString( "%1 IS NULL" ).arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) );
+    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
     str = QString( "%1 %2 '%3'" )
-          .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
+          .arg( QgsExpression::quotedColumnRef( fieldName ) )
           .arg( numeric ? "=" : sensString )
           .arg( numeric
                 ? mQuery->displayText().replace( "'", "''" )

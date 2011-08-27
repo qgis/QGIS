@@ -20,7 +20,7 @@
 #include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include "qgsapplication.h"
-#include "qgssearchtreenode.h"
+#include "qgsexpression.h"
 #include "qgssymbolv2selectordialog.h"
 #include "qgslogger.h"
 #include "qstring.h"
@@ -444,32 +444,33 @@ void QgsRendererRulePropsDialog::buildExpression()
 
 void QgsRendererRulePropsDialog::testFilter()
 {
-  QgsSearchString filterParsed;
-  if ( ! filterParsed.setString( editFilter->text() ) )
+  QgsExpression filter( editFilter->text() );
+  if ( filter.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Error" ),  tr( "Filter expression parsing error:\n" ) + filterParsed.parserErrorMsg() );
+    QMessageBox::critical( this, tr( "Error" ),  tr( "Filter expression parsing error:\n" ) + filter.parserErrorString() );
     return;
   }
 
-  QgsSearchTreeNode* tree = filterParsed.tree();
-  if ( ! tree )
+  const QgsFieldMap& fields = mLayer->pendingFields();
+
+  if ( !filter.prepare( fields ) )
   {
-    QMessageBox::critical( this, tr( "Error" ), tr( "Filter is empty" ) );
+    QMessageBox::critical( this, tr( "Evaluation error" ), filter.evalErrorString() );
     return;
   }
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
-  const QgsFieldMap& fields = mLayer->pendingFields();
   mLayer->select( fields.keys(), QgsRectangle(), false );
 
   int count = 0;
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )
   {
-    if ( tree->checkAgainst( fields, f ) )
+    QVariant value = filter.evaluate( &f );
+    if ( value.toInt() != 0 )
       count++;
-    if ( tree->hasError() )
+    if ( filter.hasEvalError() )
       break;
   }
 
