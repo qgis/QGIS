@@ -222,7 +222,8 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorySymbol()
 static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, QgsSymbolV2* symbol, QgsVectorColorRampV2* ramp )
 {
   // sort the categories first
-  // TODO: sortVariantList(values);
+  //TODO: make the order configurable?
+  QgsSymbolLayerV2Utils::sortVariantList( values, Qt::DescendingOrder );
 
   int num = values.count();
 
