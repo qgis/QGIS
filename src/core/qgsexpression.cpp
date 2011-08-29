@@ -806,7 +806,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
 
 bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
 {
-  bool res = true;
+  bool res = mNode->prepare( parent, fields );
   foreach( Node* n, mList->list() )
   {
     res = res && n->prepare( parent, fields );
