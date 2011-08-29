@@ -45,10 +45,8 @@
 
 #define B_OP(x) exp_lval.b_op = QgsExpression::x
 #define U_OP(x) exp_lval.u_op = QgsExpression::x
-//#define TEXT      exp_lval.text = new QString(); *exp_lval.text = QString::fromUtf8(yytext);
+#define TEXT                   exp_lval.text = new QString(); *exp_lval.text = QString::fromUtf8(yytext);
 #define TEXT_FILTER(filter_fn) exp_lval.text = new QString(); *exp_lval.text = filter_fn( QString::fromUtf8(yytext) );
-#define TEXT  TEXT_FILTER()
-
 
 static QString stripText(QString text)
 {
