@@ -81,6 +81,9 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
 
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
+
+    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    static QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance );
 };
 
 class QPolygonF;

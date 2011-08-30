@@ -157,6 +157,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     double lineWidth() const { return mLineWidth; }
     void setColor( const QColor& c ) { mColor = c; }
     QColor color() const { return mColor; }
+    void setOffset( double offset ) { mOffset = offset; }
+    double offset() const { return mOffset; }
 
   protected:
     /**Distance (in mm or map units) between lines*/
@@ -166,6 +168,8 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QColor mColor;
     /**Vector line angle in degrees (0 = horizontal, counterclockwise)*/
     double mLineAngle;
+    /**Offset perpendicular to line direction*/
+    double mOffset;
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
