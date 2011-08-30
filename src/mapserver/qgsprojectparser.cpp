@@ -521,23 +521,23 @@ QStringList QgsProjectParser::identifyDisabledLayers() const
   return disabledList;
 }
 
-QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
+QStringList QgsProjectParser::supportedOutputCrsList() const
 {
-  QSet<QString> crsSet;
+  QStringList crsList;
   if ( !mXMLDoc )
   {
-    return crsSet;
+    return crsList;
   }
 
   QDomElement qgisElem = mXMLDoc->documentElement();
   if ( qgisElem.isNull() )
   {
-    return crsSet;
+    return crsList;
   }
   QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
   if ( propertiesElem.isNull() )
   {
-    return crsSet;
+    return crsList;
   }
   QDomElement wmsCrsElem = propertiesElem.firstChildElement( "WMSCrsList" );
   if ( !wmsCrsElem.isNull() )
@@ -545,7 +545,7 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
     QDomNodeList valueList = wmsCrsElem.elementsByTagName( "value" );
     for ( int i = 0; i < valueList.size(); ++i )
     {
-      crsSet.insert( valueList.at( i ).toElement().text() );
+      crsList.append( valueList.at( i ).toElement().text() );
     }
   }
   else
@@ -553,7 +553,7 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
     QDomElement wmsEpsgElem = propertiesElem.firstChildElement( "WMSEpsgList" );
     if ( wmsEpsgElem.isNull() )
     {
-      return crsSet;
+      return crsList;
     }
     QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
     bool conversionOk;
@@ -562,12 +562,12 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
       int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
       if ( conversionOk )
       {
-        crsSet.insert( QString( "EPSG:%1" ).arg( epsgNr ) );
+        crsList.append( QString( "EPSG:%1" ).arg( epsgNr ) );
       }
     }
   }
 
-  return crsSet;
+  return crsList;
 }
 
 bool QgsProjectParser::featureInfoWithWktGeometry() const

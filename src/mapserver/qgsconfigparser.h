@@ -85,9 +85,9 @@ class QgsConfigParser
     /**Returns an ID-list of layers which are not queryable*/
     virtual QStringList identifyDisabledLayers() const { return QStringList(); }
 
-    /**Returns a set of supported epsg codes for the capabilities document. An empty set means
+    /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
-    virtual QSet<QString> supportedOutputCrsSet() const { return QSet<QString>(); }
+    virtual QStringList supportedOutputCrsList() const { return QStringList(); }
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const { return false; }
@@ -153,6 +153,7 @@ class QgsConfigParser
     @return true in case of success*/
     bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
     void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList ) const;
+    void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const;
 
     void setDefaultLegendSettings();
 };

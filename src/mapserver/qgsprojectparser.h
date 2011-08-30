@@ -69,7 +69,7 @@ class QgsProjectParser: public QgsConfigParser
           </WMSEpsgList>
       </properties>
     */
-    virtual QSet<QString> supportedOutputCrsSet() const;
+    virtual QStringList supportedOutputCrsList() const;
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
