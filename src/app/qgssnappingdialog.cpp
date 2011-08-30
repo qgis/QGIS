@@ -89,16 +89,7 @@ QgsSnappingDialog::QgsSnappingDialog( QWidget* parent, QgsMapCanvas* canvas ): Q
   mLayerTreeWidget->resizeColumnToContents( 4 );
   mLayerTreeWidget->setSortingEnabled( true );
 
-  // read the digitizing settings
-  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
-  if ( topologicalEditing != 0 )
-  {
-    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Checked );
-  }
-  else
-  {
-    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
-  }
+  setTopologicalEditingState();
 }
 
 QgsSnappingDialog::QgsSnappingDialog()
@@ -181,6 +172,7 @@ void QgsSnappingDialog::apply()
 
 void QgsSnappingDialog::show()
 {
+  setTopologicalEditingState();
   if ( mDock )
     mDock->setVisible( true );
   else
@@ -319,4 +311,20 @@ void QgsSnappingDialog::layerWillBeRemoved( QString theLayerId )
 
   if ( item )
     delete item;
+}
+
+void QgsSnappingDialog::setTopologicalEditingState()
+{
+  // read the digitizing settings
+  int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
+  cbxEnableTopologicalEditingCheckBox->blockSignals( true );
+  if ( topologicalEditing != 0 )
+  {
+    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Checked );
+  }
+  else
+  {
+    cbxEnableTopologicalEditingCheckBox->setCheckState( Qt::Unchecked );
+  }
+  cbxEnableTopologicalEditingCheckBox->blockSignals( false );
 }
