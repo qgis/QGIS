@@ -1106,6 +1106,7 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
   provider->select( provider->attributeIndexes(), searchRect, addWktGeometry, true );
   while ( provider->nextFeature( feature ) )
   {
+    ++featureCounter;
     if ( featureCounter > nFeatures )
     {
       break;
