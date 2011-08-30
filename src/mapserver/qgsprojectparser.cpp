@@ -178,7 +178,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers );
       }
 
-      // combine bounding boxes of childs (groups/layers)
+      // combine bounding boxes of children (groups/layers)
       combineExtentAndCrsOfGroupChildren( layerElem, doc );
     }
     else if ( currentChildElem.tagName() == "legendlayer" )
