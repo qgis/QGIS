@@ -83,8 +83,10 @@ class CORE_EXPORT QgsSymbolLayerV2Utils
     /**Multiplies opacity of image pixel values with a (global) transparency value*/
     static void multiplyImageOpacity( QImage* image, qreal alpha );
 
-	/**Sorts the passed list in requested order*/
-	static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
+    /**Sorts the passed list in requested order*/
+    static void sortVariantList( QList<QVariant>& list, Qt::SortOrder order );
+    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
+    static QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance );
 };
 
 class QPolygonF;

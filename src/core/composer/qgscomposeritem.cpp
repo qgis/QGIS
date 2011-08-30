@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
+#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
 #include <cmath>
 
@@ -954,7 +955,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
   //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
   double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
-  QPointF p2 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
+  QPointF p2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
 
   if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
   {
@@ -965,8 +966,8 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
   //else assume that points 2 and 4 are on the rectangle boundaries. Calculate 1 and 3
   double distM2 = sqrt(( x2 - midX ) * ( x2 - midX ) + ( y2 - midY ) * ( y2 - midY ) );
-  QPointF p1 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
-  QPointF p3 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
+  QPointF p1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
+  QPointF p3 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
   width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
   height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
   return true;
@@ -1034,15 +1035,6 @@ bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, d
     }
   }
   return false;
-}
-
-QPointF QgsComposerItem::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
-{
-  double dx = directionPoint.x() - startPoint.x();
-  double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
-  double scaleFactor = distance / length;
-  return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height )
