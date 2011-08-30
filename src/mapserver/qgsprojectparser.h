@@ -136,9 +136,9 @@ class QgsProjectParser: public QgsConfigParser
                     QDomElement &parentLayer,
                     const QDomElement &legendElem,
                     const QMap<QString, QgsMapLayer *> &layerMap,
-                    const QStringList &nonIdentifiableLayers,
-                    const QgsRectangle &mapExtent,
-                    const QgsCoordinateReferenceSystem &mapCRS ) const;
+                    const QStringList &nonIdentifiableLayers ) const;
+
+    void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc ) const;
 
     /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
     QDomElement composerByName( const QString& composerName ) const;

@@ -806,7 +806,7 @@ QVariant QgsExpression::NodeInOperator::eval( QgsExpression* parent, QgsFeature*
 
 bool QgsExpression::NodeInOperator::prepare( QgsExpression* parent, const QgsFieldMap& fields )
 {
-  bool res = true;
+  bool res = mNode->prepare( parent, fields );
   foreach( Node* n, mList->list() )
   {
     res = res && n->prepare( parent, fields );
@@ -850,9 +850,12 @@ QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f
 bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsFieldMap& fields )
 {
   bool res = true;
-  foreach( Node* n, mArgs->list() )
+  if ( mArgs )
   {
-    res = res && n->prepare( parent, fields );
+    foreach( Node* n, mArgs->list() )
+    {
+      res = res && n->prepare( parent, fields );
+    }
   }
   return res;
 }
@@ -863,7 +866,7 @@ QString QgsExpression::NodeFunction::dump() const
   if ( fd.mParams == 0 )
     return fd.mName; // special column
   else
-    return QString( "%1(%2)" ).arg( fd.mName ).arg( mArgs->dump() ); // function
+    return QString( "%1(%2)" ).arg( fd.mName ).arg( mArgs ? mArgs->dump() : QString() ); // function
 }
 
 //

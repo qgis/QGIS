@@ -77,6 +77,9 @@ class QgsSnappingDialog: public QDialog, private Ui::QgsSnappingDialogBase
     QgsMapCanvas* mMapCanvas;
 
     QDockWidget *mDock;
+
+    /**Set checkbox value based on project setting*/
+    void setTopologicalEditingState();
 };
 
 #endif

@@ -18,8 +18,8 @@ MESSAGE(STATUS "Quantum GIS version: ${COMPLETE_VERSION} ${RELEASE_NAME} (${QGIS
 #############################################################
 # CMake settings
 
-# 2.6 required for QtWebkit
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
+# 2.6.2 required for VERSION_LESS
+CMAKE_MINIMUM_REQUIRED(VERSION 2.6.2)
 
 SET(CMAKE_COLOR_MAKEFILE ON)
 
