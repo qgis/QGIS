@@ -106,7 +106,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
   public:
 
     //! Constructor
-    QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
     ~QgsPgSourceSelect();
     //! Populate the connection list combo box
@@ -115,6 +115,11 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList selectedTables();
     //! Connection info (database, host, user, password)
     QString connectionInfo();
+
+  signals:
+    void addDatabaseLayers( QStringList const & layerPathList,
+                         QString const & providerKey );
+    void connectionsChanged();
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
@@ -155,11 +160,11 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
 
-    /**Inserts information about the spatial tables into mTableModel*/
-    bool getTableInfo( PGconn *pg, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
+    //! Connections manager mode
+    bool mManagerMode;
 
-    /** get primary key candidates (all int4 columns) */
-    QStringList pkCandidates( PGconn *pg, QString schemaName, QString viewName );
+    //! Embedded mode, without 'Close'
+    bool mEmbeddedMode;
 
     // queue another query for the thread
     void addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column );
@@ -175,12 +180,10 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
     QString m_connInfo;
-    QString m_privConnInfo;
     QStringList m_selectedTables;
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
-    PGconn *pd;
 
     //! Model that acts as datasource for mTableTreeWidget
     QgsDbTableModel mTableModel;
