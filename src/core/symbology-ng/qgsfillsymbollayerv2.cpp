@@ -427,22 +427,22 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
+  double outlinePixelWidth = context.outputPixelSize( mLineWidth );
+  double outputPixelDist = context.outputPixelSize( mDistance );
+  double outputPixelOffset = context.outputPixelSize( mOffset );
+
   //create image
   int height, width;
   if ( doubleNear( mLineAngle, 0 ) || doubleNear( mLineAngle, 360 ) || doubleNear( mLineAngle, 90 ) || doubleNear( mLineAngle, 180 ) || doubleNear( mLineAngle, 270 ) )
   {
-    height = context.outputPixelSize( mDistance );
+    height = outputPixelDist;
     width = height; //width can be set to arbitrary value
   }
   else
   {
-    height = fabs( context.outputPixelSize( mDistance ) / cos( mLineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
-    width = fabs( height / tan( mLineAngle * M_PI / 180 ) );
+    height = qAbs( outputPixelDist / cos( mLineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
+    width = qAbs( height / tan( mLineAngle * M_PI / 180 ) );
   }
-
-  double outlinePixelWidth = context.outputPixelSize( mLineWidth );
-  double outputPixelDist = context.outputPixelSize( mDistance );
-  double outputPixelOffset = context.outputPixelSize( mOffset );
 
   //depending on the angle, we might need to render into a larger image and use a subset of it
   int dx = 0;
@@ -479,14 +479,14 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
   }
   else if (( mLineAngle > 0 && mLineAngle < 90 ) || ( mLineAngle > 180 && mLineAngle < 270 ) )
   {
-    dx = outputPixelDist * cos(( 90 - mLineAngle ) * M_PI / 180 );
-    dy = outputPixelDist * sin(( 90 - mLineAngle ) * M_PI / 180 );
+    dx = outputPixelDist * cos(( 90 - mLineAngle ) * M_PI / 180.0 );
+    dy = outputPixelDist * sin(( 90 - mLineAngle ) * M_PI / 180.0 );
     p1 = QPoint( 0, height );
     p2 = QPoint( width, 0 );
     p3 = QPoint( -dx, height - dy );
-    p4 = QPoint( width - dx, -dy );
+    p4 = QPoint( width - dx, -dy ); //p4 = QPoint( p3.x() + width, p3.y() - height );
     p5 = QPoint( dx, height + dy );
-    p6 = QPoint( width + dx, dy );
+    p6 = QPoint( width + dx, dy ); //p6 = QPoint( p5.x() + width, p5.y() - height );
   }
   else if (( mLineAngle < 180 ) || ( mLineAngle > 270 && mLineAngle < 360 ) )
   {
@@ -495,34 +495,34 @@ void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& conte
     p1 = QPoint( width, height );
     p2 = QPoint( 0, 0 );
     p5 = QPoint( width + dx, height - dy );
-    p6 = QPoint( dx, -dy );
+    p6 = QPoint( p5.x() - width, p5.y() - height ); //p6 = QPoint( dx, -dy );
     p3 = QPoint( width - dx, height + dy );
-    p4 = QPoint( -dx, dy );
+    p4 = QPoint( p3.x() - width, p3.y() - height ); //p4 = QPoint( -dx, dy );
   }
 
   if ( !doubleNear( mOffset, 0.0 ) ) //shift everything
   {
-    QPointF p3Shift = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelDist + outputPixelOffset );
-    p3 = QPoint( p3Shift.x(), p3Shift.y() );
-    QPointF p4Shift = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelDist + outputPixelOffset );
-    p4 = QPoint( p4Shift.x(), p4Shift.y() );
-    QPointF p5Shift = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p5, outputPixelDist - outputPixelOffset );
-    p5 = QPoint( p5Shift.x(), p5Shift.y() );
-    QPointF p6Shift = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p6, outputPixelDist - outputPixelOffset );
-    p6 = QPoint( p6Shift.x(), p6Shift.y() );
+    QPointF tempPt;
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelDist + outputPixelOffset );
+    p3 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelDist + outputPixelOffset );
+    p4 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p5, outputPixelDist - outputPixelOffset );
+    p5 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p6, outputPixelDist - outputPixelOffset );
+    p6 = QPoint( tempPt.x(), tempPt.y() );
 
     //update p1, p2 last
-    p1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelOffset ).toPoint();
-    p2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelOffset ).toPoint();
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelOffset ).toPoint();
+    p1 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelOffset ).toPoint();
+    p2 = QPoint( tempPt.x(), tempPt.y() );;
   }
 
   p.drawLine( p1, p2 );
   p.drawLine( p3, p4 );
   p.drawLine( p5, p6 );
   p.end();
-
-  //debug
-  //patternImage.save( "/home/marco/tmp/patternImage.png", "png" );
 
   //set image to mBrush
   if ( !doubleNear( context.alpha(), 1.0 ) )
