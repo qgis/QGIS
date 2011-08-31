@@ -11,16 +11,46 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 
+#include <QDragEnterEvent>
+/**
+Utility class for correct drag&drop handling.
+
+We want to allow user to drag layers to qgis window. At the same time we do not
+accept drops of the items on our view - but if we ignore the drag enter action
+then qgis application consumes the drag events and it is possible to drop the
+items on the tree view although the drop is actually managed by qgis app.
+ */
+class QgsBrowserTreeView : public QTreeView
+{
+  public:
+    QgsBrowserTreeView( QWidget* parent ) : QTreeView( parent )
+    {
+      setDragDropMode( QTreeView::DragDrop ); // sets also acceptDrops + dragEnabled
+      setSelectionMode( QAbstractItemView::ExtendedSelection );
+      setContextMenuPolicy( Qt::CustomContextMenu );
+      setHeaderHidden( true );
+    }
+
+    void dragEnterEvent( QDragEnterEvent* e )
+    {
+      // accept drag enter so that our widget will not get ignored
+      // and drag events will not get passed to QgisApp
+      e->accept();
+    }
+    void dragMoveEvent( QDragMoveEvent* e )
+    {
+      // ignore all possibilities where an item could be dropped
+      // because we want that user drops the item on canvas / legend / app
+      e->ignore();
+    }
+};
+
 QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
     QDockWidget( parent ), mModel( NULL )
 {
   setWindowTitle( tr( "Browser" ) );
 
-  mBrowserView = new QTreeView( this );
-  mBrowserView->setDragEnabled( true );
-  mBrowserView->setDragDropMode( QTreeView::DragOnly );
-  mBrowserView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-  mBrowserView->setContextMenuPolicy( Qt::CustomContextMenu );
+  mBrowserView = new QgsBrowserTreeView( this );
   setWidget( mBrowserView );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );

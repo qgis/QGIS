@@ -102,7 +102,7 @@ lupdate$opts -verbose qgis_ts.pro
 if [ -n "$add" ]; then
 	for i in $add; do
 		if [ -f i18n/qgis_$i.ts ]; then
-			svn add i18n/qgis_$i.ts
+			git add i18n/qgis_$i.ts
 		else
 			echo "Translaiton for $i was not added"
 			exit 1

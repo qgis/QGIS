@@ -19,6 +19,7 @@
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgspoint.h"
+#include <QSvgRenderer>
 
 class QPainter;
 
@@ -50,6 +51,7 @@ class QgsGpsMarker : public QgsMapCanvasItem
 
   private:
     QgsCoordinateReferenceSystem mWgs84CRS;
+    QSvgRenderer mSvg;
 
 };
 

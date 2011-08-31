@@ -45,7 +45,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     {
       public:
         //! Constructor takes ownership of the symbol
-        Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(), QString label = QString(), QString description = QString() );
+        Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
+          QString label = QString(), QString description = QString() );
         Rule( const Rule& other );
         ~Rule();
         QString dump() const;
@@ -131,6 +132,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     void updateRuleAt( int index, const Rule& rule );
     //! remove the rule at the specified index
     void removeRuleAt( int index );
+    //! swap the two rules specified by the indices
+    void swapRules( int index1,  int index2);
 
     //////
 
@@ -150,6 +153,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     // temporary
     QList<Rule*> mCurrentRules;
     QgsSymbolV2* mCurrentSymbol;
+
 };
 
 #endif // QGSRULEBASEDRENDERERV2_H

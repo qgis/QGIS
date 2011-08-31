@@ -140,7 +140,7 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
 
   //check the db is available
   myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
-  if ( myResult )
+  if ( myResult && theMapLayer )
   {
     //if the database cannot be opened, add at least the epsg number of the source coordinate system
     crsNumbers.push_back( theMapLayer->crs().authid() );
@@ -256,20 +256,38 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
   QDomElement titleElement = layerElement.firstChildElement( "Title" );
 
   //In case the number of advertised CRS is constrained
-  QSet<QString> crsSet = supportedOutputCrsSet();
-
-  QStringList::const_iterator crsIt = crsList.constBegin();
-  for ( ; crsIt != crsList.constEnd(); ++crsIt )
+  QStringList constrainedCrsList = supportedOutputCrsList();
+  if ( constrainedCrsList.size() > 0 )
   {
-    if ( !crsSet.isEmpty() && !crsSet.contains( *crsIt ) ) //consider epsg output constraint
+    for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
-      continue;
+      appendCRSElementToLayer( layerElement, titleElement, constrainedCrsList.at( i ), doc );
+      /*QDomElement crsElement = doc.createElement( "CRS" );
+      QDomText crsText = doc.createTextNode( constrainedCrsList.at( i ) );
+      crsElement.appendChild( crsText );
+      layerElement.insertAfter( crsElement, titleElement );*/
     }
-    QDomElement crsElement = doc.createElement( "CRS" );
-    QDomText crsText = doc.createTextNode( *crsIt );
-    crsElement.appendChild( crsText );
-    layerElement.insertAfter( crsElement, titleElement );
   }
+  else //no crs constraint
+  {
+    QStringList::const_iterator crsIt = crsList.constBegin();
+    for ( ; crsIt != crsList.constEnd(); ++crsIt )
+    {
+      appendCRSElementToLayer( layerElement, titleElement, *crsIt, doc );
+      /*QDomElement crsElement = doc.createElement( "CRS" );
+      QDomText crsText = doc.createTextNode( *crsIt );
+      crsElement.appendChild( crsText );
+      layerElement.insertAfter( crsElement, titleElement );*/
+    }
+  }
+}
+
+void QgsConfigParser::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const
+{
+  QDomElement crsElement = doc.createElement( "CRS" );
+  QDomText crsTextNode = doc.createTextNode( crsText );
+  crsElement.appendChild( crsTextNode );
+  layerElement.insertAfter( crsElement, titleElement );
 }
 
 QgsComposition* QgsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const

@@ -15,7 +15,7 @@ Build-Depends:
  libgsl0-dev,
  libpq-dev,
  libqt4-dev (>=4.4.0),
- libqwt5-qt4-dev,
+ libqwt5-qt4-dev | libqwt-dev,
  libsqlite3-dev,
  proj (<< 4.7.0) | libproj-dev (>= 4.7.0),
  pyqt4-dev-tools,

@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
 #include "qgsrasterlayer.h"
+#include "qgsrenderer.h"
 #include "qgsvectorlayer.h"
 
 #include "qgscomposition.h"
@@ -42,6 +43,7 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
 {
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
+  setSelectionColor();
 }
 
 QgsProjectParser::~QgsProjectParser()
@@ -102,39 +104,19 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
   layerParentTitleElem.appendChild( layerParentTitleText );
   layerParentElem.appendChild( layerParentTitleElem );
 
-  QSet<QString> crsSet = supportedOutputCrsSet();
-  QSet<QString>::const_iterator crsIt = crsSet.constBegin();
-  for(; crsIt != crsSet.constEnd(); ++crsIt )
-  {
-    QDomElement crsElem = doc.createElement("CRS");
-    QDomText crsText = doc.createTextNode( *crsIt );
-    crsElem.appendChild( crsText );
-    layerParentElem.appendChild( crsElem );
-   }
-
-  //Map rectangle. If not empty, this will be set for every layer (instead of the bbox that comes from the data)
-  QgsRectangle mapExtent = mapRectangle();
-  QgsCoordinateReferenceSystem mapCRS;
-  if ( !mapExtent.isEmpty() )
-  {
-    mapCRS.createFromOgcWmsCrs( mapAuthid() );
-    appendExGeographicBoundingBox( layerParentElem, doc, mapExtent, mapCRS );
-  }
-
   QDomElement legendElem = mXMLDoc->documentElement().firstChildElement( "legend" );
 
-  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers, mapExtent, mapCRS );
+  addLayers( doc, layerParentElem, legendElem, layerMap, nonIdentifiableLayers );
 
   parentElement.appendChild( layerParentElem );
+  combineExtentAndCrsOfGroupChildren( layerParentElem, doc );
 }
 
 void QgsProjectParser::addLayers( QDomDocument &doc,
                                   QDomElement &parentElem,
                                   const QDomElement &legendElem,
                                   const QMap<QString, QgsMapLayer *> &layerMap,
-                                  const QStringList &nonIdentifiableLayers,
-                                  const QgsRectangle &mapExtent,
-                                  const QgsCoordinateReferenceSystem &mapCRS ) const
+                                  const QStringList &nonIdentifiableLayers ) const
 {
   QDomNodeList legendChildren = legendElem.childNodes();
   for ( int i = 0; i < legendChildren.size(); ++i )
@@ -188,63 +170,16 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
             pLayerMap.insert( layerId( *pLayerIt ), p->createLayerFromElement( *pLayerIt ) );
           }
 
-          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled, mapExtent, mapCRS );
+          p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled );
         }
       }
       else //normal (not embedded) legend group
       {
-        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers, mapExtent, mapCRS );
+        addLayers( doc, layerElem, currentChildElem, layerMap, nonIdentifiableLayers );
       }
 
-      // combine bounding boxes of childs (groups/layers)
-
-      QgsRectangle combinedGeographicBBox;
-      QSet<QString> combinedCRSSet;
-      bool firstBBox = true;
-      bool firstCRSSet = true;
-
-      QDomNodeList layerChildren = layerElem.childNodes();
-      for ( int j = 0; j < layerChildren.size(); ++j )
-      {
-        QDomElement childElem = layerChildren.at( j ).toElement();
-
-        if ( childElem.tagName() != "Layer" )
-          continue;
-
-        QgsRectangle bbox;
-        if ( exGeographicBoundingBox( childElem, bbox ) )
-        {
-          if ( firstBBox )
-          {
-            combinedGeographicBBox = bbox;
-            firstBBox = false;
-          }
-          else
-          {
-            combinedGeographicBBox.combineExtentWith( &bbox );
-          }
-        }
-
-        //combine crs set
-        QSet<QString> crsSet;
-        if ( crsSetForLayer( childElem, crsSet ) )
-        {
-          if ( firstCRSSet )
-          {
-            combinedCRSSet = crsSet;
-            firstCRSSet = false;
-          }
-          else
-          {
-            combinedCRSSet.intersect( crsSet );
-          }
-        }
-      }
-
-      appendCRSElementsToLayer( layerElem, doc, combinedCRSSet.toList() );
-
-      const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
-      appendExGeographicBoundingBox( layerElem, doc, combinedGeographicBBox, groupCRS );
+      // combine bounding boxes of children (groups/layers)
+      combineExtentAndCrsOfGroupChildren( layerElem, doc );
     }
     else if ( currentChildElem.tagName() == "legendlayer" )
     {
@@ -289,14 +224,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       appendCRSElementsToLayer( layerElem, doc, crsList );
 
       //Ex_GeographicBoundingBox
-      if ( mapExtent.isEmpty() )
-      {
-        appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
-      }
-      else
-      {
-        appendExGeographicBoundingBox( layerElem, doc, mapExtent, mapCRS );
-      }
+      appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
 
       //only one default style in project file mode
       QDomElement styleElem = doc.createElement( "Style" );
@@ -320,6 +248,56 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
   }
 }
 
+void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc ) const
+{
+  QgsRectangle combinedGeographicBBox;
+  QSet<QString> combinedCRSSet;
+  bool firstBBox = true;
+  bool firstCRSSet = true;
+
+  QDomNodeList layerChildren = groupElem.childNodes();
+  for ( int j = 0; j < layerChildren.size(); ++j )
+  {
+    QDomElement childElem = layerChildren.at( j ).toElement();
+
+    if ( childElem.tagName() != "Layer" )
+      continue;
+
+    QgsRectangle bbox;
+    if ( exGeographicBoundingBox( childElem, bbox ) )
+    {
+      if ( firstBBox )
+      {
+        combinedGeographicBBox = bbox;
+        firstBBox = false;
+      }
+      else
+      {
+        combinedGeographicBBox.combineExtentWith( &bbox );
+      }
+    }
+
+    //combine crs set
+    QSet<QString> crsSet;
+    if ( crsSetForLayer( childElem, crsSet ) )
+    {
+      if ( firstCRSSet )
+      {
+        combinedCRSSet = crsSet;
+        firstCRSSet = false;
+      }
+      else
+      {
+        combinedCRSSet.intersect( crsSet );
+      }
+    }
+  }
+
+  appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList() );
+
+  const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
+  appendExGeographicBoundingBox( groupElem, doc, combinedGeographicBBox, groupCRS );
+}
 
 QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching ) const
 {
@@ -543,23 +521,23 @@ QStringList QgsProjectParser::identifyDisabledLayers() const
   return disabledList;
 }
 
-QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
+QStringList QgsProjectParser::supportedOutputCrsList() const
 {
-  QSet<QString> crsSet;
+  QStringList crsList;
   if ( !mXMLDoc )
   {
-    return crsSet;
+    return crsList;
   }
 
   QDomElement qgisElem = mXMLDoc->documentElement();
   if ( qgisElem.isNull() )
   {
-    return crsSet;
+    return crsList;
   }
   QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
   if ( propertiesElem.isNull() )
   {
-    return crsSet;
+    return crsList;
   }
   QDomElement wmsCrsElem = propertiesElem.firstChildElement( "WMSCrsList" );
   if ( !wmsCrsElem.isNull() )
@@ -567,7 +545,7 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
     QDomNodeList valueList = wmsCrsElem.elementsByTagName( "value" );
     for ( int i = 0; i < valueList.size(); ++i )
     {
-      crsSet.insert( valueList.at( i ).toElement().text() );
+      crsList.append( valueList.at( i ).toElement().text() );
     }
   }
   else
@@ -575,7 +553,7 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
     QDomElement wmsEpsgElem = propertiesElem.firstChildElement( "WMSEpsgList" );
     if ( wmsEpsgElem.isNull() )
     {
-      return crsSet;
+      return crsList;
     }
     QDomNodeList valueList = wmsEpsgElem.elementsByTagName( "value" );
     bool conversionOk;
@@ -584,12 +562,12 @@ QSet<QString> QgsProjectParser::supportedOutputCrsSet() const
       int epsgNr = valueList.at( i ).toElement().text().toInt( &conversionOk );
       if ( conversionOk )
       {
-        crsSet.insert( QString( "EPSG:%1" ).arg( epsgNr ) );
+        crsList.append( QString( "EPSG:%1" ).arg( epsgNr ) );
       }
     }
   }
 
-  return crsSet;
+  return crsList;
 }
 
 bool QgsProjectParser::featureInfoWithWktGeometry() const
@@ -1414,5 +1392,52 @@ QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 #endif
 
   return projElems.join( "/" );
+}
+
+void QgsProjectParser::setSelectionColor()
+{
+  int red = 255;
+  int green = 255;
+  int blue = 0;
+  int alpha = 255;
+
+  //overwrite default selection color with settings from the project
+  if ( mXMLDoc )
+  {
+    QDomElement qgisElem = mXMLDoc->documentElement();
+    if ( !qgisElem.isNull() )
+    {
+      QDomElement propertiesElem = qgisElem.firstChildElement( "properties" );
+      if ( !propertiesElem.isNull() )
+      {
+        QDomElement guiElem = propertiesElem.firstChildElement( "Gui" );
+        if ( !guiElem.isNull() )
+        {
+          QDomElement redElem = guiElem.firstChildElement( "SelectionColorRedPart" );
+          if ( !redElem.isNull() )
+          {
+            red = redElem.text().toInt();
+          }
+          QDomElement greenElem = guiElem.firstChildElement( "SelectionColorGreenPart" );
+          if ( !greenElem.isNull() )
+          {
+            green = greenElem.text().toInt();
+          }
+          QDomElement blueElem = guiElem.firstChildElement( "SelectionColorBluePart" );
+          if ( !blueElem.isNull() )
+          {
+            blue = blueElem.text().toInt();
+          }
+          QDomElement alphaElem = guiElem.firstChildElement( "SelectionColorAlphaPart" );
+          if ( !alphaElem.isNull() )
+          {
+            alpha = alphaElem.text().toInt();
+          }
+        }
+      }
+    }
+  }
+
+  QgsRenderer::setSelectionColor( QColor( red, green, blue, alpha ) );
 }
 

@@ -69,7 +69,7 @@ class QgsProjectParser: public QgsConfigParser
           </WMSEpsgList>
       </properties>
     */
-    virtual QSet<QString> supportedOutputCrsSet() const;
+    virtual QStringList supportedOutputCrsList() const;
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const;
@@ -136,15 +136,18 @@ class QgsProjectParser: public QgsConfigParser
                     QDomElement &parentLayer,
                     const QDomElement &legendElem,
                     const QMap<QString, QgsMapLayer *> &layerMap,
-                    const QStringList &nonIdentifiableLayers,
-                    const QgsRectangle &mapExtent,
-                    const QgsCoordinateReferenceSystem &mapCRS ) const;
+                    const QStringList &nonIdentifiableLayers ) const;
+
+    void combineExtentAndCrsOfGroupChildren( QDomElement& groupElement, QDomDocument& doc ) const;
 
     /**Returns dom element of composer (identified by composer title) or a null element in case of error*/
     QDomElement composerByName( const QString& composerName ) const;
 
     /**Converts a (possibly relative) path to absolute*/
     QString convertToAbsolutePath( const QString& file ) const;
+
+    /**Sets global selection color from the project or yellow if not defined in project*/
+    void setSelectionColor();
 };
 
 #endif // QGSPROJECTPARSER_H

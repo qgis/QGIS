@@ -94,6 +94,13 @@ void QgsGPSConnection::clearLastGPSInformation()
   mLastGPSInformation.satellitesInView.clear();
   mLastGPSInformation.speed = 0;
   mLastGPSInformation.vdop = 0;
+  mLastGPSInformation.quality = -1;  // valid values: 0,1,2, maybe others
+  mLastGPSInformation.satellitesUsed = 0;
+  mLastGPSInformation.fixMode = ' ';
+  mLastGPSInformation.fixType = 0; // valid values: 1,2,3
+  mLastGPSInformation.status = ' '; // valid values: A,V
   mLastGPSInformation.utcDateTime.setDate( QDate() );
+  mLastGPSInformation.satPrn.clear();
   mLastGPSInformation.utcDateTime.setTime( QTime() );
+  mLastGPSInformation.satInfoComplete = false;
 }

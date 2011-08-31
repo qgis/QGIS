@@ -10,7 +10,7 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 
 DISTRIBUTION := $(shell dpkg-parsechangelog --format rfc822 | sed -ne "s/^Distribution: //p")
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"lenny squeeze hardy intrepid jaunty karmic lucid maverick natty"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"squeeze hardy intrepid jaunty karmic lucid maverick natty oneiric"))
 DISTRIBUTION := sid
 endif
 
@@ -32,15 +32,19 @@ CMAKE_OPTS := \
 	-D QGIS_CGIBIN_SUBDIR=/usr/lib/cgi-bin \
 	-D WITH_APIDOC=TRUE
 
-ifneq (,$(findstring $(DISTRIBUTION),"natty"))
+ifneq (,$(findstring $(DISTRIBUTION),"natty oneiric"))
 	CMAKE_OPTS += -D QT_QTWEBKIT_INCLUDE_DIR=/usr/include/QtWebKit
 endif
 
-#ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty sid"))
+#ifeq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric sid"))
 	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=TRUE
 #else
 #	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALITE=FALSE
 #endif
+
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	CMAKE_OPTS += -D WITH_GLOBE=TRUE
+endif
 
 ifneq (,$(findstring $(DISTRIBUTION),"hardy intrepid"))
 LDFLAGS += -Wl,--as-needed -Wl,--no-undefined
@@ -119,11 +123,7 @@ clean: cleantemplates
 install: build
 	dh_testdir
 	dh_testroot
-ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
-	dh_clean -k 
-else
 	dh_prep
-endif
 	dh_installdirs
 
 	# Add here commands to install the package into debian/tmp.
@@ -160,12 +160,13 @@ binary-arch: build install
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qgis
 	install -o root -g root -m 755 $(CURDIR)/debian/qgis.sh $(CURDIR)/debian/qgis-plugin-grass/usr/bin/qbrowser
 	
+ifneq (,$(findstring $(DISTRIBUTION),"sid"))
+	dh_python2 --no-guessing-versions
+else
 	dh_pycentral
+endif
 	dh_installmenu
 	dh_icons
-ifneq (,$(findstring $(DISTRIBUTION),"lenny hardy"))
-	dh_desktop
-endif
 	dh_installman -pqgis qgis.1 qbrowser.1
 	dh_installmime -pqgis
 	dh_link

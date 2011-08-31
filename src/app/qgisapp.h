@@ -69,6 +69,10 @@ class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
+class QgsDecorationCopyright;
+class QgsDecorationNorthArrow;
+class QgsDecorationScaleBar;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -265,7 +269,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionTileScale() { return mActionTileScale; }
-    QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -483,8 +486,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
-    //! Show GPS tool
-    void showGpsTool();
     //! Show tile scale slider
     void showTileScale();
     //! zoom to extent of layer
@@ -867,6 +868,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool createDB();
     void createMapTips();
     void updateCRSStatusBar();
+    void createDecorations();
 
     // actions for menus and toolbars -----------------
 
@@ -1053,6 +1055,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
+
+    QgsDecorationCopyright* mDecorationCopyright;
+    QgsDecorationNorthArrow* mDecorationNorthArrow;
+    QgsDecorationScaleBar* mDecorationScaleBar;
 
     int mLastComposerId;
 

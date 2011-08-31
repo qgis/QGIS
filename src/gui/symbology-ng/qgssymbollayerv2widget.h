@@ -269,14 +269,14 @@ class QgsLinePatternFillSymbolLayer;
 
 class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Widget, private Ui::WidgetLinePatternFill
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
 
     QgsLinePatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsLinePatternFillSymbolLayerWidget( vl ); }
 
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
 
   protected:
@@ -286,6 +286,7 @@ class GUI_EXPORT QgsLinePatternFillSymbolLayerWidget : public QgsSymbolLayerV2Wi
     void on_mAngleSpinBox_valueChanged( double d );
     void on_mDistanceSpinBox_valueChanged( double d );
     void on_mLineWidthSpinBox_valueChanged( double d );
+    void on_mOffsetSpinBox_valueChanged( double d );
     void on_mColorPushButton_clicked();
     void on_mOutlinePushButton_clicked();
 };
@@ -298,13 +299,13 @@ class QgsPointPatternFillSymbolLayer;
 
 class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::WidgetPointPatternFill
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsPointPatternFillSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = NULL );
     static QgsSymbolLayerV2Widget* create( const QgsVectorLayer* vl ) { return new QgsPointPatternFillSymbolLayerWidget( vl ); }
 
-    virtual void setSymbolLayer( QgsSymbolLayerV2* layer);
+    virtual void setSymbolLayer( QgsSymbolLayerV2* layer );
     virtual QgsSymbolLayerV2* symbolLayer();
 
   protected:
@@ -312,10 +313,10 @@ class GUI_EXPORT QgsPointPatternFillSymbolLayerWidget: public QgsSymbolLayerV2Wi
     void updateMarkerIcon();
 
   private slots:
-    void on_mHorizontalDistanceSpinBox_valueChanged ( double d );
-    void on_mVerticalDistanceSpinBox_valueChanged ( double d );
-    void on_mHorizontalDisplacementSpinBox_valueChanged ( double d );
-    void on_mVerticalDisplacementSpinBox_valueChanged ( double d );
+    void on_mHorizontalDistanceSpinBox_valueChanged( double d );
+    void on_mVerticalDistanceSpinBox_valueChanged( double d );
+    void on_mHorizontalDisplacementSpinBox_valueChanged( double d );
+    void on_mVerticalDisplacementSpinBox_valueChanged( double d );
     void on_mChangeMarkerButton_clicked();
 };
 

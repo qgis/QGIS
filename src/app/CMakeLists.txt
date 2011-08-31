@@ -21,6 +21,12 @@ SET(QGIS_APP_SRCS
   qgscustomprojectiondialog.cpp
   qgsdbfilterproxymodel.cpp
   qgsdbtablemodel.cpp
+  qgsdecorationcopyright.cpp
+  qgsdecorationcopyrightdialog.cpp
+  qgsdecorationnortharrow.cpp
+  qgsdecorationnortharrowdialog.cpp
+  qgsdecorationscalebar.cpp
+  qgsdecorationscalebardialog.cpp
   qgsembedlayerdialog.cpp
   qgsformannotationdialog.cpp
   qgsdelattrdialog.cpp
@@ -127,12 +133,12 @@ SET(QGIS_APP_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsogrsublayersdialog.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
-  
+
   attributetable/qgsattributetabledialog.cpp
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
-) 
+)
 
 
 SET (QGIS_APP_MOC_HDRS
@@ -153,6 +159,12 @@ SET (QGIS_APP_MOC_HDRS
   qgscustomization.h
   qgscustomprojectiondialog.h
   qgsdbtablemodel.h
+  qgsdecorationcopyright.h
+  qgsdecorationcopyrightdialog.h
+  qgsdecorationnortharrow.h
+  qgsdecorationnortharrowdialog.h
+  qgsdecorationscalebar.h
+  qgsdecorationscalebardialog.h
   qgsdelattrdialog.h
   qgsdisplayangle.h
   qgsembedlayerdialog.h
@@ -231,44 +243,77 @@ SET (QGIS_APP_MOC_HDRS
   legend/qgslegend.h
   legend/qgsapplegendinterface.h
   legend/qgslegendlayer.h
-  
+
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
   ogr/qgsogrsublayersdialog.h
   ogr/qgsvectorlayersaveasdialog.h
-  
+
   attributetable/qgsattributetabledialog.h
 
   gps/qgsgpsinformationwidget.h
   )
 
 IF(WITH_INTERNAL_QWTPOLAR)
-  SET(QGIS_APP_SRCS
-    ${QGIS_APP_SRCS}
-    gps/qwtpolar/qwt_polar_canvas.cpp  
-    gps/qwtpolar/qwt_polar_curve.cpp
-    gps/qwtpolar/qwt_polar_fitter.cpp  
-    gps/qwtpolar/qwt_polar_grid.cpp   
-    gps/qwtpolar/qwt_polar_itemdict.cpp  
-    gps/qwtpolar/qwt_polar_item.cpp
-    gps/qwtpolar/qwt_polar_layout.cpp    
-    gps/qwtpolar/qwt_polar_magnifier.cpp
-    gps/qwtpolar/qwt_polar_marker.cpp     
-    gps/qwtpolar/qwt_polar_panner.cpp
-    gps/qwtpolar/qwt_polar_plot.cpp 
-    gps/qwtpolar/qwt_polar_point.cpp
-    gps/qwtpolar/qwt_polar_spectrogram.cpp
-  )
+  IF(QWT_VERSION_STR VERSION_LESS "6.0.0")
+    SET(QGIS_APP_SRCS
+      ${QGIS_APP_SRCS}
+      gps/qwtpolar-0.1/qwt_polar_canvas.cpp
+      gps/qwtpolar-0.1/qwt_polar_curve.cpp
+      gps/qwtpolar-0.1/qwt_polar_fitter.cpp
+      gps/qwtpolar-0.1/qwt_polar_grid.cpp
+      gps/qwtpolar-0.1/qwt_polar_itemdict.cpp
+      gps/qwtpolar-0.1/qwt_polar_item.cpp
+      gps/qwtpolar-0.1/qwt_polar_layout.cpp
+      gps/qwtpolar-0.1/qwt_polar_magnifier.cpp
+      gps/qwtpolar-0.1/qwt_polar_marker.cpp
+      gps/qwtpolar-0.1/qwt_polar_panner.cpp
+      gps/qwtpolar-0.1/qwt_polar_plot.cpp
+      gps/qwtpolar-0.1/qwt_polar_point.cpp
+      gps/qwtpolar-0.1/qwt_polar_spectrogram.cpp
+    )
 
-  SET (QGIS_APP_MOC_HDRS
-    ${QGIS_APP_MOC_HDRS}
-    gps/qwtpolar/qwt_polar_canvas.h  
-    gps/qwtpolar/qwt_polar_magnifier.h
-    gps/qwtpolar/qwt_polar_panner.h
-    gps/qwtpolar/qwt_polar_plot.h 
-  )
+    SET (QGIS_APP_MOC_HDRS
+      ${QGIS_APP_MOC_HDRS}
+      gps/qwtpolar-0.1/qwt_polar_canvas.h
+      gps/qwtpolar-0.1/qwt_polar_magnifier.h
+      gps/qwtpolar-0.1/qwt_polar_panner.h
+      gps/qwtpolar-0.1/qwt_polar_plot.h
+    )
 
-  SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar)
+    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-0.1)
+  ELSE(QWT_VERSION_STR VERSION_LESS "6.0.0")
+    SET(QGIS_APP_SRCS
+      ${QGIS_APP_SRCS}
+      gps/qwtpolar-1.0/qwt_polar_canvas.cpp
+      gps/qwtpolar-1.0/qwt_polar_curve.cpp
+      gps/qwtpolar-1.0/qwt_polar_fitter.cpp
+      gps/qwtpolar-1.0/qwt_polar_grid.cpp
+      gps/qwtpolar-1.0/qwt_polar_item.cpp
+      gps/qwtpolar-1.0/qwt_polar_itemdict.cpp
+      gps/qwtpolar-1.0/qwt_polar_layout.cpp
+      gps/qwtpolar-1.0/qwt_polar_magnifier.cpp
+      gps/qwtpolar-1.0/qwt_polar_marker.cpp
+      gps/qwtpolar-1.0/qwt_polar_panner.cpp
+      gps/qwtpolar-1.0/qwt_polar_picker.cpp
+      gps/qwtpolar-1.0/qwt_polar_plot.cpp
+      gps/qwtpolar-1.0/qwt_polar_renderer.cpp
+      gps/qwtpolar-1.0/qwt_polar_spectrogram.cpp
+    )
+
+    SET (QGIS_APP_MOC_HDRS
+      ${QGIS_APP_MOC_HDRS}
+      gps/qwtpolar-1.0/qwt_polar_canvas.h
+      gps/qwtpolar-1.0/qwt_polar_magnifier.h
+      gps/qwtpolar-1.0/qwt_polar_panner.h
+      gps/qwtpolar-1.0/qwt_polar_picker.h
+      gps/qwtpolar-1.0/qwt_polar_plot.h
+      gps/qwtpolar-1.0/qwt_polar_renderer.h
+    )
+
+    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.0)
+  ENDIF(QWT_VERSION_STR VERSION_LESS "6.0.0")
+
   SET(QWTPOLAR_LIBRARY "")
 ENDIF(WITH_INTERNAL_QWTPOLAR)
 
@@ -329,7 +374,7 @@ IF (WIN32)
     # application icon
     # resource compilation for MinGW
     ADD_CUSTOM_COMMAND( OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/icon.o
-      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc 
+      COMMAND ${WINDRES} -I${CMAKE_CURRENT_SOURCE_DIR} -i${CMAKE_CURRENT_SOURCE_DIR}/qgis_win32.rc
       -o ${CMAKE_CURRENT_BINARY_DIR}/icon.o )
     SET(QGIS_APP_SRCS ${QGIS_APP_SRCS} ${CMAKE_CURRENT_BINARY_DIR}/icon.o)
   ENDIF (MSVC)
@@ -389,7 +434,7 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QT_QTSQL_LIBRARY}
   ${QT_QTUITOOLS_LIBRARY}
   #should only be needed for win
-  ${QT_QTMAIN_LIBRARY} 
+  ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
   qgis_core
   qgis_gui
@@ -398,7 +443,7 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
 
 IF( WIN32 )
   ADD_DEFINITIONS(-DQWT_DLL)
-ENDIF( WIN32 ) 
+ENDIF( WIN32 )
 
 IF(NOT WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${SQLITE_LIBRARY})

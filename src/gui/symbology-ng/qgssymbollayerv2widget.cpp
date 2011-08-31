@@ -392,7 +392,7 @@ void QgsSimpleFillSymbolLayerV2Widget::offsetChanged()
 
 ///////////
 
-QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget(const QgsVectorLayer* vl, QWidget* parent )
+QgsMarkerLineSymbolLayerV2Widget::QgsMarkerLineSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent )
     : QgsSymbolLayerV2Widget( parent, vl )
 {
   mLayer = NULL;
@@ -916,20 +916,21 @@ QgsLinePatternFillSymbolLayerWidget::QgsLinePatternFillSymbolLayerWidget( const 
   setupUi( this );
 }
 
-void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer)
+void QgsLinePatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if( layer->layerType() != "LinePatternFill" )
+  if ( layer->layerType() != "LinePatternFill" )
   {
     return;
   }
 
   QgsLinePatternFillSymbolLayer* patternLayer = static_cast<QgsLinePatternFillSymbolLayer*>( layer );
-  if( patternLayer )
+  if ( patternLayer )
   {
     mLayer = patternLayer;
-    mAngleSpinBox->setValue( mLayer->angle() );
+    mAngleSpinBox->setValue( mLayer->lineAngle() );
     mDistanceSpinBox->setValue( mLayer->distance() );
     mLineWidthSpinBox->setValue( mLayer->lineWidth() );
+    mOffsetSpinBox->setValue( mLayer->offset() );
   }
 }
 
@@ -940,16 +941,16 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayerWidget::symbolLayer()
 
 void QgsLinePatternFillSymbolLayerWidget::on_mAngleSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
-    mLayer->setAngle( d );
+    mLayer->setLineAngle( d );
     emit changed();
   }
 }
 
 void QgsLinePatternFillSymbolLayerWidget::on_mDistanceSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
     mLayer->setDistance( d );
     emit changed();
@@ -958,19 +959,28 @@ void QgsLinePatternFillSymbolLayerWidget::on_mDistanceSpinBox_valueChanged( doub
 
 void QgsLinePatternFillSymbolLayerWidget::on_mLineWidthSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
     mLayer->setLineWidth( d );
     emit changed();
   }
 }
 
+void QgsLinePatternFillSymbolLayerWidget::on_mOffsetSpinBox_valueChanged( double d )
+{
+  if ( mLayer )
+  {
+    mLayer->setOffset( d );
+    emit changed();
+  }
+}
+
 void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
 {
-  if( mLayer )
+  if ( mLayer )
   {
     QColor c = QColorDialog::getColor( mLayer->color() );
-    if( c.isValid() )
+    if ( c.isValid() )
     {
       mLayer->setColor( c );
       emit changed();
@@ -980,7 +990,7 @@ void QgsLinePatternFillSymbolLayerWidget::on_mColorPushButton_clicked()
 
 void QgsLinePatternFillSymbolLayerWidget::on_mOutlinePushButton_clicked()
 {
-  if( mLayer )
+  if ( mLayer )
   {
     QgsSymbolV2PropertiesDialog dlg( mLayer->subSymbol(), mVectorLayer, this );
     if ( dlg.exec() == QDialog::Rejected )
@@ -1003,9 +1013,9 @@ QgsPointPatternFillSymbolLayerWidget::QgsPointPatternFillSymbolLayerWidget( cons
 }
 
 
-void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer)
+void QgsPointPatternFillSymbolLayerWidget::setSymbolLayer( QgsSymbolLayerV2* layer )
 {
-  if( !layer || layer->layerType() != "PointPatternFill" )
+  if ( !layer || layer->layerType() != "PointPatternFill" )
   {
     return;
   }
@@ -1032,36 +1042,36 @@ void QgsPointPatternFillSymbolLayerWidget::updateMarkerIcon()
   }
 }
 
-void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDistanceSpinBox_valueChanged ( double d )
+void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDistanceSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
     mLayer->setDistanceX( d );
     emit changed();
   }
 }
 
-void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDistanceSpinBox_valueChanged ( double d )
+void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDistanceSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
     mLayer->setDistanceY( d );
     emit changed();
   }
 }
 
-void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDisplacementSpinBox_valueChanged ( double d )
+void QgsPointPatternFillSymbolLayerWidget::on_mHorizontalDisplacementSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
     mLayer->setDisplacementX( d );
     emit changed();
   }
 }
 
-void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_valueChanged ( double d )
+void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_valueChanged( double d )
 {
-  if( mLayer )
+  if ( mLayer )
   {
     mLayer->setDisplacementY( d );
     emit changed();
@@ -1070,7 +1080,7 @@ void QgsPointPatternFillSymbolLayerWidget::on_mVerticalDisplacementSpinBox_value
 
 void QgsPointPatternFillSymbolLayerWidget::on_mChangeMarkerButton_clicked()
 {
-  if( !mLayer )
+  if ( !mLayer )
   {
     return;
   }

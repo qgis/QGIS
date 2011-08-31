@@ -56,31 +56,45 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="mColorLabel">
      <property name="text">
       <string>Color</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QPushButton" name="mColorPushButton">
      <property name="text">
       <string>Change</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0">
+   <item row="5" column="0">
     <widget class="QLabel" name="mOutlineLabel">
      <property name="text">
       <string>Outline</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
+   <item row="5" column="1">
     <widget class="QPushButton" name="mOutlinePushButton">
      <property name="text">
       <string>Change</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mOffsetLabel">
+     <property name="text">
+      <string>Offset</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QDoubleSpinBox" name="mOffsetSpinBox">
+     <property name="minimum">
+      <double>-99.000000000000000</double>
      </property>
     </widget>
    </item>

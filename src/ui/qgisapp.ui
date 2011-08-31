@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1054</width>
-     <height>24</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -98,6 +98,14 @@
      <addaction name="mActionMeasureArea"/>
      <addaction name="mActionMeasureAngle"/>
     </widget>
+    <widget class="QMenu" name="menuDecorations">
+     <property name="title">
+      <string>&amp;Decorations</string>
+     </property>
+     <addaction name="mActionDecorationCopyright"/>
+     <addaction name="mActionDecorationNorthArrow"/>
+     <addaction name="mActionDecorationScaleBar"/>
+    </widget>
     <addaction name="mActionPan"/>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
@@ -113,12 +121,12 @@
     <addaction name="mActionZoomNext"/>
     <addaction name="mActionZoomActualSize"/>
     <addaction name="separator"/>
+    <addaction name="menuDecorations"/>
     <addaction name="mActionMapTips"/>
     <addaction name="mActionNewBookmark"/>
     <addaction name="mActionShowBookmarks"/>
     <addaction name="mActionDraw"/>
     <addaction name="mActionTileScale"/>
-    <addaction name="mActionGpsTool"/>
    </widget>
    <widget class="QMenu" name="mLayerMenu">
     <property name="title">
@@ -1187,11 +1195,6 @@
     <string>Tile scale slider</string>
    </property>
   </action>
-  <action name="mActionGpsTool">
-   <property name="text">
-    <string>Live GPS tracking</string>
-   </property>
-  </action>
   <action name="mActionLayerProperties">
    <property name="text">
     <string>Properties...</string>
@@ -1487,6 +1490,42 @@
    </property>
    <property name="toolTip">
     <string>Embed layers and groups from other project files</string>
+   </property>
+  </action>
+  <action name="mActionDecorationCopyright">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/plugins/copyright_label.png</normaloff>:/images/themes/default/plugins/copyright_label.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Copyright Label</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a copyright label that is displayed on the map canvas.</string>
+   </property>
+  </action>
+  <action name="mActionDecorationNorthArrow">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/plugins/north_arrow.png</normaloff>:/images/themes/default/plugins/north_arrow.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;North Arrow</string>
+   </property>
+   <property name="whatsThis">
+    <string>&quot;Creates a north arrow that is displayed on the map canvas&quot;</string>
+   </property>
+  </action>
+  <action name="mActionDecorationScaleBar">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/plugins/scale_bar.png</normaloff>:/images/themes/default/plugins/scale_bar.png</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Scale Bar</string>
+   </property>
+   <property name="whatsThis">
+    <string>Creates a scale bar that is displayed on the map canvas</string>
    </property>
   </action>
  </widget>

@@ -149,14 +149,16 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     QgsSymbolLayerV2* clone() const;
 
     //getters and setters
-    void setAngle( double a ){ mAngle = a; }
-    double angle() const { return mAngle; }
-    void setDistance( double d ){ mDistance = d; }
+    void setLineAngle( double a ) { mLineAngle = a; }
+    double lineAngle() const { return mLineAngle; }
+    void setDistance( double d ) { mDistance = d; }
     double distance() const { return mDistance; }
-    void setLineWidth( double w ){ mLineWidth = w; }
+    void setLineWidth( double w ) { mLineWidth = w; }
     double lineWidth() const { return mLineWidth; }
-    void setColor( const QColor& c ){ mColor = c; }
-    QColor color() const{ return mColor; }
+    void setColor( const QColor& c ) { mColor = c; }
+    QColor color() const { return mColor; }
+    void setOffset( double offset ) { mOffset = offset; }
+    double offset() const { return mOffset; }
 
   protected:
     /**Distance (in mm or map units) between lines*/
@@ -164,8 +166,10 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
     /**Line width (in mm or map units)*/
     double mLineWidth;
     QColor mColor;
-    //todo: line type
-     double mAngle;
+    /**Vector line angle in degrees (0 = horizontal, counterclockwise)*/
+    double mLineAngle;
+    /**Offset perpendicular to line direction*/
+    double mOffset;
 };
 
 class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
@@ -193,10 +197,10 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDistanceY( double d ) { mDistanceY = d; }
 
     double displacementX() const { return mDisplacementX; }
-    void setDisplacementX( double d ){ mDisplacementX = d; }
+    void setDisplacementX( double d ) { mDisplacementX = d; }
 
     double displacementY() const { return mDisplacementY; }
-    void setDisplacementY( double d ){ mDisplacementY = d; }
+    void setDisplacementY( double d ) { mDisplacementY = d; }
 
     bool setSubSymbol( QgsSymbolV2* symbol );
     virtual QgsSymbolV2* subSymbol() { return mMarkerSymbol; }

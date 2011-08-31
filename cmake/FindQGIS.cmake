@@ -96,6 +96,7 @@ ELSE(WIN32)
       PATHS
         /usr/include/qgis
         /usr/local/include/qgis
+        /Library/Frameworks/qgis_core.framework/Headers
         ${QGIS_MAC_PATH}/Frameworks/qgis_core.framework/Headers
         "$ENV{LIB_DIR}/include/qgis"
     )
@@ -103,11 +104,15 @@ ELSE(WIN32)
     IF (APPLE)
       FIND_PATH(QGIS_GUI_INCLUDE_DIR
         NAMES qgisgui.h
-        PATHS ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
+        PATHS
+          /Library/Frameworks/qgis_core.framework/Headers
+          ${QGIS_MAC_PATH}/Frameworks/qgis_gui.framework/Headers
       )
       FIND_PATH(QGIS_ANALYSIS_INCLUDE_DIR
         NAMES qgsinterpolator.h
-        PATHS ${QGIS_MAC_PATH}/Frameworks/qgis_analysis.framework/Headers
+        PATHS
+          /Library/Frameworks/qgis_analysis.framework/Headers
+          ${QGIS_MAC_PATH}/Frameworks/qgis_analysis.framework/Headers
       )
       SET(QGIS_INCLUDE_DIR
         ${QGIS_INCLUDE_DIR}
@@ -121,6 +126,7 @@ ELSE(WIN32)
         /usr/lib64
         /usr/lib
         /usr/local/lib
+        /Library/Frameworks
         ${QGIS_MAC_PATH}/Frameworks
         "$ENV{LIB_DIR}/lib/"
     )
@@ -130,6 +136,7 @@ ELSE(WIN32)
         /usr/lib64
         /usr/lib
         /usr/local/lib
+        /Library/Frameworks
         ${QGIS_MAC_PATH}/Frameworks
         "$ENV{LIB_DIR}/lib/"
     )
@@ -139,6 +146,7 @@ ELSE(WIN32)
         /usr/lib64
         /usr/lib
         /usr/local/lib
+        /Library/Frameworks
         ${QGIS_MAC_PATH}/Frameworks
         "$ENV{LIB_DIR}/lib/"
     )

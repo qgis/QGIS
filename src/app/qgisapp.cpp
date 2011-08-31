@@ -114,6 +114,9 @@
 #include "qgscustomization.h"
 #include "qgscustomprojectiondialog.h"
 #include "qgsdatasourceuri.h"
+#include "qgsdecorationcopyright.h"
+#include "qgsdecorationnortharrow.h"
+#include "qgsdecorationscalebar.h"
 #include "qgsembedlayerdialog.h"
 #include "qgsencodingfiledialog.h"
 #include "qgsexception.h"
@@ -437,6 +440,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   initLegend();
   createOverview();
   createMapTips();
+  createDecorations();
   readSettings();
   updateRecentProjectPaths();
   activateDeactivateLayerRelatedActions( NULL );
@@ -451,6 +455,18 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mBrowserWidget->setObjectName( "Browser" );
   addDockWidget( Qt::LeftDockWidgetArea, mBrowserWidget );
   mBrowserWidget->hide();
+
+  // create the GPS tool on starting QGIS - this is like the Browser
+  mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
+  //create the dock widget
+  mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
+  mpGpsDock->setObjectName( "GPSInformation" );
+  mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
+  // add to the Panel submenu
+  // now add our widget to the dock - ownership of the widget is passed to the dock
+  mpGpsDock->setWidget( mpGpsWidget );
+  mpGpsDock->hide();
 
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
@@ -630,6 +646,8 @@ QgisApp::~QgisApp()
 
   delete mPythonUtils;
 
+  delete mpGpsWidget;
+
   deletePrintComposers();
   removeAnnotationItems();
 
@@ -729,11 +747,6 @@ void QgisApp::readSettings()
   {
     showTileScale();
   }
-  // Restore state of GPS Tracker
-  if ( settings.value( "/gps/widgetEnabled", false ).toBool() )
-  {
-    showGpsTool();
-  }
 }
 
 
@@ -830,7 +843,6 @@ void QgisApp::createActions()
   connect( mActionSetLayerCRS, SIGNAL( triggered() ), this, SLOT( setLayerCRS() ) );
   connect( mActionSetProjectCRSFromLayer, SIGNAL( triggered() ), this, SLOT( setProjectCRSFromLayer() ) );
   connect( mActionTileScale, SIGNAL( triggered() ), this, SLOT( showTileScale() ) );
-  connect( mActionGpsTool, SIGNAL( triggered() ), this, SLOT( showGpsTool() ) );
   connect( mActionLayerProperties, SIGNAL( triggered() ), this, SLOT( layerProperties() ) );
   connect( mActionLayerSubsetString, SIGNAL( triggered() ), this, SLOT( layerSubsetString() ) );
   connect( mActionAddToOverview, SIGNAL( triggered() ), this, SLOT( isInOverview() ) );
@@ -1462,6 +1474,9 @@ void QgisApp::setTheme( QString theThemeName )
   mActionMoveLabel->setIcon( getThemeIcon( "/mActionMoveLabel.png" ) );
   mActionRotateLabel->setIcon( getThemeIcon( "/mActionRotateLabel.png" ) );
   mActionChangeLabelProperties->setIcon( getThemeIcon( "/mActionChangeLabelProperties.png" ) );
+  mActionDecorationCopyright->setIcon( getThemeIcon( "/plugins/copyright_label.png" ) );
+  mActionDecorationNorthArrow->setIcon( getThemeIcon( "/plugins/north_arrow.png" ) );
+  mActionDecorationScaleBar->setIcon( getThemeIcon( "/plugins/scale_bar.png" ) );
 
   //change themes of all composers
   QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
@@ -1795,6 +1810,24 @@ void QgisApp::createMapTips()
   mpMaptip = new QgsMapTip();
 }
 
+void QgisApp::createDecorations()
+{
+  mDecorationCopyright = new QgsDecorationCopyright( this );
+  connect( mActionDecorationCopyright, SIGNAL( triggered() ), mDecorationCopyright, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationCopyright, SLOT( renderLabel( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationCopyright, SLOT( projectRead() ) );
+
+  mDecorationNorthArrow = new QgsDecorationNorthArrow( this );
+  connect( mActionDecorationNorthArrow, SIGNAL( triggered() ), mDecorationNorthArrow, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationNorthArrow, SLOT( renderNorthArrow( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationNorthArrow, SLOT( projectRead() ) );
+
+  mDecorationScaleBar = new QgsDecorationScaleBar( this );
+  connect( mActionDecorationScaleBar, SIGNAL( triggered() ), mDecorationScaleBar, SLOT( run() ) );
+  connect( mMapCanvas, SIGNAL( renderComplete( QPainter * ) ), mDecorationScaleBar, SLOT( renderScaleBar( QPainter * ) ) );
+  connect( this, SIGNAL( projectRead() ), mDecorationScaleBar, SLOT( projectRead() ) );
+}
+
 // Update file menu with the current list of recently accessed projects
 void QgisApp::updateRecentProjectPaths()
 {
@@ -1869,17 +1902,6 @@ void QgisApp::saveWindowState()
   else
   {
     settings.setValue( "/UI/tileScaleEnabled", false );
-  }
-
-  // Persist state of GPS Tracker
-  if ( mpGpsWidget )
-  {
-    settings.setValue( "/gps/widgetEnabled", true );
-    delete mpGpsWidget;
-  }
-  else
-  {
-    settings.setValue( "/gps/widgetEnabled", false );
   }
 
   QgsPluginRegistry::instance()->unloadAll();
@@ -4516,28 +4538,6 @@ void QgisApp::setProjectCRSFromLayer()
     myRenderer->setMapUnits( crs.mapUnits() );
   }
   mMapCanvas->refresh();
-}
-
-void QgisApp::showGpsTool()
-{
-  if ( !mpGpsWidget )
-  {
-    mpGpsWidget = new QgsGPSInformationWidget( mMapCanvas );
-    //create the dock widget
-    mpGpsDock = new QDockWidget( tr( "GPS Information" ), this );
-    mpGpsDock->setObjectName( "GPSInformation" );
-    mpGpsDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-    addDockWidget( Qt::LeftDockWidgetArea, mpGpsDock );
-    // add to the Panel submenu
-    mPanelMenu->addAction( mpGpsDock->toggleViewAction() );
-    // now add our widget to the dock - ownership of the widget is passed to the dock
-    mpGpsDock->setWidget( mpGpsWidget );
-    mpGpsWidget->show();
-  }
-  else
-  {
-    mpGpsDock->setVisible( mpGpsDock->isHidden() );
-  }
 }
 
 void QgisApp::showTileScale()
