@@ -4168,7 +4168,7 @@ void QgsPGRootItem::connectionsChanged()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  QgsPGRootItem * root = new QgsPGRootItem( parentItem, "Postgres/PostGIS", "pg:" );
+  QgsPGRootItem * root = new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
 
   return root;
 }
