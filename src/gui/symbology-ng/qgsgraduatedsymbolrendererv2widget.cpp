@@ -6,9 +6,6 @@
 #include "qgsstylev2.h"
 
 #include "qgsvectorlayer.h"
-
-#include "qgsgraduatedsymbolrendererv2.h"
-
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgsludialog.h"
@@ -54,6 +51,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   labels << tr( "Range" ) << tr( "Label" );
   mg->setHorizontalHeaderLabels( labels );
   viewGraduated->setModel( mg );
+  viewGraduated->setSelectionMode( QAbstractItemView::MultiSelection );
 
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
@@ -192,11 +190,57 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
 
 void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mGraduatedSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
+  QItemSelectionModel* m = viewGraduated->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+
+  QList<QgsSymbolV2*> selectedSymbols;
+
+  if( m && selectedIndexes.size() > 0 )
+  {
+    const QgsRangeList& ranges = mRenderer->ranges();
+
+    QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
+    for(; indexIt != selectedIndexes.constEnd(); ++indexIt )
+    {
+      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>(m->model())->itemFromIndex ( *indexIt );
+      if( currentItem || currentItem->row() == 1 )
+      {
+        QStringList list = currentItem->data( 0 ).toString().split(" ");
+        if( list.size() < 3 )
+        {
+          continue;
+        }
+        double lowerBound = list.at(0).toDouble();
+        double upperBound = list.at(2).toDouble();
+        QgsSymbolV2* s = findSymbolForRange( lowerBound, upperBound, ranges );
+        if( s )
+        {
+          selectedSymbols.append( s );
+        }
+      }
+    }
+  }
+
+  selectedSymbols.append( mGraduatedSymbol );
+  QgsSymbolV2SelectorDialog dlg( selectedSymbols, mStyle, mLayer, this );
+  if( !dlg.exec() )
+  {
     return;
+  }
 
   updateGraduatedSymbolIcon();
+}
+
+QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
+{
+  for ( QgsRangeList::const_iterator it = ranges.begin(); it != ranges.end(); ++it )
+  {
+    if( doubleNear( lowerBound, it->lowerValue() ) && doubleNear( upperBound, it->upperValue() ) )
+    {
+      return it->symbol();
+    }
+  }
+  return 0;
 }
 
 void QgsGraduatedSymbolRendererV2Widget::updateGraduatedSymbolIcon()

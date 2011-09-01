@@ -18,6 +18,8 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
   public:
     QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false );
+    //constructor for multi symbol editing
+    QgsSymbolV2SelectorDialog( QList<QgsSymbolV2*> symbols, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent = NULL, bool embedded = false );
 
     //! return menu for "advanced" button - create it if doesn't exist and show the advanced button
     QMenu* advancedMenu();
@@ -32,6 +34,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
     void keyPressEvent( QKeyEvent * event );
 
   private:
+    void init( bool embedded );
     /**Displays alpha value as transparency in mTransparencyLabel*/
     void displayTransparency( double alpha );
 
@@ -53,7 +56,7 @@ class GUI_EXPORT QgsSymbolV2SelectorDialog : public QDialog, private Ui::QgsSymb
 
   protected:
     QgsStyleV2* mStyle;
-    QgsSymbolV2* mSymbol;
+    QList<QgsSymbolV2*> mSymbols;
     QMenu* mAdvancedMenu;
     const QgsVectorLayer* mVectorLayer;
 };

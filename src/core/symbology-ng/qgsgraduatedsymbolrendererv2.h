@@ -120,6 +120,8 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     //! @note added in 1.6
     QString sizeScaleField() const { return mSizeScaleField; }
 
+
+
   protected:
     QString mAttrName;
     QgsRangeList mRanges;
