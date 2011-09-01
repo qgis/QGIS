@@ -60,7 +60,9 @@ static QVariant tvl2variant( TVL v )
   {
     case False: return 0;
     case True: return 1;
-    case Unknown:  return QVariant();
+    case Unknown:
+    default:
+      return QVariant();
   }
 }
 
