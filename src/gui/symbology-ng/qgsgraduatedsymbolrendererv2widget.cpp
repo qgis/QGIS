@@ -223,12 +223,10 @@ void QgsGraduatedSymbolRendererV2Widget::changeGraduatedSymbol()
 
   selectedSymbols.append( mGraduatedSymbol );
   QgsSymbolV2SelectorDialog dlg( selectedSymbols, mStyle, mLayer, this );
-  if( !dlg.exec() )
-  {
-    return;
-  }
+  dlg.exec();
 
   updateGraduatedSymbolIcon();
+  populateRanges();
 }
 
 QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const

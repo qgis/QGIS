@@ -144,12 +144,10 @@ void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 
   selectedSymbols.append( mCategorizedSymbol );
   QgsSymbolV2SelectorDialog dlg( selectedSymbols, mStyle, mLayer, this );
-  if( !dlg.exec() )
-  {
-    return;
-  }
+  dlg.exec();
 
   updateCategorizedSymbolIcon();
+  populateCategories();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
