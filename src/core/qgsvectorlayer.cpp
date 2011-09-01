@@ -830,6 +830,11 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     }
 #endif //Q_WS_MAC
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
+    if ( !sym )
+    {
+      continue;
+    }
+
     if ( !features.contains( sym ) )
     {
       features.insert( sym, QList<QgsFeature>() );
@@ -842,7 +847,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       mCachedGeometries[fet.id()] = *fet.geometry();
     }
 
-    if ( mRendererV2->symbolForFeature( fet ) != NULL )
+    if ( sym )
     {
       if ( labeling )
       {
