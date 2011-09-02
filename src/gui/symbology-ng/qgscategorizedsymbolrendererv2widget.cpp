@@ -10,6 +10,8 @@
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgsvectorlayer.h"
+#include <QColorDialog>
+#include <QInputDialog>
 #include <QMenu>
 #include <QMessageBox>
 #include <QStandardItemModel>
@@ -54,12 +56,14 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   labels << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
   m->setHorizontalHeaderLabels( labels );
   viewCategories->setModel( m );
+  viewCategories->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
   connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
 
   connect( viewCategories, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( categoriesDoubleClicked( const QModelIndex & ) ) );
+  connect( viewCategories, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
   connect( btnChangeCategorizedSymbol, SIGNAL( clicked() ), this, SLOT( changeCategorizedSymbol() ) );
   connect( btnAddCategories, SIGNAL( clicked() ), this, SLOT( addCategories() ) );
@@ -400,4 +404,156 @@ void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName
 void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+}
+
+void QgsCategorizedSymbolRendererV2Widget::contextMenuViewCategories( const QPoint& p )
+{
+  QMenu contextMenu;
+  contextMenu.addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
+  contextMenu.addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
+  contextMenu.addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
+
+  if ( mLayer && mLayer->geometryType() == QGis::Line )
+  {
+    contextMenu.addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
+  }
+  else if ( mLayer && mLayer->geometryType() == QGis::Point )
+  {
+    contextMenu.addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
+  }
+  contextMenu.exec( viewCategories->mapToGlobal( p ) );
+}
+
+void QgsCategorizedSymbolRendererV2Widget::changeSymbolColor()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  QColor color = QColorDialog::getColor( symbolList.at( 0 )->color(), this );
+  if ( color.isValid() )
+  {
+    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    {
+      ( *symbolIt )->setColor( color );
+    }
+    populateCategories();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Widget::changeSymbolTransparency()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  bool ok;
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency" ), 1 - symbolList.at( 0 )->alpha(), 0.0, 1.0, 1, &ok );
+  if ( ok )
+  {
+    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    {
+      ( *symbolIt )->setAlpha( 1 - transparency );
+    }
+    populateCategories();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Widget::changeSymbolUnit()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  bool ok;
+  int currentUnit = ( symbolList.at( 0 )->outputUnit() == QgsSymbolV2::MM ) ? 0 : 1;
+  QString item = QInputDialog::getItem( this, tr( "Symbol unit" ), tr( "Select symbol unit" ), QStringList() << tr( "Millimeter" ) << tr( "Map unit" ), currentUnit, false, &ok );
+  if ( ok )
+  {
+    QgsSymbolV2::OutputUnit unit = ( item.compare( tr( "Millimeter" ) ) == 0 ) ? QgsSymbolV2::MM : QgsSymbolV2::MapUnit;
+
+    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    {
+      ( *symbolIt )->setOutputUnit( unit );
+    }
+    populateCategories();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Widget::changeSymbolWidth()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  bool ok;
+  double width = QInputDialog::getDouble( this, tr( "Width" ), tr( "Change symbol width" ), dynamic_cast<QgsLineSymbolV2*>( symbolList.at( 0 ) )->width(), 0.0, 999999, 1, &ok );
+  if ( ok )
+  {
+    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    {
+      dynamic_cast<QgsLineSymbolV2*>( *symbolIt )->setWidth( width );
+    }
+    populateCategories();
+  }
+}
+
+void QgsCategorizedSymbolRendererV2Widget::changeSymbolSize()
+{
+  QList<QgsSymbolV2*> symbolList = selectedSymbols();
+  if ( symbolList.size() < 1 )
+  {
+    return;
+  }
+
+  bool ok;
+  double size = QInputDialog::getDouble( this, tr( "Size" ), tr( "Change symbol size" ), dynamic_cast<QgsMarkerSymbolV2*>( symbolList.at( 0 ) )->size(), 0.0, 999999, 1, &ok );
+  if ( ok )
+  {
+    QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
+    for ( ; symbolIt != symbolList.end(); ++symbolIt )
+    {
+      dynamic_cast<QgsMarkerSymbolV2*>( *symbolIt )->setSize( size );
+    }
+    populateCategories();
+  }
+}
+
+QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
+{
+  QList<QgsSymbolV2*> selectedSymbols;
+
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+
+  if ( m && selectedIndexes.size() > 0 )
+  {
+    const QgsCategoryList& categories = mRenderer->categories();
+    QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
+    for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
+    {
+      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>( m->model() )->itemFromIndex( *indexIt );
+      if ( currentItem )
+      {
+        QgsSymbolV2* s = categories[mRenderer->categoryIndexForValue( currentItem->data() )].symbol();
+        if ( s )
+        {
+          selectedSymbols.append( s );
+        }
+      }
+    }
+  }
+  return selectedSymbols;
 }

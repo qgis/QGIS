@@ -37,6 +37,17 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
 
   protected slots:
     void addCategory();
+    void contextMenuViewCategories( const QPoint& p );
+    /**Change color of selected symbols*/
+    void changeSymbolColor();
+    /**Change opacity of selected symbols*/
+    void changeSymbolTransparency();
+    /**Change units mm/map units of selected symbols*/
+    void changeSymbolUnit();
+    /**Change line widths of selected symbols*/
+    void changeSymbolWidth();
+    /**Change marker sizes of selected symbols*/
+    void changeSymbolSize();
 
   protected:
 
@@ -61,6 +72,8 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     QVariant currentCategory();
 
     void changeCategorySymbol();
+
+    QList<QgsSymbolV2*> selectedSymbols();
 
   protected:
     QgsCategorizedSymbolRendererV2* mRenderer;
