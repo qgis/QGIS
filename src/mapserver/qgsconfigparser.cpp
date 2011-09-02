@@ -68,7 +68,7 @@ void QgsConfigParser::addExternalGMLData( const QString& layerName, QDomDocument
   mExternalGMLDatasets.insert( layerName, gmlDoc );
 }
 
-void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
+void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
     QDomDocument& doc,
     const QgsRectangle& layerExtent,
     const QgsCoordinateReferenceSystem& layerCRS ) const

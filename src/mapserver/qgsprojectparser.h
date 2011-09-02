@@ -148,6 +148,12 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Sets global selection color from the project or yellow if not defined in project*/
     void setSelectionColor();
+
+    /**Returns mapcanvas output CRS from project file*/
+    const QgsCoordinateReferenceSystem& projectCRS() const;
+
+    /**Returns bbox of layer in project CRS (or empty rectangle in case of error)*/
+    QgsRectangle layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

@@ -229,7 +229,7 @@ void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDom
         //append geographic bbox and the CRS elements
         QStringList crsNumbers = createCRSListForLayer( theMapLayer );
         appendCRSElementsToLayer( layerElement, doc, crsNumbers );
-        appendExGeographicBoundingBox( layerElement, doc, theMapLayer->extent(), theMapLayer->crs() );
+        appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs() );
 
         //iterate over all <UserStyle> nodes within a user layer
         QDomNodeList userStyleList = layerNodeList.item( i ).toElement().elementsByTagName( "UserStyle" );

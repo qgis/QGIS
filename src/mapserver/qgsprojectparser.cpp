@@ -224,7 +224,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       appendCRSElementsToLayer( layerElem, doc, crsList );
 
       //Ex_GeographicBoundingBox
-      appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
+      appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
 
       //only one default style in project file mode
       QDomElement styleElem = doc.createElement( "Style" );
@@ -250,7 +250,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
 void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc ) const
 {
-  QgsRectangle combinedGeographicBBox;
+  QgsRectangle combinedBBox;
   QSet<QString> combinedCRSSet;
   bool firstBBox = true;
   bool firstCRSSet = true;
@@ -263,17 +263,17 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
     if ( childElem.tagName() != "Layer" )
       continue;
 
-    QgsRectangle bbox;
-    if ( exGeographicBoundingBox( childElem, bbox ) )
+    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem );
+    if ( !bbox.isEmpty() )
     {
       if ( firstBBox )
       {
-        combinedGeographicBBox = bbox;
+        combinedBBox = bbox;
         firstBBox = false;
       }
       else
       {
-        combinedGeographicBBox.combineExtentWith( &bbox );
+        combinedBBox.combineExtentWith( &bbox );
       }
     }
 
@@ -295,8 +295,8 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
 
   appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList() );
 
-  const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
-  appendExGeographicBoundingBox( groupElem, doc, combinedGeographicBBox, groupCRS );
+  const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS );
 }
 
 QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching ) const
@@ -1441,3 +1441,90 @@ void QgsProjectParser::setSelectionColor()
   QgsRenderer::setSelectionColor( QColor( red, green, blue, alpha ) );
 }
 
+const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
+{
+  //mapcanvas->destinationsrs->spatialrefsys->authid
+  if ( mXMLDoc )
+  {
+    QDomElement authIdElem = mXMLDoc->documentElement().firstChildElement( "mapcanvas" ).firstChildElement( "destinationsrs" ).
+                             firstChildElement( "spatialrefsys" ).firstChildElement( "authid" );
+    if ( !authIdElem.isNull() )
+    {
+      QString authId = authIdElem.text();
+      QStringList authIdSplit = authId.split( ":" );
+      if ( authIdSplit.size() == 2 && authIdSplit.at( 0 ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
+      {
+        bool ok;
+        int id = authIdSplit.at( 1 ).toInt( &ok );
+        if ( ok )
+        {
+          return QgsEPSGCache::instance()->searchCRS( id );
+        }
+      }
+    }
+  }
+  return QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
+}
+
+QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const
+{
+  QgsRectangle BBox;
+  if ( layerElem.isNull() )
+  {
+    return BBox;
+  }
+
+  //read box coordinates and layer auth. id
+  QDomElement boundingBoxElem = layerElem.firstChildElement( "BoundingBox" );
+  if ( boundingBoxElem.isNull() )
+  {
+    return BBox;
+  }
+
+  double minx, miny, maxx, maxy;
+  bool conversionOk;
+  minx = boundingBoxElem.attribute( "minx" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+  miny = boundingBoxElem.attribute( "miny" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+  maxx = boundingBoxElem.attribute( "maxx" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+  maxy = boundingBoxElem.attribute( "maxy" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+
+  int authId;
+  QString authIdString = boundingBoxElem.attribute( "CRS" );
+  QStringList authIdSplit = authIdString.split( ":" );
+  if ( authIdSplit.size() < 2 )
+  {
+    return BBox;
+  }
+  authId = authIdSplit.at( 1 ).toInt( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+
+  //create layer crs
+  const QgsCoordinateReferenceSystem& layerCrs = QgsEPSGCache::instance()->searchCRS( authId );
+
+  //get project crs
+  const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
+  QgsCoordinateTransform t( layerCrs, projectCrs );
+
+  //transform
+  BBox = t.transformBoundingBox( QgsRectangle( minx, miny, maxx, maxy ) );
+  return BBox;
+}

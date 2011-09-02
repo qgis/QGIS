@@ -137,8 +137,8 @@ class QgsConfigParser
     double mLegendSymbolWidth;
     double mLegendSymbolHeight;
 
-    /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox element to layer element*/
-    void appendExGeographicBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
+    /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
+    void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
     /**Returns the <Ex_GeographicalBoundingBox of a layer element as a rectangle
       @param layerElement <Layer> element in capabilities
       @param rect out: bounding box as rectangle
