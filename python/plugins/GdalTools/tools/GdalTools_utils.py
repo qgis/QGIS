@@ -153,6 +153,8 @@ class LayerRegistry(QObject):
     def isVector(self, layer):
       if layer.type() != layer.VectorLayer:
         return False
+      if layer.usesProvider() and layer.providerKey() != 'ogr':
+        return False
       return True
 
     def getVectorLayers(self):
