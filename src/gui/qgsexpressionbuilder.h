@@ -23,30 +23,43 @@
 #include "QStandardItemModel"
 #include "QStandardItem"
 
-
 class QgsExpressionItem : public QStandardItem
 {
     public:
-        QgsExpressionItem(QString label, QString expressionText, QString helpText)
+        enum ItemType
+        {
+            Header,
+            Field,
+            ExpressionNode
+        };
+
+        QgsExpressionItem(QString label, QString expressionText, QString helpText, QgsExpressionItem::ItemType itemType = ExpressionNode)
             : QStandardItem(label)
         {
             mExpressionText = expressionText;
             mHelpText = helpText;
+            mType = itemType;
         }
 
-        QgsExpressionItem(QString label, QString expressionText)
+        QgsExpressionItem(QString label, QString expressionText, QgsExpressionItem::ItemType itemType = ExpressionNode)
             : QStandardItem(label)
         {
             mExpressionText = expressionText;
+            mType = itemType;
         }
 
         QString getExpressionText() {   return mExpressionText;  }
 
         QString getHelpText() {  return mHelpText;  }
 
+        void setHelpText(QString helpText) { mHelpText = helpText; }
+
+        QgsExpressionItem::ItemType getItemType() { return mType ; }
+
     private:
         QString mExpressionText;
         QString mHelpText;
+        QgsExpressionItem::ItemType mType;
 };
 
 class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
@@ -59,8 +72,8 @@ public:
     void fillFieldValues(int fieldIndex, int countLimit);
     QString getExpressionString();
     void setExpressionString(const QString expressionString);
-    void registerItem(QString group, QString label, QString expressionText);
-    void registerItem(QString group, QString label, QString expressionText, QString helpText);
+    void registerItem(QString group, QString label,QString expressionText,
+                      QString helpText = "",QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode);
 
 public slots:
     void on_mAllPushButton_clicked();

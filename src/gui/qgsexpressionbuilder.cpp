@@ -20,8 +20,12 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     : QWidget(),
     mLayer( layer )
 {
-    setupUi(this);
     if (!layer) return;
+
+    setupUi(this);
+
+    mValueListWidget->hide();
+    mValueListLabel->hide();
 
     mModel = new QStandardItemModel( );
     expressionTree->setModel( mModel );
@@ -65,23 +69,25 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &in
    if ( item == 0 )
        return;
 
-
-   // Handle the special case for fields
-   // This is a bit hacky.  Should be done better. Handle it with a enum on QgsExpressionItem.
-   QStandardItem* parent = mModel->itemFromIndex(index.parent());
-   if ( parent == 0 )
-       return;
-
-   if (parent->text() == "Fields")
+   // If field item then we load a sample set of values from the field.
+   if (item->getItemType() == QgsExpressionItem::Field)
    {
+       mValueListWidget->show();
+       mValueListLabel->show();
        int fieldIndex = mLayer->fieldNameIndex(item->text());
        fillFieldValues(fieldIndex,10);
+       txtHelpText->setText("Double click to add field name to expression string. <br> " \
+                            "Or double click an item in the value list to add it to the expression string.");
+       txtHelpText->setToolTip(txtHelpText->text());
    }
    else
    {
        // Show the help for the current item.
+       mValueListWidget->hide();
+       mValueListLabel->hide();
        mValueListWidget->clear();
        txtHelpText->setText(item->getHelpText());
+       txtHelpText->setToolTip(txtHelpText->text());
    }
 }
 
@@ -91,6 +97,11 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked(const QModelInd
    if (item == 0)
        return;
 
+   // Don't handle the double click it we are on a header node.
+   if (item->getItemType() == QgsExpressionItem::Header)
+       return;
+
+   // Insert the expression text.
    txtExpressionString->insertPlainText(item->getExpressionText());
 }
 
@@ -106,10 +117,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
   {
     QString fieldName = fieldIt.value().name();
-
-    //insert into field list and field combo box
-    //mFieldMap.insert( fieldName, fieldIt.key() );
-    this->registerItem("Fields", fieldName, " " + fieldName + " ");
+    this->registerItem("Fields", fieldName, " " + fieldName + " ","", QgsExpressionItem::Field);
   }
 }
 
@@ -130,14 +138,13 @@ void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
     mValueListWidget->blockSignals( false );
 }
 
-void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QString expressionText)
+void QgsExpressionBuilderWidget::registerItem(QString group,
+                                              QString label,
+                                              QString expressionText,
+                                              QString helpText,
+                                              QgsExpressionItem::ItemType type)
 {
-    this->registerItem(group,label,expressionText,"");
-}
-
-void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QString expressionText, QString helpText)
-{
-    QgsExpressionItem* item = new QgsExpressionItem(label,expressionText, helpText);
+    QgsExpressionItem* item = new QgsExpressionItem(label,expressionText, helpText, type);
     // Look up the group and insert the new function.
     if (mExpressionGroups.contains(group))
     {
@@ -146,7 +153,8 @@ void QgsExpressionBuilderWidget::registerItem(QString group, QString label, QStr
     }
     else
     {
-        QgsExpressionItem* newgroupNode = new QgsExpressionItem(group,"");
+        // If the group doesn't exsit yet we make it first.
+        QgsExpressionItem* newgroupNode = new QgsExpressionItem(group,"", QgsExpressionItem::Header);
         newgroupNode->appendRow(item);
         mModel->appendRow(newgroupNode);
         mExpressionGroups.insert(group , newgroupNode );
