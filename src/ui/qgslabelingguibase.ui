@@ -38,6 +38,9 @@
      </item>
      <item>
       <widget class="QgsLabelPreview" name="lblFontPreview">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
@@ -66,7 +69,7 @@
       <bool>false</bool>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <property name="iconSize">
       <size>
@@ -76,7 +79,7 @@
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset>
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
       </attribute>
       <attribute name="title">
@@ -387,7 +390,7 @@
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset>
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
       </attribute>
       <attribute name="title">
@@ -397,10 +400,16 @@
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
          <property name="autoFillBackground">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
          <property name="frameShape">
           <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
@@ -847,7 +856,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="icon">
-       <iconset resource="../../images/images.qrc">
+       <iconset>
         <normaloff>:/images/themes/gis/mActionOpenTable.png</normaloff>:/images/themes/gis/mActionOpenTable.png</iconset>
       </attribute>
       <attribute name="title">

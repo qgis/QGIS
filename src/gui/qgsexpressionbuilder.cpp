@@ -2,7 +2,7 @@
     qgisexpressionbuilder.cpp - A genric expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
-    Copyright            : (C) 2006 by Nathan Woodrow
+    Copyright            : (C) 2011 by Nathan Woodrow
     Email                : nathan.woodrow at gmail dot com
  ***************************************************************************
  *                                                                         *
@@ -48,6 +48,26 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     this->registerItem("Geometry","Y"," $y ");
     this->registerItem("Geometry","XAt"," xat( ");
     this->registerItem("Geometry","YAt"," yat(  ");
+
+    this->registerItem("String","Lower Case"," lower( ");
+    this->registerItem("String","Upper Case"," upper( ");
+    this->registerItem("String","Length"," length( ");
+    this->registerItem("String","Replace"," replace(,,, ");
+    this->registerItem("String","Regex Replace"," regexp_replace(,,, ");
+    this->registerItem("String","Substring"," substr(,,, ");
+
+    this->registerItem("Math","Square Root"," sqrt( ");
+    this->registerItem("Math","SIN"," sin( ");
+    this->registerItem("Math","COS"," cos( ");
+    this->registerItem("Math","TAN"," tan( ");
+    this->registerItem("Math","ASIN"," asin( ");
+    this->registerItem("Math","ACOS"," acos( ");
+    this->registerItem("Math","ATAN"," atan( ");
+    this->registerItem("Math","ATAN2"," atan2(, ");
+
+    this->registerItem("Casting","To integer"," toint( ");
+    this->registerItem("Casting","To real"," toreal( ");
+    this->registerItem("Casting","To string"," tostring( ");
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
