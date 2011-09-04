@@ -54,6 +54,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   labels << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
   m->setHorizontalHeaderLabels( labels );
   viewCategories->setModel( m );
+  viewCategories->setSelectionMode( QAbstractItemView::MultiSelection );
 
   mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 
@@ -122,11 +123,31 @@ QgsFeatureRendererV2* QgsCategorizedSymbolRendererV2Widget::renderer()
 
 void QgsCategorizedSymbolRendererV2Widget::changeCategorizedSymbol()
 {
-  QgsSymbolV2SelectorDialog dlg( mCategorizedSymbol, mStyle, mLayer, this );
-  if ( !dlg.exec() )
-    return;
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+
+  QList<QgsSymbolV2*> selectedSymbols;
+
+  if( m && selectedIndexes.size() > 0 )
+  {
+    const QgsCategoryList& categories = mRenderer->categories();
+    QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
+    for(; indexIt != selectedIndexes.constEnd(); ++indexIt )
+    {
+      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>(m->model())->itemFromIndex ( *indexIt );
+      if( currentItem || currentItem->row() == 1 )
+      {
+        selectedSymbols.append( categories[mRenderer->categoryIndexForValue( currentItem->data() )].symbol() );
+      }
+    }
+  }
+
+  selectedSymbols.append( mCategorizedSymbol );
+  QgsSymbolV2SelectorDialog dlg( selectedSymbols, mStyle, mLayer, this );
+  dlg.exec();
 
   updateCategorizedSymbolIcon();
+  populateCategories();
 }
 
 void QgsCategorizedSymbolRendererV2Widget::updateCategorizedSymbolIcon()
