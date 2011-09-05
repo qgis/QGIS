@@ -35,20 +35,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
 
-  protected slots:
-    void addCategory();
-    void contextMenuViewCategories( const QPoint& p );
-    /**Change color of selected symbols*/
-    void changeSymbolColor();
-    /**Change opacity of selected symbols*/
-    void changeSymbolTransparency();
-    /**Change units mm/map units of selected symbols*/
-    void changeSymbolUnit();
-    /**Change line widths of selected symbols*/
-    void changeSymbolWidth();
-    /**Change marker sizes of selected symbols*/
-    void changeSymbolSize();
-
   protected:
 
     void updateUiFromRenderer();
@@ -74,6 +60,10 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void changeCategorySymbol();
 
     QList<QgsSymbolV2*> selectedSymbols();
+    void refreshSymbolView() { populateCategories(); }
+
+  protected slots:
+    void addCategory();
 
   protected:
     QgsCategorizedSymbolRendererV2* mRenderer;
