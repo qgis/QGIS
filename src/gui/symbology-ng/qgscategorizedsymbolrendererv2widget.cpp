@@ -54,7 +54,6 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   labels << tr( "Symbol" ) << tr( "Value" ) << tr( "Label" );
   m->setHorizontalHeaderLabels( labels );
   viewCategories->setModel( m );
-  viewCategories->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mCategorizedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 

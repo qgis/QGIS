@@ -52,7 +52,6 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   labels << tr( "Range" ) << tr( "Label" );
   mg->setHorizontalHeaderLabels( labels );
   viewGraduated->setModel( mg );
-  viewGraduated->setSelectionMode( QAbstractItemView::ExtendedSelection );
 
   mGraduatedSymbol = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
 

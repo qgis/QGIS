@@ -46,7 +46,7 @@ void QgsRendererV2Widget::changeSymbolColor()
     {
       ( *symbolIt )->setColor( color );
     }
-    //populateCategories();
+    refreshSymbolView();
   }
 }
 
