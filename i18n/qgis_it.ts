@@ -34256,7 +34256,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="131"/>
         <source>Coordinate reference system</source>
-        <translation>Coordinate di riferimento spaziale</translation>
+        <translation>Sistema di Riferimento</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="20"/>
@@ -34306,12 +34306,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="179"/>
         <source>Only request features overlapping the current view extent</source>
-        <translation>Soltanto le geometrie richieste in sovrapposizione all&apos;estensione attuale della vista</translation>
+        <translation>Richiedi solo le geometrie richieste in sovrapposizione all&apos;estensione attuale della vista</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
-        <translation>Aggiungi layer WFS da un server</translation>
+        <translation>Aggiungi layer WFS dal server</translation>
     </message>
 </context>
 <context>
