@@ -35,9 +35,6 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     void rotationFieldChanged( QString fldName );
     void sizeScaleFieldChanged( QString fldName );
 
-  protected slots:
-    void addCategory();
-
   protected:
 
     void updateUiFromRenderer();
@@ -61,6 +58,12 @@ class GUI_EXPORT QgsCategorizedSymbolRendererV2Widget : public QgsRendererV2Widg
     QVariant currentCategory();
 
     void changeCategorySymbol();
+
+    QList<QgsSymbolV2*> selectedSymbols();
+    void refreshSymbolView() { populateCategories(); }
+
+  protected slots:
+    void addCategory();
 
   protected:
     QgsCategorizedSymbolRendererV2* mRenderer;

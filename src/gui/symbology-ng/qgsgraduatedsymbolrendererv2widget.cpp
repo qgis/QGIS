@@ -7,8 +7,6 @@
 
 #include "qgsvectorlayer.h"
 
-#include "qgsgraduatedsymbolrendererv2.h"
-
 #include "qgssymbolv2selectordialog.h"
 
 #include "qgsludialog.h"
@@ -60,6 +58,7 @@ QgsGraduatedSymbolRendererV2Widget::QgsGraduatedSymbolRendererV2Widget( QgsVecto
   connect( cboGraduatedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( graduatedColumnChanged() ) );
   connect( viewGraduated, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( rangesDoubleClicked( const QModelIndex & ) ) );
   connect( viewGraduated, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( rangesClicked( const QModelIndex & ) ) );
+  connect( viewGraduated, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
   connect( mg, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( changeCurrentValue( QStandardItem * ) ) );
   connect( btnGraduatedClassify, SIGNAL( clicked() ), this, SLOT( classifyGraduated() ) );
   connect( btnChangeGraduatedSymbol, SIGNAL( clicked() ), this, SLOT( changeGraduatedSymbol() ) );
@@ -339,3 +338,57 @@ void QgsGraduatedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName 
 {
   mRenderer->setSizeScaleField( fldName );
 }
+
+QList<QgsSymbolV2*> QgsGraduatedSymbolRendererV2Widget::selectedSymbols()
+{
+  QList<QgsSymbolV2*> selectedSymbols;
+
+  QItemSelectionModel* m = viewGraduated->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+  if ( m && selectedIndexes.size() > 0 )
+  {
+    const QgsRangeList& ranges = mRenderer->ranges();
+    QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
+    for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
+    {
+      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>( m->model() )->itemFromIndex( *indexIt );
+      if ( currentItem )
+      {
+        QStringList list = currentItem->data( 0 ).toString().split( " " );
+        if ( list.size() < 3 )
+        {
+          continue;
+        }
+
+        double lowerBound = list.at( 0 ).toDouble();
+        double upperBound = list.at( 2 ).toDouble();
+        QgsSymbolV2* s = findSymbolForRange( lowerBound, upperBound, ranges );
+        if ( s )
+        {
+          selectedSymbols.append( s );
+        }
+      }
+    }
+  }
+  return selectedSymbols;
+}
+
+QgsSymbolV2* QgsGraduatedSymbolRendererV2Widget::findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const
+{
+  for ( QgsRangeList::const_iterator it = ranges.begin(); it != ranges.end(); ++it )
+  {
+    //range string has been created with option 'f',4
+    if ( doubleNear( lowerBound, it->lowerValue(), 0.0001 ) && doubleNear( upperBound, it->upperValue(), 0.0001 ) )
+    {
+      return it->symbol();
+    }
+  }
+  return 0;
+}
+
+void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
+{
+  populateRanges();
+}
+
+

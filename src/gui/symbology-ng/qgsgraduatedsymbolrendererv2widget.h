@@ -1,10 +1,9 @@
 #ifndef QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
 #define QGSGRADUATEDSYMBOLRENDERERV2WIDGET_H
 
+#include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsrendererv2widget.h"
 #include <QStandardItem>
-
-class QgsGraduatedSymbolRendererV2;
 
 #include "ui_qgsgraduatedsymbolrendererv2widget.h"
 
@@ -53,7 +52,9 @@ class GUI_EXPORT QgsGraduatedSymbolRendererV2Widget : public QgsRendererV2Widget
     void changeRangeSymbol( int rangeIdx );
     void changeRange( int rangeIdx );
 
-
+    QList<QgsSymbolV2*> selectedSymbols();
+    QgsSymbolV2* findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList& ranges ) const;
+    void refreshSymbolView();
 
 
   protected:

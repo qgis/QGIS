@@ -22,6 +22,7 @@ WORKFLOW:
 */
 class GUI_EXPORT QgsRendererV2Widget : public QWidget
 {
+    Q_OBJECT
   public:
     QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style );
 
@@ -33,6 +34,24 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
+
+    /**Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
+      and by connecting the slot contextMenuViewCategories(const QPoint&)*/
+    virtual QList<QgsSymbolV2*> selectedSymbols() { return QList<QgsSymbolV2*>(); }
+    virtual void refreshSymbolView() {}
+
+  protected slots:
+    void contextMenuViewCategories( const QPoint& p );
+    /**Change color of selected symbols*/
+    void changeSymbolColor();
+    /**Change opacity of selected symbols*/
+    void changeSymbolTransparency();
+    /**Change units mm/map units of selected symbols*/
+    void changeSymbolUnit();
+    /**Change line widths of selected symbols*/
+    void changeSymbolWidth();
+    /**Change marker sizes of selected symbols*/
+    void changeSymbolSize();
 };
 
 
