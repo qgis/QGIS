@@ -3797,59 +3797,59 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Decoraties</translation>
+        <translation>&amp;Decoraties</translation>
     </message>
     <message>
         <source>Add feature</source>
-        <translation type="unfinished">Object toevoegen</translation>
+        <translation>Object toevoegen</translation>
     </message>
     <message>
         <source>Customization...</source>
-        <translation type="unfinished"></translation>
+        <translation>Aanpassingen...</translation>
     </message>
     <message>
         <source>mActionCatchForCustomization</source>
-        <translation type="unfinished"></translation>
+        <translation>mActionCatchForCustomization</translation>
     </message>
     <message>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
-        <translation type="unfinished"></translation>
+        <translation>Dit is hier alleen maar om conflicten met snelkoppelingen op te vangen, de snelkoppeling wordt opgevangen door QgsCustomization</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
-        <translation type="unfinished">Ctrl+M</translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <source>Embed layers and groups...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lagen en groepen gebruiken...</translation>
     </message>
     <message>
         <source>Embed layers and groups from other project files</source>
-        <translation type="unfinished"></translation>
+        <translation>Gebruik lagen en groepen uit andere projectbestanden</translation>
     </message>
     <message>
         <source>&amp;Copyright Label</source>
-        <translation type="unfinished">&amp;Copyrightlabel</translation>
+        <translation>&amp;Copyrightlabel</translation>
     </message>
     <message>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="unfinished">creëert een copyrightlabel welk wordt getoond op het de kaart.</translation>
+        <translation>Creëert een copyrightlabel welk wordt getoond op het de kaart.</translation>
     </message>
     <message>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished">&amp;Noord Pijl</translation>
+        <translation>&amp;Noord Pijl</translation>
     </message>
     <message>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;Aanmaken van een Noordpijl om op de kaart te tonen&quot;</translation>
     </message>
     <message>
         <source>&amp;Scale Bar</source>
-        <translation type="unfinished">&amp;Schaalbalk</translation>
+        <translation>&amp;Schaalbalk</translation>
     </message>
     <message>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation type="unfinished">Maakt een schaalbalk aan voor vertoning op de kaart</translation>
+        <translation>Maakt een schaalbalk aan om op de kaart te tonen</translation>
     </message>
 </context>
 <context>
@@ -5817,7 +5817,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Cannot convert &apos;%1&apos; to double</source>
-        <translation type="unfinished"></translation>
+        <translation>Converteren van &apos;%1&apos; naar double mislukt</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1&apos; to int</source>
@@ -5909,7 +5909,7 @@ U ziet deze melding waarschijnlijk omdat er geen DISPLAY-variabele in uw (unix)-
     </message>
     <message>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="unfinished">Vector %1 in mapset %2 kan niet worden geopend</translation>
+        <translation>Vector %1 in mapset %2 kan niet worden geopend</translation>
     </message>
 </context>
 <context>
