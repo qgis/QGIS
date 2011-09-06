@@ -16,8 +16,7 @@
  ***************************************************************************/
 
 #include "qgsdbtablemodel.h"
-#include "qgsapplication.h"
-#include "qgisapp.h"
+#include "qgsdataitem.h"
 
 QgsDbTableModel::QgsDbTableModel(): QStandardItemModel(), mTableCount( 0 )
 {
@@ -224,15 +223,15 @@ QIcon QgsDbTableModel::iconForType( QGis::WkbType type ) const
 {
   if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D || type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
   {
-    return QgisApp::getThemeIcon( "/mIconPointLayer.png" );
+    return QIcon( QgsDataItem::getThemePixmap( "/mIconPointLayer.png" ) );
   }
   else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D || type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
   {
-    return QgisApp::getThemeIcon( "/mIconLineLayer.png" );
+    return QIcon( QgsDataItem::getThemePixmap( "/mIconLineLayer.png" ) );
   }
   else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D || type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
   {
-    return QgisApp::getThemeIcon( "/mIconPolygonLayer.png" );
+    return QIcon( QgsDataItem::getThemePixmap( "/mIconPolygonLayer.png" ) );
   }
   else return QIcon();
 }

@@ -23,7 +23,6 @@
 #include <netinet/in.h>
 #endif
 
-#include <qgis.h>
 #include <qgsapplication.h>
 #include <qgsfeature.h>
 #include <qgsfield.h>
@@ -36,6 +35,8 @@
 #include "qgsproviderextentcalcevent.h"
 
 #include "qgspostgresprovider.h"
+#include "qgspostgresconnection.h"
+#include "qgspgsourceselect.h"
 
 #include "qgslogger.h"
 
@@ -94,7 +95,10 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     {
       mQuery += quotedIdentifier( mSchemaName ) + ".";
     }
-    mQuery += quotedIdentifier( mTableName );
+    if ( !mTableName.isEmpty() )
+    {
+      mQuery += quotedIdentifier( mTableName );
+    }
   }
 
   primaryKey = mUri.keyColumn();
@@ -108,6 +112,14 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   QgsDebugMsg( "Where clause is: " + sqlWhereClause );
 
   connectionRW = NULL;
+  connectionRO = NULL;
+
+  // no table/query passed, the provider could be used to get tables
+  if ( mQuery.isEmpty() )
+  {
+      return;
+  }
+
   connectionRO = Conn::connectDb( mUri.connectionInfo(), true );
   if ( connectionRO == NULL )
   {
@@ -354,6 +366,329 @@ void QgsPostgresProvider::Conn::disconnect( QMap<QString, Conn *>& connections, 
 
   conn = NULL;
 }
+
+QStringList QgsPostgresProvider::pkCandidates( QString schemaName, QString viewName )
+{
+  QStringList cols;
+  cols << QString::null;
+
+  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname IN ('int4','oid') AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
+  QgsDebugMsg( sql );
+  PGresult *colRes = connectionRO->PQexec( sql );
+
+  if ( PQresultStatus( colRes ) == PGRES_TUPLES_OK )
+  {
+    for ( int i = 0; i < PQntuples( colRes ); i++ )
+    {
+      QgsDebugMsg( PQgetvalue( colRes, i, 0 ) );
+      cols << QString::fromUtf8( PQgetvalue( colRes, i, 0 ) );
+    }
+  }
+  else
+  {
+    QgsDebugMsg( QString( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( PQresultStatus( colRes ) ).arg( PQresultErrorMessage( colRes ) ) );
+  }
+
+  PQclear( colRes );
+
+  return cols;
+}
+
+bool QgsPostgresProvider::getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
+{
+  int nColumns = 0;
+  int nGTables = 0;
+
+  PGresult *result = 0;
+  QgsPostgresLayerProperty layerProperty;
+
+  QgsDebugMsg( "Entering." );
+
+  for ( int i = 0; i < 2; i++ )
+  {
+    QString gtableName, columnName;
+
+    if ( i == 0 )
+    {
+      gtableName = "geometry_columns";
+      columnName = "f_geometry_column";
+    }
+    else if ( i == 1 )
+    {
+      gtableName = "geography_columns";
+      columnName = "f_geography_column";
+    }
+
+    // The following query returns only tables that exist and the user has SELECT privilege on.
+    // Can't use regclass here because table must exist, else error occurs.
+    QString sql = QString( "select "
+                           "f_table_name,"
+                           "f_table_schema,"
+                           "%2,"
+                           "upper(type),"
+                           "pg_class.relkind"
+                           " from "
+                           "%1,"
+                           "pg_class,"
+                           "pg_namespace"
+                           " where "
+                           "relname=f_table_name"
+                           " and f_table_schema=nspname"
+                           " and pg_namespace.oid=pg_class.relnamespace"
+                           " and has_schema_privilege(pg_namespace.nspname,'usage')"
+                           " and has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
+                           " order by "
+                           "f_table_schema,f_table_name,%2" ).arg( gtableName ).arg( columnName );
+
+    QgsDebugMsg( "sql: " + sql );
+
+    result = connectionRO->PQexec( sql );
+    if ( result )
+    {
+      if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+      {
+        connectionRO->PQexecNR( "COMMIT" );
+      }
+      else
+      {
+        nGTables++;
+
+        if ( PQntuples( result ) > 0 )
+        {
+
+          for ( int idx = 0; idx < PQntuples( result ); idx++ )
+          {
+            QString tableName = QString::fromUtf8( PQgetvalue( result, idx, 0 ) );
+            QString schemaName = QString::fromUtf8( PQgetvalue( result, idx, 1 ) );
+            QString column = QString::fromUtf8( PQgetvalue( result, idx, 2 ) );
+            QString type = QString::fromUtf8( PQgetvalue( result, idx, 3 ) );
+            QString relkind = QString::fromUtf8( PQgetvalue( result, idx, 4 ) );
+
+            QgsDebugMsg( QString( "%1 %2.%3.%4: %5 %6" )
+                         .arg( gtableName )
+                         .arg( schemaName ).arg( tableName ).arg( column )
+                         .arg( type )
+                         .arg( relkind ) );
+
+            layerProperty.type = type;
+            layerProperty.schemaName = schemaName;
+            layerProperty.tableName = tableName;
+            layerProperty.geometryColName = column;
+            layerProperty.pkCols = relkind == "v" ? pkCandidates( schemaName, tableName ) : QStringList();
+            layerProperty.sql = "";
+
+            layersSupported.push_back( layerProperty );
+            nColumns++;
+          }
+        }
+      }
+    }
+
+    PQclear( result );
+    result = 0;
+  }
+
+  if ( nColumns == 0 )
+  {
+    showMessageBox( tr( "Accessible tables could not be determined" ),
+                    tr( "Database connection was successful, but the accessible tables could not be determined." ) );
+    nColumns = -1;
+  }
+
+  //search for geometry columns in tables that are not in the geometry_columns metatable
+  if ( !searchGeometryColumnsOnly )
+  {
+    // Now have a look for geometry columns that aren't in the
+    // geometry_columns table. This code is specific to postgresql,
+    // but an equivalent query should be possible in other
+    // databases.
+    QString sql = "select "
+                  "pg_class.relname"
+                  ",pg_namespace.nspname"
+                  ",pg_attribute.attname"
+                  ",pg_class.relkind"
+                  " from "
+                  "pg_attribute"
+                  ",pg_class"
+                  ",pg_namespace"
+                  " where "
+                  "pg_namespace.oid=pg_class.relnamespace"
+                  " and pg_attribute.attrelid = pg_class.oid"
+                  " and ("
+                  " exists (select * from pg_type WHERE pg_type.oid=pg_attribute.atttypid AND pg_type.typname IN ('geometry','geography'))"
+                  " or pg_attribute.atttypid IN (select oid FROM pg_type a WHERE EXISTS (SELECT * FROM pg_type b WHERE a.typbasetype=b.oid AND b.typname IN ('geometry','geography')))"
+                  ")"
+                  " and has_schema_privilege( pg_namespace.nspname, 'usage' )"
+                  " and has_table_privilege( '\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"', 'select' )";
+
+    // user has select privilege
+    if ( searchPublicOnly )
+      sql += " and pg_namespace.nspname = 'public'";
+
+    if ( nColumns > 0 )
+    {
+      sql += " and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
+
+      if ( nGTables > 1 )
+      {
+        sql += " and not exists (select * from geography_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
+      }
+    }
+    else
+    {
+      nColumns = 0;
+    }
+
+    sql += " and pg_class.relkind in( 'v', 'r' )"; // only from views and relations (tables)
+
+    QgsDebugMsg( "sql: " + sql );
+
+    result = connectionRO->PQexec( sql );
+
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+      showMessageBox( tr( "Accessible tables could not be determined" ),
+                      tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
+                          "The error message from the database was:\n%1\n" )
+                      .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
+      if ( nColumns == 0 )
+        nColumns = -1;
+    }
+    else if ( PQntuples( result ) > 0 )
+    {
+      for ( int i = 0; i < PQntuples( result ); i++ )
+      {
+        // Have the column name, schema name and the table name. The concept of a
+        // catalog doesn't exist in postgresql so we ignore that, but we
+        // do need to get the geometry type.
+
+        // Make the assumption that the geometry type for the first
+        // row is the same as for all other rows.
+
+        QString table  = QString::fromUtf8( PQgetvalue( result, i, 0 ) ); // relname
+        QString schema = QString::fromUtf8( PQgetvalue( result, i, 1 ) ); // nspname
+        QString column = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // attname
+        QString relkind = QString::fromUtf8( PQgetvalue( result, i, 3 ) ); // relation kind
+
+        QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
+
+        layerProperty.type = QString::null;
+        layerProperty.schemaName = schema;
+        layerProperty.tableName = table;
+        layerProperty.geometryColName = column;
+        layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+        layerProperty.sql = "";
+
+        layersSupported.push_back( layerProperty );
+        nColumns++;
+      }
+    }
+
+    PQclear( result );
+    result = 0;
+  }
+
+  if ( allowGeometrylessTables )
+  {
+    QString sql = "select "
+                  "pg_class.relname"
+                  ",pg_namespace.nspname"
+                  ",pg_class.relkind"
+                  " from "
+                  " pg_class"
+                  ",pg_namespace"
+                  " where "
+                  "pg_namespace.oid=pg_class.relnamespace"
+                  " and has_schema_privilege( pg_namespace.nspname, 'usage' )"
+                  " and has_table_privilege( '\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"', 'select' )"
+                  " and pg_class.relkind in( 'v', 'r' )";
+
+    // user has select privilege
+    if ( searchPublicOnly )
+      sql += " and pg_namespace.nspname = 'public'";
+
+    QgsDebugMsg( "sql: " + sql );
+
+    result = connectionRO->PQexec( sql );
+
+    if ( PQresultStatus( result ) != PGRES_TUPLES_OK )
+    {
+      showMessageBox( tr( "Accessible tables could not be determined" ),
+                      tr( "Database connection was successful, but the accessible tables could not be determined.\n\n"
+                          "The error message from the database was:\n%1\n" )
+                      .arg( QString::fromUtf8( PQresultErrorMessage( result ) ) ) );
+      if ( nColumns == 0 )
+        nColumns = -1;
+    }
+    else if ( PQntuples( result ) > 0 )
+    {
+      for ( int i = 0; i < PQntuples( result ); i++ )
+      {
+        QString table  = QString::fromUtf8( PQgetvalue( result, i, 0 ) ); // relname
+        QString schema = QString::fromUtf8( PQgetvalue( result, i, 1 ) ); // nspname
+        QString relkind = QString::fromUtf8( PQgetvalue( result, i, 2 ) ); // relation kind
+
+        QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
+
+        layerProperty.type = QString::null;
+        layerProperty.schemaName = schema;
+        layerProperty.tableName = table;
+        layerProperty.geometryColName = QString::null;
+        layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+        layerProperty.sql = "";
+
+        layersSupported.push_back( layerProperty );
+        nColumns++;
+      }
+    }
+
+    PQclear( result );
+    result = 0;
+  }
+
+  if ( nColumns == 0 )
+  {
+    showMessageBox( tr( "No accessible tables found" ),
+                    tr( "Database connection was successful, but no accessible tables were found.\n\n"
+                        "Please verify that you have SELECT privilege on a table carrying PostGIS\n"
+                        "geometry." ) );
+  }
+
+  return nColumns > 0;
+}
+
+bool QgsPostgresProvider::supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
+                                           bool searchGeometryColumnsOnly,
+                                           bool searchPublicOnly,
+                                           bool allowGeometrylessTables )
+{
+  QgsDebugMsg( "Entering." );
+
+  // Open the connection
+  if ( connectionRO == NULL )
+  {
+    connectionRO = Conn::connectDb( mUri.connectionInfo(), true );
+    if ( connectionRO == NULL )
+    {
+        return false;
+    }
+  }
+  QgsDebugMsg( "before getTableInfo." );
+
+  // Get the list of supported tables
+  if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
+  {
+    QgsDebugMsg( "Unable to get list of spatially enabled tables from the database" );
+    return false;
+  }
+
+  layers = layersSupported;
+
+  QgsDebugMsg( "Exiting." );
+
+  return true;
+}
+
 
 QString QgsPostgresProvider::storageType() const
 {
@@ -3668,4 +4003,172 @@ QGISEXTERN QString description()
 QGISEXTERN bool isProvider()
 {
   return true;
+}
+// ---------------------------------------------------------------------------
+QGISEXTERN QgsPgSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  return new QgsPgSourceSelect( parent, fl );
+}
+
+QGISEXTERN int dataCapabilities()
+{
+  return  QgsDataProvider::Database;
+}
+// ---------------------------------------------------------------------------
+QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
+    : QgsDataCollectionItem( parent, name, path )
+{
+}
+
+QgsPGConnectionItem::~QgsPGConnectionItem()
+{
+}
+
+QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
+{
+  QgsDebugMsg( "Entered" );
+  QVector<QgsDataItem*> children;
+  QgsPostgresConnection connection( mName );
+  QgsPostgresProvider *pgProvider = connection.provider( );
+  if ( !pgProvider )
+    return children;
+
+  QString mConnInfo = connection.connectionInfo();
+  QgsDebugMsg( "mConnInfo = " + mConnInfo );
+
+  if ( !pgProvider->supportedLayers( mLayerProperties, true, false, false ) )
+    return children;
+
+  QMap<QString, QVector<QgsPostgresLayerProperty> > schemasMap;
+  foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
+  {
+    schemasMap[ layerProperty.schemaName ].push_back( layerProperty );
+  }
+
+  QMap<QString, QVector<QgsPostgresLayerProperty> >::const_iterator it = schemasMap.constBegin();
+  for( ; it != schemasMap.constEnd(); it++ )
+  {
+    QgsDebugMsg( "schema: " + it.key() );
+    QgsPGSchemaItem * schema = new QgsPGSchemaItem( this, it.key(), mPath + "/" + it.key(), mConnInfo, it.value() );
+
+    children.append( schema );
+  }
+  return children;
+}
+
+bool QgsPGConnectionItem::equal( const QgsDataItem *other )
+{
+  if ( type() != other->type() )
+  {
+    return false;
+  }
+  const QgsPGConnectionItem *o = dynamic_cast<const QgsPGConnectionItem *>( other );
+  return ( mPath == o->mPath && mName == o->mName && mConnInfo == o->mConnInfo );
+}
+// ---------------------------------------------------------------------------
+QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
+    : QgsLayerItem( parent, name, path, QString(), layerType, "postgres" ),
+    mConnInfo( connInfo ),
+    mLayerProperty( layerProperty )
+{
+  mUri = createUri();
+  mPopulated = true;
+}
+
+QgsPGLayerItem::~QgsPGLayerItem()
+{
+}
+
+QString QgsPGLayerItem::createUri()
+{
+  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at(0) : QString::null;
+  QgsDataSourceURI uri( mConnInfo );
+  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName);
+  return uri.uri();
+}
+
+// ---------------------------------------------------------------------------
+QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties )
+    : QgsDataCollectionItem( parent, name, path )
+{
+  mIcon = QIcon( getThemePixmap( "mIconNamespace.png" ) );
+
+  // Populate everything, it costs nothing, all info about layers is collected
+  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
+  {
+    QgsDebugMsg( "table: " + layerProperty.schemaName + "." + layerProperty.tableName );
+
+    QgsLayerItem::LayerType layerType = QgsLayerItem::NoType;
+    if ( layerProperty.type.contains( "POINT" ) )
+    {
+      layerType = QgsLayerItem::Point;
+    }
+    else if ( layerProperty.type.contains( "LINE" ) )
+    {
+      layerType = QgsLayerItem::Line;
+    }
+    else if ( layerProperty.type.contains( "POLYGON" ) )
+    {
+      layerType = QgsLayerItem::Polygon;
+    }
+    else if ( layerProperty.type == QString::null )
+    {
+      if ( layerProperty.geometryColName == QString::null )
+      {
+        layerType = QgsLayerItem::TableLayer;
+      }
+    }
+
+    QgsPGLayerItem * layer = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, connInfo, layerType, layerProperty );
+    mChildren.append( layer );
+  }
+
+  mPopulated = true;
+}
+
+QgsPGSchemaItem::~QgsPGSchemaItem()
+{
+}
+
+// ---------------------------------------------------------------------------
+QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
+    : QgsDataCollectionItem( parent, name, path )
+{
+  //mIcon = QIcon( getThemePixmap( "mIconPg.png" ) );
+  populate();
+}
+
+QgsPGRootItem::~QgsPGRootItem()
+{
+}
+
+QVector<QgsDataItem*>QgsPGRootItem::createChildren()
+{
+  QVector<QgsDataItem*> connections;
+  foreach( QString connName,  QgsPostgresConnection::connectionList() )
+  {
+    QgsDataItem * conn = new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
+    connections.push_back( conn );
+  }
+  return connections;
+}
+
+QWidget * QgsPGRootItem::paramWidget()
+{
+  QgsPgSourceSelect *select = new QgsPgSourceSelect( 0, 0, true, true );
+  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  return select;
+}
+void QgsPGRootItem::connectionsChanged()
+{
+  refresh();
+}
+
+// ---------------------------------------------------------------------------
+
+QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
+{
+  QgsPGRootItem * root = new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
+
+  return root;
 }

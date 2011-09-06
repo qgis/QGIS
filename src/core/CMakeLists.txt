@@ -51,6 +51,8 @@ SET(QGIS_CORE_SRCS
   qgscrscache.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
+  qgsdbfilterproxymodel.cpp
+  qgsdbtablemodel.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
@@ -228,6 +230,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
+  qgsdbtablemodel.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h

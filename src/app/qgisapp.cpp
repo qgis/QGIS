@@ -228,7 +228,7 @@
 // Conditional Includes
 //
 #ifdef HAVE_POSTGRESQL
-#include "postgres/qgspgsourceselect.h"
+#include "../providers/postgres/qgspgsourceselect.h"
 #ifdef HAVE_PGCONFIG
 #include <pg_config.h>
 #else
@@ -2363,58 +2363,75 @@ void QgisApp::addDatabaseLayer()
   {
     return;
   }
+  // Fudge for now
+  QgsDebugMsg( "about to addRasterLayer" );
 
-  // only supports postgis layers at present
-  // show the postgis dialog
-
-  QgsPgSourceSelect *dbs = new QgsPgSourceSelect( this );
-
-  mMapCanvas->freeze();
-
-  if ( dbs->exec() )
+  // TODO: QDialog for now, switch to QWidget in future
+  QDialog *pgs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "postgres" ), this ) );
+  if ( !pgs )
   {
-// Let render() do its own cursor management
-//    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QMessageBox::warning( this, tr( "PostgreSQL" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
+    return;
+  }
+  connect( pgs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  pgs->exec();
+  delete pgs;
+} // QgisApp::addDatabaseLayer()
+#endif
 
-
-    // repaint the canvas if it was covered by the dialog
-
-    // add files to the map canvas
-    QStringList tables = dbs->selectedTables();
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    // for each selected table, connect to the database, parse the Wkt geometry,
-    // and build a canvasitem for it
-    // readWKB(connectionInfo,tables);
-    QStringList::Iterator it = tables.begin();
-    while ( it != tables.end() )
-    {
-      // create the layer
-      //qWarning("creating layer");
-      QgsDataSourceURI uri( *it );
-      QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), "postgres" );
-      if ( layer->isValid() )
-      {
-        // register this layer with the central layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer( layer );
-      }
-      else
-      {
-        QgsDebugMsg(( *it ) + " is an invalid layer - not loaded" );
-        QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
-        delete layer;
-      }
-      //qWarning("incrementing iterator");
-      ++it;
-    }
-
-    QApplication::restoreOverrideCursor();
-
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
   }
 
-  delete dbs;
+  if ( layerPathList.empty() )
+  {
+    // no layers to add so bail out, but
+    // allow mMapCanvas to handle events
+    // first
+    mMapCanvas->freeze( false );
+    return;
+  }
+
+  mMapCanvas->freeze( true );
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+
+  foreach( QString layerPath, layerPathList )
+  {
+    // create the layer
+    QgsDataSourceURI uri( layerPath );
+
+    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), providerKey );
+    Q_CHECK_PTR( layer );
+
+    if ( ! layer )
+    {
+      mMapCanvas->freeze( false );
+      QApplication::restoreOverrideCursor();
+
+      // XXX insert meaningful whine to the user here
+      return;
+    }
+
+    if ( layer->isValid() )
+    {
+      // register this layer with the central layers registry
+      QgsMapLayerRegistry::instance()->addMapLayer( layer );
+    }
+    else
+    {
+      QgsDebugMsg(( layerPath ) + " is an invalid layer - not loaded" );
+      QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( layerPath ) );
+      delete layer;
+    }
+    //qWarning("incrementing iterator");
+  }
+
+  statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   // update UI
   qApp->processEvents();
@@ -2423,11 +2440,8 @@ void QgisApp::addDatabaseLayer()
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
-
-} // QgisApp::addDatabaseLayer()
-#endif
+  QApplication::restoreOverrideCursor();
+}
 
 
 #ifndef HAVE_SPATIALITE

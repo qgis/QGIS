@@ -4,7 +4,7 @@
 
 SET (SPIT_SRCS
      qgsspit.cpp
-     ../../app/postgres/qgspgnewconnection.cpp
+     ../../providers/postgres/qgspgnewconnection.cpp
      qgspgutil.cpp
      qgsshapefile.cpp
 )
@@ -29,7 +29,7 @@ SET (SPIT_UIS
 SET (SPIT_EXE_MOC_HDRS
      qgsspit.h
      qgsshapefile.h
-     ../../app/postgres/qgspgnewconnection.h
+     ../../providers/postgres/qgspgnewconnection.h
 )
 
 SET (SPIT_PLUGIN_MOC_HDRS
@@ -57,7 +57,7 @@ INCLUDE_DIRECTORIES(
      ../../gui
      ../../ui
      ../../app
-     ../../app/postgres
+     ../../providers/postgres
      ..
      ${POSTGRES_INCLUDE_DIR}
      ${GDAL_INCLUDE_DIR}
