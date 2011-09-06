@@ -100,6 +100,8 @@ void QgsSpatialQueryPlugin::unload()
 
   delete mSpatialQueryAction;
 
+  delete mDialog;
+  mDialog = NULL;
 }
 
 void QgsSpatialQueryPlugin::run()
