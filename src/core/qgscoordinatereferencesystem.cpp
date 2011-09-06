@@ -27,6 +27,7 @@
 #include <QTextStream>
 
 #include "qgsapplication.h"
+#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgis.h" //const vals declared here
@@ -1001,14 +1002,24 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
     QDomNode myNode = srsNode.namedItem( "authid" );
     if ( !myNode.isNull() )
     {
-      initialized = createFromOgcWmsCrs( myNode.toElement().text() );
+      operator=( QgsCRSCache::instance()->crsByAuthId( myNode.toElement().text() ) );
+      if ( isValid() )
+      {
+        initialized = true;
+      }
     }
 
     if ( !initialized )
     {
       myNode = srsNode.namedItem( "epsg" );
       if ( !myNode.isNull() )
-        initialized = createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( myNode.toElement().text().toLong() ) );
+      {
+        operator=( QgsCRSCache::instance()->crsByEpsgId( myNode.toElement().text().toLong() ) );
+        if ( isValid() )
+        {
+          initialized = true;
+        }
+      }
     }
 
     if ( initialized )

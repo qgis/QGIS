@@ -16,7 +16,7 @@
  ***************************************************************************/
 #include "qgswmsserver.h"
 #include "qgsconfigparser.h"
-#include "qgsepsgcache.h"
+#include "qgscrscache.h"
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgsmaplayer.h"
@@ -1043,19 +1043,8 @@ int QgsWMSServer::configureMapRender( const QPaintDevice* paintDevice ) const
     QgsDebugMsg( "enable on the fly projection" );
     QgsProject::instance()->writeEntry( "SpatialRefSys", "/ProjectionsEnabled", 1 );
 
-    QString crsString = crsIt->second;
-    if ( !( crsString.left( 4 ) == "EPSG" ) )
-    {
-      return 3; // only EPSG ids supported
-    }
-    long epsgId = crsString.section( ":", 1, 1 ).toLong( &conversionSuccess );
-    if ( !conversionSuccess )
-    {
-      return 4;
-    }
-
     //destination SRS
-    outputCRS = QgsEPSGCache::instance()->searchCRS( epsgId );
+    outputCRS = QgsCRSCache::instance()->crsByAuthId( crsIt->second );
     if ( !outputCRS.isValid() )
     {
       QgsDebugMsg( "Error, could not create output CRS from EPSG" );

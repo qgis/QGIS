@@ -17,7 +17,7 @@
 
 #include "qgsprojectparser.h"
 #include "qgsconfigcache.h"
-#include "qgsepsgcache.h"
+#include "qgscrscache.h"
 #include "qgsmslayercache.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
@@ -1450,20 +1450,10 @@ const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
                              firstChildElement( "spatialrefsys" ).firstChildElement( "authid" );
     if ( !authIdElem.isNull() )
     {
-      QString authId = authIdElem.text();
-      QStringList authIdSplit = authId.split( ":" );
-      if ( authIdSplit.size() == 2 && authIdSplit.at( 0 ).compare( "EPSG", Qt::CaseInsensitive ) == 0 )
-      {
-        bool ok;
-        int id = authIdSplit.at( 1 ).toInt( &ok );
-        if ( ok )
-        {
-          return QgsEPSGCache::instance()->searchCRS( id );
-        }
-      }
+      return QgsCRSCache::instance()->crsByAuthId( authIdElem.text() );
     }
   }
-  return QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
+  return QgsCRSCache::instance()->crsByEpsgId( GEO_EPSG_CRS_ID );
 }
 
 QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const
@@ -1504,21 +1494,12 @@ QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& 
     return BBox;
   }
 
-  int authId;
-  QString authIdString = boundingBoxElem.attribute( "CRS" );
-  QStringList authIdSplit = authIdString.split( ":" );
-  if ( authIdSplit.size() < 2 )
-  {
-    return BBox;
-  }
-  authId = authIdSplit.at( 1 ).toInt( &conversionOk );
-  if ( !conversionOk )
-  {
-    return BBox;
-  }
-
   //create layer crs
-  const QgsCoordinateReferenceSystem& layerCrs = QgsEPSGCache::instance()->searchCRS( authId );
+  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( "CRS" ) );
+  if ( !layerCrs.isValid() )
+  {
+    return BBox;
+  }
 
   //get project crs
   const QgsCoordinateReferenceSystem& projectCrs = projectCRS();

@@ -48,6 +48,7 @@ SET(QGIS_CORE_SRCS
   qgsclipper.cpp
   qgscontexthelp.cpp
   qgscoordinatetransform.cpp
+  qgscrscache.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdiagram.cpp

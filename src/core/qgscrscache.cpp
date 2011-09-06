@@ -1,8 +1,8 @@
 /***************************************************************************
-                              qgsepsgcache.cpp
-                              ----------------
-  begin                : June 9th, 2010
-  copyright            : (C) 2010 by Marco Hugentobler
+                              qgscrscache.cpp
+                              ---------------
+  begin                : September 6th, 2011
+  copyright            : (C) 2011 by Marco Hugentobler
   email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************/
 
@@ -15,39 +15,39 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsepsgcache.h"
+#include "qgscrscache.h"
 
-QgsEPSGCache* QgsEPSGCache::mInstance = 0;
+QgsCRSCache* QgsCRSCache::mInstance = 0;
 
-QgsEPSGCache* QgsEPSGCache::instance()
+QgsCRSCache* QgsCRSCache::instance()
 {
   if ( !mInstance )
   {
-    mInstance = new QgsEPSGCache();
+    mInstance = new QgsCRSCache();
   }
   return mInstance;
 }
 
-QgsEPSGCache::QgsEPSGCache()
+QgsCRSCache::QgsCRSCache()
 {
 }
 
-QgsEPSGCache::~QgsEPSGCache()
+QgsCRSCache::~QgsCRSCache()
 {
   delete mInstance;
 }
 
-const QgsCoordinateReferenceSystem& QgsEPSGCache::searchCRS( long epsg )
+const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
 {
-  QHash< long, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( epsg );
+  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( authid );
   if ( crsIt == mCRS.constEnd() )
   {
     QgsCoordinateReferenceSystem s;
-    if ( ! s.createFromOgcWmsCrs( QString( "EPSG:%1" ).arg( epsg ) ) )
+    if ( ! s.createFromOgcWmsCrs( authid ) )
     {
       return mInvalidCRS;
     }
-    return mCRS.insert( epsg, s ).value();
+    return mCRS.insert( authid, s ).value();
   }
   else
   {
@@ -55,4 +55,7 @@ const QgsCoordinateReferenceSystem& QgsEPSGCache::searchCRS( long epsg )
   }
 }
 
-
+const QgsCoordinateReferenceSystem& QgsCRSCache::crsByEpsgId( long epsg )
+{
+  return crsByAuthId( "EPSG:" + QString::number( epsg ) );
+}

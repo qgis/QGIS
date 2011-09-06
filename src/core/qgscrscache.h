@@ -1,8 +1,8 @@
 /***************************************************************************
-                              qgsepsgcache.h
+                              qgscrscache.h
                               --------------
-  begin                : June 9th, 2010
-  copyright            : (C) 2010 by Marco Hugentobler
+  begin                : September 6th, 2011
+  copyright            : (C) 2011 by Marco Hugentobler
   email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************/
 
@@ -15,29 +15,29 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSEPSGCACHE_H
-#define QGSEPSGCACHE_H
+#ifndef QGSCRSCACHE_H
+#define QGSCRSCACHE_H
 
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
 
-/**A class that cashes QgsCoordinateReferenceSystem instances and allows fast searching by epsg numbers*/
-class QgsEPSGCache
+class QgsCRSCache
 {
   public:
-    static QgsEPSGCache* instance();
-    ~QgsEPSGCache();
-    /**Returns the CRS for an epsg number (or an invalid CRS in case of error)*/
-    const QgsCoordinateReferenceSystem& searchCRS( long epsg );
+    static QgsCRSCache* instance();
+    ~QgsCRSCache();
+    /**Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)*/
+    const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
+    const QgsCoordinateReferenceSystem& crsByEpsgId( long epgs );
 
   protected:
-    QgsEPSGCache();
+    QgsCRSCache();
 
   private:
-    static QgsEPSGCache* mInstance;
-    QHash< long, QgsCoordinateReferenceSystem > mCRS;
-    /**CRS that is not initialised (is returned in case of error)*/
+    static QgsCRSCache* mInstance;
+    QHash< QString, QgsCoordinateReferenceSystem > mCRS;
+    /**CRS that is not initialised (returned in case of error)*/
     QgsCoordinateReferenceSystem mInvalidCRS;
 };
 
-#endif // QGSEPSGCACHE_H
+#endif // QGSCRSCACHE_H
