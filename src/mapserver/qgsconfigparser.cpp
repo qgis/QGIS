@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsconfigparser.h"
+#include "qgscrscache.h"
 #include "qgsapplication.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
@@ -78,8 +79,7 @@ void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
     return;
   }
 
-  QgsCoordinateReferenceSystem wgs84;
-  wgs84.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
 
   //Ex_GeographicBoundingBox
   //transform the layers native CRS into WGS84
