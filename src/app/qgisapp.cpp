@@ -640,6 +640,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mDeletePart;
   delete mMapTools.mAddPart;
   delete mMapTools.mNodeTool;
+  delete mMapTools.mRotatePointSymbolsTool;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
