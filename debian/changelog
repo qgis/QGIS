@@ -6,8 +6,9 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * migrate unstable package to dh_python2
   * add ubuntu oneiric
   * include internal pyspatialite in python-qgis
+  * update watch
 
- -- Jürgen E. Fischer <jef@norbit.de>  Thu, 01 Sep 2011 23:20:25 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Wed, 07 Sep 2011 22:23:41 +0200
 
 qgis (1.7.0) UNRELEASED; urgency=low
 
