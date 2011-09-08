@@ -22,7 +22,7 @@
 
 /**A class that implements a custom filter and can be used
  as a proxy for QgsDbTableModel*/
-class QgsDbFilterProxyModel: public QSortFilterProxyModel
+class CORE_EXPORT QgsDbFilterProxyModel: public QSortFilterProxyModel
 {
   public:
     QgsDbFilterProxyModel( QObject* parent = 0 );

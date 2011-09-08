@@ -21,7 +21,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
 
-class QgsCRSCache
+class CORE_EXPORT QgsCRSCache
 {
   public:
     static QgsCRSCache* instance();

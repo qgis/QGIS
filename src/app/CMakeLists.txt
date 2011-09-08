@@ -93,7 +93,6 @@ SET(QGIS_APP_SRCS
   qgstipfactory.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
-  qgsquerybuilder.cpp
   qgshighlight.cpp
   qgshandlebadlayers.cpp
 
@@ -207,7 +206,6 @@ SET (QGIS_APP_MOC_HDRS
   qgspastetransformations.h
   qgspluginmanager.h
   qgsprojectproperties.h
-  qgsquerybuilder.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
   qgssinglesymboldialog.h

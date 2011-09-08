@@ -70,6 +70,7 @@ qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
 qgssearchquerybuilder.cpp
+qgsquerybuilder.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -125,6 +126,7 @@ qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
+qgsquerybuilder.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})
