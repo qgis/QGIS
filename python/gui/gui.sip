@@ -35,5 +35,6 @@
 %Include qgssearchquerybuilder.sip
 %Include qgsattributeeditor.sip
 %Include qgsfieldvalidator.sip
+%Include qgsquerybuilder.sip
 
 %Include symbology-ng-gui.sip
