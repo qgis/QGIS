@@ -16,7 +16,6 @@
  *                                                                         *
  ***************************************************************************/
 
-/* $Id: qgsgdalprovider.h 12528 2009-12-20 12:29:07Z jef $ */
 
 #ifndef QGSGDALPROVIDER_H
 #define QGSGDALPROVIDER_H
@@ -26,6 +25,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterbandstats.h"
 
 #include <QString>
 #include <QStringList>
@@ -208,17 +208,27 @@ class QgsGdalProvider : public QgsRasterDataProvider
     QString metadata();
 
     // Following methods specific for WMS are not used at all in this provider and should be removed IMO from qgsdataprovider.h
-    void addLayers( QStringList const &  layers, QStringList const &  styles = QStringList() ) {}
-    QStringList supportedImageEncodings() { return QStringList();}
+    void addLayers( QStringList const &layers, QStringList const &styles = QStringList() )
+    { Q_UNUSED( layers ); Q_UNUSED( styles ); }
+    QStringList supportedImageEncodings() { return QStringList(); }
     QString imageEncoding() const { return QString(); }
-    void setImageEncoding( QString const & mimeType ) {}
-    void setImageCrs( QString const & crs ) {}
+    void setImageEncoding( QString const &mimeType )
+    { Q_UNUSED( mimeType ); }
+    void setImageCrs( QString const &crs )
+    { Q_UNUSED( crs ); }
 
     /** \brief ensures that GDAL drivers are registered, but only once */
     static void registerGdalDrivers();
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
+    /** \brief If the provider supports it, return band stats for the
+        given band.
+        @note added in QGIS 1.7
+        @note overloads virtual method from QgsRasterProvider::bandStatistics
+
+    */
+    QgsRasterBandStats bandStatistics( int theBandNo );
 
     void populateHistogram( int theBandNoInt,
                             QgsRasterBandStats & theBandStats,
@@ -270,8 +280,6 @@ class QgsGdalProvider : public QgsRasterDataProvider
     // List of estimated max values, index 0 for band 1
     QList<double> mMaximum;
 
-    //GDALDataType mGdalDataType;
-
     /** \brief Pointer to the gdaldataset */
     GDALDatasetH mGdalBaseDataset;
 
@@ -286,6 +294,7 @@ class QgsGdalProvider : public QgsRasterDataProvider
     QList<QgsRasterPyramid> mPyramidList;
 
 };
+
 
 #endif
 
