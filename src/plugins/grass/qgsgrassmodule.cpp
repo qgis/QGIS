@@ -1489,6 +1489,7 @@ void QgsGrassModule::run()
 
     mProcess.setEnvironment( environment );
     mProcess.start( cmd, execArguments );
+    emit moduleStarted();
 
     mProcess.waitForStarted();
     if ( mProcess.state() != QProcess::Running )
@@ -1527,6 +1528,8 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
   {
     mOutputTextBrowser->append( tr( "<B>Module crashed or killed</B>" ) );
   }
+
+  emit moduleFinished();
   mRunButton->setText( tr( "Run" ) );
 }
 
