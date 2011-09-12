@@ -11192,7 +11192,7 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="60"/>
         <source>&amp;Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Mise à jo&amp;ur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="62"/>
@@ -11202,23 +11202,24 @@ L&apos;erreur est : %2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="162"/>
         <source>Really Update?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous vraiment mettre à jour ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="163"/>
         <source>Are you sure you want to update the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation> Êtes vous sûr de vouloir mettre à jour le signet %1 ?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="192"/>
         <source>Error updating bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la mise à jour du signet</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="193"/>
         <source>Failed to update the %1 bookmark. The database said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Echec de la mise à jour du signet %1. La base de donnée dit :
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="223"/>
@@ -12347,7 +12348,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="435"/>
         <source>Legend map changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Légende modifiée</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="546"/>
@@ -12368,12 +12369,12 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="671"/>
         <source>Map %1</source>
-        <translation type="unfinished">Carte %1</translation>
+        <translation>Carte %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="673"/>
         <source>None</source>
-        <translation type="unfinished">Aucun(e)</translation>
+        <translation>Aucun(e)</translation>
     </message>
 </context>
 <context>
@@ -12456,7 +12457,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="185"/>
         <source>Map</source>
-        <translation type="unfinished">Carte</translation>
+        <translation>Carte</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="213"/>
@@ -24069,7 +24070,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="257"/>
         <source>Edit</source>
-        <translation>2diter</translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="264"/>
@@ -29594,7 +29595,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="59"/>
         <source>Priority</source>
-        <translation type="unfinished">Priorité</translation>
+        <translation>Priorité</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="62"/>
@@ -29615,19 +29616,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="190"/>
         <source>None</source>
         <comment>No grouping for displaying rules</comment>
-        <translation type="unfinished">Aucun(e)</translation>
+        <translation>Aucun(e)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="200"/>
         <source>By filter</source>
         <comment>Group rules by filter</comment>
-        <translation type="unfinished"></translation>
+        <translation>Par filtre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="207"/>
         <source>By scale</source>
         <comment>Group rules by scale</comment>
-        <translation type="unfinished"></translation>
+        <translation>Par échelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="82"/>
@@ -29642,27 +29643,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="103"/>
         <source>Increase priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Augmenter la priorité</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="110"/>
         <source>Decrease priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Baisser la priorité</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="143"/>
         <source>Enable symbol levels</source>
-        <translation type="unfinished">Activer les niveaux de symbole</translation>
+        <translation>Activer les niveaux de symbole</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="156"/>
         <source>Use only first matched rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser uniquement la première règle correspondante</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="169"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="183"/>
@@ -34663,22 +34664,22 @@ Il s&apos;agit peut-être d&apos;une erreur de configuration du serveur. Voulez-
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="273"/>
         <source>Move selected layer UP</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer la couche sélectionnée vers le haut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="276"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="283"/>
         <source>Move selected layer DOWN</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacer la couche sélectionnée vers le bas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="286"/>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="310"/>
