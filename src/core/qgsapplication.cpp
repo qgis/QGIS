@@ -744,12 +744,7 @@ void QgsApplication::applyGdalSkippedDrivers()
   QString myDriverList = mGdalSkipList.join(" ");
   QgsDebugMsg( "Gdal Skipped driver list set to:" );
   QgsDebugMsg( myDriverList );
-#if defined(Q_WS_WIN32) || defined(WIN32)
   CPLSetConfigOption("GDAL_SKIP", myDriverList.toUtf8());
-#else
-  int myChangeFlag = 1; //whether we want to force the env var to change
-  setenv( "GDAL_SKIP", myDriverList.toUtf8(), myChangeFlag );
-#endif
   GDALDriverManager myDriverManager;
-  myDriverManager.AutoLoadDrivers();
+  myDriverManager.AutoSkipDrivers();
 }

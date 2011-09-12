@@ -531,6 +531,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
   // now build vector file filter
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
+
   // now build raster file filter
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
 
