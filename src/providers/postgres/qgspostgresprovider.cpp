@@ -25,13 +25,13 @@
 
 #include <qgis.h>
 #include <qgsapplication.h>
-#include <qgsvectorlayer.h>
 #include <qgsfeature.h>
 #include <qgsfield.h>
 #include <qgsgeometry.h>
 #include <qgsmessageoutput.h>
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
+#include "qgsvectorlayerimport.h"
 
 #include "qgsprovidercountcalcevent.h"
 #include "qgsproviderextentcalcevent.h"
@@ -81,7 +81,7 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::Double:
-      if ( fieldSize <= 0 || fieldPrec < 0)
+      if ( fieldSize <= 0 || fieldPrec <= 0)
       {
         fieldType = "float";
         fieldSize = -1;
@@ -103,38 +103,17 @@ bool QgsPostgresProvider::convertField( QgsField &field )
   return true;
 }
 
-QgsPostgresProvider::WriterError
-QgsPostgresProvider::importVector(
-    QgsVectorLayer *layer,
+QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     const QString& uri,
-    const QgsCoordinateReferenceSystem *destCRS,
-    bool onlySelected,
+    const QgsFieldMap &fields,
+    QGis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem *srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
     QString *errorMessage,
-    bool skipAttributeCreation,
     const QMap<QString,QVariant> *options )
 {
-  const QgsCoordinateReferenceSystem* outputCRS;
-  QgsCoordinateTransform* ct = 0;
-  int shallTransform = false;
-
-  if ( !layer )
-  {
-    return ErrInvalidLayer;
-  }
-
-  if ( destCRS && destCRS->isValid() )
-  {
-    // This means we should transform
-    outputCRS = destCRS;
-    shallTransform = true;
-  }
-  else
-  {
-    // This means we shouldn't transform, use source CRS as output (if defined)
-    outputCRS = &layer->crs();
-  }
-
-  QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
+  Q_UNUSED( options );
 
   // populate members from the uri structure
   QgsDataSourceURI dsUri( uri );
@@ -160,184 +139,199 @@ QgsPostgresProvider::importVector(
   QgsDebugMsg( "Table name is: " + tableName );
 
   // create the table
+  Conn *conn = Conn::connectDb( dsUri.connectionInfo(), false );
+  if ( conn == NULL )
   {
-    Conn *conn = Conn::connectDb( dsUri.connectionInfo(), false );
-    if ( conn == NULL )
-    {
-      QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "Connection to database failed" );
-      return ErrConnectionFailed;
-    }
+    QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Connection to database failed" );
+    return QgsVectorLayerImport::ErrConnectionFailed;
+  }
 
-    // get the pk's name and type
-    if ( primaryKey.isEmpty() )
+  // get the pk's name and type
+
+  // if no pk name was passed, define the new pk field name
+  if ( primaryKey.isEmpty() )
+  {
+    int index = 0;
+    QString pk = primaryKey = "pk";
+    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
-      // if no pk name was passed, define the new pk field name
-      int index = 0;
-      QString pk = primaryKey = "pk";
-      for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+      if ( fldIt.value().name() == pk )
       {
-        if ( fldIt.value().name() == pk )
+        // it already exists, try again with a new name
+        primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
+        fldIt = fields.begin();
+      }
+    }
+  }
+  else
+  {
+    // search for the passed field
+    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    {
+      if ( fldIt.value().name() == primaryKey )
+      {
+        // found, get the field type
+        QgsField fld = fldIt.value();
+        if ( convertField( fld ) )
         {
-          // it already exists, try again with a new name
-          primaryKey = QString( "%1_%2" ).arg( pk ).arg( index++ );
-          fldIt = fields.begin();
+          primaryKeyType = fld.typeName();
         }
       }
     }
-    else
-    {
-      // search for the passed field
-      for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
-      {
-        if ( fldIt.value().name() == primaryKey )
-        {
-          // found, get the field type
-          QgsField &fld = fldIt.value();
-          if ( convertField( fld ) )
-          {
-            primaryKeyType = fld.typeName();
-          }
-        }
-      }
-    }
+  }
 
-    // if the field doesn't not exist yet, create it as a serial field
-    if ( primaryKeyType.isEmpty() )
+  // if the field doesn't not exist yet, create it as a serial field
+  if ( primaryKeyType.isEmpty() )
+  {
+    primaryKeyType = "serial";
+    /* TODO
+    // check the feature count to choose if create a serial8 pk field
+    if ( layer->featureCount() > 0xFFFFFF )
     {
-      primaryKeyType = "serial";
-      // check the feature count to choose if create a serial8 pk field
-      if ( layer->featureCount() > 0xFFFFFF )
-      {
-        primaryKeyType = "serial8";
-      }
-    }
+      primaryKeyType = "serial8";
+    }*/
+  }
 
-    try
+  try
+  {
+    conn->PQexecNR( "BEGIN" );
+
+    bool exists = false;
+    QString sql = QString( "SELECT 1 "
+                           "FROM pg_class AS cls JOIN pg_namespace AS nsp"
+                           "     ON nsp.oid = cls.relnamespace "
+                           " WHERE cls.relname = %1 AND nsp.nspname = %2" )
+                  .arg( quotedValue( tableName ) )
+                  .arg( quotedValue( schemaName ) );
+
+    PGresult *result = conn->PQexec( sql );
+    if ( PQresultStatus( result ) == PGRES_FATAL_ERROR )
+      throw PGException( result );
+    if ( PQntuples( result ) > 0 )
+      exists = true;
+    PQclear( result );
+
+    if ( exists && overwrite )
     {
-      conn->PQexecNR( "BEGIN" );
-
       // delete the table if exists, then re-create it
-      QString sql = QString( "SELECT %1(%2, %3) "
+      QString sql = QString( "SELECT dropgeometrytable(%1, %2) "
                              "FROM pg_class AS cls JOIN pg_namespace AS nsp"
                              "     ON nsp.oid = cls.relnamespace "
-                             " WHERE cls.relname = %4 AND nsp.nspname = %5" )
-                    .arg( conn->majorVersion() < 2 ? "dropgeometrytable" : "st_dropgeometrytable" )
+                             " WHERE cls.relname = %3 AND nsp.nspname = %4" )
                     .arg( quotedValue( schemaName ) )
                     .arg( quotedValue( tableName ) )
                     .arg( quotedValue( tableName ) )
                     .arg( quotedValue( schemaName ) );
 
-      PGresult *result = conn->PQexec( sql );
-      if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
+      result = conn->PQexec( sql );
+      if ( PQresultStatus( result ) == PGRES_FATAL_ERROR )
         throw PGException( result );
       PQclear( result );
+    }
 
-      sql = QString( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
-                    .arg( schemaTableName )
-                    .arg( quotedIdentifier( primaryKey ) )
-                    .arg( primaryKeyType );
+    sql = QString( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
+                  .arg( schemaTableName )
+                  .arg( quotedIdentifier( primaryKey ) )
+                  .arg( primaryKeyType );
+
+    result = conn->PQexec( sql );
+    if ( PQresultStatus( result ) == PGRES_FATAL_ERROR )
+      throw PGException( result );
+    PQclear( result );
+
+
+    // get geometry type, dim and srid
+    int dim = 2;
+    long srid = srs->postgisSrid();
+
+    switch( wkbType )
+    {
+      case QGis::WKBPoint25D:
+        dim = 3;
+      case QGis::WKBPoint:
+        geometryType = "POINT";
+        break;
+
+      case QGis::WKBLineString25D:
+        dim = 3;
+      case QGis::WKBLineString:
+        geometryType = "LINESTRING";
+        break;
+
+      case QGis::WKBPolygon25D:
+        dim = 3;
+      case QGis::WKBPolygon:
+        geometryType = "POLYGON";
+        break;
+
+      case QGis::WKBMultiPoint25D:
+        dim = 3;
+      case QGis::WKBMultiPoint:
+        geometryType = "MULTIPOINT";
+        break;
+
+      case QGis::WKBMultiLineString25D:
+        dim = 3;
+      case QGis::WKBMultiLineString:
+        geometryType = "MULTILINESTRING";
+        break;
+
+      case QGis::WKBMultiPolygon25D:
+        dim = 3;
+      case QGis::WKBMultiPolygon:
+        geometryType = "MULTIPOLYGON";
+        break;
+
+      case QGis::WKBUnknown:
+        geometryType = "GEOMETRY";
+        break;
+
+      case QGis::WKBNoGeometry:
+      default:
+        dim = 0;
+        break;
+    }
+
+    // create geometry column
+    if ( !geometryType.isEmpty() )
+    {
+      sql = QString( "SELECT addgeometrycolumn(%1, %2, %3, %4, %5, %6)" )
+            .arg( quotedValue( schemaName ) )
+            .arg( QgsPostgresProvider::quotedValue( tableName ) )
+            .arg( QgsPostgresProvider::quotedValue( geometryColumn ) )
+            .arg( srid )
+            .arg( QgsPostgresProvider::quotedValue( geometryType ) )
+            .arg( dim );
 
       result = conn->PQexec( sql );
-      if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
+      if ( PQresultStatus( result ) == PGRES_FATAL_ERROR )
         throw PGException( result );
       PQclear( result );
-
-      // get geometry type, dim and srid
-      int dim = 2;
-      long srid = outputCRS->postgisSrid();
-
-      switch( layer->wkbType() )
-      {
-        case QGis::WKBPoint25D:
-          dim = 3;
-        case QGis::WKBPoint:
-          geometryType = "POINT";
-          break;
-
-        case QGis::WKBLineString25D:
-          dim = 3;
-        case QGis::WKBLineString:
-          geometryType = "LINESTRING";
-          break;
-
-        case QGis::WKBPolygon25D:
-          dim = 3;
-        case QGis::WKBPolygon:
-          geometryType = "POLYGON";
-          break;
-
-        case QGis::WKBMultiPoint25D:
-          dim = 3;
-        case QGis::WKBMultiPoint:
-          geometryType = "MULTIPOINT";
-          break;
-
-        case QGis::WKBMultiLineString25D:
-          dim = 3;
-        case QGis::WKBMultiLineString:
-          geometryType = "MULTILINESTRING";
-          break;
-
-        case QGis::WKBMultiPolygon25D:
-          dim = 3;
-        case QGis::WKBMultiPolygon:
-          geometryType = "MULTIPOLYGON";
-          break;
-
-        case QGis::WKBUnknown:
-          geometryType = "GEOMETRY";
-          break;
-
-        case QGis::WKBNoGeometry:
-        default:
-          dim = 0;
-          break;
-      }
-
-      // create geometry column
-      if ( !geometryType.isEmpty() && dim > 0 )
-      {
-        sql = QString( "SELECT %1(%2, %3, %4, %5, %6, %7)" )
-              .arg( conn->majorVersion() < 2 ? "addgeometrycolumn" : "st_addgeometrycolumn" )
-              .arg( quotedValue( schemaName ) )
-              .arg( QgsPostgresProvider::quotedValue( tableName ) )
-              .arg( QgsPostgresProvider::quotedValue( geometryColumn ) )
-              .arg( srid )
-              .arg( QgsPostgresProvider::quotedValue( geometryType ) )
-              .arg( dim );
-
-        PGresult *result = conn->PQexec( sql );
-        if ( result == 0 || PQresultStatus( result ) == PGRES_FATAL_ERROR )
-          throw PGException( result );
-        PQclear( result );
-      }
-      else
-      {
-        geometryColumn = QString();
-        geometryType = QString();
-        dim = 0;
-      }
-
-      conn->PQexecNR( "COMMIT" );
     }
-    catch ( PGException &e )
+    else
     {
-      QgsDebugMsg( "creation of data source " + schemaTableName + " failed. " + e.errorMessage() );
-      if ( errorMessage )
-        *errorMessage = QObject::tr( "creation of data source %1 failed. %2" )
-                        .arg( schemaTableName )
-                        .arg( e.errorMessage() );
-
-      conn->PQexecNR( "ROLLBACK" );
-      Conn::disconnectRW( conn );
-      return ErrCreateLayer;
+      geometryColumn.clear();
     }
-    Conn::disconnectRW( conn );
 
-    QgsDebugMsg( "layer " + schemaTableName  + " created." );
+    conn->PQexecNR( "COMMIT" );
   }
+  catch ( PGException &e )
+  {
+    QgsDebugMsg( "creation of data source " + schemaTableName + " failed. " + e.errorMessage() );
+    if ( errorMessage )
+      *errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" )
+                      .arg( schemaTableName )
+                      .arg( e.errorMessage() );
+
+    conn->PQexecNR( "ROLLBACK" );
+    Conn::disconnectRW( conn );
+    return QgsVectorLayerImport::ErrCreateLayer;
+  }
+  Conn::disconnectRW( conn );
+
+  QgsDebugMsg( "layer " + schemaTableName  + " created." );
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
@@ -346,25 +340,33 @@ QgsPostgresProvider::importVector(
   {
     QgsDebugMsg( "The layer " + schemaTableName + " just created is not valid or not supported by the provider." );
     if ( errorMessage )
-      *errorMessage = QObject::tr( "loading of the layer %1 failed" )
+      *errorMessage = QObject::tr( "Loading of the layer %1 failed" )
                       .arg( schemaTableName );
 
     delete provider;
-    return ErrCreateLayer;
+    return QgsVectorLayerImport::ErrInvalidLayer;
   }
 
   QgsDebugMsg( "layer loaded" );
 
   // add fields to the layer
+  if ( oldToNewAttrIdxMap )
+    oldToNewAttrIdxMap->clear();
+
   if ( fields.size() > 0 )
   {
+    int offset = geometryColumn.isEmpty() ? 1 : 2;
+
     // get the list of fields
     QList<QgsField> flist;
-    for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
-      QgsField &fld = fldIt.value();
+      QgsField fld = fldIt.value();
       if ( fld.name() == primaryKey )
+      {
+        oldToNewAttrIdxMap->insert( fldIt.key(), 0 );
         continue;
+      }
 
        if ( fld.name() == geometryColumn )
        {
@@ -372,180 +374,43 @@ QgsPostgresProvider::importVector(
          continue;
        }
 
-      // convert field type only if the source provider is different from the destination one
-      // because if both source and destination use the same provider,
-      // the field type should be natively supported
-      if ( layer->dataProvider()->name() != provider->name() )
+      if ( !convertField( fld ) )
       {
-        if ( !convertField( fld ) )
-        {
-          QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
-          if ( errorMessage )
-            *errorMessage = QObject::tr( "unsupported type for field %1" )
-                            .arg( fld.name() );
+        QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
+        if ( errorMessage )
+          *errorMessage = QObject::tr( "Unsupported type for field %1" )
+                          .arg( fld.name() );
 
-          delete provider;
-          return ErrAttributeTypeUnsupported;
-        }
+        delete provider;
+        return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
       }
 
-      flist.append( fld );
-      QgsDebugMsg( "creating field " + fld.name() +
+      QgsDebugMsg( "creating field #" + QString::number( fldIt.key() ) +
+                   " -> #" + QString::number( offset ) +
+                   " name " + fld.name() +
                    " type " + QString( QVariant::typeToName( fld.type() ) ) +
+                   " typename " + fld.typeName() +
                    " width " + QString::number( fld.length() ) +
                    " precision " + QString::number( fld.precision() ) );
+
+      flist.append( fld );
+      if ( oldToNewAttrIdxMap )
+        oldToNewAttrIdxMap->insert( fldIt.key(), offset++ );
     }
 
     if ( !provider->addAttributes( flist ) )
     {
       QgsDebugMsg( "error creating fields " );
       if ( errorMessage )
-        *errorMessage = QObject::tr( "creation of fields failed" );
+        *errorMessage = QObject::tr( "Creation of fields failed" );
 
       delete provider;
-      return ErrAttributeCreationFailed;
+      return QgsVectorLayerImport::ErrAttributeCreationFailed;
     }
 
     QgsDebugMsg( "Done creating fields" );
   }
-
-  QgsAttributeList allAttr = skipAttributeCreation ? QgsAttributeList() : layer->pendingAllAttributesList();
-  QgsFeature fet;
-
-  layer->select( allAttr, QgsRectangle(), layer->wkbType() != QGis::WKBNoGeometry );
-
-  const QgsFeatureIds& ids = layer->selectedFeaturesIds();
-
-  // Create our transform
-  if ( destCRS )
-  {
-    ct = new QgsCoordinateTransform( layer->crs(), *destCRS );
-  }
-
-  // Check for failure
-  if ( ct == NULL )
-  {
-    shallTransform = false;
-  }
-
-  int n = 0, errors = 0;
-
-  // make all the changes using one transaction only
-  if ( provider->connectRW() )
-  {
-    provider->connectionRW->PQexecNR( "BEGIN" );
-  }
-  else
-  {
-    QgsDebugMsg( "unable to estabilish a RW connection" );
-    if ( errorMessage )
-      *errorMessage = QObject::tr( "unable to estabilish a RW connection. Writing of features failed" );
-
-    delete provider;
-    return ErrFeatureWriteFailed;
-  }
-
-  // write all features
-  QgsFeatureList flist;
-  while (1)
-  {
-    while ( layer->nextFeature( fet ) )
-    {
-      if ( onlySelected && !ids.contains( fet.id() ) )
-        continue;
-
-      if ( shallTransform )
-      {
-        try
-        {
-          if ( fet.geometry() )
-          {
-            fet.geometry()->transform( *ct );
-          }
-        }
-        catch ( QgsCsException &e )
-        {
-          delete ct;
-
-          QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
-                        .arg( fet.typeName() ).arg( e.what() );
-          QgsLogger::warning( msg );
-          if ( errorMessage )
-            *errorMessage = msg;
-
-          provider->connectionRW->PQexecNR( "ROLLBACK" );
-          delete provider;
-          return ErrProjection;
-        }
-      }
-      if ( skipAttributeCreation )
-      {
-        fet.clearAttributeMap();
-      }
-      else
-      {
-        // fix attributes position based on how the table was created.
-        // The first field is reserved to the primary key and the second one to
-        // the geometry column (if any), so move the other attributes after these fields
-        int offset = geometryColumn.isEmpty() ? 1 : 2;
-
-        const QgsAttributeMap &attrs = fet.attributeMap();
-        QgsAttributeMap newAttrs;
-        for ( QgsAttributeMap::const_iterator it = attrs.begin(); it != attrs.end(); it++ )
-        {
-          const QgsField &fld = fields[ it.key() ];
-          if ( fld.name() == primaryKey || fld.name() == geometryColumn )
-            continue;
-
-          newAttrs.insert( offset++, *it );
-        }
-        fet.setAttributeMap( newAttrs );
-
-      }
-
-      flist.append( fet );
-
-      // add 100 features at the same time
-      if ( flist.size() == 100 )
-        break;
-    }
-
-    if ( !provider->addFeatures( flist, false ) )
-    {
-      QgsDebugMsg( QString( "failed while adding features from %1 to %2" )
-                  .arg( flist.first().id() )
-                  .arg( flist.last().id() )
-                 );
-      if ( errorMessage )
-        *errorMessage += QObject::tr( "failed while adding features from %1 to %2\n" )
-                         .arg( flist.first().id() )
-                         .arg( flist.last().id() );
-    }
-    n += flist.size();
-
-    if ( flist.size() < 100 )
-      break;
-    flist.clear();
-  }
-
-  provider->connectionRW->PQexecNR( "COMMIT" );
-  delete provider;
-
-  if ( shallTransform )
-  {
-    delete ct;
-  }
-
-  if ( errors > 0 && n > 0 )
-  {
-    if ( errorMessage )
-    {
-      *errorMessage += QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
-    }
-    return ErrFeatureWriteFailed;
-  }
-
-  return NoError;
+  return QgsVectorLayerImport::NoError;
 }
 
 
@@ -2898,20 +2763,11 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
 
 bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 {
-  return addFeatures( flist, true );
-}
-
-bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, bool useNewTransaction )
-{
   if ( flist.size() == 0 )
     return true;
 
   if ( isQuery )
     return false;
-
-  // if there's no rw connection opened then create a new transaction
-  if ( !connectionRW )
-    useNewTransaction = true;
 
   if ( !connectRW() )
     return false;
@@ -2920,8 +2776,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, bool useNewTransac
 
   try
   {
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "BEGIN" );
+    connectionRW->PQexecNR( "BEGIN" );
 
     // Prepare the INSERT statement
     QString insert = QString( "INSERT INTO %1 (" ).arg( mQuery );
@@ -3094,22 +2949,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist, bool useNewTransac
         flist[i].setFeatureId( newIds[i] );
 
     connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "COMMIT" );
+    connectionRW->PQexecNR( "COMMIT" );
 
     featuresCounted += flist.size();
   }
   catch ( PGException &e )
   {
     e.showErrorMessage( tr( "Error while adding features" ) );
-    if ( useNewTransaction )
-      connectionRW->PQexecNR( "ROLLBACK" );
+    connectionRW->PQexecNR( "ROLLBACK" );
     connectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     returnvalue = false;
   }
 
-  if ( useNewTransaction )
-   rewind();
+  rewind();
   return returnvalue;
 }
 
@@ -4208,14 +4060,18 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN int importVector(
-    QgsVectorLayer *layer,
-    const QString& uri,
-    const QgsCoordinateReferenceSystem *destCRS,
-    bool onlySelected,
-    QString *errorMessage,
-    bool skipAttributeCreation,
-    const QMap<QString,QVariant> *options )
+QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString,QVariant> *options )
 {
-  return QgsPostgresProvider::importVector( layer, uri, destCRS, onlySelected, errorMessage, skipAttributeCreation, options );
+  return QgsPostgresProvider::createEmptyLayer(
+                  uri, fields, wkbType, srs, overwrite,
+                  oldToNewAttrIdxMap, errorMessage, options
+                );
 }

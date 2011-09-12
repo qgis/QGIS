@@ -19,9 +19,10 @@ email                : sherman at mrcc.com
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsvectorlayerimport.h"
 
-class QgsFeature;
 class QgsField;
+class QgsVectorLayerImport;
 
 #include <ogr_api.h>
 
@@ -36,15 +37,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
   public:
 
     /** convert a vector layer to a vector file */
-    static QgsVectorFileWriter::WriterError importVector(
-                QgsVectorLayer *layer,
-                const QString& fileName,
-                const QgsCoordinateReferenceSystem *destCRS,
-                bool onlySelected,
-                QString *errorMessage,
-                bool skipAttributeCreation,
-                const QMap<QString,QVariant> *options
-              );
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+                            const QString& uri,
+                            const QgsFieldMap &fields,
+                            QGis::WkbType wkbType,
+                            const QgsCoordinateReferenceSystem *srs,
+                            bool overwrite,
+                            QMap<int, int> *oldToNewAttrIdxMap,
+                            QString *errorMessage = 0,
+                            const QMap<QString,QVariant> *options = 0
+                          );
 
     /**
      * Constructor of the vector provider
@@ -265,6 +267,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
     void setRelevantFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
+
+    /** convert a QgsField to work with OGR */
+    static bool convertField( QgsField &field, const QTextCodec &encoding );
 
   private:
     bool crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt );

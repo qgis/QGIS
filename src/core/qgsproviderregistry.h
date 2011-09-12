@@ -140,17 +140,6 @@ class CORE_EXPORT QgsProviderRegistry
     /** type for data provider metadata associative container */
     typedef std::map<QString, QgsProviderMetadata*> Providers;
 
-    /** allows to import a vector layer using the provider */
-    int importVector( QgsVectorLayer* layer,
-                      const QString& providerKey,
-                      const QString& uri,
-                      const QgsCoordinateReferenceSystem *destCRS,
-                      bool onlySelected = false,
-                      QString *errorMessage = 0,
-                      bool skipAttributeCreation = false,
-                      const QMap<QString, QVariant> *options = 0
-                    ) const;
-
   private:
 
     /** ctor private since instance() creates it */

@@ -24,6 +24,7 @@ extern "C"
 }
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayerimport.h"
 #include <list>
 #include <queue>
 #include <fstream>
@@ -32,7 +33,6 @@ extern "C"
 class QgsFeature;
 class QgsField;
 class QgsGeometry;
-class QgsVectorLayer;
 
 #include "qgsdatasourceuri.h"
 
@@ -50,27 +50,15 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
   public:
 
-    enum WriterError
-    {
-      NoError = 0,
-      ErrDriverNotFound,
-      ErrCreateDataSource,
-      ErrCreateLayer,
-      ErrAttributeTypeUnsupported,
-      ErrAttributeCreationFailed,
-      ErrProjection,
-      ErrFeatureWriteFailed,
-      ErrInvalidLayer,
-      ErrConnectionFailed,
-    };
-
     /** Import a vector layer into the database */
-    static WriterError importVector( QgsVectorLayer* layer,
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
                               const QString& uri,
-                              const QgsCoordinateReferenceSystem *destCRS,
-                              bool onlySelected = false,
+                              const QgsFieldMap &fields,
+                              QGis::WkbType wkbType,
+                              const QgsCoordinateReferenceSystem *srs,
+                              bool overwrite,
+                              QMap<int, int> *oldToNewAttrIdxMap,
                               QString *errorMessage = 0,
-                              bool skipAttributeCreation = false,
                               const QMap<QString,QVariant> *options = 0
                             );
 
@@ -379,14 +367,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     bool loadFields();
 
-    /** convert a QgsField to work with PG
-    */
+    /** convert a QgsField to work with PG */
     static bool convertField( QgsField &field );
-
-    /**Adds a list of features
-      @param useNewTransaction create a new transaction
-      @return true in case of success and false in case of failure*/
-    bool addFeatures( QgsFeatureList & flist, bool useNewTransaction );
 
     /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended

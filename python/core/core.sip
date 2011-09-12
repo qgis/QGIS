@@ -83,6 +83,7 @@
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
+%Include qgsvectorlayerimport.sip
 %Include qgsvectoroverlay.sip
 
 %Include qgsnetworkaccessmanager.sip

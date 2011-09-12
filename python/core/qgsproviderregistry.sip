@@ -61,21 +61,6 @@ class QgsProviderRegistry
      */
     virtual QString protocolDrivers() const;
 
-     /** allows to import a vector layer using the provider   
-     * @note this method was added in QGIS 1.8
-     */
-    int importVector( QgsVectorLayer* layer,
-                      const QString& providerKey,
-                      const QString& uri,
-                      const QgsCoordinateReferenceSystem *destCRS,
-                      bool onlySelected = FALSE,
-                      QString *errorMessage /Out/ = 0,
-                      bool skipAttributeCreation = FALSE, 
-					  const QMap<QString, QVariant> *options = 0
-                    ) const;
-    
-
-
   private:
 
         /** ctor private since instance() creates it */
