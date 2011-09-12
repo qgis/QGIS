@@ -422,6 +422,7 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
+  ${GDAL_LIBRARY}
   qgis_core
   qgis_gui
   qgis_analysis

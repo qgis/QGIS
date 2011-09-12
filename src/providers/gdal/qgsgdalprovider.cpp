@@ -1182,7 +1182,11 @@ int QgsGdalProvider::colorInterpretation( int theBandNo ) const
 void QgsGdalProvider::registerGdalDrivers()
 {
   if ( GDALGetDriverCount() == 0 )
+  {
     GDALAllRegister();
+  }
+  //call regardless of above
+  QgsApplication::applyGdalSkippedDrivers();
 }
 
 

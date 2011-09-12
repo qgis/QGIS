@@ -41,6 +41,8 @@
 #define ELLIPS_FLAT "NONE"
 #define ELLIPS_FLAT_DESC "None / Planimetric"
 
+#define CPL_SUPRESS_CPLUSPLUS
+#include <gdal.h>
 /**
  * \class QgsOptions - Set user options and preferences
  * Constructor
@@ -431,6 +433,9 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   restoreGeometry( settings.value( "/Windows/Options/geometry" ).toByteArray() );
   tabWidget->setCurrentIndex( settings.value( "/Windows/Options/row" ).toInt() );
+
+  loadGdalDriverList();
+
 }
 
 //! Destructor
@@ -744,6 +749,10 @@ void QgsOptions::saveOptions()
   //
   settings.setValue( "locale/userLocale", cboLocale->currentText() );
   settings.setValue( "locale/overrideFlag", grpLocale->isChecked() );
+
+
+  // Gdal skip driver list
+  saveGdalDriverList();
 }
 
 
@@ -1009,4 +1018,58 @@ void QgsOptions::on_mClearCache_clicked()
 #if QT_VERSION >= 0x40500
   QgsNetworkAccessManager::instance()->cache()->clear();
 #endif
+}
+
+void QgsOptions::loadGdalDriverList()
+{
+  QStringList mySkippedDrivers = QgsApplication::skippedGdalDrivers();
+  GDALDriverH myGdalDriver; // current driver
+  QString myGdalDriverDescription;
+  QStringList myDrivers;
+  for ( int i = 0; i < GDALGetDriverCount(); ++i )
+  {
+    myGdalDriver = GDALGetDriver( i );
+
+    Q_CHECK_PTR( myGdalDriver );
+
+    if ( !myGdalDriver )
+    {
+      QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+      continue;
+    }
+    myGdalDriverDescription = GDALGetDescription( myGdalDriver );
+    myDrivers << myGdalDriverDescription;
+  }
+  QStringListIterator myIterator( myDrivers );
+  myDrivers.sort();
+  while (myIterator.hasNext())
+  {
+    QString myName = myIterator.next();
+    QListWidgetItem * mypItem = new QListWidgetItem( myName );
+    if ( mySkippedDrivers.contains( myName ) )
+    {
+      mypItem->setCheckState( Qt::Unchecked );
+    }
+    else
+    {
+      mypItem->setCheckState( Qt::Checked );
+    }
+    lstGdalDrivers->addItem( mypItem );
+  }
+}
+
+void QgsOptions::saveGdalDriverList()
+{
+  for ( int i=0; i < lstGdalDrivers->count(); i++ )
+  {
+    QListWidgetItem * mypItem = lstGdalDrivers->item( i );
+    if ( mypItem->checkState() == Qt::Unchecked )
+    {
+      QgsApplication::skipGdalDriver( mypItem->text() );
+    }
+    else
+    {
+      QgsApplication::restoreGdalDriver( mypItem->text() );
+    }
+  }
 }
