@@ -745,6 +745,5 @@ void QgsApplication::applyGdalSkippedDrivers()
   QgsDebugMsg( "Gdal Skipped driver list set to:" );
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption("GDAL_SKIP", myDriverList.toUtf8());
-  GDALDriverManager myDriverManager;
-  myDriverManager.AutoSkipDrivers();
+  GetGDALDriverManager()->AutoSkipDrivers();
 }

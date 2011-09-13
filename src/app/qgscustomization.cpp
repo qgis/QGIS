@@ -797,7 +797,7 @@ void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget )
     QString p = myPath + "/" + w->objectName();
 
     bool on = mySettings.value( p, true ).toBool();
-    QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
+    //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
     if ( on )
     {
       QgsCustomization::customizeWidget( myPath, w );
@@ -854,7 +854,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     }
     else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
-      QgsDebugMsg( "click" );
+      //QgsDebugMsg( "click" );
       if ( pDialog && pDialog->isVisible() )
       {
         QMouseEvent *e = static_cast<QMouseEvent*>( event );
@@ -870,7 +870,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     if ( pDialog && pDialog->isVisible() )
     {
       QKeyEvent *e = static_cast<QKeyEvent*>( event );
-      QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
+      //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
       if ( e->key() == Qt::Key_M && e->modifiers() == Qt::ControlModifier )
       {
         pDialog->setCatch( !pDialog->catchOn() );

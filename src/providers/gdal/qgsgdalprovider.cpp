@@ -1181,12 +1181,19 @@ int QgsGdalProvider::colorInterpretation( int theBandNo ) const
 
 void QgsGdalProvider::registerGdalDrivers()
 {
-  if ( GDALGetDriverCount() == 0 )
+  //GDALDestroyDriverManager();
+  GDALAllRegister();
+  QSettings mySettings;
+  QString myJoinedList = mySettings.value( "gdal/skipList", "" ).toString();
+  if ( !myJoinedList.isEmpty() )
   {
-    GDALAllRegister();
+    QStringList myList = myJoinedList.split(" ");
+    for ( int i = 0; i < myList.size(); ++i )
+    {
+      QgsApplication::skipGdalDriver( myList.at( i ) );
+    }
+    QgsApplication::applyGdalSkippedDrivers();
   }
-  //call regardless of above
-  QgsApplication::applyGdalSkippedDrivers();
 }
 
 
