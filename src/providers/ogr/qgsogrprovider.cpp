@@ -42,8 +42,7 @@ email                : sherman at mrcc.com
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvectorlayer.h"
+#include "qgsvectorlayerimport.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -82,6 +81,121 @@ class QgsCPLErrorHandler
       CPLPopErrorHandler();
     }
 };
+
+
+bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
+{
+  OGRFieldType ogrType = OFTString; //default to string
+  int ogrWidth = field.length();
+  int ogrPrecision = field.precision();
+  switch ( field.type() )
+  {
+    case QVariant::LongLong:
+      ogrType = OFTString;
+      ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
+      ogrPrecision = -1;
+      break;
+
+    case QVariant::String:
+      ogrType = OFTString;
+      if ( ogrWidth < 0 || ogrWidth > 255 )
+        ogrWidth = 255;
+      break;
+
+    case QVariant::Int:
+      ogrType = OFTInteger;
+      ogrWidth = ogrWidth > 0 && ogrWidth <= 10 ? ogrWidth : 10;
+      ogrPrecision = 0;
+      break;
+
+    case QVariant::Double:
+      ogrType = OFTReal;
+      break;
+
+    default:
+      return false;
+  }
+
+  field.setTypeName( encoding.toUnicode( OGR_GetFieldTypeName( ogrType ) ) );
+  field.setLength( ogrWidth );
+  field.setPrecision( ogrPrecision );
+  return true;
+}
+
+
+QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
+    const QString& uri,
+    const QgsFieldMap &fields,
+    QGis::WkbType wkbType,
+    const QgsCoordinateReferenceSystem *srs,
+    bool overwrite,
+    QMap<int, int> *oldToNewAttrIdxMap,
+    QString *errorMessage,
+    const QMap<QString,QVariant> *options )
+{
+  QString encoding;
+  QString driverName = "ESRI Shapefile";
+  QStringList dsOptions, layerOptions;
+
+  if ( options )
+  {
+    if ( options->contains( "fileEncoding" ) )
+      encoding = options->value( "fileEncoding" ).toString();
+
+    if ( options->contains( "driverName" ) )
+      driverName = options->value( "driverName" ).toString();
+
+    if ( options->contains( "datasourceOptions" ) )
+      dsOptions << options->value( "datasourceOptions" ).toStringList();
+
+    if ( options->contains( "layerOptions" ) )
+      layerOptions << options->value( "layerOptions" ).toStringList();
+  }
+
+  if ( oldToNewAttrIdxMap )
+    oldToNewAttrIdxMap->clear();
+  if ( errorMessage )
+    errorMessage->clear();
+
+  if ( !overwrite )
+  {
+    QFileInfo fi( uri );
+    if ( fi.exists() )
+    {
+      if ( errorMessage )
+        *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
+                         .arg( uri );
+      return QgsVectorLayerImport::ErrCreateDataSource;
+    }
+  }
+
+  QgsVectorFileWriter *writer = new QgsVectorFileWriter(
+            uri, encoding, fields, wkbType,
+            srs, driverName, dsOptions, layerOptions );
+
+  QgsVectorFileWriter::WriterError error = writer->hasError();
+  if ( error )
+  {
+    if ( errorMessage )
+      *errorMessage += writer->errorMessage();
+
+    delete writer;
+    return ( QgsVectorLayerImport::ImportError ) error;
+  }
+
+  if ( oldToNewAttrIdxMap )
+  {
+    QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.begin(); attrIt != attrIdxMap.end(); ++attrIt )
+    {
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt );
+    }
+  }
+
+  delete writer;
+  return QgsVectorLayerImport::NoError;
+}
+
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
@@ -2369,3 +2483,18 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
   return 0;
 }
 
+QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString,QVariant> *options )
+{
+  return QgsOgrProvider::createEmptyLayer(
+                  uri, fields, wkbType, srs, overwrite,
+                  oldToNewAttrIdxMap, errorMessage, options
+                );
+}

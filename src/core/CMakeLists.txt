@@ -101,6 +101,7 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
@@ -333,6 +334,7 @@ SET(QGIS_CORE_HDRS
   qgsvectordataprovider.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
+  qgsvectorlayerimport.h
   qgsvectoroverlay.h
   qgstolerance.h
 
