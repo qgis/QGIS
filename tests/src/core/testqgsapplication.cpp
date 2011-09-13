@@ -17,7 +17,8 @@ Email                : sherman at mrcc dot com
 
 #include <QPixmap>
 
-#include <qgsapplication.h>
+#define CPL_SUPRESS_CPLUSPLUS
+#include <gdal.h>
 
 //header for class being tested
 #include <qgsapplication.h>
@@ -27,6 +28,7 @@ class TestQgsApplication: public QObject
     Q_OBJECT;
   private slots:
     void checkTheme();
+    void checkGdalSkip();
     void initTestCase();
   private:
     QString getQgisPath();
@@ -48,13 +50,21 @@ void TestQgsApplication::checkTheme()
 {
   QString myIconPath = QgsApplication::defaultThemePath();
   QPixmap myPixmap;
-  myPixmap.load( myIconPath + "/mIconProjectionDisabled.png" );
+  myPixmap.load( myIconPath + "mActionFileNew.png" );
   qDebug( "Checking if a theme icon exists:" );
   qDebug( "%s/mIconProjectionDisabled.png", myIconPath.toLocal8Bit().constData() );
   QVERIFY( !myPixmap.isNull() );
 
 };
 
+void TestQgsApplication::checkGdalSkip()
+{
+  GDALAllRegister();
+  QgsApplication::skipGdalDriver( "GTiff" );
+  QVERIFY( QgsApplication::skippedGdalDrivers( ).contains( "GTiff" ) );
+  QgsApplication::restoreGdalDriver( "GTiff" );
+  QVERIFY( !QgsApplication::skippedGdalDrivers( ).contains( "GTiff" ) );
+}
 
 QTEST_MAIN( TestQgsApplication )
 #include "moc_testqgsapplication.cxx"
