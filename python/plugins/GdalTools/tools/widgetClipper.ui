@@ -41,6 +41,9 @@
      </item>
      <item row="2" column="1">
       <widget class="QSpinBox" name="noDataSpin">
+       <property name="minimum">
+        <number>-100000</number>
+       </property>
        <property name="maximum">
         <number>65000</number>
        </property>
@@ -141,15 +144,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GdalToolsExtentSelector</class>
-   <extends>QWidget</extends>
-   <header>extentSelector</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
    <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GdalToolsExtentSelector</class>
+   <extends>QWidget</extends>
+   <header>extentSelector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
