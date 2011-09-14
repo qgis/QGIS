@@ -37,6 +37,9 @@
 #include <cstdlib> // size_t
 #include <limits> // std::numeric_limits
 
+
+#define FEATURE_BUFFER_SIZE 200
+
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
                         const QString &uri,
                         const QgsFieldMap &fields,
@@ -108,6 +111,8 @@ QgsVectorLayerImport::QgsVectorLayerImport(
 
 QgsVectorLayerImport::~QgsVectorLayerImport()
 {
+  flushBuffer();
+
   if ( mProvider )
     delete mProvider;
 }
@@ -142,15 +147,34 @@ bool QgsVectorLayerImport::addFeature( QgsFeature& feat )
   }
   feat.setAttributeMap( newAttrs );
 
-  if ( !mProvider->addFeatures( QgsFeatureList() << feat ) )
+  mFeatureBuffer.append( feat );
+
+  if ( mFeatureBuffer.count() >= FEATURE_BUFFER_SIZE )
   {
-    mErrorMessage = QObject::tr( "Feature #%1 creation error" ).arg( feat.id() );
+    return flushBuffer();
+  }
+
+  return true;
+}
+
+bool QgsVectorLayerImport::flushBuffer()
+{
+  if ( mFeatureBuffer.count() <= 0 )
+    return true;
+
+  if ( !mProvider->addFeatures( mFeatureBuffer ) )
+  {
+    mErrorMessage = QObject::tr( "Creation error for features from #%1 to #%2" )
+                    .arg( mFeatureBuffer.first().id() )
+                    .arg( mFeatureBuffer.last().id() );
     mError = ErrFeatureWriteFailed;
 
+    mFeatureBuffer.clear();
     QgsDebugMsg( mErrorMessage );
     return false;
   }
 
+  mFeatureBuffer.clear();
   return true;
 }
 

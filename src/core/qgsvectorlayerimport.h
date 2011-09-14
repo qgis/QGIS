@@ -86,6 +86,9 @@ class CORE_EXPORT QgsVectorLayerImport
     ~QgsVectorLayerImport();
 
   protected:
+    /** flush the buffer writing the features to the new layer */
+    bool flushBuffer();
+
     /** contains error value */
     ImportError mError;
     QString mErrorMessage;
@@ -94,6 +97,8 @@ class CORE_EXPORT QgsVectorLayerImport
 
     /** map attribute indexes to new field indexes */
     QMap<int, int> mOldToNewAttrIdx;
+
+    QgsFeatureList mFeatureBuffer;
 };
 
 #endif
