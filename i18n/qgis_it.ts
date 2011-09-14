@@ -12888,12 +12888,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="443"/>
         <source>Annotation position</source>
-        <translation>Posizione dell&apos;annotazione</translation>
+        <translation>Posizione delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="462"/>
         <source>Annotation direction</source>
-        <translation>Direzione dell&apos;annotazione</translation>
+        <translation>Direzione delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="596"/>
@@ -20440,7 +20440,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="165"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="275"/>
         <source>Break lines</source>
-        <translation>Spezza linee</translation>
+        <translation>Linee di interruzione</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="169"/>
@@ -22668,7 +22668,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="24"/>
         <source>Use current project</source>
-        <translation>Usa proiezione corrente</translation>
+        <translation>Usa progetto corrente</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="87"/>
