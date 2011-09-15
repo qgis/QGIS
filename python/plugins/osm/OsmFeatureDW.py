@@ -622,7 +622,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
         # clear dockwidget
         self.clear()
-        self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
+        self.plugin.iface.mainWindow().statusBar().showMessage(self.tr("Snapping ON. Hold Ctrl to disable it."))
 
         self.mapTool=OsmMoveMT(self.plugin)
         self.plugin.canvas.setMapTool(self.mapTool)
@@ -639,7 +639,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
         if self.activeEditButton==self.createPointButton:
             return
 
-        self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
+        self.plugin.iface.mainWindow().statusBar().showMessage(self.tr("Snapping ON. Hold Ctrl to disable it."))
 
         self.mapTool=OsmCreatePointMT(self.plugin)
         self.plugin.canvas.setMapTool(self.mapTool)
@@ -656,7 +656,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
         if self.activeEditButton==self.createLineButton:
             return
 
-        self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
+        self.plugin.iface.mainWindow().statusBar().showMessage(self.tr("Snapping ON. Hold Ctrl to disable it."))
 
         self.mapTool=OsmCreateLineMT(self.plugin)
         self.plugin.canvas.setMapTool(self.mapTool)
@@ -673,7 +673,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
         if self.activeEditButton==self.createPolygonButton:
             return
 
-        self.plugin.iface.mainWindow().statusBar().showMessage("Snapping ON. Hold Ctrl to disable it.")
+        self.plugin.iface.mainWindow().statusBar().showMessage(self.tr("Snapping ON. Hold Ctrl to disable it."))
 
         self.mapTool=OsmCreatePolygonMT(self.plugin)
         self.plugin.canvas.setMapTool(self.mapTool)
@@ -770,7 +770,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
             elif self.featureType=='Relation':
                 self.plugin.dbm.changeRelationStatus(self.feature.id(),'N','U')
 
-            # perform tag removing 
+            # perform tag removing
             self.plugin.dbm.removeTag(self.feature.id(),self.featureType,key.toAscii().data())
 
             self.tagTable.removeRow(ix)
@@ -1254,9 +1254,7 @@ class OsmFeatureDW(QDockWidget, Ui_OsmFeatureDW,  object):
 
         if self.urDetailsButton.isChecked():
             self.plugin.undoredo.show()
-            self.urDetailsButton.setToolTip("Hide OSM Edit History")
+            self.urDetailsButton.setToolTip(self.tr("Hide OSM Edit History"))
         else:
             self.plugin.undoredo.hide()
-            self.urDetailsButton.setToolTip("Show OSM Edit History")
-
-
+            self.urDetailsButton.setToolTip(self.tr("Show OSM Edit History"))

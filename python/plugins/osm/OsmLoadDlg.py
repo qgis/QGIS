@@ -85,7 +85,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
         lastDir=settings.value("/OSM_Plugin/lastDir", QVariant(QString())).toString()
 
         # display file open dialog and get absolute path to selected file
-        fileSelected=QFileDialog.getOpenFileName(self,"Choose an Open Street Map file",lastDir,"OSM Files (*.osm)");
+        fileSelected=QFileDialog.getOpenFileName(self,self.tr("Choose an Open Street Map file"),lastDir,self.tr("OSM Files (*.osm)"));
         # insert OSM file path into line edit control
         if not fileSelected.isNull():
             self.OSMFileEdit.setText(fileSelected)
@@ -108,7 +108,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
         self.fname = self.OSMFileEdit.text()
 
         if self.fname=='':
-            QMessageBox.information(self, "OSM Load", QString("Please enter path to OSM data file."))
+            QMessageBox.information(self, self.tr("OSM Load"),self.tr("Please enter path to OSM data file."))
             self.buttonBox.setEnabled(True)
             return
 
@@ -117,7 +117,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
         basename = osmfile.baseName()
 
         if not osmfile.exists():
-            QMessageBox.information(self, "OSM Load", QString("Path to OSM file is invalid: %1.").arg(self.fname))
+            QMessageBox.information(self, self.tr("OSM Load"), self.tr("Path to OSM file is invalid: %1.").arg(self.fname))
             return
 
         fLoaded=self.filesLoaded()
@@ -126,11 +126,11 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
         curDB=self.dbm.currentKey
 
         if basename in fLoaded and newDB<>curDB:
-            QMessageBox.information(self, "Error", QString("Layers of OSM file \"%1\" are loaded already.").arg(self.fname))
+            QMessageBox.information(self, self.tr("Error"), self.tr("Layers of OSM file \"%1\" are loaded already.").arg(self.fname))
             return
 
-        if replacing: 
-            # remove layers of current data first 
+        if replacing:
+            # remove layers of current data first
             QgsMapLayerRegistry.instance().removeMapLayer(self.canvas.currentLayer().id(),True)
 
         if self.chkCustomRenderer.isChecked():
@@ -162,7 +162,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
             polygonLayer=None
             return
         if not polygonLayer.isValid():
-            QMessageBox.information(self,"Error",QString("Failed to load polygon layer."))
+            QMessageBox.information(self,self.tr("Error"),self.tr("Failed to load polygon layer."))
             return
 
         if self.chkCustomRenderer.isChecked():
@@ -176,7 +176,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
             lineLayer=None
             return
         if not lineLayer.isValid():
-            QMessageBox.information(self,"Error",QString("Failed to load line layer."))
+            QMessageBox.information(self,self.tr("Error"),self.tr("Failed to load line layer."))
             return
 
         if self.chkCustomRenderer.isChecked():
@@ -190,7 +190,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
             pointLayer=None
             return
         if not pointLayer.isValid():
-            QMessageBox.information(self,"Error",QString("Failed to load point layer."))
+            QMessageBox.information(self,self.tr("Error"),self.tr("Failed to load point layer."))
             return
 
         if self.chkCustomRenderer.isChecked():
@@ -231,7 +231,7 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
           self.emit( SIGNAL( "setRenderer(QgsVectorLayer *)" ), layer )
           QObject.disconnect( self, SIGNAL( "setRenderer(QgsVectorLayer *)" ), layer.dataProvider(), SLOT( "setRenderer( QgsVectorLayer * )" ) )
         else:
-          QMessageBox.information(self, "OSM Load", QString("Could not connect to setRenderer signal."))
+          QMessageBox.information(self, self.tr("OSM Load"), self.tr("Could not connect to setRenderer signal."))
 
     def filesLoaded(self):
         """Function returns list of keys of all currently loaded vector layers.
@@ -303,11 +303,9 @@ class OsmLoadDlg(QDialog, Ui_OsmLoadDlg):
                     QObject.disconnect(self.progress,SIGNAL("canceled()"),self.cancelLoading)
                     self.progress.close()
                     self.progress = None
-                    QMessageBox.information(self,"Error",QString("Failed to load layers: %1")
+                    QMessageBox.information(self,self.tr("Error"),self.tr("Failed to load layers: %1")
                             .arg(self.property("osm_failure").toString()))
                     self.buttonBox.setEnabled(True)
 
             qApp.processEvents()
         return QDialog.event(self,e)
-
-
