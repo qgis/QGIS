@@ -93,7 +93,6 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
      * The number of rows that would be returned is displayed in a message box.
      * The test uses a "select count(*) from ..." query to test the SQL
      * statement.
-     * @param showResults If true, the results are displayed in a QMessageBox
      */
     void test();
     /*!
