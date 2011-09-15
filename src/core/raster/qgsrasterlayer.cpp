@@ -1994,7 +1994,7 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
   mDataProvider->populateHistogram( theBandNo, myRasterBandStats, theBinCount, theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag );
 }
 
-QString QgsRasterLayer::providerKey() const
+QString QgsRasterLayer::providerType() const
 {
   if ( mProviderKey.isEmpty() )
   {
