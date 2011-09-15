@@ -47,8 +47,8 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
                         const QgsCoordinateReferenceSystem *destCRS,
                         bool overwrite,
                         QMap<int, int> *oldToNewAttrIdx,
-                        QString *errorMessage = 0,
-                        const QMap<QString, QVariant> *options = 0
+                        QString *errorMessage,
+                        const QMap<QString, QVariant> *options
                       );
 
 
