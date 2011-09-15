@@ -73,28 +73,28 @@ class OsmPlugin:
 
         # create action for loading OSM file
         self.actionLoad=QAction(QIcon(":/plugins/osm_plugin/images/osm_load.png")
-            ,"Load OSM from file", self.iface.mainWindow())
-        self.actionLoad.setWhatsThis("Load OpenStreetMap from file")
+            ,QCoreApplication.translate( "OsmPlugin", "Load OSM from file"), self.iface.mainWindow())
+        self.actionLoad.setWhatsThis( QCoreApplication.translate( "OsmPlugin", "Load OpenStreetMap from file") )
         # create action for import of a layer into OSM
         self.actionImport=QAction(QIcon(":/plugins/osm_plugin/images/osm_import.png")
-            ,"Import data from a layer", self.iface.mainWindow())
-        self.actionImport.setWhatsThis("Import data from a layer to OpenStreetMap")
+            ,QCoreApplication.translate( "OsmPlugin", "Import data from a layer"), self.iface.mainWindow())
+        self.actionImport.setWhatsThis(QCoreApplication.translate( "OsmPlugin", "Import data from a layer to OpenStreetMap") )
         # create action for saving OSM file
         self.actionSave=QAction(QIcon(":/plugins/osm_plugin/images/osm_save.png")
-            ,"Save OSM to file", self.iface.mainWindow())
-        self.actionSave.setWhatsThis("Save OpenStreetMap to file")
+            ,QCoreApplication.translate( "OsmPlugin", "Save OSM to file"), self.iface.mainWindow())
+        self.actionSave.setWhatsThis(QCoreApplication.translate( "OsmPlugin", "Save OpenStreetMap to file") )
         # create action for OSM data downloading
         self.actionDownload=QAction(QIcon(":/plugins/osm_plugin/images/osm_download.png")
-            ,"Download OSM data", self.iface.mainWindow())
-        self.actionDownload.setWhatsThis("Download OpenStreetMap data")
+            ,QCoreApplication.translate( "OsmPlugin", "Download OSM data"), self.iface.mainWindow())
+        self.actionDownload.setWhatsThis(QCoreApplication.translate( "OsmPlugin", "Download OpenStreetMap data") )
         # create action for OSM data downloading
         self.actionUpload=QAction(QIcon(":/plugins/osm_plugin/images/osm_upload.png")
-            ,"Upload OSM data", self.iface.mainWindow())
-        self.actionUpload.setWhatsThis("Upload OpenStreetMap data")
+            ,QCoreApplication.translate( "OsmPlugin", "Upload OSM data"), self.iface.mainWindow())
+        self.actionUpload.setWhatsThis(QCoreApplication.translate( "OsmPlugin", "Upload OpenStreetMap data") )
         # create action for OSM dockable window
         self.actionDockWidget=QAction(QIcon(":/plugins/osm_plugin/images/osm_featureManager.png")
-            ,"Show/Hide OSM Feature Manager",self.iface.mainWindow())
-        self.actionDockWidget.setWhatsThis("Show/Hide OpenStreetMap Feature Manager")
+            ,QCoreApplication.translate( "OsmPlugin", "Show/Hide OSM Feature Manager"),self.iface.mainWindow())
+        self.actionDockWidget.setWhatsThis(QCoreApplication.translate( "OsmPlugin", "Show/Hide OpenStreetMap Feature Manager") )
         self.actionDockWidget.setCheckable(True)
 
         # connect new action to plugin function - when action is triggered
@@ -193,7 +193,8 @@ class OsmPlugin:
 
         # sanity check whether we're able to load osm data
         if 'osm' not in QgsProviderRegistry.instance().providerList():
-            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            QMessageBox.critical(None, QCoreApplication.translate( "OsmPlugin", "Sorry" ),
+              QCoreApplication.translate( "OsmPlugin", "You don't have OSM provider installed!") )
             return
 
         # show modal dialog with OSM file selection
@@ -222,13 +223,14 @@ class OsmPlugin:
         """
 
         if 'osm' not in QgsProviderRegistry.instance().providerList():
-            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            QMessageBox.critical(None, QCoreApplication.translate( "OsmPlugin", "Sorry" ),
+              QCoreApplication.translate( "OsmPlugin", "You don't have OSM provider installed!") )
             return
 
         if not self.dbm.currentKey:
-            QMessageBox.information(QWidget(), QString("OSM Save to file")
-                ,"No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
-Please change this situation first, because OSM Plugin doesn't know what to save.")
+            QMessageBox.information(QWidget(), QCoreApplication.translate( "OsmPlugin", "OSM Save to file"),
+                QCoreApplication.translate( "OsmPlugin", "No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
+Please change this situation first, because OSM Plugin doesn't know what to save.") )
             return
 
         # show modal dialog with OSM file selection
@@ -247,7 +249,8 @@ Please change this situation first, because OSM Plugin doesn't know what to save
         """
 
         if 'osm' not in QgsProviderRegistry.instance().providerList():
-            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            QMessageBox.critical(None, QCoreApplication.translate( "OsmPlugin", "Sorry" ),
+              QCoreApplication.translate( "OsmPlugin", "You don't have OSM provider installed!") )
             return
 
         self.dlgDownload=OsmDownloadDlg(self)
@@ -299,9 +302,9 @@ Please change this situation first, because OSM Plugin doesn't know what to save
 
         # first check if there are some data; if not upload doesn't have sense
         if not self.dbm.currentKey:
-            QMessageBox.information(QWidget(), QString("OSM Upload")
-                ,"No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
-Please change this situation first, because OSM Plugin doesn't know what to upload.")
+            QMessageBox.information(QWidget(), QCoreApplication.translate( "OsmPlugin", "OSM Upload"),
+                QCoreApplication.translate( "OsmPlugin", "No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
+Please change this situation first, because OSM Plugin doesn't know what to upload.") )
             return
 
         self.dlgUpload=OsmUploadDlg(self)
@@ -316,18 +319,20 @@ Please change this situation first, because OSM Plugin doesn't know what to uplo
         """
 
         if 'osm' not in QgsProviderRegistry.instance().providerList():
-            QMessageBox.critical(None, "Sorry", "You don't have OSM provider installed!")
+            QMessageBox.critical(None, QCoreApplication.translate( "OsmPlugin", "Sorry"),
+              QCoreApplication.translate( "OsmPlugin", "You don't have OSM provider installed!") )
             return
 
         if self.dbm.currentKey is None:
-            QMessageBox.information(self.iface.mainWindow(), "OSM Import"
-                ,"No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
-Please change this situation first, because OSM Plugin doesn't know what layer will be destination of the import.")
+            QMessageBox.information(self.iface.mainWindow(), QCoreApplication.translate( "OsmPlugin", "OSM Import"),
+                QCoreApplication.translate( "OsmPlugin", "No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. \
+Please change this situation first, because OSM Plugin doesn't know what layer will be destination of the import.") )
             return
 
         dlg=OsmImportDlg(self)
         if dlg.cboLayer.count()==0:
-            QMessageBox.information(self.iface.mainWindow(), "OSM Import", "There are currently no available vector layers.")
+            QMessageBox.information(self.iface.mainWindow(), QCoreApplication.translate( "OsmPlugin", "OSM Import"),
+              QCoreApplication.translate( "OsmPlugin", "There are currently no available vector layers.") )
             return
 
         dlg.exec_()
@@ -367,5 +372,3 @@ Please change this situation first, because OSM Plugin doesn't know what layer w
             self.actionDockWidget.setChecked(True)
         else:
             self.actionDockWidget.setChecked(False)
-
-
