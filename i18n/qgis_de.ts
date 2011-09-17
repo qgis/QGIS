@@ -22146,38 +22146,44 @@ http://meine.kiste.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="132"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="439"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="492"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="460"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="513"/>
         <source>feature %1</source>
         <translation>Objekt %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="137"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="233"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="234"/>
         <source>Minimum</source>
         <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="138"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="237"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="238"/>
         <source>Maximum</source>
         <translation>Maximum</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmergeattributesdialog.cpp" line="139"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="245"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="246"/>
         <source>Median</source>
         <translation>Mittel</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="143"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="249"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="140"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="250"/>
+        <source>Sum</source>
+        <translation>Summe</translation>
+    </message>
+    <message>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="144"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="254"/>
         <source>Concatenation</source>
         <translation>Verkettung</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="147"/>
-        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="241"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="148"/>
+        <location filename="../src/app/qgsmergeattributesdialog.cpp" line="242"/>
         <source>Mean</source>
         <translation>Durchschnitt</translation>
     </message>
