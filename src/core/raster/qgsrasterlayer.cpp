@@ -325,7 +325,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
-
   // check if we have received a valid band number
   if (( mDataProvider->bandCount() < theBandNo ) && mRasterType != Palette )
   {
@@ -339,7 +338,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
-
   // check if we have previously gathered stats for this band...
   if ( theBandNo < 1 || theBandNo > mRasterStatsList.size() )
   {
@@ -356,174 +354,23 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
   {
     return myRasterBandStats;
   }
-  // only print message if we are actually gathering the stats
-  emit statusChanged( tr( "Retrieving stats for %1" ).arg( name() ) );
-  qApp->processEvents();
-  QgsDebugMsg( "stats for band " + QString::number( theBandNo ) );
 
-  myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
-
-  emit statusChanged( tr( "Calculating stats for %1" ).arg( name() ) );
-  //reset the main app progress bar
-  emit drawingProgress( 0, 0 );
-
-  int myDataType = mDataProvider->dataType( theBandNo );
-
-  int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
-  myXBlockSize = mDataProvider->xBlockSize();
-  myYBlockSize = mDataProvider->yBlockSize();
-
-  myNXBlocks = ( mDataProvider->xSize() + myXBlockSize - 1 ) / myXBlockSize;
-  myNYBlocks = ( mDataProvider->ySize() + myYBlockSize - 1 ) / myYBlockSize;
-
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( mDataProvider->dataTypeSize( theBandNo ) / 8 ) );
-
-  // unfortunately we need to make two passes through the data to calculate stddev
-  bool myFirstIterationFlag = true;
-
-  int myBandXSize = mDataProvider->xSize();
-  int myBandYSize = mDataProvider->ySize();
-  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
-  {
-    emit drawingProgress( iYBlock, myNYBlocks * 2 );
-
-    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
-    {
-      int  nXValid, nYValid;
-      mDataProvider->readBlock( theBandNo, iXBlock, iYBlock, myData );
-
-      // Compute the portion of the block that is valid
-      // for partial edge blocks.
-      if (( iXBlock + 1 ) * myXBlockSize > myBandXSize )
-        nXValid = myBandXSize - iXBlock * myXBlockSize;
-      else
-        nXValid = myXBlockSize;
-
-      if (( iYBlock + 1 ) * myYBlockSize > myBandYSize )
-        nYValid = myBandYSize - iYBlock * myYBlockSize;
-      else
-        nYValid = myYBlockSize;
-
-      // Collect the histogram counts.
-      for ( int iY = 0; iY < nYValid; iY++ )
-      {
-        for ( int iX = 0; iX < nXValid; iX++ )
-        {
-          double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
-          //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (iX).arg(iY).arg( myValue ) );
-
-          if ( mValidNoDataValue && ( qAbs( myValue - mNoDataValue ) <= TINY_VALUE || myValue != myValue ) )
-          {
-            continue; // NULL
-          }
-
-          myRasterBandStats.sum += myValue;
-          ++myRasterBandStats.elementCount;
-          //only use this element if we have a non null element
-          if ( myFirstIterationFlag )
-          {
-            //this is the first iteration so initialise vars
-            myFirstIterationFlag = false;
-            myRasterBandStats.minimumValue = myValue;
-            myRasterBandStats.maximumValue = myValue;
-          }               //end of true part for first iteration check
-          else
-          {
-            //this is done for all subsequent iterations
-            if ( myValue < myRasterBandStats.minimumValue )
-            {
-              myRasterBandStats.minimumValue = myValue;
-            }
-            if ( myValue > myRasterBandStats.maximumValue )
-            {
-              myRasterBandStats.maximumValue = myValue;
-            }
-          }               //end of false part for first iteration check
-        }
-      }
-    }                       //end of column wise loop
-  }                           //end of row wise loop
-
-
-  //end of first pass through data now calculate the range
-  myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
-  //calculate the mean
-  myRasterBandStats.mean = myRasterBandStats.sum / myRasterBandStats.elementCount;
-
-  //for the second pass we will get the sum of the squares / mean
-  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
-  {
-    emit drawingProgress( iYBlock + myNYBlocks, myNYBlocks * 2 );
-
-    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
-    {
-      int  nXValid, nYValid;
-
-      mDataProvider->readBlock( theBandNo, iXBlock, iYBlock, myData );
-
-      // Compute the portion of the block that is valid
-      // for partial edge blocks.
-      if (( iXBlock + 1 ) * myXBlockSize > myBandXSize )
-        nXValid = myBandXSize - iXBlock * myXBlockSize;
-      else
-        nXValid = myXBlockSize;
-
-      if (( iYBlock + 1 ) * myYBlockSize > myBandYSize )
-        nYValid = myBandYSize - iYBlock * myYBlockSize;
-      else
-        nYValid = myYBlockSize;
-
-      // Collect the histogram counts.
-      for ( int iY = 0; iY < nYValid; iY++ )
-      {
-        for ( int iX = 0; iX < nXValid; iX++ )
-        {
-          double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
-          //QgsDebugMsg ( "myValue = " + QString::number(myValue) );
-
-          if ( mValidNoDataValue && ( qAbs( myValue - mNoDataValue ) <= TINY_VALUE || myValue != myValue ) )
-          {
-            continue; // NULL
-          }
-
-          myRasterBandStats.sumOfSquares += static_cast < double >
-                                            ( pow( myValue - myRasterBandStats.mean, 2 ) );
-        }
-      }
-    }                       //end of column wise loop
-  }                           //end of row wise loop
-
-  //divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumOfSquares /
-                             ( myRasterBandStats.elementCount - 1 ) ) );
-
-#ifdef QGISDEBUG
-  QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "NULL", mNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
-
-  CPLFree( myData );
-  myRasterBandStats.statsGathered = true;
-
+  myRasterBandStats = mDataProvider->bandStatistics( theBandNo );
   QgsDebugMsg( "adding stats to stats collection at position " + QString::number( theBandNo - 1 ) );
   //add this band to the class stats map
   mRasterStatsList[theBandNo - 1] = myRasterBandStats;
   emit drawingProgress( mHeight, mHeight ); //reset progress
-  //QApplication::restoreOverrideCursor(); //restore the cursor
   QgsDebugMsg( "Stats collection completed returning" );
   return myRasterBandStats;
-
 } // QgsRasterLayer::bandStatistics
 
 const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBandName )
 {
-
+  // only print message if we are actually gathering the stats
+  emit statusChanged( tr( "Retrieving stats for %1" ).arg( name() ) );
+  qApp->processEvents();
+  //reset the main app progress bar
+  emit drawingProgress( 0, 0 );
   //we cant use a vector iterator because the iterator is astruct not a class
   //and the qvector model does not like this.
   for ( int i = 1; i <= mDataProvider->bandCount(); i++ )
