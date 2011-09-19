@@ -822,7 +822,17 @@ void QgsComposerMap::syncLayerSet()
     return;
   }
 
-  QStringList currentLayerSet = mMapRenderer->layerSet();
+  //if layer set is fixed, do a lookup in the layer registry to also find the non-visible layers
+  QStringList currentLayerSet;
+  if ( mKeepLayerSet )
+  {
+    currentLayerSet = QgsMapLayerRegistry::instance()->mapLayers().uniqueKeys();
+  }
+  else //only consider layers visible in the map
+  {
+    currentLayerSet = mMapRenderer->layerSet();
+  }
+
   for ( int i = mLayerSet.size() - 1; i >= 0; --i )
   {
     if ( !currentLayerSet.contains( mLayerSet.at( i ) ) )
