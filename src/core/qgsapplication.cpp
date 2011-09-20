@@ -68,7 +68,7 @@ QStringList QgsApplication::mGdalSkipList;
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath )
     : QApplication( argc, argv, GUIenabled )
 {
-  init( customConfigPath ); //initi can also be called directly by e.g. unit tests that dont inherit QApplication.
+  init( customConfigPath ); // init can also be called directly by e.g. unit tests that don't inherit QApplication.
 }
 void QgsApplication::init( QString customConfigPath )
 {

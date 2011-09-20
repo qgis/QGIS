@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-// C++ standart includes
+// C++ standard includes
 #include <limits>
 
 // QT includes

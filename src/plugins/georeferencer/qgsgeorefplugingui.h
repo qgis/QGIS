@@ -171,7 +171,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     /**
      * Calculates root mean squared error for the currently active
      * ground control points and transform method.
-     * Note that he RMSE measure is adjusted for the degrees of freedom of the
+     * Note that the RMSE measure is adjusted for the degrees of freedom of the
      * used polynomial transform.
      * @param error out: the mean error
      * @return true in case of success

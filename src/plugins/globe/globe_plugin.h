@@ -63,9 +63,9 @@ class GlobePlugin : public QObject, public QgisPlugin
     //! Sync globe extent to mapCanavas
     void syncExtent();
 
-    //! called when a project has been read succesfully
+    //! called when a project has been read successfully
     void projectReady();
-    //! called when a new project has been created succesfully
+    //! called when a new project has been created successfully
     void blankProjectReady();
     //! called when the globe window is closed
     void setGlobeNotRunning();

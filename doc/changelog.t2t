@@ -81,7 +81,7 @@ http://linfiniti.com/2011/08/improvements-to-raster-performance-in-qgis-master/]
 - Reduce top and side margins for attribute table dialog
 - Remove the (hopefully) last SVN reference
 - More svn version removal
-- Added missing colour accessor/mutator/member from composerlegenditem header
+- Added missing color accessor/mutator/member from composerlegenditem header
 - Get rid of svn version stuff from release branch.
 - Other workaround for Qt#5114 (fixes #3250, #3028, #2598)
 - Try to make the histogram smoother
@@ -216,7 +216,7 @@ changed so we will just provide a bullet list of key new features here.
 
 - Support for icons of plugins in the plugin manager dialog.
 - Removed quickprint plugin - use easyprint plugin rather from plugin repo.
-- Removed ogr convertor plugin - use 'save as' context menu rather.
+- Removed ogr converter plugin - use 'save as' context menu rather.
 - 
 
 ==Printing==

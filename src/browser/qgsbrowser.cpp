@@ -52,7 +52,7 @@ QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
   mModel = new QgsBrowserModel( treeView );
   treeView->setModel( mModel );
 
-  // Last expanded is stored, dont cover whole height with file system
+  // Last expanded is stored, don't cover whole height with file system
   //treeView->expand( mModel->index(0,0) );
 
   connect( treeView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
