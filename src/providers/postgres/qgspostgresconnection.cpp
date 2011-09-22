@@ -102,7 +102,7 @@ QgsPostgresConnection::QgsPostgresConnection( QString theConnName ) :
     uri.setConnection( host, port, database, username, password, ( QgsDataSourceURI::SSLmode ) sslmode );
   }
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
-  mConnectionInfo = uri.connectionInfo();
+  mConnectionInfo = uri.uri();
 
   QgsDebugMsg( QString( "Connection info: '%1'." ).arg( mConnectionInfo ) );
 }
