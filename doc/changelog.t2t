@@ -15,13 +15,13 @@ Change history for the QGIS Project
 % These are comments and will not be generated in any output
 % -------------------
 
-%This document is in txt2tags format. You can generate html, plain text and
-%moinmoin formatted documentation by running txt2tags on this document. See the
-%txt2tags home page for more details.  Please insert manual line breaks in this
-%document as it makes diffing for changes much easier. To do this in vim 
-%automatically, select a section then issue (gq) command. Please don't
-%apply vim formatting to the whole document as it screws up some formatting
-%rather apply it selectively to paragraphs where needed.
+% This document is in txt2tags format. You can generate html, plain text and
+% moinmoin formatted documentation by running txt2tags on this document. See the
+% txt2tags home page for more details.  Please insert manual line breaks in this
+% document as it makes diffing for changes much easier. To do this in vim 
+% automatically, select a section then issue (gq) command. Please don't
+% apply vim formatting to the whole document as it screws up some formatting
+% rather apply it selectively to paragraphs where needed.
 
 % To generate the text version of this document:
 % txt2tags -t txt -o CHANGELOG CHANGELOG.t2t
