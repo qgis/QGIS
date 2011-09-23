@@ -5,29 +5,10 @@
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
 <TITLE>Quantum GIS (QGIS) Changelog</TITLE>
 <STYLE TYPE="text/css">
-body {
-  padding: 2em 1em 2em 70px;
-  margin: 0;
-  font-family: sans-serif;
+body{  background: white;
   color: black;
-  background: white;
+  font-family: arial,sans-serif;
 }
-:link { color: #00C; background: transparent }
-:visited { color: #609; background: transparent }
-a:active { color: #C00; background: transparent }
-
-a:link img, a:visited img { border-style: none } 
-
-
-h1, h2, h3, h4, h5, h6 { text-align: left }
-h1, h2, h3 { color: #005A9C; background: white }
-h1 { font: 170% sans-serif }
-h2 { font: 140% sans-serif }
-h3 { font: 120% sans-serif }
-h4 { font: bold 100% sans-serif }
-h5 { font: italic 100% sans-serif }
-h6 { font: small-caps 100% sans-serif }
-
 pre { margin-left: 2em;
       border: 1;
       padding: 4px;
@@ -35,6 +16,60 @@ pre { margin-left: 2em;
 pre, code { font-family: monospace } 
 
 
+.overview{ font: 1.82em; font-weight: bold;}
+
+h1{  background-color: #F6F6F6;
+  color: #8FB171; 
+  font-size: large;  
+  font-weight: bold;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+}
+h2{  background-color: #F6F6F6;
+  color: #8FB171; 
+  font-size: medium;  
+  font-weight: normal;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+}
+h3{  background-color: #F6F6F6;
+  color: #729FCF;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  font-weight: bold;
+  font-size: large;
+  text-align: right;
+  border-bottom: 5px solid #DCEB5C;
+}
+h4{  background-color: #F6F6F6;
+  color: #729FCF;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  font-weight: bold;
+  font-size: medium;
+  text-align: right;
+}
+h5{    background-color: #F6F6F6;
+   color: #729FCF;
+   font-family: luxi serif, georgia, times new roman, times, serif;
+   font-weight: bold;
+   font-size: small;
+   text-align: right;
+}
+a{  color: #729FCF;
+  font-family: arial,sans-serif;
+  font-size: small;
+}
+label{  background-color: #FFFFCC;
+  border: 1px solid black;
+  margin: 1px;
+  padding: 0px 3px; 
+  font-size: small;
+}
 </STYLE>
 </HEAD>
 <BODY>
@@ -42,75 +77,14 @@ pre, code { font-family: monospace }
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS) Changelog</H1>
 <H2>Change history for the QGIS Project</H2>
-<H3>Monday September 19, 2011</H3>
+<H3>Friday September 23, 2011</H3>
 </DIV>
 
-<DIV CLASS="toc" ID="toc">
-  <OL>
-  <LI><A HREF="#toc1">Whats new in Version 1.7.1 'Wroclaw'?</A>
-  <LI><A HREF="#toc2">Whats new in Version 1.7.0 'Wroclaw'?</A>
-    <UL>
-    <LI><A HREF="#toc3">2.1. Symbology labels and diagrams</A>
-    <LI><A HREF="#toc4">2.2. New Tools</A>
-    <LI><A HREF="#toc5">2.3. User interface updates</A>
-    <LI><A HREF="#toc6">2.4. CRS Handling</A>
-    <LI><A HREF="#toc7">2.5. Rasters</A>
-    <LI><A HREF="#toc8">2.6. Providers and Data Handling</A>
-    <LI><A HREF="#toc9">2.7. Api and Developer Centric</A>
-    <LI><A HREF="#toc10">2.8. QGIS Mapserver</A>
-    <LI><A HREF="#toc11">2.9. Plugins</A>
-    <LI><A HREF="#toc12">2.10. Printing</A>
-    </UL>
-  <LI><A HREF="#toc13">Whats new in Version 1.6.0 'Capiapo'?</A>
-    <UL>
-    <LI><A HREF="#toc14">3.1. General Improvements</A>
-    <LI><A HREF="#toc15">3.2. Table of contents (TOC) improvements</A>
-    <LI><A HREF="#toc16">3.3. Labelling (New generation only)</A>
-    <LI><A HREF="#toc17">3.4. Layer properties and symbology</A>
-    <LI><A HREF="#toc18">3.5. Map Composer</A>
-    </UL>
-  <LI><A HREF="#toc19">Whats new in Version 1.5.0?</A>
-    <UL>
-    <LI><A HREF="#toc20">4.1. Main GUI</A>
-    <LI><A HREF="#toc21">4.2. WMS and WMS-C Support</A>
-    <LI><A HREF="#toc22">4.3. API Updates</A>
-    </UL>
-  <LI><A HREF="#toc23">Whats new in Version 1.4.0 'Enceladus'?</A>
-  <LI><A HREF="#toc24">Whats new in Version 1.3.0 'Mimas'?</A>
-    <UL>
-    <LI><A HREF="#toc25">6.1. OSM plugin &amp;amp; provider updates</A>
-    <LI><A HREF="#toc26">6.2. Other notable features and improvements in this release</A>
-    </UL>
-  <LI><A HREF="#toc27">Version 1.2.0 'Daphnis'</A>
-    <UL>
-    <LI><A HREF="#toc28">7.1. Editing</A>
-    <LI><A HREF="#toc29">7.2. Keyboard shortcuts</A>
-    <LI><A HREF="#toc30">7.3. Map Composer</A>
-    <LI><A HREF="#toc31">7.4. Attribute tables</A>
-    <LI><A HREF="#toc32">7.5. Plugins</A>
-    <LI><A HREF="#toc33">7.6. Projects Management</A>
-    <LI><A HREF="#toc34">7.7. PostGIS &amp; the PostgreSQL Provider</A>
-    <LI><A HREF="#toc35">7.8. Symbology enhancements</A>
-    <LI><A HREF="#toc36">7.9. Command line arguments</A>
-    </UL>
-  <LI><A HREF="#toc37">Version 1.0.0 'Kore'</A>
-  <LI><A HREF="#toc38">Version 0.11.0 'Metis'</A>
-  <LI><A HREF="#toc39">Version 0.10.0 'Io'</A>
-  <LI><A HREF="#toc40">Version 0.9.2rc1 'Ganymede'</A>
-  <LI><A HREF="#toc41">Version 0.9.1 'Ganymede'</A>
-  <LI><A HREF="#toc42">Version 0.9 'Ganymede'</A>
-  <LI><A HREF="#toc43">Version 0.8 'Joesephine' .... development version</A>
-  <LI><A HREF="#toc44">Version 0.6 'Simon'</A>
-  <LI><A HREF="#toc45">0.5</A>
-  </OL>
-
-</DIV>
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Monday September 19, 2011
-Last Change : Monday September 19, 2011
+Last Updated: Friday September 23, 2011
+Last Change : Friday September 23, 2011
 </P>
-<A NAME="toc1"></A>
 <H1>1. Whats new in Version 1.7.1 'Wroclaw'?</H1>
 <P>
 This is a bugfix release over version 1.7.0. The following changes 
@@ -174,7 +148,6 @@ were made.
 <LI>Fixed a bug where map= was not being published in onlineresource url when project files are not in the same dir as cgi
 </UL>
 
-<A NAME="toc2"></A>
 <H1>2. Whats new in Version 1.7.0 'Wroclaw'?</H1>
 <P>
 This release is named after the town of Wrocław in Poland. The Department of
@@ -191,129 +164,125 @@ This release includes over 277 bug fixes and many new features and
 enhancements. Once again it is impossible to document everything here that has
 changed so we will just provide a bullet list of key new features here.
 </P>
-<A NAME="toc3"></A>
 <H2>2.1. Symbology labels and diagrams</H2>
-<P>
--New symbology now used by default!
--Diagram system that uses the same smart placement system as labeling-ng
--Export and import of styles (symbology-ng).
--Labels for rules in rule-based renderers.
--Ability to set label distance in map units.
--Rotation for svg fills.
--Font marker can have an X,Y offset.
--Allow the line symbol layers to be used for outline of polygon (fill) symbols.
--Option to put marker on the central point of a line.
--Option to put marker only on first/last vertex of a line.
--Added "centroid fill" symbol layer which draws a marker on polygon's centroid.
--Allow the marker line symbol layer to draw markers on each vertex.
--Move/rotate/change label edit tools to interactively change data defined label properties.
--
-</P>
-<A NAME="toc4"></A>
+<UL>
+<LI>New symbology now used by default!
+<LI>Diagram system that uses the same smart placement system as labeling-ng
+<LI>Export and import of styles (symbology-ng).
+<LI>Labels for rules in rule-based renderers.
+<LI>Ability to set label distance in map units.
+<LI>Rotation for svg fills.
+<LI>Font marker can have an X,Y offset.
+<LI>Allow the line symbol layers to be used for outline of polygon (fill) symbols.
+<LI>Option to put marker on the central point of a line.
+<LI>Option to put marker only on first/last vertex of a line.
+<LI>Added "centroid fill" symbol layer which draws a marker on polygon's centroid.
+<LI>Allow the marker line symbol layer to draw markers on each vertex.
+<LI>Move/rotate/change label edit tools to interactively change data defined label properties.
+</UL>
+
+<P></P>
 <H2>2.2. New Tools</H2>
-<P>
--Added GUI for gdaldem.
--Added 'Lines to polygons' tool to vector menu.
--Added field calculator with functions like $x, $y and $perimeter.
--Added voronoi polygon tool to Vector menu.
--
-</P>
-<A NAME="toc5"></A>
+<UL>
+<LI>Added GUI for gdaldem.
+<LI>Added 'Lines to polygons' tool to vector menu.
+<LI>Added field calculator with functions like $x, $y and $perimeter.
+<LI>Added voronoi polygon tool to Vector menu.
+</UL>
+
 <H2>2.3. User interface updates</H2>
-<P>
--Allow managing missing layers in a list.
--Zoom to group of layers.
--'Tip of the day' on startup. You can en/disable tips in the options panel.
--Better organisation of menus, separate database menu added.
--Add ability to show number of features in legend classes. Accessible via right-click legend menu.
--General clean-ups and usability improvements.
--
-</P>
-<A NAME="toc6"></A>
+<UL>
+<LI>Allow managing missing layers in a list.
+<LI>Zoom to group of layers.
+<LI>'Tip of the day' on startup. You can en/disable tips in the options panel.
+<LI>Better organisation of menus, separate database menu added.
+<LI>Add ability to show number of features in legend classes. Accessible via right-click legend menu.
+<LI>General clean-ups and usability improvements.
+</UL>
+
 <H2>2.4. CRS Handling</H2>
-<P>
--Show active crs in status bar.
--Assign layer CRS to project (in the legend context menu).
--Select default CRS for new projects.
--Allow setting CRS for multiple layers at once.
--Default to last selection when prompting for CRS.
--
-</P>
-<A NAME="toc7"></A>
+<UL>
+<LI>Show active crs in status bar.
+<LI>Assign layer CRS to project (in the legend context menu).
+<LI>Select default CRS for new projects.
+<LI>Allow setting CRS for multiple layers at once.
+<LI>Default to last selection when prompting for CRS.
+</UL>
+
+<P></P>
 <H2>2.5. Rasters</H2>
-<P>
--Added AND and OR operator for raster calculator
--On-the-fly reprojection of rasters added!
--Proper implementation of raster providers.
--Added raster toolbar with histogram stretch functions.
--
-</P>
-<A NAME="toc8"></A>
+<UL>
+<LI>Added AND and OR operator for raster calculator
+<LI>On-the-fly reprojection of rasters added!
+<LI>Proper implementation of raster providers.
+<LI>Added raster toolbar with histogram stretch functions.
+</UL>
+
+<P></P>
 <H2>2.6. Providers and Data Handling</H2>
-<P>
--New SQLAnywhere vector provider.
--Table join support.
--Feature form updates:
- -Make NULL value string representation configurable.
- -Fix feature updates in feature form from attribute table.
- -Add support for NULL values in value maps (comboboxes).
- -Use layer names instead of ids in drop down list when loading value maps from layers.
- -Support feature form expression fields: line edits on the form which
+<UL>
+<LI>New SQLAnywhere vector provider.
+<LI>Table join support.
+<LI>Feature form updates:
+ <UL>
+ <LI>Make NULL value string representation configurable.
+ <LI>Fix feature updates in feature form from attribute table.
+ <LI>Add support for NULL values in value maps (comboboxes).
+ <LI>Use layer names instead of ids in drop down list when loading value maps from layers.
+ <LI>Support feature form expression fields: line edits on the form which
       name prefix "expr_" are evaluated. Their value is interpreted as field
       calculator string and replaced with the calculated value.
- -
--Support searching for NULL in attribute table.
--Attribute editing improvements:
-</P>
-<P>
- -Improved interactive attribute editing in table (adding/deleting features, attribute update).
- -Allow adding of geometryless features.
- -Fixed attribute undo/redo.
- -
--Improved attribute handling:
-</P>
-<P>
- -Optionally re-use entered attribute values for next digitized feature.
- -Allow merging/assigning attribute values to a set of features.-
- -Allow OGR 'save as' without attributes (for eg. DGN/DXF).
- -
--
-</P>
-<A NAME="toc9"></A>
+ </UL>
+<LI>Support searching for NULL in attribute table.
+<LI>Attribute editing improvements:
+<P></P>
+ <UL>
+ <LI>Improved interactive attribute editing in table (adding/deleting features, attribute update).
+ <LI>Allow adding of geometryless features.
+ <LI>Fixed attribute undo/redo.
+ </UL>
+<LI>Improved attribute handling:
+<P></P>
+ <UL>
+ <LI>Optionally re-use entered attribute values for next digitized feature.
+ <LI>Allow merging/assigning attribute values to a set of features.-
+ <LI>Allow OGR 'save as' without attributes (for eg. DGN/DXF).
+ </UL>
+</UL>
+
+<P></P>
 <H2>2.7. Api and Developer Centric</H2>
-<P>
--Refactored attribute dialog calls to QgsFeatureAttribute.
--Added QgsVectorLayer::featureAdded signal.
--Layer menu function added.
--Added option to load c++ plugins from user specified directories. Requires application restart to activate.
--Completely new geometry checking tool for fTools. Significantly faster,
+<UL>
+<LI>Refactored attribute dialog calls to QgsFeatureAttribute.
+<LI>Added QgsVectorLayer::featureAdded signal.
+<LI>Layer menu function added.
+<LI>Added option to load c++ plugins from user specified directories. Requires application restart to activate.
+<LI>Completely new geometry checking tool for fTools. Significantly faster,
   more relevant error messages, and now supports zooming to errors. See the
   new QgsGeometry.validateGeometry function
--
-</P>
-<A NAME="toc10"></A>
+</UL>
+
 <H2>2.8. QGIS Mapserver</H2>
-<P>
--Ability to specify wms service capabilities in the properties 
+<UL>
+<LI>Ability to specify wms service capabilities in the properties 
   section of the project file (instead of wms_metadata.xml file).
--Support for wms printing with GetPrint-Request.
--
-</P>
-<A NAME="toc11"></A>
+<LI>Support for wms printing with GetPrint-Request.
+</UL>
+
 <H2>2.9. Plugins</H2>
-<P>
--Support for icons of plugins in the plugin manager dialog.
--Removed quickprint plugin - use easyprint plugin rather from plugin repo.
--Removed ogr convertor plugin - use 'save as' context menu rather.
--
-</P>
-<A NAME="toc12"></A>
+<UL>
+<LI>Support for icons of plugins in the plugin manager dialog.
+<LI>Removed quickprint plugin - use easyprint plugin rather from plugin repo.
+<LI>Removed ogr convertor plugin - use 'save as' context menu rather.
+</UL>
+
+<P></P>
 <H2>2.10. Printing</H2>
-<P>
--Undo/Redo support for the print composer
--
-</P>
-<A NAME="toc13"></A>
+<UL>
+<LI>Undo/Redo support for the print composer
+</UL>
+
+<P></P>
 <H1>3. Whats new in Version 1.6.0 'Capiapo'?</H1>
 <P>
 Please note that this is a release in our 'cutting edge' release series. As
@@ -325,88 +294,86 @@ This release includes over 177 bug fixes and many new features and enhancements.
 Once again it is impossible to document everything here that has changed so we will 
 just provide a bullet list of key new features here.
 </P>
-<A NAME="toc14"></A>
 <H2>3.1. General Improvements</H2>
-<P>
--Added gpsd support to live gps tracking.
--A new plugin has been included that allows for offline editing.
--Field calculator will now insert NULL feature value in case of calculation
+<UL>
+<LI>Added gpsd support to live gps tracking.
+<LI>A new plugin has been included that allows for offline editing.
+<LI>Field calculator will now insert NULL feature value in case of calculation
 error instead of stopping and reverting calculation for all features.
--Allow user specific PROJ.4 search paths and update srs.db to include grid reference.
--Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.
--Improved interaction with extents widget in statusbar so that the text
+<LI>Allow user specific PROJ.4 search paths and update srs.db to include grid reference.
+<LI>Added a native (C++) raster calculator implementation which can deal with large rasters efficiently.
+<LI>Improved interaction with extents widget in statusbar so that the text
 contents of the widget can be copied and pasted.
--Many improvements and new operators to the vector attribute table field
+<LI>Many improvements and new operators to the vector attribute table field
 calculator including field concatenation, row counter etc.
--Added --configpath option that overrides the default path (~/.qgis) for
+<LI>Added --configpath option that overrides the default path (~/.qgis) for
 user configuration and forces QSettings to use this directory, too. This
 allows users to e.g. carry QGIS installation on a flash drive together with
 all plugins and settings.
--Experimental WFS-T support. Additionally ported wfs to network manager.
--Georeferencer has had many tidy ups and improvements.
--Support for long int in attribute dialog and editor.
--The QGIS Mapserver project has been incorporated into the main SVN
+<LI>Experimental WFS-T support. Additionally ported wfs to network manager.
+<LI>Georeferencer has had many tidy ups and improvements.
+<LI>Support for long int in attribute dialog and editor.
+<LI>The QGIS Mapserver project has been incorporated into the main SVN
 repository and packages are being made available. QGIS Mapserver allows you
 to serve your QGIS project files via the OGC WMS protocol.
 <A HREF="http://linfiniti.com/2010/08/qgis-mapserver-a-wms-srver-for-the-masses/">Read More...</A>
--Select and measure toolbar flyouts and submenus.
--Support has been added for non-spatial tables (currently OGR, delimited
+<LI>Select and measure toolbar flyouts and submenus.
+<LI>Support has been added for non-spatial tables (currently OGR, delimited
 text and PostgreSQL providers). These tables can be used for field lookups
 or just generally browsed and edited using the table view.
--Added search string support for feature ids ($id) and various other search related improvements.
--Added reload method to map layers and provider interface. Like this,
+<LI>Added search string support for feature ids ($id) and various other search related improvements.
+<LI>Added reload method to map layers and provider interface. Like this,
 caching providers (currently WMS and WFS) can synchronize with changes in
 the datasource.
--
-</P>
-<A NAME="toc15"></A>
+</UL>
+
+<P></P>
 <H2>3.2. Table of contents (TOC) improvements</H2>
-<P>
--Added a new option to the raster legend menu that will stretch the current
+<UL>
+<LI>Added a new option to the raster legend menu that will stretch the current
 layer using the min and max pixel values of the current extent.
--When writing shape files using the table of contents context menu's 'Save
+<LI>When writing shape files using the table of contents context menu's 'Save
 as' option, you can now specify OGR creation options.
--In the table of contents, it is now possible to select and remove several layers at once.
--
-</P>
-<A NAME="toc16"></A>
+<LI>In the table of contents, it is now possible to select and remove several layers at once.
+</UL>
+
+<P></P>
 <H2>3.3. Labelling (New generation only)</H2>
-<P>
--Data defined label position in labeling-ng.
--Line wrapping, data defined font and buffer settings for labeling-ng.
--
-</P>
-<A NAME="toc17"></A>
+<UL>
+<LI>Data defined label position in labeling-ng.
+<LI>Line wrapping, data defined font and buffer settings for labeling-ng.
+</UL>
+
 <H2>3.4. Layer properties and symbology</H2>
-<P>
--Three new classification modes added to graduated symbol renderer (version
+<UL>
+<LI>Three new classification modes added to graduated symbol renderer (version
 2), including Natural Breaks (Jenks), Standard Deviations, and Pretty
 Breaks (based on pretty from the R statistical environment). 
 [Read more...
 <A HREF="http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/">http://linfiniti.com/2010/09/new-class-breaks-for-graduated-symbols-in-qgis/</A>]
--Improved loading speed of the symbol properties dialog.
--Data-defined rotation and size for categorized and graduated renderer (symbology-ng).
--Use size scale also for line symbols to modify line width.
--Replaced raster histogram implementation with one based on Qwt. Added
+<LI>Improved loading speed of the symbol properties dialog.
+<LI>Data-defined rotation and size for categorized and graduated renderer (symbology-ng).
+<LI>Use size scale also for line symbols to modify line width.
+<LI>Replaced raster histogram implementation with one based on Qwt. Added
 option to save histogram as image file. Show actual pixel values on x axis
 of raster histogram.
--Added ability to interactively select pixels from the canvas to populate
+<LI>Added ability to interactively select pixels from the canvas to populate
 the transparency table in the raster layer properties dialog.
--Allow creation of color ramps in vector color ramp combo box.
--Added "style manager..." button to symbol selector so that users will find
+<LI>Allow creation of color ramps in vector color ramp combo box.
+<LI>Added "style manager..." button to symbol selector so that users will find
 the style manager more easily.
--
-</P>
-<A NAME="toc18"></A>
+</UL>
+
+<P></P>
 <H2>3.5. Map Composer</H2>
-<P>
--add capability to show and manipulate composer item width/ height in item
+<UL>
+<LI>add capability to show and manipulate composer item width/ height in item
 position dialog.
--Composer items can now be deleted with the backspace key.
--Sorting for composer attribute table (several columns and ascending / descending).
--
-</P>
-<A NAME="toc19"></A>
+<LI>Composer items can now be deleted with the backspace key.
+<LI>Sorting for composer attribute table (several columns and ascending / descending).
+</UL>
+
+<P></P>
 <H1>4. Whats new in Version 1.5.0?</H1>
 <P>
 Please note that this is a release in our 'cutting edge' release series. As
@@ -421,93 +388,91 @@ This release includes over 350 bug fixes, over 40 new features.
 Once again it is impossible to document everything here that has changed so we will 
 just provide a bullet list of key new features here.
 </P>
-<A NAME="toc20"></A>
 <H2>4.1. Main GUI</H2>
-<P>
--There is a new angle measuring tool that allows you to interactively
+<UL>
+<LI>There is a new angle measuring tool that allows you to interactively
 measure angles against the map backdrop.
--Live GPS Tracking tool
--User configurable WMS search server
--Allow editing of invalid geometry in node tool
--Choice between mm and map units for new symbology. Scaling to use new
+<LI>Live GPS Tracking tool
+<LI>User configurable WMS search server
+<LI>Allow editing of invalid geometry in node tool
+<LI>Choice between mm and map units for new symbology. Scaling to use new
 symbology in print composer as well
--SVG fill symbol layer for polygon textures
--Font marker symbol layer
--Added --noplugins command line options to avoid restoring the plugins.
+<LI>SVG fill symbol layer for polygon textures
+<LI>Font marker symbol layer
+<LI>Added --noplugins command line options to avoid restoring the plugins.
 Useful when a plugin misbehaves and causes QGIS to crash during
 startup
--Allow hiding of deprecated CRSes
--Add point displacement renderer plugin - allows points to be shifted to
+<LI>Allow hiding of deprecated CRSes
+<LI>Add point displacement renderer plugin - allows points to be shifted to
 avoid colliding with other points
--Allow saving vector layers as ogr vector files
--Raster provider: reduce debugging noise
--Allow adding parts to multi points and lines
--Text and form annotation tools are now in gui and app
--Added possibility to place a set of default composer templates in
+<LI>Allow saving vector layers as ogr vector files
+<LI>Raster provider: reduce debugging noise
+<LI>Allow adding parts to multi points and lines
+<LI>Text and form annotation tools are now in gui and app
+<LI>Added possibility to place a set of default composer templates in
 pkgDataPath/composer_templates
--Gradient color ramps now support multiple stops - for adding intermediate
+<LI>Gradient color ramps now support multiple stops - for adding intermediate
 colors
--Center map if user clicks into the map
--New plugin for carrying out spatial selections
--Data-defined size and rotation for single symbol renderer in symbology-ng
--IdentifyAsHtml to raster layer and use it in identify
--Export legend groups and layers with legendinterface and use this
+<LI>Center map if user clicks into the map
+<LI>New plugin for carrying out spatial selections
+<LI>Data-defined size and rotation for single symbol renderer in symbology-ng
+<LI>IdentifyAsHtml to raster layer and use it in identify
+<LI>Export legend groups and layers with legendinterface and use this
 information to display groups in the composer legend.
--Show selected feature count in status bar 
--Query option added to layer menu to subset vector layers
--Option to label only selected features (on the 'old' labelling tool)
--Load/save queries created in the query builder.
--Manual adding of categories in symbology-ng.
--Georeferencer: possibility to configure if residuals should be showed in
+<LI>Show selected feature count in status bar 
+<LI>Query option added to layer menu to subset vector layers
+<LI>Option to label only selected features (on the 'old' labelling tool)
+<LI>Load/save queries created in the query builder.
+<LI>Manual adding of categories in symbology-ng.
+<LI>Georeferencer: possibility to configure if residuals should be showed in
 pixels or map units
--Delimited text provider: allow empty values in numeric columns
--Added rule-based renderer for symbology-ng
--Ability to create spatial lite databases from within QGIS
--Inclusion of GDAL Raster tools plugin into QGIS core
--New python console (with history)
--Add validation to capture tool
--Allow postgres layers without saved username &amp;amp; password by asking for credentials
--Support NULL values in search strings
--Optionally add new layers to the selected group
--Map composer can add attribute Tables in layouts. It is possibile to show
+<LI>Delimited text provider: allow empty values in numeric columns
+<LI>Added rule-based renderer for symbology-ng
+<LI>Ability to create spatial lite databases from within QGIS
+<LI>Inclusion of GDAL Raster tools plugin into QGIS core
+<LI>New python console (with history)
+<LI>Add validation to capture tool
+<LI>Allow postgres layers without saved username &amp;amp; password by asking for credentials
+<LI>Support NULL values in search strings
+<LI>Optionally add new layers to the selected group
+<LI>Map composer can add attribute Tables in layouts. It is possibile to show
 only visible features in composer table or all features
--Identify tool attribute form now non-modal in view mode (since r12796)
--Identified features' highlight disappear when window is deactivate or
+<LI>Identify tool attribute form now non-modal in view mode (since r12796)
+<LI>Identified features' highlight disappear when window is deactivate or
 closed and reappears when reactivated.
--
-</P>
-<A NAME="toc21"></A>
+</UL>
+
+<P></P>
 <H2>4.2. WMS and WMS-C Support</H2>
-<P>
--WMS-C support, new spatial authorities, wms selection improvements
--Resolved EPSG dependency in spatial reference systems and included french
+<UL>
+<LI>WMS-C support, new spatial authorities, wms selection improvements
+<LI>Resolved EPSG dependency in spatial reference systems and included french
 IGNF definitions in srs.db
--WWM provider makes requests asynchronously through QNetworkAccessManager now
--WMS selection allows inserting of all layers of a branch
--WMS has support for more mime types
--Added load/save to WMS dialog
--WMS-C scale slider gui added and more selection improvements
--
-</P>
-<A NAME="toc22"></A>
+<LI>WWM provider makes requests asynchronously through QNetworkAccessManager now
+<LI>WMS selection allows inserting of all layers of a branch
+<LI>WMS has support for more mime types
+<LI>Added load/save to WMS dialog
+<LI>WMS-C scale slider gui added and more selection improvements
+</UL>
+
+<P></P>
 <H2>4.3. API Updates</H2>
-<P>
--QgsDataProvider &amp;amp; QgsMapLayer: add dataChanged() signal, so that a
+<UL>
+<LI>QgsDataProvider &amp;amp; QgsMapLayer: add dataChanged() signal, so that a
 provider can signal that the datasource changed
--Use QNetworkAccessManager instead of QgsHttpTransaction (including caching
+<LI>Use QNetworkAccessManager instead of QgsHttpTransaction (including caching
 and dynamic authentication to website and proxies)
-</P>
-<P>
--Allow opening layer properties from plugins
--Support for custom plugin layers.
--Allow refreshing of plugins programmatically
--Support for custom plugin directories using QGIS_PLUGINPATH environment
+<P></P>
+<LI>Allow opening layer properties from plugins
+<LI>Support for custom plugin layers.
+<LI>Allow refreshing of plugins programmatically
+<LI>Support for custom plugin directories using QGIS_PLUGINPATH environment
 variables. More paths can be passed, separated by semicolon.
--Legend interface added to retrieve layers in legend order
--Support more GEOS operators
--
-</P>
-<A NAME="toc23"></A>
+<LI>Legend interface added to retrieve layers in legend order
+<LI>Support more GEOS operators
+</UL>
+
+<P></P>
 <H1>5. Whats new in Version 1.4.0 'Enceladus'?</H1>
 <P>
 Please note that this is a release in our 'cutting edge' release series. As
@@ -573,39 +538,37 @@ intersections option for polygons is now also possible with background layers.
 For power users, you can now create customizable attribute forms using Qt
 Designer dialog UIs.
 </P>
-<A NAME="toc24"></A>
 <H1>6. Whats new in Version 1.3.0 'Mimas'?</H1>
 <P>
 This release includes over 30 bug fixes and several useful new features:
 </P>
-<A NAME="toc25"></A>
 <H2>6.1. OSM plugin &amp;amp; provider updates</H2>
-<P>
--new OSM style files.
--new icons.
--dialog text updated and completed.
--"Saving OSM into file" functionality was improvements.
--fixed some problems with encoding... ascii to utf-8.
--all OSM layers are automatically removed after disabling OSM plugin in plugin manager.
--other OSM related bugfixes.
--
-</P>
-<A NAME="toc26"></A>
+<UL>
+<LI>new OSM style files.
+<LI>new icons.
+<LI>dialog text updated and completed.
+<LI>"Saving OSM into file" functionality was improvements.
+<LI>fixed some problems with encoding... ascii to utf-8.
+<LI>all OSM layers are automatically removed after disabling OSM plugin in plugin manager.
+<LI>other OSM related bugfixes.
+</UL>
+
+<P></P>
 <H2>6.2. Other notable features and improvements in this release</H2>
-<P>
--Marker size is now configurable when editing a layer.
--Incorporation of the analysis library into the mainstream release.
--Identify features across multiple layers.
--Added a new plugin for carrying out raster terrain analysis (computing slope
+<UL>
+<LI>Marker size is now configurable when editing a layer.
+<LI>Incorporation of the analysis library into the mainstream release.
+<LI>Identify features across multiple layers.
+<LI>Added a new plugin for carrying out raster terrain analysis (computing slope
       aspect, steepness etc).
--A reshape tool to apply to line/polygon geometries. The part of a geometry
+<LI>A reshape tool to apply to line/polygon geometries. The part of a geometry
      between the first and last intersection of the reshape line will be replaced.
--Added snapping to current layer in measure dialog.
--Added ability to select the primary key for views.
--Zoom to a coordinate by entering it in the status bar coordinate display.
--
-</P>
-<A NAME="toc27"></A>
+<LI>Added snapping to current layer in measure dialog.
+<LI>Added ability to select the primary key for views.
+<LI>Zoom to a coordinate by entering it in the status bar coordinate display.
+</UL>
+
+<P></P>
 <H1>7. Version 1.2.0 'Daphnis'</H1>
 <P>
 Please note that this is a release in our 'cutting edge' release series. As 
@@ -617,7 +580,6 @@ This release includes over 140 bug fixes and enchancements
 over the QGIS 1.1.0 release. In addition we have added 
 the following new features:
 </P>
-<A NAME="toc28"></A>
 <H2>7.1. Editing</H2>
 <P>
 Editing functionality in QGIS has had a major update in this release. This
@@ -654,13 +616,11 @@ We recommend that you turn off vertex markers in QGIS options when working with
 this tool: the redraws are much faster and the map is not cluttered with
 markers. 
 </P>
-<A NAME="toc29"></A>
 <H2>7.2. Keyboard shortcuts</H2>
 <P>
 New feature: configure shortcuts for actions within main window of qgis!
 See menu Setting-&gt;Configure shortcuts
 </P>
-<A NAME="toc30"></A>
 <H2>7.3. Map Composer</H2>
 <P>
 It is now possible to lock/unlock composer item positions by right mouse click.
@@ -670,7 +630,6 @@ current date in composer label by typing (d 'June' yyyy) or similar.
 It is now possible to keep the current layers in a composer map even if further
 layers are added to the main map. Export to PDF in composer is now possible.
 </P>
-<A NAME="toc31"></A>
 <H2>7.4. Attribute tables</H2>
 <P>
 It is now possible to search the attribute table within selected records only.
@@ -686,7 +645,6 @@ for layer attributes.  A new dialog allows loading a value map from a layer
 (could be non-spatial table too!).  The edit widgets settings will also now
 be respected in the attribute table.
 </P>
-<A NAME="toc32"></A>
 <H2>7.5. Plugins</H2>
 <UL>
 <LI>The order of layers in the WMS dialog can now be changed.
@@ -700,13 +658,11 @@ be respected in the attribute table.
 </UL>
 
 <P></P>
-<A NAME="toc33"></A>
 <H2>7.6. Projects Management</H2>
 <P>
 QGIS now includes support for  project relative position of file data sources
 and svgs. The saving of relative paths of file data sources is optional.
 </P>
-<A NAME="toc34"></A>
 <H2>7.7. PostGIS &amp; the PostgreSQL Provider</H2>
 <P>
 You can now select the SSL mode when adding a new DB connection. Turning off
@@ -714,7 +670,6 @@ SSL encryption can greatly improve performance of PostGIS data loading where
 connection security is not required. Support has been added for more native
 types and for setting of column comments.
 </P>
-<A NAME="toc35"></A>
 <H2>7.8. Symbology enhancements</H2>
 <UL>
 <LI>allow refresh of symbols via popup menu on the renderer's symbol selection
@@ -725,7 +680,6 @@ types and for setting of column comments.
 </UL>
 
 <P></P>
-<A NAME="toc36"></A>
 <H2>7.9. Command line arguments</H2>
 <P>
 Added command line argument support on windows.
@@ -798,7 +752,6 @@ layers based on attribute data.
 </UL>
 
 <P></P>
-<A NAME="toc37"></A>
 <H1>8. Version 1.0.0 'Kore'</H1>
 <P>
 This release includes over 265 bug fixes and enhancements over the 
@@ -829,7 +782,6 @@ running will support a plugin that is being installed.
 </UL>
 
 <P></P>
-<A NAME="toc38"></A>
 <H1>9. Version 0.11.0 'Metis'</H1>
 <P>
 This release includes over 60 bug fixes and enhancements over the 
@@ -847,7 +799,6 @@ QGIS 0.10.0 release. In addition we have made the following changes:
 </UL>
 
 <P></P>
-<A NAME="toc39"></A>
 <H1>10. Version 0.10.0 'Io'</H1>
 <P>
 This release includes over 120 bug fixes and enchancements 
@@ -870,7 +821,6 @@ improvements 'under the hood'.
 </UL>
 
 <P></P>
-<A NAME="toc40"></A>
 <H1>11. Version 0.9.2rc1 'Ganymede'</H1>
 <UL>
 <LI>This release candidate includes over 40 bug fixes and enchancements 
@@ -888,7 +838,6 @@ improvements 'under the hood'.
 </UL>
 
 <P></P>
-<A NAME="toc41"></A>
 <H1>12. Version 0.9.1 'Ganymede'</H1>
 <P>
 This is a bug fix release
@@ -903,7 +852,6 @@ This is a bug fix release
 </UL>
 
 <P></P>
-<A NAME="toc42"></A>
 <H1>13. Version 0.9 'Ganymede'</H1>
 <UL>
 <LI>Python bindings - This is the major focus of this release
@@ -919,7 +867,6 @@ This is a bug fix release
 </UL>
 
 <P></P>
-<A NAME="toc43"></A>
 <H1>14. Version 0.8 'Joesephine' .... development version</H1>
 <UL>
 <LI>2006-01-23 [timlinux] 0.7.9.10 Dropped use of qpicture and resampling for point markers in favour of
@@ -944,7 +891,6 @@ grid_maker plugin
 </UL>
 
 <P></P>
-<A NAME="toc44"></A>
 <H1>15. Version 0.6 'Simon'</H1>
 <P>
 QGIS Change Log
@@ -1037,7 +983,6 @@ under construction.
  save or save as (if not specified by the user). 
 </UL>
 
-<A NAME="toc45"></A>
 <H1>16. 0.5</H1>
 <UL>
 <LI>2004-12-01 [gsherman] 0.5.0devel30 Added functions to qgsdataprovider.h to support updating the feature count
@@ -1956,30 +1901,40 @@ including:
 <LI>possuble large increase in image side
 <LI>currently this process IS NOT KNOWN TO BE REVERSIBLE so please backup data
 first before experimenting.
+</UL>
+
 <P></P>
+<P>
 2004-04-27 [ts] 0.2.0devel1
-<P></P>
+</P>
+<P>
 Rejigged single marker symbol so directory, icon selector, preview and 
    scaling widget are all in one panel rather than having to spawn a new
    window to select an icon.
-<P></P>
+</P>
+<P>
 2004-04-27 [ts] 0.2.0devel0
-<P></P>
+</P>
+<P>
 Fixed broken bits in internal plugin builder template and updated default
    plugin template gui,
-<P></P>
+</P>
+<P>
 Version 0.2 'Pumpkin' .... development version
-<P></P>
+</P>
+<P>
 2004-04-25 [jobi] 0.1.0devel36
 Added i18n tools to EXTRA_DIST
 Updated German translation
 fixed a typo -&gt; other translations changed too
-<P></P>
+</P>
+<P>
 2004-04-22 [jobi] 0.1.0devel35
 added install routine for svg files
 added new translations
 adjusted paths in the cpp files
-<P></P>
+</P>
+<P>
 2004-04-19 [jobi] 0.1.0devel34
 Changed to simple macros for detecting QT and GDAL
 Added code for detecting QGIS as m4 file to tools
@@ -1993,55 +1948,66 @@ updated German translation
 !! aclocal)
 !! It can be cheated by adding -I path/to/qgis.m4 to the aclocal of
 !! autogen.sh. But be carefull not to commit that to CVS
-<P></P>
+</P>
+<P>
 2004-04-18 [jobi] 0.1.0devel33
 Added internationalisations stuff
    Needs some documentation and more translations :-)
-<P></P>
+</P>
+<P>
 2004-04-17 [ts] 0.1.0devel32
 Fix for crash when opening singleband grayscale images introduced by Steves
    fix for crash when opening MULTIBAND_SINGLEBAND_GRAYSCALE images. Thanks to 
    Steves help, all eight raster renderers are now working properly.
    This resolves bug : [ 934234 ] Segfault when drawing multiband image band as
    grayscale
-<P></P>
+</P>
+<P>
 2004-04-06 [ts] 0.1.0devel31
 Added new plugin (grid_maker) to build arbitary sized graticules and add
    them to the current map view.
-<P></P>
+</P>
+<P>
 2004-04-05 [jobi] 0.1.0devel30
 fixed qgiscommit (didn't work when in qgis root)
 cosmetics for qgis-config to be more "standardconform"
-<P></P>
+</P>
+<P>
 2004-04-04 [jobi] 0.1.0devel29
 fixed GRASS provider
-<P></P>
+</P>
+<P>
 2004-04-03 [ts] 0.1.0devel28
 Bug fix (still unconfirmed if it cures the bug!) for raster layer rendering
 artifacts.
-<P></P>
+</P>
+<P>
 Added new color ramper for grayscale and pseudcolor grayscale image called
 freak out (its a bit psycadellic at the moment). Last class break ne
 eds some work!
-<P></P>
+</P>
+<P>
 2004-04-02 [jobi] 0.1.0devel27
 Added version checks for autoconf, automake and libtool                                                                                                     
 Small bugfixes                                                                                                                                       
-<P></P>
+</P>
+<P>
 2004-04-02 [mcoletti] 0.1.0devel26
 Rolling forward QgsFeature::setGeometry() interface change whereby the size of
 the well known type geometry binary buffer is also now passed in.
-<P></P>
+</P>
+<P>
 2004-04-02 [mcoletti] 0.1.0devel25
 Compensating for QgsFeature::setGeometry() now accepting "size" parameter for
 the given binary geometry string.
-<P></P>
+</P>
+<P>
 QgsShapeFileProvider::endian() now uses shorter, standard way of computing
 endian-ness.
-<P></P>
+</P>
+<P>
 2004-04-02 [stevehalasz] 0.1.0devel25
-</UL>
-
+</P>
 <P>
 2004-04-01 [jobi] 0.1.0devel24
 changed qgiscommit to hopefuly fix all problems
@@ -2173,20 +2139,20 @@ Added option to options dialog to disable splashscreen.
 </P>
 <P>
 2004-02-28 [ts] 0.1.0devel5
---snapshot command line parameter working now and correctly scaling
+</P>
+<UL>
+<LI>-snapshot command line parameter working now and correctly scaling
    snapshot to size of pixmap.
 started moving splashscreen to a global so other classes diring  the startup 
    process can get access to set the splash status. (in progress)
-</P>
-<P>
+<P></P>
 2004-02-28 [gs] 0.1.0devel5
 Refactored QgsField to use new coding conventions
 Documented QgsField (added docs to qgsfield.h)
 Updated doxygen mainpage section in qgis.h
 Added Whats this? help to main application window
 Added providers/delimitedtext and associated source files to CVS
-</P>
-<P>
+<P></P>
 2004-02-27 [gs] 0.1.0devel4
 Corrected debug statements in main.cpp and added a bit of verbiage to the
    help text.
@@ -2194,8 +2160,7 @@ Removed hard coding of provider types in the QgisApp::addVectorLayer method.
   Caller must now provide compatible arguments that the designated provider can
   use to open the data store and fetch data. Changed QgsPgGeoprocessing class
   to properly call addVectorLayer.
-</P>
-<P>
+<P></P>
 2004-02-27 [ts]
 Changed cl parser to getopt
    Moved project loading out of loop that loads layers - you now need to specify
@@ -2205,27 +2170,22 @@ Changed cl parser to getopt
    specified, take a screenie of the map view and save it to disk as filename - 
    this is under construction still.
    Added saveMapAsImage(QString) to qgisapp so above cl option can be used.
-</P>
-<P>
+<P></P>
 2004-02-26 [ts]
 Added a tab to raster layer properties dialog to show metadata about the
    raster layer (using gdal metadata)
-</P>
-<P>
+<P></P>
 2004-02-26 [gs] 0.1.0devel3
 Added Version to configure.in. QGIS now displays its version number based on
    the settings in configure.in
-</P>
-<P>
+<P></P>
 2004-02-24 [gs]
 Search radius for identifying features on vector layers added to Preferences
-</P>
-<P>
+<P></P>
 2004-02-23 [ts]
 Save current view to disk as a PNG image
-</P>
+<P></P>
 <HR NOSHADE SIZE=1>
-<P>
 Version 0.1 'Moroz' February 25, 2004
 User interface improvements - menu and dialog cleanups and a new icon theme
   based on Everaldo's Crystal icon set.
@@ -2249,8 +2209,7 @@ Plugin template to automate the more mundane parts of creating a new plugin.
 Numerous bug fixes
 Removed dependency on libpq++ when compiling with PostgreSQL/PostGIS support
 PostgreSQL/PostGIS layers now rely on GEOS for selecting features
-</P>
-<P>
+<P></P>
 Version 0.0.13 December 8, 2003
 New build system (uses GNU Autoconf)
 Improvement to sorting in attribute table
@@ -2258,8 +2217,7 @@ Persistent selections (shapefiles only)
 Display order can be changed by dragging a layer to a new position in the legend
 Export QGIS view as a Mapserver map file
 Fix for crash on SuSE 9.0 when moving mouse in legend area
-</P>
-<P>
+<P></P>
 Version 0.0.12-alpha June 10, 2003
 Multiple features displayed with the Identify tool
 Identify function returns and displays attributes for multiple
@@ -2274,8 +2232,7 @@ Bug fix: Bug that prevented reopening of the attribute table once
 Bug fix: Bug that prevented lines from being drawn with widths
   other than 1 pixel
 Build system has changed for building with PostgreSQL support.
-</P>
-<P>
+<P></P>
 Version 0.0.11-alpha June 10, 2003
 Preliminary Plugin Manager implementation
 Version check under tools menu
@@ -2288,37 +2245,31 @@ Fixes to Database Connection dialog
 Fix for crash when opening a shapefile attribute table 
    twice in succession
 Fix for crash when opening invalid shapefiles
-</P>
-<P>
+<P></P>
 Version 0.0.10-alpha May 13, 2003
 *Fixes to project save/open support
 *Enhancements to plugin tests
 *Fixes to build system (gdal link problem)
-</P>
-<P>
+<P></P>
 Version 0.0.9-alpha January 25, 2003
 *Preliminary project save/open support
 *Streamlined build system
-</P>
-<P>
+<P></P>
 Version 0.0.8-alpha December 11, 2002
 *During repaint, the data store is only accessed if map state or extent
  has changed
 *Changes to layer properites aren't effective until the Layer Properties
  dialog is closed
 *Canceling the Layer Propeties dialog cancels changes
-</P>
-<P>
+<P></P>
 Version 0.0.7-alpha November 30, 2002
 *Changes to the build system to allow building with/without PostgeSQL 
  support
-</P>
-<P>
+<P></P>
 Version 0.0.6a-alpha November 27, 2002
 *Fix to build problems introduced at 0.0.6. No new features are included
  in this release.
-</P>
-<P>
+<P></P>
 Version 0.0.6-alpha November 24, 2002
 *Improved handling/management of PostGIS connections
 *Password prompt if the password is not stored with a connection
@@ -2326,8 +2277,7 @@ Version 0.0.6-alpha November 24, 2002
 *Identify function for layers
 *Attribute table for a layer can be displayed and sorted by clicking on column headers
 *Duplicate layers (layers with same name) are now handled properly
-</P>
-<P>
+<P></P>
 Version 0.0.5-alpha October 5, 2002
  * Removing a layer from the map no longer crashes the application
  * Fixed multiple render bug when adding a layer
@@ -2338,8 +2288,7 @@ Version 0.0.5-alpha October 5, 2002
  * Zoom Previous added to toolbar
  * Toolbar has been rearranged and new icons added
  * Help|About QGis now contains Version, Whats New, and License information
-</P>
-<P>
+<P></P>
 Version 0.0.4-alpha August 15, 2002
  * Added Layer Properties dialog
  * User can set color for layers
@@ -2349,48 +2298,42 @@ Version 0.0.4-alpha August 15, 2002
  * Fixed multiple repaint bug that occurred when more than one layer was
    added at a time
  * Fixed bug that caused a full refresh at the beginning of a pan operation
-</P>
-<P>
+<P></P>
 Version 0.0.3-alpha August 10, 2002
   * Support for shapefiles and other vector formats
   * Improved handling of extents when adding layers
   * Primitive legend that allows control of layer visibility
   * About Quantum GIS implemented
   * Other internal changes
-</P>
-<P>
+<P></P>
 July 26, 2002
   Drawing code now properly displays layers and calculates extents when
   zooming. Zoom is still fixed zoom in rather than interactive.
-</P>
-<P>
+<P></P>
 July 20, 2002
   Repaint automatic for layers.
-</P>
-<P>
+<P></P>
 July 18, 2002
   Point, line and polygon PostGis layers can be drawn. Still issues with
   map exent and positioning of layers on the canvas. Drawing is manual and
   not tied to the paint event. No zooming or panning yet.
-</P>
-<P>
+<P></P>
 July 10, 2002
   Layers can be selected and added to the map canvas collection however
   the rendering code is currently disabled and being reorganized. So if
   you add a layer, nothing will be drawn...
-</P>
-<P>
+<P></P>
 July 6, 2002
   This code is preliminary and really has no true functionality other than
   the ability to define a PostGIS connection and display the spatially enabled
   tables that could be loaded. 
-</P>
-<P>
+<P></P>
   This is the initial import of the code base into CVS on Sourceforge.net.
  vim: set shiftwidth=3 textwidth=75 autoindent:
-</P>
+</UL>
+
 </DIV>
 
 <!-- html code generated by txt2tags 2.3 (http://txt2tags.sf.net) -->
-<!-- cmdline: txt2tags -t html -\-enum-title -\-toc C:/dev/cpp/Quantum-GIS/doc/changelog.t2t -->
+<!-- cmdline: txt2tags -t html -\-no-toc C:/dev/cpp/Quantum-GIS/doc/changelog.t2t -->
 </BODY></HTML>
