@@ -2000,9 +2000,9 @@ void QgisApp::about()
 
     QString whatsNew = "<html><body>" ;
     whatsNew += "<h3>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h3>";
-    whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.7.0 'Wrocław'?" ) + "</h2>";
+    whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.7.0 'Wroclaw'?" ) + "</h2>";
     whatsNew +=  "<p>";
-    whatsNew +=  trUtf8( "This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our 'cutting edge' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users." );
+    whatsNew +=  trUtf8( "This release is named after the town of Wroclaw in Poland. The Department of Climatology and Atmosphere Protection, University of Wroclaw kindly hosted our last developer meeting in November 2010. Please note that this is a release in our 'cutting edge' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users." );
     whatsNew +=  "</p>";
     whatsNew +=  "<p>";
     whatsNew +=  tr( "This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here." );
@@ -4589,12 +4589,25 @@ void QgisApp::checkQgisVersion()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "http://qgis.org/version.txt" ) ) );
+     op.get(); */
   connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
+  mSocket = new QTcpSocket( this );
+  connect( mSocket, SIGNAL( connected() ), SLOT( socketConnected() ) );
+  connect( mSocket, SIGNAL( connectionClosed() ), SLOT( socketConnectionClosed() ) );
+  connect( mSocket, SIGNAL( readyRead() ), SLOT( socketReadyRead() ) );
+  connect( mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ),
+           SLOT( socketError( QAbstractSocket::SocketError ) ) );
+  mSocket->connectToHost( "qgis.org", 80 );
 }
 
 void QgisApp::versionReplyFinished()
 {
   QApplication::restoreOverrideCursor();
+  QTextStream os( mSocket );
+  mVersionMessage = "";
+  // send the qgis version string
+  // os << QGIS_VERSION << "\r\n";
+  os << "GET /version.txt HTTP/1.0\n\n";
 
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
   if ( !reply )
