@@ -772,6 +772,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
+    //! remove query item and replace it with a new value
+    void setQueryItem( QUrl &url, QString key, QString value );
+
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
 
