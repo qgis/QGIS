@@ -161,20 +161,7 @@ p, li { white-space: pre-wrap; }
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="QTextEdit" name="txtWhatsNew">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="acceptDrops">
-          <bool>false</bool>
-         </property>
-         <property name="lineWidth">
-          <number>2</number>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <widget class="QTextBrowser" name="txtWhatsNew"/>
        </item>
       </layout>
      </widget>
@@ -263,6 +250,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstContributors</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>
