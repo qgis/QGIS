@@ -4633,7 +4633,7 @@ void QgisApp::checkQgisVersion()
   connect( mSocket, SIGNAL( readyRead() ), SLOT( socketReadyRead() ) );
   connect( mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ),
            SLOT( socketError( QAbstractSocket::SocketError ) ) );
-  mSocket->connectToHost( "mrcc.com", 80 );
+  mSocket->connectToHost( "qgis.org", 80 );
 }
 
 void QgisApp::socketConnected()
@@ -4642,7 +4642,7 @@ void QgisApp::socketConnected()
   mVersionMessage = "";
   // send the qgis version string
   // os << QGIS_VERSION << "\r\n";
-  os << "GET /qgis/version.txt HTTP/1.0\n\n";
+  os << "GET /version.txt HTTP/1.0\n\n";
 
 
 }
