@@ -4590,25 +4590,12 @@ void QgisApp::checkQgisVersion()
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( "http://qgis.org/version.txt" ) ) );
-     op.get(); */
   connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
-  mSocket = new QTcpSocket( this );
-  connect( mSocket, SIGNAL( connected() ), SLOT( socketConnected() ) );
-  connect( mSocket, SIGNAL( connectionClosed() ), SLOT( socketConnectionClosed() ) );
-  connect( mSocket, SIGNAL( readyRead() ), SLOT( socketReadyRead() ) );
-  connect( mSocket, SIGNAL( error( QAbstractSocket::SocketError ) ),
-           SLOT( socketError( QAbstractSocket::SocketError ) ) );
-  mSocket->connectToHost( "qgis.org", 80 );
 }
 
 void QgisApp::versionReplyFinished()
 {
   QApplication::restoreOverrideCursor();
-  QTextStream os( mSocket );
-  mVersionMessage = "";
-  // send the qgis version string
-  // os << QGIS_VERSION << "\r\n";
-  os << "GET /version.txt HTTP/1.0\n\n";
 
   QNetworkReply *reply = qobject_cast<QNetworkReply*>( sender() );
   if ( !reply )
