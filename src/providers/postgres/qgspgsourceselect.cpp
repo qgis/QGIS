@@ -457,7 +457,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     if ( pgProvider->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
     {
       // Add the supported layers to the table
-      foreach ( QgsPostgresLayerProperty layer, layers)
+      foreach( QgsPostgresLayerProperty layer, layers )
       {
         QString type = layer.type;
         if ( !searchGeometryColumnsOnly && layer.geometryColName != QString::null )
@@ -468,7 +468,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
             type = tr( "Waiting" );
           }
         }
-        QgsDebugMsg( QString( "adding table %1.%2" ).arg(layer.schemaName).arg(layer.tableName) );
+        QgsDebugMsg( QString( "adding table %1.%2" ).arg( layer.schemaName ).arg( layer.tableName ) );
         mTableModel.addTableEntry( type, layer.schemaName, layer.tableName, layer.geometryColName, layer.pkCols, layer.sql );
       }
 

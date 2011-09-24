@@ -82,7 +82,7 @@ bool QgsPostgresProvider::convertField( QgsField &field )
       break;
 
     case QVariant::Double:
-      if ( fieldSize <= 0 || fieldPrec <= 0)
+      if ( fieldSize <= 0 || fieldPrec <= 0 )
       {
         fieldType = "float";
         fieldSize = -1;
@@ -105,14 +105,14 @@ bool QgsPostgresProvider::convertField( QgsField &field )
 }
 
 QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
-    const QString& uri,
-    const QgsFieldMap &fields,
-    QGis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem *srs,
-    bool overwrite,
-    QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString,QVariant> *options )
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( options );
 
@@ -233,9 +233,9 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     }
 
     sql = QString( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
-                  .arg( schemaTableName )
-                  .arg( quotedIdentifier( primaryKey ) )
-                  .arg( primaryKeyType );
+          .arg( schemaTableName )
+          .arg( quotedIdentifier( primaryKey ) )
+          .arg( primaryKeyType );
 
     result = conn->PQexec( sql );
     if ( PQresultStatus( result ) == PGRES_FATAL_ERROR )
@@ -247,7 +247,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     int dim = 2;
     long srid = srs->postgisSrid();
 
-    switch( wkbType )
+    switch ( wkbType )
     {
       case QGis::WKBPoint25D:
         dim = 3;
@@ -369,11 +369,11 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         continue;
       }
 
-       if ( fld.name() == geometryColumn )
-       {
-         QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
-         continue;
-       }
+      if ( fld.name() == geometryColumn )
+      {
+        QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
+        continue;
+      }
 
       if ( !convertField( fld ) )
       {
@@ -478,7 +478,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   // no table/query passed, the provider could be used to get tables
   if ( mQuery.isEmpty() )
   {
-      return;
+    return;
   }
 
   connectionRO = Conn::connectDb( mUri.connectionInfo(), true );
@@ -1019,9 +1019,9 @@ bool QgsPostgresProvider::getTableInfo( bool searchGeometryColumnsOnly, bool sea
 }
 
 bool QgsPostgresProvider::supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
-                                           bool searchGeometryColumnsOnly,
-                                           bool searchPublicOnly,
-                                           bool allowGeometrylessTables )
+    bool searchGeometryColumnsOnly,
+    bool searchPublicOnly,
+    bool allowGeometrylessTables )
 {
   QgsDebugMsg( "Entering." );
 
@@ -1031,7 +1031,7 @@ bool QgsPostgresProvider::supportedLayers( QVector<QgsPostgresLayerProperty> &la
     connectionRO = Conn::connectDb( mUri.connectionInfo(), true );
     if ( connectionRO == NULL )
     {
-        return false;
+      return false;
     }
   }
   QgsDebugMsg( "before getTableInfo." );
@@ -4436,7 +4436,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   }
 
   QMap<QString, QVector<QgsPostgresLayerProperty> >::const_iterator it = schemasMap.constBegin();
-  for( ; it != schemasMap.constEnd(); it++ )
+  for ( ; it != schemasMap.constEnd(); it++ )
   {
     QgsDebugMsg( "schema: " + it.key() );
     QgsPGSchemaItem * schema = new QgsPGSchemaItem( this, it.key(), mPath + "/" + it.key(), mConnInfo, it.value() );
@@ -4471,9 +4471,9 @@ QgsPGLayerItem::~QgsPGLayerItem()
 
 QString QgsPGLayerItem::createUri()
 {
-  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at(0) : QString::null;
+  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at( 0 ) : QString::null;
   QgsDataSourceURI uri( mConnInfo );
-  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName);
+  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   return uri.uri();
 }
 
@@ -4571,10 +4571,10 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,
-  const QMap<QString,QVariant> *options )
+  const QMap<QString, QVariant> *options )
 {
   return QgsPostgresProvider::createEmptyLayer(
-                  uri, fields, wkbType, srs, overwrite,
-                  oldToNewAttrIdxMap, errorMessage, options
-                );
+           uri, fields, wkbType, srs, overwrite,
+           oldToNewAttrIdxMap, errorMessage, options
+         );
 }

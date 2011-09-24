@@ -41,25 +41,25 @@
 #define FEATURE_BUFFER_SIZE 200
 
 typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
-                        const QString &uri,
-                        const QgsFieldMap &fields,
-                        QGis::WkbType geometryType,
-                        const QgsCoordinateReferenceSystem *destCRS,
-                        bool overwrite,
-                        QMap<int, int> *oldToNewAttrIdx,
-                        QString *errorMessage,
-                        const QMap<QString, QVariant> *options
-                      );
+  const QString &uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem *destCRS,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdx,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options
+);
 
 
 QgsVectorLayerImport::QgsVectorLayerImport(
-    const QString &uri,
-    const QString &providerKey,
-    const QgsFieldMap& fields,
-    QGis::WkbType geometryType,
-    const QgsCoordinateReferenceSystem* crs,
-    bool overwrite,
-    const QMap<QString, QVariant> *options )
+  const QString &uri,
+  const QString &providerKey,
+  const QgsFieldMap& fields,
+  QGis::WkbType geometryType,
+  const QgsCoordinateReferenceSystem* crs,
+  bool overwrite,
+  const QMap<QString, QVariant> *options )
 {
   mProvider = NULL;
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
@@ -181,13 +181,13 @@ bool QgsVectorLayerImport::flushBuffer()
 
 QgsVectorLayerImport::ImportError
 QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
-    const QString& uri,
-    const QString& providerKey,
-    const QgsCoordinateReferenceSystem *destCRS,
-    bool onlySelected,
-    QString *errorMessage,
-    bool skipAttributeCreation,
-    QMap<QString, QVariant> *options )
+                                   const QString& uri,
+                                   const QString& providerKey,
+                                   const QgsCoordinateReferenceSystem *destCRS,
+                                   bool onlySelected,
+                                   QString *errorMessage,
+                                   bool skipAttributeCreation,
+                                   QMap<QString, QVariant> *options )
 {
   const QgsCoordinateReferenceSystem* outputCRS;
   QgsCoordinateTransform* ct = 0;

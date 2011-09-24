@@ -20,19 +20,19 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
     QgsStringMap properties() const;
 
-    void setSymbolName( const QString& name ){ mSymbolName = name; }
-    QString symbolName() const{ return mSymbolName; }
+    void setSymbolName( const QString& name ) { mSymbolName = name; }
+    QString symbolName() const { return mSymbolName; }
 
     void setSymbolNameField( int index, const QString& field );
     const QPair<int, QString>& symbolNameField() const { return mSymbolNameField; }
 
-    void setSymbolWidth( double w ){ mSymbolWidth = w; }
+    void setSymbolWidth( double w ) { mSymbolWidth = w; }
     double symbolWidth() const { return mSymbolWidth; }
 
     void setWidthField( int index, const QString& field );
     const QPair<int, QString>& widthField() const { return mWidthField; }
 
-    void setSymbolHeight( double h ){ mSymbolHeight = h; }
+    void setSymbolHeight( double h ) { mSymbolHeight = h; }
     double symbolHeight() const { return mSymbolHeight; }
 
     void setHeightField( int index, const QString& field );
@@ -41,19 +41,19 @@ class CORE_EXPORT QgsEllipseSymbolLayerV2: public QgsMarkerSymbolLayerV2
     void setRotationField( int index, const QString& field );
     const QPair<int, QString>& rotationField() const { return mRotationField; }
 
-    void setOutlineWidth( double w ){ mOutlineWidth = w; }
+    void setOutlineWidth( double w ) { mOutlineWidth = w; }
     double outlineWidth() const { return mOutlineWidth; }
 
     void setOutlineWidthField( int index, const QString& field );
     const QPair<int, QString>& outlineWidthField() const { return mOutlineWidthField; }
 
-    void setFillColor( const QColor& c ){ mFillColor = c;}
+    void setFillColor( const QColor& c ) { mFillColor = c;}
     QColor fillColor() const { return mFillColor; }
 
     void setFillColorField( int index, const QString& field );
     const QPair<int, QString>& fillColorField() const { return mFillColorField; }
 
-    void setOutlineColor( const QColor& c ){ mOutlineColor = c; }
+    void setOutlineColor( const QColor& c ) { mOutlineColor = c; }
     QColor outlineColor() const { return mOutlineColor; }
 
     void setOutlineColorField( int index, const QString& field );

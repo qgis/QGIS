@@ -118,7 +118,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   signals:
     void addDatabaseLayers( QStringList const & layerPathList,
-                         QString const & providerKey );
+                            QString const & providerKey );
     void connectionsChanged();
 
   public slots:

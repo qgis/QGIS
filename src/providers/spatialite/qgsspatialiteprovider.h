@@ -49,15 +49,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-                            const QString& uri,
-                            const QgsFieldMap &fields,
-                            QGis::WkbType wkbType,
-                            const QgsCoordinateReferenceSystem *srs,
-                            bool overwrite,
-                            QMap<int, int> *oldToNewAttrIdxMap,
-                            QString *errorMessage = 0,
-                            const QMap<QString,QVariant> *options = 0
-                          );
+      const QString& uri,
+      const QgsFieldMap &fields,
+      QGis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem *srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString *errorMessage = 0,
+      const QMap<QString, QVariant> *options = 0
+    );
 
     /**
      * Constructor of the vector provider

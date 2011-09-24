@@ -43,7 +43,7 @@ void TestQgsApplication::initTestCase()
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
   QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
-  qDebug( QgsApplication::showSettings().toUtf8() );
+  qDebug( "%s", QgsApplication::showSettings().toUtf8() );
 };
 
 void TestQgsApplication::checkTheme()

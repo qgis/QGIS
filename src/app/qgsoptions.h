@@ -129,7 +129,7 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
      * @note added in 2.0
      */
     void saveGdalDriverList();
-   
+
   protected:
     //! Populates combo box with ellipsoids
     void getEllipsoidList();

@@ -65,7 +65,7 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
       break;
 
     case QVariant::Double:
-      if ( fieldSize <= 0 || fieldPrec <= 0)
+      if ( fieldSize <= 0 || fieldPrec <= 0 )
       {
         fieldType = "REAL";
         fieldSize = -1;
@@ -89,14 +89,14 @@ bool QgsSpatiaLiteProvider::convertField( QgsField &field )
 
 QgsVectorLayerImport::ImportError
 QgsSpatiaLiteProvider::createEmptyLayer(
-    const QString& uri,
-    const QgsFieldMap &fields,
-    QGis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem *srs,
-    bool overwrite,
-    QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString,QVariant> *options )
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
 {
   Q_UNUSED( options );
 
@@ -193,14 +193,14 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       {
         // delete the table if exists and the related entry in geometry_columns, then re-create it
         sql = QString( "DROP TABLE IF EXISTS %1" )
-                      .arg( quotedIdentifier( tableName ) );
+              .arg( quotedIdentifier( tableName ) );
 
         ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
         if ( ret != SQLITE_OK )
           throw SLException( errMsg );
 
         sql = QString( "DELETE FROM geometry_columns WHERE f_table_name = %1" )
-                      .arg( quotedValue( tableName ) );
+              .arg( quotedValue( tableName ) );
 
         ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
         if ( ret != SQLITE_OK )
@@ -208,9 +208,9 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       }
 
       sql = QString( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
-                    .arg( quotedIdentifier( tableName ) )
-                    .arg( quotedIdentifier( primaryKey ) )
-                    .arg( primaryKeyType );
+            .arg( quotedIdentifier( tableName ) )
+            .arg( quotedIdentifier( primaryKey ) )
+            .arg( primaryKeyType );
 
       ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
       if ( ret != SQLITE_OK )
@@ -220,7 +220,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       int dim = 2;
       long srid = srs->postgisSrid();
 
-      switch( wkbType )
+      switch ( wkbType )
       {
         case QGis::WKBPoint25D:
           dim = 3;
@@ -292,7 +292,7 @@ QgsSpatiaLiteProvider::createEmptyLayer(
         throw SLException( errMsg );
 
     }
-    catch( SLException &e )
+    catch ( SLException &e )
     {
       QgsDebugMsg( QString( "creation of data source %1 failed. %2" )
                    .arg( tableName )
@@ -351,11 +351,11 @@ QgsSpatiaLiteProvider::createEmptyLayer(
       if ( fld.name() == primaryKey )
         continue;
 
-       if ( fld.name() == geometryColumn )
-       {
-         QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
-         continue;
-       }
+      if ( fld.name() == geometryColumn )
+      {
+        QgsDebugMsg( "Found a field with the same name of the geometry column. Skip it!" );
+        continue;
+      }
 
       if ( !convertField( fld ) )
       {
@@ -4888,10 +4888,10 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,
-  const QMap<QString,QVariant> *options )
+  const QMap<QString, QVariant> *options )
 {
   return QgsSpatiaLiteProvider::createEmptyLayer(
-                  uri, fields, wkbType, srs, overwrite,
-                  oldToNewAttrIdxMap, errorMessage, options
-                );
+           uri, fields, wkbType, srs, overwrite,
+           oldToNewAttrIdxMap, errorMessage, options
+         );
 }

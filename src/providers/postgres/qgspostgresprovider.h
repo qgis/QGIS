@@ -70,15 +70,15 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Import a vector layer into the database */
     static QgsVectorLayerImport::ImportError createEmptyLayer(
-                              const QString& uri,
-                              const QgsFieldMap &fields,
-                              QGis::WkbType wkbType,
-                              const QgsCoordinateReferenceSystem *srs,
-                              bool overwrite,
-                              QMap<int, int> *oldToNewAttrIdxMap,
-                              QString *errorMessage = 0,
-                              const QMap<QString,QVariant> *options = 0
-                            );
+      const QString& uri,
+      const QgsFieldMap &fields,
+      QGis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem *srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString *errorMessage = 0,
+      const QMap<QString, QVariant> *options = 0
+    );
 
     /**
      * Constructor for the provider. The uri must be in the following format:
@@ -793,7 +793,7 @@ class QgsPGLayerItem : public QgsLayerItem
     Q_OBJECT
   public:
     QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperties );
+                    QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperties );
     ~QgsPGLayerItem();
 
     QString createUri();
@@ -807,7 +807,7 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path,
-                    QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties );
+                     QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties );
     ~QgsPGSchemaItem();
 };
 

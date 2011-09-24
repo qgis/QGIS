@@ -2287,7 +2287,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
 
   mMapCanvas->freeze( true );
 
-  QApplication::setOverrideCursor(Qt::WaitCursor);
+  QApplication::setOverrideCursor( Qt::WaitCursor );
 
   foreach( QString layerPath, layerPathList )
   {

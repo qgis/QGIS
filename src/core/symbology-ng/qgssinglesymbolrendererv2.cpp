@@ -123,7 +123,7 @@ void QgsSingleSymbolRendererV2::stopRender( QgsRenderContext& context )
 QList<QString> QgsSingleSymbolRendererV2::usedAttributes()
 {
   QSet<QString> attributes;
-  if( mSymbol )
+  if ( mSymbol )
   {
     attributes.unite( mSymbol->usedAttributes() );
   }

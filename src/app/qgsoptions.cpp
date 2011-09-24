@@ -1040,7 +1040,7 @@ void QgsOptions::loadGdalDriverList()
     myGdalDriverDescription = GDALGetDescription( myGdalDriver );
     myDrivers << myGdalDriverDescription;
   }
-  // add the skipped drivers to the list too in case their drivers are 
+  // add the skipped drivers to the list too in case their drivers are
   // already unloaded...may result in false positive if underlying
   // sys config has changed and that driver no longer exists...
   myDrivers.append( mySkippedDrivers );
@@ -1049,7 +1049,7 @@ void QgsOptions::loadGdalDriverList()
 
   QStringListIterator myIterator( myDrivers );
 
-  while (myIterator.hasNext())
+  while ( myIterator.hasNext() )
   {
     QString myName = myIterator.next();
     QListWidgetItem * mypItem = new QListWidgetItem( myName );
@@ -1067,7 +1067,7 @@ void QgsOptions::loadGdalDriverList()
 
 void QgsOptions::saveGdalDriverList()
 {
-  for ( int i=0; i < lstGdalDrivers->count(); i++ )
+  for ( int i = 0; i < lstGdalDrivers->count(); i++ )
   {
     QListWidgetItem * mypItem = lstGdalDrivers->item( i );
     if ( mypItem->checkState() == Qt::Unchecked )
@@ -1080,5 +1080,5 @@ void QgsOptions::saveGdalDriverList()
     }
   }
   QSettings mySettings;
-  mySettings.setValue( "gdal/skipList", QgsApplication::skippedGdalDrivers().join(" ") );
+  mySettings.setValue( "gdal/skipList", QgsApplication::skippedGdalDrivers().join( " " ) );
 }

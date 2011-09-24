@@ -129,12 +129,12 @@ void QgsApplication::init( QString customConfigPath )
   {
     myDir.mkpath( myPamPath ); //fail silently
   }
-  
-  
+
+
 #if defined(Q_WS_WIN32) || defined(WIN32)
-  CPLSetConfigOption("GDAL_PAM_PROXY_DIR", myPamPath.toUtf8());
+  CPLSetConfigOption( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8() );
 #else
-  //under other OS's we use an environment var so the user can 
+  //under other OS's we use an environment var so the user can
   //override the path if he likes
   int myChangeFlag = 0; //whether we want to force the env var to change
   setenv( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8(), myChangeFlag );
@@ -741,9 +741,9 @@ void QgsApplication::restoreGdalDriver( QString theDriver )
 void QgsApplication::applyGdalSkippedDrivers()
 {
   mGdalSkipList.removeDuplicates();
-  QString myDriverList = mGdalSkipList.join(" ");
+  QString myDriverList = mGdalSkipList.join( " " );
   QgsDebugMsg( "Gdal Skipped driver list set to:" );
   QgsDebugMsg( myDriverList );
-  CPLSetConfigOption("GDAL_SKIP", myDriverList.toUtf8());
+  CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
   GetGDALDriverManager()->AutoSkipDrivers();
 }

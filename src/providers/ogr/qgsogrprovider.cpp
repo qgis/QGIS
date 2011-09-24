@@ -124,14 +124,14 @@ bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 
 
 QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
-    const QString& uri,
-    const QgsFieldMap &fields,
-    QGis::WkbType wkbType,
-    const QgsCoordinateReferenceSystem *srs,
-    bool overwrite,
-    QMap<int, int> *oldToNewAttrIdxMap,
-    QString *errorMessage,
-    const QMap<QString,QVariant> *options )
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
 {
   QString encoding;
   QString driverName = "ESRI Shapefile";
@@ -170,8 +170,8 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
   }
 
   QgsVectorFileWriter *writer = new QgsVectorFileWriter(
-            uri, encoding, fields, wkbType,
-            srs, driverName, dsOptions, layerOptions );
+    uri, encoding, fields, wkbType,
+    srs, driverName, dsOptions, layerOptions );
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )
@@ -2491,10 +2491,10 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   bool overwrite,
   QMap<int, int> *oldToNewAttrIdxMap,
   QString *errorMessage,
-  const QMap<QString,QVariant> *options )
+  const QMap<QString, QVariant> *options )
 {
   return QgsOgrProvider::createEmptyLayer(
-                  uri, fields, wkbType, srs, overwrite,
-                  oldToNewAttrIdxMap, errorMessage, options
-                );
+           uri, fields, wkbType, srs, overwrite,
+           oldToNewAttrIdxMap, errorMessage, options
+         );
 }

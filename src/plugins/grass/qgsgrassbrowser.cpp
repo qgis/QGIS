@@ -398,7 +398,7 @@ void QgsGrassBrowser::deleteMap()
       for ( int i = 0; i < layers.count(); i++ )
       {
         QString uri = gisbase + "/" + location + "/"
-            + mapset + "/" + map + "/" + layers[i];
+                      + mapset + "/" + map + "/" + layers[i];
 
         foreach( QgsMapLayer *layer, mIface->legendInterface()->layers() )
         {
@@ -415,13 +415,13 @@ void QgsGrassBrowser::deleteMap()
             // the layer is loaded in canvas,
             // freeze it! (this allow to delete it from the mapset)
             QgsGrassProvider * grassProvider =
-                qobject_cast<QgsGrassProvider *>( vl->dataProvider() );
+              qobject_cast<QgsGrassProvider *>( vl->dataProvider() );
             if ( grassProvider )
               grassProvider->freeze();
 #else
-             QMessageBox::information( this, tr( "Information" ),
-                                    tr( "Remove the selected layer(s) from QGis canvas before continue." ) );
-             return;
+            QMessageBox::information( this, tr( "Information" ),
+                                      tr( "Remove the selected layer(s) from QGis canvas before continue." ) );
+            return;
 #endif
           }
         }

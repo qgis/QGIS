@@ -224,14 +224,14 @@ class CORE_EXPORT QgsApplication: public QApplication
         @note added in 2.0 */
     static QString buildOutputPath() { return mBuildOutputPath; }
 
-    /** Sets the GDAL_SKIP environment variable to include the specified driver 
+    /** Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      * @note added in 2.0
      */
     static void skipGdalDriver( QString theDriver );
 
-    /** Sets the GDAL_SKIP environment variable to exclude the specified driver 
+    /** Sets the GDAL_SKIP environment variable to exclude the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
      * driver name should be the short format of the Gdal driver name e.g. GTIFF.
      * @note added in 2.0
@@ -239,10 +239,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     static void restoreGdalDriver( QString theDriver );
 
     /** Returns the list of gdal drivers that should be skipped (based on
-     * GDAL_SKIP environment variable) 
+     * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ){ return mGdalSkipList; };
+    static QStringList skippedGdalDrivers( ) { return mGdalSkipList; };
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -274,8 +274,8 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString mBuildSourcePath;
     /** path to the output directory of the build. valid only when running from build directory */
     static QString mBuildOutputPath;
-    /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them. 
-     * @see skipGdalDriver, restoreGdalDriver 
+    /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
+     * @see skipGdalDriver, restoreGdalDriver
      * @note added in 2.0 */
     static QStringList mGdalSkipList;
 };

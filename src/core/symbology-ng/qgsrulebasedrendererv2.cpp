@@ -129,7 +129,7 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
 
 QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feature )
 {
-  if( ! usingFirstRule() )
+  if ( ! usingFirstRule() )
     return mCurrentSymbol;
 
   for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )

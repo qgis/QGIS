@@ -269,11 +269,11 @@ QSet<QString> QgsSymbolV2::usedAttributes() const
 {
   QSet<QString> attributes;
   QgsSymbolLayerV2List::const_iterator sIt = mLayers.constBegin();
-  for(; sIt != mLayers.constEnd(); ++sIt )
+  for ( ; sIt != mLayers.constEnd(); ++sIt )
   {
-    if( *sIt )
+    if ( *sIt )
     {
-      attributes.unite( (*sIt)->usedAttributes() );
+      attributes.unite(( *sIt )->usedAttributes() );
     }
   }
   return attributes;
