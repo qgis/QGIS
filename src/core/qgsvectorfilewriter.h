@@ -116,6 +116,8 @@ class CORE_EXPORT QgsVectorFileWriter
     /** add feature to the currently opened shapefile */
     bool addFeature( QgsFeature& feature );
 
+    QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; }
+
     /** close opened shapefile for writing */
     ~QgsVectorFileWriter();
 

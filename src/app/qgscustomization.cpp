@@ -668,6 +668,10 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
         // hide individual toolbar actions
         foreach( QAction* action, tb->actions() )
         {
+          if ( action->objectName().isEmpty() )
+          {
+            continue;
+          }
           visible = mSettings.value( action->objectName(), true ).toBool();
           if ( !visible )
             tb->removeAction( action );
@@ -708,6 +712,10 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
       if ( obj->inherits( "QWidget" ) )
       {
         QWidget* widget = qobject_cast<QWidget*>( obj );
+        if ( widget->objectName().isEmpty() )
+        {
+          continue;
+        }
         bool visible = mSettings.value( widget->objectName(), true ).toBool();
         if ( !visible )
         {
@@ -732,6 +740,10 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
   foreach( QAction* action, menu->actions() )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
+    if ( objName.isEmpty() )
+    {
+      continue;
+    }
     bool visible = settings.value( objName, true ).toBool();
     if ( !visible )
       menu->removeAction( action );

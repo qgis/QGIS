@@ -437,5 +437,3 @@ class OsmUndoRedoDW(QDockWidget, Ui_OsmUndoRedoDW, object):
         if self.redoCounter>0:
             self.redoButton.setEnabled(True)
             self.plugin.dockWidget.redoButton.setEnabled(True)
-
-

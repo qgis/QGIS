@@ -25,6 +25,7 @@ extern "C"
 #include "qgsvectordataprovider.h"
 #include "qgsdataitem.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayerimport.h"
 
 #include <list>
 #include <queue>
@@ -66,6 +67,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    /** Import a vector layer into the database */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+                              const QString& uri,
+                              const QgsFieldMap &fields,
+                              QGis::WkbType wkbType,
+                              const QgsCoordinateReferenceSystem *srs,
+                              bool overwrite,
+                              QMap<int, int> *oldToNewAttrIdxMap,
+                              QString *errorMessage = 0,
+                              const QMap<QString,QVariant> *options = 0
+                            );
+
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
@@ -319,6 +333,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     QString description() const;
 
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
@@ -340,6 +355,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+
     int providerId; // id to append to provider specific identified (like cursors)
 
     bool declareCursor( const QString &cursorName,
@@ -367,11 +383,11 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    QString quotedIdentifier( QString ident ) const;
+    static QString quotedIdentifier( QString ident );
 
     /** Quote a value for placement in a SQL string.
      */
-    QString quotedValue( QString value ) const;
+    static QString quotedValue( QString value );
 
     /** expression to retrieve value
      */
@@ -380,6 +396,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Load the field list
     */
     bool loadFields();
+
+    /** convert a QgsField to work with PG */
+    static bool convertField( QgsField &field );
 
     /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
@@ -745,6 +764,13 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Default value for primary key
      */
     QString mPrimaryKeyDefault;
+
+#if 0
+    /** used to cache the lastest fetched features */
+    QHash<QgsFeatureId, QgsFeature> mFeatureMap;
+    QList<QgsFeatureId> mPriorityIds;
+#endif
+
 };
 
 class QgsPGConnectionItem : public QgsDataCollectionItem

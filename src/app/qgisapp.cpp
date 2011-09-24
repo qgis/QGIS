@@ -5722,7 +5722,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       else
       {
         mActionPasteFeatures->setEnabled( false );
-        mActionAddFeature->setEnabled( !vlayer->isEditable() );
+        mActionAddFeature->setEnabled( false );
       }
 
       //does provider allow deleting of features?

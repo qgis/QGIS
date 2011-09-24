@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>777</width>
-    <height>342</height>
+    <height>348</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -288,6 +288,9 @@
          </property>
          <property name="decimals">
           <number>1</number>
+         </property>
+         <property name="minimum">
+          <double>-100000.000000000000000</double>
          </property>
          <property name="maximum">
           <double>65000.000000000000000</double>
@@ -817,15 +820,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GdalToolsExtentSelector</class>
-   <extends>QWidget</extends>
-   <header>extentSelector</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>GdalToolsInOutSelector</class>
    <extends>QWidget</extends>
    <header>inOutSelector</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GdalToolsExtentSelector</class>
+   <extends>QWidget</extends>
+   <header>extentSelector</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

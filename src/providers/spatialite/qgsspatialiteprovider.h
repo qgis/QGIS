@@ -24,6 +24,7 @@ extern "C"
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayerimport.h"
 #include <list>
 #include <queue>
 #include <fstream>
@@ -45,6 +46,19 @@ class QgsField;
 class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 {
   Q_OBJECT public:
+
+    /** Import a vector layer into the database */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+                            const QString& uri,
+                            const QgsFieldMap &fields,
+                            QGis::WkbType wkbType,
+                            const QgsCoordinateReferenceSystem *srs,
+                            bool overwrite,
+                            QMap<int, int> *oldToNewAttrIdxMap,
+                            QString *errorMessage = 0,
+                            const QMap<QString,QVariant> *options = 0
+                          );
+
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
@@ -262,6 +276,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
+    /** convert a QgsField to work with SL */
+    static bool convertField( QgsField &field );
+
     QgsFieldMap attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
@@ -370,8 +387,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     //void sqliteOpen();
     void closeDb();
-    QString quotedIdentifier( QString id ) const;
-    QString quotedValue( QString value ) const;
+    static QString quotedIdentifier( QString id );
+    static QString quotedValue( QString value );
     bool checkLayerType();
     bool getGeometryDetails();
     bool getTableGeometryDetails();
@@ -456,6 +473,31 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
         sqlite3 *sqlite_handle;
 
         static QMap < QString, SqliteHandles * >handles;
+    };
+
+    struct SLException
+    {
+      SLException( char *msg ) : errMsg( msg )
+      {
+      }
+
+      SLException( const SLException &e ) : errMsg( e.errMsg )
+      {
+      }
+
+      ~SLException()
+      {
+        if ( errMsg )
+          sqlite3_free( errMsg );
+      }
+
+      QString errorMessage() const
+      {
+        return errMsg ? QString::fromUtf8( errMsg ) : "unknown cause";
+      }
+
+    private:
+      char *errMsg;
     };
 
     /**

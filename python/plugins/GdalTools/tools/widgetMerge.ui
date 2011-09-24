@@ -51,6 +51,9 @@
      </item>
      <item row="2" column="1">
       <widget class="QSpinBox" name="noDataSpin">
+       <property name="minimum">
+        <number>-100000</number>
+       </property>
        <property name="maximum">
         <number>65000</number>
        </property>

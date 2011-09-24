@@ -1,2 +1,2 @@
 version=3
-http://download.osgeo.org/qgis/src/qgis_(.*).tar.gz
+http://qgis.org/downloads/qgis-(.*).tar.bz2
