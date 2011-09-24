@@ -26,10 +26,10 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
     QgsAbout();
     ~QgsAbout();
     void setVersion( QString v );
-    void setWhatsNew( QString txt );
     static QString fileSystemSafe( QString string );
 
   private:
+    void setWhatsNew( );
     void setPluginInfo();
     void init();
     void openUrl( QString url );
