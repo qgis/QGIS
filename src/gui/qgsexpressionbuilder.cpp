@@ -15,6 +15,7 @@
 
 #include "qgsexpressionbuilder.h"
 #include "qgslogger.h"
+#include "qgsexpression.h"
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
     : QWidget(),
@@ -40,34 +41,15 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
                                                 "<br> Joins two values together into a string " \
                                                 "<br> <i>Usage:</i><br>'Dia' || Diameter");
 
-    this->registerItem("Geometry","Area"," $area ","<b>$area</b> <br> Returns the area the object." \
-                                                                "<br> Only applies to polygons.");
-    this->registerItem("Geometry","Length"," $length ","<b>$length</b> <br> Returns the length the object. <br> Only applies to polylines.");
-    this->registerItem("Geometry","Perimeter"," $perimeter ");
-    this->registerItem("Geometry","X"," $x ");
-    this->registerItem("Geometry","Y"," $y ");
-    this->registerItem("Geometry","XAt"," xat( ");
-    this->registerItem("Geometry","YAt"," yat(  ");
-
-    this->registerItem("String","Lower Case"," lower( ");
-    this->registerItem("String","Upper Case"," upper( ");
-    this->registerItem("String","Length"," length( ");
-    this->registerItem("String","Replace"," replace(,,, ");
-    this->registerItem("String","Regex Replace"," regexp_replace(,,, ");
-    this->registerItem("String","Substring"," substr(,,, ");
-
-    this->registerItem("Math","Square Root"," sqrt( ");
-    this->registerItem("Math","SIN"," sin( ");
-    this->registerItem("Math","COS"," cos( ");
-    this->registerItem("Math","TAN"," tan( ");
-    this->registerItem("Math","ASIN"," asin( ");
-    this->registerItem("Math","ACOS"," acos( ");
-    this->registerItem("Math","ATAN"," atan( ");
-    this->registerItem("Math","ATAN2"," atan2(, ");
-
-    this->registerItem("Casting","To integer"," toint( ");
-    this->registerItem("Casting","To real"," toreal( ");
-    this->registerItem("Casting","To string"," tostring( ");
+    int count = sizeof( QgsExpression::BuiltinFunctions ) / sizeof( QgsExpression::FunctionDef);
+    for ( int i = 0; i < count; i++ )
+    {
+        QgsExpression::FunctionDef func = QgsExpression::BuiltinFunctions[i];
+        QString name = func.mName;
+        if ( func.mParams >= 1 )
+            name + "(";
+        this->registerItem(func.mGroup,func.mName, " " + name + " ", func.mHelpText);
+    };
 }
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
@@ -190,4 +172,27 @@ void QgsExpressionBuilderWidget::setExpressionString(const QString expressionStr
 {
     this->txtExpressionString->setPlainText(expressionString);
 }
+
+bool QgsExpressionBuilderWidget::hasExpressionError()
+{
+    QString text = this->txtExpressionString->toPlainText();
+    QgsExpression exp( text );
+    return exp.hasParserError();
+}
+
+void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
+{
+    QString text = this->txtExpressionString->toPlainText();
+    QgsExpression exp( text );
+    if ( exp.hasParserError())
+    {
+        this->txtExpressionString->setStyleSheet("background-color: rgba(255, 6, 10, 75);");
+    }
+    else
+    {
+        this->txtExpressionString->setStyleSheet("");
+    }
+}
+
+
 

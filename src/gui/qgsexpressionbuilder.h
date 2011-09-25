@@ -33,7 +33,10 @@ class QgsExpressionItem : public QStandardItem
             ExpressionNode
         };
 
-        QgsExpressionItem(QString label, QString expressionText, QString helpText, QgsExpressionItem::ItemType itemType = ExpressionNode)
+        QgsExpressionItem(QString label,
+                          QString expressionText,
+                          QString helpText,
+                          QgsExpressionItem::ItemType itemType = ExpressionNode)
             : QStandardItem(label)
         {
             mExpressionText = expressionText;
@@ -41,7 +44,9 @@ class QgsExpressionItem : public QStandardItem
             mType = itemType;
         }
 
-        QgsExpressionItem(QString label, QString expressionText, QgsExpressionItem::ItemType itemType = ExpressionNode)
+        QgsExpressionItem(QString label,
+                          QString expressionText,
+                          QgsExpressionItem::ItemType itemType = ExpressionNode)
             : QStandardItem(label)
         {
             mExpressionText = expressionText;
@@ -51,7 +56,10 @@ class QgsExpressionItem : public QStandardItem
         QString getExpressionText() {   return mExpressionText;  }
 
         QString getHelpText() {  return mHelpText;  }
-
+        /** Set the help text for the current item
+          *
+          * @note The help text can be set as a html string.
+          */
         void setHelpText(QString helpText) { mHelpText = helpText; }
 
         QgsExpressionItem::ItemType getItemType() { return mType ; }
@@ -68,19 +76,41 @@ public:
     QgsExpressionBuilderWidget(QgsVectorLayer * layer);
     ~QgsExpressionBuilderWidget();
 
+    /** Loads all the field names from the layer.
+      * @remarks Should this really be public couldn't we just do this for the user?
+      */
     void loadFieldNames();
-    void fillFieldValues(int fieldIndex, int countLimit);
+
+    /** Gets the expression string that has been set in the expression area.
+      * @returns The expression as a string. */
     QString getExpressionString();
+
+    /** Sets the expression string for the widget */
     void setExpressionString(const QString expressionString);
+
+    /** Registers a node item for the expression builder.
+      * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
+      * @param label The label that is show to the user for the item in the tree.
+      * @param expressionText The text that is inserted into the expression area when the user double clicks on the item.
+      * @param helpText The help text that the user will see when item is selected.
+      * @param type The type of the expression item.
+      */
     void registerItem(QString group, QString label,QString expressionText,
-                      QString helpText = "",QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode);
+                      QString helpText = "",
+                      QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode);
+
+    /** Does the expression used in the widget have any errors */
+    bool hasExpressionError();
 
 public slots:
     void on_mAllPushButton_clicked();
     void on_expressionTree_clicked(const QModelIndex &index);
     void on_expressionTree_doubleClicked(const QModelIndex &index);
+    void on_txtExpressionString_textChanged();
 
 private:
+    void fillFieldValues(int fieldIndex, int countLimit);
+
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
