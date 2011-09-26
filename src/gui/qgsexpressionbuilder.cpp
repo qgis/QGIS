@@ -41,13 +41,14 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
                                                 "<br> Joins two values together into a string " \
                                                 "<br> <i>Usage:</i><br>'Dia' || Diameter");
 
-    int count = sizeof( QgsExpression::BuiltinFunctions ) / sizeof( QgsExpression::FunctionDef);
+    // Load the fuctions from the QgsExpression class
+    int count = QgsExpression::functionCount();
     for ( int i = 0; i < count; i++ )
     {
         QgsExpression::FunctionDef func = QgsExpression::BuiltinFunctions[i];
         QString name = func.mName;
         if ( func.mParams >= 1 )
-            name + "(";
+            name += "(";
         this->registerItem(func.mGroup,func.mName, " " + name + " ", func.mHelpText);
     };
 }

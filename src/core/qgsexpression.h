@@ -194,6 +194,11 @@ class CORE_EXPORT QgsExpression
     // return index of the function in BuiltinFunctions array
     static int functionIndex( QString name );
 
+    /**  Returns the number of functions defined in the parser
+      *  @return The number of function defined in the parser.
+      */
+    static int functionCount();
+
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }
 

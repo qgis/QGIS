@@ -386,13 +386,18 @@ bool QgsExpression::isFunctionName( QString name )
 
 int QgsExpression::functionIndex( QString name )
 {
-  int count = sizeof( BuiltinFunctions ) / sizeof( FunctionDef);
+  int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
     if ( QString::compare( name, BuiltinFunctions[i].mName, Qt::CaseInsensitive ) == 0 )
       return i;
   }
   return -1;
+}
+
+int QgsExpression::functionCount()
+{
+    return ( sizeof( BuiltinFunctions ) / sizeof( FunctionDef) );
 }
 
 
