@@ -48,6 +48,12 @@ QgsHttpTransaction::QgsHttpTransaction( QString uri,
     , httphost( proxyHost )
     , mError( "" )
 {
+  Q_UNUSED( proxyPort );
+  Q_UNUSED( proxyUser );
+  Q_UNUSED( proxyPass );
+  Q_UNUSED( proxyType );
+  Q_UNUSED( userName );
+  Q_UNUSED( password );
   QSettings s;
   mNetworkTimeoutMsec = s.value( "/qgis/networkAndProxy/networkTimeout", "20000" ).toInt();
 }
@@ -245,6 +251,7 @@ QString QgsHttpTransaction::responseContentType()
 
 void QgsHttpTransaction::dataStarted( int id )
 {
+  Q_UNUSED( id );
   QgsDebugMsg( "ID=" + QString::number( id ) + "." );
 }
 
@@ -282,6 +289,7 @@ void QgsHttpTransaction::dataHeaderReceived( const QHttpResponseHeader& resp )
 
 void QgsHttpTransaction::dataReceived( const QHttpResponseHeader& resp )
 {
+  Q_UNUSED( resp );
   // TODO: Match 'resp' with 'http' if we move to multiple http connections
 
 #if 0
@@ -325,7 +333,6 @@ void QgsHttpTransaction::dataProgress( int done, int total )
 
 void QgsHttpTransaction::dataFinished( int id, bool error )
 {
-
 #ifdef QGISDEBUG
   QgsDebugMsg( "ID=" + QString::number( id ) + "." );
 
@@ -355,6 +362,9 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
   {
     QgsDebugMsg( "no error." );
   }
+#else
+  Q_UNUSED( id );
+  Q_UNUSED( error );
 #endif
 
 // Don't do this here as the request could have simply been
@@ -372,7 +382,6 @@ void QgsHttpTransaction::dataFinished( int id, bool error )
 
 void QgsHttpTransaction::transactionFinished( bool error )
 {
-
 #ifdef QGISDEBUG
   QgsDebugMsg( "entered." );
 
@@ -404,6 +413,8 @@ void QgsHttpTransaction::transactionFinished( bool error )
   {
     QgsDebugMsg( "no error." );
   }
+#else
+  Q_UNUSED( error );
 #endif
 
   // TODO

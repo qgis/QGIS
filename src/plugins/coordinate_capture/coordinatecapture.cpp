@@ -264,6 +264,7 @@ void CoordinateCapture::unload()
 // Set icons to the current theme
 void CoordinateCapture::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   mQActionPointer->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );
   mpTrackMouseButton->setIcon( QIcon( getIconPath( "tracking.png" ) ) );
   mpCaptureButton->setIcon( QIcon( getIconPath( "coordinate_capture.png" ) ) );

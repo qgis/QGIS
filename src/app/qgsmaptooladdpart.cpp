@@ -135,6 +135,7 @@ void QgsMapToolAddPart::canvasReleaseEvent( QMouseEvent * e )
     break;
     default:
       Q_ASSERT( !"invalid capture mode" );
+      errorCode = 6;
       break;
   }
 

@@ -256,6 +256,7 @@ bool QgsShapeFile::insertLayer( QString dbname, QString schema, QString primary_
                                 QString srid, PGconn * conn, QProgressDialog& pro, bool &fin,
                                 QString& errorText )
 {
+  Q_UNUSED( dbname );
   connect( &pro, SIGNAL( canceled() ), this, SLOT( cancelImport() ) );
   import_canceled = false;
   bool result = true;

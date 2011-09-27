@@ -482,7 +482,7 @@ void Tools::Geometry::Region::getCombinedRegion( Region& out, const Region& in )
 
 double Tools::Geometry::Region::getLow( unsigned long index ) const
 {
-  if ( index < 0 || index >= m_dimension )
+  if ( index >= m_dimension )
     throw IndexOutOfBoundsException( index );
 
   return m_pLow[index];
@@ -490,7 +490,7 @@ double Tools::Geometry::Region::getLow( unsigned long index ) const
 
 double Tools::Geometry::Region::getHigh( unsigned long index ) const
 {
-  if ( index < 0 || index >= m_dimension )
+  if ( index >= m_dimension )
     throw IndexOutOfBoundsException( index );
 
   return m_pHigh[index];

@@ -204,6 +204,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
 
 void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const QString& text )
 {
+  Q_UNUSED( text );
   mInterpolationAttributeComboBox->clear();
   mUseZCoordCheckBox->setEnabled( false );
 
@@ -362,41 +363,49 @@ void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged
 
 void QgsInterpolationDialog::on_mNumberOfColumnsSpinBox_valueChanged( int value )
 {
+  Q_UNUSED( value );
   setNewCellsizeXOnNColumnsChange();
 }
 
 void QgsInterpolationDialog::on_mNumberOfRowsSpinBox_valueChanged( int value )
 {
+  Q_UNUSED( value );
   setNewCellsizeYOnNRowschange();
 }
 
 void QgsInterpolationDialog::on_mCellsizeXSpinBox_valueChanged( double value )
 {
+  Q_UNUSED( value );
   setNColsOnCellsizeXChange();
 }
 
 void QgsInterpolationDialog::on_mCellSizeYSpinBox_valueChanged( double value )
 {
+  Q_UNUSED( value );
   setNRowsOnCellsizeYChange();
 }
 
 void QgsInterpolationDialog::on_mXMinLineEdit_textEdited( const QString& text )
 {
+  Q_UNUSED( text );
   setNewCellsizeOnBoundingBoxChange();
 }
 
 void QgsInterpolationDialog::on_mXMaxLineEdit_textEdited( const QString& text )
 {
+  Q_UNUSED( text );
   setNewCellsizeOnBoundingBoxChange();
 }
 
 void QgsInterpolationDialog::on_mYMinLineEdit_textEdited( const QString& text )
 {
+  Q_UNUSED( text );
   setNewCellsizeOnBoundingBoxChange();
 }
 
 void QgsInterpolationDialog::on_mYMaxLineEdit_textEdited( const QString& text )
 {
+  Q_UNUSED( text );
   setNewCellsizeOnBoundingBoxChange();
 }
 

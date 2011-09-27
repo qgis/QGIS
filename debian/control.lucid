@@ -31,7 +31,7 @@ Build-Depends:
  git-core,
  doxygen,
  graphviz,
- txt2tags 
+ txt2tags
 Build-Conflicts: libqgis-dev, qgis-dev
 Standards-Version: 3.8.4
 XS-Python-Version: current

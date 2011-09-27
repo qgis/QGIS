@@ -511,7 +511,7 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getInstalledPlugin(self, key, readOnly):
+  def getInstalledPlugin(self, key, readOnly, testLoad=False):
     """ get the metadata of an installed plugin """
     if readOnly:
       path = QgsApplication.pkgDataPath()
@@ -557,10 +557,11 @@ class Plugins(QObject):
           errorDetails = qgisMinimumVersion
       except:
         pass
-      try:
-        exec ("%s.classFactory(iface)" % key)
-      except Exception, error:
-        error = unicode(error.args[0])
+      if testLoad:
+        try:
+          exec ("%s.classFactory(iface)" % key)
+        except Exception, error:
+          error = unicode(error.args[0])
     except Exception, error:
       error = unicode(error.args[0])
 
@@ -596,7 +597,7 @@ class Plugins(QObject):
 
 
   # ----------------------------------------- #
-  def getAllInstalled(self):
+  def getAllInstalled(self, testLoad=False):
     """ Build the localCache """
     self.localCache = {}
     # first, try to add the read-only plugins...
@@ -625,7 +626,7 @@ class Plugins(QObject):
     for key in pluginDir.entryList():
       key = unicode(key)
       if not key in [".",".."]:
-        plugin = self.getInstalledPlugin(key, False)
+        plugin = self.getInstalledPlugin(key, False, testLoad)
         if key in self.localCache.keys() and compareVersions(self.localCache[key]["version_inst"],plugin["version_inst"]) == 1:
           # An obsolete plugin in the "user" location is masking a newer one in the "system" location!
           self.obsoletePlugins += [key]

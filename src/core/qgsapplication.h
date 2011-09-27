@@ -17,6 +17,7 @@
 
 #include <QApplication>
 #include <QEvent>
+#include <QStringList>
 
 #include <qgis.h>
 
@@ -31,6 +32,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! @note customConfigDir parameter added in v1.6
     QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath = QString() );
     virtual ~QgsApplication();
+
+    /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
+        when your app does not extend the QApplication class. */
+    static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
     virtual bool event( QEvent * event );
@@ -84,7 +89,8 @@ class CORE_EXPORT QgsApplication: public QApplication
     static const QString translatorsFilePath();
 
     //! Returns the path to the developer image directory.
-    static const QString developerPath();
+    //! @deprecated images are not provided anymore :-P
+    Q_DECL_DEPRECATED static const QString developerPath();
 
     //! Returns the path to the help application.
     static const QString helpAppPath();
@@ -144,6 +150,14 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
     static const QString defaultStyleV2Path();
 
+    //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
+    //! @note Added in 2.0
+    static const QString libraryPath();
+
+    //! Returns the path with utility executables (help viewer, crssync, ...)
+    //! @note Added in 2.0
+    static const QString libexecPath();
+
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
 
@@ -200,6 +214,43 @@ class CORE_EXPORT QgsApplication: public QApplication
       @note: this method was added in version 1.6*/
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
+    /** Indicates whether running from build directory (not installed)
+       @note added in 2.0 */
+    static bool isRunningFromBuildDir() { return mRunningFromBuildDir; }
+    /** Returns path to the source directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildSourcePath() { return mBuildSourcePath; }
+    /** Returns path to the build output directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildOutputPath() { return mBuildOutputPath; }
+
+    /** Sets the GDAL_SKIP environment variable to include the specified driver 
+     * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
+     * driver name should be the short format of the Gdal driver name e.g. GTIFF.
+     * @note added in 2.0
+     */
+    static void skipGdalDriver( QString theDriver );
+
+    /** Sets the GDAL_SKIP environment variable to exclude the specified driver 
+     * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
+     * driver name should be the short format of the Gdal driver name e.g. GTIFF.
+     * @note added in 2.0
+     */
+    static void restoreGdalDriver( QString theDriver );
+
+    /** Returns the list of gdal drivers that should be skipped (based on
+     * GDAL_SKIP environment variable) 
+     * @note added in 2.0
+     */
+    static QStringList skippedGdalDrivers( ){ return mGdalSkipList; };
+
+    /** Apply the skipped drivers list to gdal
+     * @see skipGdalDriver
+     * @see restoreGdalDriver
+     * @see skippedGdalDrivers
+     * @note added in 2.0 */
+    static void applyGdalSkippedDrivers();
+
   signals:
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
@@ -210,10 +261,23 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString mPrefixPath;
     static QString mPluginPath;
     static QString mPkgDataPath;
+    static QString mLibraryPath;
+    static QString mLibexecPath;
     static QString mThemeName;
     static QStringList mDefaultSvgPaths;
 
     static QString mConfigPath;
+
+    /** true when running from build directory, i.e. without 'make install' */
+    static bool mRunningFromBuildDir;
+    /** path to the source directory. valid only when running from build directory. */
+    static QString mBuildSourcePath;
+    /** path to the output directory of the build. valid only when running from build directory */
+    static QString mBuildOutputPath;
+    /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them. 
+     * @see skipGdalDriver, restoreGdalDriver 
+     * @note added in 2.0 */
+    static QStringList mGdalSkipList;
 };
 
 #endif

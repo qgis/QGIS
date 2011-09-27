@@ -65,8 +65,13 @@ class QNetworkReply;
 class QNetworkProxy;
 class QAuthenticator;
 
+class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
+
+class QgsDecorationCopyright;
+class QgsDecorationNorthArrow;
+class QgsDecorationScaleBar;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -249,6 +254,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction *actionNewVectorLayer() { return mActionNewVectorLayer; }
     QAction *actionNewSpatialLiteLayer() { return mActionNewSpatialiteLayer; }
+    QAction *actionEmbedLayers() { return mActionEmbedLayers; }
     QAction *actionAddOgrLayer() { return mActionAddOgrLayer; }
     QAction *actionAddRasterLayer() { return mActionAddRasterLayer; }
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
@@ -263,7 +269,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionTileScale() { return mActionTileScale; }
-    QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -429,6 +434,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                     QStringList const & styles,
                                     QString const & format,
                                     QString const & crs );
+
+    void versionReplyFinished();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -458,6 +466,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a databaselayer to the map
     void addDatabaseLayer();
     //#endif
+	//! Add a list of database layers to the map
+    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
@@ -478,8 +488,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
-    //! Show GPS tool
-    void showGpsTool();
     //! Show tile scale slider
     void showTileScale();
     //! zoom to extent of layer
@@ -541,6 +549,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileNew( bool thePromptToSaveFlag );
     //! Calculate new rasters from existing ones
     void showRasterCalculator();
+    void embedLayers();
 
     //! Create a new empty vector layer
     void newVectorLayer();
@@ -589,10 +598,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void options();
     //! Whats-this help slot
     void whatsThis();
-    void socketConnected();
-    void socketConnectionClosed();
-    void socketReadyRead();
-    void socketError( QAbstractSocket::SocketError e );
     //! Set project properties, including map untis
     void projectProperties();
     //! Open project properties dialog and show the projections tab
@@ -763,6 +768,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates label property tool
     void changeLabelProperties();
 
+
+
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -863,6 +870,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool createDB();
     void createMapTips();
     void updateCRSStatusBar();
+    void createDecorations();
 
     // actions for menus and toolbars -----------------
 
@@ -993,8 +1001,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgisAppInterface *mQgisInterface;
     friend class QgisAppInterface;
 
-    QTcpSocket *mSocket;
-    QString mVersionMessage;
     QSplashScreen *mSplash;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
@@ -1045,10 +1051,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsUndoWidget* mUndoWidget;
 
+    QgsBrowserDockWidget* mBrowserWidget;
+
     QgsSnappingDialog* mSnappingDialog;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
+
+    QgsDecorationCopyright* mDecorationCopyright;
+    QgsDecorationNorthArrow* mDecorationNorthArrow;
+    QgsDecorationScaleBar* mDecorationScaleBar;
 
     int mLastComposerId;
 

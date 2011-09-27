@@ -79,13 +79,13 @@ void QgsPALObjectPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorO
       continue;
     }
 
-    QMap<int, QgsOverlayObject*>* positionObjects = ( *overlayIt )->overlayObjects();
+    QMap<QgsFeatureId, QgsOverlayObject*>* positionObjects = ( *overlayIt )->overlayObjects();
     if ( !positionObjects )
     {
       continue;
     }
 
-    QMap<int, QgsOverlayObject*>::const_iterator objectIt = positionObjects->begin();
+    QMap<QgsFeatureId, QgsOverlayObject*>::const_iterator objectIt = positionObjects->begin();
     for ( ; objectIt != positionObjects->end(); ++objectIt )
     {
       QgsPALGeometry* palGeom = new QgsPALGeometry( objectIt.value() );

@@ -73,6 +73,8 @@ void QgsVectorLayerSaveAsDialog::accept()
 
 void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx )
 {
+  Q_UNUSED( idx );
+
   browseFilename->setEnabled( true );
   leFilename->setEnabled( true );
 

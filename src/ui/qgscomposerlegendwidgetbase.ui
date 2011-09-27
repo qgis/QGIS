@@ -33,23 +33,23 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>369</width>
-        <height>474</height>
+        <width>367</width>
+        <height>472</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <property name="geometry">
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>338</width>
-            <height>404</height>
+            <width>349</width>
+            <height>398</height>
            </rect>
           </property>
           <attribute name="label">
@@ -163,7 +163,7 @@
              </property>
             </widget>
            </item>
-           <item row="12" column="0">
+           <item row="14" column="0">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -176,6 +176,16 @@
              </property>
             </spacer>
            </item>
+           <item row="13" column="0">
+            <widget class="QComboBox" name="mMapComboBox"/>
+           </item>
+           <item row="12" column="0">
+            <widget class="QLabel" name="mMapLabel">
+             <property name="text">
+              <string>Map</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="page_2">
@@ -183,8 +193,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>351</width>
-            <height>394</height>
+            <width>349</width>
+            <height>398</height>
            </rect>
           </property>
           <attribute name="label">
@@ -214,6 +224,9 @@
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
+             </property>
+             <property name="selectionMode">
+              <enum>QAbstractItemView::ContiguousSelection</enum>
              </property>
              <property name="wordWrap">
               <bool>false</bool>

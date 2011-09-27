@@ -33,6 +33,7 @@ The field calculator allows you to update fields with expressions.
 <tr><td>length(<tt>a</tt>)</td><td>length of string <tt>a</tt></td></tr>
 <tr><td>atan2(y,x)</td><td>arcustangens of y/x using the signs of the two arguments to determine the quadrant of the result.</td></tr>
 <tr><td>replace(<tt>a</tt>,<i>replacethis</i>,<i>withthat</i>)</td><td>replace <i>replacethis</i> with <i>withthat</i> in string <tt>a</tt></td></td>
+<tr><td>regexp_replace(<tt>a</tt>,<i>replacethis</i>,<i>withthat</i>)</td><td>replace the regular expression <i>replacethis</i> with <i>withthat</i> in string <tt>a</tt></td></td>
 <tr><td>substr(<tt>a</tt>,from,len)</td><td>len characters of string <tt>a</tt> starting from from (first character index is 1)</td></td>
 <tr><td><tt>a</tt> || <tt>b</tt></td><td>concatenate strings <tt>a</tt> and <tt>b</tt></td></tr>
 <tr><td>$rownum</td><td>number current row</td></tr>
@@ -42,6 +43,8 @@ The field calculator allows you to update fields with expressions.
 <tr><td>$id</td><td>feature id</td></tr>
 <tr><td>$x</td><td>x coordinate of point</td></tr>
 <tr><td>$y</td><td>y coordinate of point</td></tr>
+<tr><td>xat(n)</td><td>x coordinate of nth point of a line (indizes start at 0; negative values apply to the last index)</td></tr>
+<tr><td>yat(n)</td><td>y coordinate of nth point of a line (indizes start at 0; negative values apply to the last index)</td></tr>
 <tr><td><tt>a</tt> ^ <tt>b</tt></td><td><tt>a</tt> raised to the power of <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> * <tt>b</tt></td><td><tt>a</tt> multiplied by <tt>b</tt></td></tr>
 <tr><td><tt>a</tt> / <tt>b</tt></td><td><tt>a</tt> divided by <tt>b</tt></td></tr>

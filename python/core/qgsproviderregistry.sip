@@ -60,8 +60,6 @@ class QgsProviderRegistry
      * @note this method was added in QGIS 1.1
      */
     virtual QString protocolDrivers() const;
-    
-
 
   private:
 

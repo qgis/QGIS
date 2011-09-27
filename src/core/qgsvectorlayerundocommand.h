@@ -17,9 +17,7 @@ class QgsVectorLayer;
 
 // TODO: copied from qgsvectorlayer.h
 typedef QList<int> QgsAttributeList;
-typedef QSet<int> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
-
 
 
 /**
@@ -73,7 +71,7 @@ class QgsUndoCommand : public QUndoCommand
      * @param original original geometry of feature which was changed
      * @param target changed geometry which was changed
      */
-    void storeGeometryChange( int featureId, QgsGeometry& original, QgsGeometry& target );
+    void storeGeometryChange( QgsFeatureId featureId, QgsGeometry& original, QgsGeometry& target );
 
     /**
      * Stores changes of attributes for the feature to be returned to this state after undo/redo
@@ -83,13 +81,13 @@ class QgsUndoCommand : public QUndoCommand
      * @param target target value of attribute after change
      * @param isFirstChange flag if this change is the first one
      */
-    void storeAttributeChange( int featureId, int field, QVariant original, QVariant target, bool isFirstChange );
+    void storeAttributeChange( QgsFeatureId featureId, int field, QVariant original, QVariant target, bool isFirstChange );
 
     /**
      * Add id of feature to deleted list to be reverted if needed afterwards
      * @param featureId id of feature which is to be deleted
      */
-    void storeFeatureDelete( int featureId );
+    void storeFeatureDelete( QgsFeatureId featureId );
 
     /**
      * Add new feature to list of new features to be stored for undo/redo operations.
@@ -119,10 +117,10 @@ class QgsUndoCommand : public QUndoCommand
     QgsVectorLayer* mLayer;
 
     /** Map of changes of geometry for features it describes changes of geometry */
-    QMap<int, GeometryChangeEntry> mGeometryChange;
+    QMap<QgsFeatureId, GeometryChangeEntry> mGeometryChange;
 
     /** Map of changes of atrributes for features which describes changes of attributes */
-    QMap<int, AttributeChanges> mAttributeChange;
+    QMap<QgsFeatureId, AttributeChanges> mAttributeChange;
 
     /** Deleted feature IDs which are not commited.  Note a feature can be added and then deleted
         again before the change is committed - in that case the added feature would be removed

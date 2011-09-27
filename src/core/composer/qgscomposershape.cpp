@@ -38,6 +38,8 @@ QgsComposerShape::~QgsComposerShape()
 
 void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   if ( !painter )
   {
     return;

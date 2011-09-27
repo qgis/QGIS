@@ -41,7 +41,7 @@ int nmea_calc_crc( const char *buff, int buff_sz )
 /**
  * \brief Convert string to number
  */
-int nmea_atoi( const char *str, int str_sz, int radix )
+int nmea_atoi( const char *str, size_t str_sz, int radix )
 {
   char *tmp_ptr;
   char buff[NMEA_CONVSTR_BUF];

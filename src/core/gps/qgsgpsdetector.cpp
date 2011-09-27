@@ -89,7 +89,7 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 QgsGPSDetector::QgsGPSDetector( QString portName )
 {
   mConn = 0;
-  mBaudList << BAUD4800 << BAUD9600 << BAUD38400;
+  mBaudList << BAUD4800 << BAUD9600 << BAUD38400 << BAUD57600;  //add 57600 for SXBlueII GPS unit
 
   if ( portName.isEmpty() )
   {
@@ -102,8 +102,6 @@ QgsGPSDetector::QgsGPSDetector( QString portName )
 
   mPortIndex = 0;
   mBaudIndex = -1;
-
-  advance();
 }
 
 QgsGPSDetector::~QgsGPSDetector()
@@ -145,7 +143,7 @@ void QgsGPSDetector::advance()
 
       Q_ASSERT( gpsParams.size() >= 3 );
 
-      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toInt(), gpsParams[2] );
+      mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
     else
     {
@@ -177,6 +175,8 @@ void QgsGPSDetector::advance()
 
 void QgsGPSDetector::detected( const QgsGPSInformation& info )
 {
+  Q_UNUSED( info );
+
   if ( !mConn )
   {
     // advance if connection was destroyed

@@ -17,9 +17,12 @@
 
 #include "qgsmslayerbuilder.h"
 #include "qgsrasterlayer.h"
+
 #include <QDir>
 #include <QFileInfo>
 #include <QStringList>
+
+#include <ctime>
 
 QgsMSLayerBuilder::QgsMSLayerBuilder()
 {

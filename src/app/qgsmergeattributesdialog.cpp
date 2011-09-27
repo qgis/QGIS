@@ -96,7 +96,7 @@ void QgsMergeAttributesDialog::createTableWidgetContents()
 
   for ( int i = 0; i < mFeatureList.size(); ++i )
   {
-    verticalHeaderLabels << QString::number( mFeatureList[i].id() );
+    verticalHeaderLabels << FID_TO_STRING( mFeatureList[i].id() );
 
     const QgsAttributeMap &attrs = mFeatureList[i].attributeMap();
 
@@ -137,6 +137,7 @@ QComboBox* QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     newComboBox->addItem( tr( "Minimum" ) );
     newComboBox->addItem( tr( "Maximum" ) );
     newComboBox->addItem( tr( "Median" ) );
+    newComboBox->addItem( tr( "Sum" ) );
   }
   else if ( columnType == QVariant::String )
   {
@@ -147,7 +148,8 @@ QComboBox* QgsMergeAttributesDialog::createMergeComboBox( QVariant::Type columnT
     newComboBox->addItem( tr( "Mean" ) );
   }
 
-  QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ), this, SLOT( comboValueChanged( const QString& ) ) );
+  QObject::connect( newComboBox, SIGNAL( currentIndexChanged( const QString& ) ),
+                    this, SLOT( comboValueChanged( const QString& ) ) );
   return newComboBox;
 }
 
@@ -163,8 +165,9 @@ int QgsMergeAttributesDialog::findComboColumn( QComboBox* c ) const
   return -1;
 }
 
-void QgsMergeAttributesDialog::comboValueChanged( const QString & text )
+void QgsMergeAttributesDialog::comboValueChanged( const QString &text )
 {
+  Q_UNUSED( text );
   QComboBox* senderComboBox = qobject_cast<QComboBox *>( sender() );
   if ( !senderComboBox )
   {
@@ -243,6 +246,10 @@ void QgsMergeAttributesDialog::refreshMergedValue( int col )
   else if ( mergeBehaviourString == tr( "Median" ) )
   {
     evalText = medianAttributeString( col );
+  }
+  else if ( mergeBehaviourString == tr( "Sum" ) )
+  {
+    evalText = sumAttributeString( col );
   }
   else if ( mergeBehaviourString == tr( "Concatenation" ) )
   {
@@ -386,6 +393,22 @@ QString QgsMergeAttributesDialog::medianAttributeString( int col )
     medianValue = valueList[( size + 1 ) / 2 - 1];
   }
   return QString::number( medianValue, 'f' );
+}
+
+QString QgsMergeAttributesDialog::sumAttributeString( int col )
+{
+  double sum = 0.0;
+  bool conversion = false;
+
+  for ( int i = 0; i < mFeatureList.size(); ++i )
+  {
+    double currentValue = mTableWidget->item( i + 1, col )->text().toDouble( &conversion );
+    if ( conversion )
+    {
+      sum += currentValue;
+    }
+  }
+  return QString::number( sum, 'f' );
 }
 
 QString QgsMergeAttributesDialog::concatenationAttributeString( int col )

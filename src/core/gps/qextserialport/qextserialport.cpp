@@ -158,8 +158,8 @@ QString QextSerialPort::portName() const
 */
 QByteArray QextSerialPort::readAll()
 {
-    int avail = this->bytesAvailable();
-    return (avail > 0) ? this->read(avail) : QByteArray();
+    qint64 avail = bytesAvailable();
+    return avail > 0 ? read(avail) : QByteArray();
 }
 
 /*!

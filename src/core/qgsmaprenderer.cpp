@@ -33,6 +33,7 @@
 
 #include <QDomDocument>
 #include <QDomNode>
+#include <QMutexLocker>
 #include <QPainter>
 #include <QListIterator>
 #include <QSettings>
@@ -190,9 +191,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX ).arg( mapUnitsPerPixelY ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth ).arg( myHeight ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width() ).arg( mExtent.height() ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX, 0, 'f', 8 ).arg( mapUnitsPerPixelY, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width(), 0, 'f', 8 ).arg( mExtent.height(), 0, 'f', 8 ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent
@@ -204,7 +205,7 @@ void QgsMapRenderer::adjustExtentToSize()
   // update the scale
   updateScale();
 
-  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( mScale ) );
+  QgsDebugMsg( QString( "Scale (assuming meters as map units) = 1:%1" ).arg( mScale, 0, 'f', 8 ) );
 
   newCoordXForm.setParameters( mMapUnitsPerPixel, dxmin, dymin, myHeight );
   mRenderContext.setMapToPixel( newCoordXForm );
@@ -214,6 +215,9 @@ void QgsMapRenderer::adjustExtentToSize()
 
 void QgsMapRenderer::render( QPainter* painter )
 {
+  //Lock render method for concurrent threads (e.g. from globe)
+  QMutexLocker renderLock( &mRenderMutex );
+
   //flag to see if the render context has changed
   //since the last time we rendered. If it hasnt changed we can
   //take some shortcuts with rendering
@@ -634,12 +638,12 @@ QGis::UnitType QgsMapRenderer::mapUnits() const
 
 void QgsMapRenderer::onDrawingProgress( int current, int total )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( total );
   // TODO: emit signal with progress
 // QgsDebugMsg(QString("onDrawingProgress: %1 / %2").arg(current).arg(total));
   emit updateMap();
 }
-
-
 
 void QgsMapRenderer::setProjectionsEnabled( bool enabled )
 {
@@ -836,6 +840,7 @@ void QgsMapRenderer::updateFullExtent()
   // iterate through the map layers and test each layers extent
   // against the current min and max values
   QStringList::iterator it = mLayerSet.begin();
+  QgsDebugMsg( QString( "Layer count: %1" ).arg( mLayerSet.count() ) );
   while ( it != mLayerSet.end() )
   {
     QgsMapLayer * lyr = registry->mapLayer( *it );

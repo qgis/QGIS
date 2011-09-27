@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "qgsfieldcalculator.h"
-#include "qgssearchtreenode.h"
-#include "qgssearchstring.h"
+#include "qgsexpression.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
@@ -81,19 +80,18 @@ void QgsFieldCalculator::accept()
   {
     QString calcString = mExpressionTextEdit->toPlainText();
 
-    //create QgsSearchString
-    QgsSearchString searchString;
-    if ( !searchString.setString( calcString ) )
+    //create QgsExpression
+    QgsExpression exp( calcString );
+    if ( exp.hasParserError() )
     {
       //expression not valid
-      QMessageBox::critical( 0, tr( "Syntax error" ), tr( QString( "Invalid expression syntax. The error message of the parser is: '" + searchString.parserErrorMsg() + "'" ).toLocal8Bit().data() ) );
+      QMessageBox::critical( 0, tr( "Syntax error" ), tr( QString( "Invalid expression syntax. The error message of the parser is: '" + exp.parserErrorString() + "'" ).toLocal8Bit().data() ) );
       return;
     }
 
-    //get QgsSearchTreeNode
-    QgsSearchTreeNode* searchTree = searchString.tree();
-    if ( !searchTree )
+    if ( ! exp.prepare( mVectorLayer->pendingFields() ) )
     {
+      QMessageBox::critical( 0, tr( "Evaluation error" ), exp.evalErrorString() );
       return;
     }
 
@@ -148,6 +146,7 @@ void QgsFieldCalculator::accept()
     //go through all the features and change the new attribute
     QgsFeature feature;
     bool calculationSuccess = true;
+    QString error;
 
     bool onlySelected = ( mOnlyUpdateSelectedCheckBox->checkState() == Qt::Checked );
     QgsFeatureIds selectedIds = mVectorLayer->selectedFeaturesIds();
@@ -155,12 +154,7 @@ void QgsFieldCalculator::accept()
     // block layerModified signals (that would trigger table update)
     mVectorLayer->blockSignals( true );
 
-    bool useGeometry =
-      calcString.contains( "$area" ) ||
-      calcString.contains( "$length" ) ||
-      calcString.contains( "$perimeter" ) ||
-      calcString.contains( "$x" ) ||
-      calcString.contains( "$y" );
+    bool useGeometry = exp.needsGeometry();
     int rownum = 1;
 
     mVectorLayer->select( mVectorLayer->pendingAllAttributesList(), QgsRectangle(), useGeometry, false );
@@ -174,51 +168,18 @@ void QgsFieldCalculator::accept()
         }
       }
 
-      searchTree->setCurrentRowNumber( rownum );
+      exp.setCurrentRowNumber( rownum );
 
-      QgsSearchTreeValue value;
-      searchTree->getValue( value, searchTree, mVectorLayer->pendingFields(), feature );
-      if ( value.isError() )
+      QVariant value = exp.evaluate( &feature );
+      if ( exp.hasEvalError() )
       {
-        //insert NULL value for this feature and continue the calculation
-        if ( searchTree->errorMsg() == QObject::tr( "Division by zero." ) )
-        {
-          mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, QVariant(), false );
-        }
-        else
-        {
-          calculationSuccess = false;
-          break;
-        }
-      }
-      else if ( value.isNumeric() )
-      {
-        const QgsField &f = mVectorLayer->pendingFields()[ mAttributeId ];
-        QVariant v;
-
-        if ( f.type() == QVariant::Double && f.precision() > 0 )
-        {
-          v = QString::number( value.number(), 'f', f.precision() );
-        }
-        else if ( f.type() == QVariant::Double && f.precision() == 0 )
-        {
-          v = QString::number( qRound( value.number() ) );
-        }
-        else
-        {
-          v = value.number();
-        }
-
-        v.convert( f.type() );
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, v, false );
-      }
-      else if ( value.isNull() )
-      {
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, QVariant(), false );
+        calculationSuccess = false;
+        error = exp.evalErrorString();
+        break;
       }
       else
       {
-        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value.string(), false );
+        mVectorLayer->changeAttributeValue( feature.id(), mAttributeId, value, false );
       }
 
       rownum++;
@@ -230,7 +191,7 @@ void QgsFieldCalculator::accept()
 
     if ( !calculationSuccess )
     {
-      QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string." ) );
+      QMessageBox::critical( 0, tr( "Error" ), tr( "An error occured while evaluating the calculation string:\n%1" ).arg( error ) );
       mVectorLayer->destroyEditCommand();
       return;
     }
@@ -388,17 +349,17 @@ void QgsFieldCalculator::on_mCloseBracketPushButton_clicked()
 
 void QgsFieldCalculator::on_mToRealButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( " to real ( " );
+  mExpressionTextEdit->insertPlainText( " toreal ( " );
 }
 
 void QgsFieldCalculator::on_mToIntButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( " to int ( " );
+  mExpressionTextEdit->insertPlainText( " toint ( " );
 }
 
 void QgsFieldCalculator::on_mToStringButton_clicked()
 {
-  mExpressionTextEdit->insertPlainText( " to string ( " );
+  mExpressionTextEdit->insertPlainText( " tostring ( " );
 }
 
 void QgsFieldCalculator::on_mLengthButton_clicked()
@@ -426,8 +387,9 @@ void QgsFieldCalculator::on_mAllPushButton_clicked()
   getFieldValues( 0 );
 }
 
-void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString& text )
+void QgsFieldCalculator::on_mOutputFieldNameLineEdit_textChanged( const QString &text )
 {
+  Q_UNUSED( text );
   setOkButtonState();
 }
 
@@ -523,7 +485,9 @@ void QgsFieldCalculator::setOkButtonState()
 }
 
 
-void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged( QListWidgetItem * current, QListWidgetItem * previous )
+void QgsFieldCalculator::on_mFieldsListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( previous );
   getFieldValues( 25 );
 }

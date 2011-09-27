@@ -204,6 +204,7 @@ void QgsCustomizationDialog::cancel()
 
 void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   QSettings mySettings;
   QString lastDir = mySettings.value( mLastDirSettingsName, "." ).toString();
 
@@ -222,6 +223,7 @@ void QgsCustomizationDialog::on_actionSave_triggered( bool checked )
 
 void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   QSettings mySettings;
   QString lastDir = mySettings.value( mLastDirSettingsName, "." ).toString();
 
@@ -240,16 +242,19 @@ void QgsCustomizationDialog::on_actionLoad_triggered( bool checked )
 
 void QgsCustomizationDialog::on_actionExpandAll_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   treeWidget->expandAll();
 }
 
 void QgsCustomizationDialog::on_actionCollapseAll_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   treeWidget->collapseAll();
 }
 
 void QgsCustomizationDialog::on_actionSelectAll_triggered( bool checked )
 {
+  Q_UNUSED( checked );
   QList<QTreeWidgetItem*> items = treeWidget->findItems( "*", Qt::MatchWildcard | Qt::MatchRecursive, 0 );
 
   QList<QTreeWidgetItem*>::iterator i;
@@ -348,8 +353,9 @@ QTreeWidgetItem * QgsCustomizationDialog::readWidgetsXmlNode( QDomNode theNode )
   return myItem;
 }
 
-bool QgsCustomizationDialog::switchWidget( QWidget * widget, QMouseEvent *event )
+bool QgsCustomizationDialog::switchWidget( QWidget *widget, QMouseEvent *e )
 {
+  Q_UNUSED( e );
   QgsDebugMsg( "Entered" );
   if ( !actionCatch->isChecked() )
     return false;
@@ -662,6 +668,10 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
         // hide individual toolbar actions
         foreach( QAction* action, tb->actions() )
         {
+          if ( action->objectName().isEmpty() )
+          {
+            continue;
+          }
           visible = mSettings.value( action->objectName(), true ).toBool();
           if ( !visible )
             tb->removeAction( action );
@@ -702,6 +712,10 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
       if ( obj->inherits( "QWidget" ) )
       {
         QWidget* widget = qobject_cast<QWidget*>( obj );
+        if ( widget->objectName().isEmpty() )
+        {
+          continue;
+        }
         bool visible = mSettings.value( widget->objectName(), true ).toBool();
         if ( !visible )
         {
@@ -726,6 +740,10 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
   foreach( QAction* action, menu->actions() )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
+    if ( objName.isEmpty() )
+    {
+      continue;
+    }
     bool visible = settings.value( objName, true ).toBool();
     if ( !visible )
       menu->removeAction( action );
@@ -752,6 +770,7 @@ void QgsCustomization::openDialog()
 
 void QgsCustomization::customizeWidget( QWidget * widget, QEvent * event )
 {
+  Q_UNUSED( event );
   // Test if the widget is child of QDialog
   if ( !widget->inherits( "QDialog" ) )
     return;
@@ -790,7 +809,7 @@ void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget )
     QString p = myPath + "/" + w->objectName();
 
     bool on = mySettings.value( p, true ).toBool();
-    QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
+    //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
     if ( on )
     {
       QgsCustomization::customizeWidget( myPath, w );
@@ -847,7 +866,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     }
     else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
-      QgsDebugMsg( "click" );
+      //QgsDebugMsg( "click" );
       if ( pDialog && pDialog->isVisible() )
       {
         QMouseEvent *e = static_cast<QMouseEvent*>( event );
@@ -863,7 +882,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     if ( pDialog && pDialog->isVisible() )
     {
       QKeyEvent *e = static_cast<QKeyEvent*>( event );
-      QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
+      //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
       if ( e->key() == Qt::Key_M && e->modifiers() == Qt::ControlModifier )
       {
         pDialog->setCatch( !pDialog->catchOn() );

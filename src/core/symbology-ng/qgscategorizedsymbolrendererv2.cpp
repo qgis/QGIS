@@ -117,9 +117,13 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForValue( QVariant value )
   if ( it == mSymbolHash.end() )
   {
     if ( mSymbolHash.count() == 0 )
+    {
       QgsDebugMsg( "there are no hashed symbols!!!" );
+    }
     else
-      QgsDebugMsg( "attribute value not found: " + value.toString() );
+    {
+      //QgsDebugMsg( "attribute value not found: " + value.toString() );
+    }
     return NULL;
   }
 
@@ -280,13 +284,27 @@ void QgsCategorizedSymbolRendererV2::stopRender( QgsRenderContext& context )
 
 QList<QString> QgsCategorizedSymbolRendererV2::usedAttributes()
 {
-  QList<QString> lst;
-  lst.append( mAttrName );
+  QSet<QString> attributes;
+  attributes.insert( mAttrName );
   if ( !mRotationField.isEmpty() )
-    lst.append( mRotationField );
+  {
+    attributes.insert( mRotationField );
+  }
   if ( !mSizeScaleField.isEmpty() )
-    lst.append( mSizeScaleField );
-  return lst;
+  {
+    attributes.insert( mSizeScaleField );
+  }
+
+  QgsCategoryList::const_iterator catIt = mCategories.constBegin();
+  for ( ; catIt != mCategories.constEnd(); ++catIt )
+  {
+    QgsSymbolV2* catSymbol = catIt->symbol();
+    if ( catSymbol )
+    {
+      attributes.unite( catSymbol->usedAttributes() );
+    }
+  }
+  return attributes.toList();
 }
 
 QString QgsCategorizedSymbolRendererV2::dump()

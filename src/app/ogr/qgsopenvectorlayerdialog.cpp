@@ -451,12 +451,14 @@ void QgsOpenVectorLayerDialog::on_btnEdit_clicked()
 
 void QgsOpenVectorLayerDialog::on_cmbDatabaseTypes_currentIndexChanged( const QString & text )
 {
+  Q_UNUSED( text );
   populateConnectionList();
   setSelectedConnectionType();
 }
 
 void QgsOpenVectorLayerDialog::on_cmbConnections_currentIndexChanged( const QString & text )
 {
+  Q_UNUSED( text );
   setSelectedConnection();
 }
 //********************end auto connected slots *****************/

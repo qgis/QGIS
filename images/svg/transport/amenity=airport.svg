@@ -86,7 +86,7 @@
      inkscape:groupmode="layer"
      sodipodi:insensitive="true">
     <rect
-       style="fill:#6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:param(fill) #6c7be1;fill-opacity:1;stroke:none;stroke-width:1;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect3946"
        width="16"
        height="16"

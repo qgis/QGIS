@@ -18,6 +18,7 @@
 #ifndef QGSPALGEOMETRY_H
 #define QGSPALGEOMETRY_H
 
+#include <qglobal.h>
 #include "palgeometry.h"
 
 class QgsOverlayObject;
@@ -34,10 +35,10 @@ class CORE_EXPORT QgsPALGeometry: public pal::PalGeometry
 
     //methods inherited from PalGeometry
     GEOSGeometry* getGeosGeometry();
-    void releaseGeosGeometry( GEOSGeometry *the_geom ) {}
+    void releaseGeosGeometry( GEOSGeometry *the_geom ) { Q_UNUSED( the_geom ); }
 
     /**Returns pointer to the overlay object this geometry referrs to. Don't delete the returned object!*/
-    QgsOverlayObject* overlayObjectPtr() const {return mOverlayObjectPtr;}
+    QgsOverlayObject* overlayObjectPtr() const { return mOverlayObjectPtr; }
 
   private:
     /**Default constructor forbidden*/

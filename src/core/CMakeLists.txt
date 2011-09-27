@@ -37,19 +37,26 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgsvectorcolorrampv2.cpp
   symbology-ng/qgsstylev2.cpp
   symbology-ng/qgssymbologyv2conversion.cpp
+  symbology-ng/qgssvgcache.cpp
+  symbology-ng/qgsellipsesymbollayerv2.cpp
 
   qgis.cpp
   qgsapplication.cpp
   qgsattributeaction.cpp
+  qgsbrowsermodel.cpp
   qgscentralpointpositionmanager.cpp
   qgsclipper.cpp
   qgscontexthelp.cpp
   qgscoordinatetransform.cpp
+  qgscrscache.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
+  qgsdbfilterproxymodel.cpp
+  qgsdbtablemodel.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgsexpression.cpp
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp
@@ -94,6 +101,7 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
@@ -163,7 +171,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   spatialindex/qgsspatialindex.cpp
-  
+
   )
 
 IF(WIN32)
@@ -213,15 +221,17 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
 
-ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
+ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
+  qgsbrowsermodel.h
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
+  qgsdbtablemodel.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h
@@ -262,12 +272,129 @@ SET(QGIS_CORE_MOC_HDRS
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 
+# install headers
+# install qgsconfig.h and plugin.h here so they can get into
+# the OS X framework target
+
+SET(QGIS_CORE_HDRS
+  ${CMAKE_BINARY_DIR}/qgsconfig.h
+  ../plugins/qgisplugin.h
+  ../plugins/qgsrendererplugin.h
+  qgis.h
+  qgsapplication.h
+  qgsattributeaction.h
+  qgscentralpointpositionmanager.h
+  qgsclipper.h
+  qgscontexthelp.h
+  qgscoordinatetransform.h
+  qgsdatasourceuri.h
+  qgsdataitem.h
+  qgsdistancearea.h
+  qgscsexception.h
+  qgsexception.h
+  qgsexpression.h
+  qgsfeature.h
+  qgsfield.h
+  qgsgeometry.h
+  qgshttptransaction.h
+  qgslabel.h
+  qgslabelattributes.h
+  qgslogger.h
+  qgsmaplayer.h
+  qgsmaplayerregistry.h
+  qgsmaprenderer.h
+  qgsmaptopixel.h
+  qgsmessageoutput.h
+  qgscredentials.h
+  qgsoverlayobjectpositionmanager.h
+  qgspallabeling.h
+  qgspalobjectpositionmanager.h
+  qgspluginlayer.h
+  qgspluginlayerregistry.h
+  qgspoint.h
+  qgsproject.h
+  qgsprojectfiletransform.h
+  qgsprojectproperty.h
+  qgsprojectversion.h
+  qgsprovidercountcalcevent.h
+  qgsproviderextentcalcevent.h
+  qgsprovidermetadata.h
+  qgsproviderregistry.h
+  qgspythonrunner.h
+  qgsrasterprojector.h
+  qgsrasterdataprovider.h
+  qgsrectangle.h
+  qgsrendercontext.h
+  qgsrunprocess.h
+  qgsscalecalculator.h
+  qgssearchstring.h
+  qgssearchtreenode.h
+  qgssnapper.h
+  qgscoordinatereferencesystem.h
+  qgsvectordataprovider.h
+  qgsvectorfilewriter.h
+  qgsvectorlayer.h
+  qgsvectorlayerimport.h
+  qgsvectoroverlay.h
+  qgstolerance.h
+
+  composer/qgslegendmodel.h
+  composer/qgscomposerlegenditem.h
+
+  raster/qgscliptominmaxenhancement.h
+  raster/qgscolorrampshader.h
+  raster/qgscolorrampshader.h
+  raster/qgscontrastenhancement.h
+  raster/qgscontrastenhancementfunction.h
+  raster/qgsfreakoutshader.h
+  raster/qgslinearminmaxenhancement.h
+  raster/qgslinearminmaxenhancementwithclip.h
+  raster/qgspseudocolorshader.h
+  raster/qgsrasterpyramid.h
+  raster/qgsrasterbandstats.h
+  raster/qgsrasterlayer.h
+  raster/qgsrastertransparency.h
+  raster/qgsrastershader.h
+  raster/qgsrastershaderfunction.h
+  raster/qgsrasterviewport.h
+
+  renderer/qgscontinuouscolorrenderer.h
+  renderer/qgsgraduatedsymbolrenderer.h
+  renderer/qgsrenderer.h
+  renderer/qgssinglesymbolrenderer.h
+  renderer/qgsuniquevaluerenderer.h
+
+  symbology/qgsmarkercatalogue.h
+  symbology/qgssymbol.h
+  symbology/qgssymbologyutils.h
+
+  symbology-ng/qgscategorizedsymbolrendererv2.h
+  symbology-ng/qgscolorbrewerpalette.h
+  symbology-ng/qgsfillsymbollayerv2.h
+  symbology-ng/qgsgraduatedsymbolrendererv2.h
+  symbology-ng/qgslinesymbollayerv2.h
+  symbology-ng/qgsmarkersymbollayerv2.h
+  symbology-ng/qgsrendererv2.h
+  symbology-ng/qgsrendererv2registry.h
+  symbology-ng/qgssinglesymbolrendererv2.h
+  symbology-ng/qgsstylev2.h
+  symbology-ng/qgssymbollayerv2.h
+  symbology-ng/qgssymbollayerv2registry.h
+  symbology-ng/qgssymbollayerv2utils.h
+  symbology-ng/qgssymbologyv2conversion.h
+  symbology-ng/qgssymbolv2.h
+  symbology-ng/qgsvectorcolorrampv2.h
+  qgsdiagramrendererv2.h
+
+  spatialindex/qgsspatialindex.h
+)
+
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} 
+  ${CMAKE_CURRENT_SOURCE_DIR}
   composer
   pal
-  raster 
-  renderer 
+  raster
+  renderer
   symbology
   spatialindex/include
   symbology-ng
@@ -322,9 +449,18 @@ PATH_PREFIX(INDEX_SRC spatialindex ${SPINDEX_SRC})
 #############################################################
 # qgis_core library
 
-ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC})
+ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
 
-SET_TARGET_PROPERTIES(qgis_core PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
+SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+  VERSION ${COMPLETE_VERSION}
+  SOVERSION ${COMPLETE_VERSION}
+  PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
+  CLEAN_DIRECT_OUTPUT 1
+  FRAMEWORK 1
+  FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+  MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+  MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_core)
 
 # make sure to create qgsversion.h before compiling
 ADD_DEPENDENCIES(qgis_core version)
@@ -340,12 +476,12 @@ IF(APPLE)
 ENDIF(APPLE)
 
 TARGET_LINK_LIBRARIES(qgis_core
-  ${QT_QTMAIN_LIBRARY} 
-  ${QT_QTXML_LIBRARY} 
-  ${QT_QTCORE_LIBRARY} 
-  ${QT_QTGUI_LIBRARY} 
-  ${QT_QTNETWORK_LIBRARY} 
-  ${QT_QTSVG_LIBRARY} 
+  ${QT_QTMAIN_LIBRARY}
+  ${QT_QTXML_LIBRARY}
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTGUI_LIBRARY}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTSVG_LIBRARY}
 
   ${PROJ_LIBRARY}
   ${GEOS_LIBRARY}
@@ -367,121 +503,18 @@ IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
 ENDIF (APPLE)
 
+# install
+
 INSTALL(TARGETS qgis_core
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR})
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
+# Mac dev frameworks
 
-# Added by Tim to install headers
-
-SET(QGIS_CORE_HDRS
-  qgis.h
-  qgsapplication.h
-  qgsattributeaction.h
-  qgscentralpointpositionmanager.h
-  qgsclipper.h
-  qgscontexthelp.h
-  qgscoordinatetransform.h
-  qgsdatasourceuri.h
-  qgsdataitem.h
-  qgsdistancearea.h
-  qgscsexception.h
-  qgsexception.h
-  qgsfeature.h
-  qgsfield.h
-  qgsgeometry.h
-  qgshttptransaction.h
-  qgslabel.h
-  qgslabelattributes.h
-  qgslogger.h
-  qgsmaplayer.h
-  qgsmaplayerregistry.h
-  qgsmaprenderer.h
-  qgsmaptopixel.h
-  qgsmessageoutput.h
-  qgscredentials.h
-  qgsoverlayobjectpositionmanager.h
-  qgspallabeling.h
-  qgspalobjectpositionmanager.h
-  qgspluginlayer.h
-  qgspluginlayerregistry.h
-  qgspoint.h
-  qgsproject.h
-  qgsprojectfiletransform.h
-  qgsprojectproperty.h
-  qgsprojectversion.h
-  qgsprovidercountcalcevent.h
-  qgsproviderextentcalcevent.h
-  qgsprovidermetadata.h
-  qgsproviderregistry.h
-  qgspythonrunner.h
-  qgsrasterprojector.h
-  qgsrasterdataprovider.h
-  qgsrectangle.h
-  qgsrendercontext.h
-  qgsrunprocess.h
-  qgsscalecalculator.h
-  qgssearchstring.h
-  qgssearchtreenode.h
-  qgssnapper.h
-  qgscoordinatereferencesystem.h
-  qgsvectordataprovider.h
-  qgsvectorfilewriter.h
-  qgsvectorlayer.h
-  qgsvectoroverlay.h
-  qgstolerance.h
-
-  composer/qgslegendmodel.h
-  composer/qgscomposerlegenditem.h
-
-  raster/qgscliptominmaxenhancement.h
-  raster/qgscolorrampshader.h
-  raster/qgscolorrampshader.h
-  raster/qgscontrastenhancement.h
-  raster/qgscontrastenhancementfunction.h
-  raster/qgsfreakoutshader.h
-  raster/qgslinearminmaxenhancement.h
-  raster/qgslinearminmaxenhancementwithclip.h
-  raster/qgspseudocolorshader.h
-  raster/qgsrasterpyramid.h
-  raster/qgsrasterbandstats.h
-  raster/qgsrasterlayer.h
-  raster/qgsrastertransparency.h
-  raster/qgsrastershader.h
-  raster/qgsrastershaderfunction.h
-  raster/qgsrasterviewport.h
-  
-  renderer/qgscontinuouscolorrenderer.h
-  renderer/qgsgraduatedsymbolrenderer.h
-  renderer/qgsrenderer.h
-  renderer/qgssinglesymbolrenderer.h
-  renderer/qgsuniquevaluerenderer.h
-
-  symbology/qgsmarkercatalogue.h
-  symbology/qgssymbol.h
-  symbology/qgssymbologyutils.h
-
-  symbology-ng/qgscategorizedsymbolrendererv2.h
-  symbology-ng/qgscolorbrewerpalette.h
-  symbology-ng/qgsfillsymbollayerv2.h
-  symbology-ng/qgsgraduatedsymbolrendererv2.h
-  symbology-ng/qgslinesymbollayerv2.h
-  symbology-ng/qgsmarkersymbollayerv2.h
-  symbology-ng/qgsrendererv2.h
-  symbology-ng/qgsrendererv2registry.h
-  symbology-ng/qgssinglesymbolrendererv2.h
-  symbology-ng/qgsstylev2.h
-  symbology-ng/qgssymbollayerv2.h
-  symbology-ng/qgssymbollayerv2registry.h
-  symbology-ng/qgssymbollayerv2utils.h
-  symbology-ng/qgssymbologyv2conversion.h
-  symbology-ng/qgssymbolv2.h
-  symbology-ng/qgsvectorcolorrampv2.h
-  qgsdiagramrendererv2.h
-
-  spatialindex/qgsspatialindex.h
-)
-
-INSTALL(CODE "MESSAGE(\"Installing CORE headers...\")")
-INSTALL(FILES ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
+IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  INSTALL(TARGETS qgis_core FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/qgis_core\")")
+ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)

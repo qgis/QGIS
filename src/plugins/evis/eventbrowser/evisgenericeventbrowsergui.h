@@ -116,7 +116,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     QString mEventImagePath;
 
     /** \brief List of current select featured ids*/
-    QList<int> mFeatureIds;
+    QList<QgsFeatureId> mFeatureIds;
 
     /** \brief Index of selected feature being viewed, used to access mFeatureIds */
     int mCurrentFeatureIndex;
@@ -135,7 +135,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     void displayImage( );
 
     /** \brief Generic method to get a feature by id. Access mLocalFeatureList when layer is of type delimitedtext otherwise calls existing methods in mDataProvider */
-    QgsFeature* featureAtId( int );
+    QgsFeature* featureAtId( QgsFeatureId );
 
     /** \brief Functionality common to both constructors */
     bool initBrowser( );

@@ -407,7 +407,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         ~Rule();
         QString dump() const;
         QStringList needsFields() const;
-        bool isFilterOK( const QgsFieldMap& fields, QgsFeature& f ) const;
+        bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol();
@@ -415,6 +415,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         int scaleMinDenom() const;
         int scaleMaxDenom() const;
         QString filterExpression() const;
+        QgsExpression* filter() const;
 
         void setScaleMinDenom( int scaleMinDenom );
         void setScaleMaxDenom( int scaleMaxDenom );
@@ -626,6 +627,9 @@ class QgsSymbolV2RenderContext
     //! @note added in 1.5
     void setRenderHints( int hints );
 
+    void setFeature( const QgsFeature* f );
+    const QgsFeature* feature() const;
+
     // Color used for selections
     static QColor selectionColor();
 
@@ -759,7 +763,7 @@ public:
   void setSize(double size);
   double size();
 
-  void renderPoint(const QPointF& point, QgsRenderContext& context, int layer = -1, bool selected = false );
+  void renderPoint(const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
@@ -784,7 +788,7 @@ public:
   void setWidth(double width);
   double width();
 
-  void renderPolyline(const QPolygonF& points, QgsRenderContext& context, int layer = -1, bool selected = false );
+  void renderPolyline(const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
@@ -807,7 +811,7 @@ public:
   QgsFillSymbolV2(QgsSymbolLayerV2List layers /Transfer/ = QgsSymbolLayerV2List());
 
   void setAngle( double angle );
-  void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer = -1, bool selected = false );
+  void renderPolygon(const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer = -1, bool selected = false );
 
   virtual QgsSymbolV2* clone() const /Factory/;
 };
@@ -839,7 +843,7 @@ class QgsSymbolLayerV2AbstractMetadata
     /** create a symbol layer of this type given the map of properties. */
     virtual QgsSymbolLayerV2* createSymbolLayer( const QgsStringMap& map ) = 0 /Factory/;
     /** create widget for symbol layer of this type. Can return NULL if there's no GUI */
-    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget() /Factory/;
+    virtual QgsSymbolLayerV2Widget* createSymbolLayerWidget( const QgsVectorLayer* vl ) /Factory/;
 };
 
 //////////

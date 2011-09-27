@@ -1184,40 +1184,46 @@ void QgsGrassProvider::updateMap( int mapId )
 
 void QgsGrassProvider::closeMap( int mapId )
 {
-  QgsDebugMsg( QString( "Close map %1 nUsers = %2" ).arg( mapId ).arg( mMaps[mapId].nUsers ) );
+  GMAP *map = &mMaps[mapId];
+  QgsDebugMsg( QString( "Close map %1 nUsers = %2" ).arg( mapId ).arg( map->nUsers ) );
 
   // TODO: not tested because delete is never used for providers
-  mMaps[mapId].nUsers--;
+  map->nUsers--;
 
-  if ( mMaps[mapId].nUsers == 0 )   // No more users, free sources
+  if ( map->nUsers == 0 )   // No more users, free sources
   {
     QgsDebugMsg( "No more users -> delete map" );
 
     // TODO: do this better, probably maintain QgsGrassEdit as one user
-    if ( mMaps[mapId].update )
+    if ( map->update )
     {
       QMessageBox::warning( 0, "Warning", "The vector was currently edited, "
                             "you can expect crash soon." );
     }
 
-    if ( mMaps[mapId].valid )
+    if ( map->valid )
     {
       bool mapsetunset = !G__getenv( "MAPSET" ) || !*G__getenv( "MAPSET" );
       if ( mapsetunset )
-        G__setenv(( char * )"MAPSET", mMaps[mapId].mapset.toUtf8().data() );
-      try
+        G__setenv(( char * )"MAPSET", map->mapset.toUtf8().data() );
+
+      if ( !map->frozen )
       {
-        Vect_close( mMaps[mapId].map );
+        try
+        {
+          Vect_close( map->map );
+        }
+        catch ( QgsGrass::Exception &e )
+        {
+          Q_UNUSED( e );
+          QgsDebugMsg( QString( "Vect_close failed: %1" ).arg( e.what() ) );
+        }
       }
-      catch ( QgsGrass::Exception &e )
-      {
-        Q_UNUSED( e );
-        QgsDebugMsg( QString( "Vect_close failed: %1" ).arg( e.what() ) );
-      }
+
       if ( mapsetunset )
         G__setenv(( char * )"MAPSET", "" );
     }
-    mMaps[mapId].valid = false;
+    map->valid = false;
   }
 }
 

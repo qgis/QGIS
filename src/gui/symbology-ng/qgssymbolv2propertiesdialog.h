@@ -7,6 +7,7 @@
 class QgsSymbolV2;
 class QgsSymbolLayerV2;
 class QgsSymbolLayerV2Widget;
+class QgsVectorLayer;
 
 class SymbolLayerItem;
 
@@ -18,7 +19,7 @@ class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSy
     Q_OBJECT
 
   public:
-    QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, QWidget* parent = NULL );
+    QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent = NULL );
 
 
   public slots:
@@ -64,6 +65,8 @@ class GUI_EXPORT QgsSymbolV2PropertiesDialog : public QDialog, private Ui::DlgSy
     QgsSymbolV2* mSymbol;
 
     QMap<QString, QgsSymbolLayerV2Widget*> mWidgets;
+
+    const QgsVectorLayer* mVectorLayer;
 };
 
 #endif

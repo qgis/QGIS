@@ -3,89 +3,13 @@
 #   so we configure it first to do substitutions
 #   make sure to use @varname@
 
-MESSAGE (STATUS "Bundling frameworks is not functional yet, skipping...")
+MESSAGE (STATUS "Bundling other frameworks is not functional yet, skipping...")
 
 # kill boolean warnings
 CMAKE_POLICY (SET CMP0012 NEW)
 
-SET (QAPPDIRC "$ENV{DESTDIR}@QGIS_MACAPP_PREFIX@")
-SET (QAPPDIR "$ENV{DESTDIR}@CMAKE_INSTALL_PREFIX@")
-SET (QFWDIR "${QAPPDIR}/@QGIS_FW_SUBDIR@")
-SET (QBINDIR "${QAPPDIR}/@QGIS_BIN_SUBDIR@")
-SET (QCGIDIR "${QAPPDIR}/@QGIS_CGIBIN_SUBDIR@")
-SET (QLIBDIR "${QAPPDIR}/@QGIS_LIB_SUBDIR@")
-SET (QLIBXDIR "${QAPPDIR}/@QGIS_LIBEXEC_SUBDIR@")
-SET (QDATADIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@")
-SET (QPLUGDIR "${QAPPDIR}/@QGIS_PLUGIN_SUBDIR@")
-SET (QGISPYDIR "${QAPPDIR}/@QGIS_DATA_SUBDIR@/python")
-# Qt framework version is major version
-SET (QT_FWVER @QT_VERSION_MAJOR@)
-
-# so config-file doesn't try to replace @
-SET (ATEXECUTABLE "@executable_path")
-SET (ATLOADER "@loader_path")
-
+INCLUDE (@CMAKE_BINARY_DIR@/mac/0vars.cmake)
 INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
-
-FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
-    IF (LIBFROM)
-        SET (LIB_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/${LIBTO}")
-        # app - always @executable_path
-        INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QAPPDIR}/Qgis")
-        # qgis_help - doesn't link anything else than Qt/Qgis
-        # qgis-mapserver
-        IF (@WITH_MAPSERVER@)
-            IF (@OSX_HAVE_LOADERPATH@)
-                SET (LIB_CHG_TO "${ATEXECUTABLE}/@QGIS_CGIBIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
-            ENDIF (@OSX_HAVE_LOADERPATH@)
-            INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QCGIDIR}/qgis_mapserv.fcgi")
-        ENDIF ()
-        # libs
-        IF (@OSX_HAVE_LOADERPATH@)
-            SET (LIB_CHG_TO "${ATLOADER}/@QGIS_LIB_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
-        ENDIF (@OSX_HAVE_LOADERPATH@)
-        FOREACH (QL ${QGLIBLIST})
-            INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QL}")
-        ENDFOREACH (QL)
-        # GRASS libexec stuff
-        #IF (EXISTS "${QLIBXDIR}/grass/bin/qgis.g.browser")
-        #   IF (@OSX_HAVE_LOADERPATH@)
-        #       SET (LIB_CHG_TO "${ATLOADER}/../../@QGIS_LIBEXEC_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
-        #   ENDIF (@OSX_HAVE_LOADERPATH@)
-        #   INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QLIBXDIR}/grass/bin/qgis.g.browser")
-        #ENDIF ()
-        # plugins
-        IF (@OSX_HAVE_LOADERPATH@)
-            SET (LIB_CHG_TO "${ATLOADER}/@QGIS_PLUGIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
-        ENDIF (@OSX_HAVE_LOADERPATH@)
-        FOREACH (QP ${QGPLUGLIST})
-            INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QP}")
-        ENDFOREACH (QP)
-        # qgis python
-        IF (@OSX_HAVE_LOADERPATH@)
-            SET (LIB_CHG_TO "${ATLOADER}/../../@QGIS_DATA_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
-        ENDIF (@OSX_HAVE_LOADERPATH@)
-        FOREACH (PG ${QGPYLIST})
-            INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${PG}")
-        ENDFOREACH (PG)
-        # bin - nothing yet
-        #IF (@OSX_HAVE_LOADERPATH@)
-        #    SET (LIB_CHG_TO "${ATLOADER}/@QGIS_BIN_SUBDIR_REV@/@QGIS_LIB_SUBDIR@/${LIBTO}")
-        #ENDIF (@OSX_HAVE_LOADERPATH@)
-        #FOREACH (PB ...)
-        #    INSTALLNAMETOOL_CHANGE (${LIBFROM} ${LIB_CHG_TO} "${QBINDIR}/${PB}")
-        #ENDFOREACH (PB)
-    ENDIF (LIBFROM)
-ENDFUNCTION (UPDATEQGISPATHS)
-
-# arches
-FOREACH (QARCH @CMAKE_OSX_ARCHITECTURES@)
-    SET (QARCHS ${QARCHS} "--arch" "${QARCH}")
-ENDFOREACH (QARCH)
-
-FILE (GLOB QGLIBLIST ${QLIBDIR}/libqgis*.dylib)
-FILE (GLOB QGPLUGLIST ${QPLUGDIR}/*.so)
-FILE (GLOB QGPYLIST ${QGISPYDIR}/qgis/*.so)
 
 # 
 

@@ -22,8 +22,9 @@ void QgsLabelPreview::setBuffer( double size, QColor color )
   update();
 }
 
-void QgsLabelPreview::paintEvent( QPaintEvent* e )
+void QgsLabelPreview::paintEvent( QPaintEvent *e )
 {
+  Q_UNUSED( e );
   QPainter p( this );
 
   p.setRenderHint( QPainter::Antialiasing );

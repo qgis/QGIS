@@ -35,6 +35,7 @@ QgsGrassAttributesKeyPress::~QgsGrassAttributesKeyPress() {}
 
 bool QgsGrassAttributesKeyPress::eventFilter( QObject *o, QEvent *e )
 {
+  Q_UNUSED( o );
   if ( e->type() == QEvent::KeyPress )
   {
     QKeyEvent *k = ( QKeyEvent * )e;
@@ -55,6 +56,7 @@ QgsGrassAttributes::QgsGrassAttributes( QgsGrassEdit *edit, QgsGrassProvider *pr
                                         QWidget * parent, const char * name, Qt::WFlags f )
     : QDialog( parent, f ), QgsGrassAttributesBase()
 {
+  Q_UNUSED( name );
   QgsDebugMsg( "QgsGrassAttributes()" );
 
   setupUi( this );
@@ -324,6 +326,7 @@ void QgsGrassAttributes::clear( )
 
 void QgsGrassAttributes::tabChanged( int index )
 {
+  Q_UNUSED( index );
   QgsDebugMsg( "entered." );
 
   resultLabel->setText( "" );
@@ -350,6 +353,7 @@ void QgsGrassAttributes::resetButtons( )
 
 void QgsGrassAttributes::columnSizeChanged( int section, int oldSize, int newSize )
 {
+  Q_UNUSED( oldSize );
   QSettings settings;
   QString path = "/GRASS/windows/attributes/columnWidth/"
                  + QString::number( section );

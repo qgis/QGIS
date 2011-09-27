@@ -12,7 +12,8 @@ class QgsSearchTreeNode
       tOperator = 1,
       tNumber,
       tColumnRef,
-      tString
+      tString,
+      tNodeList,
     };
 
     //! possible operators
@@ -27,6 +28,7 @@ class QgsSearchTreeNode
       opPLUS,
       opMINUS,
       opMUL,
+      opMOD,
       opDIV,
       opPOW,
       opSQRT,
@@ -36,31 +38,50 @@ class QgsSearchTreeNode
       opASIN,
       opACOS,
       opATAN,
+      opATAN2,
 
       // conversion
       opTOINT,
       opTOREAL,
       opTOSTRING,
 
+      // coordinates
+      opX,
+      opY,
+      opXAT,
+      opYAT,
+
       // measuring
       opLENGTH,
       opAREA,
+      opPERIMETER,
 
       // feature id
       opID,
 
       // comparison
-      opEQ,   // =
-      opNE,   // != resp. <>
-      opGT,   // >
-      opLT,   // <
-      opGE,   // >=
-      opLE,   // <=
-      opRegexp, // ~
-      opLike,  // LIKE
+      opISNULL,     // IS NULL
+      opISNOTNULL,  // IS NOT NULL
+      opEQ,         // =
+      opNE,         // != resp. <>
+      opGT,         // >
+      opLT,         // <
+      opGE,         // >=
+      opLE,         // <=
+      opRegexp,     // ~
+      opLike,       // LIKE
+      opILike,      // ILIKE
+      opIN,         // IN
+      opNOTIN,      // NOT IN
 
       // string handling
       opCONCAT,
+      opLOWER,
+      opUPPER,
+      opREPLACE,
+      opREGEXPREPLACE,
+      opSTRLEN,
+      opSUBSTR,
 
       opROWNUM
     };
@@ -177,8 +198,8 @@ class QgsSearchTreeValue
     QgsSearchTreeValue( double number );
     QgsSearchTreeValue( int error, QString errorMsg );
 
-    static int compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
-                        Qt::CaseSensitivity = Qt::CaseSensitive );
+    static QgsSearchTreeValue compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2,
+                                       Qt::CaseSensitivity = Qt::CaseSensitive );
 
     bool isNumeric();
     bool isError();

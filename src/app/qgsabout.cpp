@@ -216,19 +216,22 @@ void QgsAbout::init()
     QgsDebugMsg( QString( "translatorHTML:%1" ).arg( translatorHTML.toAscii().constData() ) );
     QgsDebugMsg( QString( "txtTranslators:%1" ).arg( txtTranslators->toHtml().toAscii().constData() ) );
   }
+  setWhatsNew();
 }
 
 void QgsAbout::setVersion( QString v )
 {
-  lblVersion->setText( v );
+  txtVersion->setBackgroundRole( QPalette::NoRole );
+  txtVersion->setAutoFillBackground( true );
+  txtVersion->setHtml( v );
 }
 
-void QgsAbout::setWhatsNew( QString txt )
+void QgsAbout::setWhatsNew( )
 {
   QString myStyle = QgsApplication::reportStyleSheet();
   txtWhatsNew->clear();
   txtWhatsNew->document()->setDefaultStyleSheet( myStyle );
-  txtWhatsNew->setHtml( txt );
+  txtWhatsNew->setSource( "file:///" + QgsApplication::pkgDataPath() + "/doc/changelog.html" );
 }
 
 void QgsAbout::setPluginInfo()

@@ -42,6 +42,7 @@ QString QgsNumericScaleBarStyle::name() const
 
 void QgsNumericScaleBarStyle::draw( QPainter* p, double xOffset ) const
 {
+  Q_UNUSED( xOffset );
   if ( !p || !mScaleBar )
   {
     return;

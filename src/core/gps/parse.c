@@ -75,11 +75,22 @@ int _nmea_parse_time( const char *buff, int buff_sz, nmeaTIME *res )
                                  ) );
       break;
     case sizeof( "hhmmss.s" ) - 1:
+      success = ( 4 == nmea_scanf( buff, buff_sz,
+                                   "%2d%2d%2d.%d", &( res->hour ), &( res->min ), &( res->sec ), &( res->msec )
+                                 ) );
+      res->msec = res->msec * 100;   // tenths sec * 100 = thousandths
+      break;
     case sizeof( "hhmmss.ss" ) - 1:
+      success = ( 4 == nmea_scanf( buff, buff_sz,
+                                   "%2d%2d%2d.%d", &( res->hour ), &( res->min ), &( res->sec ), &( res->msec )
+                                 ) );
+      res->msec = res->msec * 10;   // hundredths sec * 10 = thousandths
+      break;
     case sizeof( "hhmmss.sss" ) - 1:
       success = ( 4 == nmea_scanf( buff, buff_sz,
-                                   "%2d%2d%2d.%d", &( res->hour ), &( res->min ), &( res->sec ), &( res->hsec )
+                                   "%2d%2d%2d.%d", &( res->hour ), &( res->min ), &( res->sec ), &( res->msec )
                                  ) );
+      // already thousandths
       break;
     default:
       nmea_error( "Parse of time error (format error)!" );
@@ -380,7 +391,7 @@ void nmea_GPGGA2info( nmeaGPGGA *pack, nmeaINFO *info )
   info->utc.hour = pack->utc.hour;
   info->utc.min = pack->utc.min;
   info->utc.sec = pack->utc.sec;
-  info->utc.hsec = pack->utc.hsec;
+  info->utc.msec = pack->utc.msec;
   info->sig = pack->sig;
   info->HDOP = pack->HDOP;
   info->elv = pack->elv;

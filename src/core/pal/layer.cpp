@@ -262,6 +262,11 @@ namespace pal
 
     // break the (possibly multi-part) geometry into simple geometries
     LinkedList <const GEOSGeometry*> *simpleGeometries = unmulti( the_geom );
+    if ( simpleGeometries == NULL ) // unmulti() failed?
+    {
+      modMutex->unlock();
+      throw InternalException::UnknownGeometry();
+    }
 
     while ( simpleGeometries->size() > 0 )
     {
@@ -277,7 +282,10 @@ namespace pal
       int type = GEOSGeomTypeId( geom );
 
       if ( type != GEOS_POINT && type != GEOS_LINESTRING && type != GEOS_POLYGON )
+      {
+        modMutex->unlock();
         throw InternalException::UnknownGeometry();
+      }
 
       FeaturePart* fpart = new FeaturePart( f, geom );
 

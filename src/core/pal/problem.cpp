@@ -506,7 +506,8 @@ namespace pal
     {
       it++;
       /* find the next seed not ok */
-      for ( i = ( seed + 1 ) % nbft; ok[i] && i != seed; i = ( i + 1 ) % nbft );
+      for ( i = ( seed + 1 ) % nbft; ok[i] && i != seed; i = ( i + 1 ) % nbft )
+        ;
 
       if ( i == seed && ok[seed] )
       {
@@ -2693,7 +2694,8 @@ namespace pal
 
       for ( seed = ( iter + 1 ) % nbft;
             ok[seed] && seed != iter;
-            seed = ( seed + 1 ) % nbft );
+            seed = ( seed + 1 ) % nbft )
+        ;
 
       // All seeds are OK
       if ( seed == iter )

@@ -67,19 +67,6 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
-       <item row="1" column="0">
-        <widget class="QLabel" name="lblVersion">
-         <property name="text">
-          <string>Version</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
        <item row="2" column="0">
         <spacer>
          <property name="orientation">
@@ -153,6 +140,19 @@ p, li { white-space: pre-wrap; }
          </item>
         </layout>
        </item>
+       <item row="1" column="0">
+        <widget class="QTextEdit" name="txtVersion">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
       </layout>
      </widget>
      <widget class="QWidget" name="Widget3">
@@ -161,20 +161,7 @@ p, li { white-space: pre-wrap; }
       </attribute>
       <layout class="QGridLayout">
        <item row="0" column="0">
-        <widget class="QTextEdit" name="txtWhatsNew">
-         <property name="focusPolicy">
-          <enum>Qt::NoFocus</enum>
-         </property>
-         <property name="acceptDrops">
-          <bool>false</bool>
-         </property>
-         <property name="lineWidth">
-          <number>2</number>
-         </property>
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-        </widget>
+        <widget class="QTextBrowser" name="txtWhatsNew"/>
        </item>
       </layout>
      </widget>
@@ -263,6 +250,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>lstContributors</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
  </resources>
  <connections>

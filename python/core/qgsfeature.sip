@@ -4,10 +4,10 @@
 typedef QMap<int, QVariant> QgsAttributeMap;
 
 // key = feature id, value = changed attributes
-typedef QMap<int, QMap<int, QVariant> > QgsChangedAttributesMap;
+typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
 
 // key = feature id, value = changed geometry
-typedef QMap<int, QgsGeometry> QgsGeometryMap;
+typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
 
 // key = field index, value = field name
 typedef QMap<int, QString> QgsFieldNameMap;
@@ -50,7 +50,7 @@ class QgsFeature
 %End
 
     //! Constructor
-    QgsFeature(int id = 0, QString typeName = "" );
+    QgsFeature(qint64 id = 0, QString typeName = "" );
 
     /** copy ctor needed due to internal pointer */
     QgsFeature(const QgsFeature & rhs );
@@ -63,13 +63,13 @@ class QgsFeature
      * Get the feature id for this feature
      * @return Feature id
      */
-    int id() const;
+    qint64 id() const;
 
     /**
      * Set the feature id for this feature
      * @param id Feature id
      */
-     void setFeatureId(int id);
+    void setFeatureId(qint64 id);
 
 
     /** returns the feature's type name

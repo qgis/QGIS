@@ -127,7 +127,8 @@ class ShapefileTableDelegate : public QItemDelegate
 
   public:
     ShapefileTableDelegate( QObject *parent, QStringList& schema_list ) :
-        mSchemaList( schema_list ) {}
+        mSchemaList( schema_list )
+    { Q_UNUSED( parent ); }
 
     QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option,
                            const QModelIndex &index ) const;

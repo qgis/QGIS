@@ -51,6 +51,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mItemFontButton_clicked();
     void on_mBoxSpaceSpinBox_valueChanged( double d );
     void on_mCheckBoxAutoUpdate_stateChanged( int state );
+    void on_mMapComboBox_currentIndexChanged( int index );
 
     //item manipulation
     void on_mMoveDownToolButton_clicked();
@@ -62,6 +63,9 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mUpdateAllPushButton_clicked();
     void on_mAddGroupButton_clicked();
 
+  protected:
+    void showEvent( QShowEvent * event );
+
   private slots:
     /**Sets GUI according to state of mLegend*/
     void setGuiElements();
@@ -69,6 +73,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
   private:
     QgsComposerLegendWidget();
     void blockAllSignals( bool b );
+    void refreshMapComboBox();
 
 
     QgsComposerLegend* mLegend;

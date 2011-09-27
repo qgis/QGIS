@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include <QPainter>
-#include <QSvgRenderer>
 
 #include "qgsgpsmarker.h"
 #include "qgscoordinatetransform.h"
@@ -27,6 +26,11 @@ QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
 {
   mSize = 16;
   mWgs84CRS.createFromOgcWmsCrs( "EPSG:4326" );
+  mSvg.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) );
+  if ( ! mSvg.isValid() )
+  {
+    qDebug( "GPS marker not found!" );
+  }
 }
 
 void QgsGpsMarker::setSize( int theSize )
@@ -60,14 +64,18 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
 
 void QgsGpsMarker::paint( QPainter* p )
 {
-  QSvgRenderer mySVG;
-  if ( !mySVG.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) ) )
+  if ( ! mSvg.isValid() )
   {
-    qDebug( "GPS marker not found!" );
     return;
   }
+
+  // this needs to be done when the canvas is repainted to make for smoother map rendering
+  // if not done the map could be panned, but the cursor position won't be updated until the next valid GPS fix is received
+  QPointF pt = toCanvasCoordinates( mCenter );
+  setPos( pt );
+
   float myHalfSize = mSize / 2.0;
-  mySVG.render( p, QRectF( 0 - myHalfSize , 0 - myHalfSize, mSize, mSize ) );
+  mSvg.render( p, QRectF( 0 - myHalfSize , 0 - myHalfSize, mSize, mSize ) );
 }
 
 

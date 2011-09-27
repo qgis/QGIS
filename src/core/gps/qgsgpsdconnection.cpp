@@ -41,7 +41,7 @@ void QgsGpsdConnection::connected()
 {
   QgsDebugMsg( "connected!" );
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
-  socket->write( QString( "?WATCH={\"enable\":true,\"nmea\":true%1};" ).arg( mDevice.isEmpty() ? mDevice : QString( ",\"device\":%1" ).arg( mDevice ) ).toUtf8() );
+  socket->write( QString( "?WATCH={\"enable\":true,\"raw\":true%1};" ).arg( mDevice.isEmpty() ? mDevice : QString( ",\"device\":%1" ).arg( mDevice ) ).toUtf8() );
 }
 
 void QgsGpsdConnection::error( QAbstractSocket::SocketError socketError )
@@ -49,5 +49,7 @@ void QgsGpsdConnection::error( QAbstractSocket::SocketError socketError )
 #if QGISDEBUG
   QTcpSocket *socket = qobject_cast< QTcpSocket * >( mSource );
   QgsDebugMsg( QString( "error: %1 %2" ).arg( socketError ).arg( socket->errorString() ) );
+#else
+  Q_UNUSED( socketError );
 #endif
 }

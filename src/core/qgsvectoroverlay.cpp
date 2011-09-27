@@ -30,7 +30,7 @@ QgsVectorOverlay::~QgsVectorOverlay()
 
 void QgsVectorOverlay::removeOverlayObjects()
 {
-  QMap<int, QgsOverlayObject*>::iterator it = mOverlayObjects.begin();
+  QMap<QgsFeatureId, QgsOverlayObject*>::iterator it = mOverlayObjects.begin();
   for ( ; it != mOverlayObjects.end(); ++it )
   {
     delete( it.value() );

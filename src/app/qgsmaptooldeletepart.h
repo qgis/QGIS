@@ -42,7 +42,7 @@ class QgsMapToolDeletePart: public QgsMapToolVertexEdit
     QgsVertexMarker* mCross;
 
     //! delete part of a geometry
-    void deletePart( int fId, int beforeVertexNr, QgsVectorLayer* vlayer );
+    void deletePart( QgsFeatureId fId, int beforeVertexNr, QgsVectorLayer* vlayer );
 
     //! find out part number of geometry given the snapped vertex number
     int partNumberOfVertex( QgsGeometry* g, int beforeVertexNr );

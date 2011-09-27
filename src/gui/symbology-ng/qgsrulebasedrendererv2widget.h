@@ -78,6 +78,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void addRule();
     void editRule();
     void removeRule();
+    void increasePriority();
+    void decreasePriority();
 
     void setGrouping();
 
@@ -85,12 +87,24 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void refineRuleCategories();
     void refineRuleRanges();
 
+    void usingFirstRuleChanged( );
+    void symbolLevelsEnabledChanged();
+    void forceNoSymbolLevels();
+    void forceUsingFirstRule();
+
+  signals:
+
+    void forceChkUsingFirstRule();
+
   protected:
 
     void refineRule( int type );
     QList<QgsRuleBasedRendererV2::Rule> refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule& initialRule );
     QList<QgsRuleBasedRendererV2::Rule> refineRuleRangesGui( QgsRuleBasedRendererV2::Rule& initialRule );
     QList<QgsRuleBasedRendererV2::Rule> refineRuleScalesGui( QgsRuleBasedRendererV2::Rule& initialRule );
+
+    QList<QgsSymbolV2*> selectedSymbols();
+    void refreshSymbolView();
 
     QgsRuleBasedRendererV2* mRenderer;
 

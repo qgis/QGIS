@@ -52,7 +52,7 @@ int QgsAttributeTableDelegate::fieldIdx( const QModelIndex &index ) const
   return -1;
 }
 
-int QgsAttributeTableDelegate::featureId( const QModelIndex &index ) const
+QgsFeatureId QgsAttributeTableDelegate::featureId( const QModelIndex &index ) const
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( index.model() );
   if ( tm )
@@ -71,6 +71,7 @@ QWidget *QgsAttributeTableDelegate::createEditor(
   const QStyleOptionViewItem &option,
   const QModelIndex &index ) const
 {
+  Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
     return NULL;
@@ -101,7 +102,7 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
     return;
 
   int idx = fieldIdx( index );
-  int fid = featureId( index );
+  QgsFeatureId fid = featureId( index );
 
   QVariant value;
   if ( !QgsAttributeEditor::retrieveValue( editor, vl, idx, value ) )

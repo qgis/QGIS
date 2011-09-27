@@ -125,8 +125,12 @@ class CORE_EXPORT QgsComposerRasterSymbolItem: public QgsComposerLegendItem
     QString layerID() const { return mLayerID; }
     ItemType itemType() const { return RasterSymbolItem; }
 
+    void setColor( const QColor& c ) { mColor = c; }
+    QColor color() const { return mColor; }
+
   private:
     QString mLayerID;
+    QColor mColor;
 };
 
 class CORE_EXPORT QgsComposerLayerItem: public QgsComposerLegendItem

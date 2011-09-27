@@ -56,7 +56,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         self.ur=plugin.undoredo
 
         self.urlHost = "api.openstreetmap.org"
-        self.uploadButton = self.buttonBox.addButton("Upload", QDialogButtonBox.ActionRole)
+        self.uploadButton = self.buttonBox.addButton(self.tr("Upload"), QDialogButtonBox.ActionRole)
 
         self.uploadChangesTable.setColumnCount(5)
         self.uploadChangesTable.setColumnWidth(0,80)
@@ -1079,7 +1079,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.pseudoId_map[requestId]
 
         if error:
-            self.cancelUpload("Node addition failed.")
+            self.cancelUpload( self.tr("Node addition failed.") )
             return
 
         newNodeIdStr=QString(self.http.readAll().data())
@@ -1119,7 +1119,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.featureId_map[requestId]
 
         if error:
-            self.cancelUpload("Node update failed.")
+            self.cancelUpload(self.tr("Node update failed."))
             return
 
         newVersionIdStr=QString(self.http.readAll().data())
@@ -1158,7 +1158,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.featureId_map[requestId]
 
         if error:
-            self.cancelUpload("Node deletion failed.")
+            self.cancelUpload(self.tr("Node deletion failed."))
             return
 
         self.dbm.removePointRecord(pointId)
@@ -1194,7 +1194,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.pseudoId_map[requestId]
 
         if error:
-            self.cancelUpload("Way addition failed.")
+            self.cancelUpload(self.tr("Way addition failed."))
             return
 
         newWayIdStr = QString(self.http.readAll().data())
@@ -1234,7 +1234,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.featureId_map[requestId]
 
         if error:
-            self.cancelUpload("Way update failed.")
+            self.cancelUpload(self.tr("Way update failed."))
             return
 
         newVersionIdStr=QString(self.http.readAll().data())
@@ -1273,7 +1273,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.featureId_map[requestId]
 
         if error:
-            self.cancelUpload("Way deletion failed.")
+            self.cancelUpload(self.tr("Way deletion failed."))
             return
 
         self.dbm.removeWayRecord(wayId)
@@ -1309,7 +1309,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.pseudoId_map[requestId]
 
         if error:
-            self.cancelUpload("Relation addition failed.")
+            self.cancelUpload(self.tr("Relation addition failed."))
             return
 
         newRelIdStr=QString(self.http.readAll().data())
@@ -1348,7 +1348,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.featureId_map[requestId]
 
         if error:
-            self.cancelUpload("Relation update failed.")
+            self.cancelUpload(self.tr("Relation update failed."))
             return
 
         newVersionIdStr=QString(self.http.readAll().data())
@@ -1386,7 +1386,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         del self.featureId_map[requestId]
 
         if error:
-            self.cancelUpload("Relation deletion failed.")
+            self.cancelUpload(self.tr("Relation deletion failed."))
             return
 
         self.dbm.removeRelationRecord(relId)
@@ -1417,7 +1417,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         self.disconnect(self.http, SIGNAL("requestFinished(int, bool)"), self.__httpChangesetCreationReqFinished)
 
         if error:
-            self.cancelUpload("Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.")
+            self.cancelUpload(self.tr("Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again."))
             return
 
         del self.qhttp_map[requestId]
@@ -1448,7 +1448,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         self.disconnect(self.http, SIGNAL("requestFinished(int, bool)"), self.__httpChangesetClosingReqFinished)
 
         if error:
-            self.cancelUpload("Changeset closing failed.")
+            self.cancelUpload(self.tr("Changeset closing failed."))
             return
 
         # call the next upload step
@@ -1468,7 +1468,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
 
         if responseHeader.statusCode() != 200:
 
-            self.cancelUpload(QString("Upload process failed. OpenStreetMap server response: %1 - %2.")
+            self.cancelUpload(self.tr("Upload process failed. OpenStreetMap server response: %1 - %2.")
                 .arg(responseHeader.reasonPhrase())
                 .arg(responseHeader.value("Error")))
 
@@ -1480,7 +1480,7 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
         We are really not interested in function parameters - we just cancel the connection.
         """
 
-        self.cancelUpload("Authentication failed. Please try again with correct login and password.")
+        self.cancelUpload(self.tr("Authentication failed. Please try again with correct login and password."))
 
 
     def __setProxy(self):
@@ -1536,13 +1536,13 @@ class OsmUploadDlg(QDialog, Ui_OsmUploadDlg):
             return
 
         if requestId==self.reqSetHost:
-            self.cancelUpload("Setting host failed.")
+            self.cancelUpload(self.tr("Setting host failed."))
 
         elif requestId==self.reqSetUser:
-            self.cancelUpload("Setting user and password failed.")
+            self.cancelUpload(self.tr("Setting user and password failed."))
 
         elif requestId==self.reqSetProxy:
-            self.cancelUpload("Setting proxy failed.")
+            self.cancelUpload(self.tr("Setting proxy failed."))
 
 
 

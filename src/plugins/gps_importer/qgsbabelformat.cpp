@@ -41,8 +41,11 @@ QStringList QgsBabelFormat::importCommand( const QString& babel,
     const QString& input,
     const QString& output ) const
 {
-  QStringList empty;
-  return empty;
+  Q_UNUSED( babel );
+  Q_UNUSED( featuretype );
+  Q_UNUSED( input );
+  Q_UNUSED( output );
+  return QStringList();
 }
 
 
@@ -51,8 +54,11 @@ QStringList QgsBabelFormat::exportCommand( const QString& babel,
     const QString& input,
     const QString& output ) const
 {
-  QStringList empty;
-  return empty;
+  Q_UNUSED( babel );
+  Q_UNUSED( featuretype );
+  Q_UNUSED( input );
+  Q_UNUSED( output );
+  return QStringList();
 }
 
 

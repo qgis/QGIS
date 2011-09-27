@@ -42,6 +42,8 @@ QgsLegendSymbologyGroup::~QgsLegendSymbologyGroup()
   */
 int QgsLegendSymbologyGroup::compare( QTreeWidgetItem * i, int col, bool ascending )
 {
+  Q_UNUSED( col );
+  Q_UNUSED( ascending );
   QgsLegendItem * myItem = dynamic_cast<QgsLegendItem *>( i ) ;
   if ( myItem->type() == QgsLegendItem::LEGEND_PROPERTY_GROUP )
   {

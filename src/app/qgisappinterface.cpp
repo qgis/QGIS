@@ -405,6 +405,7 @@ QAction *QgisAppInterface::actionAbout() { return qgis->actionAbout(); }
 
 bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, bool updateFeatureOnly )
 {
+  Q_UNUSED( updateFeatureOnly );
   if ( !vlayer )
     return false;
 

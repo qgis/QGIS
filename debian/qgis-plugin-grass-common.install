@@ -1,8 +1,6 @@
 usr/share/qgis/grass/locations.gml
-usr/share/qgis/grass/world.png
 usr/share/qgis/grass/config
 usr/share/qgis/grass/modules/*.png
 usr/share/qgis/grass/modules/*.qgm
 usr/share/qgis/grass/modules/*.svg
 usr/share/qgis/grass/scripts/*.py
-usr/share/qgis/themes/*/grass

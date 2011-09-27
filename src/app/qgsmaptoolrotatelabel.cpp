@@ -36,7 +36,7 @@ QgsMapToolRotateLabel::~QgsMapToolRotateLabel()
   delete mRotationPreviewBox;
 }
 
-void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent *e )
 {
   deleteRubberBands();
 
@@ -83,7 +83,7 @@ void QgsMapToolRotateLabel::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
@@ -120,8 +120,10 @@ void QgsMapToolRotateLabel::canvasMoveEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolRotateLabel::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
+
   if ( !mLabelRubberBand ) //no rubber band created (most likely because the current label cannot be rotated )
   {
     return;

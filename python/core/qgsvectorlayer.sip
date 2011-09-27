@@ -1,6 +1,6 @@
 
 typedef QList<int> QgsAttributeList;
-typedef QSet<int> QgsFeatureIds;
+typedef QSet<qint64> QgsFeatureIds;
 typedef QSet<int> QgsAttributeIds;
 
 
@@ -59,12 +59,15 @@ public:
     Classification,
     EditRange,
     SliderRange
-    CheckBox,    /* @note added in 1.4 */
+    CheckBox,      /* @note added in 1.4 */
     FileName,
-    Enumeration, /* @note added in 1.4 */
-    Immutable,   /* @note added in 1.4 */
-    Hidden,      /* @note added in 1.4 */
-    TextEdit     /* @note added in 1.4 */
+    Enumeration,   /* @note added in 1.4 */
+    Immutable,     /* @note added in 1.4 */
+    Hidden,        /* @note added in 1.4 */
+    TextEdit       /* @note added in 1.4 */
+    Calendar,      /* calendar widget @added in 1.5 */
+    DialRange,     /* dial range @added in 1.5 */
+    ValueRelation, /* value map from an table @added in 1.8 */
   };
    
   struct RangeData {
@@ -74,6 +77,18 @@ public:
     QVariant mMin;
     QVariant mMax;
     QVariant mStep;
+  };
+
+  struct ValueRelationData
+  {
+    ValueRelationData();
+    ValueRelationData( QString layer, QString key, QString value, bool allowNull, bool orderByValue );
+
+    QString mLayer;
+    QString mKey;
+    QString mValue;
+    bool mAllowNull;
+    bool mOrderByValue;
   };
 
   /** Constructor */
@@ -142,10 +157,10 @@ public:
   QList<QgsFeature> selectedFeatures();
   
   /** Return reference to identifiers of selected features */
-  const QSet<int>& selectedFeaturesIds() const;
+  const QSet<qint64> &selectedFeaturesIds() const;
   
   /** Change selection to the new set of features */
-  void setSelectedFeatures(const QSet<int>& ids);
+  void setSelectedFeatures(const QSet<qint64> &ids);
 
   /** Returns the bounding box of the selected features. If there is no selection, QgsRectangle(0,0,0,0) is returned */
   QgsRectangle boundingBoxOfSelected();
@@ -267,7 +282,7 @@ public:
    *  in the given ring, item (first number is index 0), and feature
    *  Not meaningful for Point geometries
    */
-  bool insertVertex(double x, double y, int atFeatureId, int beforeVertex);
+  bool insertVertex(double x, double y, qint64 atFeatureId, int beforeVertex);
 
   /** Moves the vertex at the given position number,
    *  ring and item (first number is index 0), and feature
@@ -278,7 +293,7 @@ public:
   /** Deletes the vertex at the given position number,
    *  ring and item (first number is index 0), and feature
    */
-  bool deleteVertex(int atFeatureId, int atVertex);
+  bool deleteVertex(qint64 atFeatureId, int atVertex);
 
   /** Deletes the selected features
    *  @return true in case of success and false otherwise
@@ -313,7 +328,7 @@ public:
      @param dx translation of x-coordinate
      @param dy translation of y-coordinate
      @return 0 in case of success*/
-  int translateFeature(int featureId, double dx, double dy);
+  int translateFeature(qint64 featureId, double dx, double dy);
 
   /**Splits features cut by the given line
      @param splitLine line that splits the layer features
@@ -417,10 +432,10 @@ public:
 
   /** change feature's geometry
     @note added in version 1.2 */
-  bool changeGeometry(int fid, QgsGeometry* geom);
+  bool changeGeometry(qint64 fid, QgsGeometry* geom);
 
   /** changed an attribute value (but does not commit it */
-  bool changeAttributeValue(int fid, int field, QVariant value, bool emitSignal = true);
+  bool changeAttributeValue(qint64 fid, int field, QVariant value, bool emitSignal = true);
 
   /** add an attribute field (but does not commit it) 
       returns true in case of success
@@ -453,7 +468,7 @@ public:
   bool addFeatures(QList<QgsFeature> features, bool makeSelected = TRUE);
 
   /** delete a feature from the layer (but does not commit it) */
-  bool deleteFeature(int fid);
+  bool deleteFeature(qint64 fid);
   
   /**
     Attempts to commit any changes to disk.  Returns the result of the attempt.
@@ -528,93 +543,98 @@ public:
   /**access range */
   RangeData &range(int idx);
 
-    /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
-    @note this method was added in version 1.1
-    */
-    void addOverlay( QgsVectorOverlay* overlay /Transfer/);
+  /**access relations
+   * @note added in 1.8
+   **/
+  ValueRelationData &valueRelation( int idx );
 
-    /**Removes all overlays of a given type
-    @note this method was added in version 1.1
-    */
-    void removeOverlay( const QString& typeName );
+  /**Adds a new overlay to this class. QgsVectorLayer takes ownership of the object
+  @note this method was added in version 1.1
+  */
+  void addOverlay( QgsVectorOverlay* overlay /Transfer/);
 
-    /**Returns pointers to the overlays of this layer
-    @note this method was added in version 1.1
-    */
-    void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/);
+  /**Removes all overlays of a given type
+  @note this method was added in version 1.1
+  */
+  void removeOverlay( const QString& typeName );
 
-    /**Returns the (first) overlay of a type, e.g. diagram or label
-    @note this method was added in version 1.1
-    */
-    QgsVectorOverlay* findOverlayByType( const QString& typeName );
+  /**Returns pointers to the overlays of this layer
+  @note this method was added in version 1.1
+  */
+  void vectorOverlays( QList<QgsVectorOverlay*>& overlayList /Out/);
+
+  /**Returns the (first) overlay of a type, e.g. diagram or label
+  @note this method was added in version 1.1
+  */
+  QgsVectorOverlay* findOverlayByType( const QString& typeName );
 
 
-    /**
-     * Create edit command for undo/redo operations
-     * @param text text which is to be displayed in undo window
-     */
-    void beginEditCommand(QString text);
+  /**
+   * Create edit command for undo/redo operations
+   * @param text text which is to be displayed in undo window
+   */
+  void beginEditCommand(QString text);
 
-    /** Finish edit command and add it to undo/redo stack */
-    void endEditCommand();
+  /** Finish edit command and add it to undo/redo stack */
+  void endEditCommand();
 
-    /** Destroy active command and reverts all changes in it */
-    void destroyEditCommand();
+  /** Destroy active command and reverts all changes in it */
+  void destroyEditCommand();
 
-    /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
-    // (not necessary) void undoEditCommand(QgsUndoCommand* cmd);
+  /** Execute undo operation. To be called only from QgsVectorLayerUndoCommand. */
+  // (not necessary) void undoEditCommand(QgsUndoCommand* cmd);
 
-    /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
-    // (not necessary) void redoEditCommand(QgsUndoCommand* cmd);
+  /** Execute redo operation. To be called only from QgsVectorLayerUndoCommand. */
+  // (not necessary) void redoEditCommand(QgsUndoCommand* cmd);
 
-    /** Returns the index of a field name or -1 if the field does not exist
-      @note this method was added in version 1.4
-     */
-    int fieldNameIndex( const QString& fieldName ) const;
+  /** Returns the index of a field name or -1 if the field does not exist
+    @note this method was added in version 1.4
+   */
+  int fieldNameIndex( const QString& fieldName ) const;
 
-    /** Editing vertex markers
-      @note public from version 1.4 */
-    enum VertexMarkerType
-    {
-      SemiTransparentCircle,
-      Cross,
-      NoMarker  /* added in version 1.1 */
-    };
+  /** Editing vertex markers
+    @note public from version 1.4 */
+  enum VertexMarkerType
+  {
+    SemiTransparentCircle,
+    Cross,
+    NoMarker  /* added in version 1.1 */
+  };
 
-    /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
-      @note public and static from version 1.4 */
-    static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
+  /** Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex editing.)
+    @note public and static from version 1.4 */
+  static void drawVertexMarker( double x, double y, QPainter& p, QgsVectorLayer::VertexMarkerType type, int vertexSize );
 
-    /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
-     @note added in 1.7 */
-    void updateFieldMap();
+  /** Assembles mUpdatedFields considering provider fields, joined fields and added fields
+   @note added in 1.7 */
+  void updateFieldMap();
 
-    /** Caches joined attributes if required (and not already done)
-      @note added in 1.7 */
-    void createJoinCaches();
+  /** Caches joined attributes if required (and not already done)
+    @note added in 1.7 */
+  void createJoinCaches();
 
-    /**Returns unique values for column
-      @param index column index for attribute
-      @param uniqueValues out: result list
-      @limit maximum number of values to return (-1 if unlimited)
-      @note: this method was added in version 1.7*/
-    void uniqueValues( int index, QList<QVariant>& uniqueValues /Out/, int limit = -1 );
+  /**Returns unique values for column
+   @param index column index for attribute
+   @param uniqueValues out: result list
+   @limit maximum number of values to return (-1 if unlimited)
+   @note: this method was added in version 1.7*/
+  void uniqueValues( int index, QList<QVariant>& uniqueValues /Out/, int limit = -1 );
 
-    /**Returns minimum value for an attribute column or invalid variant in case of error
-         @note added in 1.7*/
-     QVariant minimumValue( int index );
+  /**Returns minimum value for an attribute column or invalid variant in case of error
+   @note added in 1.7*/
+  QVariant minimumValue( int index );
 
-       /**Returns maximum value for an attribute column or invalid variant in case of error
-         @note added in 1.7*/
-     QVariant maximumValue( int index );
+  /**Returns maximum value for an attribute column or invalid variant in case of error
+   @note added in 1.7*/
+  QVariant maximumValue( int index );
 
 public slots:
 
   /** Select feature by its ID, optionally emit signal selectionChanged() */
-  void select(int featureId, bool emitSignal = TRUE);
+  void select(qint64 featureId, bool emitSignal = TRUE);
   
   /** Deselect feature by its ID, optionally emit signal selectionChanged() */
-  void deselect( int featureId, bool emitSignal = TRUE );
+  void deselect( qint64 featureId, bool emitSignal = TRUE );
 
   /** Clear selection */
   void removeSelection(bool emitSignal = TRUE);
@@ -642,10 +662,10 @@ signals:
   void editingStopped();
   void attributeAdded(int idx);
   void attributeDeleted(int idx);
-  void featureDeleted(int fid);
+  void featureDeleted(qint64 fid);
   void layerDeleted();
 
-  void attributeValueChanged(int fid, int idx, const QVariant &);
+  void attributeValueChanged(qint64 fid, int idx, const QVariant &);
 
   /** Signals emitted after committing changes
     \note added in v1.6 */

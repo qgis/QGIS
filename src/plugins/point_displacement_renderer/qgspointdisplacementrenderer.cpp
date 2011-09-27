@@ -69,6 +69,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
 
 void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
+  Q_UNUSED( drawVertexMarker );
   //point position in screen coords
   QgsGeometry* geom = feature.geometry();
   QGis::WkbType geomType = geom->wkbType();
@@ -88,13 +89,13 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( mDisplacementIds.contains( feature.id() ) )
   {
     //create the symbol for the whole display group if the id is the first entry in a display group
-    QList<QMap<int, QgsFeature> >::iterator it = mDisplacementGroups.begin();
+    QList<QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
     for ( ; it != mDisplacementGroups.end(); ++it )
     {
       //create the symbol for the whole display group if the id is the first entry in a display group
       if ( feature.id() == it->begin().key() )
       {
-        QMap<int, QgsFeature>::iterator attIt = it->begin();
+        QMap<QgsFeatureId, QgsFeature>::iterator attIt = it->begin();
         for ( ; attIt != it->end(); ++attIt )
         {
           if ( mDrawLabels )
@@ -164,7 +165,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   {
     if ( mCenterSymbol )
     {
-      mCenterSymbol->renderPoint( pt, context, layer, selected );
+      mCenterSymbol->renderPoint( pt, &feature, context, layer, selected );
     }
     else
     {
@@ -173,7 +174,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   }
 
   //draw symbols on the circle
-  drawSymbols( context, symbolList, symbolPositions, selected );
+  drawSymbols( feature, context, symbolList, symbolPositions, selected );
   //and also the labels
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
 }
@@ -186,6 +187,7 @@ void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r 
 
 QgsSymbolV2* QgsPointDisplacementRenderer::symbolForFeature( QgsFeature& feature )
 {
+  Q_UNUSED( feature );
   return 0; //not used any more
 }
 
@@ -357,7 +359,7 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
   }
 
   QgsFeature f;
-  QList<int> intersectList;
+  QList<QgsFeatureId> intersectList;
 
   vlayer->select( attList, viewExtent, true, false );
   while ( vlayer->nextFeature( f ) )
@@ -375,9 +377,9 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
       else
       {
         //go through all the displacement group maps and search an entry where the id equals the result of the spatial search
-        int existingEntry = intersectList.at( 0 );
+        QgsFeatureId existingEntry = intersectList.at( 0 );
         bool found = false;
-        QList<QMap<int, QgsFeature> >::iterator it = mDisplacementGroups.begin();
+        QList< QMap<QgsFeatureId, QgsFeature> >::iterator it = mDisplacementGroups.begin();
         for ( ; it != mDisplacementGroups.end(); ++it )
         {
           if ( it->size() > 0 && it->contains( existingEntry ) )
@@ -392,7 +394,7 @@ void QgsPointDisplacementRenderer::createDisplacementGroups( QgsVectorLayer* vla
 
         if ( !found )//insert the already existing feature and the new one into a map
         {
-          QMap<int, QgsFeature> newMap;
+          QMap<QgsFeatureId, QgsFeature> newMap;
           QgsFeature existingFeature;
           vlayer->featureAtId( existingEntry, existingFeature );
           newMap.insert( existingEntry, existingFeature );
@@ -420,29 +422,29 @@ void QgsPointDisplacementRenderer::printInfoDisplacementGroups()
   for ( int i = 0; i < nGroups; ++i )
   {
     QgsDebugMsg( "***************displacement group " + QString::number( i ) );
-    QMap<int, QgsFeature>::const_iterator it = mDisplacementGroups.at( i ).constBegin();
+    QMap<QgsFeatureId, QgsFeature>::const_iterator it = mDisplacementGroups.at( i ).constBegin();
     for ( ; it != mDisplacementGroups.at( i ).constEnd(); ++it )
     {
-      QgsDebugMsg( QString::number( it.key() ) );
+      QgsDebugMsg( FID_TO_STRING( it.key() ) );
     }
   }
   QgsDebugMsg( "********all displacement ids*********" );
-  QSet<int>::const_iterator iIt = mDisplacementIds.constBegin();
+  QSet<QgsFeatureId>::const_iterator iIt = mDisplacementIds.constBegin();
   for ( ; iIt != mDisplacementIds.constEnd(); ++iIt )
   {
-    QgsDebugMsg( QString::number( *iIt ) );
+    QgsDebugMsg( FID_TO_STRING( *iIt ) );
   }
 }
 
-void QgsPointDisplacementRenderer::setDisplacementGroups( const QList<QMap<int, QgsFeature> >& list )
+void QgsPointDisplacementRenderer::setDisplacementGroups( const QList< QMap<QgsFeatureId, QgsFeature> >& list )
 {
   mDisplacementGroups = list;
   mDisplacementIds.clear();
 
-  QList<QMap<int, QgsFeature> >::const_iterator list_it = mDisplacementGroups.constBegin();
+  QList<QMap<QgsFeatureId, QgsFeature> >::const_iterator list_it = mDisplacementGroups.constBegin();
   for ( ; list_it != mDisplacementGroups.constEnd(); ++list_it )
   {
-    QMap<int, QgsFeature>::const_iterator map_it = list_it->constBegin();
+    QMap<QgsFeatureId, QgsFeature>::const_iterator map_it = list_it->constBegin();
     for ( ; map_it != list_it->constEnd(); ++map_it )
     {
       mDisplacementIds.insert( map_it.key() );
@@ -509,7 +511,7 @@ void QgsPointDisplacementRenderer::drawCircle( double radiusPainterUnits, QgsSym
   p->drawArc( QRectF( centerPoint.x() - radiusPainterUnits, centerPoint.y() - radiusPainterUnits, 2 * radiusPainterUnits, 2 * radiusPainterUnits ), 0, 5760 );
 }
 
-void QgsPointDisplacementRenderer::drawSymbols( QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected )
+void QgsPointDisplacementRenderer::drawSymbols( QgsFeature& f, QgsRenderContext& context, const QList<QgsMarkerSymbolV2*>& symbolList, const QList<QPointF>& symbolPositions, bool selected )
 {
   QList<QPointF>::const_iterator symbolPosIt = symbolPositions.constBegin();
   QList<QgsMarkerSymbolV2*>::const_iterator symbolIt = symbolList.constBegin();
@@ -517,7 +519,7 @@ void QgsPointDisplacementRenderer::drawSymbols( QgsRenderContext& context, const
   {
     if ( *symbolIt )
     {
-      ( *symbolIt )->renderPoint( *symbolPosIt, context, -1, selected );
+      ( *symbolIt )->renderPoint( *symbolPosIt, &f, context, -1, selected );
     }
   }
 }

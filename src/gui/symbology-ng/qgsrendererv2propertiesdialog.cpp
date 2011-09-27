@@ -201,11 +201,31 @@ void QgsRendererV2PropertiesDialog::showSymbolLevels()
   QgsSymbolV2List symbols = r->symbols();
 
   QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
+  connect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ) );
+  connect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ) );
+
   if ( dlg.exec() )
   {
     r->setUsingSymbolLevels( dlg.usingLevels() );
+
+    if ( r->type() == "RuleRenderer" )
+    {
+      if( dlg.usingLevels() )
+      {
+        r->setUsingFirstRule( true );
+        emit forceChkUsingFirstRule();
+      }
+      else
+      {
+        emit forceUncheckSymbolLevels();
+      }
+    }
   }
+
+  disconnect( this, SIGNAL( forceChkUsingFirstRule() ), mActiveWidget, SLOT( forceUsingFirstRule() ) );
+  disconnect( this, SIGNAL( forceUncheckSymbolLevels() ), mActiveWidget, SLOT( forceNoSymbolLevels() ) );
 }
+
 
 void QgsRendererV2PropertiesDialog::useOldSymbology()
 {

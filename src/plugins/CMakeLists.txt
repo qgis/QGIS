@@ -1,9 +1,10 @@
-ADD_SUBDIRECTORY(copyright_label)
+# override default path where built files are put to allow running qgis without installing
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
+SET (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_PLUGIN_SUBDIR})
+
 ADD_SUBDIRECTORY(delimited_text)
 ADD_SUBDIRECTORY(diagram_overlay)
 ADD_SUBDIRECTORY(interpolation)
-ADD_SUBDIRECTORY(north_arrow)
-ADD_SUBDIRECTORY(scale_bar)
 ADD_SUBDIRECTORY(oracle_raster)
 ADD_SUBDIRECTORY(raster_terrain_analysis)
 ADD_SUBDIRECTORY(coordinate_capture)
@@ -13,6 +14,7 @@ ADD_SUBDIRECTORY(point_displacement_renderer)
 ADD_SUBDIRECTORY(spatialquery)
 ADD_SUBDIRECTORY(sqlanywhere)
 ADD_SUBDIRECTORY(roadgraph)
+ADD_SUBDIRECTORY(zonal_statistics)
 
 IF (WITH_SPATIALITE)
   ADD_SUBDIRECTORY(offline_editing)
@@ -35,4 +37,8 @@ IF (GRASS_FOUND)
   ADD_SUBDIRECTORY(grass)
 ENDIF (GRASS_FOUND)
 
-INSTALL(FILES qgisplugin.h qgsrendererplugin.h DESTINATION ${QGIS_INCLUDE_DIR})
+IF (OSGEARTH_FOUND)
+  ADD_SUBDIRECTORY(globe)
+ENDIF (OSGEARTH_FOUND)
+
+# headers installed in qgis_core target

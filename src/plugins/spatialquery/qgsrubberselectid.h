@@ -58,7 +58,7 @@ class QgsRubberSelectId
     * \param mLayer    pointer to QgsVectorLayer
     * \param fid       integer for ID for feature
     */
-    void addFeature( QgsVectorLayer* lyr, int fid );
+    void addFeature( QgsVectorLayer* lyr, QgsFeatureId fid );
 
     /**
     * \brief Show rubber band

@@ -81,7 +81,7 @@ namespace pal
       {
           const char* what() const throw()
           {
-            return "Geometry Type is unknow";
+            return "Geometry Type is unknown";
           }
       };
 

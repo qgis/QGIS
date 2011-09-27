@@ -27,8 +27,11 @@
 #include "qgsdistancearea.h"
 #include <QProgressDialog>
 
-bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer, const QString& shapefileName,
-                                    double tolerance, bool onlySelectedFeatures, QProgressDialog* p )
+bool QgsGeometryAnalyzer::simplify( QgsVectorLayer* layer,
+                                    const QString& shapefileName,
+                                    double tolerance,
+                                    bool onlySelectedFeatures,
+                                    QProgressDialog *p )
 {
   if ( !layer )
   {
@@ -255,8 +258,10 @@ void QgsGeometryAnalyzer::centroidFeature( QgsFeature& f, QgsVectorFileWriter* v
   }
 }
 
-bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer, const QString& shapefileName,
-                                  bool onlySelectedFeatures, QProgressDialog* p )
+bool QgsGeometryAnalyzer::extent( QgsVectorLayer* layer,
+                                  const QString& shapefileName,
+                                  bool onlySelectedFeatures,
+                                  QProgressDialog * )
 {
   if ( !layer )
   {
@@ -408,7 +413,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), fields, outputType, &crs );
   QgsFeature currentFeature;
   QgsGeometry* dissolveGeometry = 0; //dissolve geometry
-  QMultiMap<QString, int> map;
+  QMultiMap<QString, QgsFeatureId> map;
 
   if ( onlySelectedFeatures )
   {
@@ -455,7 +460,7 @@ bool QgsGeometryAnalyzer::convexHull( QgsVectorLayer* layer, const QString& shap
     }
   }
 
-  QMultiMap<QString, int>::const_iterator jt = map.constBegin();
+  QMultiMap<QString, QgsFeatureId>::const_iterator jt = map.constBegin();
   while ( jt != map.constEnd() )
   {
     QString currentKey = jt.key();
@@ -613,7 +618,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
 
   QgsVectorFileWriter vWriter( shapefileName, dp->encoding(), dp->fields(), outputType, &crs );
   QgsFeature currentFeature;
-  QMultiMap<QString, int> map;
+  QMultiMap<QString, QgsFeatureId> map;
 
   if ( onlySelectedFeatures )
   {
@@ -639,7 +644,7 @@ bool QgsGeometryAnalyzer::dissolve( QgsVectorLayer* layer, const QString& shapef
   }
 
   QgsGeometry *dissolveGeometry = 0; //dissolve geometry
-  QMultiMap<QString, int>::const_iterator jt = map.constBegin();
+  QMultiMap<QString, QgsFeatureId>::const_iterator jt = map.constBegin();
   QgsFeature outputFeature;
   while ( jt != map.constEnd() )
   {

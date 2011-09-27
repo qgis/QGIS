@@ -17,6 +17,7 @@
 #define QGSATTRIBUTETABLEDELEGATE_H
 
 #include <QItemDelegate>
+#include "qgsfeature.h"
 
 class QPainter;
 class QgsVectorLayer;
@@ -32,7 +33,7 @@ class QgsAttributeTableDelegate : public QItemDelegate
 
     QgsVectorLayer *layer( const QAbstractItemModel *model ) const;
     int fieldIdx( const QModelIndex &index ) const;
-    int featureId( const QModelIndex &index ) const;
+    QgsFeatureId featureId( const QModelIndex &index ) const;
 
   public:
     /** Constructor

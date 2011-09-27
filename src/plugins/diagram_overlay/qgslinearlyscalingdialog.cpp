@@ -36,6 +36,7 @@ QgsLinearlyScalingDialog::~QgsLinearlyScalingDialog()
 
 QgsDiagramRenderer* QgsLinearlyScalingDialog::createRenderer( int classAttr, const QgsAttributeList& attributes ) const
 {
+  Q_UNUSED( attributes );
   //create a linearly scaling renderer
   QList<int> attributesList;
   attributesList.push_back( classAttr );

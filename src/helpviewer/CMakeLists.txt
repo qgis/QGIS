@@ -1,3 +1,5 @@
+# override default path where built files are put to allow running qgis without installing
+SET (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/${QGIS_LIBEXEC_SUBDIR})
 
 ########################################################
 # Files
@@ -54,15 +56,7 @@ QT4_WRAP_CPP (HELP_MOC_SRCS  ${HELP_MOC_HDRS})
 
 #QT4_ADD_RESOURCES(HELP_RCC_SRCS ${HELP_RCCS})
 
-IF(WIN32)
-  ADD_EXECUTABLE (qgis_help WIN32 ${HELP_SRCS} ${HELP_MOC_SRCS} ${HELP_UIS_H})
-ELSE(WIN32)
-  IF(APPLE)
-    ADD_EXECUTABLE (qgis_help MACOSX_BUNDLE ${HELP_SRCS} ${HELP_MOC_SRCS} ${HELP_UIS_H})
-  ELSE(APPLE)
-    ADD_EXECUTABLE (qgis_help ${HELP_SRCS} ${HELP_MOC_SRCS} ${HELP_UIS_H})
-  ENDIF(APPLE)
-ENDIF(WIN32)
+ADD_EXECUTABLE (qgis_help MACOSX_BUNDLE WIN32 ${HELP_SRCS} ${HELP_MOC_SRCS} ${HELP_UIS_H})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_SOURCE_DIR}/../core
@@ -100,11 +94,10 @@ SET_TARGET_PROPERTIES(qgis_help PROPERTIES
 ########################################################
 # Install
 
+INSTALL (TARGETS qgis_help
+  BUNDLE DESTINATION ${QGIS_BIN_DIR}
+  RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR}
+)
 IF (APPLE)
-  INSTALL (TARGETS qgis_help BUNDLE DESTINATION ${QGIS_BIN_DIR})
-  # needed because global install_name prefix is for main qgis app
-  INSTALL (CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change ${CMAKE_INSTALL_NAME_DIR}/libqgis_core.${COMPLETE_VERSION}.dylib @executable_path/../../../../lib/libqgis_core.${COMPLETE_VERSION}.dylib \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/MacOS/qgis_help\")")
   INSTALL (CODE "EXECUTE_PROCESS (COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_help.app/Contents/Frameworks\")")
-ELSE (APPLE)
-  INSTALL (TARGETS qgis_help RUNTIME DESTINATION ${QGIS_LIBEXEC_DIR})
 ENDIF (APPLE)

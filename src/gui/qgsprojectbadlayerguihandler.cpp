@@ -18,6 +18,8 @@ bool QgsProjectBadLayerGuiHandler::mIgnore = false;
 
 void QgsProjectBadLayerGuiHandler::handleBadLayers( QList<QDomNode> layers, QDomDocument projectDom )
 {
+  Q_UNUSED( projectDom );
+
   QgsDebugMsg( QString( "%1 bad layers found" ).arg( layers.size() ) );
 
   // make sure we have arrow cursor (and not a wait cursor)

@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsconfigparser.h"
+#include "qgscrscache.h"
 #include "qgsapplication.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
@@ -68,7 +69,7 @@ void QgsConfigParser::addExternalGMLData( const QString& layerName, QDomDocument
   mExternalGMLDatasets.insert( layerName, gmlDoc );
 }
 
-void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
+void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
     QDomDocument& doc,
     const QgsRectangle& layerExtent,
     const QgsCoordinateReferenceSystem& layerCRS ) const
@@ -78,8 +79,7 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
     return;
   }
 
-  QgsCoordinateReferenceSystem wgs84;
-  wgs84.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
 
   //Ex_GeographicBoundingBox
   //transform the layers native CRS into WGS84
@@ -103,7 +103,6 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   QDomText nBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMaximum() ) );
   nBoundLatitudeElement.appendChild( nBoundLatitudeText );
   ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
-  layerElem.appendChild( ExGeoBBoxElement );
 
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
@@ -116,7 +115,18 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
   bBoxElement.setAttribute( "miny", QString::number( layerExtent.yMinimum() ) );
   bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
   bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
-  layerElem.appendChild( bBoxElement );
+
+  QDomElement lastCRSElem = layerElem.lastChildElement( "CRS" );
+  if ( !lastCRSElem.isNull() )
+  {
+    layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
+    layerElem.insertAfter( bBoxElement, ExGeoBBoxElement );
+  }
+  else
+  {
+    layerElem.appendChild( ExGeoBBoxElement );
+    layerElem.appendChild( bBoxElement );
+  }
 }
 
 QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) const
@@ -130,7 +140,7 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
 
   //check the db is available
   myResult = sqlite3_open( myDatabaseFileName.toLocal8Bit().data(), &myDatabase );
-  if ( myResult )
+  if ( myResult && theMapLayer )
   {
     //if the database cannot be opened, add at least the epsg number of the source coordinate system
     crsNumbers.push_back( theMapLayer->crs().authid() );
@@ -242,21 +252,42 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
     return;
   }
 
-  //In case the number of advertised CRS is constrained
-  QSet<QString> crsSet = supportedOutputCrsSet();
+  //insert the CRS elements after the title element to be in accordance with the WMS 1.3 specification
+  QDomElement titleElement = layerElement.firstChildElement( "Title" );
 
-  QStringList::const_iterator crsIt = crsList.constBegin();
-  for ( ; crsIt != crsList.constEnd(); ++crsIt )
+  //In case the number of advertised CRS is constrained
+  QStringList constrainedCrsList = supportedOutputCrsList();
+  if ( constrainedCrsList.size() > 0 )
   {
-    if ( !crsSet.isEmpty() && !crsSet.contains( *crsIt ) ) //consider epsg output constraint
+    for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
-      continue;
+      appendCRSElementToLayer( layerElement, titleElement, constrainedCrsList.at( i ), doc );
+      /*QDomElement crsElement = doc.createElement( "CRS" );
+      QDomText crsText = doc.createTextNode( constrainedCrsList.at( i ) );
+      crsElement.appendChild( crsText );
+      layerElement.insertAfter( crsElement, titleElement );*/
     }
-    QDomElement crsElement = doc.createElement( "CRS" );
-    QDomText crsText = doc.createTextNode( *crsIt );
-    crsElement.appendChild( crsText );
-    layerElement.appendChild( crsElement );
   }
+  else //no crs constraint
+  {
+    QStringList::const_iterator crsIt = crsList.constBegin();
+    for ( ; crsIt != crsList.constEnd(); ++crsIt )
+    {
+      appendCRSElementToLayer( layerElement, titleElement, *crsIt, doc );
+      /*QDomElement crsElement = doc.createElement( "CRS" );
+      QDomText crsText = doc.createTextNode( *crsIt );
+      crsElement.appendChild( crsText );
+      layerElement.insertAfter( crsElement, titleElement );*/
+    }
+  }
+}
+
+void QgsConfigParser::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const
+{
+  QDomElement crsElement = doc.createElement( "CRS" );
+  QDomText crsTextNode = doc.createTextNode( crsText );
+  crsElement.appendChild( crsTextNode );
+  layerElement.insertAfter( crsElement, titleElement );
 }
 
 QgsComposition* QgsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const
@@ -437,7 +468,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
       continue;
     }
 
-    if( !titleIt.key().isEmpty() ) //no label text replacement with empty key
+    if ( !titleIt.key().isEmpty() ) //no label text replacement with empty key
     {
       currentLabel->setText( titleIt.value() );
       currentLabel->adjustSizeToText();
@@ -449,6 +480,7 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
 
 void QgsConfigParser::serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
+  Q_UNUSED( doc );
   QFile wmsService( "wms_metadata.xml" );
   if ( wmsService.open( QIODevice::ReadOnly ) )
   {

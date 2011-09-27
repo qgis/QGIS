@@ -329,7 +329,7 @@ void QgsPointDisplacementRendererWidget::on_mCenterSymbolPushButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mRenderer->centerSymbol()->clone() );
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), this );
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), mLayer, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

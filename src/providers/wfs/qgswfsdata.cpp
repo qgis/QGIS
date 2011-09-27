@@ -33,8 +33,8 @@ const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsWFSData::QgsWFSData(
   const QString& uri,
   QgsRectangle* extent,
-  QMap<int, QgsFeature*> &features,
-  QMap<int, QString > &idMap,
+  QMap<QgsFeatureId, QgsFeature*> &features,
+  QMap<QgsFeatureId, QString > &idMap,
   const QString& geometryAttribute,
   const QMap<QString, QPair<int, QgsField> >& thematicAttributes,
   QGis::WkbType* wkbType )

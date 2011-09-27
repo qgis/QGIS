@@ -84,6 +84,10 @@ class CORE_EXPORT QgsFeatureRendererV2
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
 
+    bool usingFirstRule() const { return mUsingFirstRule; }
+    void setUsingFirstRule( bool usingFirstRule ) { mUsingFirstRule = usingFirstRule; }
+
+
     //! create a renderer from XML element
     static QgsFeatureRendererV2* load( QDomElement& symbologyElem );
 
@@ -117,6 +121,7 @@ class CORE_EXPORT QgsFeatureRendererV2
     QString mType;
 
     bool mUsingSymbolLevels;
+    bool mUsingFirstRule;
 
     /** The current type of editing marker */
     int mCurrentVertexMarkerType;

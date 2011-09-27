@@ -68,6 +68,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   cmbWktField->setDisabled( true );
 
   connect( txtFilePath, SIGNAL( textChanged( QString ) ), this, SLOT( updateFieldsAndEnable() ) );
+  connect( decimalPoint, SIGNAL( textChanged( QString ) ), this, SLOT( updateFieldsAndEnable() ) );
 
   connect( delimiterSelection, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
   connect( delimiterPlain, SIGNAL( toggled( bool ) ), this, SLOT( updateFieldsAndEnable() ) );
@@ -109,6 +110,11 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     QUrl url = QUrl::fromLocalFile( txtFilePath->text() );
     url.addQueryItem( "delimiter", txtDelimiter->text() );
     url.addQueryItem( "delimiterType", delimiterType );
+
+    if ( !decimalPoint->text().isEmpty() )
+    {
+      url.addQueryItem( "decimalPoint", decimalPoint->text() );
+    }
 
     if ( geomTypeXY->isChecked() )
     {
@@ -258,6 +264,9 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
   cmbYField->setEnabled( false );
   cmbWktField->setEnabled( false );
 
+  // clear the sample text box
+  tblSample->clear();
+
   if ( ! haveValidFileAndDelimiters() )
     return;
 
@@ -374,7 +383,6 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
     cmbYField->setEnabled( isXY );
     cmbWktField->setEnabled( !  isXY );
 
-
     connect( cmbXField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
     connect( cmbYField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
     connect( cmbWktField, SIGNAL( currentIndexChanged( int ) ), this, SLOT( enableAccept() ) );
@@ -382,9 +390,6 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
     connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbYField, SLOT( setEnabled( bool ) ) );
     connect( geomTypeXY, SIGNAL( toggled( bool ) ), cmbWktField, SLOT( setDisabled( bool ) ) );
   }
-
-  // clear the sample text box
-  tblSample->clear();
 
   tblSample->setColumnCount( fieldList.size() );
   tblSample->setHorizontalHeaderLabels( fieldList );
@@ -400,7 +405,21 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
     for ( int i = 0; i < tblSample->columnCount(); i++ )
     {
-      tblSample->setItem( counter, i, new QTableWidgetItem( i < values.size() ? values[i] : "" ) );
+      QString value = i < values.size() ? values[i] : "";
+      bool ok = true;
+      if ( i == indexX || i == indexY )
+      {
+        if ( !decimalPoint->text().isEmpty() )
+        {
+          value.replace( decimalPoint->text(), "." );
+        }
+
+        value.toDouble( &ok );
+      }
+      QTableWidgetItem *item = new QTableWidgetItem( value );
+      if ( !ok )
+        item->setTextColor( Qt::red );
+      tblSample->setItem( counter, i, item );
     }
 
     counter++;

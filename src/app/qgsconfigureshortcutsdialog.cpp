@@ -43,7 +43,32 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent )
            this, SLOT( actionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
   populateActions();
+
+  restoreState();
 }
+
+QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
+{
+    saveState();
+}
+
+/*!
+ * Function to save dialog window state
+ */
+void QgsConfigureShortcutsDialog::saveState()
+{
+    QSettings settings;
+    settings.setValue( "/Windows/ShortcutsDialog/geometry", saveGeometry() );
+}
+
+/*!
+ * Function to restore dialog window state
+ */
+void QgsConfigureShortcutsDialog::restoreState()
+{
+    QSettings settings;
+    restoreGeometry( settings.value( "/Windows/ShortcutsDialog/geometry" ).toByteArray() );
+}       
 
 void QgsConfigureShortcutsDialog::populateActions()
 {
@@ -234,8 +259,10 @@ QAction* QgsConfigureShortcutsDialog::currentAction()
   return qobject_cast<QAction*>( action );
 }
 
-void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous )
+void QgsConfigureShortcutsDialog::actionChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
+  Q_UNUSED( current );
+  Q_UNUSED( previous );
   // cancel previous shortcut setting (if any)
   setGettingShortcut( false );
 

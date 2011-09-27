@@ -24,6 +24,7 @@ extern "C"
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayerimport.h"
 #include <list>
 #include <queue>
 #include <fstream>
@@ -45,6 +46,19 @@ class QgsField;
 class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 {
   Q_OBJECT public:
+
+    /** Import a vector layer into the database */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+                            const QString& uri,
+                            const QgsFieldMap &fields,
+                            QGis::WkbType wkbType,
+                            const QgsCoordinateReferenceSystem *srs,
+                            bool overwrite,
+                            QMap<int, int> *oldToNewAttrIdxMap,
+                            QString *errorMessage = 0,
+                            const QMap<QString,QVariant> *options = 0
+                          );
+
     /**
      * Constructor of the vector provider
      * @param uri  uniform resource locator (URI) for a dataset
@@ -73,7 +87,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
       *  @param useIntersect true if an accurate intersection test should be used,
       *                     false if a test based on bounding box is sufficient
       */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature & feature, bool fetchGeometry = true, QgsAttributeList fetchAttributes = QgsAttributeList() );
 
     /** Accessor for sql where clause used to limit dataset */
@@ -262,6 +276,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
+    /** convert a QgsField to work with SL */
+    static bool convertField( QgsField &field );
+
     QgsFieldMap attributeFields;
     /**
        * Flag indicating if the layer data source is a valid SpatiaLite layer
@@ -370,8 +387,8 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     //void sqliteOpen();
     void closeDb();
-    QString quotedIdentifier( QString id ) const;
-    QString quotedValue( QString value ) const;
+    static QString quotedIdentifier( QString id );
+    static QString quotedValue( QString value );
     bool checkLayerType();
     bool getGeometryDetails();
     bool getTableGeometryDetails();
@@ -380,6 +397,13 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool getQueryGeometryDetails();
     bool getSridDetails();
     bool getTableSummary();
+    bool prepareStatement( sqlite3_stmt *&stmt,
+                           const QgsAttributeList &fetchAttributes,
+                           bool fetchGeometry,
+                           QString whereClause );
+    bool getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
+                     QgsFeature &feature,
+                     const QgsAttributeList &fetchAttributes );
     void convertToGeosWKB( const unsigned char *blob, size_t blob_size,
                            unsigned char **wkb, size_t *geom_size );
     int computeSizeFromMultiWKB2D( const unsigned char *p_in, int nDims,
@@ -449,6 +473,31 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
         sqlite3 *sqlite_handle;
 
         static QMap < QString, SqliteHandles * >handles;
+    };
+
+    struct SLException
+    {
+      SLException( char *msg ) : errMsg( msg )
+      {
+      }
+
+      SLException( const SLException &e ) : errMsg( e.errMsg )
+      {
+      }
+
+      ~SLException()
+      {
+        if ( errMsg )
+          sqlite3_free( errMsg );
+      }
+
+      QString errorMessage() const
+      {
+        return errMsg ? QString::fromUtf8( errMsg ) : "unknown cause";
+      }
+
+    private:
+      char *errMsg;
     };
 
     /**

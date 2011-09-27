@@ -63,6 +63,8 @@ class QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeAttributesDi
     QString meanAttributeString( int col );
     /**Calculates and inserts the median value of a column*/
     QString medianAttributeString( int col );
+    /**Calculates and inserts the sum of a column*/
+    QString sumAttributeString( int col );
     /**Appends the values of the features for the final value*/
     QString concatenationAttributeString( int col );
     /**Sets mSelectionRubberBand to a new feature*/

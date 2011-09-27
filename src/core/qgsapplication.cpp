@@ -34,15 +34,23 @@
 #include "qgsconfig.h"
 
 #include <ogr_api.h>
+#include <gdal_priv.h>
+#include <cpl_conv.h> // for setting gdal options
 
 QObject * QgsApplication::mFileOpenEventReceiver;
 QStringList QgsApplication::mFileOpenEventList;
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
 QString QgsApplication::mPkgDataPath;
+QString QgsApplication::mLibraryPath;
+QString QgsApplication::mLibexecPath;
 QString QgsApplication::mThemeName;
 QStringList QgsApplication::mDefaultSvgPaths;
 QString QgsApplication::mConfigPath = QDir::homePath() + QString( "/.qgis/" );
+bool QgsApplication::mRunningFromBuildDir = false;
+QString QgsApplication::mBuildSourcePath;
+QString QgsApplication::mBuildOutputPath;
+QStringList QgsApplication::mGdalSkipList;
 
 /*!
   \class QgsApplication
@@ -60,14 +68,50 @@ QString QgsApplication::mConfigPath = QDir::homePath() + QString( "/.qgis/" );
 QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QString customConfigPath )
     : QApplication( argc, argv, GUIenabled )
 {
+  init( customConfigPath ); //initi can also be called directly by e.g. unit tests that dont inherit QApplication.
+}
+void QgsApplication::init( QString customConfigPath )
+{
+  // check if QGIS is run from build directory (not the install directory)
+  QDir appDir( applicationDirPath() );
+  if ( appDir.exists( "source_path.txt" ) )
+  {
+    QFile f( applicationDirPath() + "/source_path.txt" );
+    if ( f.open( QIODevice::ReadOnly ) )
+    {
+      mRunningFromBuildDir = true;
+      mBuildSourcePath = f.readAll();
 #if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
-  setPrefixPath( applicationDirPath(), true );
+      mBuildOutputPath = applicationDirPath();
 #else
-  QDir myDir( applicationDirPath() );
-  myDir.cdUp();
-  QString myPrefix = myDir.absolutePath();
-  setPrefixPath( myPrefix, true );
+      mBuildOutputPath = applicationDirPath() + "/.."; // on linux
 #endif
+      qDebug( "Running from build directory!" );
+      qDebug( "- source directory: %s", mBuildSourcePath.toAscii().data() );
+      qDebug( "- output directory of the build: %s", mBuildOutputPath.toAscii().data() );
+    }
+  }
+
+  if ( mRunningFromBuildDir )
+  {
+    // we run from source directory - not installed to destination (specified prefix)
+    mPrefixPath = QString(); // set invalid path
+    setPluginPath( mBuildOutputPath + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
+    setPkgDataPath( mBuildSourcePath ); // directly source path - used for: doc, resources, svg
+    mLibraryPath = mBuildOutputPath + "/" + QGIS_LIB_SUBDIR + "/";
+    mLibexecPath = mBuildOutputPath + "/" + QGIS_LIBEXEC_SUBDIR + "/";
+  }
+  else
+  {
+#if defined(Q_WS_MACX) || defined(Q_WS_WIN32) || defined(WIN32)
+    setPrefixPath( applicationDirPath(), true );
+#else
+    QDir myDir( applicationDirPath() );
+    myDir.cdUp();
+    QString myPrefix = myDir.absolutePath();
+    setPrefixPath( myPrefix, true );
+#endif
+  }
 
   if ( !customConfigPath.isEmpty() )
   {
@@ -75,6 +119,26 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
   }
 
   mDefaultSvgPaths << qgisSettingsDirPath() + QString( "svg/" );
+
+  // set a working directory up for gdal to write .aux.xml files into
+  // for cases where the raster dir is read only to the user
+  // if the env var is already set it will be used preferentially
+  QString myPamPath = qgisSettingsDirPath() + QString( "gdal_pam/" );
+  QDir myDir( myPamPath );
+  if ( !myDir.exists() )
+  {
+    myDir.mkpath( myPamPath ); //fail silently
+  }
+  
+  
+#if defined(Q_WS_WIN32) || defined(WIN32)
+  CPLSetConfigOption("GDAL_PAM_PROXY_DIR", myPamPath.toUtf8());
+#else
+  //under other OS's we use an environment var so the user can 
+  //override the path if he likes
+  int myChangeFlag = 0; //whether we want to force the env var to change
+  setenv( "GDAL_PAM_PROXY_DIR", myPamPath.toUtf8(), myChangeFlag );
+#endif
 }
 
 QgsApplication::~QgsApplication()
@@ -170,6 +234,8 @@ void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefault
     setPluginPath( mPrefixPath + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
     setPkgDataPath( mPrefixPath + "/" + QString( QGIS_DATA_SUBDIR ) );
   }
+  mLibraryPath = mPrefixPath + "/" + QGIS_LIB_SUBDIR + "/";
+  mLibexecPath = mPrefixPath + "/" + QGIS_LIBEXEC_SUBDIR + "/";
 }
 
 void QgsApplication::setPluginPath( const QString thePluginPath )
@@ -180,10 +246,10 @@ void QgsApplication::setPluginPath( const QString thePluginPath )
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
 {
   mPkgDataPath = thePkgDataPath;
-  QString svgPath = mPkgDataPath + QString( "/svg/" );
+  QString mySvgPath = svgPath();
   // avoid duplicate entries
-  if ( !mDefaultSvgPaths.contains( svgPath ) )
-    mDefaultSvgPaths << svgPath;
+  if ( !mDefaultSvgPaths.contains( mySvgPath ) )
+    mDefaultSvgPaths << mySvgPath;
 }
 
 void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
@@ -193,6 +259,11 @@ void QgsApplication::setDefaultSvgPaths( const QStringList& pathList )
 
 const QString QgsApplication::prefixPath()
 {
+  if ( mRunningFromBuildDir )
+  {
+    qWarning( "!!! prefix path was requested, but it is not valid - we do not run from installed path !!!" );
+  }
+
   return mPrefixPath;
 }
 const QString QgsApplication::pluginPath()
@@ -285,12 +356,10 @@ const QString QgsApplication::translatorsFilePath()
 {
   return mPkgDataPath + QString( "/doc/TRANSLATORS" );
 }
-/*!
-  Returns the path to the developer image directory.
-*/
+
 const QString QgsApplication::developerPath()
 {
-  return mPkgDataPath + QString( "/images/developers/" );
+  return QString(); // developer images are no longer shipped!
 }
 
 /*!
@@ -302,7 +371,7 @@ const QString QgsApplication::helpAppPath()
 #ifdef Q_OS_MACX
   helpAppPath = applicationDirPath() + "/bin/qgis_help.app/Contents/MacOS";
 #else
-  helpAppPath = prefixPath() + "/" QGIS_LIBEXEC_SUBDIR;
+  helpAppPath = libexecPath();
 #endif
   helpAppPath += "/qgis_help";
   return helpAppPath;
@@ -312,7 +381,10 @@ const QString QgsApplication::helpAppPath()
 */
 const QString QgsApplication::i18nPath()
 {
-  return mPkgDataPath + QString( "/i18n/" );
+  if ( mRunningFromBuildDir )
+    return mBuildOutputPath + QString( "/i18n" );
+  else
+    return mPkgDataPath + QString( "/i18n/" );
 }
 
 /*!
@@ -344,7 +416,7 @@ const QString QgsApplication::qgisUserDbFilePath()
 */
 const QString QgsApplication::splashPath()
 {
-  return mPkgDataPath + QString( "/images/splash/" );
+  return QString( ":/images/splash/" );
 }
 
 /*!
@@ -386,7 +458,8 @@ const QStringList QgsApplication::svgPaths()
 */
 const QString QgsApplication::svgPath()
 {
-  return mPkgDataPath + QString( "/svg/" );
+  QString svgSubDir( mRunningFromBuildDir ? "/images/svg/" : "/svg/" );
+  return mPkgDataPath + svgSubDir;
 }
 
 const QString QgsApplication::userStyleV2Path()
@@ -397,6 +470,16 @@ const QString QgsApplication::userStyleV2Path()
 const QString QgsApplication::defaultStyleV2Path()
 {
   return mPkgDataPath + QString( "/resources/symbology-ng-style.xml" );
+}
+
+const QString QgsApplication::libraryPath()
+{
+  return mLibraryPath;
+}
+
+const QString QgsApplication::libexecPath()
+{
+  return mLibexecPath;
 }
 
 QgsApplication::endian_t QgsApplication::endian()
@@ -629,4 +712,38 @@ QString QgsApplication::relativePathToAbsolutePath( QString rpath, QString targe
 #endif
 
   return targetElems.join( "/" );
+}
+
+void QgsApplication::skipGdalDriver( QString theDriver )
+{
+  if ( mGdalSkipList.contains( theDriver ) || theDriver.isEmpty() )
+  {
+    return;
+  }
+  mGdalSkipList << theDriver;
+  applyGdalSkippedDrivers();
+}
+
+void QgsApplication::restoreGdalDriver( QString theDriver )
+{
+  if ( !mGdalSkipList.contains( theDriver ) )
+  {
+    return;
+  }
+  int myPos = mGdalSkipList.indexOf( theDriver );
+  if ( myPos >= 0 )
+  {
+    mGdalSkipList.removeAt( myPos );
+  }
+  applyGdalSkippedDrivers();
+}
+
+void QgsApplication::applyGdalSkippedDrivers()
+{
+  mGdalSkipList.removeDuplicates();
+  QString myDriverList = mGdalSkipList.join(" ");
+  QgsDebugMsg( "Gdal Skipped driver list set to:" );
+  QgsDebugMsg( myDriverList );
+  CPLSetConfigOption("GDAL_SKIP", myDriverList.toUtf8());
+  GetGDALDriverManager()->AutoSkipDrivers();
 }

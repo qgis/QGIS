@@ -56,6 +56,16 @@ SET(QGIS_ANALYSIS_MOC_HDRS
 
 QT4_WRAP_CPP(QGIS_ANALYSIS_MOC_SRCS ${QGIS_ANALYSIS_MOC_HDRS})
 
+# install headers
+
+SET(QGIS_ANALYSIS_HDRS
+  vector/qgsgeometryanalyzer.h
+  vector/qgszonalstatistics.h
+  interpolation/qgsinterpolator.h
+  interpolation/qgsgridfilewriter.h
+  interpolation/qgsidwinterpolator.h
+  interpolation/qgstininterpolator.h
+)
 
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
@@ -81,11 +91,21 @@ ENDIF (WIN32)
 #############################################################
 # qgis_analysis library
 
-ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_MOC_SRCS} )
+ADD_LIBRARY(qgis_analysis SHARED ${QGIS_ANALYSIS_SRCS} ${QGIS_ANALYSIS_MOC_SRCS} ${QGIS_ANALYSIS_HDRS})
+
+SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES
+  VERSION ${COMPLETE_VERSION}
+  SOVERSION ${COMPLETE_VERSION}
+  # no moc headers, messes up PROPERTIES syntax
+  PUBLIC_HEADER "${QGIS_ANALYSIS_HDRS}"
+  CLEAN_DIRECT_OUTPUT 1
+  FRAMEWORK 1
+  FRAMEWORK_VERSION "${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}"
+  MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
+  MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
+  MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_analysis)
 
 ADD_DEPENDENCIES(qgis_analysis qgis_core)
-
-SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES VERSION ${COMPLETE_VERSION} SOVERSION ${COMPLETE_VERSION})
 
 TARGET_LINK_LIBRARIES(qgis_analysis
   qgis_core
@@ -95,16 +115,19 @@ IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_analysis PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )
 ENDIF (APPLE)
 
+# install
+
 INSTALL(TARGETS qgis_analysis
   RUNTIME DESTINATION ${QGIS_BIN_DIR}
   LIBRARY DESTINATION ${QGIS_LIB_DIR}
-  ARCHIVE DESTINATION ${QGIS_LIB_DIR})
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
+# Mac dev frameworks
 
-# Added by Tim to install headers
-
-SET(QGIS_ANALYSIS_HDRS vector/qgsgeometryanalyzer.h vector/qgszonalstatistics.h vector/qgsgeometryanalyzer.h interpolation/qgsinterpolator.h interpolation/qgsgridfilewriter.h interpolation/qgsidwinterpolator.h interpolation/qgstininterpolator.h
-)
-
-INSTALL(CODE "MESSAGE(\"Installing ANALYSIS headers...\")")
-INSTALL(FILES ${QGIS_ANALYSIS_HDRS} ${QGIS_ANALYSIS_MOC_HDRS} DESTINATION ${QGIS_INCLUDE_DIR}) 
+IF (APPLE AND QGIS_MACAPP_INSTALL_DEV)
+  INSTALL(TARGETS qgis_analysis FRAMEWORK DESTINATION ${QGIS_MACAPP_DEV_PREFIX})
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -id \"${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_analysis\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
+  INSTALL(CODE "EXECUTE_PROCESS(COMMAND install_name_tool -change \"${CMAKE_INSTALL_NAME_DIR}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"${QGIS_MACAPP_DEV_PREFIX}/qgis_core.framework/Versions/${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}/qgis_core\" \"$ENV{DESTDIR}${QGIS_MACAPP_DEV_PREFIX}/qgis_analysis.framework/qgis_analysis\")")
+ENDIF (APPLE AND QGIS_MACAPP_INSTALL_DEV)

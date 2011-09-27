@@ -19,6 +19,7 @@
 #define QGSFORMANNOTATIONITEM_H
 
 #include "qgsannotationitem.h"
+#include "qgsfeature.h"
 #include <QObject>
 
 class QGraphicsProxyWidget;
@@ -65,7 +66,7 @@ class GUI_EXPORT QgsFormAnnotationItem: public QObject, public QgsAnnotationItem
     /**True if the item is related to a vector feature*/
     bool mHasAssociatedFeature;
     /**Associated feature*/
-    int mFeature;
+    QgsFeatureId mFeature;
     /**Path to (and including) the .ui file*/
     QString mDesignerForm;
 

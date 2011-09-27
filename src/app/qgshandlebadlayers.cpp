@@ -47,6 +47,7 @@ QgsHandleBadLayers::QgsHandleBadLayers( const QList<QDomNode> &layers, const QDo
     : QDialog( QgisApp::instance() )
     , mLayers( layers )
 {
+  Q_UNUSED( projectDom );
   setupUi( this );
 
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
@@ -166,6 +167,7 @@ void QgsHandleBadLayers::itemChanged( QTableWidgetItem *item )
 
 void QgsHandleBadLayers::cellDoubleClicked( int row, int column )
 {
+  Q_UNUSED( row );
   if ( column != 3 || !mBrowseButton->isEnabled() )
     return;
 

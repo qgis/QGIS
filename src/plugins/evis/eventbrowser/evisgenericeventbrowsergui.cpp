@@ -258,14 +258,14 @@ bool eVisGenericEventBrowserGui::initBrowser( )
   if ( 0 == mVectorLayer->selectedFeatureCount( ) ) //if nothing is selected select everything
   {
     mVectorLayer->invertSelection();
-    mFeatureIds = mVectorLayer->selectedFeaturesIds( ).toList( );
+    mFeatureIds = mVectorLayer->selectedFeaturesIds().toList();
   }
   else //use selected features
   {
-    mFeatureIds = mVectorLayer->selectedFeaturesIds( ).toList( );
+    mFeatureIds = mVectorLayer->selectedFeaturesIds().toList();
   }
 
-  if ( 0 == mFeatureIds.size( ) )
+  if ( 0 == mFeatureIds.size() )
     return false;
 
   //get the first feature in the list so we can set the field in the pulldown menues
@@ -556,7 +556,7 @@ void eVisGenericEventBrowserGui::displayImage( )
  * Returns a pointer to the reqested feature with a given featureid
  * @param id - FeatureId of the feature to find/select
  */
-QgsFeature* eVisGenericEventBrowserGui::featureAtId( int id )
+QgsFeature* eVisGenericEventBrowserGui::featureAtId( QgsFeatureId id )
 {
   //This method was originally necessary because delimited text data provider did not support featureAtId( )
   //It has mostly been stripped down now
@@ -820,6 +820,7 @@ void eVisGenericEventBrowserGui::on_buttonboxOptions_clicked( QAbstractButton* t
  */
 void eVisGenericEventBrowserGui::on_chkboxApplyPathRulesToDocs_stateChanged( int theState )
 {
+  Q_UNUSED( theState );
   mConfiguration.setApplyPathRulesToDocs( chkboxApplyPathRulesToDocs->isChecked( ) );
 }
 
@@ -829,6 +830,7 @@ void eVisGenericEventBrowserGui::on_chkboxApplyPathRulesToDocs_stateChanged( int
  */
 void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged( int theIndex )
 {
+  Q_UNUSED( theIndex );
   if ( !mIgnoreEvent )
   {
     mConfiguration.setEventImagePathField( cboxEventImagePathField->currentText( ) );
@@ -856,6 +858,7 @@ void eVisGenericEventBrowserGui::on_cboxEventImagePathField_currentIndexChanged(
  */
 void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged( int theIndex )
 {
+  Q_UNUSED( theIndex );
   if ( !mIgnoreEvent )
   {
     mConfiguration.setCompassBearingField( cboxCompassBearingField->currentText( ) );
@@ -883,6 +886,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassBearingField_currentIndexChanged(
  */
 void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( int theIndex )
 {
+  Q_UNUSED( theIndex );
   if ( !mIgnoreEvent )
   {
     mConfiguration.setCompassOffsetField( cboxCompassOffsetField->currentText( ) );
@@ -910,6 +914,7 @@ void eVisGenericEventBrowserGui::on_cboxCompassOffsetField_currentIndexChanged( 
  */
 void eVisGenericEventBrowserGui::on_chkboxDisplayCompassBearing_stateChanged( int theState )
 {
+  Q_UNUSED( theState );
   mConfiguration.setDisplayCompassBearing( chkboxDisplayCompassBearing->isChecked( ) );
   cboxCompassBearingField->setEnabled( chkboxDisplayCompassBearing->isChecked( ) );
 }
@@ -920,6 +925,7 @@ void eVisGenericEventBrowserGui::on_chkboxDisplayCompassBearing_stateChanged( in
  */
 void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( int theState )
 {
+  Q_UNUSED( theState );
   mConfiguration.setEventImagePathRelative( chkboxEventImagePathRelative->isChecked( ) );
 
   if ( chkboxEventImagePathRelative->isChecked( ) && "" == leBasePath->text( ) )
@@ -935,6 +941,7 @@ void eVisGenericEventBrowserGui::on_chkboxEventImagePathRelative_stateChanged( i
  */
 void eVisGenericEventBrowserGui::on_chkboxUseOnlyFilename_stateChanged( int theState )
 {
+  Q_UNUSED( theState );
   mConfiguration.setUseOnlyFilename( chkboxUseOnlyFilename->isChecked( ) );
 }
 
