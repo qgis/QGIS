@@ -25,12 +25,12 @@ class QgsGraphArc
     /**
      * return index of outgoing vertex
      */
-    int out() const;
+    int outVertex() const;
 
     /**
      * return index of incoming vertex
      */
-    int in() const;
+    int inVertex() const;
 };
 
 

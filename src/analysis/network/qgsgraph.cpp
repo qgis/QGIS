@@ -97,6 +97,16 @@ QVector< QVariant > QgsGraphArc::properties() const
   return mProperties;
 }
 
+int QgsGraphArc::inVertex() const
+{
+  return mIn;
+}
+
+int QgsGraphArc::outVertex() const
+{
+  return mOut;
+}
+
 int QgsGraphArc::in() const
 {
   return mIn;

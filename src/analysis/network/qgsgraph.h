@@ -47,7 +47,7 @@ class ANALYSIS_EXPORT QgsGraphArc
      * return property value
      * @param propertyIndex property index
      */
-    QVariant property(int propertyIndex ) const;
+    QVariant property( int propertyIndex ) const;
     
     /**
      * get array of proertyes
@@ -58,11 +58,13 @@ class ANALYSIS_EXPORT QgsGraphArc
      * return index of outgoing vertex
      */
     int out() const;
+    int outVertex() const;
 
     /**
      * return index of incoming vertex
      */
     int in() const;
+    int inVertex() const;
 
   private:
 
