@@ -1266,6 +1266,15 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
       {
         featureBBox->combineExtentWith( &box );
       }
+
+      //append feature bounding box to feature info xml
+      QDomElement bBoxElem = infoDocument.createElement( "BoundingBox" );
+      bBoxElem.setAttribute( "CRS", mapRender->destinationCrs().authid() );
+      bBoxElem.setAttribute( "minx", box.xMinimum() );
+      bBoxElem.setAttribute( "maxx", box.xMaximum() );
+      bBoxElem.setAttribute( "miny", box.yMinimum() );
+      bBoxElem.setAttribute( "maxy", box.yMaximum() );
+      featureElement.appendChild( bBoxElem );
     }
   }
 
