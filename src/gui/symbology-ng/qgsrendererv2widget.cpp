@@ -11,7 +11,7 @@ QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* sty
 {
 }
 
-void QgsRendererV2Widget::contextMenuViewCategories( const QPoint& p )
+void QgsRendererV2Widget::contextMenuViewCategories( const QPoint & )
 {
   QMenu contextMenu;
   contextMenu.addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );

@@ -565,6 +565,9 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
+#else
+  Q_UNUSED( fetchGeometry );
+  Q_UNUSED( fetchAttributes );
 #endif
 }
 

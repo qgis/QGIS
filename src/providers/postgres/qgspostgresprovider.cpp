@@ -4558,9 +4558,8 @@ void QgsPGRootItem::connectionsChanged()
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
-  QgsPGRootItem * root = new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
-
-  return root;
+  Q_UNUSED( thePath );
+  return new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
 }
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
