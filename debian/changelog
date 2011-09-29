@@ -7,8 +7,9 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * add ubuntu oneiric
   * include internal pyspatialite in python-qgis
   * update watch
+  * drop abi postfix from sqlanywhere plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 07 Sep 2011 22:23:41 +0200
+ -- Jürgen E. Fischer <jef@norbit.de>  Thu, 29 Sep 2011 21:44:50 +0000
 
 qgis (1.7.0) UNRELEASED; urgency=low
 
