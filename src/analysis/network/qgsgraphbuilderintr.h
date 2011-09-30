@@ -79,12 +79,11 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
 
     /**
      * add vertex
-     * @param id vertex identyficator
+     * @param id vertex identifier
      * @param pt vertex coordinate
-     * @note id and pt is a redundant interface. You can use coordinates or id for vertex identyfy
+     * @note id and pt are redundant. You can use pt or id to identify the vertex
      */
-    virtual void addVertex( int id, const QgsPoint& pt )
-    { }
+    virtual void addVertex( int id, const QgsPoint &pt ) = 0;
 
     /**
      * add arc
@@ -95,8 +94,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      * @param properties arc properties
      * @note pt1id, pt1 and pt2id, pt2 is a redundant interface. You can use vertex coordinates or their identificators.
      */
-    virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& properties )
-    { }
+    virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& properties ) = 0;
 
   private:
     QgsCoordinateReferenceSystem mCrs;
