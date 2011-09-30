@@ -37,13 +37,13 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     /**
      * QgsGraphBuilderInterface constructor
      * @param crs Coordinate reference system for new graph vertex
-     * @param ctfEnabled enable coordinate transform from source graph CRS to CRS graph 
+     * @param ctfEnabled enable coordinate transform from source graph CRS to CRS graph
      * @param topologyTolerance sqrt distance between source point as one graph vertex
      * @param ellipsoidID ellipsoid for edge measurement
-     */  
+     */
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" ) :
-      mCrs( crs ), mCtfEnabled ( ctfEnabled ), mTopologyTolerance( topologyTolerance )
-    { 
+        mCrs( crs ), mCtfEnabled( ctfEnabled ), mTopologyTolerance( topologyTolerance )
+    {
       mDa.setSourceCrs( mCrs.srsid() );
       mDa.setEllipsoid( ellipsoidID );
       mDa.setProjectionsEnabled( ctfEnabled );
@@ -58,7 +58,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     {
       return mCrs;
     }
-    
+
     //! get coordinate transformation enabled
     bool coordinateTransformationEnabled()
     {
@@ -70,7 +70,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
     {
       return mTopologyTolerance;
     }
-    
+
     //! get measurement tool
     QgsDistanceArea* distanceArea()
     {
@@ -97,7 +97,7 @@ class ANALYSIS_EXPORT QgsGraphBuilderInterface
      */
     virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& properties )
     { }
-  
+
   private:
     QgsCoordinateReferenceSystem mCrs;
 

@@ -28,10 +28,10 @@
 
 void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, int criterionNum, const QVector<int>& destPointCost, QVector<double>& cost, QgsGraph* treeResult )
 {
-  
+
   // QMap< cost, vertexIdx > not_begin
   // I use it and not create any struct or class.
-  QMap< double, int > not_begin;  
+  QMap< double, int > not_begin;
   QMap< double, int >::iterator it;
 
   // QVector< QPair< cost, arc id > result
@@ -39,14 +39,14 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
 
   result.reserve( source->vertexCount() );
   int i;
-  for ( i=0; i < source->vertexCount(); ++i )
+  for ( i = 0; i < source->vertexCount(); ++i )
   {
     result.push_back( QPair<double, int> ( std::numeric_limits<double>::infinity() , i ) );
   }
   result[ startPointIdx ] = QPair<double, int> ( 0.0, -1 );
 
   not_begin.insert( 0.0, startPointIdx );
-  
+
   // begin Dijkstra algorithm
   while ( !not_begin.empty() )
   {
@@ -63,47 +63,47 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
       const QgsGraphArc& arc = source->arc( *arcIt );
       double cost = arc.property( criterionNum ).toDouble() + curCost;
 
-      if ( cost < result[ arc.in() ].first )
+      if ( cost < result[ arc.in()].first )
       {
-        result[ arc.in() ] = QPair< double, int >( cost, *arcIt );
+        result[ arc.in()] = QPair< double, int >( cost, *arcIt );
         not_begin.insert( cost, arc.in() );
       }
     }
   }
- 
+
   // fill shortestpath tree
   if ( treeResult != NULL )
   {
     // sourceVertexIdx2resultVertexIdx
     QVector<int> source2result( result.size(), -1 );
 
-    for ( i=0; i < source->vertexCount(); ++i )
+    for ( i = 0; i < source->vertexCount(); ++i )
     {
       if ( result[ i ].first < std::numeric_limits<double>::infinity() )
       {
-        source2result[ i ] = treeResult->addVertex( source->vertex(i).point() );
+        source2result[ i ] = treeResult->addVertex( source->vertex( i ).point() );
       }
     }
-    for ( i=0; i < source->vertexCount(); ++i )
+    for ( i = 0; i < source->vertexCount(); ++i )
     {
-      if ( result[ i ].first < std::numeric_limits<double>::infinity() && result[i].second != -1)
-      {  
+      if ( result[ i ].first < std::numeric_limits<double>::infinity() && result[i].second != -1 )
+      {
         const QgsGraphArc& arc = source->arc( result[i].second );
 
-        treeResult->addArc( source2result[ arc.out() ], source2result[ i ], 
-            arc.properties() );
+        treeResult->addArc( source2result[ arc.out()], source2result[ i ],
+                            arc.properties() );
       }
     }
   }
-  
+
   // fill shortestpath's costs
-  for ( i=0; i < destPointCost.size(); ++i )
+  for ( i = 0; i < destPointCost.size(); ++i )
   {
     cost[i] = result[ destPointCost[i] ].first;
   }
 }
 
-QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum)
+QgsGraph* QgsGraphAnalyzer::shortestTree( const QgsGraph* source, int startVertexIdx, int criterionNum )
 {
   QgsGraph *g = new QgsGraph;
   QVector<int> v;

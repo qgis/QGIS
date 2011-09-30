@@ -40,7 +40,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
      * default constructor
      */
     QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
-    
+
     ~QgsGraphBuilder();
 
     /*
@@ -54,8 +54,8 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
      * return QgsGraph result;
      */
     QgsGraph* graph();
-  
-  private:  
+
+  private:
 
     QgsGraph *mGraph;
 };

@@ -216,9 +216,9 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   {
     width = context.outputLineWidth( f->attributeMap()[mWidthField.first].toDouble() );
   }
-  else if( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
-      width = context.outputLineWidth( mSize );
+    width = context.outputLineWidth( mSize );
   }
   else //3. priority: global width setting
   {
@@ -230,9 +230,9 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   {
     height = context.outputLineWidth( f->attributeMap()[mHeightField.first].toDouble() );
   }
-  else if( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
   {
-      height = context.outputLineWidth( mSize );
+    height = context.outputLineWidth( mSize );
   }
   else //3. priority: global height setting
   {

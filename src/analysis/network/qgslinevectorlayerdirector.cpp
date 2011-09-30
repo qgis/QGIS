@@ -36,40 +36,40 @@ class QgsPointCompare
 {
   public:
     QgsPointCompare( double tolerance ) :
-      mTolerance( tolerance )
+        mTolerance( tolerance )
     {  }
-  
+
     bool operator()( const QgsPoint& p1, const QgsPoint& p2 ) const
     {
       if ( mTolerance <= 0 )
         return p1.x() == p2.x() ? p1.y() < p2.y() : p1.x() < p2.x();
 
-      double tx1 = ceil( p1.x()/mTolerance );
-      double tx2 = ceil( p2.x()/mTolerance );
+      double tx1 = ceil( p1.x() / mTolerance );
+      double tx2 = ceil( p2.x() / mTolerance );
       if ( tx1 == tx2 )
-        return ceil( p1.y()/mTolerance ) < ceil( p2.y()/mTolerance );
+        return ceil( p1.y() / mTolerance ) < ceil( p2.y() / mTolerance );
       return tx1 < tx2;
     }
-  
+
   private:
     double mTolerance;
 };
 
-template <typename RandIter, typename Type, typename CompareOp > RandIter my_binary_search( RandIter begin, RandIter end, Type val, CompareOp comp)
+template <typename RandIter, typename Type, typename CompareOp > RandIter my_binary_search( RandIter begin, RandIter end, Type val, CompareOp comp )
 {
   // result if not found
   RandIter not_found = end;
 
   while ( true )
   {
-    RandIter avg = begin + (end-begin)/2;
+    RandIter avg = begin + ( end - begin ) / 2;
     if ( begin == avg || end == avg )
     {
       if ( !comp( *begin, val ) && !comp( val, *begin ) )
         return begin;
       if ( !comp( *end, val ) && !comp( val, *end ) )
         return end;
-      
+
       return not_found;
     }
     if ( comp( val, *avg ) )
@@ -88,7 +88,7 @@ struct TiePointInfo
   QgsPoint mTiedPoint;
   double mLength;
   QgsPoint mFirstPoint;
-  QgsPoint mLastPoint;      
+  QgsPoint mLastPoint;
 };
 
 bool TiePointInfoCompare( const TiePointInfo& a, const TiePointInfo& b )
@@ -105,7 +105,7 @@ QgsLineVectorLayerDirector::QgsLineVectorLayerDirector( QgsVectorLayer *myLayer,
     const QString& reverseDirectionValue,
     const QString& bothDirectionValue,
     int defaultDirection
-    )
+                                                      )
 {
   mVectorLayer            = myLayer;
   mDirectionFieldId       = directionFieldId;
@@ -141,19 +141,20 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   if ( builder->coordinateTransformationEnabled() )
   {
     ct.setDestCRS( builder->destinationCrs() );
-  }else
+  }
+  else
   {
     ct.setDestCRS( vl->crs() );
   }
- 
+
   tiedPoint = QVector< QgsPoint >( additionalPoints.size(), QgsPoint( 0.0, 0.0 ) );
-  
+
   TiePointInfo tmpInfo;
   tmpInfo.mLength = std::numeric_limits<double>::infinity();
 
   QVector< TiePointInfo > pointLengthMap( additionalPoints.size(), tmpInfo );
   QVector< TiePointInfo >::iterator pointLengthIt;
-  
+
   //Graph's points;
   QVector< QgsPoint > points;
 
@@ -168,7 +169,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       mpl = feature.geometry()->asMultiPolyline();
     else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
       mpl.push_back( feature.geometry()->asPolyline() );
-    
+
     QgsMultiPolyline::iterator mplIt;
     for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
     {
@@ -190,10 +191,11 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               info.mLength = additionalPoints[ i ].sqrDist( pt1 );
               info.mTiedPoint = pt1;
-            }else
+            }
+            else
             {
-              info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(), 
-                pt2.x(), pt2.y(), info.mTiedPoint );
+              info.mLength = additionalPoints[ i ].sqrDistToSegment( pt1.x(), pt1.y(),
+                             pt2.x(), pt2.y(), info.mTiedPoint );
             }
 
             if ( pointLengthMap[ i ].mLength > info.mLength )
@@ -215,7 +217,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
   }
   // end: tie points to graph
 
-  // add tied point to graph 
+  // add tied point to graph
   int i = 0;
   for ( i = 0; i < tiedPoint.size(); ++i )
   {
@@ -224,19 +226,19 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       points.push_back( tiedPoint [ i ] );
     }
   }
- 
+
   QgsPointCompare pointCompare( builder->topologyTolerance() );
 
   qSort( points.begin(), points.end(), pointCompare );
-  QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() ); 
+  QVector< QgsPoint >::iterator tmp = std::unique( points.begin(), points.end() );
   points.resize( tmp - points.begin() );
 
 
-  for (i=0;i<points.size();++i)
+  for ( i = 0;i < points.size();++i )
     builder->addVertex( i, points[ i ] );
-  
-  for ( i = 0; i < tiedPoint.size() ; ++i)
-    tiedPoint[ i ] = *(my_binary_search( points.begin(), points.end(), tiedPoint[ i ], pointCompare ) );
+
+  for ( i = 0; i < tiedPoint.size() ; ++i )
+    tiedPoint[ i ] = *( my_binary_search( points.begin(), points.end(), tiedPoint[ i ], pointCompare ) );
 
   qSort( pointLengthMap.begin(), pointLengthMap.end(), TiePointInfoCompare );
 
@@ -252,16 +254,16 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
 
     for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
     {
-      QgsAttributeList tmp = (*it)->requiredAttributes();
+      QgsAttributeList tmp = ( *it )->requiredAttributes();
       for ( it2 = tmp.begin(); it2 != tmp.end(); ++it2 )
       {
         tmpAttr.push_back( *it2 );
       }
     }
     qSort( tmpAttr.begin(), tmpAttr.end() );
-    
+
     int lastAttrId = -1;
-        for ( it2 = tmpAttr.begin(); it2 != tmpAttr.end(); ++it2 )
+    for ( it2 = tmpAttr.begin(); it2 != tmpAttr.end(); ++it2 )
     {
       if ( *it2 == lastAttrId )
       {
@@ -273,7 +275,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       lastAttrId = *it2;
     }
   } // end fill attribute list 'la'
- 
+
   // begin graph construction
   vl->select( la );
   while ( vl->nextFeature( feature ) )
@@ -309,7 +311,7 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       mpl = feature.geometry()->asMultiPolyline();
     else if ( feature.geometry()->wkbType() == QGis::WKBLineString )
       mpl.push_back( feature.geometry()->asPolyline() );
-    
+
     QgsMultiPolyline::iterator mplIt;
     for ( mplIt = mpl.begin(); mplIt != mpl.end(); ++mplIt )
     {
@@ -320,18 +322,18 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
       for ( pointIt = mplIt->begin(); pointIt != mplIt->end(); ++pointIt )
       {
         pt2 = ct.transform( *pointIt );
-      
+
         if ( !isFirstPoint )
         {
           std::map< double, QgsPoint > pointsOnArc;
           pointsOnArc[ 0.0 ] = pt1;
           pointsOnArc[ pt1.sqrDist( pt2 )] = pt2;
-          
+
           TiePointInfo t;
           t.mFirstPoint = pt1;
           t.mLastPoint  = pt2;
           pointLengthIt = my_binary_search( pointLengthMap.begin(), pointLengthMap.end(), t, TiePointInfoCompare );
-          
+
           if ( pointLengthIt != pointLengthMap.end() )
           {
             QVector< TiePointInfo >::iterator it;
@@ -339,14 +341,14 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
             {
               if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
               {
-                pointsOnArc[ pt1.sqrDist( it->mTiedPoint ) ] = it->mTiedPoint;
+                pointsOnArc[ pt1.sqrDist( it->mTiedPoint )] = it->mTiedPoint;
               }
             }
-            for ( it = pointLengthIt+1; it != pointLengthMap.end(); ++it )
+            for ( it = pointLengthIt + 1; it != pointLengthMap.end(); ++it )
             {
               if ( it->mFirstPoint == pt1 && it->mLastPoint == pt2 )
               {
-                pointsOnArc[ pt1.sqrDist( it->mTiedPoint ) ] = it->mTiedPoint;
+                pointsOnArc[ pt1.sqrDist( it->mTiedPoint )] = it->mTiedPoint;
               }
             }
           }
@@ -370,9 +372,9 @@ void QgsLineVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, c
               QList< QgsArcProperter* >::const_iterator it;
               for ( it = mProperterList.begin(); it != mProperterList.end(); ++it )
               {
-                prop.push_back( (*it)->property( distance, feature ) );
+                prop.push_back(( *it )->property( distance, feature ) );
               }
-      
+
               if ( directionType == 1 ||
                    directionType == 3 )
               {

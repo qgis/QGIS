@@ -14,10 +14,10 @@
 ***************************************************************************/
 
 /*
- * 
+ *
  * \file qgsgraph.h
  * Этот файл описывает встроенные в QGIS классы описывающие математический граф. Вершина графа идентифицируется своими географическими координатами, никакие дополнительные свойства ей не могут быть присвоены. Количество свойств графа определяется разработчиком и не ограничено, например длина и время движения по дуге. Граф может быть направленным, иметь инцедентные ребра и петли.
- * 
+ *
  */
 
 #ifndef QGSGRAPHH
@@ -48,7 +48,7 @@ class ANALYSIS_EXPORT QgsGraphArc
      * @param propertyIndex property index
      */
     QVariant property( int propertyIndex ) const;
-    
+
     /**
      * get array of proertyes
      */
@@ -73,7 +73,7 @@ class ANALYSIS_EXPORT QgsGraphArc
     int mOut;
     int mIn;
 
-  friend class QgsGraph;
+    friend class QgsGraph;
 };
 
 
@@ -97,28 +97,28 @@ class ANALYSIS_EXPORT QgsGraphVertex
      */
 
     QgsGraphVertex( const QgsPoint& point );
-    
+
     /**
      * return outgoing edges
      */
     QgsGraphArcIdList outArc() const;
-    
+
     /**
      * return incoming edges
      */
     QgsGraphArcIdList inArc() const;
-    
+
     /**
      * return vertex point
      */
     QgsPoint point() const;
-  
+
   private:
     QgsPoint mCoordinate;
     QgsGraphArcIdList mOutArc;
     QgsGraphArcIdList mInArc;
 
-  friend class QgsGraph;
+    friend class QgsGraph;
 };
 
 /**
@@ -139,28 +139,28 @@ class ANALYSIS_EXPORT QgsGraph
      * add vertex to a grap
      */
     int addVertex( const QgsPoint& pt );
-    
+
     /**
      * add edge to a graph
      */
     int addArc( int outVertexIdx, int inVertexIdx, const QVector< QVariant >& properties );
-    
+
     /**
      * retrun vertex count
      */
     int vertexCount() const;
-   
+
     /**
      * return vertex at index
      */
     const QgsGraphVertex& vertex( int idx ) const;
 
-   /**
-     * retrun edge count
-     */
+    /**
+      * retrun edge count
+      */
     int arcCount() const;
-   
-    /** 
+
+    /**
      * retrun edge at index
      */
     const QgsGraphArc& arc( int idx ) const;
@@ -171,9 +171,9 @@ class ANALYSIS_EXPORT QgsGraph
      */
     int findVertex( const QgsPoint& pt ) const;
 
-  private: 
+  private:
     QVector<QgsGraphVertex> mGraphVertexes;
-    
+
     QVector<QgsGraphArc> mGraphArc;
 };
 

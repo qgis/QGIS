@@ -43,16 +43,16 @@ class QgsLineVectorLayerDirector : public QgsGraphDirector
      * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both direction
      */
     QgsLineVectorLayerDirector( QgsVectorLayer* vl,
-                               int directionFieldId,
-                               const QString& directDirectionValue,
-                               const QString& reverseDirectionValue,
-                               const QString& bothDirectionValue,
-                               int defaultDirection
-                               );
+                                int directionFieldId,
+                                const QString& directDirectionValue,
+                                const QString& reverseDirectionValue,
+                                const QString& bothDirectionValue,
+                                int defaultDirection
+                              );
 
     //! Destructor
     virtual ~QgsLineVectorLayerDirector();
-    
+
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */

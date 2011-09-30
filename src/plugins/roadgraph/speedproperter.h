@@ -20,9 +20,9 @@ class RgSpeedProperter : public QgsArcProperter
 {
   public:
     RgSpeedProperter( int attributeId, double defaultValue, double toMetricFactor );
-    
+
     QVariant property( double distance, const QgsFeature& f ) const;
-    
+
     QgsAttributeList requiredAttributes() const;
   private:
     int mAttributeId;

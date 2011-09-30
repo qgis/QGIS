@@ -25,12 +25,12 @@ QVariant RgSpeedProperter::property( double distance, const QgsFeature& f ) cons
   QgsAttributeMap::const_iterator it = map.find( mAttributeId );
 
   if ( it == map.end() )
-    return QVariant( distance/(mDefaultValue*mToMetricFactor) );
+    return QVariant( distance / ( mDefaultValue*mToMetricFactor ) );
 
-  double val = distance/(it->toDouble()*mToMetricFactor);
+  double val = distance / ( it->toDouble() * mToMetricFactor );
   if ( val <= 0.0 )
-    return QVariant( distance/(mDefaultValue/mToMetricFactor) );
-  
+    return QVariant( distance / ( mDefaultValue / mToMetricFactor ) );
+
   return QVariant( val );
 }
 

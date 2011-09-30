@@ -59,17 +59,17 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
                             const QVector< QgsPoint >& additionalPoints,
                             QVector< QgsPoint>& tiedPoints ) const
     {}
-    
+
     void addProperter( QgsArcProperter* prop )
     {
       mProperterList.push_back( prop );
     }
-    
+
     /**
      * return Director name
      */
     virtual QString name() const = 0;
-  
+
   protected:
     QList<QgsArcProperter*> mProperterList;
 };

@@ -105,7 +105,7 @@ void RoadGraphPlugin::initGui()
 
   // Set the what's this text
   mQSettingsAction->setWhatsThis( tr( "Road graph plugin settings" ) );
-   mInfoAction->setWhatsThis( tr( "About Road graph plugin" ) );
+  mInfoAction->setWhatsThis( tr( "About Road graph plugin" ) );
 
   setGuiElementsToDefault();
 
@@ -131,7 +131,7 @@ void RoadGraphPlugin::unload()
   // remove the GUI
   mQGisIface->removePluginMenu( tr( "Road graph" ), mQSettingsAction );
   mQGisIface->removePluginMenu( tr( "Road graph" ), mInfoAction );
- 
+
   // disconnect
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( newProject() ) );
@@ -271,18 +271,18 @@ const QgsGraphDirector* RoadGraphPlugin::director() const
     if ( provider == NULL )
       return NULL;
     SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
-  
+
     QgsLineVectorLayerDirector * director =
       new QgsLineVectorLayerDirector( layer,
-                                   provider->fieldNameIndex( mSettings->mDirection ),
-                                   mSettings->mFirstPointToLastPointDirectionVal,
-                                   mSettings->mLastPointToFirstPointDirectionVal,
-                                   mSettings->mBothDirectionVal,
-                                   mSettings->mDefaultDirection
-                                   );
+                                      provider->fieldNameIndex( mSettings->mDirection ),
+                                      mSettings->mFirstPointToLastPointDirectionVal,
+                                      mSettings->mLastPointToFirstPointDirectionVal,
+                                      mSettings->mBothDirectionVal,
+                                      mSettings->mDefaultDirection
+                                    );
     director->addProperter( new QgsDistanceArcProperter() );
-    director->addProperter( new RgSpeedProperter( provider->fieldNameIndex( mSettings->mSpeed ), 
-        mSettings->mDefaultSpeed, speedUnit.multipler() ) );
+    director->addProperter( new RgSpeedProperter( provider->fieldNameIndex( mSettings->mSpeed ),
+                            mSettings->mDefaultSpeed, speedUnit.multipler() ) );
     return director;
   }
   return NULL;
