@@ -14,10 +14,13 @@
 ***************************************************************************/
 
 /*
+ * This file describes the built-in QGIS classes modeling a mathematical graph.
+ * Vertex is identified by its geographic coordinates (but you can add two vertex
+ * with unique coordinate), no additional properties it can not be assigned.
+ * Count the number of properties not limited along the arc. Graph may
+ * be have intsedentnye arcs.
  *
  * \file qgsgraph.h
- * Этот файл описывает встроенные в QGIS классы описывающие математический граф. Вершина графа идентифицируется своими географическими координатами, никакие дополнительные свойства ей не могут быть присвоены. Количество свойств графа определяется разработчиком и не ограничено, например длина и время движения по дуге. Граф может быть направленным, иметь инцедентные ребра и петли.
- *
  */
 
 #ifndef QGSGRAPHH
