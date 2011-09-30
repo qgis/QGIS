@@ -27,14 +27,20 @@
 #include <qgsvectorlayer.h>
 #include <qgsvectordataprovider.h>
 
+#include <qgslinevectorlayerdirector.h>
+#include <qgsgraphbuilder.h>
+#include <qgsgraph.h>
+#include <qgsdistancearcproperter.h>
+
 // Road grap plugin includes
 #include "roadgraphplugin.h"
 #include "shortestpathwidget.h"
 #include "settingsdlg.h"
+#include "speedproperter.h"
+#include "units.h"
 
-#include "linevectorlayerdirector.h"
 #include "linevectorlayersettings.h"
-#include "simplegraphbuilder.h"
+
 //
 // Qt4 Related Includes
 //
@@ -43,7 +49,6 @@
 #include <QLabel>
 #include <QLocale>
 #include <QToolBar>
-#include <QPainter>
 #include <QPushButton>
 #include <QDockWidget>
 #include <QVBoxLayout>
@@ -96,31 +101,21 @@ void RoadGraphPlugin::initGui()
 
   // Create the action for tool
   mQSettingsAction  = new QAction( QIcon( ":/roadgraph/road.png" ), tr( "Road graph settings" ), this );
-  mQShowDirectionAction  = new QAction( QIcon( ":/roadgraph/showdirect.png" ), tr( "Show road's direction" ), this );
   mInfoAction = new QAction( QIcon( ":/roadgraph/about.png" ), tr( "About" ), this );
 
   // Set the what's this text
   mQSettingsAction->setWhatsThis( tr( "Road graph plugin settings" ) );
-  mQShowDirectionAction->setWhatsThis( tr( "Roads direction viewer" ) );
-  mInfoAction->setWhatsThis( tr( "About Road graph plugin" ) );
-
-  mQShowDirectionAction->setCheckable( true );
+   mInfoAction->setWhatsThis( tr( "About Road graph plugin" ) );
 
   setGuiElementsToDefault();
 
   // Connect the action to slots
   connect( mQSettingsAction, SIGNAL( triggered() ), this, SLOT( property() ) );
-  connect( mQShowDirectionAction, SIGNAL( triggered() ), this, SLOT( onShowDirection() ) );
   connect( mInfoAction, SIGNAL( triggered() ), SLOT( about() ) );
 
-  // Add the icons to the toolbar
-  mQGisIface->addToolBarIcon( mQShowDirectionAction );
-
   mQGisIface->addPluginToMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->addPluginToMenu( tr( "Road graph" ), mQShowDirectionAction );
   mQGisIface->addPluginToMenu( tr( "Road graph" ), mInfoAction );
 
-  connect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter* ) ), this, SLOT( render( QPainter* ) ) );
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
   connect( mQGisIface, SIGNAL( projectRead() ), mQShortestPathDock, SLOT( clear() ) );
@@ -135,18 +130,13 @@ void RoadGraphPlugin::unload()
 {
   // remove the GUI
   mQGisIface->removePluginMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->removePluginMenu( tr( "Road graph" ), mQShowDirectionAction );
   mQGisIface->removePluginMenu( tr( "Road graph" ), mInfoAction );
-
-  mQGisIface->removeToolBarIcon( mQShowDirectionAction );
-
+ 
   // disconnect
-  disconnect( mQGisIface->mapCanvas(), SIGNAL( renderComplete( QPainter* ) ), this, SLOT( render( QPainter* ) ) );
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   disconnect( mQGisIface->mainWindow(), SIGNAL( newProject() ), this, SLOT( newProject() ) );
 
   delete mQSettingsAction;
-  delete mQShowDirectionAction;
   delete mQShortestPathDock;
 } // RoadGraphPlugin::unload()
 
@@ -260,7 +250,7 @@ QgisInterface* RoadGraphPlugin::iface()
   return mQGisIface;
 }
 
-const RgGraphDirector* RoadGraphPlugin::director() const
+const QgsGraphDirector* RoadGraphPlugin::director() const
 {
   QString layerId;
   QgsVectorLayer *layer = NULL;
@@ -270,79 +260,34 @@ const RgGraphDirector* RoadGraphPlugin::director() const
   {
     if ( it.value()->name() != mSettings->mLayer )
       continue;
-    layerId = it.key();
     layer = dynamic_cast< QgsVectorLayer* >( it.value() );
     break;
   }
   if ( layer == NULL )
     return NULL;
-
-  QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* >( layer->dataProvider() );
-  if ( provider == NULL )
-    return NULL;
-
-  RgLineVectorLayerDirector * director =
-    new RgLineVectorLayerDirector( layerId,
+  if ( layer->geometryType() == QGis::Line )
+  {
+    QgsVectorDataProvider *provider = dynamic_cast< QgsVectorDataProvider* >( layer->dataProvider() );
+    if ( provider == NULL )
+      return NULL;
+    SpeedUnit speedUnit = SpeedUnit::byName( mSettings->mSpeedUnitName );
+  
+    QgsLineVectorLayerDirector * director =
+      new QgsLineVectorLayerDirector( layer,
                                    provider->fieldNameIndex( mSettings->mDirection ),
                                    mSettings->mFirstPointToLastPointDirectionVal,
                                    mSettings->mLastPointToFirstPointDirectionVal,
                                    mSettings->mBothDirectionVal,
-                                   mSettings->mDefaultDirection,
-                                   mSettings->mSpeedUnitName,
-                                   provider->fieldNameIndex( mSettings->mSpeed ),
-                                   mSettings->mDefaultSpeed );
-
-  return director;
-}
-void RoadGraphPlugin::render( QPainter *painter )
-{
-  if ( !mQShowDirectionAction->isChecked() )
-    return;
-
-  const RgGraphDirector *graphDirector = director();
-
-  if ( graphDirector == NULL )
-    return;
-
-  RgSimpleGraphBuilder builder( mQGisIface->mapCanvas()->mapRenderer()->destinationCrs(),
-                                mQGisIface->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
-  QVector< QgsPoint > null;
-  graphDirector->makeGraph( &builder , null, null );
-  AdjacencyMatrix m = builder.adjacencyMatrix();
-
-  AdjacencyMatrix::iterator it1;
-  AdjacencyMatrixString::iterator it2;
-  for ( it1 = m.begin(); it1 != m.end(); ++it1 )
-  {
-    for ( it2 = it1->second.begin(); it2 != it1->second.end(); ++it2 )
-    {
-      QgsPoint p1 =  mQGisIface->mapCanvas()->getCoordinateTransform()->transform( it1->first );
-      QgsPoint p2 =  mQGisIface->mapCanvas()->getCoordinateTransform()->transform( it2->first );
-      double  x1 = p1.x(),
-                   y1 = p1.y(),
-                        x2 = p2.x(),
-                             y2 = p2.y();
-
-      double length = sqrt( pow( x2 - x1, 2.0 ) + pow( y2 - y1, 2.0 ) );
-      double Cos = ( x2 - x1 ) / length;
-      double Sin = ( y2 - y1 ) / length;
-      double centerX = ( x1 + x2 ) / 2;
-      double centerY = ( y1 + y2 ) / 2;
-      double r = mArrowSize;
-
-      QPointF pt1( centerX - Sin*r, centerY + Cos*r );
-      QPointF pt2( centerX + Sin*r, centerY - Cos*r );
-
-      QVector<QPointF> tmp;
-      tmp.resize( 3 );
-      tmp[0] = QPointF( centerX + Cos * r * 2, centerY + Sin * r * 2 );
-      tmp[1] = pt1;
-      tmp[2] = pt2;
-      painter->drawPolygon( tmp );
-    }
+                                   mSettings->mDefaultDirection
+                                   );
+    director->addProperter( new QgsDistanceArcProperter() );
+    director->addProperter( new RgSpeedProperter( provider->fieldNameIndex( mSettings->mSpeed ), 
+        mSettings->mDefaultSpeed, speedUnit.multipler() ) );
+    return director;
   }
-  delete graphDirector;
-}// RoadGraphPlugin::render()
+  return NULL;
+}
+
 QString RoadGraphPlugin::timeUnitName()
 {
   return mTimeUnitName;

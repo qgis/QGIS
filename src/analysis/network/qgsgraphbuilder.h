@@ -1,5 +1,5 @@
 /***************************************************************************
-  simplegraphbuilder.h
+  qgsgraphbuilder.h
   --------------------------------------
   Date                 : 2010-10-25
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -12,11 +12,10 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef ROADGRAPH_SIMPLEGRAPHBUILDER
-#define ROADGRAPH_SIMPLEGRAPHBUILDER
+#ifndef QGSGRAPHBUILDERH
+#define QGSGRAPHBUILDERH
 
-#include "graphbuilder.h"
-#include "utils.h"
+#include "qgsgraphbuilderintr.h"
 
 //QT4 includes
 
@@ -26,35 +25,38 @@
 //forward declarations
 class QgsDistanceArea;
 class QgsCoordinateTransform;
+class QgsGraph;
 
 /**
-* \class RgSimpleGraphBuilder
-* \brief This class making the simple graph
+* \ingroup networkanalysis
+* \class QgsGraphBuilder
+* \brief This class making the QgsGraph object
 */
 
-class RgSimpleGraphBuilder : public RgGraphBuilder
+class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
 {
   public:
     /**
      * default constructor
      */
-    RgSimpleGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool ctfEnabled, double topologyTolerance = 0.0 );
+    QgsGraphBuilder( const QgsCoordinateReferenceSystem& crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString& ellipsoidID = "WGS84" );
+    
+    ~QgsGraphBuilder();
 
-    /**
+    /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    QgsPoint addVertex( const QgsPoint& pt );
-    void addArc( const QgsPoint& pt1, const QgsPoint& pt2, double cost, double speed, QgsFeatureId featureId );
+    virtual void addVertex( int id, const QgsPoint& pt );
+
+    virtual void addArc( int pt1id, const QgsPoint& pt1, int pt2id, const QgsPoint& pt2, const QVector< QVariant >& prop );
 
     /**
-     * return Adjacecncy matrix;
+     * return QgsGraph result;
      */
-    AdjacencyMatrix adjacencyMatrix();
-  private:
-    AdjacencyMatrix mMatrix;
+    QgsGraph* graph();
+  
+  private:  
 
-    QgsSpatialIndex mPointIndex;
-
-    QMap< QgsFeatureId, QgsPoint> mPointMap;
+    QgsGraph *mGraph;
 };
-#endif //SIMPLEGRAPHBUILDER
+#endif //QGSGRAPHBUILDERH

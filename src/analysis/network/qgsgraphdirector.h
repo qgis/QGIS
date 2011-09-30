@@ -1,5 +1,5 @@
 /***************************************************************************
-  graphdirector.h
+  qgsgraphdirector.h
   --------------------------------------
   Date                 : 2010-10-18
   Copyright            : (C) 2010 by Yakushev Sergey
@@ -12,23 +12,27 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef ROADGRAPH_GRAPHDIRECTOR
-#define ROADGRAPH_GRAPHDIRECTOR
+#ifndef QGSGRAPHDIRECTORH
+#define QGSGRAPHDIRECTORH
 
 //QT4 includes
 #include <QObject>
+#include <QVector>
+#include <QList>
 
 //QGIS includes
-#include <qgsrectangle.h>
+#include <qgspoint.h>
+#include "qgsarcproperter.h"
 
 //forward declarations
-class RgGraphBuilder;
+class QgsGraphBuilderInterface;
 
 /**
- * \class RgGraphDirector
- * \brief Determine making the graph
+ * \ingroup networkanalysis
+ * \class QgsGraphDirector
+ * \brief Determine making the graph. QgsGraphBuilder and QgsGraphDirector is a builder patter.
  */
-class RgGraphDirector : public QObject
+class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 {
     Q_OBJECT
 
@@ -38,7 +42,7 @@ class RgGraphDirector : public QObject
 
   public:
     //! Destructor
-    virtual ~RgGraphDirector() { };
+    virtual ~QgsGraphDirector() { };
 
     /**
      * Make a graph using RgGraphBuilder
@@ -51,13 +55,22 @@ class RgGraphDirector : public QObject
      *
      * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
      */
-    virtual void makeGraph( RgGraphBuilder *builder,
+    virtual void makeGraph( QgsGraphBuilderInterface* builder,
                             const QVector< QgsPoint >& additionalPoints,
-                            QVector< QgsPoint>& tiedPoints ) const = 0;
-
+                            QVector< QgsPoint>& tiedPoints ) const
+    {}
+    
+    void addProperter( QgsArcProperter* prop )
+    {
+      mProperterList.push_back( prop );
+    }
+    
     /**
      * return Director name
      */
     virtual QString name() const = 0;
+  
+  protected:
+    QList<QgsArcProperter*> mProperterList;
 };
-#endif //GRAPHDIRECTOR
+#endif //QGSGRAPHDIRECTORH

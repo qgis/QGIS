@@ -12,69 +12,60 @@
 *   (at your option) any later version.                                    *
 *                                                                          *
 ***************************************************************************/
-#ifndef ROADGRAPH_LINEVECTORLAYERDIRECTOR
-#define ROADGRAPH_LINEVECTORLAYERDIRECTOR
+#ifndef QGSLINEVECTORLAYERDIRECTORH
+#define QGSLINEVECTORLAYERDIRECTORH
 
 //QT4 includes
 
 //QGIS includes
 
 // Road-graph plugin includes
-#include "graphdirector.h"
+#include "qgsgraphdirector.h"
 
 //forward declarations
-class RgGraphBuilder;
+class QgsGraphBuilderInterface;
 class QgsVectorLayer;
 
 /**
-* \class RgLineVectorLayerDirector
+* \ingroup networkanalysis
+* \class QgsLineVectorLayerDirector
 * \brief Determine making the graph from vector line layer
 */
-class RgLineVectorLayerDirector : public RgGraphDirector
+class QgsLineVectorLayerDirector : public QgsGraphDirector
 {
-  private:
-    struct TiePointInfo
-    {
-      QgsPoint mTiedPoint;
-      double mLength;
-      QgsPoint mFirstPoint;
-      QgsPoint mLastPoint;
-    };
   public:
-    RgLineVectorLayerDirector( const QString& layerId,
-                               int directionFiledId,
+    /**
+     * @param vl  source vector layer
+     * @param directionFieldId feield contain road direction value
+     * @param directDirectionValue value for one-way road
+     * @param reverseDirectionValue value for reverse one-way road
+     * @param bothDirectionValue value for road
+     * @param defaultDirection 1 - direct direction, 2 - reverse direction, 3 - both direction
+     */
+    QgsLineVectorLayerDirector( QgsVectorLayer* vl,
+                               int directionFieldId,
                                const QString& directDirectionValue,
                                const QString& reverseDirectionValue,
                                const QString& bothDirectionValue,
-                               int defaultDirection,
-                               const QString& speedValueUnit = QString( "m/s" ),
-                               int speedFieldId = -1,
-                               double defaultSpeed = 1.0 );
+                               int defaultDirection
+                               );
 
     //! Destructor
-    virtual ~RgLineVectorLayerDirector();
-    /**
+    virtual ~QgsLineVectorLayerDirector();
+    
+    /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */
-    void makeGraph( RgGraphBuilder *builder,
+    void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPoint >& additionalPoints,
                     QVector< QgsPoint>& tiedPoints ) const;
 
     QString name() const;
 
-  private:
-
-    QgsVectorLayer* myLayer() const;
 
   private:
 
-    QString mLayerId;
-
-    int mSpeedFieldId;
-
-    double mDefaultSpeed;
-
-    QString mSpeedUnitName;
+    QgsVectorLayer *mVectorLayer;
 
     int mDirectionFieldId;
 
@@ -87,4 +78,5 @@ class RgLineVectorLayerDirector : public RgGraphDirector
     //FIXME: need enum
     int mDefaultDirection;
 };
-#endif //GRAPHDIRECTOR
+
+#endif //QGSLINEVECTORLAYERGRAPHDIRECTORH
