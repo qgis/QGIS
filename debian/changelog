@@ -8,6 +8,7 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * include internal pyspatialite in python-qgis
   * update watch
   * drop abi postfix from sqlanywhere plugin
+  * include network analysis library
 
  -- Jürgen E. Fischer <jef@norbit.de>  Thu, 29 Sep 2011 21:44:50 +0000
 
