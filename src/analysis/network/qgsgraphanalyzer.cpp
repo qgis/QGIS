@@ -63,9 +63,9 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
       const QgsGraphArc& arc = source->arc( *arcIt );
       double cost = arc.property( criterionNum ).toDouble() + curCost;
 
-      if ( cost < result[ arc.inVertex() ].first )
+      if ( cost < result[ arc.inVertex()].first )
       {
-        result[ arc.inVertex() ] = QPair< double, int >( cost, *arcIt );
+        result[ arc.inVertex()] = QPair< double, int >( cost, *arcIt );
         not_begin.insert( cost, arc.inVertex() );
       }
     }
@@ -90,7 +90,7 @@ void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, 
       {
         const QgsGraphArc& arc = source->arc( result[i].second );
 
-        treeResult->addArc( source2result[ arc.outVertex() ], source2result[ i ],
+        treeResult->addArc( source2result[ arc.outVertex()], source2result[ i ],
                             arc.properties() );
       }
     }

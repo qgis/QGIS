@@ -371,11 +371,11 @@ void RgShortestPathWidget::exportPath()
     return;
 
   QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
-                               vl->crs() );
-  
+                             vl->crs() );
+
   int startVertexIdx = path.findVertex( p1 );
   int stopVertexIdx  = path.findVertex( p2 );
-  
+
   QgsPolyline p;
   while ( startVertexIdx != stopVertexIdx )
   {
