@@ -38,7 +38,7 @@ class QgsGraphVertex;
 
 /**
  * \ingroup networkanalysis
- * \class QgsGraphEdge
+ * \class QgsGraphArc
  * \brief This class implement a graph edge
  */
 class ANALYSIS_EXPORT QgsGraphArc
