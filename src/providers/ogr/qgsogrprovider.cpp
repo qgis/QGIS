@@ -2455,7 +2455,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
       QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
 
-      QString name = info.fileName();
+      QString name = info.completeBaseName();
 
       QString layerName = FROM8( OGR_FD_GetName( hDef ) );
       QgsDebugMsg( "OGR layer name : " + layerName );
