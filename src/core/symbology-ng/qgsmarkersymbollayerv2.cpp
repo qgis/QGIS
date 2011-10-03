@@ -556,6 +556,10 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
   p->translate( point + outputOffset );
 
   int size = ( int )( context.outputLineWidth( mSize ) );
+  if ( size < 1 ) //don't render symbols with size below one pixel
+  {
+    return;
+  }
 
   if ( mAngle != 0 )
     p->rotate( mAngle );
