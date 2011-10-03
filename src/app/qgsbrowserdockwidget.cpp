@@ -1,5 +1,6 @@
 #include "qgsbrowserdockwidget.h"
 
+#include <QHeaderView>
 #include <QTreeView>
 #include <QMenu>
 #include <QSettings>
@@ -56,6 +57,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   //connect( mBrowserView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
   connect( mBrowserView, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
+
 }
 
 void QgsBrowserDockWidget::showEvent( QShowEvent * e )
@@ -65,6 +67,11 @@ void QgsBrowserDockWidget::showEvent( QShowEvent * e )
   {
     mModel = new QgsBrowserModel( mBrowserView );
     mBrowserView->setModel( mModel );
+
+    // provide a horizontal scroll bar instead of using ellipse (...) for longer items
+    mBrowserView->setTextElideMode( Qt::ElideNone );
+    mBrowserView->header()->setResizeMode( 0, QHeaderView::ResizeToContents );
+    mBrowserView->header()->setStretchLastSection( false );
   }
 
   QDockWidget::showEvent( e );
