@@ -2467,7 +2467,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         path += "/" + name;
       }
 
-      QString layerUri = thePath + "|layerid=" + QString::number( i );
+      QString layerUri = thePath;
+      if ( collection )
+        layerUri += "|layerid=" + QString::number( i );
       QgsDebugMsg( "OGR layer uri : " + layerUri );
 
       QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );
