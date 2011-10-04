@@ -33,8 +33,8 @@
 
 #include "qgsconfig.h"
 
+#include <gdal.h>
 #include <ogr_api.h>
-#include <gdal_priv.h>
 #include <cpl_conv.h> // for setting gdal options
 
 QObject * QgsApplication::mFileOpenEventReceiver;
@@ -745,5 +745,5 @@ void QgsApplication::applyGdalSkippedDrivers()
   QgsDebugMsg( "Gdal Skipped driver list set to:" );
   QgsDebugMsg( myDriverList );
   CPLSetConfigOption( "GDAL_SKIP", myDriverList.toUtf8() );
-  GetGDALDriverManager()->AutoSkipDrivers();
+  GDALAllRegister(); //to update driver list and skip missing ones
 }
