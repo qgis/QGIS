@@ -21,13 +21,13 @@ class QgsFeature;
 class QgsVectorLayer;
 class QPainter;
 class QImage;
-class QDomNode;
 class QDomDocument;
 class QColor;
 
 #include "qgis.h"
 #include "qgsrendercontext.h"
 #include <QList>
+#include <QDomNode>
 
 class QgsSymbol;
 class QBrush;
@@ -113,7 +113,7 @@ class CORE_EXPORT QgsRenderer
 
     /**Returns renderer symbol for a feature.
         @note: this method was added in version 1.6*/
-    virtual QgsSymbol* symbolForFeature( const QgsFeature* f ) { return 0;}
+    virtual QgsSymbol* symbolForFeature( const QgsFeature* f ) { Q_UNUSED( f ); return 0;}
 
     /**Scales a brush to a given raster scale factor (e.g. for printing)*/
     static void scaleBrush( QBrush& b, double rasterScaleFactor );

@@ -111,6 +111,7 @@ void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
 
 void QgsOfflineEditingPluginGui::on_checkboxShowEditableLayers_stateChanged( int state )
 {
+  Q_UNUSED( state );
   updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
 }
 

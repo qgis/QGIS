@@ -104,6 +104,8 @@ static void printGEOSNotice( const char *fmt, ... )
   va_end( ap );
 
   QgsDebugMsg( QString( "GEOS notice: %1" ).arg( QString::fromUtf8( buffer ) ) );
+#else
+  Q_UNUSED( fmt );
 #endif
 }
 

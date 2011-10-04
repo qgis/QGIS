@@ -68,7 +68,7 @@ class SelectionFeature: public QObject
      * @param canvas mapCanvas on which we are working
      * @param feature feature with which we work this parameter is not mandatory if it's not filled feature will be loaded
      */
-    void setSelectedFeature( int featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
+    void setSelectedFeature( QgsFeatureId featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
 
     /**
      * Function to select vertex with number
@@ -110,7 +110,7 @@ class SelectionFeature: public QObject
      * Updates vertex markers position accoording to changed feature geometry
      * @param canvas map canvas we are working with
      */
-    void updateVertexMarkersPosition( QgsMapCanvas* canvas );
+    void updateVertexMarkersPosition();
 
     /**
      * Tells if vertex is selected
@@ -123,7 +123,7 @@ class SelectionFeature: public QObject
      * Getting feature Id of feature selected
      * @return feature id of selected feature
      */
-    int featureId();
+    QgsFeatureId featureId();
 
     /**
      * Getting vertex map of vertexes
@@ -207,7 +207,7 @@ class SelectionFeature: public QObject
     void validateGeometry( QgsGeometry *g = NULL );
 
     QgsFeature* mFeature;
-    int mFeatureId;
+    QgsFeatureId mFeatureId;
     bool mFeatureSelected;
     QgsVectorLayer* mVlayer;
     QgsRubberBand* mRubberBand;
@@ -258,7 +258,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * Processing incoming signal of deleted feature (for deletion of selected feature)
      * @param featureId id of deleted feature
      */
-    void featureDeleted( int featureId );
+    void featureDeleted( QgsFeatureId featureId );
 
     /**
      * Processing incoming signal of deleted feature (for deletion of selected feature)
@@ -328,10 +328,10 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QList<QgsRubberBand*> mTopologyRubberBand;
 
     /** vertexes of rubberbands which are to be moved */
-    QMap<int, Vertexes*> mTopologyMovingVertexes;
+    QMap<QgsFeatureId, Vertexes*> mTopologyMovingVertexes;
 
     /** vertexes of features with int id which were already added tu rubber bands */
-    QMap<int, Vertexes*> mTopologyRubberBandVertexes;
+    QMap<QgsFeatureId, Vertexes*> mTopologyRubberBandVertexes;
 
     /** object containing selected feature and it's vertexes */
     SelectionFeature* mSelectionFeature;
@@ -352,7 +352,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     bool mSelectAnother;
 
     /** feature id of another feature where user clicked */
-    int mAnother;
+    QgsFeatureId mAnother;
 
     /** stored position of last press down action to count how much vertexes should be moved */
     QgsPoint* mLastCoordinates;

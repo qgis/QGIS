@@ -158,8 +158,6 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Reads parameter that are not subclass specific in document. Usually called from readXML methods of subclasses*/
     bool _readXML( const QDomElement& itemElem, const QDomDocument& doc );
 
-
-
     bool frame() const {return mFrame;}
     void setFrame( bool drawFrame ) {mFrame = drawFrame;}
 
@@ -219,6 +217,16 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
 
     /**Updates item, with the possibility to do custom update for subclasses*/
     virtual void updateItem() { QGraphicsRectItem::update(); }
+
+    /**Get item identification name
+      @note this method was added in version 1.7*/
+    QString id() const { return mId; }
+
+    /**Set item identification name
+      @note this method was added in version 1.7
+                     This method was moved from qgscomposerlabel so that every object can have a
+                      id (NathanW)*/
+    void setId( const QString& id ) { mId = id; }
 
   public slots:
     virtual void setRotation( double r );
@@ -307,8 +315,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
-    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+
     /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
     void sizeChangedByRotation( double& width, double& height );
     /**Rotates a point / vector
@@ -322,6 +329,11 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     void rotationChanged( double newRotation );
     /**Used e.g. by the item widgets to update the gui elements*/
     void itemChanged();
+  private:
+    // Label id (unique within the same composition)
+    QString mId;
+
+    void init( bool manageZValue );
 };
 
 #endif

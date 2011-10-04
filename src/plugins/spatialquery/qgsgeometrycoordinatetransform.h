@@ -62,7 +62,8 @@ class QgsGeometryCoordinateTransform
     * \brief None transform the coordinates reference system of the geometry (use by transform)
     * \param geom      Geometry
     */
-    void setNoneGeomTransform( QgsGeometry *geom ) {};
+    void setNoneGeomTransform( QgsGeometry *geom )
+    { Q_UNUSED( geom ); }
 
     QgsCoordinateTransform * mCoordTransform;
     void ( QgsGeometryCoordinateTransform::* mFuncTransform )( QgsGeometry * );

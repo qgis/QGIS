@@ -710,7 +710,7 @@ QgsSqlAnywhereProvider::findKeyColumn()
 
 
 bool
-QgsSqlAnywhereProvider::featureAtId( int featureId, QgsFeature & feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
+QgsSqlAnywhereProvider::featureAtId( QgsFeatureId featureId, QgsFeature & feature, bool fetchGeometry, QgsAttributeList fetchAttributes )
 {
   a_sqlany_bind_param     idParam;
   size_t      idLen = sizeof( int );
@@ -1521,7 +1521,7 @@ QgsSqlAnywhereProvider::changeGeometryValues( QgsGeometryMap & gmap )
         ; ok && it != gmap.constEnd()
         ; it++ )
   {
-    int key = it.key();
+    QgsFeatureId key = it.key();
     QgsGeometry geom = *it;
     QString wkt = geom.exportToWkt();
     QByteArray wktBa = wkt.toUtf8();

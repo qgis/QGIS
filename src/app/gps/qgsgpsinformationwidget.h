@@ -25,11 +25,15 @@
 #include <qwt_plot_curve.h>
 #include <qwt_polar_plot.h>
 #include <qwt_polar_marker.h>
+
 class QextSerialPort;
 class QgsGPSConnection;
 class QgsGPSTrackerThread;
 struct QgsGPSInformation;
-class QPointF;
+
+class QgsLegend;
+class QFile;
+class QColor;
 
 /**A dock widget that displays information from a GPS device and
  * allows the user to capture features using gps readings to
@@ -44,8 +48,11 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
   private slots:
     void on_mConnectButton_toggled( bool theFlag );
     void displayGPSInformation( const QgsGPSInformation& info );
-    void setTrackColour( );
-    void on_mBtnTrackColour_clicked( );
+    void logNmeaSentence( const QString& nmeaString ); // added to handle 'raw' data
+    void updateCloseFeatureButton( QgsMapLayer * lyr );
+    void layerEditStateChanged();
+//   void setTrackColor( ); // no longer used
+    void on_mBtnTrackColor_clicked( );
     void on_mSpinTrackWidth_valueChanged( int theValue );
     void on_mBtnPosition_clicked( );
     void on_mBtnSignal_clicked( );
@@ -56,17 +63,24 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     void on_mBtnAddVertex_clicked( );
     void on_mBtnCloseFeature_clicked( );
     void on_mBtnResetFeature_clicked( );
-    void on_mCbxAutoAddVertices_toggled( bool theFlag );
+// not needed    void on_mCbxAutoAddVertices_toggled( bool theFlag );
+    void on_mBtnLogFile_clicked();
 
     void connected( QgsGPSConnection * );
     void timedout();
 
   private:
+    enum FixStatus  //GPS status
+    {
+      NoData, NoFix, Fix2D, Fix3D
+    };
     void addVertex( );
     void connectGps();
     void connectGpsSlot( );
     void disconnectGps();
     void populateDevices();
+    void setStatusIndicator( const FixStatus statusValue );
+    void showStatusBarMessage( const QString& msg );
     QgsGPSConnection* mNmea;
     QgsMapCanvas * mpCanvas;
     QgsGpsMarker * mpMapMarker;
@@ -76,10 +90,17 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
     QList< QwtPolarMarker * > mMarkerList;
     void createRubberBand( );
     QgsCoordinateReferenceSystem mWgs84CRS;
-    QPointF gpsToPixelPosition( const QgsPoint& point );
+// not used    QPointF gpsToPixelPosition( const QgsPoint& point );
     QgsRubberBand * mpRubberBand;
     QgsPoint mLastGpsPosition;
     QList<QgsPoint> mCaptureList;
+    FixStatus mLastFixStatus;
+    QString mDateTimeFormat; // user specified format string in registry (no UI presented)
+    QgsLegend * mpLegend;
+    QgsVectorLayer * mpLastLayer;
+    QFile * mLogFile;
+    QTextStream mLogFileTextStream;
+    QColor mTrackColor;
 };
 
 #endif // QGSGPSINFORMATIONWIDGET_H

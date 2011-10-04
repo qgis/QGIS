@@ -150,9 +150,11 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOpacitySlider->blockSignals( true );
   mOutlineWidthSpinBox->blockSignals( true );
   mFrameCheckBox->blockSignals( true );
+  mItemIdLineEdit->blockSignals( true );
 
   mOpacitySlider->setValue( mItem->brush().color().alpha() );
   mOutlineWidthSpinBox->setValue( mItem->pen().widthF() );
+  mItemIdLineEdit->setText( mItem->id() );
   if ( mItem->frame() )
   {
     mFrameCheckBox->setCheckState( Qt::Checked );
@@ -165,7 +167,7 @@ void QgsComposerItemWidget::setValuesForGuiElements()
   mOpacitySlider->blockSignals( false );
   mOutlineWidthSpinBox->blockSignals( false );
   mFrameCheckBox->blockSignals( false );
-
+  mItemIdLineEdit->blockSignals( false );
 }
 
 void QgsComposerItemWidget::on_mPositionButton_clicked()
@@ -184,5 +186,15 @@ void QgsComposerItemWidget::on_mPositionButton_clicked()
   else
   {
     mItem->cancelCommand();
+  }
+}
+
+void QgsComposerItemWidget::on_mItemIdLineEdit_textChanged( const QString &text )
+{
+  if ( mItem )
+  {
+    mItem->beginCommand( tr( "Item id changed" ), QgsComposerMergeCommand::ComposerLabelSetId );
+    mItem->setId( text );
+    mItem->endCommand();
   }
 }

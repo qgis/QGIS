@@ -351,8 +351,14 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
   // This is done by looking at a number of points spread evenly
   // across the rectangle
 
-  if ( mShortCircuit || !mInitialisedFlag || rect.isEmpty() )
+  if ( mShortCircuit || !mInitialisedFlag )
     return rect;
+
+  if ( rect.isEmpty() )
+  {
+    QgsPoint p = transform( rect.xMinimum(), rect.yMinimum(), direction );
+    return QgsRectangle( p, p );
+  }
 
   static const int numP = 8;
 
@@ -563,6 +569,8 @@ const char *finder( const char *name )
 #ifdef WIN32
   proj = QApplication::applicationDirPath()
          + "/share/proj/" + QString( name );
+#else
+  Q_UNUSED( name );
 #endif
   return proj.toUtf8();
 }

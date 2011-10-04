@@ -93,6 +93,7 @@ void QgsAttributeTypeDialog::setCheckedState( QString checked, QString unchecked
 
 void QgsAttributeTypeDialog::vCellChanged( int row, int column )
 {
+  Q_UNUSED( column );
   if ( row == tableWidget->rowCount() - 1 )
   {
     tableWidget->insertRow( row + 1 );
@@ -104,8 +105,8 @@ void QgsAttributeTypeDialog::removeSelectedButtonPushed()
   QList<QTableWidgetItem *> list = tableWidget->selectedItems();
   QSet<int> rowsToRemove;
   int removed = 0;
-  int i = 0;
-  for ( ; i < list.size(); i++ )
+  int i;
+  for ( i = 0; i < list.size(); i++ )
   {
     if ( list[i]->column() == 0 )
     {
@@ -426,6 +427,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
       valueRelationKeyColumn->setCurrentIndex( valueRelationKeyColumn->findText( mValueRelationData.mKey ) );
       valueRelationValueColumn->setCurrentIndex( valueRelationValueColumn->findText( mValueRelationData.mValue ) );
       valueRelationAllowNull->setChecked( mValueRelationData.mAllowNull );
+      valueRelationOrderByValue->setChecked( mValueRelationData.mOrderByValue );
       break;
 
     case QgsVectorLayer::LineEdit:
@@ -596,6 +598,7 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mKey = valueRelationKeyColumn->currentText();
       mValueRelationData.mValue = valueRelationValueColumn->currentText();
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
+      mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
       break;
   }
 

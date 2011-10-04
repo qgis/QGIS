@@ -31,13 +31,15 @@ QgsMapToolDeleteVertex::~QgsMapToolDeleteVertex()
   delete mCross;
 }
 
-void QgsMapToolDeleteVertex::canvasMoveEvent( QMouseEvent * e )
+void QgsMapToolDeleteVertex::canvasMoveEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   //nothing to do
 }
 
-void QgsMapToolDeleteVertex::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolDeleteVertex::canvasPressEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   delete mCross;
   mCross = 0;
 
@@ -63,8 +65,9 @@ void QgsMapToolDeleteVertex::canvasPressEvent( QMouseEvent * e )
   }
 }
 
-void QgsMapToolDeleteVertex::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolDeleteVertex::canvasReleaseEvent( QMouseEvent *e )
 {
+  Q_UNUSED( e );
   delete mCross;
   mCross = 0;
 

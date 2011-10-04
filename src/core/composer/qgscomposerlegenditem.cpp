@@ -263,6 +263,7 @@ void QgsComposerRasterSymbolItem::writeXML( QDomElement& elem, QDomDocument& doc
   QDomElement rasterClassElem = doc.createElement( "RasterClassificationItem" );
   rasterClassElem.setAttribute( "layerId", mLayerID );
   rasterClassElem.setAttribute( "text", text() );
+  rasterClassElem.setAttribute( "color", mColor.name() );
   elem.appendChild( rasterClassElem );
 }
 
@@ -274,11 +275,13 @@ void QgsComposerRasterSymbolItem::readXML( const QDomElement& itemElem, bool xSe
   }
   setText( itemElem.attribute( "text", "" ) );
   setLayerID( itemElem.attribute( "layerId", "" ) );
+  setColor( QColor( itemElem.attribute( "color" ) ) );
 
-  QgsRasterLayer* rLayer = qobject_cast<QgsRasterLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mLayerID ) );
-  if ( rLayer && xServerAvailable )
+  if ( xServerAvailable )
   {
-    setIcon( QIcon( rLayer->legendAsPixmap( true ) ) );
+    QPixmap itemPixmap( 20, 20 );
+    itemPixmap.fill( mColor );
+    setIcon( QIcon( itemPixmap ) );
   }
 }
 

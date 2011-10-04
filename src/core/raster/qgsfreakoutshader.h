@@ -44,6 +44,12 @@ class CORE_EXPORT QgsFreakOutShader : public QgsRasterShaderFunction
     /** \brief Return the minimum value */
     void setMinimumValue( double );
 
+    double classBreakMin1() const { return mClassBreakMin1; }
+    double classBreakMax1() const { return mClassBreakMax1; }
+    double classBreakMin2() const { return mClassBreakMin2; }
+    double classBreakMax2() const { return mClassBreakMax2; }
+    double classBreakMin3() const { return mClassBreakMin3; }
+
   private:
     void setClassBreaks();
 

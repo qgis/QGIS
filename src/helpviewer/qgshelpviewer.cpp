@@ -70,11 +70,13 @@ void QgsHelpViewer::fileExit()
  */
 void QgsHelpViewer::moveEvent( QMoveEvent *event )
 {
+  Q_UNUSED( event );
   saveWindowLocation();
 }
 
 void QgsHelpViewer::resizeEvent( QResizeEvent *event )
 {
+  Q_UNUSED( event );
   saveWindowLocation();
 }
 

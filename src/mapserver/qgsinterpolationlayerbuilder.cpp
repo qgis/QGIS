@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgsinterpolationlayerbuilder.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
@@ -43,8 +43,14 @@ QgsInterpolationLayerBuilder::~QgsInterpolationLayerBuilder()
 
 }
 
-QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement &elem,
+    const QString &layerName,
+    QList<QTemporaryFile*> &filesToRemove,
+    QList<QgsMapLayer*> &layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( layerName );
+  Q_UNUSED( allowCaching );
   if ( !mVectorLayer )
   {
     return 0;
@@ -53,7 +59,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement& el
   QDomNodeList interpolationList = elem.elementsByTagName( "Interpolation" );
   if ( interpolationList.size() < 1 )
   {
-    QgsMSDebugMsg( "No Interpolation element found" );
+    QgsDebugMsg( "No Interpolation element found" );
     return 0;
   }
   QDomElement interpolationElem = interpolationList.at( 0 ).toElement();
@@ -122,7 +128,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement& el
     nRows = resolutionElem.attribute( "nrows" ).toInt();
     if ( nCols == 0 && nRows == 0 )
     {
-      QgsMSDebugMsg( "Reading of resolution failed" );
+      QgsDebugMsg( "Reading of resolution failed" );
       return 0;
     }
   }
@@ -137,7 +143,7 @@ QgsMapLayer* QgsInterpolationLayerBuilder::createMapLayer( const QDomElement& el
   QgsGridFileWriter gridWriter( theInterpolator, tmpFile->fileName(), extent, nCols, nRows, extent.width() / nCols, extent.height() / nRows );
   if ( gridWriter.writeFile( false ) != 0 )
   {
-    QgsMSDebugMsg( "Interpolation of raster failed" );
+    QgsDebugMsg( "Interpolation of raster failed" );
     return 0;
   }
 

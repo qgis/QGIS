@@ -46,7 +46,7 @@ QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel
   loadLayer();
 }
 
-bool QgsAttributeTableMemoryModel::featureAtId( int fid )
+bool QgsAttributeTableMemoryModel::featureAtId( QgsFeatureId fid )
 {
   if ( mFeatureMap.contains( fid ) )
   {
@@ -60,14 +60,14 @@ bool QgsAttributeTableMemoryModel::featureAtId( int fid )
   }
 }
 
-void QgsAttributeTableMemoryModel::featureDeleted( int fid )
+void QgsAttributeTableMemoryModel::featureDeleted( QgsFeatureId fid )
 {
   QgsDebugMsg( "entered." );
   mFeatureMap.remove( fid );
   QgsAttributeTableModel::featureDeleted( fid );
 }
 
-void QgsAttributeTableMemoryModel::featureAdded( int fid )
+void QgsAttributeTableMemoryModel::featureAdded( QgsFeatureId fid )
 {
   QgsDebugMsg( "entered." );
   QgsFeature f;
@@ -83,7 +83,7 @@ void QgsAttributeTableMemoryModel::layerDeleted()
   QgsAttributeTableModel::layerDeleted();
 }
 
-void QgsAttributeTableMemoryModel::attributeValueChanged( int fid, int idx, const QVariant &value )
+void QgsAttributeTableMemoryModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
   QgsDebugMsg( "entered." );
   mFeatureMap[fid].changeAttribute( idx, value );

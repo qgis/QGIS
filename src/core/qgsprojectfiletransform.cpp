@@ -51,6 +51,7 @@ QgsProjectFileTransform::transform QgsProjectFileTransform::transformers[] =
 
 bool QgsProjectFileTransform::updateRevision( QgsProjectVersion newVersion )
 {
+  Q_UNUSED( newVersion );
   bool returnValue = false;
 
   if ( ! mDom.isNull() )

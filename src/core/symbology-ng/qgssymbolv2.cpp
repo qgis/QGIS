@@ -215,17 +215,17 @@ QImage QgsSymbolV2::bigSymbolPreviewImage()
   {
     QPolygonF poly;
     poly << QPointF( 0, 50 ) << QPointF( 99, 50 );
-    static_cast<QgsLineSymbolV2*>( this )->renderPolyline( poly, context );
+    static_cast<QgsLineSymbolV2*>( this )->renderPolyline( poly, 0, context );
   }
   else if ( mType == QgsSymbolV2::Fill )
   {
     QPolygonF polygon;
     polygon << QPointF( 20, 20 ) << QPointF( 80, 20 ) << QPointF( 80, 80 ) << QPointF( 20, 80 ) << QPointF( 20, 20 );
-    static_cast<QgsFillSymbolV2*>( this )->renderPolygon( polygon, NULL, context );
+    static_cast<QgsFillSymbolV2*>( this )->renderPolygon( polygon, NULL, 0, context );
   }
   else // marker
   {
-    static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( QPointF( 50, 50 ), context );
+    static_cast<QgsMarkerSymbolV2*>( this )->renderPoint( QPointF( 50, 50 ), 0, context );
   }
 
   stopRender( context );
@@ -265,10 +265,24 @@ QgsSymbolLayerV2List QgsSymbolV2::cloneLayers() const
   return lst;
 }
 
+QSet<QString> QgsSymbolV2::usedAttributes() const
+{
+  QSet<QString> attributes;
+  QgsSymbolLayerV2List::const_iterator sIt = mLayers.constBegin();
+  for ( ; sIt != mLayers.constEnd(); ++sIt )
+  {
+    if ( *sIt )
+    {
+      attributes.unite(( *sIt )->usedAttributes() );
+    }
+  }
+  return attributes;
+}
+
 ////////////////////
 
-QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints )
-    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints )
+QgsSymbolV2RenderContext::QgsSymbolV2RenderContext( QgsRenderContext& c, QgsSymbolV2::OutputUnit u, qreal alpha, bool selected, int renderHints, const QgsFeature* f )
+    : mRenderContext( c ), mOutputUnit( u ), mAlpha( alpha ), mSelected( selected ), mRenderHints( renderHints ), mFeature( f )
 {
 
 }
@@ -402,9 +416,9 @@ double QgsMarkerSymbolV2::size()
   return maxSize;
 }
 
-void QgsMarkerSymbolV2::renderPoint( const QPointF& point, QgsRenderContext& context, int layer, bool selected )
+void QgsMarkerSymbolV2::renderPoint( const QPointF& point, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -471,9 +485,9 @@ double QgsLineSymbolV2::width()
   return maxWidth;
 }
 
-void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, QgsRenderContext& context, int layer, bool selected )
+void QgsLineSymbolV2::renderPolyline( const QPolygonF& points, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )
@@ -507,9 +521,9 @@ QgsFillSymbolV2::QgsFillSymbolV2( QgsSymbolLayerV2List layers )
     mLayers.append( new QgsSimpleFillSymbolLayerV2() );
 }
 
-void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, QgsRenderContext& context, int layer, bool selected )
+void QgsFillSymbolV2::renderPolygon( const QPolygonF& points, QList<QPolygonF>* rings, const QgsFeature* f, QgsRenderContext& context, int layer, bool selected )
 {
-  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints );
+  QgsSymbolV2RenderContext symbolContext( context, mOutputUnit, mAlpha, selected, mRenderHints, f );
   if ( layer != -1 )
   {
     if ( layer >= 0 && layer < mLayers.count() )

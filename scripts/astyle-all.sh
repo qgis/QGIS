@@ -8,7 +8,7 @@ export elcr="$(tput el)$(tput cr)"
 
 find src -type f -print | while read f; do
 	case "$f" in
-        src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
+        src/app/gps/qwtpolar-*|src/core/spatialite/*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|src/astyle/*|python/pyspatialite/*|src/providers/sqlanywhere/sqlanyconnection/*)
                 echo $f skipped
                 continue
                 ;;

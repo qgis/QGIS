@@ -87,7 +87,7 @@ void QgsAnnotationWidget::on_mMapMarkerButton_clicked()
     return;
   }
   QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( mMarkerSymbol->clone() );
-  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), this );
+  QgsSymbolV2SelectorDialog dlg( markerSymbol, QgsStyleV2::defaultStyle(), 0, this );
   if ( dlg.exec() == QDialog::Rejected )
   {
     delete markerSymbol;

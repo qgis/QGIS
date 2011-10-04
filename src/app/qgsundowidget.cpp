@@ -68,6 +68,7 @@ void QgsUndoWidget::redoChanged( bool value )
 
 void QgsUndoWidget::indexChanged( int value )
 {
+  Q_UNUSED( value );
   //redoButton->setDisabled( !value );
   //canvas refresh
   mMapCanvas->refresh();

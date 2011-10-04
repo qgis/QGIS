@@ -43,6 +43,11 @@ class CORE_EXPORT QgsRasterShaderFunction
     /** \brief generates and new RGB value based on original RGB value */
     virtual bool shade( double, double, double, int*, int*, int* );
 
+    double minimumMaximumRange() const { return mMinimumMaximumRange; }
+
+    double minimumValue() const { return mMinimumValue; }
+    double maximumValue() const { return mMaximumValue; }
+
   protected:
     /** \brief User defineable maximum value for the shading function */
     double mMaximumValue;

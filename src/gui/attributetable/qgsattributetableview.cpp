@@ -82,8 +82,9 @@ QgsAttributeTableView::~QgsAttributeTableView()
   delete mActionPopup;
 }
 
-void QgsAttributeTableView::closeEvent( QCloseEvent *event )
+void QgsAttributeTableView::closeEvent( QCloseEvent *e )
 {
+  Q_UNUSED( e );
   QSettings settings;
   settings.setValue( "/BetterAttributeTable/geometry", QVariant( saveGeometry() ) );
 }

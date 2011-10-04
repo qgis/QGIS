@@ -91,7 +91,8 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags 
   mSearchModeComboBox->setVisible( false );
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
-  cbxAllowGeometrylessTables->setVisible( false );
+
+  cbxAllowGeometrylessTables->setDisabled( true );
 }
 
 // Slot for performing action when the Add button is clicked
@@ -111,6 +112,11 @@ void QgsSpatiaLiteSourceSelect::on_cmbConnections_activated( int )
 void QgsSpatiaLiteSourceSelect::buildQuery()
 {
   setSql( mTablesTreeView->currentIndex() );
+}
+
+void QgsSpatiaLiteSourceSelect::on_cbxAllowGeometrylessTables_stateChanged( int )
+{
+  on_btnConnect_clicked();
 }
 
 void QgsSpatiaLiteSourceSelect::on_mTablesTreeView_clicked( const QModelIndex &index )
@@ -161,6 +167,7 @@ void QgsSpatiaLiteSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( co
 
 void QgsSpatiaLiteSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QString & text )
 {
+  Q_UNUSED( text );
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
@@ -268,13 +275,8 @@ sqlite3 *QgsSpatiaLiteSourceSelect::openSpatiaLiteDb( QString path )
   if ( gcSpatiaLite && rsSpatiaLite )
     return handle;
 
-  // this one cannot be a valid SpatiaLite DB - no Spatial MetaData where found
-  closeSpatiaLiteDb( handle );
-  errCause = tr( "seems to be a valid SQLite DB, but not a SpatiaLite's one ..." );
-  QMessageBox::critical( this, tr( "SpatiaLite DB Open Error" ),
-                         tr( "Failure while connecting to: %1\n\n%2" ).arg( mSqlitePath ).arg( errCause ) );
-  mSqlitePath = "";
-  return NULL;
+  // this seems to be a valid SQLite DB, but not a SpatiaLite's one
+  return handle;
 
 error:
   // unexpected IO error
@@ -470,6 +472,8 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
 {
   sqlite3 *handle;
 
+  cbxAllowGeometrylessTables->setEnabled( false );
+
   QSettings settings;
   QString subKey = cmbConnections->currentText();
   int idx = subKey.indexOf( "@" );
@@ -516,6 +520,8 @@ void QgsSpatiaLiteSourceSelect::on_btnConnect_clicked()
   }
   mTablesTreeView->resizeColumnToContents( 0 );
   mTablesTreeView->resizeColumnToContents( 1 );
+
+  cbxAllowGeometrylessTables->setEnabled( true );
 }
 
 QStringList QgsSpatiaLiteSourceSelect::selectedTables()
@@ -561,7 +567,7 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   int columns;
   char *errMsg = NULL;
   bool ok = false;
-  char sql[1024];
+  QString sql;
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   // setting the SQLite DB name
@@ -570,9 +576,9 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   mTableModel.setSqliteDb( myName );
 
   // the following query return the tables containing a Geometry column
-  strcpy( sql, "SELECT f_table_name, f_geometry_column, type " );
-  strcat( sql, "FROM geometry_columns" );
-  ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
+  sql = "SELECT f_table_name, f_geometry_column, type "
+        "FROM geometry_columns";
+  ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
     goto error;
   if ( rows < 1 )
@@ -598,10 +604,10 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   if ( checkViewsGeometryColumns( handle ) )
   {
     // the following query return the views supporting a Geometry column
-    strcpy( sql, "SELECT view_name, view_geometry, type " );
-    strcat( sql, "FROM views_geometry_columns " );
-    strcat( sql, "JOIN geometry_columns USING (f_table_name, f_geometry_column)" );
-    ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
+    sql = "SELECT view_name, view_geometry, type "
+          "FROM views_geometry_columns "
+          "JOIN geometry_columns USING (f_table_name, f_geometry_column)";
+    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
       goto error;
     if ( rows < 1 )
@@ -626,9 +632,9 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
   if ( checkVirtsGeometryColumns( handle ) )
   {
     // the following query return the VirtualShapefiles
-    strcpy( sql, "SELECT virt_name, virt_geometry, type " );
-    strcat( sql, "FROM virts_geometry_columns" );
-    ret = sqlite3_get_table( handle, sql, &results, &rows, &columns, &errMsg );
+    sql = "SELECT virt_name, virt_geometry, type "
+          "FROM virts_geometry_columns";
+    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
     if ( ret != SQLITE_OK )
       goto error;
     if ( rows < 1 )
@@ -644,6 +650,29 @@ bool QgsSpatiaLiteSourceSelect::getTableInfo( sqlite3 * handle )
           continue;
 
         mTableModel.addTableEntry( type, tableName, column, "" );
+      }
+      ok = true;
+    }
+    sqlite3_free_table( results );
+  }
+
+  if ( cbxAllowGeometrylessTables->isChecked() )
+  {
+    // get all tables
+    sql = "SELECT name "
+          "FROM sqlite_master "
+          "WHERE type in ('table', 'view')";
+    ret = sqlite3_get_table( handle, sql.toUtf8(), &results, &rows, &columns, &errMsg );
+    if ( ret != SQLITE_OK )
+      goto error;
+    if ( rows < 1 )
+      ;
+    else
+    {
+      for ( i = 1; i <= rows; i++ )
+      {
+        QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
+        mTableModel.addTableEntry( tr( "No geometry" ), tableName, QString::null, "" );
       }
       ok = true;
     }
@@ -903,4 +932,5 @@ void QgsSpatiaLiteSourceSelect::setConnectionListPosition()
 
 void QgsSpatiaLiteSourceSelect::setSearchExpression( const QString & regexp )
 {
+  Q_UNUSED( regexp );
 }

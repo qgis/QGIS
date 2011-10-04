@@ -12,7 +12,7 @@ debian/*.substvars
 Makefile
 *-stamp
 api_doc
-build
+build*
 ms-windows/Installer-Files/postinstall.bat
 ms-windows/Installer-Files/preremove.bat
 ms-windows/osgeo4w/packages/
@@ -37,3 +37,5 @@ scripts/astyle.exe
 doc/CODING.html
 doc/CODING.tex
 doc/INSTALL.tex
+scripts/Debug
+scripts/RelWithDebInfo

@@ -16,19 +16,21 @@ Build-Depends:
  libpq-dev,
  libproj-dev,
  libqt4-dev (>=4.4.0),
+ libqt4-opengl-dev,
  libqtwebkit-dev,
- libqwt5-qt4-dev,
+ libqwt-dev,
  libspatialite-dev,
  libsqlite3-dev,
  pkg-config,
  pyqt4-dev-tools,
  python,
- python-central (>=0.5),
- python-dev,
+ python-dev (>= 2.6.6-3~),
  python-qt4 (>=4.1.0),
  python-qt4-dev (>=4.1.0),
  python-sip (>= 4.5.0),
  python-sip-dev (>= 4.5.0),
+ libosgearth-dev,
+ libopenscenegraph-dev,
  git,
  doxygen,
  graphviz,
@@ -41,7 +43,7 @@ Homepage: http://qgis.org/
 Package: qgis
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, qgis-providers (= ${binary:Version}), qgis-common (= ${source:Version})
-Recommends: qgis-plugin-grass, python-qgis
+Recommends: qgis-plugin-globe, qgis-plugin-grass, python-qgis
 Suggests: gpsbabel
 Conflicts: uim-qt3
 Description: Geographic Information System (GIS)
@@ -59,7 +61,7 @@ Description: Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
  .
- This package contains architecture-independent supporting data files for use 
+ This package contains architecture-independent supporting data files for use
  with Quantum GIS.
 
 Package: libqgis{QGIS_ABI}
@@ -111,8 +113,8 @@ Description: GRASS plugin for Quantum GIS
 
 Package: qgis-plugin-grass-common
 Architecture: all
-Depends: ${python:Depends}
 Replaces: qgis-common (<< 1.5)
+Depends: python
 Breaks: qgis-common (<< 1.5)
 Description: GRASS plugin for Quantum GIS - architecture-independent data
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
@@ -124,9 +126,8 @@ Description: GRASS plugin for Quantum GIS - architecture-independent data
 Package: python-qgis
 Section: python
 Architecture: any
-Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}, ${python:Depends}
+Depends: python-qt4 (>=4.1.0), python-sip (>= 4.5.0), python-qgis-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
 Provides: ${python:Provides}
-XB-Python-Version: ${python:Versions}
 Description: Python bindings to Quantum GIS
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -137,8 +138,7 @@ Package: python-qgis-common
 Section: python
 Architecture: all
 Provides: ${python:Provides}
-Depends: gdal-bin, python-gdal, ${python:Depends}
-XB-Python-Version: ${python:Versions}
+Depends: gdal-bin, python-gdal
 Description: Python bindings to Quantum GIS - architecture-independent files
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -177,9 +177,10 @@ Description: Quantum GIS mapserver
  .
  This package contains the Quantum GIS mapserver.
 
-Package: qgis-sqlanywhere{QGIS_ABI}
+Package: qgis-sqlanywhere
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Conflicts: qgis-sqlanywhere1.7.0, qgis-sqlanywhere1.7.1, qgis-sqlanywhere1.8.0
 Description: Quantum GIS sql anywhere plugin and provider
  Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
  and display databases of geographic information.
@@ -194,4 +195,22 @@ Description: Quantum GIS API documentation
  and display databases of geographic information.
  .
  This package contains the Quantum GIS API documentation.
+
+Package: qgis-plugin-globe
+Architecture: any
+Depends: qgis (= ${binary:Version}), qgis-plugin-globe-common (= ${source:Version}), ${shlibs:Depends}, ${misc:Depends}
+Description: OSG globe plugin for Quantum GIS
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This plugin enables 3D viewing using OSG globe in the Quantum GIS.
+
+Package: qgis-plugin-globe-common
+Architecture: all
+Description: OSG GLOBE plugin for Quantum GIS - architecture-independent data
+ Quantum GIS is a Geographic Information System (GIS) which manages, analyzes
+ and display databases of geographic information.
+ .
+ This package contains architecture-independent supporting data files for use
+ with the Quantum GIS GLOBE plugin.
 

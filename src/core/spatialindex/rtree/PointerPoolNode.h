@@ -45,7 +45,7 @@ namespace Tools
 
       ~PointerPool()
       {
-        assert( m_pool.size() <= m_capacity );
+        Q_ASSERT( m_pool.size() <= m_capacity );
 
         while ( ! m_pool.empty() )
         {
@@ -116,14 +116,13 @@ namespace Tools
             delete p;
           }
 
-          assert( m_pool.size() <= m_capacity );
+          Q_ASSERT( m_pool.size() <= m_capacity );
         }
       }
 
       unsigned long getCapacity() const { return m_capacity; }
       void setCapacity( unsigned long c )
       {
-        assert( c >= 0 );
         m_capacity = c;
       }
 

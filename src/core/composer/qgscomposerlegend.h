@@ -25,6 +25,7 @@ class QgsSymbol;
 class QgsSymbolV2;
 class QgsComposerGroupItem;
 class QgsComposerLayerItem;
+class QgsComposerMap;
 
 /** \ingroup MapComposer
  * A legend that can be placed onto a map composition
@@ -86,6 +87,9 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     double symbolHeight() const {return mSymbolHeight;}
     void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
+    void setComposerMap( const QgsComposerMap* map );
+    const QgsComposerMap* composerMap() const { return mComposerMap; }
+
     /**Updates the model and all legend entries*/
     void updateLegend();
 
@@ -104,6 +108,8 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
   public slots:
     /**Data changed*/
     void synchronizeWithModel();
+    /**Sets mCompositionMap to 0 if the map is deleted*/
+    void invalidateCurrentMap();
 
   protected:
     QString mTitle;
@@ -128,6 +134,9 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     double mSymbolHeight;
 
     QgsLegendModel mLegendModel;
+
+    /**Reference to map (because symbols are sometimes in map units)*/
+    const QgsComposerMap* mComposerMap;
 
 
   private:

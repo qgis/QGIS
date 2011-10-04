@@ -16,12 +16,13 @@
  ***************************************************************************/
 
 #include "qgssentdatasourcebuilder.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include <QDataStream>
 #include <QDomElement>
 #include <QTemporaryFile>
+#include <QTextStream>
 
 QgsSentDataSourceBuilder::QgsSentDataSourceBuilder()
 {
@@ -33,8 +34,14 @@ QgsSentDataSourceBuilder::~QgsSentDataSourceBuilder()
 
 }
 
-QgsMapLayer* QgsSentDataSourceBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer* QgsSentDataSourceBuilder::createMapLayer( const QDomElement& elem,
+    const QString& layerName,
+    QList<QTemporaryFile*>& filesToRemove,
+    QList<QgsMapLayer*>& layersToRemove,
+    bool allowCaching ) const
 {
+  Q_UNUSED( layerName );
+  Q_UNUSED( allowCaching );
   if ( elem.tagName() == "SentRDS" )
   {
     return rasterLayerFromSentRDS( elem, filesToRemove, layersToRemove );
@@ -66,10 +73,10 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
     QgsVectorLayer* theVectorLayer = new QgsVectorLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ), "WFS" );
     if ( !theVectorLayer || !theVectorLayer->isValid() )
     {
-      QgsMSDebugMsg( "invalid maplayer" );
+      QgsDebugMsg( "invalid maplayer" );
       return 0;
     }
-    QgsMSDebugMsg( "returning maplayer" );
+    QgsDebugMsg( "returning maplayer" );
 
     layersToRemove.push_back( theVectorLayer ); //make sure the layer gets deleted after each request
 
@@ -84,7 +91,7 @@ QgsVectorLayer* QgsSentDataSourceBuilder::vectorLayerFromSentVDS( const QDomElem
 
 QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElement& sentRDSElem, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove ) const
 {
-  QgsMSDebugMsg( "Entering" );
+  QgsDebugMsg( "Entering" );
   QString tempFilePath = createTempFile();
   if ( tempFilePath.isEmpty() )
   {
@@ -125,7 +132,7 @@ QgsRasterLayer* QgsSentDataSourceBuilder::rasterLayerFromSentRDS( const QDomElem
     }
   }
 
-  QgsMSDebugMsg( "TempFilePath is: " + tempFilePath );
+  QgsDebugMsg( "TempFilePath is: " + tempFilePath );
   tmpFile->close();
 
   QgsRasterLayer* rl = new QgsRasterLayer( tmpFile->fileName(), layerNameFromUri( tmpFile->fileName() ) );

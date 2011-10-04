@@ -23,17 +23,36 @@ extern "C"
 #include <libpq-fe.h>
 }
 #include "qgsvectordataprovider.h"
+#include "qgsdataitem.h"
 #include "qgsrectangle.h"
+#include "qgsvectorlayerimport.h"
+
 #include <list>
 #include <queue>
 #include <fstream>
 #include <set>
 
+#include <QVector>
+
 class QgsFeature;
 class QgsField;
 class QgsGeometry;
 
+
 #include "qgsdatasourceuri.h"
+
+/** Layer Property structure */
+// TODO: Fill to Postgres/PostGIS specifications
+struct QgsPostgresLayerProperty
+{
+  // Postgres/PostGIS layer properties
+  QString       type;
+  QString       schemaName;
+  QString       tableName;
+  QString       geometryColName;
+  QStringList   pkCols;
+  QString       sql;
+};
 
 /**
   \class QgsPostgresProvider
@@ -48,6 +67,19 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    /** Import a vector layer into the database */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+      const QString& uri,
+      const QgsFieldMap &fields,
+      QGis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem *srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString *errorMessage = 0,
+      const QMap<QString, QVariant> *options = 0
+    );
+
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
@@ -98,7 +130,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
       * @param fetchAttributes a list containing the indexes of the attribute fields to copy
       * @return True when feature was found, otherwise false
       */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature& feature,
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -161,7 +193,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Get the field information for the layer
      * @return vector of QgsField objects
      */
-    const QgsFieldMap & fields() const;
+    const QgsFieldMap &fields() const;
 
     /**
      * Return a short comment for the data that this provider is
@@ -239,6 +271,12 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     bool changeGeometryValues( QgsGeometryMap & geometry_map );
 
+    //! Get the list of supported layers
+    bool supportedLayers( QVector<QgsPostgresLayerProperty> &layers,
+                          bool searchGeometryColumnsOnly = true,
+                          bool searchPublicOnly = true,
+                          bool allowGeometrylessTables = false );
+
     //! Get the postgres connection
     PGconn * pgConnection();
 
@@ -295,6 +333,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     QString description() const;
 
+
   signals:
     /**
      *   This is emitted whenever the worker thread has fully calculated the
@@ -316,6 +355,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     void repaintRequested();
 
   private:
+
     int providerId; // id to append to provider specific identified (like cursors)
 
     bool declareCursor( const QString &cursorName,
@@ -327,19 +367,27 @@ class QgsPostgresProvider : public QgsVectorDataProvider
                      QgsFeature &feature,
                      const QgsAttributeList &fetchAttributes );
 
-    QString whereClause( int featureId ) const;
+    QString whereClause( QgsFeatureId featureId ) const;
+
+    /** Gets information about the spatial tables */
+    bool getTableInfo( bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables );
+
+    /** get primary key candidates (all int4 columns) */
+    QStringList pkCandidates( QString schemaName, QString viewName );
 
     bool hasSufficientPermsAndCapabilities();
+
+    qint64 getBinaryInt( PGresult *queryResult, int row, int col );
 
     const QgsField &field( int index ) const;
 
     /** Double quote a PostgreSQL identifier for placement in a SQL string.
      */
-    QString quotedIdentifier( QString ident ) const;
+    static QString quotedIdentifier( QString ident );
 
     /** Quote a value for placement in a SQL string.
      */
-    QString quotedValue( QString value ) const;
+    static QString quotedValue( QString value );
 
     /** expression to retrieve value
      */
@@ -348,6 +396,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /** Load the field list
     */
     bool loadFields();
+
+    /** convert a QgsField to work with PG */
+    static bool convertField( QgsField &field );
 
     /**Parses the enum_range of an attribute and inserts the possible values into a stringlist
     @param enumValues the stringlist where the values are appended
@@ -370,6 +421,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     //! Data source URI struct for this layer
     QgsDataSourceURI mUri;
+
+    //! List of the supported layers
+    QVector<QgsPostgresLayerProperty> layersSupported;
 
     /**
      * Flag indicating if the layer data source is a valid PostgreSQL layer
@@ -607,7 +661,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
         int pgVersion() { return postgresqlVersion; }
 
         //! run a query and free result buffer
-        bool PQexecNR( QString query );
+        bool PQexecNR( QString query, bool retry = true );
 
         //! cursor handling
         bool openCursor( QString cursorName, QString declare );
@@ -710,6 +764,66 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      * Default value for primary key
      */
     QString mPrimaryKeyDefault;
+
+#if 0
+    /** used to cache the lastest fetched features */
+    QHash<QgsFeatureId, QgsFeature> mFeatureMap;
+    QList<QgsFeatureId> mPriorityIds;
+#endif
+
+};
+
+class QgsPGConnectionItem : public QgsDataCollectionItem
+{
+  public:
+    QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsPGConnectionItem();
+
+    QVector<QgsDataItem*> createChildren();
+    virtual bool equal( const QgsDataItem *other );
+
+    QString mConnInfo;
+    QVector<QgsPostgresLayerProperty> mLayerProperties;
+};
+
+// WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
+// We have to use QgsDataCollectionItem and support layer methods if necessary
+class QgsPGLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+  public:
+    QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
+                    QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperties );
+    ~QgsPGLayerItem();
+
+    QString createUri();
+
+    QString mConnInfo;
+    QgsPostgresLayerProperty mLayerProperty;
+};
+
+class QgsPGSchemaItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path,
+                     QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties );
+    ~QgsPGSchemaItem();
+};
+
+class QgsPGRootItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsPGRootItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsPGRootItem();
+
+    QVector<QgsDataItem*> createChildren();
+
+    virtual QWidget * paramWidget();
+
+  public slots:
+    void connectionsChanged();
 };
 
 #endif

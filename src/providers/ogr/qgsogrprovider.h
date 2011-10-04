@@ -18,9 +18,11 @@ email                : sherman at mrcc.com
 #include "qgsdataitem.h"
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayerimport.h"
 
-class QgsFeature;
 class QgsField;
+class QgsVectorLayerImport;
 
 #include <ogr_api.h>
 
@@ -33,6 +35,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    /** convert a vector layer to a vector file */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+      const QString& uri,
+      const QgsFieldMap &fields,
+      QGis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem *srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString *errorMessage = 0,
+      const QMap<QString, QVariant> *options = 0
+    );
 
     /**
      * Constructor of the vector provider
@@ -87,7 +101,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
      * @param fetchAttributes a list containing the indexes of the attribute fields to copy
      * @return True when feature was found, otherwise false
      */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature& feature,
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -254,6 +268,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
     void setRelevantFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
+    /** convert a QgsField to work with OGR */
+    static bool convertField( QgsField &field, const QTextCodec &encoding );
+
   private:
     bool crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt );
     unsigned char *getGeometryPointer( OGRFeatureH fet );
@@ -276,6 +293,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! layer index
     int mLayerIndex;
 
+    //! current spatial filter
+    QgsRectangle mFetchRect;
+
     //! String used to define a subset of the layer
     QString mSubsetString;
 
@@ -296,7 +316,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Adds one feature*/
     bool addFeature( QgsFeature& f );
     /**Deletes one feature*/
-    bool deleteFeature( int id );
+    bool deleteFeature( QgsFeatureId id );
 
     QString quotedIdentifier( QString field );
 

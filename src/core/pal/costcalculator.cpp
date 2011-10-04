@@ -161,7 +161,8 @@ namespace pal
     do
     {
       discrim += 1.0;
-      for ( stop = 0; stop < feat->nblp && feat->lPos[stop]->getCost() < discrim; stop++ );
+      for ( stop = 0; stop < feat->nblp && feat->lPos[stop]->getCost() < discrim; stop++ )
+        ;
     }
     while ( stop == 0 && discrim < feat->lPos[feat->nblp-1]->getCost() + 2.0 );
 

@@ -18,7 +18,7 @@ class QgsVectorOverlay
     virtual void drawOverlayObjects( QgsRenderContext& context ) const = 0;
 
     /**Gives direct access to oberlay objects*/
-    QMap<int, QgsOverlayObject*>* overlayObjects();
+    QMap<qint64, QgsOverlayObject*>* overlayObjects();
 
     /**Describes the overlay type (e.g. "diagram" or "label")*/
     virtual QString typeName() const = 0;

@@ -148,6 +148,7 @@ QgsGrassModule::QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisIn
                                 QString path, QWidget * parent, Qt::WFlags f )
     : QgsGrassModuleBase( ), mSuccess( false )
 {
+  Q_UNUSED( f );
   QgsDebugMsg( "called" );
 
   setupUi( this );
@@ -1394,7 +1395,7 @@ void QgsGrassModule::run()
     mOutputTextBrowser->append( "<B>" +  commandHtml + "</B>" );
 
     QStringList environment = QProcess::systemEnvironment();
-    environment.append( "GRASS_HTML_BROWSER=" + QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/bin/qgis.g.browser" );
+    environment.append( "GRASS_HTML_BROWSER=" + QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
 
     // Warning: it is not useful to write requested region to WIND file and
     //          reset then to original beacuse it is reset before
@@ -1488,6 +1489,7 @@ void QgsGrassModule::run()
 
     mProcess.setEnvironment( environment );
     mProcess.start( cmd, execArguments );
+    emit moduleStarted();
 
     mProcess.waitForStarted();
     if ( mProcess.state() != QProcess::Running )
@@ -1526,6 +1528,8 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
   {
     mOutputTextBrowser->append( tr( "<B>Module crashed or killed</B>" ) );
   }
+
+  emit moduleFinished();
   mRunButton->setText( tr( "Run" ) );
 }
 
@@ -2668,6 +2672,7 @@ QString QgsGrassModuleInput::currentMap()
 
 void QgsGrassModuleInput::changed( int i )
 {
+  Q_UNUSED( i );
   emit valueChanged();
 }
 
@@ -2693,11 +2698,12 @@ QgsGrassModuleInput::~QgsGrassModuleInput()
 
 QgsGrassModuleItem::QgsGrassModuleItem( QgsGrassModule *module, QString key,
                                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode )
-    : mModule( module ),
-    mKey( key ),
-    mHidden( false ),
-    mRequired( false )
+    : mModule( module )
+    , mKey( key )
+    , mHidden( false )
+    , mRequired( false )
 {
+  Q_UNUSED( gdesc );
   //mAnswer = qdesc.attribute("answer", "");
 
   if ( !qdesc.attribute( "answer" ).isNull() )
@@ -2787,6 +2793,7 @@ QgsGrassModuleGroupBoxItem::~QgsGrassModuleGroupBoxItem() {}
 
 void QgsGrassModuleGroupBoxItem::resizeEvent( QResizeEvent * event )
 {
+  Q_UNUSED( event );
   adjustTitle();
   setToolTip( mToolTip );
 }
@@ -3431,6 +3438,7 @@ QgsGrassModuleCheckBox::~QgsGrassModuleCheckBox()
 
 void QgsGrassModuleCheckBox::resizeEvent( QResizeEvent * event )
 {
+  Q_UNUSED( event );
   adjustText();
 }
 void QgsGrassModuleCheckBox::setText( const QString & text )

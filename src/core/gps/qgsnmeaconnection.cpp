@@ -27,6 +27,7 @@
 //from libnmea
 #include "parse.h"
 #include "gmath.h"
+#include "info.h"
 
 #define KNOTS_TO_KMH 1.852
 
@@ -47,8 +48,8 @@ void QgsNMEAConnection::parseData()
   }
 
   //print out the data as a test
-  int numBytes = 0;
-  if ( mSource->isSequential() ) //necessary because of a bug in QExtSerialPort
+  qint64 numBytes = 0;
+  if ( ! mSource->isSequential() ) //necessary because of a bug in QExtSerialPort   //SLM - bytesAvailable() works on Windows, so I reversed the logic (added ! ); this is what QIODevice docs say to do; the orig impl of win_qextserialport had an (unsigned int)-1 return on error - it should be (qint64)-1, which was fixed by ?
   {
     numBytes = mSource->size();
   }
@@ -130,6 +131,7 @@ void QgsNMEAConnection::processStringBuffer()
           mStatus = GPSDataReceived;
           QgsDebugMsg( "*******************GPS data received****************" );
         }
+        emit nmeaSentenceReceived( substring );  // added to be able to save raw data
       }
     }
     mStringBuffer.remove( 0, endSentenceIndex + 2 );
@@ -156,6 +158,8 @@ void QgsNMEAConnection::processGGASentence( const char* data, int len )
     mLastGPSInformation.longitude = nmea_ndeg2degree( longitude );
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.elevation = result.elv;
+    mLastGPSInformation.quality = result.sig;
+    mLastGPSInformation.satellitesUsed = result.satinuse;
   }
 }
 
@@ -178,10 +182,11 @@ void QgsNMEAConnection::processRMCSentence( const char* data, int len )
     mLastGPSInformation.latitude = nmea_ndeg2degree( latitude );
     mLastGPSInformation.speed = KNOTS_TO_KMH * result.speed;
     mLastGPSInformation.direction = result.direction;
+    mLastGPSInformation.status = result.status;  // A,V
 
     //date and time
     QDate date( result.utc.year + 1900, result.utc.mon + 1, result.utc.day );
-    QTime time( result.utc.hour, result.utc.min, result.utc.sec );
+    QTime time( result.utc.hour, result.utc.min, result.utc.sec, result.utc.msec ); // added msec part
     if ( date.isValid() && time.isValid() )
     {
       mLastGPSInformation.utcDateTime.setTimeSpec( Qt::UTC );
@@ -206,6 +211,9 @@ void QgsNMEAConnection::processGSVSentence( const char* data, int len )
       mLastGPSInformation.satellitesInView.clear();
     }
 
+    // for determining when to graph sat info
+    mLastGPSInformation.satInfoComplete = ( result.pack_index == result.pack_count );
+
     for ( int i = 0; i < NMEA_SATINPACK; ++i )
     {
       nmeaSATELLITE currentSatellite = result.sat_data[i];
@@ -213,7 +221,7 @@ void QgsNMEAConnection::processGSVSentence( const char* data, int len )
       satelliteInfo.azimuth = currentSatellite.azimuth;
       satelliteInfo.elevation = currentSatellite.elv;
       satelliteInfo.id = currentSatellite.id;
-      satelliteInfo.inUse = currentSatellite.in_use;
+      satelliteInfo.inUse = currentSatellite.in_use; // the GSA processing below does NOT set the sats in use
       satelliteInfo.signal = currentSatellite.sig;
       mLastGPSInformation.satellitesInView.append( satelliteInfo );
     }
@@ -235,8 +243,15 @@ void QgsNMEAConnection::processGSASentence( const char* data, int len )
   nmeaGPGSA result;
   if ( nmea_parse_GPGSA( data, len, &result ) )
   {
+    mLastGPSInformation.satPrn.clear();
     mLastGPSInformation.hdop = result.HDOP;
     mLastGPSInformation.pdop = result.PDOP;
     mLastGPSInformation.vdop = result.VDOP;
+    mLastGPSInformation.fixMode = result.fix_mode;
+    mLastGPSInformation.fixType = result.fix_type;
+    for ( int i = 0; i < NMEA_MAXSAT; i++ )
+    {
+      mLastGPSInformation.satPrn.append( result.sat_prn[ i ] );
+    }
   }
 }

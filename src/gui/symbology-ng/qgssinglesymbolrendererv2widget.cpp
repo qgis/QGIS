@@ -39,7 +39,7 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   mSingleSymbol = mRenderer->symbol()->clone();
 
   // setup ui
-  mSelector = new QgsSymbolV2SelectorDialog( mSingleSymbol, mStyle, NULL, true );
+  mSelector = new QgsSymbolV2SelectorDialog( mSingleSymbol, mStyle, mLayer, NULL, true );
   connect( mSelector, SIGNAL( symbolModified() ), this, SLOT( changeSingleSymbol() ) );
 
   QVBoxLayout* layout = new QVBoxLayout;

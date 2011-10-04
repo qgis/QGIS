@@ -24,7 +24,7 @@
 #include <QHash>
 #include <QString>
 
-/**Manages joined field for a vector layer*/
+/**Manages joined fields for a vector layer*/
 class CORE_EXPORT QgsVectorLayerJoinBuffer
 {
   public:
@@ -57,7 +57,7 @@ class CORE_EXPORT QgsVectorLayerJoinBuffer
     void writeXml( QDomNode& layer_node, QDomDocument& document ) const;
 
     /**Reads joins from project file*/
-    void readXml( QDomNode& layer_node );
+    void readXml( const QDomNode& layer_node );
 
     /**Quick way to test if there is any join at all*/
     bool containsJoins() const { return ( mVectorJoins.size() > 0 ); }

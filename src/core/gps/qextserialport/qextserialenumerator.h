@@ -13,9 +13,14 @@
 
 #ifdef Q_OS_WIN
     #ifdef __MINGW32__
+      #ifdef _WIN32_WINNT
+        #if _WIN32_WINNT < 0x0500
+          #undef _WIN32_WINNT
+          #define _WIN32_WINNT 0x0500
+        #endif
+      #else
         #define _WIN32_WINNT 0x0500
-        #define _WIN32_WINDOWS 0x0500
-        #define WINVER 0x0500 
+      #endif
     #endif
     #include <windows.h>
     #include <setupapi.h>

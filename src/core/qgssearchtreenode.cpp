@@ -205,7 +205,8 @@ QString QgsSearchTreeNode::makeSearchString()
          mOp == opASIN || mOp == opACOS || mOp == opATAN ||
          mOp == opTOINT || mOp == opTOREAL || mOp == opTOSTRING ||
          mOp == opLOWER || mOp == opUPPER || mOp == opSTRLEN ||
-         mOp == opATAN2 || mOp == opREPLACE || mOp == opSUBSTR )
+         mOp == opATAN2 || mOp == opREPLACE || mOp == opREGEXPREPLACE ||
+         mOp == opSUBSTR || mOp == opXAT || mOp == opYAT )
     {
       // functions
       switch ( mOp )
@@ -225,7 +226,10 @@ QString QgsSearchTreeNode::makeSearchString()
         case opATAN2: str += "atan2"; break;
         case opSTRLEN: str += "length"; break;
         case opREPLACE: str += "replace"; break;
+        case opREGEXPREPLACE: str += "regexp_replace"; break;
         case opSUBSTR: str += "substr"; break;
+        case opXAT: str += "xat"; break;
+        case opYAT: str += "yat"; break;
         default: str += "?";
       }
       // currently all functions take one parameter
@@ -364,13 +368,15 @@ bool QgsSearchTreeNode::needsGeometry()
 {
   if ( mType == tOperator )
   {
-    if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
+    if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY || mOp == opXAT || mOp == opYAT )
       return true;
 
     if ( mLeft && mLeft->needsGeometry() )
       return true;
+
     if ( mRight && mRight->needsGeometry() )
       return true;
+
     return false;
   }
   else
@@ -402,7 +408,6 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
   }
 
   QgsSearchTreeValue value1, value2;
-  int res;
 
   switch ( mOp )
   {
@@ -432,6 +437,7 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
     case opLT:
     case opGE:
     case opLE:
+    {
       if ( !getValue( value1, mLeft, fields, f ) || !getValue( value2, mRight, fields, f ) )
         return false;
 
@@ -441,20 +447,27 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
         return false;
       }
 
-      res = QgsSearchTreeValue::compare( value1, value2 );
+      QgsSearchTreeValue res = QgsSearchTreeValue::compare( value1, value2 );
+      if ( res.isError() )
+      {
+        mError = QString( "%1 [%2]" ).arg( res.string() ).arg( res.number() );
+        return false;
+      }
 
       switch ( mOp )
       {
-        case opEQ: return res == 0;
-        case opNE: return res != 0;
-        case opGT: return res >  0;
-        case opLT: return res <  0;
-        case opGE: return res >= 0;
-        case opLE: return res <= 0;
+        case opEQ: return res.number() == 0.0;
+        case opNE: return res.number() != 0.0;
+        case opGT: return res.number() >  0.0;
+        case opLT: return res.number() <  0.0;
+        case opGE: return res.number() >= 0.0;
+        case opLE: return res.number() <= 0.0;
         default:
           mError = QObject::tr( "Unexpected state when evaluating operator!" );
           return false;
       }
+    }
+    break;
 
     case opIN:
     case opNOTIN:
@@ -473,9 +486,9 @@ bool QgsSearchTreeNode::checkAgainst( const QgsFieldMap& fields, QgsFeature &f )
           return false;
         }
 
-        res = QgsSearchTreeValue::compare( value1, value2 );
+        QgsSearchTreeValue res = QgsSearchTreeValue::compare( value1, value2 );
 
-        if ( res == 0 )
+        if ( res.isNumeric() && res.number() == 0.0 )
         {
           // found
           return mOp == opIN;
@@ -556,16 +569,17 @@ bool QgsSearchTreeNode::getValue( QgsSearchTreeValue& value,
       case 2:
         mError = QObject::tr( "Division by zero." );
         break;
-
-        // these should never happen (no need to translate)
       case 3:
         mError = QObject::tr( "Unknown operator: %1" ).arg( value.string() );
         break;
       case 4:
         mError = QObject::tr( "Unknown token: %1" ).arg( value.string() );
         break;
+      case 5:
+        mError = QObject::tr( "Expression error: %1" ).arg( value.string() );
+        break;
       default:
-        mError = QObject::tr( "Unknown error!" );
+        mError = QObject::tr( "Unknown error %1: %2" ).arg( value.number() ).arg( value.string() );
         break;
     }
     return false;
@@ -664,11 +678,11 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
           return value2;
       }
 
-      if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY )
+      if ( mOp == opLENGTH || mOp == opAREA || mOp == opPERIMETER || mOp == opX || mOp == opY || mOp == opXAT || mOp == opYAT )
       {
         if ( !f.geometry() )
         {
-          return QgsSearchTreeValue( 2, "Geometry is 0" );
+          return QgsSearchTreeValue( 2, QObject::tr( "Geometry is 0" ) );
         }
 
         //check that we don't use area for lines or length for polygons
@@ -692,6 +706,24 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         {
           return QgsSearchTreeValue( f.geometry()->asPoint().y() );
         }
+        if (( mOp == opXAT || mOp == opYAT ) && f.geometry()->type() == QGis::Line && value1.isNumeric() )
+        {
+          QgsPolyline p = f.geometry()->asPolyline();
+
+          int idx = value1.number();
+          if ( idx < 0 )
+          {
+            idx += p.size();
+          }
+
+          if ( idx < 0 || idx >= p.size() )
+          {
+            return QgsSearchTreeValue( 2, QObject::tr( "Index %1 out of range [0;%2[" ).arg( idx ).arg( p.size() ) );
+          }
+
+          return QgsSearchTreeValue( mOp == opXAT ? p[idx].x() : p[idx].y() );
+        }
+
         return QgsSearchTreeValue( 0 );
       }
 
@@ -735,7 +767,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
       {
         if ( value1.isNumeric() && value2.isNumeric() )
         {
-          return QgsSearchTreeValue( 5, "Operator doesn't match the argument types." );
+          return QgsSearchTreeValue( 5, QObject::tr( "Operator doesn't match the argument types." ) );
         }
         else
         {
@@ -756,6 +788,16 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
           return QgsSearchTreeValue( value1.string().length() );
         case opREPLACE:
           return QgsSearchTreeValue( value1.string().replace( value2.string(), value3.string() ) );
+        case opREGEXPREPLACE:
+        {
+          QRegExp re( value2.string() );
+          if ( !re.isValid() )
+          {
+            return QgsSearchTreeValue( 5, QObject::tr( "Invalid regular expression '%1': %2" ).arg( value2.string() ).arg( re.errorString() ) );
+          }
+
+          return QgsSearchTreeValue( value1.string().replace( re, value3.string() ) );
+        }
         case opSUBSTR:
           return QgsSearchTreeValue( value1.string().mid( value2.number() - 1, value3.number() ) );
         default:
@@ -784,7 +826,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         case opMOD:
           // NOTE: we _might_ support float operators, like postgresql does
           // see 83c94a886c059 commit in postgresql git repo for more info
-          return QgsSearchTreeValue( int(val1) % int(val2) );
+          return QgsSearchTreeValue( int( val1 ) % int( val2 ) );
         case opDIV:
           if ( val2 == 0 )
             return QgsSearchTreeValue( 2, "" ); // division by zero
@@ -793,7 +835,7 @@ QgsSearchTreeValue QgsSearchTreeNode::valueAgainst( const QgsFieldMap& fields, Q
         case opPOW:
           if (( val1 == 0 && val2 < 0 ) || ( val2 < 0 && ( val2 - floor( val2 ) ) > 0 ) )
           {
-            return QgsSearchTreeValue( 4, "Error in power function" );
+            return QgsSearchTreeValue( 4, QObject::tr( "Error in power function" ) );
           }
           return QgsSearchTreeValue( pow( val1, val2 ) );
         case opSQRT:
@@ -861,7 +903,7 @@ void QgsSearchTreeNode::append( QList<QgsSearchTreeNode *> nodes )
   }
 }
 
-int QgsSearchTreeValue::compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2, Qt::CaseSensitivity cs )
+QgsSearchTreeValue QgsSearchTreeValue::compare( QgsSearchTreeValue& value1, QgsSearchTreeValue& value2, Qt::CaseSensitivity cs )
 {
   if ( value1.isNumeric() || value2.isNumeric() )
   {
@@ -869,27 +911,44 @@ int QgsSearchTreeValue::compare( QgsSearchTreeValue& value1, QgsSearchTreeValue&
 
     // convert to numbers if needed
     double val1, val2;
+    bool ok;
     if ( value1.isNumeric() )
+    {
       val1 = value1.number();
+    }
     else
-      val1 = value1.string().toDouble();
+    {
+      val1 = value1.string().toDouble( &ok );
+      if ( !ok )
+      {
+        return QgsSearchTreeValue( 5, QObject::tr( "Value '%1' is not numeric" ).arg( value1.string() ) );
+      }
+    }
     if ( value2.isNumeric() )
+    {
       val2 = value2.number();
+    }
     else
-      val2 = value2.string().toDouble();
+    {
+      val2 = value2.string().toDouble( &ok );
+      if ( !ok )
+      {
+        return QgsSearchTreeValue( 5, QObject::tr( "Value '%1' is not numeric" ).arg( value2.string() ) );
+      }
+    }
 
     QgsDebugMsgLevel( "NUM_COMP: " + QString::number( val1 ) + " ~ " + QString::number( val2 ), 2 );
 
     if ( val1 < val2 )
-      return -1;
+      return QgsSearchTreeValue( -1.0 );
     else if ( val1 > val2 )
-      return 1;
+      return QgsSearchTreeValue( 1.0 );
     else
-      return 0;
+      return QgsSearchTreeValue( 0.0 );
   }
   else
   {
     // string comparison
-    return value1.string().compare( value2.string(), cs );
+    return QgsSearchTreeValue(( double ) value1.string().compare( value2.string(), cs ) );
   }
 }

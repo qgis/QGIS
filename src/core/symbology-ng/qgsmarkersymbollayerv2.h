@@ -112,15 +112,28 @@ class CORE_EXPORT QgsSvgMarkerSymbolLayerV2 : public QgsMarkerSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
 
     QString path() const { return mPath; }
-    void setPath( QString path ) { mPath = path; }
+    void setPath( QString path );
+
+    QColor fillColor() const { return mFillColor; }
+    void setFillColor( const QColor& c ) { mFillColor = c; }
+
+    QColor outlineColor() const { return mOutlineColor; }
+    void setOutlineColor( const QColor& c ) { mOutlineColor = c; }
+
+    double outlineWidth() const { return mOutlineWidth; }
+    void setOutlineWidth( double w ) { mOutlineWidth = w; }
 
   protected:
 
     void loadSvg();
 
     QString mPath;
-    QPicture mPicture;
-    QPicture mSelPicture;
+
+    //param(fill), param(outline), param(outline-width) are going
+    //to be replaced in memory
+    QColor mFillColor;
+    QColor mOutlineColor;
+    double mOutlineWidth;
     double mOrigSize;
 };
 

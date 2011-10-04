@@ -40,11 +40,15 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
   QWidget * parent, Qt::WFlags f )
-    : QMainWindow( 0, Qt::Dialog ),
-    QgsGrassMapcalcBase( ),
-    QgsGrassModuleOptions( tools, module, iface ),
-    mTool( -1 ), mObject( 0 ), mConnector( 0 )
+    : QMainWindow( 0, Qt::Dialog )
+    , QgsGrassMapcalcBase( )
+    , QgsGrassModuleOptions( tools, module, iface )
+    , mTool( -1 )
+    , mObject( 0 )
+    , mConnector( 0 )
 {
+  Q_UNUSED( parent );
+  Q_UNUSED( f );
   QgsDebugMsg( "QgsGrassMapcalc()" );
 
   setupUi( this );
@@ -529,6 +533,7 @@ QStringList QgsGrassMapcalc::checkRegion()
 
 bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, bool all )
 {
+  Q_UNUSED( all );
   QgsDebugMsg( "entered." );
 
   if ( !QgsGrass::region( QgsGrass::getDefaultGisdbase(),
@@ -1545,6 +1550,8 @@ int QgsGrassMapcalcObject::type()
 void QgsGrassMapcalcObject::paint( QPainter * painter,
                                    const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
+  Q_UNUSED( option );
+  Q_UNUSED( widget );
   //QGraphicsRectItem::paint(painter, option, widget);
 
   painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
@@ -1930,6 +1937,8 @@ QgsGrassMapcalcConnector::~QgsGrassMapcalcConnector()
 void QgsGrassMapcalcConnector::paint( QPainter * painter,
                                       const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
+  Q_UNUSED( option );
+  Q_UNUSED( widget );
   for ( int i = 0; i < 2; i++ )
   {
     if ( mSocketObjects[i] )
@@ -2122,6 +2131,7 @@ QgsGrassMapcalcView::QgsGrassMapcalcView( QgsGrassMapcalc * mapcalc,
     QWidget * parent, Qt::WFlags f ) :
     QGraphicsView( parent )
 {
+  Q_UNUSED( f );
   setAttribute( Qt::WA_StaticContents );
   mMapcalc = mapcalc;
 

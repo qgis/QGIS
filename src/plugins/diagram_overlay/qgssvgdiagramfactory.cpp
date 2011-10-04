@@ -33,6 +33,7 @@ QgsSVGDiagramFactory::~QgsSVGDiagramFactory()
 
 QImage* QgsSVGDiagramFactory::createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const
 {
+  Q_UNUSED( f );
   //check default size
   QSize defaultSize = mRenderer.defaultSize();
   qreal scaleFactor;
@@ -67,6 +68,7 @@ QImage* QgsSVGDiagramFactory::createDiagram( int size, const QgsFeature& f, cons
 
 int QgsSVGDiagramFactory::getDiagramDimensions( int size, const QgsFeature& f, const QgsRenderContext& context, int& width, int& height ) const
 {
+  Q_UNUSED( f );
   double scaleFactor;
   QSize defaultSize = mRenderer.defaultSize();
   //size parameter applies to maximum of width, height

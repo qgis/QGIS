@@ -29,6 +29,7 @@ namespace QgisGui
       QString const &filters, QStringList & selectedFiles, QString& enc, QString &title,
       bool cancelAll )
   {
+    Q_UNUSED( enc );
 
     bool haveLastUsedFilter = false; // by default, there is no last
     // used filter
@@ -90,6 +91,7 @@ namespace QgisGui
 
   QPair<QString, QString> GUI_EXPORT getSaveAsImageName( QWidget * theParent, QString theMessage )
   {
+    Q_UNUSED( theMessage );
     //create a map to hold the QImageIO names and the filter names
     //the QImageIO name must be passed to the mapcanvas saveas image function
     typedef QMap<QString, QString> FilterMap;

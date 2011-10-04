@@ -104,7 +104,6 @@ namespace Tools
       unsigned long getCapacity() const { return m_capacity; }
       void setCapacity( unsigned long c )
       {
-        assert( c >= 0 );
         m_capacity = c;
       }
 

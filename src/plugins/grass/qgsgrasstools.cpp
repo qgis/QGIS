@@ -48,7 +48,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
                               QWidget * parent, const char * name, Qt::WFlags f )
     : QDialog( parent, f ), QgsGrassToolsBase()
 {
-
+  Q_UNUSED( name );
   setupUi( this );
   QgsDebugMsg( "QgsGrassTools()" );
   qRegisterMetaType<QgsDetailedItemData>();
@@ -119,6 +119,7 @@ QgsGrassTools::QgsGrassTools( QgisInterface *iface,
 
 void QgsGrassTools::moduleClicked( QTreeWidgetItem * item, int column )
 {
+  Q_UNUSED( column );
   QgsDebugMsg( "entered." );
   if ( !item )
     return;
@@ -143,7 +144,7 @@ void QgsGrassTools::runModule( QString name )
   if ( name == "shell" )
   {
 #ifdef WIN32
-    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/bin/qgis.g.browser" );
+    QgsGrass::putEnv( "GRASS_HTML_BROWSER", QgsApplication::libexecPath() + "grass/bin/qgis.g.browser" );
     if ( !QProcess::startDetached( getenv( "COMSPEC" ) ) )
     {
       QMessageBox::warning( 0, "Warning", tr( "Cannot start command shell (%1)" ).arg( getenv( "COMSPEC" ) ) );
@@ -162,8 +163,11 @@ void QgsGrassTools::runModule( QString name )
   }
   else
   {
-    m = qobject_cast<QWidget *>( new QgsGrassModule( this, name,
-                                 mIface, path, mTabWidget ) );
+    QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, path, mTabWidget );
+    connect( gmod, SIGNAL( moduleStarted() ), mBrowser, SLOT( moduleStarted() ) );
+    connect( gmod, SIGNAL( moduleFinished() ), mBrowser, SLOT( moduleFinished() ) );
+
+    m = qobject_cast<QWidget *>( gmod );
   }
 
   int height = mTabWidget->iconSize().height();

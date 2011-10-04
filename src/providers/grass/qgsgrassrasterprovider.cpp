@@ -125,7 +125,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
                      .arg( viewExtent.xMaximum() ).arg( viewExtent.yMaximum() )
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   QProcess process( this );
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {
@@ -152,6 +152,7 @@ QImage* QgsGrassRasterProvider::draw( QgsRectangle  const & viewExtent, int pixe
 
 void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
+  Q_UNUSED( xBlock );
   QgsDebugMsg( "Entered" );
   // TODO: optimize, see extent()
 
@@ -176,7 +177,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, int xBlock, int yBlock, void
 
   arguments.append( "format=value" );
   QProcess process( this );
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {
@@ -222,7 +223,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const & viewEx
                      .arg( pixelWidth ).arg( pixelHeight ) ) );
   arguments.append( "format=value" );
   QProcess process( this );
-  QString cmd = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.d.rast";
+  QString cmd = QgsApplication::libexecPath() + "grass/modules/qgis.d.rast";
   QByteArray data;
   try
   {
@@ -270,15 +271,18 @@ double  QgsGrassRasterProvider::noDataValue() const
 
 double  QgsGrassRasterProvider::minimumValue( int bandNo ) const
 {
+  Q_UNUSED( bandNo );
   return mInfo["MIN_VALUE"].toDouble();
 }
 double  QgsGrassRasterProvider::maximumValue( int bandNo ) const
 {
+  Q_UNUSED( bandNo );
   return mInfo["MAX_VALUE"].toDouble();
 }
 
 QList<QgsColorRampShader::ColorRampItem> QgsGrassRasterProvider::colorTable( int bandNo )const
 {
+  Q_UNUSED( bandNo );
   QgsDebugMsg( "Entered" );
   QList<QgsColorRampShader::ColorRampItem> ct;
 
@@ -376,6 +380,7 @@ int QgsGrassRasterProvider::dataType( int bandNo ) const
 
 int QgsGrassRasterProvider::srcDataType( int bandNo ) const
 {
+  Q_UNUSED( bandNo );
   switch ( mGrassDataType )
   {
     case CELL_TYPE:
@@ -434,6 +439,7 @@ void QgsGrassRasterProvider::populateHistogram( int theBandNoInt,
     bool theIgnoreOutOfRangeFlag,
     bool theHistogramEstimatedFlag )
 {
+  Q_UNUSED( theBandNoInt );
   // TODO: we could either implement it in QgsRasterDataProvider::populateHistogram
   // or use r.stats (see d.histogram)
   if ( theBandStats.histogramVector->size() != theBinCount ||
@@ -461,11 +467,13 @@ bool QgsGrassRasterProvider::isValid()
 
 QString QgsGrassRasterProvider::identifyAsText( const QgsPoint& point )
 {
+  Q_UNUSED( point );
   return  QString( "Not implemented" );
 }
 
 QString QgsGrassRasterProvider::identifyAsHtml( const QgsPoint& point )
 {
+  Q_UNUSED( point );
   return  QString( "Not implemented" );
 }
 
@@ -550,7 +558,7 @@ void QgsGrassRasterValue::start( QString gisdbase, QString location,
   mMapset = mapset;
   mMapName = map;
   // TODO: catch exceptions
-  QString module = QgsApplication::prefixPath() + "/" QGIS_LIBEXEC_SUBDIR "/grass/modules/qgis.g.info";
+  QString module = QgsApplication::libexecPath() + "grass/modules/qgis.g.info";
   QStringList arguments;
 
   arguments.append( "info=query" );

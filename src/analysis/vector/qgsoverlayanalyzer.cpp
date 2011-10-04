@@ -150,9 +150,9 @@ void QgsOverlayAnalyzer::intersectFeature( QgsFeature& f, QgsVectorFileWriter* v
     return;
   }
 
-  QList<int> intersects;
+  QList<QgsFeatureId> intersects;
   intersects = index->intersects( featureGeometry->boundingBox() );
-  QList<int>::const_iterator it = intersects.constBegin();
+  QList<QgsFeatureId>::const_iterator it = intersects.constBegin();
   QgsFeature outFeature;
   for ( ; it != intersects.constEnd(); ++it )
   {

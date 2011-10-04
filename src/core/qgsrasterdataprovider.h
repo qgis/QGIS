@@ -28,12 +28,13 @@
 #include "qgscolorrampshader.h"
 #include "qgsrasterpyramid.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsrasterbandstats.h"
 
+#include "cpl_conv.h"
 #include <cmath>
 
 class QImage;
 class QgsPoint;
-class QgsRasterBandStats;
 class QByteArray;
 
 #define TINY_VALUE  std::numeric_limits<double>::epsilon() * 20
@@ -109,10 +110,11 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     };
 
     // Progress types
-    enum Progress
+    enum RasterProgressType
     {
       ProgressHistogram = 0,
-      ProgressPyramids  = 1
+      ProgressPyramids  = 1,
+      ProgressStatistics = 2
     };
 
     QgsRasterDataProvider();
@@ -183,6 +185,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
      */
     virtual int srcDataType( int bandNo ) const
     {
+      Q_UNUSED( bandNo );
       return QgsRasterDataProvider::UnknownDataType;
     }
 
@@ -233,6 +236,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
     /** Returns data type for the band specified by number */
     virtual int colorInterpretation( int theBandNo ) const
     {
+      Q_UNUSED( theBandNo );
       return QgsRasterDataProvider::UndefinedColorInterpretation;
     }
 
@@ -314,21 +318,27 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
 
     /** read block of data  */
     // TODO clarify what happens on the last block (the part outside raster)
-    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data ) {}
+    virtual void readBlock( int bandNo, int xBlock, int yBlock, void *data )
+    { Q_UNUSED( bandNo ); Q_UNUSED( xBlock ); Q_UNUSED( yBlock ); Q_UNUSED( data ); }
 
     /** read block of data using give extent and size */
-    virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data ) {};
+    virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, void *data )
+    { Q_UNUSED( bandNo ); Q_UNUSED( viewExtent ); Q_UNUSED( width ); Q_UNUSED( height ); Q_UNUSED( data ); }
 
     /** read block of data using give extent and size */
     virtual void readBlock( int bandNo, QgsRectangle  const & viewExtent, int width, int height, QgsCoordinateReferenceSystem theSrcCRS, QgsCoordinateReferenceSystem theDestCRS, void *data );
 
+    /* Read a value from a data block at a given index. */
+    virtual double readValue( void *data, int type, int index );
+
     /** value representing null data */
     virtual double noDataValue() const { return 0; }
 
-    virtual double minimumValue( int bandNo )const { return 0; }
-    virtual double maximumValue( int bandNo )const { return 0; }
+    virtual double minimumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
+    virtual double maximumValue( int bandNo ) const { Q_UNUSED( bandNo ); return 0; }
 
-    virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo )const { return QList<QgsColorRampShader::ColorRampItem>(); }
+    virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const
+    { Q_UNUSED( bandNo ); return QList<QgsColorRampShader::ColorRampItem>(); }
 
     // Defined in parent
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
@@ -344,12 +354,14 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
                                     int theBinCountInt = 256,
                                     bool theIgnoreOutOfRangeFlag = true,
                                     bool theThoroughBandScanFlag = false
-                                  ) {};
+                                  )
+    { Q_UNUSED( theBandNoInt ); Q_UNUSED( theBandStats ); Q_UNUSED( theBinCountInt ); Q_UNUSED( theIgnoreOutOfRangeFlag ); Q_UNUSED( theThoroughBandScanFlag ); }
 
     /** \brief Create pyramid overviews */
     virtual QString buildPyramids( const QList<QgsRasterPyramid>  & thePyramidList,
                                    const QString &  theResamplingMethod = "NEAREST",
-                                   bool theTryInternalFlag = false ) { return "FAILED_NOT_SUPPORTED"; };
+                                   bool theTryInternalFlag = false )
+    { Q_UNUSED( thePyramidList ); Q_UNUSED( theResamplingMethod ); Q_UNUSED( theTryInternalFlag ); return "FAILED_NOT_SUPPORTED"; };
 
     /** \brief Accessor for ths raster layers pyramid list. A pyramid list defines the
      * POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
@@ -358,13 +370,16 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider
      */
     virtual QList<QgsRasterPyramid> buildPyramidList() { return QList<QgsRasterPyramid>(); };
 
+    /** If the provider supports it, return band stats for the
+        given band. Default behaviour is to blockwise read the data
+        and generate the stats unless the provider overloads this function. */
+    virtual QgsRasterBandStats bandStatistics( int theBandNo );
 
     /** \brief helper function to create zero padded band names */
     QString  generateBandName( int theBandNumber )
     {
       return tr( "Band" ) + QString( " %1" ) .arg( theBandNumber,  1 + ( int ) log10(( float ) bandCount() ), 10, QChar( '0' ) );
-    }
-
+    };
 
     /**
      * Get metadata in a format suitable for feeding directly

@@ -23,11 +23,4 @@ class QgsGetRequestHandler: public QgsHttpRequestHandler
   public:
     QgsGetRequestHandler();
     std::map<QString, QString> parseInput();
-    /**Sends the image back (but does not delete it)*/
-    void sendGetMapResponse( const QString& service, QImage* img ) const;
-    void sendGetCapabilitiesResponse( const QDomDocument& doc ) const;
-    void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
-    void sendServiceException( const QgsMapServiceException& ex ) const;
-    void sendGetStyleResponse( const QDomDocument& doc ) const;
-    void sendGetPrintResponse( QByteArray* ba ) const;
 };

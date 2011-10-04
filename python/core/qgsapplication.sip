@@ -185,6 +185,14 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
     //! Returns the path to default style (works as a starting point). Added in QGIS 1.4
     static const QString defaultStyleV2Path();
 
+    //! Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
+    //! @note Added in 2.0
+    static const QString libraryPath();
+
+    //! Returns the path with utility executables (help viewer, crssync, ...)
+    //! @note Added in 2.0
+    static const QString libexecPath();
+
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath(const QString thePrefixPath, bool useDefaultPaths = FALSE);
     
@@ -234,6 +242,51 @@ static void qtgui_UpdatePyArgv(PyObject *argvlist, int argc, char **argv)
      * times.
      */
     static void registerOgrDrivers();
+
+    /**Converts absolute path to path relative to target
+      @note: this method was added in version 1.6*/
+    static QString absolutePathToRelativePath( QString apath, QString targetPath );
+    /**Converts path relative to target to an absolute path
+      @note: this method was added in version 1.6*/
+    static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
+
+    /** Indicates whether running from build directory (not installed)
+       @note added in 2.0 */
+    static bool isRunningFromBuildDir();
+    /** Returns path to the source directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildSourcePath();
+    /** Returns path to the build output directory. Valid only when running from build directory
+        @note added in 2.0 */
+    static QString buildOutputPath();
+
+    /** Sets the GDAL_SKIP environment variable to include the specified driver 
+     * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
+     * driver name should be the short format of the Gdal driver name e.g. GTiff.
+     * @note added in 2.0
+     */
+    static void skipGdalDriver( QString theDriver );
+
+    /** Sets the GDAL_SKIP environment variable to exclude the specified driver 
+     * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
+     * driver name should be the short format of the Gdal driver name e.g. GTiff.
+     * @note added in 2.0
+     */
+    static void restoreGdalDriver( QString theDriver );
+
+
+    /** Returns the list of gdal drivers that should be skipped (based on
+     * GDAL_SKIP environment variable) 
+     * @note added in 2.0
+     */
+    static QStringList skippedGdalDrivers( ) const ;
+
+    /** Apply the skipped drivers list to gdal
+     * @see skipGdalDriver
+     * @see restoreGdalDriver
+     * @see skippedGdalDrivers
+     * @note added in 2.0 */
+    static void applyGdalSkippedDrivers();
 
 };
 

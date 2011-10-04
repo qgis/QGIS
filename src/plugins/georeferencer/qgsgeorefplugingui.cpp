@@ -535,6 +535,7 @@ void QgsGeorefPluginGui::movePoint( const QPoint &p )
 
 void QgsGeorefPluginGui::releasePoint( const QPoint &p )
 {
+  Q_UNUSED( p );
   // Get Map Sender
   if ( sender() == mToolMovePoint )
   {
@@ -1342,6 +1343,7 @@ bool QgsGeorefPluginGui::calculateMeanError( double& error ) const
 
 bool QgsGeorefPluginGui::writePDFMapFile( const QString& fileName, const QgsGeorefTransform& transform )
 {
+  Q_UNUSED( transform );
   if ( !mCanvas )
   {
     return false;

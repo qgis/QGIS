@@ -48,6 +48,8 @@ bool MathUtils::calcBarycentricCoordinates( double x, double y, Point3D* p1, Poi
 
 bool MathUtils::BarycentricToXY( double u, double v, double w, Point3D* p1, Point3D* p2, Point3D* p3, Point3D* result )//this is wrong at the moment. Furthermore, the case, where the denominators are 0 have to be treated (two ways of calculating px and py)
 {
+  Q_UNUSED( w );
+
   double px, py;
   if ( p1 && p2 && p3 && result )
   {

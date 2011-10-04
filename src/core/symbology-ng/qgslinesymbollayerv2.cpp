@@ -93,6 +93,7 @@ void QgsSimpleLineSymbolLayerV2::startRender( QgsSymbolV2RenderContext& context 
 
 void QgsSimpleLineSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 void QgsSimpleLineSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
@@ -354,7 +355,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
     // draw first marker
     if ( first )
     {
-      mMarker->renderPoint( lastPt, rc, -1, context.selected() );
+      mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
       first = false;
     }
 
@@ -364,7 +365,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineInterval( const QPolygonF& points
       // "c" is 1 for regular point or in interval (0,1] for begin of line segment
       lastPt += c * diff;
       lengthLeft -= painterUnitInterval;
-      mMarker->renderPoint( lastPt, rc, -1, context.selected() );
+      mMarker->renderPoint( lastPt, context.feature(), rc, -1, context.selected() );
       c = 1; // reset c (if wasn't 1 already)
     }
 
@@ -473,7 +474,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineVertex( const QPolygonF& points, 
       mMarker->setAngle( origAngle + angle * 180 / M_PI );
     }
 
-    mMarker->renderPoint( points.at( i ), rc, -1, context.selected() );
+    mMarker->renderPoint( points.at( i ), context.feature(), rc, -1, context.selected() );
   }
 
   // restore original rotation
@@ -520,7 +521,7 @@ void QgsMarkerLineSymbolLayerV2::renderPolylineCentral( const QPolygonF& points,
   double origAngle = mMarker->angle();
   if ( mRotateMarker )
     mMarker->setAngle( origAngle + l.angle() * 180 / M_PI );
-  mMarker->renderPoint( pt, context.renderContext(), -1, context.selected() );
+  mMarker->renderPoint( pt, context.feature(), context.renderContext(), -1, context.selected() );
   if ( mRotateMarker )
     mMarker->setAngle( origAngle );
 }
@@ -628,6 +629,7 @@ void QgsLineDecorationSymbolLayerV2::startRender( QgsSymbolV2RenderContext& cont
 
 void QgsLineDecorationSymbolLayerV2::stopRender( QgsSymbolV2RenderContext& context )
 {
+  Q_UNUSED( context );
 }
 
 void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, QgsSymbolV2RenderContext& context )
@@ -641,11 +643,16 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   }
 
   int cnt = points.count();
+  if ( cnt < 2 )
+  {
+    return;
+  }
   QPointF p2 = points.at( --cnt );
   QPointF p1 = points.at( --cnt );
   while ( p2 == p1 && cnt )
     p1 = points.at( --cnt );
-  if ( p1 == p2 ) {
+  if ( p1 == p2 )
+  {
     // this is a collapsed line... don't bother drawing an arrow
     // with arbitrary orientation
     return;

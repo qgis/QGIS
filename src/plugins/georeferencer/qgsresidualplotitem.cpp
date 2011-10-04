@@ -31,6 +31,8 @@ QgsResidualPlotItem::~QgsResidualPlotItem()
 
 void QgsResidualPlotItem::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   if ( mGCPList.size() < 1 || !painter )
   {
     return;
@@ -209,11 +211,15 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint* p
 
 bool QgsResidualPlotItem::writeXML( QDomElement& elem, QDomDocument & doc ) const
 {
+  Q_UNUSED( elem );
+  Q_UNUSED( doc );
   return false;
 }
 
 bool QgsResidualPlotItem::readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
+  Q_UNUSED( itemElem );
+  Q_UNUSED( doc );
   return false;
 }
 

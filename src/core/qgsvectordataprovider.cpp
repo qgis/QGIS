@@ -48,7 +48,7 @@ long QgsVectorDataProvider::updateFeatureCount()
   return -1;
 }
 
-bool QgsVectorDataProvider::featureAtId( int featureId,
+bool QgsVectorDataProvider::featureAtId( QgsFeatureId featureId,
     QgsFeature& feature,
     bool fetchGeometry,
     QgsAttributeList fetchAttributes )
@@ -71,16 +71,19 @@ QString QgsVectorDataProvider::dataComment() const
 
 bool QgsVectorDataProvider::addFeatures( QgsFeatureList &flist )
 {
+  Q_UNUSED( flist );
   return false;
 }
 
-bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds & id )
+bool QgsVectorDataProvider::deleteFeatures( const QgsFeatureIds &ids )
 {
+  Q_UNUSED( ids );
   return false;
 }
 
-bool QgsVectorDataProvider::addAttributes( const QList<QgsField> & attributes )
+bool QgsVectorDataProvider::addAttributes( const QList<QgsField> &attributes )
 {
+  Q_UNUSED( attributes );
   return false;
 }
 
@@ -104,23 +107,27 @@ bool QgsVectorDataProvider::addAttributes( const QMap<QString, QString> &attribu
   return addAttributes( list );
 }
 
-bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds& attributes )
+bool QgsVectorDataProvider::deleteAttributes( const QgsAttributeIds &attributes )
 {
+  Q_UNUSED( attributes );
   return false;
 }
 
-bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
+bool QgsVectorDataProvider::changeAttributeValues( const QgsChangedAttributesMap &attr_map )
 {
+  Q_UNUSED( attr_map );
   return false;
 }
 
 QVariant QgsVectorDataProvider::defaultValue( int fieldId )
 {
+  Q_UNUSED( fieldId );
   return QVariant();
 }
 
-bool QgsVectorDataProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
+bool QgsVectorDataProvider::changeGeometryValues( QgsGeometryMap &geometry_map )
 {
+  Q_UNUSED( geometry_map );
   return false;
 }
 
@@ -131,6 +138,7 @@ bool QgsVectorDataProvider::createSpatialIndex()
 
 bool QgsVectorDataProvider::createAttributeIndex( int field )
 {
+  Q_UNUSED( field );
   return true;
 }
 

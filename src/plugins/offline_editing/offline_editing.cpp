@@ -137,6 +137,7 @@ bool QgsOfflineEditing::isOfflineProject()
 
 void QgsOfflineEditing::synchronize( QgsLegendInterface* legendInterface )
 {
+  Q_UNUSED( legendInterface );
   // open logging db
   sqlite3* db = openLoggingDb();
   if ( db == NULL )
@@ -516,7 +517,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
       mProgressDialog->setupProgressBar( tr( "%v / %m features copied" ), layer->featureCount() );
       int featureCount = 1;
 
-      QList<int> remoteFeatureIds;
+      QList<QgsFeatureId> remoteFeatureIds;
       while ( layer->nextFeature( f ) )
       {
         remoteFeatureIds << f.id();
@@ -543,7 +544,7 @@ void QgsOfflineEditing::copyVectorLayer( QgsVectorLayer* layer, sqlite3* db, con
 
         // update feature id lookup
         int layerId = getOrCreateLayerId( db, newLayer->id() );
-        QList<int> offlineFeatureIds;
+        QList<QgsFeatureId> offlineFeatureIds;
         newLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
         while ( newLayer->nextFeature( f ) )
         {
@@ -659,7 +660,7 @@ void QgsOfflineEditing::applyFeaturesRemoved( QgsVectorLayer* remoteLayer, sqlit
   int i = 1;
   for ( QgsFeatureIds::const_iterator it = values.begin(); it != values.end(); ++it )
   {
-    int fid = remoteFid( db, layerId, *it );
+    QgsFeatureId fid = remoteFid( db, layerId, *it );
     remoteLayer->deleteFeature( fid );
 
     mProgressDialog->setProgressValue( i++ );
@@ -677,7 +678,7 @@ void QgsOfflineEditing::applyAttributeValueChanges( QgsVectorLayer* offlineLayer
 
   for ( int i = 0; i < values.size(); i++ )
   {
-    int fid = remoteFid( db, layerId, values.at( i ).fid );
+    QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
 
     remoteLayer->changeAttributeValue( fid, attrLookup[ values.at( i ).attr ], values.at( i ).value, false );
 
@@ -694,7 +695,7 @@ void QgsOfflineEditing::applyGeometryChanges( QgsVectorLayer* remoteLayer, sqlit
 
   for ( int i = 0; i < values.size(); i++ )
   {
-    int fid = remoteFid( db, layerId, values.at( i ).fid );
+    QgsFeatureId fid = remoteFid( db, layerId, values.at( i ).fid );
     remoteLayer->changeGeometry( fid, QgsGeometry::fromWkt( values.at( i ).geom_wkt ) );
 
     mProgressDialog->setProgressValue( i + 1 );
@@ -707,7 +708,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
 
   // get remote added fids
   // NOTE: use QMap for sorted fids
-  QMap < int, bool /*dummy*/ > newRemoteFids;
+  QMap < QgsFeatureId, bool /*dummy*/ > newRemoteFids;
   QgsFeature f;
   remoteLayer->select( QgsAttributeList(), QgsRectangle(), false, false );
 
@@ -738,7 +739,7 @@ void QgsOfflineEditing::updateFidLookup( QgsVectorLayer* remoteLayer, sqlite3* d
     // add new fid lookups
     i = 0;
     sqlExec( db, "BEGIN" );
-    for ( QMap<int, bool>::const_iterator it = newRemoteFids.begin(); it != newRemoteFids.end(); ++it )
+    for ( QMap<QgsFeatureId, bool>::const_iterator it = newRemoteFids.begin(); it != newRemoteFids.end(); ++it )
     {
       addFidLookup( db, layerId, newOfflineFids.at( i++ ), it.key() );
     }
@@ -839,25 +840,25 @@ void QgsOfflineEditing::increaseCommitNo( sqlite3* db )
   sqlExec( db, sql );
 }
 
-void QgsOfflineEditing::addFidLookup( sqlite3* db, int layerId, int offlineFid, int remoteFid )
+void QgsOfflineEditing::addFidLookup( sqlite3* db, int layerId, QgsFeatureId offlineFid, QgsFeatureId remoteFid )
 {
   QString sql = QString( "INSERT INTO 'log_fids' VALUES ( %1, %2, %3 )" ).arg( layerId ).arg( offlineFid ).arg( remoteFid );
   sqlExec( db, sql );
 }
 
-int QgsOfflineEditing::remoteFid( sqlite3* db, int layerId, int offlineFid )
+QgsFeatureId QgsOfflineEditing::remoteFid( sqlite3* db, int layerId, QgsFeatureId offlineFid )
 {
   QString sql = QString( "SELECT \"remote_fid\" FROM 'log_fids' WHERE \"layer_id\" = %1 AND \"offline_fid\" = %2" ).arg( layerId ).arg( offlineFid );
   return sqlQueryInt( db, sql, -1 );
 }
 
-int QgsOfflineEditing::offlineFid( sqlite3* db, int layerId, int remoteFid )
+QgsFeatureId QgsOfflineEditing::offlineFid( sqlite3* db, int layerId, QgsFeatureId remoteFid )
 {
   QString sql = QString( "SELECT \"offline_fid\" FROM 'log_fids' WHERE \"layer_id\" = %1 AND \"remote_fid\" = %2" ).arg( layerId ).arg( remoteFid );
   return sqlQueryInt( db, sql, -1 );
 }
 
-bool QgsOfflineEditing::isAddedFeature( sqlite3* db, int layerId, int fid )
+bool QgsOfflineEditing::isAddedFeature( sqlite3* db, int layerId, QgsFeatureId fid )
 {
   QString sql = QString( "SELECT COUNT(\"fid\") FROM 'log_added_features' WHERE \"layer_id\" = %1 AND \"fid\" = %2" ).arg( layerId ).arg( fid );
   return ( sqlQueryInt( db, sql, 0 ) > 0 );
@@ -1145,7 +1146,7 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString& qgisLaye
 
   for ( QgsChangedAttributesMap::const_iterator cit = changedAttrsMap.begin(); cit != changedAttrsMap.end(); ++cit )
   {
-    int fid = cit.key();
+    QgsFeatureId fid = cit.key();
     if ( isAddedFeature( db, layerId, fid ) )
     {
       // skip added features
@@ -1182,7 +1183,7 @@ void QgsOfflineEditing::committedGeometriesChanges( const QString& qgisLayerId, 
 
   for ( QgsGeometryMap::const_iterator it = changedGeometries.begin(); it != changedGeometries.end(); ++it )
   {
-    int fid = it.key();
+    QgsFeatureId fid = it.key();
     if ( isAddedFeature( db, layerId, fid ) )
     {
       // skip added features

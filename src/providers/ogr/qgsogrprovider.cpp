@@ -42,8 +42,7 @@ email                : sherman at mrcc.com
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvectorlayer.h"
+#include "qgsvectorlayerimport.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -82,6 +81,121 @@ class QgsCPLErrorHandler
       CPLPopErrorHandler();
     }
 };
+
+
+bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
+{
+  OGRFieldType ogrType = OFTString; //default to string
+  int ogrWidth = field.length();
+  int ogrPrecision = field.precision();
+  switch ( field.type() )
+  {
+    case QVariant::LongLong:
+      ogrType = OFTString;
+      ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
+      ogrPrecision = -1;
+      break;
+
+    case QVariant::String:
+      ogrType = OFTString;
+      if ( ogrWidth < 0 || ogrWidth > 255 )
+        ogrWidth = 255;
+      break;
+
+    case QVariant::Int:
+      ogrType = OFTInteger;
+      ogrWidth = ogrWidth > 0 && ogrWidth <= 10 ? ogrWidth : 10;
+      ogrPrecision = 0;
+      break;
+
+    case QVariant::Double:
+      ogrType = OFTReal;
+      break;
+
+    default:
+      return false;
+  }
+
+  field.setTypeName( encoding.toUnicode( OGR_GetFieldTypeName( ogrType ) ) );
+  field.setLength( ogrWidth );
+  field.setPrecision( ogrPrecision );
+  return true;
+}
+
+
+QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
+{
+  QString encoding;
+  QString driverName = "ESRI Shapefile";
+  QStringList dsOptions, layerOptions;
+
+  if ( options )
+  {
+    if ( options->contains( "fileEncoding" ) )
+      encoding = options->value( "fileEncoding" ).toString();
+
+    if ( options->contains( "driverName" ) )
+      driverName = options->value( "driverName" ).toString();
+
+    if ( options->contains( "datasourceOptions" ) )
+      dsOptions << options->value( "datasourceOptions" ).toStringList();
+
+    if ( options->contains( "layerOptions" ) )
+      layerOptions << options->value( "layerOptions" ).toStringList();
+  }
+
+  if ( oldToNewAttrIdxMap )
+    oldToNewAttrIdxMap->clear();
+  if ( errorMessage )
+    errorMessage->clear();
+
+  if ( !overwrite )
+  {
+    QFileInfo fi( uri );
+    if ( fi.exists() )
+    {
+      if ( errorMessage )
+        *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
+                         .arg( uri );
+      return QgsVectorLayerImport::ErrCreateDataSource;
+    }
+  }
+
+  QgsVectorFileWriter *writer = new QgsVectorFileWriter(
+    uri, encoding, fields, wkbType,
+    srs, driverName, dsOptions, layerOptions );
+
+  QgsVectorFileWriter::WriterError error = writer->hasError();
+  if ( error )
+  {
+    if ( errorMessage )
+      *errorMessage += writer->errorMessage();
+
+    delete writer;
+    return ( QgsVectorLayerImport::ImportError ) error;
+  }
+
+  if ( oldToNewAttrIdxMap )
+  {
+    QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.begin(); attrIt != attrIdxMap.end(); ++attrIt )
+    {
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt );
+    }
+  }
+
+  delete writer;
+  return QgsVectorLayerImport::NoError;
+}
+
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
@@ -451,17 +565,20 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
+#else
+  Q_UNUSED( fetchGeometry );
+  Q_UNUSED( fetchAttributes );
 #endif
 }
 
-bool QgsOgrProvider::featureAtId( int featureId,
+bool QgsOgrProvider::featureAtId( QgsFeatureId featureId,
                                   QgsFeature& feature,
                                   bool fetchGeometry,
                                   QgsAttributeList fetchAttributes )
 {
   setRelevantFields( fetchGeometry, fetchAttributes );
 
-  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, featureId );
+  OGRFeatureH fet = OGR_L_GetFeature( ogrLayer, FID_TO_NUMBER( featureId ) );
   if ( !fet )
     return false;
 
@@ -518,7 +635,8 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   OGRFeatureH fet;
   QgsRectangle selectionRect;
 
-  setRelevantFields( mFetchGeom, mAttributesToFetch );
+  setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
+                     mAttributesToFetch );
 
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
@@ -616,6 +734,7 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
   mUseIntersect = useIntersect;
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
+  mFetchRect = rect;
 
   // spatial query to select features
   if ( rect.isEmpty() )
@@ -960,14 +1079,20 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
   for ( QgsChangedAttributesMap::const_iterator it = attr_map.begin(); it != attr_map.end(); ++it )
   {
-    long fid = ( long ) it.key();
+    QgsFeatureId fid = it.key();
 
-    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, fid );
+    if ( FID_TO_NUMBER( fid ) > std::numeric_limits<long>::max() )
+    {
+      QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, feature id too large for OGR" );
+      continue;
+    }
+
+    OGRFeatureH of = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( fid ) ) );
 
     if ( !of )
     {
       QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, Cannot read feature, cannot change attributes" );
-      return false;
+      continue;
     }
 
     const QgsAttributeMap& attr = it.value();
@@ -1031,7 +1156,13 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
   for ( QgsGeometryMap::iterator it = geometry_map.begin(); it != geometry_map.end(); ++it )
   {
-    theOGRFeature = OGR_L_GetFeature( ogrLayer, it.key() );
+    if ( FID_TO_NUMBER( it.key() ) > std::numeric_limits<long>::max() )
+    {
+      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, fid too large for OGR" );
+      continue;
+    }
+
+    theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
     if ( !theOGRFeature )
     {
       QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, cannot find feature" );
@@ -1146,9 +1277,15 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
   return returnvalue;
 }
 
-bool QgsOgrProvider::deleteFeature( int id )
+bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 {
-  return OGR_L_DeleteFeature( ogrLayer, id ) == OGRERR_NONE;
+  if ( FID_TO_NUMBER( id ) > std::numeric_limits<long>::max() )
+  {
+    QgsDebugMsg( "id too large for OGR" );
+    return false;
+  }
+
+  return OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) == OGRERR_NONE;
 }
 
 int QgsOgrProvider::capabilities() const
@@ -2268,7 +2405,10 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     int numLayers = OGR_DS_GetLayerCount( hDataSource );
 
     if ( numLayers == 0 )
+    {
+      OGR_DS_Destroy( hDataSource );
       return 0;
+    }
 
     QgsDataCollectionItem * collection = 0;
     if ( numLayers > 1 )
@@ -2315,7 +2455,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
       QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
 
-      QString name = info.fileName();
+      QString name = info.completeBaseName();
 
       QString layerName = FROM8( OGR_FD_GetName( hDef ) );
       QgsDebugMsg( "OGR layer name : " + layerName );
@@ -2327,18 +2467,39 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         path += "/" + name;
       }
 
-      QString layerUri = thePath + "|layerid=" + QString::number( i );
+      QString layerUri = thePath;
+      if ( collection )
+        layerUri += "|layerid=" + QString::number( i );
       QgsDebugMsg( "OGR layer uri : " + layerUri );
 
       QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );
       if ( numLayers == 1 )
+      {
+        OGR_DS_Destroy( hDataSource );
         return item;
+      }
       collection->addChild( item );
     }
     collection->setPopulated();
+    OGR_DS_Destroy( hDataSource );
     return collection;
   }
 
   return 0;
 }
 
+QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
+{
+  return QgsOgrProvider::createEmptyLayer(
+           uri, fields, wkbType, srs, overwrite,
+           oldToNewAttrIdxMap, errorMessage, options
+         );
+}

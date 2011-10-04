@@ -14,6 +14,9 @@
    <string>Attribute Table</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
    <item row="0" column="0">
     <widget class="QgsAttributeTableView" name="mView">
      <property name="alternatingRowColors">
@@ -23,6 +26,12 @@
    </item>
    <item row="2" column="0">
     <layout class="QHBoxLayout">
+     <property name="leftMargin">
+      <number>3</number>
+     </property>
+     <property name="rightMargin">
+      <number>3</number>
+     </property>
      <item>
       <widget class="QCheckBox" name="cbxShowSelectedOnly">
        <property name="text">
@@ -93,6 +102,12 @@
    </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="leftMargin">
+      <number>3</number>
+     </property>
+     <property name="rightMargin">
+      <number>3</number>
+     </property>
      <item>
       <widget class="QToolButton" name="mRemoveSelectionButton">
        <property name="toolTip">
@@ -239,7 +254,7 @@
         <string>Ctrl+E</string>
        </property>
        <property name="checkable">
-        <bool>true</bool>
+        <bool>false</bool>
        </property>
       </widget>
      </item>

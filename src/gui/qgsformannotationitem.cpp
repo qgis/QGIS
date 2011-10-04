@@ -115,11 +115,13 @@ void QgsFormAnnotationItem::setMapPosition( const QgsPoint& pos )
 
 void QgsFormAnnotationItem::paint( QPainter * painter )
 {
-
+  Q_UNUSED( painter );
 }
 
 void QgsFormAnnotationItem::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
+  Q_UNUSED( option );
+  Q_UNUSED( widget );
   if ( !painter || !mWidgetContainer )
   {
     return;
@@ -233,7 +235,7 @@ void QgsFormAnnotationItem::setFeatureForMapPosition()
   mVectorLayer->select( noAttributes, searchRect, false, true );
 
   QgsFeature currentFeature;
-  int currentFeatureId = 0;
+  QgsFeatureId currentFeatureId = 0;
   bool featureFound = false;
 
   while ( mVectorLayer->nextFeature( currentFeature ) )

@@ -193,6 +193,9 @@ class QgsLegend : public QTreeWidget
     /**Returns a layers check state*/
     Qt::CheckState layerCheckState( QgsMapLayer * layer );
 
+    /**Add group from other project file. Returns a pointer to the new group in case of success or 0 in case of error*/
+    QgsLegendGroup* addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent = 0 );
+
   public slots:
 
     /*!Adds a new layer group with the maplayer to the canvas*/
@@ -367,6 +370,10 @@ class QgsLegend : public QTreeWidget
     // The action when the mouse is released
     enum { BEFORE, INSERT, AFTER } mDropAction;
 
+    /** Groups defined in other project files.
+    Key: group name, value: absolute path to project file*/
+    QHash< QString, QString > mEmbeddedGroups;
+
     /** Hide the line that indicates insertion position */
     void hideLine();
 
@@ -429,6 +436,12 @@ class QgsLegend : public QTreeWidget
      * @see mItemBeingMovedOrigPos
      */
     int getItemPos( QTreeWidgetItem* item );
+
+    /**Returns true if the item is a group embedde from another project*/
+    bool groupEmbedded( QTreeWidgetItem* item ) const;
+
+    /**Returns true if the parent group is embedded from another project*/
+    bool parentGroupEmbedded( QTreeWidgetItem* item ) const;
 
     /**Pointer to the main canvas. Used for requiring repaints in case of legend changes*/
     QgsMapCanvas* mMapCanvas;

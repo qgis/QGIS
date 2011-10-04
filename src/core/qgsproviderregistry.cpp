@@ -30,6 +30,7 @@
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
 #include "qgsprovidermetadata.h"
+#include "qgsvectorlayer.h"
 
 
 // typedefs for provider plugin functions of interest
@@ -406,6 +407,8 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
       {
         QgsLogger::warning( "Unable to instantiate the data provider plugin" );
 
+        delete dataProvider;
+
         myLib->unload();
         delete myLib;
         return 0;
@@ -466,7 +469,7 @@ void * QgsProviderRegistry::function( QString const & providerKey,
   return 0;
 }
 
-QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey )
+QLibrary *QgsProviderRegistry::providerLibrary( QString const & providerKey ) const
 {
   QString lib = library( providerKey );
 

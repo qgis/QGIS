@@ -136,6 +136,7 @@ bool Tools::Geometry::Point::intersectsShape( const IShape& s ) const
 
 bool Tools::Geometry::Point::containsShape( const IShape& s ) const
 {
+  Q_UNUSED( s );
   return false;
 }
 
@@ -217,7 +218,7 @@ double Tools::Geometry::Point::getMinimumDistance( const Point& p ) const
 
 double Tools::Geometry::Point::getCoordinate( unsigned long index ) const
 {
-  if ( index < 0 || index >= m_dimension )
+  if ( index >= m_dimension )
     throw IndexOutOfBoundsException( index );
 
   return m_pCoords[index];

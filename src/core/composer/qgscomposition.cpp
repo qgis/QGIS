@@ -199,6 +199,7 @@ bool QgsComposition::writeXML( QDomElement& composerElem, QDomDocument& doc )
 
 bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocument& doc )
 {
+  Q_UNUSED( doc );
   if ( compositionElem.isNull() )
   {
     return false;

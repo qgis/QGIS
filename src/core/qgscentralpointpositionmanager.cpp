@@ -33,6 +33,7 @@ QgsCentralPointPositionManager::~QgsCentralPointPositionManager()
 
 void QgsCentralPointPositionManager::addLayer( QgsVectorLayer* vl, QList<QgsVectorOverlay*>& overlays )
 {
+  Q_UNUSED( vl );
   mOverlays << overlays;
 }
 
@@ -43,6 +44,8 @@ void QgsCentralPointPositionManager::removeLayers()
 
 void QgsCentralPointPositionManager::findObjectPositions( const QgsRenderContext& context, QGis::UnitType unitType )
 {
+  Q_UNUSED( context );
+  Q_UNUSED( unitType );
   QList<QgsVectorOverlay*>::iterator overlay_it = mOverlays.begin();
   QgsVectorOverlay* currentOverlay = 0;
   QgsPoint currentPosition;
@@ -55,13 +58,13 @@ void QgsCentralPointPositionManager::findObjectPositions( const QgsRenderContext
       continue;
     }
 
-    QMap<int, QgsOverlayObject*>* objectMap = currentOverlay->overlayObjects();
+    QMap<QgsFeatureId, QgsOverlayObject*>* objectMap = currentOverlay->overlayObjects();
     if ( !objectMap )
     {
       continue;
     }
 
-    QMap<int, QgsOverlayObject*>::iterator object_it = objectMap->begin();
+    QMap<QgsFeatureId, QgsOverlayObject*>::iterator object_it = objectMap->begin();
     for ( ; object_it != objectMap->end(); ++object_it )
     {
       if ( findObjectPosition( object_it.value()->geometry()->asWkb(), currentPosition ) == 0 )

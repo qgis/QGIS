@@ -33,6 +33,8 @@
 
 QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( QGis::GeometryType type, Mode mode )
 {
+  Q_UNUSED( mode );
+
   mGeometryType = type;
 }
 

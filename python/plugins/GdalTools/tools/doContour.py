@@ -19,6 +19,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
 
       gdalVersion = Utils.GdalConfig.version()
       self.useDirAsOutput = gdalVersion < "1.7.0"
+      if self.useDirAsOutput:
+	      self.label_2.setText( QApplication.translate("GdalToolsWidget", "&Output directory for contour lines (shapefile)") )
 
       self.outSelector.setType( self.outSelector.FILE )
 

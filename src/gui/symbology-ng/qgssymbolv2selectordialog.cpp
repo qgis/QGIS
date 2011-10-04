@@ -18,8 +18,8 @@
 #include <QKeyEvent>
 #include <QMenu>
 
-QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, QWidget* parent, bool embedded )
-    : QDialog( parent ), mAdvancedMenu( NULL )
+QgsSymbolV2SelectorDialog::QgsSymbolV2SelectorDialog( QgsSymbolV2* symbol, QgsStyleV2* style, const QgsVectorLayer* vl, QWidget* parent, bool embedded )
+    : QDialog( parent ), mAdvancedMenu( NULL ), mVectorLayer( vl )
 {
   mStyle = style;
   mSymbol = symbol;
@@ -162,7 +162,7 @@ void QgsSymbolV2SelectorDialog::updateSymbolInfo()
 
 void QgsSymbolV2SelectorDialog::changeSymbolProperties()
 {
-  QgsSymbolV2PropertiesDialog dlg( mSymbol, this );
+  QgsSymbolV2PropertiesDialog dlg( mSymbol, mVectorLayer, this );
   if ( !dlg.exec() )
     return;
 
@@ -266,6 +266,7 @@ void QgsSymbolV2SelectorDialog::keyPressEvent( QKeyEvent * e )
 
 void QgsSymbolV2SelectorDialog::on_mSymbolUnitComboBox_currentIndexChanged( const QString & text )
 {
+  Q_UNUSED( text );
   if ( mSymbol )
   {
     mSymbol->setOutputUnit(( QgsSymbolV2::OutputUnit ) mSymbolUnitComboBox->currentIndex() );

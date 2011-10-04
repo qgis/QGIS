@@ -20,7 +20,6 @@
 
 #include "../providers/wms/qgswmsprovider.h"
 #include "qgis.h" // GEO_EPSG_CRS_ID
-//#include "qgisapp.h" //for getThemeIcon
 #include "qgscontexthelp.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsgenericprojectionselector.h"
@@ -48,6 +47,7 @@
 #include <QPicture>
 #include <QSettings>
 #include <QUrl>
+#include <QValidator>
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -68,6 +68,9 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
   mAddButton = new QPushButton( tr( "&Add" ) );
   mAddButton->setToolTip( tr( "Add selected layers to map" ) );
   mAddButton->setEnabled( false );
+
+  mTileWidth->setValidator( new QIntValidator( 0, 9999, this ) );
+  mTileHeight->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mImageFormatGroup = new QButtonGroup;
 
@@ -776,6 +779,8 @@ void QgsWMSSourceSelect::on_lstLayers_itemSelectionChanged()
 
 void QgsWMSSourceSelect::on_lstTilesets_itemClicked( QTableWidgetItem *item )
 {
+  Q_UNUSED( item );
+
   QTableWidgetItem *rowItem = lstTilesets->item( lstTilesets->currentRow(), 0 );
   bool wasSelected = mCurrentTileset == rowItem;
 

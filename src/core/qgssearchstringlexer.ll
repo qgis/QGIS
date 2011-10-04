@@ -100,10 +100,13 @@ string      "'"{str_char}*"'"
 "lower" { yylval.op = QgsSearchTreeNode::opLOWER; return FUNCTION1;}
 "upper" { yylval.op = QgsSearchTreeNode::opUPPER; return FUNCTION1;}
 "length" { yylval.op = QgsSearchTreeNode::opSTRLEN; return FUNCTION1;}
+"xat" { yylval.op = QgsSearchTreeNode::opXAT; return FUNCTION1;}
+"yat" { yylval.op = QgsSearchTreeNode::opYAT; return FUNCTION1;}
 
 "atan2" { yylval.op = QgsSearchTreeNode::opATAN2; return FUNCTION2;}
 
 "replace" { yylval.op = QgsSearchTreeNode::opREPLACE; return FUNCTION3;}
+"regexp_replace" { yylval.op = QgsSearchTreeNode::opREGEXPREPLACE; return FUNCTION3;}
 "substr" { yylval.op = QgsSearchTreeNode::opSUBSTR; return FUNCTION3;}
 
 "||"   { return CONCAT; }

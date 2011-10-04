@@ -85,6 +85,7 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void on_cbxAllowGeometrylessTables_stateChanged( int );
     void setSql( const QModelIndex& index );
     void on_cmbConnections_activated( int );
     void setLayerType( QString table, QString column, QString type );

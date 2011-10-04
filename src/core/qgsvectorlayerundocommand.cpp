@@ -70,7 +70,7 @@ void QgsUndoCommand::undo()
 }
 
 
-void QgsUndoCommand::storeGeometryChange( int featureId, QgsGeometry& original, QgsGeometry& target )
+void QgsUndoCommand::storeGeometryChange( QgsFeatureId featureId, QgsGeometry& original, QgsGeometry& target )
 {
   if ( mGeometryChange.contains( featureId ) )
   {
@@ -86,7 +86,7 @@ void QgsUndoCommand::storeGeometryChange( int featureId, QgsGeometry& original, 
   }
 }
 
-void QgsUndoCommand::storeAttributeChange( int featureId, int field, QVariant original, QVariant target, bool isFirstChange )
+void QgsUndoCommand::storeAttributeChange( QgsFeatureId featureId, int field, QVariant original, QVariant target, bool isFirstChange )
 {
   AttributeChangeEntry entry;
   entry.isFirstChange = isFirstChange;
@@ -105,7 +105,7 @@ void QgsUndoCommand::storeAttributeDelete( int index, const QgsField & orig )
   mDeletedAttributes.insert( index, orig );
 }
 
-void QgsUndoCommand::storeFeatureDelete( int featureId )
+void QgsUndoCommand::storeFeatureDelete( QgsFeatureId featureId )
 {
   mDeletedFeatureIdChange.insert( featureId );
 }

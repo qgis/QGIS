@@ -220,7 +220,7 @@ void QgsAnnotationItem::drawMarkerSymbol( QPainter* p )
   if ( mMarkerSymbol )
   {
     mMarkerSymbol->startRender( renderContext );
-    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), renderContext );
+    mMarkerSymbol->renderPoint( QPointF( 0, 0 ), 0, renderContext );
     mMarkerSymbol->stopRender( renderContext );
   }
 }
@@ -413,6 +413,7 @@ void QgsAnnotationItem::_writeXML( QDomDocument& doc, QDomElement& itemElem ) co
 
 void QgsAnnotationItem::_readXML( const QDomDocument& doc, const QDomElement& annotationElem )
 {
+  Q_UNUSED( doc );
   if ( annotationElem.isNull() )
   {
     return;

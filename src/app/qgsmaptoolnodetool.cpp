@@ -103,7 +103,7 @@ void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer* layer )
 }
 
 
-void QgsMapToolNodeTool::featureDeleted( int featureId )
+void QgsMapToolNodeTool::featureDeleted( QgsFeatureId featureId )
 {
   //check if deleted feature is the one selected
   if ( mSelectionFeature != NULL && featureId == mSelectionFeature->featureId() )
@@ -111,17 +111,18 @@ void QgsMapToolNodeTool::featureDeleted( int featureId )
     //if it's delete selection and disconnect signals since tool is not used anymore
     delete mSelectionFeature;
     mSelectionFeature = NULL;
-    disconnect( mCanvas->currentLayer(), SIGNAL( featureDeleted( int ) ) );
+    disconnect( mCanvas->currentLayer(), SIGNAL( featureDeleted( QgsFeatureId ) ) );
     disconnect( mCanvas->currentLayer(), SIGNAL( layerModified( bool ) ) );
   }
 }
 
 void QgsMapToolNodeTool::layerModified( bool onlyGeometry )
 {
+  Q_UNUSED( onlyGeometry );
   //handling modification of
   QgsFeature feat;
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( mSelectionFeature != NULL && !mChangingGeometry && ( vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) ) )
+  if ( mSelectionFeature && !mChangingGeometry && vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) )
   {
     if ( !feat.geometry()->isGeosEqual( *mSelectionFeature->feature()->geometry() ) )
     {
@@ -312,7 +313,7 @@ void QgsMapToolNodeTool::coordinatesChanged()
   //need to update vertex markers since coordinate systems have changed
   if ( mSelectionFeature != NULL )
   {
-    mSelectionFeature->updateVertexMarkersPosition( mCanvas );
+    mSelectionFeature->updateVertexMarkersPosition();
   }
 }
 
@@ -445,7 +446,7 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
 
 void QgsMapToolNodeTool::connectSignals( QgsVectorLayer* vlayer )
 {
-  connect( vlayer, SIGNAL( featureDeleted( int ) ), this, SLOT( featureDeleted( int ) ) );
+  connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( vlayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
 }
 
@@ -506,7 +507,8 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     }
     mSelectionFeature = new SelectionFeature();
     mSelectionFeature->setSelectedFeature( snapResults[0].snappedAtGeometry,  vlayer,  NULL, mCanvas );
-    mIsPoint = (( vlayer->dataProvider()->geometryType() == QGis::WKBPoint ) || ( vlayer->dataProvider()->geometryType() == QGis::WKBMultiPoint ) );
+    mIsPoint = vlayer->dataProvider()->geometryType() == QGis::WKBPoint
+               || vlayer->dataProvider()->geometryType() == QGis::WKBMultiPoint;
     connectSignals( vlayer );
   }
   else
@@ -563,7 +565,8 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
           mMoving = true;
           QgsPoint point = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
           mClosestVertex = getClosestVertex( toLayerCoordinates( vlayer, point ) );
-          if ( !mSelectionFeature->isSelected( snapResult.beforeVertexNr ) || !mSelectionFeature->isSelected( snapResult.afterVertexNr ) )
+          if ( !mSelectionFeature->isSelected( snapResult.beforeVertexNr ) ||
+               !mSelectionFeature->isSelected( snapResult.afterVertexNr ) )
           {
             mSelectionFeature->deselectAllVertexes();
             mSelectionFeature->selectVertex( snapResult.afterVertexNr );
@@ -644,7 +647,8 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
     {
       //select another feature (this should deselect current one ;-) )
       mSelectionFeature->setSelectedFeature( mAnother, vlayer, NULL, mCanvas );
-      mIsPoint = (( vlayer->dataProvider()->geometryType() == QGis::WKBPoint ) || ( vlayer->dataProvider()->geometryType() == QGis::WKBMultiPoint ) );
+      mIsPoint = vlayer->dataProvider()->geometryType() == QGis::WKBPoint ||
+                 vlayer->dataProvider()->geometryType() == QGis::WKBMultiPoint;
       mSelectAnother = false;
     }
   }
@@ -739,7 +743,7 @@ void QgsMapToolNodeTool::deactivate()
   removeRubberBands();
   delete mSelectionFeature;
   mSelectionFeature = NULL;
-  disconnect( mCanvas->currentLayer(), SIGNAL( featureDeleted( int ) ) );
+  disconnect( mCanvas->currentLayer(), SIGNAL( featureDeleted( QgsFeatureId ) ) );
   disconnect( mCanvas->currentLayer(), SIGNAL( layerModified( bool ) ) );
 
   mQRubberBand = NULL;
@@ -918,7 +922,11 @@ void SelectionFeature::cleanRubberBandsData()
   }
 }
 
-void SelectionFeature::setSelectedFeature( int featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature )
+void SelectionFeature::setSelectedFeature( QgsFeatureId featureId,
+    QgsVectorLayer* vlayer,
+    QgsRubberBand* rubberBand,
+    QgsMapCanvas* canvas,
+    QgsFeature* feature )
 {
   if ( mFeatureSelected )
   {
@@ -1397,7 +1405,7 @@ void SelectionFeature::invertVertexSelection( int vertexNr, bool invert )
 }
 
 
-void SelectionFeature::updateVertexMarkersPosition( QgsMapCanvas* canvas )
+void SelectionFeature::updateVertexMarkersPosition()
 {
   //function for on-line updating vertex markers without refresh of canvas
   for ( int i = 0; i < mVertexMap.size(); i++ )
@@ -1408,7 +1416,7 @@ void SelectionFeature::updateVertexMarkersPosition( QgsMapCanvas* canvas )
 }
 
 
-int SelectionFeature::featureId()
+QgsFeatureId SelectionFeature::featureId()
 {
   return mFeatureId;
 }

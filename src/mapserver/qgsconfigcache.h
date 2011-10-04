@@ -30,13 +30,18 @@ class QgsConfigCache: public QObject
 {
     Q_OBJECT
   public:
-    QgsConfigCache();
+    static QgsConfigCache* instance();
     ~QgsConfigCache();
 
     /**Returns configuration for given config file path. The calling function does _not_ take ownership*/
     QgsConfigParser* searchConfiguration( const QString& filePath );
 
+  protected:
+    QgsConfigCache();
+
   private:
+    static QgsConfigCache* mInstance;
+
     /**Creates configuration parser depending on the file type and, if successfull, inserts it to the cached configuration map
         @param filePath path of the configuration file
         @return the inserted config parser or 0 in case of error*/

@@ -38,6 +38,7 @@
 #include <iostream>
 #endif
 
+#include <qglobal.h>
 
 #include <cmath>
 #include <cstring>
@@ -255,6 +256,8 @@ namespace pal
 
   int FeaturePart::setPositionOverPoint( double x, double y, double scale, LabelPosition ***lPos, double delta_width )
   {
+    Q_UNUSED( scale );
+    Q_UNUSED( delta_width );
     int nbp = 3;
     *lPos = new LabelPosition *[nbp];
 

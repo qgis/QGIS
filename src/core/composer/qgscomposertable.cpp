@@ -19,9 +19,13 @@
 #include "qgslogger.h"
 #include <QPainter>
 
-QgsComposerTable::QgsComposerTable( QgsComposition* composition ): QgsComposerItem( composition ), mLineTextDistance( 1.0 ), mShowGrid( true ), mGridStrokeWidth( 0.5 ), mGridColor( QColor( 0, 0, 0 ) )
+QgsComposerTable::QgsComposerTable( QgsComposition* composition )
+    : QgsComposerItem( composition )
+    , mLineTextDistance( 1.0 )
+    , mShowGrid( true )
+    , mGridStrokeWidth( 0.5 )
+    , mGridColor( QColor( 0, 0, 0 ) )
 {
-
 }
 
 QgsComposerTable::~QgsComposerTable()
@@ -31,6 +35,8 @@ QgsComposerTable::~QgsComposerTable()
 
 void QgsComposerTable::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
 {
+  Q_UNUSED( itemStyle );
+  Q_UNUSED( pWidget );
   if ( !painter )
   {
     return;

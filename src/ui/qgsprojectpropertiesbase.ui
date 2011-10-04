@@ -393,7 +393,7 @@
           <item row="0" column="2">
            <widget class="QLineEdit" name="mWMSTitle"/>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Person</string>
@@ -403,10 +403,10 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="3" column="2">
            <widget class="QLineEdit" name="mWMSContactPerson"/>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>Phone</string>
@@ -416,13 +416,13 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="2">
+          <item row="6" column="2">
            <widget class="QLineEdit" name="mWMSContactPhone"/>
           </item>
-          <item row="7" column="2">
+          <item row="8" column="2">
            <widget class="QTextEdit" name="mWMSAbstract"/>
           </item>
-          <item row="7" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Abstract</string>
@@ -432,14 +432,14 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_13">
             <property name="text">
              <string>E-Mail</string>
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
+          <item row="5" column="2">
            <widget class="QLineEdit" name="mWMSContactMail"/>
           </item>
           <item row="1" column="0">
@@ -454,6 +454,16 @@
           </item>
           <item row="1" column="2">
            <widget class="QLineEdit" name="mWMSContactOrganization"/>
+          </item>
+          <item row="2" column="2">
+           <widget class="QLineEdit" name="mWMSOnlineResourceLineEdit"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mWMSOnlineResourceLabel">
+            <property name="text">
+             <string>Online resource</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

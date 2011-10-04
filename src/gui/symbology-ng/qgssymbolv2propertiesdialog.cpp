@@ -12,6 +12,7 @@
 #include "qgslogger.h"
 
 #include "qgssymbollayerv2widget.h"
+#include "qgsellipsesymbollayerv2widget.h"
 #include "qgssymbolv2.h" //for the unit
 
 
@@ -90,10 +91,13 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "SimpleMarker", QgsSimpleMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerV2Widget::create );
+  _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerV2Widget::create );
 
   _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
   _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );
   _initWidgetFunction( "CentroidFill", QgsCentroidFillSymbolLayerV2Widget::create );
+  _initWidgetFunction( "LinePatternFill", QgsLinePatternFillSymbolLayerWidget::create );
+  _initWidgetFunction( "PointPatternFill", QgsPointPatternFillSymbolLayerWidget::create );
 
   initialized = true;
 }
@@ -101,8 +105,8 @@ static void _initWidgetFunctions()
 
 //////////
 
-QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, QWidget* parent )
-    : QDialog( parent ), mSymbol( symbol )
+QgsSymbolV2PropertiesDialog::QgsSymbolV2PropertiesDialog( QgsSymbolV2* symbol, const QgsVectorLayer* vl, QWidget* parent )
+    : QDialog( parent ), mSymbol( symbol ), mVectorLayer( vl )
 {
   setupUi( this );
 
@@ -247,7 +251,7 @@ void QgsSymbolV2PropertiesDialog::loadPropertyWidgets()
     if ( am == NULL ) // check whether the metadata is assigned
       continue;
 
-    QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget();
+    QgsSymbolLayerV2Widget* w = am->createSymbolLayerWidget( mVectorLayer );
     if ( w == NULL ) // check whether the function returns correct widget
       continue;
 

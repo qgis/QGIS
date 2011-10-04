@@ -17,7 +17,7 @@
 
 #include "qgssldrule.h"
 #include "qgsfilter.h"
-#include "qgsmapserverlogger.h"
+#include "qgslogger.h"
 #include "qgsmsutils.h"
 #include "qgssymbol.h"
 #include "qgsvectordataprovider.h"
@@ -26,11 +26,15 @@
 #include <QSvgRenderer>
 #include <QTemporaryFile>
 #include <QPainter>
+#include <QTextStream>
 #include <cmath>
 
-QgsSLDRule::QgsSLDRule( double minDenom, double maxDenom, const QgsSymbol& s, const QgsFilter* f ): mSymbol( s ), mMinScaleDenominator( minDenom ), mMaxScaleDenominator( maxDenom )
+QgsSLDRule::QgsSLDRule( double minDenom, double maxDenom, const QgsSymbol& s, const QgsFilter* f )
+    : mSymbol( s )
+    , mMinScaleDenominator( minDenom )
+    , mMaxScaleDenominator( maxDenom )
 {
-
+  Q_UNUSED( f );
 }
 
 QgsSLDRule::~QgsSLDRule()
@@ -547,7 +551,7 @@ int QgsSLDRule::brushFromSvgParameters( const QDomElement& fillElement, QBrush& 
 
 int QgsSLDRule::brushFromSvgPattern( const QDomElement& svgPatternElement, QBrush& brush ) const
 {
-  QgsMSDebugMsg( "Entering QgsSLDRule::brushFromSvgPattern" );
+  QgsDebugMsg( "Entering QgsSLDRule::brushFromSvgPattern" );
 
   if ( svgPatternElement.isNull() )
   {
@@ -579,11 +583,11 @@ int QgsSLDRule::brushFromSvgPattern( const QDomElement& svgPatternElement, QBrus
   svgElem.appendChild( svgDocument.importNode( svgGroupElem, true ) );
 
   //debug
-  QgsMSDebugMsg( svgDocument.toString() );
+  QgsDebugMsg( svgDocument.toString() );
 
   if ( !renderer.load( svgDocument.toByteArray() ) )
   {
-    QgsMSDebugMsg( "Loading of svg content into QSvgRenderer failed" );
+    QgsDebugMsg( "Loading of svg content into QSvgRenderer failed" );
   }
 
   QImage brushImage( patternWidth, patternHeight, QImage::Format_ARGB32 );

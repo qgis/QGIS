@@ -166,6 +166,7 @@ void QgsComposerPictureWidget::on_mRotationSpinBox_valueChanged( double d )
 
 void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous )
 {
+  Q_UNUSED( previous );
   if ( !mPicture || !current )
   {
     return;

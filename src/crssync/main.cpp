@@ -28,6 +28,7 @@
 
 void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
 {
+  Q_UNUSED( errClass );
   QRegExp re( "EPSG PCS/GCS code \\d+ not found in EPSG support files.  Is this a valid\nEPSG coordinate system?" );
   if ( errNo != 6 && !re.exactMatch( msg ) )
   {

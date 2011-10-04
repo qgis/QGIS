@@ -117,6 +117,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     void paintEvent( QPaintEvent* event );
 
+    void hideEvent( QHideEvent* e );
+    void showEvent( QShowEvent* e );
 
   private:
     /**Status of shift key (used for multiple selection)*/
@@ -167,6 +169,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/
     void actionFinished();
+
+    /**Emitted before composerview is shown*/
+    void composerViewShow( QgsComposerView* );
+    /**Emitted before composerview is hidden*/
+    void composerViewHide( QgsComposerView* );
 };
 
 #endif

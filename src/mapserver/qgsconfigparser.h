@@ -54,7 +54,8 @@ class QgsConfigParser
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
-    virtual void setParameterMap( const std::map<QString, QString>& parameterMap ) {}
+    virtual void setParameterMap( const std::map<QString, QString>& parameterMap )
+    { Q_UNUSED( parameterMap ); }
 
     /**Returns if output are MM or PIXEL*/
     QgsMapRenderer::OutputUnits outputUnits() const { return mOutputUnits; }
@@ -84,9 +85,9 @@ class QgsConfigParser
     /**Returns an ID-list of layers which are not queryable*/
     virtual QStringList identifyDisabledLayers() const { return QStringList(); }
 
-    /**Returns a set of supported epsg codes for the capabilities document. An empty set means
+    /**Returns a set of supported epsg codes for the capabilities document. An empty list means
        that all possible CRS should be advertised (which could result in very long capabilities documents)*/
-    virtual QSet<QString> supportedOutputCrsSet() const { return QSet<QString>(); }
+    virtual QStringList supportedOutputCrsList() const { return QStringList(); }
 
     /**True if the feature info response should contain the wkt geometry for vector features*/
     virtual bool featureInfoWithWktGeometry() const { return false; }
@@ -136,8 +137,8 @@ class QgsConfigParser
     double mLegendSymbolWidth;
     double mLegendSymbolHeight;
 
-    /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox element to layer element*/
-    void appendExGeographicBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
+    /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
+    void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
     /**Returns the <Ex_GeographicalBoundingBox of a layer element as a rectangle
       @param layerElement <Layer> element in capabilities
       @param rect out: bounding box as rectangle
@@ -152,6 +153,7 @@ class QgsConfigParser
     @return true in case of success*/
     bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
     void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList ) const;
+    void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const;
 
     void setDefaultLegendSettings();
 };

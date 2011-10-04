@@ -7,7 +7,7 @@
 #
 # This file defines the following macros:
 #
-# PYTHON_INSTALL (SOURCE_FILE DESINATION_DIR)
+# PYTHON_INSTALL (SOURCE_FILE DESTINATION_DIR)
 #     Install the SOURCE_FILE, which is a Python .py file, into the
 #     destination directory during install. The file will be byte compiled
 #     and both the .py file and .pyc file will be installed.

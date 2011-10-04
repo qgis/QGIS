@@ -22,7 +22,7 @@ QgsLineSymbolLayerV2::QgsLineSymbolLayerV2( bool locked )
 }
 
 QgsFillSymbolLayerV2::QgsFillSymbolLayerV2( bool locked )
-    : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked )
+    : QgsSymbolLayerV2( QgsSymbolV2::Fill, locked ), mAngle( 0.0 )
 {
 }
 

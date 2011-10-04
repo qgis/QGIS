@@ -274,7 +274,7 @@ QgsGPSData::TrackIterator QgsGPSData::addTrack( QString name )
 }
 
 
-QgsGPSData::TrackIterator QgsGPSData::addTrack( const QgsTrack& trk )
+QgsGPSData::TrackIterator QgsGPSData::addTrack( const QgsTrack &trk )
 {
   xMax = xMax > trk.xMax ? xMax : trk.xMax;
   xMin = xMin < trk.xMin ? xMin : trk.xMin;
@@ -286,11 +286,11 @@ QgsGPSData::TrackIterator QgsGPSData::addTrack( const QgsTrack& trk )
 }
 
 
-void QgsGPSData::removeWaypoints( const QgsFeatureIds & ids )
+void QgsGPSData::removeWaypoints( const QgsFeatureIds &ids )
 {
-  QList<int> ids2 = ids.toList();
+  QList<QgsFeatureId> ids2 = ids.toList();
   qSort( ids2 );
-  QList<int>::const_iterator iter = ids2.begin();
+  QList<QgsFeatureId>::const_iterator iter = ids2.begin();
   WaypointIterator wIter;
   for ( wIter = waypoints.begin();
         wIter != waypoints.end() && iter != ids2.end(); )
@@ -307,11 +307,11 @@ void QgsGPSData::removeWaypoints( const QgsFeatureIds & ids )
 }
 
 
-void QgsGPSData::removeRoutes( const QgsFeatureIds & ids )
+void QgsGPSData::removeRoutes( const QgsFeatureIds &ids )
 {
-  QList<int> ids2 = ids.toList();
+  QList<QgsFeatureId> ids2 = ids.toList();
   qSort( ids2 );
-  QList<int>::const_iterator iter = ids2.begin();
+  QList<QgsFeatureId>::const_iterator iter = ids2.begin();
   RouteIterator rIter;
   for ( rIter = routes.begin(); rIter != routes.end() && iter != ids2.end(); )
   {
@@ -327,11 +327,11 @@ void QgsGPSData::removeRoutes( const QgsFeatureIds & ids )
 }
 
 
-void QgsGPSData::removeTracks( const QgsFeatureIds & ids )
+void QgsGPSData::removeTracks( const QgsFeatureIds &ids )
 {
-  QList<int> ids2 = ids.toList();
+  QList<QgsFeatureId> ids2 = ids.toList();
   qSort( ids2 );
-  QList<int>::const_iterator iter = ids2.begin();
+  QList<QgsFeatureId>::const_iterator iter = ids2.begin();
   TrackIterator tIter;
   for ( tIter = tracks.begin(); tIter != tracks.end() && iter != ids2.end(); )
   {
@@ -412,7 +412,9 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     dataObjects[fileName] = std::pair<QgsGPSData*, unsigned>( data, 0 );
   }
   else
+  {
     QgsDebugMsg( fileName + " is already loaded" );
+  }
 
   // return a pointer and increase the reference count for that file name
   DataMap::iterator iter = dataObjects.find( fileName );
@@ -674,6 +676,8 @@ void QgsGPXHandler::characters( const XML_Char* chars, int len )
 
 bool QgsGPXHandler::endElement( const std::string& qName )
 {
+  Q_UNUSED( qName );
+
   if ( parseModes.top() == ParsingWaypoint )
   {
     mData.addWaypoint( mWpt );

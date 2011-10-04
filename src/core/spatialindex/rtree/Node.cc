@@ -146,7 +146,7 @@ void Node::storeToByteArray( byte** data, unsigned long& len )
   memcpy( ptr, m_nodeMBR.m_pHigh, m_pTree->m_dimension * sizeof( double ) );
   //ptr += m_pTree->m_dimension * sizeof(double);
 
-  assert( len == ( ptr - *data ) + m_pTree->m_dimension * sizeof( double ) );
+  Q_ASSERT( len == ( ptr - *data ) + m_pTree->m_dimension * sizeof( double ) );
 }
 
 //
@@ -172,14 +172,16 @@ unsigned long Node::getChildrenCount() const
 
 long Node::getChildIdentifier( unsigned long index ) const
 {
-  if ( index < 0 || index >= m_children ) throw Tools::IndexOutOfBoundsException( index );
+  if ( index >= m_children )
+    throw Tools::IndexOutOfBoundsException( index );
 
   return m_pIdentifier[index];
 }
 
 void Node::getChildShape( unsigned long index, IShape** out ) const
 {
-  if ( index < 0 || index >= m_children ) throw Tools::IndexOutOfBoundsException( index );
+  if ( index >= m_children )
+    throw Tools::IndexOutOfBoundsException( index );
 
   *out = new Region( *( m_ptrMBR[index] ) );
 }
@@ -272,12 +274,13 @@ Node::~Node()
 
 Node& Node::operator=( const Node & n )
 {
+  Q_UNUSED( n );
   throw Tools::IllegalStateException( "operator =: This should never be called." );
 }
 
 void Node::insertEntry( unsigned long dataLength, byte* pData, Region& mbr, long id )
 {
-  assert( m_children < m_capacity );
+  Q_ASSERT( m_children < m_capacity );
 
   m_pDataLength[m_children] = dataLength;
   m_pData[m_children] = pData;
@@ -293,7 +296,7 @@ void Node::insertEntry( unsigned long dataLength, byte* pData, Region& mbr, long
 
 void Node::deleteEntry( unsigned long index )
 {
-  assert( index >= 0 && index < m_children );
+  Q_ASSERT( index < m_children );
 
   // cache it, since I might need it for "touches" later.
   RegionPtr ptrR = m_ptrMBR[index];

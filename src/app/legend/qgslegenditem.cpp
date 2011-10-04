@@ -58,6 +58,8 @@ void QgsLegendItem::print( QgsLegendItem * theItem )
     }
     ++myIterator;
   }
+#else
+  Q_UNUSED( theItem );
 #endif
 }
 

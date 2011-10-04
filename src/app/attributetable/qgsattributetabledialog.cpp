@@ -24,8 +24,7 @@
 #include <qgsapplication.h>
 #include <qgsvectordataprovider.h>
 #include <qgsvectorlayer.h>
-#include <qgssearchstring.h>
-#include <qgssearchtreenode.h>
+#include <qgsexpression.h>
 
 #include "qgisapp.h"
 #include "qgsaddattrdialog.h"
@@ -48,6 +47,7 @@ class QgsAttributeTableDock : public QDockWidget
 
     virtual void closeEvent( QCloseEvent * ev )
     {
+      Q_UNUSED( ev );
       deleteLater();
     }
 };
@@ -196,23 +196,24 @@ void QgsAttributeTableDialog::on_mSelectedToTopButton_clicked()
     mModel->swapRows( mModel->rowToId( sourceIndex.row() ), *it );
   }
 
-  /*
-    while (it != fids.end())
-    { //map!!!!
-      //mModel->swapRows(mModel->rowToId(freeIndex), *it);
-      //QModelIndex index = mFilterModel->mapFromSource(mModel->index(mModel->idToRow(*it), 0));
-      QModelIndex sourceIndex = mFilterModel->mapToSource(mFilterModel->index(freeIndex, 0));
-      mModel->swapRows(mModel->rowToId(sourceIndex.row()), *it);
-      //mModel->swapRows(freeIndex, *it);
+#if 0
+  while ( it != fids.end() )
+  { //map!!!!
+    //mModel->swapRows(mModel->rowToId(freeIndex), *it);
+    //QModelIndex index = mFilterModel->mapFromSource(mModel->index(mModel->idToRow(*it), 0));
+    QModelIndex sourceIndex = mFilterModel->mapToSource( mFilterModel->index( freeIndex, 0 ) );
+    mModel->swapRows( mModel->rowToId( sourceIndex.row() ), *it );
+    //mModel->swapRows(freeIndex, *it);
 
-      if (fids.empty())
-        break;
-      else
-        ++it;
+    if ( fids.empty() )
+      break;
+    else
+      ++it;
 
-      ++freeIndex;
-    }
-  */
+    ++freeIndex;
+  }
+#endif
+
   // just select proper rows
   //mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount(), mModel->columnCount()));
   //mModel->changeLayout();
@@ -405,7 +406,7 @@ void QgsAttributeTableDialog::updateRowSelection( int first, int last, int click
 
   // Id must be mapped to table/view row
   QModelIndex index = mFilterModel->mapToSource( mFilterModel->index( first, 0 ) );
-  int fid = mModel->rowToId( index.row() );
+  QgsFeatureId fid = mModel->rowToId( index.row() );
   bool wasSelected = mSelectedFeatures.contains( fid );
 
   // new selection should be created
@@ -530,23 +531,21 @@ void QgsAttributeTableDialog::updateSelectionFromLayer()
 void QgsAttributeTableDialog::doSearch( QString searchString )
 {
   // parse search string and build parsed tree
-  QgsSearchString search;
-  if ( !search.setString( searchString ) )
+  QgsExpression search( searchString );
+  if ( search.hasParserError() )
   {
-    QMessageBox::critical( this, tr( "Search string parsing error" ), search.parserErrorMsg() );
+    QMessageBox::critical( this, tr( "Parsing error" ), search.parserErrorString() );
     return;
   }
 
-  QgsSearchTreeNode* searchTree = search.tree();
-  if ( searchTree == NULL )
+  if ( ! search.prepare( mLayer->pendingFields() ) )
   {
-    QMessageBox::information( this, tr( "Search results" ), tr( "You've supplied an empty search string." ) );
-    return;
+    QMessageBox::critical( this, tr( "Evaluation error" ), search.evalErrorString() );
   }
 
   // TODO: fetch only necessary columns
-  // QStringList columns = searchTree->referencedColumns();
-  bool fetchGeom = searchTree->needsGeometry();
+  //QStringList columns = search.referencedColumns();
+  bool fetchGeom = search.needsGeometry();
 
   QApplication::setOverrideCursor( Qt::WaitCursor );
   mSelectedFeatures.clear();
@@ -556,11 +555,12 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
     QgsFeatureList selectedFeatures = mLayer->selectedFeatures();
     for ( QgsFeatureList::Iterator it = selectedFeatures.begin(); it != selectedFeatures.end(); ++it )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), *it ) )
-        mSelectedFeatures << it->id();
+      QgsFeature& feat = *it;
+      if ( search.evaluate( &feat ).toInt() != 0 )
+        mSelectedFeatures << feat.id();
 
       // check if there were errors during evaluating
-      if ( searchTree->hasError() )
+      if ( search.hasEvalError() )
         break;
     }
   }
@@ -571,20 +571,20 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
 
     while ( mLayer->nextFeature( f ) )
     {
-      if ( searchTree->checkAgainst( mLayer->pendingFields(), f ) )
+      if ( search.evaluate( &f ).toInt() != 0 )
         mSelectedFeatures << f.id();
 
       // check if there were errors during evaluating
-      if ( searchTree->hasError() )
+      if ( search.hasEvalError() )
         break;
     }
   }
 
   QApplication::restoreOverrideCursor();
 
-  if ( searchTree->hasError() )
+  if ( search.hasEvalError() )
   {
-    QMessageBox::critical( this, tr( "Error during search" ), searchTree->errorMsg() );
+    QMessageBox::critical( this, tr( "Error during search" ), search.evalErrorString() );
     return;
   }
 
@@ -600,6 +600,7 @@ void QgsAttributeTableDialog::doSearch( QString searchString )
   {
     w->setWindowTitle( tr( "Attribute table - %1 (No matching features)" ).arg( mLayer->name() ) );
   }
+  mView->setFocus();
 }
 
 void QgsAttributeTableDialog::search()
@@ -622,12 +623,12 @@ void QgsAttributeTableDialog::search()
   QString str;
   if ( mQuery->displayText() == nullValue )
   {
-    str = QString( "%1 IS NULL" ).arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) );
+    str = QString( "%1 IS NULL" ).arg( QgsExpression::quotedColumnRef( fieldName ) );
   }
   else
   {
     str = QString( "%1 %2 '%3'" )
-          .arg( QgsSearchTreeNode::quotedColumnRef( fieldName ) )
+          .arg( QgsExpression::quotedColumnRef( fieldName ) )
           .arg( numeric ? "=" : sensString )
           .arg( numeric
                 ? mQuery->displayText().replace( "'", "''" )

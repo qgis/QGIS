@@ -544,6 +544,7 @@ int QgsGraduatedSymbolDialog::calculateQuantiles( std::list<double>& result, con
 
 QColor QgsGraduatedSymbolDialog::getColorFromRamp( QString ramp, int step, int totalSteps )
 {
+  Q_UNUSED( ramp );
   QColor color;
   /* To do:
      Grab the ramp by name from a file or ramp registry

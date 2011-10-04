@@ -35,6 +35,7 @@
 %Include qgsdataprovider.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdistancearea.sip
+%Include qgsexpression.sip
 %Include qgsfeature.sip
 %Include qgsfield.sip
 %Include qgsgeometry.sip
@@ -83,6 +84,7 @@
 %Include qgsvectordataprovider.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
+%Include qgsvectorlayerimport.sip
 %Include qgsvectoroverlay.sip
 
 %Include qgsnetworkaccessmanager.sip

@@ -49,12 +49,12 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * Launched when a feature has been deleted
      * @param fid feature id
      */
-    virtual void featureDeleted( int fid );
+    virtual void featureDeleted( QgsFeatureId fid );
     /**
      * Launched when a feature has been deleted
      * @param fid feature id
      */
-    virtual void featureAdded( int fid );
+    virtual void featureAdded( QgsFeatureId fid );
     /**
      * Launched when layer has been deleted
      */
@@ -67,7 +67,7 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * @param idx attribute index
      * @param value new value
      */
-    virtual void attributeValueChanged( int fid, int idx, const QVariant &value );
+    virtual void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value );
 
   private:
     /**
@@ -75,14 +75,14 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * @param fid feature id
      * @return feature exists
      */
-    virtual bool featureAtId( int fid );
+    virtual bool featureAtId( QgsFeatureId fid );
 
     /**
      * Loads the layer into the model
      */
     virtual void loadLayer();
 
-    QHash<int, QgsFeature> mFeatureMap;
+    QHash<QgsFeatureId, QgsFeature> mFeatureMap;
 };
 
 #endif //QGSATTRIBUTETABLEMEMORYMODEL_H

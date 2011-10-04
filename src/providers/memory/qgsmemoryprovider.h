@@ -17,7 +17,7 @@
 #include "qgscoordinatereferencesystem.h"
 
 
-typedef QMap<int, QgsFeature> QgsFeatureMap;
+typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
 class QgsSpatialIndex;
 
@@ -73,7 +73,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
       * @param fetchAttributes a list containing the indexes of the attribute fields to copy
       * @return True when feature was found, otherwise false
       */
-    virtual bool featureAtId( int featureId,
+    virtual bool featureAtId( QgsFeatureId featureId,
                               QgsFeature& feature,
                               bool fetchGeometry = true,
                               QgsAttributeList fetchAttributes = QgsAttributeList() );
@@ -202,7 +202,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
 
     // features
     QgsFeatureMap mFeatures;
-    int mNextFeatureId;
+    QgsFeatureId mNextFeatureId;
 
     // selection
     QgsAttributeList mSelectAttrs;
@@ -211,8 +211,8 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     bool mSelectGeometry, mSelectUseIntersect;
     QgsFeatureMap::iterator mSelectIterator;
     bool mSelectUsingSpatialIndex;
-    QList<int> mSelectSI_Features;
-    QList<int>::iterator mSelectSI_Iterator;
+    QList<QgsFeatureId> mSelectSI_Features;
+    QList<QgsFeatureId>::iterator mSelectSI_Iterator;
 
     // indexing
     QgsSpatialIndex* mSpatialIndex;

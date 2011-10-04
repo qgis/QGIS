@@ -30,6 +30,7 @@
 #include "qgsapplication.h"
 #include "qgsrectangle.h" //just for debugging
 #include "qgslogger.h"
+#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
 
 #include <cmath>
 
@@ -45,20 +46,7 @@ QgsComposerItem::QgsComposerItem( QgsComposition* composition, bool manageZValue
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, true );
-  setAcceptsHoverEvents( true );
-
-  //set default pen and brush
-  setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
-  QPen defaultPen( QColor( 0, 0, 0 ) );
-  defaultPen.setWidthF( 0.3 );
-  setPen( defaultPen );
-
-  //let z-Value be managed by composition
-  if ( mComposition && manageZValue )
-  {
-    mComposition->addItemToZList( this );
-  }
+  init( manageZValue );
 }
 
 QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition, bool manageZValue )
@@ -71,20 +59,22 @@ QgsComposerItem::QgsComposerItem( qreal x, qreal y, qreal width, qreal height, Q
     , mLastValidViewScaleFactor( -1 )
     , mRotation( 0 )
 {
-  setFlag( QGraphicsItem::ItemIsSelectable, true );
-  setAcceptsHoverEvents( true );
-
+  init( manageZValue );
   QTransform t;
   t.translate( x, y );
   setTransform( t );
+}
 
+void QgsComposerItem::init( bool manageZValue )
+{
+  setFlag( QGraphicsItem::ItemIsSelectable, true );
+  setAcceptsHoverEvents( true );
   //set default pen and brush
   setBrush( QBrush( QColor( 255, 255, 255, 255 ) ) );
   QPen defaultPen( QColor( 0, 0, 0 ) );
   defaultPen.setWidthF( 0.3 );
   setPen( defaultPen );
-
-//let z-Value be managed by composition
+  //let z-Value be managed by composition
   if ( mComposition && manageZValue )
   {
     mComposition->addItemToZList( this );
@@ -141,7 +131,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
   composerItemElem.setAttribute( "zValue", QString::number( zValue() ) );
   composerItemElem.setAttribute( "outlineWidth", QString::number( pen().widthF() ) );
   composerItemElem.setAttribute( "rotation", mRotation );
-
+  composerItemElem.setAttribute( "id", mId );
   //position lock for mouse moves/resizes
   if ( mItemPositionLocked )
   {
@@ -180,6 +170,7 @@ bool QgsComposerItem::_writeXML( QDomElement& itemElem, QDomDocument& doc ) cons
 
 bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument& doc )
 {
+  Q_UNUSED( doc );
   if ( itemElem.isNull() )
   {
     return false;
@@ -187,6 +178,9 @@ bool QgsComposerItem::_readXML( const QDomElement& itemElem, const QDomDocument&
 
   //rotation
   mRotation = itemElem.attribute( "rotation", "0" ).toDouble();
+
+  //id
+  mId = itemElem.attribute( "id", "" );
 
   //frame
   QString frame = itemElem.attribute( "frame" );
@@ -383,30 +377,26 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 Qt::CursorShape QgsComposerItem::cursorForPosition( const QPointF& itemCoordPos )
 {
   QgsComposerItem::MouseMoveAction mouseAction = mouseMoveActionForPosition( itemCoordPos );
-
-  if ( mouseAction == QgsComposerItem::NoAction )
+  switch ( mouseAction )
   {
-    return Qt::ForbiddenCursor;
-  }
-  if ( mouseAction == QgsComposerItem::MoveItem )
-  {
-    return Qt::ClosedHandCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeLeftUp || mouseAction == QgsComposerItem::ResizeRightDown )
-  {
-    return Qt::SizeFDiagCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeLeftDown || mouseAction == QgsComposerItem::ResizeRightUp )
-  {
-    return Qt::SizeBDiagCursor;
-  }
-  else if ( mouseAction == QgsComposerItem::ResizeUp || mouseAction == QgsComposerItem::ResizeDown )
-  {
-    return Qt::SizeVerCursor;
-  }
-  else //if(mouseAction == QgsComposerItem::ResizeLeft || mouseAction == QgsComposerItem::ResizeRight)
-  {
-    return Qt::SizeHorCursor;
+    case NoAction:
+      return Qt::ForbiddenCursor;
+    case MoveItem:
+      return Qt::SizeAllCursor;
+    case ResizeUp:
+    case ResizeDown:
+      return Qt::SizeVerCursor;
+    case ResizeLeft:
+    case ResizeRight:
+      return Qt::SizeHorCursor;
+    case ResizeLeftUp:
+    case ResizeRightDown:
+      return Qt::SizeFDiagCursor;
+    case ResizeRightUp:
+    case ResizeLeftDown:
+      return Qt::SizeBDiagCursor;
+    default:
+      return Qt::ArrowCursor;
   }
 }
 
@@ -479,8 +469,14 @@ QgsComposerItem::MouseMoveAction QgsComposerItem::mouseMoveActionForPosition( co
   return QgsComposerItem::MoveItem; //default
 }
 
-void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition, const QPointF& mouseMoveStartPos, const QGraphicsRectItem* originalItem, double dx, double dy, QGraphicsRectItem* changeItem )
+void QgsComposerItem::changeItemRectangle( const QPointF& currentPosition,
+    const QPointF& mouseMoveStartPos,
+    const QGraphicsRectItem* originalItem,
+    double dx, double dy,
+    QGraphicsRectItem* changeItem )
 {
+  Q_UNUSED( dx );
+  Q_UNUSED( dy );
   if ( !changeItem || !originalItem || !mComposition )
   {
     return;
@@ -959,7 +955,7 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
   //assume points 1 and 3 are on the rectangle boundaries. Calculate 2 and 4.
   double distM1 = sqrt(( x1 - midX ) * ( x1 - midX ) + ( y1 - midY ) * ( y1 - midY ) );
-  QPointF p2 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
+  QPointF p2 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x2, y2 ), distM1 );
 
   if ( p2.x() < width && p2.x() > 0 && p2.y() < height && p2.y() > 0 )
   {
@@ -970,8 +966,8 @@ bool QgsComposerItem::imageSizeConsideringRotation( double& width, double& heigh
 
   //else assume that points 2 and 4 are on the rectangle boundaries. Calculate 1 and 3
   double distM2 = sqrt(( x2 - midX ) * ( x2 - midX ) + ( y2 - midY ) * ( y2 - midY ) );
-  QPointF p1 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
-  QPointF p3 = pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
+  QPointF p1 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x1, y1 ), distM2 );
+  QPointF p3 = QgsSymbolLayerV2Utils::pointOnLineWithDistance( QPointF( midX, midY ), QPointF( x3, y3 ), distM2 );
   width = sqrt(( x2 - p1.x() ) * ( x2 - p1.x() ) + ( y2 - p1.y() ) * ( y2 - p1.y() ) );
   height = sqrt(( p3.x() - x2 ) * ( p3.x() - x2 ) + ( p3.y() - y2 ) * ( p3.y() - y2 ) );
   return true;
@@ -1039,15 +1035,6 @@ bool QgsComposerItem::cornerPointOnRotatedAndScaledRect( double& x, double& y, d
     }
   }
   return false;
-}
-
-QPointF QgsComposerItem::pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const
-{
-  double dx = directionPoint.x() - startPoint.x();
-  double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
-  double scaleFactor = distance / length;
-  return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
 
 void QgsComposerItem::sizeChangedByRotation( double& width, double& height )

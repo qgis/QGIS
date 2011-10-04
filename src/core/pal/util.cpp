@@ -231,7 +231,8 @@ namespace pal
           final_queue->push_back( geom );
           break;
         default:
-          throw InternalException::UnknownGeometry();
+          delete final_queue;
+          final_queue = NULL;
       }
     }
     delete queue;

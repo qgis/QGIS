@@ -97,6 +97,7 @@ void QgsSpitPlugin::unload()
 //! Set icons to the current theme
 void QgsSpitPlugin::setCurrentTheme( QString theThemeName )
 {
+  Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/spit.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/spit.png";
   QString myQrcPath = ":/spit.png";

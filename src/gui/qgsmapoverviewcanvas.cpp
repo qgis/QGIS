@@ -52,6 +52,8 @@ class QgsPanningWidget : public QWidget
 
     void paintEvent( QPaintEvent* pe )
     {
+      Q_UNUSED( pe );
+
       QRect r( QPoint( 0, 0 ), size() );
       QPainter p;
       p.begin( this );

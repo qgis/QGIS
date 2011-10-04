@@ -41,9 +41,9 @@ class QgsDiagramRendererWidget: public QWidget
     /**Applies the settings of an existing renderer*/
     virtual void applySettings( const QgsDiagramRenderer* renderer ) = 0;
     /**Possibility to adapt the dialog to a new field*/
-    virtual void changeClassificationField( int newField ) {}
+    virtual void changeClassificationField( int newField ) { Q_UNUSED( newField ); }
 
-    virtual QgsDiagramFactory::SizeUnit sizeUnit() const {return QgsDiagramFactory::MM;}
+    virtual QgsDiagramFactory::SizeUnit sizeUnit() const { return QgsDiagramFactory::MM; }
 
   private:
     QgsDiagramRendererWidget();
