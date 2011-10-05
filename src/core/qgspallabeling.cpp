@@ -133,7 +133,7 @@ class QgsPalGeometry : public PalGeometry
 // -------------
 
 QgsPalLayerSettings::QgsPalLayerSettings()
-    : palLayer( NULL ), fontMetrics( NULL ), ct( NULL ), extentGeom( NULL )
+    : palLayer( NULL ), fontMetrics( NULL ), ct( NULL ), extentGeom( NULL ), expression( NULL )
 {
   placement = AroundPoint;
   placementFlags = 0;
@@ -195,6 +195,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   fontMetrics = NULL;
   ct = NULL;
   extentGeom = NULL;
+  expression = NULL;
 }
 
 
@@ -204,8 +205,17 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 
   delete fontMetrics;
   delete ct;
-
+  delete expression;
   delete extentGeom;
+}
+
+QgsExpression* QgsPalLayerSettings::getLabelExpression()
+{
+    if (expression == NULL)
+    {
+        expression = new QgsExpression( fieldName );
+    }
+    return expression;
 }
 
 static QColor _readColor( QgsVectorLayer* layer, QString property )
@@ -458,17 +468,17 @@ void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f,
   // Check to see if we are a expression string.
   if (isExpression)
   {
-    QgsExpression exp( fieldName );
-    if ( exp.hasParserError() )
+    QgsExpression* exp = getLabelExpression();
+    if ( exp->hasParserError() )
     {
-      QgsDebugMsg("PASER HAS ERROR:" + exp.parserErrorString());
+      QgsDebugMsg("PASER HAS ERROR:" + exp->parserErrorString());
       return;
     }
-    QVariant result = exp.evaluate(&f,layer->dataProvider()->fields());
+    QVariant result = exp->evaluate(&f,layer->dataProvider()->fields());
     QgsDebugMsg("VALUE = " + result.toString());
-    if (exp.hasEvalError())
+    if (exp->hasEvalError())
     {
-       QgsDebugMsg("Expression Label Error = " + exp.evalErrorString());
+       QgsDebugMsg("Expression Label Error = " + exp->evalErrorString());
        return;
     }
     labelText  = result.toString();

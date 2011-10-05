@@ -55,6 +55,10 @@ class QgsExpressionItem : public QStandardItem
 
         QString getExpressionText() {   return mExpressionText;  }
 
+        /** Get the help text that is associated with this expression item.
+          *
+          * @return The help text.
+          */
         QString getHelpText() {  return mHelpText;  }
         /** Set the help text for the current item
           *
@@ -62,6 +66,10 @@ class QgsExpressionItem : public QStandardItem
           */
         void setHelpText(QString helpText) { mHelpText = helpText; }
 
+        /** Get the type of expression item eg header, field, ExpressionNode.
+          *
+          * @return The QgsExpressionItem::ItemType
+          */
         QgsExpressionItem::ItemType getItemType() { return mType ; }
 
     private:
