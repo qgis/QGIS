@@ -10,6 +10,7 @@ import os
 
 from ui_dialogBase import Ui_GdalToolsDialog as Ui_Dialog
 import GdalTools_utils as Utils
+from .. import resources_rc
 
 import os, platform
 
@@ -39,6 +40,12 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.setupUi(self)
       self.arguments = QStringList()
 
+      self.editCmdBtn.setIcon( QIcon(":/icons/edit.png") )
+      self.connect(self.editCmdBtn, SIGNAL("toggled(bool)"), self.editCommand)
+      self.resetCmdBtn.setIcon( QIcon(":/icons/reset.png") )
+      self.connect(self.resetCmdBtn, SIGNAL("clicked()"), self.resetCommand)
+      self.editCommand( False )
+
       self.connect(self.buttonBox, SIGNAL("rejected()"), self.reject)
       self.connect(self.buttonBox, SIGNAL("accepted()"), self.accept)
       self.connect(self.buttonBox, SIGNAL("helpRequested()"), self.help)
@@ -65,6 +72,32 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         self.helpFileName = cmd[:-3] + ".html"
       else:
         self.helpFileName = cmd + ".html"
+
+
+  def editCommand(self, enabled):
+      if not self.commandIsEnabled():
+        return
+      self.editCmdBtn.setChecked( enabled )
+      self.resetCmdBtn.setEnabled( enabled )
+      self.textEditCommand.setReadOnly( not enabled )
+      self.controlsWidget.setEnabled( not enabled )
+      self.emit( SIGNAL("refreshArgs()") )
+
+  def resetCommand(self):
+      if not self.commandIsEditable():
+        return
+      self.emit( SIGNAL("refreshArgs()") )
+
+  def commandIsEditable(self):
+      return self.commandIsEnabled() and self.editCmdBtn.isChecked()
+
+  def setCommandViewerEnabled(self, enable):
+      if not enable:
+        self.editCommand( False )
+      self.commandWidget.setEnabled( enable )
+
+  def commandIsEnabled(self):
+      return self.commandWidget.isEnabled()
 
   def reject(self):
       if self.process.state() != QProcess.NotRunning:
@@ -98,17 +131,14 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
         url = QUrl.fromLocalFile(helpPath + '/' + self.helpFileName)
       QDesktopServices.openUrl(url)
 
-  def setCommandViewerEnabled(self, enable):
-      self.textEditCommand.setEnabled( enable )
-
   # called when a value in the plugin widget interface changed
   def refreshArgs(self, args):
       self.arguments = args
 
-      if not self.textEditCommand.isEnabled():
-        self.textEditCommand.setText(self.command)
+      if not self.commandIsEnabled():
+        self.textEditCommand.setPlainText(self.command)
       else:
-        self.textEditCommand.setText(self.command + " " + Utils.escapeAndJoin(self.arguments))
+        self.textEditCommand.setPlainText(self.command + " " + Utils.escapeAndJoin(self.arguments))
 
   # enables the OK button
   def enableRun(self, enable = True):
@@ -116,19 +146,12 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
 
   # start the command execution
   def onRun(self):
-      self.process.start(self.command, self.arguments, QIODevice.ReadOnly)
       self.enableRun(False)
       self.setCursor(Qt.WaitCursor)
-
-      """
-      try:
-        print "Debug: " + self.command + " " + unicode(Utils.escapeAndJoin(self.arguments))
-      except UnicodeEncodeError:
-        try:
-          print "Debug: " + self.command + " " + unicode(Utils.escapeAndJoin(self.arguments)).encode('cp866', 'replace')
-        except:
-          print "Debug: " + self.command + " " + unicode(Utils.escapeAndJoin(self.arguments)).encode('ascii', 'replace')
-      """
+      if not self.commandIsEditable():
+        self.process.start(self.command, self.arguments, QIODevice.ReadOnly)
+      else:
+        self.process.start(self.textEditCommand.toPlainText(), QIODevice.ReadOnly)
 
   # stop the command execution
   def stop(self):
