@@ -107,16 +107,6 @@ int QgsGraphArc::outVertex() const
   return mOut;
 }
 
-int QgsGraphArc::in() const
-{
-  return mIn;
-}
-
-int QgsGraphArc::out() const
-{
-  return mOut;
-}
-
 QgsGraphVertex::QgsGraphVertex( const QgsPoint& point )
     : mCoordinate( point )
 {

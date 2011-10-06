@@ -48,7 +48,11 @@ class ANALYSIS_EXPORT QgsArcProperter
     /**
      * calculate and return adge property
      */
-    virtual QVariant property( double distance, const QgsFeature& f ) const
-    { return QVariant(); }
+    virtual QVariant property( double distance, const QgsFeature &f ) const
+    {
+      Q_UNUSED( distance );
+      Q_UNUSED( f );
+      return QVariant();
+    }
 };
 #endif //QGSEDGEPROPERTYH

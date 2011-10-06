@@ -31,7 +31,7 @@ class QgsVectorLayer;
 * \class QgsLineVectorLayerDirector
 * \brief Determine making the graph from vector line layer
 */
-class QgsLineVectorLayerDirector : public QgsGraphDirector
+class ANALYSIS_EXPORT QgsLineVectorLayerDirector : public QgsGraphDirector
 {
   public:
     /**

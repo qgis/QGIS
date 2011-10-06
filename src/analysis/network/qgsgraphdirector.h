@@ -55,10 +55,14 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
      *
      * @note if tiedPoints[i]==QgsPoint(0.0,0.0) then tied failed.
      */
-    virtual void makeGraph( QgsGraphBuilderInterface* builder,
-                            const QVector< QgsPoint >& additionalPoints,
-                            QVector< QgsPoint>& tiedPoints ) const
-    {}
+    virtual void makeGraph( QgsGraphBuilderInterface *builder,
+                            const QVector< QgsPoint > &additionalPoints,
+                            QVector< QgsPoint > &tiedPoints ) const
+    {
+      Q_UNUSED( builder );
+      Q_UNUSED( additionalPoints );
+      Q_UNUSED( tiedPoints );
+    }
 
     void addProperter( QgsArcProperter* prop )
     {

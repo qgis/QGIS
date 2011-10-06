@@ -18,7 +18,7 @@
  * Vertex is identified by its geographic coordinates (but you can add two vertex
  * with unique coordinate), no additional properties it can not be assigned.
  * Count the number of properties not limited along the arc. Graph may
- * be have intsedentnye arcs.
+ * be have incidence arcs.
  *
  * \file qgsgraph.h
  */
@@ -38,7 +38,7 @@ class QgsGraphVertex;
 
 /**
  * \ingroup networkanalysis
- * \class QgsGraphEdge
+ * \class QgsGraphArc
  * \brief This class implement a graph edge
  */
 class ANALYSIS_EXPORT QgsGraphArc
@@ -60,13 +60,11 @@ class ANALYSIS_EXPORT QgsGraphArc
     /**
      * return index of outgoing vertex
      */
-    int out() const;
     int outVertex() const;
 
     /**
      * return index of incoming vertex
      */
-    int in() const;
     int inVertex() const;
 
   private:

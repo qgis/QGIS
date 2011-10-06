@@ -1,5 +1,5 @@
 /***************************************************************************
-    qgspostgresconnection.h  -  PostgresSQL/PostGIS connection
+    qgspostgresconnection.h  -  PostgreSQL/PostGIS connection
                              -------------------
     begin                : 3 June 2011
     copyright            : (C) 2011 by Giuseppe Sucameli

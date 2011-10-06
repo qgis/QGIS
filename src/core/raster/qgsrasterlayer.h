@@ -674,7 +674,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Propagate progress updates from GDAL up to the parent app */
     void updateProgress( int, int );
 
-    /** \brief recieve progress signal from provider */
+    /** \brief receive progress signal from provider */
     void onProgress( int, double, QString );
 
   signals:

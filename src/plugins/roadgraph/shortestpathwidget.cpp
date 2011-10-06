@@ -324,9 +324,9 @@ void RgShortestPathWidget::findingPath()
     cost += e.property( 0 ).toDouble();
     time += e.property( 1 ).toDouble();
 
-    p.push_front( path.vertex( e.in() ).point() );
+    p.push_front( path.vertex( e.inVertex() ).point() );
 
-    stopVertexIdx = e.out();
+    stopVertexIdx = e.outVertex();
   }
   p.push_front( p1 );
   QList< QgsPoint>::iterator it;
@@ -357,39 +357,44 @@ void RgShortestPathWidget::clear()
 
 void RgShortestPathWidget::exportPath()
 {
-  /*  RgExportDlg dlg( this );
-    if ( !dlg.exec() )
-      return;
+  RgExportDlg dlg( this );
+  if ( !dlg.exec() )
+    return;
 
-    QgsPoint p1, p2;
-    QgsGraph path;
-    if ( !getPath( path, p1, p2 ) )
-      return;
+  QgsPoint p1, p2;
+  QgsGraph path;
+  if ( !getPath( &path, p1, p2 ) )
+    return;
 
-    QgsVectorLayer *vl = dlg.mapLayer();
-    if ( vl == NULL )
-      return;
+  QgsVectorLayer *vl = dlg.mapLayer();
+  if ( vl == NULL )
+    return;
 
-    QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
-                               vl->crs() );
+  QgsCoordinateTransform ct( mPlugin->iface()->mapCanvas()->mapRenderer()->destinationCrs(),
+                             vl->crs() );
 
-    while ( it != path.end() )
-    {
-      AdjacencyMatrixString::iterator it2 = it->second.begin();
-      if ( it2 == it->second.end() )
-        break;
-      points.append( ct.transform( it2->first ) );
-      it = path.find( it2->first );
-    }
+  int startVertexIdx = path.findVertex( p1 );
+  int stopVertexIdx  = path.findVertex( p2 );
 
-    vl->startEditing();
-    QgsFeature f;
-    f.setGeometry( QgsGeometry::fromPolyline( points ) );
-    vl->addFeature( f );
-    vl->updateExtents();
+  QgsPolyline p;
+  while ( startVertexIdx != stopVertexIdx )
+  {
+    QgsGraphArcIdList l = path.vertex( stopVertexIdx ).inArc();
+    if ( l.empty() )
+      break;
+    const QgsGraphArc& e = path.arc( l.front() );
+    p.push_front( path.vertex( e.inVertex() ).point() );
+    stopVertexIdx = e.outVertex();
+  }
+  p.push_front( p1 );
 
-    mPlugin->iface()->mapCanvas()->update();
-  */
+  vl->startEditing();
+  QgsFeature f;
+  f.setGeometry( QgsGeometry::fromPolyline( p ) );
+  vl->addFeature( f );
+  vl->updateExtents();
+
+  mPlugin->iface()->mapCanvas()->update();
 }
 
 void RgShortestPathWidget::helpRequested()

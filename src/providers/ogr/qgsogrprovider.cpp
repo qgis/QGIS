@@ -2455,7 +2455,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
       QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
 
-      QString name = info.fileName();
+      QString name = info.completeBaseName();
 
       QString layerName = FROM8( OGR_FD_GetName( hDef ) );
       QgsDebugMsg( "OGR layer name : " + layerName );
@@ -2467,7 +2467,9 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         path += "/" + name;
       }
 
-      QString layerUri = thePath + "|layerid=" + QString::number( i );
+      QString layerUri = thePath;
+      if ( collection )
+        layerUri += "|layerid=" + QString::number( i );
       QgsDebugMsg( "OGR layer uri : " + layerUri );
 
       QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );

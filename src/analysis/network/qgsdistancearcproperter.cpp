@@ -14,5 +14,6 @@
 
 QVariant QgsDistanceArcProperter::property( double distance, const QgsFeature& f ) const
 {
+  Q_UNUSED( f );
   return QVariant( distance );
 }

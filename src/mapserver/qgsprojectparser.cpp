@@ -1193,8 +1193,8 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     QDomNodeList composerLabelList = currentComposerElem.elementsByTagName( "ComposerLabel" );
     for ( int j = 0; j < composerLabelList.size(); ++j )
     {
-      QDomElement clabel = composerLabelList.at( j ).toElement();
-      QString id = clabel.attribute( "id" );
+      QDomElement citem = composerLabelList.at( j ).firstChildElement( "ComposerItem" );
+      QString id = citem.attribute( "id" );
       if ( id.isEmpty() ) //only export labels with ids for text replacement
       {
         continue;

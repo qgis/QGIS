@@ -77,7 +77,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     double topologyToleranceFactor();
 
   public slots:
-    void render( QPainter *painter );
     //! init the gui
     virtual void initGui();
 
