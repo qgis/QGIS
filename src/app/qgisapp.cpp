@@ -4738,7 +4738,7 @@ void QgisApp::fullHistogramStretch()
                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
     return;
   }
-  if ( rlayer->providerKey() == "wms" )
+  if ( rlayer->providerType() == "wms" )
   {
     return;
   }
