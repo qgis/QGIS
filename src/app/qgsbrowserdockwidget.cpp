@@ -4,6 +4,7 @@
 #include <QTreeView>
 #include <QMenu>
 #include <QSettings>
+#include <QToolButton>
 
 #include "qgsbrowsermodel.h"
 #include "qgsdataitem.h"
@@ -11,6 +12,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
+#include "qgisapp.h"
 
 #include <QDragEnterEvent>
 /**
@@ -52,7 +54,22 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   setWindowTitle( tr( "Browser" ) );
 
   mBrowserView = new QgsBrowserTreeView( this );
-  setWidget( mBrowserView );
+
+  mRefreshButton = new QToolButton( this );
+  mRefreshButton->setIcon( QgisApp::instance()->getThemeIcon( "mActionDraw.png" ) );
+  mRefreshButton->setText( tr( "Refresh" ) );
+  mRefreshButton->setAutoRaise( true );
+  connect( mRefreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
+
+  QVBoxLayout* layout = new QVBoxLayout( this );
+  layout->setContentsMargins( 0, 0, 0, 0 );
+  layout->setSpacing( 0 );
+  layout->addWidget( mRefreshButton );
+  layout->addWidget( mBrowserView );
+
+  QWidget* innerWidget = new QWidget( this );
+  innerWidget->setLayout( layout );
+  setWidget( innerWidget );
 
   connect( mBrowserView, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
   //connect( mBrowserView, SIGNAL( clicked( const QModelIndex& ) ), this, SLOT( itemClicked( const QModelIndex& ) ) );
@@ -215,4 +232,37 @@ void QgsBrowserDockWidget::removeFavourite()
 
   // reload the browser model so that the favourite directory is not shown anymore
   mModel->reload();
+}
+
+void QgsBrowserDockWidget::refresh()
+{
+  refreshModel( QModelIndex() );
+}
+
+void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
+{
+  QgsDebugMsg( "Entered" );
+  if ( index.isValid() )
+  {
+    QgsDataItem *item = mModel->dataItem( index );
+    if ( item )
+    {
+      QgsDebugMsg( "path = " + item->path() );
+    }
+    else
+    {
+      QgsDebugMsg( "invalid item" );
+    }
+  }
+
+  mModel->refresh( index );
+
+  for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
+  {
+    QModelIndex idx = mModel->index( i, 0, index );
+    if ( mBrowserView->isExpanded( idx ) )
+    {
+      refreshModel( idx );
+    }
+  }
 }
