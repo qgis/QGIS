@@ -775,6 +775,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
 class QgsPGConnectionItem : public QgsDataCollectionItem
 {
+    Q_OBJECT
   public:
     QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsPGConnectionItem();
@@ -782,8 +783,14 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
     virtual bool equal( const QgsDataItem *other );
 
+    virtual QList<QAction*> actions();
+
     QString mConnInfo;
     QVector<QgsPostgresLayerProperty> mLayerProperties;
+
+  public slots:
+    void editConnection();
+    void deleteConnection();
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
@@ -822,8 +829,11 @@ class QgsPGRootItem : public QgsDataCollectionItem
 
     virtual QWidget * paramWidget();
 
+    virtual QList<QAction*> actions();
+
   public slots:
     void connectionsChanged();
+    void newConnection();
 };
 
 #endif

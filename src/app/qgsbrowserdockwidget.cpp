@@ -187,6 +187,15 @@ void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
     }
   }
 
+  QList<QAction*> actions = item->actions();
+  if ( !actions.isEmpty() )
+  {
+    if ( !menu->actions().isEmpty() )
+      menu->addSeparator();
+    // add action to the menu
+    menu->addActions( actions );
+  }
+
   if ( menu->actions().count() == 0 )
   {
     delete menu;

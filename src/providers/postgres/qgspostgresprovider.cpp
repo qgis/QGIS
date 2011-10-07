@@ -4455,6 +4455,41 @@ bool QgsPGConnectionItem::equal( const QgsDataItem *other )
   const QgsPGConnectionItem *o = dynamic_cast<const QgsPGConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName && mConnInfo == o->mConnInfo );
 }
+
+QList<QAction*> QgsPGConnectionItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  lst.append( actionEdit );
+
+  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  lst.append( actionDelete );
+
+  return lst;
+}
+
+#include "qgspgnewconnection.h"
+void QgsPGConnectionItem::editConnection()
+{
+  QgsPgNewConnection nc( NULL, mName );
+  if ( nc.exec() )
+  {
+    // the parent should be updated
+    mParent->refresh();
+  }
+}
+
+void QgsPGConnectionItem::deleteConnection()
+{
+  QgsPgSourceSelect::deleteConnection( mName );
+  // the parent should be updated
+  mParent->refresh();
+}
+
+
 // ---------------------------------------------------------------------------
 QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
     : QgsLayerItem( parent, name, path, QString(), layerType, "postgres" ),
@@ -4543,6 +4578,17 @@ QVector<QgsDataItem*>QgsPGRootItem::createChildren()
   return connections;
 }
 
+QList<QAction*> QgsPGRootItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionNew = new QAction( tr( "New..." ), this );
+  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  lst.append( actionNew );
+
+  return lst;
+}
+
 QWidget * QgsPGRootItem::paramWidget()
 {
   QgsPgSourceSelect *select = new QgsPgSourceSelect( 0, 0, true, true );
@@ -4552,6 +4598,15 @@ QWidget * QgsPGRootItem::paramWidget()
 void QgsPGRootItem::connectionsChanged()
 {
   refresh();
+}
+
+void QgsPGRootItem::newConnection()
+{
+  QgsPgNewConnection nc( NULL );
+  if ( nc.exec() )
+  {
+    refresh();
+  }
 }
 
 // ---------------------------------------------------------------------------

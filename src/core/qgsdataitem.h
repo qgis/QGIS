@@ -76,6 +76,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     virtual QWidget * paramWidget() { return 0; }
 
+    // list of actions provided by this item - usually used for popup menu on right-click
+    virtual QList<QAction*> actions() { return QList<QAction*>(); }
+
     //
 
     enum Capability
