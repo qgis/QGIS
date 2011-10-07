@@ -246,7 +246,7 @@ void QgsApplication::setPluginPath( const QString thePluginPath )
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
 {
   mPkgDataPath = thePkgDataPath;
-  QString mySvgPath = svgPath();
+  QString mySvgPath = thePkgDataPath + ( mRunningFromBuildDir ? "/images/svg/" : "/svg/" );
   // avoid duplicate entries
   if ( !mDefaultSvgPaths.contains( mySvgPath ) )
     mDefaultSvgPaths << mySvgPath;
