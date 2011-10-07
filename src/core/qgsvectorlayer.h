@@ -351,6 +351,12 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
      */
     bool addFeature( QgsFeature& f, bool alsoUpdateExtent = true );
 
+    /** Updates an existing feature
+        @param f feature to update
+        @return                    True in case of success and False in case of error
+        @note added in 1.8
+     */
+    bool updateFeature( QgsFeature &f );
 
     /** Insert a new vertex before the given vertex number,
      *  in the given ring, item (first number is index 0), and feature
