@@ -16,14 +16,16 @@ FIND_PATH(SPATIALINDEX_INCLUDE_DIR NAMES SpatialIndex.h PATHS
   /usr/local/include
   "$ENV{LIB_DIR}/include"
   "$ENV{INCLUDE}"
+  "$ENV{OSGEO4W_ROOT}/include"
   PATH_SUFFIXES spatialindex
   )
 
-FIND_LIBRARY(SPATIALINDEX_LIBRARY NAMES spatialindex PATHS
+FIND_LIBRARY(SPATIALINDEX_LIBRARY NAMES spatialindex_i spatialindex PATHS
   /usr/lib
   /usr/local/lib
   "$ENV{LIB_DIR}/lib"
   "$ENV{LIB}/lib"
+  "$ENV{OSGEO4W_ROOT}/lib"
   )
 
 IF (SPATIALINDEX_INCLUDE_DIR AND SPATIALINDEX_LIBRARY)
