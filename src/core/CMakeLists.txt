@@ -170,7 +170,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbol.cpp
   symbology/qgssymbologyutils.cpp
 
-  spatialindex/qgsspatialindex.cpp
+  qgsspatialindex.cpp
 
   )
 
@@ -386,7 +386,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorcolorrampv2.h
   qgsdiagramrendererv2.h
 
-  spatialindex/qgsspatialindex.h
+  qgsspatialindex.h
 )
 
 INCLUDE_DIRECTORIES(
@@ -440,17 +440,16 @@ IF (WITH_INTERNAL_SPATIALINDEX)
   ENDMACRO(PATH_PREFIX)
   
   # tools library
-  PATH_PREFIX(TOOLS_SRC tools   ExternalSort.cc ExternalSort.h TemporaryFile.cc Tools.cc)
-  PATH_PREFIX(GEOM_SRC geometry LineSegment.cc Point.cc Region.cc)
+  PATH_PREFIX(TOOLS_SRC tools Tools.cc)
   
   # spatial index library
-  PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc)
+  PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc LineSegment.cc Point.cc Region.cc)
   PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
   PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
   
   SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
   
-  PATH_PREFIX(INDEX_SRC spatialindex ${SPINDEX_SRC})
+  PATH_PREFIX(INDEX_SRC spatialindex/src ${SPINDEX_SRC})
 ENDIF (WITH_INTERNAL_SPATIALINDEX)
 
 #############################################################
