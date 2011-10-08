@@ -67,7 +67,7 @@ QgsSpatialIndex::QgsSpatialIndex()
   RTree::RTreeVariant variant = RTree::RV_RSTAR;
 
   // create R-tree
-  long indexId;
+  SpatialIndex::id_type indexId;
   mRTree = RTree::createNewRTree( *mStorage, fillFactor, indexCapacity,
                                   leafCapacity, dimension, variant, indexId );
 }
