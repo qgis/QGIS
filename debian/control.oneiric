@@ -19,6 +19,7 @@ Build-Depends:
  libqtwebkit-dev,
  libqwt5-qt4-dev,
  libspatialite-dev,
+ libspatialindex-dev,
  libsqlite3-dev,
  pkg-config,
  pyqt4-dev-tools,
