@@ -21,7 +21,6 @@
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
 
-class QgisInterface;
 class QgsGenericProjectionSelector;
 class QNetworkReply;
 
@@ -31,12 +30,14 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   public:
 
-    QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface );
+    QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl );
     ~QgsWFSSourceSelect();
+
+  signals:
+    void addWfsLayer( QString uri, QString typeName );
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
-    QgisInterface* mIface; //pointer to the QGIS interface object (needed to add WFS layers)
     QString mUri; //uri of the currently connected server
     QgsGenericProjectionSelector* mProjectionSelector;
     /**Stores the available CRS for a server connections.

@@ -17,6 +17,7 @@
 
 #include "qgisinterface.h"
 #include "qgswfssourceselect.h"
+#include "qgswfsconnection.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgscontexthelp.h"
@@ -37,9 +38,8 @@
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, QgisInterface* iface )
-    : QDialog( parent )
-    , mIface( iface )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl )
+    : QDialog( parent, fl )
     , mCapabilitiesReply( 0 )
 {
   setupUi( this );
@@ -66,9 +66,8 @@ QgsWFSSourceSelect::~QgsWFSSourceSelect()
 
 void QgsWFSSourceSelect::populateConnectionList()
 {
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-wfs" );
-  QStringList keys = settings.childGroups();
+  QStringList keys = QgsWFSConnection::connectionList();
+
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while ( it != keys.end() )
@@ -76,7 +75,6 @@ void QgsWFSSourceSelect::populateConnectionList()
     cmbConnections->addItem( *it );
     ++it;
   }
-  settings.endGroup();
 
   if ( keys.begin() != keys.end() )
   {
@@ -95,8 +93,7 @@ void QgsWFSSourceSelect::populateConnectionList()
   }
 
   //set last used connection
-  QSettings s;
-  QString selectedConnection = s.value( "/Qgis/connections-wfs/selected" ).toString();
+  QString selectedConnection = QgsWFSConnection::selectedConnection();
   int index = cmbConnections->findText( selectedConnection );
   if ( index != -1 )
   {
@@ -321,14 +318,12 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
 
 void QgsWFSSourceSelect::deleteEntryOfServerList()
 {
-  QSettings settings;
-  QString key = "/Qgis/connections-wfs/" + cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    settings.remove( key );
+    QgsWFSConnection::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
   }
 }
@@ -393,12 +388,11 @@ void QgsWFSSourceSelect::addLayer()
     filterString = ( "&FILTER=" + mFilterLineEdit->text() );
   }
 
-  //add a wfs layer to the map
-  if ( mIface )
-  {
+  QString bBoxString;
+#if 0
+    // TODO: resolve [MD]
     //get current extent
     QgsMapCanvas* canvas = mIface->mapCanvas();
-    QString bBoxString;
     if ( canvas && mBboxCheckBox->isChecked() )
     {
       QgsRectangle currentExtent = canvas->extent();
@@ -408,8 +402,12 @@ void QgsWFSSourceSelect::addLayer()
                    .arg( currentExtent.xMaximum(), 0, 'f' )
                    .arg( currentExtent.yMaximum(), 0, 'f' );
     }
-    mIface->addVectorLayer( uri + "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString + filterString, typeName, "WFS" );
-  }
+#endif
+
+  //add a wfs layer to the map
+  uri += "SERVICE=WFS&VERSION=1.0.0&REQUEST=GetFeature&TYPENAME=" + typeName + crsString + bBoxString + filterString;
+  emit addWfsLayer( uri, typeName );
+
   accept();
 }
 
@@ -462,8 +460,7 @@ void QgsWFSSourceSelect::changeCRSFilter()
 void QgsWFSSourceSelect::on_cmbConnections_activated( int index )
 {
   Q_UNUSED( index );
-  QSettings s;
-  s.setValue( "/Qgis/connections-wfs/selected", cmbConnections->currentText() );
+  QgsWFSConnection::setSelectedConnection( cmbConnections->currentText() );
 }
 
 void QgsWFSSourceSelect::on_btnSave_clicked()

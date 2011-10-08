@@ -836,6 +836,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
+  connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
@@ -1468,6 +1469,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionNewBookmark->setIcon( getThemeIcon( "/mActionNewBookmark.png" ) );
   mActionCustomProjection->setIcon( getThemeIcon( "/mActionCustomProjection.png" ) );
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
+  mActionAddWfsLayer->setIcon( getThemeIcon( "/mActionAddWfsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( getThemeIcon( "/mActionFormAnnotation.png" ) );
@@ -2426,6 +2428,36 @@ void QgisApp::addWmsLayer()
   wmss->exec();
   delete wmss;
 }
+
+void QgisApp::addWfsLayer()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+  // Fudge for now
+  QgsDebugMsg( "about to addWfsLayer" );
+
+  // TODO: QDialog for now, switch to QWidget in future
+  QDialog *wfss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "WFS" ), this ) );
+  if ( !wfss )
+  {
+    QMessageBox::warning( this, tr( "WFS" ), tr( "Cannot get WFS select dialog from provider." ) );
+    return;
+  }
+  connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
+           this , SLOT( addWfsLayer( QString, QString ) ) );
+
+  wfss->exec();
+  delete wfss;
+}
+
+void QgisApp::addWfsLayer( QString uri, QString typeName )
+{
+  // TODO: this should be eventually moved to a more reasonable place
+  addVectorLayer( uri, typeName, "WFS" );
+}
+
 
 void QgisApp::fileExit()
 {
