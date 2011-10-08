@@ -34,14 +34,16 @@ const int NAME_COLUMN = 0;
 const int AUTHID_COLUMN = 1;
 const int QGIS_CRS_ID_COLUMN = 2;
 
-QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char * name, Qt::WFlags fl )
+QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name, Qt::WFlags fl )
     : QWidget( parent, fl )
     , mProjListDone( false )
     , mUserProjListDone( false )
+    , mRecentProjListDone( false )
     , mCRSNameSelectionPending( false )
     , mCRSIDSelectionPending( false )
     , mAuthIDSelectionPending( false )
 {
+  Q_UNUSED( name );
   setupUi( this );
   connect( lstCoordinateSystems, SIGNAL( currentItemChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ),
            this, SLOT( coordinateSystemSelected( QTreeWidgetItem* ) ) );
@@ -168,10 +170,12 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
     applySelection();
   }
 
-  lstRecent->clear();
-
-  for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
-    insertRecent( mRecentProjections.at( i ).toLong() );
+  if ( !mRecentProjListDone )
+  {
+    for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
+      insertRecent( mRecentProjections.at( i ).toLong() );
+    mRecentProjListDone = true;
+  }
 
   // Pass up the inheritance hierarchy
   QWidget::showEvent( theEvent );
@@ -858,10 +862,9 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
+  Q_UNUSED( previous );
   if ( current )
-  {
     setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
-  }
 }
 
 void QgsProjectionSelector::on_pbnFind_clicked()
