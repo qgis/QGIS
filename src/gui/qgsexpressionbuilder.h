@@ -22,6 +22,23 @@
 
 #include "QStandardItemModel"
 #include "QStandardItem"
+#include "QSortFilterProxyModel"
+
+class QgsExpressionItemSearhProxy : public QSortFilterProxyModel
+{
+    public:
+        QgsExpressionItemSearhProxy()
+        {
+        }
+
+        bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+        {
+            if (source_parent == qobject_cast<QStandardItemModel*>(sourceModel())->invisibleRootItem()->index())
+                return true;
+
+            QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+        }
+};
 
 class QgsExpressionItem : public QStandardItem
 {
@@ -82,8 +99,13 @@ class QgsExpressionItem : public QStandardItem
 class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
     Q_OBJECT
 public:
-    QgsExpressionBuilderWidget(QgsVectorLayer * layer);
+    QgsExpressionBuilderWidget(QWidget *parent);
     ~QgsExpressionBuilderWidget();
+
+    /** Sets layer in order to get the fields and values
+      * @note this needs to be called before calling loadFieldNames().
+      */
+    void setLayer( QgsVectorLayer* layer );
 
     /** Loads all the field names from the layer.
       * @remarks Should this really be public couldn't we just do this for the user?
@@ -115,10 +137,13 @@ public:
     bool hasExpressionError();
 
 public slots:
-    void on_mAllPushButton_clicked();
     void on_expressionTree_clicked(const QModelIndex &index);
     void on_expressionTree_doubleClicked(const QModelIndex &index);
     void on_txtExpressionString_textChanged();
+    void on_txtSearchEdit_textChanged();
+    void showContextMenu( const QPoint & );
+    void loadSampleValues();
+    void loadAllValues();
 
 signals:
     void expressionParsed(bool isVaild);
@@ -128,6 +153,7 @@ private:
 
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
+    QgsExpressionItemSearhProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
 };
 

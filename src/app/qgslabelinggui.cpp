@@ -24,7 +24,7 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelengineconfigdialog.h"
-#include "qgsexpressionbuilder.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgsexpression.h"
 
 #include <QColorDialog>
@@ -494,43 +494,16 @@ void QgsLabelingGui::showEngineConfigDialog()
 void QgsLabelingGui::showExpressionDialog()
 {
     //TODO extract this out to a dialog.
-
-    QDialog* dlg = new QDialog();
-    QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
-                                                       | QDialogButtonBox::Cancel);
-    QGridLayout* layout = new QGridLayout();
-    QgsExpressionBuilderWidget* builder = new QgsExpressionBuilderWidget(mLayer);
-    dlg->setLayout(layout);
-    layout->addWidget(builder);
-    layout->addWidget(buttonBox);
-    connect(buttonBox,SIGNAL( accepted() ),dlg,SLOT( accept() ) );
-    connect(buttonBox,SIGNAL( rejected() ),dlg,SLOT( reject() ) );
-    QPushButton* okButuon = buttonBox->button(QDialogButtonBox::Ok);
-    connect(builder, SIGNAL(expressionParsed(bool)), okButuon, SLOT(setEnabled(bool)));
-
-    // Set the current expression using the selected text in the combo box.
-    builder->setExpressionString(this->cboFieldName->currentText());
-    builder->loadFieldNames();
-
-    if ( dlg->exec() == QDialog::Accepted )
-    { 
-      QString expression =  builder->getExpressionString();
-      //Do validation here first before applying
-      QgsExpression exp( expression );
-      if ( exp.hasParserError() )
-      {
-        //expression not valid
-          QMessageBox::critical( 0, "Syntax error",
-                                 "Invalid expression syntax. The error message of the parser is: '" + exp.parserErrorString() + "'" );
-          return;
-      }
-
-      // Only add the expression if the user has entered some text.
-      if (!expression.isEmpty())
-      {
-          cboFieldName->addItem(expression);
-          cboFieldName->setCurrentIndex(cboFieldName->count() - 1);
-      }
+    QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
+    if ( dlg.exec() == QDialog::Accepted )
+    {
+        QString expression =  dlg.expressionBuilder()->getExpressionString();
+        //Only add the expression if the user has entered some text.
+        if (!expression.isEmpty())
+        {
+            cboFieldName->addItem(expression);
+            cboFieldName->setCurrentIndex(cboFieldName->count() - 1);
+        }
     }
  }
 

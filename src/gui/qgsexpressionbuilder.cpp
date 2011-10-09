@@ -17,19 +17,23 @@
 #include "qgslogger.h"
 #include "qgsexpression.h"
 
-QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QgsVectorLayer *layer)
-    : QWidget(),
-    mLayer( layer )
-{
-    if (!layer) return;
+#include <QMenu>
 
+QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QWidget *parent)
+    : QWidget(parent)
+{
     setupUi(this);
 
     mValueListWidget->hide();
     mValueListLabel->hide();
 
     mModel = new QStandardItemModel( );
-    expressionTree->setModel( mModel );
+    mProxyModel = new QgsExpressionItemSearhProxy();
+    mProxyModel->setSourceModel( mModel );
+    expressionTree->setModel( mProxyModel );
+
+    expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
+    connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
     this->registerItem("Operators","+"," + ");
     this->registerItem("Operators","-"," -");
@@ -58,29 +62,26 @@ QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
     
 }
 
-
-void QgsExpressionBuilderWidget::on_mAllPushButton_clicked()
+void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
 {
-    // We don't use this yet.
-    // TODO
+    mLayer = layer;
 }
 
 void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &index)
 {
    // Get the item
-   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
+   QModelIndex idx = mProxyModel->mapToSource(index);
+   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex( idx ));
    if ( item == 0 )
        return;
 
-   // If field item then we load a sample set of values from the field.
+   // Loading field values are handled with a
+   // right click so we just show the help.
    if (item->getItemType() == QgsExpressionItem::Field)
    {
-       mValueListWidget->show();
-       mValueListLabel->show();
-       int fieldIndex = mLayer->fieldNameIndex(item->text());
-       fillFieldValues(fieldIndex,10);
-       txtHelpText->setText("Double click to add field name to expression string. <br> " \
-                            "Or double click an item in the value list to add it to the expression string.");
+       txtHelpText->setText( tr("Double click to add field name to expression string. <br> " \
+                            "Or right click to select loading value options then " \
+                            "double click an item in the value list to add it to the expression string."));
        txtHelpText->setToolTip(txtHelpText->text());
    }
    else
@@ -96,7 +97,8 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked(const QModelIndex &in
 
 void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked(const QModelIndex &index)
 {
-   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex(index));
+   QModelIndex idx = mProxyModel->mapToSource(index);
+   QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex( idx ));
    if (item == 0)
        return;
 
@@ -110,10 +112,10 @@ void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked(const QModelInd
 
 void QgsExpressionBuilderWidget::loadFieldNames()
 {
+  // TODO We should really return a error the user of the widget that
+  // the there is no layer set.
   if ( !mLayer )
-  {
     return;
-  }
  
   const QgsFieldMap fieldMap = mLayer->pendingFields();
   QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
@@ -126,6 +128,12 @@ void QgsExpressionBuilderWidget::loadFieldNames()
 
 void QgsExpressionBuilderWidget::fillFieldValues(int fieldIndex, int countLimit)
 {
+    // TODO We should really return a error the user of the widget that
+    // the there is no layer set.
+    if ( !mLayer )
+      return;
+
+    // TODO We should thread this so that we don't hold the user up if the layer is massive.
     mValueListWidget->clear();
     mValueListWidget->setUpdatesEnabled( false );
     mValueListWidget->blockSignals( true );
@@ -199,5 +207,59 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     }
 }
 
+void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
+{
+    mProxyModel->setFilterWildcard( txtSearchEdit->text() );
+    if ( txtSearchEdit->text().isEmpty() )
+        expressionTree->collapseAll();
+    else
+        expressionTree->expandAll();
+}
 
+void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt)
+{
+    QModelIndex idx = expressionTree->indexAt( pt );
+    idx = mProxyModel->mapToSource( idx );
+    QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex( idx ));
+    if ( !item )
+      return;
+
+    if (item->getItemType() == QgsExpressionItem::Field)
+    {
+        QMenu* menu = new QMenu( this );
+        menu->addAction( tr( "Load top 10 unique values" ), this, SLOT( loadSampleValues()) );
+        menu->addAction( tr( "Load all unique values" ), this, SLOT( loadAllValues() ) );
+        menu->popup( expressionTree->mapToGlobal( pt ) );
+    }
+}
+
+void QgsExpressionBuilderWidget::loadSampleValues()
+{
+    QModelIndex idx = mProxyModel->mapToSource(expressionTree->currentIndex());
+    QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex( idx ));
+    // TODO We should really return a error the user of the widget that
+    // the there is no layer set.
+    if ( !mLayer )
+        return;
+
+    mValueListWidget->show();
+    mValueListLabel->show();
+    int fieldIndex = mLayer->fieldNameIndex(item->text());
+    fillFieldValues(fieldIndex,10);
+}
+
+void QgsExpressionBuilderWidget::loadAllValues()
+{
+    QModelIndex idx = mProxyModel->mapToSource(expressionTree->currentIndex());
+    QgsExpressionItem* item = dynamic_cast<QgsExpressionItem*>(mModel->itemFromIndex( idx ));
+    // TODO We should really return a error the user of the widget that
+    // the there is no layer set.
+    if ( !mLayer )
+        return;
+
+    mValueListWidget->show();
+    mValueListLabel->show();
+    int fieldIndex = mLayer->fieldNameIndex(item->text());
+    fillFieldValues(fieldIndex,-1);
+}
 
