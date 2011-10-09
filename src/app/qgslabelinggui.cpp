@@ -37,6 +37,8 @@
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
+  if ( !layer ) return;
+
   setupUi( this );
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
@@ -63,6 +65,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       Q_ASSERT( 0 && "NOOOO!" );
   }
 
+  //mTabWidget->setEnabled( chkEnableLabeling->isChecked() );
   chkMergeLines->setEnabled( layer->geometryType() == QGis::Line );
   label_19->setEnabled( layer->geometryType() != QGis::Point );
   mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
@@ -71,11 +74,16 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   QgsPalLayerSettings lyr;
   lyr.readFromLayer( layer );
   populateFieldNames();
+  populateDataDefinedCombos( lyr );
+
+  chkEnableLabeling->setChecked( lyr.enabled );
+  mTabWidget->setEnabled( lyr.enabled );
+  cboFieldName->setEnabled( lyr.enabled );
+  btnExpression->setEnabled( lyr.enabled );
 
   //Add the current expression to the bottom of the list.
   if (lyr.isExpression and !lyr.fieldName.isEmpty())
       cboFieldName->addItem(lyr.fieldName);
-  populateDataDefinedCombos( lyr );
 
   // placement
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
@@ -485,6 +493,8 @@ void QgsLabelingGui::showEngineConfigDialog()
 
 void QgsLabelingGui::showExpressionDialog()
 {
+    //TODO extract this out to a dialog.
+
     QDialog* dlg = new QDialog();
     QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok
                                                        | QDialogButtonBox::Cancel);
@@ -495,6 +505,8 @@ void QgsLabelingGui::showExpressionDialog()
     layout->addWidget(buttonBox);
     connect(buttonBox,SIGNAL( accepted() ),dlg,SLOT( accept() ) );
     connect(buttonBox,SIGNAL( rejected() ),dlg,SLOT( reject() ) );
+    QPushButton* okButuon = buttonBox->button(QDialogButtonBox::Ok);
+    connect(builder, SIGNAL(expressionParsed(bool)), okButuon, SLOT(setEnabled(bool)));
 
     // Set the current expression using the selected text in the combo box.
     builder->setExpressionString(this->cboFieldName->currentText());

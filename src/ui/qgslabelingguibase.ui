@@ -79,7 +79,7 @@
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/labels.png</normaloff>:/images/themes/default/propertyicons/labels.png</iconset>
       </attribute>
       <attribute name="title">
@@ -390,7 +390,7 @@
      </widget>
      <widget class="QWidget" name="tab">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/default/propertyicons/general.png</normaloff>:/images/themes/default/propertyicons/general.png</iconset>
       </attribute>
       <attribute name="title">
@@ -856,7 +856,7 @@
      </widget>
      <widget class="QWidget" name="tab_4">
       <attribute name="icon">
-       <iconset>
+       <iconset resource="../../images/images.qrc">
         <normaloff>:/images/themes/gis/mActionOpenTable.png</normaloff>:/images/themes/gis/mActionOpenTable.png</iconset>
       </attribute>
       <attribute name="title">
@@ -1096,6 +1096,9 @@
        <property name="enabled">
         <bool>false</bool>
        </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -1180,22 +1183,6 @@
   <connection>
    <sender>chkEnableLabeling</sender>
    <signal>clicked(bool)</signal>
-   <receiver>mTabWidget</receiver>
-   <slot>setEnabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>59</x>
-     <y>22</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>91</x>
-     <y>89</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>chkEnableLabeling</sender>
-   <signal>clicked(bool)</signal>
    <receiver>cboFieldName</receiver>
    <slot>setEnabled(bool)</slot>
    <hints>
@@ -1206,6 +1193,22 @@
     <hint type="destinationlabel">
      <x>248</x>
      <y>26</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>mTabWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>89</y>
     </hint>
    </hints>
   </connection>

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>589</width>
-    <height>604</height>
+    <width>533</width>
+    <height>591</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -80,7 +80,7 @@
         <item>
          <widget class="QLabel" name="mValueListLabel">
           <property name="text">
-           <string>Field Values</string>
+           <string>&lt;b&gt;Field Values&lt;/b&gt;</string>
           </property>
          </widget>
         </item>
@@ -149,8 +149,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>277</width>
-                <height>140</height>
+                <width>249</width>
+                <height>127</height>
                </rect>
               </property>
               <layout class="QGridLayout" name="gridLayout_4">
@@ -187,8 +187,6 @@
             </widget>
            </item>
           </layout>
-          <zorder>txtHelpText</zorder>
-          <zorder>scrollArea</zorder>
          </widget>
         </item>
        </layout>
@@ -360,7 +358,7 @@
       </size>
      </property>
      <property name="title">
-      <string>Expression =</string>
+      <string>Expression</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
       <property name="leftMargin">

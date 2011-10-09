@@ -78,6 +78,7 @@ class QgsExpressionItem : public QStandardItem
         QgsExpressionItem::ItemType mType;
 };
 
+/** A reusable widget that can be used to build a expression string. */
 class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
     Q_OBJECT
 public:
@@ -107,7 +108,10 @@ public:
                       QString helpText = "",
                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode);
 
-    /** Does the expression used in the widget have any errors */
+    /** Does the expression used in the widget have any errors
+      * @note Users of this widget can check this to see if they should let the
+      * user move forward.
+      */
     bool hasExpressionError();
 
 public slots:
@@ -115,6 +119,9 @@ public slots:
     void on_expressionTree_clicked(const QModelIndex &index);
     void on_expressionTree_doubleClicked(const QModelIndex &index);
     void on_txtExpressionString_textChanged();
+
+signals:
+    void expressionParsed(bool isVaild);
 
 private:
     void fillFieldValues(int fieldIndex, int countLimit);

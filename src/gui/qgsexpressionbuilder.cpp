@@ -188,10 +188,14 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     if ( exp.hasParserError())
     {
         this->txtExpressionString->setStyleSheet("background-color: rgba(255, 6, 10, 75);");
+        this->txtExpressionString->setToolTip(exp.parserErrorString());
+        emit expressionParsed(false);
     }
     else
     {
         this->txtExpressionString->setStyleSheet("");
+        this->txtExpressionString->setToolTip("");
+        emit expressionParsed(true);
     }
 }
 
