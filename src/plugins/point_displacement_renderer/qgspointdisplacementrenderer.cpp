@@ -479,6 +479,17 @@ void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( const QPoin
   symbolPositions.clear();
   labelShifts.clear();
 
+  if ( nPosition < 1 )
+  {
+    return;
+  }
+  else if ( nPosition == 1 ) //If there is only one feature, draw it exactly at the center position
+  {
+    symbolPositions.append( centerPoint );
+    labelShifts.append( QPointF( symbolDiagonal / 2.0, -symbolDiagonal / 2.0 ) );
+    return;
+  }
+
   double fullPerimeter = 2 * M_PI;
   double angleStep = fullPerimeter / nPosition;
   double currentAngle;
