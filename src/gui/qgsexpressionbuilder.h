@@ -36,7 +36,7 @@ class QgsExpressionItemSearhProxy : public QSortFilterProxyModel
             if (source_parent == qobject_cast<QStandardItemModel*>(sourceModel())->invisibleRootItem()->index())
                 return true;
 
-            QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
+            return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
         }
 };
 
@@ -141,6 +141,7 @@ public slots:
     void on_expressionTree_doubleClicked(const QModelIndex &index);
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
+    void on_btnUpdatePreview_clicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
     void loadAllValues();

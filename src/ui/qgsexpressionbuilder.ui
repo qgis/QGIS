@@ -212,6 +212,90 @@
         </property>
        </widget>
       </item>
+      <item row="1" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <property name="spacing">
+         <number>3</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="QCheckBox" name="chkLive">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>If enabled the output preview will be generated &lt;br&gt; as the expression string is updated.</string>
+          </property>
+          <property name="text">
+           <string>Live preview</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="btnUpdatePreview">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>7</pointsize>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>If Live preview is unchecked this button can be &lt;br&gt; used to render a output preview.</string>
+          </property>
+          <property name="text">
+           <string>Update Preview</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_2">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
+          </property>
+          <property name="text">
+           <string>Output preview:   </string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="lblPreview">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <italic>true</italic>
+            <bold>false</bold>
+            <underline>false</underline>
+           </font>
+          </property>
+          <property name="toolTip">
+           <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
      </layout>
     </widget>
    </item>
@@ -221,6 +305,9 @@
       <widget class="QGroupBox" name="moperationListGroup">
        <property name="title">
         <string>Function List</string>
+       </property>
+       <property name="flat">
+        <bool>true</bool>
        </property>
        <layout class="QGridLayout" name="gridLayout_6">
         <property name="margin">
@@ -260,7 +347,10 @@
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
+           <number>2</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
           </property>
           <item>
            <widget class="QLabel" name="label">
@@ -304,7 +394,7 @@
        <item>
         <widget class="QLabel" name="mValueListLabel">
          <property name="text">
-          <string>&lt;b&gt;Field Values&lt;/b&gt;</string>
+          <string>Field Values</string>
          </property>
         </widget>
        </item>
@@ -345,7 +435,7 @@
           <string>Function Help</string>
          </property>
          <property name="flat">
-          <bool>false</bool>
+          <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
           <property name="margin">

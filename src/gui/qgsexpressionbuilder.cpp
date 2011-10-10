@@ -193,10 +193,26 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 {
     QString text = this->txtExpressionString->toPlainText();
     QgsExpression exp( text );
-    if ( exp.hasParserError())
+
+    // TODO We could do this without a layer to.
+    // maybe just calling exp.evaluate()?
+    if ( chkLive->isChecked() && mLayer )
+    {
+        QgsFeature feature;
+        mLayer->featureAtId( 0 , feature );
+        QVariant value = exp.evaluate( &feature, mLayer->pendingFields() );
+
+        if (!exp.hasEvalError())
+            lblPreview->setText( value.toString() );
+    }
+
+    if ( exp.hasParserError() || exp.hasEvalError())
     {
         this->txtExpressionString->setStyleSheet("background-color: rgba(255, 6, 10, 75);");
-        this->txtExpressionString->setToolTip(exp.parserErrorString());
+        QString tooltip = "<b>Parser Error:</b> <br>" + exp.parserErrorString();
+        if (exp.hasEvalError())
+            tooltip += "<br><br> <b>Eval Error:</b> <br>" + exp.evalErrorString();
+        this->txtExpressionString->setToolTip(tooltip);
         emit expressionParsed(false);
     }
     else
@@ -215,6 +231,24 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
     else
         expressionTree->expandAll();
 }
+
+void QgsExpressionBuilderWidget::on_btnUpdatePreview_clicked()
+{
+    QString text = this->txtExpressionString->toPlainText();
+    QgsExpression exp( text );
+
+    // TODO We could do this without a layer maybe just calling exp.evaluate()?
+    if ( mLayer )
+    {
+        QgsFeature feature;
+        mLayer->featureAtId( 0 , feature );
+        QVariant value = exp.evaluate( &feature, mLayer->pendingFields() );
+
+        if (!exp.hasEvalError())
+            lblPreview->setText( value.toString() );
+    }
+}
+
 
 void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt)
 {
