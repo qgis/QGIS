@@ -125,10 +125,8 @@ QgsWFSRootItem::~QgsWFSRootItem()
 QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  QSettings settings;
 
-  settings.beginGroup( "/Qgis/connections-wfs" );
-  foreach( QString connName,  settings.childGroups() )
+  foreach( QString connName, QgsWFSConnection::connectionList() )
   {
     QgsDataItem * conn = new QgsWFSConnectionItem( this, connName, mPath + "/" + connName );
     connections.append( conn );

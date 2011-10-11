@@ -3321,10 +3321,8 @@ QgsWMSRootItem::~QgsWMSRootItem()
 QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
 {
   QVector<QgsDataItem*> connections;
-  QSettings settings;
 
-  settings.beginGroup( "/Qgis/connections-wms" );
-  foreach( QString connName,  settings.childGroups() )
+  foreach( QString connName, QgsWMSConnection::connectionList() )
   {
     QgsDataItem * conn = new QgsWMSConnectionItem( this, connName, mPath + "/" + connName );
     connections.append( conn );
