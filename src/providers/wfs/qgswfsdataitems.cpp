@@ -149,7 +149,7 @@ QList<QAction*> QgsWFSRootItem::actions()
 
 QWidget * QgsWFSRootItem::paramWidget()
 {
-  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( 0, 0 );
+  QgsWFSSourceSelect *select = new QgsWFSSourceSelect( 0, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
 }

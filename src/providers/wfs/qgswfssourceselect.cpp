@@ -34,13 +34,24 @@
 #include <QFileDialog>
 
 
-QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl )
+QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool embeddedMode )
     : QDialog( parent, fl )
     , mConn( NULL )
 {
   setupUi( this );
+
   btnAdd = buttonBox->button( QDialogButtonBox::Ok );
   btnAdd->setEnabled( false );
+
+  if ( embeddedMode )
+  {
+    buttonBox->button( QDialogButtonBox::Ok )->hide();
+    buttonBox->button( QDialogButtonBox::Cancel )->hide();
+  }
+
+  // keep the "use current view extent" checkbox hidden until
+  // the functionality is reintroduced [MD]
+  mBboxCheckBox->hide();
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
