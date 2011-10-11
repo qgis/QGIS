@@ -226,9 +226,10 @@ IF (PEDANTIC)
     ADD_DEFINITIONS( /wd4610 )  # user defined constructor required (sqlite3_index_info)
     ADD_DEFINITIONS( /wd4706 )  # assignment within conditional expression (pal)
   ELSE (MSVC)
-    ADD_DEFINITIONS( -Wall -Wextra -Wredundant-decls -Wno-long-long -Wformat-security -Wno-strict-aliasing )
+    ADD_DEFINITIONS( -Wall -Wextra  -Wno-long-long -Wformat-security -Wno-strict-aliasing )
     # Qt produces lots of warnings with strict aliasing (as of Qt 4.4.0 & GCC 4.3)
-    # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 )
+    # There are redundant declarations in Qt and GDAL
+    # ADD_DEFINITIONS( -fstrict-aliasing -Wstrict-aliasing=1 -Wredundant-decls )
   ENDIF (MSVC)
 ENDIF (PEDANTIC)
 
