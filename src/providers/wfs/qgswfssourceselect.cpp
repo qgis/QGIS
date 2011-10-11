@@ -201,6 +201,7 @@ void QgsWFSSourceSelect::addEntryToServerList()
   if ( nc.exec() )
   {
     populateConnectionList();
+    emit connectionsChanged();
   }
 }
 
@@ -212,6 +213,7 @@ void QgsWFSSourceSelect::modifyEntryOfServerList()
   if ( nc.exec() )
   {
     populateConnectionList();
+    emit connectionsChanged();
   }
 }
 
@@ -224,6 +226,7 @@ void QgsWFSSourceSelect::deleteEntryOfServerList()
   {
     QgsWFSConnection::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );
+    emit connectionsChanged();
   }
 }
 
@@ -346,4 +349,5 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
   QgsManageConnectionsDialog dlg( this, QgsManageConnectionsDialog::Import, QgsManageConnectionsDialog::WFS, fileName );
   dlg.exec();
   populateConnectionList();
+  emit connectionsChanged();
 }

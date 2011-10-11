@@ -35,6 +35,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
   signals:
     void addWfsLayer( QString uri, QString typeName );
+    void connectionsChanged();
 
   private:
     QgsWFSSourceSelect(); //default constructor is forbidden
