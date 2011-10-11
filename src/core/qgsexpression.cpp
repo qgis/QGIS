@@ -208,6 +208,33 @@ static QVariant fcnAtan2( const QVariantList& values, QgsFeature* , QgsExpressio
   double x = getDoubleValue( values.at( 1 ), parent );
   return QVariant( atan2( y, x ) );
 }
+static QVariant fcnExp( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( exp( x ) );
+}
+static QVariant fcnLn( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  if ( x <= 0 )
+    return QVariant();
+  return QVariant( log( x ) );
+}
+static QVariant fcnLog10( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  if ( x <= 0 )
+    return QVariant();
+  return QVariant( log10( x ) );
+}
+static QVariant fcnLog( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double b = getDoubleValue( values.at( 0 ), parent );
+  double x = getDoubleValue( values.at( 1 ), parent );
+  if ( x <= 0 || b <= 0 )
+    return QVariant();
+  return QVariant( log( x ) / log( b ) );
+}
 static QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
   return QVariant( getIntValue( values.at( 0 ), parent ) );
@@ -356,6 +383,10 @@ FnDef QgsExpression::BuiltinFunctions[] =
   FnDef( "acos", 1, fcnAcos ),
   FnDef( "atan", 1, fcnAtan ),
   FnDef( "atan2", 2, fcnAtan2 ),
+  FnDef( "exp", 1, fcnExp ),
+  FnDef( "ln", 1, fcnLn ),
+  FnDef( "log10", 1, fcnLog10 ),
+  FnDef( "log", 2, fcnLog ),
   // casts
   FnDef( "toint", 1, fcnToInt ),
   FnDef( "toreal", 1, fcnToReal ),
