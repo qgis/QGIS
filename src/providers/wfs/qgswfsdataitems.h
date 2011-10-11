@@ -12,10 +12,14 @@ class QgsWFSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren();
 
+    virtual QList<QAction*> actions();
+
     virtual QWidget * paramWidget();
 
   public slots:
     void connectionsChanged();
+
+    void newConnection();
 };
 
 class QgsWFSConnection;
@@ -30,8 +34,13 @@ class QgsWFSConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
     //virtual bool equal( const QgsDataItem *other );
 
+    virtual QList<QAction*> actions();
+
   private slots:
     void gotCapabilities();
+
+    void editConnection();
+    void deleteConnection();
 
   private:
     QString mName;

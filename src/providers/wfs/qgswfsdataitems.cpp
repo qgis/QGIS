@@ -4,6 +4,8 @@
 #include "qgswfsconnection.h"
 #include "qgswfssourceselect.h"
 
+#include "qgsnewhttpconnection.h"
+
 #include <QSettings>
 #include <QCoreApplication>
 
@@ -69,6 +71,42 @@ void QgsWFSConnectionItem::gotCapabilities()
   mGotCapabilities = true;
 }
 
+QList<QAction*> QgsWFSConnectionItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  lst.append( actionEdit );
+
+  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  lst.append( actionDelete );
+
+  return lst;
+}
+
+void QgsWFSConnectionItem::editConnection()
+{
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/", mName );
+  nc.setWindowTitle( tr( "Modify WFS connection" ) );
+
+  if ( nc.exec() )
+  {
+    // the parent should be updated
+    mParent->refresh();
+  }
+}
+
+void QgsWFSConnectionItem::deleteConnection()
+{
+  QgsWFSConnection::deleteConnection( mName );
+  // the parent should be updated
+  mParent->refresh();
+}
+
+
+
 //////
 
 
@@ -98,6 +136,17 @@ QVector<QgsDataItem*> QgsWFSRootItem::createChildren()
   return connections;
 }
 
+QList<QAction*> QgsWFSRootItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionNew = new QAction( tr( "New..." ), this );
+  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  lst.append( actionNew );
+
+  return lst;
+}
+
 QWidget * QgsWFSRootItem::paramWidget()
 {
   QgsWFSSourceSelect *select = new QgsWFSSourceSelect( 0, 0 );
@@ -108,6 +157,17 @@ QWidget * QgsWFSRootItem::paramWidget()
 void QgsWFSRootItem::connectionsChanged()
 {
   refresh();
+}
+
+void QgsWFSRootItem::newConnection()
+{
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-wfs/" );
+  nc.setWindowTitle( tr( "Create a new WFS connection" ) );
+
+  if ( nc.exec() )
+  {
+    refresh();
+  }
 }
 
 
