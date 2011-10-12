@@ -10,6 +10,7 @@ qgis (1.8.0) UNRELEASED; urgency=low
   * drop abi postfix from sqlanywhere plugin
   * include network analysis library
   * build package with libspatialindex where available
+  * drop wfsplugin
 
  -- Jürgen E. Fischer <jef@norbit.de>  Sat, 08 Oct 2011 20:03:51 +0000
 
