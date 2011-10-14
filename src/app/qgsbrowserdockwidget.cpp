@@ -269,7 +269,7 @@ void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
-    if ( mBrowserView->isExpanded( idx ) )
+    if ( mBrowserView->isExpanded( idx ) || !mModel->hasChildren( idx ) )
     {
       refreshModel( idx );
     }
