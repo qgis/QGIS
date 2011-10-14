@@ -31,7 +31,10 @@ QVector<QgsDataItem*> QgsWMSConnectionItem::createChildren()
 
   // Attention: supportedLayers() gives tree leafes, not top level
   if ( !wmsProvider->supportedLayers( mLayerProperties ) )
+  {
+    children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     return children;
+  }
 
   QgsWmsCapabilitiesProperty mCapabilitiesProperty = wmsProvider->capabilitiesProperty();
   QgsWmsCapabilityProperty capabilityProperty = mCapabilitiesProperty.capability;

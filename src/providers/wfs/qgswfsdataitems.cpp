@@ -57,7 +57,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   }
   else
   {
-    // TODO: return an "error" item
+    layers.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
   }
 
   mConn->deleteLater();

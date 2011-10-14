@@ -29,7 +29,10 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   QgsDebugMsg( "mConnInfo = " + mConnInfo );
 
   if ( !pgProvider->supportedLayers( mLayerProperties, true, false, false ) )
+  {
+    children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     return children;
+  }
 
   QMap<QString, QVector<QgsPostgresLayerProperty> > schemasMap;
   foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
