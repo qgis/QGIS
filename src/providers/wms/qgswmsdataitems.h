@@ -5,6 +5,7 @@
 
 class QgsWMSConnectionItem : public QgsDataCollectionItem
 {
+    Q_OBJECT
   public:
     QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path );
     ~QgsWMSConnectionItem();
@@ -12,9 +13,15 @@ class QgsWMSConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem*> createChildren();
     virtual bool equal( const QgsDataItem *other );
 
+    virtual QList<QAction*> actions();
+
     QgsWmsCapabilitiesProperty mCapabilitiesProperty;
     QString mConnInfo;
     QVector<QgsWmsLayerProperty> mLayerProperties;
+
+  public slots:
+    void editConnection();
+    void deleteConnection();
 };
 
 // WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
@@ -43,10 +50,14 @@ class QgsWMSRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem*> createChildren();
 
+    virtual QList<QAction*> actions();
+
     virtual QWidget * paramWidget();
 
   public slots:
     void connectionsChanged();
+
+    void newConnection();
 };
 
 #endif // QGSWMSDATAITEMS_H

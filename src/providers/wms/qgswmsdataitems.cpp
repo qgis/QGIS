@@ -5,6 +5,8 @@
 #include "qgswmsconnection.h"
 #include "qgswmssourceselect.h"
 
+#include "qgsnewhttpconnection.h"
+
 // ---------------------------------------------------------------------------
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
@@ -60,7 +62,43 @@ bool QgsWMSConnectionItem::equal( const QgsDataItem *other )
   const QgsWMSConnectionItem *o = dynamic_cast<const QgsWMSConnectionItem *>( other );
   return ( mPath == o->mPath && mName == o->mName && mConnInfo == o->mConnInfo );
 }
+
+QList<QAction*> QgsWMSConnectionItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  lst.append( actionEdit );
+
+  QAction* actionDelete = new QAction( tr( "Delete" ), this );
+  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  lst.append( actionDelete );
+
+  return lst;
+}
+
+void QgsWMSConnectionItem::editConnection()
+{
+  QgsNewHttpConnection nc( 0, "/Qgis/connections-wms/", mName );
+
+  if ( nc.exec() )
+  {
+    // the parent should be updated
+    mParent->refresh();
+  }
+}
+
+void QgsWMSConnectionItem::deleteConnection()
+{
+  QgsWMSConnection::deleteConnection( mName );
+  // the parent should be updated
+  mParent->refresh();
+}
+
+
 // ---------------------------------------------------------------------------
+
 QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path, QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperty )
     : QgsLayerItem( parent, name, path, QString(), QgsLayerItem::Raster, "wms" ),
     mCapabilitiesProperty( capabilitiesProperty ),
@@ -170,6 +208,18 @@ QVector<QgsDataItem*>QgsWMSRootItem::createChildren()
   return connections;
 }
 
+QList<QAction*> QgsWMSRootItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionNew = new QAction( tr( "New..." ), this );
+  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  lst.append( actionNew );
+
+  return lst;
+}
+
+
 QWidget * QgsWMSRootItem::paramWidget()
 {
   QgsWMSSourceSelect *select = new QgsWMSSourceSelect( 0, 0, true, true );
@@ -180,6 +230,17 @@ void QgsWMSRootItem::connectionsChanged()
 {
   refresh();
 }
+
+void QgsWMSRootItem::newConnection()
+{
+  QgsNewHttpConnection nc( 0 );
+
+  if ( nc.exec() )
+  {
+    refresh();
+  }
+}
+
 
 // ---------------------------------------------------------------------------
 
