@@ -142,7 +142,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
     {
       QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( currentLayer );
 
-      if ( rl && rl->providerKey() == "wms" )
+      if ( rl && rl->providerType() == "wms" )
       {
         type = tr( "WMS" );
       }

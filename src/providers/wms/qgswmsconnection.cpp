@@ -128,3 +128,30 @@ QgsWmsProvider * QgsWMSConnection::provider( )
   return wmsProvider;
 }
 
+
+
+QStringList QgsWMSConnection::connectionList()
+{
+  QSettings settings;
+  settings.beginGroup( "/Qgis/connections-wms" );
+  return settings.childGroups();
+}
+
+QString QgsWMSConnection::selectedConnection()
+{
+  QSettings settings;
+  return settings.value( "/Qgis/connections-wms/selected" ).toString();
+}
+
+void QgsWMSConnection::setSelectedConnection( QString name )
+{
+  QSettings settings;
+  settings.setValue( "/Qgis/connections-wms/selected", name );
+}
+
+void QgsWMSConnection::deleteConnection( QString name )
+{
+  QSettings settings;
+  settings.remove( "/Qgis/connections-wms/" + name );
+  settings.remove( "/Qgis/WMS/" + name );
+}

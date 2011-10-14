@@ -1947,6 +1947,42 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   return true;
 }
 
+bool QgsVectorLayer::updateFeature( QgsFeature &f )
+{
+  QgsFeature current;
+  if ( !featureAtId( f.id(), current, f.geometry(), !f.attributeMap().isEmpty() ) )
+  {
+    QgsDebugMsg( QString( "feature %1 could not be retrieved" ).arg( f.id() ) );
+    return false;
+  }
+
+  if ( f.geometry() && current.geometry() && f.geometry() != current.geometry() && !f.geometry()->isGeosEqual( *current.geometry() ) )
+  {
+    if ( !changeGeometry( f.id(), f.geometry() ) )
+    {
+      QgsDebugMsg( QString( "geometry of feature %1 could not be changed." ).arg( f.id() ) );
+      return false;
+    }
+  }
+
+  const QgsAttributeMap &fa = f.attributeMap();
+  const QgsAttributeMap &ca = current.attributeMap();
+
+  foreach( int attr, fa.keys() )
+  {
+    if ( fa.contains( attr ) && ca.contains( attr ) && fa[attr] != ca[attr] )
+    {
+      if ( !changeAttributeValue( f.id(), attr, fa[attr] ) )
+      {
+        QgsDebugMsg( QString( "attribute %1 of feature %2 could not be changed." ).arg( attr ).arg( f.id() ) );
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
 
 bool QgsVectorLayer::insertVertex( double x, double y, QgsFeatureId atFeatureId, int beforeVertex )
 {

@@ -26,6 +26,7 @@
 #include "qgstotalcurvaturefilter.h"
 #include "qgsrasterterrainanalysisdialog.h"
 #include <QAction>
+#include <QFileInfo>
 #include <QProgressDialog>
 
 static const QString name_ = QObject::tr( "Raster Terrain Analysis plugin" );
@@ -109,7 +110,7 @@ void QgsRasterTerrainAnalysisPlugin::run()
       delete filter;
       if ( d.addLayerToProject() )
       {
-        mIface->addRasterLayer( outputFile, d.selectedAnalysisMethod() );
+        mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
       }
     }
   }
