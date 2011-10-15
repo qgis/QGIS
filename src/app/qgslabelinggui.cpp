@@ -82,7 +82,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   btnExpression->setEnabled( lyr.enabled );
 
   //Add the current expression to the bottom of the list.
-  if (lyr.isExpression and !lyr.fieldName.isEmpty())
+  if (lyr.isExpression && !lyr.fieldName.isEmpty())
       cboFieldName->addItem(lyr.fieldName);
 
   // placement
