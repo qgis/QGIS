@@ -46,6 +46,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Collection,
       Directory,
       Layer,
+      Error,
     };
 
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
@@ -224,6 +225,24 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     static QVector<QgsDataProvider*> mProviders;
     static QVector<QLibrary*> mLibraries;
 };
+
+/**
+ Data item that can be used to report problems (e.g. network error)
+ */
+class CORE_EXPORT QgsErrorItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    QgsErrorItem( QgsDataItem* parent, QString error, QString path );
+    ~QgsErrorItem();
+
+    //QVector<QgsDataItem*> createChildren();
+    //virtual bool equal( const QgsDataItem *other );
+};
+
+
+// ---------
 
 class QgsDirectoryParamWidget : public QTreeWidget
 {
