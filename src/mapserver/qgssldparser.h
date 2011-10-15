@@ -34,7 +34,6 @@ class QgsRenderer;
 #include <map>
 #include <QList>
 #include <QString>
-#include <QTemporaryFile>
 
 #ifdef DIAGRAMSERVER
 #include "qgsdiagramcategory.h"
@@ -61,7 +60,7 @@ class QgsSLDParser: public QgsConfigParser
     int numberOfLayers() const;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
-    QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool allowCaching = true ) const;
+    QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool useCache = true ) const;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     int layersAndStyles( QStringList& layers, QStringList& styles ) const;
@@ -144,24 +143,11 @@ class QgsSLDParser: public QgsConfigParser
     double scaleFactorFromScaleTag( const QDomElement& scaleElem ) const;
 #endif //DIAGRAMSERVER
 
-
-
     /**SLD as dom document*/
     QDomDocument* mXMLDoc;
 
     /**Map containing the WMS parameters of the request*/
     std::map<QString, QString> mParameterMap;
-
-    //todo: leave this to the layer cash?
-    /**Stores pointers to layers that have to be removed in the destructor of QgsSLDParser*/
-    mutable QList<QgsMapLayer*> mLayersToRemove;
-
-
-    /**Stores the temporary file objects. The class takes ownership of the objects and deletes them in the destructor*/
-    mutable QList<QTemporaryFile*> mFilesToRemove;
-    /**Stores paths of files that need to be removed after each request (necessary because of contours shapefiles that \
-      cannot be handles with QTemporaryFile*/
-    mutable QList<QString> mFilePathsToRemove;
 
     QString mSLDNamespace;
 };

@@ -41,7 +41,7 @@ class QgsProjectParser: public QgsConfigParser
     int numberOfLayers() const;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
-    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching = true ) const;
+    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const;
@@ -118,7 +118,7 @@ class QgsProjectParser: public QgsConfigParser
     QMap< QString, QDomElement > projectLayerElementsByName() const;
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
-    QgsMapLayer* createLayerFromElement( const QDomElement& elem ) const;
+    QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
     /**Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
     QString layerId( const QDomElement& layerElem ) const;
