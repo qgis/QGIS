@@ -108,14 +108,15 @@ class QgsProjectParser: public QgsConfigParser
     /**Absolute project file path (including file name)*/
     QString mProjectPath;
 
-    /**Get all layers of the project (ordered same as in the project file)*/
-    QList<QDomElement> projectLayerElements() const;
-    /**Returns all legend group elements*/
-    QList<QDomElement> legendGroupElements() const;
-    /**Get all layers of the project, accessible by layer id*/
-    QMap< QString, QDomElement > projectLayerElementsById() const;
-    /**Get all layers of the project, accessible by layer name*/
-    QMap< QString, QDomElement > projectLayerElementsByName() const;
+    /**List of project layer (ordered same as in the project file)*/
+    QList<QDomElement> mProjectLayerElements;
+    /**List of all legend group elements*/
+    QList<QDomElement> mLegendGroupElements;
+    /**Project layer elements, accessible by layer id*/
+    QHash< QString, QDomElement > mProjectLayerElementsById;
+    /**Project layer elements, accessible by layer name*/
+    QHash< QString, QDomElement > mProjectLayerElementsByName;
+
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
     QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
