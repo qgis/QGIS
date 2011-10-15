@@ -141,7 +141,7 @@ public slots:
     void on_expressionTree_doubleClicked(const QModelIndex &index);
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
-    void on_btnUpdatePreview_clicked();
+    void on_lblPreview_linkActivated(QString link);
     void showContextMenu( const QPoint & );
     void loadSampleValues();
     void loadAllValues();
@@ -156,6 +156,7 @@ private:
     QStandardItemModel *mModel;
     QgsExpressionItemSearhProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
+    QgsFeature* mFeature;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

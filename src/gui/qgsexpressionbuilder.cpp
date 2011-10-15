@@ -16,6 +16,7 @@
 #include "qgsexpressionbuilder.h"
 #include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsmessageviewer.h"
 
 #include <QMenu>
 
@@ -56,6 +57,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QWidget *parent)
         this->registerItem(func.mGroup,func.mName, " " + name + " ", func.mHelpText);
     };
 }
+
 
 QgsExpressionBuilderWidget::~QgsExpressionBuilderWidget()
 {
@@ -192,12 +194,26 @@ bool QgsExpressionBuilderWidget::hasExpressionError()
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 {
     QString text = this->txtExpressionString->toPlainText();
+
+    // If the string is empty the expression will still "fail" although
+    // we don't show the user an error as it will be confusing.
+    if ( text.isEmpty() )
+    {
+        this->lblPreview->setStyleSheet("");
+        this->txtExpressionString->setToolTip("");
+        this->lblPreview->setToolTip("");
+        // Return false for isVaild because a null expression is still invaild.
+        emit expressionParsed(false);
+        return;
+    }
+
     QgsExpression exp( text );
 
-    // TODO We could do this without a layer to.
-    // maybe just calling exp.evaluate()?
-    if ( chkLive->isChecked() && mLayer )
+    // TODO We could do this without a layer.
+    // Maybe just calling exp.evaluate()?
+    if ( mLayer )
     {
+        // TODO We should really cache the feature.
         QgsFeature feature;
         mLayer->featureAtId( 0 , feature );
         QVariant value = exp.evaluate( &feature, mLayer->pendingFields() );
@@ -208,17 +224,22 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 
     if ( exp.hasParserError() || exp.hasEvalError())
     {
-        this->txtExpressionString->setStyleSheet("background-color: rgba(255, 6, 10, 75);");
         QString tooltip = "<b>Parser Error:</b> <br>" + exp.parserErrorString();
         if (exp.hasEvalError())
             tooltip += "<br><br> <b>Eval Error:</b> <br>" + exp.evalErrorString();
+
+        this->lblPreview->setText( "Expression is invaild <a href=""more"">(more info)</a>" );
+        this->lblPreview->setStyleSheet("color: rgba(255, 6, 10,  255);");
         this->txtExpressionString->setToolTip(tooltip);
+        this->lblPreview->setToolTip(tooltip);
         emit expressionParsed(false);
+        return;
     }
     else
     {
-        this->txtExpressionString->setStyleSheet("");
+        this->lblPreview->setStyleSheet("");
         this->txtExpressionString->setToolTip("");
+        this->lblPreview->setToolTip("");
         emit expressionParsed(true);
     }
 }
@@ -232,23 +253,13 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
         expressionTree->expandAll();
 }
 
-void QgsExpressionBuilderWidget::on_btnUpdatePreview_clicked()
+void QgsExpressionBuilderWidget::on_lblPreview_linkActivated(QString link)
 {
-    QString text = this->txtExpressionString->toPlainText();
-    QgsExpression exp( text );
-
-    // TODO We could do this without a layer maybe just calling exp.evaluate()?
-    if ( mLayer )
-    {
-        QgsFeature feature;
-        mLayer->featureAtId( 0 , feature );
-        QVariant value = exp.evaluate( &feature, mLayer->pendingFields() );
-
-        if (!exp.hasEvalError())
-            lblPreview->setText( value.toString() );
-    }
+    QgsMessageViewer * mv = new QgsMessageViewer( this );
+    mv->setWindowTitle( "More info on expression error" );
+    mv->setMessageAsHtml( this->txtExpressionString->toolTip());
+    mv->exec();
 }
-
 
 void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt)
 {
