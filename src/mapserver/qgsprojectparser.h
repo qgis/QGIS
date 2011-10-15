@@ -102,6 +102,10 @@ class QgsProjectParser: public QgsConfigParser
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
   private:
+
+    //forbidden
+    QgsProjectParser();
+
     /**Content of project file*/
     QDomDocument* mXMLDoc;
 

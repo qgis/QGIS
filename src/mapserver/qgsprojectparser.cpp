@@ -71,6 +71,10 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   }
 }
 
+QgsProjectParser::QgsProjectParser(): mXMLDoc( 0 )
+{
+}
+
 QgsProjectParser::~QgsProjectParser()
 {
   delete mXMLDoc;
