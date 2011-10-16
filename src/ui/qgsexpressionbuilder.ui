@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>QgsExpressionBuilder</class>
- <widget class="QWidget" name="QgsExpressionBuilder">
+ <class>QgsExpressionBuilderWidgetBase</class>
+ <widget class="QWidget" name="QgsExpressionBuilderWidgetBase">
   <property name="geometry">
    <rect>
     <x>0</x>
