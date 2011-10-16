@@ -202,6 +202,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     // we don't show the user an error as it will be confusing.
     if ( text.isEmpty() )
     {
+        this->lblPreview->setText("");
         this->lblPreview->setStyleSheet("");
         this->txtExpressionString->setToolTip("");
         this->lblPreview->setToolTip("");
@@ -262,6 +263,11 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated(QString link)
     mv->setWindowTitle( "More info on expression error" );
     mv->setMessageAsHtml( this->txtExpressionString->toolTip());
     mv->exec();
+}
+
+void QgsExpressionBuilderWidget::on_mValueListWidget_itemDoubleClicked(QListWidgetItem *item)
+{
+    txtExpressionString->insertPlainText( " " + item->text() + " " );
 }
 
 void QgsExpressionBuilderWidget::operatorButtonClicked()

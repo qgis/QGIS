@@ -136,6 +136,7 @@ public slots:
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
     void on_lblPreview_linkActivated(QString link);
+    void on_mValueListWidget_itemDoubleClicked(QListWidgetItem* item);
     void operatorButtonClicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
