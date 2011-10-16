@@ -35,7 +35,17 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget(QWidget *parent)
 
     expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
+    connect( btnPlusPushButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnMinusPushButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnDividePushButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnMultiplyPushButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnExpButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnConcatButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnOpenBracketPushButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
+    connect( btnCloseBracketPushButton, SIGNAL(pressed()), this, SLOT(operatorButtonClicked()));
 
+
+    // TODO Can we move this stuff to QgsExpression, like the functions?
     this->registerItem("Operators","+"," + ");
     this->registerItem("Operators","-"," -");
     this->registerItem("Operators","*"," * ");
@@ -184,13 +194,6 @@ void QgsExpressionBuilderWidget::setExpressionString(const QString expressionStr
     this->txtExpressionString->setPlainText(expressionString);
 }
 
-bool QgsExpressionBuilderWidget::hasExpressionError()
-{
-    QString text = this->txtExpressionString->toPlainText();
-    QgsExpression exp( text );
-    return exp.hasParserError();
-}
-
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 {
     QString text = this->txtExpressionString->toPlainText();
@@ -259,6 +262,12 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated(QString link)
     mv->setWindowTitle( "More info on expression error" );
     mv->setMessageAsHtml( this->txtExpressionString->toolTip());
     mv->exec();
+}
+
+void QgsExpressionBuilderWidget::operatorButtonClicked()
+{
+    QPushButton* button = dynamic_cast<QPushButton*>( sender() );
+    txtExpressionString->insertPlainText( " " + button->text() + " " );
 }
 
 void QgsExpressionBuilderWidget::showContextMenu( const QPoint & pt)

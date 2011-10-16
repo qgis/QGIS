@@ -130,23 +130,23 @@ public:
                       QString helpText = "",
                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode);
 
-    /** Does the expression used in the widget have any errors
-      * @note Users of this widget can check this to see if they should let the
-      * user move forward.
-      */
-    bool hasExpressionError();
-
 public slots:
     void on_expressionTree_clicked(const QModelIndex &index);
     void on_expressionTree_doubleClicked(const QModelIndex &index);
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
     void on_lblPreview_linkActivated(QString link);
+    void operatorButtonClicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
     void loadAllValues();
 
 signals:
+    /** Emited when the user changes the expression in the widget.
+      * Users of this widget should connect to this signal to decide if to let the user
+      * continue.
+      * @param isVaild Is true if the expression the user has typed is vaild.
+      */
     void expressionParsed(bool isVaild);
 
 private:
