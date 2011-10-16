@@ -249,6 +249,18 @@
           <property name="toolTip">
            <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
           </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Sunken</enum>
+          </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="midLineWidth">
+           <number>0</number>
+          </property>
           <property name="text">
            <string/>
           </property>
@@ -398,7 +410,16 @@
           <bool>true</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <property name="margin">
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>3</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
            <number>0</number>
           </property>
           <property name="spacing">
@@ -424,7 +445,7 @@
                <x>0</x>
                <y>0</y>
                <width>287</width>
-               <height>141</height>
+               <height>138</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_4">
