@@ -24,12 +24,14 @@
 #include "QStandardItem"
 #include "QSortFilterProxyModel"
 
+/** Search proxy used to filter the QgsExpressionBuilderWidget tree.
+  * The default search for a tree model only searches top level this will handle one
+  * level down
+  */
 class QgsExpressionItemSearhProxy : public QSortFilterProxyModel
 {
     public:
-        QgsExpressionItemSearhProxy()
-        {
-        }
+        QgsExpressionItemSearhProxy() { }
 
         bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
         {
@@ -40,6 +42,8 @@ class QgsExpressionItemSearhProxy : public QSortFilterProxyModel
         }
 };
 
+/** An expression item that can be used in the QgsExpressionBuilderWidget tree.
+  */
 class QgsExpressionItem : public QStandardItem
 {
     public:
@@ -95,7 +99,9 @@ class QgsExpressionItem : public QStandardItem
         QgsExpressionItem::ItemType mType;
 };
 
-/** A reusable widget that can be used to build a expression string. */
+/** A reusable widget that can be used to build a expression string.
+  * See QgsExpressionBuilderDialog for exmaple of usage.
+  */
 class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilder {
     Q_OBJECT
 public:

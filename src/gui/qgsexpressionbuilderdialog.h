@@ -13,6 +13,7 @@ class QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuil
         QgsExpressionBuilderWidget* expressionBuilder();
 
         void setExpressionText( QString text );
+
     protected:
         /**
          * Handle closing of the window
