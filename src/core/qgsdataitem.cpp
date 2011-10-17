@@ -565,3 +565,16 @@ void QgsDirectoryParamWidget::showHideColumn()
   }
   settings.setValue( "/dataitem/directoryHiddenColumns", lst );
 }
+
+
+QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
+    : QgsDataItem( QgsDataItem::Error, parent, error, path )
+{
+  mIcon = QIcon( getThemePixmap( "/mIconDelete.png" ) );
+
+  mPopulated = true; // no more children
+}
+
+QgsErrorItem::~QgsErrorItem()
+{
+}

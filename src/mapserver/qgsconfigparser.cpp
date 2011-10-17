@@ -42,6 +42,25 @@ QgsConfigParser::~QgsConfigParser()
   {
     delete it.value();
   }
+
+  //remove the temporary files
+  for ( QList<QTemporaryFile*>::const_iterator it = mFilesToRemove.constBegin(); it != mFilesToRemove.constEnd(); ++it )
+  {
+    delete *it;
+  }
+
+  //and also those the temporary file paths
+  for ( QList<QString>::const_iterator it = mFilePathsToRemove.constBegin(); it != mFilePathsToRemove.constEnd(); ++it )
+  {
+    QFile::remove( *it );
+  }
+
+  //delete the layers in the list
+  QList<QgsMapLayer*>::iterator layer_it = mLayersToRemove.begin();
+  for ( ; layer_it != mLayersToRemove.end(); ++layer_it )
+  {
+    delete *layer_it;
+  }
 }
 
 void QgsConfigParser::setDefaultLegendSettings()
