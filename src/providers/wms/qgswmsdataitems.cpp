@@ -11,6 +11,7 @@
 QgsWMSConnectionItem::QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
 }
 
 QgsWMSConnectionItem::~QgsWMSConnectionItem()
@@ -123,7 +124,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
 
   if ( mChildren.size() == 0 )
   {
-    mIcon = QIcon( getThemePixmap( "mIconWmsLayer.png" ) );
+    mIcon = QIcon( getThemePixmap( "mIconRaster.png" ) );
   }
   mPopulated = true;
 }

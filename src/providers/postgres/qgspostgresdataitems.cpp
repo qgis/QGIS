@@ -10,6 +10,7 @@
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
 }
 
 QgsPGConnectionItem::~QgsPGConnectionItem()
@@ -120,7 +121,7 @@ QString QgsPGLayerItem::createUri()
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconNamespace.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconDbSchema.png" ) );
 
   // Populate everything, it costs nothing, all info about layers is collected
   foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
@@ -163,7 +164,7 @@ QgsPGSchemaItem::~QgsPGSchemaItem()
 QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  //mIcon = QIcon( getThemePixmap( "mIconPg.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconPostgis.png" ) );
   populate();
 }
 
