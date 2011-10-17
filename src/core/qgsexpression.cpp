@@ -364,7 +364,7 @@ FnDef QgsExpression::BuiltinFunctions[] =
                                         "<br> <i>Usage:</i><br>lower('HELLO WORLD') will return 'hello world'"),
   FnDef( "upper", 1, fcnUpper, "String" , "<b>Convert to upper case</b> "\
                                         "<br> Converts a string to upper case letters. " \
-                                        "<br> <i>Usage:</i><br>lower('hello world') will return 'HELLO WORLD'"),
+                                        "<br> <i>Usage:</i><br>upper('hello world') will return 'HELLO WORLD'"),
   FnDef( "length", 1, fcnLength, "String", "<b>Length of string</b> "\
                                         "<br> Returns the legnth of a string. " \
                                         "<br> <i>Usage:</i><br>length('hello') will return 5"),
