@@ -228,8 +228,10 @@ public:
     /** \brief  Accessor for transparent band name mapping */
     QString transparentBandName() const;
 
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? */
-    bool usesProvider();
+    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? 
+     * @deprecated in 2.0
+     */
+    bool usesProvider() /Deprecated/;
 
     /** \brief Accessor that returns the width of the (unclipped) raster  */
     int width();
@@ -375,8 +377,15 @@ public:
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBand = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? */
-    QString providerKey() const;
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+     * @note added in 2.0
+     */
+    QString providerType() const;
+
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+     * @deprecated in 2.0
+     */
+    QString providerKey() const /Deprecated/;
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();

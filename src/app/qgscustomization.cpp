@@ -668,6 +668,10 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
         // hide individual toolbar actions
         foreach( QAction* action, tb->actions() )
         {
+          if ( action->objectName().isEmpty() )
+          {
+            continue;
+          }
           visible = mSettings.value( action->objectName(), true ).toBool();
           if ( !visible )
             tb->removeAction( action );
@@ -708,6 +712,10 @@ void QgsCustomization::updateMainWindow( QMenu * theToolBarMenu )
       if ( obj->inherits( "QWidget" ) )
       {
         QWidget* widget = qobject_cast<QWidget*>( obj );
+        if ( widget->objectName().isEmpty() )
+        {
+          continue;
+        }
         bool visible = mSettings.value( widget->objectName(), true ).toBool();
         if ( !visible )
         {
@@ -732,6 +740,10 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
   foreach( QAction* action, menu->actions() )
   {
     QString objName = ( action->menu() ? action->menu()->objectName() : action->objectName() );
+    if ( objName.isEmpty() )
+    {
+      continue;
+    }
     bool visible = settings.value( objName, true ).toBool();
     if ( !visible )
       menu->removeAction( action );
@@ -797,7 +809,7 @@ void QgsCustomization::customizeWidget( QString thePath, QWidget * theWidget )
     QString p = myPath + "/" + w->objectName();
 
     bool on = mySettings.value( p, true ).toBool();
-    QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
+    //QgsDebugMsg( QString( "p = %1 on = %2" ).arg( p ).arg( on ) );
     if ( on )
     {
       QgsCustomization::customizeWidget( myPath, w );
@@ -854,7 +866,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     }
     else if ( widget && event->type() == QEvent::MouseButtonPress )
     {
-      QgsDebugMsg( "click" );
+      //QgsDebugMsg( "click" );
       if ( pDialog && pDialog->isVisible() )
       {
         QMouseEvent *e = static_cast<QMouseEvent*>( event );
@@ -870,7 +882,7 @@ void QgsCustomization::preNotify( QObject * receiver, QEvent * event, bool * don
     if ( pDialog && pDialog->isVisible() )
     {
       QKeyEvent *e = static_cast<QKeyEvent*>( event );
-      QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
+      //QgsDebugMsg( QString( "key = %1 modifiers = %2" ).arg( e->key() ).arg( e->modifiers() ) ) ;
       if ( e->key() == Qt::Key_M && e->modifiers() == Qt::ControlModifier )
       {
         pDialog->setCatch( !pDialog->catchOn() );

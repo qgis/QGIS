@@ -762,9 +762,15 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::FileName:
     case QgsVectorLayer::Calendar:
     {
-      QLineEdit *le = editor->findChild<QLineEdit *>();
-      if ( le == NULL )
+      QLineEdit* le = qobject_cast<QLineEdit*>( editor );
+      if( !le )
+      {
+        le = editor->findChild<QLineEdit *>();
+      }
+      if ( !le )
+      {
         return false;
+      }
       le->setText( value.toString() );
     }
     break;

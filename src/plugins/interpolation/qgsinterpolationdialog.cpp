@@ -195,7 +195,7 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
                                mNumberOfRowsSpinBox->value(), mCellsizeXSpinBox->value(), mCellSizeYSpinBox->value() );
   if ( theWriter.writeFile( true ) == 0 )
   {
-    mIface->addRasterLayer( fileName, "Interpolation" );
+    mIface->addRasterLayer( fileName, QFileInfo( fileName ).baseName() );
     accept();
   }
 

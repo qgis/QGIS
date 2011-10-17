@@ -245,9 +245,9 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
   QgsDistanceArea calc;
   if ( !featureList.count() == 0 )
   {
-      calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
-      calc.setEllipsoid( ellipsoid );
-      calc.setSourceCrs( layer->crs().srsid() );
+    calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
+    calc.setEllipsoid( ellipsoid );
+    calc.setSourceCrs( layer->crs().srsid() );
   }
   QgsFeatureList::iterator f_it = featureList.begin();
 
@@ -327,7 +327,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   idPoint = toLayerCoordinates( layer, idPoint );
   QString type;
 
-  if ( layer->providerKey() == "wms" )
+  if ( layer->providerType() == "wms" )
   {
     type = tr( "WMS layer" );
 

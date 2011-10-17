@@ -17,7 +17,7 @@
 
 #include "qgsprojectparser.h"
 #include "qgsconfigcache.h"
-#include "qgsepsgcache.h"
+#include "qgscrscache.h"
 #include "qgsmslayercache.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
@@ -44,6 +44,35 @@ QgsProjectParser::QgsProjectParser( QDomDocument* xmlDoc, const QString& filePat
   mOutputUnits = QgsMapRenderer::Millimeters;
   setLegendParametersFromProject();
   setSelectionColor();
+
+  //accelerate search for layers and groups
+  if ( mXMLDoc )
+  {
+    QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
+    QDomElement currentElement;
+    int nNodes = layerNodeList.size();
+    for ( int i = 0; i < nNodes; ++i )
+    {
+      currentElement = layerNodeList.at( i ).toElement();
+      mProjectLayerElements.push_back( currentElement );
+      mProjectLayerElementsByName.insert( layerName( currentElement ), currentElement );
+      mProjectLayerElementsById.insert( layerId( currentElement ), currentElement );
+    }
+
+    QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
+    if ( !legendElement.isNull() )
+    {
+      QDomNodeList groupNodeList = legendElement.elementsByTagName( "legendgroup" );
+      for ( int i = 0; i < groupNodeList.size(); ++i )
+      {
+        mLegendGroupElements.push_back( groupNodeList.at( i ).toElement() );
+      }
+    }
+  }
+}
+
+QgsProjectParser::QgsProjectParser(): mXMLDoc( 0 )
+{
 }
 
 QgsProjectParser::~QgsProjectParser()
@@ -53,25 +82,22 @@ QgsProjectParser::~QgsProjectParser()
 
 int QgsProjectParser::numberOfLayers() const
 {
-  QList<QDomElement> layerElems = projectLayerElements();
-  return layerElems.size();
+  return mProjectLayerElements.size();
 }
 
 void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const
 {
-  QList<QDomElement> layerElems = projectLayerElements();
-
   QStringList nonIdentifiableLayers = identifyDisabledLayers();
 
-  if ( layerElems.size() < 1 )
+  if ( mProjectLayerElements.size() < 1 )
   {
     return;
   }
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  QList<QDomElement>::const_iterator layerIt = layerElems.constBegin();
-  for ( ; layerIt != layerElems.constEnd(); ++layerIt )
+  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
+  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
   {
     QgsMapLayer *layer = createLayerFromElement( *layerIt );
     if ( layer )
@@ -151,9 +177,8 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
-          QList<QDomElement> pLegendElems = p->legendGroupElements();
-          QList<QDomElement>::const_iterator pLegendIt = pLegendElems.constBegin();
-          for ( ; pLegendIt != pLegendElems.constEnd(); ++pLegendIt )
+          QList<QDomElement>::const_iterator pLegendIt = mLegendGroupElements.constBegin();
+          for ( ; pLegendIt != mLegendGroupElements.constEnd(); ++pLegendIt )
           {
             if ( pLegendIt->attribute( "name" ) == embeddedGroupName )
             {
@@ -162,10 +187,9 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
             }
           }
 
-          QList<QDomElement> pLayerElems = p->projectLayerElements();
           QMap<QString, QgsMapLayer *> pLayerMap;
-          QList<QDomElement>::const_iterator pLayerIt = pLayerElems.constBegin();
-          for ( ; pLayerIt != pLayerElems.constEnd(); ++pLayerIt )
+          QList<QDomElement>::const_iterator pLayerIt = mProjectLayerElements.constBegin();
+          for ( ; pLayerIt != mProjectLayerElements.constEnd(); ++pLayerIt )
           {
             pLayerMap.insert( layerId( *pLayerIt ), p->createLayerFromElement( *pLayerIt ) );
           }
@@ -224,7 +248,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       appendCRSElementsToLayer( layerElem, doc, crsList );
 
       //Ex_GeographicBoundingBox
-      appendExGeographicBoundingBox( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
+      appendLayerBoundingBoxes( layerElem, doc, currentLayer->extent(), currentLayer->crs() );
 
       //only one default style in project file mode
       QDomElement styleElem = doc.createElement( "Style" );
@@ -250,7 +274,7 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
 
 void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupElem, QDomDocument& doc ) const
 {
-  QgsRectangle combinedGeographicBBox;
+  QgsRectangle combinedBBox;
   QSet<QString> combinedCRSSet;
   bool firstBBox = true;
   bool firstCRSSet = true;
@@ -263,17 +287,17 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
     if ( childElem.tagName() != "Layer" )
       continue;
 
-    QgsRectangle bbox;
-    if ( exGeographicBoundingBox( childElem, bbox ) )
+    QgsRectangle bbox = layerBoundingBoxInProjectCRS( childElem );
+    if ( !bbox.isEmpty() )
     {
       if ( firstBBox )
       {
-        combinedGeographicBBox = bbox;
+        combinedBBox = bbox;
         firstBBox = false;
       }
       else
       {
-        combinedGeographicBBox.combineExtentWith( &bbox );
+        combinedBBox.combineExtentWith( &bbox );
       }
     }
 
@@ -295,22 +319,32 @@ void QgsProjectParser::combineExtentAndCrsOfGroupChildren( QDomElement& groupEle
 
   appendCRSElementsToLayer( groupElem, doc, combinedCRSSet.toList() );
 
-  const QgsCoordinateReferenceSystem& groupCRS = QgsEPSGCache::instance()->searchCRS( GEO_EPSG_CRS_ID );
-  appendExGeographicBoundingBox( groupElem, doc, combinedGeographicBBox, groupCRS );
+  const QgsCoordinateReferenceSystem& groupCRS = projectCRS();
+  appendLayerBoundingBoxes( groupElem, doc, combinedBBox, groupCRS );
 }
 
-QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching ) const
+QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache ) const
 {
   Q_UNUSED( styleName );
-  Q_UNUSED( allowCaching );
+  Q_UNUSED( useCache );
   QList<QgsMapLayer*> layerList;
 
-  //first assume lName refers to a leaf layer
-  QMap< QString, QDomElement > layerElemMap = projectLayerElementsByName();
-  QMap< QString, QDomElement >::const_iterator layerElemIt = layerElemMap.find( lName );
-  if ( layerElemIt != layerElemMap.constEnd() )
+  //Check if layer name refers to the top level group for the project.
+  if ( lName == projectTitle() )
   {
-    QgsMapLayer* layer = createLayerFromElement( layerElemIt.value() );
+    QList<QDomElement>::const_iterator layerElemIt = mProjectLayerElements.constBegin();
+    for ( ; layerElemIt != mProjectLayerElements.constEnd(); ++layerElemIt )
+    {
+      layerList.push_back( createLayerFromElement( *layerElemIt, useCache ) );
+    }
+    return layerList;
+  }
+
+  //does lName refer to a leaf layer
+  QHash< QString, QDomElement >::const_iterator layerElemIt = mProjectLayerElementsByName.find( lName );
+  if ( layerElemIt != mProjectLayerElementsByName.constEnd() )
+  {
+    QgsMapLayer* layer = createLayerFromElement( layerElemIt.value(), useCache );
     if ( layer )
     {
       layerList.push_back( layer );
@@ -318,24 +352,9 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
     }
   }
 
-  //Check if layer name refers to the top level group for the project.
-  if ( lName == projectTitle() )
-  {
-    QList<QDomElement> layerElemList = projectLayerElements();
-    QList<QDomElement>::const_iterator layerElemIt = layerElemList.constBegin();
-    for ( ; layerElemIt != layerElemList.constEnd(); ++layerElemIt )
-    {
-      layerList.push_back( createLayerFromElement( *layerElemIt ) );
-    }
-    return layerList;
-  }
-
   //maybe the layer is a goup. Check if lName is contained in the group list
-  QMap< QString, QDomElement > idLayerMap = projectLayerElementsById();
-
-  QList<QDomElement> legendGroups = legendGroupElements();
-  QList<QDomElement>::const_iterator groupIt = legendGroups.constBegin();
-  for ( ; groupIt != legendGroups.constEnd(); ++groupIt )
+  QList<QDomElement>::const_iterator groupIt = mLegendGroupElements.constBegin();
+  for ( ; groupIt != mLegendGroupElements.constEnd(); ++groupIt )
   {
     if ( groupIt->attribute( "name" ) == lName )
     {
@@ -346,11 +365,10 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
         QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
         if ( p )
         {
-          QList<QDomElement> pGroupElems = p->legendGroupElements();
-          QList<QDomElement>::const_iterator pGroupIt = pGroupElems.constBegin();
+          QList<QDomElement>::const_iterator pGroupIt = mLegendGroupElements.constBegin();
           QDomElement embeddedGroupElem;
 
-          for ( ; pGroupIt != pGroupElems.constEnd(); ++pGroupIt )
+          for ( ; pGroupIt != mLegendGroupElements.constEnd(); ++pGroupIt )
           {
             if ( pGroupIt->attribute( "name" ) == lName )
             {
@@ -362,12 +380,11 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
           if ( !embeddedGroupElem.isNull() )
           {
             //add all the layers under the group
-            QMap< QString, QDomElement > pLayerElems = p->projectLayerElementsById();
             QDomNodeList pLayerNodes = embeddedGroupElem.elementsByTagName( "legendlayer" );
             for ( int i = 0; i < pLayerNodes.size(); ++i )
             {
               QString pLayerId = pLayerNodes.at( i ).toElement().firstChildElement( "filegroup" ).firstChildElement( "legendlayerfile" ).attribute( "layerid" );
-              QgsMapLayer* pLayer = p->createLayerFromElement( pLayerElems[pLayerId] );
+              QgsMapLayer* pLayer = p->createLayerFromElement( mProjectLayerElementsById[pLayerId], useCache );
               if ( pLayer )
               {
                 layerList.push_back( pLayer );
@@ -381,10 +398,10 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
         QDomNodeList layerFileList = groupIt->elementsByTagName( "legendlayerfile" );
         for ( int i = 0; i < layerFileList.size(); ++i )
         {
-          QMap< QString, QDomElement >::const_iterator layerEntry = idLayerMap.find( layerFileList.at( i ).toElement().attribute( "layerid" ) );
-          if ( layerEntry != idLayerMap.constEnd() )
+          QHash< QString, QDomElement >::const_iterator layerEntry = mProjectLayerElementsById.find( layerFileList.at( i ).toElement().attribute( "layerid" ) );
+          if ( layerEntry != mProjectLayerElementsById.constEnd() )
           {
-            layerList.push_back( createLayerFromElement( layerEntry.value() ) );
+            layerList.push_back( createLayerFromElement( layerEntry.value(), useCache ) );
           }
         }
       }
@@ -393,8 +410,8 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   }
 
   //maybe the layer is embedded from another project
-  QMap< QString, QDomElement >::const_iterator layerIt = idLayerMap.constBegin();
-  for ( ; layerIt != idLayerMap.constEnd(); ++layerIt )
+  QHash< QString, QDomElement >::const_iterator layerIt = mProjectLayerElementsById.constBegin();
+  for ( ; layerIt != mProjectLayerElementsById.constEnd(); ++layerIt )
   {
     if ( layerIt.value().attribute( "embedded" ) == "1" )
     {
@@ -407,13 +424,12 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
       if ( otherParser )
       {
         //get element by id
-        QMap< QString, QDomElement > otherLayerElems = otherParser->projectLayerElementsById();
-        QMap< QString, QDomElement >::const_iterator otherLayerIt = otherLayerElems.find( id );
-        if ( otherLayerIt != otherLayerElems.constEnd() )
+        QHash< QString, QDomElement >::const_iterator otherLayerIt = otherParser->mProjectLayerElementsById.find( id );
+        if ( otherLayerIt != otherParser->mProjectLayerElementsById.constEnd() )
         {
           if ( otherLayerIt.value().firstChildElement( "layername" ).text() == lName )
           {
-            layerList.push_back( otherParser->createLayerFromElement( otherLayerIt.value() ) );
+            layerList.push_back( otherParser->createLayerFromElement( otherLayerIt.value(), useCache ) );
             return layerList;
           }
         }
@@ -422,8 +438,8 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
   }
 
   //layer still not found. Check if it is a single layer contained in a embedded layer group
-  groupIt = legendGroups.constBegin();
-  for ( ; groupIt != legendGroups.constEnd(); ++groupIt )
+  groupIt = mLegendGroupElements.constBegin();
+  for ( ; groupIt != mLegendGroupElements.constEnd(); ++groupIt )
   {
     if ( groupIt->attribute( "embedded" ) == "1" )
     {
@@ -432,9 +448,8 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
       QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
       if ( p )
       {
-        QMap< QString, QDomElement > pLayers = p->projectLayerElementsByName();
-        QMap< QString, QDomElement >::const_iterator pLayerIt = pLayers.find( lName );
-        if ( pLayerIt != pLayers.constEnd() )
+        QHash< QString, QDomElement >::const_iterator pLayerIt = mProjectLayerElementsByName.find( lName );
+        if ( pLayerIt != mProjectLayerElementsByName.constEnd() )
         {
           QgsMapLayer* layer = p->createLayerFromElement( pLayerIt.value() );
           if ( layer )
@@ -456,12 +471,11 @@ int QgsProjectParser::layersAndStyles( QStringList& layers, QStringList& styles 
   layers.clear();
   styles.clear();
 
-  QList<QDomElement> layerElemList = projectLayerElements();
-  QList<QDomElement>::const_iterator elemIt = layerElemList.constBegin();
+  QList<QDomElement>::const_iterator elemIt = mProjectLayerElements.constBegin();
 
   QString currentLayerName;
 
-  for ( ; elemIt != layerElemList.constEnd(); ++elemIt )
+  for ( ; elemIt != mProjectLayerElements.constEnd(); ++elemIt )
   {
     currentLayerName = layerName( *elemIt );
     if ( !currentLayerName.isNull() )
@@ -600,9 +614,8 @@ QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
 {
   QMap< QString, QMap< int, QString > > resultMap;
 
-  QList<QDomElement> layerElems = projectLayerElements();
-  QList<QDomElement>::const_iterator layerIt = layerElems.constBegin();
-  for ( ; layerIt != layerElems.constEnd(); ++layerIt )
+  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
+  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
   {
     QDomNodeList aNodeList = layerIt->elementsByTagName( "aliases" );
     if ( aNodeList.size() > 0 )
@@ -624,9 +637,8 @@ QMap< QString, QMap< int, QString > > QgsProjectParser::layerAliasInfo() const
 QMap< QString, QSet<QString> > QgsProjectParser::hiddenAttributes() const
 {
   QMap< QString, QSet<QString> > resultMap;
-  QList<QDomElement> layerElems = projectLayerElements();
-  QList<QDomElement>::const_iterator layerIt = layerElems.constBegin();
-  for ( ; layerIt != layerElems.constEnd(); ++layerIt )
+  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
+  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
   {
     QDomNodeList editTypesList = layerIt->elementsByTagName( "edittypes" );
     if ( editTypesList.size() > 0 )
@@ -754,85 +766,7 @@ QString QgsProjectParser::projectTitle() const
   return projectFileInfo.baseName();
 }
 
-QList<QDomElement> QgsProjectParser::projectLayerElements() const
-{
-  QList<QDomElement> layerElemList;
-  if ( !mXMLDoc )
-  {
-    return layerElemList;
-  }
-
-  QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
-  int nNodes = layerNodeList.size();
-  for ( int i = 0; i < nNodes; ++i )
-  {
-    layerElemList.push_back( layerNodeList.at( i ).toElement() );
-  }
-  return layerElemList;
-}
-
-QList<QDomElement> QgsProjectParser::legendGroupElements() const
-{
-  QList<QDomElement> groupList;
-  if ( !mXMLDoc )
-  {
-    return groupList;
-  }
-
-  QDomElement legendElement = mXMLDoc->documentElement().firstChildElement( "legend" );
-  if ( legendElement.isNull() )
-  {
-    return groupList;
-  }
-
-  QDomNodeList groupNodeList = legendElement.elementsByTagName( "legendgroup" );
-  for ( int i = 0; i < groupNodeList.size(); ++i )
-  {
-    groupList.push_back( groupNodeList.at( i ).toElement() );
-  }
-
-  return groupList;
-}
-
-QMap< QString, QDomElement > QgsProjectParser::projectLayerElementsById() const
-{
-  QMap< QString, QDomElement > layerMap;
-  if ( !mXMLDoc )
-  {
-    return layerMap;
-  }
-
-  QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
-  QDomElement currentElement;
-  int nNodes = layerNodeList.size();
-  for ( int i = 0; i < nNodes; ++i )
-  {
-    currentElement = layerNodeList.at( i ).toElement();
-    layerMap.insert( layerId( currentElement ), currentElement );
-  }
-  return layerMap;
-}
-
-QMap< QString, QDomElement > QgsProjectParser::projectLayerElementsByName() const
-{
-  QMap< QString, QDomElement > layerMap;
-  if ( !mXMLDoc )
-  {
-    return layerMap;
-  }
-
-  QDomNodeList layerNodeList = mXMLDoc->elementsByTagName( "maplayer" );
-  QDomElement currentElement;
-  int nNodes = layerNodeList.size();
-  for ( int i = 0; i < nNodes; ++i )
-  {
-    currentElement = layerNodeList.at( i ).toElement();
-    layerMap.insert( layerName( currentElement ), currentElement );
-  }
-  return layerMap;
-}
-
-QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem ) const
+QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, bool useCache ) const
 {
   if ( elem.isNull() || !mXMLDoc )
   {
@@ -855,12 +789,14 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem )
   }
 
   QString id = layerId( elem );
-  QgsMapLayer* layer = QgsMSLayerCache::instance()->searchLayer( absoluteUri, id );
+  QgsMapLayer* layer = 0;
+  if ( useCache )
+  {
+    layer = QgsMSLayerCache::instance()->searchLayer( absoluteUri, id );
+  }
+
   if ( layer )
   {
-    //reading symbology every time is necessary because it could have been changed by a user SLD based request
-    QString error;
-    layer->readSymbology( elem, error );
     return layer;
   }
 
@@ -883,9 +819,8 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem )
       return 0;
     }
 
-    QMap< QString, QDomElement > layerMap = otherConfig->projectLayerElementsById();
-    QMap< QString, QDomElement >::const_iterator layerIt = layerMap.find( elem.attribute( "id" ) );
-    if ( layerIt == layerMap.constEnd() )
+    QHash< QString, QDomElement >::const_iterator layerIt = otherConfig->mProjectLayerElementsById.find( elem.attribute( "id" ) );
+    if ( layerIt == otherConfig->mProjectLayerElementsById.constEnd() )
     {
       return 0;
     }
@@ -896,7 +831,14 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem )
   {
     layer->readXML( const_cast<QDomElement&>( elem ) ); //should be changed to const in QgsMapLayer
     layer->setLayerName( layerName( elem ) );
-    QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer );
+    if ( useCache )
+    {
+      QgsMSLayerCache::instance()->insertLayer( absoluteUri, id, layer );
+    }
+    else
+    {
+      mLayersToRemove.push_back( layer );
+    }
   }
   return layer;
 }
@@ -1193,8 +1135,8 @@ void QgsProjectParser::printCapabilities( QDomElement& parentElement, QDomDocume
     QDomNodeList composerLabelList = currentComposerElem.elementsByTagName( "ComposerLabel" );
     for ( int j = 0; j < composerLabelList.size(); ++j )
     {
-      QDomElement clabel = composerLabelList.at( j ).toElement();
-      QString id = clabel.attribute( "id" );
+      QDomElement citem = composerLabelList.at( j ).firstChildElement( "ComposerItem" );
+      QString id = citem.attribute( "id" );
       if ( id.isEmpty() ) //only export labels with ids for text replacement
       {
         continue;
@@ -1441,3 +1383,71 @@ void QgsProjectParser::setSelectionColor()
   QgsRenderer::setSelectionColor( QColor( red, green, blue, alpha ) );
 }
 
+const QgsCoordinateReferenceSystem& QgsProjectParser::projectCRS() const
+{
+  //mapcanvas->destinationsrs->spatialrefsys->authid
+  if ( mXMLDoc )
+  {
+    QDomElement authIdElem = mXMLDoc->documentElement().firstChildElement( "mapcanvas" ).firstChildElement( "destinationsrs" ).
+                             firstChildElement( "spatialrefsys" ).firstChildElement( "authid" );
+    if ( !authIdElem.isNull() )
+    {
+      return QgsCRSCache::instance()->crsByAuthId( authIdElem.text() );
+    }
+  }
+  return QgsCRSCache::instance()->crsByEpsgId( GEO_EPSG_CRS_ID );
+}
+
+QgsRectangle QgsProjectParser::layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const
+{
+  QgsRectangle BBox;
+  if ( layerElem.isNull() )
+  {
+    return BBox;
+  }
+
+  //read box coordinates and layer auth. id
+  QDomElement boundingBoxElem = layerElem.firstChildElement( "BoundingBox" );
+  if ( boundingBoxElem.isNull() )
+  {
+    return BBox;
+  }
+
+  double minx, miny, maxx, maxy;
+  bool conversionOk;
+  minx = boundingBoxElem.attribute( "minx" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+  miny = boundingBoxElem.attribute( "miny" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+  maxx = boundingBoxElem.attribute( "maxx" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+  maxy = boundingBoxElem.attribute( "maxy" ).toDouble( &conversionOk );
+  if ( !conversionOk )
+  {
+    return BBox;
+  }
+
+  //create layer crs
+  const QgsCoordinateReferenceSystem& layerCrs = QgsCRSCache::instance()->crsByAuthId( boundingBoxElem.attribute( "CRS" ) );
+  if ( !layerCrs.isValid() )
+  {
+    return BBox;
+  }
+
+  //get project crs
+  const QgsCoordinateReferenceSystem& projectCrs = projectCRS();
+  QgsCoordinateTransform t( layerCrs, projectCrs );
+
+  //transform
+  BBox = t.transformBoundingBox( QgsRectangle( minx, miny, maxx, maxy ) );
+  return BBox;
+}

@@ -29,8 +29,8 @@ class QgsDecorationCopyrightDialog;
 
 class QgsDecorationCopyright : public QObject
 {
-  Q_OBJECT
-public:
+    Q_OBJECT
+  public:
 
     //! Constructor
     QgsDecorationCopyright( QObject* parent = NULL );

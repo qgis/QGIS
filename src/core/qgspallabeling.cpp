@@ -527,6 +527,10 @@ void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f,
   }
 
   QgsGeometry* geom = f.geometry();
+  if ( !geom )
+  {
+    return;
+  }
 
   if ( ct ) // reproject the geometry if necessary
     geom->transform( *ct );
@@ -543,6 +547,10 @@ void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f,
   if ( do_clip )
   {
     geomClipped = geom->intersection( extentGeom ); // creates new geometry
+    if ( !geomClipped )
+    {
+      return;
+    }
     geos_geom = geomClipped->asGeos();
   }
   else

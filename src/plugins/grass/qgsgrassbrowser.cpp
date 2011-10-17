@@ -19,6 +19,10 @@
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"
+#include "qgslegendinterface.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+//#include "qgsgrassprovider.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
 
@@ -36,7 +40,7 @@
 
 QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
                                   QWidget * parent, Qt::WFlags f )
-    : QMainWindow( parent, Qt::Dialog ), mIface( iface )
+    : QMainWindow( parent, Qt::Dialog ), mIface( iface ), mRunningMods( 0 )
 {
   Q_UNUSED( f );
   QgsDebugMsg( "QgsGrassBrowser()" );
@@ -166,7 +170,7 @@ void QgsGrassBrowser::addMap()
       QStringList list = QgsGrass::vectorLayers(
                            QgsGrass::getDefaultGisdbase(),
                            QgsGrass::getDefaultLocation(),
-                           mModel->itemMapset( *it ), map );
+                           mapset, map );
 
       // TODO: common method for vector names
       QStringList split = uri.split( '/',  QString::SkipEmptyParts );
@@ -376,11 +380,54 @@ void QgsGrassBrowser::deleteMap()
 {
   QgsDebugMsg( "entered." );
 
+  QString gisbase = QgsGrass::getDefaultGisdbase();
+  QString location = QgsGrass::getDefaultLocation();
+
   // Filter VectorLayer type from selection
   QModelIndexList indexes;
   foreach( QModelIndex index, mTree->selectionModel()->selectedIndexes() )
   {
     int type = mModel->itemType( index );
+    QString mapset = mModel->itemMapset( index );
+    QString map = mModel->itemMap( index );
+
+    // check whether the layer is loaded in QGis canvas
+    if ( type == QgsGrassModel::Vector )
+    {
+      QStringList layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+      for ( int i = 0; i < layers.count(); i++ )
+      {
+        QString uri = gisbase + "/" + location + "/"
+                      + mapset + "/" + map + "/" + layers[i];
+
+        foreach( QgsMapLayer *layer, mIface->legendInterface()->layers() )
+        {
+          QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
+          if ( vl && vl->dataProvider()->name() == "grass" && vl->source() == uri )
+          {
+#if 0
+            /* The following lines allow to delete a grass vector layer
+              even if it's loaded in canvas, but it needs to compile
+              the grass plugin against the grass provider.
+              This causes a known problem on OSX
+              (see at http://hub.qgis.org/issues/3999) */
+
+            // the layer is loaded in canvas,
+            // freeze it! (this allow to delete it from the mapset)
+            QgsGrassProvider * grassProvider =
+              qobject_cast<QgsGrassProvider *>( vl->dataProvider() );
+            if ( grassProvider )
+              grassProvider->freeze();
+#else
+            QMessageBox::information( this, tr( "Information" ),
+                                      tr( "Remove the selected layer(s) from QGis canvas before continue." ) );
+            return;
+#endif
+          }
+        }
+      }
+    }
+
     if ( type != QgsGrassModel::VectorLayer )
     {
       indexes << index;
@@ -556,4 +603,14 @@ void QgsGrassBrowser::currentChanged( const QModelIndex & current, const QModelI
 void QgsGrassBrowser::setLocation( const QString &gisbase, const QString &location )
 {
   mModel->setLocation( gisbase, location );
+}
+
+void QgsGrassBrowser::moduleStarted()
+{
+  mActionRefresh->setDisabled( ++mRunningMods > 0 );
+}
+
+void QgsGrassBrowser::moduleFinished()
+{
+  mActionRefresh->setDisabled( --mRunningMods > 0 );
 }

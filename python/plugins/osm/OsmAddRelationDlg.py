@@ -61,8 +61,8 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
             # we are editing existing relation
             self.editing = True
             self.relId = relationToEdit
-            self.createRelButton.setText("Save")
-            self.setWindowTitle("Edit OSM relation")
+            self.createRelButton.setText( self.tr("Save") )
+            self.setWindowTitle( self.tr("Edit OSM relation") )
         else:
             self.editing = False
             # we are adding new relation
@@ -790,18 +790,14 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
         info = ""
 
         if typeName=="boundary":
-            info = "for grouping boundaries and marking enclaves / exclaves"
+            info = QCoreApplication.translate( "OsmAddRelationDlg", "for grouping boundaries and marking enclaves / exclaves" )
         elif typeName=="multipolygon":
-            info = "to put holes into areas (might have to be renamed, see article)"
+            info = QCoreApplication.translate( "OsmAddRelationDlg", "to put holes into areas (might have to be renamed, see article)" )
         elif typeName=="restriction":
-            info = "any kind of turn restriction"
+            info = QCoreApplication.translate( "OsmAddRelationDlg", "any kind of turn restriction" )
         elif typeName=="route":
-            info = "like bus routes, cycle routes and numbered highways"
+            info = QCoreApplication.translate( "OsmAddRelationDlg", "like bus routes, cycle routes and numbered highways" )
         elif typeName=="enforcement":
-            info = "traffic enforcement devices; speed cameras, redlight cameras, weight checks, ..."
+            info = QCoreApplication.translate( "OsmAddRelationDlg", "traffic enforcement devices; speed cameras, redlight cameras, weight checks, ..." )
 
-        QMessageBox.information(self, self.tr("OSM Information")
-                        ,self.tr(info))
-
-
-
+        QMessageBox.information(self, self.tr("OSM Information"), info)

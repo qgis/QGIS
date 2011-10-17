@@ -6,6 +6,7 @@
 class QgsBrowserModel;
 class QModelIndex;
 class QTreeView;
+class QToolButton;
 
 class QgsBrowserDockWidget : public QDockWidget
 {
@@ -22,11 +23,16 @@ class QgsBrowserDockWidget : public QDockWidget
     void addFavourite();
     void removeFavourite();
 
+    void refresh();
+
   protected:
+
+    void refreshModel( const QModelIndex& index );
 
     void showEvent( QShowEvent * event );
 
     QTreeView* mBrowserView;
+    QToolButton* mRefreshButton;
     QgsBrowserModel* mModel;
 };
 

@@ -23,6 +23,7 @@
 #include <QFont>
 #include <QList>
 #include <QSet>
+#include <QTemporaryFile>
 
 class QgsComposition;
 class QgsComposerLabel;
@@ -41,8 +42,9 @@ class QgsConfigParser
     virtual void layersAndStylesCapabilities( QDomElement& parentElement, QDomDocument& doc ) const = 0;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If there are several layers, the layers should be drawn in inverse list order.
-       If no layers/style are found, an empty list is returned*/
-    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool allowCaching = true ) const = 0;
+       If no layers/style are found, an empty list is returned
+      @param allowCache true if layer can be read from / written to cache*/
+    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& layerName, const QString& styleName, bool useCache = true ) const = 0;
 
     /**Returns number of layers in configuration*/
     virtual int numberOfLayers() const = 0;
@@ -124,6 +126,17 @@ class QgsConfigParser
     /**List of GML datasets passed outside SLD (e.g. in a SOAP request). Key of the map is the layer name*/
     QMap<QString, QDomDocument*> mExternalGMLDatasets;
 
+    //todo: leave this to the layer cash?
+    /**Stores pointers to layers that have to be removed in the destructor of QgsSLDParser*/
+    mutable QList<QgsMapLayer*> mLayersToRemove;
+
+    /**Stores the temporary file objects. The class takes ownership of the objects and deletes them in the destructor*/
+    mutable QList<QTemporaryFile*> mFilesToRemove;
+
+    /**Stores paths of files that need to be removed after each request (necessary because of contours shapefiles that \
+      cannot be handles with QTemporaryFile*/
+    mutable QList<QString> mFilePathsToRemove;
+
     /**Layer font for GetLegendGraphics*/
     QFont mLegendLayerFont;
     /**Item font for GetLegendGraphics*/
@@ -137,8 +150,8 @@ class QgsConfigParser
     double mLegendSymbolWidth;
     double mLegendSymbolHeight;
 
-    /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox element to layer element*/
-    void appendExGeographicBoundingBox( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
+    /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
+    void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
     /**Returns the <Ex_GeographicalBoundingBox of a layer element as a rectangle
       @param layerElement <Layer> element in capabilities
       @param rect out: bounding box as rectangle

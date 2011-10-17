@@ -41,7 +41,7 @@ class QgsProjectParser: public QgsConfigParser
     int numberOfLayers() const;
 
     /**Returns one or possibly several maplayers for a given layer name and style. If no layers/style are found, an empty list is returned*/
-    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool allowCaching = true ) const;
+    virtual QList<QgsMapLayer*> mapLayerFromStyle( const QString& lName, const QString& styleName, bool useCache = true ) const;
 
     /**Fills a layer and a style list. The two list have the same number of entries and the style and the layer at a position belong together (similar to the HTTP parameters 'Layers' and 'Styles'. Returns 0 in case of success*/
     virtual int layersAndStyles( QStringList& layers, QStringList& styles ) const;
@@ -102,23 +102,28 @@ class QgsProjectParser: public QgsConfigParser
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
   private:
+
+    //forbidden
+    QgsProjectParser();
+
     /**Content of project file*/
     QDomDocument* mXMLDoc;
 
     /**Absolute project file path (including file name)*/
     QString mProjectPath;
 
-    /**Get all layers of the project (ordered same as in the project file)*/
-    QList<QDomElement> projectLayerElements() const;
-    /**Returns all legend group elements*/
-    QList<QDomElement> legendGroupElements() const;
-    /**Get all layers of the project, accessible by layer id*/
-    QMap< QString, QDomElement > projectLayerElementsById() const;
-    /**Get all layers of the project, accessible by layer name*/
-    QMap< QString, QDomElement > projectLayerElementsByName() const;
+    /**List of project layer (ordered same as in the project file)*/
+    QList<QDomElement> mProjectLayerElements;
+    /**List of all legend group elements*/
+    QList<QDomElement> mLegendGroupElements;
+    /**Project layer elements, accessible by layer id*/
+    QHash< QString, QDomElement > mProjectLayerElementsById;
+    /**Project layer elements, accessible by layer name*/
+    QHash< QString, QDomElement > mProjectLayerElementsByName;
+
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
-    QgsMapLayer* createLayerFromElement( const QDomElement& elem ) const;
+    QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
     /**Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
     QString layerId( const QDomElement& layerElem ) const;
@@ -148,6 +153,12 @@ class QgsProjectParser: public QgsConfigParser
 
     /**Sets global selection color from the project or yellow if not defined in project*/
     void setSelectionColor();
+
+    /**Returns mapcanvas output CRS from project file*/
+    const QgsCoordinateReferenceSystem& projectCRS() const;
+
+    /**Returns bbox of layer in project CRS (or empty rectangle in case of error)*/
+    QgsRectangle layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const;
 };
 
 #endif // QGSPROJECTPARSER_H

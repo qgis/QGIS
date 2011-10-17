@@ -22,6 +22,7 @@ class GdalToolsBasePluginWidget:
       self.connect(self.base, SIGNAL("helpClicked()"), self.onHelp)
 
       self.connect(self.base, SIGNAL("finished(bool)"), self.finished)
+      self.connect(self.base, SIGNAL("refreshArgs()"), self.someValueChanged)
 
   def someValueChanged(self):
       self.emit(SIGNAL("valuesChanged(const QStringList &)"), self.getArguments())

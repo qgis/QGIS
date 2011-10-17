@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgsconfigparser.h"
+#include "qgscrscache.h"
 #include "qgsapplication.h"
 #include "qgscomposerlabel.h"
 #include "qgscomposermap.h"
@@ -40,6 +41,25 @@ QgsConfigParser::~QgsConfigParser()
   for ( QMap<QString, QDomDocument*>::iterator it = mExternalGMLDatasets.begin(); it != mExternalGMLDatasets.end(); ++it )
   {
     delete it.value();
+  }
+
+  //remove the temporary files
+  for ( QList<QTemporaryFile*>::const_iterator it = mFilesToRemove.constBegin(); it != mFilesToRemove.constEnd(); ++it )
+  {
+    delete *it;
+  }
+
+  //and also those the temporary file paths
+  for ( QList<QString>::const_iterator it = mFilePathsToRemove.constBegin(); it != mFilePathsToRemove.constEnd(); ++it )
+  {
+    QFile::remove( *it );
+  }
+
+  //delete the layers in the list
+  QList<QgsMapLayer*>::iterator layer_it = mLayersToRemove.begin();
+  for ( ; layer_it != mLayersToRemove.end(); ++layer_it )
+  {
+    delete *layer_it;
   }
 }
 
@@ -68,7 +88,7 @@ void QgsConfigParser::addExternalGMLData( const QString& layerName, QDomDocument
   mExternalGMLDatasets.insert( layerName, gmlDoc );
 }
 
-void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
+void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
     QDomDocument& doc,
     const QgsRectangle& layerExtent,
     const QgsCoordinateReferenceSystem& layerCRS ) const
@@ -78,8 +98,7 @@ void QgsConfigParser::appendExGeographicBoundingBox( QDomElement& layerElem,
     return;
   }
 
-  QgsCoordinateReferenceSystem wgs84;
-  wgs84.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
 
   //Ex_GeographicBoundingBox
   //transform the layers native CRS into WGS84

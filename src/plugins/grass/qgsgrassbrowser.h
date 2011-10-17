@@ -77,6 +77,12 @@ class QgsGrassBrowser: public QMainWindow
     // Double click
     void doubleClicked( const QModelIndex & index );
 
+    // Called when a module started
+    void moduleStarted();
+
+    // Called when a module finished
+    void moduleFinished();
+
   private slots:
     // Context menu
     void showContextMenu( const QPoint &position );
@@ -113,6 +119,8 @@ class QgsGrassBrowser: public QMainWindow
 
     //! Escape HTML tags and convert \n to <br>
     QString formatMessage( QString msg );
+
+    int mRunningMods;
 };
 
 #endif // QGSGRASSBROWSER_H

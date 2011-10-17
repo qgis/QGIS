@@ -8,7 +8,7 @@ class QgsEllipseSymbolLayerV2;
 
 class GUI_EXPORT QgsEllipseSymbolLayerV2Widget: public QgsSymbolLayerV2Widget, private Ui::WidgetEllipseBase
 {
-  Q_OBJECT
+    Q_OBJECT
 
   public:
     QgsEllipseSymbolLayerV2Widget( const QgsVectorLayer* vl, QWidget* parent = 0 );

@@ -42,7 +42,7 @@ email                : tim@linfiniti.com
 
 
 QgsDecorationCopyright::QgsDecorationCopyright( QObject* parent )
-  : QObject(parent)
+    : QObject( parent )
 {
   mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
   << tr( "Top Right" ) << tr( "Bottom Right" );
@@ -77,7 +77,7 @@ void QgsDecorationCopyright::run()
 {
   QgsDecorationCopyrightDialog dlg( *this, QgisApp::instance() );
 
-  if (dlg.exec())
+  if ( dlg.exec() )
   {
     saveToProject();
     QgisApp::instance()->mapCanvas()->refresh();

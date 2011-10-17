@@ -210,7 +210,7 @@ void QgsRendererV2PropertiesDialog::showSymbolLevels()
 
     if ( r->type() == "RuleRenderer" )
     {
-      if( dlg.usingLevels() )
+      if ( dlg.usingLevels() )
       {
         r->setUsingFirstRule( true );
         emit forceChkUsingFirstRule();

@@ -79,7 +79,7 @@ class OsmSaveDlg(QDialog, Ui_OsmSaveDlg):
         lastDir = settings.value("/OSM_Plugin/lastDir", QVariant(QString())).toString()
 
         # display file open dialog and get absolute path to selected file
-        fileSelected = QFileDialog.getSaveFileName(self,"Choose an Open Street Map file",lastDir,"OSM Files (*.osm)");
+        fileSelected = QFileDialog.getSaveFileName(self, self.tr("Choose an Open Street Map file"),lastDir,self.tr("OSM Files (*.osm)") );
         # insert OSM file path into line edit control
         if not fileSelected.isNull():
             self.OSMFileEdit.setText(fileSelected)
@@ -457,6 +457,3 @@ class OsmSaveDlg(QDialog, Ui_OsmSaveDlg):
         if self.outFile and self.outFile.exists():
             self.outFile.close()
         self.close()
-
-
-

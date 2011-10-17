@@ -260,6 +260,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
+    QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
@@ -435,6 +436,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                     QString const & format,
                                     QString const & crs );
 
+    void addWfsLayer( QString uri, QString typeName );
+
     void versionReplyFinished();
 
   protected:
@@ -466,6 +469,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a databaselayer to the map
     void addDatabaseLayer();
     //#endif
+    //! Add a list of database layers to the map
+    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
@@ -687,6 +692,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileExit();
     //! Add a WMS layer to the map
     void addWmsLayer();
+    //! Add a WFS layer to the map
+    void addWfsLayer();
     //! Set map tool to Zoom out
     void zoomOut();
     //! Set map tool to Zoom in

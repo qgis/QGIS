@@ -228,7 +228,7 @@
 // Conditional Includes
 //
 #ifdef HAVE_POSTGRESQL
-#include "postgres/qgspgsourceselect.h"
+#include "../providers/postgres/qgspgsourceselect.h"
 #ifdef HAVE_PGCONFIG
 #include <pg_config.h>
 #else
@@ -531,6 +531,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
   // now build vector file filter
   mVectorFileFilter = QgsProviderRegistry::instance()->fileVectorFilters();
+
   // now build raster file filter
   QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
 
@@ -640,6 +641,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mDeletePart;
   delete mMapTools.mAddPart;
   delete mMapTools.mNodeTool;
+  delete mMapTools.mRotatePointSymbolsTool;
   delete mMapTools.mMoveLabel;
   delete mMapTools.mRotateLabel;
   delete mMapTools.mChangeLabelProperties;
@@ -834,6 +836,7 @@ void QgisApp::createActions()
   connect( mActionAddPgLayer, SIGNAL( triggered() ), this, SLOT( addDatabaseLayer() ) );
   connect( mActionAddSpatiaLiteLayer, SIGNAL( triggered() ), this, SLOT( addSpatiaLiteLayer() ) );
   connect( mActionAddWmsLayer, SIGNAL( triggered() ), this, SLOT( addWmsLayer() ) );
+  connect( mActionAddWfsLayer, SIGNAL( triggered() ), this, SLOT( addWfsLayer() ) );
   connect( mActionOpenTable, SIGNAL( triggered() ), this, SLOT( attributeTable() ) );
   connect( mActionToggleEditing, SIGNAL( triggered() ), this, SLOT( toggleEditing() ) );
   connect( mActionSaveEdits, SIGNAL( triggered() ), this, SLOT( saveEdits() ) );
@@ -1466,6 +1469,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionNewBookmark->setIcon( getThemeIcon( "/mActionNewBookmark.png" ) );
   mActionCustomProjection->setIcon( getThemeIcon( "/mActionCustomProjection.png" ) );
   mActionAddWmsLayer->setIcon( getThemeIcon( "/mActionAddWmsLayer.png" ) );
+  mActionAddWfsLayer->setIcon( getThemeIcon( "/mActionAddWfsLayer.png" ) );
   mActionAddToOverview->setIcon( getThemeIcon( "/mActionInOverview.png" ) );
   mActionAnnotation->setIcon( getThemeIcon( "/mActionAnnotation.png" ) );
   mActionFormAnnotation->setIcon( getThemeIcon( "/mActionFormAnnotation.png" ) );
@@ -1997,119 +2001,6 @@ void QgisApp::about()
 
     abt->setVersion( versionString );
 
-    QString whatsNew = "<html><body>" ;
-    whatsNew += "<h3>" + tr( "Version" ) + " " + QString( QGis::QGIS_VERSION ) +  "</h3>";
-    whatsNew +=  "<h2>" + trUtf8( "What's new in Version 1.7.0 'Wrocław'?" ) + "</h2>";
-    whatsNew +=  "<p>";
-    whatsNew +=  trUtf8( "This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our 'cutting edge' release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users." );
-    whatsNew +=  "</p>";
-    whatsNew +=  "<p>";
-    whatsNew +=  tr( "This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here." );
-    whatsNew += "</p>";
-
-    whatsNew += "<h3>" + tr( "Symbology labels and diagrams" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "New symbology now used by default!" ) + "</li>";
-    whatsNew += "<li>" + tr( "Diagram system that uses the same smart placement system as labeling-ng" ) + "</li>";
-    whatsNew += "<li>" + tr( "Export and import of styles (symbology-ng)." ) + "</li>";
-    whatsNew += "<li>" + tr( "Labels for rules in rule-based renderers." ) + "</li>";
-    whatsNew += "<li>" + tr( "Ability to set label distance in map units." ) + "</li>";
-    whatsNew += "<li>" + tr( "Rotation for svg fills." ) + "</li>";
-    whatsNew += "<li>" + tr( "Font marker can have an X,Y offset." ) + "</li>";
-    whatsNew += "<li>" + tr( "Allow the line symbol layers to be used for outline of polygon (fill) symbols." ) + "</li>";
-    whatsNew += "<li>" + tr( "Option to put marker on the central point of a line." ) + "</li>";
-    whatsNew += "<li>" + tr( "Option to put marker only on first/last vertex of a line." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added \"centroid fill\" symbol layer which draws a marker on polygon's centroid." ) + "</li>";
-    whatsNew += "<li>" + tr( "Allow the marker line symbol layer to draw markers on each vertex." ) + "</li>";
-    whatsNew += "<li>" + tr( "Move/rotate/change label edit tools to interactively change data defined label properties." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "New Tools" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Added GUI for gdaldem." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added 'Lines to polygons' tool to vector menu." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added field calculator with functions like $x, $y and $perimeter." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added voronoi polygon tool to Vector menu." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "User interface updates" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Allow managing missing layers in a list." ) + "</li>";
-    whatsNew += "<li>" + tr( "Zoom to group of layers." ) + "</li>";
-    whatsNew += "<li>" + tr( "'Tip of the day' on startup. You can en/disable tips in the options panel." ) + "</li>";
-    whatsNew += "<li>" + tr( "Better organisation of menus, separate database menu added." ) + "</li>";
-    whatsNew += "<li>" + tr( "Add ability to show number of features in "
-                             "legend classes. Accessible via right-click legend menu." ) + "</li>";
-    whatsNew += "<li>" + tr( "General clean-ups and usability improvements." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "CRS Handling" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Show active crs in status bar." ) + "</li>";
-    whatsNew += "<li>" + tr( "Assign layer CRS to project (in the legend context menu)." ) + "</li>";
-    whatsNew += "<li>" + tr( "Select default CRS for new projects." ) + "</li>";
-    whatsNew += "<li>" + tr( "Allow setting CRS for multiple layers at once." ) + "</li>";
-    whatsNew += "<li>" + tr( "Default to last selection when prompting for CRS." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "Rasters" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Added AND and OR operator for raster calculator" ) + "</li>";
-    whatsNew += "<li>" + tr( "On-the-fly reprojection of rasters added!" ) + "</li>";
-    whatsNew += "<li>" + tr( "Proper implementation of raster providers." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added raster toolbar with histogram stretch functions." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "Providers and Data Handling" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "New SQLAnywhere vector provider." ) + "</li>";
-    whatsNew += "<li>" + tr( "Table join support." ) + "</li>";
-    whatsNew += "<li>" + tr( "Feature form updates" ) ;
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Make NULL value string representation configurable." ) + "</li>";
-    whatsNew += "<li>" + tr( "Fix feature updates in feature form from attribute table." ) + "</li>";
-    whatsNew += "<li>" + tr( "Add support for NULL values in value maps (comboboxes)." ) + "</li>";
-    whatsNew += "<li>" + tr( "Use layer names instead of ids in drop down list when loading value maps from layers." ) + "</li>";
-    whatsNew += "<li>" + tr( "Support feature form expression fields: line edits on the form which name prefix \"expr_\" are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value." ) + "</li></ul></li>";
-    whatsNew += "<li>" + tr( "Support searching for NULL in attribute table." ) + "</li>";
-    whatsNew += "<li>" + tr( "Attribute editing improvements" );
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Improved interactive attribute editing in table (adding/deleting features, attribute update)." ) + "</li>";
-    whatsNew += "<li>" + tr( "Allow adding of geometryless features." ) + "</li>";
-    whatsNew += "<li>" + tr( "Fixed attribute undo/redo." ) + "</li></ul></li>";
-    whatsNew += "<li>" + tr( "Improved attribute handling." );
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Optionally re-use entered attribute values for next digitized feature." ) + "</li>";
-    whatsNew += "<li>" + tr( "Allow merging/assigning attribute values to a set of features." ) + "</li></ul></li>";
-    whatsNew += "<li>" + tr( "Allow OGR 'save as' without attributes (for eg. DGN/DXF)." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "Api and Developer Centric" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Refactored attribute dialog calls to QgsFeatureAttribute." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added QgsVectorLayer::featureAdded signal." ) + "</li>";
-    whatsNew += "<li>" + tr( "Layer menu function added." ) + "</li>";
-    whatsNew += "<li>" + tr( "Added option to load c++ plugins from user "
-                             " specified directories. Requires application restart to activate." ) +
-                "</li>";
-    whatsNew += "<li>" + tr( "Completely new geometry checking tool for fTools. Significantly faster, "
-                             "more relevant error messages, and now supports zooming to errors. "
-                             "See the new QgsGeometry.validateGeometry function" ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "QGIS Mapserver" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Ability to specify wms service capabilities in the properties "
-                             "section of the project file (instead of wms_metadata.xml file)." ) + "</li>";
-    whatsNew += "<li>" + tr( "Support for wms printing with GetPrint-Request." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "Plugins" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Support for icons of plugins in the plugin manager dialog." ) + "</li>";
-    whatsNew += "<li>" + tr( "Removed quickprint plugin - use easyprint plugin rather from plugin repo." ) + "</li>";
-    whatsNew += "<li>" + tr( "Removed ogr converter plugin - use 'save as' context menu rather." ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "<h3>" + tr( "Printing" ) + "</h3>";
-    whatsNew += "<ul>";
-    whatsNew += "<li>" + tr( "Undo/Redo support for the print composer" ) + "</li>";
-    whatsNew += "</ul>";
-    whatsNew += "</body></html>";
-
-    abt->setWhatsNew( whatsNew );
-
     QApplication::restoreOverrideCursor();
   }
   abt->show();
@@ -2363,58 +2254,75 @@ void QgisApp::addDatabaseLayer()
   {
     return;
   }
+  // Fudge for now
+  QgsDebugMsg( "about to addRasterLayer" );
 
-  // only supports postgis layers at present
-  // show the postgis dialog
-
-  QgsPgSourceSelect *dbs = new QgsPgSourceSelect( this );
-
-  mMapCanvas->freeze();
-
-  if ( dbs->exec() )
+  // TODO: QDialog for now, switch to QWidget in future
+  QDialog *pgs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "postgres" ), this ) );
+  if ( !pgs )
   {
-// Let render() do its own cursor management
-//    QApplication::setOverrideCursor(Qt::WaitCursor);
+    QMessageBox::warning( this, tr( "PostgreSQL" ), tr( "Cannot get PostgreSQL select dialog from provider." ) );
+    return;
+  }
+  connect( pgs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  pgs->exec();
+  delete pgs;
+} // QgisApp::addDatabaseLayer()
+#endif
 
-
-    // repaint the canvas if it was covered by the dialog
-
-    // add files to the map canvas
-    QStringList tables = dbs->selectedTables();
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    // for each selected table, connect to the database, parse the Wkt geometry,
-    // and build a canvasitem for it
-    // readWKB(connectionInfo,tables);
-    QStringList::Iterator it = tables.begin();
-    while ( it != tables.end() )
-    {
-      // create the layer
-      //qWarning("creating layer");
-      QgsDataSourceURI uri( *it );
-      QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), "postgres" );
-      if ( layer->isValid() )
-      {
-        // register this layer with the central layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer( layer );
-      }
-      else
-      {
-        QgsDebugMsg(( *it ) + " is an invalid layer - not loaded" );
-        QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
-        delete layer;
-      }
-      //qWarning("incrementing iterator");
-      ++it;
-    }
-
-    QApplication::restoreOverrideCursor();
-
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey )
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
   }
 
-  delete dbs;
+  if ( layerPathList.empty() )
+  {
+    // no layers to add so bail out, but
+    // allow mMapCanvas to handle events
+    // first
+    mMapCanvas->freeze( false );
+    return;
+  }
+
+  mMapCanvas->freeze( true );
+
+  QApplication::setOverrideCursor( Qt::WaitCursor );
+
+  foreach( QString layerPath, layerPathList )
+  {
+    // create the layer
+    QgsDataSourceURI uri( layerPath );
+
+    QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), providerKey );
+    Q_CHECK_PTR( layer );
+
+    if ( ! layer )
+    {
+      mMapCanvas->freeze( false );
+      QApplication::restoreOverrideCursor();
+
+      // XXX insert meaningful whine to the user here
+      return;
+    }
+
+    if ( layer->isValid() )
+    {
+      // register this layer with the central layers registry
+      QgsMapLayerRegistry::instance()->addMapLayer( layer );
+    }
+    else
+    {
+      QgsDebugMsg(( layerPath ) + " is an invalid layer - not loaded" );
+      QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( layerPath ) );
+      delete layer;
+    }
+    //qWarning("incrementing iterator");
+  }
+
+  statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
 
   // update UI
   qApp->processEvents();
@@ -2423,11 +2331,8 @@ void QgisApp::addDatabaseLayer()
   mMapCanvas->freeze( false );
   mMapCanvas->refresh();
 
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
-
-} // QgisApp::addDatabaseLayer()
-#endif
+  QApplication::restoreOverrideCursor();
+}
 
 
 #ifndef HAVE_SPATIALITE
@@ -2523,6 +2428,36 @@ void QgisApp::addWmsLayer()
   wmss->exec();
   delete wmss;
 }
+
+void QgisApp::addWfsLayer()
+{
+  if ( mMapCanvas && mMapCanvas->isDrawing() )
+  {
+    return;
+  }
+  // Fudge for now
+  QgsDebugMsg( "about to addWfsLayer" );
+
+  // TODO: QDialog for now, switch to QWidget in future
+  QDialog *wfss = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "WFS" ), this ) );
+  if ( !wfss )
+  {
+    QMessageBox::warning( this, tr( "WFS" ), tr( "Cannot get WFS select dialog from provider." ) );
+    return;
+  }
+  connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
+           this , SLOT( addWfsLayer( QString, QString ) ) );
+
+  wfss->exec();
+  delete wfss;
+}
+
+void QgisApp::addWfsLayer( QString uri, QString typeName )
+{
+  // TODO: this should be eventually moved to a more reasonable place
+  addVectorLayer( uri, typeName, "WFS" );
+}
+
 
 void QgisApp::fileExit()
 {
@@ -4807,6 +4742,9 @@ void QgisApp::options()
 
     //do we need this? TS
     mMapCanvas->refresh();
+
+    mRasterFileFilter.clear();
+    QgsRasterLayer::buildSupportedRasterFileFilter( mRasterFileFilter );
   }
 
   delete optionsDialog;
@@ -4832,7 +4770,7 @@ void QgisApp::fullHistogramStretch()
                               tr( "To perform a full histogram stretch, you need to have a raster layer selected." ) );
     return;
   }
-  if ( rlayer->providerKey() == "wms" )
+  if ( rlayer->providerType() == "wms" )
   {
     return;
   }
@@ -5806,7 +5744,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       else
       {
         mActionPasteFeatures->setEnabled( false );
-        mActionAddFeature->setEnabled( !vlayer->isEditable() );
+        mActionAddFeature->setEnabled( false );
       }
 
       //does provider allow deleting of features?

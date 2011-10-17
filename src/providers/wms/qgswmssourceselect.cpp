@@ -154,11 +154,8 @@ QgsWMSSourceSelect::~QgsWMSSourceSelect()
 
 void QgsWMSSourceSelect::populateConnectionList()
 {
-  QSettings settings;
-  settings.beginGroup( "/Qgis/connections-wms" );
   cmbConnections->clear();
-  cmbConnections->addItems( settings.childGroups() );
-  settings.endGroup();
+  cmbConnections->addItems( QgsWMSConnection::connectionList() );
 
   setConnectionListPosition();
 
@@ -205,15 +202,12 @@ void QgsWMSSourceSelect::on_btnEdit_clicked()
 
 void QgsWMSSourceSelect::on_btnDelete_clicked()
 {
-  QSettings settings;
-  QString key = "/Qgis/connections-wms/" + cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
   QMessageBox::StandardButton result = QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel );
   if ( result == QMessageBox::Ok )
   {
-    settings.remove( key );
-    settings.remove( "/Qgis/WMS/" + cmbConnections->currentText() );
+    QgsWMSConnection::deleteConnection( cmbConnections->currentText() );
     cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
     setConnectionListPosition();
     emit connectionsChanged();
@@ -926,8 +920,7 @@ QString QgsWMSSourceSelect::selectedImageEncoding()
 
 void QgsWMSSourceSelect::setConnectionListPosition()
 {
-  QSettings settings;
-  QString toSelect = settings.value( "/Qgis/connections-wms/selected" ).toString();
+  QString toSelect = QgsWMSConnection::selectedConnection();
 
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
@@ -968,8 +961,7 @@ void QgsWMSSourceSelect::showError( QgsWmsProvider * wms )
 void QgsWMSSourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which server was selected.
-  QSettings settings;
-  settings.setValue( "/Qgis/connections-wms/selected", cmbConnections->currentText() );
+  QgsWMSConnection::setSelectedConnection( cmbConnections->currentText() );
 }
 
 void QgsWMSSourceSelect::on_btnAddDefault_clicked()
@@ -1127,7 +1119,7 @@ void QgsWMSSourceSelect::on_btnAddWMS_clicked()
 
   // add selected WMS to config and mark as current
   settings.setValue( QString( "Qgis/connections-wms/%1/url" ).arg( wmsTitle ), wmsUrl );
-  settings.setValue( "/Qgis/connections-wms/selected", wmsTitle );
+  QgsWMSConnection::setSelectedConnection( wmsTitle );
   populateConnectionList();
 
   tabServers->setCurrentIndex( 0 );

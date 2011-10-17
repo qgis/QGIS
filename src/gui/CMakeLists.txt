@@ -72,6 +72,7 @@ qgsludialog.cpp
 qgssearchquerybuilder.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
+qgsquerybuilder.cpp
 )
 
 SET(QGIS_GUI_MOC_HDRS
@@ -129,6 +130,7 @@ qgslonglongvalidator.h
 qgssearchquerybuilder.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
+qgsquerybuilder.h
 )
 
 QT4_WRAP_CPP(QGIS_GUI_MOC_SRCS ${QGIS_GUI_MOC_HDRS})

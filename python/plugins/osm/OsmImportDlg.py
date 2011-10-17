@@ -101,10 +101,10 @@ class OsmImportDlg(QDialog, Ui_OsmImportDlg):
 
         layer = QgsMapLayerRegistry.instance().mapLayer(layerId)
         if layer is None:
-          QMessageBox.warning(self, "Layer doesn't exist", "The selected layer doesn't exist anymore!")
+          QMessageBox.warning(self, self.tr("Layer doesn't exist"), self.tr("The selected layer doesn't exist anymore!"))
           return
 
-        self.progress = QProgressDialog("Importing features...", "Cancel", 0, 100, self)
+        self.progress = QProgressDialog(self.tr("Importing features..."), self.tr("Cancel"), 0, 100, self)
         self.progress.setWindowModality(Qt.WindowModal)
 
         self.nodes = { }
@@ -135,7 +135,7 @@ class OsmImportDlg(QDialog, Ui_OsmImportDlg):
         self.dbm.recacheAffectedNow(self.affected)
         self.plugin.canvas.refresh()
 
-        QMessageBox.information(self, "Import", "Import has been completed.")
+        QMessageBox.information(self, self.tr("Import"), self.tr("Import has been completed."))
         self.accept()
 
 
@@ -249,4 +249,3 @@ class OsmImportDlg(QDialog, Ui_OsmImportDlg):
             dp = dummyPoint(p[0])
             self.nodes[dp] = dummyFeat(nodeId)
           nodeId -= 1
-

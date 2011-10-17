@@ -49,7 +49,7 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent )
 
 QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
 {
-    saveState();
+  saveState();
 }
 
 /*!
@@ -57,8 +57,8 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
  */
 void QgsConfigureShortcutsDialog::saveState()
 {
-    QSettings settings;
-    settings.setValue( "/Windows/ShortcutsDialog/geometry", saveGeometry() );
+  QSettings settings;
+  settings.setValue( "/Windows/ShortcutsDialog/geometry", saveGeometry() );
 }
 
 /*!
@@ -66,9 +66,9 @@ void QgsConfigureShortcutsDialog::saveState()
  */
 void QgsConfigureShortcutsDialog::restoreState()
 {
-    QSettings settings;
-    restoreGeometry( settings.value( "/Windows/ShortcutsDialog/geometry" ).toByteArray() );
-}       
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/ShortcutsDialog/geometry" ).toByteArray() );
+}
 
 void QgsConfigureShortcutsDialog::populateActions()
 {

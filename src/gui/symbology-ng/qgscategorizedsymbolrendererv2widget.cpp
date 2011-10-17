@@ -60,6 +60,7 @@ QgsCategorizedSymbolRendererV2Widget::QgsCategorizedSymbolRendererV2Widget( QgsV
   connect( cboCategorizedColumn, SIGNAL( currentIndexChanged( int ) ), this, SLOT( categoryColumnChanged() ) );
 
   connect( viewCategories, SIGNAL( doubleClicked( const QModelIndex & ) ), this, SLOT( categoriesDoubleClicked( const QModelIndex & ) ) );
+  connect( viewCategories, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
   connect( btnChangeCategorizedSymbol, SIGNAL( clicked() ), this, SLOT( changeCategorizedSymbol() ) );
   connect( btnAddCategories, SIGNAL( clicked() ), this, SLOT( addCategories() ) );
@@ -400,4 +401,31 @@ void QgsCategorizedSymbolRendererV2Widget::rotationFieldChanged( QString fldName
 void QgsCategorizedSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+}
+
+QList<QgsSymbolV2*> QgsCategorizedSymbolRendererV2Widget::selectedSymbols()
+{
+  QList<QgsSymbolV2*> selectedSymbols;
+
+  QItemSelectionModel* m = viewCategories->selectionModel();
+  QModelIndexList selectedIndexes = m->selectedRows( 1 );
+
+  if ( m && selectedIndexes.size() > 0 )
+  {
+    const QgsCategoryList& categories = mRenderer->categories();
+    QModelIndexList::const_iterator indexIt = selectedIndexes.constBegin();
+    for ( ; indexIt != selectedIndexes.constEnd(); ++indexIt )
+    {
+      QStandardItem* currentItem = qobject_cast<const QStandardItemModel*>( m->model() )->itemFromIndex( *indexIt );
+      if ( currentItem )
+      {
+        QgsSymbolV2* s = categories[mRenderer->categoryIndexForValue( currentItem->data() )].symbol();
+        if ( s )
+        {
+          selectedSymbols.append( s );
+        }
+      }
+    }
+  }
+  return selectedSymbols;
 }

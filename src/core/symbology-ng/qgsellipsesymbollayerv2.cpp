@@ -125,7 +125,7 @@ void QgsEllipseSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Rend
     return;
   }
 
-  //priority for rotation: 1. data defined, 2. symbol layer rotation (mAngle)
+  //priority for rotation: 1. data defined symbol level, 2. symbol layer rotation (mAngle)
   double rotation = 0.0;
   if ( f && mRotationField.first != -1 )
   {
@@ -211,21 +211,30 @@ void QgsEllipseSymbolLayerV2::preparePath( const QString& symbolName, QgsSymbolV
   mPainterPath = QPainterPath();
 
   double width = 0;
-  if ( f && mWidthField.first != -1 )
+
+  if ( f && mWidthField.first != -1 ) //1. priority: data defined setting on symbol layer level
   {
     width = context.outputLineWidth( f->attributeMap()[mWidthField.first].toDouble() );
   }
-  else
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  {
+    width = context.outputLineWidth( mSize );
+  }
+  else //3. priority: global width setting
   {
     width = context.outputLineWidth( mSymbolWidth );
   }
 
   double height = 0;
-  if ( f && mHeightField.first != -1 )
+  if ( f && mHeightField.first != -1 ) //1. priority: data defined setting on symbol layer level
   {
     height = context.outputLineWidth( f->attributeMap()[mHeightField.first].toDouble() );
   }
-  else
+  else if ( context.renderHints() & QgsSymbolV2::DataDefinedSizeScale ) //2. priority: is data defined size on symbol level
+  {
+    height = context.outputLineWidth( mSize );
+  }
+  else //3. priority: global height setting
   {
     height = context.outputLineWidth( mSymbolHeight );
   }

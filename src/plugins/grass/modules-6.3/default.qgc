@@ -398,7 +398,7 @@
 			<grass name="v.what.rast"/>
 			<grass name="v.sample"/>
 		</section>
-		<section label="Report and statistics">
+		<section label="Reports and statistics">
 			<grass name="v.to.db"/>
 			<grass name="v.report"/>
 			<grass name="v.univar"/>

@@ -61,6 +61,9 @@ MACRO (ADD_QGIS_TEST testname testsrc)
   ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
   TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_core)
   ADD_TEST(qgis_${testname} qgis_${testname})
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+    INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+    INSTALL_RPATH_USE_LINK_PATH true )
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################

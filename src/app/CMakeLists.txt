@@ -19,8 +19,6 @@ SET(QGIS_APP_SRCS
   qgsconfigureshortcutsdialog.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
-  qgsdbfilterproxymodel.cpp
-  qgsdbtablemodel.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
   qgsdecorationnortharrow.cpp
@@ -95,7 +93,6 @@ SET(QGIS_APP_SRCS
   qgstipfactory.cpp
   qgsuniquevaluedialog.cpp
   qgsvectorlayerproperties.cpp
-  qgsquerybuilder.cpp
   qgshighlight.cpp
   qgshandlebadlayers.cpp
 
@@ -158,7 +155,6 @@ SET (QGIS_APP_MOC_HDRS
   qgscontinuouscolordialog.h
   qgscustomization.h
   qgscustomprojectiondialog.h
-  qgsdbtablemodel.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
   qgsdecorationnortharrow.h
@@ -210,7 +206,6 @@ SET (QGIS_APP_MOC_HDRS
   qgspastetransformations.h
   qgspluginmanager.h
   qgsprojectproperties.h
-  qgsquerybuilder.h
   qgsrastercalcdialog.h
   qgsrasterlayerproperties.h
   qgssinglesymboldialog.h
@@ -322,15 +317,6 @@ IF (POSTGRES_FOUND)
   IF(HAVE_PGCONFIG)
     ADD_DEFINITIONS(-DHAVE_PGCONFIG=1)
   ENDIF(HAVE_PGCONFIG)
-
-  SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    postgres/qgspgsourceselect.cpp
-    postgres/qgspgnewconnection.cpp
-    )
-  SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    postgres/qgspgsourceselect.h
-    postgres/qgspgnewconnection.h
-    )
 ENDIF (POSTGRES_FOUND)
 
 IF (HAVE_SPATIALITE)
@@ -436,6 +422,7 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   #should only be needed for win
   ${QT_QTMAIN_LIBRARY}
   ${QWTPOLAR_LIBRARY}
+  ${GDAL_LIBRARY}
   qgis_core
   qgis_gui
   qgis_analysis

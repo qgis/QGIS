@@ -163,8 +163,11 @@ void QgsGrassTools::runModule( QString name )
   }
   else
   {
-    m = qobject_cast<QWidget *>( new QgsGrassModule( this, name,
-                                 mIface, path, mTabWidget ) );
+    QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, path, mTabWidget );
+    connect( gmod, SIGNAL( moduleStarted() ), mBrowser, SLOT( moduleStarted() ) );
+    connect( gmod, SIGNAL( moduleFinished() ), mBrowser, SLOT( moduleFinished() ) );
+
+    m = qobject_cast<QWidget *>( gmod );
   }
 
   int height = mTabWidget->iconSize().height();

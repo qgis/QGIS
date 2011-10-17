@@ -121,25 +121,6 @@ QgsSLDParser::QgsSLDParser(): mXMLDoc( 0 )
 
 QgsSLDParser::~QgsSLDParser()
 {
-  //remove the temporary files
-  for ( QList<QTemporaryFile*>::const_iterator it = mFilesToRemove.constBegin(); it != mFilesToRemove.constEnd(); ++it )
-  {
-    delete *it;
-  }
-
-  //and also those the temporary file paths
-  for ( QList<QString>::const_iterator it = mFilePathsToRemove.constBegin(); it != mFilePathsToRemove.constEnd(); ++it )
-  {
-    QFile::remove( *it );
-  }
-
-  //delete the layers in the list
-  QList<QgsMapLayer*>::iterator layer_it = mLayersToRemove.begin();
-  for ( ; layer_it != mLayersToRemove.end(); ++layer_it )
-  {
-    delete *layer_it;
-  }
-
   delete mXMLDoc;
 }
 
@@ -229,7 +210,7 @@ void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDom
         //append geographic bbox and the CRS elements
         QStringList crsNumbers = createCRSListForLayer( theMapLayer );
         appendCRSElementsToLayer( layerElement, doc, crsNumbers );
-        appendExGeographicBoundingBox( layerElement, doc, theMapLayer->extent(), theMapLayer->crs() );
+        appendLayerBoundingBoxes( layerElement, doc, theMapLayer->extent(), theMapLayer->crs() );
 
         //iterate over all <UserStyle> nodes within a user layer
         QDomNodeList userStyleList = layerNodeList.item( i ).toElement().elementsByTagName( "UserStyle" );
@@ -275,7 +256,7 @@ void QgsSLDParser::layersAndStylesCapabilities( QDomElement& parentElement, QDom
   }
 }
 
-QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, const QString& styleName, bool allowCaching ) const
+QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, const QString& styleName, bool useCache ) const
 {
   QList<QgsMapLayer*> fallbackLayerList;
   QList<QgsMapLayer*> resultList;
@@ -287,7 +268,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     QDomElement userStyleElement = findUserStyleElement( namedLayerElemList[i], styleName );
     if ( !userStyleElement.isNull() )
     {
-      fallbackLayerList = mFallbackParser->mapLayerFromStyle( layerName, "", allowCaching );
+      fallbackLayerList = mFallbackParser->mapLayerFromStyle( layerName, "", false );
       if ( fallbackLayerList.size() > 0 )
       {
         QgsVectorLayer* v = dynamic_cast<QgsVectorLayer*>( fallbackLayerList.at( 0 ) );
@@ -335,7 +316,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     //maybe named layer and named style is defined in the fallback SLD?
     if ( mFallbackParser )
     {
-      resultList = mFallbackParser->mapLayerFromStyle( layerName, styleName, allowCaching );
+      resultList = mFallbackParser->mapLayerFromStyle( layerName, styleName, useCache );
     }
 
     QList<QgsMapLayer*>::iterator it = resultList.begin();
@@ -349,7 +330,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
 
   QDomElement userStyleElement = findUserStyleElement( userLayerElement, styleName );
 
-  QgsMapLayer* theMapLayer = mapLayerFromUserLayer( userLayerElement, layerName, allowCaching );
+  QgsMapLayer* theMapLayer = mapLayerFromUserLayer( userLayerElement, layerName, useCache );
   if ( !theMapLayer )
   {
     return resultList;

@@ -60,7 +60,9 @@ static QVariant tvl2variant( TVL v )
   {
     case False: return 0;
     case True: return 1;
-    case Unknown:  return QVariant();
+    case Unknown:
+    default:
+      return QVariant();
   }
 }
 
@@ -205,6 +207,33 @@ static QVariant fcnAtan2( const QVariantList& values, QgsFeature* , QgsExpressio
   double y = getDoubleValue( values.at( 0 ), parent );
   double x = getDoubleValue( values.at( 1 ), parent );
   return QVariant( atan2( y, x ) );
+}
+static QVariant fcnExp( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( exp( x ) );
+}
+static QVariant fcnLn( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  if ( x <= 0 )
+    return QVariant();
+  return QVariant( log( x ) );
+}
+static QVariant fcnLog10( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  if ( x <= 0 )
+    return QVariant();
+  return QVariant( log10( x ) );
+}
+static QVariant fcnLog( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double b = getDoubleValue( values.at( 0 ), parent );
+  double x = getDoubleValue( values.at( 1 ), parent );
+  if ( x <= 0 || b <= 0 )
+    return QVariant();
+  return QVariant( log( x ) / log( b ) );
 }
 static QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
@@ -354,6 +383,10 @@ FnDef QgsExpression::BuiltinFunctions[] =
   FnDef( "acos", 1, fcnAcos, "Math" ),
   FnDef( "atan", 1, fcnAtan, "Math" ),
   FnDef( "atan2", 2, fcnAtan2, "Math" ),
+  FnDef( "exp", 1, fcnExp, "Math" ),
+  FnDef( "ln", 1, fcnLn, "Math" ),
+  FnDef( "log10", 1, fcnLog10, "Math" ),
+  FnDef( "log", 2, fcnLog, "Math" ),
   // casts
   FnDef( "toint", 1, fcnToInt, "Conversions" ),
   FnDef( "toreal", 1, fcnToReal, "Conversions" ),

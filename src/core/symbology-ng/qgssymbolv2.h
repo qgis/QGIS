@@ -147,7 +147,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
 
-    void setFeature( const QgsFeature* f ){ mFeature = f; }
+    void setFeature( const QgsFeature* f ) { mFeature = f; }
     const QgsFeature* feature() const { return mFeature; }
 
     // Color used for selections

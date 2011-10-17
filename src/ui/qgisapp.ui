@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1054</width>
-    <height>491</height>
+    <width>1052</width>
+    <height>489</height>
    </rect>
   </property>
   <widget class="QWidget" name="centralwidget"/>
@@ -16,7 +16,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1054</width>
+     <width>1052</width>
      <height>23</height>
     </rect>
    </property>
@@ -147,6 +147,7 @@
     <addaction name="mActionAddSpatiaLiteLayer"/>
     <addaction name="mActionAddWmsLayer"/>
     <addaction name="mActionAddLayerSeparator"/>
+    <addaction name="mActionAddWfsLayer"/>
     <addaction name="separator"/>
     <addaction name="mActionOpenTable"/>
     <addaction name="mActionSaveEdits"/>
@@ -248,6 +249,7 @@
    <addaction name="mActionAddPgLayer"/>
    <addaction name="mActionAddSpatiaLiteLayer"/>
    <addaction name="mActionAddWmsLayer"/>
+   <addaction name="mActionAddWfsLayer"/>
    <addaction name="mActionNewVectorLayer"/>
    <addaction name="mActionRemoveLayer"/>
   </widget>
@@ -1526,6 +1528,18 @@
    </property>
    <property name="whatsThis">
     <string>Creates a scale bar that is displayed on the map canvas</string>
+   </property>
+  </action>
+  <action name="mActionAddWfsLayer">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionAddWfsLayer.png</normaloff>:/images/themes/default/mActionAddWfsLayer.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add WFS Layer...</string>
+   </property>
+   <property name="toolTip">
+    <string>Add WFS Layer</string>
    </property>
   </action>
  </widget>

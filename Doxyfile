@@ -603,6 +603,7 @@ INPUT                  = doc \
                          src/analysis/interpolation \
                          src/analysis/raster \
                          src/analysis/vector \
+                         src/analysis/network \
                          src/plugins
 
 # This tag can be used to specify the character encoding of the source files
