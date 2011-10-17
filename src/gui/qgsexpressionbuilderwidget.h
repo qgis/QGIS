@@ -1,9 +1,9 @@
 /***************************************************************************
-    qgisexpressionbuilder.h - A genric expression string builder widget.
+    qgisexpressionbuilderwidget.h - A genric expression string builder widget.
      --------------------------------------
     Date                 :  29-May-2011
-    Copyright            : (C) 2006 by Nathan Woodrow
-    Email                : nathan.woodrow at gmail dot com
+    Copyright            : (C) 2011 by Nathan Woodrow
+    Email                : woodrow.nathan at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
