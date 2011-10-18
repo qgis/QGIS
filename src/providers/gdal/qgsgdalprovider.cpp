@@ -1940,6 +1940,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
                                     QString name, QString path, QString uri )
     : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
 {
+  mToolTip = uri;
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem()
@@ -2023,7 +2024,7 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 
     QgsDebugMsg( "GdalDataset opened " + thePath );
 
-    QString name = info.fileName();
+    QString name = info.completeBaseName();
     QString uri = thePath;
 
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, uri );

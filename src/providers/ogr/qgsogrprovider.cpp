@@ -2271,6 +2271,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
                                   QString name, QString path, QString uri, LayerType layerType )
     : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
 {
+  mToolTip = uri;
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()

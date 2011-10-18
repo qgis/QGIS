@@ -134,6 +134,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   {
     return item->name();
   }
+  else if ( role == Qt::ToolTipRole )
+  {
+    return item->toolTip();
+  }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
     return item->icon();

@@ -112,6 +112,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     void setIcon( QIcon icon ) { mIcon = icon; }
 
+    void setToolTip( QString msg ) { mToolTip = msg; }
+    QString toolTip() const { return mToolTip; }
+
   protected:
 
     Type mType;
@@ -120,6 +123,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     bool mPopulated;
     QString mName;
     QString mPath; // it is also used to identify item in tree
+    QString mToolTip;
     QIcon mIcon;
 
   public slots:
