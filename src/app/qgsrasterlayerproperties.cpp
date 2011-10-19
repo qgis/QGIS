@@ -176,6 +176,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     cboGreen->addItem( myRasterBandName );
     cboBlue->addItem( myRasterBandName );
     cboxColorMapBand->addItem( myRasterBandName );
+    cboxTransparencyBand->addItem( myRasterBandName );
+    cboxTransparencyBand->setEnabled( true );
   }
 
   cboRed->addItem( TRSTRING_NOT_SET );
