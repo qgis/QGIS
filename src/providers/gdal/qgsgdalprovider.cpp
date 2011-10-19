@@ -1941,6 +1941,7 @@ QgsGdalLayerItem::QgsGdalLayerItem( QgsDataItem* parent,
     : QgsLayerItem( parent, name, path, uri, QgsLayerItem::Raster, "gdal" )
 {
   mToolTip = uri;
+  mPopulated = true; // children are not expected
 }
 
 QgsGdalLayerItem::~QgsGdalLayerItem()

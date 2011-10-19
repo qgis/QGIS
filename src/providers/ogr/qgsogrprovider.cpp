@@ -2272,6 +2272,7 @@ QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
     : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
 {
   mToolTip = uri;
+  mPopulated = true; // children are not expected
 }
 
 QgsOgrLayerItem::~QgsOgrLayerItem()
@@ -2358,135 +2359,156 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
   return false;
 }
 
+
+static QgsOgrLayerItem* dataItemForLayer( QgsDataItem* parentItem, QString name, QString path, OGRDataSourceH hDataSource, int layerId )
+{
+  OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, layerId );
+  OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
+
+  QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
+  int ogrType = getOgrGeomType( hLayer );
+  switch ( ogrType )
+  {
+    case wkbUnknown:
+    case wkbGeometryCollection:
+      break;
+    case wkbNone:
+      layerType = QgsLayerItem::TableLayer;
+      break;
+    case wkbPoint:
+    case wkbMultiPoint:
+    case wkbPoint25D:
+    case wkbMultiPoint25D:
+      layerType = QgsLayerItem::Point;
+      break;
+    case wkbLineString:
+    case wkbMultiLineString:
+    case wkbLineString25D:
+    case wkbMultiLineString25D:
+      layerType = QgsLayerItem::Line;
+      break;
+    case wkbPolygon:
+    case wkbMultiPolygon:
+    case wkbPolygon25D:
+    case wkbMultiPolygon25D:
+      layerType = QgsLayerItem::Polygon;
+      break;
+    default:
+      break;
+  }
+
+  QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
+
+  QString layerUri = path;
+
+  if ( name.isEmpty() )
+  {
+    // we are in a collection
+    name = FROM8( OGR_FD_GetName( hDef ) );
+    QgsDebugMsg( "OGR layer name : " + name );
+
+    layerUri += "|layerid=" + QString::number( layerId );
+
+    path += "/" + name;
+  }
+
+  QgsDebugMsg( "OGR layer uri : " + layerUri );
+
+  return new QgsOgrLayerItem( parentItem, name, path, layerUri, layerType );
+}
+
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   if ( thePath.isEmpty() )
     return 0;
 
   QFileInfo info( thePath );
-  if ( info.isFile() )
+  if ( !info.isFile() )
+    return 0;
+
+  // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
+  // because OGR drive can open also .dbf, .shx.
+  QStringList myExtensions = fileExtensions();
+  if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )
   {
-    // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
-    // because OGR drive can open also .dbf, .shx.
-    QStringList myExtensions = fileExtensions();
-    if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )
+    bool matches = false;
+    foreach( QString wildcard, wildcards() )
     {
-      bool matches = false;
-      foreach( QString wildcard, wildcards() )
+      QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
+      if ( rx.exactMatch( info.fileName() ) )
       {
-        QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-        if ( rx.exactMatch( info.fileName() ) )
-        {
-          matches = true;
-          break;
-        }
+        matches = true;
+        break;
       }
-      if ( !matches )
-        return 0;
     }
-
-    // .dbf should probably appear if .shp is not present
-    if ( info.suffix().toLower() == "dbf" )
-    {
-      QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
-      if ( QFileInfo( pathShp ).exists() )
-        return 0;
-    }
-
-    OGRRegisterAll();
-    OGRSFDriverH hDriver;
-    OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
-
-    if ( !hDataSource )
+    if ( !matches )
       return 0;
-
-    QString  driverName = OGR_Dr_GetName( hDriver );
-    QgsDebugMsg( "OGR Driver : " + driverName );
-
-    int numLayers = OGR_DS_GetLayerCount( hDataSource );
-
-    if ( numLayers == 0 )
-    {
-      OGR_DS_Destroy( hDataSource );
-      return 0;
-    }
-
-    QgsDataCollectionItem * collection = 0;
-    if ( numLayers > 1 )
-    {
-      collection = new QgsDataCollectionItem( parentItem, info.fileName(), thePath );
-    }
-
-    for ( int i = 0; i < numLayers; i++ )
-    {
-      OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, i );
-      OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
-
-      QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-      int ogrType = getOgrGeomType( hLayer );
-      switch ( ogrType )
-      {
-        case wkbUnknown:
-        case wkbGeometryCollection:
-          break;
-        case wkbNone:
-          layerType = QgsLayerItem::TableLayer;
-          break;
-        case wkbPoint:
-        case wkbMultiPoint:
-        case wkbPoint25D:
-        case wkbMultiPoint25D:
-          layerType = QgsLayerItem::Point;
-          break;
-        case wkbLineString:
-        case wkbMultiLineString:
-        case wkbLineString25D:
-        case wkbMultiLineString25D:
-          layerType = QgsLayerItem::Line;
-          break;
-        case wkbPolygon:
-        case wkbMultiPolygon:
-        case wkbPolygon25D:
-        case wkbMultiPolygon25D:
-          layerType = QgsLayerItem::Polygon;
-          break;
-        default:
-          break;
-      }
-
-      QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
-
-      QString name = info.completeBaseName();
-
-      QString layerName = FROM8( OGR_FD_GetName( hDef ) );
-      QgsDebugMsg( "OGR layer name : " + layerName );
-
-      QString path = thePath;
-      if ( numLayers > 1 )
-      {
-        name = layerName;
-        path += "/" + name;
-      }
-
-      QString layerUri = thePath;
-      if ( collection )
-        layerUri += "|layerid=" + QString::number( i );
-      QgsDebugMsg( "OGR layer uri : " + layerUri );
-
-      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );
-      if ( numLayers == 1 )
-      {
-        OGR_DS_Destroy( hDataSource );
-        return item;
-      }
-      collection->addChild( item );
-    }
-    collection->setPopulated();
-    OGR_DS_Destroy( hDataSource );
-    return collection;
   }
 
-  return 0;
+  // .dbf should probably appear if .shp is not present
+  if ( info.suffix().toLower() == "dbf" )
+  {
+    QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
+    if ( QFileInfo( pathShp ).exists() )
+      return 0;
+  }
+
+  OGRRegisterAll();
+  OGRSFDriverH hDriver;
+  OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
+
+  if ( !hDataSource )
+    return 0;
+
+  QString  driverName = OGR_Dr_GetName( hDriver );
+  QgsDebugMsg( "OGR Driver : " + driverName );
+
+  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+
+  QgsDataItem* item = 0;
+
+  if ( numLayers == 1 )
+  {
+    QString name = info.completeBaseName();
+    item = dataItemForLayer( parentItem, name, thePath, hDataSource, 0 );
+  }
+  else if ( numLayers > 1 )
+  {
+    item = new QgsOgrDataCollectionItem( parentItem, info.fileName(), thePath );
+  }
+
+  OGR_DS_Destroy( hDataSource );
+  return item;
+}
+
+QgsOgrDataCollectionItem::QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path )
+    : QgsDataCollectionItem( parent, name, path )
+{
+}
+
+QgsOgrDataCollectionItem::~QgsOgrDataCollectionItem()
+{
+}
+
+QVector<QgsDataItem*> QgsOgrDataCollectionItem::createChildren()
+{
+  QVector<QgsDataItem*> children;
+
+  OGRSFDriverH hDriver;
+  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), false, &hDriver );
+  if ( !hDataSource )
+    return children;
+  int numLayers = OGR_DS_GetLayerCount( hDataSource );
+
+  for ( int i = 0; i < numLayers; i++ )
+  {
+    QgsOgrLayerItem* item = dataItemForLayer( this, QString(), mPath, hDataSource, i );
+    children.append( item );
+  }
+
+  OGR_DS_Destroy( hDataSource );
+
+  return children;
 }
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(

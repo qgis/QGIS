@@ -335,3 +335,12 @@ class QgsOgrLayerItem : public QgsLayerItem
     Capability capabilities();
 };
 
+class QgsOgrDataCollectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsOgrDataCollectionItem();
+
+    QVector<QgsDataItem*> createChildren();
+};
