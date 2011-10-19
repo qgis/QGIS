@@ -201,6 +201,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     void addChild( QgsDataItem *item ) { mChildren.append( item ); }
 
     static const QIcon &iconDir(); // shared icon: open/closed directory
+    static const QIcon &iconDataCollection(); // default icon for data collection
 };
 
 /** A directory: contains subdirectories and layers */

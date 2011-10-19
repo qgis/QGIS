@@ -96,6 +96,16 @@ const QIcon &QgsLayerItem::iconDefault()
   return icon;
 }
 
+const QIcon &QgsDataCollectionItem::iconDataCollection()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QIcon( getThemePixmap( "/mIconDbSchema.png" ) );
+
+  return icon;
+}
+
 const QIcon &QgsDataCollectionItem::iconDir()
 {
   static QIcon icon;
@@ -315,6 +325,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataItem( Collection, parent, name, path )
 {
+  mIcon = iconDataCollection();
 }
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
