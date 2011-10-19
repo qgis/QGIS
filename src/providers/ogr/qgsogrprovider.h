@@ -15,7 +15,6 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
@@ -25,6 +24,16 @@ class QgsField;
 class QgsVectorLayerImport;
 
 #include <ogr_api.h>
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x)   (x).toUtf8().constData()
+#define TO8F(x)  (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8(x)   (x).toLocal8Bit().constData()
+#define TO8F(x)  QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
 
 /**
   \class QgsOgrProvider
@@ -255,6 +264,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
           @note: added in version 1.4*/
     virtual bool doesStrictFeatureTypeCheck() const { return false;}
 
+    /** return OGR geometry type */
+    static int getOgrGeomType( OGRLayerH ogrLayer );
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
@@ -322,25 +334,4 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
-};
-
-class QgsOgrLayerItem : public QgsLayerItem
-{
-    Q_OBJECT
-  public:
-    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
-    ~QgsOgrLayerItem();
-
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
-};
-
-class QgsOgrDataCollectionItem : public QgsDataCollectionItem
-{
-    Q_OBJECT
-  public:
-    QgsOgrDataCollectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsOgrDataCollectionItem();
-
-    QVector<QgsDataItem*> createChildren();
 };
