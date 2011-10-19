@@ -124,7 +124,7 @@ QgsWMSLayerItem::QgsWMSLayerItem( QgsDataItem* parent, QString name, QString pat
 
   if ( mChildren.size() == 0 )
   {
-    mIcon = QIcon( getThemePixmap( "mIconRaster.png" ) );
+    mIcon = iconRaster();
   }
   mPopulated = true;
 }

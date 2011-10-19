@@ -184,6 +184,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     static const QIcon &iconLine();
     static const QIcon &iconPolygon();
     static const QIcon &iconTable();
+    static const QIcon &iconRaster();
     static const QIcon &iconDefault();
 };
 

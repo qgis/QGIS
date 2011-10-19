@@ -76,6 +76,16 @@ const QIcon &QgsLayerItem::iconTable()
   return icon;
 }
 
+const QIcon &QgsLayerItem::iconRaster()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QIcon( getThemePixmap( "/mIconRaster.png" ) );
+
+  return icon;
+}
+
 const QIcon &QgsLayerItem::iconDefault()
 {
   static QIcon icon;
@@ -277,6 +287,7 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QSt
     case Line:       mIcon = iconLine(); break;
     case Polygon:    mIcon = iconPolygon(); break;
     case TableLayer: mIcon = iconTable(); break;
+    case Raster:     mIcon = iconRaster(); break;
     default:         mIcon = iconDefault(); break;
   }
 }
