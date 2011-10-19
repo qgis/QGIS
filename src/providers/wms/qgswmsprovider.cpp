@@ -26,7 +26,6 @@
 #include "qgslogger.h"
 #include "qgswmsprovider.h"
 #include "qgswmsconnection.h"
-#include "qgswmssourceselect.h"
 
 #include <cmath>
 
@@ -3155,13 +3154,3 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-// ---------------------------------------------------------------------------
-QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
-{
-  return new QgsWMSSourceSelect( parent, fl );
-}
-
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Net;
-}

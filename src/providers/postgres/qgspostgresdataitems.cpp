@@ -223,6 +223,17 @@ void QgsPGRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
+QGISEXTERN QgsPgSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  // TODO: this should be somewhere else
+  return new QgsPgSourceSelect( parent, fl );
+}
+
+QGISEXTERN int dataCapabilities()
+{
+  return  QgsDataProvider::Database;
+}
+
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   Q_UNUSED( thePath );

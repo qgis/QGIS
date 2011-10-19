@@ -248,10 +248,19 @@ void QgsWMSRootItem::newConnection()
 
 // ---------------------------------------------------------------------------
 
+QGISEXTERN QgsWMSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  return new QgsWMSSourceSelect( parent, fl );
+}
+
+QGISEXTERN int dataCapabilities()
+{
+  return  QgsDataProvider::Net;
+}
+
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {
   Q_UNUSED( thePath );
 
   return new QgsWMSRootItem( parentItem, "WMS", "wms:" );
 }
-

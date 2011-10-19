@@ -21,7 +21,6 @@
 #define QGSWMSPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
-#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 
 #include <QString>
@@ -29,6 +28,7 @@
 #include <QDomElement>
 #include <QMap>
 #include <QVector>
+#include <QUrl>
 
 class QgsCoordinateTransform;
 class QNetworkAccessManager;

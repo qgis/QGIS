@@ -2301,12 +2301,3 @@ QGISEXTERN bool isProvider()
 {
   return true;
 }
-
-// ---------------------------------------------------------------------------
-
-#include "qgswfssourceselect.h"
-
-QGISEXTERN QgsWFSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
-{
-  return new QgsWFSSourceSelect( parent, fl );
-}

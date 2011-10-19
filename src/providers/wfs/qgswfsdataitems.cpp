@@ -169,6 +169,12 @@ void QgsWFSRootItem::newConnection()
   }
 }
 
+// ---------------------------------------------------------------------------
+
+QGISEXTERN QgsWFSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  return new QgsWFSSourceSelect( parent, fl );
+}
 
 QGISEXTERN int dataCapabilities()
 {

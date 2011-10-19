@@ -1,6 +1,7 @@
 #ifndef QGSWMSDATAITEMS_H
 #define QGSWMSDATAITEMS_H
 
+#include "qgsdataitem.h"
 #include "qgswmsprovider.h"
 
 class QgsWMSConnectionItem : public QgsDataCollectionItem
