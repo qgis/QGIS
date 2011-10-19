@@ -62,6 +62,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   }
 
   chkMergeLines->setEnabled( layer->geometryType() == QGis::Line );
+  chkAddDirectionSymbol->setEnabled( layer->geometryType() == QGis::Line );
   label_19->setEnabled( layer->geometryType() != QGis::Point );
   mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
 
