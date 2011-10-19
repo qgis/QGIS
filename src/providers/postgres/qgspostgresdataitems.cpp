@@ -122,9 +122,16 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString pat
     : QgsDataCollectionItem( parent, name, path )
 {
   mIcon = QIcon( getThemePixmap( "mIconDbSchema.png" ) );
+  mConnInfo = connInfo;
+  mLayerProperties = layerProperties;
+  populate();
+}
 
+QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
+{
+  QVector<QgsDataItem*> children;
   // Populate everything, it costs nothing, all info about layers is collected
-  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
+  foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
   {
     QgsDebugMsg( "table: " + layerProperty.schemaName + "." + layerProperty.tableName );
 
@@ -149,11 +156,11 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString pat
       }
     }
 
-    QgsPGLayerItem * layer = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, connInfo, layerType, layerProperty );
-    mChildren.append( layer );
+    QgsPGLayerItem * layer = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, mConnInfo, layerType, layerProperty );
+    children.append( layer );
   }
 
-  mPopulated = true;
+  return children;
 }
 
 QgsPGSchemaItem::~QgsPGSchemaItem()
