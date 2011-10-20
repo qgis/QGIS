@@ -211,11 +211,11 @@ QgsPalLayerSettings::~QgsPalLayerSettings()
 
 QgsExpression* QgsPalLayerSettings::getLabelExpression()
 {
-    if (expression == NULL)
-    {
-        expression = new QgsExpression( fieldName );
-    }
-    return expression;
+  if ( expression == NULL )
+  {
+    expression = new QgsExpression( fieldName );
+  }
+  return expression;
 }
 
 static QColor _readColor( QgsVectorLayer* layer, QString property )
@@ -303,7 +303,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
     return; // there's no information available
 
   fieldName = layer->customProperty( "labeling/fieldName" ).toString();
-  isExpression = layer->customProperty( "labeling/isExpression").toBool();
+  isExpression = layer->customProperty( "labeling/isExpression" ).toBool();
   placement = ( Placement ) layer->customProperty( "labeling/placement" ).toInt();
   placementFlags = layer->customProperty( "labeling/placementFlags" ).toUInt();
   QString fontFamily = layer->customProperty( "labeling/fontFamily" ).toString();
@@ -462,42 +462,42 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   labelY = qAbs( ptSize.y() - ptZero.y() );
 }
 
-void QgsPalLayerSettings::registerFeature(QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
+void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f, const QgsRenderContext& context )
 {
   QString labelText;
   // Check to see if we are a expression string.
-  if (isExpression)
+  if ( isExpression )
   {
     QgsExpression* exp = getLabelExpression();
     if ( exp->hasParserError() )
     {
-      QgsDebugMsg("PASER HAS ERROR:" + exp->parserErrorString());
+      QgsDebugMsg( "PASER HAS ERROR:" + exp->parserErrorString() );
       return;
     }
-    QVariant result = exp->evaluate(&f,layer->dataProvider()->fields());
-    QgsDebugMsg("VALUE = " + result.toString());
-    if (exp->hasEvalError())
+    QVariant result = exp->evaluate( &f, layer->dataProvider()->fields() );
+    QgsDebugMsg( "VALUE = " + result.toString() );
+    if ( exp->hasEvalError() )
     {
-       QgsDebugMsg("Expression Label Error = " + exp->evalErrorString());
-       return;
+      QgsDebugMsg( "Expression Label Error = " + exp->evalErrorString() );
+      return;
     }
     labelText  = result.toString();
   }
   else if ( formatNumbers == true && ( f.attributeMap()[fieldIndex].type() == QVariant::Int ||
                                        f.attributeMap()[fieldIndex].type() == QVariant::Double ) )
   {
-     QString numberFormat;
-     double d = f.attributeMap()[fieldIndex].toDouble();
-     if ( d > 0 && plusSign == true )
-     {
-       numberFormat.append( "+" );
-     }
-     numberFormat.append( "%1" );
-     labelText = numberFormat.arg( d, 0, 'f', decimals );
+    QString numberFormat;
+    double d = f.attributeMap()[fieldIndex].toDouble();
+    if ( d > 0 && plusSign == true )
+    {
+      numberFormat.append( "+" );
+    }
+    numberFormat.append( "%1" );
+    labelText = numberFormat.arg( d, 0, 'f', decimals );
   }
   else
   {
-      labelText = f.attributeMap()[fieldIndex].toString();
+    labelText = f.attributeMap()[fieldIndex].toString();
   }
 
   double labelX, labelY; // will receive label size
@@ -774,7 +774,7 @@ bool QgsPalLabeling::willUseLayer( QgsVectorLayer* layer )
 
 int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices, QgsRenderContext& ctx )
 {
-  QgsDebugMsg("PREPARE LAYER");
+  QgsDebugMsg( "PREPARE LAYER" );
   Q_ASSERT( mMapRenderer != NULL );
 
   // start with a temporary settings class, find out labeling info
@@ -786,25 +786,25 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
 
 
   int fldIndex ;
-  if(lyrTmp.isExpression)
+  if ( lyrTmp.isExpression )
   {
-      if (lyrTmp.fieldName.isEmpty())
-          return 0;
-      QgsExpression exp( lyrTmp.fieldName );
-      foreach(QString name, exp.referencedColumns() )
-      {
-          QgsDebugMsg("REFERENCED COLUMN = " + name );
-          fldIndex =  layer->fieldNameIndex( name );
-          attrIndices.insert(fldIndex);
-      }
+    if ( lyrTmp.fieldName.isEmpty() )
+      return 0;
+    QgsExpression exp( lyrTmp.fieldName );
+    foreach( QString name, exp.referencedColumns() )
+    {
+      QgsDebugMsg( "REFERENCED COLUMN = " + name );
+      fldIndex =  layer->fieldNameIndex( name );
+      attrIndices.insert( fldIndex );
+    }
   }
   else
   {
-      // If we aren't an expression, we check to see if we can find the column.
-      fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
-      if ( fldIndex == -1)
-          return 0;
-      attrIndices.insert( fldIndex );
+    // If we aren't an expression, we check to see if we can find the column.
+    fldIndex = layer->fieldNameIndex( lyrTmp.fieldName );
+    if ( fldIndex == -1 )
+      return 0;
+    attrIndices.insert( fldIndex );
   }
 
   //add indices of data defined fields
@@ -897,7 +897,7 @@ int QgsPalLabeling::addDiagramLayer( QgsVectorLayer* layer, QgsDiagramLayerSetti
 void QgsPalLabeling::registerFeature( QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context )
 {
   QgsPalLayerSettings& lyr = mActiveLayers[layer];
-  lyr.registerFeature(layer, f, context );
+  lyr.registerFeature( layer, f, context );
 }
 
 void QgsPalLabeling::registerDiagramFeature( QgsVectorLayer* layer, QgsFeature& feat, const QgsRenderContext& context )

@@ -30,82 +30,83 @@
   */
 class QgsExpressionItemSearhProxy : public QSortFilterProxyModel
 {
-    public:
-        QgsExpressionItemSearhProxy() { }
+  public:
+    QgsExpressionItemSearhProxy() { }
 
-        bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
-        {
-            if (source_parent == qobject_cast<QStandardItemModel*>(sourceModel())->invisibleRootItem()->index())
-                return true;
+    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
+    {
+      if ( source_parent == qobject_cast<QStandardItemModel*>( sourceModel() )->invisibleRootItem()->index() )
+        return true;
 
-            return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
-        }
+      return QSortFilterProxyModel::filterAcceptsRow( source_row, source_parent );
+    }
 };
 
 /** An expression item that can be used in the QgsExpressionBuilderWidget tree.
   */
 class QgsExpressionItem : public QStandardItem
 {
-    public:
-        enum ItemType
-        {
-            Header,
-            Field,
-            ExpressionNode
-        };
+  public:
+    enum ItemType
+    {
+      Header,
+      Field,
+      ExpressionNode
+    };
 
-        QgsExpressionItem(QString label,
-                          QString expressionText,
-                          QString helpText,
-                          QgsExpressionItem::ItemType itemType = ExpressionNode)
-            : QStandardItem(label)
-        {
-            mExpressionText = expressionText;
-            mHelpText = helpText;
-            mType = itemType;
-        }
+    QgsExpressionItem( QString label,
+                       QString expressionText,
+                       QString helpText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode )
+        : QStandardItem( label )
+    {
+      mExpressionText = expressionText;
+      mHelpText = helpText;
+      mType = itemType;
+    }
 
-        QgsExpressionItem(QString label,
-                          QString expressionText,
-                          QgsExpressionItem::ItemType itemType = ExpressionNode)
-            : QStandardItem(label)
-        {
-            mExpressionText = expressionText;
-            mType = itemType;
-        }
+    QgsExpressionItem( QString label,
+                       QString expressionText,
+                       QgsExpressionItem::ItemType itemType = ExpressionNode )
+        : QStandardItem( label )
+    {
+      mExpressionText = expressionText;
+      mType = itemType;
+    }
 
-        QString getExpressionText() {   return mExpressionText;  }
+    QString getExpressionText() {   return mExpressionText;  }
 
-        /** Get the help text that is associated with this expression item.
-          *
-          * @return The help text.
-          */
-        QString getHelpText() {  return mHelpText;  }
-        /** Set the help text for the current item
-          *
-          * @note The help text can be set as a html string.
-          */
-        void setHelpText(QString helpText) { mHelpText = helpText; }
+    /** Get the help text that is associated with this expression item.
+      *
+      * @return The help text.
+      */
+    QString getHelpText() {  return mHelpText;  }
+    /** Set the help text for the current item
+      *
+      * @note The help text can be set as a html string.
+      */
+    void setHelpText( QString helpText ) { mHelpText = helpText; }
 
-        /** Get the type of expression item eg header, field, ExpressionNode.
-          *
-          * @return The QgsExpressionItem::ItemType
-          */
-        QgsExpressionItem::ItemType getItemType() { return mType ; }
+    /** Get the type of expression item eg header, field, ExpressionNode.
+      *
+      * @return The QgsExpressionItem::ItemType
+      */
+    QgsExpressionItem::ItemType getItemType() { return mType ; }
 
-    private:
-        QString mExpressionText;
-        QString mHelpText;
-        QgsExpressionItem::ItemType mType;
+  private:
+    QString mExpressionText;
+    QString mHelpText;
+    QgsExpressionItem::ItemType mType;
 };
 
 /** A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
   */
-class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase {
+class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
+{
     Q_OBJECT
-public:
-    QgsExpressionBuilderWidget(QWidget *parent);
+  public:
+    QgsExpressionBuilderWidget( QWidget *parent );
     ~QgsExpressionBuilderWidget();
 
     /** Sets layer in order to get the fields and values
@@ -123,7 +124,7 @@ public:
     QString getExpressionString();
 
     /** Sets the expression string for the widget */
-    void setExpressionString(const QString expressionString);
+    void setExpressionString( const QString expressionString );
 
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
@@ -132,32 +133,32 @@ public:
       * @param helpText The help text that the user will see when item is selected.
       * @param type The type of the expression item.
       */
-    void registerItem(QString group, QString label,QString expressionText,
-                      QString helpText = "",
-                      QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode);
+    void registerItem( QString group, QString label, QString expressionText,
+                       QString helpText = "",
+                       QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
 
-public slots:
-    void on_expressionTree_clicked(const QModelIndex &index);
-    void on_expressionTree_doubleClicked(const QModelIndex &index);
+  public slots:
+    void on_expressionTree_clicked( const QModelIndex &index );
+    void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
-    void on_lblPreview_linkActivated(QString link);
-    void on_mValueListWidget_itemDoubleClicked(QListWidgetItem* item);
+    void on_lblPreview_linkActivated( QString link );
+    void on_mValueListWidget_itemDoubleClicked( QListWidgetItem* item );
     void operatorButtonClicked();
     void showContextMenu( const QPoint & );
     void loadSampleValues();
     void loadAllValues();
 
-signals:
+  signals:
     /** Emited when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
       * @param isVaild Is true if the expression the user has typed is vaild.
       */
-    void expressionParsed(bool isVaild);
+    void expressionParsed( bool isVaild );
 
-private:
-    void fillFieldValues(int fieldIndex, int countLimit);
+  private:
+    void fillFieldValues( int fieldIndex, int countLimit );
 
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;

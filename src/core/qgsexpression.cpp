@@ -375,9 +375,9 @@ typedef QgsExpression::FunctionDef FnDef;
 FnDef QgsExpression::BuiltinFunctions[] =
 {
   // math
-  FnDef( "sqrt", 1, fcnSqrt, "Math"),
+  FnDef( "sqrt", 1, fcnSqrt, "Math" ),
   FnDef( "sin", 1, fcnSin, "Math" ),
-  FnDef( "cos", 1, fcnCos, "Math"),
+  FnDef( "cos", 1, fcnCos, "Math" ),
   FnDef( "tan", 1, fcnTan, "Math" ),
   FnDef( "asin", 1, fcnAsin, "Math" ),
   FnDef( "acos", 1, fcnAcos, "Math" ),
@@ -393,15 +393,15 @@ FnDef QgsExpression::BuiltinFunctions[] =
   FnDef( "tostring", 1, fcnToString, "Conversions" ),
   // string manipulation
   FnDef( "lower", 1, fcnLower, "String", "<b>Convert to lower case</b> "\
-                                        "<br> Converts a string to lower case letters. " \
-                                        "<br> <i>Usage:</i><br>lower('HELLO WORLD') will return 'hello world'"),
+  "<br> Converts a string to lower case letters. " \
+  "<br> <i>Usage:</i><br>lower('HELLO WORLD') will return 'hello world'" ),
   FnDef( "upper", 1, fcnUpper, "String" , "<b>Convert to upper case</b> "\
-                                        "<br> Converts a string to upper case letters. " \
-                                        "<br> <i>Usage:</i><br>upper('hello world') will return 'HELLO WORLD'"),
+  "<br> Converts a string to upper case letters. " \
+  "<br> <i>Usage:</i><br>upper('hello world') will return 'HELLO WORLD'" ),
   FnDef( "length", 1, fcnLength, "String", "<b>Length of string</b> "\
-                                        "<br> Returns the legnth of a string. " \
-                                        "<br> <i>Usage:</i><br>length('hello') will return 5"),
-  FnDef( "replace", 3, fcnReplace, "String", "<b>Replace a section of a string.</b> "),
+  "<br> Returns the legnth of a string. " \
+  "<br> <i>Usage:</i><br>length('hello') will return 5" ),
+  FnDef( "replace", 3, fcnReplace, "String", "<b>Replace a section of a string.</b> " ),
   FnDef( "regexp_replace", 3, fcnRegexpReplace, "String" ),
   FnDef( "substr", 3, fcnSubstr, "String" ),
   // geometry accessors
@@ -414,7 +414,7 @@ FnDef QgsExpression::BuiltinFunctions[] =
   FnDef( "$y", 0, fcnY, "Geometry", "" , true ),
   // special columns
   FnDef( "$rownum", 0, fcnRowNumber, "Record" ),
-  FnDef( "$id", 0, fcnFeatureId, "Record")
+  FnDef( "$id", 0, fcnFeatureId, "Record" )
 };
 
 
@@ -436,7 +436,7 @@ int QgsExpression::functionIndex( QString name )
 
 int QgsExpression::functionCount()
 {
-    return ( sizeof( BuiltinFunctions ) / sizeof( FunctionDef) );
+  return ( sizeof( BuiltinFunctions ) / sizeof( FunctionDef ) );
 }
 
 

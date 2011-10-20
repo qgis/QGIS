@@ -21,20 +21,20 @@
 
 class QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
 {
-    public:
-        QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = "", QWidget* parent = NULL);
+  public:
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = "", QWidget* parent = NULL );
 
-        /** The builder widget that is used by the dialog */
-        QgsExpressionBuilderWidget* expressionBuilder();
+    /** The builder widget that is used by the dialog */
+    QgsExpressionBuilderWidget* expressionBuilder();
 
-        void setExpressionText( QString text );
+    void setExpressionText( QString text );
 
-    protected:
-        /**
-         * Handle closing of the window
-         * @param event unused
-         */
-        void closeEvent( QCloseEvent * event );
+  protected:
+    /**
+     * Handle closing of the window
+     * @param event unused
+     */
+    void closeEvent( QCloseEvent * event );
 };
 
 #endif

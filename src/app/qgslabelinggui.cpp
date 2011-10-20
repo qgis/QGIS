@@ -47,7 +47,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
   connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
-  connect( btnExpression, SIGNAL(clicked()), this, SLOT( showExpressionDialog()));
+  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( showExpressionDialog() ) );
 
   // set placement methods page based on geometry type
   switch ( layer->geometryType() )
@@ -83,8 +83,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   btnExpression->setEnabled( lyr.enabled );
 
   //Add the current expression to the bottom of the list.
-  if (lyr.isExpression && !lyr.fieldName.isEmpty())
-      cboFieldName->addItem(lyr.fieldName);
+  if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
+    cboFieldName->addItem( lyr.fieldName );
 
   // placement
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
@@ -212,13 +212,13 @@ QgsLabelingGui::~QgsLabelingGui()
 
 void QgsLabelingGui::apply()
 {
-    QgsPalLayerSettings settings = layerSettings();
-    settings.writeToLayer( mLayer );
-    // trigger refresh
-    if ( mMapCanvas )
-    {
-        mMapCanvas->refresh();
-    }
+  QgsPalLayerSettings settings = layerSettings();
+  settings.writeToLayer( mLayer );
+  // trigger refresh
+  if ( mMapCanvas )
+  {
+    mMapCanvas->refresh();
+  }
 }
 
 QgsPalLayerSettings QgsLabelingGui::layerSettings()
@@ -494,20 +494,20 @@ void QgsLabelingGui::showEngineConfigDialog()
 
 void QgsLabelingGui::showExpressionDialog()
 {
-    //TODO extract this out to a dialog.
-    QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
-    dlg.setWindowTitle( tr("Expression based label") );
-    if ( dlg.exec() == QDialog::Accepted )
+  //TODO extract this out to a dialog.
+  QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
+  dlg.setWindowTitle( tr( "Expression based label" ) );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionBuilder()->getExpressionString();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
     {
-        QString expression =  dlg.expressionBuilder()->getExpressionString();
-        //Only add the expression if the user has entered some text.
-        if (!expression.isEmpty())
-        {
-            cboFieldName->addItem(expression);
-            cboFieldName->setCurrentIndex(cboFieldName->count() - 1);
-        }
+      cboFieldName->addItem( expression );
+      cboFieldName->setCurrentIndex( cboFieldName->count() - 1 );
     }
- }
+  }
+}
 
 void QgsLabelingGui::updateUi()
 {
