@@ -70,6 +70,8 @@ qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
 qgssearchquerybuilder.cpp
+qgsexpressionbuilderwidget.cpp
+qgsexpressionbuilderdialog.cpp
 qgsquerybuilder.cpp
 )
 
@@ -126,6 +128,8 @@ qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
+qgsexpressionbuilderwidget.h
+qgsexpressionbuilderdialog.h
 qgsquerybuilder.h
 )
 
@@ -159,6 +163,8 @@ qgsmaptip.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
 qgsfieldvalidator.h
+qgsexpressionbuilderwidget.h
+qgsexpressionbuilderdialog.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetablememorymodel.h
@@ -175,6 +181,8 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderwidget.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
 )
 
 INCLUDE_DIRECTORIES(

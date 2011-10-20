@@ -46,9 +46,10 @@ namespace pal
 
 class QgsMapToPixel;
 class QgsFeature;
-#include "qgspoint.h"
 
+#include "qgspoint.h"
 #include "qgsmaprenderer.h" // definition of QgsLabelingEngineInterface
+#include "qgsexpression.h"
 
 class QgsPalGeometry;
 class QgsVectorLayer;
@@ -98,6 +99,15 @@ class CORE_EXPORT QgsPalLayerSettings
     };
 
     QString fieldName;
+
+    /** Is this label made from a expression string eg FieldName || 'mm'
+      */
+    bool isExpression;
+
+    /** Returns the QgsExpression for this label settings.
+      */
+    QgsExpression* getLabelExpression();
+
     Placement placement;
     unsigned int placementFlags;
     QFont textFont;
@@ -128,7 +138,7 @@ class CORE_EXPORT QgsPalLayerSettings
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
 
     // implementation of register feature hook
-    void registerFeature( QgsFeature& f, const QgsRenderContext& context );
+    void registerFeature(QgsVectorLayer* layer, QgsFeature& f, const QgsRenderContext& context );
 
     void readFromLayer( QgsVectorLayer* layer );
     void writeToLayer( QgsVectorLayer* layer );
@@ -161,6 +171,7 @@ class CORE_EXPORT QgsPalLayerSettings
     /**Checks if a feature is larger than a minimum size (in mm)
     @return true if above size, false if below*/
     bool checkMinimumSizeMM( const QgsRenderContext& ct, QgsGeometry* geom, double minSize ) const;
+    QgsExpression* expression;
 };
 
 class CORE_EXPORT QgsLabelCandidate
