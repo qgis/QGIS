@@ -30,7 +30,7 @@ The expressions try to follow both syntax and semantics of SQL expressions.
 
 Usage:
 
-  QgsExpression exp("gid*2 > 10 and type not in ('D','F');
+  QgsExpression exp("gid*2 > 10 and type not in ('D','F'));
   if (exp.hasParserError())
   {
     // show error message with parserErrorString() and exit
@@ -170,12 +170,20 @@ class CORE_EXPORT QgsExpression
 
     struct FunctionDef
     {
-      FunctionDef( QString fnname, int params, FcnEval fcn, bool usesGeometry = false )
-          : mName( fnname ), mParams( params ), mFcn( fcn ), mUsesGeometry( usesGeometry ) {}
+      FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = "", bool usesGeometry = false )
+          : mName( fnname ), mParams( params ), mFcn( fcn ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
+      /** The name of the function. */
       QString mName;
+      /** The number of parameters this function takes. */
       int mParams;
+      /** Pointer to fucntion. */
       FcnEval mFcn;
+      /** Does this function use a geometry object. */
       bool mUsesGeometry;
+      /** The group the function belongs to. */
+      QString mGroup;
+      /** The help text for the function. */
+      QString mHelpText;
     };
 
     static FunctionDef BuiltinFunctions[];
@@ -185,6 +193,11 @@ class CORE_EXPORT QgsExpression
 
     // return index of the function in BuiltinFunctions array
     static int functionIndex( QString name );
+
+    /**  Returns the number of functions defined in the parser
+      *  @return The number of function defined in the parser.
+      */
+    static int functionCount();
 
     //! return quoted column reference (in double quotes)
     static QString quotedColumnRef( QString name ) { return QString( "\"%1\"" ).arg( name.replace( "\"", "\"\"" ) ); }

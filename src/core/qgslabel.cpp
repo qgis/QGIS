@@ -84,11 +84,9 @@ QString QgsLabel::fieldValue( int attr, QgsFeature &feature )
 }
 
 void QgsLabel::renderLabel( QgsRenderContext &renderContext,
-                            QgsFeature &feature,
-                            bool selected,
+                            QgsFeature &feature, bool selected,
                             QgsLabelAttributes *classAttributes )
 {
-  Q_UNUSED( classAttributes );
   if ( mLabelAttributes->selectedOnly() && !selected )
     return;
 

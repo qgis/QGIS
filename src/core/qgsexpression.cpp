@@ -375,40 +375,46 @@ typedef QgsExpression::FunctionDef FnDef;
 FnDef QgsExpression::BuiltinFunctions[] =
 {
   // math
-  FnDef( "sqrt", 1, fcnSqrt ),
-  FnDef( "sin", 1, fcnSin ),
-  FnDef( "cos", 1, fcnCos ),
-  FnDef( "tan", 1, fcnTan ),
-  FnDef( "asin", 1, fcnAsin ),
-  FnDef( "acos", 1, fcnAcos ),
-  FnDef( "atan", 1, fcnAtan ),
-  FnDef( "atan2", 2, fcnAtan2 ),
-  FnDef( "exp", 1, fcnExp ),
-  FnDef( "ln", 1, fcnLn ),
-  FnDef( "log10", 1, fcnLog10 ),
-  FnDef( "log", 2, fcnLog ),
+  FnDef( "sqrt", 1, fcnSqrt, "Math"),
+  FnDef( "sin", 1, fcnSin, "Math" ),
+  FnDef( "cos", 1, fcnCos, "Math"),
+  FnDef( "tan", 1, fcnTan, "Math" ),
+  FnDef( "asin", 1, fcnAsin, "Math" ),
+  FnDef( "acos", 1, fcnAcos, "Math" ),
+  FnDef( "atan", 1, fcnAtan, "Math" ),
+  FnDef( "atan2", 2, fcnAtan2, "Math" ),
+  FnDef( "exp", 1, fcnExp, "Math" ),
+  FnDef( "ln", 1, fcnLn, "Math" ),
+  FnDef( "log10", 1, fcnLog10, "Math" ),
+  FnDef( "log", 2, fcnLog, "Math" ),
   // casts
-  FnDef( "toint", 1, fcnToInt ),
-  FnDef( "toreal", 1, fcnToReal ),
-  FnDef( "tostring", 1, fcnToString ),
+  FnDef( "toint", 1, fcnToInt, "Conversions" ),
+  FnDef( "toreal", 1, fcnToReal, "Conversions" ),
+  FnDef( "tostring", 1, fcnToString, "Conversions" ),
   // string manipulation
-  FnDef( "lower", 1, fcnLower ),
-  FnDef( "upper", 1, fcnUpper ),
-  FnDef( "length", 1, fcnLength ),
-  FnDef( "replace", 3, fcnReplace ),
-  FnDef( "regexp_replace", 3, fcnRegexpReplace ),
-  FnDef( "substr", 3, fcnSubstr ),
+  FnDef( "lower", 1, fcnLower, "String", "<b>Convert to lower case</b> "\
+                                        "<br> Converts a string to lower case letters. " \
+                                        "<br> <i>Usage:</i><br>lower('HELLO WORLD') will return 'hello world'"),
+  FnDef( "upper", 1, fcnUpper, "String" , "<b>Convert to upper case</b> "\
+                                        "<br> Converts a string to upper case letters. " \
+                                        "<br> <i>Usage:</i><br>upper('hello world') will return 'HELLO WORLD'"),
+  FnDef( "length", 1, fcnLength, "String", "<b>Length of string</b> "\
+                                        "<br> Returns the legnth of a string. " \
+                                        "<br> <i>Usage:</i><br>length('hello') will return 5"),
+  FnDef( "replace", 3, fcnReplace, "String", "<b>Replace a section of a string.</b> "),
+  FnDef( "regexp_replace", 3, fcnRegexpReplace, "String" ),
+  FnDef( "substr", 3, fcnSubstr, "String" ),
   // geometry accessors
-  FnDef( "xat", 1, fcnXat, true ),
-  FnDef( "yat", 1, fcnYat, true ),
+  FnDef( "xat", 1, fcnXat, "Geometry", "", true ),
+  FnDef( "yat", 1, fcnYat, "Geometry", "", true ),
+  FnDef( "$area", 0, fcnGeomArea, "Geometry", "", true ),
+  FnDef( "$length", 0, fcnGeomLength, "Geometry", "", true ),
+  FnDef( "$perimeter", 0, fcnGeomPerimeter, "Geometry", "", true ),
+  FnDef( "$x", 0, fcnX, "Geometry", "", true ),
+  FnDef( "$y", 0, fcnY, "Geometry", "" , true ),
   // special columns
-  FnDef( "$rownum", 0, fcnRowNumber ),
-  FnDef( "$area", 0, fcnGeomArea, true ),
-  FnDef( "$length", 0, fcnGeomLength, true ),
-  FnDef( "$perimeter", 0, fcnGeomPerimeter, true ),
-  FnDef( "$x", 0, fcnX, true ),
-  FnDef( "$y", 0, fcnY, true ),
-  FnDef( "$id", 0, fcnFeatureId ),
+  FnDef( "$rownum", 0, fcnRowNumber, "Record" ),
+  FnDef( "$id", 0, fcnFeatureId, "Record")
 };
 
 
@@ -419,13 +425,18 @@ bool QgsExpression::isFunctionName( QString name )
 
 int QgsExpression::functionIndex( QString name )
 {
-  int count = sizeof( BuiltinFunctions ) / sizeof( FunctionDef );
+  int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
     if ( QString::compare( name, BuiltinFunctions[i].mName, Qt::CaseInsensitive ) == 0 )
       return i;
   }
   return -1;
+}
+
+int QgsExpression::functionCount()
+{
+    return ( sizeof( BuiltinFunctions ) / sizeof( FunctionDef) );
 }
 
 
