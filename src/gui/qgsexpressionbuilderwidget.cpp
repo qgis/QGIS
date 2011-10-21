@@ -29,7 +29,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   mValueListLabel->hide();
 
   mModel = new QStandardItemModel( );
-  mProxyModel = new QgsExpressionItemSearhProxy();
+  mProxyModel = new QgsExpressionItemSearchProxy();
   mProxyModel->setSourceModel( mModel );
   expressionTree->setModel( mProxyModel );
 

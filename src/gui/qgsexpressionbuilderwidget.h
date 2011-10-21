@@ -28,10 +28,10 @@
   * The default search for a tree model only searches top level this will handle one
   * level down
   */
-class QgsExpressionItemSearhProxy : public QSortFilterProxyModel
+class QgsExpressionItemSearchProxy : public QSortFilterProxyModel
 {
   public:
-    QgsExpressionItemSearhProxy() { }
+    QgsExpressionItemSearchProxy() { }
 
     bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const
     {
@@ -102,7 +102,7 @@ class QgsExpressionItem : public QStandardItem
 /** A reusable widget that can be used to build a expression string.
   * See QgsExpressionBuilderDialog for exmaple of usage.
   */
-class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
+class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuilderWidgetBase
 {
     Q_OBJECT
   public:
@@ -162,7 +162,7 @@ class QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExpressionBuil
 
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
-    QgsExpressionItemSearhProxy *mProxyModel;
+    QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature* mFeature;
 };

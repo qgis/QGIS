@@ -19,10 +19,10 @@
 #include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
 
-class QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
+class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
 {
   public:
-    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = "", QWidget* parent = NULL );
+    QgsExpressionBuilderDialog( QgsVectorLayer* layer, QString startText = QString(), QWidget* parent = NULL );
 
     /** The builder widget that is used by the dialog */
     QgsExpressionBuilderWidget* expressionBuilder();

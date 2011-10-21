@@ -170,7 +170,7 @@ class CORE_EXPORT QgsExpression
 
     struct FunctionDef
     {
-      FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = "", bool usesGeometry = false )
+      FunctionDef( QString fnname, int params, FcnEval fcn, QString group, QString helpText = QString(), bool usesGeometry = false )
           : mName( fnname ), mParams( params ), mFcn( fcn ), mUsesGeometry( usesGeometry ), mGroup( group ), mHelpText( helpText ) {}
       /** The name of the function. */
       QString mName;
