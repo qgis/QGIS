@@ -181,7 +181,7 @@ ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
-${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderwidget.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilder.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsexpressionbuilderdialogbase.h
 )
 
