@@ -165,8 +165,20 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Deletes a feature*/
     virtual bool deleteFeatures( const QgsFeatureIds & id );
 
-    /**Adds new attributess. Unfortunately not supported for layers with features in it*/
+    /**
+     * Adds new attributes
+     * @param attributes list of new attributes
+     * @return true in case of success and false in case of failure
+     * @note added in 1.2
+     */
     virtual bool addAttributes( const QList<QgsField> &attributes );
+
+    /**
+     * Deletes existing attributes
+     * @param attributes a set containing names of attributes
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 
     /**Changes attribute values of existing features */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
