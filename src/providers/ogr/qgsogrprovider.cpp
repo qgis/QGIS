@@ -1281,7 +1281,7 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 
 int QgsOgrProvider::capabilities() const
 {
-  int ability = NoCapabilities;
+  int ability = SetEncoding;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
