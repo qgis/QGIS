@@ -48,6 +48,12 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path,
                      QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties );
     ~QgsPGSchemaItem();
+
+    QVector<QgsDataItem*> createChildren();
+
+  protected:
+    QString mConnInfo;
+    QVector<QgsPostgresLayerProperty> mLayerProperties;
 };
 
 class QgsPGRootItem : public QgsDataCollectionItem

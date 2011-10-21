@@ -531,7 +531,7 @@ void QgsBrowser::refresh( const QModelIndex& index )
   for ( int i = 0 ; i < mModel->rowCount( index ); i++ )
   {
     QModelIndex idx = mModel->index( i, 0, index );
-    if ( treeView->isExpanded( idx ) )
+    if ( treeView->isExpanded( idx ) || !mModel->hasChildren( idx ) )
     {
       refresh( idx );
     }

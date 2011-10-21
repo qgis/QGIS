@@ -26,6 +26,7 @@ QgsWFSLayerItem::~QgsWFSLayerItem()
 QgsWFSConnectionItem::QgsWFSConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path ), mName( name ), mConn( NULL )
 {
+  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
 }
 
 QgsWFSConnectionItem::~QgsWFSConnectionItem()
@@ -57,7 +58,7 @@ QVector<QgsDataItem*> QgsWFSConnectionItem::createChildren()
   }
   else
   {
-    // TODO: return an "error" item
+    layers.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
   }
 
   mConn->deleteLater();
@@ -113,7 +114,7 @@ void QgsWFSConnectionItem::deleteConnection()
 QgsWFSRootItem::QgsWFSRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconWms.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconWfs.png" ) );
 
   populate();
 }
@@ -168,6 +169,12 @@ void QgsWFSRootItem::newConnection()
   }
 }
 
+// ---------------------------------------------------------------------------
+
+QGISEXTERN QgsWFSSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  return new QgsWFSSourceSelect( parent, fl );
+}
 
 QGISEXTERN int dataCapabilities()
 {

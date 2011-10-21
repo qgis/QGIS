@@ -2230,7 +2230,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot; per ottener
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation>Scegli la cartella contenente gli eseguibili GDAL</translation>
+        <translation>Scegli la cartella contenente gli eseguibili di GDAL</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
@@ -10247,7 +10247,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="50"/>
         <source>Frame width</source>
-        <translation>Larghezza del riquadro</translation>
+        <translation>Spessore del riquadro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="67"/>
@@ -29412,7 +29412,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="107"/>
         <source>Calculating </source>
-        <translation>Calcolo in corso</translation>
+        <translation>Calcolo in corso </translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="107"/>
@@ -30992,7 +30992,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="332"/>
         <source>Zoom to item</source>
-        <translation>Zomm all&apos;oggetto</translation>
+        <translation>Zoom all&apos;oggetto</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="353"/>

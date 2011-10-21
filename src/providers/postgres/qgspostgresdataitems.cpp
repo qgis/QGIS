@@ -10,6 +10,7 @@
 QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mIcon = QIcon( getThemePixmap( "mIconConnect.png" ) );
 }
 
 QgsPGConnectionItem::~QgsPGConnectionItem()
@@ -29,7 +30,10 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   QgsDebugMsg( "mConnInfo = " + mConnInfo );
 
   if ( !pgProvider->supportedLayers( mLayerProperties, true, false, false ) )
+  {
+    children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     return children;
+  }
 
   QMap<QString, QVector<QgsPostgresLayerProperty> > schemasMap;
   foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
@@ -117,10 +121,17 @@ QString QgsPGLayerItem::createUri()
 QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mIcon = QIcon( getThemePixmap( "mIconNamespace.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconDbSchema.png" ) );
+  mConnInfo = connInfo;
+  mLayerProperties = layerProperties;
+  populate();
+}
 
+QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
+{
+  QVector<QgsDataItem*> children;
   // Populate everything, it costs nothing, all info about layers is collected
-  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
+  foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
   {
     QgsDebugMsg( "table: " + layerProperty.schemaName + "." + layerProperty.tableName );
 
@@ -145,11 +156,11 @@ QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString pat
       }
     }
 
-    QgsPGLayerItem * layer = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, connInfo, layerType, layerProperty );
-    mChildren.append( layer );
+    QgsPGLayerItem * layer = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, mConnInfo, layerType, layerProperty );
+    children.append( layer );
   }
 
-  mPopulated = true;
+  return children;
 }
 
 QgsPGSchemaItem::~QgsPGSchemaItem()
@@ -160,7 +171,7 @@ QgsPGSchemaItem::~QgsPGSchemaItem()
 QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  //mIcon = QIcon( getThemePixmap( "mIconPg.png" ) );
+  mIcon = QIcon( getThemePixmap( "mIconPostgis.png" ) );
   populate();
 }
 
@@ -211,6 +222,17 @@ void QgsPGRootItem::newConnection()
 }
 
 // ---------------------------------------------------------------------------
+
+QGISEXTERN QgsPgSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  // TODO: this should be somewhere else
+  return new QgsPgSourceSelect( parent, fl );
+}
+
+QGISEXTERN int dataCapabilities()
+{
+  return  QgsDataProvider::Database;
+}
 
 QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
 {

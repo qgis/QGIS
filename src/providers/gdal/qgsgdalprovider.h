@@ -39,6 +39,13 @@ class QgsRasterPyramid;
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
 
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#endif
+
+
 /** \ingroup core
  * A call back function for showing progress of gdal operations.
  */
@@ -294,17 +301,6 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     QList<QgsRasterPyramid> mPyramidList;
 
-};
-
-class QgsGdalLayerItem : public QgsLayerItem
-{
-  public:
-    QgsGdalLayerItem( QgsDataItem* parent,
-                      QString name, QString path, QString uri );
-    ~QgsGdalLayerItem();
-
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
 };
 
 #endif
