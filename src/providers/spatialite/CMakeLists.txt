@@ -2,9 +2,9 @@
 ########################################################
 # Files
 
-SET(SPATIALITE_SRCS qgsspatialiteprovider.cpp)
+SET(SPATIALITE_SRCS qgsspatialiteprovider.cpp qgsspatialitedataitems.cpp qgsspatialiteconnection.cpp)
 
-SET(SPATIALITE_MOC_HDRS qgsspatialiteprovider.h)
+SET(SPATIALITE_MOC_HDRS qgsspatialiteprovider.h qgsspatialitedataitems.h)
 
 
 ########################################################
