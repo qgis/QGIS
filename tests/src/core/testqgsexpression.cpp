@@ -21,6 +21,10 @@
 #include <qgsfeature.h>
 #include <qgsgeometry.h>
 
+// Workaround for Qt 4.6.2
+// See http://hub.qgis.org/issues/4284
+Q_DECLARE_METATYPE(QVariant)
+
 class TestQgsExpression: public QObject
 {
     Q_OBJECT;
