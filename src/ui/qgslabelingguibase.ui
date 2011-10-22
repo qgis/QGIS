@@ -821,6 +821,10 @@
                     </property>
                    </widget>
                   </item>
+
+<item><widget class="QWidget" name="offlineOptions"><!-- { -->
+<layout class="QVBoxLayout" name="offlineOptionsLayout">
+
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_13">
                     <item>
@@ -849,6 +853,7 @@
                     </item>
                    </layout>
                   </item>
+
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_14">
                     <item>
@@ -887,6 +892,11 @@
                     </item>
                    </layout>
                   </item>
+
+</layout><!-- offlineOptionsLayout -->
+</widget><!-- offlineOptions } -->
+</item>
+
                  </layout>
                 </widget>
                 <widget class="QWidget" name="pageOptionsEmpty"/>

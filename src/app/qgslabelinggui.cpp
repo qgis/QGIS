@@ -190,6 +190,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkScaleBasedVisibility, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkFormattedNumbers, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
 
   // setup connection to changes in the placement
   QRadioButton* placementRadios[] =
@@ -518,6 +520,9 @@ void QgsLabelingGui::updateUi()
   spinScaleMax->setEnabled( scale );
 
   spinDecimals->setEnabled( chkFormattedNumbers->isChecked() );
+
+  bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
+  offlineOptions->setEnabled ( offline );
 }
 
 void QgsLabelingGui::changeBufferColor()
