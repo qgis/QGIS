@@ -87,6 +87,8 @@ void QgsLabel::renderLabel( QgsRenderContext &renderContext,
                             QgsFeature &feature, bool selected,
                             QgsLabelAttributes *classAttributes )
 {
+  Q_UNUSED( classAttributes );
+
   if ( mLabelAttributes->selectedOnly() && !selected )
     return;
 

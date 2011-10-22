@@ -83,8 +83,8 @@ GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
   //needed to be "seen" by other plugins by doing
   //iface.mainWindow().findChild( QObject, "globePlugin" )
   //needed until https://trac.osgeo.org/qgis/changeset/15224
-  this->setObjectName( "globePlugin" );
-  this->setParent( theQgisInterface->mainWindow() );
+  setObjectName( "globePlugin" );
+  setParent( theQgisInterface->mainWindow() );
 
   mSettingsDialog = new QgsGlobePluginDialog( &viewer, theQgisInterface->mainWindow(), QgisGui::ModalDialogFlags );
   mQDockWidget = new QDockWidgetGlobe( tr( "Globe" ), theQgisInterface->mainWindow() );

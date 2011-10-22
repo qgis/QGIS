@@ -1077,6 +1077,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   loadFields();
   return res;
 #else
+  Q_UNUSED( attributes );
   QgsDebugMsg( "Deleting fields is supported only from GDAL >= 1.9.0" );
   return false;
 #endif

@@ -46,27 +46,27 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
-  this->registerItem( "Operators", "+", " + " );
-  this->registerItem( "Operators", "-", " -" );
-  this->registerItem( "Operators", "*", " * " );
-  this->registerItem( "Operators", "/", " / " );
-  this->registerItem( "Operators", "%", " % " );
-  this->registerItem( "Operators", "^", " ^ " );
-  this->registerItem( "Operators", "=", " = " );
-  this->registerItem( "Operators", ">", " > " );
-  this->registerItem( "Operators", "<", " < " );
-  this->registerItem( "Operators", "<>", " <> " );
-  this->registerItem( "Operators", "<=", " <= " );
-  this->registerItem( "Operators", ">=", " >= " );
-  this->registerItem( "Operators", "||", " || ", "<b>|| (String Concatenation)</b> "\
-                      "<br> Joins two values together into a string " \
-                      "<br> <i>Usage:</i><br>'Dia' || Diameter" );
-  this->registerItem( "Operators", "LIKE", " LIKE " );
-  this->registerItem( "Operators", "ILIKE", " ILIKE " );
-  this->registerItem( "Operators", "IS", " IS NOT " );
-  this->registerItem( "Operators", "OR", " OR " );
-  this->registerItem( "Operators", "AND", " AND " );
-  this->registerItem( "Operators", "NOT", " NOT " );
+  registerItem( "Operators", "+", " + " );
+  registerItem( "Operators", "-", " -" );
+  registerItem( "Operators", "*", " * " );
+  registerItem( "Operators", "/", " / " );
+  registerItem( "Operators", "%", " % " );
+  registerItem( "Operators", "^", " ^ " );
+  registerItem( "Operators", "=", " = " );
+  registerItem( "Operators", ">", " > " );
+  registerItem( "Operators", "<", " < " );
+  registerItem( "Operators", "<>", " <> " );
+  registerItem( "Operators", "<=", " <= " );
+  registerItem( "Operators", ">=", " >= " );
+  registerItem( "Operators", "||", " || ", "<b>|| (String Concatenation)</b> "\
+                "<br> Joins two values together into a string " \
+                "<br> <i>Usage:</i><br>'Dia' || Diameter" );
+  registerItem( "Operators", "LIKE", " LIKE " );
+  registerItem( "Operators", "ILIKE", " ILIKE " );
+  registerItem( "Operators", "IS", " IS NOT " );
+  registerItem( "Operators", "OR", " OR " );
+  registerItem( "Operators", "AND", " AND " );
+  registerItem( "Operators", "NOT", " NOT " );
 
 
   // Load the fuctions from the QgsExpression class
@@ -77,7 +77,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     QString name = func.mName;
     if ( func.mParams >= 1 )
       name += "(";
-    this->registerItem( func.mGroup, func.mName, " " + name + " ", func.mHelpText );
+    registerItem( func.mGroup, func.mName, " " + name + " ", func.mHelpText );
   };
 }
 
@@ -147,7 +147,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
   {
     QString fieldName = fieldIt.value().name();
-    this->registerItem( "Fields", fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
+    registerItem( "Fields", fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
   }
 }
 
@@ -199,26 +199,26 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
 
 QString QgsExpressionBuilderWidget::getExpressionString()
 {
-  return this->txtExpressionString->toPlainText();
+  return txtExpressionString->toPlainText();
 }
 
 void QgsExpressionBuilderWidget::setExpressionString( const QString expressionString )
 {
-  this->txtExpressionString->setPlainText( expressionString );
+  txtExpressionString->setPlainText( expressionString );
 }
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
 {
-  QString text = this->txtExpressionString->toPlainText();
+  QString text = txtExpressionString->toPlainText();
 
   // If the string is empty the expression will still "fail" although
   // we don't show the user an error as it will be confusing.
   if ( text.isEmpty() )
   {
-    this->lblPreview->setText( "" );
-    this->lblPreview->setStyleSheet( "" );
-    this->txtExpressionString->setToolTip( "" );
-    this->lblPreview->setToolTip( "" );
+    lblPreview->setText( "" );
+    lblPreview->setStyleSheet( "" );
+    txtExpressionString->setToolTip( "" );
+    lblPreview->setToolTip( "" );
     // Return false for isVaild because a null expression is still invaild.
     emit expressionParsed( false );
     return;
@@ -245,18 +245,18 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     if ( exp.hasEvalError() )
       tooltip += "<br><br> <b>Eval Error:</b> <br>" + exp.evalErrorString();
 
-    this->lblPreview->setText( "Expression is invaild <a href=""more"">(more info)</a>" );
-    this->lblPreview->setStyleSheet( "color: rgba(255, 6, 10,  255);" );
-    this->txtExpressionString->setToolTip( tooltip );
-    this->lblPreview->setToolTip( tooltip );
+    lblPreview->setText( "Expression is invaild <a href=""more"">(more info)</a>" );
+    lblPreview->setStyleSheet( "color: rgba(255, 6, 10,  255);" );
+    txtExpressionString->setToolTip( tooltip );
+    lblPreview->setToolTip( tooltip );
     emit expressionParsed( false );
     return;
   }
   else
   {
-    this->lblPreview->setStyleSheet( "" );
-    this->txtExpressionString->setToolTip( "" );
-    this->lblPreview->setToolTip( "" );
+    lblPreview->setStyleSheet( "" );
+    txtExpressionString->setToolTip( "" );
+    lblPreview->setToolTip( "" );
     emit expressionParsed( true );
   }
 }
@@ -272,9 +272,10 @@ void QgsExpressionBuilderWidget::on_txtSearchEdit_textChanged()
 
 void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
 {
+  Q_UNUSED( link );
   QgsMessageViewer * mv = new QgsMessageViewer( this );
   mv->setWindowTitle( "More info on expression error" );
-  mv->setMessageAsHtml( this->txtExpressionString->toolTip() );
+  mv->setMessageAsHtml( txtExpressionString->toolTip() );
   mv->exec();
 }
 

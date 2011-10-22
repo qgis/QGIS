@@ -111,7 +111,7 @@ QgsGrassBrowser::QgsGrassBrowser( QgisInterface *iface,
   mSplitter->addWidget( mTree );
   mSplitter->addWidget( mTextBrowser );
 
-  this->setCentralWidget( mSplitter );
+  setCentralWidget( mSplitter );
 
   connect( mTree, SIGNAL( customContextMenuRequested( const QPoint& ) ),
            this,  SLOT( showContextMenu( const QPoint& ) ) );

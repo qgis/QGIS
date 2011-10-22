@@ -129,7 +129,6 @@ qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
 qgsexpressionbuilderwidget.h
-qgsexpressionbuilderdialog.h
 qgsquerybuilder.h
 )
 

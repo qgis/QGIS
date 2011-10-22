@@ -914,10 +914,7 @@
            </layout>
           </item>
          </layout>
-         <zorder></zorder>
-         <zorder></zorder>
          <zorder>mDiagramFontButton</zorder>
-         <zorder></zorder>
         </widget>
        </item>
        <item row="2" column="0" colspan="6">
