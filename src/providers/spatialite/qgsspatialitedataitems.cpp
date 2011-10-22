@@ -2,6 +2,7 @@
 
 #include "qgsspatialiteprovider.h"
 #include "qgsspatialiteconnection.h"
+#include "qgsspatialitesourceselect.h"
 
 #include "qgslogger.h"
 
@@ -11,6 +12,7 @@
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
+  mToolTip = QgsSpatiaLiteConnection::connectionPath( name );
 }
 
 QgsSLConnectionItem::~QgsSLConnectionItem()
@@ -92,9 +94,9 @@ QList<QAction*> QgsSLConnectionItem::actions()
 {
   QList<QAction*> lst;
 
-  QAction* actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
-  lst.append( actionEdit );
+  //QAction* actionEdit = new QAction( tr( "Edit..." ), this );
+  //connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  //lst.append( actionEdit );
 
   QAction* actionDelete = new QAction( tr( "Delete" ), this );
   connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
@@ -105,23 +107,13 @@ QList<QAction*> QgsSLConnectionItem::actions()
 
 void QgsSLConnectionItem::editConnection()
 {
-  /*
-  QgsPgNewConnection nc( NULL, mName );
-  if ( nc.exec() )
-  {
-    // the parent should be updated
-    mParent->refresh();
-  }
-  */
 }
 
 void QgsSLConnectionItem::deleteConnection()
 {
-  /*
-  QgsPgSourceSelect::deleteConnection( mName );
+  QgsSpatiaLiteConnection::deleteConnection( mName );
   // the parent should be updated
   mParent->refresh();
-  */
 }
 
 
@@ -162,12 +154,9 @@ QList<QAction*> QgsSLRootItem::actions()
 
 QWidget * QgsSLRootItem::paramWidget()
 {
-  /*
-  QgsSLSourceSelect *select = new QgsSLSourceSelect( 0, 0, true, true );
+  QgsSpatiaLiteSourceSelect *select = new QgsSpatiaLiteSourceSelect( 0, 0, true );
   connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
   return select;
-  */
-  return NULL;
 }
 
 void QgsSLRootItem::connectionsChanged()
@@ -177,16 +166,19 @@ void QgsSLRootItem::connectionsChanged()
 
 void QgsSLRootItem::newConnection()
 {
-  /*
-  QgsSLNewConnection nc( NULL );
-  if ( nc.exec() )
+  if ( QgsSpatiaLiteSourceSelect::newConnection( NULL ) )
   {
     refresh();
   }
-  */
 }
 
 // ---------------------------------------------------------------------------
+
+QGISEXTERN QgsSpatiaLiteSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
+{
+  // TODO: this should be somewhere else
+  return new QgsSpatiaLiteSourceSelect( parent, fl, false );
+}
 
 QGISEXTERN int dataCapabilities()
 {

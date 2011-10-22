@@ -11,6 +11,20 @@ QStringList QgsSpatiaLiteConnection::connectionList()
   return settings.childGroups();
 }
 
+void QgsSpatiaLiteConnection::deleteConnection( QString name )
+{
+  QSettings settings;
+  QString key = "/SpatiaLite/connections/" + name;
+  settings.remove( key + "/sqlitepath" );
+  settings.remove( key );
+}
+
+QString QgsSpatiaLiteConnection::connectionPath( QString name )
+{
+  QSettings settings;
+  return settings.value( "/SpatiaLite/connections/" + name + "/sqlitepath" ).toString();
+}
+
 // -------
 
 QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( QString name )

@@ -2,9 +2,20 @@
 ########################################################
 # Files
 
-SET(SPATIALITE_SRCS qgsspatialiteprovider.cpp qgsspatialitedataitems.cpp qgsspatialiteconnection.cpp)
+SET(SPATIALITE_SRCS
+  qgsspatialiteprovider.cpp
+  qgsspatialitedataitems.cpp
+  qgsspatialiteconnection.cpp
+  qgsspatialitesourceselect.cpp
+  qgsspatialitetablemodel.cpp
+)
 
-SET(SPATIALITE_MOC_HDRS qgsspatialiteprovider.h qgsspatialitedataitems.h)
+SET(SPATIALITE_MOC_HDRS
+  qgsspatialiteprovider.h
+  qgsspatialitedataitems.h
+  qgsspatialitesourceselect.h
+  qgsspatialitetablemodel.h
+)
 
 
 ########################################################
@@ -13,7 +24,11 @@ SET(SPATIALITE_MOC_HDRS qgsspatialiteprovider.h qgsspatialitedataitems.h)
 QT4_WRAP_CPP(SPATIALITE_MOC_SRCS ${SPATIALITE_MOC_HDRS})
 
 
-INCLUDE_DIRECTORIES(../../core)
+INCLUDE_DIRECTORIES(
+  ../../core
+  ../../gui
+  ${CMAKE_CURRENT_BINARY_DIR}/../../ui
+)
 
 IF(WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(

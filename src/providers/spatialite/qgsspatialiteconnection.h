@@ -18,6 +18,8 @@ class QgsSpatiaLiteConnection : public QObject
     QString path() { return mPath; }
 
     static QStringList connectionList();
+    static void deleteConnection( QString name );
+    static QString connectionPath( QString name );
 
     typedef struct TableEntry
     {

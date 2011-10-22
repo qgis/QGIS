@@ -180,6 +180,7 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QString mUri;
     LayerType mLayerType;
 
+  public:
     static const QIcon &iconPoint();
     static const QIcon &iconLine();
     static const QIcon &iconPolygon();
