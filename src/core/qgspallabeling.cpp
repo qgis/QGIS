@@ -256,7 +256,7 @@ static void _writeDataDefinedPropertyMap( QgsVectorLayer* layer, const QMap< Qgs
   }
 }
 
-static void _readDataDefinedProperty( QgsVectorLayer* layer, QgsPalLayerSettings::DataDefinedProperties p, \
+static void _readDataDefinedProperty( QgsVectorLayer* layer, QgsPalLayerSettings::DataDefinedProperties p,
                                       QMap< QgsPalLayerSettings::DataDefinedProperties, int >& propertyMap )
 {
   QVariant propertyField = layer->customProperty( "labeling/dataDefinedProperty" + QString::number( p ) );
@@ -785,7 +785,7 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
     return 0;
 
 
-  int fldIndex ;
+  int fldIndex = -1;
   if ( lyrTmp.isExpression )
   {
     if ( lyrTmp.fieldName.isEmpty() )
@@ -797,6 +797,9 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
       fldIndex =  layer->fieldNameIndex( name );
       attrIndices.insert( fldIndex );
     }
+
+    if ( fldIndex == -1 )
+      return 0;
   }
   else
   {

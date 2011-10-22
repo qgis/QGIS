@@ -231,7 +231,7 @@ class CORE_EXPORT QgsPalLabeling : public QgsLabelingEngineInterface
 
     void drawLabelCandidateRect( pal::LabelPosition* lp, QPainter* painter, const QgsMapToPixel* xform );
     //!drawLabel
-    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1, \
+    void drawLabel( pal::LabelPosition* label, QPainter* painter, const QFont& f, const QColor& c, const QgsMapToPixel* xform, double bufferSize = -1,
                     const QColor& bufferColor = QColor( 255, 255, 255 ), bool drawBuffer = false );
     static void drawLabelBuffer( QPainter* p, QString text, const QFont& font, double size, QColor color );
 

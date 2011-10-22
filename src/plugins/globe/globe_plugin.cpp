@@ -60,7 +60,6 @@ using namespace osgEarth::Util::Controls;
 
 #define MOVE_OFFSET 0.05
 
-//static const char * const sIdent = "$Id: plugin.cpp 9327 2008-09-14 11:18:44Z jef $";
 static const QString sName = QObject::tr( "Globe" );
 static const QString sDescription = QObject::tr( "Overlay data on a 3D globe" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
@@ -859,9 +858,9 @@ bool NavigationControl::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActi
 
 bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& /*aa*/ )
 {
-  /*
+#if 0
   osgEarth::Util::EarthManipulator::Settings* _manipSettings = _manip->getSettings();
-  _manip->getSettings()->bindKey(osgEarth::Util::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Space);
+  _manip->getSettings()->bindKey( osgEarth::Util::EarthManipulator::ACTION_ZOOM_IN, osgGA::GUIEventAdapter::KEY_Space );
   //install default action bindings:
   osgEarth::Util::EarthManipulator::ActionOptions options;
 
@@ -898,9 +897,8 @@ bool KeyboardControlHandler::handle( const osgGA::GUIEventAdapter& ea, osgGA::GU
   _manipSettings->setThrowingEnabled( false );
   _manipSettings->setLockAzimuthWhilePanning( true );
 
-  _manip->applySettings(_manipSettings);
-
-  */
+  _manip->applySettings( _manipSettings );
+#endif
 
   switch ( ea.getEventType() )
   {

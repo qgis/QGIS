@@ -980,8 +980,10 @@ void QgsGeorefPluginGui::createDockWidgets()
   dockWidgetGCPpoints->setWidget( mGCPListWidget );
 
   connect( mGCPListWidget, SIGNAL( jumpToGCP( uint ) ), this, SLOT( jumpToGCP( uint ) ) );
-  /*connect( mGCPListWidget, SIGNAL( replaceDataPoint( QgsGeorefDataPoint*, int ) ),
-           this, SLOT( replaceDataPoint( QgsGeorefDataPoint*, int ) ) );*/
+#if 0
+  connect( mGCPListWidget, SIGNAL( replaceDataPoint( QgsGeorefDataPoint*, int ) ),
+           this, SLOT( replaceDataPoint( QgsGeorefDataPoint*, int ) ) );
+#endif
   connect( mGCPListWidget, SIGNAL( deleteDataPoint( int ) ),
            this, SLOT( deleteDataPoint( int ) ) );
   connect( mGCPListWidget, SIGNAL( pointEnabled( QgsGeorefDataPoint*, int ) ), this, SLOT( updateGeorefTransform() ) );
@@ -1182,7 +1184,7 @@ bool QgsGeorefPluginGui::georeference()
   if ( !checkReadyGeoref() )
     return false;
 
-  if ( mModifiedRasterFileName.isEmpty() && ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() || \
+  if ( mModifiedRasterFileName.isEmpty() && ( QgsGeorefTransform::Linear == mGeorefTransform.transformParametrisation() ||
        QgsGeorefTransform::Helmert == mGeorefTransform.transformParametrisation() ) )
   {
     QgsPoint origin;

@@ -267,13 +267,15 @@ int main( int argc, char * argv[] )
     {
       serviceString = serviceIt->second;
     }
-    /*else
+#if 0
+    else
     {
       QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
-    }*/
+    }
+#endif
 
     QgsWMSServer* theServer = 0;
     try

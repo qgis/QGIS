@@ -58,7 +58,7 @@ class CORE_EXPORT QgsComposerTable: public QgsComposerItem
     void setGridColor( const QColor& c ) { mGridColor = c; }
     QColor gridColor() const { return mGridColor; }
 
-    /**Adapts the size of the frame to match the content. This is normally done in the paint method, but sometimes \
+    /**Adapts the size of the frame to match the content. This is normally done in the paint method, but sometimes
     it needs to be done before the first render*/
     void adjustFrameToSize();
 

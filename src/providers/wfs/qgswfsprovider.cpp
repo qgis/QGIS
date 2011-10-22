@@ -2084,7 +2084,7 @@ QDomElement QgsWFSProvider::createTransactionElement( QDomDocument& doc ) const
   transactionElem.setAttribute( "version", "1.0.0" );
   transactionElem.setAttribute( "service", "WFS" );
   transactionElem.setAttribute( "xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance" );
-  transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + " " \
+  transactionElem.setAttribute( "xsi:schemaLocation", mWfsNamespace + " "
                                 + dataSourceUri().replace( QString( "GetFeature" ), QString( "DescribeFeatureType" ) ) );
 
   QString namespacePrefix = nameSpacePrefix( parameterFromUrl( "typename" ) );

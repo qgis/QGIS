@@ -475,7 +475,7 @@ void QgsPointDisplacementRenderer::setCenterSymbol( QgsMarkerSymbolV2* symbol )
 
 
 
-void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius, \
+void QgsPointDisplacementRenderer::calculateSymbolAndLabelPositions( const QPointF& centerPoint, int nPosition, double radius,
     double symbolDiagonal, QList<QPointF>& symbolPositions, QList<QPointF>& labelShifts ) const
 {
   symbolPositions.clear();

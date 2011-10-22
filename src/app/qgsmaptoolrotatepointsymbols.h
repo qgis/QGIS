@@ -36,7 +36,7 @@ class QgsMapToolRotatePointSymbols: public QgsMapToolEdit
 
     bool isEditTool() {return true;}
 
-    /**Returns true if the symbols of a maplayer can be rotated. This means the layer \
+    /**Returns true if the symbols of a maplayer can be rotated. This means the layer
       is a vector layer, has type point or multipoint and has at least one rotation attribute in the renderer*/
     static bool layerIsRotatable( QgsMapLayer* ml );
 

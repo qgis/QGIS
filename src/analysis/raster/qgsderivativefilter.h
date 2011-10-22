@@ -27,8 +27,9 @@ class QgsDerivativeFilter: public QgsNineCellFilter
     QgsDerivativeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat );
     virtual ~QgsDerivativeFilter();
     //to be implemented by subclasses
-    virtual float processNineCellWindow( float* x11, float* x21, float* x31, float* x12, float* x22, \
-                                         float* x32, float* x13, float* x23, float* x33 ) = 0;
+    virtual float processNineCellWindow( float* x11, float* x21, float* x31,
+                                         float* x12, float* x22, float* x32,
+                                         float* x13, float* x23, float* x33 ) = 0;
 
   protected:
     /**Calculates the first order derivative in x-direction according to Horn (1981)*/

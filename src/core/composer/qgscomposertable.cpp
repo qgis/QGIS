@@ -213,7 +213,7 @@ bool QgsComposerTable::calculateMaxColumnWidths( QMap<int, double>& maxWidthMap,
 void QgsComposerTable::adaptItemFrame( const QMap<int, double>& maxWidthMap, const QList<QgsAttributeMap>& attributeList )
 {
   //calculate height
-  double totalHeight = fontAscentMillimeters( mHeaderFont ) + attributeList.size() * fontAscentMillimeters( mContentFont ) \
+  double totalHeight = fontAscentMillimeters( mHeaderFont ) + attributeList.size() * fontAscentMillimeters( mContentFont )
                        + ( attributeList.size() + 1 ) * mLineTextDistance * 2 + ( attributeList.size() + 2 ) * mGridStrokeWidth;
 
   //adapt frame to total width

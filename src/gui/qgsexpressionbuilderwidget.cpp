@@ -58,8 +58,8 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   registerItem( "Operators", "<>", " <> " );
   registerItem( "Operators", "<=", " <= " );
   registerItem( "Operators", ">=", " >= " );
-  registerItem( "Operators", "||", " || ", "<b>|| (String Concatenation)</b> "\
-                "<br> Joins two values together into a string " \
+  registerItem( "Operators", "||", " || ", "<b>|| (String Concatenation)</b> "
+                "<br> Joins two values together into a string "
                 "<br> <i>Usage:</i><br>'Dia' || Diameter" );
   registerItem( "Operators", "LIKE", " LIKE " );
   registerItem( "Operators", "ILIKE", " ILIKE " );
@@ -104,8 +104,8 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked( const QModelIndex &i
   // right click so we just show the help.
   if ( item->getItemType() == QgsExpressionItem::Field )
   {
-    txtHelpText->setText( tr( "Double click to add field name to expression string. <br> " \
-                              "Or right click to select loading value options then " \
+    txtHelpText->setText( tr( "Double click to add field name to expression string. <br> "
+                              "Or right click to select loading value options then "
                               "double click an item in the value list to add it to the expression string." ) );
     txtHelpText->setToolTip( txtHelpText->text() );
   }

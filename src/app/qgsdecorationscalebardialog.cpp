@@ -42,7 +42,7 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
   spnSize->setValue( mDeco.mPreferredSize );
 
   chkSnapping->setChecked( mDeco.mSnapping );
-  \
+
   cboPlacement->clear();
   cboPlacement->addItems( mDeco.mPlacementLabels );
   cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );

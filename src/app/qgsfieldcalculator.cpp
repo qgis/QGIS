@@ -476,7 +476,7 @@ void QgsFieldCalculator::getFieldValues( int limit )
 void QgsFieldCalculator::setOkButtonState()
 {
   bool okEnabled = true;
-  if (( mOutputFieldNameLineEdit->text().isEmpty() && mUpdateExistingFieldCheckBox->checkState() == Qt::Unchecked )\
+  if (( mOutputFieldNameLineEdit->text().isEmpty() && mUpdateExistingFieldCheckBox->checkState() == Qt::Unchecked )
       || mExpressionTextEdit->toPlainText().isEmpty() )
   {
     okEnabled = false;

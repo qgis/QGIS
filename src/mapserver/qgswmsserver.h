@@ -53,10 +53,10 @@ class QgsWMSServer
     ~QgsWMSServer();
     /**Returns an XML file with the capabilities description (as described in the WMS specs)*/
     QDomDocument getCapabilities();
-    /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership\
+    /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();
-    /**Returns the map as an image (or a null pointer in case of error). The caller takes ownership\
+    /**Returns the map as an image (or a null pointer in case of error). The caller takes ownership
     of the image object)*/
     QImage* getMap();
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/

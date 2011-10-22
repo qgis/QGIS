@@ -137,7 +137,7 @@ class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QString getLabel( const QgsFeature& f );
 
     //rendering methods
-    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context, const QList<QgsMarkerSymbolV2*>& symbols, \
+    void renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context, const QList<QgsMarkerSymbolV2*>& symbols,
                       const QStringList& labels );
 
     //helper functions

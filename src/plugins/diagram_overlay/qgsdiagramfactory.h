@@ -33,8 +33,8 @@ class QImage;
 class QgsDiagramFactory
 {
   public:
-    /**Describes if the size describes one dimensional height (e.g. bar chart), \
-       a diameter (e.g. piechart) or a squareside. This may be taken into consideration \
+    /**Describes if the size describes one dimensional height (e.g. bar chart),
+       a diameter (e.g. piechart) or a squareside. This may be taken into consideration
        from a renderer for interpolation*/
     enum SizeType
     {
@@ -57,7 +57,7 @@ class QgsDiagramFactory
     @param f feature that is symbolized by the diagram
     @param renderContext rendering parameters*/
     virtual QImage* createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const = 0;
-    /**Creates the text/images for the legend items. The caller takes ownership of the generated \
+    /**Creates the text/images for the legend items. The caller takes ownership of the generated
      image objects.
     @param size diagram size that should be represented in the legend
     @param u size may be in MM on output device or in map units on map
