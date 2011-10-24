@@ -59,7 +59,7 @@ class QgsBarDiagramFactory: public QgsWKNDiagramFactory
      scaling attribute)*/
     int getMaximumHeight( int size, const QgsAttributeMap& featureAttributes ) const;
 
-    /**Calculates the value to size unit ratio for the bar chart (based on the size \
+    /**Calculates the value to size unit ratio for the bar chart (based on the size
      of the scaling attribute)
     @return the ratio or -1 in case of error*/
     double sizeValueRatioBarChart( int size, const QgsAttributeMap& featureAttributes ) const;

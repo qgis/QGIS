@@ -260,7 +260,7 @@ void QgsComposerArrow::setArrowHeadWidth( double width )
 void QgsComposerArrow::adaptItemSceneRect()
 {
   //rectangle containing start and end point
-  QRectF rect = QRectF( qMin( mStartPoint.x(), mStopPoint.x() ), qMin( mStartPoint.y(), mStopPoint.y() ), \
+  QRectF rect = QRectF( qMin( mStartPoint.x(), mStopPoint.x() ), qMin( mStartPoint.y(), mStopPoint.y() ),
                         qAbs( mStopPoint.x() - mStartPoint.x() ), qAbs( mStopPoint.y() - mStartPoint.y() ) );
   double enlarge = 0;
   if ( mMarkerMode == DefaultMarker )

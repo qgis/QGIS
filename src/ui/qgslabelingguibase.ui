@@ -18,43 +18,6 @@
     <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="chkEnableLabeling">
-       <property name="text">
-        <string>Label this layer</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_20">
-       <property name="text">
-        <string>Field with labels</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboFieldName"/>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
@@ -75,6 +38,9 @@
      </item>
      <item>
       <widget class="QgsLabelPreview" name="lblFontPreview">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
@@ -99,6 +65,9 @@
    </item>
    <item row="2" column="0">
     <widget class="QTabWidget" name="mTabWidget">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -430,6 +399,18 @@
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -438,8 +419,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>478</height>
+            <width>647</width>
+            <height>487</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -542,7 +523,7 @@
                 <item>
                  <widget class="QCheckBox" name="chkNoObstacle">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>Features don't act as obstacles for labels</string>
@@ -565,7 +546,7 @@
                 <item>
                  <widget class="QPushButton" name="btnEngineSettings">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>Engine settings</string>
@@ -884,6 +865,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="3" column="1">
         <widget class="QScrollArea" name="scrollArea">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -892,8 +876,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>586</height>
+            <width>647</width>
+            <height>615</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1098,6 +1082,50 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCheckBox" name="chkEnableLabeling">
+       <property name="text">
+        <string>Label this layer with</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboFieldName">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExpression">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -1127,8 +1155,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>575</y>
+     <x>353</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>
@@ -1143,12 +1171,60 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>575</y>
+     <x>353</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>353</x>
      <y>430</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>cboFieldName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>127</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>248</x>
+     <y>26</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>mTabWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>89</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>btnExpression</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>32</y>
     </hint>
    </hints>
   </connection>

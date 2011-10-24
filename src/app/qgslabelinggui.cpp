@@ -24,18 +24,21 @@
 
 #include "qgspallabeling.h"
 #include "qgslabelengineconfigdialog.h"
+#include "qgsexpressionbuilderdialog.h"
+#include "qgsexpression.h"
 
 #include <QColorDialog>
 #include <QFontDialog>
-
+#include <QTextEdit>
 #include <iostream>
 #include <QApplication>
-
-
+#include <QMessageBox>
 
 QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsMapCanvas* mapCanvas, QWidget* parent )
     : QDialog( parent ), mLBL( lbl ), mLayer( layer ), mMapCanvas( mapCanvas )
 {
+  if ( !layer ) return;
+
   setupUi( this );
 
   connect( btnTextColor, SIGNAL( clicked() ), this, SLOT( changeTextColor() ) );
@@ -44,6 +47,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( btnBufferColor, SIGNAL( clicked() ), this, SLOT( changeBufferColor() ) );
   connect( spinBufferSize, SIGNAL( valueChanged( double ) ), this, SLOT( updatePreview() ) );
   connect( btnEngineSettings, SIGNAL( clicked() ), this, SLOT( showEngineConfigDialog() ) );
+  connect( btnExpression, SIGNAL( clicked() ), this, SLOT( showExpressionDialog() ) );
 
   // set placement methods page based on geometry type
   switch ( layer->geometryType() )
@@ -61,18 +65,26 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
       Q_ASSERT( 0 && "NOOOO!" );
   }
 
+  //mTabWidget->setEnabled( chkEnableLabeling->isChecked() );
   chkMergeLines->setEnabled( layer->geometryType() == QGis::Line );
   chkAddDirectionSymbol->setEnabled( layer->geometryType() == QGis::Line );
   label_19->setEnabled( layer->geometryType() != QGis::Point );
   mMinSizeSpinBox->setEnabled( layer->geometryType() != QGis::Point );
 
-  populateFieldNames();
-
   // load labeling settings from layer
   QgsPalLayerSettings lyr;
   lyr.readFromLayer( layer );
-
+  populateFieldNames();
   populateDataDefinedCombos( lyr );
+
+  chkEnableLabeling->setChecked( lyr.enabled );
+  mTabWidget->setEnabled( lyr.enabled );
+  cboFieldName->setEnabled( lyr.enabled );
+  btnExpression->setEnabled( lyr.enabled );
+
+  //Add the current expression to the bottom of the list.
+  if ( lyr.isExpression && !lyr.fieldName.isEmpty() )
+    cboFieldName->addItem( lyr.fieldName );
 
   // placement
   int distUnitIndex = lyr.distInMapUnits ? 1 : 0;
@@ -200,7 +212,8 @@ QgsLabelingGui::~QgsLabelingGui()
 
 void QgsLabelingGui::apply()
 {
-  layerSettings().writeToLayer( mLayer );
+  QgsPalLayerSettings settings = layerSettings();
+  settings.writeToLayer( mLayer );
   // trigger refresh
   if ( mMapCanvas )
   {
@@ -212,6 +225,9 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 {
   QgsPalLayerSettings lyr;
   lyr.fieldName = cboFieldName->currentText();
+  // Check if we are an expression. Also treats expressions with just a column name as non expressions,
+  // this saves time later so we don't have to parse the expression tree.
+  lyr.isExpression = mLayer->fieldNameIndex( lyr.fieldName ) == -1 && !lyr.fieldName.isEmpty();
 
   lyr.dist = 0;
   lyr.placementFlags = 0;
@@ -327,7 +343,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
 
   return lyr;
 }
-
 
 void QgsLabelingGui::populateFieldNames()
 {
@@ -475,6 +490,23 @@ void QgsLabelingGui::showEngineConfigDialog()
 {
   QgsLabelEngineConfigDialog dlg( mLBL, this );
   dlg.exec();
+}
+
+void QgsLabelingGui::showExpressionDialog()
+{
+  //TODO extract this out to a dialog.
+  QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
+  dlg.setWindowTitle( tr( "Expression based label" ) );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionBuilder()->getExpressionString();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
+    {
+      cboFieldName->addItem( expression );
+      cboFieldName->setCurrentIndex( cboFieldName->count() - 1 );
+    }
+  }
 }
 
 void QgsLabelingGui::updateUi()

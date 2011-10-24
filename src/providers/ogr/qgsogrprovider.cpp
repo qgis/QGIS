@@ -1059,6 +1059,31 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   return returnvalue;
 }
 
+bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
+{
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+  bool res = true;
+  QList<int> attrsLst = attributes.toList();
+  // sort in descending order
+  qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
+  foreach( int attr, attrsLst )
+  {
+    if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
+    {
+      QgsDebugMsg( "Failed to delete attribute " + QString::number( attr ) );
+      res = false;
+    }
+  }
+  loadFields();
+  return res;
+#else
+  Q_UNUSED( attributes );
+  QgsDebugMsg( "Deleting fields is supported only from GDAL >= 1.9.0" );
+  return false;
+#endif
+}
+
+
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
 {
   if ( attr_map.isEmpty() )
@@ -1281,7 +1306,7 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 
 int QgsOgrProvider::capabilities() const
 {
-  int ability = NoCapabilities;
+  int ability = SetEncoding;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
@@ -1362,17 +1387,20 @@ int QgsOgrProvider::capabilities() const
     }
 #endif
 
+    if ( OGR_L_TestCapability( ogrLayer, "CreateField" ) )
+    {
+      ability |= AddAttributes;
+    }
+
+    if ( OGR_L_TestCapability( ogrLayer, "DeleteField" ) )
+    {
+      ability |= DeleteAttributes;
+    }
+
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
     if ( ogrDriverName == "ESRI Shapefile" )
     {
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1260
-      // test for Shapefile type and GDAL >= 1.2.6
       ability |= CreateSpatialIndex;
-#endif
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
-      // adding attributes was added in GDAL 1.6
-      ability |= AddAttributes;
-#endif
       ability |= CreateAttributeIndex;
 
       if ( mAttributeFields.size() == 0 )

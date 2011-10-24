@@ -5,8 +5,8 @@
 #include <QFileInfo>
 #include <QGraphicsScene>
 
-QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent, Qt::WindowFlags f ): \
-    QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
+QgsFormAnnotationDialog::QgsFormAnnotationDialog( QgsFormAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
+    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
 {
   setupUi( this );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );

@@ -133,7 +133,7 @@ class QgsConfigParser
     /**Stores the temporary file objects. The class takes ownership of the objects and deletes them in the destructor*/
     mutable QList<QTemporaryFile*> mFilesToRemove;
 
-    /**Stores paths of files that need to be removed after each request (necessary because of contours shapefiles that \
+    /**Stores paths of files that need to be removed after each request (necessary because of contours shapefiles that
       cannot be handles with QTemporaryFile*/
     mutable QList<QString> mFilePathsToRemove;
 

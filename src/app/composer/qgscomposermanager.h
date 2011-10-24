@@ -22,7 +22,7 @@
 class QListWidgetItem;
 class QgsComposer;
 
-/**A dialog that shows the existing composer instances. Lets the user add new \
+/**A dialog that shows the existing composer instances. Lets the user add new
 instances and change title of existing ones*/
 class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 {

@@ -2939,11 +2939,11 @@ bool DualEdgeTriangulation::saveToTAFF( QString filename ) const
 
   //export the points to the file
   outstream << "POIN" << std::endl << std::flush;
-  outstream << "NPTS " << this->getNumberOfPoints() << std::endl << std::flush;
+  outstream << "NPTS " << getNumberOfPoints() << std::endl << std::flush;
   outstream << "PATT 3" << std::endl << std::flush;
   outstream << "DATA ";
 
-  for ( int i = 0; i < this->getNumberOfPoints(); i++ )
+  for ( int i = 0; i < getNumberOfPoints(); i++ )
   {
     Point3D* p = mPointVector[i];
     outstream << p->getX() << " " << p->getY() << " " << p->getZ() << " ";

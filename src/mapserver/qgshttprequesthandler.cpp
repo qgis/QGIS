@@ -345,7 +345,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         formatString = "PNG";
       }
-      else if ( formatString.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.compare( "image/jpg", Qt::CaseInsensitive ) == 0 \
+      else if ( formatString.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.compare( "image/jpg", Qt::CaseInsensitive ) == 0
                 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "JPG";

@@ -104,8 +104,8 @@ void QgsMapToolAddVertex::canvasReleaseEvent( QMouseEvent * e )
           QList<QgsSnappingResult>::iterator filterIt = filteredSnapResults.begin();
           for ( ; filterIt != filteredSnapResults.end(); ++filterIt )
           {
-            if ( filterIt->snappedAtGeometry == recentIt->snappedAtGeometry \
-                 && filterIt->snappedVertexNr == recentIt->snappedVertexNr \
+            if ( filterIt->snappedAtGeometry == recentIt->snappedAtGeometry
+                 && filterIt->snappedVertexNr == recentIt->snappedVertexNr
                  && filterIt->beforeVertexNr == recentIt->beforeVertexNr )
             {
               filteredSnapResults.erase( filterIt );

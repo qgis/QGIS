@@ -296,7 +296,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
     double angle( const QPointF& p1, const QPointF& p2 ) const;
 
-    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the \
+    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance() const;
 

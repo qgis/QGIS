@@ -45,8 +45,8 @@ class ANALYSIS_EXPORT QgsOverlayAnalyzer
       @param onlySelectedFeatures if true, only selected features are considered, else all the features
       @param p progress dialog (or 0 if no progress dialog is to be shown)
       @note: added in version 1.4*/
-    bool intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB, \
-                       const QString& shapefileName, bool onlySelectedFeatures = false, \
+    bool intersection( QgsVectorLayer* layerA, QgsVectorLayer* layerB,
+                       const QString& shapefileName, bool onlySelectedFeatures = false,
                        QProgressDialog* p = 0 );
 
 #if 0
