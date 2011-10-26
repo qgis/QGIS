@@ -22,6 +22,7 @@ symbology-ng/qgsvectorcolorbrewercolorrampv2dialog.cpp
 symbology-ng/characterwidget.cpp
 symbology-ng/qgsstylev2exportimportdialog.cpp
 symbology-ng/qgsellipsesymbollayerv2widget.cpp
+symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
 
 attributetable/qgsattributetablemodel.cpp
 attributetable/qgsattributetablememorymodel.cpp
@@ -98,6 +99,7 @@ symbology-ng/qgspenstylecombobox.h
 symbology-ng/qgsbrushstylecombobox.h
 symbology-ng/qgsstylev2exportimportdialog.h
 symbology-ng/qgsellipsesymbollayerv2widget.h
+symbology-ng/qgsvectorfieldsymbollayerwidget.h
 
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablemodel.h

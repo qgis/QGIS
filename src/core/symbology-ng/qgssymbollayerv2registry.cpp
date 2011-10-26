@@ -5,6 +5,7 @@
 #include "qgsmarkersymbollayerv2.h"
 #include "qgslinesymbollayerv2.h"
 #include "qgsfillsymbollayerv2.h"
+#include "qgsvectorfieldsymbollayer.h"
 
 QgsSymbolLayerV2Registry* QgsSymbolLayerV2Registry::mInstance = NULL;
 
@@ -26,6 +27,8 @@ QgsSymbolLayerV2Registry::QgsSymbolLayerV2Registry()
                       QgsFontMarkerSymbolLayerV2::create ) );
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "EllipseMarker", QObject::tr( "Ellipse marker" ), QgsSymbolV2::Marker,
                       QgsEllipseSymbolLayerV2::create ) );
+  addSymbolLayerType( new QgsSymbolLayerV2Metadata( "VectorField", QObject::tr( "Vector Field marker" ), QgsSymbolV2::Marker,
+                      QgsVectorFieldSymbolLayer::create ) );
 
   addSymbolLayerType( new QgsSymbolLayerV2Metadata( "SimpleFill", QObject::tr( "Simple fill" ), QgsSymbolV2::Fill,
                       QgsSimpleFillSymbolLayerV2::create ) );
