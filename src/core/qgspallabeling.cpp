@@ -152,7 +152,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   plusSign = false;
   labelPerPart = false;
   mergeLines = false;
-  multiLineLabels = false;
+  multiLineLabels = true;
   minFeatureSize = 0.0;
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
