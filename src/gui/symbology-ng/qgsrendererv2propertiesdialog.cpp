@@ -9,6 +9,7 @@
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsgraduatedsymbolrendererv2widget.h"
 #include "qgsrulebasedrendererv2widget.h"
+#include "qgspointdisplacementrendererwidget.h"
 
 #include "qgssymbollevelsv2dialog.h"
 
@@ -53,6 +54,7 @@ static void _initRendererWidgetFunctions()
   _initRenderer( "categorizedSymbol", QgsCategorizedSymbolRendererV2Widget::create, "rendererCategorizedSymbol.png" );
   _initRenderer( "graduatedSymbol", QgsGraduatedSymbolRendererV2Widget::create, "rendererGraduatedSymbol.png" );
   _initRenderer( "RuleRenderer", QgsRuleBasedRendererV2Widget::create );
+  _initRenderer( "pointDisplacement", QgsPointDisplacementRendererWidget::create );
   initialized = true;
 }
 
