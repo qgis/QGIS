@@ -164,7 +164,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QStandardItemModel *mModel;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
-    QgsFeature* mFeature;
+    QgsFeature mFeature;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H
