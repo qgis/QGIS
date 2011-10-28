@@ -267,9 +267,18 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     {
       mAuthId = QString( "USER:%1" ).arg( mSrsId );
     }
+    else if ( mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
+    {
+      OSRDestroySpatialReference( mCRS );
+      mCRS = OSRNewSpatialReference( NULL );
+      mIsValidFlag = OSRSetFromUserInput( mCRS, mAuthId.toLower().toAscii() ) == OGRERR_NONE;
+      setMapUnits();
+    }
 
-    setProj4String( toProj4 );
-    setMapUnits();
+    if ( !mIsValidFlag )
+    {
+      setProj4String( toProj4 );
+    }
   }
   else
   {

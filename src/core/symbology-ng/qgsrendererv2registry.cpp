@@ -5,6 +5,7 @@
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsrulebasedrendererv2.h"
+#include "qgspointdisplacementrenderer.h"
 
 QgsRendererV2Registry* QgsRendererV2Registry::mInstance = NULL;
 
@@ -24,6 +25,9 @@ QgsRendererV2Registry::QgsRendererV2Registry()
   addRenderer( new QgsRendererV2Metadata( "RuleRenderer",
                                           QObject::tr( "Rule-based" ),
                                           QgsRuleBasedRendererV2::create ) );
+  addRenderer( new QgsRendererV2Metadata( "pointDisplacement",
+                                          QObject::tr( "Point displacement" ),
+                                          QgsPointDisplacementRenderer::create ) );
 }
 
 QgsRendererV2Registry::~QgsRendererV2Registry()

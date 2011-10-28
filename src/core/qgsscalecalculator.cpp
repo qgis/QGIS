@@ -45,7 +45,7 @@ void QgsScaleCalculator::setMapUnits( QGis::UnitType mapUnits )
 
 QGis::UnitType QgsScaleCalculator::mapUnits() const
 {
-  QgsDebugMsgLevel( QString( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ), 3 );
+  QgsDebugMsgLevel( QString( "Map units returned as %1" ).arg( QString::number( mMapUnits ) ), 4 );
   return mMapUnits;
 }
 
