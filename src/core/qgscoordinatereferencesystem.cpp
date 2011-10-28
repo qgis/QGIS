@@ -314,6 +314,15 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
     return mIsValidFlag;
   }
 
+  if ( OSRAutoIdentifyEPSG( mCRS ) == OGRERR_NONE )
+  {
+    QString authid = QString( "%1:%2" )
+                     .arg( OSRGetAuthorityName( mCRS, NULL ) )
+                     .arg( OSRGetAuthorityCode( mCRS, NULL ) );
+    QgsDebugMsg( "authid recognized as " + authid );
+    return createFromOgcWmsCrs( authid );
+  }
+
   // always morph from esri as it doesn't hurt anything
   // FW: Hey, that's not right!  It can screw stuff up! Disable
   //myOgrSpatialRef.morphFromESRI();

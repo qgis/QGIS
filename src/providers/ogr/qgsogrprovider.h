@@ -296,7 +296,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     static bool convertField( QgsField &field, const QTextCodec &encoding );
 
   private:
-    bool crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt );
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QgsFieldMap mAttributeFields;
     OGRDataSourceH ogrDataSource;

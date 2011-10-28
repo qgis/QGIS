@@ -2020,44 +2020,6 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   return true;
 }
 
-bool QgsOgrProvider::crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt )
-{
-  void *hCRS = OSRNewSpatialReference( NULL );
-
-  if ( OSRImportFromWkt( hCRS, ( char ** ) &wkt ) == OGRERR_NONE )
-  {
-    if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
-    {
-      QString authid = QString( "%1:%2" )
-                       .arg( OSRGetAuthorityName( hCRS, NULL ) )
-                       .arg( OSRGetAuthorityCode( hCRS, NULL ) );
-      QgsDebugMsg( "authid recognized as " + authid );
-      srs.createFromOgcWmsCrs( authid );
-    }
-    else
-    {
-      // get the proj4 text
-      char *pszProj4;
-      OSRExportToProj4( hCRS, &pszProj4 );
-      QgsDebugMsg( pszProj4 );
-      OGRFree( pszProj4 );
-
-      char *pszWkt = NULL;
-      OSRExportToWkt( hCRS, &pszWkt );
-      QString myWktString = QString( pszWkt );
-      OGRFree( pszWkt );
-
-      // create CRS from Wkt
-      srs.createFromWkt( myWktString );
-    }
-  }
-
-  OSRRelease( hCRS );
-
-  return srs.isValid();
-}
-
-
 QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 {
   QgsDebugMsg( "entering." );
@@ -2078,7 +2040,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
         QString myWktString = prjStream.readLine();
         prjFile.close();
 
-        if ( crsFromWkt( srs, myWktString.toUtf8().constData() ) )
+        if ( srs.createFromWkt( myWktString.toUtf8().constData() ) )
           return srs;
       }
     }
@@ -2095,7 +2057,8 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 
     char *pszWkt = NULL;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
-    crsFromWkt( srs, pszWkt );
+
+    srs.createFromWkt( pszWkt );
     OGRFree( pszWkt );
   }
   else
