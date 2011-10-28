@@ -434,10 +434,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   {
     text.append( ">" );
   }
-  QRectF labelRect = fm->boundingRect( text );
+
   double w, h;
   if ( !multiLineLabels )
   {
+    QRectF labelRect = fm->boundingRect( text );
     w = labelRect.width() / rasterCompressFactor;
     h = labelRect.height() / rasterCompressFactor;
   }
@@ -452,9 +453,9 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
       if ( width > w )
       {
         w = width;
-      }
-      w /= rasterCompressFactor;
+      } 
     }
+    w /= rasterCompressFactor;
   }
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
 
