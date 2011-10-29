@@ -471,14 +471,13 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     QgsExpression* exp = getLabelExpression();
     if ( exp->hasParserError() )
     {
-      QgsDebugMsg( "PASER HAS ERROR:" + exp->parserErrorString() );
+      QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
       return;
     }
     QVariant result = exp->evaluate( &f, layer->dataProvider()->fields() );
-    QgsDebugMsg( "VALUE = " + result.toString() );
     if ( exp->hasEvalError() )
     {
-      QgsDebugMsg( "Expression Label Error = " + exp->evalErrorString() );
+      QgsDebugMsg( "Expression parser eval error:" + exp->evalErrorString() );
       return;
     }
     labelText  = result.toString();
