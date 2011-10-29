@@ -1564,7 +1564,12 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   }
 
   //store the current item
-  QModelIndex currentItemIndex( currentIndex() );
+  QTreeWidgetItem* current = currentItem();
+  // in case the current item is a child of the layer, use the layer as current item
+  // because otherwise we would set an invalid item as current item
+  // (in refreshSymbology the symbology items are removed and new ones are added)
+  if ( current->parent() == theLegendLayer )
+    current = current->parent();
 
   double widthScale = 1.0;
   if ( mMapCanvas && mMapCanvas->map() )
@@ -1575,7 +1580,7 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   theLegendLayer->refreshSymbology( key, widthScale );
 
   //restore the current item again
-  setCurrentIndex( currentItemIndex );
+  setCurrentItem( current );
   adjustIconSize();
   if ( expandItem )
   {
