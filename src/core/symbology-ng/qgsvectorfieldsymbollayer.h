@@ -60,11 +60,15 @@ class QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     QgsSymbolLayerV2* clone() const;
     QgsStringMap properties() const;
 
+    void drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size );
+
+    QSet<QString> usedAttributes() const;
+
     //setters and getters
-    void setXAttribute( int attribute ) { mXAttribute = attribute; }
-    int xAttribute() const { return mXAttribute; }
-    void setYAttribute( int attribute ) { mYAttribute = attribute; }
-    int yAttribute() const { return mYAttribute; }
+    void setXAttribute( const QString& attribute ) { mXAttribute = attribute; }
+    QString xAttribute() const { return mXAttribute; }
+    void setYAttribute( const QString& attribute ) { mYAttribute = attribute; }
+    QString yAttribute() const { return mYAttribute; }
     void setScale( double s ) { mScale = s; }
     double scale() const { return mScale; }
     void setVectorFieldType( VectorFieldType type ) { mVectorFieldType = type; }
@@ -75,14 +79,18 @@ class QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     AngleUnits angleUnits() const { return mAngleUnits; }
 
   private:
-    int mXAttribute;
-    int mYAttribute;
+    QString mXAttribute;
+    QString mYAttribute;
     double mScale;
     VectorFieldType mVectorFieldType;
     AngleOrientation mAngleOrientation;
     AngleUnits mAngleUnits;
 
     QgsLineSymbolV2* mLineSymbol;
+
+    //Attribute indices are resolved in startRender method
+    int mXIndex;
+    int mYIndex;
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYER_H

@@ -16,9 +16,10 @@
  ***************************************************************************/
 
 #include "qgsvectorfieldsymbollayer.h"
+#include "qgsvectorlayer.h"
 
-QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer(): mXAttribute( -1 ), mYAttribute( -1 ), mScale( 1.0 ),
-    mVectorFieldType( Cartesian ), mAngleOrientation( ClockwiseFromNorth ), mAngleUnits( Degrees )
+QgsVectorFieldSymbolLayer::QgsVectorFieldSymbolLayer(): mXAttribute( "" ), mYAttribute( "" ), mScale( 1.0 ),
+    mVectorFieldType( Cartesian ), mAngleOrientation( ClockwiseFromNorth ), mAngleUnits( Degrees ), mXIndex( -1 ), mYIndex( -1 )
 {
   setSubSymbol( new QgsLineSymbolV2() );
 }
@@ -32,11 +33,11 @@ QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::create( const QgsStringMap& propert
   QgsVectorFieldSymbolLayer* symbolLayer = new QgsVectorFieldSymbolLayer();
   if ( properties.contains( "x_attribute" ) )
   {
-    symbolLayer->setXAttribute( properties["x_attribute"].toInt() );
+    symbolLayer->setXAttribute( properties["x_attribute"] );
   }
   if ( properties.contains( "y_attribute" ) )
   {
-    symbolLayer->setYAttribute( properties["y_attribute"].toInt() );
+    symbolLayer->setYAttribute( properties["y_attribute"] );
   }
   if ( properties.contains( "scale" ) )
   {
@@ -69,7 +70,52 @@ bool QgsVectorFieldSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 
 void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2RenderContext& context )
 {
-  //soon...
+  if ( !mLineSymbol )
+  {
+    return;
+  }
+
+  const QgsFeature* f = context.feature();
+  if ( !f )
+  {
+    //preview
+    QPolygonF line;
+    line << QPointF( 0, 50 );
+    line << QPointF( 100, 50 );
+    mLineSymbol->renderPolyline( line, 0, context.renderContext() );
+  }
+
+  double xComponent = 0;
+  double yComponent = 0;
+
+  double xVal = 0;
+  if ( mXIndex != -1 )
+  {
+    xVal = f->attributeMap()[mXIndex].toDouble();
+  }
+  double yVal = 0;
+  if ( mYIndex != -1 )
+  {
+    yVal = f->attributeMap()[mYIndex].toDouble();
+  }
+
+  switch ( mVectorFieldType )
+  {
+    case Cartesian:
+      xComponent = context.outputLineWidth( xVal );
+      yComponent = context.outputLineWidth( yVal );
+      break;
+    default:
+      break;
+  }
+
+  xComponent *= mScale;
+  yComponent *= mScale;
+
+  QPolygonF line;
+  line << point;
+  line << QPointF( point.x() + xComponent, point.y() - yComponent );
+  mLineSymbol->renderPolyline( line, f, context.renderContext() );
 }
 
 void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
@@ -77,6 +123,18 @@ void QgsVectorFieldSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
   if ( mLineSymbol )
   {
     mLineSymbol->startRender( context.renderContext() );
+  }
+
+  const QgsVectorLayer* layer = context.layer();
+  if ( layer )
+  {
+    mXIndex = layer->fieldNameIndex( mXAttribute );
+    mYIndex = layer->fieldNameIndex( mYAttribute );
+  }
+  else
+  {
+    mXIndex = -1;
+    mYIndex = -1;
   }
 }
 
@@ -90,17 +148,44 @@ void QgsVectorFieldSymbolLayer::stopRender( QgsSymbolV2RenderContext& context )
 
 QgsSymbolLayerV2* QgsVectorFieldSymbolLayer::clone() const
 {
-  return QgsVectorFieldSymbolLayer::create( properties() );
+  QgsSymbolLayerV2* clonedLayer = QgsVectorFieldSymbolLayer::create( properties() );
+  if ( mLineSymbol )
+  {
+    clonedLayer->setSubSymbol( mLineSymbol->clone() );
+  }
+  return clonedLayer;
 }
 
 QgsStringMap QgsVectorFieldSymbolLayer::properties() const
 {
   QgsStringMap properties;
-  properties["x_attribute"] = QString::number( mXAttribute );
-  properties["y_attribute"] = QString::number( mYAttribute );
+  properties["x_attribute"] = mXAttribute;
+  properties["y_attribute"] = mYAttribute;
   properties["scale"] = QString::number( mScale );
   properties["vector_field_type"] = QString::number( mVectorFieldType );
   properties["angle_orientation"] = QString::number( mAngleOrientation );
   properties["angle_units"] = QString::number( mAngleUnits );
   return properties;
+}
+
+void QgsVectorFieldSymbolLayer::drawPreviewIcon( QgsSymbolV2RenderContext& context, QSize size )
+{
+  if ( mLineSymbol )
+  {
+    mLineSymbol->drawPreviewIcon( context.renderContext().painter(), size );
+  }
+}
+
+QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
+{
+  QSet<QString> attributes;
+  if ( !mXAttribute.isEmpty() )
+  {
+    attributes.insert( mXAttribute );
+  }
+  if ( !mYAttribute.isEmpty() )
+  {
+    attributes.insert( mYAttribute );
+  }
+  return attributes;
 }
