@@ -241,7 +241,6 @@ extern "C"
 {
 #include <spatialite.h>
 }
-#include "spatialite/qgsspatialitesourceselect.h"
 #include "spatialite/qgsnewspatialitelayerdialog.h"
 #endif
 
@@ -327,7 +326,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 {
   static QString authid = QString::null;
   QSettings mySettings;
-  QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour" ).toString();
+  QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
   if ( myDefaultProjectionOption == "prompt" )
   {
     //@note this class is not a descendent of QWidget so we cant pass
@@ -2346,61 +2345,16 @@ void QgisApp::addSpatiaLiteLayer()
   }
 
   // show the SpatiaLite dialog
-
-  QgsSpatiaLiteSourceSelect *dbs = new QgsSpatiaLiteSourceSelect( this );
-
-  mMapCanvas->freeze();
-
-  if ( dbs->exec() )
+  QDialog *dbs = dynamic_cast<QDialog*>( QgsProviderRegistry::instance()->selectWidget( QString( "spatialite" ), this ) );
+  if ( !dbs )
   {
-// Let render() do its own cursor management
-//    QApplication::setOverrideCursor(Qt::WaitCursor);
-
-
-    // repaint the canvas if it was covered by the dialog
-
-    // add files to the map canvas
-    QStringList tables = dbs->selectedTables();
-
-    QApplication::setOverrideCursor( Qt::WaitCursor );
-
-    // for each selected table, connect to the database and build a canvasitem for it
-    QStringList::Iterator it = tables.begin();
-    while ( it != tables.end() )
-    {
-      // create the layer
-      QgsDataSourceURI uri( *it );
-      QgsVectorLayer *layer = new QgsVectorLayer( uri.uri(), uri.table(), "spatialite" );
-      if ( layer->isValid() )
-      {
-        // register this layer with the central layers registry
-        QgsMapLayerRegistry::instance()->addMapLayer( layer );
-      }
-      else
-      {
-        QgsDebugMsg(( *it ) + " is an invalid layer - not loaded" );
-        QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( *it ) );
-        delete layer;
-      }
-      //qWarning("incrementing iterator");
-      ++it;
-    }
-
-    QApplication::restoreOverrideCursor();
-
-    statusBar()->showMessage( mMapCanvas->extent().toString( 2 ) );
+    QMessageBox::warning( this, tr( "SpatiaLite" ), tr( "Cannot get SpatiaLite select dialog from provider." ) );
+    return;
   }
+  connect( dbs , SIGNAL( addDatabaseLayers( QStringList const &, QString const & ) ),
+           this , SLOT( addDatabaseLayers( QStringList const &, QString const & ) ) );
+  dbs->exec();
   delete dbs;
-
-  // update UI
-  qApp->processEvents();
-
-  // draw the map
-  mMapCanvas->freeze( false );
-  mMapCanvas->refresh();
-
-// Let render() do its own cursor management
-//  QApplication::restoreOverrideCursor();
 
 } // QgisApp::addSpatiaLiteLayer()
 #endif

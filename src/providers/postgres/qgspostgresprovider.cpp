@@ -186,12 +186,13 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   if ( primaryKeyType.isEmpty() )
   {
     primaryKeyType = "serial";
-    /* TODO
-    // check the feature count to choose if create a serial8 pk field
+#if 0
+    // TODO: check the feature count to choose if create a serial8 pk field
     if ( layer->featureCount() > 0xFFFFFF )
     {
       primaryKeyType = "serial8";
-    }*/
+    }
+#endif
   }
 
   try
@@ -1153,13 +1154,15 @@ qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int co
   char *p = PQgetvalue( queryResult, row, col );
   size_t s = PQgetlength( queryResult, row, col );
 
+#ifdef QGISDEBUG
   QString buf = "";
   for ( size_t i = 0; i < s; i++ )
   {
     buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
   }
 
-  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 3 );
+  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 4 );
+#endif
 
   switch ( s )
   {
@@ -1191,18 +1194,18 @@ qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int co
 
       if ( swapEndian )
       {
-        QgsDebugMsg( QString( "swap oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ) );
+        QgsDebugMsgLevel( QString( "swap oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ), 4 );
         oid0 = ntohl( oid0 );
         oid1 = ntohl( oid1 );
       }
 
-      QgsDebugMsg( QString( "oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ) );
+      QgsDebugMsgLevel( QString( "oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ), 4 );
       oid   = oid0;
-      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      QgsDebugMsgLevel( QString( "oid:%1" ).arg( oid ), 4 );
       oid <<= 32;
-      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      QgsDebugMsgLevel( QString( "oid:%1" ).arg( oid ), 4 );
       oid  |= oid1;
-      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      QgsDebugMsgLevel( QString( "oid:%1" ).arg( oid ), 4 );
     }
     break;
 
@@ -1226,7 +1229,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
   try
   {
     QgsFeatureId oid = getBinaryInt( queryResult, row, 0 );
-    QgsDebugMsgLevel( QString( "oid=%1" ).arg( oid ), 3 );
+    QgsDebugMsgLevel( QString( "oid=%1" ).arg( oid ), 4 );
 
     feature.setFeatureId( oid );
     feature.clearAttributeMap();

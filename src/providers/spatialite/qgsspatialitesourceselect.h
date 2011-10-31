@@ -22,11 +22,6 @@
 #include "qgsspatialitetablemodel.h"
 #include "qgscontexthelp.h"
 
-extern "C"
-{
-#include <sqlite3.h>
-}
-
 #include <QThread>
 
 #include <vector>
@@ -40,7 +35,6 @@ extern "C"
 
 class QStringList;
 class QTableWidgetItem;
-class QgisApp;
 class QPushButton;
 
 /*! \class QgsSpatiaLiteSourceSelect
@@ -56,8 +50,11 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
   public:
 
+    /* Open file selector to add new connection */
+    static bool newConnection( QWidget* parent );
+
     //! Constructor
-    QgsSpatiaLiteSourceSelect( QgisApp * app, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
     //! Destructor
     ~QgsSpatiaLiteSourceSelect() {}
     //! Populate the connection list combo box
@@ -96,6 +93,10 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+  signals:
+    void connectionsChanged();
+    void addDatabaseLayers( QStringList const & paths, QString const & providerKey );
+
   private:
     enum columns
     {
@@ -107,31 +108,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
 
     typedef std::pair < QString, QString > geomPair;
     typedef std::list < geomPair > geomCol;
-
-    /**Checks if geometry_columns_auth table exists*/
-    bool checkGeometryColumnsAuth( sqlite3 * handle );
-
-    /**Checks if views_geometry_columns table exists*/
-    bool checkViewsGeometryColumns( sqlite3 * handle );
-
-    /**Checks if virts_geometry_columns table exists*/
-    bool checkVirtsGeometryColumns( sqlite3 * handle );
-
-    /**Checks if this layer has been declared HIDDEN*/
-    bool isDeclaredHidden( sqlite3 * handle, QString table, QString geom );
-
-    /**Checks if this layer is a RasterLite-1 datasource*/
-    bool isRasterlite1Datasource( sqlite3 * handle, const char * table );
-
-    /**cleaning well-formatted SQL strings*/
-    QString quotedValue( QString value ) const;
-
-    /**Inserts information about the spatial tables into mTableModel*/
-    bool getTableInfo( sqlite3 * handle );
-
-    // SpatiaLite DB open / close
-    sqlite3 *openSpatiaLiteDb( QString path );
-    void closeSpatiaLiteDb( sqlite3 * handle );
 
     // Set the position of the database connection list to the last
     // used one.
@@ -145,8 +121,6 @@ class QgsSpatiaLiteSourceSelect: public QDialog, private Ui::QgsDbSourceSelectBa
     QStringList m_selectedTables;
     // Storage for the range of layer type icons
     QMap < QString, QPair < QString, QIcon > >mLayerIcons;
-    //! Pointer to the qgis application mainwindow
-    QgisApp *qgisApp;
     //! Model that acts as datasource for mTableTreeWidget
     QgsSpatiaLiteTableModel mTableModel;
     QgsDbFilterProxyModel mProxyModel;

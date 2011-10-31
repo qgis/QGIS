@@ -39,6 +39,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
   symbology-ng/qgsellipsesymbollayerv2.cpp
+  symbology-ng/qgspointdisplacementrenderer.cpp
 
   qgis.cpp
   qgsapplication.cpp

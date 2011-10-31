@@ -177,11 +177,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
   //set the default projection behaviour radio buttongs
-  if ( settings.value( "/Projections/defaultBehaviour" ).toString() == "prompt" )
+  if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "prompt" )
   {
     radPromptForProjection->setChecked( true );
   }
-  else if ( settings.value( "/Projections/defaultBehaviour" ).toString() == "useProject" )
+  else if ( settings.value( "/Projections/defaultBehaviour", "prompt" ).toString() == "useProject" )
   {
     radUseProjectProjection->setChecked( true );
   }
