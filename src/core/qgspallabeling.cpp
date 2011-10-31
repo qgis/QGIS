@@ -152,7 +152,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   plusSign = false;
   labelPerPart = false;
   mergeLines = false;
-  multiLineLabels = false;
+  multiLineLabels = true;
   minFeatureSize = 0.0;
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
@@ -434,10 +434,11 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   {
     text.append( ">" );
   }
-  QRectF labelRect = fm->boundingRect( text );
+
   double w, h;
   if ( !multiLineLabels )
   {
+    QRectF labelRect = fm->boundingRect( text );
     w = labelRect.width() / rasterCompressFactor;
     h = labelRect.height() / rasterCompressFactor;
   }
@@ -452,9 +453,9 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
       if ( width > w )
       {
         w = width;
-      }
-      w /= rasterCompressFactor;
+      } 
     }
+    w /= rasterCompressFactor;
   }
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
 
@@ -471,14 +472,13 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
     QgsExpression* exp = getLabelExpression();
     if ( exp->hasParserError() )
     {
-      QgsDebugMsg( "PASER HAS ERROR:" + exp->parserErrorString() );
+      QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
       return;
     }
     QVariant result = exp->evaluate( &f, layer->dataProvider()->fields() );
-    QgsDebugMsg( "VALUE = " + result.toString() );
     if ( exp->hasEvalError() )
     {
-      QgsDebugMsg( "Expression Label Error = " + exp->evalErrorString() );
+      QgsDebugMsg( "Expression parser eval error:" + exp->evalErrorString() );
       return;
     }
     labelText  = result.toString();

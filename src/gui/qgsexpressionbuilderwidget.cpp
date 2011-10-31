@@ -230,13 +230,24 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   // Maybe just calling exp.evaluate()?
   if ( mLayer )
   {
-    // TODO We should really cache the feature.
-    QgsFeature feature;
-    mLayer->featureAtId( 0 , feature );
-    QVariant value = exp.evaluate( &feature, mLayer->pendingFields() );
+    if ( !mFeature.isValid() )
+    {
+        mLayer->select( mLayer->pendingAllAttributesList() );
+        mLayer->nextFeature( mFeature );
+    }
 
-    if ( !exp.hasEvalError() )
-      lblPreview->setText( value.toString() );
+    if ( mFeature.isValid() )
+    {
+        QVariant value = exp.evaluate( &mFeature, mLayer->pendingFields() );
+        if ( !exp.hasEvalError() )
+          lblPreview->setText( value.toString() );
+    }
+    else
+    {
+        // The feautre is invaild because we don't have one but that doesn't mean user can't
+        // build a expression string.  They just get no preview.
+        lblPreview->setText("");
+    }
   }
 
   if ( exp.hasParserError() || exp.hasEvalError() )
