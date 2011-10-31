@@ -1756,7 +1756,7 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   // in case the current item is a child of the layer, use the layer as current item
   // because otherwise we would set an invalid item as current item
   // (in refreshSymbology the symbology items are removed and new ones are added)
-  if ( current->parent() == theLegendLayer )
+  if ( current && current->parent() == theLegendLayer )
     current = current->parent();
 
   double widthScale = 1.0;
