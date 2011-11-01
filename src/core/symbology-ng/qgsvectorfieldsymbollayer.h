@@ -21,7 +21,7 @@
 #include "qgssymbollayerv2.h"
 
 /**A symbol layer class for displaying displacement arrows based on point layer attributes*/
-class QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
+class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
 {
   public:
     enum VectorFieldType

@@ -6,9 +6,9 @@
 
 class QgsVectorFieldSymbolLayer;
 
-class QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::WidgetVectorFieldBase
+class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerV2Widget, private Ui::WidgetVectorFieldBase
 {
-  Q_OBJECT
+    Q_OBJECT
   public:
     QgsVectorFieldSymbolLayerWidget( const QgsVectorLayer* vl, QWidget* parent = 0 );
     ~QgsVectorFieldSymbolLayerWidget();
