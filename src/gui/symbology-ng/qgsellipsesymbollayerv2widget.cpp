@@ -55,33 +55,62 @@ void QgsEllipseSymbolLayerV2Widget::setSymbolLayer( QgsSymbolLayerV2* layer )
   blockComboSignals( true );
   if ( mLayer )
   {
-    if ( mLayer->widthField().first != -1 )
+
+    if ( mLayer->widthField().isEmpty() )
     {
-      mDDSymbolWidthComboBox->setCurrentIndex( mDDSymbolWidthComboBox->findText( mLayer->widthField().second ) );
+      mDDSymbolWidthComboBox->setCurrentIndex( 0 );
     }
-    if ( mLayer->heightField().first != -1 )
+    else
     {
-      mDDSymbolHeightComboBox->setCurrentIndex( mDDSymbolHeightComboBox->findText( mLayer->heightField().second ) );
+      mDDSymbolWidthComboBox->setCurrentIndex( mDDSymbolWidthComboBox->findText( mLayer->widthField() ) );
     }
-    if ( mLayer->rotationField().first != -1 )
+    if ( mLayer->heightField().isEmpty() )
     {
-      mDDRotationComboBox->setCurrentIndex( mDDRotationComboBox->findText( mLayer->rotationField().second ) );
+      mDDSymbolHeightComboBox->setCurrentIndex( 0 );
     }
-    if ( mLayer->outlineWidthField().first != -1 )
+    else
     {
-      mDDOutlineWidthComboBox->setCurrentIndex( mDDOutlineWidthComboBox->findText( mLayer->outlineWidthField().second ) );
+      mDDSymbolHeightComboBox->setCurrentIndex( mDDSymbolHeightComboBox->findText( mLayer->heightField() ) );
     }
-    if ( mLayer->fillColorField().first != -1 )
+    if ( mLayer->rotationField().isEmpty() )
     {
-      mDDFillColorComboBox->setCurrentIndex( mDDFillColorComboBox->findText( mLayer->fillColorField().second ) );
+      mDDRotationComboBox->setCurrentIndex( 0 );
     }
-    if ( mLayer->outlineColorField().first != -1 )
+    else
     {
-      mDDOutlineColorComboBox->setCurrentIndex( mDDOutlineColorComboBox->findText( mLayer->outlineColorField().second ) );
+      mDDRotationComboBox->setCurrentIndex( mDDRotationComboBox->findText( mLayer->rotationField() ) );
     }
-    if ( mLayer->symbolNameField().first != -1 )
+    if ( mLayer->outlineWidthField().isEmpty() )
     {
-      mDDShapeComboBox->setCurrentIndex( mDDShapeComboBox->findText( mLayer->symbolNameField().second ) );
+      mDDOutlineWidthComboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+      mDDOutlineWidthComboBox->setCurrentIndex( mDDOutlineWidthComboBox->findText( mLayer->outlineWidthField() ) );
+    }
+    if ( mLayer->fillColorField().isEmpty() )
+    {
+      mDDFillColorComboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+      mDDFillColorComboBox->setCurrentIndex( mDDFillColorComboBox->findText( mLayer->fillColorField() ) );
+    }
+    if ( mLayer->outlineColorField().isEmpty() )
+    {
+      mDDOutlineColorComboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+      mDDOutlineColorComboBox->setCurrentIndex( mDDOutlineColorComboBox->findText( mLayer->outlineColorField() ) );
+    }
+    if ( mLayer->symbolNameField().isEmpty() )
+    {
+      mDDShapeComboBox->setCurrentIndex( 0 );
+    }
+    else
+    {
+      mDDShapeComboBox->setCurrentIndex( mDDShapeComboBox->findText( mLayer->symbolNameField() ) );
     }
   }
   blockComboSignals( false );
@@ -208,7 +237,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDSymbolWidthComboBox_currentIndexChange
 {
   if ( mLayer )
   {
-    mLayer->setWidthField( mDDSymbolWidthComboBox->itemData( idx ).toInt(),  mDDSymbolWidthComboBox->itemText( idx ) );
+    mLayer->setWidthField( mDDSymbolWidthComboBox->itemText( idx ) );
     emit changed();
   }
 }
@@ -217,7 +246,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDSymbolHeightComboBox_currentIndexChang
 {
   if ( mLayer )
   {
-    mLayer->setHeightField( mDDSymbolHeightComboBox->itemData( idx ).toInt(),  mDDSymbolHeightComboBox->itemText( idx ) );
+    mLayer->setHeightField( mDDSymbolHeightComboBox->itemText( idx ) );
     emit changed();
   }
 }
@@ -226,7 +255,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDRotationComboBox_currentIndexChanged( 
 {
   if ( mLayer )
   {
-    mLayer->setRotationField( mDDRotationComboBox->itemData( idx ).toInt(), mDDRotationComboBox->itemText( idx ) );
+    mLayer->setRotationField( mDDRotationComboBox->itemText( idx ) );
     emit changed();
   }
 }
@@ -235,7 +264,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineWidthComboBox_currentIndexChang
 {
   if ( mLayer )
   {
-    mLayer->setOutlineWidthField( mDDOutlineWidthComboBox->itemData( idx ).toInt(),  mDDOutlineWidthComboBox->itemText( idx ) );
+    mLayer->setOutlineWidthField( mDDOutlineWidthComboBox->itemText( idx ) );
     emit changed();
   }
 }
@@ -244,7 +273,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDFillColorComboBox_currentIndexChanged(
 {
   if ( mLayer )
   {
-    mLayer->setFillColorField( mDDFillColorComboBox->itemData( idx ).toInt(), mDDFillColorComboBox->itemText( idx ) );
+    mLayer->setFillColorField( mDDFillColorComboBox->itemText( idx ) );
     emit changed();
   }
 }
@@ -253,7 +282,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDOutlineColorComboBox_currentIndexChang
 {
   if ( mLayer )
   {
-    mLayer->setOutlineColorField( mDDOutlineColorComboBox->itemData( idx ).toInt(), mDDOutlineColorComboBox->itemText( idx ) );
+    mLayer->setOutlineColorField( mDDOutlineColorComboBox->itemText( idx ) );
     emit changed();
   }
 }
@@ -262,7 +291,7 @@ void QgsEllipseSymbolLayerV2Widget::on_mDDShapeComboBox_currentIndexChanged( int
 {
   if ( mLayer )
   {
-    mLayer->setSymbolNameField( mDDShapeComboBox->itemData( idx ).toInt(), mDDShapeComboBox->itemText( idx ) );
+    mLayer->setSymbolNameField( mDDShapeComboBox->itemText( idx ) );
   }
 }
 
