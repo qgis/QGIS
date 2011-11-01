@@ -109,9 +109,11 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
       convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
       xComponent = context.outputLineWidth( xComponent );
       yComponent = context.outputLineWidth( yComponent );
+      break;
     case Height:
       xComponent = 0;
       yComponent = context.outputLineWidth( yVal );
+      break;
     default:
       break;
   }

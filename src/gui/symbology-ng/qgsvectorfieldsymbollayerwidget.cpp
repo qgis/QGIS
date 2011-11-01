@@ -140,6 +140,10 @@ void QgsVectorFieldSymbolLayerWidget::on_mCartesianRadioButton_toggled( bool che
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Cartesian );
+    mXAttributeComboBox->setEnabled( true );
+    mYAttributeComboBox->setEnabled( true );
+    mXAttributeLabel->setText( tr( "X attribute" ) );
+    mYAttributeLabel->setText( tr( "Y attribute" ) );
     emit changed();
   }
 }
@@ -149,6 +153,10 @@ void QgsVectorFieldSymbolLayerWidget::on_mPolarRadioButton_toggled( bool checked
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Polar );
+    mXAttributeComboBox->setEnabled( true );
+    mYAttributeComboBox->setEnabled( true );
+    mXAttributeLabel->setText( tr( "Length attribute" ) );
+    mYAttributeLabel->setText( tr( "Angle attribute" ) );
     emit changed();
   }
 }
@@ -158,6 +166,9 @@ void QgsVectorFieldSymbolLayerWidget::on_mHeightRadioButton_toggled( bool checke
   if ( mLayer && checked )
   {
     mLayer->setVectorFieldType( QgsVectorFieldSymbolLayer::Height );
+    mXAttributeLabel->setText( "" );
+    mXAttributeComboBox->setEnabled( false );
+    mYAttributeLabel->setText( tr( "Height attribute" ) );
     emit changed();
   }
 }

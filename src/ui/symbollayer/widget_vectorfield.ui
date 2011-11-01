@@ -27,7 +27,7 @@
    <item row="1" column="0">
     <widget class="QLabel" name="mYAttributeLabel">
      <property name="text">
-      <string>Y Attribute</string>
+      <string>Y attribute</string>
      </property>
     </widget>
    </item>
