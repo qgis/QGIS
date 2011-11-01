@@ -25,8 +25,10 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mValueListWidget->hide();
-  mValueListLabel->hide();
+  mValueGroupBox->hide();
+  // The open and save button are for future.
+  btnOpen->hide();
+  btnSave->hide();
 
   mModel = new QStandardItemModel( );
   mProxyModel = new QgsExpressionItemSearchProxy();
@@ -112,8 +114,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked( const QModelIndex &i
   else
   {
     // Show the help for the current item.
-    mValueListWidget->hide();
-    mValueListLabel->hide();
+    mValueGroupBox->hide();
     mValueListWidget->clear();
     txtHelpText->setText( item->getHelpText() );
     txtHelpText->setToolTip( txtHelpText->text() );
@@ -327,8 +328,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
   if ( !mLayer )
     return;
 
-  mValueListWidget->show();
-  mValueListLabel->show();
+  mValueGroupBox->show();
   int fieldIndex = mLayer->fieldNameIndex( item->text() );
   fillFieldValues( fieldIndex, 10 );
 }
@@ -342,8 +342,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
   if ( !mLayer )
     return;
 
-  mValueListWidget->show();
-  mValueListLabel->show();
+  mValueGroupBox->show();
   int fieldIndex = mLayer->fieldNameIndex( item->text() );
   fillFieldValues( fieldIndex, -1 );
 }
