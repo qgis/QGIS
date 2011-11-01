@@ -91,6 +91,9 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayerV2
     //Attribute indices are resolved in startRender method
     int mXIndex;
     int mYIndex;
+
+    //Converts length/angle to cartesian x/y
+    void convertPolarToCartesian( double length, double angle, double& x, double& y ) const;
 };
 
 #endif // QGSVECTORFIELDSYMBOLLAYER_H

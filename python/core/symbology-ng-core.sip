@@ -711,7 +711,7 @@ public:
   //! delete layer at specified index and set a new one
   bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
 
-  void startRender( QgsRenderContext& context, const QgsVectorLayer* layer );
+  void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
   void stopRender(QgsRenderContext& context);
 
   void setColor(const QColor& color);

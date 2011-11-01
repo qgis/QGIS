@@ -105,6 +105,13 @@ void QgsVectorFieldSymbolLayer::renderPoint( const QPointF& point, QgsSymbolV2Re
       xComponent = context.outputLineWidth( xVal );
       yComponent = context.outputLineWidth( yVal );
       break;
+    case Polar:
+      convertPolarToCartesian( xVal, yVal, xComponent, yComponent );
+      xComponent = context.outputLineWidth( xComponent );
+      yComponent = context.outputLineWidth( yComponent );
+    case Height:
+      xComponent = 0;
+      yComponent = context.outputLineWidth( yVal );
     default:
       break;
   }
@@ -188,4 +195,28 @@ QSet<QString> QgsVectorFieldSymbolLayer::usedAttributes() const
     attributes.insert( mYAttribute );
   }
   return attributes;
+}
+
+void QgsVectorFieldSymbolLayer::convertPolarToCartesian( double length, double angle, double& x, double& y ) const
+{
+  //convert angle to degree and to north orientation
+  if ( mAngleOrientation == CounterclockwiseFromEast )
+  {
+    if ( angle <= 90 )
+    {
+      angle = 90 - angle;
+    }
+    else
+    {
+      angle = 360 - angle + 90;
+    }
+  }
+
+  if ( mAngleUnits == Degrees )
+  {
+    angle = angle * M_PI / 180.0;
+  }
+
+  x = length * sin( angle );
+  y = length * cos( angle );
 }
