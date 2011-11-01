@@ -200,7 +200,7 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 {
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
-    it->symbol()->startRender( context );
+    it->symbol()->stopRender( context );
 
   // cleanup mTempSymbols
 #if QT_VERSION < 0x40600
