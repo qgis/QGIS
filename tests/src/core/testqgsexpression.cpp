@@ -23,7 +23,7 @@
 
 #if QT_VERSION < 0x40701
 // See http://hub.qgis.org/issues/4284
-Q_DECLARE_METATYPE(QVariant)
+Q_DECLARE_METATYPE( QVariant )
 #endif
 
 class TestQgsExpression: public QObject
@@ -198,10 +198,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "atan2(0,1)" ) << "atan2(0,1)" << false << QVariant( 0. );
       QTest::newRow( "atan2(1,0)" ) << "atan2(1,0)" << false << QVariant( M_PI / 2 );
       QTest::newRow( "exp(0)" ) << "exp(0)" << false << QVariant( 1. );
-      QTest::newRow( "exp(1)" ) << "exp(1)" << false << QVariant( exp(1) );
+      QTest::newRow( "exp(1)" ) << "exp(1)" << false << QVariant( exp( 1 ) );
       QTest::newRow( "ln(0)" ) << "ln(0)" << false << QVariant();
       QTest::newRow( "log10(-1)" ) << "log10(-1)" << false << QVariant();
-      QTest::newRow( "ln(1)" ) << "ln(1)" << false << QVariant( log(1) );
+      QTest::newRow( "ln(1)" ) << "ln(1)" << false << QVariant( log( 1 ) );
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
@@ -341,9 +341,16 @@ class TestQgsExpression: public QObject
       QTest::addColumn<bool>( "needsGeom" );
 
       // literal evaluation
-      QTest::newRow( "geom 1" ) << "x > 0" << false;
-      QTest::newRow( "geom 2" ) << "$x > 0" << true;
-      QTest::newRow( "geom 2" ) << "xat(0) > 0" << true;
+      QTest::newRow( "x > 0" ) << "x > 0" << false;
+      QTest::newRow( "1 = 1" ) << "1 = 1" << false;
+      QTest::newRow( "$x > 0" ) << "$x > 0" << true;
+      QTest::newRow( "xat(0) > 0" ) << "xat(0) > 0" << true;
+      QTest::newRow( "$x" ) << "$x" << true;
+      QTest::newRow( "$area" ) << "$area" << true;
+      QTest::newRow( "$length" ) << "$length" << true;
+      QTest::newRow( "$perimeter" ) << "$perimeter" << true;
+      QTest::newRow( "toint($perimeter)" ) << "toint($perimeter)" << true;
+      QTest::newRow( "toint(123)" ) << "toint(123)" << false;
     }
 
     void needs_geometry()
