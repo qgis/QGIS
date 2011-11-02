@@ -4,6 +4,10 @@
 #include <QSettings>
 #include <stdlib.h> // atoi
 
+#ifdef _MSC_VER
+#define strcasecmp(a,b) stricmp(a,b)
+#endif
+
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
   QSettings settings;
