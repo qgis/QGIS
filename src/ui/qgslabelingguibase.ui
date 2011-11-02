@@ -63,10 +63,64 @@
      </item>
     </layout>
    </item>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCheckBox" name="chkEnableLabeling">
+       <property name="text">
+        <string>Label this layer with</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboFieldName">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExpression">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item row="2" column="0">
     <widget class="QTabWidget" name="mTabWidget">
      <property name="enabled">
-      <bool>false</bool>
+      <bool>true</bool>
      </property>
      <property name="currentIndex">
       <number>0</number>
@@ -419,8 +473,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>647</width>
-            <height>487</height>
+            <width>646</width>
+            <height>451</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -487,20 +541,13 @@
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QCheckBox" name="chkMultiLine">
-                <property name="text">
-                 <string>Multiline labels</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
                <widget class="QCheckBox" name="chkAddDirectionSymbol">
                 <property name="text">
                  <string>Add direction symbol</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
+              <item row="3" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLabel" name="label_19">
@@ -518,7 +565,7 @@
                 </item>
                </layout>
               </item>
-              <item row="5" column="0">
+              <item row="4" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_20">
                 <item>
                  <widget class="QCheckBox" name="chkNoObstacle">
@@ -876,8 +923,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>647</width>
-            <height>615</height>
+            <width>646</width>
+            <height>585</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1071,60 +1118,6 @@
       </layout>
      </widget>
     </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="chkEnableLabeling">
-       <property name="text">
-        <string>Label this layer with</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboFieldName">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="editable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QToolButton" name="btnExpression">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>
