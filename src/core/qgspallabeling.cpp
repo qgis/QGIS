@@ -152,7 +152,6 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   plusSign = false;
   labelPerPart = false;
   mergeLines = false;
-  multiLineLabels = true;
   minFeatureSize = 0.0;
   vectorScaleFactor = 1.0;
   rasterCompressFactor = 1.0;
@@ -183,7 +182,6 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   plusSign = s.plusSign;
   labelPerPart = s.labelPerPart;
   mergeLines = s.mergeLines;
-  multiLineLabels = s.multiLineLabels;
   minFeatureSize = s.minFeatureSize;
   vectorScaleFactor = s.vectorScaleFactor;
   rasterCompressFactor = s.rasterCompressFactor;
@@ -328,7 +326,6 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   plusSign = layer->customProperty( "labeling/plussign" ).toInt();
   labelPerPart = layer->customProperty( "labeling/labelPerPart" ).toBool();
   mergeLines = layer->customProperty( "labeling/mergeLines" ).toBool();
-  multiLineLabels = layer->customProperty( "labeling/multiLineLabels" ).toBool();
   addDirectionSymbol = layer->customProperty( "labeling/addDirectionSymbol" ).toBool();
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
@@ -367,7 +364,6 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/plussign", plusSign );
   layer->setCustomProperty( "labeling/labelPerPart", labelPerPart );
   layer->setCustomProperty( "labeling/mergeLines", mergeLines );
-  layer->setCustomProperty( "labeling/multiLineLabels", multiLineLabels );
   layer->setCustomProperty( "labeling/addDirectionSymbol", addDirectionSymbol );
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
@@ -430,33 +426,25 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
     return;
   }
 
-  if ( addDirectionSymbol && !multiLineLabels && placement == QgsPalLayerSettings::Line ) //consider the space needed for the direction symbol
+  //consider the space needed for the direction symbol
+  if ( addDirectionSymbol && placement == QgsPalLayerSettings::Line )
   {
     text.append( ">" );
   }
 
   double w, h;
-  if ( !multiLineLabels )
+  QStringList multiLineSplit = text.split( "\n" );
+  h = fm->height() * multiLineSplit.size() / rasterCompressFactor;
+  w = 0;
+  for ( int i = 0; i < multiLineSplit.size(); ++i )
   {
-    QRectF labelRect = fm->boundingRect( text );
-    w = labelRect.width() / rasterCompressFactor;
-    h = labelRect.height() / rasterCompressFactor;
-  }
-  else
-  {
-    QStringList multiLineSplit = text.split( "\n" );
-    h = fm->height() * multiLineSplit.size() / rasterCompressFactor;
-    w = 0;
-    for ( int i = 0; i < multiLineSplit.size(); ++i )
+    double width = fm->width( multiLineSplit.at( i ) );
+    if ( width > w )
     {
-      double width = fm->width( multiLineSplit.at( i ) );
-      if ( width > w )
-      {
-        w = width;
-      } 
+      w = width;
     }
-    w /= rasterCompressFactor;
   }
+  w /= rasterCompressFactor;
   QgsPoint ptSize = xform->toMapCoordinatesF( w, h );
 
   labelX = qAbs( ptSize.x() - ptZero.x() );
@@ -1337,7 +1325,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
 
   //add the direction symbol if needed
   if ( !txt.isEmpty() && lyr.placement == QgsPalLayerSettings::Line &&
-       lyr.addDirectionSymbol && !lyr.multiLineLabels )
+       lyr.addDirectionSymbol )
   {
     if ( label->getReversed() )
     {
@@ -1352,14 +1340,7 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
   //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
 
   QStringList multiLineList;
-  if ( lyr.multiLineLabels )
-  {
-    multiLineList = txt.split( "\n" );
-  }
-  else
-  {
-    multiLineList << txt;
-  }
+  multiLineList = txt.split( "\n" );
 
   for ( int i = 0; i < multiLineList.size(); ++i )
   {
