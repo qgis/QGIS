@@ -473,8 +473,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>646</width>
-            <height>451</height>
+            <width>658</width>
+            <height>443</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -731,7 +731,7 @@
               <item>
                <widget class="QStackedWidget" name="stackedOptions">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="pageOptionsPoint">
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -821,82 +821,60 @@
                     </property>
                    </widget>
                   </item>
-
-<item><widget class="QWidget" name="offlineOptions"><!-- { -->
-<layout class="QVBoxLayout" name="offlineOptionsLayout">
-
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QLabel" name="label_25">
-                      <property name="text">
-                       <string>Orientation</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="radOrientationMap">
-                      <property name="text">
-                       <string>map</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="radOrientationLine">
-                      <property name="text">
-                       <string>line</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="QLabel" name="label_26">
-                      <property name="text">
-                       <string>Label distance</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QDoubleSpinBox" name="spinDistLine">
-                      <property name="decimals">
-                       <number>4</number>
-                      </property>
-                      <property name="maximum">
-                       <double>999999999.000000000000000</double>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mLineDistanceUnitComboBox">
-                      <item>
+                   <widget class="QWidget" name="offlineOptions" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout">
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_14">
+                       <item>
+                        <widget class="QLabel" name="label_26">
+                         <property name="text">
+                          <string>Label distance</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QDoubleSpinBox" name="spinDistLine">
+                         <property name="decimals">
+                          <number>4</number>
+                         </property>
+                         <property name="maximum">
+                          <double>999999999.000000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="mLineDistanceUnitComboBox">
+                         <item>
+                          <property name="text">
+                           <string>In mm</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>In map units</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="chkLineOrientationDependent">
                        <property name="text">
-                        <string>In mm</string>
+                        <string>Line orientation dependent position</string>
                        </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>In map units</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                   </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
                   </item>
-
-</layout><!-- offlineOptionsLayout -->
-</widget><!-- offlineOptions } -->
-</item>
-
                  </layout>
                 </widget>
                 <widget class="QWidget" name="pageOptionsEmpty"/>
@@ -933,8 +911,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>646</width>
-            <height>585</height>
+            <width>249</width>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">

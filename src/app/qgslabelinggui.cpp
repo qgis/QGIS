@@ -126,10 +126,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
     chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
     chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation )
-      radOrientationMap->setChecked( true );
-    else
-      radOrientationLine->setChecked( true );
+    if ( ! ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+      chkLineOrientationDependent->setChecked( true );
   }
 
   cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
@@ -260,7 +258,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     if ( chkLineOn->isChecked() )
       lyr.placementFlags |= QgsPalLayerSettings::OnLine;
 
-    if ( radOrientationMap->isChecked() )
+    if ( ! chkLineOrientationDependent->isChecked() )
       lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked() )
