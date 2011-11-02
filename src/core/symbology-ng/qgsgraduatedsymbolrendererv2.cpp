@@ -183,14 +183,14 @@ void QgsGraduatedSymbolRendererV2::startRender( QgsRenderContext& context, const
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
   {
-    it->symbol()->startRender( context );
+    it->symbol()->startRender( context, vlayer );
 
     if ( mRotationFieldIdx != -1 || mSizeScaleFieldIdx != -1 )
     {
       QgsSymbolV2* tempSymbol = it->symbol()->clone();
       tempSymbol->setRenderHints(( mRotationFieldIdx != -1 ? QgsSymbolV2::DataDefinedRotation : 0 ) |
                                  ( mSizeScaleFieldIdx != -1 ? QgsSymbolV2::DataDefinedSizeScale : 0 ) );
-      tempSymbol->startRender( context );
+      tempSymbol->startRender( context, vlayer );
       mTempSymbols[ it->symbol()] = tempSymbol;
     }
   }
@@ -200,7 +200,7 @@ void QgsGraduatedSymbolRendererV2::stopRender( QgsRenderContext& context )
 {
   QgsRangeList::iterator it = mRanges.begin();
   for ( ; it != mRanges.end(); ++it )
-    it->symbol()->startRender( context );
+    it->symbol()->stopRender( context );
 
   // cleanup mTempSymbols
 #if QT_VERSION < 0x40600

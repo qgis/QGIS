@@ -23,6 +23,7 @@ symbology-ng/characterwidget.cpp
 symbology-ng/qgsstylev2exportimportdialog.cpp
 symbology-ng/qgsellipsesymbollayerv2widget.cpp
 symbology-ng/qgspointdisplacementrendererwidget.cpp
+symbology-ng/qgsvectorfieldsymbollayerwidget.cpp
 
 attributetable/qgsattributetablemodel.cpp
 attributetable/qgsattributetablememorymodel.cpp
@@ -100,6 +101,7 @@ symbology-ng/qgsbrushstylecombobox.h
 symbology-ng/qgsstylev2exportimportdialog.h
 symbology-ng/qgsellipsesymbollayerv2widget.h
 symbology-ng/qgspointdisplacementrendererwidget.h
+symbology-ng/qgsvectorfieldsymbollayerwidget.h
 
 attributetable/qgsattributetableview.h
 attributetable/qgsattributetablemodel.h

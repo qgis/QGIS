@@ -219,7 +219,7 @@ void QgsPointDisplacementRenderer::startRender( QgsRenderContext& context, const
 
   if ( mCenterSymbol )
   {
-    mCenterSymbol->startRender( context );
+    mCenterSymbol->startRender( context, vlayer );
   }
 }
 

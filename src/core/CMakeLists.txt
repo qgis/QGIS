@@ -40,6 +40,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssvgcache.cpp
   symbology-ng/qgsellipsesymbollayerv2.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
+  symbology-ng/qgsvectorfieldsymbollayer.cpp
 
   qgis.cpp
   qgsapplication.cpp
