@@ -30,6 +30,7 @@ ADD_LIBRARY (spatialiteprovider MODULE ${SPATIALITE_SRCS} ${SPATIALITE_MOC_SRCS}
 
 TARGET_LINK_LIBRARIES(spatialiteprovider
   qgis_core
+  qgis_gui
 )
 
 IF(NOT WITH_INTERNAL_SPATIALITE)
