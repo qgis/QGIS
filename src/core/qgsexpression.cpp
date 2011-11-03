@@ -87,7 +87,7 @@ inline bool isDoubleSafe( const QVariant& v )
   return false;
 }
 
-inline bool isNull( const QVariant& v ) { return v.type() == QVariant::Invalid; }
+inline bool isNull( const QVariant& v ) { return v.isNull(); }
 
 ///////////////////////////////////////////////
 // evaluation error macros
@@ -149,7 +149,7 @@ static int getIntValue( const QVariant& value, QgsExpression* parent )
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
 {
   // we need to convert to TVL
-  if ( value.type() == QVariant::Invalid )
+  if ( value.isNull() )
     return Unknown;
 
   if ( value.type() == QVariant::Int )
@@ -928,13 +928,15 @@ bool QgsExpression::NodeLiteral::prepare( QgsExpression* /*parent*/, const QgsFi
 
 QString QgsExpression::NodeLiteral::dump() const
 {
+  if ( mValue.isNull() )
+    return "NULL";
+
   switch ( mValue.type() )
   {
-    case QVariant::Invalid: return "NULL";
     case QVariant::Int: return QString::number( mValue.toInt() );
     case QVariant::Double: return QString::number( mValue.toDouble() );
     case QVariant::String: return QString( "'%1'" ).arg( mValue.toString() );
-    default: return "[unsupported value]";
+    default: return QString( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
 }
 

@@ -463,7 +463,7 @@ void QgsPalLayerSettings::registerFeature( QgsVectorLayer* layer,  QgsFeature& f
       QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
       return;
     }
-    QVariant result = exp->evaluate( &f, layer->dataProvider()->fields() );
+    QVariant result = exp->evaluate( &f, layer->pendingFields() );
     if ( exp->hasEvalError() )
     {
       QgsDebugMsg( "Expression parser eval error:" + exp->evalErrorString() );
