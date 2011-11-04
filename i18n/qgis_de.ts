@@ -406,7 +406,7 @@
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="149"/>
         <source>Use this number of points</source>
-        <translation>Dies Anzahl von Punkten verwenden</translation>
+        <translation>Anzahl von Punkten</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="96"/>
@@ -416,7 +416,7 @@
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="129"/>
         <source>Use this density of points</source>
-        <translation>Dies Punktdichte verwenden</translation>
+        <translation>Punktdichte</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="162"/>
@@ -541,7 +541,7 @@
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
-        <translation>Diesen Punktabstand verwenden</translation>
+        <translation>Punktabstand</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
@@ -7396,7 +7396,7 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1997"/>
         <source>This copy of QGIS writes debugging output.</source>
-        <translation>Dies QGIS-Kopie schreibt Debugausgaben.</translation>
+        <translation>Diese QGIS-Kopie schreibt Debugausgaben.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2711"/>
@@ -16357,7 +16357,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="448"/>
         <source>Split stereo vertical eye mapping</source>
-        <translation></translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="485"/>
@@ -21522,7 +21522,7 @@ Die könnte auf ein Netzwerkproblem oder ein Problem des WMS-Server hindeuten.</
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="302"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation>Diese Objekt kann nicht vereinfacht werden.  Prüfen Sie, ob das Objekt dazu genügend Stützpunkte hat.</translation>
+        <translation>Dieses Objekt kann nicht vereinfacht werden.  Prüfen Sie, ob das Objekt dazu genügend Stützpunkte hat.</translation>
     </message>
 </context>
 <context>
@@ -25058,7 +25058,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="37"/>
         <source>The Plugin Installer has detected that your copy of QGIS is configured to use a number of plugin repositories around the world. It was a typical situation in older versions of the program, but from the version 1.5, external plugins are collected in one central Contributed Repository, and all the old repositories are not necessary any more. Do you want to drop them now? If you&apos;re unsure what to do, probably you don&apos;t need them. However, if you choose to keep them in use, you will be able to remove them manually later.</source>
-        <translation>Die Erweiterungsinstallation hat festgestellt, dass Ihre QGIS-Kopie einige Erweiterungsrepositorien rund um die Wwelt benutzt. Dies war typisch für ältere Versionen des Programms, ab der Version 1.5 werden externe Erweiterung in einem zentralen Beitragsrepositorien gesammelt und alle alten Repositorien sind nicht mehr nötig. Wollen Sie sie jetzt entfernen?  Wenn Sie unsicher sind, brauchen Sie sie wahrscheinlich nicht. Falls Sie sie trotzdem behalten wollen, können Sie sie auch später manuell entfernen.</translation>
+        <translation>Die Erweiterungsinstallation hat festgestellt, dass Ihre QGIS-Kopie einige Erweiterungsrepositorien rund um die Welt benutzt. Dies war typisch für ältere Versionen des Programms, ab der Version 1.5 werden externe Erweiterung in einem zentralen Beitragsrepositorium gesammelt und alle alten Repositorien sind nicht mehr nötig. Wollen Sie sie jetzt entfernen?  Wenn Sie unsicher sind, brauchen Sie sie wahrscheinlich nicht. Falls Sie sie trotzdem behalten wollen, können Sie sie auch später manuell entfernen.</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstalleroldreposbase.ui" line="52"/>
@@ -30002,11 +30002,11 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//DE&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlich warm, wenn Sie damit arbeiten? Quantum GIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von Quantum GIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS-Sponsoren-Webseite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;.
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;Wir arbeiten wirklich hart, um diese Software für Sie zu erstellen. Haben Sie all die coolen Funktionen gesehen? Wird Ihnen wohlig warm, wenn Sie damit arbeiten? Quantum GIS ist das Produkt eines Teams das sich ihm aus Spaß and Freude verschrieben hat. Wir möchten dass Sie es kopieren und weitergeben und es so vielen Leute wie möglich zugänglich machen. Wenn Sie mit QGIS Geld sparen oder Sie unsere Arbeit gut finden und die Möglichkeit haben uns finanziell zu unterstützen, überlegen Sie sich bitte, ob Sie die Entwicklung von Quantum GIS nicht vielleicht auch unterstützen wollen. Wir verwenden das Geld unserer Sponsoren um Reise- und sonstige Kosten unserer halbjährlichen Entwicklertreffen und allgemeine Kosten zu decken. Nähere Details finden Sie auf der &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS-Sponsoren-Webseite&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;;&quot;&gt;.
 &lt;p&gt;Untenstehend finden Sie eine Liste der netten Menschen und Firmen die uns finanziell helfen - ein ganz großes Dankeschön Ihnen allen!&lt;/span&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsoren&lt;/span&gt;&lt;/p&gt;
@@ -30480,7 +30480,7 @@ Ersetzen?</translation>
     <message>
         <location filename="../src/ui/qgssymbollevelsv2dialogbase.ui" line="27"/>
         <source>Define the order in which the symbol layers are rendered. The numbers in the cells define in which rendering pass the layer will be drawn.</source>
-        <translation>Darstellungsreihenfolge der Symbollayer festlegen. Die Anzehl der Zellen legt fest in welchem Darstellungsdurchlauf der Layer gezeichnet wird.</translation>
+        <translation>Darstellungsreihenfolge der Symbollayer festlegen. Die Anzahl der Zellen legt fest in welchem Darstellungsdurchlauf der Layer gezeichnet wird.</translation>
     </message>
 </context>
 <context>
