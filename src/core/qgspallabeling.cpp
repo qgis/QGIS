@@ -786,8 +786,6 @@ int QgsPalLabeling::prepareLayer( QgsVectorLayer* layer, QSet<int>& attrIndices,
       attrIndices.insert( fldIndex );
     }
 
-    if ( fldIndex == -1 )
-      return 0;
   }
   else
   {

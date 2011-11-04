@@ -492,7 +492,6 @@ void QgsLabelingGui::showEngineConfigDialog()
 
 void QgsLabelingGui::showExpressionDialog()
 {
-  //TODO extract this out to a dialog.
   QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
   dlg.setWindowTitle( tr( "Expression based label" ) );
   if ( dlg.exec() == QDialog::Accepted )
