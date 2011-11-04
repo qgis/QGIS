@@ -472,7 +472,7 @@ void QgsLegendLayer::addToPopupMenu( QMenu& theMenu )
       saveSelectionAsAction->setEnabled( false );
     }
 
-    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() )
+    if ( !vlayer->isEditable() && vlayer->dataProvider()->supportsSubsetString() && vlayer->vectorJoins().isEmpty() )
       theMenu.addAction( tr( "&Query..." ), QgisApp::instance(), SLOT( layerSubsetString() ) );
 
     //show number of features in legend if requested
