@@ -47,23 +47,7 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
     }
   }
 
-  //insert composer maps into combo
-  mLayerComboBox->blockSignals( true );
-  if ( mComposerTable )
-  {
-    const QgsComposition* tableComposition = mComposerTable->composition();
-    if ( tableComposition )
-    {
-      QList<const QgsComposerMap*> mapList = tableComposition->composerMapItems();
-      QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
-      for ( ; mapIt != mapList.constEnd(); ++mapIt )
-      {
-        int mapId = ( *mapIt )->id();
-        mComposerMapComboBox->addItem( tr( "Map %1" ).arg( mapId ), mapId );
-      }
-    }
-  }
-  mLayerComboBox->blockSignals( false );
+  refreshMapComboBox();
 
   updateGuiElements();
   on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
@@ -78,6 +62,46 @@ QgsComposerTableWidget::QgsComposerTableWidget( QgsComposerAttributeTable* table
 QgsComposerTableWidget::~QgsComposerTableWidget()
 {
 
+}
+
+void QgsComposerTableWidget::showEvent( QShowEvent* event )
+{
+  refreshMapComboBox();
+}
+
+void QgsComposerTableWidget::refreshMapComboBox()
+{
+  //save the current entry in case it is still present after refresh
+  QString saveCurrentComboText = mComposerMapComboBox->currentText();
+
+  mComposerMapComboBox->blockSignals( true );
+  mComposerMapComboBox->clear();
+  if ( mComposerTable )
+  {
+    const QgsComposition* tableComposition = mComposerTable->composition();
+    if ( tableComposition )
+    {
+      QList<const QgsComposerMap*> mapList = tableComposition->composerMapItems();
+      QList<const QgsComposerMap*>::const_iterator mapIt = mapList.constBegin();
+      for ( ; mapIt != mapList.constEnd(); ++mapIt )
+      {
+        int mapId = ( *mapIt )->id();
+        mComposerMapComboBox->addItem( tr( "Map %1" ).arg( mapId ), mapId );
+      }
+    }
+  }
+  mComposerMapComboBox->blockSignals( false );
+
+  if ( mComposerMapComboBox->findText( saveCurrentComboText ) == -1 )
+  {
+    //the former entry is no longer present. Inform the scalebar about the changed composer map
+    on_mComposerMapComboBox_activated( mComposerMapComboBox->currentIndex() );
+  }
+  else
+  {
+    //the former entry is still present. Make it the current entry again
+    mComposerMapComboBox->setCurrentIndex( mComposerMapComboBox->findText( saveCurrentComboText ) );
+  }
 }
 
 void QgsComposerTableWidget::on_mLayerComboBox_currentIndexChanged( int index )
