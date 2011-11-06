@@ -556,6 +556,10 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
+
+  // mark that relevant fields may not be set appropriately for nextFeature() calls
+  mRelevantFieldsForNextFeature = false;
+
 #else
   Q_UNUSED( fetchGeometry );
   Q_UNUSED( fetchAttributes );
@@ -621,6 +625,14 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
   {
     QgsLogger::warning( "Read attempt on an invalid shapefile data source" );
     return false;
+  }
+
+  if ( !mRelevantFieldsForNextFeature )
+  {
+    // setting relevant fields has some overhead so set it only when necessary
+    setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
+                       mAttributesToFetch );
+    mRelevantFieldsForNextFeature = true;
   }
 
   OGRFeatureH fet;
@@ -726,6 +738,7 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
 
   setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
                      mAttributesToFetch );
+  mRelevantFieldsForNextFeature = true;
 
   // spatial query to select features
   if ( rect.isEmpty() )
