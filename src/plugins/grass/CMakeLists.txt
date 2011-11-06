@@ -154,9 +154,19 @@ INCLUDE_DIRECTORIES(
 TARGET_LINK_LIBRARIES(grassplugin
   qgisgrass
   qgis_gui
-  grassprovider
   ${OPENPTY_LIBRARY}
 )
+
+# provider must be built as module on OS X so it gets loaded,
+# lookup symbols dynamically instead of linking at compile time
+IF (APPLE)
+    SET_TARGET_PROPERTIES(grassplugin PROPERTIES
+        LINK_FLAGS "-undefined dynamic_lookup")
+ELSE (APPLE)
+    TARGET_LINK_LIBRARIES(grassplugin
+        grassprovider
+    )
+ENDIF (APPLE)
 
 # override default path where built files are put to allow running qgis without installing
 # the binary goes under libexec subdir
