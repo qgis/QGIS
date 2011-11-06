@@ -232,6 +232,7 @@ FOREACH (QFW ${QTLISTQG})
     FOREACH (QC cn;jp;kr;tw)
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIRC}/PlugIns/codecs/libq${QC}codecs.dylib")
     ENDFOREACH (QC)
+    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIRC}/PlugIns/sqldrivers/libqsqlite.dylib")
     # qt fw
     IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/../../../${QFW}.framework/${QFW}")
