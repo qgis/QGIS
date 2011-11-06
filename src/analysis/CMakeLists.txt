@@ -71,7 +71,6 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/renderer
-  ${CMAKE_CURRENT_SOURCE_DIR}/../core/spatialindex
   ${CMAKE_CURRENT_SOURCE_DIR}/../core/raster
   interpolation
   ${PROJ_INCLUDE_DIR}

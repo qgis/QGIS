@@ -34,12 +34,10 @@ SET(QGIS_NETWORK_ANALYSIS_HDRS
 INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_SOURCE_DIR}../../core/
-  ${CMAKE_CURRENT_SOURCE_DIR}../../core/spatialindex 
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
-
 
 #############################################################
 # qgis_analysis library

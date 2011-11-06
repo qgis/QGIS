@@ -57,7 +57,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
     return FailedToOpen;
   }
 
-  bool isSpatiaLite = checkHasMetadataTables( handle );
+  checkHasMetadataTables( handle );
   if ( !mErrorMsg.isNull() )
   {
     // unexpected error; invalid SpatiaLite DB

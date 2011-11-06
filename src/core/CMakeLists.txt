@@ -173,8 +173,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   qgsspatialindex.cpp
-
-  )
+)
 
 IF(WIN32)
     SET(QGIS_CORE_SRCS
@@ -400,7 +399,6 @@ INCLUDE_DIRECTORIES(
   symbology
   symbology-ng
   gps/qextserialport
-  spatialindex/include
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}

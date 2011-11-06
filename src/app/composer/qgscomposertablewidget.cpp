@@ -64,7 +64,7 @@ QgsComposerTableWidget::~QgsComposerTableWidget()
 
 }
 
-void QgsComposerTableWidget::showEvent( QShowEvent* event )
+void QgsComposerTableWidget::showEvent( QShowEvent* /* event */ )
 {
   refreshMapComboBox();
 }
