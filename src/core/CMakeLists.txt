@@ -400,6 +400,7 @@ INCLUDE_DIRECTORIES(
   symbology
   symbology-ng
   gps/qextserialport
+  spatialindex/include
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
