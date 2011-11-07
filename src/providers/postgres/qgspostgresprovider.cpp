@@ -733,7 +733,7 @@ QStringList QgsPostgresProvider::pkCandidates( QString schemaName, QString viewN
   QStringList cols;
   cols << QString::null;
 
-  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname IN ('int4','oid') AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
+  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname IN ('int2','int4','int8','oid') AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
   QgsDebugMsg( sql );
   PGresult *colRes = connectionRO->PQexec( sql );
 
