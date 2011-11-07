@@ -258,9 +258,19 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
     {
 // QgsDebugMsg(QString("tag = %1").arg(e.tagName()));
 
-      if ( e.tagName() == "section" && e.tagName() == "grass" )
+      if ( e.tagName() != "section" && e.tagName() != "grass" )
       {
         QgsDebugMsg( QString( "Unknown tag: %1" ).arg( e.tagName() ) );
+        continue;
+      }
+
+      // Check GRASS version
+      QString version_min = e.attribute( "version_min" );
+      QString version_max = e.attribute( "version_max" );
+
+      if ( !QgsGrassModuleOption::checkVersion( e.attribute( "version_min" ), e.attribute( "version_max" ) ) )
+      {
+        n = n.nextSibling();
         continue;
       }
 

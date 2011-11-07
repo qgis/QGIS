@@ -5,5 +5,6 @@
 	<option key="map" layeroption="layer"/>
 	<option key="option"/>
 	<option key="units"/>
-	<field key="columns" layer="map" type="integer,double" label="Attribute field" />
+	<field key="column" layer="map" type="integer,double" label="Attribute field" version_max="6.3" />
+	<field key="columns" layer="map" type="integer,double" label="Attribute field" version_min="6.4" />
 </qgisgrassmodule>

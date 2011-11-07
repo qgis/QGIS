@@ -29,7 +29,7 @@
 					<grass name="r.in.gdal.qgis"/>
                                 	<grass name="r.in.gdal.qgis.loc"/>
 				</section>
-				<section label="Register external data sources in GRASS">
+				<section label="Register external data sources in GRASS" version_min="6.4">
 					<grass name="r.external"/>
 					<grass name="r.external.qgis"/>
 					<grass name="r.external.all"/>
@@ -63,7 +63,7 @@
 					<grass name="v.in.db"/>
 					<grass name="v.in.garmin"/>
 					<grass name="v.in.gpsbabel"/>
-					<grass name="v.in.geonames"/>
+					<grass name="v.in.geonames" version_min="6.4"/>
 					<grass name="v.in.gns"/>
 			</section>
 			<section label="Import from database into GRASS">
@@ -101,7 +101,7 @@
 				<grass name="v.out.vtk"/>
 			</section>
 			<section label="Export vector table from GRASS to database format">
-				<grass name="db.out.ogr"/>
+				<grass name="db.out.ogr" version_min="6.4"/>
 			</section>
 		</section>
 		<section label="Map type conversion">
@@ -169,7 +169,7 @@
 			<grass name="r.colors.table"/>
 			<grass name="r.colors.rules"/>
 			<grass name="r.colors.rast"/>
-			<grass name="r.colors.stddev"/>
+			<grass name="r.colors.stddev" version_min="6.4"/>
 			<grass name="r.blend"/>
 			<grass name="r.composite"/>
 			<grass name="r.his"/>
@@ -211,7 +211,7 @@
 				<grass name="r.texture"/>
 				<grass name="r.texture.bis"/>
 				<grass name="r.los"/>
-				<grass name="r.grow.distance"/>
+				<grass name="r.grow.distance" version_min="6.4"/>
 				<grass name="r.walk.coord"/>
 				<grass name="r.walk.vect"/>
 			</section>
@@ -263,7 +263,7 @@
 				<grass name="v.surf.bspline"/>
 				<grass name="v.surf.idw"/>
 				<grass name="v.surf.rst"/>
-                                <grass name="r.bilinear"/>
+                                <grass name="r.bilinear" version_min="6.4"/>
                                 <grass name="r.surf.idw"/>
                                 <grass name="r.surf.idw2"/>
 				<grass name="r.fillnulls"/>
@@ -457,7 +457,7 @@
 		<section label="Database management">
 			<grass name="db.connect"/>
 			<grass name="db.connect.schema"/>
-			<grass name="db.connect-login.pg"/>
+			<grass name="db.connect-login.pg" version_min="6.4"/>
 			<grass name="v.db.reconnect.all"/>
 			<grass name="db.login"/>
 		</section>
@@ -472,7 +472,7 @@
 			<grass name="v.db.update_query"/>
 			<grass name="v.db.update_op"/>
 			<grass name="v.db.update_op_query"/>
-			<grass name="v.db.dropcol"/>
+			<grass name="v.db.dropcol" version_min="6.4"/>
 			<grass name="v.db.renamecol"/>
 			<grass name="db.execute"/>
 			<grass name="db.select"/>
