@@ -3,7 +3,8 @@
 
 <qgisgrassmodule label="Display vector map attributes with SQL" module="v.db.select">
 	<option key="map" layeroption="layer" />
-	<field key="columns" layer="map" type="integer,double,varchar"/>
+	<field key="column" layer="map" type="integer,double,varchar" version_max="6.3"/>
+	<field key="columns" layer="map" type="integer,double,varchar" version_min="6.4"/>
 	<option key="where" />
 	<option key="fs" answer="|" hidden="yes" />
 </qgisgrassmodule>

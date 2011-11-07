@@ -491,6 +491,9 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
     //  Use of region can be forced by 'region' attribute in qgm
     bool usesRegion() { return mUsesRegion; }
 
+    //! Check min/max version
+    static bool checkVersion( QString version_min, QString version_max );
+
   public slots:
     // Add new line edit for multiple options
     void addLineEdit();
