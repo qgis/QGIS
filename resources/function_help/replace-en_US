@@ -1,0 +1,15 @@
+<h3>replace() function</h3>
+Returns a string with the the supplied string replaced.
+
+<p><h4>Syntax</h4>
+     replace(<i>string,before,after</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> -> is string.  The start string.<br>
+<i>  before</i> -> is string.  The string to replace.<br>
+<i>  after</i> -> is string.  The string that will repalce <i>before</i><br></p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     replace('QGIS SHOULD ROCK','SHOULD','DOES') -> 'QGIS DOES ROCK'</p>
