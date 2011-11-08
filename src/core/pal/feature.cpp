@@ -486,7 +486,6 @@ namespace pal
     unsigned long flags = f->layer->getArrangementFlags();
     if ( flags == 0 )
       flags = FLAG_ON_LINE; // default flag
-    bool reversed = false;
 
     //LinkedList<PointSet*> *shapes_final;
 
@@ -597,15 +596,20 @@ namespace pal
 #endif
       if ( f->layer->arrangement == P_LINE )
       {
-        //if ( flags & FLAG_MAP_ORIENTATION ) // see bug #3643
-        reversed = ( alpha > M_PI / 2 || alpha <= -M_PI / 2 );
+        // find out whether the line direction for this candidate is from right to left
+        bool isRightToLeft = ( alpha > M_PI / 2 || alpha <= -M_PI / 2 );
+        // meaning of above/below may be reversed if using line position dependent orientation
+        // and the line has right-to-left direction
+        bool reversed = (( flags & FLAG_MAP_ORIENTATION ) ? isRightToLeft : false );
+        bool aboveLine = ( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) );
+        bool belowLine = ( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) );
 
-        if (( !reversed && ( flags & FLAG_ABOVE_LINE ) ) || ( reversed && ( flags & FLAG_BELOW_LINE ) ) )
-          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, reversed ) ); // Line
-        if (( !reversed && ( flags & FLAG_BELOW_LINE ) ) || ( reversed && ( flags & FLAG_ABOVE_LINE ) ) )
-          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ) , by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, reversed ) );   // Line
+        if ( aboveLine )
+          positions->push_back( new LabelPosition( i, bx + cos( beta ) *distlabel , by + sin( beta ) *distlabel, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
+        if ( belowLine )
+          positions->push_back( new LabelPosition( i, bx - cos( beta ) *( distlabel + yrm ) , by - sin( beta ) *( distlabel + yrm ), xrm, yrm, alpha, cost, this, isRightToLeft ) );   // Line
         if ( flags & FLAG_ON_LINE )
-          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, reversed ) ); // Line
+          positions->push_back( new LabelPosition( i, bx - yrm*cos( beta ) / 2, by - yrm*sin( beta ) / 2, xrm, yrm, alpha, cost, this, isRightToLeft ) ); // Line
       }
       else if ( f->layer->arrangement == P_HORIZ )
       {
