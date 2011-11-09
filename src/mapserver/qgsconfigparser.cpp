@@ -42,6 +42,25 @@ QgsConfigParser::~QgsConfigParser()
   {
     delete it.value();
   }
+
+  //remove the temporary files
+  for ( QList<QTemporaryFile*>::const_iterator it = mFilesToRemove.constBegin(); it != mFilesToRemove.constEnd(); ++it )
+  {
+    delete *it;
+  }
+
+  //and also those the temporary file paths
+  for ( QList<QString>::const_iterator it = mFilePathsToRemove.constBegin(); it != mFilePathsToRemove.constEnd(); ++it )
+  {
+    QFile::remove( *it );
+  }
+
+  //delete the layers in the list
+  QList<QgsMapLayer*>::iterator layer_it = mLayersToRemove.begin();
+  for ( ; layer_it != mLayersToRemove.end(); ++layer_it )
+  {
+    delete *layer_it;
+  }
 }
 
 void QgsConfigParser::setDefaultLegendSettings()
@@ -262,10 +281,12 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
     for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
       appendCRSElementToLayer( layerElement, titleElement, constrainedCrsList.at( i ), doc );
-      /*QDomElement crsElement = doc.createElement( "CRS" );
+#if 0
+      QDomElement crsElement = doc.createElement( "CRS" );
       QDomText crsText = doc.createTextNode( constrainedCrsList.at( i ) );
       crsElement.appendChild( crsText );
-      layerElement.insertAfter( crsElement, titleElement );*/
+      layerElement.insertAfter( crsElement, titleElement );
+#endif
     }
   }
   else //no crs constraint
@@ -274,10 +295,12 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
     for ( ; crsIt != crsList.constEnd(); ++crsIt )
     {
       appendCRSElementToLayer( layerElement, titleElement, *crsIt, doc );
-      /*QDomElement crsElement = doc.createElement( "CRS" );
+#if 0
+      QDomElement crsElement = doc.createElement( "CRS" );
       QDomText crsText = doc.createTextNode( *crsIt );
       crsElement.appendChild( crsText );
-      layerElement.insertAfter( crsElement, titleElement );*/
+      layerElement.insertAfter( crsElement, titleElement );
+#endif
     }
   }
 }

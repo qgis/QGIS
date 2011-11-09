@@ -32,7 +32,7 @@ class QgsSVGDiagramFactory: public QgsDiagramFactory
     @param f feature that is symbolized by the diagram
     @param renderContext rendering parameters*/
     QImage* createDiagram( int size, const QgsFeature& f, const QgsRenderContext& renderContext ) const;
-    /**Creates the text/images for the legend items. The caller takes ownership of the generated \
+    /**Creates the text/images for the legend items. The caller takes ownership of the generated
      image objects.
     @param size diagram size that should be represented in the legend
     @param renderContext rendering parameters

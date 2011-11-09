@@ -46,6 +46,10 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid"))
 	CMAKE_OPTS += -D WITH_GLOBE=TRUE
 endif
 
+ifneq (,$(findstring $(DISTRIBUTION),"squeeze lucid maverick natty oneiric sid"))
+	CMAKE_OPTS += -D WITH_INTERNAL_SPATIALINDEX=FALSE
+endif
+
 ifneq (,$(findstring $(DISTRIBUTION),"hardy intrepid"))
 LDFLAGS += -Wl,--as-needed -Wl,--no-undefined
 endif

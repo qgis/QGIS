@@ -144,13 +144,21 @@ void QgsPgSourceSelect::on_btnNew_clicked()
 // Slot for deleting an existing connection
 void QgsPgSourceSelect::on_btnDelete_clicked()
 {
-  QSettings settings;
-  QString key = "/Postgresql/connections/" + cmbConnections->currentText();
   QString msg = tr( "Are you sure you want to remove the %1 connection and all associated settings?" )
                 .arg( cmbConnections->currentText() );
   if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
+  QgsPgSourceSelect::deleteConnection( cmbConnections->currentText() );
+
+  populateConnectionList();
+  emit connectionsChanged();
+}
+
+void QgsPgSourceSelect::deleteConnection( QString name )
+{
+  QString key = "/Postgresql/connections/" + name;
+  QSettings settings;
   settings.remove( key + "/service" );
   settings.remove( key + "/host" );
   settings.remove( key + "/port" );
@@ -166,9 +174,6 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   settings.remove( key + "/savePassword" );
   settings.remove( key + "/save" );
   settings.remove( key );
-
-  populateConnectionList();
-  emit connectionsChanged();
 }
 
 void QgsPgSourceSelect::on_btnSave_clicked()

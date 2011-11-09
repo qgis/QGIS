@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Put geometry variables in database" module="v.to.db">
+	<option key="map" layeroption="layer"/>
+	<option key="option"/>
+	<option key="units"/>
+	<field key="column" layer="map" type="integer,double" label="Attribute field" version_max="6.3" />
+	<field key="columns" layer="map" type="integer,double" label="Attribute field" version_min="6.4" />
+</qgisgrassmodule>

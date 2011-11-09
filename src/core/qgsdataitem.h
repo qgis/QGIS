@@ -46,6 +46,7 @@ class CORE_EXPORT QgsDataItem : public QObject
       Collection,
       Directory,
       Layer,
+      Error,
     };
 
     QgsDataItem( QgsDataItem::Type type, QgsDataItem* parent, QString name, QString path );
@@ -75,6 +76,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     virtual bool equal( const QgsDataItem *other );
 
     virtual QWidget * paramWidget() { return 0; }
+
+    // list of actions provided by this item - usually used for popup menu on right-click
+    virtual QList<QAction*> actions() { return QList<QAction*>(); }
 
     //
 
@@ -108,6 +112,9 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     void setIcon( QIcon icon ) { mIcon = icon; }
 
+    void setToolTip( QString msg ) { mToolTip = msg; }
+    QString toolTip() const { return mToolTip; }
+
   protected:
 
     Type mType;
@@ -116,6 +123,7 @@ class CORE_EXPORT QgsDataItem : public QObject
     bool mPopulated;
     QString mName;
     QString mPath; // it is also used to identify item in tree
+    QString mToolTip;
     QIcon mIcon;
 
   public slots:
@@ -172,10 +180,12 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
     QString mUri;
     LayerType mLayerType;
 
+  public:
     static const QIcon &iconPoint();
     static const QIcon &iconLine();
     static const QIcon &iconPolygon();
     static const QIcon &iconTable();
+    static const QIcon &iconRaster();
     static const QIcon &iconDefault();
 };
 
@@ -192,6 +202,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     void addChild( QgsDataItem *item ) { mChildren.append( item ); }
 
     static const QIcon &iconDir(); // shared icon: open/closed directory
+    static const QIcon &iconDataCollection(); // default icon for data collection
 };
 
 /** A directory: contains subdirectories and layers */
@@ -221,6 +232,24 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
     static QVector<QgsDataProvider*> mProviders;
     static QVector<QLibrary*> mLibraries;
 };
+
+/**
+ Data item that can be used to report problems (e.g. network error)
+ */
+class CORE_EXPORT QgsErrorItem : public QgsDataItem
+{
+    Q_OBJECT
+  public:
+
+    QgsErrorItem( QgsDataItem* parent, QString error, QString path );
+    ~QgsErrorItem();
+
+    //QVector<QgsDataItem*> createChildren();
+    //virtual bool equal( const QgsDataItem *other );
+};
+
+
+// ---------
 
 class QgsDirectoryParamWidget : public QTreeWidget
 {

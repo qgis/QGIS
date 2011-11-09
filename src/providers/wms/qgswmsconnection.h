@@ -43,6 +43,14 @@ class QgsWMSConnection : public QObject
     //! Destructor
     ~QgsWMSConnection();
 
+    static QStringList connectionList();
+
+    static void deleteConnection( QString name );
+
+    static QString selectedConnection();
+    static void setSelectedConnection( QString name );
+
+
   public:
     QgsWmsProvider *provider();
     QString connectionInfo();

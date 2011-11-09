@@ -107,7 +107,7 @@ class QgsDiagramRenderer
      @return 0 in case of success*/
     virtual int calculateDiagramSize( const QgsFeature& f, int& size ) const;
     /**Does (linear or discrete) interpolation*/
-    int interpolateSize( double value, double lowerValue, double upperValue, int lowerSize, \
+    int interpolateSize( double value, double lowerValue, double upperValue, int lowerSize,
                          int upperSize ) const;
 };
 

@@ -267,9 +267,18 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     {
       mAuthId = QString( "USER:%1" ).arg( mSrsId );
     }
+    else if ( mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
+    {
+      OSRDestroySpatialReference( mCRS );
+      mCRS = OSRNewSpatialReference( NULL );
+      mIsValidFlag = OSRSetFromUserInput( mCRS, mAuthId.toLower().toAscii() ) == OGRERR_NONE;
+      setMapUnits();
+    }
 
-    setProj4String( toProj4 );
-    setMapUnits();
+    if ( !mIsValidFlag )
+    {
+      setProj4String( toProj4 );
+    }
   }
   else
   {
@@ -303,6 +312,15 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
     QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
     return mIsValidFlag;
+  }
+
+  if ( OSRAutoIdentifyEPSG( mCRS ) == OGRERR_NONE )
+  {
+    QString authid = QString( "%1:%2" )
+                     .arg( OSRGetAuthorityName( mCRS, NULL ) )
+                     .arg( OSRGetAuthorityCode( mCRS, NULL ) );
+    QgsDebugMsg( "authid recognized as " + authid );
+    return createFromOgcWmsCrs( authid );
   }
 
   // always morph from esri as it doesn't hurt anything
@@ -821,7 +839,7 @@ void QgsCoordinateReferenceSystem::setMapUnits()
 
     QgsDebugMsg( "Projection has linear units of " + unit );
 
-    if ( unit == "Meter" )
+    if ( doubleNear( toMeter, 1.0 ) ) //Unit name for meters would be "metre"
       mMapUnits = QGis::Meters;
     else if ( unit == "Foot" )
       mMapUnits = QGis::Feet;

@@ -29,11 +29,15 @@ class QgsComposerTableWidget: public QWidget, private Ui::QgsComposerTableWidget
     QgsComposerTableWidget( QgsComposerAttributeTable* table );
     ~QgsComposerTableWidget();
 
+  protected:
+    void showEvent( QShowEvent * event );
+
   private:
     QgsComposerAttributeTable* mComposerTable;
 
     /**Blocks / unblocks the signals of all GUI elements*/
     void blockAllSignals( bool b );
+    void refreshMapComboBox();
 
   private slots:
     void on_mLayerComboBox_currentIndexChanged( int index );

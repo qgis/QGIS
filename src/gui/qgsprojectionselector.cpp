@@ -37,6 +37,7 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
     : QWidget( parent, fl )
     , mProjListDone( false )
     , mUserProjListDone( false )
+    , mRecentProjListDone( false )
     , mCRSNameSelectionPending( false )
     , mCRSIDSelectionPending( false )
     , mAuthIDSelectionPending( false )
@@ -168,10 +169,12 @@ void QgsProjectionSelector::showEvent( QShowEvent * theEvent )
     applySelection();
   }
 
-  lstRecent->clear();
-
-  for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
-    insertRecent( mRecentProjections.at( i ).toLong() );
+  if ( !mRecentProjListDone )
+  {
+    for ( int i = mRecentProjections.size() - 1; i >= 0; i-- )
+      insertRecent( mRecentProjections.at( i ).toLong() );
+    mRecentProjListDone = true;
+  }
 
   // Pass up the inheritance hierarchy
   QWidget::showEvent( theEvent );
@@ -828,7 +831,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
   else
   {
     // Not an CRS - remove the highlight so the user doesn't get too confused
-    theItem->setSelected( false );
+    if ( theItem )
+      theItem->setSelected( false );
     teProjection->setText( "" );
   }
 }
@@ -858,7 +862,8 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
   Q_UNUSED( previous );
-  setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
+  if ( current )
+    setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
 }
 
 void QgsProjectionSelector::on_pbnFind_clicked()

@@ -87,7 +87,7 @@ inline bool isDoubleSafe( const QVariant& v )
   return false;
 }
 
-inline bool isNull( const QVariant& v ) { return v.type() == QVariant::Invalid; }
+inline bool isNull( const QVariant& v ) { return v.isNull(); }
 
 ///////////////////////////////////////////////
 // evaluation error macros
@@ -149,7 +149,7 @@ static int getIntValue( const QVariant& value, QgsExpression* parent )
 static TVL getTVLValue( const QVariant& value, QgsExpression* parent )
 {
   // we need to convert to TVL
-  if ( value.type() == QVariant::Invalid )
+  if ( value.isNull() )
     return Unknown;
 
   if ( value.type() == QVariant::Int )
@@ -207,6 +207,33 @@ static QVariant fcnAtan2( const QVariantList& values, QgsFeature* , QgsExpressio
   double y = getDoubleValue( values.at( 0 ), parent );
   double x = getDoubleValue( values.at( 1 ), parent );
   return QVariant( atan2( y, x ) );
+}
+static QVariant fcnExp( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  return QVariant( exp( x ) );
+}
+static QVariant fcnLn( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  if ( x <= 0 )
+    return QVariant();
+  return QVariant( log( x ) );
+}
+static QVariant fcnLog10( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double x = getDoubleValue( values.at( 0 ), parent );
+  if ( x <= 0 )
+    return QVariant();
+  return QVariant( log10( x ) );
+}
+static QVariant fcnLog( const QVariantList& values, QgsFeature* , QgsExpression* parent )
+{
+  double b = getDoubleValue( values.at( 0 ), parent );
+  double x = getDoubleValue( values.at( 1 ), parent );
+  if ( x <= 0 || b <= 0 )
+    return QVariant();
+  return QVariant( log( x ) / log( b ) );
 }
 static QVariant fcnToInt( const QVariantList& values, QgsFeature* , QgsExpression* parent )
 {
@@ -348,36 +375,46 @@ typedef QgsExpression::FunctionDef FnDef;
 FnDef QgsExpression::BuiltinFunctions[] =
 {
   // math
-  FnDef( "sqrt", 1, fcnSqrt ),
-  FnDef( "sin", 1, fcnSin ),
-  FnDef( "cos", 1, fcnCos ),
-  FnDef( "tan", 1, fcnTan ),
-  FnDef( "asin", 1, fcnAsin ),
-  FnDef( "acos", 1, fcnAcos ),
-  FnDef( "atan", 1, fcnAtan ),
-  FnDef( "atan2", 2, fcnAtan2 ),
+  FnDef( "sqrt", 1, fcnSqrt, "Math" ),
+  FnDef( "sin", 1, fcnSin, "Math" ),
+  FnDef( "cos", 1, fcnCos, "Math" ),
+  FnDef( "tan", 1, fcnTan, "Math" ),
+  FnDef( "asin", 1, fcnAsin, "Math" ),
+  FnDef( "acos", 1, fcnAcos, "Math" ),
+  FnDef( "atan", 1, fcnAtan, "Math" ),
+  FnDef( "atan2", 2, fcnAtan2, "Math" ),
+  FnDef( "exp", 1, fcnExp, "Math" ),
+  FnDef( "ln", 1, fcnLn, "Math" ),
+  FnDef( "log10", 1, fcnLog10, "Math" ),
+  FnDef( "log", 2, fcnLog, "Math" ),
   // casts
-  FnDef( "toint", 1, fcnToInt ),
-  FnDef( "toreal", 1, fcnToReal ),
-  FnDef( "tostring", 1, fcnToString ),
+  FnDef( "toint", 1, fcnToInt, "Conversions" ),
+  FnDef( "toreal", 1, fcnToReal, "Conversions" ),
+  FnDef( "tostring", 1, fcnToString, "Conversions" ),
   // string manipulation
-  FnDef( "lower", 1, fcnLower ),
-  FnDef( "upper", 1, fcnUpper ),
-  FnDef( "length", 1, fcnLength ),
-  FnDef( "replace", 3, fcnReplace ),
-  FnDef( "regexp_replace", 3, fcnRegexpReplace ),
-  FnDef( "substr", 3, fcnSubstr ),
+  FnDef( "lower", 1, fcnLower, "String", "<b>Convert to lower case</b> "
+  "<br> Converts a string to lower case letters. "
+  "<br> <i>Usage:</i><br>lower('HELLO WORLD') will return 'hello world'" ),
+  FnDef( "upper", 1, fcnUpper, "String" , "<b>Convert to upper case</b> "
+  "<br> Converts a string to upper case letters. "
+  "<br> <i>Usage:</i><br>upper('hello world') will return 'HELLO WORLD'" ),
+  FnDef( "length", 1, fcnLength, "String", "<b>Length of string</b> "
+  "<br> Returns the legnth of a string. "
+  "<br> <i>Usage:</i><br>length('hello') will return 5" ),
+  FnDef( "replace", 3, fcnReplace, "String", "<b>Replace a section of a string.</b> " ),
+  FnDef( "regexp_replace", 3, fcnRegexpReplace, "String" ),
+  FnDef( "substr", 3, fcnSubstr, "String" ),
   // geometry accessors
-  FnDef( "xat", 1, fcnXat, true ),
-  FnDef( "yat", 1, fcnYat, true ),
+  FnDef( "xat", 1, fcnXat, "Geometry", "", true ),
+  FnDef( "yat", 1, fcnYat, "Geometry", "", true ),
+  FnDef( "$area", 0, fcnGeomArea, "Geometry", "", true ),
+  FnDef( "$length", 0, fcnGeomLength, "Geometry", "", true ),
+  FnDef( "$perimeter", 0, fcnGeomPerimeter, "Geometry", "", true ),
+  FnDef( "$x", 0, fcnX, "Geometry", "", true ),
+  FnDef( "$y", 0, fcnY, "Geometry", "" , true ),
   // special columns
-  FnDef( "$rownum", 0, fcnRowNumber ),
-  FnDef( "$area", 0, fcnGeomArea, true ),
-  FnDef( "$length", 0, fcnGeomLength, true ),
-  FnDef( "$perimeter", 0, fcnGeomPerimeter, true ),
-  FnDef( "$x", 0, fcnX, true ),
-  FnDef( "$y", 0, fcnY, true ),
-  FnDef( "$id", 0, fcnFeatureId ),
+  FnDef( "$rownum", 0, fcnRowNumber, "Record" ),
+  FnDef( "$id", 0, fcnFeatureId, "Record" )
 };
 
 
@@ -388,13 +425,18 @@ bool QgsExpression::isFunctionName( QString name )
 
 int QgsExpression::functionIndex( QString name )
 {
-  int count = sizeof( BuiltinFunctions ) / sizeof( FunctionDef );
+  int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
     if ( QString::compare( name, BuiltinFunctions[i].mName, Qt::CaseInsensitive ) == 0 )
       return i;
   }
   return -1;
+}
+
+int QgsExpression::functionCount()
+{
+  return ( sizeof( BuiltinFunctions ) / sizeof( FunctionDef ) );
 }
 
 
@@ -886,13 +928,15 @@ bool QgsExpression::NodeLiteral::prepare( QgsExpression* /*parent*/, const QgsFi
 
 QString QgsExpression::NodeLiteral::dump() const
 {
+  if ( mValue.isNull() )
+    return "NULL";
+
   switch ( mValue.type() )
   {
-    case QVariant::Invalid: return "NULL";
     case QVariant::Int: return QString::number( mValue.toInt() );
     case QVariant::Double: return QString::number( mValue.toDouble() );
     case QVariant::String: return QString( "'%1'" ).arg( mValue.toString() );
-    default: return "[unsupported value]";
+    default: return QString( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
 }
 

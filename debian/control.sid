@@ -21,6 +21,7 @@ Build-Depends:
  libqwt-dev,
  libspatialite-dev,
  libsqlite3-dev,
+ libspatialindex-dev,
  pkg-config,
  pyqt4-dev-tools,
  python,

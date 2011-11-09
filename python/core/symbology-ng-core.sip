@@ -630,6 +630,9 @@ class QgsSymbolV2RenderContext
     void setFeature( const QgsFeature* f );
     const QgsFeature* feature() const;
 
+    void setLayer( const QgsVectorLayer* layer );
+    const QgsVectorLayer* layer() const;
+
     // Color used for selections
     static QColor selectionColor();
 
@@ -708,8 +711,7 @@ public:
   //! delete layer at specified index and set a new one
   bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
 
-
-  void startRender(QgsRenderContext& context);
+  void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
   void stopRender(QgsRenderContext& context);
 
   void setColor(const QColor& color);

@@ -26,8 +26,8 @@
 #include <QSvgRenderer>
 
 
-QgsComposerPicture::QgsComposerPicture( QgsComposition *composition ): QgsComposerItem( composition ), mMode( Unknown ), \
-    mRotationMap( 0 )
+QgsComposerPicture::QgsComposerPicture( QgsComposition *composition )
+    : QgsComposerItem( composition ), mMode( Unknown ), mRotationMap( 0 )
 {
   mPictureWidth = rect().width();
 }

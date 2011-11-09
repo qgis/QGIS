@@ -20,7 +20,7 @@
 #include "qgsgcplist.h"
 #include "qgsrectangle.h"
 
-/**A composer item to visualise the distribution of georeference residuals. For the visualisation, \
+/**A composer item to visualise the distribution of georeference residuals. For the visualisation,
 the length of the residual arrows are scaled*/
 class QgsResidualPlotItem: public QgsComposerItem
 {

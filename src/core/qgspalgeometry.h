@@ -28,7 +28,7 @@ class QgsOverlayObject;
 class CORE_EXPORT QgsPALGeometry: public pal::PalGeometry
 {
   public:
-    /**Constructor that takes the geometry representation as geos object. \
+    /**Constructor that takes the geometry representation as geos object.
     Note that the class does not take ownership*/
     QgsPALGeometry( QgsOverlayObject* op );
     ~QgsPALGeometry();

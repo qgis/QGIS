@@ -37,7 +37,6 @@
 
 #include "qgspostgresprovider.h"
 #include "qgspostgresconnection.h"
-#include "qgspgsourceselect.h"
 
 #include "qgslogger.h"
 
@@ -187,12 +186,13 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   if ( primaryKeyType.isEmpty() )
   {
     primaryKeyType = "serial";
-    /* TODO
-    // check the feature count to choose if create a serial8 pk field
+#if 0
+    // TODO: check the feature count to choose if create a serial8 pk field
     if ( layer->featureCount() > 0xFFFFFF )
     {
       primaryKeyType = "serial8";
-    }*/
+    }
+#endif
   }
 
   try
@@ -733,7 +733,7 @@ QStringList QgsPostgresProvider::pkCandidates( QString schemaName, QString viewN
   QStringList cols;
   cols << QString::null;
 
-  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname IN ('int4','oid') AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
+  QString sql = QString( "select attname from pg_attribute join pg_type on atttypid=pg_type.oid WHERE pg_type.typname IN ('int2','int4','int8','oid') AND attrelid=regclass('\"%1\".\"%2\"')" ).arg( schemaName ).arg( viewName );
   QgsDebugMsg( sql );
   PGresult *colRes = connectionRO->PQexec( sql );
 
@@ -1154,13 +1154,15 @@ qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int co
   char *p = PQgetvalue( queryResult, row, col );
   size_t s = PQgetlength( queryResult, row, col );
 
+#ifdef QGISDEBUG
   QString buf = "";
   for ( size_t i = 0; i < s; i++ )
   {
     buf += QString( "%1 " ).arg( *( unsigned char * )( p + i ), 0, 16, QLatin1Char( ' ' ) );
   }
 
-  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 3 );
+  QgsDebugMsgLevel( QString( "int in hex:%1" ).arg( buf ), 4 );
+#endif
 
   switch ( s )
   {
@@ -1192,18 +1194,18 @@ qint64 QgsPostgresProvider::getBinaryInt( PGresult *queryResult, int row, int co
 
       if ( swapEndian )
       {
-        QgsDebugMsg( QString( "swap oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ) );
+        QgsDebugMsgLevel( QString( "swap oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ), 4 );
         oid0 = ntohl( oid0 );
         oid1 = ntohl( oid1 );
       }
 
-      QgsDebugMsg( QString( "oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ) );
+      QgsDebugMsgLevel( QString( "oid0:%1 oid1:%2" ).arg( oid0 ).arg( oid1 ), 4 );
       oid   = oid0;
-      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      QgsDebugMsgLevel( QString( "oid:%1" ).arg( oid ), 4 );
       oid <<= 32;
-      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      QgsDebugMsgLevel( QString( "oid:%1" ).arg( oid ), 4 );
       oid  |= oid1;
-      QgsDebugMsg( QString( "oid:%1" ).arg( oid ) );
+      QgsDebugMsgLevel( QString( "oid:%1" ).arg( oid ), 4 );
     }
     break;
 
@@ -1227,7 +1229,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
   try
   {
     QgsFeatureId oid = getBinaryInt( queryResult, row, 0 );
-    QgsDebugMsgLevel( QString( "oid=%1" ).arg( oid ), 3 );
+    QgsDebugMsgLevel( QString( "oid=%1" ).arg( oid ), 4 );
 
     feature.setFeatureId( oid );
     feature.clearAttributeMap();
@@ -4395,172 +4397,6 @@ QGISEXTERN bool isProvider()
   return true;
 }
 // ---------------------------------------------------------------------------
-QGISEXTERN QgsPgSourceSelect * selectWidget( QWidget * parent, Qt::WFlags fl )
-{
-  return new QgsPgSourceSelect( parent, fl );
-}
-
-QGISEXTERN int dataCapabilities()
-{
-  return  QgsDataProvider::Database;
-}
-// ---------------------------------------------------------------------------
-QgsPGConnectionItem::QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
-{
-}
-
-QgsPGConnectionItem::~QgsPGConnectionItem()
-{
-}
-
-QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
-{
-  QgsDebugMsg( "Entered" );
-  QVector<QgsDataItem*> children;
-  QgsPostgresConnection connection( mName );
-  QgsPostgresProvider *pgProvider = connection.provider( );
-  if ( !pgProvider )
-    return children;
-
-  QString mConnInfo = connection.connectionInfo();
-  QgsDebugMsg( "mConnInfo = " + mConnInfo );
-
-  if ( !pgProvider->supportedLayers( mLayerProperties, true, false, false ) )
-    return children;
-
-  QMap<QString, QVector<QgsPostgresLayerProperty> > schemasMap;
-  foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
-  {
-    schemasMap[ layerProperty.schemaName ].push_back( layerProperty );
-  }
-
-  QMap<QString, QVector<QgsPostgresLayerProperty> >::const_iterator it = schemasMap.constBegin();
-  for ( ; it != schemasMap.constEnd(); it++ )
-  {
-    QgsDebugMsg( "schema: " + it.key() );
-    QgsPGSchemaItem * schema = new QgsPGSchemaItem( this, it.key(), mPath + "/" + it.key(), mConnInfo, it.value() );
-
-    children.append( schema );
-  }
-  return children;
-}
-
-bool QgsPGConnectionItem::equal( const QgsDataItem *other )
-{
-  if ( type() != other->type() )
-  {
-    return false;
-  }
-  const QgsPGConnectionItem *o = dynamic_cast<const QgsPGConnectionItem *>( other );
-  return ( mPath == o->mPath && mName == o->mName && mConnInfo == o->mConnInfo );
-}
-// ---------------------------------------------------------------------------
-QgsPGLayerItem::QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperty )
-    : QgsLayerItem( parent, name, path, QString(), layerType, "postgres" ),
-    mConnInfo( connInfo ),
-    mLayerProperty( layerProperty )
-{
-  mUri = createUri();
-  mPopulated = true;
-}
-
-QgsPGLayerItem::~QgsPGLayerItem()
-{
-}
-
-QString QgsPGLayerItem::createUri()
-{
-  QString pkColName = mLayerProperty.pkCols.size() > 0 ? mLayerProperty.pkCols.at( 0 ) : QString::null;
-  QgsDataSourceURI uri( mConnInfo );
-  uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
-  return uri.uri();
-}
-
-// ---------------------------------------------------------------------------
-QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties )
-    : QgsDataCollectionItem( parent, name, path )
-{
-  mIcon = QIcon( getThemePixmap( "mIconNamespace.png" ) );
-
-  // Populate everything, it costs nothing, all info about layers is collected
-  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
-  {
-    QgsDebugMsg( "table: " + layerProperty.schemaName + "." + layerProperty.tableName );
-
-    QgsLayerItem::LayerType layerType = QgsLayerItem::NoType;
-    if ( layerProperty.type.contains( "POINT" ) )
-    {
-      layerType = QgsLayerItem::Point;
-    }
-    else if ( layerProperty.type.contains( "LINE" ) )
-    {
-      layerType = QgsLayerItem::Line;
-    }
-    else if ( layerProperty.type.contains( "POLYGON" ) )
-    {
-      layerType = QgsLayerItem::Polygon;
-    }
-    else if ( layerProperty.type == QString::null )
-    {
-      if ( layerProperty.geometryColName == QString::null )
-      {
-        layerType = QgsLayerItem::TableLayer;
-      }
-    }
-
-    QgsPGLayerItem * layer = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, connInfo, layerType, layerProperty );
-    mChildren.append( layer );
-  }
-
-  mPopulated = true;
-}
-
-QgsPGSchemaItem::~QgsPGSchemaItem()
-{
-}
-
-// ---------------------------------------------------------------------------
-QgsPGRootItem::QgsPGRootItem( QgsDataItem* parent, QString name, QString path )
-    : QgsDataCollectionItem( parent, name, path )
-{
-  //mIcon = QIcon( getThemePixmap( "mIconPg.png" ) );
-  populate();
-}
-
-QgsPGRootItem::~QgsPGRootItem()
-{
-}
-
-QVector<QgsDataItem*>QgsPGRootItem::createChildren()
-{
-  QVector<QgsDataItem*> connections;
-  foreach( QString connName,  QgsPostgresConnection::connectionList() )
-  {
-    QgsDataItem * conn = new QgsPGConnectionItem( this, connName, mPath + "/" + connName );
-    connections.push_back( conn );
-  }
-  return connections;
-}
-
-QWidget * QgsPGRootItem::paramWidget()
-{
-  QgsPgSourceSelect *select = new QgsPgSourceSelect( 0, 0, true, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
-  return select;
-}
-void QgsPGRootItem::connectionsChanged()
-{
-  refresh();
-}
-
-// ---------------------------------------------------------------------------
-
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
-{
-  Q_UNUSED( thePath );
-  return new QgsPGRootItem( parentItem, "PostGIS", "pg:" );
-}
 
 QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
   const QString& uri,

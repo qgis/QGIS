@@ -3,11 +3,13 @@ SET (WMS_SRCS
   qgswmsprovider.cpp 
   qgswmssourceselect.cpp 
   qgswmsconnection.cpp 
+  qgswmsdataitems.cpp
 )
 SET (WMS_MOC_HDRS  
   qgswmsprovider.h 
   qgswmssourceselect.h 
   qgswmsconnection.h 
+  qgswmsdataitems.h
 )
 
 QT4_WRAP_CPP (WMS_MOC_SRCS ${WMS_MOC_HDRS})

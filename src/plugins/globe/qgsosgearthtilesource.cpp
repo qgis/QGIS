@@ -153,11 +153,11 @@ QImage* QgsOsgEarthTileSource::createImage( int width, int height ) const
   }
 
   //apply DPI parameter if present.
-  /*
-        int dpm = dpi / 0.0254;
-        qImage->setDotsPerMeterX(dpm);
-        qImage->setDotsPerMeterY(dpm);
-        */
+#if 0
+  int dpm = dpi / 0.0254;
+  qImage->setDotsPerMeterX( dpm );
+  qImage->setDotsPerMeterY( dpm );
+#endif
   return qImage;
 }
 

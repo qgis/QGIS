@@ -436,7 +436,7 @@
                 <property name="title">
                  <string>GDAL Drivers</string>
                 </property>
-                <layout class="QGridLayout" name="gridLayout">
+                <layout class="QGridLayout" name="gridLayout_24">
                  <item row="1" column="0">
                   <widget class="QListWidget" name="lstGdalDrivers">
                    <property name="minimumSize">

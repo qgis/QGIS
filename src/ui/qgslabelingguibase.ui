@@ -18,43 +18,6 @@
     <normaloff>../../../../.designer/backup</normaloff>../../../../.designer/backup</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <item row="0" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="chkEnableLabeling">
-       <property name="text">
-        <string>Label this layer</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <spacer name="horizontalSpacer_5">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_20">
-       <property name="text">
-        <string>Field with labels</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QComboBox" name="cboFieldName"/>
-     </item>
-    </layout>
-   </item>
    <item row="1" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_4">
      <item>
@@ -75,6 +38,9 @@
      </item>
      <item>
       <widget class="QgsLabelPreview" name="lblFontPreview">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
          <horstretch>0</horstretch>
@@ -97,8 +63,65 @@
      </item>
     </layout>
    </item>
+   <item row="3" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QCheckBox" name="chkEnableLabeling">
+       <property name="text">
+        <string>Label this layer with</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cboFieldName">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="editable">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="btnExpression">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="text">
+        <string>...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
    <item row="2" column="0">
     <widget class="QTabWidget" name="mTabWidget">
+     <property name="enabled">
+      <bool>true</bool>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -430,6 +453,18 @@
       <layout class="QGridLayout" name="gridLayout_6">
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
+         <property name="autoFillBackground">
+          <bool>false</bool>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Plain</enum>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -438,8 +473,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>478</height>
+            <width>658</width>
+            <height>443</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -506,20 +541,13 @@
                </widget>
               </item>
               <item row="2" column="0">
-               <widget class="QCheckBox" name="chkMultiLine">
-                <property name="text">
-                 <string>Multiline labels</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
                <widget class="QCheckBox" name="chkAddDirectionSymbol">
                 <property name="text">
                  <string>Add direction symbol</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
+              <item row="3" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLabel" name="label_19">
@@ -537,12 +565,12 @@
                 </item>
                </layout>
               </item>
-              <item row="5" column="0">
+              <item row="4" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_20">
                 <item>
                  <widget class="QCheckBox" name="chkNoObstacle">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>Features don't act as obstacles for labels</string>
@@ -565,7 +593,7 @@
                 <item>
                  <widget class="QPushButton" name="btnEngineSettings">
                   <property name="enabled">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                   <property name="text">
                    <string>Engine settings</string>
@@ -703,7 +731,7 @@
               <item>
                <widget class="QStackedWidget" name="stackedOptions">
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="pageOptionsPoint">
                  <layout class="QGridLayout" name="gridLayout_7">
@@ -794,70 +822,58 @@
                    </widget>
                   </item>
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_13">
-                    <item>
-                     <widget class="QLabel" name="label_25">
-                      <property name="text">
-                       <string>Orientation</string>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="radOrientationMap">
-                      <property name="text">
-                       <string>map</string>
-                      </property>
-                      <property name="checked">
-                       <bool>true</bool>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QRadioButton" name="radOrientationLine">
-                      <property name="text">
-                       <string>line</string>
-                      </property>
-                     </widget>
-                    </item>
-                   </layout>
-                  </item>
-                  <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_14">
-                    <item>
-                     <widget class="QLabel" name="label_26">
-                      <property name="text">
-                       <string>Label distance</string>
-                      </property>
-                      <property name="alignment">
-                       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QDoubleSpinBox" name="spinDistLine">
-                      <property name="decimals">
-                       <number>4</number>
-                      </property>
-                      <property name="maximum">
-                       <double>999999999.000000000000000</double>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QComboBox" name="mLineDistanceUnitComboBox">
-                      <item>
+                   <widget class="QWidget" name="offlineOptions" native="true">
+                    <layout class="QVBoxLayout" name="verticalLayout">
+                     <property name="margin">
+                      <number>0</number>
+                     </property>
+                     <item>
+                      <layout class="QHBoxLayout" name="horizontalLayout_14">
+                       <item>
+                        <widget class="QLabel" name="label_26">
+                         <property name="text">
+                          <string>Label distance</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QDoubleSpinBox" name="spinDistLine">
+                         <property name="decimals">
+                          <number>4</number>
+                         </property>
+                         <property name="maximum">
+                          <double>999999999.000000000000000</double>
+                         </property>
+                        </widget>
+                       </item>
+                       <item>
+                        <widget class="QComboBox" name="mLineDistanceUnitComboBox">
+                         <item>
+                          <property name="text">
+                           <string>In mm</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>In map units</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </item>
+                     <item>
+                      <widget class="QCheckBox" name="chkLineOrientationDependent">
                        <property name="text">
-                        <string>In mm</string>
+                        <string>Line orientation dependent position</string>
                        </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>In map units</string>
-                       </property>
-                      </item>
-                     </widget>
-                    </item>
-                   </layout>
+                      </widget>
+                     </item>
+                    </layout>
+                   </widget>
                   </item>
                  </layout>
                 </widget>
@@ -884,6 +900,9 @@
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="3" column="1">
         <widget class="QScrollArea" name="scrollArea">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -892,8 +911,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>586</height>
+            <width>249</width>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
@@ -1088,16 +1107,6 @@
      </widget>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -1127,8 +1136,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>575</y>
+     <x>353</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>309</x>
@@ -1143,12 +1152,60 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>344</x>
-     <y>575</y>
+     <x>353</x>
+     <y>459</y>
     </hint>
     <hint type="destinationlabel">
      <x>353</x>
      <y>430</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>cboFieldName</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>127</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>248</x>
+     <y>26</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>mTabWidget</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>59</x>
+     <y>22</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>91</x>
+     <y>89</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>chkEnableLabeling</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>btnExpression</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>70</x>
+     <y>28</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>291</x>
+     <y>32</y>
     </hint>
    </hints>
   </connection>

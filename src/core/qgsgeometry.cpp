@@ -6138,7 +6138,7 @@ QgsGeometry* QgsGeometry::combine( QgsGeometry* geometry )
     GEOSGeometry* unionGeom = GEOSUnion( mGeos, geometry->mGeos );
     QGis::WkbType thisGeomType = wkbType();
     QGis::WkbType otherGeomType = geometry->wkbType();
-    if (( thisGeomType == QGis::WKBLineString || thisGeomType == QGis::WKBLineString25D ) \
+    if (( thisGeomType == QGis::WKBLineString || thisGeomType == QGis::WKBLineString25D )
         && ( otherGeomType == QGis::WKBLineString || otherGeomType == QGis::WKBLineString25D ) )
     {
       GEOSGeometry* mergedGeom = GEOSLineMerge( unionGeom );

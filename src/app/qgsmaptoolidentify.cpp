@@ -327,7 +327,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   idPoint = toLayerCoordinates( layer, idPoint );
   QString type;
 
-  if ( layer->providerKey() == "wms" )
+  if ( layer->providerType() == "wms" )
   {
     type = tr( "WMS layer" );
 

@@ -179,8 +179,8 @@ void QgsGeorefTransform::selectTransformParametrisation( TransformParametrisatio
 
 bool QgsGeorefTransform::providesAccurateInverseTransformation() const
 {
-  return ( mTransformParametrisation == Linear \
-           || mTransformParametrisation == Helmert \
+  return ( mTransformParametrisation == Linear
+           || mTransformParametrisation == Helmert
            || mTransformParametrisation == PolynomialOrder1 );
 }
 

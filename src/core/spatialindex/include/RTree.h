@@ -19,86 +19,84 @@
 //  Email:
 //    mhadji@gmail.com
 
-#ifndef __spatialindex_rtree_h
-#define __spatialindex_rtree_h
+#pragma once
 
 namespace SpatialIndex
 {
   namespace RTree
   {
-    enum RTreeVariant
+    SIDX_DLL enum RTreeVariant
     {
       RV_LINEAR = 0x0,
       RV_QUADRATIC,
       RV_RSTAR
     };
 
-    enum BulkLoadMethod
+    SIDX_DLL enum BulkLoadMethod
     {
       BLM_STR = 0x0
     };
 
-    enum PersistenObjectIdentifier
+    SIDX_DLL enum PersistenObjectIdentifier
     {
       PersistentIndex = 0x1,
       PersistentLeaf = 0x2
     };
 
-    enum RangeQueryType
+    SIDX_DLL enum RangeQueryType
     {
       ContainmentQuery = 0x1,
       IntersectionQuery = 0x2
     };
 
-    class Data : public IData, public Tools::ISerializable
+    class SIDX_DLL Data : public IData, public Tools::ISerializable
     {
       public:
-        Data( unsigned long len, byte* pData, Tools::Geometry::Region& r, long id );
+        Data( uint32_t len, byte* pData, Region& r, id_type id );
         virtual ~Data();
 
         virtual Data* clone();
-        virtual long getIdentifier() const;
+        virtual id_type getIdentifier() const;
         virtual void getShape( IShape** out ) const;
-        virtual void getData( unsigned long& len, byte** data ) const;
-        virtual unsigned long getByteArraySize();
+        virtual void getData( uint32_t& len, byte** data ) const;
+        virtual uint32_t getByteArraySize();
         virtual void loadFromByteArray( const byte* data );
-        virtual void storeToByteArray( byte** data, unsigned long& len );
+        virtual void storeToByteArray( byte** data, uint32_t& len );
 
-        long m_id;
-        Tools::Geometry::Region m_region;
+        id_type m_id;
+        Region m_region;
         byte* m_pData;
-        unsigned long m_dataLength;
+        uint32_t m_dataLength;
     }; // Data
 
-#ifdef _MSC_VER
-    // MSVC didn't like the difference in parameter names between declaration
-    // definition
-    extern ISpatialIndex* returnRTree( IStorageManager& sm, Tools::PropertySet& ps );
-#else
-    extern ISpatialIndex* returnRTree( IStorageManager& in0, Tools::PropertySet& in1 );
-#endif//_MSC_VER
-    extern ISpatialIndex* createNewRTree(
-        IStorageManager& sm,
-        double fillFactor,
-        unsigned long indexCapacity,
-        unsigned long leafCapacity,
-        unsigned long dimension,
-        RTreeVariant rv,
-        long& indexIdentifier
-      );
-    extern ISpatialIndex* createAndBulkLoadNewRTree(
-        BulkLoadMethod m,
-        IDataStream& stream,
-        IStorageManager& sm,
-        double fillFactor,
-        unsigned long indexCapacity,
-        unsigned long leafCapacity,
-        unsigned long dimension,
-        RTreeVariant rv,
-        long& indexIdentifier
-      );
-    extern ISpatialIndex* loadRTree( IStorageManager& in, long indexIdentifier );
+    SIDX_DLL ISpatialIndex* returnRTree( IStorageManager& ind, Tools::PropertySet& in );
+    SIDX_DLL ISpatialIndex* createNewRTree(
+      IStorageManager& sm,
+      double fillFactor,
+      uint32_t indexCapacity,
+      uint32_t leafCapacity,
+      uint32_t dimension,
+      RTreeVariant rv,
+      id_type& indexIdentifier
+    );
+    SIDX_DLL ISpatialIndex* createAndBulkLoadNewRTree(
+      BulkLoadMethod m,
+      IDataStream& stream,
+      IStorageManager& sm,
+      double fillFactor,
+      uint32_t indexCapacity,
+      uint32_t leafCapacity,
+      uint32_t dimension,
+      RTreeVariant rv,
+      id_type& indexIdentifier
+    );
+    SIDX_DLL ISpatialIndex* createAndBulkLoadNewRTree(
+      BulkLoadMethod m,
+      IDataStream& stream,
+      IStorageManager& sm,
+      Tools::PropertySet& ps,
+      id_type& indexIdentifier
+    );
+    SIDX_DLL ISpatialIndex* loadRTree( IStorageManager& in, id_type indexIdentifier );
   }
 }
-
-#endif /* __spatialindex_rtree_h */

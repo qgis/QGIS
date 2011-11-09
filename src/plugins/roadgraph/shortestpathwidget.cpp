@@ -128,7 +128,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
 
   h = new QHBoxLayout( myWidget );
   QPushButton *helpButton = new QPushButton( tr( "Help" ), this );
-  helpButton->setIcon( this->style()->standardIcon( QStyle::SP_DialogHelpButton ) );
+  helpButton->setIcon( style()->standardIcon( QStyle::SP_DialogHelpButton ) );
   h->addWidget( helpButton );
   v->addLayout( h );
 

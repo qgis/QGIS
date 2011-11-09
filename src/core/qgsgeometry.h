@@ -521,7 +521,7 @@ class CORE_EXPORT QgsGeometry
      @return 0 in case of success*/
     int topologicalTestPointsSplit( const GEOSGeometry* splitLine, QList<QgsPoint>& testPoints ) const;
 
-    /**Creates a new line from an original line and a reshape line. The part of the input line from the first to the last intersection with the \
+    /**Creates a new line from an original line and a reshape line. The part of the input line from the first to the last intersection with the
         reshape line will be replaced. The calling function takes ownership of the result.
     @param origLine the original line
     @param reshapeLineGeos the reshape line

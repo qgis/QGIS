@@ -5,12 +5,14 @@
 SET(PG_SRCS
   qgspostgresprovider.cpp
   qgspostgresconnection.cpp
+  qgspostgresdataitems.cpp
   qgspgsourceselect.cpp
   qgspgnewconnection.cpp
 )
 SET(PG_MOC_HDRS
   qgspostgresprovider.h
   qgspostgresconnection.h
+  qgspostgresdataitems.h
   qgspgsourceselect.h
   qgspgnewconnection.h
 )

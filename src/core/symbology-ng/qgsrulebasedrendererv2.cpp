@@ -184,7 +184,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVe
     QgsExpression* exp = rule->filter();
     if ( exp )
       exp->prepare( pendingFields );
-    rule->symbol()->startRender( context );
+    rule->symbol()->startRender( context, vlayer );
   }
 }
 
