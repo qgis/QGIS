@@ -28,6 +28,7 @@
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include <QUrl>
 #include <QVector>
 
 class QgsCoordinateTransform;
