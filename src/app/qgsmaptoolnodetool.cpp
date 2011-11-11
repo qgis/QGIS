@@ -954,10 +954,16 @@ void SelectionFeature::setSelectedFeature( QgsFeatureId featureId,
 
 void SelectionFeature::validateGeometry( QgsGeometry *g )
 {
-  QgsDebugMsg( "validating geometry" );
-
   if ( g == NULL )
     g = mFeature->geometry();
+
+  if ( g->isGeosValid() )
+  {
+    QgsDebugMsg( "geometry is valid - not validating." );
+    return;
+  }
+
+  QgsDebugMsg( "validating geometry" );
 
   g->validateGeometry( mGeomErrors );
 
