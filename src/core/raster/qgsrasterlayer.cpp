@@ -1717,7 +1717,7 @@ QString QgsRasterLayer::metadata()
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   //just use the first band
-  switch ( mDataProvider->dataType( 1 ) )
+  switch ( mDataProvider->srcDataType( 1 ) )
   {
     case GDT_Byte:
       myMetadata += tr( "GDT_Byte - Eight bit unsigned integer" );
