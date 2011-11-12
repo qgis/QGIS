@@ -4932,11 +4932,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>like bus routes, cycle routes and numbered highways</source>
-        <translation type="unfinished"></translation>
+        <translation>tels que de voies de bus, des pistes cyclables</translation>
     </message>
     <message>
         <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
-        <translation type="unfinished"></translation>
+        <translation>radars de vitesse, caméras infrarouge, contrôles du poid,...</translation>
     </message>
     <message>
         <source>OSM Information</source>
@@ -5728,7 +5728,7 @@ Veuillez rectifier cette situation si vous voulez que l&apos;extension OSM sache
     </message>
     <message>
         <source>Changeset closing failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur lors de la fermeture</translation>
     </message>
     <message>
         <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
@@ -16683,7 +16683,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsexpressionbuilderdialogbase.ui" line="14"/>
         <source>Expression string builder</source>
-        <translation type="unfinished"></translation>
+        <translation>Constructeur de chaîne d&apos;expression</translation>
     </message>
 </context>
 <context>
@@ -19380,7 +19380,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="538"/>
         <source>Eye separation (m)</source>
-        <translation type="unfinished"></translation>
+        <translation>Espace entre les yeux (m)</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="567"/>
@@ -19712,7 +19712,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="423"/>
         <source>Remove the selected layer(s) from QGis canvas before continue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enlever les couches sélectionnées du canevas avant de poursuivre.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassbrowser.cpp" line="437"/>
@@ -21033,12 +21033,12 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2105"/>
         <source>Cannot parse version_min %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;analyser version_min %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2123"/>
         <source>Cannot parse version_max %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;analyser version_max %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2169"/>
@@ -22094,7 +22094,7 @@ ou changez manuellement les valeurs suivantes</translation>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="57"/>
         <location filename="../src/plugins/grass/qgsgrassshell.cpp" line="82"/>
         <source>Cannot rename the lock file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de renommer le fichier %1</translation>
     </message>
 </context>
 <context>
@@ -23248,7 +23248,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="496"/>
         <source>Expression based label</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiquette basée sur une formule</translation>
     </message>
 </context>
 <context>
@@ -23284,17 +23284,17 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="401"/>
         <source>Formatted numbers</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombres formattés</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="426"/>
         <source>Decimal places </source>
-        <translation type="unfinished"></translation>
+        <translation>Places des décimales</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="436"/>
         <source>Show plus sign</source>
-        <translation type="unfinished"></translation>
+        <translation>Afficher le signe plus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="451"/>
@@ -23574,7 +23574,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="871"/>
         <source>Line orientation dependent position</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientation de la ligne suivant la position</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="898"/>
@@ -23639,7 +23639,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="81"/>
         <source>Label this layer with</source>
-        <translation type="unfinished"></translation>
+        <translation>Étiqueter cette couche avec</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1007"/>
@@ -24365,7 +24365,7 @@ Ceci est peut-être dûà votre connexion ou celle du serveru WMS.
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="169"/>
         <source>New polygon ring not disjoint with existing polygons.</source>
-        <translation type="unfinished"></translation>
+        <translation>Le nouvel anneau du polygone n&apos;est pas disjoint des polygones existants.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdpart.cpp" line="177"/>
@@ -26785,12 +26785,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="437"/>
         <source>GDAL Drivers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilotes GDAL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="453"/>
         <source>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans certains cas, plus d&apos;un pilote GDAL peut être utilisé pour charger un même format. Utilisez la liste ci-dessous pour sélectionner lequel.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="548"/>
@@ -27294,7 +27294,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="34"/>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de retrouver les couches</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="69"/>
@@ -27312,7 +27312,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresdataitems.cpp" line="197"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau...</translation>
     </message>
 </context>
 <context>
@@ -27784,12 +27784,12 @@ Complément d&apos;information sur l&apos;erreur :
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="518"/>
         <source>Postgres/PostGIS Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Prestataire Postgres/PostGIS</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgsourceselect.cpp" line="519"/>
         <source>Could not open the Postgres/PostGIS Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;ouvrir le prestataire Postgres/PostGIS</translation>
     </message>
     <message>
         <source>Load connections )</source>
@@ -29135,7 +29135,8 @@ une colonne oid de PostgreSQL ou une colonne ctid.</translation>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type integer and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
+        <translation>La vue &apos;%1.%2&apos; n&apos;a pas de colonne utilisable en tant que clé unique.
+QGIS a besoin que la vue soit dotée d&apos;une colonne qui puisse être utilisée en tant que clé unique. Une telle colonne doit être tirée d&apos;un colonne de  type int4 , être une clé primaire et être dotée d&apos;une contrainte d&apos;unicité ou bien être une colonne oid de PostgreSQL. Pour améliorer les performances, cette colonne devrait indexée. La vue que vous choisie possède les colonnes suivantes, aucunes ne satisfait les conditions pré-citées :</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="3338"/>
@@ -29584,7 +29585,7 @@ Proceed?</source>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="464"/>
         <source>Online resource</source>
-        <translation type="unfinished"></translation>
+        <translation>Ressource en ligne</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectpropertiesbase.ui" line="474"/>
@@ -31912,7 +31913,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="490"/>
         <source>Evaluation error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;évaluation</translation>
     </message>
     <message>
         <source>Filter is empty</source>
@@ -32017,78 +32018,78 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="17"/>
         <source>Change color</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la couleur</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="18"/>
         <source>Change transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la transparence</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="19"/>
         <source>Change output unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier l&apos;unité de sortie</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="23"/>
         <source>Change width</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la largeur</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="27"/>
         <source>Change size</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la taille</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="62"/>
         <source>Transparency</source>
-        <translation type="unfinished">Transparence</translation>
+        <translation>Transparence</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="62"/>
         <source>Change symbol transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la transparence du symbole</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="84"/>
         <source>Symbol unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Unité de symbole</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="84"/>
         <source>Select symbol unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner l&apos;unité de symbole</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="84"/>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="87"/>
         <source>Millimeter</source>
-        <translation type="unfinished">Millimètre</translation>
+        <translation>Millimètre</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="84"/>
         <source>Map unit</source>
-        <translation type="unfinished">Unité Identique à celle de la carte</translation>
+        <translation>Unité Identique à celle de la carte</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="107"/>
         <source>Width</source>
-        <translation type="unfinished">Largeur</translation>
+        <translation>Largeur</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="107"/>
         <source>Change symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la largeur du symbole</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="128"/>
         <source>Size</source>
-        <translation type="unfinished">Taille</translation>
+        <translation>Taille</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrendererv2widget.cpp" line="128"/>
         <source>Change symbol size</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier la taille du symbole</translation>
     </message>
 </context>
 <context>
@@ -32130,7 +32131,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="68"/>
         <source>Priority when symbol levels are enabled (only first matching rule will be applied)</source>
-        <translation type="unfinished"></translation>
+        <translation>Priorité lorsque les niveaux de symboles sont activés (seul la première régle correspondante sera appliquée).</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="81"/>
@@ -32152,13 +32153,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="206"/>
         <source>By filter</source>
         <comment>Group rules by filter</comment>
-        <translation type="unfinished"></translation>
+        <translation>Par filtre</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="213"/>
         <source>By scale</source>
         <comment>Group rules by scale</comment>
-        <translation type="unfinished"></translation>
+        <translation>Par échelle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="88"/>
@@ -32173,12 +32174,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="109"/>
         <source>Increase priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Augmenter priorité</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="116"/>
         <source>Decrease priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Baisser priorité</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="149"/>
@@ -32188,12 +32189,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="162"/>
         <source>Use only first matched rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Utiliser uniquement la 1ère règle correspondante</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="175"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportement</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="189"/>
@@ -32303,27 +32304,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="58"/>
         <source>Database does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>La base de données n&apos;existe pas</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="59"/>
         <source>Failed to open database</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur durant l&apos;ouverture de la base de donnée</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="60"/>
         <source>Failed to check metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de vérifier les métadonnées</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="61"/>
         <source>Failed to get list of tables</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible d&apos;obtenir une liste des tables</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="62"/>
         <source>Unknown error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur inconnue</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="101"/>
@@ -32336,7 +32337,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="148"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau...</translation>
     </message>
 </context>
 <context>
@@ -32642,7 +32643,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="210"/>
         <source>Evaluation error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur d&apos;évaluation</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="236"/>
@@ -32945,7 +32946,7 @@ M&apos;erreur était :
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="314"/>
         <location filename="../src/providers/spatialite/qgsspatialiteconnection.cpp" line="517"/>
         <source>unknown error cause</source>
-        <translation type="unfinished">Une erreur inconnue est survenue</translation>
+        <translation>Une erreur inconnue est survenue</translation>
     </message>
 </context>
 <context>
@@ -33044,7 +33045,7 @@ M&apos;erreur était :
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="383"/>
         <source>Database does not exist: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>La base de données n&apos;existe pas : %1</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="387"/>
@@ -33058,14 +33059,16 @@ M&apos;erreur était :
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="394"/>
         <source>SpatiaLite Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="395"/>
         <source>Unexpected error when working with: %1
 
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur inattendue lors du travail avec %1
+
+%2</translation>
     </message>
     <message>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
@@ -34234,7 +34237,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -35547,27 +35550,27 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="145"/>
         <source>X attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut X</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="146"/>
         <source>Y attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut Y</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="158"/>
         <source>Length attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut de longueur</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="159"/>
         <source>Angle attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut d&apos;angle</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorfieldsymbollayerwidget.cpp" line="171"/>
         <source>Height attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribut de hauteur</translation>
     </message>
 </context>
 <context>
@@ -36187,7 +36190,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="578"/>
         <source>Value relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Valeur relationnelle</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="735"/>
@@ -36511,7 +36514,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="563"/>
         <source>Provider-specific options</source>
-        <translation type="unfinished"></translation>
+        <translation>Options spécifiques du prestataire</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="569"/>
@@ -36845,22 +36848,22 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="61"/>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de retrouver les couches</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="79"/>
         <source>Edit...</source>
-        <translation type="unfinished">Editer...</translation>
+        <translation>Editer...</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="83"/>
         <source>Delete</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="93"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished">Modifier une connexion WFS</translation>
+        <translation>Modifier une connexion WFS</translation>
     </message>
 </context>
 <context>
@@ -36910,12 +36913,12 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="142"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau...</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdataitems.cpp" line="164"/>
         <source>Create a new WFS connection</source>
-        <translation type="unfinished">Créer une nouvelle connexion WFS</translation>
+        <translation>Créer une nouvelle connexion WFS</translation>
     </message>
 </context>
 <context>
@@ -36947,12 +36950,12 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="161"/>
         <source>Network Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur réseau</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="163"/>
         <source>Server Exception</source>
-        <translation type="unfinished"></translation>
+        <translation>Erreur serveur</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfssourceselect.cpp" line="210"/>
@@ -37115,7 +37118,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="36"/>
         <source>Failed to retrieve layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossible de retrouver les couches</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="74"/>
@@ -37133,7 +37136,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/providers/wms/qgswmsdataitems.cpp" line="219"/>
         <source>New...</source>
-        <translation type="unfinished"></translation>
+        <translation>Nouveau...</translation>
     </message>
 </context>
 <context>
@@ -39352,7 +39355,7 @@ Description : %3</translation>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="37"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="51"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="44"/>
@@ -39364,7 +39367,7 @@ Description : %3</translation>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="58"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="166"/>
         <source>Symbol width</source>
-        <translation type="unfinished"></translation>
+        <translation>Largeur du symbole </translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="75"/>
@@ -39376,7 +39379,7 @@ Description : %3</translation>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="92"/>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="176"/>
         <source>Symbol height</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauteur du symbole </translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="152"/>
@@ -39392,7 +39395,7 @@ Description : %3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="206"/>
         <source>Outline color</source>
-        <translation type="unfinished"></translation>
+        <translation>Couleur de la bordure</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_ellipse.ui" line="216"/>
@@ -39486,7 +39489,7 @@ Description : %3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="48"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Largeur de ligne</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="62"/>
@@ -39497,7 +39500,7 @@ Description : %3</translation>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="69"/>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="83"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_linepatternfill.ui" line="76"/>
@@ -39577,37 +39580,37 @@ Description : %3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="23"/>
         <source>Marker</source>
-        <translation type="unfinished"></translation>
+        <translation>Symbole</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="30"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifier</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="37"/>
         <source>Horizontal distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance horizontale</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="51"/>
         <source>Vertical distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Distance verticale</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="65"/>
         <source>Horizontal displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement horizontal</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_pointpatternfill.ui" line="79"/>
         <source>Vertical displacement</source>
-        <translation type="unfinished"></translation>
+        <translation>Déplacement vertical</translation>
     </message>
 </context>
 <context>
@@ -39854,32 +39857,32 @@ Description : %3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="50"/>
         <source>Vector field type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de champ</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="56"/>
         <source>Cartesian</source>
-        <translation type="unfinished"></translation>
+        <translation>Cartésien</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="63"/>
         <source>Polar</source>
-        <translation type="unfinished"></translation>
+        <translation>Polaire</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="70"/>
         <source>Height only</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauteur</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="80"/>
         <source>Angle units</source>
-        <translation type="unfinished"></translation>
+        <translation>Unités d&apos;angle</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="86"/>
         <source>Degrees</source>
-        <translation>Dégrés</translation>
+        <translation>Degrés</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="93"/>
@@ -39889,22 +39892,22 @@ Description : %3</translation>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="103"/>
         <source>Angle orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>Orientation</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="109"/>
         <source>Counterclockwise from east</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans le sens inverse des aiguilles (depuis l&apos;est)</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="116"/>
         <source>Clockwise from north</source>
-        <translation type="unfinished"></translation>
+        <translation>Dans le sens des aiguilles (depuis le nord)</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="126"/>
         <source>LineStyle</source>
-        <translation type="unfinished"></translation>
+        <translation>Style de ligne</translation>
     </message>
     <message>
         <location filename="../src/ui/symbollayer/widget_vectorfield.ui" line="133"/>
