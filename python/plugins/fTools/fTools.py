@@ -103,6 +103,7 @@ class fToolsPlugin:
     self.voronoi.setIcon(QIcon(self.getThemeIcon("voronoi.png")))
     self.extNodes.setIcon(QIcon(self.getThemeIcon("extract_nodes.png")))
     self.simplify.setIcon(QIcon(self.getThemeIcon("simplify.png")))
+    self.densify.setIcon(QIcon(self.getThemeIcon("densify.png")))
     self.multiToSingle.setIcon(QIcon(self.getThemeIcon("multi_to_single.png")))
     self.singleToMulti.setIcon(QIcon(self.getThemeIcon("single_to_multi.png")))
     self.polysToLines.setIcon(QIcon(self.getThemeIcon("to_lines.png")))
@@ -168,12 +169,14 @@ class fToolsPlugin:
     self.voronoi = QAction(QCoreApplication.translate("fTools", "Voronoi Polygons"),self.iface.mainWindow())
     self.extNodes = QAction(QCoreApplication.translate("fTools", "Extract nodes"),self.iface.mainWindow())
     self.simplify = QAction(QCoreApplication.translate("fTools", "Simplify geometries"),self.iface.mainWindow())
+    self.densify = QAction(QCoreApplication.translate("fTools", "Densify geometries"),self.iface.mainWindow())
     self.multiToSingle = QAction(QCoreApplication.translate("fTools", "Multipart to singleparts"),self.iface.mainWindow())
     self.singleToMulti = QAction(QCoreApplication.translate("fTools", "Singleparts to multipart"),self.iface.mainWindow())
     self.polysToLines = QAction(QCoreApplication.translate("fTools", "Polygons to lines"),self.iface.mainWindow())
     self.linesToPolys = QAction(QCoreApplication.translate("fTools", "Lines to polygons"),self.iface.mainWindow())
     self.conversionMenu.addActions([self.checkGeom, self.compGeo, self.centroids, self.delaunay, self.voronoi,
-    self.simplify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.linesToPolys, self.extNodes])
+    self.simplify, self.densify, self.multiToSingle, self.singleToMulti, self.polysToLines, self.linesToPolys,
+    self.extNodes])
 
     self.dataManageMenu = QMenu(QCoreApplication.translate("fTools", "&Data Management Tools"))
     self.define = QAction(QCoreApplication.translate("fTools", "Define current projection"), self.iface.mainWindow())
@@ -224,7 +227,8 @@ class fToolsPlugin:
     QObject.connect(self.multiToSingle, SIGNAL("triggered()"), self.domultiToSingle)
     QObject.connect(self.singleToMulti, SIGNAL("triggered()"), self.dosingleToMulti)
     QObject.connect(self.checkGeom, SIGNAL("triggered()"), self.docheckGeom)
-    QObject.connect(self.simplify, SIGNAL("triggered()"), self.dosimplify)
+    QObject.connect(self.simplify, SIGNAL("triggered()"), self.doSimplify)
+    QObject.connect(self.densify, SIGNAL("triggered()"), self.doDensify)
     QObject.connect(self.centroids, SIGNAL("triggered()"), self.docentroids)
     QObject.connect(self.delaunay, SIGNAL("triggered()"), self.dodelaunay)
     QObject.connect(self.voronoi, SIGNAL("triggered()"), self.dovoronoi)
@@ -242,8 +246,14 @@ class fToolsPlugin:
   def unload(self):
     pass
 
-  def dosimplify(self):
-    d = doSimplify.Dialog(self.iface)
+  def doSimplify(self):
+    d = doSimplify.Dialog(self.iface, 1)
+    d.show()
+    d.exec_()
+
+  def doDensify(self):
+    d = doSimplify.Dialog(self.iface, 2)
+    d.show()
     d.exec_()
 
   def dopolysToLines(self):
