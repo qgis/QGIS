@@ -43,7 +43,7 @@ import doGeometry, doGeoprocessing, doVisual
 import doIntersectLines, doSelectByLocation, doVectorSplit, doMeanCoords
 import doPointDistance, doPointsInPolygon, doRandom, doRandPoints, doRegPoints
 import doSpatialJoin, doSubsetSelect, doSumLines, doVectorGrid, doMergeShapes
-import doValidate, doSimplify, doDefineProj
+import doValidate, doSimplify, doDefineProj, doSpatialIndex
 
 class fToolsPlugin:
   def __init__(self,iface):
@@ -113,6 +113,7 @@ class fToolsPlugin:
     self.spatJoin.setIcon(QIcon(self.getThemeIcon("join_location.png")))
     self.splitVect.setIcon(QIcon(self.getThemeIcon("split_layer.png")))
     self.mergeShapes.setIcon(QIcon(self.getThemeIcon("merge_shapes.png")))
+    self.spatialIndex.setIcon(QIcon(self.getThemeIcon("spatial_index.png")))
 
   def initGui(self):
     if int(self.QgisVersion) < 1:
@@ -179,7 +180,8 @@ class fToolsPlugin:
     self.spatJoin = QAction(QCoreApplication.translate("fTools", "Join attributes by location"), self.iface.mainWindow())
     self.splitVect = QAction(QCoreApplication.translate("fTools", "Split vector layer"), self.iface.mainWindow())
     self.mergeShapes = QAction(QCoreApplication.translate("fTools", "Merge shapefiles to one"), self.iface.mainWindow())
-    self.dataManageMenu.addActions([self.define, self.spatJoin, self.splitVect, self.mergeShapes])
+    self.spatialIndex = QAction(QCoreApplication.translate("fTools", "Create spatial index"), self.iface.mainWindow())
+    self.dataManageMenu.addActions([self.define, self.spatJoin, self.splitVect, self.mergeShapes, self.spatialIndex])
     self.updateThemeIcons("theme")
 
     self.menu.addMenu(self.analysisMenu)
@@ -235,6 +237,7 @@ class fToolsPlugin:
     QObject.connect(self.spatJoin, SIGNAL("triggered()"), self.dospatJoin)
     QObject.connect(self.splitVect, SIGNAL("triggered()"), self.dosplitVect)
     QObject.connect(self.mergeShapes, SIGNAL("triggered()"), self.doMergeShapes)
+    QObject.connect(self.spatialIndex, SIGNAL("triggered()"), self.doSpatIndex)
 
   def unload(self):
     pass
@@ -319,7 +322,7 @@ class fToolsPlugin:
   def dodelaunay(self):
     d = doGeometry.GeometryDialog(self.iface, 8)
     d.exec_()
-    
+
   def dovoronoi(self):
     d = doGeometry.GeometryDialog(self.iface, 10)
     d.exec_()
@@ -392,3 +395,7 @@ class fToolsPlugin:
     d = doMergeShapes.Dialog(self.iface)
     d.exec_()
 
+  def doSpatIndex(self):
+    d = doSpatialIndex.Dialog(self.iface)
+    d.show()
+    d.exec_()
