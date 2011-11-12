@@ -47,18 +47,6 @@ class Dialog( QDialog, Ui_Dialog ):
 
     self.workThread = None
 
-    self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
-    self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
-
-    QObject.connect( self.chkWriteShapefile, SIGNAL( "stateChanged( int )" ), self.updateGui )
-    QObject.connect( self.btnSelectOutputFile, SIGNAL( "clicked()" ), self.selectOutputFile )
-
-    self.manageGui()
-
-  def manageGui( self ):
-    layers = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )
-    self.cmbInputLayer.addItems( layers )
-
     if self.myFunction == 2:
       self.setWindowTitle( self.tr( "Densify geometries" ) )
       self.lblTolerance.setText( self.tr( "Vertices to add" ) )
@@ -66,6 +54,19 @@ class Dialog( QDialog, Ui_Dialog ):
       self.spnTolerance.setMinimum( 1 )
       self.spnTolerance.setSingleStep( 1 )
       self.spnTolerance.setValue( 1.0 )
+
+    self.btnOk = self.buttonBox.button( QDialogButtonBox.Ok )
+    self.btnClose = self.buttonBox.button( QDialogButtonBox.Close )
+
+    QObject.connect( self.chkWriteShapefile, SIGNAL( "stateChanged( int )" ), self.updateGui )
+    QObject.connect( self.btnSelectOutputFile, SIGNAL( "clicked()" ), self.selectOutputFile )
+
+    self.populateLayers()
+
+  def populateLayers( self ):
+    layers = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )
+    self.cmbInputLayer.clear()
+    self.cmbInputLayer.addItems( layers )
 
   def updateGui( self ):
     if self.chkWriteShapefile.isChecked():
@@ -140,6 +141,7 @@ class Dialog( QDialog, Ui_Dialog ):
         QMessageBox.warning( self, self.tr( "Error" ),
                              self.tr( "Error loading output shapefile:\n%1" )
                              .arg( unicode( self.shapeFileName ) ) )
+      self.populateLayers()
 
     QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
     self.iface.mapCanvas().refresh()
