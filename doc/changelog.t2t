@@ -83,7 +83,10 @@ were made.
 - OS X build/install updates
 - GRASS version support
 - Intializing from WKT favourize EPSG instead of PROJ.4
--
+- add What's this to Help menu (implement #4179)
+- fTools: update layers lists after adding new layer to TOC (fix #4318)
+- don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
+- 
 
 
 
