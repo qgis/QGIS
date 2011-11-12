@@ -46,9 +46,14 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         self.setWindowTitle(self.tr("Random Points"))
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-        self.mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
+        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.clear()
         self.inShape.addItems(layers)
+        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
 # If input layer is changed, update field list
     def update(self, inputLayer):
@@ -123,6 +128,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -208,7 +214,7 @@ class Dialog(QDialog, Ui_Dialog):
                 points = self.vectorRandom(int(value), inLayer,
                 ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
         else: points = self.loopThruPolygons(inLayer, value, design)
-        crs = self.mapCanvas.mapRenderer().destinationSrs()
+        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
         if not crs.isValid(): crs = None
         fields = { 0 : QgsField("ID", QVariant.Int) }
         check = QFile(self.shapefileName)

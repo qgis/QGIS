@@ -44,14 +44,17 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         self.setWindowTitle(self.tr("Sum line lengths"))
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-        # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Line])
+        self.inPoint.clear()
         self.inPoint.addItems(layers)
         layers = ftools_utils.getLayerNames([QGis.Polygon])
+        self.inPolygon.clear()
         self.inPolygon.addItems(layers)
-    
+
     def accept(self):
         self.buttonOk.setEnabled( False )
         if self.inPolygon.currentText() == "":
@@ -79,6 +82,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
