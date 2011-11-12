@@ -175,12 +175,16 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       elif self.myFunction == 7: # Symetrical difference
         self.label_2.setText( self.tr( "Difference layer" ) )
         self.setWindowTitle( self.tr( "Symetrical difference" ) )
+        self.useSelectedA.hide()
+        self.useSelectedB.hide()
       elif self.myFunction == 8: # Clip
         self.label_2.setText( self.tr( "Clip layer" ) )
         self.setWindowTitle( self.tr( "Clip" ) )
       else: # Union
         self.label_2.setText( self.tr( "Union layer" ) )
         self.setWindowTitle( self.tr( "Union" ) )
+        self.useSelectedA.hide()
+        self.useSelectedB.hide()
     self.resize(381, 100)
     self.populateLayers()
 
