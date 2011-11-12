@@ -1064,6 +1064,7 @@ class geoprocessingThread( QThread ):
     vproviderB = self.vlayerB.dataProvider()
     allAttrsB = vproviderB.attributeIndexes()
     vproviderB.select( allAttrsB )
+
     # check for crs compatibility
     crsA = vproviderA.crs()
     crsB = vproviderB.crs()
@@ -1071,26 +1072,32 @@ class geoprocessingThread( QThread ):
         crs_match = None
     else:
         crs_match = crsA == crsB
+
     fields = ftools_utils.combineVectorFields( self.vlayerA, self.vlayerB )
     longNames = ftools_utils.checkFieldNameLength( fields )
     if not longNames.isEmpty():
       message = QString( 'Following field names are longer than 10 characters:\n%1' ).arg( longNames.join( '\n' ) )
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, message
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding,
-    fields, vproviderA.geometryType(), vproviderA.crs() )
+
+    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+                                  vproviderA.geometryType(), vproviderA.crs() )
     if writer.hasError():
       return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, writer.errorMessage()
+
     inFeatA = QgsFeature()
     inFeatB = QgsFeature()
     outFeat = QgsFeature()
     indexA = ftools_utils.createIndex( vproviderB )
     indexB = ftools_utils.createIndex( vproviderA )
+
     nFeat = vproviderA.featureCount() * vproviderB.featureCount()
-    nElement = 0
     self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0)
     self.emit( SIGNAL( "runRange(PyQt_PyObject)" ), ( 0, nFeat ) )
+
     vproviderA.rewind()
     count = 0
+    nElement = 0
+
     while vproviderA.nextFeature( inFeatA ):
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), nElement )
       nElement += 1
@@ -1105,10 +1112,9 @@ class geoprocessingThread( QThread ):
           outFeat.setAttributeMap( atMapA )
           writer.addFeature( outFeat )
         except:
-          FEATURE_EXCEPT = False
           # this really shouldn't happen, as we
           # haven't edited the input geom at all
-          # continue
+          FEATURE_EXCEPT = False
       else:
         for id in intersects:
           count += 1
@@ -1119,12 +1125,14 @@ class geoprocessingThread( QThread ):
             if geom.intersects( tmpGeom ):
               found = True
               int_geom = geom.intersection( tmpGeom )
+
               if int_geom is None:
-                GEOS_EXCEPT = False
                 # There was a problem creating the intersection
+                GEOS_EXCEPT = False
                 int_geom = QgsGeometry()
               else:
                 int_geom = QgsGeometry(int_geom)
+
               if diff_geom.intersects( tmpGeom ):
                 diff_geom = diff_geom.difference( tmpGeom )
                 if diff_geom is None:
@@ -1132,8 +1140,9 @@ class geoprocessingThread( QThread ):
                   diff_geom = QgsGeometry()
                 else:
                   diff_geom = QgsGeometry(diff_geom)
+
               if int_geom.wkbType() == 0:
-              # intersection produced different geomety types
+                # intersection produced different geomety types
                 temp_list = int_geom.asGeometryCollection()
                 for i in temp_list:
                   if i.type() == geom.type():
@@ -1141,27 +1150,23 @@ class geoprocessingThread( QThread ):
               try:
                 outFeat.setGeometry( int_geom )
                 outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-#                print int_geom.wkbType()
                 writer.addFeature( outFeat )
               except Exception, err:
-#                print str(err)
                 FEATURE_EXCEPT = False
-#            else:
-#              # this only happends if the bounding box
-#              # intersects, but the geometry doesn't
-#              try:
-#                outFeat.setGeometry( geom )
-#                outFeat.setAttributeMap( atMapA )
-#                print geom.wkbType()
-#                writer.addFeature( outFeat )
-#              except:
-##                # also shoudn't ever happen
-#                FEATURE_EXCEPT = False
-#              pass
+            else:
+              # this only happends if the bounding box
+              # intersects, but the geometry doesn't
+              try:
+                outFeat.setGeometry( geom )
+                outFeat.setAttributeMap( atMapA )
+                writer.addFeature( outFeat )
+              except:
+                # also shoudn't ever happen
+                FEATURE_EXCEPT = False
           except Exception, err:
-#            print str(err)
             GEOS_EXCEPT = False
             found = False
+
         if found:
           try:
             if diff_geom.wkbType() == 0:
@@ -1171,14 +1176,13 @@ class geoprocessingThread( QThread ):
                     diff_geom = QgsGeometry( i )
             outFeat.setGeometry( diff_geom )
             outFeat.setAttributeMap( atMapA )
-#            print diff_geom.wkbType()
             writer.addFeature( outFeat )
           except Exception, err:
-#            print str(err)
             FEATURE_EXCEPT = False
-#            continue
+
     length = len( vproviderA.fields().values() )
     vproviderB.rewind()
+
     while vproviderB.nextFeature( inFeatA ):
       add = False
       geom = QgsGeometry( inFeatA.geometry() )
@@ -1186,36 +1190,43 @@ class geoprocessingThread( QThread ):
       atMap = inFeatA.attributeMap().values()
       atMap = dict( zip( range( length, length + len( atMap ) ), atMap ) )
       intersects = indexB.intersects( geom.boundingBox() )
+
       if len(intersects) < 1:
         try:
           outFeat.setGeometry( geom )
           outFeat.setAttributeMap( atMap )
           writer.addFeature( outFeat )
         except Exception, err:
-#          print str(err)
           FEATURE_EXCEPT = False
       else:
         for id in intersects:
           vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
           atMapB = inFeatB.attributeMap()
           tmpGeom = QgsGeometry( inFeatB.geometry() )
+
           try:
             if diff_geom.intersects( tmpGeom ):
               add = True
               diff_geom = QgsGeometry( diff_geom.difference( tmpGeom ) )
+            else:
+              # this only happends if the bounding box
+              # intersects, but the geometry doesn't
+              outFeat.setGeometry( diff_geom )
+              outFeat.setAttributeMap( atMap )
+              print geom.wkbType()
+              writer.addFeature( outFeat )
           except Exception, err:
-#            print str(err)
             add = False
             GEOS_EXCEPT = False
+
         if add:
           try:
             outFeat.setGeometry( diff_geom )
             outFeat.setAttributeMap( atMapB )
             writer.addFeature( outFeat )
           except Exception, err:
-#            print str(err)
             FEATURE_EXCEPT = False
-#            continue
+
       self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ),  nElement )
       nElement += 1
     del writer
