@@ -403,6 +403,7 @@ class fToolsPlugin:
 
   def doMergeShapes(self):
     d = doMergeShapes.Dialog(self.iface)
+    d.show()
     d.exec_()
 
   def doSpatIndex(self):
