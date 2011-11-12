@@ -70,6 +70,7 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 # Repositories: (name, url, possible depreciated url)
 officialRepo = ("QGIS Official Repository",    "http://pyqgis.org/repo/official","")
+officialRepo2 = ("QGIS Official Repository 2",    "http://plugins.qgis.org/plugins","")
 contribRepo  = ("QGIS Contributed Repository", "http://pyqgis.org/repo/contributed","")
 authorRepos  = [("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
                 ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml", ""),
@@ -83,7 +84,8 @@ authorRepos  = [("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com"
                 ("Martin Dobias' Sandbox",     "http://mapserver.sk/~wonder/qgis/plugins-sandbox.xml", ""),
                 ("Marco Hugentobler's Repository","http://karlinapp.ethz.ch/python_plugins/python_plugins.xml", ""),
                 ("Sourcepole Repository",      "http://build.sourcepole.ch/qgis/plugins.xml", ""),
-                ("Volkan Kepoglu's Repository","http://ggit.metu.edu.tr/~volkan/plugins.xml", "")]
+                #("Volkan Kepoglu's Repository","http://ggit.metu.edu.tr/~volkan/plugins.xml", "")
+                ]
 
 
 
@@ -199,6 +201,9 @@ class Repositories(QObject):
     if presentURLs.count(officialRepo[1]) == 0:
       settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
       settings.setValue(officialRepo[0]+"/enabled", QVariant(True))
+    if presentURLs.count(officialRepo2[1]) == 0:
+      settings.setValue(officialRepo2[0]+"/url", QVariant(officialRepo2[1]))
+      settings.setValue(officialRepo2[0]+"/enabled", QVariant(True))
     if presentURLs.count(contribRepo[1]) == 0:
       settings.setValue(contribRepo[0]+"/url", QVariant(contribRepo[1]))
       settings.setValue(contribRepo[0]+"/enabled", QVariant(True))
@@ -323,6 +328,7 @@ class Repositories(QObject):
     settings.beginGroup(reposGroup)
     # first, update repositories in QSettings if needed
     officialRepoPresent = False
+    officialRepo2Present = False
     for key in settings.childGroups():
       url = settings.value(key+"/url", QVariant()).toString()
       if url == contribRepo[1]:
@@ -331,11 +337,16 @@ class Repositories(QObject):
         settings.setValue(key+"/valid", QVariant(True)) # unlock any other repo
       if url == officialRepo[1]:
         officialRepoPresent = True
+      if url == officialRepo2[1]:
+        officialRepoPresent = True
       for authorRepo in authorRepos:
         if url == authorRepo[2]:
           settings.setValue(key+"/url", QVariant(authorRepo[1])) # correct a depreciated url
     if not officialRepoPresent:
       settings.setValue(officialRepo[0]+"/url", QVariant(officialRepo[1]))
+    if not officialRepo2Present:
+      settings.setValue(officialRepo2[0]+"/url", QVariant(officialRepo2[1]))
+
 
     for key in settings.childGroups():
       self.mRepositories[key] = {}
