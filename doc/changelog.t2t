@@ -38,6 +38,55 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= Whats new in Version 1.7.2 'Wroclaw'? =
+
+This is a bugfix release over version 1.7.0. The following changes
+were made.
+
+- Fix Gdaltools error checking for ogr layers
+- More Translations in OSM plugin
+- Fix for ticket #4283 (composer forgets on/off status of layers)
+- Fix to v.generalize for recent GRASS versions
+- Fix typos in GRASS command list
+- Restore override cursor when about box is shown
+- Enhance maximum for point displacement tolerance (ticket #4319)
+- Added Python wrappers for QgsZonalStatistics
+- fix #4331
+- fix #4282
+- Match proj4string in database
+- Fix #4241 (Ensure that we have a valid line in line decoration)
+- Fix label id for GetPrint in composer
+- Added gource script (thanks Nathan) and qgis download stats
+- Added simple script to generate a tarball
+- [FEATURE] Make the gdaltools command editable to fix #3041
+- Corrected URLs for GitHub and for the issue tracker (it now points to Redmine).
+- Fix shift in point displacement renderer
+- Fix for a crash in projection selection
+- Fix for ticket #4308
+- Insert date value in attribute editor
+- Fixing typos in IT GUI
+- Enable "add direction symbol" only for line layers (#4387)
+- Handle raster layer's transparency band while rendering (fix #2491)
+- Allow setting I/O encoding for OGR layers in vector layer properties.
+- Fix #4414 (svg indicators for arrows are not shown)
+- Label direction symbol shouldn't depend on "map" vs. "line" orientation.
+- Set prompt as default behaviour for unknown CRS
+- For EPSG initialize GDAL CRS from authid instead of proj.4 string
+- Fix #4439
+- Fix #4444. Patch by Vaclav Petras
+- Fix #4440 (invalid reference to trac)
+- Fix stopRender call in graduated symbol renderer
+- Fix Windows build
+- Fix #4479 - trigger "new color ramp" always when activated
+- Hide query entry in legend context menu for layers with joins
+- Refresh map list in composer table widget in showEvent. Ticket #4496
+- OS X build/install updates
+- GRASS version support
+- Intializing from WKT favourize EPSG instead of PROJ.4
+-
+
+
+
 = Whats new in Version 1.7.1 'Wroclaw'? =
 
 This is a bugfix release over version 1.7.0. The following changes 
