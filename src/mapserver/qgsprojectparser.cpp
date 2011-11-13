@@ -18,6 +18,7 @@
 #include "qgsprojectparser.h"
 #include "qgsconfigcache.h"
 #include "qgscrscache.h"
+#include "qgsdatasourceuri.h"
 #include "qgsmslayercache.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
@@ -773,18 +774,36 @@ QgsMapLayer* QgsProjectParser::createLayerFromElement( const QDomElement& elem, 
     return 0;
   }
 
-  QString uri;
-  QString absoluteUri;
   QDomElement dataSourceElem = elem.firstChildElement( "datasource" );
+  QString uri = dataSourceElem.text();
+  QString absoluteUri;
   if ( !dataSourceElem.isNull() )
   {
     //convert relative pathes to absolute ones if necessary
-    uri = dataSourceElem.text();
-    absoluteUri = convertToAbsolutePath( uri );
-    if ( uri != absoluteUri )
+    if ( uri.startsWith( "dbname" ) ) //database
     {
-      QDomText absoluteTextNode = mXMLDoc->createTextNode( absoluteUri );
-      dataSourceElem.replaceChild( absoluteTextNode, dataSourceElem.firstChild() );
+      QgsDataSourceURI dsUri( uri );
+      if ( dsUri.host().isEmpty() ) //only convert path for file based databases
+      {
+        QString dbnameUri = dsUri.database();
+        QString dbNameUriAbsolute = convertToAbsolutePath( dbnameUri );
+        if ( dbnameUri != dbNameUriAbsolute )
+        {
+          dsUri.setDatabase( dbNameUriAbsolute );
+          absoluteUri = dsUri.uri();
+          QDomText absoluteTextNode = mXMLDoc->createTextNode( absoluteUri );
+          dataSourceElem.replaceChild( absoluteTextNode, dataSourceElem.firstChild() );
+        }
+      }
+    }
+    else //file based data source
+    {
+      absoluteUri = convertToAbsolutePath( uri );
+      if ( uri != absoluteUri )
+      {
+        QDomText absoluteTextNode = mXMLDoc->createTextNode( absoluteUri );
+        dataSourceElem.replaceChild( absoluteTextNode, dataSourceElem.firstChild() );
+      }
     }
   }
 
