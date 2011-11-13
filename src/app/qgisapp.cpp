@@ -277,7 +277,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "Quantum GIS " );
 
-  if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
+  if ( QString( QGis::QGIS_VERSION ).endsWith( "Alpha" ) )
   {
     caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
