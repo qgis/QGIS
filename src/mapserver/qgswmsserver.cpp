@@ -36,6 +36,7 @@
 #include "qgssymbol.h"
 #include "qgssymbolv2.h"
 #include "qgsrenderer.h"
+#include "qgsrendererv2.h"
 #include "qgslegendmodel.h"
 #include "qgscomposerlegenditem.h"
 #include "qgslogger.h"
@@ -624,7 +625,8 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
   //find out the current scale denominater and set it to the SLD parser
   QgsScaleCalculator scaleCalc(( outputImage->logicalDpiX() + outputImage->logicalDpiY() ) / 2 , mMapRenderer->destinationCrs().mapUnits() );
   QgsRectangle mapExtent = mMapRenderer->extent();
-  mConfigParser->setScaleDenominator( scaleCalc.calculate( mapExtent, outputImage->width() ) );
+  double scaleDenominator = scaleCalc.calculate( mapExtent, outputImage->width() );
+  mConfigParser->setScaleDenominator( scaleDenominator );
   delete outputImage; //no longer needed for feature info
 
   //read FEATURE_COUNT
@@ -738,6 +740,12 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result )
     {
       currentLayer = *layerListIt;
       if ( !currentLayer || nonIdentifiableLayers.contains( currentLayer->id() ) )
+      {
+        continue;
+      }
+
+      //skip layer if not visible at current map scale
+      if ( currentLayer->hasScaleBasedVisibility() && ( currentLayer->minimumScale() > scaleDenominator || currentLayer->maximumScale() < scaleDenominator ) )
       {
         continue;
       }
@@ -1214,6 +1222,24 @@ int QgsWMSServer::featureInfoFromVectorLayer( QgsVectorLayer* layer,
     if ( featureCounter > nFeatures )
     {
       break;
+    }
+
+    //check if feature is rendered at all
+    if ( layer->isUsingRendererV2() )
+    {
+      QgsFeatureRendererV2* r2 = layer->rendererV2();
+      if ( !r2 || !r2->symbolForFeature( feature ) )
+      {
+        continue;
+      }
+    }
+    else
+    {
+      QgsRenderer* r = const_cast<QgsRenderer*>( layer->renderer() ); //bad, 'willRenderFeature' should be const
+      if ( !r || !r->willRenderFeature( &feature ) )
+      {
+        continue;
+      }
     }
 
     QDomElement featureElement = infoDocument.createElement( "Feature" );
