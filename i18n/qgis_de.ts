@@ -78,7 +78,7 @@
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="203"/>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="136"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="223"/>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="93"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="90"/>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="177"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="77"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
@@ -303,7 +303,7 @@
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="49"/>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="81"/>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="40"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="37"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Use only selected features</source>
         <translation>Nur gewählte Objekte nutzen</translation>
@@ -750,8 +750,24 @@ Would you like to add the new layer to the TOC?</source>
 Soll es als neuer Layer hinzugefügt werden?</translation>
     </message>
     <message>
+        <source>Finished</source>
+        <translation>Abgeschlossen</translation>
+    </message>
+    <message>
+        <source>Processing completed.</source>
+        <translation>Verarbeitung abgeschlossen.</translation>
+    </message>
+    <message>
         <source>Use selected features only</source>
         <translation>Nur gewählte Objekte nutzen</translation>
+    </message>
+    <message>
+        <source>Densify geometries</source>
+        <translation>Geometrien verdichten</translation>
+    </message>
+    <message>
+        <source>Vertices to add</source>
+        <translation>Zu ergänzende Stützpunkte</translation>
     </message>
     <message>
         <source>Simplify results</source>
@@ -762,6 +778,10 @@ Soll es als neuer Layer hinzugefügt werden?</translation>
 were reduced to %2 vertices after simplification</source>
         <translation>%1 Stützpunkte des ursprünglichen Datenbestands
 wurden auf %2 Stützpunkte vereinfacht</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation>Fehler</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -1123,29 +1143,59 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
         <translation>Punkte in Polygon zählen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="17"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="14"/>
         <source>Simplify geometries</source>
         <translation>Geometrien vereinfachen</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="23"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="20"/>
         <source>Input line or polygon layer</source>
         <translation>Eingabelinien- oder -polygonlayer</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="49"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="46"/>
         <source>Simplify tolerance</source>
         <translation>Vereinfachungstoleranz</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="76"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="73"/>
         <source>Save to new file</source>
         <translation>In neuer Datei speichern</translation>
     </message>
     <message>
-        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="105"/>
+        <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="102"/>
         <source>Add result to canvas</source>
         <translation>Ergebnis der Karte hinzufügen</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="14"/>
+        <source>Build spatial index</source>
+        <translation>Räumlicher Index erzeugen</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="22"/>
+        <source>Select files from disk</source>
+        <translation>Dateien wählen</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="29"/>
+        <source>Select files...</source>
+        <translation>Durchsuchen...</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="53"/>
+        <source>Select all</source>
+        <translation>Alle wählen</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="60"/>
+        <source>Select none</source>
+        <translation>Keine wählen</translation>
+    </message>
+    <message>
+        <location filename="../python/plugins/fTools/tools/frmSpatialIndex.ui" line="67"/>
+        <source>Clear list</source>
+        <translation>Liste leeren</translation>
     </message>
 </context>
 <context>
@@ -6207,12 +6257,12 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Auf OracleSpatial-Georaster zugreifen</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="994"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1000"/>
         <source>Deleted vertices</source>
         <translation>Gelöschte Stützpunkte</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1061"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1067"/>
         <source>Moved vertices</source>
         <translation>Verschobene Stützpunkte</translation>
     </message>
@@ -6324,7 +6374,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsmaptoolcapture.cpp" line="319"/>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="985"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="991"/>
         <source>%n geometry error(s) found.</source>
         <comment>number of geometry errors</comment>
         <translation>
@@ -26053,42 +26103,42 @@ Fortfahren?</translation>
 <context>
     <name>QgsProjectionSelector</name>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="59"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="60"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="596"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="599"/>
         <source>User Defined Coordinate Systems</source>
         <translation>Benutzerdefiniertes Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="671"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="674"/>
         <source>Geographic Coordinate Systems</source>
         <translation>Geografisches Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="680"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="683"/>
         <source>Projected Coordinate Systems</source>
         <translation>Projiziertes Koordinatensystem</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="976"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="980"/>
         <source>Find projection</source>
         <translation>Projektion finden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="976"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="980"/>
         <source>No matching projection found.</source>
         <translation>Keine passende Projektion gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1115"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1119"/>
         <source>Resource Location Error</source>
         <translation>Ressource nicht gefunden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsprojectionselector.cpp" line="1116"/>
+        <location filename="../src/gui/qgsprojectionselector.cpp" line="1120"/>
         <source>Error reading database file from: 
  %1
 Because of this the projection selector will not work...</source>
@@ -34571,44 +34621,44 @@ Beschreibung: %3</translation>
 <context>
     <name>SelectionFeature</name>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1191"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1197"/>
         <source>ring %1, vertex %2</source>
         <translation>Ring %1, Stützpunkt %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1219"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1225"/>
         <source>polygon %1, ring %2, vertex %3</source>
         <translation>Polygon %1, Ring %2, Stützpunkt %3</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1252"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1258"/>
         <source>polyline %1, vertex %2</source>
         <translation>Polylinie %1, Stützpunkt %2</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1273"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1279"/>
         <source>vertex %1</source>
         <translation>Stützpunkt %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1296"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1302"/>
         <source>point %1</source>
         <translation>Punkt %1</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1312"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1318"/>
         <source>single point</source>
         <translation>Einzelpunkt</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1039"/>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1113"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1045"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1119"/>
         <source>Node tool</source>
         <translation>Knotenwerkzeug</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1040"/>
-        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1114"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1046"/>
+        <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1120"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
         <translation>Ergebnisgeometrie ist ungültig.  Letzte Änderungen werden zurückgenommen.
@@ -36370,6 +36420,10 @@ Base Path (i.e. keep only filename from attribute)</source>
         <translation>Geometrien vereinfachen</translation>
     </message>
     <message>
+        <source>Densify geometries</source>
+        <translation>Geometrien verdichten</translation>
+    </message>
+    <message>
         <source>Multipart to singleparts</source>
         <translation>Mehr- zu einteilig</translation>
     </message>
@@ -36400,6 +36454,10 @@ Base Path (i.e. keep only filename from attribute)</source>
     <message>
         <source>Split vector layer</source>
         <translation>Vektorlayer teilen</translation>
+    </message>
+    <message>
+        <source>Create spatial index</source>
+        <translation>Räumlichen Index erzeugen</translation>
     </message>
     <message>
         <source>&amp;Research Tools</source>
