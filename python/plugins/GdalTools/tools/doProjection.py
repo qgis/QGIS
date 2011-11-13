@@ -41,9 +41,6 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       self.connect( self.batchCheck, SIGNAL( "stateChanged( int )" ), self.switchToolMode )
       self.connect( self.recurseCheck, SIGNAL( "stateChanged( int )" ), self.enableRecurse )
 
-      #QObject.disconnect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.onRun )
-      #QObject.connect( self.base.buttonBox.button( QDialogButtonBox.Ok ), SIGNAL( "clicked()" ), self.checkLayer )
-
   def switchToolMode( self ):
       self.setCommandViewerEnabled( not self.batchCheck.isChecked() )
       self.progressBar.setVisible( self.batchCheck.isChecked() )
@@ -102,10 +99,31 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
       inputFn = self.getInputFileName()
       arguments << inputFn
       self.tempFile = QString( inputFn )
+      self.needOverwrite = False
       if not self.tempFile.isEmpty():
-        self.tempFile = self.tempFile.replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" ).append( ".tmp" )
+        if self.tempFile.toLower().contains( QRegExp( "\.tif{1,2}" ) ):
+          self.tempFile = self.tempFile.replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" ).append( ".tmp" )
+          self.needOverwrite = True
+        else:
+          self.tempFile = self.tempFile.replace( QRegExp( "\.[a-zA-Z]{2,4}$" ), ".tif" )
       arguments << self.tempFile
       return arguments
+
+  def finished( self ):
+      outFn = self.getOutputFileName()
+      if self.needOverwrite:
+        oldFile = QFile( outFn )
+        newFile = QFile( self.tempFile )
+        if oldFile.remove():
+          newFile.rename( outFn  )
+
+      fileInfo = QFileInfo( outFn )
+      if fileInfo.exists():
+        if self.base.loadCheckBox.isChecked():
+          self.addLayerIntoCanvas( fileInfo )
+        QMessageBox.information( self, self.tr( "Finished" ), self.tr( "Processing completed." ) )
+      else:
+        QMessageBox.warning( self, self.tr( "Warning" ), self.tr( "%1 not created." ).arg( outFn ) )
 
   def getInputFileName(self):
       return self.inSelector.filename()
@@ -149,10 +167,3 @@ class GdalToolsDialog( QWidget, Ui_Widget, BaseBatchWidget ):
         self.progressBar.setValue(index + 1)
       else:
         self.progressBar.setValue(0)
-
-  def finished( self ):
-      oldFile = QFile( self.getInputFileName() )
-      newFile = QFile( self.tempFile )
-      if oldFile.remove():
-        newFile.rename( self.getInputFileName() )
-

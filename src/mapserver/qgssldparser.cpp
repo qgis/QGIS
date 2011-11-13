@@ -276,6 +276,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
         {
           QgsRenderer* r = rendererFromUserStyle( userStyleElement, v );
           v->setRenderer( r );
+          v->setUsingRendererV2( false );
           labelSettingsFromUserStyle( userStyleElement, v );
 #ifdef DIAGRAMSERVER
           overlaysFromUserStyle( userStyleElement, v );
@@ -399,6 +400,7 @@ QList<QgsMapLayer*> QgsSLDParser::mapLayerFromStyle( const QString& layerName, c
     return resultList;
   }
   theVectorLayer->setRenderer( theRenderer );
+  theVectorLayer->setUsingRendererV2( false );
   QgsDebugMsg( "Returning the vectorlayer" );
   setOpacityForLayer( userLayerElement, theVectorLayer );
   resultList.push_back( theVectorLayer );

@@ -277,7 +277,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "Quantum GIS " );
 
-  if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
+  if ( QString( QGis::QGIS_VERSION ).endsWith( "Alpha" ) )
   {
     caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
@@ -1091,6 +1091,10 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
 
+  // Help menu
+  // add What's this button to it
+  QAction* before = mActionHelpAPI;
+  mHelpMenu->insertAction( before, QWhatsThis::createAction() );
 }
 
 void QgisApp::createToolBars()

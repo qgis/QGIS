@@ -40,6 +40,18 @@ trap cleanup EXIT
 
 PATH=$QTDIR/bin:$PATH
 
+if type qmake-qt4 >/dev/null 2>&1; then
+	QMAKE=qmake-qt4
+else
+	QMAKE=qmake
+fi
+
+if type lupdate-qt4 >/dev/null 2>&1; then
+	LUPDATE=lupdate-qt4
+else
+	LUPDATE=lupdate
+fi
+
 exclude=
 opts=
 while (( $# > 0 )); do
@@ -89,7 +101,7 @@ for i in \
 do
 	[ -f "$i" ] && mv "$i" "$i.save"
 done
-qmake -project -o qgis_ts.pro -nopwd src python i18n
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n
 if [ -n "$add" ]; then
 	for i in $add; do
 		echo "Adding translation for $i"
@@ -97,14 +109,14 @@ if [ -n "$add" ]; then
 	done
 fi
 echo Updating translations
-lupdate$opts -verbose qgis_ts.pro
+$LUPDATE$opts -verbose qgis_ts.pro
 
 if [ -n "$add" ]; then
 	for i in $add; do
 		if [ -f i18n/qgis_$i.ts ]; then
 			git add i18n/qgis_$i.ts
 		else
-			echo "Translaiton for $i was not added"
+			echo "Translation for $i was not added"
 			exit 1
 		fi
 	done

@@ -50,7 +50,11 @@ class Dialog(QDialog, Ui_Dialog):
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
         self.progressBar.setValue(0)
         self.mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames("all")
+        self.inShape.clear()
         self.inShape.addItems(layers)
 
     def accept(self):
@@ -89,6 +93,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -98,7 +103,7 @@ class Dialog(QDialog, Ui_Dialog):
         if self.shapefileName is None or self.encoding is None:
             return
         self.outShape.setText( QString( self.shapefileName ) )
-    
+
 # Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
         seed()
@@ -109,7 +114,7 @@ class Dialog(QDialog, Ui_Dialog):
             if pGeom.intersects(bound):
                 points.append(pGeom)
                 i = i + 1
-        return points    
+        return points
 
     def regularize(self, bound, outPath, offset, value, gridType, inset, crs):
         area = bound.width() * bound.height()
