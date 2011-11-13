@@ -33,7 +33,7 @@ Building QGIS from source - step by step
 %! PostProc(tex): '\\section' '\\newpage\\section'
 %! PostProc(tex): 'section{' 'section{\\color{qgis-green}'
 %! PostProc(tex): NEWPAGE  '\\newpage'
-% Give alternating table rows different colours and use a smaller font in tables (\tiny)
+% Give alternating table rows different colors and use a smaller font in tables (\tiny)
 %! PostProc(tex): '\\begin{tabular}' '\\rowcolors{2}{tableShade}{white} \n\\tiny\\begin{tabular}'
 %! encoding: iso-8859-1
 

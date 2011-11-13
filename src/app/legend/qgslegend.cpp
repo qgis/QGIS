@@ -655,6 +655,18 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
     return 0;
   }
 
+  //store identify disabled layers of the embedded project
+  QSet<QString> embeddedIdentifyDisabledLayers;
+  QDomElement disabledLayersElem = projectDocument.documentElement().firstChildElement( "properties" ).firstChildElement( "Identify" ).firstChildElement( "disabledLayers" );
+  if ( !disabledLayersElem.isNull() )
+  {
+    QDomNodeList valueList = disabledLayersElem.elementsByTagName( "value" );
+    for ( int i = 0; i < valueList.size(); ++i )
+    {
+      embeddedIdentifyDisabledLayers.insert( valueList.at( i ).toElement().text() );
+    }
+  }
+
   QDomElement legendElem = projectDocument.documentElement().firstChildElement( "legend" );
   if ( legendElem.isNull() )
   {
@@ -719,9 +731,17 @@ QgsLegendGroup* QgsLegend::addEmbeddedGroup( const QString& groupName, const QSt
             group->insertChild( group->childCount(), cItem );
           }
 
-          if( !visible )
+          if ( !visible )
           {
             cItem->setCheckState( 0, Qt::Unchecked );
+          }
+
+          //consider the layer might be identify disabled in its project
+          if ( embeddedIdentifyDisabledLayers.contains( layerId ) )
+          {
+            QStringList thisProjectIdentifyDisabledLayers = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
+            thisProjectIdentifyDisabledLayers.append( layerId );
+            QgsProject::instance()->writeEntry( "Identify", "/disabledLayers", thisProjectIdentifyDisabledLayers );
           }
         }
         else if ( tagName == "legendgroup" )
@@ -1233,6 +1253,13 @@ bool QgsLegend::readXML( QgsLegendGroup *parent, const QDomNode &node )
         continue;
       }
 
+      if ( currentLayer->layer() && !QgsProject::instance()->layerIsEmbedded( currentLayer->layer()->id() ).isEmpty() )
+      {
+        QFont itemFont;
+        itemFont.setItalic( true );
+        currentLayer->setFont( 0, itemFont );
+      }
+
       // add to tree - either as a top-level node or a child of a group
       if ( parent )
       {
@@ -1725,7 +1752,12 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   }
 
   //store the current item
-  QModelIndex currentItemIndex( currentIndex() );
+  QTreeWidgetItem* current = currentItem();
+  // in case the current item is a child of the layer, use the layer as current item
+  // because otherwise we would set an invalid item as current item
+  // (in refreshSymbology the symbology items are removed and new ones are added)
+  if ( current && current->parent() == theLegendLayer )
+    current = current->parent();
 
   double widthScale = 1.0;
   if ( mMapCanvas && mMapCanvas->map() )
@@ -1736,7 +1768,7 @@ void QgsLegend::refreshLayerSymbology( QString key, bool expandItem )
   theLegendLayer->refreshSymbology( key, widthScale );
 
   //restore the current item again
-  setCurrentIndex( currentItemIndex );
+  setCurrentItem( current );
   adjustIconSize();
   setItemExpanded( theLegendLayer, expandItem );//make sure the symbology items are visible
 }

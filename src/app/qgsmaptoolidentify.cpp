@@ -211,12 +211,6 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
 
   int featureCount = 0;
 
-  // init distance/area calculator
-  QgsDistanceArea calc;
-  calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
-  calc.setEllipsoid( ellipsoid );
-  calc.setSourceCrs( layer->crs().srsid() );
-
   QgsFeatureList featureList;
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
@@ -247,6 +241,14 @@ bool QgsMapToolIdentify::identifyVectorLayer( QgsVectorLayer *layer, int x, int 
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
+  // init distance/area calculator
+  QgsDistanceArea calc;
+  if ( !featureList.count() == 0 )
+  {
+    calc.setProjectionsEnabled( mCanvas->hasCrsTransformEnabled() ); // project?
+    calc.setEllipsoid( ellipsoid );
+    calc.setSourceCrs( layer->crs().srsid() );
+  }
   QgsFeatureList::iterator f_it = featureList.begin();
 
   for ( ; f_it != featureList.end(); ++f_it )
@@ -325,7 +327,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   idPoint = toLayerCoordinates( layer, idPoint );
   QString type;
 
-  if ( layer->providerKey() == "wms" )
+  if ( layer->providerType() == "wms" )
   {
     type = tr( "WMS layer" );
 

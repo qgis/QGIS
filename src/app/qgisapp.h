@@ -69,6 +69,10 @@ class QgsBrowserDockWidget;
 class QgsSnappingDialog;
 class QgsGPSInformationWidget;
 
+class QgsDecorationCopyright;
+class QgsDecorationNorthArrow;
+class QgsDecorationScaleBar;
+
 #include <QMainWindow>
 #include <QToolBar>
 #include <QAbstractSocket>
@@ -256,6 +260,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionAddPgLayer() { return mActionAddPgLayer; }
     QAction *actionAddSpatiaLiteLayer() { return mActionAddSpatiaLiteLayer; };
     QAction *actionAddWmsLayer() { return mActionAddWmsLayer; }
+    QAction *actionAddWfsLayer() { return mActionAddWfsLayer; }
     QAction *actionOpenTable() { return mActionOpenTable; }
     QAction *actionToggleEditing() { return mActionToggleEditing; }
     QAction *actionSaveEdits() { return mActionSaveEdits; }
@@ -265,7 +270,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSetLayerCRS() { return mActionSetLayerCRS; }
     QAction *actionSetProjectCRSFromLayer() { return mActionSetProjectCRSFromLayer; }
     QAction *actionTileScale() { return mActionTileScale; }
-    QAction *actionGpsTool() { return mActionGpsTool; }
     QAction *actionLayerProperties() { return mActionLayerProperties; }
     QAction *actionLayerSubsetString() { return mActionLayerSubsetString; }
     QAction *actionAddToOverview() { return mActionAddToOverview; }
@@ -431,6 +435,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
                                     QStringList const & styles,
                                     QString const & format,
                                     QString const & crs );
+
+    void addWfsLayer( QString uri, QString typeName );
+
+    void versionReplyFinished();
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -460,6 +469,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Add a databaselayer to the map
     void addDatabaseLayer();
     //#endif
+    //! Add a list of database layers to the map
+    void addDatabaseLayers( QStringList const & layerPathList, QString const & providerKey );
     //#ifdef HAVE_SPATIALITE
     //! Add a SpatiaLite layer to the map
     void addSpatiaLiteLayer();
@@ -480,8 +491,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setLayerCRS();
     //! Assign layer CRS to project
     void setProjectCRSFromLayer();
-    //! Show GPS tool
-    void showGpsTool();
     //! Show tile scale slider
     void showTileScale();
     //! zoom to extent of layer
@@ -592,10 +601,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void options();
     //! Whats-this help slot
     void whatsThis();
-    void socketConnected();
-    void socketConnectionClosed();
-    void socketReadyRead();
-    void socketError( QAbstractSocket::SocketError e );
     //! Set project properties, including map untis
     void projectProperties();
     //! Open project properties dialog and show the projections tab
@@ -687,6 +692,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void fileExit();
     //! Add a WMS layer to the map
     void addWmsLayer();
+    //! Add a WFS layer to the map
+    void addWfsLayer();
     //! Set map tool to Zoom out
     void zoomOut();
     //! Set map tool to Zoom in
@@ -868,6 +875,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool createDB();
     void createMapTips();
     void updateCRSStatusBar();
+    void createDecorations();
 
     // actions for menus and toolbars -----------------
 
@@ -998,8 +1006,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgisAppInterface *mQgisInterface;
     friend class QgisAppInterface;
 
-    QTcpSocket *mSocket;
-    QString mVersionMessage;
     QSplashScreen *mSplash;
     //! list of recently opened/saved project files
     QStringList mRecentProjectPaths;
@@ -1056,6 +1062,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Persistent tile scale slider
     QgsTileScaleWidget * mpTileScaleWidget;
+
+    QgsDecorationCopyright* mDecorationCopyright;
+    QgsDecorationNorthArrow* mDecorationNorthArrow;
+    QgsDecorationScaleBar* mDecorationScaleBar;
 
     int mLastComposerId;
 

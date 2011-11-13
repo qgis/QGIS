@@ -20,7 +20,7 @@
 #include <QDomElement>
 #include <QPainter>
 
-QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ), \
+QgsComposerLabel::QgsComposerLabel( QgsComposition *composition ): QgsComposerItem( composition ), mMargin( 1.0 ), mFontColor( QColor( 0, 0, 0 ) ),
     mHAlignment( Qt::AlignLeft ), mVAlignment( Qt::AlignTop )
 {
   //default font size is 10 point
@@ -104,7 +104,7 @@ void QgsComposerLabel::adjustSizeToText()
   double textWidth = textWidthMillimeters( mFont, displayText() );
   double fontAscent = fontAscentMillimeters( mFont );
 
-  setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1, \
+  setSceneRect( QRectF( transform().dx(), transform().dy(), textWidth + 2 * mMargin + 2 * pen().widthF() + 1,
                         fontAscent + 2 * mMargin + 2 * pen().widthF() + 1 ) );
 }
 

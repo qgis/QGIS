@@ -20,6 +20,7 @@
 
 #include <QDateTime>
 #include <QObject>
+#include <QString>
 
 class QIODevice;
 
@@ -44,6 +45,13 @@ struct CORE_EXPORT QgsGPSInformation
   double hdop;
   double vdop;
   QDateTime utcDateTime;
+  QChar fixMode;
+  int fixType;
+  int quality;      // from GPGGA
+  int satellitesUsed; // from GPGGA
+  QChar status;     // from GPRMC A,V
+  QList<int>satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
+  bool satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 };
 
 /**Abstract base class for connection to a GPS device*/
@@ -81,6 +89,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
 
   signals:
     void stateChanged( const QgsGPSInformation& info );
+    void nmeaSentenceReceived( const QString& substring );  // added to capture 'raw' data
 
   protected:
     /**Data source (e.g. serial device, socket, file,...)*/

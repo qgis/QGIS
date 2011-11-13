@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
-
-<qgisgrassmodule label="Vector buffer" module="v.buffer">
-	<option key="input" typeoption="type" layeroption="layer" />
-	<option key="distance"/>
-	<option key="output" />
-</qgisgrassmodule>

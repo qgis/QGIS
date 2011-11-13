@@ -26,6 +26,7 @@
 #include "qgsrasterdataprovider.h"
 #include "qgsrectangle.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterbandstats.h"
 
 #include <QString>
 #include <QStringList>
@@ -37,6 +38,13 @@ class QgsRasterPyramid;
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8F(x) (x).toUtf8().constData()
+#else
+#define TO8F(x) QFile::encodeName( x ).constData()
+#endif
+
 
 /** \ingroup core
  * A call back function for showing progress of gdal operations.
@@ -222,6 +230,13 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
+    /** \brief If the provider supports it, return band stats for the
+        given band.
+        @note added in QGIS 1.7
+        @note overloads virtual method from QgsRasterProvider::bandStatistics
+
+    */
+    QgsRasterBandStats bandStatistics( int theBandNo );
 
     void populateHistogram( int theBandNoInt,
                             QgsRasterBandStats & theBandStats,
@@ -286,17 +301,6 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     QList<QgsRasterPyramid> mPyramidList;
 
-};
-
-class QgsGdalLayerItem : public QgsLayerItem
-{
-  public:
-    QgsGdalLayerItem( QgsDataItem* parent,
-                      QString name, QString path, QString uri );
-    ~QgsGdalLayerItem();
-
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
 };
 
 #endif

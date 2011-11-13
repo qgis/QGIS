@@ -326,8 +326,7 @@ class QgsComposerItem: QObject, QGraphicsRectItem
     bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
-    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+
     /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
     void sizeChangedByRotation(double& width, double& height);
     /**Rotates a point / vector

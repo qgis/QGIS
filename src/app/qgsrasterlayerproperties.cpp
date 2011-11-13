@@ -53,6 +53,7 @@
 #include <QVector>
 
 // QWT Charting widget
+#include <qwt_global.h>
 #include <qwt_plot_canvas.h>
 #include <qwt_legend.h>
 #include <qwt_plot.h>
@@ -175,6 +176,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     cboGreen->addItem( myRasterBandName );
     cboBlue->addItem( myRasterBandName );
     cboxColorMapBand->addItem( myRasterBandName );
+    cboxTransparencyBand->addItem( myRasterBandName );
+    cboxTransparencyBand->setEnabled( true );
   }
 
   cboRed->addItem( TRSTRING_NOT_SET );
@@ -753,7 +756,7 @@ void QgsRasterLayerProperties::sync()
     {
       labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
     }
-    mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toDouble();
+    mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
     sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
   }
 
@@ -1855,7 +1858,9 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 
 void QgsRasterLayerProperties::refreshHistogram()
 {
+#if !defined(QWT_VERSION) || QWT_VERSION<0x060000
   mpPlot->clear();
+#endif
   mHistogramProgress->show();
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
@@ -1882,7 +1887,7 @@ void QgsRasterLayerProperties::refreshHistogram()
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
-  const int BINCOUNT = 255;
+  const int BINCOUNT = 256;
   bool myIgnoreOutOfRangeFlag = true;
   bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
@@ -1920,15 +1925,27 @@ void QgsRasterLayerProperties::refreshHistogram()
     mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
     mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
     mypCurve->setPen( QPen( myColors.at( myIteratorInt ) ) );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    QVector<QPointF> data;
+#else
     QVector<double> myX2Data;
     QVector<double> myY2Data;
+#endif
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
       int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+      data << QPointF( myBin, myBinValue );
+#else
       myX2Data.append( double( myBin ) );
       myY2Data.append( double( myBinValue ) );
+#endif
     }
+#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
+    mypCurve->setSamples( data );
+#else
     mypCurve->setData( myX2Data, myY2Data );
+#endif
     mypCurve->attach( mpPlot );
     if ( myFirstIteration || myGlobalMin < myRasterBandStats.minimumValue )
     {
@@ -1963,6 +1980,7 @@ void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
   QPixmap myPixmap( 600, 600 );
   myPixmap.fill( Qt::white ); // Qt::transparent ?
 
+#if (QWT_VERSION<0x060000)
   QwtPlotPrintFilter myFilter;
   int myOptions = QwtPlotPrintFilter::PrintAll;
   myOptions &= ~QwtPlotPrintFilter::PrintBackground;
@@ -1970,6 +1988,12 @@ void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
   myFilter.setOptions( myOptions );
 
   mpPlot->print( myPixmap, myFilter );
+#else
+  QPainter painter;
+  painter.begin( &myPixmap );
+  mpPlot->drawCanvas( &painter );
+  painter.end();
+#endif
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != "" )
   {

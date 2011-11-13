@@ -174,7 +174,7 @@ void QgsImageFillSymbolLayer::renderPolygon( const QPolygonF& points, QList<QPol
 
 bool QgsImageFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 {
-  if( !symbol ) //unset current outline
+  if ( !symbol ) //unset current outline
   {
     delete mOutline;
     mOutline = 0;
@@ -382,16 +382,17 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
   QgsLinePatternFillSymbolLayer* patternLayer = new QgsLinePatternFillSymbolLayer();
 
   //default values
-  double angle = 45;
+  double lineAngle = 45;
   double distance = 5;
   double lineWidth = 0.5;
   QColor color( Qt::black );
+  double offset = 0.0;
 
-  if ( properties.contains( "angle" ) )
+  if ( properties.contains( "lineangle" ) )
   {
-    angle = properties["angle"].toDouble();
+    lineAngle = properties["lineangle"].toDouble();
   }
-  patternLayer->setAngle( angle );
+  patternLayer->setLineAngle( lineAngle );
 
   if ( properties.contains( "distance" ) )
   {
@@ -410,6 +411,12 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::create( const QgsStringMap& pro
     color = QgsSymbolLayerV2Utils::decodeColor( properties["color"] );
   }
   patternLayer->setColor( color );
+
+  if ( properties.contains( "offset" ) )
+  {
+    offset = properties["offset"].toDouble();
+  }
+  patternLayer->setOffset( offset );
   return patternLayer;
 }
 
@@ -420,87 +427,101 @@ QString QgsLinePatternFillSymbolLayer::layerType() const
 
 void QgsLinePatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
 {
+  double outlinePixelWidth = context.outputPixelSize( mLineWidth );
+  double outputPixelDist = context.outputPixelSize( mDistance );
+  double outputPixelOffset = context.outputPixelSize( mOffset );
+
   //create image
   int height, width;
-  if ( doubleNear( mAngle, 0 ) || doubleNear( mAngle, 360 ) || doubleNear( mAngle, 90 ) || doubleNear( mAngle, 180 ) || doubleNear( mAngle, 270 ) )
+  if ( doubleNear( mLineAngle, 0 ) || doubleNear( mLineAngle, 360 ) || doubleNear( mLineAngle, 90 ) || doubleNear( mLineAngle, 180 ) || doubleNear( mLineAngle, 270 ) )
   {
-    height = context.outputPixelSize( mDistance );
+    height = outputPixelDist;
     width = height; //width can be set to arbitrary value
   }
   else
   {
-    height = fabs( context.outputPixelSize( mDistance ) / cos( mAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
-    width = fabs( height / tan( mAngle * M_PI / 180 ) );
+    height = qAbs( outputPixelDist / cos( mLineAngle * M_PI / 180 ) ); //keep perpendicular distance between lines constant
+    width = qAbs( height / tan( mLineAngle * M_PI / 180 ) );
   }
 
-  double outlinePixelWidth = context.outputPixelSize( mLineWidth );
+  //depending on the angle, we might need to render into a larger image and use a subset of it
+  int dx = 0;
+  int dy = 0;
 
-  //find a suitable multiple of width and heigh
-
-  QImage patternImage( fabs( width ), height, QImage::Format_ARGB32 );
+  QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
   QPainter p( &patternImage );
+
   p.setRenderHint( QPainter::Antialiasing, true );
   QPen pen( mColor );
   pen.setWidthF( outlinePixelWidth );
   pen.setCapStyle( Qt::FlatCap );
   p.setPen( pen );
 
-  //draw line and dots in the border
-  if ( doubleNear( mAngle, 0.0 ) || doubleNear( mAngle, 360.0 ) || doubleNear( mAngle, 180.0 ) )
+  QPoint p1, p2, p3, p4, p5, p6;
+  if ( doubleNear( mLineAngle, 0.0 ) || doubleNear( mLineAngle, 360.0 ) || doubleNear( mLineAngle, 180.0 ) )
   {
-    p.drawLine( QPointF( 0, height / 2.0 ), QPointF( width, height / 2.0 ) );
+    p1 = QPoint( 0, height );
+    p2 = QPoint( width, height );
+    p3 = QPoint( 0, 0 );
+    p4 = QPoint( width, 0 );
+    p5 = QPoint( 0, 2 * height );
+    p6 = QPoint( width, 2 * height );
   }
-  else if ( doubleNear( mAngle, 90.0 ) || doubleNear( mAngle, 270.0 ) )
+  else if ( doubleNear( mLineAngle, 90.0 ) || doubleNear( mLineAngle, 270.0 ) )
   {
-    p.drawLine( QPointF( width / 2.0, 0 ), QPointF( width / 2.0, height ) );
+    p1 = QPoint( 0, height );
+    p2 = QPoint( 0, 0 );
+    p3 = QPoint( width, height );
+    p4 = QPoint( width, 0 );
+    p5 = QPoint( -width, height );
+    p6 = QPoint( -width, 0 );
   }
-  else if (( mAngle > 0 && mAngle < 90 ) || ( mAngle > 180 && mAngle < 270 ) )
+  else if (( mLineAngle > 0 && mLineAngle < 90 ) || ( mLineAngle > 180 && mLineAngle < 270 ) )
   {
-    p.drawLine( QPointF( 0, height ), QPointF( width, 0 ) );
+    dx = outputPixelDist * cos(( 90 - mLineAngle ) * M_PI / 180.0 );
+    dy = outputPixelDist * sin(( 90 - mLineAngle ) * M_PI / 180.0 );
+    p1 = QPoint( 0, height );
+    p2 = QPoint( width, 0 );
+    p3 = QPoint( -dx, height - dy );
+    p4 = QPoint( width - dx, -dy ); //p4 = QPoint( p3.x() + width, p3.y() - height );
+    p5 = QPoint( dx, height + dy );
+    p6 = QPoint( width + dx, dy ); //p6 = QPoint( p5.x() + width, p5.y() - height );
   }
-  else if (( mAngle < 180 ) || ( mAngle > 270 && mAngle < 360 ) )
+  else if (( mLineAngle < 180 ) || ( mLineAngle > 270 && mLineAngle < 360 ) )
   {
-    p.drawLine( QPointF( width, height ), QPointF( 0, 0 ) );
-  }
-
-  //todo: calculate triangles more accurately
-  double d1 = 0;
-  double d2 = 0;
-  QPolygonF triangle1, triangle2;
-  if ( mAngle > 0 && mAngle < 90 )
-  {
-    d1 = ( outlinePixelWidth / 2.0 ) / cos( mAngle * M_PI / 180 );
-    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 90 - mAngle ) * M_PI / 180 );
-    triangle1 << QPointF( 0, 0 ) << QPointF( 0, d1 ) << QPointF( d2, 0 ) << QPointF( 0, 0 );
-    triangle2 << QPointF( width, height ) << QPointF( width - d2, height ) << QPointF( width, height - d1 ) << QPointF( width, height );
-  }
-  else if ( mAngle > 90 && mAngle < 180 )
-  {
-    d1 = ( outlinePixelWidth / 2.0 ) / cos(( mAngle - 90 ) * M_PI / 180 );
-    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 180 - mAngle ) * M_PI / 180 );
-    triangle1 << QPointF( width, 0 ) << QPointF( width - d1, 0 ) << QPointF( width, d2 ) << QPointF( width, 0 );
-    triangle2 << QPointF( 0, height ) << QPointF( 0, height - d2 ) << QPointF( d1, height ) << QPointF( 0, height );
-  }
-  else if ( mAngle > 180 && mAngle < 270 )
-  {
-    d1 = ( outlinePixelWidth / 2.0 ) / cos(( mAngle - 180 ) * M_PI / 180 );
-    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 270 - mAngle ) * M_PI / 180 );
-    triangle1 << QPointF( 0, 0 ) << QPointF( 0, d1 ) << QPointF( d2, 0 ) << QPointF( 0, 0 );
-    triangle2 << QPointF( width, height ) << QPointF( width - d2, height ) << QPointF( width, height - d1 ) << QPointF( width, height );
-  }
-  else if ( mAngle > 270 && mAngle < 360 )
-  {
-    d1 = ( outlinePixelWidth / 2.0 ) / cos(( mAngle - 270 ) * M_PI / 180 );
-    d2 = ( outlinePixelWidth / 2.0 ) / cos(( 360 - mAngle ) * M_PI / 180 );
-    triangle1 << QPointF( width, 0 ) << QPointF( width - d1, 0 ) << QPointF( width, d2 ) << QPointF( width, 0 );
-    triangle2 << QPointF( 0, height ) << QPointF( 0, height - d2 ) << QPointF( d1, height ) << QPointF( 0, height );
+    dy = outputPixelDist * cos(( 180 - mLineAngle ) * M_PI / 180 );
+    dx = outputPixelDist * sin(( 180 - mLineAngle ) * M_PI / 180 );
+    p1 = QPoint( width, height );
+    p2 = QPoint( 0, 0 );
+    p5 = QPoint( width + dx, height - dy );
+    p6 = QPoint( p5.x() - width, p5.y() - height ); //p6 = QPoint( dx, -dy );
+    p3 = QPoint( width - dx, height + dy );
+    p4 = QPoint( p3.x() - width, p3.y() - height ); //p4 = QPoint( -dx, dy );
   }
 
-  p.setPen( QPen( Qt::NoPen ) );
-  p.setBrush( QBrush( mColor ) );
-  p.drawPolygon( triangle1 );
-  p.drawPolygon( triangle2 );
+  if ( !doubleNear( mOffset, 0.0 ) ) //shift everything
+  {
+    QPointF tempPt;
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelDist + outputPixelOffset );
+    p3 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelDist + outputPixelOffset );
+    p4 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p5, outputPixelDist - outputPixelOffset );
+    p5 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p6, outputPixelDist - outputPixelOffset );
+    p6 = QPoint( tempPt.x(), tempPt.y() );
+
+    //update p1, p2 last
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p1, p3, outputPixelOffset ).toPoint();
+    p1 = QPoint( tempPt.x(), tempPt.y() );
+    tempPt = QgsSymbolLayerV2Utils::pointOnLineWithDistance( p2, p4, outputPixelOffset ).toPoint();
+    p2 = QPoint( tempPt.x(), tempPt.y() );;
+  }
+
+  p.drawLine( p1, p2 );
+  p.drawLine( p3, p4 );
+  p.drawLine( p5, p6 );
   p.end();
 
   //set image to mBrush
@@ -532,10 +553,11 @@ void QgsLinePatternFillSymbolLayer::stopRender( QgsSymbolV2RenderContext & )
 QgsStringMap QgsLinePatternFillSymbolLayer::properties() const
 {
   QgsStringMap map;
-  map.insert( "angle", QString::number( mAngle ) );
+  map.insert( "lineangle", QString::number( mLineAngle ) );
   map.insert( "distance", QString::number( mDistance ) );
   map.insert( "linewidth", QString::number( mLineWidth ) );
   map.insert( "color", QgsSymbolLayerV2Utils::encodeColor( mColor ) );
+  map.insert( "offset", QString::number( mOffset ) );
   return map;
 }
 
@@ -552,7 +574,7 @@ QgsSymbolLayerV2* QgsLinePatternFillSymbolLayer::clone() const
 ////////////////////////
 
 QgsPointPatternFillSymbolLayer::QgsPointPatternFillSymbolLayer(): QgsImageFillSymbolLayer(), mMarkerSymbol( 0 ), mDistanceX( 15 ),
-  mDistanceY( 15 ), mDisplacementX( 0 ), mDisplacementY( 0 )
+    mDistanceY( 15 ), mDisplacementX( 0 ), mDisplacementY( 0 )
 {
   mDistanceX = 15;
   mDistanceY = 15;
@@ -569,19 +591,19 @@ QgsPointPatternFillSymbolLayer::~QgsPointPatternFillSymbolLayer()
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::create( const QgsStringMap& properties )
 {
   QgsPointPatternFillSymbolLayer* layer = new QgsPointPatternFillSymbolLayer();
-  if( properties.contains("distance_x") )
+  if ( properties.contains( "distance_x" ) )
   {
     layer->setDistanceX( properties["distance_x"].toDouble() );
   }
-  if( properties.contains("distance_y") )
+  if ( properties.contains( "distance_y" ) )
   {
     layer->setDistanceY( properties["distance_y"].toDouble() );
   }
-  if( properties.contains("displacement_x") )
+  if ( properties.contains( "displacement_x" ) )
   {
     layer->setDisplacementX( properties["displacement_x"].toDouble() );
   }
-  if( properties.contains("displacement_y") )
+  if ( properties.contains( "displacement_y" ) )
   {
     layer->setDisplacementY( properties["displacement_y"].toDouble() );
   }
@@ -602,7 +624,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
   QImage patternImage( width, height, QImage::Format_ARGB32 );
   patternImage.fill( 0 );
 
-  if( mMarkerSymbol )
+  if ( mMarkerSymbol )
   {
     QPainter p( &patternImage );
 
@@ -631,7 +653,7 @@ void QgsPointPatternFillSymbolLayer::startRender( QgsSymbolV2RenderContext& cont
     mMarkerSymbol->renderPoint( QPointF( displacementPixelX, height / 2.0 ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width / 2.0 + displacementPixelX, height / 2.0 - displacementPixelY ), context.feature(), pointRenderContext );
     mMarkerSymbol->renderPoint( QPointF( width + displacementPixelX, height / 2.0 ), context.feature(), pointRenderContext );
-    mMarkerSymbol->renderPoint( QPointF( width / 2.0, height - displacementPixelY), context.feature(), pointRenderContext );
+    mMarkerSymbol->renderPoint( QPointF( width / 2.0, height - displacementPixelY ), context.feature(), pointRenderContext );
 
     mMarkerSymbol->stopRender( pointRenderContext );
   }
@@ -677,7 +699,7 @@ QgsStringMap QgsPointPatternFillSymbolLayer::properties() const
 QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
 {
   QgsSymbolLayerV2* clonedLayer = QgsPointPatternFillSymbolLayer::create( properties() );
-  if( mMarkerSymbol )
+  if ( mMarkerSymbol )
   {
     clonedLayer->setSubSymbol( mMarkerSymbol->clone() );
   }
@@ -686,12 +708,12 @@ QgsSymbolLayerV2* QgsPointPatternFillSymbolLayer::clone() const
 
 bool QgsPointPatternFillSymbolLayer::setSubSymbol( QgsSymbolV2* symbol )
 {
-  if( !symbol )
+  if ( !symbol )
   {
     return false;
   }
 
-  if(symbol->type() == QgsSymbolV2::Marker )
+  if ( symbol->type() == QgsSymbolV2::Marker )
   {
     QgsMarkerSymbolV2* markerSymbol = static_cast<QgsMarkerSymbolV2*>( symbol );
     delete mMarkerSymbol;

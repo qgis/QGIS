@@ -6,20 +6,16 @@ SET (VRP_SRCS
   roadgraphplugin.cpp
   settingsdlg.cpp
   units.cpp
-  utils.cpp
   shortestpathwidget.cpp
   linevectorlayersettings.cpp
   linevectorlayerwidget.cpp
-  linevectorlayerdirector.cpp
-  simplegraphbuilder.cpp
   exportdlg.cpp
-  graphbuilder.cpp
+  speedproperter.cpp
 )
 
 #SET ([pluginlcasename]_UIS [pluginlcasename]guibase.ui)
 
 SET (VRP_MOC_HDRS
-  graphdirector.h
   roadgraphplugin.h
   settingsdlg.h
   shortestpathwidget.h
@@ -32,10 +28,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ${GEOS_INCLUDE_DIR}
   ../../core
-  ../../core/spatialindex/
   ../../gui
+  ../../analysis/network
   ..
   )
+
 ########################################################
 # Build
 
@@ -49,6 +46,7 @@ ADD_LIBRARY (roadgraphplugin MODULE ${VRP_SRCS} ${VRP_MOC_SRCS} ${VRP_RCC_SRCS})
 TARGET_LINK_LIBRARIES(roadgraphplugin
   qgis_core
   qgis_gui
+  qgis_networkanalysis
 )
 
 

@@ -45,12 +45,15 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-
-        # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Point, QGis.Line, QGis.Polygon])
+        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.clear()
         self.inShape.addItems(layers)
+        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
     def updateUi(self):
         if self.function == 1:
@@ -96,6 +99,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(vlayer)
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 

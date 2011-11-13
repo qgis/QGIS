@@ -17,6 +17,7 @@ class QPolygonF;
 class QgsFeature;
 class QgsSymbolLayerV2;
 class QgsRenderContext;
+class QgsVectorLayer;
 
 typedef QMap<QString, QString> QgsStringMap;
 typedef QList<QgsSymbolLayerV2*> QgsSymbolLayerV2List;
@@ -74,7 +75,7 @@ class CORE_EXPORT QgsSymbolV2
     bool changeSymbolLayer( int index, QgsSymbolLayerV2* layer );
 
 
-    void startRender( QgsRenderContext& context );
+    void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
     void stopRender( QgsRenderContext& context );
 
     void setColor( const QColor& color );
@@ -147,8 +148,11 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
 
-    void setFeature( const QgsFeature* f ){ mFeature = f; }
+    void setFeature( const QgsFeature* f ) { mFeature = f; }
     const QgsFeature* feature() const { return mFeature; }
+
+    void setLayer( const QgsVectorLayer* layer ) { mLayer = layer; }
+    const QgsVectorLayer* layer() const { return mLayer; }
 
     // Color used for selections
     static QColor selectionColor();
@@ -166,6 +170,7 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     bool mSelected;
     int mRenderHints;
     const QgsFeature* mFeature; //current feature
+    const QgsVectorLayer* mLayer; //current vectorlayer
 };
 
 

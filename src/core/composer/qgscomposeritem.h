@@ -296,7 +296,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     /**Returns angle of the line from p1 to p2 (clockwise, starting at N)*/
     double angle( const QPointF& p1, const QPointF& p2 ) const;
 
-    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the \
+    /**Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance() const;
 
@@ -315,8 +315,7 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
     bool imageSizeConsideringRotation( double& width, double& height ) const;
     /**Calculates corner point after rotation and scaling*/
     bool cornerPointOnRotatedAndScaledRect( double& x, double& y, double width, double height ) const;
-    /**Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point*/
-    QPointF pointOnLineWithDistance( const QPointF& startPoint, const QPointF& directionPoint, double distance ) const;
+
     /**Calculates width / height of the bounding box of a rotated rectangle (mRotation)*/
     void sizeChangedByRotation( double& width, double& height );
     /**Rotates a point / vector
@@ -333,6 +332,8 @@ class CORE_EXPORT QgsComposerItem: public QObject, public QGraphicsRectItem
   private:
     // Label id (unique within the same composition)
     QString mId;
+
+    void init( bool manageZValue );
 };
 
 #endif

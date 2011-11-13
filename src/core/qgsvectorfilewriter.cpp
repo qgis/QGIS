@@ -588,6 +588,11 @@ QgsVectorFileWriter::writeAsVectorFormat( QgsVectorLayer* layer,
   QgsCoordinateTransform* ct = 0;
   int shallTransform = false;
 
+  if ( layer == NULL )
+  {
+    return ErrInvalidLayer;
+  }
+
   if ( destCRS && destCRS->isValid() )
   {
     // This means we should transform

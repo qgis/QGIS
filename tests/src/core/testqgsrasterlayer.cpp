@@ -57,6 +57,7 @@ class TestQgsRasterLayer: public QObject
     void landsatBasic();
     void landsatBasic875Qml();
     void checkDimensions();
+    void checkStats();
     void buildExternalOverviews();
     void registry();
   private:
@@ -73,9 +74,10 @@ class TestQgsRasterLayer: public QObject
 void TestQgsRasterLayer::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
-  QgsApplication::showSettings();
+  QgsApplication::init( QString() );
+  QgsApplication::initQgis();
+  QString mySettings = QgsApplication::showSettings();
+  mySettings = mySettings.replace("\n","<br />");
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
@@ -96,6 +98,7 @@ void TestQgsRasterLayer::initTestCase()
   myLayers << mpRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
   mReport += "<h1>Raster Layer Tests</h1>\n";
+  mReport += "<p>" + mySettings + "</p>";
 }
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
@@ -115,6 +118,7 @@ void TestQgsRasterLayer::cleanupTestCase()
 void TestQgsRasterLayer::isValid()
 {
   QVERIFY( mpRasterLayer->isValid() );
+  mpRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, false );
   mpMapRenderer->setExtent( mpRasterLayer->extent() );
   QVERIFY( render( "raster" ) );
 }
@@ -133,6 +137,7 @@ void TestQgsRasterLayer::pseudoColor()
 
 void TestQgsRasterLayer::landsatBasic()
 {
+  mpLandsatRasterLayer->setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum, false );
   QStringList myLayers;
   myLayers << mpLandsatRasterLayer->id();
   mpMapRenderer->setLayerSet( myLayers );
@@ -156,13 +161,26 @@ void TestQgsRasterLayer::checkDimensions()
   // regression check for ticket #832
   // note bandStatistics call is base 1
   QVERIFY( mpRasterLayer->bandStatistics( 1 ).elementCount == 100 );
+  mReport += "<h2>Check Dimensions</h2>\n";
+  mReport += "<p>Passed</p>";
+}
+void TestQgsRasterLayer::checkStats()
+{
+  QVERIFY( mpRasterLayer->width() == 10 );
+  QVERIFY( mpRasterLayer->height() == 10 );
+  QVERIFY( mpRasterLayer->bandStatistics( 1 ).elementCount == 100 );
+  QVERIFY( mpRasterLayer->bandStatistics( 1 ).minimumValue == 0 );
+  QVERIFY( mpRasterLayer->bandStatistics( 1 ).maximumValue == 9 );
+  QVERIFY( mpRasterLayer->bandStatistics( 1 ).mean == 4.5 );
+  QVERIFY( mpRasterLayer->bandStatistics( 1 ).stdDev == 2.872281323269 );
+  mReport += "<h2>Check Stats</h2>\n";
+  mReport += "<p>Passed</p>";
 }
 
 void TestQgsRasterLayer::buildExternalOverviews()
 {
   //before we begin delete any old ovr file (if it exists)
   //and make a copy of the landsat raster into the temp dir
-
   QString myTempPath = QDir::tempPath() + QDir::separator();
   QFile::remove( myTempPath + "landsat.tif.ovr" );
   QFile::copy( mTestDataDir + "landsat.tif", myTempPath + "landsat.tif" );
@@ -205,6 +223,8 @@ void TestQgsRasterLayer::buildExternalOverviews()
   QVERIFY( QFile::exists( myTempPath + "landsat.tif.ovr" ) );
   //cleanup
   delete mypLayer;
+  mReport += "<h2>Check Overviews</h2>\n";
+  mReport += "<p>Passed</p>";
 }
 
 

@@ -201,31 +201,31 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
   double d;
   switch ( type )
   {
-    case QgsRasterDataProvider::Byte:
+    case Byte:
       uc = ( unsigned char )noval;
       memcpy( data, &uc, size );
       break;
-    case QgsRasterDataProvider::UInt16:
+    case UInt16:
       us = ( unsigned short )noval;
       memcpy( data, &us, size );
       break;
-    case QgsRasterDataProvider::Int16:
+    case Int16:
       s = ( short )noval;
       memcpy( data, &s, size );
       break;
-    case QgsRasterDataProvider::UInt32:
+    case UInt32:
       ui = ( unsigned int )noval;
       memcpy( data, &ui, size );
       break;
-    case QgsRasterDataProvider::Int32:
+    case Int32:
       i = ( int )noval;
       memcpy( data, &i, size );
       break;
-    case QgsRasterDataProvider::Float32:
+    case Float32:
       f = ( float )noval;
       memcpy( data, &f, size );
       break;
-    case QgsRasterDataProvider::Float64:
+    case Float64:
       d = ( double )noval;
       memcpy( data, &d, size );
       break;
@@ -233,6 +233,190 @@ QByteArray QgsRasterDataProvider::noValueBytes( int theBandNo )
       QgsLogger::warning( "GDAL data type is not supported" );
   }
   return ba;
+}
+
+
+QgsRasterBandStats QgsRasterDataProvider::bandStatistics( int theBandNo )
+{
+  double myNoDataValue = noDataValue();
+  QgsRasterBandStats myRasterBandStats;
+  myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
+
+  int myDataType = dataType( theBandNo );
+
+  int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
+  myXBlockSize = xBlockSize();
+  myYBlockSize = yBlockSize();
+
+  myNXBlocks = ( xSize() + myXBlockSize - 1 ) / myXBlockSize;
+  myNYBlocks = ( ySize() + myYBlockSize - 1 ) / myYBlockSize;
+
+  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( dataTypeSize( theBandNo ) / 8 ) );
+
+  // unfortunately we need to make two passes through the data to calculate stddev
+  bool myFirstIterationFlag = true;
+
+  int myBandXSize = xSize();
+  int myBandYSize = ySize();
+  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
+  {
+    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
+    {
+      int  nXValid, nYValid;
+      readBlock( theBandNo, iXBlock, iYBlock, myData );
+
+      // Compute the portion of the block that is valid
+      // for partial edge blocks.
+      if (( iXBlock + 1 ) * myXBlockSize > myBandXSize )
+        nXValid = myBandXSize - iXBlock * myXBlockSize;
+      else
+        nXValid = myXBlockSize;
+
+      if (( iYBlock + 1 ) * myYBlockSize > myBandYSize )
+        nYValid = myBandYSize - iYBlock * myYBlockSize;
+      else
+        nYValid = myYBlockSize;
+
+      // Collect the histogram counts.
+      for ( int iY = 0; iY < nYValid; iY++ )
+      {
+        for ( int iX = 0; iX < nXValid; iX++ )
+        {
+          double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
+          //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (iX).arg(iY).arg( myValue ) );
+
+          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          {
+            continue; // NULL
+          }
+
+          myRasterBandStats.sum += myValue;
+          ++myRasterBandStats.elementCount;
+          //only use this element if we have a non null element
+          if ( myFirstIterationFlag )
+          {
+            //this is the first iteration so initialise vars
+            myFirstIterationFlag = false;
+            myRasterBandStats.minimumValue = myValue;
+            myRasterBandStats.maximumValue = myValue;
+          }               //end of true part for first iteration check
+          else
+          {
+            //this is done for all subsequent iterations
+            if ( myValue < myRasterBandStats.minimumValue )
+            {
+              myRasterBandStats.minimumValue = myValue;
+            }
+            if ( myValue > myRasterBandStats.maximumValue )
+            {
+              myRasterBandStats.maximumValue = myValue;
+            }
+          } //end of false part for first iteration check
+        }
+      }
+    } //end of column wise loop
+  } //end of row wise loop
+
+
+  //end of first pass through data now calculate the range
+  myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
+  //calculate the mean
+  myRasterBandStats.mean = myRasterBandStats.sum / myRasterBandStats.elementCount;
+
+  //for the second pass we will get the sum of the squares / mean
+  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
+  {
+    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
+    {
+      int  nXValid, nYValid;
+
+      readBlock( theBandNo, iXBlock, iYBlock, myData );
+
+      // Compute the portion of the block that is valid
+      // for partial edge blocks.
+      if (( iXBlock + 1 ) * myXBlockSize > myBandXSize )
+        nXValid = myBandXSize - iXBlock * myXBlockSize;
+      else
+        nXValid = myXBlockSize;
+
+      if (( iYBlock + 1 ) * myYBlockSize > myBandYSize )
+        nYValid = myBandYSize - iYBlock * myYBlockSize;
+      else
+        nYValid = myYBlockSize;
+
+      // Collect the histogram counts.
+      for ( int iY = 0; iY < nYValid; iY++ )
+      {
+        for ( int iX = 0; iX < nXValid; iX++ )
+        {
+          double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
+          //QgsDebugMsg ( "myValue = " + QString::number(myValue) );
+
+          if ( mValidNoDataValue && ( qAbs( myValue - myNoDataValue ) <= TINY_VALUE ) )
+          {
+            continue; // NULL
+          }
+
+          myRasterBandStats.sumOfSquares += static_cast < double >
+                                            ( pow( myValue - myRasterBandStats.mean, 2 ) );
+        }
+      }
+    } //end of column wise loop
+  } //end of row wise loop
+
+  //divide result by sample size - 1 and get square root to get stdev
+  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumOfSquares /
+                             ( myRasterBandStats.elementCount - 1 ) ) );
+
+#ifdef QGISDEBUG
+  QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "NULL", noDataValue() , 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
+  QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
+#endif
+
+  CPLFree( myData );
+  myRasterBandStats.statsGathered = true;
+  return myRasterBandStats;
+}
+
+double QgsRasterDataProvider::readValue( void *data, int type, int index )
+{
+  if ( !data )
+    return mValidNoDataValue ? noDataValue() : 0.0;
+
+  switch ( type )
+  {
+    case Byte:
+      return ( double )(( GByte * )data )[index];
+      break;
+    case UInt16:
+      return ( double )(( GUInt16 * )data )[index];
+      break;
+    case Int16:
+      return ( double )(( GInt16 * )data )[index];
+      break;
+    case UInt32:
+      return ( double )(( GUInt32 * )data )[index];
+      break;
+    case Int32:
+      return ( double )(( GInt32 * )data )[index];
+      break;
+    case Float32:
+      return ( double )(( float * )data )[index];
+      break;
+    case Float64:
+      return ( double )(( double * )data )[index];
+      break;
+    default:
+      QgsLogger::warning( "GDAL data type is not supported" );
+  }
+
+  return mValidNoDataValue ? noDataValue() : 0.0;
 }
 
 // ENDS

@@ -3,7 +3,7 @@ Help I think I found a bug!
 
 If you find a bug in QGIS, you can report it using the QGIS ticket/bug database at:
 
-http://trac.osgeo.org/qgis/report
+http://hub.qgis.org/projects/quantum-gis/issues/new
 
 
 Some hints about when you should file a bug:
@@ -25,6 +25,3 @@ Some hints about when you should file a bug:
    do. While we appreciate it's inconvenient if some issue prevents you doing
    your work, we need to take the big picture view of things and focus on
    things that affect the largest proportion of our user base.
-
-
-$Id$

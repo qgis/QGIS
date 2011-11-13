@@ -26,6 +26,7 @@ class QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShor
 
   public:
     QgsConfigureShortcutsDialog( QWidget* parent = NULL );
+    ~QgsConfigureShortcutsDialog();
 
     void populateActions();
 
@@ -51,6 +52,18 @@ class QgsConfigureShortcutsDialog : public QDialog, private Ui::QgsConfigureShor
   protected:
     bool mGettingShortcut;
     int mModifiers, mKey;
+
+  private:
+    /*!
+     * Function to save dialog window state
+     */
+    void saveState();
+
+    /*!
+     * Function to restore dialog window state
+     */
+    void restoreState();
+
 };
 
 #endif

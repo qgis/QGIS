@@ -93,6 +93,13 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
     // Returns empty list if not found.
     static QStringList execArguments( QString module );
 
+  signals:
+    // ! emitted when the module started
+    void moduleStarted();
+
+    // ! emitted when the module finished
+    void moduleFinished();
+
   public slots:
     //! Run the module with current options
     void on_mRunButton_clicked() { run(); }
@@ -483,6 +490,9 @@ class QgsGrassModuleOption: public QgsGrassModuleGroupBoxItem
     //  Raster input/output uses region by default
     //  Use of region can be forced by 'region' attribute in qgm
     bool usesRegion() { return mUsesRegion; }
+
+    //! Check min/max version
+    static bool checkVersion( QString version_min, QString version_max );
 
   public slots:
     // Add new line edit for multiple options

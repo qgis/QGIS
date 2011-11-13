@@ -141,7 +141,7 @@ public:
 
        @returns true if successful
      */
-    bool readXML(QDomNode & layer_node);
+    bool readXML(const QDomNode& layer_node);
 
 
     /** stores state in Dom node
@@ -345,7 +345,7 @@ protected:
     /** called by readXML(), used by children to read state specific to them from
         project files.
     */
-    virtual bool readXml( QDomNode & layer_node );
+    virtual bool readXml( const QDomNode& layer_node );
 
     /** called by writeXML(), used by children to write state specific to them to
         project files.

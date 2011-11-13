@@ -643,6 +643,10 @@ void QgsLineDecorationSymbolLayerV2::renderPolyline( const QPolygonF& points, Qg
   }
 
   int cnt = points.count();
+  if ( cnt < 2 )
+  {
+    return;
+  }
   QPointF p2 = points.at( --cnt );
   QPointF p1 = points.at( --cnt );
   while ( p2 == p1 && cnt )

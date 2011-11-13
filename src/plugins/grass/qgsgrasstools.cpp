@@ -163,8 +163,11 @@ void QgsGrassTools::runModule( QString name )
   }
   else
   {
-    m = qobject_cast<QWidget *>( new QgsGrassModule( this, name,
-                                 mIface, path, mTabWidget ) );
+    QgsGrassModule *gmod = new QgsGrassModule( this, name, mIface, path, mTabWidget );
+    connect( gmod, SIGNAL( moduleStarted() ), mBrowser, SLOT( moduleStarted() ) );
+    connect( gmod, SIGNAL( moduleFinished() ), mBrowser, SLOT( moduleFinished() ) );
+
+    m = qobject_cast<QWidget *>( gmod );
   }
 
   int height = mTabWidget->iconSize().height();
@@ -264,9 +267,19 @@ void QgsGrassTools::addModules( QTreeWidgetItem *parent, QDomElement &element )
     {
 // QgsDebugMsg(QString("tag = %1").arg(e.tagName()));
 
-      if ( e.tagName() == "section" && e.tagName() == "grass" )
+      if ( e.tagName() != "section" && e.tagName() != "grass" )
       {
         QgsDebugMsg( QString( "Unknown tag: %1" ).arg( e.tagName() ) );
+        continue;
+      }
+
+      // Check GRASS version
+      QString version_min = e.attribute( "version_min" );
+      QString version_max = e.attribute( "version_max" );
+
+      if ( !QgsGrassModuleOption::checkVersion( e.attribute( "version_min" ), e.attribute( "version_max" ) ) )
+      {
+        n = n.nextSibling();
         continue;
       }
 

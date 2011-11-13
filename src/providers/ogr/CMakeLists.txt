@@ -1,7 +1,7 @@
 
-SET (OGR_SRCS qgsogrprovider.cpp)
+SET (OGR_SRCS qgsogrprovider.cpp qgsogrdataitems.cpp)
 
-SET(OGR_MOC_HDRS qgsogrprovider.h)
+SET(OGR_MOC_HDRS qgsogrprovider.h qgsogrdataitems.h)
 
 ########################################################
 # Build

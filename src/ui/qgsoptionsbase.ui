@@ -50,8 +50,14 @@
        <string>General</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_7">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_2">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -60,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>755</height>
+            <width>979</width>
+            <height>1135</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -426,6 +432,32 @@
                </layout>
               </item>
               <item>
+               <widget class="QGroupBox" name="groupBox_13">
+                <property name="title">
+                 <string>GDAL Drivers</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_24">
+                 <item row="1" column="0">
+                  <widget class="QListWidget" name="lstGdalDrivers">
+                   <property name="minimumSize">
+                    <size>
+                     <width>0</width>
+                     <height>141</height>
+                    </size>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label_17">
+                   <property name="text">
+                    <string>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
                <widget class="QGroupBox" name="groupBox_4">
                 <property name="title">
                  <string>Plugin paths</string>
@@ -489,8 +521,14 @@
        <string>Rendering</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_9">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_3">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -499,8 +537,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>433</height>
+            <width>641</width>
+            <height>512</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -657,8 +695,14 @@
        <string>Map tools</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_6">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -667,8 +711,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>456</height>
+            <width>567</width>
+            <height>532</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -937,8 +981,14 @@
        <string>Overlays</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_11">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_4">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -947,8 +997,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>795</width>
-            <height>415</height>
+            <width>289</width>
+            <height>94</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1022,8 +1072,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>795</width>
-            <height>415</height>
+            <width>797</width>
+            <height>490</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1342,8 +1392,14 @@
        <string>CRS</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_16">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_6">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -1352,8 +1408,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>795</width>
-            <height>415</height>
+            <width>446</width>
+            <height>420</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1510,8 +1566,14 @@
        <string>Locale</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_18">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_7">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -1520,8 +1582,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>527</height>
+            <width>519</width>
+            <height>583</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1601,8 +1663,14 @@
        <string>Network</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_19">
+       <property name="margin">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <widget class="QScrollArea" name="scrollArea_8">
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
          <property name="widgetResizable">
           <bool>true</bool>
          </property>
@@ -1611,8 +1679,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>780</width>
-            <height>461</height>
+            <width>384</width>
+            <height>573</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

@@ -21,7 +21,6 @@
 #define QGSWMSPROVIDER_H
 
 #include "qgsrasterdataprovider.h"
-#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 
 #include <QString>
@@ -29,6 +28,7 @@
 #include <QDomElement>
 #include <QMap>
 #include <QVector>
+#include <QUrl>
 
 class QgsCoordinateTransform;
 class QNetworkAccessManager;
@@ -772,6 +772,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
+    //! remove query item and replace it with a new value
+    void setQueryItem( QUrl &url, QString key, QString value );
+
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;
 
@@ -965,51 +968,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QStringList mSupportedGetFeatureFormats;
 };
 
-class QgsWMSConnectionItem : public QgsDataCollectionItem
-{
-  public:
-    QgsWMSConnectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsWMSConnectionItem();
-
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
-
-    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QString mConnInfo;
-    QVector<QgsWmsLayerProperty> mLayerProperties;
-};
-
-// WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
-// We have to use QgsDataCollectionItem and support layer methods if necessary
-class QgsWMSLayerItem : public QgsLayerItem
-{
-    Q_OBJECT
-  public:
-    QgsWMSLayerItem( QgsDataItem* parent, QString name, QString path,
-                     QgsWmsCapabilitiesProperty capabilitiesProperty, QString connInfo, QgsWmsLayerProperty layerProperties );
-    ~QgsWMSLayerItem();
-
-    QString createUri();
-
-    QgsWmsCapabilitiesProperty mCapabilitiesProperty;
-    QString mConnInfo;
-    QgsWmsLayerProperty mLayerProperty;
-};
-
-class QgsWMSRootItem : public QgsDataCollectionItem
-{
-    Q_OBJECT
-  public:
-    QgsWMSRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsWMSRootItem();
-
-    QVector<QgsDataItem*> createChildren();
-
-    virtual QWidget * paramWidget();
-
-  public slots:
-    void connectionsChanged();
-};
 
 #endif
 

@@ -34,7 +34,7 @@
 * @param port - The port number the database server is listening to
 * @param databasename - The name of the database to connect to
 * @param username - The username needed to access the database or database server
-* @param password - The password associate witht he username needed to access the database or database server
+* @param password - The password associate with the username needed to access the database or database server
 * @param type - The type of database being connected to
 */
 eVisDatabaseConnection::eVisDatabaseConnection( QString hostname, int port, QString databasename, QString username, QString password, DATABASE_TYPE type )
@@ -191,7 +191,7 @@ QSqlQuery* eVisDatabaseConnection::query( QString sqlStatement )
 * @param port - The port number the database server is listening to
 * @param databasename - The name of the database to connect to
 * @param username - The username needed to access the database or database server
-* @param password - The password associate witht he username needed to access the database or database server
+* @param password - The password associate with the username needed to access the database or database server
 * @param type - The type of database being connected to
 */
 void eVisDatabaseConnection::resetConnectionParameters( QString hostname, int port, QString databasename, QString username, QString password, DATABASE_TYPE type )

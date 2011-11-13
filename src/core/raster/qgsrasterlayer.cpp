@@ -327,7 +327,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
-
   // check if we have received a valid band number
   if (( mDataProvider->bandCount() < theBandNo ) && mRasterType != Palette )
   {
@@ -341,7 +340,6 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
     QgsRasterBandStats myNullReturnStats;
     return myNullReturnStats;
   }
-
   // check if we have previously gathered stats for this band...
   if ( theBandNo < 1 || theBandNo > mRasterStatsList.size() )
   {
@@ -358,174 +356,23 @@ const QgsRasterBandStats QgsRasterLayer::bandStatistics( int theBandNo )
   {
     return myRasterBandStats;
   }
-  // only print message if we are actually gathering the stats
-  emit statusChanged( tr( "Retrieving stats for %1" ).arg( name() ) );
-  qApp->processEvents();
-  QgsDebugMsg( "stats for band " + QString::number( theBandNo ) );
 
-  myRasterBandStats.elementCount = 0; // because we'll be counting only VALID pixels later
-
-  emit statusChanged( tr( "Calculating stats for %1" ).arg( name() ) );
-  //reset the main app progress bar
-  emit drawingProgress( 0, 0 );
-
-  int myDataType = mDataProvider->dataType( theBandNo );
-
-  int  myNXBlocks, myNYBlocks, myXBlockSize, myYBlockSize;
-  myXBlockSize = mDataProvider->xBlockSize();
-  myYBlockSize = mDataProvider->yBlockSize();
-
-  myNXBlocks = ( mDataProvider->xSize() + myXBlockSize - 1 ) / myXBlockSize;
-  myNYBlocks = ( mDataProvider->ySize() + myYBlockSize - 1 ) / myYBlockSize;
-
-  void *myData = CPLMalloc( myXBlockSize * myYBlockSize * ( mDataProvider->dataTypeSize( theBandNo ) / 8 ) );
-
-  // unfortunately we need to make two passes through the data to calculate stddev
-  bool myFirstIterationFlag = true;
-
-  int myBandXSize = mDataProvider->xSize();
-  int myBandYSize = mDataProvider->ySize();
-  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
-  {
-    emit drawingProgress( iYBlock, myNYBlocks * 2 );
-
-    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
-    {
-      int  nXValid, nYValid;
-      mDataProvider->readBlock( theBandNo, iXBlock, iYBlock, myData );
-
-      // Compute the portion of the block that is valid
-      // for partial edge blocks.
-      if (( iXBlock + 1 ) * myXBlockSize > myBandXSize )
-        nXValid = myBandXSize - iXBlock * myXBlockSize;
-      else
-        nXValid = myXBlockSize;
-
-      if (( iYBlock + 1 ) * myYBlockSize > myBandYSize )
-        nYValid = myBandYSize - iYBlock * myYBlockSize;
-      else
-        nYValid = myYBlockSize;
-
-      // Collect the histogram counts.
-      for ( int iY = 0; iY < nYValid; iY++ )
-      {
-        for ( int iX = 0; iX < nXValid; iX++ )
-        {
-          double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
-          //QgsDebugMsg ( QString ( "%1 %2 value %3" ).arg (iX).arg(iY).arg( myValue ) );
-
-          if ( mValidNoDataValue && ( qAbs( myValue - mNoDataValue ) <= TINY_VALUE || myValue != myValue ) )
-          {
-            continue; // NULL
-          }
-
-          myRasterBandStats.sum += myValue;
-          ++myRasterBandStats.elementCount;
-          //only use this element if we have a non null element
-          if ( myFirstIterationFlag )
-          {
-            //this is the first iteration so initialise vars
-            myFirstIterationFlag = false;
-            myRasterBandStats.minimumValue = myValue;
-            myRasterBandStats.maximumValue = myValue;
-          }               //end of true part for first iteration check
-          else
-          {
-            //this is done for all subsequent iterations
-            if ( myValue < myRasterBandStats.minimumValue )
-            {
-              myRasterBandStats.minimumValue = myValue;
-            }
-            if ( myValue > myRasterBandStats.maximumValue )
-            {
-              myRasterBandStats.maximumValue = myValue;
-            }
-          }               //end of false part for first iteration check
-        }
-      }
-    }                       //end of column wise loop
-  }                           //end of row wise loop
-
-
-  //end of first pass through data now calculate the range
-  myRasterBandStats.range = myRasterBandStats.maximumValue - myRasterBandStats.minimumValue;
-  //calculate the mean
-  myRasterBandStats.mean = myRasterBandStats.sum / myRasterBandStats.elementCount;
-
-  //for the second pass we will get the sum of the squares / mean
-  for ( int iYBlock = 0; iYBlock < myNYBlocks; iYBlock++ )
-  {
-    emit drawingProgress( iYBlock + myNYBlocks, myNYBlocks * 2 );
-
-    for ( int iXBlock = 0; iXBlock < myNXBlocks; iXBlock++ )
-    {
-      int  nXValid, nYValid;
-
-      mDataProvider->readBlock( theBandNo, iXBlock, iYBlock, myData );
-
-      // Compute the portion of the block that is valid
-      // for partial edge blocks.
-      if (( iXBlock + 1 ) * myXBlockSize > myBandXSize )
-        nXValid = myBandXSize - iXBlock * myXBlockSize;
-      else
-        nXValid = myXBlockSize;
-
-      if (( iYBlock + 1 ) * myYBlockSize > myBandYSize )
-        nYValid = myBandYSize - iYBlock * myYBlockSize;
-      else
-        nYValid = myYBlockSize;
-
-      // Collect the histogram counts.
-      for ( int iY = 0; iY < nYValid; iY++ )
-      {
-        for ( int iX = 0; iX < nXValid; iX++ )
-        {
-          double myValue = readValue( myData, myDataType, iX + ( iY * myXBlockSize ) );
-          //QgsDebugMsg ( "myValue = " + QString::number(myValue) );
-
-          if ( mValidNoDataValue && ( qAbs( myValue - mNoDataValue ) <= TINY_VALUE || myValue != myValue ) )
-          {
-            continue; // NULL
-          }
-
-          myRasterBandStats.sumOfSquares += static_cast < double >
-                                            ( pow( myValue - myRasterBandStats.mean, 2 ) );
-        }
-      }
-    }                       //end of column wise loop
-  }                           //end of row wise loop
-
-  //divide result by sample size - 1 and get square root to get stdev
-  myRasterBandStats.stdDev = static_cast < double >( sqrt( myRasterBandStats.sumOfSquares /
-                             ( myRasterBandStats.elementCount - 1 ) ) );
-
-#ifdef QGISDEBUG
-  QgsLogger::debug( "************ STATS **************", 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "VALID NODATA", mValidNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "NULL", mNoDataValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MIN", myRasterBandStats.minimumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MAX", myRasterBandStats.maximumValue, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "RANGE", myRasterBandStats.range, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "MEAN", myRasterBandStats.mean, 1, __FILE__, __FUNCTION__, __LINE__ );
-  QgsLogger::debug( "STDDEV", myRasterBandStats.stdDev, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
-
-  CPLFree( myData );
-  myRasterBandStats.statsGathered = true;
-
+  myRasterBandStats = mDataProvider->bandStatistics( theBandNo );
   QgsDebugMsg( "adding stats to stats collection at position " + QString::number( theBandNo - 1 ) );
   //add this band to the class stats map
   mRasterStatsList[theBandNo - 1] = myRasterBandStats;
   emit drawingProgress( mHeight, mHeight ); //reset progress
-  //QApplication::restoreOverrideCursor(); //restore the cursor
   QgsDebugMsg( "Stats collection completed returning" );
   return myRasterBandStats;
-
 } // QgsRasterLayer::bandStatistics
 
 const QgsRasterBandStats QgsRasterLayer::bandStatistics( QString const & theBandName )
 {
-
+  // only print message if we are actually gathering the stats
+  emit statusChanged( tr( "Retrieving stats for %1" ).arg( name() ) );
+  qApp->processEvents();
+  //reset the main app progress bar
+  emit drawingProgress( 0, 0 );
   //we cant use a vector iterator because the iterator is astruct not a class
   //and the qvector model does not like this.
   for ( int i = 1; i <= mDataProvider->bandCount(); i++ )
@@ -975,7 +822,6 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
                                      theQgsMapToPixel, bandNumber( mGrayBandName ) );
-
         break;
       }
       // a "Palette" layer drawn in gray scale (using only one of the color components)
@@ -1871,7 +1717,7 @@ QString QgsRasterLayer::metadata()
   myMetadata += "</p>\n";
   myMetadata += "<p>";
   //just use the first band
-  switch ( mDataProvider->dataType( 1 ) )
+  switch ( mDataProvider->srcDataType( 1 ) )
   {
     case GDT_Byte:
       myMetadata += tr( "GDT_Byte - Eight bit unsigned integer" );
@@ -2147,7 +1993,7 @@ void QgsRasterLayer::populateHistogram( int theBandNo, int theBinCount, bool the
   mDataProvider->populateHistogram( theBandNo, myRasterBandStats, theBinCount, theIgnoreOutOfRangeFlag, theHistogramEstimatedFlag );
 }
 
-QString QgsRasterLayer::providerKey() const
+QString QgsRasterLayer::providerType() const
 {
   if ( mProviderKey.isEmpty() )
   {
@@ -2459,7 +2305,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   //Try to read the default contrast enhancement from the config file
 
   QSettings myQSettings;
-  setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "StretchToMinimumMaximum" ).toString() );
+  setContrastEnhancementAlgorithm( myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString() );
 
   //decide what type of layer this is...
   //TODO Change this to look at the color interp and palette interp to decide which type of layer it is
@@ -2530,7 +2376,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
       mGreenBandName = bandName( 2 );
     }
 
-    //for the third layer we cant be sure so..
+    //for the third band we cant be sure so..
     if (( mDataProvider->bandCount() > 2 ) )
     {
       mBlueBandName = bandName( myQSettings.value( "/Raster/defaultBlueBand", 3 ).toInt() ); // sensible default
@@ -2556,7 +2402,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toInt() );
     }
   }
   else                        //GrayOrUndefined
@@ -2571,7 +2417,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 1.0 ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toInt() );
     }
   }
   // Debug
@@ -3828,9 +3674,13 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
     return;
   }
 
+  int myTransparencyBandNo = bandNumber( mTransparencyBandName );
+  bool hasTransparencyBand = 0 < myTransparencyBandNo;
+
   int myRedType = mDataProvider->dataType( myRedBandNo );
   int myGreenType = mDataProvider->dataType( myGreenBandNo );
   int myBlueType = mDataProvider->dataType( myBlueBandNo );
+  int myTransparencyType = hasTransparencyBand ? mDataProvider->dataType( myTransparencyBandNo ) : 0;
 
   QRgb* redImageScanLine = 0;
   void* redRasterScanLine = 0;
@@ -3838,6 +3688,8 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   void* greenRasterScanLine = 0;
   QRgb* blueImageScanLine = 0;
   void* blueRasterScanLine = 0;
+  QRgb* transparencyImageScanLine = 0;
+  void* transparencyRasterScanLine = 0;
 
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
@@ -3883,6 +3735,7 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   double myRedValue = 0.0;
   double myGreenValue = 0.0;
   double myBlueValue = 0.0;
+  int myTransparencyValue = 0;
 
   int myStretchedRedValue   = 0;
   int myStretchedGreenValue = 0;
@@ -3901,12 +3754,31 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
   blueImageBuffer.setWritingEnabled( false ); //only draw to redImageBuffer
   blueImageBuffer.reset();
 
+  QgsRasterImageBuffer *transparencyImageBuffer = 0;
+  if ( hasTransparencyBand )
+  {
+    transparencyImageBuffer = new QgsRasterImageBuffer( mDataProvider, myTransparencyBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+    transparencyImageBuffer->setWritingEnabled( false ); //only draw to redImageBuffer
+    transparencyImageBuffer->reset();
+  }
+
   while ( redImageBuffer.nextScanLine( &redImageScanLine, &redRasterScanLine )
           && greenImageBuffer.nextScanLine( &greenImageScanLine, &greenRasterScanLine )
-          && blueImageBuffer.nextScanLine( &blueImageScanLine, &blueRasterScanLine ) )
+          && blueImageBuffer.nextScanLine( &blueImageScanLine, &blueRasterScanLine )
+          && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
+      if ( transparencyImageBuffer )
+      {
+        myTransparencyValue = readValue( transparencyRasterScanLine, myTransparencyType, i );
+        if ( 0 == myTransparencyValue )
+        {
+          redImageScanLine[ i ] = myDefaultColor;
+          continue;
+        }
+      }
+
       myRedValue   = readValue( redRasterScanLine, myRedType, i );
       myGreenValue = readValue( greenRasterScanLine, myGreenType, i );
       myBlueValue  = readValue( blueRasterScanLine, myBlueType, i );
@@ -3959,9 +3831,15 @@ void QgsRasterLayer::drawMultiBandColor( QPainter * theQPainter, QgsRasterViewPo
         myStretchedBlueValue = 255 - myStretchedBlueValue;
       }
 
+      if ( myTransparencyValue )
+        myAlphaValue *= myTransparencyValue / 255.0;
+
       redImageScanLine[ i ] = qRgba( myStretchedRedValue, myStretchedGreenValue, myStretchedBlueValue, myAlphaValue );
     }
   }
+
+  if ( transparencyImageBuffer )
+    delete transparencyImageBuffer;
 }
 
 void QgsRasterLayer::drawMultiBandSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
@@ -3995,30 +3873,56 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
     return;
   }
 
+  int myTransparencyBandNo = bandNumber( mTransparencyBandName );
+  bool hasTransparencyBand = 0 < myTransparencyBandNo;
+
   if ( NULL == mRasterShader )
   {
     return;
   }
 
   int myDataType = mDataProvider->dataType( theBandNo );
+  int myTransparencyType = hasTransparencyBand ? mDataProvider->dataType( myTransparencyBandNo ) : 0;
 
   QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   imageBuffer.reset();
 
+  QgsRasterImageBuffer *transparencyImageBuffer = 0;
+  if ( hasTransparencyBand )
+  {
+    transparencyImageBuffer = new QgsRasterImageBuffer( mDataProvider, myTransparencyBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+    transparencyImageBuffer->setWritingEnabled( false ); //only draw to imageBuffer
+    transparencyImageBuffer->reset();
+  }
+
   QRgb* imageScanLine = 0;
   void* rasterScanLine = 0;
+  QRgb* transparencyImageScanLine = 0;
+  void* transparencyRasterScanLine = 0;
 
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
   double myPixelValue = 0.0;
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
+  int myTransparencyValue = 0;
   int myAlphaValue = 0;
 
-  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine )
+          && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
+      if ( transparencyImageBuffer )
+      {
+        myTransparencyValue = readValue( transparencyRasterScanLine, myTransparencyType, i );
+        if ( 0 == myTransparencyValue )
+        {
+          imageScanLine[ i ] = myDefaultColor;
+          continue;
+        }
+      }
+
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
@@ -4044,9 +3948,12 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
         continue;
       }
 
+      if ( myTransparencyValue )
+        myAlphaValue *= myTransparencyValue / 255.0;
+
       if ( mInvertColor )
       {
-        //Invert flag, flip blue and read
+        //Invert flag, flip blue and red
         imageScanLine[ i ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
@@ -4056,6 +3963,9 @@ void QgsRasterLayer::drawPalettedSingleBandColor( QPainter * theQPainter, QgsRas
       }
     }
   }
+
+  if ( transparencyImageBuffer )
+    delete transparencyImageBuffer;
 }
 
 /**
@@ -4075,30 +3985,56 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
     return;
   }
 
+  int myTransparencyBandNo = bandNumber( mTransparencyBandName );
+  bool hasTransparencyBand = 0 < myTransparencyBandNo;
+
   if ( NULL == mRasterShader )
   {
     return;
   }
 
   int myDataType = mDataProvider->dataType( theBandNo );
+  int myTransparencyType = hasTransparencyBand ? mDataProvider->dataType( myTransparencyBandNo ) : 0;
 
   QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   imageBuffer.reset();
 
+  QgsRasterImageBuffer *transparencyImageBuffer = 0;
+  if ( hasTransparencyBand )
+  {
+    transparencyImageBuffer = new QgsRasterImageBuffer( mDataProvider, myTransparencyBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+    transparencyImageBuffer->setWritingEnabled( false ); //only draw to redImageBuffer
+    transparencyImageBuffer->reset();
+  }
+
   QRgb* imageScanLine = 0;
   void* rasterScanLine = 0;
+  QRgb* transparencyImageScanLine = 0;
+  void* transparencyRasterScanLine = 0;
 
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
   double myPixelValue = 0.0;
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
+  int myTransparencyValue = 0;
   int myAlphaValue = 0;
 
-  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine )
+         && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
+      if ( transparencyImageBuffer )
+      {
+        myTransparencyValue = readValue( transparencyRasterScanLine, myTransparencyType, i );
+        if ( 0 == myTransparencyValue )
+        {
+          imageScanLine[ i ] = myDefaultColor;
+          continue;
+        }
+      }
+
       myRedValue = 0;
       myGreenValue = 0;
       myBlueValue = 0;
@@ -4124,9 +4060,12 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
         continue;
       }
 
+      if ( myTransparencyValue )
+        myAlphaValue *= myTransparencyValue / 255.0;
+
       if ( mInvertColor )
       {
-        //Invert flag, flip blue and read
+        //Invert flag, flip blue and red
         double myGrayValue = ( 0.3 * ( double )myRedValue ) + ( 0.59 * ( double )myGreenValue ) + ( 0.11 * ( double )myBlueValue );
         imageScanLine[ i ] = qRgba(( int )myGrayValue, ( int )myGrayValue, ( int )myGrayValue, myAlphaValue );
       }
@@ -4138,6 +4077,9 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
       }
     }
   }
+
+  if ( transparencyImageBuffer )
+    delete transparencyImageBuffer;
 }
 
 /**
@@ -4158,14 +4100,33 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
     return;
   }
 
+  int myTransparencyBandNo = bandNumber( mTransparencyBandName );
+  bool hasTransparencyBand = 0 < myTransparencyBandNo;
+
+  if ( NULL == mRasterShader )
+  {
+    return;
+  }
+
   QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
   int myDataType = mDataProvider->dataType( theBandNo );
+  int myTransparencyType = hasTransparencyBand ? mDataProvider->dataType( myTransparencyBandNo ) : 0;
 
   QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   imageBuffer.reset();
 
+  QgsRasterImageBuffer *transparencyImageBuffer = 0;
+  if ( hasTransparencyBand )
+  {
+    transparencyImageBuffer = new QgsRasterImageBuffer( mDataProvider, myTransparencyBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+    transparencyImageBuffer->setWritingEnabled( false ); //only draw to imageBuffer
+    transparencyImageBuffer->reset();
+  }
+
   QRgb* imageScanLine = 0;
   void* rasterScanLine = 0;
+  QRgb* transparencyImageScanLine = 0;
+  void* transparencyRasterScanLine = 0;
 
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
   double myMinimumValue = 0.0;
@@ -4189,15 +4150,24 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
   int myRedValue = 0;
   int myGreenValue = 0;
   int myBlueValue = 0;
+  int myTransparencyValue = 0;
   int myAlphaValue = 0;
 
-  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine )
+          && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
-      myRedValue = 0;
-      myGreenValue = 0;
-      myBlueValue = 0;
+      if ( transparencyImageBuffer )
+      {
+        myTransparencyValue = readValue( transparencyRasterScanLine, myTransparencyType, i );
+        if ( 0 == myTransparencyValue )
+        {
+          imageScanLine[ i ] = myDefaultColor;
+          continue;
+        }
+      }
+
       myPixelValue = readValue( rasterScanLine, myDataType, i );
 
       if ( mValidNoDataValue && ( qAbs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
@@ -4219,9 +4189,12 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
         continue;
       }
 
+      if ( myTransparencyValue )
+        myAlphaValue *= myTransparencyValue / 255.0;
+
       if ( mInvertColor )
       {
-        //Invert flag, flip blue and read
+        //Invert flag, flip blue and red
         imageScanLine[ i ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
@@ -4231,6 +4204,9 @@ void QgsRasterLayer::drawPalettedSingleBandPseudoColor( QPainter * theQPainter, 
       }
     }
   }
+
+  if ( transparencyImageBuffer )
+    delete transparencyImageBuffer;
 }
 
 /**
@@ -4251,7 +4227,8 @@ void QgsRasterLayer::drawPalettedMultiBandColor( QPainter * theQPainter, QgsRast
   QgsDebugMsg( "Not supported at this time" );
 }
 
-void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort, const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
+void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
+    const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
   QgsDebugMsg( "layer=" + QString::number( theBandNo ) );
   //Invalid band number, segfault prevention
@@ -4260,17 +4237,33 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
     return;
   }
 
+  int myTransparencyBandNo = bandNumber( mTransparencyBandName );
+  bool hasTransparencyBand = 0 < myTransparencyBandNo;
+
   int myDataType = mDataProvider->dataType( theBandNo );
   QgsDebugMsg( "myDataType = " + QString::number( myDataType ) );
+  int myTransparencyType = hasTransparencyBand ? mDataProvider->dataType( myTransparencyBandNo ) : 0;
+
   QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
   imageBuffer.reset();
 
+  QgsRasterImageBuffer *transparencyImageBuffer = 0;
+  if ( hasTransparencyBand )
+  {
+    transparencyImageBuffer = new QgsRasterImageBuffer( mDataProvider, myTransparencyBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+    transparencyImageBuffer->setWritingEnabled( false ); //only draw to imageBuffer
+    transparencyImageBuffer->reset();
+  }
+
   QRgb* imageScanLine = 0;
   void* rasterScanLine = 0;
+  QRgb* transparencyImageScanLine = 0;
+  void* transparencyRasterScanLine = 0;
 
   QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
   double myGrayValue = 0.0;
   int myGrayVal = 0;
+  int myTransparencyValue = 0;
   int myAlphaValue = 0;
   QgsContrastEnhancement* myContrastEnhancement = contrastEnhancement( theBandNo );
 
@@ -4290,15 +4283,25 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
     mGrayMinimumMaximumEstimated = true;
     setMaximumValue( theBandNo, mDataProvider->maximumValue( theBandNo ) );
     setMinimumValue( theBandNo, mDataProvider->minimumValue( theBandNo ) );
-
   }
 
   QgsDebugMsg( " -> imageBuffer.nextScanLine" );
-  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine )
+          && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     //QgsDebugMsg( " rendering line");
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
+      if ( transparencyImageBuffer )
+      {
+        myTransparencyValue = readValue( transparencyRasterScanLine, myTransparencyType, i );
+        if ( 0 == myTransparencyValue )
+        {
+          imageScanLine[ i ] = myDefaultColor;
+          continue;
+        }
+      }
+
       myGrayValue = readValue( rasterScanLine, myDataType, i );
       //QgsDebugMsg( QString( "i = %1 myGrayValue = %2 ").arg(i).arg( myGrayValue ) );
       //if ( myGrayValue != -2147483647 ) {
@@ -4332,16 +4335,20 @@ void QgsRasterLayer::drawSingleBandGray( QPainter * theQPainter, QgsRasterViewPo
         myGrayVal = 255 - myGrayVal;
       }
 
+      if ( myTransparencyValue )
+        myAlphaValue *= myTransparencyValue / 255.0;
+
       //QgsDebugMsg( QString( "i = %1 myGrayValue = %2 myGrayVal = %3 myAlphaValue = %4").arg(i).arg( myGrayValue ).arg(myGrayVal).arg(myAlphaValue) );
       imageScanLine[ i ] = qRgba( myGrayVal, myGrayVal, myGrayVal, myAlphaValue );
     }
   }
+
+  if ( transparencyImageBuffer )
+    delete transparencyImageBuffer;
 } // QgsRasterLayer::drawSingleBandGray
 
-void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
-    QgsRasterViewPort * theRasterViewPort,
-    const QgsMapToPixel* theQgsMapToPixel,
-    int theBandNo )
+void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter, QgsRasterViewPort * theRasterViewPort,
+    const QgsMapToPixel* theQgsMapToPixel, int theBandNo )
 {
   QgsDebugMsg( "entered." );
   //Invalid band number, segfault prevention
@@ -4350,20 +4357,35 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
     return;
   }
 
-  QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
-  int myDataType = mDataProvider->dataType( theBandNo );
+  int myTransparencyBandNo = bandNumber( mTransparencyBandName );
+  bool hasTransparencyBand = 0 < myTransparencyBandNo;
 
-  QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
-  imageBuffer.reset();
-
-  QRgb* imageScanLine = 0;
-  void* rasterScanLine = 0;
-
-  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
   if ( NULL == mRasterShader )
   {
     return;
   }
+
+  QgsRasterBandStats myRasterBandStats = bandStatistics( theBandNo );
+  int myDataType = mDataProvider->dataType( theBandNo );
+  int myTransparencyType = hasTransparencyBand ? mDataProvider->dataType( myTransparencyBandNo ) : 0;
+
+  QgsRasterImageBuffer imageBuffer( mDataProvider, theBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+  imageBuffer.reset();
+
+  QgsRasterImageBuffer *transparencyImageBuffer = 0;
+  if ( hasTransparencyBand )
+  {
+    transparencyImageBuffer = new QgsRasterImageBuffer( mDataProvider, myTransparencyBandNo, theQPainter, theRasterViewPort, theQgsMapToPixel, &mGeoTransform[0] );
+    transparencyImageBuffer->setWritingEnabled( false ); //only draw to imageBuffer
+    transparencyImageBuffer->reset();
+  }
+
+  QRgb* imageScanLine = 0;
+  void* rasterScanLine = 0;
+  QRgb* transparencyImageScanLine = 0;
+  void* transparencyRasterScanLine = 0;
+
+  QRgb myDefaultColor = qRgba( 255, 255, 255, 0 );
 
   double myMinimumValue = 0.0;
   double myMaximumValue = 0.0;
@@ -4385,14 +4407,26 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
   int myRedValue = 255;
   int myGreenValue = 255;
   int myBlueValue = 255;
+  int myTransparencyValue = 0;
 
   double myPixelValue = 0.0;
   int myAlphaValue = 0;
 
-  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine ) )
+  while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine )
+          && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
+      if ( transparencyImageBuffer )
+      {
+        myTransparencyValue = readValue( transparencyRasterScanLine, myTransparencyType, i );
+        if ( 0 == myTransparencyValue )
+        {
+          imageScanLine[ i ] = myDefaultColor;
+          continue;
+        }
+      }
+
       myPixelValue = readValue( rasterScanLine, myDataType, i );
 
       if ( mValidNoDataValue && ( qAbs( myPixelValue - mNoDataValue ) <= TINY_VALUE || myPixelValue != myPixelValue ) )
@@ -4414,9 +4448,12 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
         continue;
       }
 
+      if ( myTransparencyValue )
+        myAlphaValue *= myTransparencyValue / 255.0;
+
       if ( mInvertColor )
       {
-        //Invert flag, flip blue and read
+        //Invert flag, flip blue and red
         imageScanLine[ i ] = qRgba( myBlueValue, myGreenValue, myRedValue, myAlphaValue );
       }
       else
@@ -4427,6 +4464,9 @@ void QgsRasterLayer::drawSingleBandPseudoColor( QPainter * theQPainter,
       }
     }
   }
+
+  if ( transparencyImageBuffer )
+    delete transparencyImageBuffer;
 }
 
 #if 0

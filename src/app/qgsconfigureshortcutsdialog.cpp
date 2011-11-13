@@ -43,6 +43,31 @@ QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget* parent )
            this, SLOT( actionChanged( QTreeWidgetItem*, QTreeWidgetItem* ) ) );
 
   populateActions();
+
+  restoreState();
+}
+
+QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
+{
+  saveState();
+}
+
+/*!
+ * Function to save dialog window state
+ */
+void QgsConfigureShortcutsDialog::saveState()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/ShortcutsDialog/geometry", saveGeometry() );
+}
+
+/*!
+ * Function to restore dialog window state
+ */
+void QgsConfigureShortcutsDialog::restoreState()
+{
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/ShortcutsDialog/geometry" ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()

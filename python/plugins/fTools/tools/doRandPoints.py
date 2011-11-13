@@ -46,9 +46,14 @@ class Dialog(QDialog, Ui_Dialog):
         self.progressBar.setValue(0)
         self.setWindowTitle(self.tr("Random Points"))
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-        self.mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Polygon, "Raster"])
+        QObject.disconnect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
+        self.inShape.clear()
         self.inShape.addItems(layers)
+        QObject.connect(self.inShape, SIGNAL("currentIndexChanged(QString)"), self.update)
 
 # If input layer is changed, update field list
     def update(self, inputLayer):
@@ -123,6 +128,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -132,7 +138,7 @@ class Dialog(QDialog, Ui_Dialog):
         if self.shapefileName is None or self.encoding is None:
             return
         self.outShape.setText( QString( self.shapefileName ) )
-    
+
 # combine all polygons in layer to create single polygon (slow for complex polygons)
     def createSinglePolygon(self, vlayer):
         provider = vlayer.dataProvider()
@@ -153,13 +159,15 @@ class Dialog(QDialog, Ui_Dialog):
             count = count + add
             self.progressBar.setValue(count)
         return geom
-    
+
 # Generate list of random points
     def simpleRandom(self, n, bound, xmin, xmax, ymin, ymax):
         seed()
         points = []
         i = 1
         count = 40.00
+        if n == 0:
+          return []
         add = ( 70.00 - 40.00 ) / n
         while i <= n:
             pGeom = QgsGeometry().fromPoint(QgsPoint(xmin + (xmax-xmin) * random(), ymin + (ymax-ymin) * random()))
@@ -206,7 +214,7 @@ class Dialog(QDialog, Ui_Dialog):
                 points = self.vectorRandom(int(value), inLayer,
                 ext.xMinimum(), ext.xMaximum(), ext.yMinimum(), ext.yMaximum())
         else: points = self.loopThruPolygons(inLayer, value, design)
-        crs = self.mapCanvas.mapRenderer().destinationSrs()
+        crs = self.iface.mapCanvas().mapRenderer().destinationSrs()
         if not crs.isValid(): crs = None
         fields = { 0 : QgsField("ID", QVariant.Int) }
         check = QFile(self.shapefileName)
@@ -225,8 +233,8 @@ class Dialog(QDialog, Ui_Dialog):
             count = count + add
             self.progressBar.setValue(count)
         del writer
-    
-#   
+
+#
     def loopThruPolygons(self, inLayer, numRand, design):
         sProvider = inLayer.dataProvider()
         sAllAttrs = sProvider.attributeIndexes()

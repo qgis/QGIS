@@ -93,16 +93,11 @@ call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 ```
 
 Start the batch file and on the command prompt checkout the QGIS source from
-svn to the source directory ``qgis-trunk``:
+git to the source directory ``Quantum-GIS``:
+
 
 ```
-svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
-```
-
-or using git-svn (from the git shell):
-
-```
-git svn clone --username $USER --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+git clone git://github.com/qgis/Quantum-GIS.git
 ```
 
 Create a 'build' directory somewhere. This will be where all the build output

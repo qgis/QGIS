@@ -43,7 +43,8 @@ bool QgsComposerAttributeTableCompare::operator()( const QgsAttributeMap& m1, co
 }
 
 
-QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition ): QgsComposerTable( composition ), mVectorLayer( 0 ), mComposerMap( 0 ), \
+QgsComposerAttributeTable::QgsComposerAttributeTable( QgsComposition* composition )
+    : QgsComposerTable( composition ), mVectorLayer( 0 ), mComposerMap( 0 ),
     mMaximumNumberOfFeatures( 5 ), mShowOnlyVisibleFeatures( true )
 {
   //set first vector layer from layer registry as default one

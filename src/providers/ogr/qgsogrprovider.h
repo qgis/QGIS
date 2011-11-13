@@ -15,14 +15,25 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsdataitem.h"
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
+#include "qgsvectorfilewriter.h"
+#include "qgsvectorlayerimport.h"
 
-class QgsFeature;
 class QgsField;
+class QgsVectorLayerImport;
 
 #include <ogr_api.h>
+
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
+#define TO8(x)   (x).toUtf8().constData()
+#define TO8F(x)  (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
+#else
+#define TO8(x)   (x).toLocal8Bit().constData()
+#define TO8F(x)  QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
+#endif
 
 /**
   \class QgsOgrProvider
@@ -33,6 +44,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
+
+    /** convert a vector layer to a vector file */
+    static QgsVectorLayerImport::ImportError createEmptyLayer(
+      const QString& uri,
+      const QgsFieldMap &fields,
+      QGis::WkbType wkbType,
+      const QgsCoordinateReferenceSystem *srs,
+      bool overwrite,
+      QMap<int, int> *oldToNewAttrIdxMap,
+      QString *errorMessage = 0,
+      const QMap<QString, QVariant> *options = 0
+    );
 
     /**
      * Constructor of the vector provider
@@ -142,8 +165,20 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Deletes a feature*/
     virtual bool deleteFeatures( const QgsFeatureIds & id );
 
-    /**Adds new attributess. Unfortunately not supported for layers with features in it*/
+    /**
+     * Adds new attributes
+     * @param attributes list of new attributes
+     * @return true in case of success and false in case of failure
+     * @note added in 1.2
+     */
     virtual bool addAttributes( const QList<QgsField> &attributes );
+
+    /**
+     * Deletes existing attributes
+     * @param attributes a set containing names of attributes
+     * @return true in case of success and false in case of failure
+     */
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
 
     /**Changes attribute values of existing features */
     virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
@@ -241,6 +276,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
           @note: added in version 1.4*/
     virtual bool doesStrictFeatureTypeCheck() const { return false;}
 
+    /** return OGR geometry type */
+    static int getOgrGeomType( OGRLayerH ogrLayer );
+
   protected:
     /** loads fields from input file to member attributeFields */
     void loadFields();
@@ -254,8 +292,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
     void setRelevantFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
+    /** convert a QgsField to work with OGR */
+    static bool convertField( QgsField &field, const QTextCodec &encoding );
+
   private:
-    bool crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt );
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QgsFieldMap mAttributeFields;
     OGRDataSourceH ogrDataSource;
@@ -294,6 +334,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
     int geomType;
     long featuresCounted;
 
+    /** Flag whether OGR will return fields required by nextFeature() calls.
+        The relevant fields are first set in select(), however the setting may be
+        interferred by some other calls. This flag ensures they are set again
+        to correct values.
+     */
+    bool mRelevantFieldsForNextFeature;
+
     //! Selection rectangle
     OGRGeometryH mSelectionRectangle;
     /**Adds one feature*/
@@ -306,15 +353,3 @@ class QgsOgrProvider : public QgsVectorDataProvider
     /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
     bool syncToDisc();
 };
-
-class QgsOgrLayerItem : public QgsLayerItem
-{
-    Q_OBJECT
-  public:
-    QgsOgrLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
-    ~QgsOgrLayerItem();
-
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
-};
-

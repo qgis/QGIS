@@ -28,7 +28,8 @@
 
 class QgsDataProvider;
 class QgsProviderMetadata;
-
+class QgsVectorLayer;
+class QgsCoordinateReferenceSystem;
 
 
 /** \ingroup core
@@ -78,7 +79,7 @@ class CORE_EXPORT QgsProviderRegistry
     void *function( const QString & providerKey,
                     const QString & functionName );
 
-    QLibrary *providerLibrary( const QString & providerKey );
+    QLibrary *providerLibrary( const QString & providerKey ) const;
 
     /** Return list of available providers by their keys */
     QStringList providerList() const;

@@ -407,7 +407,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         ~Rule();
         QString dump() const;
         QStringList needsFields() const;
-        bool isFilterOK( const QgsFieldMap& fields, QgsFeature& f ) const;
+        bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol();
@@ -415,6 +415,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
         int scaleMinDenom() const;
         int scaleMaxDenom() const;
         QString filterExpression() const;
+        QgsExpression* filter() const;
 
         void setScaleMinDenom( int scaleMinDenom );
         void setScaleMaxDenom( int scaleMaxDenom );
@@ -629,6 +630,9 @@ class QgsSymbolV2RenderContext
     void setFeature( const QgsFeature* f );
     const QgsFeature* feature() const;
 
+    void setLayer( const QgsVectorLayer* layer );
+    const QgsVectorLayer* layer() const;
+
     // Color used for selections
     static QColor selectionColor();
 
@@ -707,8 +711,7 @@ public:
   //! delete layer at specified index and set a new one
   bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
 
-
-  void startRender(QgsRenderContext& context);
+  void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
   void stopRender(QgsRenderContext& context);
 
   void setColor(const QColor& color);

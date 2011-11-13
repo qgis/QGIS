@@ -2230,7 +2230,7 @@ Disabilita l&apos;opzione &quot;Usa estensioni di intersezione&quot; per ottener
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation>Scegli la cartella contenente gli eseguibili GDAL</translation>
+        <translation>Scegli la cartella contenente gli eseguibili di GDAL</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
@@ -10247,7 +10247,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="50"/>
         <source>Frame width</source>
-        <translation>Larghezza del riquadro</translation>
+        <translation>Spessore del riquadro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsannotationwidgetbase.ui" line="67"/>
@@ -12842,12 +12842,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="443"/>
         <source>Annotation position</source>
-        <translation>Posizione dell&apos;annotazione</translation>
+        <translation>Posizione delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="462"/>
         <source>Annotation direction</source>
-        <translation>Direzione dell&apos;annotazione</translation>
+        <translation>Direzione delle coordinate</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposermapwidgetbase.ui" line="596"/>
@@ -20394,7 +20394,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="165"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="275"/>
         <source>Break lines</source>
-        <translation>Spezza linee</translation>
+        <translation>Linee di interruzione</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="169"/>
@@ -22616,7 +22616,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="24"/>
         <source>Use current project</source>
-        <translation>Usa proiezione corrente</translation>
+        <translation>Usa progetto corrente</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="87"/>
@@ -29412,7 +29412,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="107"/>
         <source>Calculating </source>
-        <translation>Calcolo in corso</translation>
+        <translation>Calcolo in corso </translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="107"/>
@@ -30992,7 +30992,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="332"/>
         <source>Zoom to item</source>
-        <translation>Zomm all&apos;oggetto</translation>
+        <translation>Zoom all&apos;oggetto</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquerydialogbase.ui" line="353"/>
@@ -34256,7 +34256,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="131"/>
         <source>Coordinate reference system</source>
-        <translation>Coordinate di riferimento spaziale</translation>
+        <translation>Sistema di Riferimento</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="20"/>
@@ -34306,12 +34306,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="179"/>
         <source>Only request features overlapping the current view extent</source>
-        <translation>Soltanto le geometrie richieste in sovrapposizione all&apos;estensione attuale della vista</translation>
+        <translation>Richiedi solo le geometrie richieste in sovrapposizione all&apos;estensione attuale della vista</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
-        <translation>Aggiungi layer WFS da un server</translation>
+        <translation>Aggiungi layer WFS dal server</translation>
     </message>
 </context>
 <context>

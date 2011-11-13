@@ -44,7 +44,7 @@ class QgsComparisonFilter: public QgsFilter
     };
 
     QgsComparisonFilter();
-    /**Constructor that takes index of the feature attribute, type of comparison \
+    /**Constructor that takes index of the feature attribute, type of comparison
      and reference value to compare against*/
     QgsComparisonFilter( int propertyIndex, COMPARISON_TYPE ct, QString value );
     ~QgsComparisonFilter();

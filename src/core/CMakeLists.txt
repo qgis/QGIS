@@ -39,6 +39,8 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssymbologyv2conversion.cpp
   symbology-ng/qgssvgcache.cpp
   symbology-ng/qgsellipsesymbollayerv2.cpp
+  symbology-ng/qgspointdisplacementrenderer.cpp
+  symbology-ng/qgsvectorfieldsymbollayer.cpp
 
   qgis.cpp
   qgsapplication.cpp
@@ -48,11 +50,15 @@ SET(QGIS_CORE_SRCS
   qgsclipper.cpp
   qgscontexthelp.cpp
   qgscoordinatetransform.cpp
+  qgscrscache.cpp
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
+  qgsdbfilterproxymodel.cpp
+  qgsdbtablemodel.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
+  qgsexpression.cpp
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp
@@ -97,6 +103,7 @@ SET(QGIS_CORE_SRCS
   qgsvectordataprovider.cpp
   qgsvectorfilewriter.cpp
   qgsvectorlayer.cpp
+  qgsvectorlayerimport.cpp
   qgsvectorlayerjoinbuffer.cpp
   qgsvectorlayerundocommand.cpp
   qgsvectoroverlay.cpp
@@ -165,9 +172,8 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbol.cpp
   symbology/qgssymbologyutils.cpp
 
-  spatialindex/qgsspatialindex.cpp
-
-  )
+  qgsspatialindex.cpp
+)
 
 IF(WIN32)
     SET(QGIS_CORE_SRCS
@@ -216,9 +222,9 @@ IF (WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(BEFORE spatialite/headers/spatialite)
 ENDIF (WITH_INTERNAL_SPATIALITE)
 
-ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll)
+ADD_FLEX_FILES(QGIS_CORE_SRCS qgssearchstringlexer.ll qgsexpressionlexer.ll)
 
-ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy)
+ADD_BISON_FILES(QGIS_CORE_SRCS qgssearchstringparser.yy qgsexpressionparser.yy)
 
 SET(QGIS_CORE_MOC_HDRS
   qgsapplication.h
@@ -226,6 +232,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
+  qgsdbtablemodel.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h
@@ -286,6 +293,7 @@ SET(QGIS_CORE_HDRS
   qgsdistancearea.h
   qgscsexception.h
   qgsexception.h
+  qgsexpression.h
   qgsfeature.h
   qgsfield.h
   qgsgeometry.h
@@ -327,6 +335,7 @@ SET(QGIS_CORE_HDRS
   qgsvectordataprovider.h
   qgsvectorfilewriter.h
   qgsvectorlayer.h
+  qgsvectorlayerimport.h
   qgsvectoroverlay.h
   qgstolerance.h
 
@@ -378,7 +387,7 @@ SET(QGIS_CORE_HDRS
   symbology-ng/qgsvectorcolorrampv2.h
   qgsdiagramrendererv2.h
 
-  spatialindex/qgsspatialindex.h
+  qgsspatialindex.h
 )
 
 INCLUDE_DIRECTORIES(
@@ -388,13 +397,20 @@ INCLUDE_DIRECTORIES(
   raster
   renderer
   symbology
-  spatialindex/include
   symbology-ng
   gps/qextserialport
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
 )
+
+# put SPATIALINDEX include dir in front
+# (otherwise GEOS's spatialite.h might be found first)
+IF (NOT WITH_INTERNAL_SPATIALINDEX)
+  INCLUDE_DIRECTORIES(BEFORE ${SPATIALINDEX_INCLUDE_DIR})
+ELSE (NOT WITH_INTERNAL_SPATIALINDEX)
+  INCLUDE_DIRECTORIES(BEFORE spatialindex/include)
+ENDIF (NOT WITH_INTERNAL_SPATIALINDEX)
 
 IF (NOT WITH_INTERNAL_SPATIALITE)
   INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
@@ -418,25 +434,26 @@ ENDIF (WIN32)
 #############################################################
 # spatial indexing library
 
-# add path prefix to every specified file
-MACRO(PATH_PREFIX OUTPUT PREFIX)
-  FOREACH(F ${ARGN})
-    SET(${OUTPUT} ${${OUTPUT}} ${PREFIX}/${F})
-  ENDFOREACH(F)
-ENDMACRO(PATH_PREFIX)
-
-# tools library
-PATH_PREFIX(TOOLS_SRC tools   ExternalSort.cc ExternalSort.h TemporaryFile.cc Tools.cc)
-PATH_PREFIX(GEOM_SRC geometry LineSegment.cc Point.cc Region.cc)
-
-# spatial index library
-PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc)
-PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
-PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
-
-SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
-
-PATH_PREFIX(INDEX_SRC spatialindex ${SPINDEX_SRC})
+IF (WITH_INTERNAL_SPATIALINDEX)
+  # add path prefix to every specified file
+  MACRO(PATH_PREFIX OUTPUT PREFIX)
+    FOREACH(F ${ARGN})
+      SET(${OUTPUT} ${${OUTPUT}} ${PREFIX}/${F})
+    ENDFOREACH(F)
+  ENDMACRO(PATH_PREFIX)
+  
+  # tools library
+  PATH_PREFIX(TOOLS_SRC tools Tools.cc)
+  
+  # spatial index library
+  PATH_PREFIX(SPINDEX_SRC spatialindex SpatialIndexImpl.cc LineSegment.cc Point.cc Region.cc)
+  PATH_PREFIX(STMAN_SRC storagemanager Buffer.cc DiskStorageManager.cc MemoryStorageManager.cc RandomEvictionsBuffer.cc)
+  PATH_PREFIX(RTREE_SRC rtree BulkLoader.cc Index.cc Leaf.cc Node.cc RTree.cc Statistics.cc)
+  
+  SET(SPINDEX_SRC ${TOOLS_SRC} ${GEOM_SRC} ${SPINDEX_SRC} ${STMAN_SRC} ${RTREE_SRC})
+  
+  PATH_PREFIX(INDEX_SRC spatialindex/src ${SPINDEX_SRC})
+ENDIF (WITH_INTERNAL_SPATIALINDEX)
 
 #############################################################
 # qgis_core library
@@ -493,6 +510,11 @@ IF (WITH_INTERNAL_SPATIALITE)
 ELSE (WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
 ENDIF (WITH_INTERNAL_SPATIALITE)
+
+IF (NOT WITH_INTERNAL_SPATIALINDEX)
+  TARGET_LINK_LIBRARIES(qgis_core ${SPATIALINDEX_LIBRARY})
+ENDIF (NOT WITH_INTERNAL_SPATIALINDEX)
+
 
 IF (APPLE)
   SET_TARGET_PROPERTIES(qgis_core PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE )

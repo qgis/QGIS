@@ -830,6 +830,11 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
     }
 #endif //Q_WS_MAC
     QgsSymbolV2* sym = mRendererV2->symbolForFeature( fet );
+    if ( !sym )
+    {
+      continue;
+    }
+
     if ( !features.contains( sym ) )
     {
       features.insert( sym, QList<QgsFeature>() );
@@ -842,7 +847,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       mCachedGeometries[fet.id()] = *fet.geometry();
     }
 
-    if ( mRendererV2->symbolForFeature( fet ) != NULL )
+    if ( sym )
     {
       if ( labeling )
       {
@@ -1938,6 +1943,42 @@ bool QgsVectorLayer::addFeature( QgsFeature& f, bool alsoUpdateExtent )
   }
 
   emit featureAdded( f.id() );
+
+  return true;
+}
+
+bool QgsVectorLayer::updateFeature( QgsFeature &f )
+{
+  QgsFeature current;
+  if ( !featureAtId( f.id(), current, f.geometry(), !f.attributeMap().isEmpty() ) )
+  {
+    QgsDebugMsg( QString( "feature %1 could not be retrieved" ).arg( f.id() ) );
+    return false;
+  }
+
+  if ( f.geometry() && current.geometry() && f.geometry() != current.geometry() && !f.geometry()->isGeosEqual( *current.geometry() ) )
+  {
+    if ( !changeGeometry( f.id(), f.geometry() ) )
+    {
+      QgsDebugMsg( QString( "geometry of feature %1 could not be changed." ).arg( f.id() ) );
+      return false;
+    }
+  }
+
+  const QgsAttributeMap &fa = f.attributeMap();
+  const QgsAttributeMap &ca = current.attributeMap();
+
+  foreach( int attr, fa.keys() )
+  {
+    if ( fa.contains( attr ) && ca.contains( attr ) && fa[attr] != ca[attr] )
+    {
+      if ( !changeAttributeValue( f.id(), attr, fa[attr] ) )
+      {
+        QgsDebugMsg( QString( "attribute %1 of feature %2 could not be changed." ).arg( attr ).arg( f.id() ) );
+        return false;
+      }
+    }
+  }
 
   return true;
 }

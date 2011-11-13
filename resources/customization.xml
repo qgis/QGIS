@@ -1935,7 +1935,7 @@
           <widget class="QLabel" label="&lt;p align=&quot;right&quot;&gt;Full&lt;/p&gt;" objectName="textLabel4"/>
         </widget>
         <widget class="QGroupBox" label="" objectName="gboxCustomTransparency">
-          <widget class="QLabel" label="Transparency band" objectName="lblTransarent"/>
+          <widget class="QLabel" label="Transparency band" objectName="lblTransparent"/>
           <widget class="QComboBox" label="" objectName="cboxTransparencyBand"/>
           <widget class="QLabel" label="Transparent pixel list" objectName="label_2"/>
         </widget>

@@ -30,7 +30,7 @@ class QgisInterface;
 class QDockWidget;
 
 //forward declarations RoadGraph plugins classes
-class RgGraphDirector;
+class QgsGraphDirector;
 class RgShortestPathWidget;
 class RgLineVectorLayerSettings;
 
@@ -59,7 +59,7 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     /**
      * return pointer to graph director
      */
-    const RgGraphDirector* director() const;
+    const QgsGraphDirector* director() const;
 
     /**
      * get time unit name
@@ -77,7 +77,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     double topologyToleranceFactor();
 
   public slots:
-    void render( QPainter *painter );
     //! init the gui
     virtual void initGui();
 
@@ -132,11 +131,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
     QAction * mQSettingsAction;
 
     /**
-     * pointer ot the direction show action
-     */
-    QAction * mQShowDirectionAction;
-
-    /**
      * pointer ot the about action
      */
     QAction * mInfoAction;
@@ -166,8 +160,6 @@ class RoadGraphPlugin: public QObject, public QgisPlugin
      */
     double mTopologyToleranceFactor;
 
-  private:
-    static const int mArrowSize = 5;
 };
 
 #endif //ROADGRAPHPLUGIN

@@ -32,7 +32,7 @@ extern "C"
     int     hour;       /**< Hours since midnight - [0,23] */
     int     min;        /**< Minutes after the hour - [0,59] */
     int     sec;        /**< Seconds after the minute - [0,59] */
-    int     hsec;       /**< Hundredth part of second - [0,99] */
+    int     msec;       /**< Thousandths part of second - [0,999] */
 
   } nmeaTIME;
 

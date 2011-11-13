@@ -47,7 +47,13 @@ ENDIF (APPLE)
 #
 
 QT4_WRAP_CPP(GRASS_PROVIDER_MOC_SRCS qgsgrassprovider.h)
-ADD_LIBRARY(grassprovider SHARED qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
+# provider must be built as module on OS X so it gets loaded,
+# other modules that need provider symbols must dynamically lookup them
+IF (APPLE)
+    ADD_LIBRARY(grassprovider MODULE qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
+ELSE (APPLE)
+    ADD_LIBRARY(grassprovider SHARED qgsgrassprovider.cpp ${GRASS_PROVIDER_MOC_SRCS})
+ENDIF (APPLE)
 SET_TARGET_PROPERTIES(grassprovider PROPERTIES COMPILE_FLAGS "\"-DGRASS_EXPORT=${DLLEXPORT}\" \"-DGRASS_LIB_EXPORT=${DLLIMPORT}\"" )
 TARGET_LINK_LIBRARIES(grassprovider qgisgrass)
 

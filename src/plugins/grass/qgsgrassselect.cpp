@@ -311,12 +311,12 @@ void QgsGrassSelect::setMaps()
   {
     emap->setCurrentIndex( sel );
   }
-  /*
+#if 0
   else
   {
-  emap->clearEdit(); // set box line empty
+    emap->clearEdit(); // set box line empty
   }
-  */
+#endif
   if ( !emap->isHidden() )
   {
     buttonBox->button( QDialogButtonBox::Ok )->setDefault( emap->count() > 0 );

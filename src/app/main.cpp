@@ -486,11 +486,12 @@ QgsDebugMsg( QString( "Starting qgis main" ) );
   QApplication::setStyle( new QPlastiqueStyle );
 #endif
 
-  QString i18nPath = QgsApplication::i18nPath();
+  QSettings mySettings;
+
 
   /* Translation file for QGIS.
    */
-  QSettings mySettings;
+  QString i18nPath = QgsApplication::i18nPath();
   QString myUserLocale = mySettings.value( "locale/userLocale", "" ).toString();
   bool myLocaleOverrideFlag = mySettings.value( "locale/overrideFlag", false ).toBool();
   QString myLocale;

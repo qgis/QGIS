@@ -39,7 +39,7 @@ class QgsPointRotationItem: public QgsMapCanvasItem
     /**Sets the center point of the rotation symbol (in map coordinates)*/
     void setPointLocation( const QgsPoint& p );
 
-    /**Sets the rotation of the symbol and displays the new rotation number. \
+    /**Sets the rotation of the symbol and displays the new rotation number.
     Units are degrees, starting from north direction, clockwise direction*/
     void setSymbolRotation( int r ) {mRotation = r;}
 

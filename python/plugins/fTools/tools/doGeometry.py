@@ -161,7 +161,9 @@ class GeometryDialog(QDialog, Ui_Dialog):
       self.cmbField.setVisible( False )
       self.field_label.setVisible( False )
     self.resize( 381, 100 )
-    myList = []
+    self.populateLayers()
+
+  def populateLayers( self ):
     self.inShape.clear()
     if self.myFunction == 3 or self.myFunction == 6:
       myList = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )
@@ -176,7 +178,6 @@ class GeometryDialog(QDialog, Ui_Dialog):
     else:
       myList = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
     self.inShape.addItems( myList )
-    return
 
 #1:  Singleparts to multipart
 #2:  Multipart to singleparts
@@ -241,6 +242,7 @@ class GeometryDialog(QDialog, Ui_Dialog):
         if addToTOC == QMessageBox.Yes:
           if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
             QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
+          self.populateLayers()
       else:
         QMessageBox.warning( self, self.tr("Geometry"), self.tr( "Error writing output shapefile." ) )
 

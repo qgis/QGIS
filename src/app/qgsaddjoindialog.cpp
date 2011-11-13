@@ -52,11 +52,15 @@ QgsAddJoinDialog::QgsAddJoinDialog( QgsVectorLayer* layer, QWidget * parent, Qt:
   on_mJoinLayerComboBox_currentIndexChanged( mJoinLayerComboBox->currentIndex() );
 
   //insert possible target fields
-  const QgsFieldMap& layerFieldMap = mLayer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = layerFieldMap.constBegin();
-  for ( ; fieldIt != layerFieldMap.constEnd(); ++fieldIt )
+  QgsVectorDataProvider* provider = mLayer->dataProvider();
+  if ( provider )
   {
-    mTargetFieldComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+    const QgsFieldMap& layerFieldMap = provider->fields();
+    QgsFieldMap::const_iterator fieldIt = layerFieldMap.constBegin();
+    for ( ; fieldIt != layerFieldMap.constEnd(); ++fieldIt )
+    {
+      mTargetFieldComboBox->addItem( fieldIt.value().name(), fieldIt.key() );
+    }
   }
 
   mCacheInMemoryCheckBox->setChecked( true );

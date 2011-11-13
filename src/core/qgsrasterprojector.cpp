@@ -42,7 +42,7 @@ QgsRasterProjector::QgsRasterProjector(
 
   // Calculate tolerance
   // TODO: Think it over better
-  // Note: we are checking on matrix each even point, that means taht the real error
+  // Note: we are checking on matrix each even point, that means that the real error
   // in that moment is approximately half size
   double myDestRes = mDestXRes < mDestYRes ? mDestXRes : mDestYRes;
   mSqrTolerance = myDestRes * myDestRes;

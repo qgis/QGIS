@@ -235,7 +235,8 @@ void QgsHttpRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& info
   }
   else //unsupported format, send exception
   {
-    //todo: send service exception
+    sendServiceException( QgsMapServiceException( "InvalidFormat", "Feature info format '" + mFormat + "' is not supported. Possibilities are 'text/plain', 'text/html' or 'text/xml'." ) );
+    return;
   }
 
   sendHttpResponse( &ba, infoFormat );
@@ -344,7 +345,7 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       {
         formatString = "PNG";
       }
-      else if ( formatString.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.compare( "image/jpg", Qt::CaseInsensitive ) == 0 \
+      else if ( formatString.compare( "image/jpeg", Qt::CaseInsensitive ) == 0 || formatString.compare( "image/jpg", Qt::CaseInsensitive ) == 0
                 || formatString.compare( "jpg", Qt::CaseInsensitive ) == 0 )
       {
         formatString = "JPG";

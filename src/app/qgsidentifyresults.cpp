@@ -270,7 +270,7 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
   featItem->setData( 0, Qt::UserRole, -1 );
   layItem->addChild( featItem );
 
-  if ( layer && layer->providerKey() == "wms" )
+  if ( layer && layer->providerType() == "wms" )
   {
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << attributes.begin().key() << "" );
     featItem->addChild( attrItem );

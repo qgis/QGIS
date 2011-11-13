@@ -38,7 +38,7 @@ void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
   mResolutions.clear();
   mSlider->setDisabled( true );
 
-  if ( !rl || rl->providerKey() != "wms" )
+  if ( !rl || rl->providerType() != "wms" )
     return;
 
   QString uri = rl->source();

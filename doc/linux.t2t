@@ -162,8 +162,8 @@ ccmake ..
 When you run ccmake (note the .. is required!), a menu will appear where 
 you can configure various aspects of the build. If you do not have root
 access or do not want to overwrite existing QGIS installs (by your
-packagemanager for example), set the CMAKE_BUILD_PREFIX to somewhere you
-have write access to (I usually use /home/timlinux/apps). Now press
+packagemanager for example), set the CMAKE_INSTALL_PREFIX to somewhere you
+have write access to (I usually use ${HOME}/apps). Now press
 'c' to configure, 'e' to dismiss any error messages that may appear.
 and 'g' to generate the make files. Note that sometimes 'c' needs to 
 be pressed several times before the 'g' option becomes available.
@@ -230,10 +230,10 @@ sudo debi
 
 == A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support ==
 
-The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If you want 
-to use different versions of the software (gdal, grass, qgis), just make the 
-necessary adjustments to the following code. This guide assumes that you don't have 
-installed any previous version of gdal, grass and qgis.
+The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If
+you want to use different versions of the software (gdal, grass, qgis), just
+make the necessary adjustments to the following code. This guide assumes that
+you don't have installed any previous version of gdal, grass and qgis.
 
 ===  Step 1: install base packages === 
 
@@ -251,7 +251,7 @@ Go to the ERDAS web site http://www.erdas.com/ and follow the links
 then download the "'''Image Compression SDK Source Code 3.3'''" (you'll need to make a registration 
 and accept a license).
 
-Uncompress the arquive in a proper location (this guide assumes 
+Uncompress the archive in a proper location (this guide assumes 
 that all the downloaded source code will be placed in the user home) 
 and the enter the newly created folder
 
@@ -373,26 +373,35 @@ Before downloading and compile GRASS source code you need to install a few
 other libraries and programs. We can do this through apt
 
 ``` 
-sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
-tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
-libgdal1-dev proj libjpeg62-dev libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake \
-python-dev python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev libxmu6 \
-libqt4-dev libgsl0-dev python-qt4 swig python-wxversion python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev \
-tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
+sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev \
+debhelper dpatch libtiff4-dev tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev \
+libfreetype6-dev autoconf2.13 autotools-dev libgdal1-dev proj libjpeg62-dev \
+libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake python-dev \
+python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev \
+libxmu6 \ libqt4-dev libgsl0-dev python-qt4 swig python-wxversion \
+python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev tk8.4-dev tk8.4 \
+libfftw3-dev libfftw3-3
 ```
 
 At this point we can get the GRASS source code: you may want to download it
-through svn or maybe you want just to download the latest available source code arquive.
-For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
+through svn or maybe you want just to download the latest available source code
+archive.  For example the GRASS 6.4rc4 is available at
+http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
 
-Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
+Uncompress the archive, enter the newly created folder and run configure with a few specific parameters
 
 ``` 
-CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
+CFLAGS="-fexceptions" ./configure \
+--with-tcltk-includes=/usr/include/tcl8.4 \
+--with-proj-share=/usr/share/proj \
+--with-gdal=/usr/local/bin/gdal-config \
 --with-python=/usr/bin/python2.5-config
 ```
 
-The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also http://trac.osgeo.org/grass/ticket/869
+The additional gcc option -fexceptions is necessary to enable exceptions
+support in GRASS libraries. It is currently the only way to avoid QGIS crashes
+if a fatal error happens in GRASS library. See also
+http://trac.osgeo.org/grass/ticket/869
 
 Then as usual (it will take a while)
 
@@ -420,36 +429,24 @@ grass64 -wxpython
 ```
 
 
-=== Step 6: compile and install QGIS ===
+=== Step 6: Compile and install QGIS ===
 
-As for GRASS you can obtain the QGIS source code from different sources,
-for instance from svn or just by downloading one of the source code arquives available
-at http://www.qgis.org/download/sources.html
-
-For example download the QGIS 1.1.0 source code here http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz
-
-uncompress the arquive and enter the newly created folder
+As for GRASS you can obtain the QGIS source code from different sources as described 
+in section 2 above. Once you have the sources, create a build directory in them:
 
 ``` 
-cd /qgis_1.1.0
+cd Quantum-GIS
+mkdir build
+cd build
 ```
 
 then run ccmake
 
 ``` 
-ccmake .
+ccmake ..
 ```
 
-press the "c" key, then when the option list will appear we need to manually
-configure the "GRASS_PREFIX" parameter. Scroll down until the "GRASS_PREFIX" will appear, 
-press enter and manually set it to
-
-``` 
-/usr/local/grass-6.4.0RC4
-```
-
-then press enter again.
-
+Press the "c" key to do an initial configure.
 Press the "c" again and the option "Press [g] to generate and exit" will appear.
 Press the "g" key to generate and exit.
 

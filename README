@@ -46,7 +46,7 @@ installation document in qgis/doc/index.html. The installation document is
 also available as PDF in the same directory.
 
 HELP US --  Please submit bug reports using the QGIS bug tracker at:
-            http://trac.osgeo.org/qgis/
+            http://hub.qgis.org/
             When reporting a bug, either login or, if you don't
             have a qgis trac, provide an email address where we can 
             request additional information.
@@ -60,7 +60,7 @@ SUPPORT -   You can get support in the following ways:
                 folks on the channel are doing other things and it may take a 
                 while for them to notice your question.
 
-QGIS is on GitHub at http://github.com/qgis/qgis. If you wish to contribute
+QGIS is on GitHub at http://github.com/qgis/Quantum-GIS. If you wish to contribute
 patches you can fork the project, make your changes, commit to your
 repository, and then issue a pull request. The development team can then
 review your contribution and commit it upstream as appropriate. See

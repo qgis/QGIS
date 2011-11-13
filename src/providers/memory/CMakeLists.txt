@@ -3,7 +3,7 @@ SET (MEMORY_SRCS qgsmemoryprovider.cpp)
 
 INCLUDE_DIRECTORIES(
   .
-  ../../core ../../core/spatialindex
+  ../../core
   ${GEOS_INCLUDE_DIR}
 )
 

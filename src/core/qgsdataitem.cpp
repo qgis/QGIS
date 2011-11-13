@@ -76,12 +76,32 @@ const QIcon &QgsLayerItem::iconTable()
   return icon;
 }
 
+const QIcon &QgsLayerItem::iconRaster()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QIcon( getThemePixmap( "/mIconRaster.png" ) );
+
+  return icon;
+}
+
 const QIcon &QgsLayerItem::iconDefault()
 {
   static QIcon icon;
 
   if ( icon.isNull() )
     icon = QIcon( getThemePixmap( "/mIconLayer.png" ) );
+
+  return icon;
+}
+
+const QIcon &QgsDataCollectionItem::iconDataCollection()
+{
+  static QIcon icon;
+
+  if ( icon.isNull() )
+    icon = QIcon( getThemePixmap( "/mIconDbSchema.png" ) );
 
   return icon;
 }
@@ -277,6 +297,7 @@ QgsLayerItem::QgsLayerItem( QgsDataItem* parent, QString name, QString path, QSt
     case Line:       mIcon = iconLine(); break;
     case Polygon:    mIcon = iconPolygon(); break;
     case TableLayer: mIcon = iconTable(); break;
+    case Raster:     mIcon = iconRaster(); break;
     default:         mIcon = iconDefault(); break;
   }
 }
@@ -304,6 +325,7 @@ bool QgsLayerItem::equal( const QgsDataItem *other )
 QgsDataCollectionItem::QgsDataCollectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataItem( Collection, parent, name, path )
 {
+  mIcon = iconDataCollection();
 }
 
 QgsDataCollectionItem::~QgsDataCollectionItem()
@@ -564,4 +586,17 @@ void QgsDirectoryParamWidget::showHideColumn()
       lst.append( QVariant( i ) );
   }
   settings.setValue( "/dataitem/directoryHiddenColumns", lst );
+}
+
+
+QgsErrorItem::QgsErrorItem( QgsDataItem* parent, QString error, QString path )
+    : QgsDataItem( QgsDataItem::Error, parent, error, path )
+{
+  mIcon = QIcon( getThemePixmap( "/mIconDelete.png" ) );
+
+  mPopulated = true; // no more children
+}
+
+QgsErrorItem::~QgsErrorItem()
+{
 }

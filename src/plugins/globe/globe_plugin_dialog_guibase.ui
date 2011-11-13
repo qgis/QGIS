@@ -456,12 +456,12 @@
          </property>
          <item>
           <property name="text">
-           <string>LEFT_EYE_TOP_VIEWPORT</string>
+           <string notr="true">LEFT_EYE_TOP_VIEWPORT</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>LEFT_EYE_BOTTOM_VIEWPORT</string>
+           <string notr="true">LEFT_EYE_BOTTOM_VIEWPORT</string>
           </property>
          </item>
         </widget>
@@ -507,27 +507,27 @@
         <widget class="QComboBox" name="comboStereoMode">
          <item>
           <property name="text">
-           <string>OFF</string>
+           <string notr="true">OFF</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>ANAGLYPHIC</string>
+           <string notr="true">ANAGLYPHIC</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>QUAD_BUFFER</string>
+           <string notr="true">QUAD_BUFFER</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>HORIZONTAL_SPLIT</string>
+           <string notr="true">HORIZONTAL_SPLIT</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>VERTICAL_SPLIT</string>
+           <string notr="true">VERTICAL_SPLIT</string>
           </property>
          </item>
         </widget>
@@ -579,12 +579,12 @@
         <widget class="QComboBox" name="splitStereoHorizontalEyeMapping">
          <item>
           <property name="text">
-           <string>LEFT_EYE_LEFT_VIEWPORT</string>
+           <string notr="true">LEFT_EYE_LEFT_VIEWPORT</string>
           </property>
          </item>
          <item>
           <property name="text">
-           <string>LEFT_EYE_RIGHT_VIEWPORT</string>
+           <string notr="true">LEFT_EYE_RIGHT_VIEWPORT</string>
           </property>
          </item>
         </widget>

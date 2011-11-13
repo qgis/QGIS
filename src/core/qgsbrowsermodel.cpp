@@ -10,11 +10,21 @@
 
 #include "qgsbrowsermodel.h"
 
+#include <QSettings>
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
     QAbstractItemModel( parent )
 {
+  addRootItems();
+}
 
+QgsBrowserModel::~QgsBrowserModel()
+{
+  removeRootItems();
+}
+
+void QgsBrowserModel::addRootItems()
+{
   // give the home directory a prominent first place
   QgsDirectoryItem *item = new QgsDirectoryItem( NULL, tr( "Home" ), QDir::homePath() );
   QStyle *style = QApplication::style();
@@ -22,6 +32,16 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
   item->setIcon( homeIcon );
   connectItem( item );
   mRootItems << item;
+
+  // add favourite directories
+  QSettings settings;
+  QStringList favDirs = settings.value( "/browser/favourites", QVariant() ).toStringList();
+  foreach( QString favDir, favDirs )
+  {
+    QgsDirectoryItem *item = new QgsDirectoryItem( NULL, favDir, favDir );
+    connectItem( item );
+    mRootItems << item;
+  }
 
   foreach( QFileInfo drive, QDir::drives() )
   {
@@ -70,12 +90,14 @@ QgsBrowserModel::QgsBrowserModel( QObject *parent ) :
   }
 }
 
-QgsBrowserModel::~QgsBrowserModel()
+void QgsBrowserModel::removeRootItems()
 {
   foreach( QgsDataItem* item, mRootItems )
   {
     delete item;
   }
+
+  mRootItems.clear();
 }
 
 
@@ -111,6 +133,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::DisplayRole )
   {
     return item->name();
+  }
+  else if ( role == Qt::ToolTipRole )
+  {
+    return item->toolTip();
   }
   else if ( role == Qt::DecorationRole && index.column() == 0 )
   {
@@ -199,6 +225,13 @@ QModelIndex QgsBrowserModel::findPath( QString path )
   }
 
   return QModelIndex(); // not found
+}
+
+void QgsBrowserModel::reload()
+{
+  removeRootItems();
+  addRootItems();
+  reset(); // Qt4.6 brings better methods beginResetModel + endResetModel
 }
 
 /* Refresh dir path */

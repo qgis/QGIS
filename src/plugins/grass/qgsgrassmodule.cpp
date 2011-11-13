@@ -410,6 +410,16 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
     QDomElement e = n.toElement();
     if ( !e.isNull() )
     {
+      // Check GRASS version
+      QString version_min = e.attribute( "version_min" );
+      QString version_max = e.attribute( "version_max" );
+
+      if ( !QgsGrassModuleOption::checkVersion( e.attribute( "version_min" ), e.attribute( "version_max" ) ) )
+      {
+        n = n.nextSibling();
+        continue;
+      }
+
       QString optionType = e.tagName();
       QgsDebugMsg( "optionType = " + optionType );
 
@@ -1489,6 +1499,7 @@ void QgsGrassModule::run()
 
     mProcess.setEnvironment( environment );
     mProcess.start( cmd, execArguments );
+    emit moduleStarted();
 
     mProcess.waitForStarted();
     if ( mProcess.state() != QProcess::Running )
@@ -1527,6 +1538,8 @@ void QgsGrassModule::finished( int exitCode, QProcess::ExitStatus exitStatus )
   {
     mOutputTextBrowser->append( tr( "<B>Module crashed or killed</B>" ) );
   }
+
+  emit moduleFinished();
   mRunButton->setText( tr( "Run" ) );
 }
 
@@ -2077,6 +2090,51 @@ QString QgsGrassModuleOption::value()
     value = values.join( "," );
   }
   return value;
+}
+
+bool QgsGrassModuleOption::checkVersion( QString version_min, QString version_max )
+{
+  QgsDebugMsg( "version_min = " + version_min );
+  QgsDebugMsg( "version_max = " + version_max );
+
+  QRegExp rxVersion( "(\\d+)\\.(\\d+)" );
+  if ( !version_min.isEmpty() )
+  {
+    if ( !rxVersion.exactMatch( version_min ) )
+    {
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot parse version_min %1" ).arg( version_min ) );
+      return false;
+    }
+    else
+    {
+      int versionMajor = rxVersion.cap( 1 ).toInt();
+      int versionMinor = rxVersion.cap( 2 ).toInt();
+      if ( QgsGrass::versionMajor() < versionMajor || ( QgsGrass::versionMajor() == versionMajor && QgsGrass::versionMinor() < versionMinor ) )
+      {
+        return false;
+      }
+    }
+  }
+
+  if ( !version_max.isEmpty() )
+  {
+    if ( !rxVersion.exactMatch( version_max ) )
+    {
+      QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot parse version_max %1" ).arg( version_max ) );
+      return false;
+    }
+    else
+    {
+      int versionMajor = rxVersion.cap( 1 ).toInt();
+      int versionMinor = rxVersion.cap( 2 ).toInt();
+      if ( QgsGrass::versionMajor() > versionMajor || ( QgsGrass::versionMajor() == versionMajor && QgsGrass::versionMinor() > versionMinor ) )
+      {
+        return false;
+      }
+    }
+  }
+
+  return true;
 }
 
 QStringList QgsGrassModuleOption::options()

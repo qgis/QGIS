@@ -42,8 +42,7 @@ email                : sherman at mrcc.com
 #include "qgsfield.h"
 #include "qgsgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorfilewriter.h"
-#include "qgsvectorlayer.h"
+#include "qgsvectorlayerimport.h"
 
 static const QString TEXT_PROVIDER_KEY = "ogr";
 static const QString TEXT_PROVIDER_DESCRIPTION =
@@ -54,15 +53,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION =
   + GDALVersionInfo( "RELEASE_NAME" )
   + ")";
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
 
 class QgsCPLErrorHandler
 {
@@ -82,6 +72,121 @@ class QgsCPLErrorHandler
       CPLPopErrorHandler();
     }
 };
+
+
+bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
+{
+  OGRFieldType ogrType = OFTString; //default to string
+  int ogrWidth = field.length();
+  int ogrPrecision = field.precision();
+  switch ( field.type() )
+  {
+    case QVariant::LongLong:
+      ogrType = OFTString;
+      ogrWidth = ogrWidth > 0 && ogrWidth <= 21 ? ogrWidth : 21;
+      ogrPrecision = -1;
+      break;
+
+    case QVariant::String:
+      ogrType = OFTString;
+      if ( ogrWidth < 0 || ogrWidth > 255 )
+        ogrWidth = 255;
+      break;
+
+    case QVariant::Int:
+      ogrType = OFTInteger;
+      ogrWidth = ogrWidth > 0 && ogrWidth <= 10 ? ogrWidth : 10;
+      ogrPrecision = 0;
+      break;
+
+    case QVariant::Double:
+      ogrType = OFTReal;
+      break;
+
+    default:
+      return false;
+  }
+
+  field.setTypeName( encoding.toUnicode( OGR_GetFieldTypeName( ogrType ) ) );
+  field.setLength( ogrWidth );
+  field.setPrecision( ogrPrecision );
+  return true;
+}
+
+
+QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
+{
+  QString encoding;
+  QString driverName = "ESRI Shapefile";
+  QStringList dsOptions, layerOptions;
+
+  if ( options )
+  {
+    if ( options->contains( "fileEncoding" ) )
+      encoding = options->value( "fileEncoding" ).toString();
+
+    if ( options->contains( "driverName" ) )
+      driverName = options->value( "driverName" ).toString();
+
+    if ( options->contains( "datasourceOptions" ) )
+      dsOptions << options->value( "datasourceOptions" ).toStringList();
+
+    if ( options->contains( "layerOptions" ) )
+      layerOptions << options->value( "layerOptions" ).toStringList();
+  }
+
+  if ( oldToNewAttrIdxMap )
+    oldToNewAttrIdxMap->clear();
+  if ( errorMessage )
+    errorMessage->clear();
+
+  if ( !overwrite )
+  {
+    QFileInfo fi( uri );
+    if ( fi.exists() )
+    {
+      if ( errorMessage )
+        *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
+                         .arg( uri );
+      return QgsVectorLayerImport::ErrCreateDataSource;
+    }
+  }
+
+  QgsVectorFileWriter *writer = new QgsVectorFileWriter(
+    uri, encoding, fields, wkbType,
+    srs, driverName, dsOptions, layerOptions );
+
+  QgsVectorFileWriter::WriterError error = writer->hasError();
+  if ( error )
+  {
+    if ( errorMessage )
+      *errorMessage += writer->errorMessage();
+
+    delete writer;
+    return ( QgsVectorLayerImport::ImportError ) error;
+  }
+
+  if ( oldToNewAttrIdxMap )
+  {
+    QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
+    for ( QMap<int, int>::const_iterator attrIt = attrIdxMap.begin(); attrIt != attrIdxMap.end(); ++attrIt )
+    {
+      oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt );
+    }
+  }
+
+  delete writer;
+  return QgsVectorLayerImport::NoError;
+}
+
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
     : QgsVectorDataProvider( uri ),
@@ -356,7 +461,7 @@ void QgsOgrProvider::setEncoding( const QString& e )
 }
 
 // This is reused by dataItem
-int getOgrGeomType( OGRLayerH ogrLayer )
+int QgsOgrProvider::getOgrGeomType( OGRLayerH ogrLayer )
 {
   OGRFeatureDefnH fdef = OGR_L_GetLayerDefn( ogrLayer );
   int geomType = wkbUnknown;
@@ -461,6 +566,13 @@ void QgsOgrProvider::setRelevantFields( bool fetchGeometry, const QgsAttributeLi
 
     OGR_L_SetIgnoredFields( ogrLayer, ignoredFields.data() );
   }
+
+  // mark that relevant fields may not be set appropriately for nextFeature() calls
+  mRelevantFieldsForNextFeature = false;
+
+#else
+  Q_UNUSED( fetchGeometry );
+  Q_UNUSED( fetchAttributes );
 #endif
 }
 
@@ -525,11 +637,16 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
     return false;
   }
 
+  if ( !mRelevantFieldsForNextFeature )
+  {
+    // setting relevant fields has some overhead so set it only when necessary
+    setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
+                       mAttributesToFetch );
+    mRelevantFieldsForNextFeature = true;
+  }
+
   OGRFeatureH fet;
   QgsRectangle selectionRect;
-
-  setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
-                     mAttributesToFetch );
 
   while (( fet = OGR_L_GetNextFeature( ogrLayer ) ) )
   {
@@ -628,6 +745,10 @@ void QgsOgrProvider::select( QgsAttributeList fetchAttributes, QgsRectangle rect
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
   mFetchRect = rect;
+
+  setRelevantFields( mFetchGeom || mUseIntersect || !mFetchRect.isEmpty(),
+                     mAttributesToFetch );
+  mRelevantFieldsForNextFeature = true;
 
   // spatial query to select features
   if ( rect.isEmpty() )
@@ -961,6 +1082,31 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
   return returnvalue;
 }
 
+bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
+{
+#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1900
+  bool res = true;
+  QList<int> attrsLst = attributes.toList();
+  // sort in descending order
+  qSort( attrsLst.begin(), attrsLst.end(), qGreater<int>() );
+  foreach( int attr, attrsLst )
+  {
+    if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
+    {
+      QgsDebugMsg( "Failed to delete attribute " + QString::number( attr ) );
+      res = false;
+    }
+  }
+  loadFields();
+  return res;
+#else
+  Q_UNUSED( attributes );
+  QgsDebugMsg( "Deleting fields is supported only from GDAL >= 1.9.0" );
+  return false;
+#endif
+}
+
+
 bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr_map )
 {
   if ( attr_map.isEmpty() )
@@ -1183,7 +1329,7 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 
 int QgsOgrProvider::capabilities() const
 {
-  int ability = NoCapabilities;
+  int ability = SetEncoding;
 
   // collect abilities reported by OGR
   if ( ogrLayer )
@@ -1264,17 +1410,20 @@ int QgsOgrProvider::capabilities() const
     }
 #endif
 
+    if ( OGR_L_TestCapability( ogrLayer, "CreateField" ) )
+    {
+      ability |= AddAttributes;
+    }
+
+    if ( OGR_L_TestCapability( ogrLayer, "DeleteField" ) )
+    {
+      ability |= DeleteAttributes;
+    }
+
     // OGR doesn't handle shapefiles without attributes, ie. missing DBFs well, fixes #803
     if ( ogrDriverName == "ESRI Shapefile" )
     {
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1260
-      // test for Shapefile type and GDAL >= 1.2.6
       ability |= CreateSpatialIndex;
-#endif
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1600
-      // adding attributes was added in GDAL 1.6
-      ability |= AddAttributes;
-#endif
       ability |= CreateAttributeIndex;
 
       if ( mAttributeFields.size() == 0 )
@@ -1894,44 +2043,6 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   return true;
 }
 
-bool QgsOgrProvider::crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt )
-{
-  void *hCRS = OSRNewSpatialReference( NULL );
-
-  if ( OSRImportFromWkt( hCRS, ( char ** ) &wkt ) == OGRERR_NONE )
-  {
-    if ( OSRAutoIdentifyEPSG( hCRS ) == OGRERR_NONE )
-    {
-      QString authid = QString( "%1:%2" )
-                       .arg( OSRGetAuthorityName( hCRS, NULL ) )
-                       .arg( OSRGetAuthorityCode( hCRS, NULL ) );
-      QgsDebugMsg( "authid recognized as " + authid );
-      srs.createFromOgcWmsCrs( authid );
-    }
-    else
-    {
-      // get the proj4 text
-      char *pszProj4;
-      OSRExportToProj4( hCRS, &pszProj4 );
-      QgsDebugMsg( pszProj4 );
-      OGRFree( pszProj4 );
-
-      char *pszWkt = NULL;
-      OSRExportToWkt( hCRS, &pszWkt );
-      QString myWktString = QString( pszWkt );
-      OGRFree( pszWkt );
-
-      // create CRS from Wkt
-      srs.createFromWkt( myWktString );
-    }
-  }
-
-  OSRRelease( hCRS );
-
-  return srs.isValid();
-}
-
-
 QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 {
   QgsDebugMsg( "entering." );
@@ -1952,7 +2063,7 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
         QString myWktString = prjStream.readLine();
         prjFile.close();
 
-        if ( crsFromWkt( srs, myWktString.toUtf8().constData() ) )
+        if ( srs.createFromWkt( myWktString.toUtf8().constData() ) )
           return srs;
       }
     }
@@ -1969,7 +2080,8 @@ QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 
     char *pszWkt = NULL;
     OSRExportToWkt( mySpatialRefSys, &pszWkt );
-    crsFromWkt( srs, pszWkt );
+
+    srs.createFromWkt( pszWkt );
     OGRFree( pszWkt );
   }
   else
@@ -2155,220 +2267,20 @@ void QgsOgrProvider::recalculateFeatureCount()
   }
 }
 
-QGISEXTERN int dataCapabilities()
+// ---------------------------------------------------------------------------
+
+QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
+  const QString& uri,
+  const QgsFieldMap &fields,
+  QGis::WkbType wkbType,
+  const QgsCoordinateReferenceSystem *srs,
+  bool overwrite,
+  QMap<int, int> *oldToNewAttrIdxMap,
+  QString *errorMessage,
+  const QMap<QString, QVariant> *options )
 {
-  return  QgsDataProvider::File | QgsDataProvider::Dir;
+  return QgsOgrProvider::createEmptyLayer(
+           uri, fields, wkbType, srs, overwrite,
+           oldToNewAttrIdxMap, errorMessage, options
+         );
 }
-
-QgsOgrLayerItem::QgsOgrLayerItem( QgsDataItem* parent,
-                                  QString name, QString path, QString uri, LayerType layerType )
-    : QgsLayerItem( parent, name, path, uri, layerType, "ogr" )
-{
-}
-
-QgsOgrLayerItem::~QgsOgrLayerItem()
-{
-}
-
-QgsLayerItem::Capability QgsOgrLayerItem::capabilities()
-{
-  QgsDebugMsg( "mPath = " + mPath );
-  OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
-
-  if ( !hDataSource )
-    return NoCapabilities;
-
-  QString  driverName = OGR_Dr_GetName( hDriver );
-  OGR_DS_Destroy( hDataSource );
-
-  if ( driverName == "ESRI Shapefile" )
-    return SetCrs;
-
-  return NoCapabilities;
-}
-
-bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
-{
-  QgsDebugMsg( "mPath = " + mPath );
-  OGRRegisterAll();
-  OGRSFDriverH hDriver;
-  OGRDataSourceH hDataSource = OGROpen( TO8F( mPath ), true, &hDriver );
-
-  if ( !hDataSource )
-    return false;
-
-  QString  driverName = OGR_Dr_GetName( hDriver );
-  OGR_DS_Destroy( hDataSource );
-
-  // we are able to assign CRS only to shapefiles :-(
-  if ( driverName == "ESRI Shapefile" )
-  {
-    QString layerName = mPath.left( mPath.indexOf( ".shp", Qt::CaseInsensitive ) );
-    QString wkt = crs.toWkt();
-
-    // save ordinary .prj file
-    OGRSpatialReferenceH hSRS = OSRNewSpatialReference( wkt.toLocal8Bit().data() );
-    OSRMorphToESRI( hSRS ); // this is the important stuff for shapefile .prj
-    char* pszOutWkt = NULL;
-    OSRExportToWkt( hSRS, &pszOutWkt );
-    QFile prjFile( layerName + ".prj" );
-    if ( prjFile.open( QIODevice::WriteOnly ) )
-    {
-      QTextStream prjStream( &prjFile );
-      prjStream << pszOutWkt << endl;
-      prjFile.close();
-    }
-    else
-    {
-      QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
-      return false;
-    }
-    OSRDestroySpatialReference( hSRS );
-    CPLFree( pszOutWkt );
-
-    // save qgis-specific .qpj file (maybe because of better wkt compatibility?)
-    QFile qpjFile( layerName + ".qpj" );
-    if ( qpjFile.open( QIODevice::WriteOnly ) )
-    {
-      QTextStream qpjStream( &qpjFile );
-      qpjStream << wkt.toLocal8Bit().data() << endl;
-      qpjFile.close();
-    }
-    else
-    {
-      QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
-      return false;
-    }
-
-    return true;
-  }
-
-  // It it is impossible to assign a crs to an existing layer
-  // No OGR_L_SetSpatialRef : http://trac.osgeo.org/gdal/ticket/4032
-  return false;
-}
-
-QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
-{
-  if ( thePath.isEmpty() )
-    return 0;
-
-  QFileInfo info( thePath );
-  if ( info.isFile() )
-  {
-    // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
-    // because OGR drive can open also .dbf, .shx.
-    QStringList myExtensions = fileExtensions();
-    if ( myExtensions.indexOf( info.suffix().toLower() ) < 0 )
-    {
-      bool matches = false;
-      foreach( QString wildcard, wildcards() )
-      {
-        QRegExp rx( wildcard, Qt::CaseInsensitive, QRegExp::Wildcard );
-        if ( rx.exactMatch( info.fileName() ) )
-        {
-          matches = true;
-          break;
-        }
-      }
-      if ( !matches )
-        return 0;
-    }
-
-    // .dbf should probably appear if .shp is not present
-    if ( info.suffix().toLower() == "dbf" )
-    {
-      QString pathShp = thePath.left( thePath.count() - 4 ) + ".shp";
-      if ( QFileInfo( pathShp ).exists() )
-        return 0;
-    }
-
-    OGRRegisterAll();
-    OGRSFDriverH hDriver;
-    OGRDataSourceH hDataSource = OGROpen( TO8F( thePath ), false, &hDriver );
-
-    if ( !hDataSource )
-      return 0;
-
-    QString  driverName = OGR_Dr_GetName( hDriver );
-    QgsDebugMsg( "OGR Driver : " + driverName );
-
-    int numLayers = OGR_DS_GetLayerCount( hDataSource );
-
-    if ( numLayers == 0 )
-      return 0;
-
-    QgsDataCollectionItem * collection = 0;
-    if ( numLayers > 1 )
-    {
-      collection = new QgsDataCollectionItem( parentItem, info.fileName(), thePath );
-    }
-
-    for ( int i = 0; i < numLayers; i++ )
-    {
-      OGRLayerH hLayer = OGR_DS_GetLayer( hDataSource, i );
-      OGRFeatureDefnH hDef = OGR_L_GetLayerDefn( hLayer );
-
-      QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-      int ogrType = getOgrGeomType( hLayer );
-      switch ( ogrType )
-      {
-        case wkbUnknown:
-        case wkbGeometryCollection:
-          break;
-        case wkbNone:
-          layerType = QgsLayerItem::TableLayer;
-          break;
-        case wkbPoint:
-        case wkbMultiPoint:
-        case wkbPoint25D:
-        case wkbMultiPoint25D:
-          layerType = QgsLayerItem::Point;
-          break;
-        case wkbLineString:
-        case wkbMultiLineString:
-        case wkbLineString25D:
-        case wkbMultiLineString25D:
-          layerType = QgsLayerItem::Line;
-          break;
-        case wkbPolygon:
-        case wkbMultiPolygon:
-        case wkbPolygon25D:
-        case wkbMultiPolygon25D:
-          layerType = QgsLayerItem::Polygon;
-          break;
-        default:
-          break;
-      }
-
-      QgsDebugMsg( QString( "ogrType = %1 layertype = %2" ).arg( ogrType ).arg( layerType ) );
-
-      QString name = info.fileName();
-
-      QString layerName = FROM8( OGR_FD_GetName( hDef ) );
-      QgsDebugMsg( "OGR layer name : " + layerName );
-
-      QString path = thePath;
-      if ( numLayers > 1 )
-      {
-        name = layerName;
-        path += "/" + name;
-      }
-
-      QString layerUri = thePath + "|layerid=" + QString::number( i );
-      QgsDebugMsg( "OGR layer uri : " + layerUri );
-
-      QgsOgrLayerItem * item = new QgsOgrLayerItem( collection ? collection : parentItem, name, path, layerUri, layerType );
-      if ( numLayers == 1 )
-        return item;
-      collection->addChild( item );
-    }
-    collection->setPopulated();
-    return collection;
-  }
-
-  return 0;
-}
-

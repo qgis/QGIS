@@ -126,6 +126,24 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     {
       pbnIndex->setEnabled( false );
     }
+
+    if ( capabilities & QgsVectorDataProvider::SetEncoding )
+    {
+      cboProviderEncoding->addItems( QgsVectorDataProvider::availableEncodings() );
+      QString enc = layer->dataProvider()->encoding();
+      int encindex = cboProviderEncoding->findText( enc );
+      if ( encindex < 0 )
+      {
+        cboProviderEncoding->insertItem( 0, enc );
+        encindex = 0;
+      }
+      cboProviderEncoding->setCurrentIndex( encindex );
+    }
+    else
+    {
+      // currently only encoding can be set in this group, so hide it completely
+      grpProviderOptions->hide();
+    }
   }
 
   updateButtons();
@@ -588,6 +606,15 @@ void QgsVectorLayerProperties::apply()
   layer->toggleScaleBasedVisibility( chkUseScaleDependentRendering->isChecked() );
   layer->setMinimumScale( leMinimumScale->text().toFloat() );
   layer->setMaximumScale( leMaximumScale->text().toFloat() );
+
+  // provider-specific options
+  if ( layer->dataProvider() )
+  {
+    if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SetEncoding )
+    {
+      layer->dataProvider()->setEncoding( cboProviderEncoding->currentText() );
+    }
+  }
 
   // update the display field
   layer->setDisplayField( displayFieldComboBox->currentText() );
@@ -1068,7 +1095,7 @@ void QgsVectorLayerProperties::on_mButtonAddJoin_clicked()
     info.memoryCache = d.cacheInMemory();
     if ( layer )
     {
-      //create attribute index if possible. Todo: ask user if this should be done (e.g. in QgsAddJoinDialog)
+      //create attribute index if possible
       if ( d.createAttributeIndex() )
       {
         QgsVectorLayer* joinLayer = qobject_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( info.joinLayerId ) );

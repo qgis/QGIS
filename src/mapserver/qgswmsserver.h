@@ -27,11 +27,12 @@ class QgsCoordinateReferenceSystem;
 class QgsComposerLayerItem;
 class QgsComposerLegendItem;
 class QgsComposition;
+class QgsConfigParser;
 class QgsMapLayer;
 class QgsMapRenderer;
 class QgsPoint;
 class QgsRasterLayer;
-class QgsConfigParser;
+class QgsRectangle;
 class QgsVectorLayer;
 class QgsSymbol;
 class QFile;
@@ -52,10 +53,10 @@ class QgsWMSServer
     ~QgsWMSServer();
     /**Returns an XML file with the capabilities description (as described in the WMS specs)*/
     QDomDocument getCapabilities();
-    /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership\
+    /**Returns the map legend as an image (or a null pointer in case of error). The caller takes ownership
     of the image object*/
     QImage* getLegendGraphics();
-    /**Returns the map as an image (or a null pointer in case of error). The caller takes ownership\
+    /**Returns the map as an image (or a null pointer in case of error). The caller takes ownership
     of the image object)*/
     QImage* getMap();
     /**Returns an SLD file with the style of the requested layer. Exception is raised in case of troubles :-)*/
@@ -106,14 +107,15 @@ class QgsWMSServer
     @param j pixel y-coordinate
     @param layerCoords calculated layer coordinates are assigned to this point
     @return 0 in case of success*/
-    int infoPointToLayerCoordinates( int i, int j, QgsPoint& layerCoords, QgsMapRenderer* mapRender,
+    int infoPointToLayerCoordinates( int i, int j, QgsPoint* layerCoords, QgsMapRenderer* mapRender,
                                      QgsMapLayer* layer ) const;
     /**Appends feature info xml for the layer to the layer element of the feature info dom document
-     @return 0 in case of success*/
-    int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint& infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
-                                    QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes ) const;
+    @param featureBBox the bounding box of the selected features in output CRS
+    @return 0 in case of success*/
+    int featureInfoFromVectorLayer( QgsVectorLayer* layer, const QgsPoint* infoPoint, int nFeatures, QDomDocument& infoDocument, QDomElement& layerElement, QgsMapRenderer* mapRender,
+                                    QMap<int, QString>& aliasMap, QSet<QString>& hiddenAttributes, QgsRectangle* featureBBox = 0 ) const;
     /**Appends feature info xml for the layer to the layer element of the dom document*/
-    int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint& infoPoint, QDomDocument& infoDocument, QDomElement& layerElement ) const;
+    int featureInfoFromRasterLayer( QgsRasterLayer* layer, const QgsPoint* infoPoint, QDomDocument& infoDocument, QDomElement& layerElement ) const;
 
     /**Creates a layer set and returns a stringlist with layer ids that can be passed to a QgsMapRenderer. Usually used in conjunction with readLayersAndStyles*/
     QStringList layerSet( const QStringList& layersList, const QStringList& stylesList, const QgsCoordinateReferenceSystem& destCRS ) const;
@@ -140,12 +142,18 @@ class QgsWMSServer
 
     /**Apply filter (subset) strings from the request to the layers. Example: '&FILTER=<layer1>:"AND property > 100",<layer2>:"AND bla = 'hallo!'" '
        @return a map with the original filters ( layer id / filter string )*/
-    QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList, const QStringList& layerIds ) const;
+    QMap<QString, QString> applyRequestedLayerFilters( const QStringList& layerList ) const;
     /**Restores the original layer filters*/
     void restoreLayerFilters( const QMap < QString, QString >& filterMap ) const;
     /**Tests if a filter sql string is allowed (safe)
       @return true in case of success, false if string seems unsafe*/
     bool testFilterStringSafety( const QString& filter ) const;
+
+    /**Select vector features with ids specified in parameter SELECTED, e.g. ...&SELECTED=layer1:1,2,9;layer2:3,5,10&...
+      @return list with layer ids where selections have been created*/
+    QStringList applyFeatureSelections( const QStringList& layerList ) const;
+    /**Clear all feature selections in the given layers*/
+    void clearFeatureSelections( const QStringList& layerIds ) const;
 
     /**Map containing the WMS parameters*/
     std::map<QString, QString> mParameterMap;

@@ -262,7 +262,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
             # and tell user (if the download wasn't cancelled by user)
             if self.errMessage != "__cancel__":
                 if self.errMessage==None:
-                    self.errMessage="Check your internet connection"
+                    self.errMessage=QCoreApplication.translate( "OsmDownloadDlg", "Check your internet connection" )
                 QMessageBox.information(self, self.tr("OSM Download Error")
                     ,self.tr("Download failed: %1.").arg(self.errMessage))
             return
@@ -302,7 +302,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         """
 
         # display file open dialog and get absolute path to selected directory
-        fileSelected = QFileDialog.getSaveFileName(self, "Choose file to save","download.osm", "OSM Files (*.osm)");
+        fileSelected = QFileDialog.getSaveFileName(self, self.tr("Choose file to save"),"download.osm", self.tr("OSM Files (*.osm)") );
         # insert selected directory path into line edit control
         if not fileSelected.isNull():
             self.destdirLineEdit.setText(fileSelected)
@@ -339,7 +339,7 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
 
     def showExtentHelp(self):
         """Function is called after clicking on Help button.
-        It shows basic information on downloading. 
+        It shows basic information on downloading.
         """
 
         mb=QMessageBox()
@@ -464,6 +464,3 @@ class OsmDownloadDlg(QDialog, Ui_OsmDownloadDlg):
         self.disconnect(self.downloadButton, SIGNAL("clicked()"), self.downloadFile)
         self.disconnect(self.choosedirButton, SIGNAL("clicked()"), self.showChooseDirectoryDialog)
         self.disconnect(self.autoLoadCheckBox, SIGNAL("clicked()"), self.autoLoadClicked)
-
-
-

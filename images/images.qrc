@@ -345,11 +345,21 @@
         <file>themes/gis/plugins/quick_print.png</file>
         <file>themes/gis/plugins/scale_bar.png</file>
         <file>themes/gis/plugins/spit.png</file>
-        <file>themes/gis/plugins/wfs.png</file>
         <file>splash/splash.png</file>
         <file>north_arrows/default.png</file>
         <file>themes/default/locked.png</file>
         <file>themes/default/unlocked.png</file>
+        <file>themes/default/plugins/copyright_label.png</file>
+        <file>themes/default/plugins/north_arrow.png</file>
+        <file>themes/default/plugins/scale_bar.png</file>
+        <file>themes/default/mActionAddWfsLayer.png</file>
+        <file>themes/gis/mIconWms.png</file>
+        <file>themes/gis/mIconWfs.png</file>
+        <file>themes/gis/mIconSpatialite.png</file>
+        <file>themes/gis/mIconRaster.png</file>
+        <file>themes/gis/mIconPostgis.png</file>
+        <file>themes/gis/mIconConnect.png</file>
+        <file>themes/gis/mIconDbSchema.png</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>
