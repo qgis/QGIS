@@ -1058,6 +1058,10 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
 
+  // Help menu
+  // add What's this button to it
+  QAction* before = mActionHelpAPI;
+  mHelpMenu->insertAction( before, QWhatsThis::createAction() );
 }
 
 void QgisApp::createToolBars()

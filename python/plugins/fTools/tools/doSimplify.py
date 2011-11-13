@@ -56,6 +56,7 @@ class Dialog( QDialog, Ui_Dialog ):
 
   def manageGui( self ):
     layers = ftools_utils.getLayerNames( [ QGis.Polygon, QGis.Line ] )
+    self.cmbInputLayer.clear()
     self.cmbInputLayer.addItems( layers )
 
   def updateGui( self ):
@@ -125,8 +126,8 @@ class Dialog( QDialog, Ui_Dialog ):
                              self.tr( "Error loading output shapefile:\n%1" )
                              .arg( unicode( self.shapefileName ) ) )
 
+    self.manageGui()
     self.iface.mapCanvas().refresh()
-    #self.restoreGui()
 
   def generalizationInterrupted( self ):
     self.restoreGui()
