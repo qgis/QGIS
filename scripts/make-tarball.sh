@@ -5,7 +5,7 @@
 #  Tim Sutton, October 2011
 
 TAG_OR_BRANCH="master"
-VERSION="1.8.0-dev"
+VERSION="1.7.2"
 
 git archive --format=tar --prefix=qgis-${VERSION}/ ${TAG_OR_BRANCH=} | \
    bzip2 > /tmp/qgis-${VERSION}.tar.bz2
