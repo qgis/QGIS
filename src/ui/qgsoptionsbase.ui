@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>979</width>
-            <height>1135</height>
+            <width>851</width>
+            <height>1068</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -127,19 +127,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="1" column="3">
                <widget class="QgsColorButton" name="pbnCanvasColor">
                 <property name="minimumSize">
@@ -153,7 +140,20 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
+              <item row="0" column="4">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="4">
                <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -176,6 +176,36 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_18">
+                  <property name="text">
+                   <string>Style</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbStyle"/>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
                  <widget class="QLabel" name="textLabel1_4">
@@ -191,6 +221,18 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QComboBox" name="cmbTheme">
+                  <property name="duplicatesEnabled">
+                   <bool>false</bool>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_2">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -202,18 +244,6 @@
                    </size>
                   </property>
                  </spacer>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="cmbTheme">
-                  <property name="duplicatesEnabled">
-                   <bool>false</bool>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </item>
-                 </widget>
                 </item>
                </layout>
               </item>
@@ -233,6 +263,13 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QComboBox" name="cmbSize">
+                  <property name="duplicatesEnabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_5">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -245,13 +282,6 @@
                   </property>
                  </spacer>
                 </item>
-                <item>
-                 <widget class="QComboBox" name="cmbSize">
-                  <property name="duplicatesEnabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </item>
               <item>
@@ -262,19 +292,6 @@
                    <string>Double click action in legend</string>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_6">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                 <item>
                  <widget class="QComboBox" name="cmbLegendDoubleClickAction">
@@ -289,6 +306,19 @@
                    </property>
                   </item>
                  </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </item>
@@ -537,8 +567,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
-            <height>512</height>
+            <width>786</width>
+            <height>473</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -711,8 +741,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>567</width>
-            <height>532</height>
+            <width>786</width>
+            <height>473</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -997,8 +1027,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>289</width>
-            <height>94</height>
+            <width>803</width>
+            <height>414</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1072,8 +1102,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>797</width>
-            <height>490</height>
+            <width>766</width>
+            <height>432</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1408,8 +1438,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>446</width>
-            <height>420</height>
+            <width>803</width>
+            <height>414</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1582,8 +1612,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>583</height>
+            <width>786</width>
+            <height>542</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1679,8 +1709,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>384</width>
-            <height>573</height>
+            <width>786</width>
+            <height>533</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
