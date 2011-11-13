@@ -65,7 +65,7 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-147</y>
             <width>851</width>
             <height>1068</height>
            </rect>
@@ -183,7 +183,7 @@
                 <item>
                  <widget class="QLabel" name="label_18">
                   <property name="text">
-                   <string>Style</string>
+                   <string>Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;</string>
                   </property>
                  </widget>
                 </item>
