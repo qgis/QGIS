@@ -65,9 +65,9 @@
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>979</width>
-            <height>1135</height>
+            <y>-461</y>
+            <width>787</width>
+            <height>1235</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -452,6 +452,9 @@
                    <property name="text">
                     <string>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</string>
                    </property>
+                   <property name="wordWrap">
+                    <bool>true</bool>
+                   </property>
                   </widget>
                  </item>
                 </layout>
@@ -537,8 +540,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
-            <height>512</height>
+            <width>614</width>
+            <height>523</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -711,8 +714,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>567</width>
-            <height>532</height>
+            <width>539</width>
+            <height>502</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -997,8 +1000,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>289</width>
-            <height>94</height>
+            <width>270</width>
+            <height>93</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1072,8 +1075,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>797</width>
-            <height>490</height>
+            <width>750</width>
+            <height>469</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1408,8 +1411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>446</width>
-            <height>420</height>
+            <width>425</width>
+            <height>417</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1583,7 +1586,7 @@
             <x>0</x>
             <y>0</y>
             <width>519</width>
-            <height>583</height>
+            <height>584</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1679,8 +1682,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>384</width>
-            <height>573</height>
+            <width>355</width>
+            <height>572</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
