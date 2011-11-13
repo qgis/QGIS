@@ -24,13 +24,13 @@ Change history for the QGIS Project
 %rather apply it selectively to paragraphs where needed.
 
 % To generate the text version of this document:
-% txt2tags -t txt -o CHANGELOG CHANGELOG.t2t
+% txt2tags -t txt -o ../CHANGELOG changelog.t2t
 % To generate the mediawiki version of this document:
-% txt2tags -t wiki --no-enum-title -o CHANGELOG.wiki CHANGELOG.t2t
+% txt2tags -t wiki --no-enum-title -o CHANGELOG.wiki changelog.t2t
 % To generate the html version of this document:
-% txt2tags -t html -o CHANGELOG.html CHANGELOG.t2t
+% txt2tags -t html -o changelog.html changelog.t2t
 % To generate the LaTeX version of this document:
-% txt2tags -t tex -o CHANGELOG.tex CHANGELOG.t2t; pdflatex CHANGELOG.tex
+% txt2tags -t tex -o CHANGELOG.tex CHANGELOG.t2t; pdflatex changelog.tex
 
 % End of comments
 % -------------------
@@ -40,7 +40,7 @@ Last Change : %%mtime(%A %B %d, %Y)
 
 = Whats new in Version 1.7.2 'Wroclaw'? =
 
-This is a bugfix release over version 1.7.0. The following changes
+This is a bugfix release over version 1.7.1. The following changes
 were made.
 
 - Fix Gdaltools error checking for ogr layers
@@ -56,15 +56,11 @@ were made.
 - Match proj4string in database
 - Fix #4241 (Ensure that we have a valid line in line decoration)
 - Fix label id for GetPrint in composer
-- Added gource script (thanks Nathan) and qgis download stats
-- Added simple script to generate a tarball
 - Fix #3041 (Make the gdaltools command editable)
-- Corrected URLs for GitHub and for the issue tracker
 - Fix shift in point displacement renderer
 - Fix for a crash in projection selection
 - Fix #4308 (Interpolation and Terrain core plugins)
 - Insert date value in attribute editor
-- Fixing typos in IT GUI
 - Fix #4387 (Enable "add direction symbol" only for line layers)
 - Fix #2491 (Handle raster layer's transparency band while rendering)
 - Allow setting I/O encoding for OGR layers in vector layer properties.
@@ -76,7 +72,6 @@ were made.
 - Fix #4444 (Error when loading Python plugins)
 - Fix #4440 (invalid reference to Trac)
 - Fix stopRender call in graduated symbol renderer
-- Fix Windows build
 - Fix #4479 - trigger "new color ramp" always when activated
 - Hide query entry in legend context menu for layers with joins
 - Fix #4496 (Refresh map list in composer table widget in showEvent)
@@ -85,7 +80,7 @@ were made.
 - Intializing from WKT favourize EPSG instead of PROJ.4
 - Add What's this to Help menu (implement #4179)
 - fTools: update layers lists after adding new layer to TOC (fix #4318)
-- don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
+- Don't block QGIS main window when running Merge shapefiles tool. Partially addresses #4383
 - Fix broken Assign projection functionality in GDALTools and improve handling output file extension
 - 
 
