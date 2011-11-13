@@ -4,7 +4,7 @@
 #
 #  Tim Sutton, October 2011
 
-TAG_OR_BRANCH="master"
+TAG_OR_BRANCH="release-1_7_2"
 VERSION="1.7.2"
 
 git archive --format=tar --prefix=qgis-${VERSION}/ ${TAG_OR_BRANCH=} | \
