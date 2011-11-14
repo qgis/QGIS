@@ -68,7 +68,7 @@ void TestQgsCoordinateReferenceSystem::initTestCase()
   //
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init( INSTALL_PREFIX );
   QgsApplication::showSettings();
 
 };
