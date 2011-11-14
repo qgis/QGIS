@@ -1178,11 +1178,12 @@ QgsFeature* SelectionFeature::feature()
 void SelectionFeature::createVertexMapPolygon()
 {
   int y = 0;
-  if ( !mFeature->geometry()->asPolygon().empty() )
+  QgsPolygon polygon = mFeature->geometry()->asPolygon();
+  if ( !polygon.empty() )
   { //polygon
-    for ( int i2 = 0; i2 < mFeature->geometry()->asPolygon().size(); i2++ )
+    for ( int i2 = 0; i2 < polygon.size(); i2++ )
     {
-      QgsPolyline poly = mFeature->geometry()->asPolygon()[i2];
+      const QgsPolyline& poly = polygon[i2];
       int i;
       for ( i = 0; i < poly.size(); i++ )
       {
@@ -1205,12 +1206,13 @@ void SelectionFeature::createVertexMapPolygon()
   }
   else //multipolygon
   {
-    for ( int i2 = 0; i2 < mFeature->geometry()->asMultiPolygon().size(); i2++ )
+    QgsMultiPolygon multiPolygon = mFeature->geometry()->asMultiPolygon();
+    for ( int i2 = 0; i2 < multiPolygon.size(); i2++ )
     { //iterating through polygons
-      QgsPolygon poly2 = mFeature->geometry()->asMultiPolygon()[i2];
+      const QgsPolygon& poly2 = multiPolygon[i2];
       for ( int i3 = 0; i3 < poly2.size(); i3++ )
       { //iterating through polygon rings
-        QgsPolyline poly = poly2[i3];
+        const QgsPolyline& poly = poly2[i3];
         int i;
         for ( i = 0; i < poly.size(); i++ )
         {
