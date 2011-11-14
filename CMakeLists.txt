@@ -88,7 +88,7 @@ ENDIF (WITH_GLOBE)
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
 # whether unit tests should be build
-SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
+SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
