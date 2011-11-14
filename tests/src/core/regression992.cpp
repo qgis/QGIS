@@ -64,7 +64,8 @@ void Regression992::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init( INSTALL_PREFIX );
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
