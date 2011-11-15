@@ -227,15 +227,14 @@
 //
 // Conditional Includes
 //
-#ifdef HAVE_POSTGRESQL
-#include "../providers/postgres/qgspgsourceselect.h"
 #ifdef HAVE_PGCONFIG
 #include <pg_config.h>
 #else
 #define PG_VERSION "unknown"
 #endif
-#endif
+
 #include <sqlite3.h>
+
 #ifdef HAVE_SPATIALITE
 extern "C"
 {

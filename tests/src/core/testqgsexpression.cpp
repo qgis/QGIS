@@ -198,10 +198,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "atan2(0,1)" ) << "atan2(0,1)" << false << QVariant( 0. );
       QTest::newRow( "atan2(1,0)" ) << "atan2(1,0)" << false << QVariant( M_PI / 2 );
       QTest::newRow( "exp(0)" ) << "exp(0)" << false << QVariant( 1. );
-      QTest::newRow( "exp(1)" ) << "exp(1)" << false << QVariant( exp( 1 ) );
+      QTest::newRow( "exp(1)" ) << "exp(1)" << false << QVariant( exp( 1. ) );
       QTest::newRow( "ln(0)" ) << "ln(0)" << false << QVariant();
       QTest::newRow( "log10(-1)" ) << "log10(-1)" << false << QVariant();
-      QTest::newRow( "ln(1)" ) << "ln(1)" << false << QVariant( log( 1 ) );
+      QTest::newRow( "ln(1)" ) << "ln(1)" << false << QVariant( log( 1. ) );
       QTest::newRow( "log10(100)" ) << "log10(100)" << false << QVariant( 2. );
       QTest::newRow( "log(2,32)" ) << "log(2,32)" << false << QVariant( 5. );
       QTest::newRow( "log(10,1000)" ) << "log(10,1000)" << false << QVariant( 3. );
