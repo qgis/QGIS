@@ -29,23 +29,25 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
   QString mConnInfo = connection.connectionInfo();
   QgsDebugMsg( "mConnInfo = " + mConnInfo );
 
-  if ( !pgProvider->supportedLayers( mLayerProperties, true, false, false ) )
+  QVector<QgsPostgresLayerProperty> layerProperties;
+  if ( !pgProvider->supportedLayers( layerProperties, true, false, false ) )
   {
     children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     return children;
   }
 
-  QMap<QString, QVector<QgsPostgresLayerProperty> > schemasMap;
-  foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
+  // fill the schemas map
+  mSchemasMap.clear();
+  foreach( QgsPostgresLayerProperty layerProperty, layerProperties )
   {
-    schemasMap[ layerProperty.schemaName ].push_back( layerProperty );
+    mSchemasMap[ layerProperty.schemaName ].push_back( layerProperty );
   }
 
-  QMap<QString, QVector<QgsPostgresLayerProperty> >::const_iterator it = schemasMap.constBegin();
-  for ( ; it != schemasMap.constEnd(); it++ )
+  QMap<QString, QVector<QgsPostgresLayerProperty> >::const_iterator it = mSchemasMap.constBegin();
+  for ( ; it != mSchemasMap.constEnd(); it++ )
   {
     QgsDebugMsg( "schema: " + it.key() );
-    QgsPGSchemaItem * schema = new QgsPGSchemaItem( this, it.key(), mPath + "/" + it.key(), mConnInfo, it.value() );
+    QgsPGSchemaItem * schema = new QgsPGSchemaItem( this, it.key(), mPath + "/" + it.key(), mConnInfo );
 
     children.append( schema );
   }
@@ -118,20 +120,22 @@ QString QgsPGLayerItem::createUri()
 }
 
 // ---------------------------------------------------------------------------
-QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path, QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties )
+QgsPGSchemaItem::QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path, QString connInfo )
     : QgsDataCollectionItem( parent, name, path )
 {
   mIcon = QIcon( getThemePixmap( "mIconDbSchema.png" ) );
   mConnInfo = connInfo;
-  mLayerProperties = layerProperties;
-  populate();
 }
 
 QVector<QgsDataItem*> QgsPGSchemaItem::createChildren()
 {
+  QgsPGConnectionItem* connItem = dynamic_cast<QgsPGConnectionItem*>( mParent );
+  Q_ASSERT( connItem );
+  QVector<QgsPostgresLayerProperty> layers = connItem->mSchemasMap.value( mName );
+
   QVector<QgsDataItem*> children;
   // Populate everything, it costs nothing, all info about layers is collected
-  foreach( QgsPostgresLayerProperty layerProperty, mLayerProperties )
+  foreach( QgsPostgresLayerProperty layerProperty, layers )
   {
     QgsDebugMsg( "table: " + layerProperty.schemaName + "." + layerProperty.tableName );
 
