@@ -82,6 +82,7 @@
 %Include qgsuniquevaluerenderer.sip
 %Include qgsattributeaction.sip
 %Include qgsvectordataprovider.sip
+%Include qgsvectorfieldsymbollayer.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayerimport.sip
