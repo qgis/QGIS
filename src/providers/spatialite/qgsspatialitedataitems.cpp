@@ -7,7 +7,8 @@
 #include "qgslogger.h"
 
 #include <QAction>
-
+#include <QMessageBox>
+#include <QSettings>
 
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
@@ -149,6 +150,10 @@ QList<QAction*> QgsSLRootItem::actions()
   connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
   lst.append( actionNew );
 
+  QAction* actionCreateDatabase = new QAction( tr( "Create database..." ), this );
+  connect( actionCreateDatabase, SIGNAL( triggered() ), this, SLOT( createDatabase() ) );
+  lst.append( actionCreateDatabase );
+
   return lst;
 }
 
@@ -170,6 +175,38 @@ void QgsSLRootItem::newConnection()
   {
     refresh();
   }
+}
+
+QGISEXTERN bool createDb( const QString& dbPath, QString& errCause );
+
+void QgsSLRootItem::createDatabase()
+{
+  QSettings settings;
+  QString lastUsedDir = settings.value( "/UI/lastSpatiaLiteDir", "." ).toString();
+
+  QString filename = QFileDialog::getSaveFileName( 0, tr( "New SpatiaLite Database File" ),
+                     lastUsedDir,
+                     tr( "SpatiaLite (*.sqlite *.db )" ) );
+  if ( filename.isEmpty() )
+    return;
+
+  QString errCause;
+  if ( ::createDb( filename, errCause ) )
+  {
+    QMessageBox::information( 0, tr( "Create SpatiaLite database" ), tr( "The database has been created" ) );
+
+    // add connection
+    QString baseKey = "/SpatiaLite/connections/";
+    QSettings settings;
+    settings.setValue( baseKey + "/sqlitepath", filename );
+
+    refresh();
+  }
+  else
+  {
+    QMessageBox::critical( 0, tr( "Create SpatiaLite database" ), tr( "Failed to create the database:\n" ) + errCause );
+  }
+
 }
 
 // ---------------------------------------------------------------------------

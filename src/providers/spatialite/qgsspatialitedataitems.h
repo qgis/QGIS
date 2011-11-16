@@ -49,6 +49,7 @@ class QgsSLRootItem : public QgsDataCollectionItem
   public slots:
     void connectionsChanged();
     void newConnection();
+    void createDatabase();
 };
 
 
