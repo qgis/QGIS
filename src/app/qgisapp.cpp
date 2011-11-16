@@ -136,6 +136,7 @@
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsmimedatautils.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
@@ -681,31 +682,18 @@ void QgisApp::dropEvent( QDropEvent *event )
       openFile( fileName );
     }
   }
-  if ( event->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
-    QByteArray encodedData = event->mimeData()->data( "application/x-vnd.qgis.qgis.uri" );
-    QDataStream stream( &encodedData, QIODevice::ReadOnly );
-    QString xUri; // extended uri: layer_type:provider_key:uri
-    while ( !stream.atEnd() )
+    QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+    foreach( const QgsMimeDataUtils::Uri& u, lst )
     {
-      stream >> xUri;
-      QgsDebugMsg( xUri );
-      QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
-      if ( rx.indexIn( xUri ) != -1 )
+      if ( u.layerType == "vector" )
       {
-        QString layerType = rx.cap( 1 );
-        QString providerKey = rx.cap( 2 );
-        QString name = rx.cap( 3 );
-        QString uri = rx.cap( 4 );
-        QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
-        if ( layerType == "vector" )
-        {
-          addVectorLayer( uri, name, providerKey );
-        }
-        else if ( layerType == "raster" )
-        {
-          addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
-        }
+        addVectorLayer( u.uri, u.name, u.providerKey );
+      }
+      else if ( u.layerType == "raster" )
+      {
+        addRasterLayer( u.uri, u.name, u.providerKey, QStringList(), QStringList(), QString(), QString() );
       }
     }
   }

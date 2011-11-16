@@ -72,6 +72,7 @@ SET(QGIS_CORE_SRCS
   qgsmaprenderer.cpp
   qgsmaptopixel.cpp
   qgsmessageoutput.cpp
+  qgsmimedatautils.cpp
   qgscredentials.cpp
   qgsoverlayobject.cpp
   qgspalgeometry.cpp
@@ -306,6 +307,7 @@ SET(QGIS_CORE_HDRS
   qgsmaprenderer.h
   qgsmaptopixel.h
   qgsmessageoutput.h
+  qgsmimedatautils.h
   qgscredentials.h
   qgsoverlayobjectpositionmanager.h
   qgspallabeling.h

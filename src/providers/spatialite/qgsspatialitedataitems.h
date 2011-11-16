@@ -25,6 +25,9 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
 
     virtual QList<QAction*> actions();
 
+    virtual bool acceptDrop() { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+
   public slots:
     void editConnection();
     void deleteConnection();

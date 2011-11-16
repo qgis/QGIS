@@ -5,6 +5,8 @@
 #include "qgsspatialitesourceselect.h"
 
 #include "qgslogger.h"
+#include "qgsmimedatautils.h"
+#include "qgsvectorlayerimport.h"
 
 #include <QAction>
 #include <QMessageBox>
@@ -13,7 +15,8 @@
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
-  mToolTip = QgsSpatiaLiteConnection::connectionPath( name );
+  mDbPath = QgsSpatiaLiteConnection::connectionPath( name );
+  mToolTip = mDbPath;
 }
 
 QgsSLConnectionItem::~QgsSLConnectionItem()
@@ -115,6 +118,73 @@ void QgsSLConnectionItem::deleteConnection()
   QgsSpatiaLiteConnection::deleteConnection( mName );
   // the parent should be updated
   mParent->refresh();
+}
+
+bool QgsSLConnectionItem::handleDrop( const QMimeData * data, Qt::DropAction )
+{
+  if ( !QgsMimeDataUtils::isUriList( data ) )
+    return false;
+
+  // TODO: probably should show a GUI with settings etc
+
+  QgsDataSourceURI destUri;
+  destUri.setDatabase( mDbPath );
+
+  qApp->setOverrideCursor( Qt::WaitCursor );
+
+  QStringList importResults;
+  bool hasError = false;
+  QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( data );
+  foreach( const QgsMimeDataUtils::Uri& u, lst )
+  {
+    if ( u.layerType != "vector" )
+    {
+      importResults.append( tr( "%1: Not a vector layer!" ).arg( u.name ) );
+      hasError = true; // only vectors can be imported
+      continue;
+    }
+
+    // open the source layer
+    QgsVectorLayer* srcLayer = new QgsVectorLayer( u.uri, u.name, u.providerKey );
+
+    if ( srcLayer->isValid() )
+    {
+      destUri.setDataSource( QString(), u.name, "geomm" );
+      QgsDebugMsg( "URI " + destUri.uri() );
+      QgsVectorLayerImport::ImportError err;
+      QString importError;
+      err = QgsVectorLayerImport::importLayer( srcLayer, destUri.uri(), "spatialite", &srcLayer->crs(), false, &importError );
+      if ( err == QgsVectorLayerImport::NoError )
+        importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      else
+      {
+        importResults.append( QString( "%1: %2" ).arg( u.name ).arg( importError ) );
+        hasError = true;
+      }
+    }
+    else
+    {
+      importResults.append( tr( "%1: OK!" ).arg( u.name ) );
+      hasError = true;
+    }
+
+    delete srcLayer;
+  }
+
+  qApp->restoreOverrideCursor();
+
+  if ( hasError )
+  {
+    QMessageBox::warning( 0, tr( "Import to SpatiaLite database" ), tr( "Failed to import some layers!\n\n" ) + importResults.join( "\n" ) );
+  }
+  else
+  {
+    QMessageBox::information( 0, tr( "Import to SpatiaLite database" ), tr( "Import was successful." ) );
+  }
+
+  refresh();
+
+  return true;
 }
 
 
