@@ -41,7 +41,7 @@ static JNIEnv *m_env = NULL;
 static jobject objptr;
 static QSemaphore m_quitAppSemaphore;
 static QList<QByteArray> m_applicationParams;
-static const char * const QtApplicationClassPathName = "org/kde/necessitas/origo/QtApplication";
+static const char * const QtNativeClassPathName = "org/kde/necessitas/industrius/QtNative";
 
 extern "C" int main(int, char **); //use the standard main method to start the application
 static void * startMainMethod(void * /*data*/)
@@ -53,8 +53,8 @@ static void * startMainMethod(void * /*data*/)
         params[i]= (char*)m_applicationParams[i].constData();
 
     int ret = main(m_applicationParams.length(), params);
-    
-    qDebug()<<"MainMethod finished, it's time to cleanup ";
+
+    qDebug()<<"MainMethod finished, it's time to cleanup";
     free(params);
     Q_UNUSED(ret);
 
@@ -136,7 +136,7 @@ static int registerNativeMethods(JNIEnv* env, const char* className,
 */
 static int registerNatives(JNIEnv* env)
 {
-    if (!registerNativeMethods(env, QtApplicationClassPathName, methods, sizeof(methods) / sizeof(methods[0])))
+    if (!registerNativeMethods(env, QtNativeClassPathName, methods, sizeof(methods) / sizeof(methods[0])))
         return JNI_FALSE;
 
     return JNI_TRUE;
@@ -166,6 +166,5 @@ Q_DECL_EXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* /*reserved*/)
         return -1;
     }
     m_javaVM = vm;
-    __android_log_print(ANDROID_LOG_INFO,"Qt", "JNI_OnLoad OK");
     return JNI_VERSION_1_4;
 }
