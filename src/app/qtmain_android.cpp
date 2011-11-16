@@ -41,7 +41,7 @@ static JNIEnv *m_env = NULL;
 static jobject objptr;
 static QSemaphore m_quitAppSemaphore;
 static QList<QByteArray> m_applicationParams;
-static const char * const QtApplicationClassPathName = "eu/licentia/necessitas/industrius/QtApplication";
+static const char * const QtApplicationClassPathName = "org/kde/necessitas/origo/QtApplication";
 
 extern "C" int main(int, char **); //use the standard main method to start the application
 static void * startMainMethod(void * /*data*/)
