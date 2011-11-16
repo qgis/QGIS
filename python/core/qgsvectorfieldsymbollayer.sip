@@ -1,8 +1,8 @@
 class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayerV2
 {
-  %TypeHeaderCode
-  #include <qgsvectorfieldsymbollayer.h>
-  %End
+%TypeHeaderCode
+#include <qgsvectorfieldsymbollayer.h>
+%End
   public:
     enum VectorFieldType
     {
