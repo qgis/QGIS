@@ -25,7 +25,6 @@ my $packagename;
 my $releasename;
 my $shortname;
 my $version;
-my $revision;
 my $help;
 
 my $result = GetOptions(
@@ -33,7 +32,6 @@ my $result = GetOptions(
 		"keep" => \$keep,
 		"releasename=s" => \$releasename,
 		"version=s" => \$version,
-		"revision=s" => \$revision,
 		"packagename=s" => \$packagename,
 		"shortname=s" => \$shortname,
 		"help" => \$help
@@ -234,22 +232,16 @@ while(<F>) {
 }
 close F;
 
-$version = "$major.$minor.$patch" unless defined $version;
+$version  = "$major.$minor.$patch" unless defined $version;
 
-unless( defined $revision ) {
-	open F, "svnversion|";
-	$revision = <F>;
-	$revision =~ s/\D+$//g;
-	close F;
-}
-
-$revision = 14615 unless $revision =~ /^\d+$/;
+my $revision = $major * 0x10000 + $minor * 0x100 + $patch;
 
 system "unzip packages/Untgz.zip" unless -d "untgz";
 
 chdir "..";
 
 $packagename = "Quantum GIS" unless defined $packagename;
+my $sha = `git log -n1 --pretty=format:%h`;
 $shortname = "qgis" unless defined $shortname;
 
 my $cmd = "makensis";
@@ -258,7 +250,7 @@ $cmd .= " -DVERSION_NUMBER='$version'";
 $cmd .= " -DVERSION_NAME='$releasename'";
 $cmd .= " -DSVN_REVISION='$revision'";
 $cmd .= " -DQGIS_BASE='$packagename $releasename'";
-$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$version-$revision-Setup.exe'";
+$cmd .= " -DINSTALLER_NAME='QGIS-OSGeo4W-$version-$sha-Setup.exe'";
 $cmd .= " -DDISPLAYED_NAME='$packagename \'$releasename\' ($version)'";
 $cmd .= " -DBINARY_REVISION=1";
 $cmd .= " -DSHORTNAME='$shortname'";

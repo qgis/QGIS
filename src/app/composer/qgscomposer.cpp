@@ -518,7 +518,9 @@ class QgsPaintEngineHack : public QPaintEngine
                   // | QPaintEngine::PerspectiveTransform
                   | QPaintEngine::BlendModes
                   // | QPaintEngine::ObjectBoundingModeGradients
+#if QT_VERSION >= 0x040500
                   | QPaintEngine::RasterOpModes
+#endif
                   | QPaintEngine::PaintOutsidePaintEvent
                 );
     }
