@@ -5,12 +5,14 @@
 
 class QgsSLLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
   public:
-    QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType )
-        : QgsLayerItem( parent, name, path, uri, layerType, "spatialite" )
-    {
-      mPopulated = true; // no children are expected
-    }
+    QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
+
+    QList<QAction*> actions();
+
+  public slots:
+    void deleteLayer();
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem

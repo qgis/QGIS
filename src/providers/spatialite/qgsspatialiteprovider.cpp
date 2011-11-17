@@ -4988,3 +4988,56 @@ QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
 
   return init_res;
 }
+
+// -------------
+
+QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QString& errCause )
+{
+  QgsDebugMsg( "deleting layer " + tableName );
+
+  spatialite_init( 0 );
+  QgsSpatiaLiteProvider::SqliteHandles* hndl = QgsSpatiaLiteProvider::SqliteHandles::openDb( dbPath );
+  if ( !hndl )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+  sqlite3* sqlite_handle = hndl->handle();
+
+  // drop the table
+
+  QString sql = QString( "DROP TABLE " ) + QgsSpatiaLiteProvider::quotedIdentifier( tableName );
+  QgsDebugMsg( sql );
+  char *errMsg = NULL;
+  int ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to delete table %1:\n" ).arg( tableName );
+    errCause += QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+    QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+    return false;
+  }
+
+  // remove table from geometry columns
+  sql = QString( "DELETE FROM geometry_columns WHERE f_table_name = %1" )
+        .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) );
+  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, NULL );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( "sqlite error: " + QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) );
+  }
+
+  // TODO: remove spatial indexes?
+
+  // run VACUUM to free unused space and compact the database
+  ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
+  }
+
+  QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+
+  return true;
+}
