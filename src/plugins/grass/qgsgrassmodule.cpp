@@ -2648,13 +2648,13 @@ QStringList QgsGrassModuleInput::options()
     }
   }
 
-  if ( !mGeometryTypeOption.isNull() && current < mGeometryTypes.size() )
+  if ( !mGeometryTypeOption.isEmpty() && current < mGeometryTypes.size() )
   {
     opt = mGeometryTypeOption + "=" + mGeometryTypes[current] ;
     list.push_back( opt );
   }
 
-  if ( !mVectorLayerOption.isNull() && current < mVectorLayerNames.size() )
+  if ( !mVectorLayerOption.isEmpty() && current < mVectorLayerNames.size() )
   {
     opt = mVectorLayerOption + "=" + mVectorLayerNames[current] ;
     list.push_back( opt );
