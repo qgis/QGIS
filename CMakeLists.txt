@@ -195,6 +195,8 @@ ENDIF ()
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
+  # Define "make check" as alias for "make test" - thanks geos :-)
+  add_custom_target(check COMMAND ctest)
 ENDIF (ENABLE_TESTS)
 
 
