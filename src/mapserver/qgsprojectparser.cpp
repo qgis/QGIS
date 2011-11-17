@@ -405,6 +405,40 @@ QList<QgsMapLayer*> QgsProjectParser::mapLayerFromStyle( const QString& lName, c
     }
   }
 
+  //Still not found. Probably it is a layer or a subgroup in an embedded group
+  //go through all groups
+  //check if they are embedded
+  //if yes, request leaf layers and groups from project parser
+  QList<QDomElement>::const_iterator legendIt = mLegendGroupElements.constBegin();
+  for ( ; legendIt != mLegendGroupElements.constEnd(); ++legendIt )
+  {
+    if ( legendIt->attribute( "embedded" ) == "1" )
+    {
+      QString project = convertToAbsolutePath( legendIt->attribute( "project" ) );
+      QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
+      if ( p )
+      {
+        const QHash< QString, QDomElement >& pLayerByName = p->mProjectLayerElementsByName;
+        QHash< QString, QDomElement >::const_iterator pLayerNameIt = pLayerByName.find( lName );
+        if ( pLayerNameIt != pLayerByName.constEnd() )
+        {
+          layerList.push_back( p->createLayerFromElement( pLayerNameIt.value(), useCache ) );
+          break;
+        }
+
+        QList<QDomElement>::const_iterator pLegendGroupIt = p->mLegendGroupElements.constBegin();
+        for ( ; pLegendGroupIt != p->mLegendGroupElements.constEnd(); ++pLegendGroupIt )
+        {
+          if ( pLegendGroupIt->attribute( "name" ) == lName )
+          {
+            p->addLayersFromGroup( *pLegendGroupIt, layerList, useCache );
+            break;
+          }
+        }
+      }
+    }
+  }
+
   return layerList;
 }
 
@@ -416,7 +450,7 @@ void QgsProjectParser::addLayersFromGroup( const QDomElement& legendGroupElem, Q
     //get group elements from project parser, find the group
     //iterate over layers and add them (embedding in embedded groups does not work)
     QString groupName = legendGroupElem.attribute( "name" );
-    QString project = legendGroupElem.attribute( "project" );
+    QString project = convertToAbsolutePath( legendGroupElem.attribute( "project" ) );
     QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
     if ( !p )
     {
