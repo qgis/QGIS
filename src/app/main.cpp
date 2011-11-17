@@ -478,7 +478,7 @@ int main( int argc, char *argv[] )
 
   // Set the application style.  If it's not set QT will use the platform style except on Windows
   // as it looks really ugly so we use QPlastiqueStyle.
-  QString style = mySettings.value("/qgis/style","").toString();
+  QString style = mySettings.value("/qgis/style").toString();
   if ( !style.isNull() )
       QApplication::setStyle( style );
 #ifdef Q_WS_WIN
