@@ -31,7 +31,6 @@ QT4_WRAP_CPP(WFS_MOC_SRCS ${WFS_MOC_HDRS})
 
 INCLUDE_DIRECTORIES (
   ../../core
-  ../../core/spatialindex
   ../../gui
   ${CMAKE_CURRENT_BINARY_DIR}/../../ui
   ${GEOS_INCLUDE_DIR}

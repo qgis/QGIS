@@ -200,14 +200,14 @@ void TestQgsGeometry::cleanupTestCase()
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "geometrytest.html";
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl( "file://" + myReportFile );
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
 }

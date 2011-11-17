@@ -1,10 +1,10 @@
 Quantum GIS (QGIS)
 Building QGIS from source - step by step
-Sunday August 07, 2011
+Sunday November 06, 2011
 
 
-Last Updated: Sunday August 07, 2011
-Last Change : Tuesday June 28, 2011
+Last Updated: Sunday November 06, 2011
+Last Change : Sunday November 06, 2011
 
 
   1. Introduction
@@ -81,9 +81,9 @@ Following a summary of the required dependencies for building:
 
 Required build tools:
 
-- CMake >= 2.6.0
+- CMake >= 2.6.2
 - Flex
-- Bison
+- Bison >= 2.4
 
 Required build deps:
 
@@ -321,10 +321,10 @@ Install them using dpkg.  E.g.:
   3.9. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support
   =======================================================================================================
 
-The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If you want 
-to use different versions of the software (gdal, grass, qgis), just make the 
-necessary adjustments to the following code. This guide assumes that you don't have 
-installed any previous version of gdal, grass and qgis.
+The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If
+you want to use different versions of the software (gdal, grass, qgis), just
+make the necessary adjustments to the following code. This guide assumes that
+you don't have installed any previous version of gdal, grass and qgis.
 
 
     3.9.1. Step 1: install base packages
@@ -344,7 +344,7 @@ Go to the ERDAS web site http://www.erdas.com/ and follow the links
 then download the "'Image Compression SDK Source Code 3.3'" (you'll need to make a registration 
 and accept a license).
 
-Uncompress the arquive in a proper location (this guide assumes 
+Uncompress the archive in a proper location (this guide assumes 
 that all the downloaded source code will be placed in the user home) 
 and the enter the newly created folder
 
@@ -439,23 +439,32 @@ leave the folder
 Before downloading and compile GRASS source code you need to install a few
 other libraries and programs. We can do this through apt
 
-  sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
-  tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
-  libgdal1-dev proj libjpeg62-dev libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake \
-  python-dev python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev libxmu6 \
-  libqt4-dev libgsl0-dev python-qt4 swig python-wxversion python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev \
-  tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
+  sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev \
+  debhelper dpatch libtiff4-dev tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev \
+  libfreetype6-dev autoconf2.13 autotools-dev libgdal1-dev proj libjpeg62-dev \
+  libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake python-dev \
+  python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev \
+  libxmu6 \ libqt4-dev libgsl0-dev python-qt4 swig python-wxversion \
+  python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev tk8.4-dev tk8.4 \
+  libfftw3-dev libfftw3-3
 
 At this point we can get the GRASS source code: you may want to download it
-through svn or maybe you want just to download the latest available source code arquive.
-For example the GRASS 6.4rc4 is available at http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
+through svn or maybe you want just to download the latest available source code
+archive.  For example the GRASS 6.4rc4 is available at
+http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz
 
-Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
+Uncompress the archive, enter the newly created folder and run configure with a few specific parameters
 
-  CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
+  CFLAGS="-fexceptions" ./configure \
+  --with-tcltk-includes=/usr/include/tcl8.4 \
+  --with-proj-share=/usr/share/proj \
+  --with-gdal=/usr/local/bin/gdal-config \
   --with-python=/usr/bin/python2.5-config
 
-The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also http://trac.osgeo.org/grass/ticket/869
+The additional gcc option -fexceptions is necessary to enable exceptions
+support in GRASS libraries. It is currently the only way to avoid QGIS crashes
+if a fatal error happens in GRASS library. See also
+http://trac.osgeo.org/grass/ticket/869
 
 Then as usual (it will take a while)
 
@@ -475,31 +484,21 @@ may want to give it a try
   grass64 -wxpython
 
 
-    3.9.6. Step 6: compile and install QGIS
+    3.9.6. Step 6: Compile and install QGIS
     =======================================
 
-As for GRASS you can obtain the QGIS source code from different sources,
-for instance from svn or just by downloading one of the source code arquives available
-at http://www.qgis.org/download/sources.html
+As for GRASS you can obtain the QGIS source code from different sources as described 
+in section 2 above. Once you have the sources, create a build directory in them:
 
-For example download the QGIS 1.1.0 source code here http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz
-
-uncompress the arquive and enter the newly created folder
-
-  cd /qgis_1.1.0
+  cd Quantum-GIS
+  mkdir build
+  cd build
 
 then run ccmake
 
-  ccmake .
+  ccmake ..
 
-press the "c" key, then when the option list will appear we need to manually
-configure the "GRASS_PREFIX" parameter. Scroll down until the "GRASS_PREFIX" will appear, 
-press enter and manually set it to
-
-  /usr/local/grass-6.4.0RC4
-
-then press enter again.
-
+Press the "c" key to do an initial configure.
 Press the "c" again and the option "Press [g] to generate and exit" will appear.
 Press the "g" key to generate and exit.
 
@@ -621,13 +620,9 @@ installed in the default locations):
   @cmd
 
 Start the batch file and on the command prompt checkout the QGIS source from
-svn to the source directory qgis-trunk:
+git to the source directory Quantum-GIS:
 
-  svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
-
-or using git-svn (from the git shell):
-
-  git svn clone --username $USER --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+  git clone git://github.com/qgis/Quantum-GIS.git
 
 Create a 'build' directory somewhere. This will be where all the build output
 will be generated.
@@ -1154,9 +1149,9 @@ In this approach I will try to avoid as much as possible building dependencies
 from source and rather use frameworks wherever possible.
 
 The base system here is Mac OS X 10.4 (Tiger), with a single architecture
-build.  Included are notes for building on Mac OS X 10.5 (Leopard) and 10.6
-(Snow Leopard).  Make sure to read each section completely before typing
-the first command you see.
+build.  Included are notes for building on Mac OS X 10.5 (Leopard), 10.6
+(Snow Leopard) and 10.7 (Lion).
+Make sure to read each section completely before typing the first command you see.
 
 General note on Terminal usage:  When I say "cd" to a folder in a Terminal,
 it means type "cd " (without the quotes, make sure to type a space after) and
@@ -1187,10 +1182,12 @@ You need a minimum of Qt-4.4.0. I suggest getting the latest.  There is no need
 for the full Qt SDK, so save yourself some download time and get the frameworks
 only.
 
-Snow Leopard note: If you are building on Snow Leopard, you will need to
-decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
+Snow Leopard+ note: If you are building on Snow Leopard+, you will need to
+decide between 32-bit support in the older Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
-as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
+as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
+Qt 4.6+ is recommended for Cocoa.
+Starting with Lion, Carbon may not work properly, if at all.
 
 PPC note: The readymade Qt Cocoa installers don't include PPC support, you'd
 have to compile Qt yourself.  But, there appear to be issues with Qt Cocoa on
@@ -1258,8 +1255,8 @@ have problems and you are on your own with those.
     5.2.2. Additional Dependencies: Expat
     =====================================
 
-Snow Leopard note: Snow Leopard includes a usable expat, so this step is 
-not necessary on Snow Leopard.
+Snow Leopard+ note: Snow Leopard includes a usable expat, so this step is 
+not necessary on Snow Leopard or Lion.
 
 Get the expat sources:
 
@@ -1276,10 +1273,10 @@ source folder and:
     5.2.3. Additional Dependencies: Python
     ======================================
 
-Leopard and Snow Leopard note: Leopard and Snow Leopard include a usable
-Python 2.5 and 2.6, respectively. So there is no need to install Python on
-Leopard and Snow Leopard. You can still install Python from python.org if
-preferred.
+Leopard+ note: Starting with Leopard a usable Python is included
+in the system.  This Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lion. 
+So there is no need to install Python on Leopard and newer.
+You can still install Python from python.org if preferred.
 
 If installing from python.org, make sure you install at least the latest Python
 2.x from 
@@ -1314,12 +1311,13 @@ More configuration is needed to install outside the system path:
   python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
   -e /usr/local/include -v /usr/local/share/sip -s MacOSX10.5.sdk
 
-Snow Leopard system Python
+Snow Leopard+ system Python
 
 Similar to Leopard, you should install outside the system Python path.
 Also, you need to specify the architecture you want (requires at least SIP
 4.9), and make sure to run the versioned python binary (this one responds to
 the 'arch' command, 'python' does not).
+Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 
 If you are using 32-bit Qt (Qt Carbon):
 
@@ -1361,12 +1359,13 @@ More configuration is needed to install outside the system path:
 
   python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
 
-Snow Leopard system Python
+Snow Leopard+ system Python
 
 Similar to Leopard, you should install outside the system Python path.
 Also, you need to specify the architecture you want (requires at least PyQt 4.6),
 and make sure to run the versioned python binary (this one responds to the
 'arch' command, which is important for pyuic4, 'python' does not).
+Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 
 If you are using 32-bit Qt (Qt Carbon):
 
@@ -1435,7 +1434,7 @@ Carbon note below):
 
 Make sure to use the qwt install path from the Qwt build above.
 
-Snow Leopard note
+Snow Leopard+ note
 
 If using Qt Carbon, you need to specify which architectures to build, otherwise
 it will default to a combination that does not work (ie x86_64 for a Carbon Qt).
@@ -1449,18 +1448,15 @@ This is not needed for Qt Cocoa. Configure as follows:
     5.2.7. Additional Dependencies: Bison
     =====================================
 
-Leopard and Snow Leopard note: Leopard and Snow Leopard include Bison 2.3,
-so this step can be skipped on Leopard and Snow Leopard.
-
-The version of bison available by default on Mac OS X 10.4 is too old so you
-need to get a more recent one on your system. Download at least version 2.3 from:
+The version of bison available by default on Mac OS X is too old so you
+need to get a more recent one on your system. Download at least version 2.4 from:
 
   ftp.gnu.org/gnu/bison/
 
-Now build and install it to a prefix of /usr/local.Ê Double-click the source
+Now build and install it to a prefix of /usr/local. Double-click the source
 tarball to unpack it, then cd to the source folder and:
 
-  ./configure --prefix=/usr/local 
+  ./configure --disable-dependency-tracking CFLAGS=-Os
   make
   sudo make install 
 
@@ -1474,8 +1470,9 @@ http://www.cmake.org/cmake/resources/software.html
 
 Binary installers are available for OS X, but they are not recommended
 (2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
-strange application). Instead, download the source, double-click the source
-tarball, then cd to the source folder and:
+strange application). Instead, download the source.
+NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
+Double-click the source tarball, then cd to the source folder and:
 
   ./bootstrap --docdir=/share/doc/CMake --mandir=/share/man
   make
@@ -1508,16 +1505,17 @@ CMake supports out of source build so we will create a 'build' dir for the
 build process. OS X uses ${HOME}/Applications as a standard user app folder (it
 gives it the system app folder icon).  If you have the correct permissions you
 may want to build straight into your /Applications folder. The instructions
-below assume you are building into a pre-existing ${HOME}/Applications directory.
+below assume you are building into a ${HOME}/Applications directory.
 In a Terminal cd to the qgis source folder previously downloaded, then:
 
   mkdir build
   cd build
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
   -D CMAKE_BUILD_TYPE=MinSizeRel \
-  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
+  -D WITH_INTERNAL_SPATIALITE=FALSE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+  -D BISON_EXECUTABLE=/usr/local/bin/bison \
   ..
 
 This will automatically find and use the previously installed frameworks, and
@@ -1529,10 +1527,11 @@ path and version as required):
 
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
   -D CMAKE_BUILD_TYPE=MinSizeRel \
-  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
+  -D WITH_INTERNAL_SPATIALITE=FALSE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
   -D GRASS_PREFIX=/user/local/grass-6.4.1 \
+  -D BISON_EXECUTABLE=/usr/local/bin/bison \
   ..
 
 Snow Leopard note: To handle 32-bit Qt (Carbon), create a 32bit python wrapper
@@ -1547,11 +1546,22 @@ script and add arch flags to the configuration:
   
   cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
   -D CMAKE_BUILD_TYPE=MinSizeRel \
-  -D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
+  -D WITH_INTERNAL_SPATIALITE=FALSE \
   -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
   -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+  -D BISON_EXECUTABLE=/usr/local/bin/bison \
   -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
   ..
+
+The Qgis Mapserver feature requires fastcgi support.  This is included in
+Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
+component on Leopard and Snow, add the followling line before the last line in
+the above configuration:
+
+  -D WITH_MAPSERVER=TRUE \
+
+On Lion you are on your own to figure out how to install libfcgi and add fcgi
+support to the system Apache.  Not recommended for the average user.
 
 Bundling note: Older Qt versions may have problems with some Qt plugins and
 Qgis.  The way to handle this is to bundle Qt inside the Qgis application.  You

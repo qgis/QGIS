@@ -25,8 +25,10 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 {
   setupUi( this );
 
-  mValueListWidget->hide();
-  mValueListLabel->hide();
+  mValueGroupBox->hide();
+  // The open and save button are for future.
+  btnOpen->hide();
+  btnSave->hide();
 
   mModel = new QStandardItemModel( );
   mProxyModel = new QgsExpressionItemSearchProxy();
@@ -112,8 +114,7 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked( const QModelIndex &i
   else
   {
     // Show the help for the current item.
-    mValueListWidget->hide();
-    mValueListLabel->hide();
+    mValueGroupBox->hide();
     mValueListWidget->clear();
     txtHelpText->setText( item->getHelpText() );
     txtHelpText->setToolTip( txtHelpText->text() );
@@ -230,13 +231,24 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   // Maybe just calling exp.evaluate()?
   if ( mLayer )
   {
-    // TODO We should really cache the feature.
-    QgsFeature feature;
-    mLayer->featureAtId( 0 , feature );
-    QVariant value = exp.evaluate( &feature, mLayer->pendingFields() );
+    if ( !mFeature.isValid() )
+    {
+        mLayer->select( mLayer->pendingAllAttributesList() );
+        mLayer->nextFeature( mFeature );
+    }
 
-    if ( !exp.hasEvalError() )
-      lblPreview->setText( value.toString() );
+    if ( mFeature.isValid() )
+    {
+        QVariant value = exp.evaluate( &mFeature, mLayer->pendingFields() );
+        if ( !exp.hasEvalError() )
+          lblPreview->setText( value.toString() );
+    }
+    else
+    {
+        // The feautre is invaild because we don't have one but that doesn't mean user can't
+        // build a expression string.  They just get no preview.
+        lblPreview->setText("");
+    }
   }
 
   if ( exp.hasParserError() || exp.hasEvalError() )
@@ -316,8 +328,7 @@ void QgsExpressionBuilderWidget::loadSampleValues()
   if ( !mLayer )
     return;
 
-  mValueListWidget->show();
-  mValueListLabel->show();
+  mValueGroupBox->show();
   int fieldIndex = mLayer->fieldNameIndex( item->text() );
   fillFieldValues( fieldIndex, 10 );
 }
@@ -331,8 +342,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
   if ( !mLayer )
     return;
 
-  mValueListWidget->show();
-  mValueListLabel->show();
+  mValueGroupBox->show();
   int fieldIndex = mLayer->fieldNameIndex( item->text() );
   fillFieldValues( fieldIndex, -1 );
 }

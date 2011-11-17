@@ -126,10 +126,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
     chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
     chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation )
-      radOrientationMap->setChecked( true );
-    else
-      radOrientationLine->setChecked( true );
+    if ( ! ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+      chkLineOrientationDependent->setChecked( true );
   }
 
   cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
@@ -138,7 +136,6 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   chkNoObstacle->setChecked( !lyr.obstacle );
   chkLabelPerFeaturePart->setChecked( lyr.labelPerPart );
   chkMergeLines->setChecked( lyr.mergeLines );
-  chkMultiLine->setChecked( lyr.multiLineLabels );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
 
@@ -191,6 +188,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkScaleBasedVisibility, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkFormattedNumbers, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
 
   // setup connection to changes in the placement
   QRadioButton* placementRadios[] =
@@ -259,7 +258,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     if ( chkLineOn->isChecked() )
       lyr.placementFlags |= QgsPalLayerSettings::OnLine;
 
-    if ( radOrientationMap->isChecked() )
+    if ( ! chkLineOrientationDependent->isChecked() )
       lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked() )
@@ -282,7 +281,6 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   lyr.obstacle = !chkNoObstacle->isChecked();
   lyr.labelPerPart = chkLabelPerFeaturePart->isChecked();
   lyr.mergeLines = chkMergeLines->isChecked();
-  lyr.multiLineLabels = chkMultiLine->isChecked();
   if ( chkScaleBasedVisibility->isChecked() )
   {
     lyr.scaleMin = spinScaleMin->value();
@@ -494,7 +492,6 @@ void QgsLabelingGui::showEngineConfigDialog()
 
 void QgsLabelingGui::showExpressionDialog()
 {
-  //TODO extract this out to a dialog.
   QgsExpressionBuilderDialog dlg( mLayer, cboFieldName->currentText() , this );
   dlg.setWindowTitle( tr( "Expression based label" ) );
   if ( dlg.exec() == QDialog::Accepted )
@@ -521,6 +518,9 @@ void QgsLabelingGui::updateUi()
   spinScaleMax->setEnabled( scale );
 
   spinDecimals->setEnabled( chkFormattedNumbers->isChecked() );
+
+  bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
+  offlineOptions->setEnabled ( offline );
 }
 
 void QgsLabelingGui::changeBufferColor()

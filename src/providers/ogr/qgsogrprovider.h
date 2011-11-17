@@ -296,7 +296,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     static bool convertField( QgsField &field, const QTextCodec &encoding );
 
   private:
-    bool crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt );
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QgsFieldMap mAttributeFields;
     OGRDataSourceH ogrDataSource;
@@ -334,6 +333,13 @@ class QgsOgrProvider : public QgsVectorDataProvider
     bool mUseIntersect;
     int geomType;
     long featuresCounted;
+
+    /** Flag whether OGR will return fields required by nextFeature() calls.
+        The relevant fields are first set in select(), however the setting may be
+        interferred by some other calls. This flag ensures they are set again
+        to correct values.
+     */
+    bool mRelevantFieldsForNextFeature;
 
     //! Selection rectangle
     OGRGeometryH mSelectionRectangle;

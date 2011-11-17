@@ -462,7 +462,7 @@ QStringList QgsPythonUtilsImpl::pluginList()
 
   QString output;
   evalString( "'\\n'.join(qgis.utils.available_plugins)", output );
-  return output.split( QChar( '\n' ) );
+  return output.split( QChar( '\n' ), QString::SkipEmptyParts );
 }
 
 QString QgsPythonUtilsImpl::getPluginMetadata( QString pluginName, QString function )
@@ -513,5 +513,5 @@ QStringList QgsPythonUtilsImpl::listActivePlugins()
 {
   QString output;
   evalString( "'\\n'.join(qgis.utils.active_plugins)", output );
-  return output.split( QChar( '\n' ) );
+  return output.split( QChar( '\n' ), QString::SkipEmptyParts );
 }

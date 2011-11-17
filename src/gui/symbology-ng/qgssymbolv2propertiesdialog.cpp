@@ -13,6 +13,7 @@
 
 #include "qgssymbollayerv2widget.h"
 #include "qgsellipsesymbollayerv2widget.h"
+#include "qgsvectorfieldsymbollayerwidget.h"
 #include "qgssymbolv2.h" //for the unit
 
 
@@ -92,6 +93,7 @@ static void _initWidgetFunctions()
   _initWidgetFunction( "SvgMarker", QgsSvgMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "FontMarker", QgsFontMarkerSymbolLayerV2Widget::create );
   _initWidgetFunction( "EllipseMarker", QgsEllipseSymbolLayerV2Widget::create );
+  _initWidgetFunction( "VectorField", QgsVectorFieldSymbolLayerWidget::create );
 
   _initWidgetFunction( "SimpleFill", QgsSimpleFillSymbolLayerV2Widget::create );
   _initWidgetFunction( "SVGFill", QgsSVGFillSymbolLayerWidget::create );

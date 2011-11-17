@@ -180,6 +180,12 @@ class GdalTools:
       QObject.connect( self.nearBlack, SIGNAL( "triggered()" ), self.doNearBlack )
       self.analysisMenu.addAction( self.nearBlack )
 
+    if self.GdalVersion >= "1.7":
+      self.fillNodata = QAction( QIcon(":/icons/fillnodata.png"), QCoreApplication.translate( "GdalTools", "Fill nodata" ), self.iface.mainWindow() )
+      self.fillNodata.setStatusTip( QCoreApplication.translate( "GdalTools", "Fill raster regions by interpolation from edges") )
+      QObject.connect( self.fillNodata, SIGNAL( "triggered()" ), self.doFillNodata )
+      self.analysisMenu.addAction( self.fillNodata )
+
     if self.GdalVersion >= "1.6":
       self.proximity = QAction( QIcon(":/icons/proximity.png"),  QCoreApplication.translate( "GdalTools", "Proximity (Raster distance)" ), self.iface.mainWindow() )
       self.proximity.setStatusTip( QCoreApplication.translate( "GdalTools", "Produces a raster proximity map") )
@@ -293,6 +299,11 @@ class GdalTools:
   def doNearBlack( self ):
     from tools.doNearBlack import GdalToolsDialog as NearBlack
     d = NearBlack( self.iface )
+    self.runToolDialog( d )
+
+  def doFillNodata( self ):
+    from tools.doFillNodata import GdalToolsDialog as FillNodata
+    d = FillNodata( self.iface )
     self.runToolDialog( d )
 
   def doWarp( self ):

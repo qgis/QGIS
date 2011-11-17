@@ -28,7 +28,7 @@
 class QgsVectorLayer;
 
 /**A renderer that automatically displaces points with the same position*/
-class QgsPointDisplacementRenderer: public QgsFeatureRendererV2
+class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
 {
   public:
     QgsPointDisplacementRenderer( const QString& labelAttributeName = "" );

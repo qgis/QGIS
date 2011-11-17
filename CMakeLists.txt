@@ -1,8 +1,8 @@
 SET(CPACK_PACKAGE_VERSION_MAJOR "1")
-SET(CPACK_PACKAGE_VERSION_MINOR "8")
-SET(CPACK_PACKAGE_VERSION_PATCH "0")
+SET(CPACK_PACKAGE_VERSION_MINOR "9")
+SET(CPACK_PACKAGE_VERSION_PATCH "90")
 SET(COMPLETE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
-SET(RELEASE_NAME "Trunk")
+SET(RELEASE_NAME "Alpha")
 SET(PROJECT_VERSION ${COMPLETE_VERSION})
 PROJECT(qgis${PROJECT_VERSION})
 IF (APPLE)
@@ -88,7 +88,7 @@ ENDIF (WITH_GLOBE)
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
 # whether unit tests should be build
-SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
+SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
@@ -500,6 +500,8 @@ IF (ENABLE_TESTS)
   #the test data. See CMakeLists in test dirs for more info
   SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
   ADD_SUBDIRECTORY(tests)
+  SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
+  MESSAGE (STATUS "Ctest Binary Directory  set to: ${CTEST_BINARY_DIRECTORY}")
 ENDIF (ENABLE_TESTS)
 
 IF (APPLE)

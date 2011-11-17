@@ -490,7 +490,16 @@ class QgsSymbolLayerV2
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolLayerV2; break;
+    case QgsSymbolV2::Marker:
+      if( sipCpp->layerType() == "VectorField" )
+      {
+        sipClass = sipClass_QgsVectorFieldSymbolLayer;
+      }
+      else
+      {
+        sipClass = sipClass_QgsMarkerSymbolLayerV2;
+      }
+      break;
     case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolLayerV2; break;
     case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolLayerV2; break;
     default: sipClass = 0; break;
@@ -630,6 +639,9 @@ class QgsSymbolV2RenderContext
     void setFeature( const QgsFeature* f );
     const QgsFeature* feature() const;
 
+    void setLayer( const QgsVectorLayer* layer );
+    const QgsVectorLayer* layer() const;
+
     // Color used for selections
     static QColor selectionColor();
 
@@ -708,8 +720,7 @@ public:
   //! delete layer at specified index and set a new one
   bool changeSymbolLayer(int index, QgsSymbolLayerV2* layer /Transfer/);
 
-
-  void startRender(QgsRenderContext& context);
+  void startRender( QgsRenderContext& context, const QgsVectorLayer* layer = 0 );
   void stopRender(QgsRenderContext& context);
 
   void setColor(const QColor& color);

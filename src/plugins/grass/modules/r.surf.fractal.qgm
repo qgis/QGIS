@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Create fractal surface of given fractal dimension" module="r.surf.fractal">
+	<option key="d" version_max="6.3" />
+	<option key="dimension" version_min="6.4" />
+	<option key="n" version_max="6.3" />
+	<option key="number" version_min="6.4" />
+	<option key="out" version_max="6.3" />
+	<option key="output" version_min="6.4" />
+</qgisgrassmodule>

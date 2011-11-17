@@ -27,7 +27,7 @@ class TestQgsApplication: public QObject
 {
     Q_OBJECT;
   private slots:
-    void checkTheme();
+    void checkPaths();
     void checkGdalSkip();
     void initTestCase();
   private:
@@ -41,20 +41,17 @@ void TestQgsApplication::initTestCase()
   // Runs once before any tests are run
   //
   // init QGIS's paths - true means that all path will be inited from prefix
-  QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  //QString qgisPath = QCoreApplication::applicationDirPath();
+  QgsApplication::init( INSTALL_PREFIX );
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
 };
 
-void TestQgsApplication::checkTheme()
+void TestQgsApplication::checkPaths()
 {
-  QString myIconPath = QgsApplication::defaultThemePath();
-  QPixmap myPixmap;
-  myPixmap.load( myIconPath + "mActionFileNew.png" );
-  qDebug( "Checking if a theme icon exists:" );
-  qDebug( "%s/mIconProjectionDisabled.png", myIconPath.toLocal8Bit().constData() );
-  QVERIFY( !myPixmap.isNull() );
-
+  QString myPath = QgsApplication::authorsFilePath();
+  qDebug( "Checking authors file exists:" );
+  qDebug( "%s", myPath.toLocal8Bit().constData() );
+  QVERIFY( !myPath.isEmpty() );
 };
 
 void TestQgsApplication::checkGdalSkip()

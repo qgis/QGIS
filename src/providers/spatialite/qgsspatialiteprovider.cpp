@@ -28,6 +28,9 @@ email                : a.furieri@lqt.it
 
 #include "qgslogger.h"
 
+#include <QFileInfo>
+#include <QDir>
+
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
@@ -4894,4 +4897,92 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
            oldToNewAttrIdxMap, errorMessage, options
          );
+}
+
+// -------------
+
+static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause )
+{
+  // attempting to perform self-initialization for a newly created DB
+  int ret;
+  char sql[1024];
+  char *errMsg = NULL;
+  int count = 0;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+
+  if ( sqlite_handle == NULL )
+    return false;
+  // checking if this DB is really empty
+  strcpy( sql, "SELECT Count(*) from sqlite_master" );
+  ret = sqlite3_get_table( sqlite_handle, sql, &results, &rows, &columns, NULL );
+  if ( ret != SQLITE_OK )
+    return false;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    for ( i = 1; i <= rows; i++ )
+      count = atoi( results[( i * columns ) + 0] );
+  }
+  sqlite3_free_table( results );
+
+  if ( count > 0 )
+    return false;
+
+  // all right, it's empty: proceding to initialize
+  strcpy( sql, "SELECT InitSpatialMetadata()" );
+  ret = sqlite3_exec( sqlite_handle, sql, NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to initialize SpatialMetadata:\n" );
+    errCause += QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+    return false;
+  }
+  spatial_ref_sys_init( sqlite_handle, 0 );
+  return true;
+}
+
+QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
+{
+  QgsDebugMsg( "creating a new db" );
+
+  QFileInfo fullPath = QFileInfo( dbPath );
+  QDir path = fullPath.dir();
+  QgsDebugMsg( QString( "making this dir: %1" ).arg( path.absolutePath() ) );
+
+  // Must be sure there is destination directory ~/.qgis
+  QDir().mkpath( path.absolutePath( ) );
+
+  // creating/opening the new database
+  spatialite_init( 0 );
+  sqlite3 *sqlite_handle;
+  int ret = sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL );
+  if ( ret )
+  {
+    // an error occurred
+    errCause = QObject::tr( "Could not create a new database\n" );
+    errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
+    sqlite3_close( sqlite_handle );
+    return false;
+  }
+  // activating Foreign Key constraints
+  char *errMsg = NULL;
+  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints" );
+    sqlite3_free( errMsg );
+    sqlite3_close( sqlite_handle );
+    return false;
+  }
+  bool init_res = ::initializeSpatialMetadata( sqlite_handle, errCause );
+
+  // all done: closing the DB connection
+  sqlite3_close( sqlite_handle );
+
+  return init_res;
 }

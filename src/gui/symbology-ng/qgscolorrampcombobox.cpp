@@ -38,7 +38,7 @@ void QgsColorRampComboBox::populate( QgsStyleV2* style )
   }
 
   addItem( tr( "New color ramp..." ) );
-  connect( this, SIGNAL( currentIndexChanged( int ) ), SLOT( colorRampChanged( int ) ) );
+  connect( this, SIGNAL( activated( int ) ), SLOT( colorRampChanged( int ) ) );
 }
 
 QgsVectorColorRampV2* QgsColorRampComboBox::currentColorRamp()

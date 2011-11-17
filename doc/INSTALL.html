@@ -7,29 +7,10 @@
 
 <!-- Included style.css -->
 <STYLE TYPE="text/css">
-body {
-  padding: 2em 1em 2em 70px;
-  margin: 0;
-  font-family: sans-serif;
+body{  background: white;
   color: black;
-  background: white;
+  font-family: arial,sans-serif;
 }
-:link { color: #00C; background: transparent }
-:visited { color: #609; background: transparent }
-a:active { color: #C00; background: transparent }
-
-a:link img, a:visited img { border-style: none } 
-
-
-h1, h2, h3, h4, h5, h6 { text-align: left }
-h1, h2, h3 { color: #005A9C; background: white }
-h1 { font: 170% sans-serif }
-h2 { font: 140% sans-serif }
-h3 { font: 120% sans-serif }
-h4 { font: bold 100% sans-serif }
-h5 { font: italic 100% sans-serif }
-h6 { font: small-caps 100% sans-serif }
-
 pre { margin-left: 2em;
       border: 1;
       padding: 4px;
@@ -37,6 +18,60 @@ pre { margin-left: 2em;
 pre, code { font-family: monospace } 
 
 
+.overview{ font: 1.82em; font-weight: bold;}
+
+h1{  background-color: #F6F6F6;
+  color: #8FB171; 
+  font-size: large;  
+  font-weight: bold;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+}
+h2{  background-color: #F6F6F6;
+  color: #8FB171; 
+  font-size: medium;  
+  font-weight: normal;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  background: none;
+  padding: 0.75em 0 0;
+  margin: 0;
+  line-height: 1.1em;
+}
+h3{  background-color: #F6F6F6;
+  color: #729FCF;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  font-weight: bold;
+  font-size: large;
+  text-align: right;
+  border-bottom: 5px solid #DCEB5C;
+}
+h4{  background-color: #F6F6F6;
+  color: #729FCF;
+  font-family: luxi serif, georgia, times new roman, times, serif;
+  font-weight: bold;
+  font-size: medium;
+  text-align: right;
+}
+h5{    background-color: #F6F6F6;
+   color: #729FCF;
+   font-family: luxi serif, georgia, times new roman, times, serif;
+   font-weight: bold;
+   font-size: small;
+   text-align: right;
+}
+a{  color: #729FCF;
+  font-family: arial,sans-serif;
+  font-size: small;
+}
+label{  background-color: #FFFFCC;
+  border: 1px solid black;
+  margin: 1px;
+  padding: 0px 3px; 
+  font-size: small;
+}
 </STYLE>
 
 </HEAD>
@@ -45,13 +80,13 @@ pre, code { font-family: monospace }
 <DIV CLASS="header" ID="header">
 <H1>Quantum GIS (QGIS)</H1>
 <H2>Building QGIS from source - step by step</H2>
-<H3>Sunday August 07, 2011</H3>
+<H3>Sunday November 06, 2011</H3>
 </DIV>
 
 <DIV CLASS="body" ID="body">
 <P>
-Last Updated: Sunday August 07, 2011
-Last Change : Tuesday June 28, 2011
+Last Updated: Sunday November 06, 2011
+Last Change : Sunday November 06, 2011
 </P>
 <DIV CLASS="toc">
 
@@ -150,9 +185,9 @@ Required build tools:
 </P>
 
 <UL>
-<LI>CMake &gt;= 2.6.0
+<LI>CMake &gt;= 2.6.2
 <LI>Flex
-<LI>Bison
+<LI>Bison &gt;= 2.4
 </UL>
 
 <P>
@@ -497,10 +532,10 @@ sudo debi
 <H2>3.9. A practical case: Building QGIS and GRASS from source on Ubuntu with ECW and MrSID formats support</H2>
 
 <P>
-The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If you want 
-to use different versions of the software (gdal, grass, qgis), just make the 
-necessary adjustments to the following code. This guide assumes that you don't have 
-installed any previous version of gdal, grass and qgis.
+The following procedure has been tested on Ubuntu 8.04, 8.10 and 9.04 32bit. If
+you want to use different versions of the software (gdal, grass, qgis), just
+make the necessary adjustments to the following code. This guide assumes that
+you don't have installed any previous version of gdal, grass and qgis.
 </P>
 
 <H3>3.9.1. Step 1: install base packages</H3>
@@ -523,7 +558,7 @@ then download the "'Image Compression SDK Source Code 3.3'" (you'll need to make
 and accept a license).
 </P>
 <P>
-Uncompress the arquive in a proper location (this guide assumes 
+Uncompress the archive in a proper location (this guide assumes 
 that all the downloaded source code will be placed in the user home) 
 and the enter the newly created folder
 </P>
@@ -679,30 +714,39 @@ other libraries and programs. We can do this through apt
 </P>
 
 <div class="code"><PRE>
-sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev debhelper dpatch libtiff4-dev \
-tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev libfreetype6-dev autoconf2.13 autotools-dev \
-libgdal1-dev proj libjpeg62-dev libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake \
-python-dev python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev libxmu6 \
-libqt4-dev libgsl0-dev python-qt4 swig python-wxversion python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev \
-tk8.4-dev tk8.4 libfftw3-dev libfftw3-3
+sudo apt-get install flex bison libreadline5-dev libncurses5-dev lesstif2-dev \
+debhelper dpatch libtiff4-dev tcl8.4-dev tk8.4-dev fftw-dev xlibmesa-gl-dev \
+libfreetype6-dev autoconf2.13 autotools-dev libgdal1-dev proj libjpeg62-dev \
+libpng12-dev libpq-dev unixodbc-dev doxygen fakeroot cmake python-dev \
+python-qt4-common python-qt4-dev python-sip4 python2.5-dev sip4 libglew1.5-dev \
+libxmu6 \ libqt4-dev libgsl0-dev python-qt4 swig python-wxversion \
+python-wxgtk2.8 libwxgtk2.8-0 libwxbase2.8-0 tcl8.4-dev tk8.4-dev tk8.4 \
+libfftw3-dev libfftw3-3
 </PRE></div>
 
 <P>
 At this point we can get the GRASS source code: you may want to download it
-through svn or maybe you want just to download the latest available source code arquive.
-For example the GRASS 6.4rc4 is available at <A HREF="http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz">http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz</A>
+through svn or maybe you want just to download the latest available source code
+archive.  For example the GRASS 6.4rc4 is available at
+<A HREF="http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz">http://grass.itc.it/grass64/source/grass-6.4.0RC4.tar.gz</A>
 </P>
 <P>
-Uncompress the arquive, enter the newly created folder and run configure with a few specific parameters
+Uncompress the archive, enter the newly created folder and run configure with a few specific parameters
 </P>
 
 <div class="code"><PRE>
-CFLAGS="-fexceptions" ./configure --with-tcltk-includes=/usr/include/tcl8.4 --with-proj-share=/usr/share/proj --with-gdal=/usr/local/bin/gdal-config \
+CFLAGS="-fexceptions" ./configure \
+--with-tcltk-includes=/usr/include/tcl8.4 \
+--with-proj-share=/usr/share/proj \
+--with-gdal=/usr/local/bin/gdal-config \
 --with-python=/usr/bin/python2.5-config
 </PRE></div>
 
 <P>
-The additional gcc option -fexceptions is necessary to enable exceptions support in GRASS libraries. It is currently the only way to avoid QGIS crashes if a fatal error happens in GRASS library. See also <A HREF="http://trac.osgeo.org/grass/ticket/869">http://trac.osgeo.org/grass/ticket/869</A>
+The additional gcc option -fexceptions is necessary to enable exceptions
+support in GRASS libraries. It is currently the only way to avoid QGIS crashes
+if a fatal error happens in GRASS library. See also
+<A HREF="http://trac.osgeo.org/grass/ticket/869">http://trac.osgeo.org/grass/ticket/869</A>
 </P>
 <P>
 Then as usual (it will take a while)
@@ -737,22 +781,17 @@ may want to give it a try
 grass64 -wxpython
 </PRE></div>
 
-<H3>3.9.6. Step 6: compile and install QGIS</H3>
+<H3>3.9.6. Step 6: Compile and install QGIS</H3>
 
 <P>
-As for GRASS you can obtain the QGIS source code from different sources,
-for instance from svn or just by downloading one of the source code arquives available
-at <A HREF="http://www.qgis.org/download/sources.html">http://www.qgis.org/download/sources.html</A>
-</P>
-<P>
-For example download the QGIS 1.1.0 source code here <A HREF="http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz">http://download.osgeo.org/qgis/src/qgis_1.1.0.tar.gz</A>
-</P>
-<P>
-uncompress the arquive and enter the newly created folder
+As for GRASS you can obtain the QGIS source code from different sources as described 
+in section 2 above. Once you have the sources, create a build directory in them:
 </P>
 
 <div class="code"><PRE>
-cd /qgis_1.1.0
+cd Quantum-GIS
+mkdir build
+cd build
 </PRE></div>
 
 <P>
@@ -760,23 +799,11 @@ then run ccmake
 </P>
 
 <div class="code"><PRE>
-ccmake .
+ccmake ..
 </PRE></div>
 
 <P>
-press the "c" key, then when the option list will appear we need to manually
-configure the "GRASS_PREFIX" parameter. Scroll down until the "GRASS_PREFIX" will appear, 
-press enter and manually set it to
-</P>
-
-<div class="code"><PRE>
-/usr/local/grass-6.4.0RC4
-</PRE></div>
-
-<P>
-then press enter again.
-</P>
-<P>
+Press the "c" key to do an initial configure.
 Press the "c" again and the option "Press [g] to generate and exit" will appear.
 Press the "g" key to generate and exit.
 </P>
@@ -952,19 +979,11 @@ call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
 
 <P>
 Start the batch file and on the command prompt checkout the QGIS source from
-svn to the source directory <CODE>qgis-trunk</CODE>:
+git to the source directory <CODE>Quantum-GIS</CODE>:
 </P>
 
 <div class="code"><PRE>
-svn co https://svn.osgeo.org/qgis/trunk/qgis qgis-trunk
-</PRE></div>
-
-<P>
-or using git-svn (from the git shell):
-</P>
-
-<div class="code"><PRE>
-git svn clone --username $USER --revision 15611:HEAD https://svn.osgeo.org/qgis/trunk/qgis
+git clone git://github.com/qgis/Quantum-GIS.git
 </PRE></div>
 
 <P>
@@ -1634,9 +1653,9 @@ from source and rather use frameworks wherever possible.
 </P>
 <P>
 The base system here is Mac OS X 10.4 (<U>Tiger</U>), with a single architecture
-build.  Included are notes for building on Mac OS X 10.5 (<U>Leopard</U>) and 10.6
-(<U>Snow Leopard</U>).  Make sure to read each section completely before typing
-the first command you see.
+build.  Included are notes for building on Mac OS X 10.5 (<U>Leopard</U>), 10.6
+(<U>Snow Leopard</U>) and 10.7 (<U>Lion</U>).
+Make sure to read each section completely before typing the first command you see.
 </P>
 <P>
 <U>General note on Terminal usage:</U>  When I say "cd" to a folder in a Terminal,
@@ -1677,10 +1696,12 @@ for the full Qt SDK, so save yourself some download time and get the frameworks
 only.
 </P>
 <P>
-<U>Snow Leopard note:</U> If you are building on Snow Leopard, you will need to
-decide between 32-bit support in the older, Qt Carbon branch, or 64-bit
+<U>Snow Leopard+ note:</U> If you are building on Snow Leopard+, you will need to
+decide between 32-bit support in the older Qt Carbon branch, or 64-bit
 support in the Qt Cocoa branch. Appropriate installers are available for both
-as of Qt-4.5.2.  Qt 4.6+ is recommended for Cocoa.
+as of Qt-4.5.2, though they stopped making Carbon packages at Qt 4.7.4.
+Qt 4.6+ is recommended for Cocoa.
+Starting with Lion, Carbon may not work properly, if at all.
 </P>
 <P>
 <U>PPC note:</U> The readymade Qt Cocoa installers don't include PPC support, you'd
@@ -1765,8 +1786,8 @@ have problems and you are on your own with those.
 <H3>5.2.2. Additional Dependencies: Expat</H3>
 
 <P>
-<U>Snow Leopard note:</U> Snow Leopard includes a usable expat, so this step is 
-not necessary on Snow Leopard.
+<U>Snow Leopard+ note:</U> Snow Leopard includes a usable expat, so this step is 
+not necessary on Snow Leopard or Lion.
 </P>
 <P>
 Get the expat sources:
@@ -1788,10 +1809,10 @@ sudo make install
 <H3>5.2.3. Additional Dependencies: Python</H3>
 
 <P>
-<U>Leopard and Snow Leopard note:</U> Leopard and Snow Leopard include a usable
-Python 2.5 and 2.6, respectively. So there is no need to install Python on
-Leopard and Snow Leopard. You can still install Python from python.org if
-preferred.
+<U>Leopard+ note:</U> Starting with Leopard a usable Python is included
+in the system.  This Python 2.5, 2.6 and 2.7, respectively for Leo, Snow and Lion. 
+So there is no need to install Python on Leopard and newer.
+You can still install Python from python.org if preferred.
 </P>
 <P>
 If installing from python.org, make sure you install at least the latest Python
@@ -1841,13 +1862,14 @@ python configure.py -n -d /Library/Python/2.5/site-packages -b /usr/local/bin \
 </PRE></div>
 
 <P>
-<U>Snow Leopard system Python</U>
+<U>Snow Leopard+ system Python</U>
 </P>
 <P>
 Similar to Leopard, you should install outside the system Python path.
 Also, you need to specify the architecture you want (requires at least SIP
 4.9), and make sure to run the versioned python binary (this one responds to
 the 'arch' command, 'python' does not).
+Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 </P>
 <P>
 If you are using 32-bit Qt (Qt Carbon):
@@ -1913,13 +1935,14 @@ python configure.py -d /Library/Python/2.5/site-packages -b /usr/local/bin
 </PRE></div>
 
 <P>
-<U>Snow Leopard system Python</U>
+<U>Snow Leopard+ system Python</U>
 </P>
 <P>
 Similar to Leopard, you should install outside the system Python path.
 Also, you need to specify the architecture you want (requires at least PyQt 4.6),
 and make sure to run the versioned python binary (this one responds to the
 'arch' command, which is important for pyuic4, 'python' does not).
+Substitute '2.7' for python version and 10.7 for SDK version below for Lion.
 </P>
 <P>
 If you are using 32-bit Qt (Qt Carbon):
@@ -2019,7 +2042,7 @@ sudo make install
 Make sure to use the qwt install path from the Qwt build above.
 </P>
 <P>
-<U>Snow Leopard note</U>
+<U>Snow Leopard+ note</U>
 </P>
 <P>
 If using Qt Carbon, you need to specify which architectures to build, otherwise
@@ -2036,12 +2059,8 @@ python configure.py --extra-cflags="-arch i386" --extra-cxxflags="-arch i386" \
 <H3>5.2.7. Additional Dependencies: Bison</H3>
 
 <P>
-<U>Leopard and Snow Leopard note:</U> Leopard and Snow Leopard include Bison 2.3,
-so this step can be skipped on Leopard and Snow Leopard.
-</P>
-<P>
-The version of bison available by default on Mac OS X 10.4 is too old so you
-need to get a more recent one on your system. Download at least version 2.3 from:
+The version of bison available by default on Mac OS X is too old so you
+need to get a more recent one on your system. Download at least version 2.4 from:
 </P>
 
 <div class="code"><PRE>
@@ -2049,12 +2068,12 @@ ftp.gnu.org/gnu/bison/
 </PRE></div>
 
 <P>
-Now build and install it to a prefix of /usr/local.Ê Double-click the source
+Now build and install it to a prefix of /usr/local. Double-click the source
 tarball to unpack it, then cd to the source folder and:
 </P>
 
 <div class="code"><PRE>
-./configure --prefix=/usr/local 
+./configure --disable-dependency-tracking CFLAGS=-Os
 make
 sudo make install 
 </PRE></div>
@@ -2071,8 +2090,9 @@ Get the latest source release from here:
 <P>
 Binary installers are available for OS X, but they are not recommended
 (2.4 versions install in /usr instead of /usr/local, and 2.6+ versions are a
-strange application). Instead, download the source, double-click the source
-tarball, then cd to the source folder and:
+strange application). Instead, download the source.
+NOTE: 2.8.5 is broken for detecting part of Qt.  Fixed in 2.8.6.
+Double-click the source tarball, then cd to the source folder and:
 </P>
 
 <div class="code"><PRE>
@@ -2113,7 +2133,7 @@ CMake supports out of source build so we will create a 'build' dir for the
 build process. OS X uses ${HOME}/Applications as a standard user app folder (it
 gives it the system app folder icon).  If you have the correct permissions you
 may want to build straight into your /Applications folder. The instructions
-below assume you are building into a pre-existing ${HOME}/Applications directory.
+below assume you are building into a ${HOME}/Applications directory.
 In a Terminal cd to the qgis source folder previously downloaded, then:
 </P>
 
@@ -2122,9 +2142,10 @@ mkdir build
 cd build
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications \
 -D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
+-D WITH_INTERNAL_SPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+-D BISON_EXECUTABLE=/usr/local/bin/bison \
 ..
 </PRE></div>
 
@@ -2141,10 +2162,11 @@ path and version as required):
 <div class="code"><PRE>
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D CMAKE_BUILD_TYPE=Release \
 -D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
+-D WITH_INTERNAL_SPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
 -D GRASS_PREFIX=/user/local/grass-6.4.1 \
+-D BISON_EXECUTABLE=/usr/local/bin/bison \
 ..
 </PRE></div>
 
@@ -2163,13 +2185,29 @@ sudo chmod +x /usr/local/bin/python32
 
 cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
 -D CMAKE_BUILD_TYPE=MinSizeRel \
--D WITH_INTERNAL_SPATIALITE=FALSE -D WITH_MAPSERVER=TRUE \
+-D WITH_INTERNAL_SPATIALITE=FALSE \
 -D QWT_LIBRARY=/usr/local/qwt-5.2.1-svn/lib/libqwt.dylib \
 -D QWT_INCLUDE_DIR=/usr/local/qwt-5.2.1-svn/include \
+-D BISON_EXECUTABLE=/usr/local/bin/bison \
 -D CMAKE_OSX_ARCHITECTURES=i386 -D PYTHON_EXECUTABLE=/usr/local/bin/python32 \
 ..
 </PRE></div>
 
+<P>
+The Qgis Mapserver feature requires fastcgi support.  This is included in
+Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
+component on Leopard and Snow, add the followling line before the last line in
+the above configuration:
+</P>
+
+<div class="code"><PRE>
+-D WITH_MAPSERVER=TRUE \
+</PRE></div>
+
+<P>
+On Lion you are on your own to figure out how to install libfcgi and add fcgi
+support to the system Apache.  Not recommended for the average user.
+</P>
 <P>
 <U>Bundling note:</U> Older Qt versions may have problems with some Qt plugins and
 Qgis.  The way to handle this is to bundle Qt inside the Qgis application.  You
@@ -2273,5 +2311,5 @@ The following people have contributed to this document:
 
 </DIV>
 <!-- html code generated by txt2tags 2.6 (http://txt2tags.org) -->
-<!-- cmdline: txt2tags -o INSTALL.html -t html INSTALL.t2t -->
+<!-- cmdline: txt2tags -t html -o INSTALL.html INSTALL.t2t -->
 </BODY></HTML>

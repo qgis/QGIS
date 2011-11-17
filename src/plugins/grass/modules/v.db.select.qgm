@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Display vector attributes" module="v.db.select">
+	<option key="map" layeroption="layer" />
+	<field key="column" layer="map" type="integer,double,varchar" version_max="6.3"/>
+	<field key="columns" layer="map" type="integer,double,varchar" version_min="6.4"/>
+	<option key="fs" answer="|" hidden="yes" />
+</qgisgrassmodule>

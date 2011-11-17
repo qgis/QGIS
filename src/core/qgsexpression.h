@@ -301,7 +301,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { return BuiltinFunctions[mFnIndex].mUsesGeometry; }
+        virtual bool needsGeometry() const { bool needs = BuiltinFunctions[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
       protected:
         //QString mName;
         int mFnIndex;

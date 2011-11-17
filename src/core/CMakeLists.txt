@@ -40,6 +40,7 @@ SET(QGIS_CORE_SRCS
   symbology-ng/qgssvgcache.cpp
   symbology-ng/qgsellipsesymbollayerv2.cpp
   symbology-ng/qgspointdisplacementrenderer.cpp
+  symbology-ng/qgsvectorfieldsymbollayer.cpp
 
   qgis.cpp
   qgsapplication.cpp
@@ -71,6 +72,7 @@ SET(QGIS_CORE_SRCS
   qgsmaprenderer.cpp
   qgsmaptopixel.cpp
   qgsmessageoutput.cpp
+  qgsmimedatautils.cpp
   qgscredentials.cpp
   qgsoverlayobject.cpp
   qgspalgeometry.cpp
@@ -172,8 +174,7 @@ SET(QGIS_CORE_SRCS
   symbology/qgssymbologyutils.cpp
 
   qgsspatialindex.cpp
-
-  )
+)
 
 IF(WIN32)
     SET(QGIS_CORE_SRCS
@@ -306,6 +307,7 @@ SET(QGIS_CORE_HDRS
   qgsmaprenderer.h
   qgsmaptopixel.h
   qgsmessageoutput.h
+  qgsmimedatautils.h
   qgscredentials.h
   qgsoverlayobjectpositionmanager.h
   qgspallabeling.h
@@ -404,10 +406,12 @@ INCLUDE_DIRECTORIES(
   ${GDAL_INCLUDE_DIR}
 )
 
+# put SPATIALINDEX include dir in front
+# (otherwise GEOS's spatialite.h might be found first)
 IF (NOT WITH_INTERNAL_SPATIALINDEX)
-  INCLUDE_DIRECTORIES(${SPATIALINDEX_INCLUDE_DIR})
+  INCLUDE_DIRECTORIES(BEFORE ${SPATIALINDEX_INCLUDE_DIR})
 ELSE (NOT WITH_INTERNAL_SPATIALINDEX)
-  INCLUDE_DIRECTORIES(spatialindex/include)
+  INCLUDE_DIRECTORIES(BEFORE spatialindex/include)
 ENDIF (NOT WITH_INTERNAL_SPATIALINDEX)
 
 IF (NOT WITH_INTERNAL_SPATIALITE)

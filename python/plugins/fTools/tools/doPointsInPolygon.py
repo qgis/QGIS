@@ -44,14 +44,18 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)
         self.setWindowTitle(self.tr("Count Points in Polygon"))
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-        # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Polygon])
+        self.inPolygon.clear()
         self.inPolygon.addItems(layers)
+
+        self.inPoint.clear()
         layers = ftools_utils.getLayerNames([QGis.Point])
         self.inPoint.addItems(layers)
-    
+
     def accept(self):
         self.buttonOk.setEnabled( False )
         if self.inPolygon.currentText() == "":
@@ -79,6 +83,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 self.vlayer = QgsVectorLayer(outPath, unicode(outName), "ogr")
                 QgsMapLayerRegistry.instance().addMapLayer(self.vlayer)
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 
@@ -112,7 +117,6 @@ class Dialog(QDialog, Ui_Dialog):
             if not QgsVectorFileWriter.deleteShapeFile(self.shapefileName):
                 return
         writer = QgsVectorFileWriter(self.shapefileName, self.encoding, fieldList, polyProvider.geometryType(), sRs)
-        #writer = QgsVectorFileWriter(outPath, "UTF-8", fieldList, polyProvider.geometryType(), sRs)
         inFeat = QgsFeature()
         inFeatB = QgsFeature()
         outFeat = QgsFeature()

@@ -48,9 +48,14 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
      */
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
+    /** Returns a list of mime that can describe model indexes */
     virtual QStringList mimeTypes() const;
 
-    QMimeData * mimeData( const QModelIndexList &indexes ) const;
+    /** Returns an object that contains serialized items of data corresponding to the list of indexes specified */
+    virtual QMimeData * mimeData( const QModelIndexList &indexes ) const;
+
+    /** Handles the data supplied by a drag and drop operation that ended with the given action */
+    virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
 

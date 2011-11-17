@@ -14,45 +14,19 @@ SET (QT_FWVER @QT_VERSION_MAJOR@)
 
 # build list of Qt frameworks to bundle
 
-SET (QTLISTQG QtCore QtGui phonon)
-SET (PYQTLIST Qt QtCore QtGui phonon)
-IF (@QT_USE_QTXML@)
-    SET (QTLISTQG ${QTLISTQG} QtXml)
-    SET (PYQTLIST ${PYQTLIST} QtXml)
-ENDIF (@QT_USE_QTXML@)
-IF (@QT_USE_QTNETWORK@)
-    SET (QTLISTQG ${QTLISTQG} QtNetwork)
-    SET (PYQTLIST ${PYQTLIST} QtNetwork)
-ENDIF (@QT_USE_QTNETWORK@)
-IF (@QT_USE_QTSVG@)
-    SET (QTLISTQG ${QTLISTQG} QtSvg)
-    SET (PYQTLIST ${PYQTLIST} QtSvg)
-ENDIF (@QT_USE_QTSVG@)
-IF (@QT_USE_QTSQL@)
-    SET (QTLISTQG ${QTLISTQG} QtSql)
-    SET (PYQTLIST ${PYQTLIST} QtSql)
-ENDIF (@QT_USE_QTSQL@)
-IF (@QT_USE_QTWEBKIT@)
-    SET (QTLISTQG ${QTLISTQG} QtWebKit)
-    SET (PYQTLIST ${PYQTLIST} QtWebKit)
-    # see if it links QtDBus
-    EXECUTE_PROCESS (COMMAND otool -L @QT_QTWEBKIT_LIBRARY@/QtWebKit
-                     OUTPUT_VARIABLE QTWEBKIT_DBUS)
-    IF (QTWEBKIT_DBUS MATCHES ".*QtDBus.framework.*")
-        SET (QTLISTQG ${QTLISTQG} QtDBus)
-    ENDIF ()
-    # see if it links QtXmlPatterns
-    EXECUTE_PROCESS (COMMAND otool -L @QT_QTWEBKIT_LIBRARY@/QtWebKit
-                     OUTPUT_VARIABLE QTWEBKIT_XMLP)
-    IF (QTWEBKIT_XMLP MATCHES ".*QtXmlPatterns.framework.*")
-        SET (QTLISTQG ${QTLISTQG} QtXmlPatterns)
-        SET (PYQTLIST ${PYQTLIST} QtXmlPatterns)
-    ENDIF ()
-ENDIF (@QT_USE_QTWEBKIT@)
-IF (@OSGEARTH_FOUND@)
-    SET (QTLISTQG ${QTLISTQG} QtOpenGL)
-    SET (PYQTLIST ${PYQTLIST} QtOpenGL)
-ENDIF (@OSGEARTH_FOUND@)
+# core list, includes dependencies
+SET (QTLISTQG QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns)
+SET (PYQTLIST Qt QtCore QtGui phonon QtXml QtNetwork QtSvg QtSql QtWebKit QtXmlPatterns)
+# see if QtWebKit links QtDBus
+EXECUTE_PROCESS (COMMAND otool -L @QT_QTWEBKIT_LIBRARY@/QtWebKit
+                 OUTPUT_VARIABLE QTWEBKIT_DBUS)
+IF (QTWEBKIT_DBUS MATCHES ".*QtDBus.framework.*")
+    SET (QTLISTQG ${QTLISTQG} QtDBus)
+ENDIF ()
+# additional Qt may be needed by plugins
+SET (QTLISTQG ${QTLISTQG} QtMultimedia QtOpenGL)
+SET (PYQTLIST ${PYQTLIST} QtMultimedia QtOpenGL)
+
 MYMESSAGE ("Qt list: ${QTLISTQG}")
 
 # symlinks when only @executable_path used
@@ -89,6 +63,10 @@ FOREACH (QTC cn;jp;kr;tw)
         EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/codecs/libq${QTC}codecs.dylib" "${QAPPDIRC}/PlugIns/codecs/libq${QTC}codecs.dylib")
     ENDIF ()
 ENDFOREACH (QTC)
+EXECUTE_PROCESS (COMMAND mkdir -p "${QAPPDIRC}/PlugIns/sqldrivers")
+IF (NOT EXISTS "${QAPPDIRC}/PlugIns/sqldrivers/libqsqlite.dylib")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@QT_PLUGINS_DIR@/sqldrivers/libqsqlite.dylib" "${QAPPDIRC}/PlugIns/sqldrivers/libqsqlite.dylib")
+ENDIF ()
 
 # Qwt
 # assumes shared libraries
@@ -192,6 +170,7 @@ FOREACH (QFW ${QTLISTQG})
     FOREACH (QC cn;jp;kr;tw)
         INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIRC}/PlugIns/codecs/libq${QC}codecs.dylib")
     ENDFOREACH (QC)
+    INSTALLNAMETOOL_CHANGE (${QFW_CHG} ${QFW_CHG_TO} "${QAPPDIRC}/PlugIns/sqldrivers/libqsqlite.dylib")
     # qt fw
     IF (@OSX_HAVE_LOADERPATH@)
         SET (QFW_CHG_TO "${ATLOADER}/../../../${LIBPOST}")
