@@ -795,8 +795,7 @@ bool QgsSpatiaLiteProvider::getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
         }
         if ( fetchGeometry )
         {
-          QString geoCol = QString( "AsBinary(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
-          if ( strcasecmp( geoCol.toUtf8().constData(), sqlite3_column_name( stmt, ic ) ) == 0 )
+          if ( ic == mGeomColIdx )
           {
             if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
             {
@@ -3247,6 +3246,7 @@ bool QgsSpatiaLiteProvider::prepareStatement(
   QString primaryKey = !isQuery ? "ROWID" : quotedIdentifier( mPrimaryKey );
 
   QString sql = QString( "SELECT %1" ).arg( primaryKey );
+  int colIdx = 1; // column 0 is primary key
   for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
   {
     const QgsField & fld = field( *it );
@@ -3258,10 +3258,12 @@ bool QgsSpatiaLiteProvider::prepareStatement(
       fieldname = QString( "AsText(%1)" ).arg( fieldname );
     }
     sql += "," + fieldname;
+    colIdx++;
   }
   if ( fetchGeometry )
   {
     sql += QString( ", AsBinary(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+    mGeomColIdx = colIdx;
   }
   sql += QString( " FROM %1" ).arg( mQuery );
 

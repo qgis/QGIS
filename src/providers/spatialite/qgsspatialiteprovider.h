@@ -382,6 +382,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     const QgsField & field( int index ) const;
 
+    /** geometry column index used when fetching geometry */
+    int mGeomColIdx;
+
     /**
     * internal utility functions used to handle common SQLite tasks
     */
