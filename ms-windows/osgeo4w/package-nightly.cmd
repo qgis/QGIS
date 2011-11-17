@@ -1,5 +1,5 @@
 @echo off
-set GRASS_VERSION=6.4.2RC1
+set GRASS_VERSION=6.4.2RC2
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
