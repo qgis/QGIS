@@ -126,10 +126,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
     chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
     chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation )
-      radOrientationMap->setChecked( true );
-    else
-      radOrientationLine->setChecked( true );
+    if ( ! ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+      chkLineOrientationDependent->setChecked( true );
   }
 
   cboFieldName->setCurrentIndex( cboFieldName->findText( lyr.fieldName ) );
@@ -190,6 +188,8 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   connect( chkBuffer, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkScaleBasedVisibility, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
   connect( chkFormattedNumbers, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkLineAbove, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
+  connect( chkLineBelow, SIGNAL( toggled( bool ) ), this, SLOT( updateUi() ) );
 
   // setup connection to changes in the placement
   QRadioButton* placementRadios[] =
@@ -258,7 +258,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
     if ( chkLineOn->isChecked() )
       lyr.placementFlags |= QgsPalLayerSettings::OnLine;
 
-    if ( radOrientationMap->isChecked() )
+    if ( ! chkLineOrientationDependent->isChecked() )
       lyr.placementFlags |= QgsPalLayerSettings::MapOrientation;
   }
   else if (( stackedPlacement->currentWidget() == pageLine && radLineHorizontal->isChecked() )
@@ -518,6 +518,9 @@ void QgsLabelingGui::updateUi()
   spinScaleMax->setEnabled( scale );
 
   spinDecimals->setEnabled( chkFormattedNumbers->isChecked() );
+
+  bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
+  offlineOptions->setEnabled ( offline );
 }
 
 void QgsLabelingGui::changeBufferColor()

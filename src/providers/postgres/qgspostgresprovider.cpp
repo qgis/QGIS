@@ -876,8 +876,8 @@ bool QgsPostgresProvider::getTableInfo( bool searchGeometryColumnsOnly, bool sea
                   "pg_namespace.oid=pg_class.relnamespace"
                   " and pg_attribute.attrelid = pg_class.oid"
                   " and ("
-                  " exists (select * from pg_type WHERE pg_type.oid=pg_attribute.atttypid AND pg_type.typname IN ('geometry','geography'))"
-                  " or pg_attribute.atttypid IN (select oid FROM pg_type a WHERE EXISTS (SELECT * FROM pg_type b WHERE a.typbasetype=b.oid AND b.typname IN ('geometry','geography')))"
+                  " exists (select * from pg_type WHERE pg_type.oid=pg_attribute.atttypid AND pg_type.typname IN ('geometry','geography','topogeometry'))"
+                  " or pg_attribute.atttypid IN (select oid FROM pg_type a WHERE EXISTS (SELECT * FROM pg_type b WHERE a.typbasetype=b.oid AND b.typname IN ('geometry','geography','topogeometry')))"
                   ")"
                   " and has_schema_privilege( pg_namespace.nspname, 'usage' )"
                   " and has_table_privilege( '\"' || pg_namespace.nspname || '\".\"' || pg_class.relname || '\"', 'select' )";
@@ -888,10 +888,13 @@ bool QgsPostgresProvider::getTableInfo( bool searchGeometryColumnsOnly, bool sea
 
     if ( nColumns > 0 )
     {
+      // TODO: handle this for the topogeometry case
       sql += " and not exists (select * from geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
 
       if ( nGTables > 1 )
       {
+        // TODO: handle this for the topogeometry case
+        // TODO: handle this for the geometry case ?
         sql += " and not exists (select * from geography_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
       }
     }

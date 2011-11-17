@@ -15,6 +15,7 @@ SET(SPATIALITE_MOC_HDRS
   qgsspatialitedataitems.h
   qgsspatialitesourceselect.h
   qgsspatialitetablemodel.h
+  qgsspatialiteconnection.h
 )
 
 

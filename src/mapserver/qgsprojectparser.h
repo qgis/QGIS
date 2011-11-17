@@ -124,6 +124,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Creates a maplayer object from <maplayer> element. The layer cash owns the maplayer, so don't delete it
     @return the maplayer or 0 in case of error*/
     QgsMapLayer* createLayerFromElement( const QDomElement& elem, bool useCache = true ) const;
+    /**Adds layers from a legend group to list (could be embedded or a normal group)*/
+    void addLayersFromGroup( const QDomElement& legendGroupElem, QList<QgsMapLayer*>& layerList, bool useCache = true ) const;
+    void addLayerFromLegendLayer( const QDomElement& legendLayerElem, QList<QgsMapLayer*>& layerList, bool useCache = true ) const;
     /**Returns the text of the <id> element for a layer element
     @return id or a null string in case of error*/
     QString layerId( const QDomElement& layerElem ) const;

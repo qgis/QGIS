@@ -4,6 +4,6 @@
 <qgisgrassmodule label="Upload vector values at positions of vector points" module="v.what.vect">
 	<option key="vector" layeroption="layer" typemask="point"/>
 	<field key="column" layer="vector" type="integer,double,string"/>
-	<option key="qvector" layeroption="layer" typemask="area"/>
+	<option key="qvector" layeroption="qlayer" typemask="area"/>
 	<field key="qcolumn" layer="qvector" type="string"/>
 </qgisgrassmodule>

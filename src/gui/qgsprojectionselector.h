@@ -187,6 +187,9 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     //! Has the User Projection List been populated?
     bool mUserProjListDone;
 
+    //! Has the Recent Projection List been populated?
+    bool mRecentProjListDone;
+
     //! Is there a pending selection to be made by CRS Name?
     bool mCRSNameSelectionPending;
 

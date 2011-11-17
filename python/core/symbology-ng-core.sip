@@ -490,7 +490,16 @@ class QgsSymbolLayerV2
 %ConvertToSubClassCode
   switch (sipCpp->type())
   {
-    case QgsSymbolV2::Marker: sipClass = sipClass_QgsMarkerSymbolLayerV2; break;
+    case QgsSymbolV2::Marker:
+      if( sipCpp->layerType() == "VectorField" )
+      {
+        sipClass = sipClass_QgsVectorFieldSymbolLayer;
+      }
+      else
+      {
+        sipClass = sipClass_QgsMarkerSymbolLayerV2;
+      }
+      break;
     case QgsSymbolV2::Line: sipClass = sipClass_QgsLineSymbolLayerV2; break;
     case QgsSymbolV2::Fill: sipClass = sipClass_QgsFillSymbolLayerV2; break;
     default: sipClass = 0; break;
