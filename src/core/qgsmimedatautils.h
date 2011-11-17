@@ -5,7 +5,7 @@
 
 class QgsLayerItem;
 
-class QgsMimeDataUtils
+class CORE_EXPORT QgsMimeDataUtils
 {
   public:
 
