@@ -63,6 +63,10 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
   else
   {
     w = new QTableWidget( 0, 3, this );
+    w->verticalHeader()->setDefaultSectionSize( 16 );
+    w->verticalHeader()->setVisible( false );
+    w->setGridStyle( Qt::DotLine );
+    w->setEditTriggers(QAbstractItemView::NoEditTriggers);
     w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << "Level" );
     tabWidget->addTab( w, tag );
   }
