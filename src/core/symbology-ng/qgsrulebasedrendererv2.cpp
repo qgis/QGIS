@@ -118,10 +118,8 @@ QgsRuleBasedRendererV2::Rule& QgsRuleBasedRendererV2::Rule::operator=( const Qgs
 /////////////////////
 
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
-    : QgsFeatureRendererV2( "RuleRenderer" )
+    : QgsFeatureRendererV2( "RuleRenderer" ), mDefaultSymbol( defaultSymbol ), mCurrentSymbol( 0 )
 {
-  mDefaultSymbol = defaultSymbol;
-
   // add the default rule
   mRules << Rule( defaultSymbol->clone() );
 }
