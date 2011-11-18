@@ -12,6 +12,43 @@
 #include <QMessageBox>
 #include <QSettings>
 
+QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QString& errCause );
+
+QgsSLLayerItem::QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType )
+    : QgsLayerItem( parent, name, path, uri, layerType, "spatialite" )
+{
+  mPopulated = true; // no children are expected
+}
+
+QList<QAction*> QgsSLLayerItem::actions()
+{
+  QList<QAction*> lst;
+
+  QAction* actionDeleteLayer = new QAction( tr( "Delete layer" ), this );
+  connect( actionDeleteLayer, SIGNAL( triggered() ), this, SLOT( deleteLayer() ) );
+  lst.append( actionDeleteLayer );
+
+  return lst;
+}
+
+void QgsSLLayerItem::deleteLayer()
+{
+  QgsDataSourceURI uri( mUri );
+  QString errCause;
+  bool res = ::deleteLayer( uri.database(), uri.table(), errCause );
+  if ( !res )
+  {
+    QMessageBox::warning( 0, tr( "Delete layer" ), errCause );
+  }
+  else
+  {
+    QMessageBox::information( 0, tr( "Delete layer" ), tr( "Layer deleted successfully." ) );
+    mParent->refresh();
+  }
+}
+
+// ------
+
 QgsSLConnectionItem::QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path )
     : QgsDataCollectionItem( parent, name, path )
 {
