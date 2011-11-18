@@ -73,6 +73,7 @@ SET(QGIS_CORE_SRCS
   qgsmaptopixel.cpp
   qgsmessageoutput.cpp
   qgsmimedatautils.cpp
+  qgsmessagelog.cpp
   qgscredentials.cpp
   qgsoverlayobject.cpp
   qgspalgeometry.cpp

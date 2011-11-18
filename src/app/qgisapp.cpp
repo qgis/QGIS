@@ -137,6 +137,7 @@
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
 #include "qgsmimedatautils.h"
+#include "qgsmessagelog.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
@@ -169,7 +170,8 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-//#include "qgswmssourceselect.h"
+#include "qgsmessagelogviewer.h"
+
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -468,6 +470,15 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mpGpsDock->setWidget( mpGpsWidget );
   mpGpsDock->hide();
 
+  mLogViewer = new QgsMessageLogViewer();
+
+  mLogDock = new QDockWidget( tr( "Log Messages" ), this );
+  mLogDock->setObjectName( "MessageLog" );
+  mLogDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
+  addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
+  mLogDock->setWidget( mLogViewer );
+  mLogDock->hide();
+
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
@@ -489,7 +500,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // set graphical message output
   QgsMessageOutput::setMessageOutputCreator( messageOutputViewer_ );
-
 
   // set graphical credential requester
   new QgsCredentialDialog( this );
@@ -5458,6 +5468,7 @@ void QgisApp::showMapTip()
     }
   }
 }
+
 void QgisApp::projectPropertiesProjections()
 {
   // Driver to display the project props dialog and switch to the

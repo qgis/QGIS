@@ -49,6 +49,7 @@
 %Include qgsmaptopixel.sip
 %Include qgsmarkercatalogue.sip
 %Include qgsmessageoutput.sip
+%Include qgsmessagelog.sip
 %Include qgsoverlayobject.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip

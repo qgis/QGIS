@@ -28,6 +28,7 @@
 #include <qgsfield.h>
 #include <qgsgeometry.h>
 #include <qgsmessageoutput.h>
+#include <qgsmessagelog.h>
 #include <qgsrectangle.h>
 #include <qgscoordinatereferencesystem.h>
 #include "qgsvectorlayerimport.h"
@@ -142,7 +143,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   Conn *conn = Conn::connectDb( dsUri.connectionInfo(), false );
   if ( conn == NULL )
   {
-    QgsDebugMsg( "Connection to database failed. Import of layer aborted." );
+    QgsMessageLog::logMessage( tr( "Connection to database failed. Import of layer aborted." ), tr( "PostgreSQL" ) );
     if ( errorMessage )
       *errorMessage = QObject::tr( "Connection to database failed" );
     return QgsVectorLayerImport::ErrConnectionFailed;
@@ -320,7 +321,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   }
   catch ( PGException &e )
   {
-    QgsDebugMsg( "creation of data source " + schemaTableName + " failed. " + e.errorMessage() );
+    QgsMessageLog::logMessage( tr( "creation of data source %1 failed.\nError: %2" ).arg( schemaTableName ).arg( e.errorMessage() ), tr( "PostgreSQL" ) );
     if ( errorMessage )
       *errorMessage = QObject::tr( "Creation of data source %1 failed: \n%2" )
                       .arg( schemaTableName )
@@ -339,10 +340,9 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   QgsPostgresProvider *provider = new QgsPostgresProvider( dsUri.uri() );
   if ( !provider->isValid() )
   {
-    QgsDebugMsg( "The layer " + schemaTableName + " just created is not valid or not supported by the provider." );
+    QgsMessageLog::logMessage( tr( "The layer %1 just created is not valid or not supported by the provider." ).arg( schemaTableName ), tr( "PostgreSQL" ) );
     if ( errorMessage )
-      *errorMessage = QObject::tr( "Loading of the layer %1 failed" )
-                      .arg( schemaTableName );
+      *errorMessage = QObject::tr( "Loading of the layer %1 failed" ).arg( schemaTableName );
 
     delete provider;
     return QgsVectorLayerImport::ErrInvalidLayer;
@@ -377,10 +377,9 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 
       if ( !convertField( fld ) )
       {
-        QgsDebugMsg( "error creating field " + fld.name() + ": unsupported type" );
+        QgsMessageLog::logMessage( tr( "error creating field %1: unsupported type" ).arg( fld.name() ), tr( "PostgreSQL" ) );
         if ( errorMessage )
-          *errorMessage = QObject::tr( "Unsupported type for field %1" )
-                          .arg( fld.name() );
+          *errorMessage = QObject::tr( "Unsupported type for field %1" ).arg( fld.name() );
 
         delete provider;
         return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
@@ -401,7 +400,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
 
     if ( !provider->addAttributes( flist ) )
     {
-      QgsDebugMsg( "error creating fields " );
+      QgsMessageLog::logMessage( tr( "error creating fields" ), tr( "PostgreSQL" ) );
       if ( errorMessage )
         *errorMessage = QObject::tr( "Creation of fields failed" );
 
@@ -501,7 +500,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     featuresCounted = 0;
     valid = false;
 
-    QgsDebugMsg( "Invalid Postgres layer" );
+    QgsMessageLog::logMessage( tr( "invalid PostgreSQL layer" ), tr( "PostgreSQL" ) );
     disconnectDb();
     return;
   }
@@ -619,7 +618,7 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
   if ( PQstatus( pd ) != CONNECTION_OK )
   {
     ::PQfinish( pd );
-    QgsDebugMsg( "Connection to database failed" );
+    QgsMessageLog::logMessage( tr( "Connection to database failed" ), tr( "PostgreSQL" ) );
     return NULL;
   }
 
@@ -634,11 +633,11 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
   }
   else if ( errcode == -1 )
   {
-    QgsDebugMsg( "error in setting encoding" );
+    QgsMessageLog::logMessage( tr( "error in setting encoding" ), tr( "PostgreSQL" ) );
   }
   else
   {
-    QgsDebugMsg( "undefined return value from encoding setting" );
+    QgsMessageLog::logMessage( tr( "undefined return value from encoding setting" ), tr( "PostgreSQL" ) );
   }
 
   QgsDebugMsg( "Connection to the database was successful" );
@@ -747,7 +746,7 @@ QStringList QgsPostgresProvider::pkCandidates( QString schemaName, QString viewN
   }
   else
   {
-    QgsDebugMsg( QString( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( PQresultStatus( colRes ) ).arg( PQresultErrorMessage( colRes ) ) );
+    QgsMessageLog::logMessage( tr( "SQL:%1\nresult:%2\nerror:%3\n" ).arg( sql ).arg( PQresultStatus( colRes ) ).arg( PQresultErrorMessage( colRes ) ), tr( "PostgreSQL" ) );
   }
 
   PQclear( colRes );
@@ -1042,7 +1041,7 @@ bool QgsPostgresProvider::supportedLayers( QVector<QgsPostgresLayerProperty> &la
   // Get the list of supported tables
   if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
   {
-    QgsDebugMsg( "Unable to get list of spatially enabled tables from the database" );
+    QgsMessageLog::logMessage( tr( "Unable to get list of spatially enabled tables from the database" ), tr( "PostgreSQL" ) );
     return false;
   }
 
@@ -1252,7 +1251,7 @@ bool QgsPostgresProvider::getFeature( PGresult *queryResult, int row, bool fetch
       else
       {
         feature.setGeometryAndOwnership( 0, 0 );
-        QgsDebugMsg( "Couldn't get the feature geometry in binary form" );
+        QgsMessageLog::logMessage( tr( "Couldn't get the feature geometry in binary form" ), tr( "PostgreSQL" ) );
       }
 
       col = 2;
@@ -1366,13 +1365,13 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
   feature.setValid( false );
   if ( !valid )
   {
-    QgsDebugMsg( "Read attempt on an invalid postgresql data source" );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid postgresql data source" ), tr( "PostgreSQL" ) );
     return false;
   }
 
   if ( !mFetching )
   {
-    QgsDebugMsg( "nextFeature() without select()" );
+    QgsMessageLog::logMessage( tr( "nextFeature() without select()" ), tr( "PostgreSQL" ) );
     return false;
   }
 
@@ -1383,7 +1382,7 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
     QString fetch = QString( "fetch forward %1 from %2" ).arg( mFeatureQueueSize ).arg( cursorName );
     if ( connectionRO->PQsendQuery( fetch ) == 0 ) // fetch features asynchronously
     {
-      QgsLogger::warning( "PQsendQuery failed" );
+      QgsMessageLog::logMessage( tr( "fetching from cursor %1 failed\nDatabase error: %2" ).arg( cursorName ).arg( QString::fromUtf8( PQerrorMessage( pgConnection() ) ) ), tr( "PostgreSQL" ) );
     }
 
     Result queryResult;
@@ -1490,13 +1489,13 @@ bool QgsPostgresProvider::featureAtId( QgsFeatureId featureId, QgsFeature& featu
   int rows = PQntuples( queryResult );
   if ( rows == 0 )
   {
-    QgsDebugMsg( QString( "feature %1 not found" ).arg( featureId ) );
+    QgsMessageLog::logMessage( tr( "feature %1 not found" ).arg( featureId ), tr( "PostgreSQL" ) );
     connectionRO->closeCursor( cursorName );
     return false;
   }
   else if ( rows != 1 )
   {
-    QgsDebugMsg( QString( "found %1 features instead of just one." ).arg( rows ) );
+    QgsMessageLog::logMessage( tr( "found %1 features instead of just one." ).arg( rows ), tr( "PostgreSQL" ) );
   }
 
   bool gotit = getFeature( queryResult, 0, fetchGeometry, feature, fetchAttributes );
@@ -1704,19 +1703,28 @@ bool QgsPostgresProvider::loadFields()
       {
         fieldType = QVariant::Double;
 
-        QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
-        if ( re.exactMatch( formattedFieldType ) )
+        if ( formattedFieldType == "numeric" )
         {
-          fieldSize = re.cap( 1 ).toInt();
-          fieldPrec = re.cap( 2 ).toInt();
+          fieldSize = -1;
+          fieldPrec = -1;
         }
         else
         {
-          QgsDebugMsg( QString( "unexpected formatted field type '%1' for field %2" )
-                       .arg( formattedFieldType )
-                       .arg( fieldName ) );
-          fieldSize = -1;
-          fieldPrec = -1;
+          QRegExp re( "numeric\\((\\d+),(\\d+)\\)" );
+          if ( re.exactMatch( formattedFieldType ) )
+          {
+            fieldSize = re.cap( 1 ).toInt();
+            fieldPrec = re.cap( 2 ).toInt();
+          }
+          else if ( formattedFieldType != "numeric" )
+          {
+            QgsMessageLog::logMessage( tr( "unexpected formatted field type '%1' for field %2" )
+                                       .arg( formattedFieldType )
+                                       .arg( fieldName ),
+                                       tr( "PostgreSQL" ) );
+            fieldSize = -1;
+            fieldPrec = -1;
+          }
         }
       }
       else if ( fieldTypeName == "text" ||
@@ -1743,9 +1751,9 @@ bool QgsPostgresProvider::loadFields()
         }
         else
         {
-          QgsDebugMsg( QString( "unexpected formatted field type '%1' for field %2" )
-                       .arg( formattedFieldType )
-                       .arg( fieldName ) );
+          QgsMessageLog::logMessage( tr( "unexpected formatted field type '%1' for field %2" )
+                                     .arg( formattedFieldType )
+                                     .arg( fieldName ) );
           fieldSize = -1;
           fieldPrec = -1;
         }
@@ -1921,8 +1929,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     if ( !mQuery.startsWith( "(select", Qt::CaseInsensitive ) &&
          !mQuery.endsWith( ")" ) )
     {
-      QgsDebugMsg( "The custom query is not a select query." );
-      //TODO show a message by showMessageBox()
+      QgsMessageLog::logMessage( tr( "The custom query is not a select query." ), tr( "PostgreSQL" ) );
       return false;
     }
 
@@ -2108,7 +2115,7 @@ QString QgsPostgresProvider::getPrimaryKey()
       }
       else
       {
-        QgsDebugMsg( "Unexpected relation type of '" + type + "'." );
+        QgsMessageLog::logMessage( tr( "Unexpected relation type of '%1'." ).arg( type ), tr( "PostgreSQL" ) );
       }
     }
     else // have some unique indices on the table. Now choose one...
@@ -2321,9 +2328,8 @@ QString QgsPostgresProvider::chooseViewColumn( const tableCols &cols )
     }
     else
     {
-      QgsDebugMsg( "Relation " + schemaName + "." + tableName +
-                   " doesn't exist in the pg_class table."
-                   "This shouldn't happen and is odd." );
+      QgsMessageLog::logMessage( tr( "Relation %1.%2 doesn't exist in the pg_class table. This shouldn't happen and is odd." )
+                                 .arg( schemaName ).arg( tableName ) );
       continue;
     }
 
@@ -3010,7 +3016,7 @@ QString QgsPostgresProvider::Conn::postgisVersion()
   Result result = PQexec( "select postgis_version()" );
   if ( PQntuples( result ) != 1 )
   {
-    QgsDebugMsg( "Retrieval of postgis version failed" );
+    QgsMessageLog::logMessage( tr( "Retrieval of postgis version failed" ), tr( "PostgreSQL" ) );
     return QString::null;
   }
 
@@ -3024,7 +3030,7 @@ QString QgsPostgresProvider::Conn::postgisVersion()
   QStringList postgisVersionParts = postgisParts[0].split( ".", QString::SkipEmptyParts );
   if ( postgisVersionParts.size() < 2 )
   {
-    QgsDebugMsg( "Could not parse postgis version" );
+    QgsMessageLog::logMessage( tr( "Could not parse postgis version string '%1'" ).arg( postgisVersionInfo ), tr( "PostgreSQL" ) );
     return QString::null;
   }
 
@@ -3836,7 +3842,7 @@ QgsRectangle QgsPostgresProvider::extent()
     }
     else
     {
-      QgsDebugMsg( "extents query failed" );
+      QgsMessageLog::logMessage( tr( "extents query failed: %1" ).arg( ext ), tr( "PostgreSQL" ) );
     }
 
     QgsDebugMsg( "Set extents to: " + layerExtent.toString() );
@@ -3883,7 +3889,7 @@ bool QgsPostgresProvider::deduceEndian()
     }
     else
     {
-      QgsDebugMsg( "no oid found" );
+      QgsMessageLog::logMessage( tr( "no oid found" ), tr( "PostgreSQL" ) );
       return false;
     }
   }
@@ -4145,7 +4151,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   }
   else
   {
-    QgsDebugMsg( "Failed to get geometry details for Postgres layer." );
+    QgsMessageLog::logMessage( tr( "Failed to get geometry details for PostGIS column %1.%2." ).arg( tableName ).arg( geometryColumn ), tr( "PostgreSQL" ) );
   }
 
   return valid;
@@ -4172,24 +4178,20 @@ PGresult *QgsPostgresProvider::Conn::PQexec( QString query )
   QgsDebugMsgLevel( QString( "Executing SQL: %1" ).arg( query ), 3 );
   PGresult *res = ::PQexec( conn, query.toUtf8() );
 
-#ifdef QGISDEBUG
   if ( res )
   {
     int errorStatus = PQresultStatus( res );
     if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
     {
-      QString err = QString( "Errornous query: %1 returned %2 [%3]" )
-                    .arg( query )
-                    .arg( errorStatus )
-                    .arg( PQresultErrorMessage( res ) );
-      QgsDebugMsgLevel( err, 3 );
+      QgsMessageLog::logMessage( tr( "Errornous query: %1 returned %2 [%3]" )
+                                 .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
+                                 tr( "PostgreSQL" ) );
     }
   }
   else
   {
-    QgsDebugMsgLevel( QString( "Query failed: %1" ).arg( query ), 3 );
+    QgsMessageLog::logMessage( tr( "Query failed: %1\nError: %2" ).arg( query ), tr( "PostgreSQL" ) );
   }
-#endif
 
   return res;
 }
@@ -4224,7 +4226,7 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query, bool retry )
   Result res = ::PQexec( conn, query.toUtf8() );
   if ( !res )
   {
-    QgsDebugMsgLevel( QString( "Query: %1 returned no result buffer" ).arg( query ), 3 );
+    QgsMessageLog::logMessage( tr( "Query: %1 returned no result buffer" ).arg( query ), tr( "PostgreSQL" ) );
     return false;
   }
 
@@ -4232,10 +4234,11 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query, bool retry )
   if ( errorStatus == PGRES_COMMAND_OK )
     return true;
 
-  QgsLogger::warning( QString( "Query: %1 returned %2 [%3]" )
-                      .arg( query )
-                      .arg( errorStatus )
-                      .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ) );
+  QgsMessageLog::logMessage( tr( "Query: %1 returned %2 [%3]" )
+                             .arg( query )
+                             .arg( errorStatus )
+                             .arg( QString::fromUtf8( PQresultErrorMessage( res ) ) ),
+                             tr( "PostgreSQL" ) );
 
   if ( openCursors )
   {
@@ -4255,17 +4258,29 @@ bool QgsPostgresProvider::Conn::PQexecNR( QString query, bool retry )
   }
   else if ( retry )
   {
-    QgsDebugMsg( "connection bad - resetting" );
+    QgsMessageLog::logMessage( tr( "resetting bad connection." ), tr( "PostgreSQL" ) );
     ::PQreset( conn );
     if ( PQstatus( conn ) == CONNECTION_OK )
     {
-      QgsDebugMsg( "reconnected - retrying" );
-      return PQexecNR( query, false );
+      if ( PQexecNR( query, false ) )
+      {
+        QgsMessageLog::logMessage( tr( "retry after reset succeeded." ), tr( "PostgreSQL" ) );
+        return true;
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "retry after reset failed again." ), tr( "PostgreSQL" ) );
+        return false;
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "connection still bad after reset." ), tr( "PostgreSQL" ) );
     }
   }
   else
   {
-    QgsDebugMsg( "connection bad - giving up" );
+    QgsMessageLog::logMessage( tr( "bad connection, not retrying." ), tr( "PostgreSQL" ) );
   }
 
   return false;

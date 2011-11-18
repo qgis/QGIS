@@ -60,6 +60,7 @@ qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
+qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
@@ -123,6 +124,7 @@ qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmessageviewer.h
+qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
 qgscredentialdialog.h
@@ -181,6 +183,7 @@ SET(QGIS_GUI_UI_HDRS
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
