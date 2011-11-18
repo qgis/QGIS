@@ -373,6 +373,7 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
     , mSplash( splash )
+    , mShowProjectionTab( false )
     , mPythonUtils( NULL )
     , mpTileScaleWidget( NULL )
 #ifdef Q_OS_WIN
