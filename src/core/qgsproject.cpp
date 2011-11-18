@@ -326,6 +326,7 @@ struct QgsProject::Imp
     // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
     QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", true );
     QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
+    QgsProject::instance()->writeEntry( "Paths", "/Absolute", false );
   }
 
 };  // struct QgsProject::Imp
@@ -339,6 +340,7 @@ QgsProject::QgsProject()
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
   writeEntry( "PositionPrecision", "/Automatic", true );
   writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
+  writeEntry( "Paths", "/Absolute", false );
   // XXX writeEntry() makes the project dirty, but it doesn't make sense
   // for a new project to be dirty, so let's clean it up
   dirty( false );
