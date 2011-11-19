@@ -51,14 +51,8 @@
 #include <QSettings>
 #include <QMouseEvent>
 #include <QVector>
+#include <QWebView>
 
-// QWT Charting widget
-#include <qwt_global.h>
-#include <qwt_plot_canvas.h>
-#include <qwt_legend.h>
-#include <qwt_plot.h>
-#include <qwt_plot_curve.h>
-#include <qwt_plot_grid.h>
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
     : QDialog( parent, fl ),
@@ -1858,25 +1852,10 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
 
 void QgsRasterLayerProperties::refreshHistogram()
 {
-#if !defined(QWT_VERSION) || QWT_VERSION<0x060000
-  mpPlot->clear();
-#endif
   mHistogramProgress->show();
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  QgsDebugMsg( "entered." );
-  //ensure all children get removed
-  mpPlot->setAutoDelete( true );
-  mpPlot->setTitle( QObject::tr( "Raster Histogram" ) );
-  mpPlot->insertLegend( new QwtLegend(), QwtPlot::BottomLegend );
-  // Set axis titles
-  mpPlot->setAxisTitle( QwtPlot::xBottom, QObject::tr( "Pixel Value" ) );
-  mpPlot->setAxisTitle( QwtPlot::yLeft, QObject::tr( "Frequency" ) );
-  mpPlot->setAxisAutoScale( QwtPlot::yLeft );
-  // x axis scale only set after computing global min/max across bands (see below)
-  // add a grid
-  QwtPlotGrid * myGrid = new QwtPlotGrid();
-  myGrid->attach( mpPlot );
+  mWebPlot->setHtml("<h1>Hellow World</h1>");
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected
   // layer. Currently the hist is hardcoded
@@ -1891,115 +1870,44 @@ void QgsRasterLayerProperties::refreshHistogram()
   bool myIgnoreOutOfRangeFlag = true;
   bool myThoroughBandScanFlag = false;
   int myBandCountInt = mRasterLayer->bandCount();
-  QList<QColor> myColors;
-  myColors << Qt::black << Qt::red << Qt::green << Qt::blue << Qt::magenta << Qt::darkRed << Qt::darkGreen << Qt::darkBlue;
-
-  while ( myColors.size() <= myBandCountInt )
-  {
-    myColors <<
-    QColor( 1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ),
-            1 + ( int )( 255.0 * rand() / ( RAND_MAX + 1.0 ) ) );
-  }
-
   //
   //now draw actual graphs
   //
 
-  //somtimes there are more bins than needed
-  //we find out the last one that actually has data in it
-  //so we can discard the rest and set the x-axis scales correctly
-  //
-  // scan through to get counts from layers' histograms
-  //
-  float myGlobalMin = 0;
-  float myGlobalMax = 0;
   bool myFirstIteration = true;
   for ( int myIteratorInt = 1;
-        myIteratorInt <= myBandCountInt;
-        ++myIteratorInt )
+      myIteratorInt <= myBandCountInt;
+      ++myIteratorInt )
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
-    QwtPlotCurve * mypCurve = new QwtPlotCurve( tr( "Band %1" ).arg( myIteratorInt ) );
-    mypCurve->setCurveAttribute( QwtPlotCurve::Fitted );
-    mypCurve->setRenderHint( QwtPlotItem::RenderAntialiased );
-    mypCurve->setPen( QPen( myColors.at( myIteratorInt ) ) );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    QVector<QPointF> data;
-#else
-    QVector<double> myX2Data;
-    QVector<double> myY2Data;
-#endif
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
       int myBinValue = myRasterBandStats.histogramVector->at( myBin );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-      data << QPointF( myBin, myBinValue );
-#else
-      myX2Data.append( double( myBin ) );
-      myY2Data.append( double( myBinValue ) );
-#endif
     }
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
-    mypCurve->setSamples( data );
-#else
-    mypCurve->setData( myX2Data, myY2Data );
-#endif
-    mypCurve->attach( mpPlot );
-    if ( myFirstIteration || myGlobalMin < myRasterBandStats.minimumValue )
-    {
-      myGlobalMin = myRasterBandStats.minimumValue;
-    }
-    if ( myFirstIteration || myGlobalMax < myRasterBandStats.maximumValue )
-    {
-      myGlobalMax = myRasterBandStats.maximumValue;
-    }
-    myFirstIteration = false;
   }
-  // for x axis use band pixel values rather than gdal hist. bin values
-  // subtract -0.5 to prevent rounding errors
-  // see http://www.gdal.org/classGDALRasterBand.html#3f8889607d3b2294f7e0f11181c201c8
-  mpPlot->setAxisScale( QwtPlot::xBottom,
-                        myGlobalMin - 0.5,
-                        myGlobalMax + 0.5 );
-  mpPlot->replot();
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   mHistogramProgress->hide();
-  mpPlot->canvas()->setCursor( Qt::ArrowCursor );
   QApplication::restoreOverrideCursor();
 }
 
 void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
 {
-  if ( mpPlot == 0 )
-  {
-    return;
-  }
 
   QPixmap myPixmap( 600, 600 );
   myPixmap.fill( Qt::white ); // Qt::transparent ?
 
-#if (QWT_VERSION<0x060000)
-  QwtPlotPrintFilter myFilter;
-  int myOptions = QwtPlotPrintFilter::PrintAll;
-  myOptions &= ~QwtPlotPrintFilter::PrintBackground;
-  myOptions |= QwtPlotPrintFilter::PrintFrameWithScales;
-  myFilter.setOptions( myOptions );
-
-  mpPlot->print( myPixmap, myFilter );
-#else
   QPainter painter;
   painter.begin( &myPixmap );
-  mpPlot->drawCanvas( &painter );
+  //mWebPlot->drawCanvas( &painter );
   painter.end();
-#endif
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != "" )
   {
     myPixmap.save( myFileNameAndFilter.first );
   }
 }
+
 void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
 {
   int myLineCounter = 0;
@@ -2864,6 +2772,7 @@ QLinearGradient QgsRasterLayerProperties::grayGradient()
   myGradient.setColorAt( 1.0, QColor( 220, 220, 220, 190 ) );
   return myGradient;
 }
+
 QLinearGradient QgsRasterLayerProperties::highlightGradient()
 {
   //define another gradient for the highlight
@@ -3074,4 +2983,3 @@ void QgsRasterLayerProperties::toggleBuildPyramidsButton()
     buttonBuildPyramids->setEnabled( true );
   }
 }
-
