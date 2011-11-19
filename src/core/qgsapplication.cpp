@@ -519,13 +519,13 @@ QString QgsApplication::showSettings()
   QString myState = QString( "Application state:\n"
                              "Prefix              : %1\n"
                              "Plugin Path         : %2\n"
-                             "Provider Path       : %2\n"
-                             "Package Data Path   : %3\n"
-                             "Active Theme Name   : %4\n"
-                             "Active Theme Path   : %5\n"
-                             "Default Theme Path  : %6\n"
-                             "SVG Search Paths    : %7\n"
-                             "User DB Path        : %8\n" )
+                             "Provider Path       : %3\n"
+                             "Package Data Path   : %4\n"
+                             "Active Theme Name   : %5\n"
+                             "Active Theme Path   : %6\n"
+                             "Default Theme Path  : %7\n"
+                             "SVG Search Paths    : %8\n"
+                             "User DB Path        : %9\n" )
                     .arg( mPrefixPath )
                     .arg( mPluginPath )
                     .arg( mProviderPath )

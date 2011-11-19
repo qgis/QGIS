@@ -133,7 +133,9 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the application plugin directory.
     static const QString pluginPath();
 
-    //! Returns the path to the application data providers directory.
+    /** Returns the path to the application data providers directory.
+    * @note Added in 2.0
+    */
     static const QString providerPath();
 
     //! Returns the common root path of all application data directories.
