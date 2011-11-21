@@ -61,14 +61,15 @@ class QgsBench :  public QObject
     void readProject( const QDomDocument &doc );
 
   private:
-    // Number of rendering cycles
-    int mIterations;
-
     // snapshot image width
     int mWidth;
 
     // snapshot image height
     int mHeight;
+
+    // Number of rendering cycles
+    int mIterations;
+
 
     QgsRectangle mExtent;
     bool mSetExtent;

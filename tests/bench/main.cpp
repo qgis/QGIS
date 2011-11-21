@@ -81,6 +81,7 @@ void usage( std::string const & appName )
             << "\t[--extent xmin,ymin,xmax,ymax]\tset initial map extent\n"
             << "\t[--optionspath path]\tuse the given QSettings path\n"
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
+            << "\t[--prefix path]\tpath to a different build of qgis, may be used to test old versions\n"
             << "\t[--quality]\trenderer hint(s), comma separated, possible values: Antialiasing,TextAntialiasing,SmoothPixmapTransform,NonCosmeticDefaultPen\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
@@ -132,6 +133,7 @@ int main( int argc, char *argv[] )
   int myIterations = 1;
   QString mySnapshotFileName = "";
   QString myLogFileName = "";
+  QString myPrefixPath = "";
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
   QString myQuality = "";
@@ -171,6 +173,7 @@ int main( int argc, char *argv[] )
       {"extent",   required_argument, 0, 'e'},
       {"optionspath", required_argument, 0, 'o'},
       {"configpath", required_argument, 0, 'c'},
+      {"prefix", required_argument, 0, 'r'},
       {"quality", required_argument, 0, 'q'},
       {0, 0, 0, 0}
     };
@@ -178,7 +181,7 @@ int main( int argc, char *argv[] )
     /* getopt_long stores the option index here. */
     int option_index = 0;
 
-    optionChar = getopt_long( argc, argv, "rswhlpeoc",
+    optionChar = getopt_long( argc, argv, "islwhpeocrq",
                               long_options, &option_index );
 
     /* Detect the end of the options. */
@@ -231,6 +234,10 @@ int main( int argc, char *argv[] )
 
       case 'c':
         configpath = optarg;
+        break;
+
+      case 'r':
+        myPrefixPath = optarg;
         break;
 
       case 'q':
@@ -309,7 +316,11 @@ int main( int argc, char *argv[] )
       configpath = argv[++i];
       QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
     }
-    else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
+    else if ( i + 1 < argc && ( arg == "--prefix" ) )
+    {
+      myPrefixPath = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--quality" || arg == "-q" ) )
     {
       myQuality = argv[++i];
     }
@@ -338,7 +349,18 @@ int main( int argc, char *argv[] )
   // but QgsApplication inherits from QApplication (GUI)
   // it is working, but maybe we should make QgsCoreApplication, which
   // could also be used by mapserver
-  QgsApplication myApp( argc, argv, false, configpath );
+  // Don't use QgsApplication( int, char **, bool GUIenabled, QString) which is new
+  // so that this program may be run with old libraries
+  //QgsApplication myApp( argc, argv, false, configpath );
+  QCoreApplication myApp( argc, argv );
+
+  if ( myPrefixPath.isEmpty() )
+  {
+    QDir dir( QCoreApplication::applicationDirPath() );
+    dir.cdUp();
+    myPrefixPath = dir.absolutePath();
+  }
+  QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
   QgsApplication::setOrganizationName( "QuantumGIS" );

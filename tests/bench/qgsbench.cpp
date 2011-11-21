@@ -211,17 +211,17 @@ QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
     switch ( i.value().type() )
     {
       case QMetaType::Int:
-        list.append( space2 + i.key() + ": " + QString( "%1" ).arg( i.value().toInt() ) );
+        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
         break;
       case QMetaType::Double:
-        list.append( space2 + i.key() + ": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
+        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + i.key() + ": " + i.value().toString() );
+        list.append( space2 + "\"" + i.key() + "\": \"" + i.value().toString() + "\"" );
         break;
         //case QMetaType::QMap: QMap is not in QMetaType
       default:
-        list.append( space2 + i.key() + ": " + serialize( i.value().toMap(), level + 1 ) );
+        list.append( space2 + "\"" + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
         break;
     }
     ++i;
