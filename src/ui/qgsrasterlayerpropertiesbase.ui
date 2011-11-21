@@ -15,8 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>../../../../../.designer/backup</normaloff>../../../../../.designer/backup</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -234,7 +233,7 @@
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+                    <normaloff>../../../../../images/themes/default/mActionFileSave.png</normaloff>../../../../../images/themes/default/mActionFileSave.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -542,7 +541,7 @@
                   </property>
                   <property name="icon">
                    <iconset>
-                    <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+                    <normaloff>../../../../../images/themes/default/mActionFileSave.png</normaloff>../../../../../images/themes/default/mActionFileSave.png</iconset>
                   </property>
                  </widget>
                 </item>
@@ -898,7 +897,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+              <normaloff>../../../../../images/themes/default/mActionFileSave.png</normaloff>../../../../../images/themes/default/mActionFileSave.png</iconset>
             </property>
            </widget>
           </item>
@@ -1093,7 +1092,7 @@
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+                <normaloff>../../../../../images/themes/default/mActionNewAttribute.png</normaloff>../../../../../images/themes/default/mActionNewAttribute.png</iconset>
               </property>
              </widget>
             </item>
@@ -1110,7 +1109,7 @@
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../images/themes/default/mActionContextHelp.png</normaloff>../../images/themes/default/mActionContextHelp.png</iconset>
+                <normaloff>../../../../../images/themes/default/mActionContextHelp.png</normaloff>../../../../../images/themes/default/mActionContextHelp.png</iconset>
               </property>
              </widget>
             </item>
@@ -1124,7 +1123,7 @@
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../images/themes/default/mActionDeleteAttribute.png</iconset>
+                <normaloff>../../../../../images/themes/default/mActionDeleteAttribute.png</normaloff>../../../../../images/themes/default/mActionDeleteAttribute.png</iconset>
               </property>
              </widget>
             </item>
@@ -1138,7 +1137,7 @@
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../images/themes/default/mActionCopySelected.png</normaloff>../../images/themes/default/mActionCopySelected.png</iconset>
+                <normaloff>../../../../../images/themes/default/mActionCopySelected.png</normaloff>../../../../../images/themes/default/mActionCopySelected.png</iconset>
               </property>
              </widget>
             </item>
@@ -1165,7 +1164,7 @@
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
+                <normaloff>../../../../../images/themes/default/mActionFolder.png</normaloff>../../../../../images/themes/default/mActionFolder.png</iconset>
               </property>
              </widget>
             </item>
@@ -1179,7 +1178,7 @@
               </property>
               <property name="icon">
                <iconset>
-                <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+                <normaloff>../../../../../images/themes/default/mActionFileSave.png</normaloff>../../../../../images/themes/default/mActionFileSave.png</iconset>
               </property>
              </widget>
             </item>
@@ -1350,7 +1349,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+              <normaloff>../../../../../images/themes/default/mActionNewAttribute.png</normaloff>../../../../../images/themes/default/mActionNewAttribute.png</iconset>
             </property>
            </widget>
           </item>
@@ -1380,7 +1379,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
+              <normaloff>../../../../../images/themes/default/mActionFolder.png</normaloff>../../../../../images/themes/default/mActionFolder.png</iconset>
             </property>
            </widget>
           </item>
@@ -1394,7 +1393,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+              <normaloff>../../../../../images/themes/default/mActionFileSave.png</normaloff>../../../../../images/themes/default/mActionFileSave.png</iconset>
             </property>
            </widget>
           </item>
@@ -1775,6 +1774,9 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
@@ -1880,11 +1882,11 @@ p, li { white-space: pre-wrap; }
          </property>
          <property name="icon">
           <iconset>
-           <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+           <normaloff>../../../../../images/themes/default/mActionFileSave.png</normaloff>../../../../../images/themes/default/mActionFileSave.png</iconset>
          </property>
         </widget>
        </item>
-       <item row="0" column="0">
+       <item row="0" column="0" colspan="2">
         <widget class="QWebView" name="mWebPlot">
          <property name="url">
           <url>

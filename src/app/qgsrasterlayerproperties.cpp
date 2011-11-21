@@ -52,6 +52,7 @@
 #include <QMouseEvent>
 #include <QVector>
 #include <QWebView>
+#include <QWebFrame>
 
 
 QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanvas* theCanvas, QWidget *parent, Qt::WFlags fl )
@@ -65,6 +66,8 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   mRGBMinimumMaximumEstimated = true;
 
   setupUi( this );
+  QString myChartPage = "file:///" + QgsApplication::pkgDataPath() + "/resources/html/chart.html";
+  mWebPlot->load(QUrl( myChartPage ));
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -1855,14 +1858,13 @@ void QgsRasterLayerProperties::refreshHistogram()
   mHistogramProgress->show();
   connect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   QApplication::setOverrideCursor( Qt::WaitCursor );
-  mWebPlot->setHtml("<h1>Hellow World</h1>");
   // Explanation:
   // We use the gdal histogram creation routine is called for each selected
   // layer. Currently the hist is hardcoded
   // to create 256 bins. Each bin stores the total number of cells that
   // fit into the range defined by that bin.
   //
-  // The graph routine below determines the greatest number of pixesl in any given
+  // The graph routine below determines the greatest number of pixels in any given
   // bin in all selected layers, and the min. It then draws a scaled line between min
   // and max - scaled to image height. 1 line drawn per selected band
   //
@@ -1881,10 +1883,21 @@ void QgsRasterLayerProperties::refreshHistogram()
   {
     QgsRasterBandStats myRasterBandStats = mRasterLayer->bandStatistics( myIteratorInt );
     mRasterLayer->populateHistogram( myIteratorInt, BINCOUNT, myIgnoreOutOfRangeFlag, myThoroughBandScanFlag );
+    QString mySeriesJS = "addSeries([";
+    bool myFirst = true;
     for ( int myBin = 0; myBin < BINCOUNT; myBin++ )
     {
+      if ( ! myFirst )
+      {
+        mySeriesJS += ",";
+      }
       int myBinValue = myRasterBandStats.histogramVector->at( myBin );
+      mySeriesJS += QString("[%1,%2]").arg(myBin).arg(myBinValue);
+      myFirst = false;
     }
+    mySeriesJS += "]);";
+    QgsDebugMsg( mySeriesJS );
+    mWebPlot->page()->mainFrame()->evaluateJavaScript( mySeriesJS );
   }
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );
   mHistogramProgress->hide();
