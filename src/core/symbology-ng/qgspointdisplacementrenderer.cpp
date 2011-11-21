@@ -18,7 +18,6 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsrendererv2registry.h"
 #include "qgsspatialindex.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -276,12 +275,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
   {
-    QString rendererName = embeddedRendererElem.attribute( "type" );
-    QgsRendererV2AbstractMetadata* metaData = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
-    if ( metaData )
-    {
-      r->setEmbeddedRenderer( metaData->createRenderer( embeddedRendererElem ) );
-    }
+    r->setEmbeddedRenderer( QgsFeatureRendererV2::load( embeddedRendererElem ) );
   }
 
   //center symbol
