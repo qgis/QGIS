@@ -294,7 +294,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     }
 
     ogrLayer = ogrOrigLayer;
-    setSubsetString( mSubsetString );
+    if (ogrLayer != NULL )
+    {
+      setSubsetString( mSubsetString );
+    }
+    else
+    {
+      valid = false;
+    }
   }
   else
   {
