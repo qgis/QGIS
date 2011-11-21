@@ -1915,12 +1915,12 @@ void QgsRasterLayerProperties::refreshHistogram()
 void QgsRasterLayerProperties::on_mSaveAsImageButton_clicked()
 {
 
-  QPixmap myPixmap( 600, 600 );
+  QPixmap myPixmap( mWebPlot->width(), mWebPlot->height() );
   myPixmap.fill( Qt::white ); // Qt::transparent ?
 
   QPainter painter;
   painter.begin( &myPixmap );
-  //mWebPlot->drawCanvas( &painter );
+  mWebPlot->render( &painter );
   painter.end();
   QPair< QString, QString> myFileNameAndFilter = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
   if ( myFileNameAndFilter.first != "" )
