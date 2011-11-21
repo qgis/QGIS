@@ -28,6 +28,7 @@
 #include <QStringList>
 #include <QDomElement>
 #include <QMap>
+#include <QUrl>
 #include <QVector>
 
 class QgsCoordinateTransform;
@@ -762,6 +763,9 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QStringList identifyAs( const QgsPoint &point, QString format );
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
+
+    //! remove query item and replace it with a new value
+    void setQueryItem( QUrl &url, QString key, QString value );
 
     //! set authorization header
     void setAuthorization( QNetworkRequest &request ) const;

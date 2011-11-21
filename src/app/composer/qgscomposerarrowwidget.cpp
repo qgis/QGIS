@@ -184,13 +184,13 @@ void QgsComposerArrowWidget::on_mSvgMarkerRadioButton_toggled( bool toggled )
   }
 }
 
-void QgsComposerArrowWidget::on_mStartMarkerLineEdit_editingFinished( const QString & text )
+void QgsComposerArrowWidget::on_mStartMarkerLineEdit_textChanged( const QString & text )
 {
   if ( mArrow )
   {
     mArrow->beginCommand( tr( "Arrow start marker" ) );
     QFileInfo fi( text );
-    if ( fi.exists() )
+    if ( fi.exists() && fi.isFile() )
     {
       mArrow->setStartMarker( text );
     }
@@ -203,13 +203,13 @@ void QgsComposerArrowWidget::on_mStartMarkerLineEdit_editingFinished( const QStr
   }
 }
 
-void QgsComposerArrowWidget::on_mEndMarkerLineEdit_editingFinished( const QString & text )
+void QgsComposerArrowWidget::on_mEndMarkerLineEdit_textChanged( const QString & text )
 {
   if ( mArrow )
   {
-    mArrow->beginCommand( tr( "Arrow start marker" ) );
+    mArrow->beginCommand( tr( "Arrow end marker" ) );
     QFileInfo fi( text );
-    if ( fi.exists() )
+    if ( fi.exists() && fi.isFile() )
     {
       mArrow->setEndMarker( text );
     }

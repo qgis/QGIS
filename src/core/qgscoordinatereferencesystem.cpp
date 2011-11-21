@@ -263,9 +263,18 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
     {
       mAuthId = QString( "USER:%1" ).arg( mSrsId );
     }
+    else if ( mAuthId.startsWith( "EPSG:", Qt::CaseInsensitive ) )
+    {
+      OSRDestroySpatialReference( mCRS );
+      mCRS = OSRNewSpatialReference( NULL );
+      mIsValidFlag = OSRSetFromUserInput( mCRS, mAuthId.toLower().toAscii() ) == OGRERR_NONE;
+      setMapUnits();
+    }
 
-    setProj4String( toProj4 );
-    setMapUnits();
+    if ( !mIsValidFlag )
+    {
+      setProj4String( toProj4 );
+    }
   }
   else
   {
@@ -299,6 +308,15 @@ bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
     QgsDebugMsg( QString( "UNUSED WKT: %1" ).arg( pWkt ) );
     QgsDebugMsg( "---------------------------------------------------------------\n" );
     return mIsValidFlag;
+  }
+
+  if ( OSRAutoIdentifyEPSG( mCRS ) == OGRERR_NONE )
+  {
+    QString authid = QString( "%1:%2" )
+                     .arg( OSRGetAuthorityName( mCRS, NULL ) )
+                     .arg( OSRGetAuthorityCode( mCRS, NULL ) );
+    QgsDebugMsg( "authid recognized as " + authid );
+    return createFromOgcWmsCrs( authid );
   }
 
   // always morph from esri as it doesn't hurt anything
@@ -388,27 +406,12 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   long mySrsId = 0;
   QgsCoordinateReferenceSystem::RecordMap myRecord;
 
-  // *** Matching on descriptions feels iffy. Different projs can have same description. Homann ***
-  // if ( !mDescription.trimmed().isEmpty() )
-  //{
-  //  myRecord = getRecord( "select * from tbl_srs where description=" + quotedValue( mDescription.trimmed() ) );
-  //}
-
   /*
    * - if the above does not match perform a whole text search on proj4 string (if not null)
    */
   // QgsDebugMsg( "wholetext match on name failed, trying proj4string match" );
   myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4String.trimmed() ) );
-  if ( !myRecord.empty() )
-  {
-    mySrsId = myRecord["srs_id"].toLong();
-    QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
-    if ( mySrsId > 0 )
-    {
-      createFromSrsId( mySrsId );
-    }
-  }
-  else
+  if ( myRecord.empty() )
   {
     // Ticket #722 - aaronr
     // Check if we can swap the lat_1 and lat_2 params (if they exist) to see if we match...
@@ -423,7 +426,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     QString lat2Str = "";
     myStart1 = myLat1RegExp.indexIn( theProj4String, myStart1 );
     myStart2 = myLat2RegExp.indexIn( theProj4String, myStart2 );
-    if (( myStart1 != -1 ) && ( myStart2 != -1 ) )
+    if ( myStart1 != -1 && myStart2 != -1 )
     {
       myLength1 = myLat1RegExp.matchedLength();
       myLength2 = myLat2RegExp.matchedLength();
@@ -431,7 +434,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       lat2Str = theProj4String.mid( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN );
     }
     // If we found the lat_1 and lat_2 we need to swap and check to see if we can find it...
-    if (( lat1Str != "" ) && ( lat2Str != "" ) )
+    if ( lat1Str != "" && lat2Str != "" )
     {
       // Make our new string to check...
       QString theProj4StringModified = theProj4String;
@@ -443,33 +446,68 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       theProj4StringModified.replace( myStart2 + LAT_PREFIX_LEN, myLength2 - LAT_PREFIX_LEN, lat1Str );
       QgsDebugMsg( "trying proj4string match with swapped lat_1,lat_2" );
       myRecord = getRecord( "select * from tbl_srs where parameters=" + quotedValue( theProj4StringModified.trimmed() ) );
-      if ( !myRecord.empty() )
-      {
-        // Success!  We have found the proj string by swapping the lat_1 and lat_2
-        setProj4String( theProj4StringModified );
-        mySrsId = myRecord["srs_id"].toLong();
-        QgsDebugMsg( "proj4string match search for srsid returned srsid: " + QString::number( mySrsId ) );
-        if ( mySrsId > 0 )
-        {
-          createFromSrsId( mySrsId );
-        }
-      }
     }
-    else
+  }
+
+  if ( myRecord.empty() )
+  {
+    // match all arameters individually:
+    // - order of parameters doesn't matter
+    // - found definition may have more parameters (like +towgs84 in GDAL)
+    // - retry without datum, if no match is found (looks like +datum<>WGS84 was dropped in GDAL)
+
+    QString sql = "SELECT * FROM tbl_srs WHERE ";
+    QString delim = "";
+    QString datum;
+    foreach( QString param, theProj4String.split( " ", QString::SkipEmptyParts ) )
     {
-      // Last ditch attempt to piece together what we know of the projection to find a match...
-      QgsDebugMsg( "globbing search for srsid from this proj string" );
-      setProj4String( theProj4String );
-      mySrsId = findMatchingProj();
-      QgsDebugMsg( "globbing search for srsid returned srsid: " + QString::number( mySrsId ) );
-      if ( mySrsId > 0 )
+      QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param ) ) );
+      if ( param.startsWith( "+datum=" ) )
       {
-        createFromSrsId( mySrsId );
+        datum = arg;
       }
       else
       {
-        mIsValidFlag = false;
+        sql += delim + arg;
+        delim = " AND ";
       }
+    }
+
+    if ( !datum.isEmpty() )
+    {
+      myRecord = getRecord( sql + delim + datum );
+    }
+
+    if ( myRecord.empty() )
+    {
+      // datum might have disappeared in definition - retry without it
+      myRecord = getRecord( sql );
+    }
+  }
+
+  if ( !myRecord.empty() )
+  {
+    mySrsId = myRecord["srs_id"].toLong();
+    QgsDebugMsg( "proj4string param match search for srsid returned srsid: " + QString::number( mySrsId ) );
+    if ( mySrsId > 0 )
+    {
+      createFromSrsId( mySrsId );
+    }
+  }
+  else
+  {
+    // Last ditch attempt to piece together what we know of the projection to find a match...
+    QgsDebugMsg( "globbing search for srsid from this proj string" );
+    setProj4String( theProj4String );
+    mySrsId = findMatchingProj();
+    QgsDebugMsg( "globbing search for srsid returned srsid: " + QString::number( mySrsId ) );
+    if ( mySrsId > 0 )
+    {
+      createFromSrsId( mySrsId );
+    }
+    else
+    {
+      mIsValidFlag = false;
     }
   }
 

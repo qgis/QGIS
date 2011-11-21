@@ -321,7 +321,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
 {
   static QString authid = QString::null;
   QSettings mySettings;
-  QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour" ).toString();
+  QString myDefaultProjectionOption = mySettings.value( "/Projections/defaultBehaviour", "prompt" ).toString();
   if ( myDefaultProjectionOption == "prompt" )
   {
     //@note this class is not a descendent of QWidget so we cant pass
@@ -1058,6 +1058,10 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
 
+  // Help menu
+  // add What's this button to it
+  QAction* before = mActionHelpAPI;
+  mHelpMenu->insertAction( before, QWhatsThis::createAction() );
 }
 
 void QgisApp::createToolBars()
@@ -6467,7 +6471,7 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
                               "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
                           .arg( oldVersion )
                           .arg( QGis::QGIS_VERSION )
-                          .arg( "<a href=\"https://trac.osgeo.org/qgis\">http://trac.osgeo.org/qgis</a> " )
+                          .arg( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " )
                           .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
                           .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) )
                         );

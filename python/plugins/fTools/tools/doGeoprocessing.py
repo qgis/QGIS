@@ -182,6 +182,9 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
         self.label_2.setText( self.tr( "Union layer" ) )
         self.setWindowTitle( self.tr( "Union" ) )
     self.resize(381, 100)
+    self.populateLayers()
+
+  def populateLayers( self ):
     myListA = []
     myListB = []
     self.inShapeA.clear()
@@ -195,7 +198,6 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
       myListB = ftools_utils.getLayerNames( [ QGis.Point, QGis.Line, QGis.Polygon ] )
     self.inShapeA.addItems( myListA )
     self.inShapeB.addItems( myListB )
-    return
 
 #1: Buffer
 #2: Convex Hull
@@ -257,6 +259,7 @@ class GeoprocessingDialog( QDialog, Ui_Dialog ):
     if addToTOC == QMessageBox.Yes:
       if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
           QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ))
+      self.populateLayers()
 
   def runStatusFromThread( self, status ):
     self.progressBar.setValue( status )
@@ -1103,7 +1106,7 @@ class geoprocessingThread( QThread ):
           writer.addFeature( outFeat )
         except:
           FEATURE_EXCEPT = False
-          # this really shouldn't happen, as we 
+          # this really shouldn't happen, as we
           # haven't edited the input geom at all
           # continue
       else:
@@ -1144,7 +1147,7 @@ class geoprocessingThread( QThread ):
 #                print str(err)
                 FEATURE_EXCEPT = False
 #            else:
-#              # this only happends if the bounding box 
+#              # this only happends if the bounding box
 #              # intersects, but the geometry doesn't
 #              try:
 #                outFeat.setGeometry( geom )

@@ -46,10 +46,13 @@ class Dialog(QDialog, Ui_Dialog):
         QObject.connect(self.inLine2, SIGNAL("currentIndexChanged(QString)"), self.update2)
         self.setWindowTitle( self.tr("Line intersections") )
         self.buttonOk = self.buttonBox_2.button( QDialogButtonBox.Ok )
-        # populate layer list
         self.progressBar.setValue(0)
-        mapCanvas = self.iface.mapCanvas()
+        self.populateLayers()
+
+    def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Line])
+        self.inLine1.clear()
+        self.inLine2.clear()
         self.inLine1.addItems(layers)
         self.inLine2.addItems(layers)
 
@@ -92,6 +95,7 @@ class Dialog(QDialog, Ui_Dialog):
             if addToTOC == QMessageBox.Yes:
                 if not ftools_utils.addShapeToCanvas( unicode( outPath ) ):
                     QMessageBox.warning( self, self.tr("Geoprocessing"), self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( outPath ) ))
+                self.populateLayers()
         self.progressBar.setValue(0)
         self.buttonOk.setEnabled( True )
 

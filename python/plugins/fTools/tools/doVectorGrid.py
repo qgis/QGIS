@@ -50,6 +50,10 @@ class Dialog(QDialog, Ui_Dialog):
         self.xMax.setValidator(QDoubleValidator(self.xMax))
         self.yMin.setValidator(QDoubleValidator(self.yMin))
         self.yMax.setValidator(QDoubleValidator(self.yMax))
+        self.populateLayers()
+
+    def populateLayers( self ):
+        self.inShape.clear()
         layermap = QgsMapLayerRegistry.instance().mapLayers()
         for name, layer in layermap.iteritems():
             self.inShape.addItem( unicode( layer.name() ) )
@@ -64,12 +68,12 @@ class Dialog(QDialog, Ui_Dialog):
             mLayer = ftools_utils.getMapLayerByName( unicode( mLayerName ) )
             boundBox = mLayer.extent()
             self.updateExtents( boundBox )
-    
+
     def updateCanvas( self ):
         canvas = self.iface.mapCanvas()
         boundBox = canvas.extent()
         self.updateExtents( boundBox )
-    
+
     def updateExtents( self, boundBox ):
         self.xMin.setText( unicode( boundBox.xMinimum() ) )
         self.yMin.setText( unicode( boundBox.yMinimum() ) )
@@ -100,6 +104,7 @@ class Dialog(QDialog, Ui_Dialog):
             addToTOC = QMessageBox.question(self, self.tr("Generate Vector Grid"), self.tr("Created output shapefile:\n%1\n\nWould you like to add the new layer to the TOC?").arg(unicode(self.shapefileName)), QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton)
             if addToTOC == QMessageBox.Yes:
                 ftools_utils.addShapeToCanvas( self.shapefileName )
+                self.populateLayers()
         self.progressBar.setValue( 0 )
         self.buttonOk.setEnabled( True )
 

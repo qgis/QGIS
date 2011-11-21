@@ -255,7 +255,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
     void setRelevantFields( bool fetchGeometry, const QgsAttributeList& fetchAttributes );
 
   private:
-    bool crsFromWkt( QgsCoordinateReferenceSystem &srs, const char *wkt );
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QgsFieldMap mAttributeFields;
     OGRDataSourceH ogrDataSource;

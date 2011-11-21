@@ -828,7 +828,8 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
   else
   {
     // Not an CRS - remove the highlight so the user doesn't get too confused
-    theItem->setSelected( false );
+    if ( theItem )
+      theItem->setSelected( false );
     teProjection->setText( "" );
   }
 }

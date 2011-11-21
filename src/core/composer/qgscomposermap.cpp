@@ -357,6 +357,11 @@ void QgsComposerMap::paint( QPainter* painter, const QStyleOptionGraphicsItem* i
 
 void QgsComposerMap::updateCachedImage( void )
 {
+  //If we have a locked layer set then don't reload the map canvas.
+  if ( mKeepLayerSet )
+  {
+    return;
+  }
   syncLayerSet(); //layer list may have changed
   mCacheUpdated = false;
   cache();
