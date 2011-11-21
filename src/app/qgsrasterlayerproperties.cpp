@@ -68,6 +68,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   setupUi( this );
   QString myChartPage = "file:///" + QgsApplication::pkgDataPath() + "/resources/html/chart.html";
   mWebPlot->load(QUrl( myChartPage ));
+  connect( mWebPlot->page()->mainFrame(), SIGNAL( loadFinished( bool ) ), this, SLOT( histogramPageLoaded( bool ) ) );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -1853,6 +1854,14 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
   }
 }
 
+void QgsRasterLayerProperties::histogramPageLoaded( bool theOkFlag )
+{
+  if ( tabBar->currentIndex() == 6 && theOkFlag ) //yuk magick number
+  {
+    refreshHistogram();
+  }
+}
+
 void QgsRasterLayerProperties::refreshHistogram()
 {
   mHistogramProgress->show();
@@ -1876,7 +1885,6 @@ void QgsRasterLayerProperties::refreshHistogram()
   //now draw actual graphs
   //
 
-  bool myFirstIteration = true;
   for ( int myIteratorInt = 1;
       myIteratorInt <= myBandCountInt;
       ++myIteratorInt )
@@ -1896,7 +1904,7 @@ void QgsRasterLayerProperties::refreshHistogram()
       myFirst = false;
     }
     mySeriesJS += "]);";
-    QgsDebugMsg( mySeriesJS );
+    //QgsDebugMsg( mySeriesJS );
     mWebPlot->page()->mainFrame()->evaluateJavaScript( mySeriesJS );
   }
   disconnect( mRasterLayer, SIGNAL( progressUpdate( int ) ), mHistogramProgress, SLOT( setValue( int ) ) );

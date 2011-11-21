@@ -4,8 +4,6 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <script language="javascript" type="text/javascript" src="../js/jquery.js"></script>
     <script language="javascript" type="text/javascript" src="../js/jquery.flot.js"></script>
-    <!-- flot grow plugin: see http://jumware.com/Includes/jquery/Flot/Doc/JQuery.flot.grow.html -->
-    <script language="javascript" type="text/javascript" src="../js/jquery.flot.grow.js"></script>
     <script language="javascript" type="text/javascript" src="../js/jquery.flot.navigate.js"></script>
   </head>
   <body>
@@ -16,9 +14,7 @@
       {
         var options = { series : 
                         { 
-                          grow   : { active      : true }, 
-                          points : { show        : true }, 
-                          grow   : { stepMode    : "maximum", steps: 120 },
+                          points : { show        : false }, 
                           lines  : { show        : true },
                         }, 
                         yaxis  : { zoomRange: null, panRange: null },
