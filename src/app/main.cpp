@@ -474,13 +474,17 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-#ifdef Q_WS_WIN
-  //for windows lets use plastique style!
-  QApplication::setStyle( new QPlastiqueStyle );
-#endif
-
   QSettings mySettings;
 
+  // Set the application style.  If it's not set QT will use the platform style except on Windows
+  // as it looks really ugly so we use QPlastiqueStyle.
+  QString style = mySettings.value("/qgis/style").toString();
+  if ( !style.isNull() )
+      QApplication::setStyle( style );
+#ifdef Q_WS_WIN
+  else
+      QApplication::setStyle( new QPlastiqueStyle );
+#endif
 
   /* Translation file for QGIS.
    */
