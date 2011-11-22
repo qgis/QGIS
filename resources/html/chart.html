@@ -20,13 +20,14 @@
                         yaxis  : { zoomRange: null, panRange: null },
                         xaxis  : { zoomRange: null, panRange: null },
                         zoom   : { interactive : true },
-                        pan    : { interactive : true }
+                        pan    : { interactive : true },
+                        legend : { show : true }
                       };
         $.plot($("#chart"), d, options);
       }
-      function addSeries( theSeries )
+      function addSeries( theSeries, theBand, theColor )
       {
-        d.push( { data: theSeries } );
+        d.push( { data: theSeries, label: "Band " + theBand, color: theColor } );
         replot();
         //alert( theSeries );
       }
