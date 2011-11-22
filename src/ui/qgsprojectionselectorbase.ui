@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>590</width>
-    <height>358</height>
+    <width>574</width>
+    <height>378</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,69 +31,7 @@
    <property name="margin">
     <number>3</number>
    </property>
-   <item row="1" column="0">
-    <widget class="QTextEdit" name="teProjection">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>50</height>
-      </size>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>0</width>
-       <height>50</height>
-      </size>
-     </property>
-     <property name="autoFormatting">
-      <set>QTextEdit::AutoBulletList</set>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
-    <widget class="QTreeWidget" name="lstCoordinateSystems">
-     <property name="alternatingRowColors">
-      <bool>true</bool>
-     </property>
-     <property name="uniformRowHeights">
-      <bool>true</bool>
-     </property>
-     <property name="columnCount">
-      <number>3</number>
-     </property>
-     <column>
-      <property name="text">
-       <string>Coordinate Reference System</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Authority ID</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>ID</string>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="2" column="0">
     <widget class="QGroupBox" name="groupBox">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Minimum">
@@ -102,64 +40,9 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Search</string>
+      <string>Filter</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>Authority</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cbxAuthority"/>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>Search for</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="cbxMode">
-          <item>
-           <property name="text">
-            <string>ID</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Name</string>
-           </property>
-          </item>
-         </widget>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="cbxHideDeprecated">
-          <property name="text">
-           <string>Hide deprecated CRSs</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -196,7 +79,7 @@
    <item row="4" column="0">
     <widget class="QTreeWidget" name="lstRecent">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+      <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
@@ -210,7 +93,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>105</height>
+       <height>200</height>
       </size>
      </property>
      <property name="alternatingRowColors">
@@ -242,6 +125,150 @@
      </column>
     </widget>
    </item>
+   <item row="7" column="0" rowspan="5">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <property name="topMargin">
+      <number>15</number>
+     </property>
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Coordinate reference systems of the world</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="cbxHideDeprecated">
+       <property name="text">
+        <string>Hide deprecated CRSs</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="15" column="0">
+    <widget class="QTreeWidget" name="lstCoordinateSystems">
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
+     <property name="uniformRowHeights">
+      <bool>true</bool>
+     </property>
+     <property name="columnCount">
+      <number>3</number>
+     </property>
+     <column>
+      <property name="text">
+       <string>Coordinate Reference System</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Authority ID</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>ID</string>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="19" column="0">
+    <widget class="QTextEdit" name="teProjection">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>0</width>
+       <height>50</height>
+      </size>
+     </property>
+     <property name="autoFormatting">
+      <set>QTextEdit::AutoBulletList</set>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="16" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Authority</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cbxAuthority"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Search for</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QComboBox" name="cbxMode">
+       <item>
+        <property name="text">
+         <string>ID</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>Name</string>
+        </property>
+       </item>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
@@ -250,10 +277,8 @@
   <tabstop>teProjection</tabstop>
   <tabstop>cbxAuthority</tabstop>
   <tabstop>cbxMode</tabstop>
-  <tabstop>cbxHideDeprecated</tabstop>
   <tabstop>leSearch</tabstop>
   <tabstop>pbnFind</tabstop>
-  <tabstop>lstRecent</tabstop>
  </tabstops>
  <resources/>
  <connections/>
