@@ -127,19 +127,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="1" column="3">
                <widget class="QgsColorButton" name="pbnCanvasColor">
                 <property name="minimumSize">
@@ -153,7 +140,20 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
+              <item row="0" column="4">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="4">
                <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -176,6 +176,36 @@
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
               <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_18">
+                  <property name="text">
+                   <string>Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbStyle"/>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
                  <widget class="QLabel" name="textLabel1_4">
@@ -191,6 +221,18 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QComboBox" name="cmbTheme">
+                  <property name="duplicatesEnabled">
+                   <bool>false</bool>
+                  </property>
+                  <item>
+                   <property name="text">
+                    <string/>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_2">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -202,18 +244,6 @@
                    </size>
                   </property>
                  </spacer>
-                </item>
-                <item>
-                 <widget class="QComboBox" name="cmbTheme">
-                  <property name="duplicatesEnabled">
-                   <bool>false</bool>
-                  </property>
-                  <item>
-                   <property name="text">
-                    <string/>
-                   </property>
-                  </item>
-                 </widget>
                 </item>
                </layout>
               </item>
@@ -233,6 +263,13 @@
                  </widget>
                 </item>
                 <item>
+                 <widget class="QComboBox" name="cmbSize">
+                  <property name="duplicatesEnabled">
+                   <bool>false</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <spacer name="horizontalSpacer_5">
                   <property name="orientation">
                    <enum>Qt::Horizontal</enum>
@@ -245,13 +282,6 @@
                   </property>
                  </spacer>
                 </item>
-                <item>
-                 <widget class="QComboBox" name="cmbSize">
-                  <property name="duplicatesEnabled">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
                </layout>
               </item>
               <item>
@@ -262,19 +292,6 @@
                    <string>Double click action in legend</string>
                   </property>
                  </widget>
-                </item>
-                <item>
-                 <spacer name="horizontalSpacer_6">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
                 </item>
                 <item>
                  <widget class="QComboBox" name="cmbLegendDoubleClickAction">
@@ -289,6 +306,19 @@
                    </property>
                   </item>
                  </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_6">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
                 </item>
                </layout>
               </item>
