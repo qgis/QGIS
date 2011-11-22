@@ -52,13 +52,24 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   lstCoordinateSystems->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
+  // Hide (internal) ID column
+  lstCoordinateSystems->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
 
   lstRecent->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
   lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstRecent->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
+  // Hide (internal) ID column
+  lstRecent->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
 
   cbxAuthority->addItem( tr( "All" ) );
   cbxAuthority->addItems( authorities() );
+
+  // TEMP? hide buttons, we now implemented filter
+  cbxAuthority->hide();
+  cbxMode->hide();
+  label->hide();
+  label_2->hide();
+  pbnFind->hide();
 
   // Read settings from persistent storage
   QSettings settings;
@@ -189,7 +200,6 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   {
     return sqlExpression;
   }
-
   /*
      Ref: WMS 1.3.0, section 6.7.3 "Layer CRS":
 
@@ -794,7 +804,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
         // display the qgis srs_id (field 1) in the third column of the list view
         newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 1 ) ) );
-
+        // expand also parent node
+        newItem->parent()->setExpanded(true);
       }
 
       // display the qgis deprecated in the user data of the item
@@ -982,6 +993,65 @@ void QgsProjectionSelector::on_pbnFind_clicked()
   teProjection->setText( "" );
 }
 
+void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt)
+{
+    // filter recent crs's
+    QTreeWidgetItemIterator itr(lstRecent);
+    while (*itr) {
+        if ( (*itr)->childCount() == 0 )  // it's an end node aka a projection
+        {
+            if ( (*itr)->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              || (*itr)->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              )
+            {
+                (*itr)->setHidden(false);
+                QTreeWidgetItem * parent = (*itr)->parent();
+                while (parent != NULL)
+                {
+                    parent->setExpanded(true);
+                    parent->setHidden(false);
+                    parent = parent->parent();
+                }
+            }
+            else{
+                 (*itr)->setHidden(true);
+            }
+        }
+        else{
+             (*itr)->setHidden(true);
+        }
+        ++itr;
+    }
+    // filter crs's
+    QTreeWidgetItemIterator it(lstCoordinateSystems);
+    while (*it) {
+        if ( (*it)->childCount() == 0 )  // it's an end node aka a projection
+        {
+            if ( (*it)->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              || (*it)->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              )
+            {
+                (*it)->setHidden(false);
+                QTreeWidgetItem * parent = (*it)->parent();
+                while (parent != NULL)
+                {
+                    parent->setExpanded(true);
+                    parent->setHidden(false);
+                    parent = parent->parent();
+                }
+            }
+            else{
+                 (*it)->setHidden(true);
+            }
+        }
+        else{
+             (*it)->setHidden(true);
+        }
+        ++it;
+    }
+}
+
+
 long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
 {
   long mySrsId = 0;
@@ -1094,7 +1164,7 @@ QStringList QgsProjectionSelector::authorities()
   return authorities;
 }
 
-/*!
+/*!linfinity qtcreator qgis
 * \brief Make the string safe for use in SQL statements.
 *  This involves escaping single quotes, double quotes, backslashes,
 *  and optionally, percentage symbols.  Percentage symbols are used
