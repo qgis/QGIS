@@ -61,16 +61,6 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   // Hide (internal) ID column
   lstRecent->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
 
-  cbxAuthority->addItem( tr( "All" ) );
-  cbxAuthority->addItems( authorities() );
-
-  // TEMP? hide buttons, we now implemented filter
-  cbxAuthority->hide();
-  cbxMode->hide();
-  label->hide();
-  label_2->hide();
-  pbnFind->hide();
-
   // Read settings from persistent storage
   QSettings settings;
   mRecentProjections = settings.value( "/UI/recentProjections" ).toStringList();
@@ -145,7 +135,6 @@ QgsProjectionSelector::~QgsProjectionSelector()
     settings.setValue( "/UI/recentProjectionsAuthId", projectionsAuthId );
   }
 }
-
 
 void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
 {
@@ -877,121 +866,6 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
     setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
 }
 
-void QgsProjectionSelector::on_pbnFind_clicked()
-{
-  QgsDebugMsg( "pbnFind..." );
-
-  QString mySearchString( sqlSafeString( leSearch->text() ) );
-
-  // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql = "select srs_id from tbl_srs where ";
-  if ( cbxAuthority->currentIndex() > 0 )
-  {
-    mySql += QString( "auth_name='%1' AND " ).arg( cbxAuthority->currentText() );
-  }
-
-  if ( cbxHideDeprecated->isChecked() )
-  {
-    mySql += "not deprecated AND ";
-  }
-
-  if ( cbxMode->currentIndex() == 0 )
-  {
-    mySql += QString( "auth_id='%1'" ).arg( mySearchString );
-  }
-  else
-  {
-    mySql += "upper(description) like '%" + mySearchString.toUpper() + "%' ";
-
-    long myLargestSrsId = getLargestCRSIDMatch( QString( "%1 order by srs_id desc limit 1" ).arg( mySql ) );
-    QgsDebugMsg( QString( "Largest CRSID%1" ).arg( myLargestSrsId ) );
-
-    //a name search is ambiguous, so we find the first srsid after the current selected srsid
-    // each time the find button is pressed. This means we can loop through all matches.
-    if ( myLargestSrsId <= selectedCrsId() )
-    {
-      mySql = QString( "%1 order by srs_id limit 1" ).arg( mySql );
-    }
-    else
-    {
-      // search ahead of the current position
-      mySql = QString( "%1 and srs_id > %2 order by srs_id limit 1" ).arg( mySql ).arg( selectedCrsId() );
-    }
-  }
-  QgsDebugMsg( QString( " Search sql: %1" ).arg( mySql ) );
-
-  //
-  // Now perform the actual search
-  //
-
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &myDatabase );
-  if ( myResult )
-  {
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist. But we checked earlier for its existance
-    //     and aborted in that case. This is because we may be runnig from read only
-    //     media such as live cd and don't want to force trying to create a db.
-    showDBMissingWarning( mSrsDatabaseFileName );
-    return;
-  }
-
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    myResult = sqlite3_step( myPreparedStatement );
-    if ( myResult == SQLITE_ROW )
-    {
-      QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      setSelectedCrsId( mySrsId.toLong() );
-      // close the sqlite3 statement
-      sqlite3_finalize( myPreparedStatement );
-      sqlite3_close( myDatabase );
-      return;
-    }
-  }
-  //search the users db
-  QString myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
-  QFileInfo myFileInfo;
-  myFileInfo.setFile( myDatabaseFileName );
-  if ( !myFileInfo.exists( ) ) //its not critical if this happens
-  {
-    QgsDebugMsg( QString( "%1\nUser db does not exist" ).arg( myDatabaseFileName ) );
-    return ;
-  }
-  myResult = sqlite3_open( myDatabaseFileName.toUtf8().data(), &myDatabase );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    //no need for assert because user db may not have been created yet
-    return;
-  }
-
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    myResult = sqlite3_step( myPreparedStatement );
-    if ( myResult == SQLITE_ROW )
-    {
-      QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      setSelectedCrsId( mySrsId.toLong() );
-      // close the sqlite3 statement
-      sqlite3_finalize( myPreparedStatement );
-      sqlite3_close( myDatabase );
-      return;
-    }
-  }
-
-  QMessageBox::information( this, tr( "Find projection" ), tr( "No matching projection found." ) );
-  lstCoordinateSystems->clearSelection();
-  teProjection->setText( "" );
-}
 
 void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt)
 {
