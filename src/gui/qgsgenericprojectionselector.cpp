@@ -15,6 +15,8 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include "qgsapplication.h"
+
 #include <qgsgenericprojectionselector.h>
 #include <QApplication>
 
@@ -38,20 +40,18 @@ void QgsGenericProjectionSelector::setMessage( QString theMessage )
   if ( theMessage.isEmpty() )
   {
     // Set up text edit pane
-    QString format( "<h2>%1</h2>%2 %3" );
+    QString format( "<h1>%1</h1>%2 %3" );
     QString header = tr( "Define this layer's coordinate reference system:" );
     QString sentence1 = tr( "This layer appears to have no projection specification." );
     QString sentence2 = tr( "By default, this layer will now have its projection set to that of the project, "
                             "but you may override this by selecting a different projection below." );
-    textEdit->setHtml( format.arg( header ).arg( sentence1 )
-                       .arg( sentence2 ) );
+    theMessage = format.arg( header ).arg( sentence1 ).arg( sentence2 );
   }
-  else
-  {
-    textEdit->setHtml( theMessage );
-  }
-  textEdit->show();
 
+  QString myStyle = QgsApplication::reportStyleSheet();
+  theMessage = "<head><style>" + myStyle + "</style></head><body>" + theMessage + "</body>";
+  textEdit->setHtml( theMessage );
+  textEdit->show();
 }
 //! Destructor
 QgsGenericProjectionSelector::~QgsGenericProjectionSelector()

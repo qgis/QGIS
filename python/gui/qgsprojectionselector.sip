@@ -89,8 +89,6 @@ class QgsProjectionSelector: QWidget //, private Ui::QgsProjectionSelectorBase
        */
       void setOgcWmsCrsFilter(QSet<QString> crsFilter);
 
-      void on_pbnFind_clicked();
-
     protected:
       /** Used to ensure the projection list view is actually populated */
       void showEvent ( QShowEvent * theEvent );
