@@ -32,6 +32,7 @@
 #include <QPlastiqueStyle>
 #include <QTranslator>
 #include <QImageReader>
+#include <QWebSettings>
 
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
@@ -738,6 +739,12 @@ int main( int argc, char *argv[] )
 
     return 1;
   }
+
+
+#ifdef QGISDEBUG
+  //enable debugging in QWebViews when in debug mode
+  QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+#endif
 
 
   /////////////////////////////////////////////////////////////////////
