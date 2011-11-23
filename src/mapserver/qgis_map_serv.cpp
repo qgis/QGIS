@@ -164,10 +164,10 @@ int main( int argc, char * argv[] )
   }
 #endif
 
-  // Instantiate the plugin directory so that providers are loaded
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
+  // Instantiate the provider directory so that providers are loaded
+  QgsProviderRegistry::instance( QgsApplication::providerPath() );
   QgsDebugMsg( "Prefix  PATH: " + QgsApplication::prefixPath() );
-  QgsDebugMsg( "Plugin  PATH: " + QgsApplication::pluginPath() );
+  QgsDebugMsg( "Provider PATH: " + QgsApplication::providerPath() );
   QgsDebugMsg( "PkgData PATH: " + QgsApplication::pkgDataPath() );
   QgsDebugMsg( "User DB PATH: " + QgsApplication::qgisUserDbFilePath() );
 
