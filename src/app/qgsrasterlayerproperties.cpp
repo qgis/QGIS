@@ -69,6 +69,10 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   QString myChartPage = "file:///" + QgsApplication::pkgDataPath() + "/resources/html/chart.html";
   mWebPlot->load(QUrl( myChartPage ));
   connect( mWebPlot->page()->mainFrame(), SIGNAL( loadFinished( bool ) ), this, SLOT( histogramPageLoaded( bool ) ) );
+  QString myMetadataPage = "file:///" + QgsApplication::pkgDataPath() + "/resources/html/qgsrasterlayer.html";
+  wvMetadata->load(QUrl( myMetadataPage ));
+  connect( wvMetadata->page()->mainFrame(), SIGNAL( loadFinished( bool ) ), this, SLOT( metadataPageLoaded( bool ) ) );
+
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
   connect( this, SIGNAL( accepted() ), this, SLOT( apply() ) );
   connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
@@ -843,14 +847,6 @@ void QgsRasterLayerProperties::sync()
   pixmapPalette->setScaledContents( true );
   pixmapPalette->repaint();
 
-  QgsDebugMsg( "populate metadata tab" );
-  /*
-   * Metadata Tab
-   */
-  //populate the metadata tab's text browser widget with gdal metadata info
-  QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->document()->setDefaultStyleSheet( myStyle );
-  txtbMetadata->setHtml( mRasterLayer->metadata() );
 
 } // QgsRasterLayerProperties::sync()
 
@@ -1608,10 +1604,6 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
   pixmapLegend->setScaledContents( true );
   pixmapLegend->repaint();
-  //populate the metadata tab's text browser widget with gdal metadata info
-  QString myStyle = QgsApplication::reportStyleSheet();
-  txtbMetadata->setHtml( mRasterLayer->metadata() );
-  txtbMetadata->document()->setDefaultStyleSheet( myStyle );
 }
 
 void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged( const QString& theText )
@@ -1852,6 +1844,14 @@ void QgsRasterLayerProperties::on_tabBar_currentChanged( int theTab )
   {
     refreshHistogram();
   }
+}
+
+void QgsRasterLayerProperties::metadataPageLoaded( bool theOkFlag )
+{
+  Q_UNUSED( theOkFlag );
+  //populate the metadata tab's text browser widget with raster metadata info
+  wvMetadata->page()->mainFrame()->addToJavaScriptWindowObject( "mRasterLayer", mRasterLayer );
+  wvMetadata->page()->mainFrame()->evaluateJavaScript( QString("setMetadata()"));
 }
 
 void QgsRasterLayerProperties::histogramPageLoaded( bool theOkFlag )
