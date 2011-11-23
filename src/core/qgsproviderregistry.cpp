@@ -78,6 +78,8 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
 
 #ifdef WIN32
   mLibraryDirectory.setNameFilters( QStringList( "*.dll" ) );
+#elif ANDROID
+  mLibraryDirectory.setNameFilters( QStringList( "*provider.so" ) );
 #else
   mLibraryDirectory.setNameFilters( QStringList( "*.so" ) );
 #endif
