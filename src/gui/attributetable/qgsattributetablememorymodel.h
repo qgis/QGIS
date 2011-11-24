@@ -81,8 +81,6 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * Loads the layer into the model
      */
     virtual void loadLayer();
-
-    QHash<QgsFeatureId, QgsFeature> mFeatureMap;
 };
 
 #endif //QGSATTRIBUTETABLEMEMORYMODEL_H
