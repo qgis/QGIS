@@ -1852,6 +1852,7 @@ void QgsRasterLayerProperties::metadataPageLoaded( bool theOkFlag )
   //populate the metadata tab's text browser widget with raster metadata info
   wvMetadata->page()->mainFrame()->addToJavaScriptWindowObject( "mRasterLayer", mRasterLayer );
   wvMetadata->page()->mainFrame()->evaluateJavaScript( QString("setMetadata()"));
+  setWindowModality ( Qt::NonModal );
 }
 
 void QgsRasterLayerProperties::histogramPageLoaded( bool theOkFlag )
