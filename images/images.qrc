@@ -203,6 +203,7 @@
         <file>themes/default/propertyicons/rendering.png</file>
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/transparency.png</file>
+        <file>themes/default/propertyicons/gdal.png</file>
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
