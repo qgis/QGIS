@@ -1365,7 +1365,9 @@ QString QgsProject::readPath( QString src ) const
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
     QFileInfo pfi( fileName() );
-    Q_ASSERT( pfi.exists() );
+    if ( !pfi.exists() )
+      return src;
+
     QFileInfo fi( pfi.canonicalPath() + "/" + src );
 
     if ( !fi.exists() )

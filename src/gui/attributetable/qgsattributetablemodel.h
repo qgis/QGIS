@@ -21,6 +21,7 @@
 #include <QModelIndex>
 #include <QObject>
 #include <QHash>
+#include <QQueue>
 
 #include "qgsfeature.h" // QgsAttributeMap
 #include "qgsvectorlayer.h" // QgsAttributeList
@@ -196,6 +197,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     int mFieldCount;
 
     mutable QgsFeature mFeat;
+    mutable QHash<QgsFeatureId, QgsFeature> mFeatureMap;
 
     QgsAttributeList mAttributes;
     QMap< int, const QMap<QString, QVariant> * > mValueMaps;
@@ -228,6 +230,10 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return feature exists
      */
     virtual bool featureAtId( QgsFeatureId fid ) const;
+
+  private:
+    mutable QQueue<QgsFeatureId> mFeatureQueue;
+
 };
 
 

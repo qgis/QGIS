@@ -67,7 +67,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbSize->addItem( "32" );
 
   QStringList styles = QStyleFactory::keys();
-  foreach(QString style, styles )
+  foreach( QString style, styles )
   {
     cmbStyle->addItem( style );
   }
@@ -181,6 +181,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbAttrTableBehaviour->addItem( tr( "Show selected features" ) );
   cmbAttrTableBehaviour->addItem( tr( "Show features in current canvas" ) );
   cmbAttrTableBehaviour->setCurrentIndex( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() );
+
+  spinBoxAttrTableRowCache->setValue( settings.value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
 
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
@@ -584,6 +586,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
+  settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
