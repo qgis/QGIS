@@ -1,0 +1,15 @@
+<h3>substr() function</h3>
+Return a part of a string
+
+<p><h4>Syntax</h4>
+     substr(<i>string,startpos,length</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> -> is string.  The full string.<br>
+<i>  startpos</i> -> is number.  The start position to extract from.<br>
+<i>  length</i> -> is number.  The length of the string to extract.<br></p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     substr('HELLO WORLD',3,5) -> 'LLO W'</p>
