@@ -1326,24 +1326,21 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
     if ( whereClause.isEmpty() )
     {
+      QString qBox = QString( "%1('BOX3D(%2)'::box3d,%3)" )
+                    .arg( connectionRO->majorVersion() < 2 ? "setsrid"
+                                                        : "st_setsrid" )
+                    .arg( rect.asWktCoordinates() )
+                    .arg( srid );
+      whereClause = QString( "%1 && %2" )
+                   .arg( quotedIdentifier( geometryColumn ) )
+                   .arg( qBox );
       if ( useIntersect )
       {
-        // Contributed by #qgis irc "creeping"
-        // This version actually invokes PostGIS's use of spatial indexes
-        whereClause = QString( "%1 && %2('BOX3D(%3)'::box3d,%4) and %5(%1,%2('BOX3D(%3)'::box3d,%4))" )
+        whereClause += QString( " and %1(%2,%3))" )
+                      .arg( connectionRO->majorVersion() < 2 ? "intersects"
+                                                          : "st_intersects" )
                       .arg( quotedIdentifier( geometryColumn ) )
-                      .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
-                      .arg( rect.asWktCoordinates() )
-                      .arg( srid )
-                      .arg( connectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" );
-      }
-      else
-      {
-        whereClause = QString( "%1 && %2('BOX3D(%3)'::box3d,%4)" )
-                      .arg( quotedIdentifier( geometryColumn ) )
-                      .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
-                      .arg( rect.asWktCoordinates() )
-                      .arg( srid );
+                      .arg( qBox );
       }
     }
   }
