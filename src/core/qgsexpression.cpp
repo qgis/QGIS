@@ -392,16 +392,10 @@ FnDef QgsExpression::BuiltinFunctions[] =
   FnDef( "toreal", 1, fcnToReal, "Conversions" ),
   FnDef( "tostring", 1, fcnToString, "Conversions" ),
   // string manipulation
-  FnDef( "lower", 1, fcnLower, "String", "<b>Convert to lower case</b> "
-  "<br> Converts a string to lower case letters. "
-  "<br> <i>Usage:</i><br>lower('HELLO WORLD') will return 'hello world'" ),
-  FnDef( "upper", 1, fcnUpper, "String" , "<b>Convert to upper case</b> "
-  "<br> Converts a string to upper case letters. "
-  "<br> <i>Usage:</i><br>upper('hello world') will return 'HELLO WORLD'" ),
-  FnDef( "length", 1, fcnLength, "String", "<b>Length of string</b> "
-  "<br> Returns the legnth of a string. "
-  "<br> <i>Usage:</i><br>length('hello') will return 5" ),
-  FnDef( "replace", 3, fcnReplace, "String", "<b>Replace a section of a string.</b> " ),
+  FnDef( "lower", 1, fcnLower, "String"),
+  FnDef( "upper", 1, fcnUpper, "String"),
+  FnDef( "length", 1, fcnLength, "String"),
+  FnDef( "replace", 3, fcnReplace, "String"),
   FnDef( "regexp_replace", 3, fcnRegexpReplace, "String" ),
   FnDef( "substr", 3, fcnSubstr, "String" ),
   // geometry accessors

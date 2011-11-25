@@ -1,0 +1,11 @@
+<h3>lower() function</h3>
+Converts a string to lower case letters.
+
+<p><h4>  Syntax</h4>
+     lower(<i>string</i>)</p>
+
+<p><h4>  Arguments</h4>
+<i>  string</i> -> is string.  The String to convert to lower case.</p>
+
+<p><h4>  Example</h4>
+     lower('HELLO World') -> 'hello world'</p>

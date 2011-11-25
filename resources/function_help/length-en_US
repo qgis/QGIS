@@ -1,0 +1,13 @@
+<h3>length() function</h3>
+Returns the length of a string.
+
+<p><h4>Syntax</h4>
+     length(<i>string</i>)</p>
+
+<p><h4>Arguments</h4>
+<!-- List args for functions here-->
+<i>  string</i> -> is string.  The String to count the length of.</p>
+
+<p><h4>Example</h4>
+<!-- Show example of function.-->
+     length('HELLO') -> 5</p>
