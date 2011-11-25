@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>825</width>
-    <height>503</height>
+    <height>852</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>979</width>
-            <height>1135</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -127,19 +127,6 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="2">
-               <spacer>
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
               <item row="1" column="3">
                <widget class="QgsColorButton" name="pbnCanvasColor">
                 <property name="minimumSize">
@@ -153,7 +140,20 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="2">
+              <item row="0" column="4">
+               <spacer>
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="4">
                <spacer>
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -175,6 +175,36 @@
               <string>Application</string>
              </property>
              <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_9">
+                <property name="topMargin">
+                 <number>0</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_18">
+                  <property name="text">
+                   <string>Style &lt;i&gt;(QGIS restart required)&lt;/i&gt;</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_7">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbStyle"/>
+                </item>
+               </layout>
+              </item>
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
@@ -405,6 +435,49 @@
                </layout>
               </item>
               <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_10">
+                <item>
+                 <widget class="QLabel" name="textLabel1_12">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
+                  <property name="text">
+                   <string>Attribute table row cache</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_8">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBoxAttrTableRowCache">
+                  <property name="maximum">
+                   <number>100000</number>
+                  </property>
+                  <property name="singleStep">
+                   <number>1000</number>
+                  </property>
+                  <property name="value">
+                   <number>10000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
                <layout class="QHBoxLayout" name="horizontalLayout_6">
                 <item>
                  <widget class="QLabel" name="label_14">
@@ -431,83 +504,108 @@
                 </item>
                </layout>
               </item>
-              <item>
-               <widget class="QGroupBox" name="groupBox_13">
-                <property name="title">
-                 <string>GDAL Drivers</string>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_24">
-                 <item row="1" column="0">
-                  <widget class="QListWidget" name="lstGdalDrivers">
-                   <property name="minimumSize">
-                    <size>
-                     <width>0</width>
-                     <height>141</height>
-                    </size>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="label_17">
-                   <property name="text">
-                    <string>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</string>
-                   </property>
-                  </widget>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item>
-               <widget class="QGroupBox" name="groupBox_4">
-                <property name="title">
-                 <string>Plugin paths</string>
-                </property>
-                <layout class="QGridLayout" name="_2">
-                 <item row="0" column="0">
-                  <widget class="QLabel" name="mSVGLabel_2">
-                   <property name="text">
-                    <string>Path(s) to search for additional C++ plugins libraries</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="1">
-                  <spacer>
-                   <property name="orientation">
-                    <enum>Qt::Horizontal</enum>
-                   </property>
-                   <property name="sizeHint" stdset="0">
-                    <size>
-                     <width>31</width>
-                     <height>20</height>
-                    </size>
-                   </property>
-                  </spacer>
-                 </item>
-                 <item row="0" column="2">
-                  <widget class="QPushButton" name="mBtnAddPluginPath">
-                   <property name="text">
-                    <string>Add</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="3">
-                  <widget class="QPushButton" name="mBtnRemovePluginPath">
-                   <property name="text">
-                    <string>Remove</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0" colspan="4">
-                  <widget class="QListWidget" name="mListPluginPaths"/>
-                 </item>
-                </layout>
-               </widget>
-              </item>
              </layout>
             </widget>
            </item>
           </layout>
          </widget>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/propertyicons/gdal.png</normaloff>:/images/themes/default/propertyicons/gdal.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>GDAL</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_13">
+         <property name="title">
+          <string>GDAL Drivers</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_24">
+          <item row="1" column="0">
+           <widget class="QListWidget" name="lstGdalDrivers">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>141</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_17">
+            <property name="text">
+             <string>In some cases more than one GDAL driver can be used to load the same raster format. Use the list below to specify which to use.</string>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="tab_2">
+      <attribute name="icon">
+       <iconset resource="../../images/images.qrc">
+        <normaloff>:/images/themes/default/mActionShowPluginManager.png</normaloff>:/images/themes/default/mActionShowPluginManager.png</iconset>
+      </attribute>
+      <attribute name="title">
+       <string>Plugins</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_25">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="groupBox_4">
+         <property name="title">
+          <string>Plugin paths</string>
+         </property>
+         <layout class="QGridLayout" name="_2">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mSVGLabel_2">
+            <property name="text">
+             <string>Path(s) to search for additional C++ plugins libraries</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <spacer>
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>31</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="2">
+           <widget class="QPushButton" name="mBtnAddPluginPath">
+            <property name="text">
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QPushButton" name="mBtnRemovePluginPath">
+            <property name="text">
+             <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="4">
+           <widget class="QListWidget" name="mListPluginPaths"/>
+          </item>
+         </layout>
         </widget>
        </item>
       </layout>
@@ -537,8 +635,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>641</width>
-            <height>512</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -552,6 +650,20 @@
                <widget class="QCheckBox" name="chkAddedVisibility">
                 <property name="text">
                  <string>By default new la&amp;yers added to the map should be displayed</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QLabel" name="textLabel3">
+                <property name="text">
+                 <string>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="0" colspan="2">
+               <widget class="QCheckBox" name="chkUseRenderCaching">
+                <property name="text">
+                 <string>Use render caching where possible to speed up redraws</string>
                 </property>
                </widget>
               </item>
@@ -572,20 +684,6 @@
                 </property>
                 <property name="value">
                  <number>1000</number>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0" colspan="2">
-               <widget class="QLabel" name="textLabel3">
-                <property name="text">
-                 <string>&lt;b&gt;Note:&lt;/b&gt; Use zero to prevent display updates until all features have been rendered</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0" colspan="2">
-               <widget class="QCheckBox" name="chkUseRenderCaching">
-                <property name="text">
-                 <string>Use render caching where possible to speed up redraws</string>
                 </property>
                </widget>
               </item>
@@ -711,8 +809,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>567</width>
-            <height>532</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -997,8 +1095,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>289</width>
-            <height>94</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1072,8 +1170,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>797</width>
-            <height>490</height>
+            <width>773</width>
+            <height>735</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1408,8 +1506,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>446</width>
-            <height>420</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1582,8 +1680,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>519</width>
-            <height>583</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1679,8 +1777,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>384</width>
-            <height>573</height>
+            <width>799</width>
+            <height>761</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -1930,9 +2028,6 @@
   <tabstop>cbxAddNewLayersToCurrentGroup</tabstop>
   <tabstop>cmbAttrTableBehaviour</tabstop>
   <tabstop>leNullValue</tabstop>
-  <tabstop>mListPluginPaths</tabstop>
-  <tabstop>mBtnAddPluginPath</tabstop>
-  <tabstop>mBtnRemovePluginPath</tabstop>
   <tabstop>buttonBox</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>chkAddedVisibility</tabstop>

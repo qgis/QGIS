@@ -33,6 +33,9 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
     : QAbstractTableModel( parent )
 {
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
+  mFeatureMap.clear();
+  mFeatureQueue.clear();
+
   mLayer = theLayer;
   loadAttributes();
 
@@ -50,9 +53,33 @@ bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
   QgsDebugMsgLevel( QString( "loading feature %1" ).arg( fid ), 3 );
 
   if ( fid == std::numeric_limits<int>::min() )
+  {
     return false;
+  }
+  else if ( mFeatureMap.contains( fid ) )
+  {
+    mFeat = mFeatureMap[ fid ];
+    return true;
+  }
+  else if ( mLayer->featureAtId( fid, mFeat, false, true ) )
+  {
+    QSettings settings;
+    int cacheSize = settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt();
+
+    if ( mFeatureQueue.size() == cacheSize )
+    {
+      mFeatureMap.remove( mFeatureQueue.dequeue() );
+    }
+
+    mFeatureQueue.enqueue( fid );
+    mFeatureMap.insert( fid, mFeat );
+
+    return true;
+  }
   else
-    return mLayer->featureAtId( fid, mFeat, false, true );
+  {
+    return false;
+  }
 }
 
 void QgsAttributeTableModel::featureDeleted( QgsFeatureId fid )
@@ -152,6 +179,10 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
+  if ( mFeatureMap.contains( fid ) )
+  {
+    mFeatureMap[ fid ].changeAttribute( fieldCol( idx ), value );
+  }
   setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 

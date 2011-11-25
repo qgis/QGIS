@@ -7,8 +7,13 @@ SET (util_SRCS ../core/qgsrenderchecker.cpp)
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/
-  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/analysis/vector
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/renderer
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/analysis
+  ${CMAKE_SOURCE_DIR}/src/analysis/vector
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
@@ -34,10 +39,10 @@ ENDIF (WIN32)
 
 # Since the tests are not actually installed, but rather
 # run directly from the build/src/tests dir we need to
-# ensure the omg libs can be found.
+# ensure the qgis libs can be found.
 IF (APPLE)
   # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/analyzer)
+  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
 ENDIF (APPLE)
 
 #note for tests we should not include the moc of our
@@ -45,47 +50,28 @@ ENDIF (APPLE)
 #directly included in the sources
 #and should not be compiled twice. Trying to include
 #them in will cause an error at build time 
+
+#No relinking and full RPATH for the install tree
+#See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
+
+MACRO (ADD_QGIS_TEST testname testsrc)
+  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
+  SET(qgis_${testname}_MOC_CPPS ${testsrc})
+  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
+  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
+  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
+  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_analysis)
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
+  #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+  #  INSTALL_RPATH_USE_LINK_PATH true )
+ENDMACRO (ADD_QGIS_TEST)
+
 #############################################################
 # Tests:
 
-#
-# QgsVectorAnalyzer test
-#
-SET(qgis_vectoranalyzertest_SRCS testqgsvectoranalyzer.cpp ${util_SRCS})
-SET(qgis_vectoranalyzertest_MOC_CPPS testqgsvectoranalyzer.cpp)
-QT4_WRAP_CPP(qgis_vectoranalyzertest_MOC_SRCS ${qgis_vectoranalyzertest_MOC_CPPS})
-ADD_CUSTOM_TARGET(qgis_vectoranalyzertestmoc ALL DEPENDS ${qgis_vectoranalyzertest_MOC_SRCS})
-ADD_EXECUTABLE(qgis_vectoranalyzertest ${qgis_vectoranalyzertest_SRCS})
-ADD_DEPENDENCIES(qgis_vectoranalyzertest qgis_vectoranalyzertestmoc)
-TARGET_LINK_LIBRARIES(qgis_vectoranalyzertest ${QT_LIBRARIES} qgis_core qgis_analysis)
-  #No relinking and full RPATH for the install tree
-  #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
-SET_TARGET_PROPERTIES(qgis_vectoranalyzertest 
-  # skip the full RPATH for the build tree
-  PROPERTIES SKIP_BUILD_RPATH  TRUE
-  )
-SET_TARGET_PROPERTIES(qgis_vectoranalyzertest 
-  # when building, use the install RPATH already
-  # (so it doesn't need to relink when installing)
-  PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE 
-  )
-SET_TARGET_PROPERTIES(qgis_vectoranalyzertest 
-  # the RPATH to be used when installing
-  PROPERTIES INSTALL_RPATH ${QGIS_LIB_DIR}
-  )
-SET_TARGET_PROPERTIES(qgis_vectoranalyzertest 
-  # add the automatically determined parts of the RPATH
-  # which point to directories outside the build tree to the install RPATH
-  PROPERTIES INSTALL_RPATH_USE_LINK_PATH TRUE
-  )
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-  INSTALL(TARGETS qgis_vectoranalyzertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX})
-  ADD_TEST(qgis_vectoranalyzertest ${CMAKE_INSTALL_PREFIX}/qgis_vectoranalyzertest)
-ELSE (APPLE)
-  INSTALL(TARGETS qgis_vectoranalyzertest RUNTIME DESTINATION ${CMAKE_INSTALL_PREFIX}/bin)
-  ADD_TEST(qgis_vectoranalyzertest ${CMAKE_INSTALL_PREFIX}/bin/qgis_vectoranalyzertest)
-ENDIF (APPLE)
+ADD_QGIS_TEST(analyzertest testqgsvectoranalyzer.cpp)
 
 
 

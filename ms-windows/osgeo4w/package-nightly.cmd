@@ -1,5 +1,5 @@
 @echo off
-set GRASS_VERSION=6.4.2RC1
+set GRASS_VERSION=6.4.2RC2
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -129,6 +129,10 @@ if errorlevel 1 goto error
 echo ALL_BUILD: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project ALL_BUILD /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
 if errorlevel 1 goto error 
+
+echo RUN_TESTS: %DATE% %TIME%>>%LOG% 2>&1
+%DEVENV% qgis%VERSION%.sln /Project RUN_TESTS /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1
+if errorlevel 1 echo "TESTS WERE NOT SUCCESSFUL."
 
 echo INSTALL: %DATE% %TIME%>>%LOG% 2>&1
 %DEVENV% qgis%VERSION%.sln /Project INSTALL /Build %BUILDCONF% /Out %LOG%>>%LOG% 2>&1

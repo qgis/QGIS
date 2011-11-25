@@ -1,6 +1,5 @@
 ADD_SUBDIRECTORY(plugins)
 
-
 SET (PYTHON_OUTPUT_DIRECTORY ${QGIS_OUTPUT_DIRECTORY}/python)
 SET (QGIS_PYTHON_OUTPUT_DIRECTORY ${PYTHON_OUTPUT_DIRECTORY}/qgis)
 
@@ -98,6 +97,12 @@ ADD_SIP_PYTHON_MODULE(qgis.networkanalysis analysis/network/networkanalysis.sip 
 SET (QGIS_PYTHON_DIR ${PYTHON_SITE_PACKAGES_DIR}/qgis)
 
 ADD_CUSTOM_TARGET(compile_python_files ALL)
+
+ADD_CUSTOM_COMMAND(TARGET compile_python_files
+       POST_BUILD
+       COMMAND ${CMAKE_COMMAND} -E make_directory ${QGIS_PYTHON_OUTPUT_DIRECTORY}
+       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
+)
 
 FOREACH(file __init__.py utils.py console.py)
   ADD_CUSTOM_COMMAND(TARGET compile_python_files

@@ -30,6 +30,7 @@
 #include <QLocale>
 #include <QToolBar>
 #include <QSize>
+#include <QStyleFactory>
 
 #if QT_VERSION >= 0x40500
 #include <QNetworkDiskCache>
@@ -58,11 +59,18 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
   cmbSize->addItem( "16" );
   cmbSize->addItem( "24" );
   cmbSize->addItem( "32" );
+
+  QStringList styles = QStyleFactory::keys();
+  foreach( QString style, styles )
+  {
+    cmbStyle->addItem( style );
+  }
 
   cmbIdentifyMode->addItem( tr( "Current layer" ), 0 );
   cmbIdentifyMode->addItem( tr( "Top down, stop at first" ), 1 );
@@ -174,6 +182,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbAttrTableBehaviour->addItem( tr( "Show features in current canvas" ) );
   cmbAttrTableBehaviour->setCurrentIndex( settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt() );
 
+  spinBoxAttrTableRowCache->setValue( settings.value( "/qgis/attributeTableRowCache", 10000 ).toInt() );
+
   // set the display update threshold
   spinBoxUpdateThreshold->setValue( settings.value( "/Map/updateThreshold" ).toInt() );
   //set the default projection behaviour radio buttongs
@@ -270,6 +280,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", 24 ).toString() ) );
+  QString name = QApplication::style()->objectName();
+  cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
   //Changed to default to true as of QGIS 1.7
   chkAntiAliasing->setChecked( settings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
@@ -574,6 +586,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/showTips", cbxShowTips->isChecked() );
   settings.setValue( "/qgis/dockAttributeTable", cbxAttributeTableDocked->isChecked() );
   settings.setValue( "/qgis/attributeTableBehaviour", cmbAttrTableBehaviour->currentIndex() );
+  settings.setValue( "/qgis/attributeTableRowCache", spinBoxAttrTableRowCache->value() );
   settings.setValue( "/qgis/dockIdentifyResults", cbxIdentifyResultsDocked->isChecked() );
   settings.setValue( "/qgis/dockSnapping", cbxSnappingOptionsDocked->isChecked() );
   settings.setValue( "/qgis/addPostgisDC", cbxAddPostgisDC->isChecked() );
@@ -589,6 +602,7 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/askToSaveProjectChanges", chbAskToSaveProjectChanges->isChecked() );
   settings.setValue( "/qgis/warnOldProjectVersion", chbWarnOldProjectVersion->isChecked() );
   settings.setValue( "/qgis/nullValue", leNullValue->text() );
+  settings.setValue( "/qgis/style", cmbStyle->currentText() );
 
   //overlay placement method
   int overlayIndex = mOverlayAlgorithmComboBox->currentIndex();

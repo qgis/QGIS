@@ -88,7 +88,7 @@ ENDIF (WITH_GLOBE)
 SET (PEDANTIC TRUE CACHE BOOL "Determines if we should compile in pedantic mode.")
 
 # whether unit tests should be build
-SET (ENABLE_TESTS FALSE CACHE BOOL "Build unit tests?")
+SET (ENABLE_TESTS TRUE CACHE BOOL "Build unit tests?")
 
 # hide this variable because building of python bindings might fail
 # if set to other directory than expected
@@ -195,6 +195,8 @@ ENDIF ()
 IF (ENABLE_TESTS)
   SET( QT_USE_QTTEST  TRUE )
   ENABLE_TESTING()
+  # Define "make check" as alias for "make test" - thanks geos :-)
+  add_custom_target(check COMMAND ctest)
 ENDIF (ENABLE_TESTS)
 
 
@@ -504,6 +506,8 @@ IF (ENABLE_TESTS)
   #the test data. See CMakeLists in test dirs for more info
   SET (TEST_DATA_DIR "${CMAKE_CURRENT_SOURCE_DIR}/tests/testdata")
   ADD_SUBDIRECTORY(tests)
+  SET (CTEST_BINARY_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/output/bin" )
+  MESSAGE (STATUS "Ctest Binary Directory  set to: ${CTEST_BINARY_DIRECTORY}")
 ENDIF (ENABLE_TESTS)
 
 IF (APPLE)

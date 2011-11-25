@@ -51,28 +51,30 @@ void  TestQgsVectorAnalyzer::initTestCase()
   //
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath ();
-  QgsApplication::setPrefixPath(INSTALL_PREFIX, true);
+  QgsApplication::init( INSTALL_PREFIX );
+  QgsApplication::initQgis( );
   QgsApplication::showSettings();
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance(QgsApplication::pluginPath());
 
   //create some objects that will be used in all tests...
   //create a map layer that will be used in all tests...
-  QString myFileName (TEST_DATA_DIR); //defined in CmakeLists.txt
+  QString myBaseFileName (TEST_DATA_DIR); //defined in CmakeLists.txt
   QString myEndName = "lines.shp";
-  myFileName = myFileName + QDir::separator() + myEndName;
+  QString myFileName = myBaseFileName + QDir::separator() + myEndName;
+  qDebug() << myFileName;
   QFileInfo myLineInfo ( myFileName );
   mpLineLayer = new QgsVectorLayer ( myLineInfo.filePath(),
             myLineInfo.completeBaseName(), "ogr" );
 
   myEndName = "polys.shp";
-  myFileName = myFileName + QDir::separator() + myEndName;
+  myFileName = myBaseFileName + QDir::separator() + myEndName;
   QFileInfo myPolyInfo ( myFileName );
   mpPolyLayer = new QgsVectorLayer ( myPolyInfo.filePath(),
             myPolyInfo.completeBaseName(), "ogr" );
 
   myEndName = "points.shp";
-  myFileName = myFileName + QDir::separator() + myEndName;
+  myFileName = myBaseFileName + QDir::separator() + myEndName;
   QFileInfo myPointInfo ( myFileName );
   mpPointLayer = new QgsVectorLayer ( myPointInfo.filePath(),
             myPointInfo.completeBaseName(), "ogr" );

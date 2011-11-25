@@ -5,12 +5,14 @@
 
 class QgsSLLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
   public:
-    QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType )
-        : QgsLayerItem( parent, name, path, uri, layerType, "spatialite" )
-    {
-      mPopulated = true; // no children are expected
-    }
+    QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
+
+    QList<QAction*> actions();
+
+  public slots:
+    void deleteLayer();
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
@@ -24,6 +26,9 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     virtual bool equal( const QgsDataItem *other );
 
     virtual QList<QAction*> actions();
+
+    virtual bool acceptDrop() { return true; }
+    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
 
   public slots:
     void editConnection();
@@ -49,6 +54,7 @@ class QgsSLRootItem : public QgsDataCollectionItem
   public slots:
     void connectionsChanged();
     void newConnection();
+    void createDatabase();
 };
 
 

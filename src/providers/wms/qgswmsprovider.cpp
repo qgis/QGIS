@@ -35,6 +35,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsnetworkaccessmanager.h"
 #include <qgsmessageoutput.h>
+#include <qgsmessagelog.h>
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -298,7 +299,7 @@ void QgsWmsProvider::addLayers( QStringList const &layers,
 
   if ( layers.size() != styles.size() )
   {
-    QgsDebugMsg( "number of layers and styles don't match" );
+    QgsMessageLog::logMessage( tr( "number of layers and styles don't match" ), tr( "WMS" ) );
     valid = false;
     return;
   }
@@ -717,7 +718,7 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
 
   if ( ! image )   // should not happen
   {
-    QgsDebugMsg( "image is NULL" );
+    QgsMessageLog::logMessage( tr( "image is NULL" ), tr( "WMS" ) );
     return;
   }
   QgsDebugMsg( QString( "image height = %1 bytesPerLine = %2" ).arg( image->height() ) . arg( image->bytesPerLine() ) ) ;
@@ -725,7 +726,7 @@ void QgsWmsProvider::readBlock( int bandNo, QgsRectangle  const & viewExtent, in
   int myImageSize = image->height() *  image->bytesPerLine();
   if ( myExpectedSize != myImageSize )   // should not happen
   {
-    QgsDebugMsg( "unexpected image size" );
+    QgsMessageLog::logMessage( tr( "unexpected image size" ), tr( "WMS" ) );
     return;
   }
 
@@ -1059,7 +1060,7 @@ void QgsWmsProvider::capabilitiesReplyFinished()
   {
     mErrorFormat = "text/plain";
     mError = tr( "Download of capabilities failed: %1" ).arg( mCapabilitiesReply->errorString() );
-    QgsDebugMsg( "error: " + mError );
+    QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     httpcapabilitiesresponse.clear();
   }
 
@@ -2204,7 +2205,7 @@ void QgsWmsProvider::parseServiceException( QDomElement const & e )
 
   // TODO = e.attribute("locator");
 
-  QgsDebugMsg( "composed error message '"  + mError  + "'." );
+  QgsMessageLog::logMessage( tr( "composed error message '%1'." ).arg( mError ), tr( "WMS" ) );
   QgsDebugMsg( "exiting." );
 }
 
@@ -2281,13 +2282,13 @@ bool QgsWmsProvider::calculateExtent()
         return true;
       }
 
-      QgsDebugMsg( QString( "mismatch layers=%1, styles=%2 and crs=%3." )
-                   .arg( tilesetsSupported[i].layers.join( "," ) )
-                   .arg( tilesetsSupported[i].styles.join( "," ) )
-                   .arg( tilesetsSupported[i].crs ) );
+      QgsMessageLog::logMessage( tr( "mismatch layers=%1, styles=%2 and crs=%3." )
+                                 .arg( tilesetsSupported[i].layers.join( "," ) )
+                                 .arg( tilesetsSupported[i].styles.join( "," ) )
+                                 .arg( tilesetsSupported[i].crs ), tr( "WMS" ) );
     }
 
-    QgsDebugMsg( "no extent for layer" );
+    QgsMessageLog::logMessage( tr( "no extent for layer" ), tr( "WMS" ) );
     return false;
   }
 

@@ -49,7 +49,6 @@ class TestQgsRenderers: public QObject
     void uniqueValue();
     void graduatedSymbol();
     void continuousSymbol();
-    void checkClassificationFieldMismatch();
   private:
     bool mTestHasError;
     bool setQml( QString theType ); //uniquevalue / continuous / single /
@@ -68,7 +67,8 @@ void TestQgsRenderers::initTestCase()
   mTestHasError = false;
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init( INSTALL_PREFIX );
+  QgsApplication::initQgis( );
   QgsApplication::showSettings();
   // Instantiate the plugin directory so that providers are loaded
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
@@ -127,14 +127,14 @@ void TestQgsRenderers::initTestCase()
 }
 void TestQgsRenderers::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "renderertest.html";
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl( "file://" + myReportFile );
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
 }
@@ -165,19 +165,6 @@ void TestQgsRenderers::continuousSymbol()
   mReport += "<h2>Continuous symbol renderer test</h2>\n";
   QVERIFY( setQml( "continuous" ) );
   QVERIFY( imageCheck( "continuous" ) );
-}
-
-void TestQgsRenderers::checkClassificationFieldMismatch()
-{
-  mReport += "<h2>Classification field mismatch test</h2>\n";
-  // Here we test to see that a qml created for one layer
-  // will raise an error properly if the
-  // We will do this by trying to apply the points qml to the polys shpfile
-  // it should fail and raise an error
-  QString myFileName = mTestDataDir + "points_continuous_symbol.qml";
-  bool myStyleFlag = false;
-  mpPolysLayer->loadNamedStyle( myFileName, myStyleFlag );
-  QVERIFY( !myStyleFlag ); //we are expecting this to have raised an error
 }
 
 //

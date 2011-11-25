@@ -30,7 +30,7 @@
 
 class TestQgsPoint: public QObject
 {
-  Q_OBJECT;
+    Q_OBJECT;
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
@@ -73,7 +73,7 @@ void TestQgsPoint::initTestCase()
   //
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init( INSTALL_PREFIX );
   QgsApplication::showSettings();
   mReport += "<h1>Point Tests</h1>\n";
 }
@@ -84,14 +84,14 @@ void TestQgsPoint::cleanupTestCase()
   //
   // Runs once after all tests are run
   //
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgspointtest.html";
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl( "file://" + myReportFile );
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
 }
@@ -103,7 +103,7 @@ void TestQgsPoint::toString()
   mReport += "<p>" + mPoint2.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint3.toString( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toString( 2 )  +  "</p>";
-  QVERIFY( mPoint1.toString( 2 ) == QString("20.00,-20.00") );
+  QVERIFY( mPoint1.toString( 2 ) == QString( "20.00,-20.00" ) );
 };
 void TestQgsPoint::toDegreesMinutesSeconds()
 {
@@ -112,7 +112,15 @@ void TestQgsPoint::toDegreesMinutesSeconds()
   mReport += "<p>" + mPoint2.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint3.toDegreesMinutesSeconds( 2 )  +  "</p>";
   mReport += "<p>" + mPoint4.toDegreesMinutesSeconds( 2 )  +  "</p>";
-  QVERIFY( mPoint4.toDegreesMinutesSeconds( 2 ) == QString("80°0'0.00\"E,20°0'0.00\"N") );
+  qDebug() << mPoint4.toDegreesMinutesSeconds( 2 );
+  QString myControlString = QString( "80" ) + QChar( 176 ) + 
+    QString( "0'0.00" ) + 
+    QString( '"' ) + 
+    QString( "E,20" ) + QChar( 176 ) + 
+    QString( "0'0.00" ) + QString( '"' ) + 
+    QString( "N" );
+  qDebug() << myControlString;
+  QVERIFY( mPoint4.toDegreesMinutesSeconds( 2 ) == myControlString );
 
 };
 void TestQgsPoint::wellKnownText()
@@ -133,5 +141,5 @@ void TestQgsPoint::onSegment()
 };
 
 
-QTEST_MAIN(TestQgsPoint)
+QTEST_MAIN( TestQgsPoint )
 #include "moc_testqgspoint.cxx"

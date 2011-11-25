@@ -148,7 +148,7 @@ int main( int argc, char * argv[] )
   qInstallMsgHandler( dummyMessageHandler );
 #endif
 
-  QgsApplication qgsapp( argc, argv, false );
+  QgsApplication qgsapp( argc, argv, getenv( "DISPLAY" ) );
 
   //Default prefix path may be altered by environment variable
   char* prefixPath = getenv( "QGIS_PREFIX_PATH" );

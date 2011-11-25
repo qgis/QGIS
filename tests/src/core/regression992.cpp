@@ -64,7 +64,8 @@ void Regression992::initTestCase()
 {
   // init QGIS's paths - true means that all path will be inited from prefix
   QString qgisPath = QCoreApplication::applicationDirPath();
-  QgsApplication::setPrefixPath( INSTALL_PREFIX, true );
+  QgsApplication::init( INSTALL_PREFIX );
+  QgsApplication::initQgis();
   QgsApplication::showSettings();
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
@@ -87,14 +88,14 @@ void Regression992::initTestCase()
 //runs after all tests
 void Regression992::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "regression992.html";
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl( "file://" + myReportFile );
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 }
 

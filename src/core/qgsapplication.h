@@ -34,7 +34,10 @@ class CORE_EXPORT QgsApplication: public QApplication
     virtual ~QgsApplication();
 
     /** This method initialises paths etc for QGIS. Called by the ctor or call it manually
-        when your app does not extend the QApplication class. */
+        when your app does not extend the QApplication class. 
+        @note you will probably want to call initQgis too to load the providers in 
+        the above case.
+        */
     static void init( QString customConfigPath = QString() );
 
     //! Watch for QFileOpenEvent.
