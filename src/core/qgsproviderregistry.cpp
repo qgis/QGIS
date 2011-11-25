@@ -29,6 +29,7 @@
 #include "qgsdataprovider.h"
 #include "qgslogger.h"
 #include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 #include "qgsprovidermetadata.h"
 #include "qgsvectorlayer.h"
 
@@ -394,7 +395,8 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
           return dataProvider;
         }
         else
-        {   // this is likely because the dataSource is invalid, and isn't
+        {
+          // this is likely because the dataSource is invalid, and isn't
           // necessarily a reflection on the data provider itself
           QgsDebugMsg( "Invalid data provider" );
 
@@ -405,7 +407,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
       }
       else
       {
-        QgsLogger::warning( "Unable to instantiate the data provider plugin" );
+        QgsMessageLog::logMessage( QObject::tr( "Unable to instantiate the data provider plugin %1" ).arg( lib ) );
 
         delete dataProvider;
 
@@ -417,7 +419,7 @@ QgsDataProvider *QgsProviderRegistry::provider( QString const & providerKey, QSt
   }
   else
   {
-    QgsLogger::warning( "Failed to load " + lib );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1: %2" ).arg( lib ).arg( myLib->errorString() ) );
     delete myLib;
     return 0;
   }

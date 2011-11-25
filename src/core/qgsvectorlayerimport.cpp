@@ -20,6 +20,7 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
@@ -102,6 +103,7 @@ QgsVectorLayerImport::QgsVectorLayerImport(
 
     if ( vectorProvider )
       delete vectorProvider;
+
     return;
   }
 
@@ -271,7 +273,7 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
                       .arg( fet.typeName() ).arg( e.what() );
-        QgsLogger::warning( msg );
+        QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
           *errorMessage = msg;
 
