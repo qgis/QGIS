@@ -84,15 +84,6 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( radGroupFilter, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
   connect( radGroupScale, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
 
-  // Make sure buttons are always in the correct state
-  chkUsingFirstRule->setChecked( mRenderer->usingFirstRule() );
-  chkEnableSymbolLevels->setChecked( mRenderer->usingSymbolLevels() );
-  // If symbol levels are used, forcefully check and gray-out the chkUsingFirstRule checkbox
-  if ( mRenderer->usingSymbolLevels() ) { forceUsingFirstRule(); }
-  connect( chkUsingFirstRule, SIGNAL( clicked() ), this, SLOT( usingFirstRuleChanged() ) );
-  connect( chkEnableSymbolLevels, SIGNAL( clicked() ), this, SLOT( symbolLevelsEnabledChanged() ) );
-  connect( this, SIGNAL( forceChkUsingFirstRule() ), this, SLOT( forceUsingFirstRule() ) );
-
   treeRules->populateRules();
 }
 
@@ -230,52 +221,6 @@ void QgsRuleBasedRendererV2Widget::decreasePriority()
       mRenderer->swapRules( rule_index, rule_index + 1 );
       treeRules->populateRules();
     }
-  }
-}
-
-
-void QgsRuleBasedRendererV2Widget::usingFirstRuleChanged()
-{
-  if ( chkUsingFirstRule->checkState() == Qt::Checked )
-  {
-    mRenderer->setUsingFirstRule( true );
-  }
-  else
-  {
-    mRenderer->setUsingFirstRule( false );
-  }
-
-}
-
-
-void QgsRuleBasedRendererV2Widget::forceUsingFirstRule()
-{
-  chkEnableSymbolLevels->setChecked( true );
-  chkUsingFirstRule->setChecked( true );
-  chkUsingFirstRule->setEnabled( false );
-  mRenderer->setUsingFirstRule( true );
-}
-
-
-void QgsRuleBasedRendererV2Widget::forceNoSymbolLevels()
-{
-  chkEnableSymbolLevels->setChecked( false );
-  chkUsingFirstRule->setEnabled( true );
-  mRenderer->setUsingSymbolLevels( false );
-}
-
-
-void QgsRuleBasedRendererV2Widget::symbolLevelsEnabledChanged()
-{
-  if ( chkEnableSymbolLevels->checkState() == Qt::Checked )
-  {
-    mRenderer->setUsingSymbolLevels( true );
-    emit forceChkUsingFirstRule();
-  }
-  else
-  {
-    mRenderer->setUsingSymbolLevels( false );
-    chkUsingFirstRule->setEnabled( true );
   }
 }
 

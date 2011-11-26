@@ -309,8 +309,6 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone()
   QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( s );
   r->mRules = mRules;
   r->setUsingSymbolLevels( usingSymbolLevels() );
-  r->setUsingFirstRule( usingFirstRule() );
-  setUsingFirstRule( usingFirstRule() );
   setUsingSymbolLevels( usingSymbolLevels() );
   return r;
 }
@@ -332,7 +330,6 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
   QDomElement rendererElem = doc.createElement( RENDERER_TAG_NAME );
   rendererElem.setAttribute( "type", "RuleRenderer" );
   rendererElem.setAttribute( "symbollevels", ( mUsingSymbolLevels ? "1" : "0" ) );
-  rendererElem.setAttribute( "firstrule", ( mUsingFirstRule ? "1" : "0" ) );
 
   QDomElement rulesElem = doc.createElement( "rules" );
 

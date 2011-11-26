@@ -87,15 +87,6 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void refineRuleCategories();
     void refineRuleRanges();
 
-    void usingFirstRuleChanged( );
-    void symbolLevelsEnabledChanged();
-    void forceNoSymbolLevels();
-    void forceUsingFirstRule();
-
-  signals:
-
-    void forceChkUsingFirstRule();
-
   protected:
 
     void refineRule( int type );
