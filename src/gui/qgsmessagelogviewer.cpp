@@ -31,6 +31,8 @@ QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WFlags fl )
   setupUi( this );
   gmInstance = this;
   QgsMessageLog::setLogger( logger );
+
+  connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
 }
 
 QgsMessageLogViewer::~QgsMessageLogViewer()
@@ -40,7 +42,7 @@ QgsMessageLogViewer::~QgsMessageLogViewer()
 
 void QgsMessageLogViewer::logger( QString message, QString tag, int level )
 {
-  if( !gmInstance )
+  if ( !gmInstance )
     return;
 
   gmInstance->logMessage( message, tag, level );
@@ -48,17 +50,17 @@ void QgsMessageLogViewer::logger( QString message, QString tag, int level )
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
 {
-  if( tag.isNull() )
+  if ( tag.isNull() )
     tag = tr( "General" );
 
   int i;
-  for( i=0; i<tabWidget->count() && tabWidget->tabText(i) != tag; i++ )
-	;
+  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
+    ;
 
   QTableWidget *w;
-  if( i<tabWidget->count() )
+  if ( i < tabWidget->count() )
   {
-    w = qobject_cast<QTableWidget *>( tabWidget->widget(i) );
+    w = qobject_cast<QTableWidget *>( tabWidget->widget( i ) );
   }
   else
   {
@@ -66,8 +68,8 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
     w->verticalHeader()->setDefaultSectionSize( 16 );
     w->verticalHeader()->setVisible( false );
     w->setGridStyle( Qt::DotLine );
-    w->setEditTriggers(QAbstractItemView::NoEditTriggers);
-    w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << "Level" );
+    w->setEditTriggers( QAbstractItemView::NoEditTriggers );
+    w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << tr( "Level" ) );
     tabWidget->addTab( w, tag );
   }
 
@@ -75,12 +77,17 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
 
   QgsDebugMsg( QString( "%1: %2[%3] %4" ).arg( n ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( level ).arg( level ) );
 
-  w->setRowCount( n+1 );
+  w->setRowCount( n + 1 );
   QTableWidgetItem *item = new QTableWidgetItem( QDateTime::currentDateTime().toString( Qt::ISODate ) );
   w->setItem( n, 0, item );
   w->setItem( n, 1, new QTableWidgetItem( message ) );
-  w->setItem( n, 2, new QTableWidgetItem( level ) );
+  w->setItem( n, 2, new QTableWidgetItem( QString::number( level ) ) );
   w->scrollToItem( item );
 
   w->resizeColumnsToContents();
+}
+
+void QgsMessageLogViewer::closeTab( int index )
+{
+  tabWidget->removeTab( index );
 }

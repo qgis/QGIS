@@ -392,10 +392,10 @@ FnDef QgsExpression::BuiltinFunctions[] =
   FnDef( "toreal", 1, fcnToReal, "Conversions" ),
   FnDef( "tostring", 1, fcnToString, "Conversions" ),
   // string manipulation
-  FnDef( "lower", 1, fcnLower, "String"),
-  FnDef( "upper", 1, fcnUpper, "String"),
-  FnDef( "length", 1, fcnLength, "String"),
-  FnDef( "replace", 3, fcnReplace, "String"),
+  FnDef( "lower", 1, fcnLower, "String" ),
+  FnDef( "upper", 1, fcnUpper, "String" ),
+  FnDef( "length", 1, fcnLength, "String" ),
+  FnDef( "replace", 3, fcnReplace, "String" ),
   FnDef( "regexp_replace", 3, fcnRegexpReplace, "String" ),
   FnDef( "substr", 3, fcnSubstr, "String" ),
   // geometry accessors
