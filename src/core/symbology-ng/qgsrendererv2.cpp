@@ -187,6 +187,11 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
   if ( symbol == NULL )
     return;
 
+  renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+}
+
+void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbolV2* symbol, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+{
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
   QgsGeometry* geom = feature.geometry();

@@ -784,6 +784,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif //Q_WS_MAC
   }
 
+  stopRendererV2( rendererContext, NULL );
+
 #ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
 #endif

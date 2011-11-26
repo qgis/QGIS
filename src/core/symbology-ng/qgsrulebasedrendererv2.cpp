@@ -125,20 +125,9 @@ QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
 }
 
 
-QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& feature )
+QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& )
 {
-  if ( ! usingFirstRule() )
-    return mCurrentSymbol;
-
-  for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
-  {
-    Rule* rule = *it;
-
-    if ( rule->isFilterOK( feature ) )
-    {
-      return rule->symbol(); //works with levels but takes only first rule
-    }
-  }
+  // not used at all
   return 0;
 }
 
@@ -148,16 +137,37 @@ void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
     bool selected,
     bool drawVertexMarker )
 {
+
+  // TODO: selected features, vertex markers
+
+  // check each active rule
+  QgsFeature* featPtr = NULL;
   for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
   {
     Rule* rule = *it;
+    // if matching: add rendering job to queue
     if ( rule->isFilterOK( feature ) )
     {
-      mCurrentSymbol = rule->symbol();
-      // will ask for mCurrentSymbol
-      QgsFeatureRendererV2::renderFeature( feature, context, layer, selected, drawVertexMarker );
+      //QgsDebugMsg(QString("matching fid %1").arg(feature.id()));
+      // make a copy of the feature if not yet exists
+      if ( !featPtr )
+      {
+        featPtr = new QgsFeature( feature );
+        mCurrentFeatures.append( featPtr );
+      }
+
+      // create job for this feature and this symbol, add to list of jobs
+      //RenderJob* job = new RenderJob( featPtr, rule->symbol() );
+      //mRenderJobs.append( job );
+      // add job to the queue: each symbol's zLevel must be added
+      foreach( int normZLevel, rule->mSymbolNormZLevels )
+      {
+        //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
+        mRenderQueue.levels[normZLevel].jobs.append( new RenderJob( featPtr, rule->symbol() ) );
+      }
     }
   }
+
 }
 
 
@@ -166,6 +176,7 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVe
   double currentScale = context.rendererScale();
   // filter out rules which are not compatible with this scale
 
+  // build temporary list of active rules (usable with this scale)
   mCurrentRules.clear();
   for ( QList<Rule>::iterator it = mRules.begin(); it != mRules.end(); ++it )
   {
@@ -176,18 +187,98 @@ void QgsRuleBasedRendererV2::startRender( QgsRenderContext& context, const QgsVe
 
   QgsFieldMap pendingFields = vlayer->pendingFields();
 
-  for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
+  QSet<int> symbolZLevelsSet;
+
+  QList<Rule*>::iterator it;
+  for ( it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
   {
     Rule* rule = *it;
     QgsExpression* exp = rule->filter();
     if ( exp )
       exp->prepare( pendingFields );
-    rule->symbol()->startRender( context, vlayer );
+
+    // prepare symbol
+    QgsSymbolV2* s = rule->symbol();
+    s->startRender( context, vlayer );
+
+    QgsDebugMsg( "rule " + rule->dump() );
+
+    // find out which Z-levels are used
+    for ( int i = 0; i < s->symbolLayerCount(); i++ )
+    {
+      symbolZLevelsSet.insert( s->symbolLayer( i )->renderingPass() );
+      rule->mSymbolNormZLevels.clear();
+    }
+  }
+
+  // create mapping from unnormalized levels [unlimited range] to normalized levels [0..N-1]
+  // and prepare rendering queue
+  QMap<int, int> zLevelsToNormLevels;
+  int maxNormLevel = -1;
+  mRenderQueue.levels.clear();
+  foreach( int zLevel, symbolZLevelsSet.toList() )
+  {
+    zLevelsToNormLevels[zLevel] = ++maxNormLevel;
+    mRenderQueue.levels.append( RenderLevel( zLevel ) );
+    QgsDebugMsg( QString( "zLevel %1 -> %2" ).arg( zLevel ).arg( maxNormLevel ) );
+  }
+
+  // prepare list of normalized levels for each rule
+  for ( it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
+  {
+    Rule* rule = *it;
+    QgsSymbolV2* s = rule->symbol();
+    for ( int i = 0; i < s->symbolLayerCount(); i++ )
+    {
+      int normLevel = zLevelsToNormLevels.value( s->symbolLayer( i )->renderingPass() );
+      rule->mSymbolNormZLevels.append( normLevel );
+    }
   }
 }
 
 void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
 {
+  //
+  // do the actual rendering
+  //
+
+  // TODO: selected, markers
+  bool selected = false;
+  bool drawVertexMarker = false;
+
+  // go through all levels
+  foreach( const RenderLevel& level, mRenderQueue.levels )
+  {
+    //QgsDebugMsg(QString("level %1").arg(level.zIndex));
+    // go through all jobs at the level
+    foreach( const RenderJob* job, level.jobs )
+    {
+      //QgsDebugMsg(QString("job fid %1").arg(job->f->id()));
+      // render feature - but only with symbol layers with specified zIndex
+      QgsSymbolV2* s = job->symbol;
+      int count = s->symbolLayerCount();
+      for ( int i = 0; i < count; i++ )
+      {
+        // TODO: better solution for this
+        // renderFeatureWithSymbol asks which symbol layer to draw
+        // but there are multiple transforms going on!
+        if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
+        {
+          renderFeatureWithSymbol( *job->f, job->symbol, context, i, selected, drawVertexMarker );
+        }
+      }
+    }
+  }
+
+  // TODO:
+  // clear render queue, render jobs
+
+  foreach( QgsFeature* f, mCurrentFeatures )
+  {
+    delete f;
+  }
+  mCurrentFeatures.clear();
+
   for ( QList<Rule*>::iterator it = mCurrentRules.begin(); it != mCurrentRules.end(); ++it )
   {
     Rule* rule = *it;

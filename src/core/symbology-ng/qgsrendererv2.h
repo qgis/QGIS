@@ -107,6 +107,13 @@ class CORE_EXPORT QgsFeatureRendererV2
   protected:
     QgsFeatureRendererV2( QString type );
 
+    void renderFeatureWithSymbol( QgsFeature& feature,
+                                  QgsSymbolV2* symbol,
+                                  QgsRenderContext& context,
+                                  int layer,
+                                  bool selected,
+                                  bool drawVertexMarker );
+
     //! render editing vertex marker at specified point
     void renderVertexMarker( QPointF& pt, QgsRenderContext& context );
     //! render editing vertex marker for a polyline
