@@ -627,7 +627,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 
   if ( !valid )
   {
-    QgsMessageLog::logMessage( tr( "Read attempt on an invalid shapefile data source" ), tr( "OGR" ) );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid OGR data source" ), tr( "OGR" ) );
     return false;
   }
 
@@ -1216,7 +1216,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     if ( !theNewGeometry )
     {
-      QgsMessageLog::logMessage( tr( "Newly created geometry for feature % is null." ).arg( it.key() ), tr( "OGR" ) );
+      QgsMessageLog::logMessage( tr( "Newly created geometry for feature %1 is null." ).arg( it.key() ), tr( "OGR" ) );
       continue;
     }
 
