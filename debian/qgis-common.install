@@ -13,5 +13,6 @@ usr/share/qgis/doc/images
 usr/share/qgis/i18n/*
 usr/share/qgis/images/*
 usr/share/qgis/resources/context_help/*
+usr/share/qgis/resources/function_help/*
 usr/share/qgis/resources/spatialite.db
 usr/share/qgis/resources/qgis_help.db
