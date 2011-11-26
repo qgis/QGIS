@@ -17,7 +17,6 @@
 
 #include "qgspallabeling.h"
 
-#include <iostream>
 #include <list>
 
 #include <pal/pal.h>

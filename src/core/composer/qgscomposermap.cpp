@@ -37,7 +37,6 @@
 #include <QGraphicsView>
 #include <QPainter>
 #include <QSettings>
-#include <iostream>
 #include <cmath>
 
 QgsComposerMap::QgsComposerMap( QgsComposition *composition, int x, int y, int width, int height )

@@ -18,8 +18,6 @@
 
 #include "qgsproviderregistry.h"
 
-#include <iostream>
-
 #include <QString>
 #include <QDir>
 #include <QLibrary>
