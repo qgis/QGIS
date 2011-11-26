@@ -68,8 +68,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
   btnRemoveRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyRemove.png" ) ) );
-  btnIncreasePriority->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
-  btnDecreasePriority->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
+  btnMoveUp->setIcon( QIcon( QgsApplication::iconPath( "symbologyUp.png" ) ) );
+  btnMoveDown->setIcon( QIcon( QgsApplication::iconPath( "symbologyDown.png" ) ) );
 
   connect( treeRules, SIGNAL( itemDoubleClicked( QTreeWidgetItem*, int ) ), this, SLOT( editRule() ) );
   connect( treeRules, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
@@ -77,8 +77,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
   connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
-  connect( btnIncreasePriority, SIGNAL( clicked() ), this, SLOT( increasePriority() ) );
-  connect( btnDecreasePriority, SIGNAL( clicked() ), this, SLOT( decreasePriority() ) );
+  connect( btnMoveUp, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
+  connect( btnMoveDown, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
 
   connect( radNoGrouping, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
   connect( radGroupFilter, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
@@ -180,7 +180,7 @@ void QgsRuleBasedRendererV2Widget::removeRule()
 }
 
 
-void QgsRuleBasedRendererV2Widget::increasePriority()
+void QgsRuleBasedRendererV2Widget::moveUp()
 {
   QTreeWidgetItem * item = treeRules->currentItem();
   if ( ! item ) return; // No rule selected, exit
@@ -191,7 +191,7 @@ void QgsRuleBasedRendererV2Widget::increasePriority()
   }
   else
   {
-    if ( rule_index > 0 ) // do not increase priority of first rule
+    if ( rule_index > 0 ) // do not move up the first rule
     {
       mRenderer->swapRules( rule_index, rule_index - 1 );
       treeRules->populateRules();
@@ -205,7 +205,7 @@ void QgsRuleBasedRendererV2Widget::increasePriority()
 }
 
 
-void QgsRuleBasedRendererV2Widget::decreasePriority()
+void QgsRuleBasedRendererV2Widget::moveDown()
 {
   QTreeWidgetItem * item = treeRules->currentItem();
   if ( ! item ) return; // No rule selected, exit
@@ -216,7 +216,7 @@ void QgsRuleBasedRendererV2Widget::decreasePriority()
   }
   else
   {
-    if ( rule_index + 1 < mRenderer->ruleCount() ) // do not increase priority of last rule
+    if ( rule_index + 1 < mRenderer->ruleCount() ) // do not move down the last rule
     {
       mRenderer->swapRules( rule_index, rule_index + 1 );
       treeRules->populateRules();

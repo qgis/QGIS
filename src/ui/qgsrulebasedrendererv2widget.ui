@@ -10,26 +10,17 @@
     <height>401</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
     <widget class="QgsRendererRulesTreeWidget" name="treeRules">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="rootIsDecorated">
       <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
-      <bool>true</bool>
      </property>
      <property name="headerHidden">
       <bool>false</bool>
@@ -48,27 +39,10 @@
       <property name="text">
        <string>Min. scale</string>
       </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
      </column>
      <column>
       <property name="text">
        <string>Max. scale</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Priority</string>
-      </property>
-      <property name="toolTip">
-       <string>Priority when symbol levels are enabled (only first matching rule will be applied)</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
     </widget>
@@ -104,16 +78,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnIncreasePriority">
+      <widget class="QPushButton" name="btnMoveUp">
        <property name="text">
-        <string>Increase priority</string>
+        <string>Move up</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnDecreasePriority">
+      <widget class="QPushButton" name="btnMoveDown">
        <property name="text">
-        <string>Decrease priority</string>
+        <string>Move down</string>
        </property>
       </widget>
      </item>
