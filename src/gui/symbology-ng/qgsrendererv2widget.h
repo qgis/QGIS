@@ -31,6 +31,9 @@ class GUI_EXPORT QgsRendererV2Widget : public QWidget
     //! return pointer to the renderer (no transfer of ownership)
     virtual QgsFeatureRendererV2* renderer() = 0;
 
+    //! show a dialog with renderer's symbol level settings
+    void showSymbolLevelsDialog( QgsFeatureRendererV2* r );
+
   protected:
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;

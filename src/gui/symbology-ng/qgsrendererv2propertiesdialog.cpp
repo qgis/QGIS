@@ -11,8 +11,6 @@
 #include "qgsrulebasedrendererv2widget.h"
 #include "qgspointdisplacementrendererwidget.h"
 
-#include "qgssymbollevelsv2dialog.h"
-
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgsvectorlayer.h"
@@ -71,7 +69,6 @@ QgsRendererV2PropertiesDialog::QgsRendererV2PropertiesDialog( QgsVectorLayer* la
   }
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( btnSymbolLevels, SIGNAL( clicked() ), this, SLOT( showSymbolLevels() ) );
   connect( btnOldSymbology, SIGNAL( clicked() ), this, SLOT( useOldSymbology() ) );
 
   // initialize registry's widget functions
@@ -146,15 +143,11 @@ void QgsRendererV2PropertiesDialog::rendererChanged()
     mActiveWidget = w;
     stackedWidget->addWidget( mActiveWidget );
     stackedWidget->setCurrentWidget( mActiveWidget );
-
-    btnSymbolLevels->setEnabled( true );
   }
   else
   {
     // set default "no edit widget available" page
     stackedWidget->setCurrentWidget( pageNoWidget );
-
-    btnSymbolLevels->setEnabled( false );
   }
 
 }
@@ -194,21 +187,6 @@ void QgsRendererV2PropertiesDialog::keyPressEvent( QKeyEvent * e )
 }
 
 
-void QgsRendererV2PropertiesDialog::showSymbolLevels()
-{
-  if ( !mActiveWidget )
-    return;
-
-  QgsFeatureRendererV2* r = mActiveWidget->renderer();
-  QgsSymbolV2List symbols = r->symbols();
-
-  QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
-
-  if ( dlg.exec() )
-  {
-    r->setUsingSymbolLevels( dlg.usingLevels() );
-  }
-}
 
 
 void QgsRendererV2PropertiesDialog::useOldSymbology()

@@ -49,6 +49,8 @@ QgsSingleSymbolRendererV2Widget::QgsSingleSymbolRendererV2Widget( QgsVectorLayer
   // advanced actions - data defined rendering
   QMenu* advMenu = mSelector->advancedMenu();
 
+  advMenu->addAction( tr( "Symbol levels..." ), this, SLOT( showSymbolLevels() ) );
+
   mDataDefinedMenus = new QgsRendererV2DataDefinedMenus( advMenu, mLayer->pendingFields(),
       mRenderer->rotationField(), mRenderer->sizeScaleField() );
   connect( mDataDefinedMenus, SIGNAL( rotationFieldChanged( QString ) ), this, SLOT( rotationFieldChanged( QString ) ) );
@@ -84,4 +86,9 @@ void QgsSingleSymbolRendererV2Widget::rotationFieldChanged( QString fldName )
 void QgsSingleSymbolRendererV2Widget::sizeScaleFieldChanged( QString fldName )
 {
   mRenderer->setSizeScaleField( fldName );
+}
+
+void QgsSingleSymbolRendererV2Widget::showSymbolLevels()
+{
+  showSymbolLevelsDialog( mRenderer );
 }
