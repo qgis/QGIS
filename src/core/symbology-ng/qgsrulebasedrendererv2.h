@@ -81,6 +81,32 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
         // temporary
         QgsExpression* mFilter;
+      public: // TODO
+        QList<int> mSymbolNormZLevels; // normalized
+    };
+
+    // TODO: use QVarLengthArray instead of QList
+
+    // rendering job: a feature to be rendered with a particular symbol
+    struct RenderJob
+    {
+      RenderJob( QgsFeature* _f, QgsSymbolV2* _s ) : f( _f ), symbol( _s ) {}
+      QgsFeature* f;
+      QgsSymbolV2* symbol;
+    };
+
+    // render level: a list of jobs to be drawn at particular level
+    struct RenderLevel
+    {
+      RenderLevel( int z ): zIndex( z ) {}
+      int zIndex;
+      QList<RenderJob*> jobs;
+    };
+
+    // rendering queue: a list of rendering levels and jobs
+    struct RenderQueue
+    {
+      QList<RenderLevel> levels;
     };
 
     /////
@@ -154,6 +180,9 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     QList<Rule*> mCurrentRules;
     QgsSymbolV2* mCurrentSymbol;
 
+    RenderQueue mRenderQueue;
+    QList<QgsFeature*> mCurrentFeatures;
+    //QList<RenderJob*> mCurrentRenderJobs;
 };
 
 #endif // QGSRULEBASEDRENDERERV2_H
