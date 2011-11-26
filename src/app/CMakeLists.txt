@@ -124,6 +124,7 @@ SET(QGIS_APP_SRCS
   legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
   legend/qgslegendvectorsymbologyitem.cpp
+  legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -238,6 +239,7 @@ SET (QGIS_APP_MOC_HDRS
   legend/qgslegend.h
   legend/qgsapplegendinterface.h
   legend/qgslegendlayer.h
+  legend/qgslayerorder.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h

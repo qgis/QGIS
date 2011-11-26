@@ -324,7 +324,7 @@ void QgsVectorLayer::drawLabels( QgsRenderContext& rendererContext )
   if ( !hasGeometryType() )
     return;
 
-  QgsDebugMsg( "Starting draw of labels" );
+  QgsDebugMsg( "Starting draw of labels: " + id() );
 
   if (( mRenderer || mRendererV2 ) && mLabelOn &&
       ( !mLabel->scaleBasedVisibility() ||
