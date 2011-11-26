@@ -987,7 +987,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    if ( mRendererV2->usingSymbolLevels() )
+    if ( ( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+         && mRendererV2->usingSymbolLevels() )
       drawRendererV2Levels( rendererContext, labeling );
     else
       drawRendererV2( rendererContext, labeling );
