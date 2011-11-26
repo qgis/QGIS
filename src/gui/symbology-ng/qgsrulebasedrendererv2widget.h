@@ -78,8 +78,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void addRule();
     void editRule();
     void removeRule();
-    void increasePriority();
-    void decreasePriority();
+    void moveUp();
+    void moveDown();
 
     void setGrouping();
 
