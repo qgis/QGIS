@@ -34,8 +34,6 @@ class GUI_EXPORT QgsRendererV2PropertiesDialog : public QDialog, private Ui::Qgs
 
   signals:
     void useNewSymbology( bool );
-    void forceChkUsingFirstRule();
-    void forceUncheckSymbolLevels();
 
   protected:
 
