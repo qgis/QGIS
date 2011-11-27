@@ -370,46 +370,53 @@ static QVariant fcnGeomPerimeter( const QVariantList& , QgsFeature* f, QgsExpres
   return QVariant( calc->measurePerimeter( f->geometry() ) );
 }
 
-typedef QgsExpression::FunctionDef FnDef;
+QList<QgsExpression::FunctionDef> QgsExpression::gmBuiltinFunctions;
 
-FnDef QgsExpression::BuiltinFunctions[] =
+const QList<QgsExpression::FunctionDef> &QgsExpression::BuiltinFunctions()
 {
-  // math
-  FnDef( "sqrt", 1, fcnSqrt, "Math" ),
-  FnDef( "sin", 1, fcnSin, "Math" ),
-  FnDef( "cos", 1, fcnCos, "Math" ),
-  FnDef( "tan", 1, fcnTan, "Math" ),
-  FnDef( "asin", 1, fcnAsin, "Math" ),
-  FnDef( "acos", 1, fcnAcos, "Math" ),
-  FnDef( "atan", 1, fcnAtan, "Math" ),
-  FnDef( "atan2", 2, fcnAtan2, "Math" ),
-  FnDef( "exp", 1, fcnExp, "Math" ),
-  FnDef( "ln", 1, fcnLn, "Math" ),
-  FnDef( "log10", 1, fcnLog10, "Math" ),
-  FnDef( "log", 2, fcnLog, "Math" ),
-  // casts
-  FnDef( "toint", 1, fcnToInt, "Conversions" ),
-  FnDef( "toreal", 1, fcnToReal, "Conversions" ),
-  FnDef( "tostring", 1, fcnToString, "Conversions" ),
-  // string manipulation
-  FnDef( "lower", 1, fcnLower, "String" ),
-  FnDef( "upper", 1, fcnUpper, "String" ),
-  FnDef( "length", 1, fcnLength, "String" ),
-  FnDef( "replace", 3, fcnReplace, "String" ),
-  FnDef( "regexp_replace", 3, fcnRegexpReplace, "String" ),
-  FnDef( "substr", 3, fcnSubstr, "String" ),
-  // geometry accessors
-  FnDef( "xat", 1, fcnXat, "Geometry", "", true ),
-  FnDef( "yat", 1, fcnYat, "Geometry", "", true ),
-  FnDef( "$area", 0, fcnGeomArea, "Geometry", "", true ),
-  FnDef( "$length", 0, fcnGeomLength, "Geometry", "", true ),
-  FnDef( "$perimeter", 0, fcnGeomPerimeter, "Geometry", "", true ),
-  FnDef( "$x", 0, fcnX, "Geometry", "", true ),
-  FnDef( "$y", 0, fcnY, "Geometry", "" , true ),
-  // special columns
-  FnDef( "$rownum", 0, fcnRowNumber, "Record" ),
-  FnDef( "$id", 0, fcnFeatureId, "Record" )
-};
+  if ( gmBuiltinFunctions.isEmpty() )
+  {
+    // math
+    gmBuiltinFunctions
+    << FunctionDef( "sqrt", 1, fcnSqrt, QObject::tr( "Math" ) )
+    << FunctionDef( "sin", 1, fcnSin, QObject::tr( "Math" ) )
+    << FunctionDef( "cos", 1, fcnCos, QObject::tr( "Math" ) )
+    << FunctionDef( "tan", 1, fcnTan, QObject::tr( "Math" ) )
+    << FunctionDef( "asin", 1, fcnAsin, QObject::tr( "Math" ) )
+    << FunctionDef( "acos", 1, fcnAcos, QObject::tr( "Math" ) )
+    << FunctionDef( "atan", 1, fcnAtan, QObject::tr( "Math" ) )
+    << FunctionDef( "atan2", 2, fcnAtan2, QObject::tr( "Math" ) )
+    << FunctionDef( "exp", 1, fcnExp, QObject::tr( "Math" ) )
+    << FunctionDef( "ln", 1, fcnLn, QObject::tr( "Math" ) )
+    << FunctionDef( "log10", 1, fcnLog10, QObject::tr( "Math" ) )
+    << FunctionDef( "log", 2, fcnLog, QObject::tr( "Math" ) )
+    // casts
+    << FunctionDef( "toint", 1, fcnToInt, QObject::tr( "Conversions" ) )
+    << FunctionDef( "toreal", 1, fcnToReal, QObject::tr( "Conversions" ) )
+    << FunctionDef( "tostring", 1, fcnToString, QObject::tr( "Conversions" ) )
+    // string manipulation
+    << FunctionDef( "lower", 1, fcnLower, QObject::tr( "String" ) )
+    << FunctionDef( "upper", 1, fcnUpper, QObject::tr( "String" ) )
+    << FunctionDef( "length", 1, fcnLength, QObject::tr( "String" ) )
+    << FunctionDef( "replace", 3, fcnReplace, QObject::tr( "String" ) )
+    << FunctionDef( "regexp_replace", 3, fcnRegexpReplace, QObject::tr( "String" ) )
+    << FunctionDef( "substr", 3, fcnSubstr, QObject::tr( "String" ) )
+    // geometry accessors
+    << FunctionDef( "xat", 1, fcnXat, QObject::tr( "Geometry" ), "", true )
+    << FunctionDef( "yat", 1, fcnYat, QObject::tr( "Geometry" ), "", true )
+    << FunctionDef( "$area", 0, fcnGeomArea, QObject::tr( "Geometry" ), "", true )
+    << FunctionDef( "$length", 0, fcnGeomLength, QObject::tr( "Geometry" ), "", true )
+    << FunctionDef( "$perimeter", 0, fcnGeomPerimeter, QObject::tr( "Geometry" ), "", true )
+    << FunctionDef( "$x", 0, fcnX, QObject::tr( "Geometry" ), "", true )
+    << FunctionDef( "$y", 0, fcnY, QObject::tr( "Geometry" ), "" , true )
+    // special columns
+    << FunctionDef( "$rownum", 0, fcnRowNumber, QObject::tr( "Record" ) )
+    << FunctionDef( "$id", 0, fcnFeatureId, QObject::tr( "Record" ) )
+    ;
+  }
+
+  return gmBuiltinFunctions;
+}
 
 
 bool QgsExpression::isFunctionName( QString name )
@@ -422,7 +429,7 @@ int QgsExpression::functionIndex( QString name )
   int count = functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    if ( QString::compare( name, BuiltinFunctions[i].mName, Qt::CaseInsensitive ) == 0 )
+    if ( QString::compare( name, BuiltinFunctions()[i].mName, Qt::CaseInsensitive ) == 0 )
       return i;
   }
   return -1;
@@ -430,7 +437,7 @@ int QgsExpression::functionIndex( QString name )
 
 int QgsExpression::functionCount()
 {
-  return ( sizeof( BuiltinFunctions ) / sizeof( FunctionDef ) );
+  return BuiltinFunctions().size();
 }
 
 
@@ -527,7 +534,8 @@ QVariant QgsExpression::evaluate( QgsFeature* f, const QgsFieldMap& fields )
 
 QString QgsExpression::dump() const
 {
-  if ( !mRootNode ) return "(no root)";
+  if ( !mRootNode )
+    return QObject::tr( "(no root)" );
 
   return mRootNode->dump();
 }
@@ -861,7 +869,7 @@ QString QgsExpression::NodeInOperator::dump() const
 
 QVariant QgsExpression::NodeFunction::eval( QgsExpression* parent, QgsFeature* f )
 {
-  const FunctionDef& fd = BuiltinFunctions[mFnIndex];
+  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
 
   // evaluate arguments
   QVariantList argValues;
@@ -900,7 +908,7 @@ bool QgsExpression::NodeFunction::prepare( QgsExpression* parent, const QgsField
 
 QString QgsExpression::NodeFunction::dump() const
 {
-  const FnDef& fd = BuiltinFunctions[mFnIndex];
+  const FunctionDef& fd = BuiltinFunctions()[mFnIndex];
   if ( fd.mParams == 0 )
     return fd.mName; // special column
   else
@@ -930,7 +938,7 @@ QString QgsExpression::NodeLiteral::dump() const
     case QVariant::Int: return QString::number( mValue.toInt() );
     case QVariant::Double: return QString::number( mValue.toDouble() );
     case QVariant::String: return QString( "'%1'" ).arg( mValue.toString() );
-    default: return QString( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
+    default: return QObject::tr( "[unsupported type;%1; value:%2]" ).arg( mValue.typeName() ).arg( mValue.toString() );
   }
 }
 
