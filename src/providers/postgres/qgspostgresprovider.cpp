@@ -674,6 +674,11 @@ QgsPostgresProvider::Conn *QgsPostgresProvider::Conn::connectDb( const QString &
                         "GEOS support (http://geos.refractions.net)" ) );
   }
 
+  if ( conn->hasTopology() )
+  {
+    QgsDebugMsg( "Topology support available!" );
+  }
+
 
 
   return conn;
@@ -1321,24 +1326,21 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
     if ( whereClause.isEmpty() )
     {
+      QString qBox = QString( "%1('BOX3D(%2)'::box3d,%3)" )
+                    .arg( connectionRO->majorVersion() < 2 ? "setsrid"
+                                                        : "st_setsrid" )
+                    .arg( rect.asWktCoordinates() )
+                    .arg( srid );
+      whereClause = QString( "%1 && %2" )
+                   .arg( quotedIdentifier( geometryColumn ) )
+                   .arg( qBox );
       if ( useIntersect )
       {
-        // Contributed by #qgis irc "creeping"
-        // This version actually invokes PostGIS's use of spatial indexes
-        whereClause = QString( "%1 && %2('BOX3D(%3)'::box3d,%4) and %5(%1,%2('BOX3D(%3)'::box3d,%4))" )
+        whereClause += QString( " and %1(%2,%3))" )
+                      .arg( connectionRO->majorVersion() < 2 ? "intersects"
+                                                          : "st_intersects" )
                       .arg( quotedIdentifier( geometryColumn ) )
-                      .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
-                      .arg( rect.asWktCoordinates() )
-                      .arg( srid )
-                      .arg( connectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" );
-      }
-      else
-      {
-        whereClause = QString( "%1 && %2('BOX3D(%3)'::box3d,%4)" )
-                      .arg( quotedIdentifier( geometryColumn ) )
-                      .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
-                      .arg( rect.asWktCoordinates() )
-                      .arg( srid );
+                      .arg( qBox );
       }
     }
   }
@@ -3008,9 +3010,22 @@ bool QgsPostgresProvider::Conn::hasGEOS()
   return geosAvailable;
 }
 
+/**
+ * Check to see if topology is available
+ */
+bool QgsPostgresProvider::Conn::hasTopology()
+{
+  // make sure info is up to date for the current connection
+  postgisVersion();
+  // get topology capability
+  return topologyAvailable;
+}
+
 /* Functions for determining available features in postGIS */
 QString QgsPostgresProvider::Conn::postgisVersion()
 {
+  if ( gotPostgisVersion ) return postgisVersionInfo;
+
   postgresqlVersion = PQserverVersion( conn );
 
   Result result = PQexec( "select postgis_version()" );
@@ -3072,6 +3087,18 @@ QString QgsPostgresProvider::Conn::postgisVersion()
     if ( proj.size() == 1 )
     {
       projAvailable = ( proj[0].indexOf( "=1" ) > -1 );
+    }
+  }
+
+  // checking for topology support
+  QgsDebugMsg( "Checking for topology support" );
+  topologyAvailable = false;
+  if ( postgisVersionMajor > 1 )
+  {
+    Result result = PQexec( "select count(c.oid) from pg_class as c join pg_namespace as n on c.relnamespace = n.oid where n.nspname = 'topology' and c.relname = 'topology'" );
+    if ( PQntuples( result ) >= 1 )
+    {
+      topologyAvailable = true;
     }
   }
 

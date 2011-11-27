@@ -25,7 +25,6 @@
 #include <QObject>
 #include <QSet>
 #include <QSettings>
-#include <iostream>
 
 #include <cmath>
 

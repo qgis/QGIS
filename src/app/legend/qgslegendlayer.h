@@ -77,6 +77,9 @@ class QgsLegendLayer : public QgsLegendItem
     /** set check state, but only if user checkable */
     void setCheckState( int column, Qt::CheckState state );
 
+    void setDrawingOrder( int order );
+    int drawingOrder() const { return mDrawingOrder; }
+
   public slots:
 
     /**Toggle show in overview*/
@@ -126,6 +129,9 @@ class QgsLegendLayer : public QgsLegendItem
 
     /** layer identified by its layer id */
     QgsMapCanvasLayer mLyr;
+
+    /** drawing order */
+    int mDrawingOrder;
 
     /**True if number of features per legend class should is shown in the legend items*/
     bool mShowFeatureCount;

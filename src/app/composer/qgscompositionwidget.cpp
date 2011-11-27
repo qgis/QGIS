@@ -91,6 +91,8 @@ QgsCompositionWidget::QgsCompositionWidget( QWidget* parent, QgsComposition* c )
     {
       mGridStyleComboBox->setCurrentIndex( 2 );
     }
+
+    mSelectionToleranceSpinBox->setValue( mComposition->selectionTolerance() );
   }
   blockSignals( false );
 }
@@ -503,6 +505,14 @@ void QgsCompositionWidget::on_mPenWidthSpinBox_valueChanged( double d )
   }
 }
 
+void QgsCompositionWidget::on_mSelectionToleranceSpinBox_valueChanged( double d )
+{
+  if ( mComposition )
+  {
+    mComposition->setSelectionTolerance( d );
+  }
+}
+
 void QgsCompositionWidget::blockSignals( bool block )
 {
   mPaperSizeComboBox->blockSignals( block );
@@ -519,4 +529,5 @@ void QgsCompositionWidget::blockSignals( bool block )
   mPenWidthSpinBox->blockSignals( block );
   mGridColorButton->blockSignals( block );
   mGridStyleComboBox->blockSignals( block );
+  mSelectionToleranceSpinBox->blockSignals( block );
 }

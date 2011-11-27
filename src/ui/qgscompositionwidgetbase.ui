@@ -32,8 +32,8 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-11</y>
-        <width>397</width>
+        <y>0</y>
+        <width>395</width>
         <height>579</height>
        </rect>
       </property>
@@ -280,6 +280,13 @@
           </item>
           <item row="8" column="0">
            <widget class="QComboBox" name="mGridStyleComboBox"/>
+          </item>
+          <item row="9" column="0">
+           <widget class="QDoubleSpinBox" name="mSelectionToleranceSpinBox">
+            <property name="prefix">
+             <string>Selection tolerance (mm) </string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

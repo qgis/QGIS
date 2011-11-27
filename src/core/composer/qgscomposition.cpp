@@ -25,8 +25,8 @@
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSnapToGrid( false ),
-    mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
 
@@ -36,14 +36,14 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
   addItem( mPaperItem );
   mPaperItem->setZValue( 0 );
   mPrintResolution = 300; //hardcoded default
-  loadGridAppearanceSettings();
+  loadSettings();
 }
 
 QgsComposition::QgsComposition():
     QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
+    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
-  loadGridAppearanceSettings();
+  loadSettings();
 }
 
 QgsComposition::~QgsComposition()
@@ -77,7 +77,16 @@ double QgsComposition::paperWidth() const
 
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 {
-  QList<QGraphicsItem *> itemList = items( position );
+  QList<QGraphicsItem*> itemList;
+  if ( mSelectionTolerance <= 0.0 )
+  {
+    itemList = items( position );
+  }
+  else
+  {
+    itemList = items( QRectF( position.x() - mSelectionTolerance, position.y() - mSelectionTolerance, 2 * mSelectionTolerance, 2 * mSelectionTolerance ),
+                      Qt::IntersectsItemShape, Qt::DescendingOrder );
+  }
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
 
   for ( ; itemIt != itemList.end(); ++itemIt )
@@ -663,6 +672,7 @@ void QgsComposition::setSnapToGridEnabled( bool b )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setSnapGridResolution( double r )
@@ -672,6 +682,7 @@ void QgsComposition::setSnapGridResolution( double r )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
@@ -681,6 +692,7 @@ void QgsComposition::setSnapGridOffsetX( double offset )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetY( double offset )
@@ -690,6 +702,7 @@ void QgsComposition::setSnapGridOffsetY( double offset )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setGridPen( const QPen& p )
@@ -699,7 +712,7 @@ void QgsComposition::setGridPen( const QPen& p )
   {
     mPaperItem->update();
   }
-  saveGridAppearanceSettings();
+  saveSettings();
 }
 
 void QgsComposition::setGridStyle( GridStyle s )
@@ -709,10 +722,16 @@ void QgsComposition::setGridStyle( GridStyle s )
   {
     mPaperItem->update();
   }
-  saveGridAppearanceSettings();
+  saveSettings();
 }
 
-void QgsComposition::loadGridAppearanceSettings()
+void QgsComposition::setSelectionTolerance( double tol )
+{
+  mSelectionTolerance = tol;
+  saveSettings();
+}
+
+void QgsComposition::loadSettings()
 {
   //read grid style, grid color and pen width from settings
   QSettings s;
@@ -742,9 +761,11 @@ void QgsComposition::loadGridAppearanceSettings()
   {
     mGridStyle = Solid;
   }
+
+  mSelectionTolerance = s.value( "/qgis/composerSelectionTolerance", 0.0 ).toDouble();
 }
 
-void QgsComposition::saveGridAppearanceSettings()
+void QgsComposition::saveSettings()
 {
   //store grid appearance settings
   QSettings s;
@@ -765,6 +786,9 @@ void QgsComposition::saveGridAppearanceSettings()
   {
     s.setValue( "/qgis/composerGridStyle", "Crosses" );
   }
+
+  //store also selection tolerance
+  s.setValue( "/qgis/composerSelectionTolerance", mSelectionTolerance );
 }
 
 void QgsComposition::beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c )

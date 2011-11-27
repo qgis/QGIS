@@ -36,8 +36,6 @@
 #define strcasecmp(s,t) stricmp(s,t)
 #endif
 
-#include <iostream>
-
 #include "dl_attributes.h"
 #include "dl_codes.h"
 

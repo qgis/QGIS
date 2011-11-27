@@ -14,8 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-
 #include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>

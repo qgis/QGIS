@@ -236,6 +236,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 {
   if ( mDrawing )
   {
+    QgsDebugMsg( "NOT updating layer set while drawing" );
     return;
   }
 
@@ -255,6 +256,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     {
       layerSet.push_back( lyr.layer()->id() );
     }
+
     if ( lyr.isInOverview() )
     {
       layerSetOverview.push_back( lyr.layer()->id() );
@@ -268,6 +270,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
   // update only if needed
   if ( layerSetChanged )
   {
+    QgsDebugMsg( "Layer changed to: " + layerSet.join( ", " ) );
+
     for ( i = 0; i < layerCount(); i++ )
     {
       // Add check if vector layer when disconnecting from selectionChanged slot

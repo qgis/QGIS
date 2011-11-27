@@ -18,6 +18,7 @@
 
 #include <QStringList>
 #include <QVariant>
+#include <QList>
 
 #include "qgsfield.h"
 
@@ -122,7 +123,7 @@ class CORE_EXPORT QgsExpression
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea* geomCalculator() { if ( mCalc == NULL ) initGeomCalculator(); return mCalc; }
+    QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
 
     //
 
@@ -186,7 +187,8 @@ class CORE_EXPORT QgsExpression
       QString mHelpText;
     };
 
-    static FunctionDef BuiltinFunctions[];
+    static const QList<FunctionDef> &BuiltinFunctions();
+    static QList<FunctionDef> gmBuiltinFunctions;
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
@@ -301,7 +303,7 @@ class CORE_EXPORT QgsExpression
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { bool needs = BuiltinFunctions[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual bool needsGeometry() const { bool needs = BuiltinFunctions()[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
       protected:
         //QString mName;
         int mFnIndex;

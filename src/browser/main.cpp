@@ -15,7 +15,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
 #include <QLocale>
 #include <QSettings>
 #include <QTranslator>

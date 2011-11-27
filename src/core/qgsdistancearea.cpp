@@ -28,6 +28,7 @@
 #include "qgsdistancearea.h"
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 // MSVC compiler doesn't have defined M_PI in math.h
 #ifndef M_PI
@@ -101,7 +102,7 @@ bool QgsDistanceArea::setEllipsoid( const QString& ellipsoid )
   myResult = sqlite3_open( QgsApplication::srsDbFilePath().toUtf8().data(), &myDatabase );
   if ( myResult )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     return false;
@@ -363,7 +364,7 @@ double QgsDistanceArea::measureLine( const QList<QgsPoint>& points )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsLogger::warning( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
     return 0.0;
   }
 
@@ -388,7 +389,7 @@ double QgsDistanceArea::measureLine( const QgsPoint& p1, const QgsPoint& p2 )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsLogger::warning( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate line length." ) );
     return 0.0;
   }
 }
@@ -476,7 +477,7 @@ unsigned char* QgsDistanceArea::measurePolygon( unsigned char* feature, double* 
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsLogger::warning( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area or perimeter." ) );
   }
 
   return ptr;
@@ -505,7 +506,7 @@ double QgsDistanceArea::measurePolygon( const QList<QgsPoint>& points )
   catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
-    QgsLogger::warning( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area." ) );
+    QgsMessageLog::logMessage( QObject::tr( "Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area." ) );
     return 0.0;
   }
 }

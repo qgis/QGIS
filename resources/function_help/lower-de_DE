@@ -1,0 +1,11 @@
+<h3>Funktion lower()</h3>
+Wandelt eine Zeichenkette in Kleinbuchstaben um.
+
+<p><h4>  Syntax</h4>
+     lower(<i>zeichenkette</i>)</p>
+
+<p><h4>  Argumente</h4>
+<i>  zeichenkette</i> -> ist eine Zeichenkette.  Die Zeichenkette, die in Kleinbuchstaben umzuwandeln ist.</p>
+
+<p><h4>  Beispiel</h4>
+     lower('Hallo Welt') -> 'hallo welt'</p>

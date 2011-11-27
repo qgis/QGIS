@@ -20,7 +20,7 @@
 //    mhadji@gmail.com
 
 #pragma once
-
+#include <iostream>
 #include "PoolPointer.h"
 
 namespace Tools

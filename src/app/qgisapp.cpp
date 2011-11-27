@@ -126,6 +126,7 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgslabelinggui.h"
 #include "qgslegend.h"
+#include "qgslayerorder.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -428,6 +429,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // "theMapLegend" used to find this canonical instance later
   mMapLegend = new QgsLegend( mMapCanvas, this, "theMapLegend" );
 
+  mMapLayerOrder = new QgsLayerOrder( mMapLegend, this, "theMapLayerOrder" );
+
   // create undo widget
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
@@ -494,6 +497,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // set application's caption
   QString caption = tr( "Quantum GIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
+
+  QgsMessageLog::logMessage( tr( "QGIS starting..." ) );
 
   // set QGIS specific srs validation
   QgsCoordinateReferenceSystem::setCustomSrsValidation( customSrsValidation_ );
@@ -574,6 +579,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QgsCustomization::instance()->updateMainWindow( mToolbarMenu );
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
+
+  QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
 
   mMapTipsVisible = false;
 
@@ -1661,7 +1668,7 @@ void QgisApp::createOverview()
   QSettings mySettings;
   // Anti Aliasing enabled by default as of QGIS 1.7
   mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
-  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", false ).toBool() );
+  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", true ).toBool() );
 
   int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
@@ -1714,8 +1721,17 @@ void QgisApp::initLegend()
   mLegendDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
   mLegendDock->setWidget( mMapLegend );
   addDockWidget( Qt::LeftDockWidgetArea, mLegendDock );
+
   // add to the Panel submenu
   mPanelMenu->addAction( mLegendDock->toggleViewAction() );
+
+  mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
+  mLayerOrderDock = new QDockWidget( tr( "Layerorder" ), this );
+  mLayerOrderDock->setObjectName( "Legend" );
+  mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+  mLayerOrderDock->setWidget( mMapLayerOrder );
+  addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
+
   return;
 }
 

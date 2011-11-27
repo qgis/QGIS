@@ -13,16 +13,14 @@
 #include "qgsgpsdevicedialog.h"
 #include "qgisgui.h"
 
-#include <iostream>
-
 #include <QMessageBox>
 #include <QSettings>
 
 
-QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map<QString, QgsGPSDevice*>&
-                                        devices ) :
-    QDialog( 0, QgisGui::ModalDialogFlags ), mDevices( devices )
-
+QgsGPSDeviceDialog::QgsGPSDeviceDialog( std::map<QString,
+                                        QgsGPSDevice*>& devices )
+   : QDialog( 0, QgisGui::ModalDialogFlags )
+   , mDevices( devices )
 {
   setupUi( this );
   setAttribute( Qt::WA_DeleteOnClose );

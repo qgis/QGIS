@@ -8,7 +8,7 @@ Returns a string with the the supplied string replaced.
 <!-- List args for functions here-->
 <i>  string</i> -> is string.  The start string.<br>
 <i>  before</i> -> is string.  The string to replace.<br>
-<i>  after</i> -> is string.  The string that will repalce <i>before</i><br></p>
+<i>  after</i> -> is string.  The string that will replace <i>before</i><br></p>
 
 <p><h4>Example</h4>
 <!-- Show example of function.-->

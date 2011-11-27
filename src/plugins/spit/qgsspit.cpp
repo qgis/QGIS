@@ -29,8 +29,6 @@
 #include <QTableWidgetItem>
 #include <QInputDialog>
 
-#include <iostream>
-
 #include "qgsencodingfiledialog.h"
 
 #include "qgspgutil.h"

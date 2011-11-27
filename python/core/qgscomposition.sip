@@ -79,6 +79,9 @@ class QgsComposition: QGraphicsScene
     bool printAsRaster() const;
     void setPrintAsRaster(bool enabled);
 
+    double selectionTolerance() const;
+    void setSelectionTolerance( double tol );
+
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer();
 
