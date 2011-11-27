@@ -519,7 +519,7 @@ QString QgsApplication::showSettings()
                     .arg( themeName() )
                     .arg( activeThemePath() )
                     .arg( defaultThemePath() )
-                    .arg( svgPaths().join( "\n\t\t" ) )
+                    .arg( svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ) )
                     .arg( qgisMasterDbFilePath() );
   return myState;
 }
