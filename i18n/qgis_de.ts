@@ -5452,18 +5452,78 @@ qgis.utils.iface object (instance of QgisInterface class) zugegriffen werden.
         <translation>Index außerhalb des Bereichs</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="498"/>
-        <location filename="../src/core/qgsexpression.cpp" line="510"/>
+        <location filename="../src/core/qgsexpression.cpp" line="379"/>
+        <location filename="../src/core/qgsexpression.cpp" line="380"/>
+        <location filename="../src/core/qgsexpression.cpp" line="381"/>
+        <location filename="../src/core/qgsexpression.cpp" line="382"/>
+        <location filename="../src/core/qgsexpression.cpp" line="383"/>
+        <location filename="../src/core/qgsexpression.cpp" line="384"/>
+        <location filename="../src/core/qgsexpression.cpp" line="385"/>
+        <location filename="../src/core/qgsexpression.cpp" line="386"/>
+        <location filename="../src/core/qgsexpression.cpp" line="387"/>
+        <location filename="../src/core/qgsexpression.cpp" line="388"/>
+        <location filename="../src/core/qgsexpression.cpp" line="389"/>
+        <location filename="../src/core/qgsexpression.cpp" line="390"/>
+        <source>Math</source>
+        <translation>Mathematik</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="392"/>
+        <location filename="../src/core/qgsexpression.cpp" line="393"/>
+        <location filename="../src/core/qgsexpression.cpp" line="394"/>
+        <source>Conversions</source>
+        <translation>Umwandlungen</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="396"/>
+        <location filename="../src/core/qgsexpression.cpp" line="397"/>
+        <location filename="../src/core/qgsexpression.cpp" line="398"/>
+        <location filename="../src/core/qgsexpression.cpp" line="399"/>
+        <location filename="../src/core/qgsexpression.cpp" line="400"/>
+        <location filename="../src/core/qgsexpression.cpp" line="401"/>
+        <source>String</source>
+        <translation>Zeichenketten</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="403"/>
+        <location filename="../src/core/qgsexpression.cpp" line="404"/>
+        <location filename="../src/core/qgsexpression.cpp" line="405"/>
+        <location filename="../src/core/qgsexpression.cpp" line="406"/>
+        <location filename="../src/core/qgsexpression.cpp" line="407"/>
+        <location filename="../src/core/qgsexpression.cpp" line="408"/>
+        <location filename="../src/core/qgsexpression.cpp" line="409"/>
+        <source>Geometry</source>
+        <translation>Geometrie</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="411"/>
+        <location filename="../src/core/qgsexpression.cpp" line="412"/>
+        <source>Record</source>
+        <translation>Datensatz</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="503"/>
+        <location filename="../src/core/qgsexpression.cpp" line="515"/>
         <source>No root node! Parsing failed?</source>
         <translation>Kein Wurzelknoten! Parsen gescheitert?</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="572"/>
+        <location filename="../src/core/qgsexpression.cpp" line="536"/>
+        <source>(no root)</source>
+        <translation>(Keine Wurzel)</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="578"/>
         <source>Unary minus only for numeric values.</source>
         <translation>Negatives Vorzeichen nur für nummerische Werte.</translation>
     </message>
     <message>
-        <location filename="../src/core/qgsexpression.cpp" line="954"/>
+        <location filename="../src/core/qgsexpression.cpp" line="939"/>
+        <source>[unsupported type;%1; value:%2]</source>
+        <translation>[nicht unterstützter Typ;%1; Wert:%2]</translation>
+    </message>
+    <message>
+        <location filename="../src/core/qgsexpression.cpp" line="960"/>
         <source>Column &apos;%1&apos;&apos; not found</source>
         <translation>Spalte &apos;%1&quot; nicht gefunden</translation>
     </message>
@@ -14053,27 +14113,95 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsExpressionBuilderWidget</name>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="113"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="55"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="56"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="57"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="58"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="59"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="60"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="61"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="62"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="63"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="64"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="65"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="66"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="67"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="73"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="74"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="75"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="76"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="77"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="78"/>
+        <source>Operators</source>
+        <translation>Operatoren</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="69"/>
+        <source>(String Concatenation)</source>
+        <translation>(Zeichenverkettung)</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="70"/>
+        <source>Joins two values together into a string</source>
+        <translation>Zwei Werte zu einer Zeichenkette zusammenziehen</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="71"/>
+        <source>Usage</source>
+        <translation>Syntax</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="72"/>
+        <source>&apos;Dia&apos; || Diameter</source>
+        <translation>&apos;Durchmesser&apos; || Durchmesser</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="116"/>
         <source>Double click to add field name to expression string. &lt;br&gt; Or right click to select loading value options then double click an item in the value list to add it to the expression string.</source>
         <translation>Klicken Sie doppelt auf eine Feldnamen um ihn dem Ausdruck hinzuzufügen. &lt;br&gt; Oder klicken Sie rechts, um die Wertladeoption zu setzen und dann mit einem Doppelkick den Wert in den Ausdruck einzufügen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="321"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="159"/>
+        <source>Fields</source>
+        <translation>Felder</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="264"/>
+        <source>Parser Error</source>
+        <translation>Parsingfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="266"/>
+        <source>Eval Error</source>
+        <translation>Auswertungsfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="268"/>
+        <source>Expression is invalid &lt;a href=more&gt;(more info)&lt;/a&gt;</source>
+        <translation>Ausdruck ist ungültig &lt;a href=more&gt;(mehr Information)&lt;/a&gt;</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="297"/>
+        <source>More info on expression error</source>
+        <translation>Mehr Informations zum Ausdrucksfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="324"/>
         <source>Load top 10 unique values</source>
         <translation>Die ersten zehn eindeutigen Werte laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="322"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="325"/>
         <source>Load all unique values</source>
         <translation>Alle eindeutigen Werte laden</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="398"/>
-        <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="401"/>
+        <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team.</source>
         <translation>Diese Hilfedatei gibt es in Ihrer Sprache %1 nicht. Wenn Sie sie erstellen wollen, kontaktieren Sie das QGIS-Entwicklerteam.</translation>
     </message>
     <message>
-        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="404"/>
+        <location filename="../src/gui/qgsexpressionbuilderwidget.cpp" line="407"/>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
         <translation>Diese Hilfedatei gibt es in Ihrer Sprache:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;Wenn Sie sie erstellen wollen, kontaktieren Sie das QGIS-Entwicklerteam</translation>
     </message>
@@ -16623,7 +16751,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="448"/>
         <source>Split stereo vertical eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertikale Stereo-Augenabbildung teilen</translation>
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="485"/>
@@ -16643,7 +16771,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog_guibase.ui" line="574"/>
         <source>Split stereo horizontal eye mapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Horizontale Stereo-Augenabbildung teilen</translation>
     </message>
 </context>
 <context>
@@ -19512,7 +19640,7 @@ in Zeile %2, Spalte %3</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="140"/>
-        <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
+        <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team.</source>
         <translation>Diese Hilfedatei gibt es in Ihrer Sprache %1 nicht. Wenn Sie sie erstellen wollen, kontaktieren Sie das QGIS-Entwicklerteam.</translation>
     </message>
     <message>
