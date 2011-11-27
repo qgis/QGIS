@@ -17,7 +17,6 @@
 
 #include "qgsmessagelogviewer.h"
 #include "qgsmessagelog.h"
-#include "qgslogger.h"
 
 #include <QSettings>
 #include <QTableWidget>
@@ -66,25 +65,23 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
   {
     w = new QTableWidget( 0, 3, this );
     w->verticalHeader()->setDefaultSectionSize( 16 );
+    w->verticalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     w->verticalHeader()->setVisible( false );
     w->setGridStyle( Qt::DotLine );
     w->setEditTriggers( QAbstractItemView::NoEditTriggers );
     w->setHorizontalHeaderLabels( QStringList() << tr( "Timestamp" ) << tr( "Message" ) << tr( "Level" ) );
+    w->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     tabWidget->addTab( w, tag );
   }
 
   int n = w->rowCount();
-
-  QgsDebugMsg( QString( "%1: %2[%3] %4" ).arg( n ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( level ).arg( level ) );
 
   w->setRowCount( n + 1 );
   QTableWidgetItem *item = new QTableWidgetItem( QDateTime::currentDateTime().toString( Qt::ISODate ) );
   w->setItem( n, 0, item );
   w->setItem( n, 1, new QTableWidgetItem( message ) );
   w->setItem( n, 2, new QTableWidgetItem( QString::number( level ) ) );
-  w->scrollToItem( item );
-
-  w->resizeColumnsToContents();
+  w->scrollToBottom();
 }
 
 void QgsMessageLogViewer::closeTab( int index )

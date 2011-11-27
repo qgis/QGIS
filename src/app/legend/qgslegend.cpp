@@ -1403,6 +1403,7 @@ bool QgsLegend::readXML( QDomNode& legendnode )
   clear(); //remove all items first
   mEmbeddedGroups.clear();
   mUpdateDrawingOrder = legendnode.toElement().attribute( "updateDrawingOrder", "true" ) == "true";
+  emit updateDrawingOrderChanged( mUpdateDrawingOrder );
   return readXML( 0, legendnode );
 }
 

@@ -14,6 +14,8 @@
  ***************************************************************************/
 
 #include "qgsmessagelog.h"
+#include <qgslogger.h>
+#include <QDateTime>
 #include <iostream>
 
 class QgsMessageLogConsole;
@@ -27,6 +29,8 @@ void QgsMessageLog::setLogger( void (*f)( QString message, QString tag, int leve
 
 void QgsMessageLog::logMessage( QString message, QString tag, int level )
 {
+  QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( tag ).arg( level ).arg( message ) );
+
   if( !gmLogger )
     QgsMessageLogConsole::logger( message, tag, level );
   else
