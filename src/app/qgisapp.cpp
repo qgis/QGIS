@@ -580,6 +580,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
+  QgsMessageLog::logMessage( QgsApplication::showSettings() );
+
   QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
 
   mMapTipsVisible = false;
@@ -612,11 +614,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildrenActions( this );
-
-  //finally show all the application settings as initialised above
-  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n" );
-  QgsDebugMsg( QgsApplication::showSettings() );
-  QgsDebugMsg( "\n--------------------------\n\n\n" );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
@@ -1755,7 +1752,7 @@ bool QgisApp::createDB()
 
     if ( !isDbFileCopied )
     {
-      QgsDebugMsg( "[ERROR] Can not make qgis.db private copy" );
+      QgsMessageLog::logMessage( tr( "[ERROR] Can not make qgis.db private copy" ) );
       return false;
     }
   }
@@ -2332,7 +2329,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     }
     else
     {
-      QgsDebugMsg(( layerPath ) + " is an invalid layer - not loaded" );
+      QgsMessageLog::logMessage( tr( "%1 is an invalid layer - not loaded" ).arg( layerPath ) );
       QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( layerPath ) );
       delete layer;
     }
@@ -2928,7 +2925,7 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   if ( !ok )
   {
     // we have no idea what this file is...
-    QgsDebugMsg( "Unable to load " + fileName );
+    QgsMessageLog::logMessage( tr( "Unable to load %1" ).arg( fileName ) );
   }
 
   return ok;
@@ -4539,12 +4536,10 @@ void QgisApp::loadPythonSupport()
   pythonlib.setLoadHints( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
   if ( !pythonlib.load() )
   {
-    //using stderr on purpose because we want end users to see this [TS]
-    QgsDebugMsg( "Couldn't load Python support library: " + pythonlib.errorString() );
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      qWarning( "Couldn't load Python support library: %s", pythonlib.errorString().toUtf8().data() );
+      QgsMessageLog::logMessage( tr( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
       return;
     }
   }
@@ -4555,7 +4550,7 @@ void QgisApp::loadPythonSupport()
   if ( !pythonlib_inst )
   {
     //using stderr on purpose because we want end users to see this [TS]
-    QgsDebugMsg( "Couldn't resolve python support library's instance() symbol." );
+    QgsMessageLog::logMessage( tr( "Couldn't resolve python support library's instance() symbol." ) );
     return;
   }
 
@@ -4570,7 +4565,7 @@ void QgisApp::loadPythonSupport()
     // init python runner
     QgsPythonRunner::setInstance( new QgsPythonRunnerImpl( mPythonUtils ) );
 
-    std::cout << "Python support ENABLED :-) " << std::endl; // OK
+    QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ) );
   }
   else
   {
