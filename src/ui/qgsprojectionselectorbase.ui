@@ -107,7 +107,7 @@
        </property>
       </column>
      </widget>
-     <widget class="QWidget" name="">
+     <widget class="QWidget" name="layoutWidget">
       <layout class="QGridLayout" name="gridLayout">
        <property name="horizontalSpacing">
         <number>0</number>
@@ -147,7 +147,7 @@
           <widget class="QCheckBox" name="cbxHideDeprecated">
            <property name="font">
             <font>
-             <pointsize>7</pointsize>
+             <pointsize>9</pointsize>
             </font>
            </property>
            <property name="text">
