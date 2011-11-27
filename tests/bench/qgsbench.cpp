@@ -210,8 +210,9 @@ void QgsBench::render()
   mLogMap.insert( "iterations", mTimes.size() );
 
   // Calc stats: user, sys, total
-  double maxdev[3], min[3], max[3];
+  double min[3], max[3];
   double stdev[3] = {0.};
+  double maxdev[3] = {0.};
   double avg[3] = {0.};
 
   for ( int t = 0; t < 3; t++ )
