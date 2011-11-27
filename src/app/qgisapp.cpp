@@ -1668,7 +1668,7 @@ void QgisApp::createOverview()
   QSettings mySettings;
   // Anti Aliasing enabled by default as of QGIS 1.7
   mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
-  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", false ).toBool() );
+  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", true ).toBool() );
 
   int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
