@@ -20,6 +20,8 @@
 #include <QGraphicsView>
 #include "qgsaddremoveitemcommand.h"
 
+class QDomDocument;
+class QDomElement;
 class QKeyEvent;
 class QMainWindow;
 class QMouseEvent;
@@ -94,6 +96,12 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     void addComposerShape( QgsComposerShape* shape );
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
+
+    /**Remove item from the graphics scene*/
+    void removeItem( QgsComposerItem* item );
+
+    /**Add items from XML representation to the graphics scene (for pasting items from clipboard)*/
+    void addItemsfromXML( const QDomElement& docElem, const QDomDocument& doc );
 
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
