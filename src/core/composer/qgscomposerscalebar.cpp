@@ -28,7 +28,8 @@
 #include <QPainter>
 #include <cmath>
 
-QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ), mSegmentMillimeters( 0.0 )
+QgsComposerScaleBar::QgsComposerScaleBar( QgsComposition* composition ): QgsComposerItem( composition ), mComposerMap( 0 ), mStyle( 0 ),
+    mSegmentMillimeters( 0.0 ), mAlignment( Left )
 {
   applyDefaultSettings();
   applyDefaultSize();
@@ -65,10 +66,57 @@ void QgsComposerScaleBar::paint( QPainter* painter, const QStyleOptionGraphicsIt
   }
 }
 
+void QgsComposerScaleBar::setNumSegments( int nSegments )
+{
+  if ( !mStyle )
+  {
+    mNumSegments = nSegments;
+    return;
+  }
+  double width = mStyle->calculateBoxSize().width();
+  mNumSegments = nSegments;
+  double widthAfter = mStyle->calculateBoxSize().width();
+  correctXPositionAlignment( width, widthAfter );
+}
+
 void QgsComposerScaleBar::setNumUnitsPerSegment( double units )
 {
+  if ( !mStyle )
+  {
+    mNumUnitsPerSegment = units;
+    return;
+  }
+  double width = mStyle->calculateBoxSize().width();
   mNumUnitsPerSegment = units;
   refreshSegmentMillimeters();
+  double widthAfter = mStyle->calculateBoxSize().width();
+  correctXPositionAlignment( width, widthAfter );
+}
+
+void QgsComposerScaleBar::setNumSegmentsLeft( int nSegmentsLeft )
+{
+  if ( !mStyle )
+  {
+    mNumSegmentsLeft = nSegmentsLeft;
+    return;
+  }
+  double width = mStyle->calculateBoxSize().width();
+  mNumSegmentsLeft = nSegmentsLeft;
+  double widthAfter = mStyle->calculateBoxSize().width();
+  correctXPositionAlignment( width, widthAfter );
+}
+
+void QgsComposerScaleBar::setBoxContentSpace( double space )
+{
+  if ( !mStyle )
+  {
+    mBoxContentSpace = space;
+    return;
+  }
+  double width = mStyle->calculateBoxSize().width();
+  mBoxContentSpace = space;
+  double widthAfter = mStyle->calculateBoxSize().width();
+  correctXPositionAlignment( width, widthAfter );
 }
 
 void QgsComposerScaleBar::setComposerMap( const QgsComposerMap* map )
@@ -172,7 +220,14 @@ void QgsComposerScaleBar::update()
 
 void QgsComposerScaleBar::updateSegmentSize()
 {
+  if ( !mStyle )
+  {
+    return;
+  }
+  double width = mStyle->calculateBoxSize().width();
   refreshSegmentMillimeters();
+  double widthAfter = mStyle->calculateBoxSize().width();
+  correctXPositionAlignment( width, widthAfter );
   update();
 }
 
@@ -309,6 +364,9 @@ bool QgsComposerScaleBar::writeXML( QDomElement& elem, QDomDocument & doc ) cons
   colorElem.setAttribute( "blue", brushColor.blue() );
   composerScaleBarElem.appendChild( colorElem );
 
+  //alignment
+  composerScaleBarElem.setAttribute( "alignment", QString::number(( int ) mAlignment ) );
+
   elem.appendChild( composerScaleBarElem );
   return _writeXML( composerScaleBarElem, doc );
 }
@@ -357,6 +415,9 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
 
   refreshSegmentMillimeters();
 
+  //alignment
+  mAlignment = ( Alignment )( itemElem.attribute( "alignment", "0" ).toInt() );
+
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
   if ( composerItemList.size() > 0 )
@@ -366,6 +427,18 @@ bool QgsComposerScaleBar::readXML( const QDomElement& itemElem, const QDomDocume
   }
 
   return true;
+}
+
+void QgsComposerScaleBar::correctXPositionAlignment( double width, double widthAfter )
+{
+  if ( mAlignment == Middle )
+  {
+    move( -( widthAfter - width ) / 2.0, 0 );
+  }
+  else if ( mAlignment == Right )
+  {
+    move( -( widthAfter - width ), 0 );
+  }
 }
 
 

@@ -20,12 +20,12 @@
 #include <QList>
 #include <QPainter>
 
-QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar )
+QgsNumericScaleBarStyle::QgsNumericScaleBarStyle( QgsComposerScaleBar* bar ): QgsScaleBarStyle( bar ), mLastScaleBarWidth( 0 )
 {
 
 }
 
-QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( 0 )
+QgsNumericScaleBarStyle::QgsNumericScaleBarStyle(): QgsScaleBarStyle( 0 ), mLastScaleBarWidth( 0 )
 {
 
 }
@@ -67,9 +67,17 @@ QRectF QgsNumericScaleBarStyle::calculateBoxSize() const
   double textWidth = mScaleBar->textWidthMillimeters( mScaleBar->font(), scaleText() );
   double textHeight = mScaleBar->fontAscentMillimeters( mScaleBar->font() );
 
-  return QRectF( mScaleBar->transform().dx(), mScaleBar->transform().dy(), 2 * mScaleBar->boxContentSpace()
+  rect = QRectF( mScaleBar->transform().dx(), mScaleBar->transform().dy(), 2 * mScaleBar->boxContentSpace()
                  + 2 * mScaleBar->pen().width() + textWidth,
                  textHeight + 2 * mScaleBar->boxContentSpace() );
+
+  if ( mLastScaleBarWidth != rect.width() && mLastScaleBarWidth > 0 && rect.width() > 0 )
+  {
+    //hack to move scale bar the the left / right in order to keep the bar alignment
+    const_cast<QgsComposerScaleBar*>( mScaleBar )->correctXPositionAlignment( mLastScaleBarWidth, rect.width() );
+  }
+  mLastScaleBarWidth = rect.width();
+  return rect;
 }
 
 QString QgsNumericScaleBarStyle::scaleText() const
@@ -78,12 +86,14 @@ QString QgsNumericScaleBarStyle::scaleText() const
   if ( mScaleBar )
   {
     //find out scale
+    double scaleDenominator = 1;
     const QgsComposerMap* composerMap = mScaleBar->composerMap();
     if ( composerMap )
     {
-      double scaleDenominator = composerMap->scale();
+      scaleDenominator = composerMap->scale();
       scaleBarText = "1:" + QString::number( scaleDenominator, 'f', 0 );
     }
+    scaleBarText = "1:" + QString::number( scaleDenominator, 'f', 0 );
   }
   return scaleBarText;
 }

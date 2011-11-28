@@ -31,12 +31,19 @@ QgsComposerScaleBarWidget::QgsComposerScaleBarWidget( QgsComposerScaleBar* scale
   toolBox->addItem( itemPropertiesWidget, tr( "General options" ) );
 
   blockMemberSignals( true );
+
+  //style combo box
   mStyleComboBox->insertItem( 0, tr( "Single Box" ) );
   mStyleComboBox->insertItem( 1, tr( "Double Box" ) );
   mStyleComboBox->insertItem( 2, tr( "Line Ticks Middle" ) );
   mStyleComboBox->insertItem( 3, tr( "Line Ticks Down" ) );
   mStyleComboBox->insertItem( 4, tr( "Line Ticks Up" ) );
   mStyleComboBox->insertItem( 5, tr( "Numeric" ) );
+
+  mAlignmentComboBox->insertItem( 0, tr( "Left" ) );
+  mAlignmentComboBox->insertItem( 1, tr( "Middle" ) );
+  mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
+
   setGuiElements(); //set the GUI elements to the state of scaleBar
   blockMemberSignals( false );
 }
@@ -161,6 +168,9 @@ void QgsComposerScaleBarWidget::setGuiElements()
   //style...
   QString style = mComposerScaleBar->style();
   mStyleComboBox->setCurrentIndex( mStyleComboBox->findText( tr( style.toLocal8Bit().data() ) ) );
+
+  //alignment
+  mAlignmentComboBox->setCurrentIndex(( int )( mComposerScaleBar->alignment() ) );
 }
 
 //slots
@@ -371,6 +381,18 @@ void QgsComposerScaleBarWidget::on_mBoxSizeSpinBox_valueChanged( double d )
   mComposerScaleBar->endCommand();
 }
 
+void QgsComposerScaleBarWidget::on_mAlignmentComboBox_currentIndexChanged( int index )
+{
+  if ( !mComposerScaleBar )
+  {
+    return;
+  }
+
+  mComposerScaleBar->beginCommand( tr( "Scalebar alignment" ) );
+  mComposerScaleBar->setAlignment(( QgsComposerScaleBar::Alignment ) index );
+  mComposerScaleBar->endCommand();
+}
+
 void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
 {
   mSegmentSizeSpinBox->blockSignals( block );
@@ -384,4 +406,5 @@ void QgsComposerScaleBarWidget::blockMemberSignals( bool block )
   mLineWidthSpinBox->blockSignals( block );
   mLabelBarSpaceSpinBox->blockSignals( block );
   mBoxSizeSpinBox->blockSignals( block );
+  mAlignmentComboBox->blockSignals( block );
 }

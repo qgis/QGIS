@@ -32,6 +32,14 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
   public:
 
+    /**Added in version 1.8*/
+    enum Alignment
+    {
+      Left = 0,
+      Middle,
+      Right
+    };
+
     QgsComposerScaleBar( QgsComposition* composition );
     ~QgsComposerScaleBar();
 
@@ -43,10 +51,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     //getters and setters
     int numSegments() const {return mNumSegments;}
-    void setNumSegments( int nSegments ) {mNumSegments = nSegments;}
+    void setNumSegments( int nSegments );
 
     int numSegmentsLeft() const {return mNumSegmentsLeft;}
-    void setNumSegmentsLeft( int nSegmentsLeft ) {mNumSegmentsLeft = nSegmentsLeft;}
+    void setNumSegmentsLeft( int nSegmentsLeft );
 
     double numUnitsPerSegment() const {return mNumUnitsPerSegment;}
     void setNumUnitsPerSegment( double units );
@@ -77,9 +85,16 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void setLabelBarSpace( double space ) {mLabelBarSpace = space;}
 
     double boxContentSpace() const {return mBoxContentSpace;}
-    void setBoxContentSpace( double space ) {mBoxContentSpace = space;}
+    void setBoxContentSpace( double space );
 
     double segmentMillimeters() const {return mSegmentMillimeters;}
+
+    /**Left / Middle/ Right
+      @note: this method was added in version 1.8*/
+    Alignment alignment() const { return mAlignment; }
+
+    /**@note: this method was added in version 1.8*/
+    void setAlignment( Alignment a ) { mAlignment = a; }
 
     /**Apply default settings*/
     void applyDefaultSettings();
@@ -118,6 +133,9 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
        * @param doc is Dom document
        */
     bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+
+    /**Moves scalebar position to the left / right depending on alignment and change in item width*/
+    void correctXPositionAlignment( double width, double widthAfter );
 
   public slots:
     void updateSegmentSize();
@@ -158,6 +176,8 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
 
     /**Width of a segment (in mm)*/
     double mSegmentMillimeters;
+
+    Alignment mAlignment;
 
     /**Calculates with of a segment in mm and stores it in mSegmentMillimeters*/
     void refreshSegmentMillimeters();
