@@ -1327,20 +1327,18 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
     if ( whereClause.isEmpty() )
     {
       QString qBox = QString( "%1('BOX3D(%2)'::box3d,%3)" )
-                    .arg( connectionRO->majorVersion() < 2 ? "setsrid"
-                                                        : "st_setsrid" )
-                    .arg( rect.asWktCoordinates() )
-                    .arg( srid );
+                     .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
+                     .arg( rect.asWktCoordinates() )
+                     .arg( srid );
       whereClause = QString( "%1 && %2" )
-                   .arg( quotedIdentifier( geometryColumn ) )
-                   .arg( qBox );
+                    .arg( quotedIdentifier( geometryColumn ) )
+                    .arg( qBox );
       if ( useIntersect )
       {
-        whereClause += QString( " and %1(%2,%3))" )
-                      .arg( connectionRO->majorVersion() < 2 ? "intersects"
-                                                          : "st_intersects" )
-                      .arg( quotedIdentifier( geometryColumn ) )
-                      .arg( qBox );
+        whereClause += QString( " and %1(%2,%3)" )
+                       .arg( connectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
+                       .arg( quotedIdentifier( geometryColumn ) )
+                       .arg( qBox );
       }
     }
   }

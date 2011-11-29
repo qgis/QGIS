@@ -15,9 +15,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QApplication>
 #include <QMainWindow>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <QClipboard>
+#include <QMimeData>
 
 #include "qgscomposerview.h"
 #include "qgscomposerarrow.h"
@@ -394,40 +397,56 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   QList<QgsComposerItem*> composerItemList = composition()->selectedComposerItems();
   QList<QgsComposerItem*>::iterator itemIt = composerItemList.begin();
 
+  if ( e->matches( QKeySequence::Copy ) || e->matches( QKeySequence::Cut ) )
+  {
+    QDomDocument doc;
+    QDomElement documentElement = doc.createElement( "ComposerItemClipboard" );
+    for ( ; itemIt != composerItemList.end(); ++itemIt )
+    {
+      // copy each item in a group
+      QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
+      if ( itemGroup && composition() )
+      {
+        QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+        QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+        for ( ; it != groupedItems.end(); ++it )
+        {
+          ( *it )->writeXML( documentElement, doc );
+        }
+      }
+      ( *itemIt )->writeXML( documentElement, doc );
+      if ( e->matches( QKeySequence::Cut ) )
+      {
+        removeItem( *itemIt );
+      }
+    }
+    doc.appendChild( documentElement );
+    QMimeData *mimeData = new QMimeData;
+    mimeData->setData( "text/xml", doc.toByteArray() );
+    QClipboard *clipboard = QApplication::clipboard();
+    clipboard->setMimeData( mimeData );
+  }
+
+  if ( e->matches( QKeySequence::Paste ) )
+  {
+    QDomDocument doc;
+    QClipboard *clipboard = QApplication::clipboard();
+    if ( doc.setContent( clipboard->mimeData()->data( "text/xml" ) ) )
+    {
+      QDomElement docElem = doc.documentElement();
+      if ( docElem.tagName() == "ComposerItemClipboard" )
+      {
+        addItemsfromXML( docElem, doc );
+      }
+    }
+  }
+
   //delete selected items
   if ( e->key() == Qt::Key_Delete || e->key() == Qt::Key_Backspace )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
-      QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( *itemIt );
-      if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
-      {
-        composition()->removeItem( *itemIt );
-        QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( *itemIt );
-        if ( itemGroup && composition() )
-        {
-          //add add/remove item command for every item in the group
-          QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
-
-          QSet<QgsComposerItem*> groupedItems = itemGroup->items();
-          QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
-          for ( ; it != groupedItems.end(); ++it )
-          {
-            QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, composition(), "", parentCommand );
-            connectAddRemoveCommandSignals( subcommand );
-            emit itemRemoved( *it );
-          }
-
-          composition()->undoStack()->push( parentCommand );
-          delete itemGroup;
-          emit itemRemoved( itemGroup );
-        }
-        else
-        {
-          emit itemRemoved( *itemIt );
-          pushAddRemoveCommand( *itemIt, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
-        }
-      }
+      removeItem( *itemIt );
     }
   }
 
@@ -624,6 +643,133 @@ void QgsComposerView::addComposerTable( QgsComposerAttributeTable* table )
   table->setSelected( true );
   emit selectedItemChanged( table );
   pushAddRemoveCommand( table, tr( "Table added" ) );
+}
+
+void QgsComposerView::removeItem( QgsComposerItem* item )
+{
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
+  if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
+  {
+    composition()->removeItem( item );
+    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
+    if ( itemGroup && composition() )
+    {
+      //add add/remove item command for every item in the group
+      QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
+
+      QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+      for ( ; it != groupedItems.end(); ++it )
+      {
+        QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, composition(), "", parentCommand );
+        connectAddRemoveCommandSignals( subcommand );
+        emit itemRemoved( *it );
+      }
+
+      composition()->undoStack()->push( parentCommand );
+      delete itemGroup;
+      emit itemRemoved( itemGroup );
+    }
+    else
+    {
+      emit itemRemoved( item );
+      pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+    }
+  }
+}
+
+void QgsComposerView::addItemsfromXML( const QDomElement& docElem, const QDomDocument& doc )
+{
+  QPointF scenePoint = mapToScene( mapFromGlobal( QCursor::pos() ) );
+
+  // label
+  QDomNodeList composerLabelList = docElem.elementsByTagName( "ComposerLabel" );
+  for ( int i = 0; i < composerLabelList.size(); ++i )
+  {
+    QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
+    QgsComposerLabel* newLabel = new QgsComposerLabel( composition() );
+    newLabel->readXML( currentComposerLabelElem, doc );
+    newLabel->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerLabel( newLabel );
+    emit actionFinished();
+  }
+  // map
+  QDomNodeList composerMapList = docElem.elementsByTagName( "ComposerMap" );
+  for ( int i = 0; i < composerMapList.size(); ++i )
+  {
+    QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
+    QgsComposerMap* newMap = new QgsComposerMap( composition() );
+    newMap->readXML( currentComposerMapElem, doc );
+    newMap->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerMap( newMap );
+    emit actionFinished();
+  }
+  // arrow
+  QDomNodeList composerArrowList = docElem.elementsByTagName( "ComposerArrow" );
+  for ( int i = 0; i < composerArrowList.size(); ++i )
+  {
+    QDomElement currentComposerArrowElem = composerArrowList.at( i ).toElement();
+    QgsComposerArrow* newArrow = new QgsComposerArrow( composition() );
+    newArrow->readXML( currentComposerArrowElem, doc );
+    newArrow->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerArrow( newArrow );
+    emit actionFinished();
+  }
+  // scalebar
+  QDomNodeList composerScaleBarList = docElem.elementsByTagName( "ComposerScaleBar" );
+  for ( int i = 0; i < composerScaleBarList.size(); ++i )
+  {
+    QDomElement currentComposerScaleBarElem = composerScaleBarList.at( i ).toElement();
+    QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( composition() );
+    newScaleBar->readXML( currentComposerScaleBarElem, doc );
+    newScaleBar->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerScaleBar( newScaleBar );
+    emit actionFinished();
+  }
+  // shape
+  QDomNodeList composerShapeList = docElem.elementsByTagName( "ComposerShape" );
+  for ( int i = 0; i < composerShapeList.size(); ++i )
+  {
+    QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
+    QgsComposerShape* newShape = new QgsComposerShape( composition() );
+    newShape->readXML( currentComposerShapeElem, doc );
+    newShape->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerShape( newShape );
+    emit actionFinished();
+  }
+  // picture
+  QDomNodeList composerPictureList = docElem.elementsByTagName( "ComposerPicture" );
+  for ( int i = 0; i < composerPictureList.size(); ++i )
+  {
+    QDomElement currentComposerPictureElem = composerPictureList.at( i ).toElement();
+    QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
+    newPicture->readXML( currentComposerPictureElem, doc );
+    newPicture->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerPicture( newPicture );
+    emit actionFinished();
+  }
+  // legend
+  QDomNodeList composerLegendList = docElem.elementsByTagName( "ComposerLegend" );
+  for ( int i = 0; i < composerLegendList.size(); ++i )
+  {
+    QDomElement currentComposerLegendElem = composerLegendList.at( i ).toElement();
+    QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
+    newLegend->readXML( currentComposerLegendElem, doc );
+    newLegend->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerLegend( newLegend );
+    emit actionFinished();
+  }
+  // table
+  QDomNodeList composerTableList = docElem.elementsByTagName( "ComposerAttributeTable" );
+  for ( int i = 0; i < composerTableList.size(); ++i )
+  {
+    QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
+    QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
+    newTable->readXML( currentComposerTableElem, doc );
+    newTable->setItemPosition( scenePoint.x(), scenePoint.y() );
+    addComposerTable( newTable );
+    emit actionFinished();
+  }
 }
 
 void QgsComposerView::groupItems()
