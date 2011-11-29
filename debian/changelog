@@ -1,8 +1,9 @@
 qgis (1.9.90) UNRELEASED; urgency=low
 
   * new development version 1.9.90 after branch of 1.8.0
+  * include function help in package
 
- -- Jürgen E. Fischer <jef@norbit.de>  Wed, 16 Nov 2011 09:43:40 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 26 Nov 2011 23:43:48 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 

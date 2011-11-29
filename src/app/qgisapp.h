@@ -46,6 +46,7 @@ class QgsGeometry;
 class QgsFeature;
 
 class QgsLegend;
+class QgsLayerOrder;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
@@ -906,6 +907,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
+    QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
     QDockWidget *mpTileScaleDock;
     QDockWidget *mpGpsDock;
@@ -991,6 +993,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *mMapCanvas;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
+    //! Table of contents (legend) to order layers of the map
+    QgsLayerOrder *mMapLayerOrder;
     //! Cursor for the overview map
     QCursor *mOverviewMapCursor;
     //! scale factor

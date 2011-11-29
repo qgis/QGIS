@@ -14,7 +14,6 @@
 
 #include "osmhandler.h"
 
-#include <iostream>
 #include <cstring>
 
 #include "qgslogger.h"

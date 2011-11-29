@@ -37,6 +37,9 @@ class GUI_EXPORT QgsMessageLogViewer: public QDialog, public QgsMessageLog, priv
     void logMessage( QString message, QString tag = QString::null, int level = 0 );
 
     static void logger( QString message, QString tag, int level );
+
+  private slots:
+    void closeTab( int index );
 };
 
 #endif

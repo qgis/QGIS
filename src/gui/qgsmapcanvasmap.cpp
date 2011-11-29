@@ -26,7 +26,7 @@ QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
   setZValue( -10 );
   setPos( 0, 0 );
   resize( QSize( 1, 1 ) );
-  mUseQImageToRender = false;
+  mUseQImageToRender = true;
 }
 
 void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* )
@@ -60,6 +60,7 @@ void QgsMapCanvasMap::setPanningOffset( const QPoint& point )
 
 void QgsMapCanvasMap::render()
 {
+  QgsDebugMsg( QString( "mUseQImageToRender = %1" ).arg( mUseQImageToRender ) );
   if ( mUseQImageToRender )
   {
     // use temporary image for rendering

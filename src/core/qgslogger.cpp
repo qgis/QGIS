@@ -36,29 +36,35 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   int dlevel = debugLevel();
   if ( dlevel >= debuglevel && debuglevel > 0 )
   {
-    if ( file == NULL )
+    QString m;
+
+    if ( !file )
     {
-      qDebug( "%s", msg.toLocal8Bit().constData() );
-      logMessageToFile( msg );
+      m =  msg;
     }
-    else if ( function == NULL )
+    else if ( !function )
     {
-      qDebug( "%s: %s", file, msg.toLocal8Bit().constData() );
-      logMessageToFile( msg );
+      m = QString( "%1: %2" ).arg( file ).arg( msg );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s) %s", file, function, msg.toLocal8Bit().constData() );
-      logMessageToFile( msg );
+      m = QString( "%1: (%2) %3" ).arg( file ).arg( function ).arg( msg );
     }
     else
     {
 #ifndef _MSC_VER
-      qDebug( "%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().constData() );
+      m = QString( "%1: %2: (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( msg );
 #else
-      qDebug( "%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().constData() );
+      m = QString( "%1(%2) : (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( msg );
 #endif
-      logMessageToFile( msg );
+    }
+    if ( logFile().isEmpty() )
+    {
+      qDebug( "%s", m.toLocal8Bit().constData() );
+    }
+    else
+    {
+      logMessageToFile( m );
     }
   }
 }

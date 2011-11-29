@@ -34,6 +34,7 @@ class QDomNode;
 class QMouseEvent;
 class QTreeWidgetItem;
 class QgsCoordinateReferenceSystem;
+class QgsMapCanvasLayer;
 
 //Information about relationship between groups and layers
 //key: group name (or null strings for single layers without groups)
@@ -111,9 +112,11 @@ class QgsLegend : public QTreeWidget
     Else, an empty list is returned.*/
     QList<QgsMapLayer *> selectedLayers();
 
-    /*!Returns all layers loaded in QgsMapCanvas.
+    /*!Returns all layers loaded in QgsMapCanvas in drawing order
     Else, an empty list is returned.*/
     QList<QgsMapLayer *> layers();
+
+    void setDrawingOrder( QList<QgsMapLayer *> );
 
     /*!set the current layer
     returns true if the layer exists, false otherwise*/
@@ -195,6 +198,9 @@ class QgsLegend : public QTreeWidget
 
     /**Add group from other project file. Returns a pointer to the new group in case of success or 0 in case of error*/
     QgsLegendGroup* addEmbeddedGroup( const QString& groupName, const QString& projectFilePath, QgsLegendItem* parent = 0 );
+
+    /** return canvas */
+    QgsMapCanvas *canvas() { return mMapCanvas; }
 
   public slots:
 
@@ -294,6 +300,12 @@ class QgsLegend : public QTreeWidget
 
     /** Set CRS for selected layers */
     void setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs );
+
+    /** Update drawing order */
+    bool updateDrawingOrder();
+
+    /** Update drawing order */
+    void setUpdateDrawingOrder( bool updateDrawingOrder );
 
   protected:
 
@@ -405,6 +417,8 @@ class QgsLegend : public QTreeWidget
     void expandAll();
     /**Sets all listview items to closed*/
     void collapseAll();
+    /** toogle update drawing order */
+    void toggleDrawingOrderUpdate();
     void handleItemChange( QTreeWidgetItem* item, int row );
     /** delegates current layer to map canvas */
     void handleCurrentItemChanged( QTreeWidgetItem* current, QTreeWidgetItem* previous );
@@ -416,6 +430,9 @@ class QgsLegend : public QTreeWidget
   private:
     bool readXML( QgsLegendGroup *parent, const QDomNode &node );
     bool writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDocument &document );
+
+    QList<QgsMapCanvasLayer> canvasLayers();
+    QList<QgsLegendLayer *> legendLayers();
 
     /*! Prevent the copying of QgsLegends
     * @todo See if this is really required - we may want multiple map, canvas and
@@ -459,6 +476,9 @@ class QgsLegend : public QTreeWidget
 
     bool mChanging;
 
+    /** moving the layers in the hierarchy also changes the drawing order */
+    bool mUpdateDrawingOrder;
+
     /** structure which holds pixmap which are used in legend */
     class QgsLegendPixmaps
     {
@@ -491,7 +511,9 @@ class QgsLegend : public QTreeWidget
 
     void zOrderChanged();
 
-    //! Emited whenever current (selected) layer changes
+    void updateDrawingOrderChanged( bool );
+
+    //! Emitted whenever current (selected) layer changes
     //  the pointer to layer can be null if no layer is selected
     void currentLayerChanged( QgsMapLayer * layer );
 };

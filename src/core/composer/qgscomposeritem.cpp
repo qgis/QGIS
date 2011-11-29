@@ -296,6 +296,11 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
     return;
   }
 
+  if ( !isSelected() )
+  {
+    return;
+  }
+
   if ( mBoundingResizeRectangle )
   {
     double diffX = event->lastScenePos().x() - mLastMouseEventPos.x();
@@ -309,6 +314,11 @@ void QgsComposerItem::mouseMoveEvent( QGraphicsSceneMouseEvent * event )
 void QgsComposerItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
   if ( mItemPositionLocked )
+  {
+    return;
+  }
+
+  if ( !isSelected() )
   {
     return;
   }
@@ -343,6 +353,11 @@ void QgsComposerItem::mouseReleaseEvent( QGraphicsSceneMouseEvent * event )
 {
 
   if ( mItemPositionLocked )
+  {
+    return;
+  }
+
+  if ( !isSelected() )
   {
     return;
   }
@@ -727,6 +742,10 @@ void QgsComposerItem::hoverMoveEvent( QGraphicsSceneHoverEvent * event )
   if ( isSelected() )
   {
     setCursor( cursorForPosition( event->pos() ) );
+  }
+  else
+  {
+    setCursor( Qt::ArrowCursor );
   }
 }
 

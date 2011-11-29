@@ -504,22 +504,22 @@ void QgsApplication::exitQgis()
 
 QString QgsApplication::showSettings()
 {
-  QString myState = QString( "Application state:\n"
-                             "Prefix              : %1\n"
-                             "Plugin Path         : %2\n"
-                             "Package Data Path   : %3\n"
-                             "Active Theme Name   : %4\n"
-                             "Active Theme Path   : %5\n"
-                             "Default Theme Path  : %6\n"
-                             "SVG Search Paths    : %7\n"
-                             "User DB Path        : %8\n" )
+  QString myState = tr( "Application state:\n"
+                             "Prefix:\t\t%1\n"
+                             "Plugin Path:\t\t%2\n"
+                             "Package Data Path:\t%3\n"
+                             "Active Theme Name:\t%4\n"
+                             "Active Theme Path:\t%5\n"
+                             "Default Theme Path:\t%6\n"
+                             "SVG Search Paths:\t%7\n"
+                             "User DB Path:\t%8\n" )
                     .arg( mPrefixPath )
                     .arg( mPluginPath )
                     .arg( mPkgDataPath )
                     .arg( themeName() )
                     .arg( activeThemePath() )
                     .arg( defaultThemePath() )
-                    .arg( svgPaths().join( "\n" ) )
+                    .arg( svgPaths().join( tr( "\n\t\t", "match indentation of application state" ) ) )
                     .arg( qgisMasterDbFilePath() );
   return myState;
 }
@@ -550,6 +550,16 @@ QString QgsApplication::reportStyleSheet()
             "body{  background: white;"
             "  color: black;"
             "  font-family: arial,sans-serif;"
+            "}"
+            "h1{  background-color: #F6F6F6;"
+            "  color: #8FB171; "
+            "  font-size: x-large;  "
+            "  font-weight: normal;"
+            "  font-family: luxi serif, georgia, times new roman, times, serif;"
+            "  background: none;"
+            "  padding: 0.75em 0 0;"
+            "  margin: 0;"
+            "  line-height: 3em;"
             "}"
             "h2{  background-color: #F6F6F6;"
             "  color: #8FB171; "

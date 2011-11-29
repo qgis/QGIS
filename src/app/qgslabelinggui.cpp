@@ -30,7 +30,6 @@
 #include <QColorDialog>
 #include <QFontDialog>
 #include <QTextEdit>
-#include <iostream>
 #include <QApplication>
 #include <QMessageBox>
 

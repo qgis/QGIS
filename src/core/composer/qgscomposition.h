@@ -109,6 +109,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     bool printAsRaster() const {return mPrintAsRaster;}
     void setPrintAsRaster( bool enabled ) { mPrintAsRaster = enabled; }
 
+    double selectionTolerance() const { return mSelectionTolerance; }
+    void setSelectionTolerance( double tol );
+
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer() {return mMapRenderer;}
 
@@ -186,6 +189,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Flag if map should be printed as a raster (via QImage). False by default*/
     bool mPrintAsRaster;
 
+    /**Distance tolerance for item selection (in mm)*/
+    double mSelectionTolerance;
+
     /**Parameters for snap to grid function*/
     bool mSnapToGrid;
     double mSnapGridResolution;
@@ -207,8 +213,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
      @return 0 in case of success*/
     int boundingRectOfSelectedItems( QRectF& bRect );
 
-    void loadGridAppearanceSettings();
-    void saveGridAppearanceSettings();
+    void loadSettings();
+    void saveSettings();
 
   signals:
     void paperSizeChanged();

@@ -15,8 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <iostream>
-
 #include "qgsmaplayerregistry.h"
 #include "qgsmaplayer.h"
 #include "qgslogger.h"

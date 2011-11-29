@@ -39,7 +39,6 @@ email                : tim@linfiniti.com
 #include <QFile>
 
 //non qt includes
-#include <iostream>
 #include <cmath>
 #include <cassert>
 
