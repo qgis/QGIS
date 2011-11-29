@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>777</width>
-    <height>650</height>
+    <height>672</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -372,8 +372,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>761</width>
-            <height>539</height>
+            <width>755</width>
+            <height>542</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -441,17 +441,24 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="4">
+              <item row="3" column="0" colspan="3">
                <widget class="QLineEdit" name="leSpatialRefSys">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1" colspan="2">
+              <item row="2" column="1" colspan="3">
                <widget class="QLineEdit" name="leEditFormInit"/>
               </item>
-              <item row="2" column="3">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_3">
+                <property name="text">
+                 <string>Init function</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
                <widget class="QPushButton" name="pbnChangeSpatialRefSys">
                 <property name="toolTip">
                  <string>Specify the coordinate reference system of the layer's geometry.</string>
@@ -461,13 +468,6 @@
                 </property>
                 <property name="text">
                  <string>Specify CRS</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_3">
-                <property name="text">
-                 <string>Init function</string>
                 </property>
                </widget>
               </item>
@@ -787,6 +787,40 @@
           <string>Appearance</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_13">
+          <item row="1" column="0">
+           <layout class="QHBoxLayout" name="horizontalLayout_8">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_10">
+              <item>
+               <widget class="QLabel" name="mBackgroundColorLabel">
+                <property name="text">
+                 <string>Background color</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QgsColorButton" name="mBackgroundColorButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>25</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </item>
           <item row="1" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_11">
             <item>
@@ -835,6 +869,19 @@
             </item>
            </layout>
           </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mDiagramFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font...</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0" colspan="4">
            <layout class="QHBoxLayout" name="horizontalLayout_13">
             <item>
@@ -863,53 +910,6 @@
             </item>
             <item>
              <widget class="QLineEdit" name="mMaximumDiagramScaleLineEdit"/>
-            </item>
-           </layout>
-          </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="mDiagramFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <layout class="QHBoxLayout" name="horizontalLayout_8">
-            <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_10">
-              <item>
-               <widget class="QLabel" name="mBackgroundColorLabel">
-                <property name="text">
-                 <string>Background color</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QgsColorButton" name="mBackgroundColorButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>25</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-             </layout>
             </item>
            </layout>
           </item>
