@@ -46,6 +46,7 @@ class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBar
     void on_mStyleComboBox_currentIndexChanged( const QString& text );
     void on_mLabelBarSpaceSpinBox_valueChanged( double d );
     void on_mBoxSizeSpinBox_valueChanged( double d );
+    void on_mAlignmentComboBox_currentIndexChanged( int index );
 
 
   protected:

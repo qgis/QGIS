@@ -9,6 +9,14 @@ class QgsComposerScaleBar: QgsComposerItem
 %End
   public:
 
+    /**Added in version 1.8*/
+    enum Alignment
+    {
+      Left = 0,
+      Middle,
+      Right
+    };
+
     QgsComposerScaleBar( QgsComposition* composition /TransferThis/);
     ~QgsComposerScaleBar();
 
@@ -57,6 +65,13 @@ class QgsComposerScaleBar: QgsComposerItem
     void setBoxContentSpace( double space );
 
     double segmentMillimeters() const;
+
+    /**Left / Middle/ Right
+      @note: this method was added in version 1.8*/
+    Alignment alignment() const;
+
+    /**@note: this method was added in version 1.8*/
+    void setAlignment( Alignment a );
 
     /**Apply default settings*/
     void applyDefaultSettings();
