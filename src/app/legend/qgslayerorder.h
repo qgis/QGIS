@@ -46,7 +46,7 @@ class QgsLayerOrder : public QListWidget
     void mouseReleaseEvent( QMouseEvent * e );
 
   private slots:
-    void updateDrawingOrderChanged( bool );
+    void updateDrawingOrderChecked( bool );
     void itemChanged( QListWidgetItem * );
     void legendItemChanged( QTreeWidgetItem *, int );
     void refreshLayerList();
