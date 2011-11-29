@@ -39,4 +39,3 @@ doc/CODING.tex
 doc/INSTALL.tex
 scripts/Debug
 scripts/RelWithDebInfo
-/CMakeLists.txt.user

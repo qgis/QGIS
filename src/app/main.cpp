@@ -190,9 +190,11 @@ QgsDebugMsg( QString( "Starting qgis main" ) );
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#if !(defined(_MSC_VER) || defined(ANDROID))
-  // Set up the custom qWarning/qDebug custom handler
-  qInstallMsgHandler( myMessageOutput );
+#ifndef ANDROID
+  #ifndef _MSC_VER
+    // Set up the custom qWarning/qDebug custom handler
+    qInstallMsgHandler( myMessageOutput );
+  #endif
 #endif
 
   /////////////////////////////////////////////////////////////////
