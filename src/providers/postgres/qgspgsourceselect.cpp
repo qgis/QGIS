@@ -353,6 +353,7 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
   QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmTable ) )->text();
   QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmGeomCol ) )->text();
   QString pkColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmPkCol ) )->text();
+  bool selectAtId = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmSql ) )->text();
 
   if ( geomColumnName.contains( " AS " ) )
@@ -389,6 +390,7 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
   QgsDataSourceURI uri( m_connInfo );
   uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
   uri.setUseEstimatedMetadata( mUseEstimatedMetadata );
+  uri.disableSelectAtId( !selectAtId );
 
   return uri.uri();
 }

@@ -32,6 +32,8 @@ QgsRectangle QgsAttributeTableModel::mCurrentExtent; // static member
 QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
     : QAbstractTableModel( parent )
 {
+  QgsDebugMsg( "entered." );
+
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   mFeatureMap.clear();
   mFeatureQueue.clear();
@@ -44,8 +46,6 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
-
-  loadLayer();
 }
 
 bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const

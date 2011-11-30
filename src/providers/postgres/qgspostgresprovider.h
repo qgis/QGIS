@@ -525,6 +525,9 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     /* Use estimated metadata. Uses fast table counts, geometry type and extent determination */
     bool mUseEstimatedMetadata;
 
+    /* Disable support for SelectAtId */
+    bool mSelectAtIdDisabled;
+
     // Produces a QMessageBox with the given title and text. Doesn't
     // return until the user has dismissed the dialog box.
     static void showMessageBox( const QString& title, const QString &text );

@@ -38,18 +38,16 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param parent parent pointer
      */
     QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent = 0 );
-
     /**
      * Returns the number of rows
      * @param parent parent index
      */
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     /**
      * Returns the number of columns
      * @param parent parent index
      */
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-
     /**
      * Returns header data
      * @param section required section
@@ -215,14 +213,18 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void initIdMaps();
 
     /**
+      * Gets mFieldCount, mAttributes and mValueMaps
+      */
+    virtual void loadAttributes();
+
+  public:
+    /**
      * Loads the layer into the model
      */
     virtual void loadLayer();
 
-    /**
-      * Gets mFieldCount, mAttributes and mValueMaps
-      */
-    virtual void loadAttributes();
+  private:
+    mutable QQueue<QgsFeatureId> mFeatureQueue;
 
     /**
      * load feature fid into mFeat
@@ -230,10 +232,6 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @return feature exists
      */
     virtual bool featureAtId( QgsFeatureId fid ) const;
-
-  private:
-    mutable QQueue<QgsFeatureId> mFeatureQueue;
-
 };
 
 

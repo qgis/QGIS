@@ -422,6 +422,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , geomType( QGis::WKBUnknown )
     , mFeatureQueueSize( 200 )
     , mUseEstimatedMetadata( false )
+    , mSelectAtIdDisabled( false )
     , mPrimaryKeyDefault( QString::null )
 {
   // assume this is a valid layer until we determine otherwise
@@ -463,6 +464,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   primaryKey = mUri.keyColumn();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
+  mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
   QgsDebugMsg( "Connection info is " + mUri.connectionInfo() );
   QgsDebugMsg( "Geometry column is: " + geometryColumn );
@@ -1834,7 +1836,10 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
     // postgres has fast access to features at id (thanks to primary key / unique index)
     // the latter flag is here just for compatibility
-    enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    if ( !mSelectAtIdDisabled )
+    {
+      enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    }
 
     if ( !inRecovery )
     {
@@ -1963,7 +1968,10 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
-    enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    if ( !mSelectAtIdDisabled )
+    {
+      enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    }
   }
 
   return true;

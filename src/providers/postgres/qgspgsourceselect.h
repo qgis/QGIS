@@ -151,8 +151,7 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void setSql( const QModelIndex& index );
     //! Store the selected database
     void on_cmbConnections_activated( int );
-    void setLayerType( QString schema, QString table, QString column,
-                       QString type );
+    void setLayerType( QString schema, QString table, QString column, QString type );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );
     //!Sets a new regular expression to the model
