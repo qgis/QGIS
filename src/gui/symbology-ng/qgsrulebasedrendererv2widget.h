@@ -90,9 +90,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
   protected:
 
     void refineRule( int type );
-    QList<QgsRuleBasedRendererV2::Rule> refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule& initialRule );
-    QList<QgsRuleBasedRendererV2::Rule> refineRuleRangesGui( QgsRuleBasedRendererV2::Rule& initialRule );
-    QList<QgsRuleBasedRendererV2::Rule> refineRuleScalesGui( QgsRuleBasedRendererV2::Rule& initialRule );
+    QgsRuleBasedRendererV2::RuleList refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule* initialRule );
+    QgsRuleBasedRendererV2::RuleList refineRuleRangesGui( QgsRuleBasedRendererV2::Rule* initialRule );
+    QgsRuleBasedRendererV2::RuleList refineRuleScalesGui( QgsRuleBasedRendererV2::Rule* initialRule );
 
     QList<QgsSymbolV2*> selectedSymbols();
     void refreshSymbolView();
@@ -113,17 +113,17 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
     Q_OBJECT
 
   public:
-    QgsRendererRulePropsDialog( const QgsRuleBasedRendererV2::Rule& rule, QgsVectorLayer* layer, QgsStyleV2* style );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style );
 
     void updateRuleFromGui();
-    const QgsRuleBasedRendererV2::Rule& rule() { return mRule; }
+    QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
 
   public slots:
     void testFilter();
     void buildExpression();
 
   protected:
-    QgsRuleBasedRendererV2::Rule mRule;
+    QgsRuleBasedRendererV2::Rule* mRule; // borrowed
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
 };

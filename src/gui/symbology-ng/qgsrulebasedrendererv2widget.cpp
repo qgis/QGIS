@@ -110,15 +110,20 @@ void QgsRuleBasedRendererV2Widget::setGrouping()
 
 void QgsRuleBasedRendererV2Widget::addRule()
 {
-  QgsRuleBasedRendererV2::Rule newrule( QgsSymbolV2::defaultSymbol( mLayer->geometryType() ) );
+  QgsSymbolV2* s = QgsSymbolV2::defaultSymbol( mLayer->geometryType() );
+  QgsRuleBasedRendererV2::Rule* newrule = new QgsRuleBasedRendererV2::Rule( s );
 
   QgsRendererRulePropsDialog dlg( newrule, mLayer, mStyle );
   if ( dlg.exec() )
   {
     // add rule
     dlg.updateRuleFromGui();
-    mRenderer->addRule( dlg.rule() );
+    mRenderer->addRule( newrule ); // takes ownership
     treeRules->populateRules();
+  }
+  else
+  {
+    delete newrule;
   }
 }
 
@@ -136,16 +141,20 @@ void QgsRuleBasedRendererV2Widget::editRule()
     QMessageBox::information( this, tr( "Edit rule" ), tr( "Groups of rules cannot be edited." ) );
     return;
   }
-  QgsRuleBasedRendererV2::Rule& rule = mRenderer->ruleAt( rule_index );
+  QgsRuleBasedRendererV2::Rule* rule = mRenderer->ruleAt( rule_index )->clone();
 
   QgsRendererRulePropsDialog dlg( rule, mLayer, mStyle );
   if ( dlg.exec() )
   {
     // update rule
     dlg.updateRuleFromGui();
-    mRenderer->updateRuleAt( rule_index, dlg.rule() );
+    mRenderer->updateRuleAt( rule_index, rule );
 
     treeRules->populateRules();
+  }
+  else
+  {
+    delete rule;
   }
 }
 
@@ -245,10 +254,10 @@ void QgsRuleBasedRendererV2Widget::refineRule( int type )
   if ( rule_index < 0 )
     return;
 
-  QgsRuleBasedRendererV2::Rule& initialRule = mRenderer->ruleAt( rule_index );
+  QgsRuleBasedRendererV2::Rule* initialRule = mRenderer->ruleAt( rule_index );
 
 
-  QList<QgsRuleBasedRendererV2::Rule> refinedRules;
+  QgsRuleBasedRendererV2::RuleList refinedRules;
   if ( type == 0 ) // categories
     refinedRules = refineRuleCategoriesGui( initialRule );
   else if ( type == 1 ) // ranges
@@ -286,7 +295,7 @@ void QgsRuleBasedRendererV2Widget::refineRuleScales()
   refineRule( 2 );
 }
 
-QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule& initialRule )
+QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule* initialRule )
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
@@ -300,7 +309,7 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2Widget::refineRuleCate
   dlg.setLayout( l );
 
   if ( !dlg.exec() )
-    return QList<QgsRuleBasedRendererV2::Rule>();
+    return QgsRuleBasedRendererV2::RuleList();
 
   // create new rules
   QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
@@ -308,7 +317,7 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2Widget::refineRuleCate
 }
 
 
-QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2Widget::refineRuleRangesGui( QgsRuleBasedRendererV2::Rule& initialRule )
+QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2Widget::refineRuleRangesGui( QgsRuleBasedRendererV2::Rule* initialRule )
 {
   QDialog dlg;
   dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
@@ -322,20 +331,20 @@ QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2Widget::refineRuleRang
   dlg.setLayout( l );
 
   if ( !dlg.exec() )
-    return QList<QgsRuleBasedRendererV2::Rule>();
+    return QgsRuleBasedRendererV2::RuleList();
 
   // create new rules
   QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
   return QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
 }
 
-QList<QgsRuleBasedRendererV2::Rule> QgsRuleBasedRendererV2Widget::refineRuleScalesGui( QgsRuleBasedRendererV2::Rule& initialRule )
+QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2Widget::refineRuleScalesGui( QgsRuleBasedRendererV2::Rule* initialRule )
 {
   QString txt = QInputDialog::getText( this,
                                        tr( "Scale refinement" ),
                                        tr( "Please enter scale denominators at which will split the rule, separate them by commas (e.g. 1000,5000):" ) );
   if ( txt.isEmpty() )
-    return QList<QgsRuleBasedRendererV2::Rule>();
+    return QgsRuleBasedRendererV2::RuleList();
 
   QList<int> scales;
   bool ok;
@@ -367,7 +376,7 @@ QList<QgsSymbolV2*> QgsRuleBasedRendererV2Widget::selectedSymbols()
     int priority = ( *it )->data( 0, Qt::UserRole + 1 ).toInt();
     if ( priority < mRenderer->ruleCount() )
     {
-      symbolList.append( mRenderer->ruleAt( priority ).symbol() );
+      symbolList.append( mRenderer->ruleAt( priority )->symbol() );
     }
   }
 
@@ -385,23 +394,23 @@ void QgsRuleBasedRendererV2Widget::refreshSymbolView()
 
 ///////////
 
-QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( const QgsRuleBasedRendererV2::Rule& rule, QgsVectorLayer* layer, QgsStyleV2* style )
+QgsRendererRulePropsDialog::QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style )
     : mRule( rule ), mLayer( layer )
 {
   setupUi( this );
 
-  editFilter->setText( mRule.filterExpression() );
-  editLabel->setText( mRule.label() );
-  editDescription->setText( mRule.description() );
+  editFilter->setText( mRule->filterExpression() );
+  editLabel->setText( mRule->label() );
+  editDescription->setText( mRule->description() );
 
-  if ( mRule.dependsOnScale() )
+  if ( mRule->dependsOnScale() )
   {
     groupScale->setChecked( true );
-    spinMinScale->setValue( rule.scaleMinDenom() );
-    spinMaxScale->setValue( rule.scaleMaxDenom() );
+    spinMinScale->setValue( rule->scaleMinDenom() );
+    spinMaxScale->setValue( rule->scaleMaxDenom() );
   }
 
-  QgsSymbolV2SelectorDialog* symbolSel = new QgsSymbolV2SelectorDialog( mRule.symbol(), style, mLayer, this, true );
+  QgsSymbolV2SelectorDialog* symbolSel = new QgsSymbolV2SelectorDialog( mRule->symbol(), style, mLayer, this, true );
   QVBoxLayout* l = new QVBoxLayout;
   l->addWidget( symbolSel );
   groupSymbol->setLayout( l );
@@ -458,11 +467,11 @@ void QgsRendererRulePropsDialog::testFilter()
 
 void QgsRendererRulePropsDialog::updateRuleFromGui()
 {
-  mRule.setFilterExpression( editFilter->text() );
-  mRule.setLabel( editLabel->text() );
-  mRule.setDescription( editDescription->text() );
-  mRule.setScaleMinDenom( groupScale->isChecked() ? spinMinScale->value() : 0 );
-  mRule.setScaleMaxDenom( groupScale->isChecked() ? spinMaxScale->value() : 0 );
+  mRule->setFilterExpression( editFilter->text() );
+  mRule->setLabel( editLabel->text() );
+  mRule->setDescription( editDescription->text() );
+  mRule->setScaleMinDenom( groupScale->isChecked() ? spinMinScale->value() : 0 );
+  mRule->setScaleMaxDenom( groupScale->isChecked() ? spinMaxScale->value() : 0 );
 }
 
 ////////
@@ -530,10 +539,10 @@ void QgsRendererRulesTreeWidget::populateRules()
   // TODO: use a custom model and implement custom sorting
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
-    QgsRuleBasedRendererV2::Rule& rule = mR->ruleAt( i );
+    QgsRuleBasedRendererV2::Rule* rule = mR->ruleAt( i );
 
-    mLongestMinDenom = qMax( mLongestMinDenom, formatScale( rule.scaleMinDenom() ).size() );
-    mLongestMaxDenom = qMax( mLongestMaxDenom, formatScale( rule.scaleMaxDenom() ).size() );
+    mLongestMinDenom = qMax( mLongestMinDenom, formatScale( rule->scaleMinDenom() ).size() );
+    mLongestMaxDenom = qMax( mLongestMaxDenom, formatScale( rule->scaleMaxDenom() ).size() );
   }
 
 
@@ -554,24 +563,24 @@ void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
 
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
-    QgsRuleBasedRendererV2::Rule& rule = mR->ruleAt( i );
+    QgsRuleBasedRendererV2::Rule* rule = mR->ruleAt( i );
 
     QTreeWidgetItem* item = new QTreeWidgetItem;
 
-    QString txtLabel = rule.label();
+    QString txtLabel = rule->label();
     item->setText( 0, txtLabel );
     item->setData( 0, Qt::UserRole + 1, i );
-    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
+    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) ) );
 
-    QString txtRule = rule.filterExpression();
+    QString txtRule = rule->filterExpression();
     if ( txtRule.isEmpty() )
       txtRule = tr( "(no filter)" );
     item->setText( 1, txtRule );
 
-    if ( rule.dependsOnScale() )
+    if ( rule->dependsOnScale() )
     {
-      item->setText( 2, formatScale( rule.scaleMinDenom(), mLongestMinDenom ) );
-      item->setText( 3, formatScale( rule.scaleMaxDenom(), mLongestMaxDenom ) );
+      item->setText( 2, formatScale( rule->scaleMinDenom(), mLongestMinDenom ) );
+      item->setText( 3, formatScale( rule->scaleMaxDenom(), mLongestMaxDenom ) );
       item->setTextAlignment( 2, Qt::AlignRight );
       item->setTextAlignment( 3, Qt::AlignRight );
     }
@@ -598,14 +607,14 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
 
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
-    QgsRuleBasedRendererV2::Rule& rule = mR->ruleAt( i );
+    QgsRuleBasedRendererV2::Rule* rule = mR->ruleAt( i );
 
-    QPair<int, int> scale = qMakePair( rule.scaleMinDenom(), rule.scaleMaxDenom() );
+    QPair<int, int> scale = qMakePair( rule->scaleMinDenom(), rule->scaleMaxDenom() );
     if ( ! scale_items.contains( scale ) )
     {
       QString txt;
-      if ( rule.dependsOnScale() )
-        txt = tr( "scale " ) + formatScaleRange( rule.scaleMinDenom(), rule.scaleMaxDenom() );
+      if ( rule->dependsOnScale() )
+        txt = tr( "scale " ) + formatScaleRange( rule->scaleMinDenom(), rule->scaleMaxDenom() );
       else
         txt = tr( "any scale" );
 
@@ -621,25 +630,25 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
       scale_item->setFirstColumnSpanned( true );
     }
 
-    QString filter = rule.filterExpression();
+    QString filter = rule->filterExpression();
 
     QTreeWidgetItem* item = new QTreeWidgetItem( scale_items[scale] );
 
-    QString txtLabel = rule.label();
+    QString txtLabel = rule->label();
     item->setText( 0, txtLabel );
     item->setData( 0, Qt::UserRole + 1, i );
-    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
+    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) ) );
 
-    QString txtRule = rule.filterExpression();
+    QString txtRule = rule->filterExpression();
     if ( txtRule.isEmpty() )
       txtRule = tr( "(no filter)" );
     item->setText( 1, txtRule );
 
-    if ( rule.dependsOnScale() )
+    if ( rule->dependsOnScale() )
     {
       // Displaying scales is redundant here, but keeping them allows to keep constant the layout and width of all columns when switching to one of the two other views
-      item->setText( 2, formatScale( rule.scaleMinDenom(), mLongestMinDenom ) );
-      item->setText( 3, formatScale( rule.scaleMaxDenom(), mLongestMaxDenom ) );
+      item->setText( 2, formatScale( rule->scaleMinDenom(), mLongestMinDenom ) );
+      item->setText( 3, formatScale( rule->scaleMaxDenom(), mLongestMaxDenom ) );
       item->setTextAlignment( 2, Qt::AlignRight );
       item->setTextAlignment( 3, Qt::AlignRight );
     }
@@ -664,9 +673,9 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByFilter()
 
   for ( int i = 0; i < mR->ruleCount(); ++i )
   {
-    QgsRuleBasedRendererV2::Rule& rule = mR->ruleAt( i );
+    QgsRuleBasedRendererV2::Rule* rule = mR->ruleAt( i );
 
-    QString filter = rule.filterExpression();
+    QString filter = rule->filterExpression();
     if ( ! filter_items.contains( filter ) )
     {
       QTreeWidgetItem* filter_item = new QTreeWidgetItem;
@@ -683,10 +692,10 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByFilter()
 
     QTreeWidgetItem* item = new QTreeWidgetItem( filter_items[filter] );
 
-    QString txtLabel = rule.label();
+    QString txtLabel = rule->label();
     item->setText( 0, txtLabel );
     item->setData( 0, Qt::UserRole + 1, i );
-    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule.symbol(), QSize( 16, 16 ) ) );
+    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) ) );
 
     // Displaying filter is redundant here, but keeping it allows to keep constant the layout and width of all columns when switching to one of the two other views
     item->setText( 1, filter );
@@ -695,10 +704,10 @@ void QgsRendererRulesTreeWidget::populateRulesGroupByFilter()
     //item->setBackground( 1, Qt::lightGray );
     //item->setBackground( 3, Qt::lightGray );
 
-    if ( rule.dependsOnScale() )
+    if ( rule->dependsOnScale() )
     {
-      item->setText( 2, formatScale( rule.scaleMinDenom(), mLongestMinDenom ) );
-      item->setText( 3, formatScale( rule.scaleMaxDenom(), mLongestMaxDenom ) );
+      item->setText( 2, formatScale( rule->scaleMinDenom(), mLongestMinDenom ) );
+      item->setText( 3, formatScale( rule->scaleMaxDenom(), mLongestMaxDenom ) );
       item->setTextAlignment( 2, Qt::AlignRight );
       item->setTextAlignment( 3, Qt::AlignRight );
     }
