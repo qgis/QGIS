@@ -69,6 +69,12 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void on_tabBar_currentChanged( int theTab );
     /** \brief slot executed when user wishes to refresh raster histogram */
     void refreshHistogram();
+    /** \brief slot executed when the web view for the histogram is loaded and ready to display charts
+     * @note added in 2.0 */
+    void histogramPageLoaded( bool theOkFlag );
+    /** \brief slot executed when the web view for the metadata is loaded and ready to display content
+     * @note added in 2.0 */
+    void metadataPageLoaded( bool theOkFlag );
     /** \brief slow executed when user wishes to import transparency values */
     void on_pbnImportTransparentPixelValues_clicked();
     /** \brief slot executed when user presses "Remove Selected Row" button on the transparency page */

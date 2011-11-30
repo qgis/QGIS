@@ -45,11 +45,11 @@ typedef QString protocolDrivers_t();
 
 QgsProviderRegistry *QgsProviderRegistry::_instance = 0;
 
-QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
+QgsProviderRegistry *QgsProviderRegistry::instance( QString providerPath )
 {
   if ( _instance == 0 )
   {
-    _instance = new QgsProviderRegistry( pluginPath );
+    _instance = new QgsProviderRegistry( providerPath );
   }
 
   return _instance;
@@ -58,7 +58,7 @@ QgsProviderRegistry *QgsProviderRegistry::instance( QString pluginPath )
 
 
 
-QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
+QgsProviderRegistry::QgsProviderRegistry( QString providerPath )
 {
   // At startup, examine the libs in the qgis/lib dir and store those that
   // are a provider shared lib
@@ -70,7 +70,7 @@ QgsProviderRegistry::QgsProviderRegistry( QString pluginPath )
      int bin = appDir.findRev("/bin", -1, false);
      QString baseDir = appDir.left(bin);
      QString mLibraryDirectory = baseDir + "/lib"; */
-  mLibraryDirectory = pluginPath;
+  mLibraryDirectory = providerPath;
 
   mLibraryDirectory.setSorting( QDir::Name | QDir::IgnoreCase );
   mLibraryDirectory.setFilter( QDir::Files | QDir::NoSymLinks );
