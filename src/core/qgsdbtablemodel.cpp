@@ -81,6 +81,7 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   QStandardItem* selItem = new QStandardItem( "" );
   selItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
+  selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
   QStandardItem* sqlItem = new QStandardItem( sql );
   sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
