@@ -390,6 +390,8 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
   public:
 
+    //typedef QList<QgsRuleBasedRendererV2::Rule*> RuleList;
+
     /**
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
@@ -403,10 +405,10 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
       public:
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol /Transfer/, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString() );
-        Rule( const QgsRuleBasedRendererV2::Rule& other );
+        //Rule( const QgsRuleBasedRendererV2::Rule& other );
         ~Rule();
         QString dump() const;
-        QStringList needsFields() const;
+        //QStringList needsFields() const;
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
@@ -429,7 +431,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
 
     //! Constructor. Takes ownership of the defult symbol.
-    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol /Transfer/ );
+    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol /Transfer/ = NULL );
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
@@ -457,24 +459,24 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! return the total number of rules
     int ruleCount();
     //! get reference to rule at index (valid indexes: 0...count-1)
-    QgsRuleBasedRendererV2::Rule& ruleAt( int index );
+    QgsRuleBasedRendererV2::Rule* ruleAt( int index );
     //! add rule to the end of the list of rules
-    void addRule( const QgsRuleBasedRendererV2::Rule& rule );
+    void addRule( QgsRuleBasedRendererV2::Rule* rule );
     //! insert rule to a specific position of the list of rules
-    void insertRule( int index, const QgsRuleBasedRendererV2::Rule& rule );
+    void insertRule( int index, QgsRuleBasedRendererV2::Rule* rule );
     //! modify the rule at a specific position of the list of rules
-    void updateRuleAt( int index, const QgsRuleBasedRendererV2::Rule& rule );
+    void updateRuleAt( int index, QgsRuleBasedRendererV2::Rule* rule );
     //! remove the rule at the specified index
     void removeRuleAt( int index );
 
     //////
 
     //! take a rule and create a list of new rules based on the categories from categorized symbol renderer
-    static QList<QgsRuleBasedRendererV2::Rule> refineRuleCategories( QgsRuleBasedRendererV2::Rule& initialRule, QgsCategorizedSymbolRendererV2* r );
+    //static QgsRuleBasedRendererV2::RuleList refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
     //! take a rule and create a list of new rules based on the ranges from graduated symbol renderer
-    static QList<QgsRuleBasedRendererV2::Rule> refineRuleRanges( QgsRuleBasedRendererV2::Rule& initialRule, QgsGraduatedSymbolRendererV2* r );
+    //static QgsRuleBasedRendererV2::RuleList refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
-    static QList<QgsRuleBasedRendererV2::Rule> refineRuleScales( QgsRuleBasedRendererV2::Rule& initialRule, QList<int> scales );
+    //static QgsRuleBasedRendererV2::RuleList refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales );
 
 };
 

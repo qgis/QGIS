@@ -33,6 +33,34 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 {
   public:
 
+
+    // TODO: use QVarLengthArray instead of QList
+
+    // rendering job: a feature to be rendered with a particular symbol
+    // (both f, symbol are _not_ owned by this class)
+    struct RenderJob
+    {
+      RenderJob( QgsFeature* _f, QgsSymbolV2* _s ) : f( _f ), symbol( _s ) {}
+      QgsFeature* f;
+      QgsSymbolV2* symbol;
+    };
+
+    // render level: a list of jobs to be drawn at particular level
+    // (jobs are owned by this class)
+    struct RenderLevel
+    {
+      RenderLevel( int z ): zIndex( z ) {}
+      ~RenderLevel() { foreach( RenderJob* j, jobs ) delete j; }
+      int zIndex;
+      QList<RenderJob*> jobs;
+    };
+
+    // rendering queue: a list of rendering levels
+    typedef QList<RenderLevel> RenderQueue;
+
+    class Rule;
+    typedef QList<Rule*> RuleList;
+
     /**
       This class keeps data about a rules for rule-based renderer.
       A rule consists of a symbol, filter expression and range of scales.
@@ -47,29 +75,50 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! Constructor takes ownership of the symbol
         Rule( QgsSymbolV2* symbol, int scaleMinDenom = 0, int scaleMaxDenom = 0, QString filterExp = QString(),
               QString label = QString(), QString description = QString() );
-        Rule( const Rule& other );
+        //Rule( const Rule& other );
         ~Rule();
         QString dump() const;
-        QStringList needsFields() const;
+        QSet<QString> usedAttributes();
+        QgsSymbolV2List symbols();
+        QgsLegendSymbolList legendSymbolItems();
         bool isFilterOK( QgsFeature& f ) const;
         bool isScaleOK( double scale ) const;
 
         QgsSymbolV2* symbol() { return mSymbol; }
+        QString label() const { return mLabel; }
         bool dependsOnScale() const { return mScaleMinDenom != 0 || mScaleMaxDenom != 0; }
         int scaleMinDenom() const { return mScaleMinDenom; }
         int scaleMaxDenom() const { return mScaleMaxDenom; }
         QgsExpression* filter() const { return mFilter; }
         QString filterExpression() const { return mFilterExp; }
-        QString label() const { return mLabel; }
         QString description() const { return mDescription; }
 
+        void setLabel( QString label ) { mLabel = label; }
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
         void setFilterExpression( QString filterExp ) { mFilterExp = filterExp; initFilter(); }
-        void setLabel( QString label ) { mLabel = label; }
         void setDescription( QString description ) { mDescription = description; }
 
-        Rule& operator=( const Rule& other );
+        //Rule& operator=( const Rule& other );
+        //! clone this rule, return new instance
+        Rule* clone() const;
+
+        QDomElement save( QDomDocument& doc, QgsSymbolV2Map& symbolMap );
+
+        //! prepare the rule for rendering and its children (build active children array)
+        bool startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
+        //! get all used z-levels from this rule and children
+        QSet<int> collectZLevels();
+        //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
+        void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
+
+        void renderFeature( QgsFeature* featPtr, QgsRenderContext& context, RenderQueue& renderQueue );
+
+        void stopRender( QgsRenderContext& context );
+
+        static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
+
+        RuleList& children() { return mChildren; }
 
       protected:
 
@@ -78,43 +127,24 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QgsSymbolV2* mSymbol;
         int mScaleMinDenom, mScaleMaxDenom;
         QString mFilterExp, mLabel, mDescription;
+        bool mElseRule;
+        RuleList mChildren;
 
         // temporary
         QgsExpression* mFilter;
-      public: // TODO
-        QList<int> mSymbolNormZLevels; // normalized
-    };
-
-    // TODO: use QVarLengthArray instead of QList
-
-    // rendering job: a feature to be rendered with a particular symbol
-    struct RenderJob
-    {
-      RenderJob( QgsFeature* _f, QgsSymbolV2* _s ) : f( _f ), symbol( _s ) {}
-      QgsFeature* f;
-      QgsSymbolV2* symbol;
-    };
-
-    // render level: a list of jobs to be drawn at particular level
-    struct RenderLevel
-    {
-      RenderLevel( int z ): zIndex( z ) {}
-      int zIndex;
-      QList<RenderJob*> jobs;
-    };
-
-    // rendering queue: a list of rendering levels and jobs
-    struct RenderQueue
-    {
-      QList<RenderLevel> levels;
+        // temporary while rendering
+        QList<int> mSymbolNormZLevels;
+        RuleList mActiveChildren;
     };
 
     /////
 
     static QgsFeatureRendererV2* create( QDomElement& element );
 
-    //! Constructor. Takes ownership of the default symbol.
-    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol );
+    //! Constructor. Adds default rule if the symbol is not null (and takes ownership of it)
+    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol = NULL );
+
+    ~QgsRuleBasedRendererV2();
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
@@ -146,43 +176,41 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     /////
 
+    Rule* rootRule() { return mRootRule; }
+
+
     //! return the total number of rules
     int ruleCount();
     //! get reference to rule at index (valid indexes: 0...count-1)
-    Rule& ruleAt( int index );
-    //! add rule to the end of the list of rules
-    void addRule( const Rule& rule );
-    //! insert rule to a specific position of the list of rules
-    void insertRule( int index, const Rule& rule );
-    //! modify the rule at a specific position of the list of rules
-    void updateRuleAt( int index, const Rule& rule );
+    Rule* ruleAt( int index );
+    //! add rule to the end of the list of rules. takes ownership
+    void addRule( Rule* rule );
+    //! insert rule to a specific position of the list of rules. takes ownership
+    void insertRule( int index, Rule* rule );
+    //! modify the rule at a specific position of the list of rules. takes ownership
+    void updateRuleAt( int index, Rule* rule );
     //! remove the rule at the specified index
     void removeRuleAt( int index );
     //! swap the two rules specified by the indices
     void swapRules( int index1,  int index2 );
 
+
     //////
 
     //! take a rule and create a list of new rules based on the categories from categorized symbol renderer
-    static QList<Rule> refineRuleCategories( Rule& initialRule, QgsCategorizedSymbolRendererV2* r );
+    static RuleList refineRuleCategories( Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
     //! take a rule and create a list of new rules based on the ranges from graduated symbol renderer
-    static QList<Rule> refineRuleRanges( Rule& initialRule, QgsGraduatedSymbolRendererV2* r );
+    static RuleList refineRuleRanges( Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
-    static QList<Rule> refineRuleScales( Rule& initialRule, QList<int> scales );
+    static RuleList refineRuleScales( Rule* initialRule, QList<int> scales );
 
   protected:
-    //! the list of rules
-    QList<Rule> mRules;
-    //! the default symbol, used for the first rule with no filter
-    QgsSymbolV2* mDefaultSymbol;
+    //! the root node with hierarchical list of rules
+    Rule* mRootRule;
 
     // temporary
-    QList<Rule*> mCurrentRules;
-    QgsSymbolV2* mCurrentSymbol;
-
     RenderQueue mRenderQueue;
     QList<QgsFeature*> mCurrentFeatures;
-    //QList<RenderJob*> mCurrentRenderJobs;
 };
 
 #endif // QGSRULEBASEDRENDERERV2_H
