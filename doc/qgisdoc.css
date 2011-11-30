@@ -11,11 +11,11 @@ body{
   font-weight: bold;
   color: #800000;
 } 
-h1,  span.header{
+span.header{
   font-family: trebuchet,arial,helvetica,sans;
   font-size: 18pt;
 }
-h2, span.subheader{
+span.subheader{
   font-family: trebuchet,arial,helvetica,sans;
   font-size: 14pt;
   font-weight: normal;
@@ -27,7 +27,14 @@ dt{
 ul.small{
   font-size: 9pt;
 }
+h2{
+  font-size: 14pt;
+  font-family: trebuchet,arial,helvetica,sans;
+  font-weight: normal;
+}
 a.link.bar{
   font-size: 9pt;
   font-style: italic;
+}
+  }
 }

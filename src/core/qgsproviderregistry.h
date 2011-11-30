@@ -43,7 +43,7 @@ class CORE_EXPORT QgsProviderRegistry
   public:
 
     /** means of accessing canonical single instance  */
-    static QgsProviderRegistry* instance( QString providerPath = QString::null );
+    static QgsProviderRegistry* instance( QString pluginPath = QString::null );
 
     /** Virtual dectructor */
     virtual ~QgsProviderRegistry();
@@ -143,7 +143,7 @@ class CORE_EXPORT QgsProviderRegistry
   private:
 
     /** ctor private since instance() creates it */
-    QgsProviderRegistry( QString providerPath );
+    QgsProviderRegistry( QString pluginPath );
 
     /** pointer to canonical Singleton object */
     static QgsProviderRegistry* _instance;

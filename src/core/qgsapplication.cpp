@@ -41,7 +41,6 @@ QObject * QgsApplication::mFileOpenEventReceiver;
 QStringList QgsApplication::mFileOpenEventList;
 QString QgsApplication::mPrefixPath;
 QString QgsApplication::mPluginPath;
-QString QgsApplication::mProviderPath;
 QString QgsApplication::mPkgDataPath;
 QString QgsApplication::mLibraryPath;
 QString QgsApplication::mLibexecPath;
@@ -98,7 +97,6 @@ void QgsApplication::init( QString customConfigPath )
     // we run from source directory - not installed to destination (specified prefix)
     mPrefixPath = QString(); // set invalid path
     setPluginPath( mBuildOutputPath + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
-    setProviderPath( mBuildOutputPath + "/" + QString( QGIS_PROVIDER_SUBDIR ) );
     setPkgDataPath( mBuildSourcePath ); // directly source path - used for: doc, resources, svg
     mLibraryPath = mBuildOutputPath + "/" + QGIS_LIB_SUBDIR + "/";
     mLibexecPath = mBuildOutputPath + "/" + QGIS_LIBEXEC_SUBDIR + "/";
@@ -234,7 +232,6 @@ void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefault
   if ( useDefaultPaths )
   {
     setPluginPath( mPrefixPath + "/" + QString( QGIS_PLUGIN_SUBDIR ) );
-    setProviderPath( mPrefixPath + "/" + QString( QGIS_PROVIDER_SUBDIR ) );
     setPkgDataPath( mPrefixPath + "/" + QString( QGIS_DATA_SUBDIR ) );
   }
   mLibraryPath = mPrefixPath + "/" + QGIS_LIB_SUBDIR + "/";
@@ -244,11 +241,6 @@ void QgsApplication::setPrefixPath( const QString thePrefixPath, bool useDefault
 void QgsApplication::setPluginPath( const QString thePluginPath )
 {
   mPluginPath = thePluginPath;
-}
-
-void QgsApplication::setProviderPath( const QString theProviderPath )
-{
-  mProviderPath = theProviderPath;
 }
 
 void QgsApplication::setPkgDataPath( const QString thePkgDataPath )
@@ -273,10 +265,6 @@ const QString QgsApplication::prefixPath()
   }
 
   return mPrefixPath;
-}
-const QString QgsApplication::providerPath()
-{
-  return mProviderPath;
 }
 const QString QgsApplication::pluginPath()
 {
@@ -502,7 +490,7 @@ QgsApplication::endian_t QgsApplication::endian()
 void QgsApplication::initQgis()
 {
   // set the provider plugin path (this creates provider registry)
-  QgsProviderRegistry::instance( providerPath() );
+  QgsProviderRegistry::instance( pluginPath() );
 
   // create map layer registry if doesn't exist
   QgsMapLayerRegistry::instance();
@@ -516,19 +504,17 @@ void QgsApplication::exitQgis()
 
 QString QgsApplication::showSettings()
 {
-  QString myState = QString( "Application state:\n"
-                             "Prefix              : %1\n"
-                             "Plugin Path         : %2\n"
-                             "Provider Path       : %3\n"
-                             "Package Data Path   : %4\n"
-                             "Active Theme Name   : %5\n"
-                             "Active Theme Path   : %6\n"
-                             "Default Theme Path  : %7\n"
-                             "SVG Search Paths    : %8\n"
-                             "User DB Path        : %9\n" )
+  QString myState = tr( "Application state:\n"
+                             "Prefix:\t\t%1\n"
+                             "Plugin Path:\t\t%2\n"
+                             "Package Data Path:\t%3\n"
+                             "Active Theme Name:\t%4\n"
+                             "Active Theme Path:\t%5\n"
+                             "Default Theme Path:\t%6\n"
+                             "SVG Search Paths:\t%7\n"
+                             "User DB Path:\t%8\n" )
                     .arg( mPrefixPath )
                     .arg( mPluginPath )
-                    .arg( mProviderPath )
                     .arg( mPkgDataPath )
                     .arg( themeName() )
                     .arg( activeThemePath() )
