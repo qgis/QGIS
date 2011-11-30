@@ -87,6 +87,8 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void refineRuleCategories();
     void refineRuleRanges();
 
+    void setRenderingOrder();
+
   protected:
 
     void refineRule( int type );
