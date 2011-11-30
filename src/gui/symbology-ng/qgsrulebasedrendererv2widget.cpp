@@ -84,6 +84,8 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   connect( radGroupFilter, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
   connect( radGroupScale, SIGNAL( clicked() ), this, SLOT( setGrouping() ) );
 
+  connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
+
   treeRules->populateRules();
 }
 
@@ -389,6 +391,16 @@ void QgsRuleBasedRendererV2Widget::refreshSymbolView()
   {
     treeRules->populateRules();
   }
+}
+
+#include "qgssymbollevelsv2dialog.h"
+
+void QgsRuleBasedRendererV2Widget::setRenderingOrder()
+{
+  QgsSymbolV2List symbols = mRenderer->symbols();
+
+  QgsSymbolLevelsV2Dialog dlg( symbols, true, this );
+  dlg.exec();
 }
 
 
