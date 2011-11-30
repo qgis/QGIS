@@ -1768,6 +1768,7 @@ void QgisApp::initLegend()
   w->setLayout( l );
   mLayerOrderDock->setWidget( w );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
+  mLayerOrderDock->hide();
 
   // add to the Panel submenu
   mPanelMenu->addAction( mLayerOrderDock->toggleViewAction() );
