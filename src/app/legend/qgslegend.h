@@ -116,6 +116,9 @@ class QgsLegend : public QTreeWidget
     Else, an empty list is returned.*/
     QList<QgsMapLayer *> layers();
 
+    //!Return all layers in drawing order
+    QList<QgsLegendLayer *> legendLayers();
+
     void setDrawingOrder( QList<QgsMapLayer *> );
 
     /*!set the current layer
@@ -307,6 +310,9 @@ class QgsLegend : public QTreeWidget
     /** Update drawing order */
     void setUpdateDrawingOrder( bool updateDrawingOrder );
 
+    /** Update drawing order */
+    void unsetUpdateDrawingOrder( bool dontUpdateDrawingOrder ) { setUpdateDrawingOrder( !dontUpdateDrawingOrder ); }
+
   protected:
 
     /*!Event handler for mouse movements.
@@ -432,7 +438,6 @@ class QgsLegend : public QTreeWidget
     bool writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDocument &document );
 
     QList<QgsMapCanvasLayer> canvasLayers();
-    QList<QgsLegendLayer *> legendLayers();
 
     /*! Prevent the copying of QgsLegends
     * @todo See if this is really required - we may want multiple map, canvas and
@@ -511,7 +516,8 @@ class QgsLegend : public QTreeWidget
 
     void zOrderChanged();
 
-    void updateDrawingOrderChanged( bool );
+    void updateDrawingOrderChecked( bool );
+    void updateDrawingOrderUnchecked( bool );
 
     //! Emitted whenever current (selected) layer changes
     //  the pointer to layer can be null if no layer is selected

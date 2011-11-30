@@ -422,6 +422,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
     , geomType( QGis::WKBUnknown )
     , mFeatureQueueSize( 200 )
     , mUseEstimatedMetadata( false )
+    , mSelectAtIdDisabled( false )
     , mPrimaryKeyDefault( QString::null )
 {
   // assume this is a valid layer until we determine otherwise
@@ -463,6 +464,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 
   primaryKey = mUri.keyColumn();
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
+  mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
   QgsDebugMsg( "Connection info is " + mUri.connectionInfo() );
   QgsDebugMsg( "Geometry column is: " + geometryColumn );
@@ -1327,20 +1329,18 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
     if ( whereClause.isEmpty() )
     {
       QString qBox = QString( "%1('BOX3D(%2)'::box3d,%3)" )
-                    .arg( connectionRO->majorVersion() < 2 ? "setsrid"
-                                                        : "st_setsrid" )
-                    .arg( rect.asWktCoordinates() )
-                    .arg( srid );
+                     .arg( connectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
+                     .arg( rect.asWktCoordinates() )
+                     .arg( srid );
       whereClause = QString( "%1 && %2" )
-                   .arg( quotedIdentifier( geometryColumn ) )
-                   .arg( qBox );
+                    .arg( quotedIdentifier( geometryColumn ) )
+                    .arg( qBox );
       if ( useIntersect )
       {
-        whereClause += QString( " and %1(%2,%3))" )
-                      .arg( connectionRO->majorVersion() < 2 ? "intersects"
-                                                          : "st_intersects" )
-                      .arg( quotedIdentifier( geometryColumn ) )
-                      .arg( qBox );
+        whereClause += QString( " and %1(%2,%3)" )
+                       .arg( connectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
+                       .arg( quotedIdentifier( geometryColumn ) )
+                       .arg( qBox );
       }
     }
   }
@@ -1836,7 +1836,10 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
 
     // postgres has fast access to features at id (thanks to primary key / unique index)
     // the latter flag is here just for compatibility
-    enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    if ( !mSelectAtIdDisabled )
+    {
+      enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    }
 
     if ( !inRecovery )
     {
@@ -1965,7 +1968,10 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
       return false;
     }
 
-    enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    if ( !mSelectAtIdDisabled )
+    {
+      enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
+    }
   }
 
   return true;

@@ -26,6 +26,7 @@ QgsDbTableModel::QgsDbTableModel(): QStandardItemModel(), mTableCount( 0 )
   headerLabels << tr( "Type" );
   headerLabels << tr( "Geometry column" );
   headerLabels << tr( "Primary key column" );
+  headerLabels << tr( "Select at id" );
   headerLabels << tr( "Sql" );
   setHorizontalHeaderLabels( headerLabels );
 }
@@ -60,17 +61,27 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   QIcon iconFile = iconForType( wkbType );
 
   QList<QStandardItem*> childItemList;
+
   QStandardItem* schemaNameItem = new QStandardItem( schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+
   QStandardItem* typeItem = new QStandardItem( QIcon( iconFile ), type );
   typeItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+
   QStandardItem* tableItem = new QStandardItem( tableName );
   tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+
   QStandardItem* geomItem = new QStandardItem( geometryColName );
   geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+
   QStandardItem* pkItem = new QStandardItem( "" );
   pkItem->setData( pkCols );
   pkItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+
+  QStandardItem* selItem = new QStandardItem( "" );
+  selItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable );
+  selItem->setCheckState( Qt::Checked );
+
   QStandardItem* sqlItem = new QStandardItem( sql );
   sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
@@ -79,6 +90,7 @@ void QgsDbTableModel::addTableEntry( QString type, QString schemaName, QString t
   childItemList.push_back( typeItem );
   childItemList.push_back( geomItem );
   childItemList.push_back( pkItem );
+  childItemList.push_back( selItem );
   childItemList.push_back( sqlItem );
 
   schemaItem->appendRow( childItemList );

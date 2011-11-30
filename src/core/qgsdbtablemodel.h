@@ -28,15 +28,19 @@ class CORE_EXPORT QgsDbTableModel : public QStandardItemModel
   public:
     QgsDbTableModel();
     ~QgsDbTableModel();
+
     /**Adds entry for one database table to the model*/
     void addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, const QStringList &pkCols, QString Sql );
+
     /**Sets an sql statement that belongs to a cell specified by a model index*/
     void setSql( const QModelIndex& index, const QString& sql );
+
     /**Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is dectected later by thread*/
     void setGeometryTypesForTable( const QString& schema, const QString& table, const QString& attribute, const QString& type );
+
     /**Returns the number of tables in the model*/
-    int tableCount() const {return mTableCount;}
+    int tableCount() const { return mTableCount; }
 
     enum columns
     {
@@ -45,6 +49,7 @@ class CORE_EXPORT QgsDbTableModel : public QStandardItemModel
       dbtmType,
       dbtmGeomCol,
       dbtmPkCol,
+      dbtmSelectAtId,
       dbtmSql,
       dbtmColumns
     };
@@ -55,6 +60,7 @@ class CORE_EXPORT QgsDbTableModel : public QStandardItemModel
 
     QIcon iconForType( QGis::WkbType type ) const;
     QString displayStringForType( QGis::WkbType type ) const;
+
     /**Returns qgis wkbtype from database typename*/
     QGis::WkbType qgisTypeFromDbType( const QString& dbType ) const;
 };
