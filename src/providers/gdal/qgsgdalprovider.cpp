@@ -356,27 +356,41 @@ void QgsGdalProvider::closeDataset()
 
 QString QgsGdalProvider::metadata()
 {
+  //even as I am writing this I know it is wrong - we should separate markup from content...TS
+  QString myLabelStart = "<label class=\"span-10\">";
+  QString myLabelEnd   = "</label>";
+  QString myDetailStart = "<p class=\"span-13\">";
+  QString myDetailEnd   = "</p>";
+
   QString myMetadata ;
+  myMetadata += myLabelStart;
   myMetadata += QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) );
-  myMetadata += "<br>";
+  myMetadata += myLabelEnd;
+  myMetadata += myDetailStart;
   myMetadata += QString( GDALGetMetadataItem( GDALGetDatasetDriver( mGdalDataset ), GDAL_DMD_LONGNAME, NULL ) );
+  myMetadata += myDetailEnd;
 
   // my added code (MColetti)
 
-  myMetadata += "<p class=\"glossy\">";
+  myMetadata += myLabelStart;
   myMetadata += tr( "Dataset Description" );
-  myMetadata += "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += myLabelEnd;
+  myMetadata += myDetailStart;
   myMetadata += QFile::decodeName( GDALGetDescription( mGdalDataset ) );
-  myMetadata += "</p>\n";
+  myMetadata += myDetailEnd;
 
 
   char ** GDALmetadata = GDALGetMetadata( mGdalDataset, NULL );
 
   if ( GDALmetadata )
   {
+    myMetadata += myLabelStart;
+    myMetadata += tr( "GDAL Dataset Metadata:" );
+    myMetadata += myLabelEnd;
+    myMetadata += myDetailStart;
     QStringList metadata = cStringList2Q_( GDALmetadata );
     myMetadata += QgsRasterDataProvider::makeTableCells( metadata );
+    myMetadata += myDetailEnd;
   }
   else
   {
@@ -385,14 +399,19 @@ QString QgsGdalProvider::metadata()
 
   for ( int i = 1; i <= GDALGetRasterCount( mGdalDataset ); ++i )
   {
-    myMetadata += "<p class=\"glossy\">" + tr( "Band %1" ).arg( i ) + "</p>\n";
+    myMetadata += "<h2>" + tr( "Band %1" ).arg( i ) + "</h2><hr/>";
     GDALRasterBandH gdalBand = GDALGetRasterBand( mGdalDataset, i );
     GDALmetadata = GDALGetMetadata( gdalBand, NULL );
 
     if ( GDALmetadata )
     {
+      myMetadata += myLabelStart;
+      myMetadata += tr( "GDAL Metadata:" );
+      myMetadata += myLabelEnd;
+      myMetadata += myDetailStart;
       QStringList metadata = cStringList2Q_( GDALmetadata );
       myMetadata += QgsRasterDataProvider::makeTableCells( metadata );
+      myMetadata += myDetailEnd;
     }
     else
     {
@@ -403,6 +422,9 @@ QString QgsGdalProvider::metadata()
 
     if ( GDALcategories )
     {
+      myMetadata += myLabelStart;
+      myMetadata += tr( "Categories:" );
+      myMetadata += myLabelEnd;
       QStringList categories = cStringList2Q_( GDALcategories );
       myMetadata += QgsRasterDataProvider::makeTableCells( categories );
     }
@@ -415,15 +437,15 @@ QString QgsGdalProvider::metadata()
 
   // end my added code
 
-  myMetadata += "<p class=\"glossy\">";
+  myMetadata += myLabelStart;
   myMetadata += tr( "Dimensions:" );
-  myMetadata += "</p>\n";
-  myMetadata += "<p>";
+  myMetadata += myLabelEnd;
+  myMetadata += myDetailStart;
   myMetadata += tr( "X: %1 Y: %2 Bands: %3" )
                 .arg( GDALGetRasterXSize( mGdalDataset ) )
                 .arg( GDALGetRasterYSize( mGdalDataset ) )
                 .arg( GDALGetRasterCount( mGdalDataset ) );
-  myMetadata += "</p>\n";
+  myMetadata += myDetailEnd;
 
   //just use the first band
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, 1 );
@@ -436,11 +458,10 @@ QString QgsGdalProvider::metadata()
     {
       GDALRasterBandH myOverview;
       myOverview = GDALGetOverview( myGdalBand, myOverviewInt );
-      myMetadata += "<p>X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
-      myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "</p>";
+      myMetadata += "X : " + QString::number( GDALGetRasterBandXSize( myOverview ) );
+      myMetadata += ",Y " + QString::number( GDALGetRasterBandYSize( myOverview ) ) + "<br />";
     }
   }
-  myMetadata += "</p>\n";
 
   if ( GDALGetGeoTransform( mGdalDataset, mGeoTransform ) != CE_None )
   {
@@ -450,23 +471,23 @@ QString QgsGdalProvider::metadata()
   }
   else
   {
-    myMetadata += "<p class=\"glossy\">";
+    myMetadata += myLabelStart;
     myMetadata += tr( "Origin:" );
-    myMetadata += "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += myLabelEnd;
+    myMetadata += myDetailStart;
     myMetadata += QString::number( mGeoTransform[0] );
     myMetadata += ",";
     myMetadata += QString::number( mGeoTransform[3] );
-    myMetadata += "</p>\n";
+    myMetadata += myDetailEnd;
 
-    myMetadata += "<p class=\"glossy\">";
+    myMetadata += myLabelStart;
     myMetadata += tr( "Pixel Size:" );
-    myMetadata += "</p>\n";
-    myMetadata += "<p>";
+    myMetadata += myLabelEnd;
+    myMetadata += myDetailStart;
     myMetadata += QString::number( mGeoTransform[1] );
     myMetadata += ",";
     myMetadata += QString::number( mGeoTransform[5] );
-    myMetadata += "</p>\n";
+    myMetadata += myDetailEnd;
   }
 
   return myMetadata;

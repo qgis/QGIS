@@ -133,6 +133,11 @@ class CORE_EXPORT QgsApplication: public QApplication
     //! Returns the path to the application plugin directory.
     static const QString pluginPath();
 
+    /** Returns the path to the application data providers directory.
+    * @note Added in 2.0
+    */
+    static const QString providerPath();
+
     //! Returns the common root path of all application data directories.
     static const QString pkgDataPath();
 
@@ -163,6 +168,11 @@ class CORE_EXPORT QgsApplication: public QApplication
 
     //! Alters prefix path - used by 3rd party apps
     static void setPrefixPath( const QString thePrefixPath, bool useDefaultPaths = false );
+
+    /** Alters provider path - providers are used to connect to a data source
+    * @note Added in 2.0
+    */
+    static void setProviderPath( const QString theProviderPath );
 
     //! Alters plugin path - used by 3rd party apps
     static void setPluginPath( const QString thePluginPath );
@@ -262,6 +272,7 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QStringList mFileOpenEventList;
 
     static QString mPrefixPath;
+    static QString mProviderPath;
     static QString mPluginPath;
     static QString mPkgDataPath;
     static QString mLibraryPath;

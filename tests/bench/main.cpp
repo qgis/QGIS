@@ -367,7 +367,7 @@ int main( int argc, char *argv[] )
   QgsApplication::setOrganizationDomain( "qgis.org" );
   QgsApplication::setApplicationName( "QGIS" );
 
-  QgsProviderRegistry::instance( QgsApplication::pluginPath() );
+  QgsProviderRegistry::instance( QgsApplication::providerPath() );
 
 #ifdef Q_OS_MACX
   // If the GDAL plugins are bundled with the application and GDAL_DRIVER_PATH
