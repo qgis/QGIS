@@ -23,5 +23,6 @@
         <file>icons/projection-export.png</file>
         <file>icons/edit.png</file>
         <file>icons/reset.png</file>
+        <file>icons/tooltip.png</file>
     </qresource>
 </RCC>
