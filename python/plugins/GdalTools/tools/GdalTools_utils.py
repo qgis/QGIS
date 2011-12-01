@@ -760,3 +760,9 @@ class Version:
 
   def __str__(self):
     return ".".join(self.vers)
+
+
+# setup the default MacOs path
+#if platform.system() == "Darwin" and getGdalPath().isEmpty():
+#  setGdalPath( u"/Library/Frameworks/GDAL.framework/Versions/%s/Programs" % str(GdalConfig.version())[:3] )
+
