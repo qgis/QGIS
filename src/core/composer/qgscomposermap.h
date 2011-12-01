@@ -85,7 +85,7 @@ class CORE_EXPORT QgsComposerMap : public QgsComposerItem
         @param extent map extent
         @param size size in scene coordinates
         @param dpi scene dpi*/
-    void draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi );
+    void draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale = 0 );
 
     /** \brief Reimplementation of QCanvasItem::paint - draw on canvas */
     void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );

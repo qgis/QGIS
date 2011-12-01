@@ -120,7 +120,7 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     ~QgsMapRenderer();
 
     //! starts rendering
-    void render( QPainter* painter );
+    void render( QPainter* painter, double* forceScaleFactor = 0 );
 
     //! sets extent and checks whether suitable (returns false if not)
     bool setExtent( const QgsRectangle& extent );
