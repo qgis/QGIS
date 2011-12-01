@@ -213,7 +213,7 @@ void QgsMapRenderer::adjustExtentToSize()
 }
 
 
-void QgsMapRenderer::render( QPainter* painter )
+void QgsMapRenderer::render( QPainter* painter, double* forceScaleFactor )
 {
   //Lock render method for concurrent threads (e.g. from globe)
   QMutexLocker renderLock( &mRenderMutex );
@@ -282,7 +282,14 @@ void QgsMapRenderer::render( QPainter* painter )
   double scaleFactor = 1.0;
   if ( mOutputUnits == QgsMapRenderer::Millimeters )
   {
-    scaleFactor = sceneDpi / 25.4;
+    if ( forceScaleFactor )
+    {
+      scaleFactor = *forceScaleFactor;
+    }
+    else
+    {
+      scaleFactor = sceneDpi / 25.4;
+    }
   }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
   if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )

@@ -117,7 +117,7 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
 
 /* This function is called by paint() and cache() to render the map.  It does not override any functions
 from QGraphicsItem. */
-void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi )
+void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const QSizeF& size, double dpi, double* forceWidthScale )
 {
   if ( !painter )
   {
@@ -174,7 +174,14 @@ void QgsComposerMap::draw( QPainter *painter, const QgsRectangle& extent, const 
   bool bkLayerCaching = s.value( "/qgis/enable_render_caching", false ).toBool();
   s.setValue( "/qgis/enable_render_caching", false );
 
-  theMapRenderer.render( painter );
+  if ( forceWidthScale ) //force wysiwyg line widths / marker sizes
+  {
+    theMapRenderer.render( painter, forceWidthScale );
+  }
+  else
+  {
+    theMapRenderer.render( painter );
+  }
   s.setValue( "/qgis/enable_render_caching", bkLayerCaching );
 
   theMapRenderer.setScale( bk_scale );
@@ -217,6 +224,8 @@ void QgsComposerMap::cache( void )
     h = 5000;
   }
 
+  double forcedWidthScaleFactor = w / requestExtent.width() / mapUnitsToMM();
+
   mCacheImage = QImage( w, h,  QImage::Format_ARGB32 );
   mCacheImage.fill( brush().color().rgb() ); //consider the item background brush
   double mapUnitsPerPixel = mExtent.width() / w;
@@ -226,7 +235,7 @@ void QgsComposerMap::cache( void )
 
   QPainter p( &mCacheImage );
 
-  draw( &p, requestExtent, QSizeF( w, h ), mCacheImage.logicalDpiX() );
+  draw( &p, requestExtent, QSizeF( w, h ), mCacheImage.logicalDpiX(), &forcedWidthScaleFactor );
   p.end();
   mCacheUpdated = true;
 
