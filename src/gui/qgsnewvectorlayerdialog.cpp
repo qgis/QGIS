@@ -64,7 +64,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
   srs.validate();
 
   mCrsId = srs.srsid();
-  leSpatialRefSys->setText( srs.toProj4() );
+  leSpatialRefSys->setText( srs.authid() + " - " + srs.description() );
 
   connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
   connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
@@ -162,8 +162,10 @@ void QgsNewVectorLayerDialog::on_pbnChangeSpatialRefSys_clicked()
   mySelector->setSelectedCrsId( pbnChangeSpatialRefSys->text().toInt() );
   if ( mySelector->exec() )
   {
-    mCrsId = mySelector->selectedCrsId();
-    leSpatialRefSys->setText( mySelector->selectedAuthId() );
+    QgsCoordinateReferenceSystem srs;
+    srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+    mCrsId = srs.srsid();
+    leSpatialRefSys->setText( srs.authid() + " - " + srs.description() );
   }
   else
   {
