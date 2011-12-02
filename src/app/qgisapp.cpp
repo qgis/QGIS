@@ -1730,6 +1730,7 @@ void QgisApp::initLegend()
 
   QWidget *w = new QWidget( this );
   QLayout *l = new QVBoxLayout;
+  l->setMargin(0);
   l->addWidget( mMapLegend );
   l->addWidget( legendCb );
   w->setLayout( l );
@@ -1746,6 +1747,7 @@ void QgisApp::initLegend()
 
   w = new QWidget( this );
   l = new QVBoxLayout;
+  l->setMargin(0);
   l->addWidget( mMapLayerOrder );
   l->addWidget( orderCb );
   w->setLayout( l );

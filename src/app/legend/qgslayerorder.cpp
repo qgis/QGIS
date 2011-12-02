@@ -64,7 +64,7 @@ QgsLayerOrder::QgsLayerOrder( QgsLegend *legend, QWidget * parent, const char *n
   setSelectionMode( QAbstractItemView::ExtendedSelection );
   setDragEnabled( false );
   setAutoScroll( true );
-  QFont f( "Arial", 11, QFont::Bold );
+  QFont f( "Arial", 10, QFont::Bold );
   setFont( f );
   QPalette palette;
   palette.setColor( backgroundRole(), QColor( 192, 192, 192 ) );
