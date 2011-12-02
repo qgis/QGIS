@@ -1403,7 +1403,8 @@ bool QgsLegend::readXML( QDomNode& legendnode )
   clear(); //remove all items first
   mEmbeddedGroups.clear();
   mUpdateDrawingOrder = legendnode.toElement().attribute( "updateDrawingOrder", "true" ) == "true";
-  emit updateDrawingOrderChanged( mUpdateDrawingOrder );
+  emit updateDrawingOrderChecked( mUpdateDrawingOrder );
+  emit updateDrawingOrderUnchecked( !mUpdateDrawingOrder );
   return readXML( 0, legendnode );
 }
 
@@ -2356,7 +2357,8 @@ void QgsLegend::setUpdateDrawingOrder( bool updateDrawingOrder )
 
   updateMapCanvasLayerSet();
 
-  emit updateDrawingOrderChanged( mUpdateDrawingOrder );
+  emit updateDrawingOrderChecked( mUpdateDrawingOrder );
+  emit updateDrawingOrderUnchecked( !mUpdateDrawingOrder );
 }
 
 bool QgsLegend::updateDrawingOrder()

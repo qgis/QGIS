@@ -42,7 +42,6 @@ class QPainter;
 class CORE_EXPORT QgsMapLayer : public QObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString metadata READ metadata)
 
   public:
     /** Layers enum defining the types of layers that can be added to a map */

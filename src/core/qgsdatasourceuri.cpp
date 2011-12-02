@@ -22,12 +22,20 @@
 #include <QStringList>
 #include <QRegExp>
 
-QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer ), mKeyColumn( "" ), mUseEstimatedMetadata( false )
+QgsDataSourceURI::QgsDataSourceURI()
+    : mSSLmode( SSLprefer )
+    , mKeyColumn( "" )
+    , mUseEstimatedMetadata( false )
+    , mSelectAtIdDisabled( false )
 {
   // do nothing
 }
 
-QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyColumn( "" ), mUseEstimatedMetadata( false )
+QgsDataSourceURI::QgsDataSourceURI( QString uri )
+    : mSSLmode( SSLprefer )
+    , mKeyColumn( "" )
+    , mUseEstimatedMetadata( false )
+    , mSelectAtIdDisabled( false )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -114,6 +122,10 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyC
       else if ( pname == "estimatedmetadata" )
       {
         mUseEstimatedMetadata = pval == "true";
+      }
+      else if ( pname == "selectatid" )
+      {
+        mSelectAtIdDisabled = pval == "false";
       }
       else if ( pname == "service" )
       {
@@ -309,6 +321,16 @@ bool QgsDataSourceURI::useEstimatedMetadata() const
   return mUseEstimatedMetadata;
 }
 
+void QgsDataSourceURI::disableSelectAtId( bool theFlag )
+{
+  mSelectAtIdDisabled = theFlag;
+}
+
+bool QgsDataSourceURI::selectAtIdDisabled() const
+{
+  return mSelectAtIdDisabled;
+}
+
 void QgsDataSourceURI::setSql( QString sql )
 {
   mSql = sql;
@@ -459,6 +481,11 @@ QString QgsDataSourceURI::uri() const
   if ( mUseEstimatedMetadata )
   {
     theUri += QString( " estimatedmetadata=true" );
+  }
+
+  if ( mSelectAtIdDisabled )
+  {
+    theUri += QString( " selectatid=false" );
   }
 
   theUri += QString( " table=%1%2 sql=%3" )

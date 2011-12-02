@@ -38,8 +38,8 @@ QgsLayerOrder::QgsLayerOrder( QgsLegend *legend, QWidget * parent, const char *n
            this, SLOT( legendItemChanged( QTreeWidgetItem *, int ) ) );
 
   // track if legend mode changes
-  connect( mLegend, SIGNAL( updateDrawingOrderChanged( bool ) ),
-           this, SLOT( updateDrawingOrderChanged( bool ) ) );
+  connect( mLegend, SIGNAL( updateDrawingOrderChecked( bool ) ),
+           this, SLOT( updateDrawingOrderChecked( bool ) ) );
 
   connect( mLegend, SIGNAL( zOrderChanged() ),
            this, SLOT( refreshLayerList() ) );
@@ -64,13 +64,13 @@ QgsLayerOrder::QgsLayerOrder( QgsLegend *legend, QWidget * parent, const char *n
   setSelectionMode( QAbstractItemView::ExtendedSelection );
   setDragEnabled( false );
   setAutoScroll( true );
-  QFont f( "Arial", 12, QFont::Bold );
+  QFont f( "Arial", 10, QFont::Bold );
   setFont( f );
   QPalette palette;
   palette.setColor( backgroundRole(), QColor( 192, 192, 192 ) );
   setPalette( palette );
 
-  updateDrawingOrderChanged( mLegend->updateDrawingOrder() );
+  updateDrawingOrderChecked( mLegend->updateDrawingOrder() );
 }
 
 QgsLayerOrder::~QgsLayerOrder()
@@ -82,11 +82,12 @@ void QgsLayerOrder::refreshLayerList()
 {
   clear();
 
-  foreach( QgsMapLayer *layer, mLegend->layers() )
+  foreach( QgsLegendLayer *layer, mLegend->legendLayers() )
   {
-    QListWidgetItem *item = new QListWidgetItem( layer->name() );
-    item->setData( Qt::UserRole, qVariantFromValue( qobject_cast<QObject*>( layer ) ) );
-    item->setCheckState( mLegend->layerCheckState( layer ) );
+    QListWidgetItem *item = new QListWidgetItem( layer->layer()->name() );
+    item->setData( 1, QString::number( layer->drawingOrder() ) );
+    item->setData( Qt::UserRole, qVariantFromValue( qobject_cast<QObject*>( layer->layer() ) ) );
+    item->setCheckState( layer->isVisible() ? Qt::Checked : Qt::Unchecked );
     QgsDebugMsg( QString( "add item=%1 at %2" ).arg( item ? item->text() : "(null item)" ).arg( count() ) );
     addItem( item );
   }
@@ -189,16 +190,19 @@ void QgsLayerOrder::mouseMoveEvent( QMouseEvent * e )
     {
       mInsertRow = row( rowItem );
       QgsDebugMsg( QString( "Move to row %1" ).arg( mInsertRow ) );
+      scrollToItem( rowItem );
     }
     else if ( e->pos().y() < visualItemRect( item( 0 ) ).bottom() )
     {
       mInsertRow = 0;
       QgsDebugMsg( QString( "Insert top row %1" ).arg( mInsertRow ) );
+      scrollToTop();
     }
     else
     {
       mInsertRow = count();
       QgsDebugMsg( QString( "Append bottom row %1" ).arg( mInsertRow ) );
+      scrollToBottom();
     }
 
     int y;
@@ -269,7 +273,7 @@ void QgsLayerOrder::hideLine()
   mInsertionLine->setGeometry( 0, -100, 1, 1 );
 }
 
-void QgsLayerOrder::updateDrawingOrderChanged( bool enabled )
+void QgsLayerOrder::updateDrawingOrderChecked( bool enabled )
 {
   setDisabled( enabled );
 }

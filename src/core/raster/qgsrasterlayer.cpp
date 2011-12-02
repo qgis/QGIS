@@ -1685,25 +1685,22 @@ double QgsRasterLayer::maximumValue( QString theBand )
 
 QString QgsRasterLayer::metadata()
 {
-  //even as I am writing this I know it is wrong - we should separate markup from content...TS
-  QString myLabelStart = "<label class=\"span-10\">";
-  QString myLabelEnd   = "</label>";
-  QString myDetailStart = "<p class=\"span-13\">";
-  QString myDetailEnd   = "</p>";
-
   QString myMetadata ;
-  myMetadata += myLabelStart + tr( "Driver:" ) + myLabelEnd;
-  myMetadata += myDetailStart;
+  myMetadata += "<p class=\"glossy\">" + tr( "Driver:" ) + "</p>\n";
+  myMetadata += "<p>";
   myMetadata += mDataProvider->description();
-  myMetadata += myDetailEnd;
+  myMetadata += "</p>\n";
 
   // Insert provider-specific (e.g. WMS-specific) metadata
+  // crashing
+  //QString s =  mDataProvider->metadata();
+  //QgsDebugMsg( s );
   myMetadata += mDataProvider->metadata();
 
-  myMetadata += myLabelStart;
+  myMetadata += "<p class=\"glossy\">";
   myMetadata += tr( "No Data Value" );
-  myMetadata += myLabelEnd;
-  myMetadata += myDetailStart;
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
   if ( mValidNoDataValue )
   {
     myMetadata += QString::number( mNoDataValue );
@@ -1712,12 +1709,13 @@ QString QgsRasterLayer::metadata()
   {
     myMetadata += "*" + tr( "NoDataValue not set" ) + "*";
   }
-  myMetadata += myDetailEnd;
+  myMetadata += "</p>\n";
 
-  myMetadata += myLabelStart;
+  myMetadata += "</p>\n";
+  myMetadata += "<p class=\"glossy\">";
   myMetadata += tr( "Data Type:" );
-  myMetadata += myLabelEnd;
-  myMetadata += myDetailStart;
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
   //just use the first band
   switch ( mDataProvider->srcDataType( 1 ) )
   {
@@ -1757,31 +1755,36 @@ QString QgsRasterLayer::metadata()
     default:
       myMetadata += tr( "Could not determine raster data type." );
   }
-  myMetadata += myDetailEnd;
+  myMetadata += "</p>\n";
 
-  myMetadata += myLabelStart;
+  myMetadata += "<p class=\"glossy\">";
+  myMetadata += tr( "Pyramid overviews:" );
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
+
+  myMetadata += "<p class=\"glossy\">";
   myMetadata += tr( "Layer Spatial Reference System: " );
-  myMetadata += myLabelEnd;
-  myMetadata += myDetailStart;
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
   myMetadata += mCRS->toProj4();
-  myMetadata += myDetailEnd;
+  myMetadata += "</p>\n";
 
-  myMetadata += myLabelStart;
+  myMetadata += "<p class=\"glossy\">";
   myMetadata += tr( "Layer Extent (layer original source projection): " );
-  myMetadata += myLabelEnd;
-  myMetadata += myDetailStart;
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
   myMetadata += mDataProvider->extent().toString();
-  myMetadata += myDetailEnd;
+  myMetadata += "</p>\n";
 
   // output coordinate system
   // TODO: this is not related to layer, to be removed? [MD]
 #if 0
-  myMetadata += myLabelStart;
+  myMetadata += "<tr><td class=\"glossy\">";
   myMetadata += tr( "Project Spatial Reference System: " );
-  myMetadata += myLabelEnd;
-  myMetadata += myDetailStart;
+  myMetadata += "</p>\n";
+  myMetadata += "<p>";
   myMetadata +=  mCoordinateTransform->destCRS().toProj4();
-  myMetadata += myDetailEnd;
+  myMetadata += "</p>\n";
 #endif
 
   //
@@ -1792,104 +1795,100 @@ QString QgsRasterLayer::metadata()
   {
     QgsDebugMsg( "Raster properties : checking if band " + QString::number( myIteratorInt ) + " has stats? " );
     //band name
-    myMetadata += "<h2>" + tr("QGIS Metadata") + "</h2></hr>";
-    myMetadata += myLabelStart;
-    myMetadata += tr( "Band Name:" );
-    myMetadata += myLabelEnd;
-    myMetadata += myDetailStart;
+    myMetadata += "<p class=\"glossy\">\n";
+    myMetadata += tr( "Band" );
+    myMetadata += "</p>\n";
+    myMetadata += "<p>";
     myMetadata += bandName( myIteratorInt );
-    myMetadata += myDetailEnd;
+    myMetadata += "</p>\n";
     //band number
-    myMetadata += myLabelStart;
-    myMetadata += tr( "Band No:" );
-    myMetadata += myLabelEnd;
-    myMetadata += myDetailStart;
+    myMetadata += "<p>";
+    myMetadata += tr( "Band No" );
+    myMetadata += "</p>\n";
+    myMetadata += "<p>\n";
     myMetadata += QString::number( myIteratorInt );
-    myMetadata += myDetailEnd;
+    myMetadata += "</p>\n";
 
-    myMetadata += myLabelStart;
-    myMetadata += tr( "Has stats?" );
-    myMetadata += myLabelEnd;
     //check if full stats for this layer have already been collected
     if ( !hasStatistics( myIteratorInt ) )  //not collected
     {
       QgsDebugMsg( ".....no" );
 
-      myMetadata += myDetailStart;
+      myMetadata += "<p>";
+      myMetadata += tr( "No Stats" );
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += tr( "No stats collected yet" );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
     }
     else                    // collected - show full detail
     {
       QgsDebugMsg( ".....yes" );
 
-      myMetadata += myDetailStart;
-      myMetadata += tr( "yes" );
-      myMetadata += myDetailEnd;
       QgsRasterBandStats myRasterBandStats = bandStatistics( myIteratorInt );
       //Min Val
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Min Val" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.minimumValue, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       // Max Val
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Max Val" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.maximumValue, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       // Range
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Range" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.range, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       // Mean
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Mean" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.mean, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       //sum of squares
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Sum of squares" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.sumOfSquares, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       //standard deviation
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Standard Deviation" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.stdDev, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       //sum of all cells
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Sum of all cells" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.sum, 'f', 10 );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
 
       //number of cells
-      myMetadata += myLabelStart;
+      myMetadata += "<p>";
       myMetadata += tr( "Cell Count" );
-      myMetadata += myLabelEnd;
-      myMetadata += myDetailStart;
+      myMetadata += "</p>\n";
+      myMetadata += "<p>\n";
       myMetadata += QString::number( myRasterBandStats.elementCount );
-      myMetadata += myDetailEnd;
+      myMetadata += "</p>\n";
     }
   }
 

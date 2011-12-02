@@ -1716,18 +1716,46 @@ void QgisApp::initLegend()
   mLegendDock = new QDockWidget( tr( "Layers" ), this );
   mLegendDock->setObjectName( "Legend" );
   mLegendDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  mLegendDock->setWidget( mMapLegend );
+
+  QCheckBox *legendCb = new QCheckBox( tr( "Control rendering order" ) );
+  legendCb->setChecked( true );
+
+  QCheckBox *orderCb = new QCheckBox( tr( "Control rendering order" ) );
+  orderCb->setChecked( false );
+
+  connect( legendCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( setUpdateDrawingOrder( bool ) ) );
+  connect( orderCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( unsetUpdateDrawingOrder( bool ) ) );
+  connect( mMapLegend, SIGNAL( updateDrawingOrderChecked( bool ) ), legendCb, SLOT( setChecked( bool ) ) );
+  connect( mMapLegend, SIGNAL( updateDrawingOrderUnchecked( bool ) ), orderCb, SLOT( setChecked( bool ) ) );
+
+  QWidget *w = new QWidget( this );
+  QLayout *l = new QVBoxLayout;
+  l->setMargin(0);
+  l->addWidget( mMapLegend );
+  l->addWidget( legendCb );
+  w->setLayout( l );
+  mLegendDock->setWidget( w );
   addDockWidget( Qt::LeftDockWidgetArea, mLegendDock );
 
   // add to the Panel submenu
   mPanelMenu->addAction( mLegendDock->toggleViewAction() );
 
   mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
-  mLayerOrderDock = new QDockWidget( tr( "Layerorder" ), this );
+  mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
   mLayerOrderDock->setObjectName( "Legend" );
   mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  mLayerOrderDock->setWidget( mMapLayerOrder );
+
+  w = new QWidget( this );
+  l = new QVBoxLayout;
+  l->setMargin(0);
+  l->addWidget( mMapLayerOrder );
+  l->addWidget( orderCb );
+  w->setLayout( l );
+  mLayerOrderDock->setWidget( w );
   addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
+
+  // add to the Panel submenu
+  mPanelMenu->addAction( mLayerOrderDock->toggleViewAction() );
 
   return;
 }
