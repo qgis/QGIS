@@ -271,7 +271,7 @@ QgsDebugMsg( QString( "Starting qgis main" ) );
 	
 		  optionChar = getopt_long( argc, argv, "swhlpeoc",
 									long_options, &option_index );
-	QgsDebugMsg( QString( "Qgis main Debug" ) + optionChar );
+                  QgsDebugMsg( QString( "Qgis main Debug" ) + optionChar );
 		  /* Detect the end of the options. */
 		  if ( optionChar == -1 )
 			break;
