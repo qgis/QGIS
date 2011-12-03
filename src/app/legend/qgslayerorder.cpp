@@ -44,6 +44,9 @@ QgsLayerOrder::QgsLayerOrder( QgsLegend *legend, QWidget * parent, const char *n
   connect( mLegend, SIGNAL( zOrderChanged() ),
            this, SLOT( refreshLayerList() ) );
 
+  connect( mLegend, SIGNAL( invisibleLayerRemoved() ),
+           this, SLOT( refreshLayerList() ) );
+
   connect( mLegend->canvas(), SIGNAL( layersChanged() ),
            this, SLOT( refreshLayerList() ) );
 

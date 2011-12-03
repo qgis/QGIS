@@ -244,6 +244,8 @@ void QgsLegend::removeLayer( QString layerId )
 {
   QgsDebugMsg( "Entering." );
 
+  bool invLayerRemoved = false;
+
   for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
   {
     QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
@@ -254,15 +256,21 @@ void QgsLegend::removeLayer( QString layerId )
 
       if ( ll && ll->layer() && ll->layer()->id() == layerId )
       {
+        if( !ll->isVisible() )
+	{
+          invLayerRemoved = true;
+	}
         removeItem( ll );
         delete ll;
         break;
       }
     }
   }
-
   updateMapCanvasLayerSet();
   adjustIconSize();
+
+  if( invLayerRemoved )
+    emit invisibleLayerRemoved();
 }
 
 void QgsLegend::mousePressEvent( QMouseEvent * e )
