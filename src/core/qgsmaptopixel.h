@@ -73,6 +73,12 @@ class CORE_EXPORT QgsMapToPixel
     void transformInPlace( std::vector<double>& x,
                            std::vector<double>& y ) const;
 
+#ifdef ANDROID
+    void transformInPlace( float& x, float& y ) const;
+    void transformInPlace( std::vector<float>& x,
+                          std::vector<float>& y ) const;
+#endif
+
     QgsPoint toMapCoordinates( int x, int y ) const;
 
     /*! Transform device coordinates to map (world) coordinates

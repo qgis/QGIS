@@ -181,6 +181,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
 int main( int argc, char *argv[] )
 {
+QgsDebugMsg( QString( "Starting qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -189,9 +190,11 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#ifndef _MSC_VER
-  // Set up the custom qWarning/qDebug custom handler
-  qInstallMsgHandler( myMessageOutput );
+#ifndef ANDROID
+  #ifndef _MSC_VER
+    // Set up the custom qWarning/qDebug custom handler
+    qInstallMsgHandler( myMessageOutput );
+  #endif
 #endif
 
   /////////////////////////////////////////////////////////////////
@@ -230,190 +233,196 @@ int main( int argc, char *argv[] )
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
 
-#ifndef WIN32
-  if ( !bundleclicked( argc, argv ) )
-  {
+#ifndef ANDROID
+	#ifndef WIN32
+	  if ( !bundleclicked( argc, argv ) )
+	  {
+	
+		////////////////////////////////////////////////////////////////
+		// USe the GNU Getopts utility to parse cli arguments
+		// Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
+		///////////////////////////////////////////////////////////////
+		int optionChar;
+		while ( 1 )
+		{
+		  static struct option long_options[] =
+		  {
+			/* These options set a flag. */
+			{"help", no_argument, 0, '?'},
+			{"nologo", no_argument, 0, 'n'},
+			{"noplugins", no_argument, 0, 'P'},
+			{"nocustomization", no_argument, 0, 'C'},
+			/* These options don't set a flag.
+			 *  We distinguish them by their indices. */
+			{"snapshot", required_argument, 0, 's'},
+			{"width",    required_argument, 0, 'w'},
+			{"height",   required_argument, 0, 'h'},
+			{"lang",     required_argument, 0, 'l'},
+			{"project",  required_argument, 0, 'p'},
+			{"extent",   required_argument, 0, 'e'},
+			{"optionspath", required_argument, 0, 'o'},
+			{"configpath", required_argument, 0, 'c'},
+			{"android", required_argument, 0, 'a'},
+			{0, 0, 0, 0}
+		  };
+	
+		  /* getopt_long stores the option index here. */
+		  int option_index = 0;
+	
+		  optionChar = getopt_long( argc, argv, "swhlpeoc",
+									long_options, &option_index );
+                  QgsDebugMsg( QString( "Qgis main Debug" ) + optionChar );
+		  /* Detect the end of the options. */
+		  if ( optionChar == -1 )
+			break;
+	
+		  switch ( optionChar )
+		  {
+			case 0:
+			  /* If this option set a flag, do nothing else now. */
+			  if ( long_options[option_index].flag != 0 )
+				break;
+			  printf( "option %s", long_options[option_index].name );
+			  if ( optarg )
+				printf( " with arg %s", optarg );
+			  printf( "\n" );
+			  break;
+	
+			case 's':
+			  mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+			  break;
+	
+			case 'w':
+			  mySnapshotWidth = QString( optarg ).toInt();
+			  break;
+	
+			case 'h':
+			  mySnapshotHeight = QString( optarg ).toInt();
+			  break;
+	
+			case 'n':
+			  myHideSplash = true;
+			  break;
+	
+			case 'l':
+			  myTranslationCode = optarg;
+			  break;
+	
+			case 'p':
+			  myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+			  break;
+	
+			case 'P':
+			  myRestorePlugins = false;
+			  break;
+	
+			case 'C':
+			  myCustomization = false;
+			  break;
+	
+			case 'e':
+			  myInitialExtent = optarg;
+			  break;
+	
+			case 'o':
+			  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optarg );
+			  break;
+	
+			case 'c':
+			  configpath = optarg;
+			  break;
+	
+			case '?':
+			  usage( argv[0] );
+			  return 2;   // XXX need standard exit codes
+			  break;
+	
+			default:
+			  QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
+			  return 1;   // XXX need standard exit codes
+		  }
+		}
+	
+		// Add any remaining args to the file list - we will attempt to load them
+		// as layers in the map view further down....
+		QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
+		if ( optind < argc )
+		{
+		  while ( optind < argc )
+		  {
+	#ifdef QGISDEBUG
+			int idx = optind;
+			QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
+	#endif
+			myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
+		  }
+		}
+	  }
+	#else
+	  for ( int i = 1; i < argc; i++ )
+	  {
+		QString arg = argv[i];
+	
+		if ( arg == "--help" || arg == "-?" )
+		{
+		  usage( argv[0] );
+		  return 2;
+		}
+		else if ( arg == "-nologo" || arg == "-n" )
+		{
+		  myHideSplash = true;
+		}
+		else if ( arg == "--noplugins" || arg == "-P" )
+		{
+		  myRestorePlugins = false;
+		}
+		else if ( arg == "--nocustomization" || arg == "-C" )
+		{
+		  myCustomization = false;
+		}
+		else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
+		{
+		  mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+		}
+		else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
+		{
+		  mySnapshotWidth = QString( argv[++i] ).toInt();
+		}
+		else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
+		{
+		  mySnapshotHeight = QString( argv[++i] ).toInt();
+		}
+		else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
+		{
+		  myTranslationCode = argv[++i];
+		}
+		else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
+		{
+		  myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+		}
+		else if ( i + 1 < argQgsDebugMsgc && ( arg == "--extent" || arg == "-e" ) )
+		{
+		  myInitialExtent = argv[++i];
+		}
+		else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
+		{
+		  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
+		}
+		else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
+		{
+		  configpath = argv[++i];
+		  QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
+		}
+		else
+		{
+		  myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+		}
+	  }
+	#endif //WIN32
+#else //ANDROID
+	  QgsDebugMsg( QString( "Android: All params stripped"));// Param %1" ).arg( argv[0] ) );
+#endif //ANDROID
 
-    ////////////////////////////////////////////////////////////////
-    // USe the GNU Getopts utility to parse cli arguments
-    // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
-    ///////////////////////////////////////////////////////////////
-    int optionChar;
-    while ( 1 )
-    {
-      static struct option long_options[] =
-      {
-        /* These options set a flag. */
-        {"help", no_argument, 0, '?'},
-        {"nologo", no_argument, 0, 'n'},
-        {"noplugins", no_argument, 0, 'P'},
-        {"nocustomization", no_argument, 0, 'C'},
-        /* These options don't set a flag.
-         *  We distinguish them by their indices. */
-        {"snapshot", required_argument, 0, 's'},
-        {"width",    required_argument, 0, 'w'},
-        {"height",   required_argument, 0, 'h'},
-        {"lang",     required_argument, 0, 'l'},
-        {"project",  required_argument, 0, 'p'},
-        {"extent",   required_argument, 0, 'e'},
-        {"optionspath", required_argument, 0, 'o'},
-        {"configpath", required_argument, 0, 'c'},
-        {0, 0, 0, 0}
-      };
-
-      /* getopt_long stores the option index here. */
-      int option_index = 0;
-
-      optionChar = getopt_long( argc, argv, "swhlpeoc",
-                                long_options, &option_index );
-
-      /* Detect the end of the options. */
-      if ( optionChar == -1 )
-        break;
-
-      switch ( optionChar )
-      {
-        case 0:
-          /* If this option set a flag, do nothing else now. */
-          if ( long_options[option_index].flag != 0 )
-            break;
-          printf( "option %s", long_options[option_index].name );
-          if ( optarg )
-            printf( " with arg %s", optarg );
-          printf( "\n" );
-          break;
-
-        case 's':
-          mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
-          break;
-
-        case 'w':
-          mySnapshotWidth = QString( optarg ).toInt();
-          break;
-
-        case 'h':
-          mySnapshotHeight = QString( optarg ).toInt();
-          break;
-
-        case 'n':
-          myHideSplash = true;
-          break;
-
-        case 'l':
-          myTranslationCode = optarg;
-          break;
-
-        case 'p':
-          myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
-          break;
-
-        case 'P':
-          myRestorePlugins = false;
-          break;
-
-        case 'C':
-          myCustomization = false;
-          break;
-
-        case 'e':
-          myInitialExtent = optarg;
-          break;
-
-        case 'o':
-          QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, optarg );
-          break;
-
-        case 'c':
-          configpath = optarg;
-          break;
-
-        case '?':
-          usage( argv[0] );
-          return 2;   // XXX need standard exit codes
-          break;
-
-        default:
-          QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
-          return 1;   // XXX need standard exit codes
-      }
-    }
-
-    // Add any remaining args to the file list - we will attempt to load them
-    // as layers in the map view further down....
-    QgsDebugMsg( QString( "Files specified on command line: %1" ).arg( optind ) );
-    if ( optind < argc )
-    {
-      while ( optind < argc )
-      {
-#ifdef QGISDEBUG
-        int idx = optind;
-        QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
-#endif
-        myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
-      }
-    }
-  }
-#else
-  for ( int i = 1; i < argc; i++ )
-  {
-    QString arg = argv[i];
-
-    if ( arg == "--help" || arg == "-?" )
-    {
-      usage( argv[0] );
-      return 2;
-    }
-    else if ( arg == "-nologo" || arg == "-n" )
-    {
-      myHideSplash = true;
-    }
-    else if ( arg == "--noplugins" || arg == "-P" )
-    {
-      myRestorePlugins = false;
-    }
-    else if ( arg == "--nocustomization" || arg == "-C" )
-    {
-      myCustomization = false;
-    }
-    else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
-    {
-      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
-    }
-    else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
-    {
-      mySnapshotWidth = QString( argv[++i] ).toInt();
-    }
-    else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
-    {
-      mySnapshotHeight = QString( argv[++i] ).toInt();
-    }
-    else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
-    {
-      myTranslationCode = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
-    {
-      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
-    }
-    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
-    {
-      myInitialExtent = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
-    {
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
-    }
-    else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
-    {
-      configpath = argv[++i];
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
-    }
-    else
-    {
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
-    }
-  }
-#endif //WIN32
 
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviours...
