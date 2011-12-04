@@ -100,9 +100,6 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Remove item from the graphics scene*/
     void removeItem( QgsComposerItem* item );
 
-    /**Add items from XML representation to the graphics scene (for pasting items from clipboard)*/
-    void addItemsfromXML( const QDomElement& docElem, const QDomDocument& doc );
-
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
 

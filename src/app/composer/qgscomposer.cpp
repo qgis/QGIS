@@ -201,10 +201,10 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
 
   //create composer view
   mView = new QgsComposerView( mViewFrame );
-  connectSlots();
 
   //init undo/redo buttons
   mComposition  = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
+
   mActionUndo->setEnabled( false );
   mActionRedo->setEnabled( false );
   if ( mComposition->undoStack() )
@@ -212,6 +212,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), 
     connect( mComposition->undoStack(), SIGNAL( canUndoChanged( bool ) ), mActionUndo, SLOT( setEnabled( bool ) ) );
     connect( mComposition->undoStack(), SIGNAL( canRedoChanged( bool ) ), mActionRedo, SLOT( setEnabled( bool ) ) );
   }
+
+  connectSlots();
 
 
   mComposition->setParent( mView );
@@ -324,6 +326,15 @@ void QgsComposer::connectSlots()
   connect( mView, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
   connect( mView, SIGNAL( composerTableAdded( QgsComposerAttributeTable* ) ), this, SLOT( addComposerTable( QgsComposerAttributeTable* ) ) );
   connect( mView, SIGNAL( actionFinished() ), this, SLOT( setSelectionTool() ) );
+
+  connect( mComposition, SIGNAL( composerArrowAdded( QgsComposerArrow* ) ), this, SLOT( addComposerArrow( QgsComposerArrow* ) ) );
+  connect( mComposition, SIGNAL( composerLabelAdded( QgsComposerLabel* ) ), this, SLOT( addComposerLabel( QgsComposerLabel* ) ) );
+  connect( mComposition, SIGNAL( composerMapAdded( QgsComposerMap* ) ), this, SLOT( addComposerMap( QgsComposerMap* ) ) );
+  connect( mComposition, SIGNAL( composerScaleBarAdded( QgsComposerScaleBar* ) ), this, SLOT( addComposerScaleBar( QgsComposerScaleBar* ) ) );
+  connect( mComposition, SIGNAL( composerLegendAdded( QgsComposerLegend* ) ), this, SLOT( addComposerLegend( QgsComposerLegend* ) ) );
+  connect( mComposition, SIGNAL( composerPictureAdded( QgsComposerPicture* ) ), this, SLOT( addComposerPicture( QgsComposerPicture* ) ) );
+  connect( mComposition, SIGNAL( composerShapeAdded( QgsComposerShape* ) ), this, SLOT( addComposerShape( QgsComposerShape* ) ) );
+  connect( mComposition, SIGNAL( composerTableAdded( QgsComposerAttributeTable* ) ), this, SLOT( addComposerTable( QgsComposerAttributeTable* ) ) );
 }
 
 void QgsComposer::open( void )
@@ -1306,7 +1317,6 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mCompositionOptionsLayout = 0;
 
   mView = new QgsComposerView( mViewFrame );
-  connectSlots();
 
   //read composition settings
   mComposition = new QgsComposition( mQgis->mapCanvas()->mapRenderer() );
@@ -1316,6 +1326,8 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     QDomElement compositionElem = compositionNodeList.at( 0 ).toElement();
     mComposition->readXML( compositionElem, doc );
   }
+
+  connectSlots();
 
   QGridLayout *l = new QGridLayout( mViewFrame );
   l->setMargin( 0 );
@@ -1331,7 +1343,12 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   mCompositionOptionsLayout->addWidget( compositionWidget );
 
   //read and restore all the items
+  if ( mComposition )
+  {
+    mComposition->addItemsFromXML( composerElem, doc );
+  }
 
+#if 0
   //composer labels
   QDomNodeList composerLabelList = composerElem.elementsByTagName( "ComposerLabel" );
   for ( int i = 0; i < composerLabelList.size(); ++i )
@@ -1465,6 +1482,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     newTable->setSelected( true );
     showItemOptions( newTable );
   }
+#endif //0
 
   mComposition->sortZList();
   mView->setComposition( mComposition );

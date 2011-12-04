@@ -436,7 +436,11 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       QDomElement docElem = doc.documentElement();
       if ( docElem.tagName() == "ComposerItemClipboard" )
       {
-        addItemsfromXML( docElem, doc );
+        if ( composition() )
+        {
+          QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
+          composition()->addItemsFromXML( docElem, doc, &pt );
+        }
       }
     }
   }
@@ -675,100 +679,6 @@ void QgsComposerView::removeItem( QgsComposerItem* item )
       emit itemRemoved( item );
       pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
     }
-  }
-}
-
-void QgsComposerView::addItemsfromXML( const QDomElement& docElem, const QDomDocument& doc )
-{
-  QPointF scenePoint = mapToScene( mapFromGlobal( QCursor::pos() ) );
-
-  // label
-  QDomNodeList composerLabelList = docElem.elementsByTagName( "ComposerLabel" );
-  for ( int i = 0; i < composerLabelList.size(); ++i )
-  {
-    QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
-    QgsComposerLabel* newLabel = new QgsComposerLabel( composition() );
-    newLabel->readXML( currentComposerLabelElem, doc );
-    newLabel->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerLabel( newLabel );
-    emit actionFinished();
-  }
-  // map
-  QDomNodeList composerMapList = docElem.elementsByTagName( "ComposerMap" );
-  for ( int i = 0; i < composerMapList.size(); ++i )
-  {
-    QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
-    QgsComposerMap* newMap = new QgsComposerMap( composition() );
-    newMap->readXML( currentComposerMapElem, doc );
-    newMap->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerMap( newMap );
-    emit actionFinished();
-  }
-  // arrow
-  QDomNodeList composerArrowList = docElem.elementsByTagName( "ComposerArrow" );
-  for ( int i = 0; i < composerArrowList.size(); ++i )
-  {
-    QDomElement currentComposerArrowElem = composerArrowList.at( i ).toElement();
-    QgsComposerArrow* newArrow = new QgsComposerArrow( composition() );
-    newArrow->readXML( currentComposerArrowElem, doc );
-    newArrow->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerArrow( newArrow );
-    emit actionFinished();
-  }
-  // scalebar
-  QDomNodeList composerScaleBarList = docElem.elementsByTagName( "ComposerScaleBar" );
-  for ( int i = 0; i < composerScaleBarList.size(); ++i )
-  {
-    QDomElement currentComposerScaleBarElem = composerScaleBarList.at( i ).toElement();
-    QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( composition() );
-    newScaleBar->readXML( currentComposerScaleBarElem, doc );
-    newScaleBar->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerScaleBar( newScaleBar );
-    emit actionFinished();
-  }
-  // shape
-  QDomNodeList composerShapeList = docElem.elementsByTagName( "ComposerShape" );
-  for ( int i = 0; i < composerShapeList.size(); ++i )
-  {
-    QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
-    QgsComposerShape* newShape = new QgsComposerShape( composition() );
-    newShape->readXML( currentComposerShapeElem, doc );
-    newShape->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerShape( newShape );
-    emit actionFinished();
-  }
-  // picture
-  QDomNodeList composerPictureList = docElem.elementsByTagName( "ComposerPicture" );
-  for ( int i = 0; i < composerPictureList.size(); ++i )
-  {
-    QDomElement currentComposerPictureElem = composerPictureList.at( i ).toElement();
-    QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
-    newPicture->readXML( currentComposerPictureElem, doc );
-    newPicture->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerPicture( newPicture );
-    emit actionFinished();
-  }
-  // legend
-  QDomNodeList composerLegendList = docElem.elementsByTagName( "ComposerLegend" );
-  for ( int i = 0; i < composerLegendList.size(); ++i )
-  {
-    QDomElement currentComposerLegendElem = composerLegendList.at( i ).toElement();
-    QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
-    newLegend->readXML( currentComposerLegendElem, doc );
-    newLegend->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerLegend( newLegend );
-    emit actionFinished();
-  }
-  // table
-  QDomNodeList composerTableList = docElem.elementsByTagName( "ComposerAttributeTable" );
-  for ( int i = 0; i < composerTableList.size(); ++i )
-  {
-    QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
-    QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
-    newTable->readXML( currentComposerTableElem, doc );
-    newTable->setItemPosition( scenePoint.x(), scenePoint.y() );
-    addComposerTable( newTable );
-    emit actionFinished();
   }
 }
 

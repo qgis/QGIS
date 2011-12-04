@@ -28,8 +28,16 @@ class QgsComposerMap;
 class QgsPaperItem;
 class QGraphicsRectItem;
 class QgsMapRenderer;
-
 class QDomElement;
+class QgsComposerArrow;
+class QgsComposerItem;
+class QgsComposerLabel;
+class QgsComposerLegend;
+class QgsComposerMap;
+class QgsComposerPicture;
+class QgsComposerScaleBar;
+class QgsComposerShape;
+class QgsComposerAttributeTable;
 
 /** \ingroup MapComposer
  * Graphics scene for map printing. The class manages the paper item which always
@@ -132,6 +140,12 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
 
+    /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
+      @param elem items parent element, e.g. <Composer> or <ComposerItemClipboard>
+      @param doc xml document
+      @param pos item position. Optional, take position from xml if 0*/
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QPointF* pos = 0 );
+
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
     /**Removes item from z list. Usually called from destructor of QgsComposerItem*/
@@ -173,6 +187,22 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Deletes current command*/
     void cancelCommand();
 
+    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerArrow( QgsComposerArrow* arrow );
+    /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerLabel( QgsComposerLabel* label );
+    /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerMap( QgsComposerMap* map );
+    /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
+    /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerLegend( QgsComposerLegend* legend );
+    /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerPicture( QgsComposerPicture* picture );
+    /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerShape( QgsComposerShape* shape );
+    /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerTable( QgsComposerAttributeTable* table );
 
   private:
     /**Pointer to map renderer of QGIS main map*/
@@ -218,6 +248,25 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
   signals:
     void paperSizeChanged();
+
+    /**Is emitted when selected item changed. If 0, no item is selected*/
+    void selectedItemChanged( QgsComposerItem* selected );
+    /**Is emitted when new composer arrow has been added to the view*/
+    void composerArrowAdded( QgsComposerArrow* arrow );
+    /**Is emitted when new composer label has been added to the view*/
+    void composerLabelAdded( QgsComposerLabel* label );
+    /**Is emitted when new composer map has been added to the view*/
+    void composerMapAdded( QgsComposerMap* map );
+    /**Is emitted when new composer scale bar has been added*/
+    void composerScaleBarAdded( QgsComposerScaleBar* scalebar );
+    /**Is emitted when a new composer legend has been added*/
+    void composerLegendAdded( QgsComposerLegend* legend );
+    /**Is emitted when a new composer picture has been added*/
+    void composerPictureAdded( QgsComposerPicture* picture );
+    /**Is emitted when a new composer shape has been added*/
+    void composerShapeAdded( QgsComposerShape* shape );
+    /**Is emitted when a new composer table has been added*/
+    void composerTableAdded( QgsComposerAttributeTable* table );
 };
 
 #endif

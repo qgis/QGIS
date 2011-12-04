@@ -18,6 +18,15 @@
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
 #include "qgspaperitem.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposermap.h"
+#include "qgscomposeritemgroup.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
+#include "qgscomposerattributetable.h"
 #include "qgslogger.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -250,6 +259,113 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   }
 
   return true;
+}
+
+void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QPointF* pos )
+{
+  QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
+  for ( int i = 0; i < composerLabelList.size(); ++i )
+  {
+    QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
+    QgsComposerLabel* newLabel = new QgsComposerLabel( this );
+    newLabel->readXML( currentComposerLabelElem, doc );
+    if ( pos )
+    {
+      newLabel->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerLabel( newLabel );
+  }
+  // map
+  QDomNodeList composerMapList = elem.elementsByTagName( "ComposerMap" );
+  for ( int i = 0; i < composerMapList.size(); ++i )
+  {
+    QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
+    QgsComposerMap* newMap = new QgsComposerMap( this );
+    newMap->readXML( currentComposerMapElem, doc );
+    if ( pos )
+    {
+      newMap->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerMap( newMap );
+  }
+  // arrow
+  QDomNodeList composerArrowList = elem.elementsByTagName( "ComposerArrow" );
+  for ( int i = 0; i < composerArrowList.size(); ++i )
+  {
+    QDomElement currentComposerArrowElem = composerArrowList.at( i ).toElement();
+    QgsComposerArrow* newArrow = new QgsComposerArrow( this );
+    newArrow->readXML( currentComposerArrowElem, doc );
+    if ( pos )
+    {
+      newArrow->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerArrow( newArrow );
+  }
+  // scalebar
+  QDomNodeList composerScaleBarList = elem.elementsByTagName( "ComposerScaleBar" );
+  for ( int i = 0; i < composerScaleBarList.size(); ++i )
+  {
+    QDomElement currentComposerScaleBarElem = composerScaleBarList.at( i ).toElement();
+    QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( this );
+    newScaleBar->readXML( currentComposerScaleBarElem, doc );
+    if ( pos )
+    {
+      newScaleBar->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerScaleBar( newScaleBar );
+  }
+  // shape
+  QDomNodeList composerShapeList = elem.elementsByTagName( "ComposerShape" );
+  for ( int i = 0; i < composerShapeList.size(); ++i )
+  {
+    QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
+    QgsComposerShape* newShape = new QgsComposerShape( this );
+    newShape->readXML( currentComposerShapeElem, doc );
+    if ( pos )
+    {
+      newShape->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerShape( newShape );
+  }
+  // picture
+  QDomNodeList composerPictureList = elem.elementsByTagName( "ComposerPicture" );
+  for ( int i = 0; i < composerPictureList.size(); ++i )
+  {
+    QDomElement currentComposerPictureElem = composerPictureList.at( i ).toElement();
+    QgsComposerPicture* newPicture = new QgsComposerPicture( this );
+    newPicture->readXML( currentComposerPictureElem, doc );
+    if ( pos )
+    {
+      newPicture->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerPicture( newPicture );
+  }
+  // legend
+  QDomNodeList composerLegendList = elem.elementsByTagName( "ComposerLegend" );
+  for ( int i = 0; i < composerLegendList.size(); ++i )
+  {
+    QDomElement currentComposerLegendElem = composerLegendList.at( i ).toElement();
+    QgsComposerLegend* newLegend = new QgsComposerLegend( this );
+    newLegend->readXML( currentComposerLegendElem, doc );
+    if ( pos )
+    {
+      newLegend->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerLegend( newLegend );
+  }
+  // table
+  QDomNodeList composerTableList = elem.elementsByTagName( "ComposerAttributeTable" );
+  for ( int i = 0; i < composerTableList.size(); ++i )
+  {
+    QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
+    QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( this );
+    newTable->readXML( currentComposerTableElem, doc );
+    if ( pos )
+    {
+      newTable->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerTable( newTable );
+  }
 }
 
 void QgsComposition::addItemToZList( QgsComposerItem* item )
@@ -832,4 +948,100 @@ void QgsComposition::cancelCommand()
 {
   delete mActiveCommand;
   mActiveCommand = 0;
+}
+
+void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
+{
+  addItem( arrow );
+  emit composerArrowAdded( arrow );
+  clearSelection();
+  arrow->setSelected( true );
+  emit selectedItemChanged( arrow );
+  //pushAddRemoveCommand( arrow, tr( "Arrow added" ) );
+}
+
+void QgsComposition::addComposerLabel( QgsComposerLabel* label )
+{
+  addItem( label );
+  emit composerLabelAdded( label );
+  clearSelection();
+  label->setSelected( true );
+  emit selectedItemChanged( label );
+  //pushAddRemoveCommand( label, tr( "Label added" ) );
+}
+
+void QgsComposition::addComposerMap( QgsComposerMap* map )
+{
+  addItem( map );
+  //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
+  map->setPreviewMode( QgsComposerMap::Cache );
+  map->cache();
+  emit composerMapAdded( map );
+  clearSelection();
+  map->setSelected( true );
+  emit selectedItemChanged( map );
+  //pushAddRemoveCommand( map, tr( "Map added" ) );
+}
+
+void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
+{
+  //take first available map
+  QList<const QgsComposerMap*> mapItemList = composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    scaleBar->setComposerMap( mapItemList.at( 0 ) );
+  }
+  scaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
+  addItem( scaleBar );
+  emit composerScaleBarAdded( scaleBar );
+  clearSelection();
+  scaleBar->setSelected( true );
+  emit selectedItemChanged( scaleBar );
+  //pushAddRemoveCommand( scaleBar, tr( "Scale bar added" ) );
+}
+
+void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
+{
+  //take first available map
+  QList<const QgsComposerMap*> mapItemList = composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    legend->setComposerMap( mapItemList.at( 0 ) );
+  }
+  addItem( legend );
+  emit composerLegendAdded( legend );
+  clearSelection();
+  legend->setSelected( true );
+  emit selectedItemChanged( legend );
+  //pushAddRemoveCommand( legend, tr( "Legend added" ) );
+}
+
+void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
+{
+  addItem( picture );
+  emit composerPictureAdded( picture );
+  clearSelection();
+  picture->setSelected( true );
+  emit selectedItemChanged( picture );
+  //pushAddRemoveCommand( picture, tr( "Picture added" ) );
+}
+
+void QgsComposition::addComposerShape( QgsComposerShape* shape )
+{
+  addItem( shape );
+  emit composerShapeAdded( shape );
+  clearSelection();
+  shape->setSelected( true );
+  emit selectedItemChanged( shape );
+  //pushAddRemoveCommand( shape, tr( "Shape added" ) );
+}
+
+void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
+{
+  addItem( table );
+  emit composerTableAdded( table );
+  clearSelection();
+  table->setSelected( true );
+  emit selectedItemChanged( table );
+  //pushAddRemoveCommand( table, tr( "Table added" ) );
 }
