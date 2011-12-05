@@ -49,21 +49,6 @@ class QgsComposerView: QGraphicsView
     void setComposition( QgsComposition* c );
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
-    
-    /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerLabel( QgsComposerLabel* label);
-    /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerMap( QgsComposerMap* map );
-    /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
-    /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerLegend( QgsComposerLegend* legend );
-    /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerPicture( QgsComposerPicture* picture );
-    /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerShape( QgsComposerShape* shape );
-    /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
-    void addComposerTable( QgsComposerAttributeTable* table );
 
     /**Returns the composer main window*/
     QMainWindow* composerWindow();

@@ -1572,10 +1572,6 @@ void QgsComposer::addComposerLegend( QgsComposerLegend* legend )
   }
 
   QgsComposerLegendWidget* lWidget = new QgsComposerLegendWidget( legend );
-  if ( sender() ) //only update if created from GUI (not after XML read)
-  {
-    lWidget->updateLegend();
-  }
   mItemWidgetMap.insert( legend, lWidget );
 }
 

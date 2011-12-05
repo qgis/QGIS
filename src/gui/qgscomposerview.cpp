@@ -137,50 +137,68 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
     break;
 
     case AddLabel:
-    {
-      QgsComposerLabel* newLabelItem = new QgsComposerLabel( composition() );
-      newLabelItem->setText( tr( "Quantum GIS" ) );
-      newLabelItem->adjustSizeToText();
-      newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
-      addComposerLabel( newLabelItem );
-      emit actionFinished();
-    }
-    break;
+      if ( composition() )
+      {
+        QgsComposerLabel* newLabelItem = new QgsComposerLabel( composition() );
+        newLabelItem->setText( tr( "Quantum GIS" ) );
+        newLabelItem->adjustSizeToText();
+        newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
+        composition()->addComposerLabel( newLabelItem );
+        emit actionFinished();
+        pushAddRemoveCommand( newLabelItem, tr( "Label added" ) );
+      }
+      break;
 
     case AddScalebar:
-    {
-      QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( composition() );
-      newScaleBar->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 20, 20 ) );
-      addComposerScaleBar( newScaleBar );
-      emit actionFinished();
-    }
-    break;
+      if ( composition() )
+      {
+        QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( composition() );
+        newScaleBar->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 20, 20 ) );
+        composition()->addComposerScaleBar( newScaleBar );
+        QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
+        if ( mapItemList.size() > 0 )
+        {
+          newScaleBar->setComposerMap( mapItemList.at( 0 ) );
+        }
+        newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
+        emit actionFinished();
+        pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
+      }
+      break;
 
     case AddLegend:
     {
-      QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
-      newLegend->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
-      addComposerLegend( newLegend );
-      emit actionFinished();
+      if ( composition() )
+      {
+        QgsComposerLegend* newLegend = new QgsComposerLegend( composition() );
+        newLegend->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLegend->rect().width(), newLegend->rect().height() ) );
+        composition()->addComposerLegend( newLegend );
+        newLegend->updateLegend();
+        emit actionFinished();
+        pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
+      }
       break;
     }
     case AddPicture:
-    {
-      QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
-      newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
-      addComposerPicture( newPicture );
-      emit actionFinished();
+      if ( composition() )
+      {
+        QgsComposerPicture* newPicture = new QgsComposerPicture( composition() );
+        newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
+        composition()->addComposerPicture( newPicture );
+        emit actionFinished();
+        pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
+      }
       break;
-    }
     case AddTable:
-    {
-      QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
-      newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
-      addComposerTable( newTable );
-      emit actionFinished();
+      if ( composition() )
+      {
+        QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( composition() );
+        newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
+        composition()->addComposerTable( newTable );
+        emit actionFinished();
+        pushAddRemoveCommand( newTable, tr( "Table added" ) );
+      }
       break;
-    }
-
     default:
       break;
   }
@@ -225,20 +243,21 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       break;
     }
     case AddArrow:
-    {
-      QPointF scenePoint = mapToScene( e->pos() );
-      QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
-      QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandStartPos, QPointF( snappedScenePoint.x(), snappedScenePoint.y() ), composition() );
-      addComposerArrow( composerArrow );
-      scene()->removeItem( mRubberBandLineItem );
-      delete mRubberBandLineItem;
-      mRubberBandLineItem = 0;
-      emit actionFinished();
+      if ( composition() )
+      {
+        QPointF scenePoint = mapToScene( e->pos() );
+        QPointF snappedScenePoint = composition()->snapPointToGrid( scenePoint );
+        QgsComposerArrow* composerArrow = new QgsComposerArrow( mRubberBandStartPos, QPointF( snappedScenePoint.x(), snappedScenePoint.y() ), composition() );
+        composition()->addComposerArrow( composerArrow );
+        scene()->removeItem( mRubberBandLineItem );
+        delete mRubberBandLineItem;
+        mRubberBandLineItem = 0;
+        emit actionFinished();
+        pushAddRemoveCommand( composerArrow, tr( "Arrow added" ) );
+      }
       break;
-    }
 
     case AddShape:
-    {
       if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
       {
         scene()->removeItem( mRubberBandItem );
@@ -246,18 +265,19 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         mRubberBandItem = 0;
         return;
       }
-
-      QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
-      addComposerShape( composerShape );
-      scene()->removeItem( mRubberBandItem );
-      delete mRubberBandItem;
-      mRubberBandItem = 0;
-      emit actionFinished();
+      if ( composition() )
+      {
+        QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
+        composition()->addComposerShape( composerShape );
+        scene()->removeItem( mRubberBandItem );
+        delete mRubberBandItem;
+        mRubberBandItem = 0;
+        emit actionFinished();
+        pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
+      }
       break;
-    }
 
     case AddMap:
-    {
       if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
       {
         if ( mRubberBandItem )
@@ -268,15 +288,17 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         }
         return;
       }
-
-      QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
-      addComposerMap( composerMap );
-      scene()->removeItem( mRubberBandItem );
-      delete mRubberBandItem;
-      mRubberBandItem = 0;
-      emit actionFinished();
-    }
-    break;
+      if ( composition() )
+      {
+        QgsComposerMap* composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        composition()->addComposerMap( composerMap );
+        scene()->removeItem( mRubberBandItem );
+        delete mRubberBandItem;
+        mRubberBandItem = 0;
+        emit actionFinished();
+        pushAddRemoveCommand( composerMap, tr( "Map added" ) );
+      }
+      break;
 
     default:
       break;
@@ -551,102 +573,6 @@ QgsComposition* QgsComposerView::composition()
     }
   }
   return 0;
-}
-
-void QgsComposerView::addComposerArrow( QgsComposerArrow* arrow )
-{
-  composition()->addItem( arrow );
-  emit composerArrowAdded( arrow );
-  scene()->clearSelection();
-  arrow->setSelected( true );
-  emit selectedItemChanged( arrow );
-  pushAddRemoveCommand( arrow, tr( "Arrow added" ) );
-}
-
-void QgsComposerView::addComposerLabel( QgsComposerLabel* label )
-{
-  composition()->addItem( label );
-  emit composerLabelAdded( label );
-  scene()->clearSelection();
-  label->setSelected( true );
-  emit selectedItemChanged( label );
-  pushAddRemoveCommand( label, tr( "Label added" ) );
-}
-
-void QgsComposerView::addComposerMap( QgsComposerMap* map )
-{
-  scene()->addItem( map );
-  //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
-  map->setPreviewMode( QgsComposerMap::Cache );
-  map->cache();
-  emit composerMapAdded( map );
-  scene()->clearSelection();
-  map->setSelected( true );
-  emit selectedItemChanged( map );
-  pushAddRemoveCommand( map, tr( "Map added" ) );
-}
-
-void QgsComposerView::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
-{
-  //take first available map
-  QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-  if ( mapItemList.size() > 0 )
-  {
-    scaleBar->setComposerMap( mapItemList.at( 0 ) );
-  }
-  scaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
-  scene()->addItem( scaleBar );
-  emit composerScaleBarAdded( scaleBar );
-  scene()->clearSelection();
-  scaleBar->setSelected( true );
-  emit selectedItemChanged( scaleBar );
-  pushAddRemoveCommand( scaleBar, tr( "Scale bar added" ) );
-}
-
-void QgsComposerView::addComposerLegend( QgsComposerLegend* legend )
-{
-  //take first available map
-  QList<const QgsComposerMap*> mapItemList = composition()->composerMapItems();
-  if ( mapItemList.size() > 0 )
-  {
-    legend->setComposerMap( mapItemList.at( 0 ) );
-  }
-  scene()->addItem( legend );
-  emit composerLegendAdded( legend );
-  scene()->clearSelection();
-  legend->setSelected( true );
-  emit selectedItemChanged( legend );
-  pushAddRemoveCommand( legend, tr( "Legend added" ) );
-}
-
-void QgsComposerView::addComposerPicture( QgsComposerPicture* picture )
-{
-  scene()->addItem( picture );
-  emit composerPictureAdded( picture );
-  scene()->clearSelection();
-  picture->setSelected( true );
-  emit selectedItemChanged( picture );
-  pushAddRemoveCommand( picture, tr( "Picture added" ) );
-}
-
-void QgsComposerView::addComposerShape( QgsComposerShape* shape )
-{
-  scene()->addItem( shape );
-  emit composerShapeAdded( shape );
-  scene()->clearSelection();
-  shape->setSelected( true );
-  emit selectedItemChanged( shape );
-  pushAddRemoveCommand( shape, tr( "Shape added" ) );
-}
-
-void QgsComposerView::addComposerTable( QgsComposerAttributeTable* table )
-{
-  scene()->addItem( table );
-  emit composerTableAdded( table );
-  scene()->clearSelection();
-  table->setSelected( true );
-  emit selectedItemChanged( table );
-  pushAddRemoveCommand( table, tr( "Table added" ) );
 }
 
 void QgsComposerView::removeItem( QgsComposerItem* item )
