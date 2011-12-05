@@ -157,6 +157,13 @@ class CORE_EXPORT QgsCoordinateTransform: public QObject
     void transformInPlace( std::vector<double>& x, std::vector<double>& y, std::vector<double>& z,
                            TransformDirection direction = ForwardTransform ) const;
 
+#ifdef ANDROID
+    void transformInPlace( float& x, float& y, float& z, TransformDirection direction = ForwardTransform ) const;
+
+    void transformInPlace( std::vector<float>& x, std::vector<float>& y, std::vector<float>& z,
+                           TransformDirection direction = ForwardTransform ) const;
+#endif
+
     /*! Transform a QgsRectangle to the dest Coordinate system
     * If the direction is ForwardTransform then coordinates are transformed from layer CS --> map canvas CS,
     * otherwise points are transformed from map canvas CS to layerCS.

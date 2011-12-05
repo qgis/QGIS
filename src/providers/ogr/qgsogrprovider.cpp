@@ -522,8 +522,18 @@ void QgsOgrProvider::loadFields()
 
       mAttributeFields.insert(
         i, QgsField(
-          mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ), varType,
-          mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+          //TODO: fix this hack
+          #ifdef ANDROID
+            OGR_Fld_GetNameRef( fldDef ),
+          #else
+            mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ),
+          #endif
+          varType,
+          #ifdef ANDROID
+            OGR_GetFieldTypeName( ogrType ),
+          #else
+            mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+          #endif
           OGR_Fld_GetWidth( fldDef ),
           OGR_Fld_GetPrecision( fldDef ) ) );
     }
