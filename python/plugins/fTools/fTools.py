@@ -379,6 +379,7 @@ class fToolsPlugin:
 
   def dosplitVect(self):
     d = doVectorSplit.Dialog(self.iface)
+    d.show()
     d.exec_()
 
   def docompGeo(self):
