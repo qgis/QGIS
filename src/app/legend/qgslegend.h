@@ -515,6 +515,7 @@ class QgsLegend : public QTreeWidget
     void itemMoved( QModelIndex oldIndex, QModelIndex newIndex );
 
     void zOrderChanged();
+    void invisibleLayerRemoved();
 
     void updateDrawingOrderChecked( bool );
     void updateDrawingOrderUnchecked( bool );
