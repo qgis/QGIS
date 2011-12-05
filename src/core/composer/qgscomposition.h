@@ -204,6 +204,10 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
 
+  public slots:
+    /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
+    void sendItemAddedSignal( QgsComposerItem* item );
+
   private:
     /**Pointer to map renderer of QGIS main map*/
     QgsMapRenderer* mMapRenderer;
@@ -267,6 +271,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     void composerShapeAdded( QgsComposerShape* shape );
     /**Is emitted when a new composer table has been added*/
     void composerTableAdded( QgsComposerAttributeTable* table );
+    /**Is emitted when a composer item has been removed from the scene*/
+    void itemRemoved( QgsComposerItem* );
 };
 
 #endif

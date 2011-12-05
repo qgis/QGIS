@@ -128,31 +128,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
-
-  public slots:
-    /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
-    void sendItemAddedSignal( QgsComposerItem* item );
-
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/
     void selectedItemChanged( QgsComposerItem* selected );
-    /**Is emitted when new composer arrow has been added to the view*/
-    void composerArrowAdded( QgsComposerArrow* arrow );
-    /**Is emitted when new composer label has been added to the view*/
-    void composerLabelAdded( QgsComposerLabel* label );
-    /**Is emitted when new composer map has been added to the view*/
-    void composerMapAdded( QgsComposerMap* map );
-    /**Is emitted when new composer scale bar has been added*/
-    void composerScaleBarAdded( QgsComposerScaleBar* scalebar );
-    /**Is emitted when a new composer legend has been added*/
-    void composerLegendAdded( QgsComposerLegend* legend );
-    /**Is emitted when a new composer picture has been added*/
-    void composerPictureAdded( QgsComposerPicture* picture );
-    /**Is emitted when a new composer shape has been added*/
-    void composerShapeAdded( QgsComposerShape* shape );
-    /**Is emitted when a new composer table has been added*/
-    void composerTableAdded( QgsComposerAttributeTable* table );
-    /**Is emitted when a composer item has been removed from the scene*/
     void itemRemoved( QgsComposerItem* );
     /**Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
      QgsComposer may set the selection tool again*/

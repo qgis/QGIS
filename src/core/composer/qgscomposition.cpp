@@ -1045,3 +1045,65 @@ void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
   emit selectedItemChanged( table );
   //pushAddRemoveCommand( table, tr( "Table added" ) );
 }
+
+void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
+{
+  //cast and send proper signal
+  item->setSelected( true );
+  QgsComposerArrow* arrow = dynamic_cast<QgsComposerArrow*>( item );
+  if ( arrow )
+  {
+    emit composerArrowAdded( arrow );
+    emit selectedItemChanged( arrow );
+    return;
+  }
+  QgsComposerLabel* label = dynamic_cast<QgsComposerLabel*>( item );
+  if ( label )
+  {
+    emit composerLabelAdded( label );
+    emit selectedItemChanged( label );
+    return;
+  }
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
+  if ( map )
+  {
+    emit composerMapAdded( map );
+    emit selectedItemChanged( map );
+    return;
+  }
+  QgsComposerScaleBar* scalebar = dynamic_cast<QgsComposerScaleBar*>( item );
+  if ( scalebar )
+  {
+    emit composerScaleBarAdded( scalebar );
+    emit selectedItemChanged( scalebar );
+    return;
+  }
+  QgsComposerLegend* legend = dynamic_cast<QgsComposerLegend*>( item );
+  if ( legend )
+  {
+    emit composerLegendAdded( legend );
+    emit selectedItemChanged( legend );
+    return;
+  }
+  QgsComposerPicture* picture = dynamic_cast<QgsComposerPicture*>( item );
+  if ( picture )
+  {
+    emit composerPictureAdded( picture );
+    emit selectedItemChanged( picture );
+    return;
+  }
+  QgsComposerShape* shape = dynamic_cast<QgsComposerShape*>( item );
+  if ( shape )
+  {
+    emit composerShapeAdded( shape );
+    emit selectedItemChanged( shape );
+    return;
+  }
+  QgsComposerAttributeTable* table = dynamic_cast<QgsComposerAttributeTable*>( item );
+  if ( table )
+  {
+    emit composerTableAdded( table );
+    emit selectedItemChanged( table );
+    return;
+  }
+}

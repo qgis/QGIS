@@ -655,68 +655,6 @@ void QgsComposerView::ungroupItems()
   }
 }
 
-void QgsComposerView::sendItemAddedSignal( QgsComposerItem* item )
-{
-  //cast and send proper signal
-  item->setSelected( true );
-  QgsComposerArrow* arrow = dynamic_cast<QgsComposerArrow*>( item );
-  if ( arrow )
-  {
-    emit composerArrowAdded( arrow );
-    emit selectedItemChanged( arrow );
-    return;
-  }
-  QgsComposerLabel* label = dynamic_cast<QgsComposerLabel*>( item );
-  if ( label )
-  {
-    emit composerLabelAdded( label );
-    emit selectedItemChanged( label );
-    return;
-  }
-  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
-  if ( map )
-  {
-    emit composerMapAdded( map );
-    emit selectedItemChanged( map );
-    return;
-  }
-  QgsComposerScaleBar* scalebar = dynamic_cast<QgsComposerScaleBar*>( item );
-  if ( scalebar )
-  {
-    emit composerScaleBarAdded( scalebar );
-    emit selectedItemChanged( scalebar );
-    return;
-  }
-  QgsComposerLegend* legend = dynamic_cast<QgsComposerLegend*>( item );
-  if ( legend )
-  {
-    emit composerLegendAdded( legend );
-    emit selectedItemChanged( legend );
-    return;
-  }
-  QgsComposerPicture* picture = dynamic_cast<QgsComposerPicture*>( item );
-  if ( picture )
-  {
-    emit composerPictureAdded( picture );
-    emit selectedItemChanged( picture );
-    return;
-  }
-  QgsComposerShape* shape = dynamic_cast<QgsComposerShape*>( item );
-  if ( shape )
-  {
-    emit composerShapeAdded( shape );
-    emit selectedItemChanged( shape );
-    return;
-  }
-  QgsComposerAttributeTable* table = dynamic_cast<QgsComposerAttributeTable*>( item );
-  if ( table )
-  {
-    emit composerTableAdded( table );
-    emit selectedItemChanged( table );
-    return;
-  }
-}
-
 QMainWindow* QgsComposerView::composerWindow()
 {
   QMainWindow* composerObject = 0;
@@ -745,8 +683,12 @@ void QgsComposerView::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c
   {
     return;
   }
-  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
-  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+
+  if ( composition() )
+  {
+    QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), composition(), SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+    QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), composition(), SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+  }
 }
 
 void QgsComposerView::pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state )
