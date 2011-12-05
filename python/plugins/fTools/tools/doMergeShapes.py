@@ -121,7 +121,6 @@ class Dialog( QDialog, Ui_Dialog ):
         QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
         return
 
-    QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
     self.btnOk.setEnabled( False )
 
     self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.outFileName, self.encoding )
@@ -168,7 +167,6 @@ class Dialog( QDialog, Ui_Dialog ):
     self.progressFeatures.setRange( 0, 100 )
     self.progressFeatures.setValue( 0 )
     self.progressFiles.setValue( 0 )
-    QApplication.restoreOverrideCursor()
     QObject.connect( self.buttonBox, SIGNAL( "rejected()" ), self.reject )
     self.btnClose.setText( self.tr( "Close" ) )
     self.btnOk.setEnabled( True )

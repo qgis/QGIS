@@ -80,7 +80,6 @@ class Dialog( QDialog, Ui_Dialog ):
   def accept( self ):
     vLayer = ftools_utils.getVectorLayerByName( self.cmbInputLayer.currentText() )
 
-    QApplication.setOverrideCursor( Qt.WaitCursor )
     self.okButton.setEnabled( False )
 
     if self.writeShapefileCheck.isChecked():
@@ -139,7 +138,6 @@ class Dialog( QDialog, Ui_Dialog ):
 
   def restoreGui( self ):
     self.progressBar.setValue( 0 )
-    QApplication.restoreOverrideCursor()
     QObject.connect( self.buttonBox, SIGNAL( "rejected()" ), self.reject )
     self.closeButton.setText( self.tr( "Close" ) )
     self.okButton.setEnabled( True )
