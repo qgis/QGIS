@@ -251,9 +251,7 @@ extern "C"
 
 #ifndef WIN32
 #include <dlfcn.h>
-#endif
-
-#ifdef WIN32
+#else
 #include <windows.h>
 #endif
 
@@ -3373,6 +3371,14 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     QString encoding = dialog->encoding();
     QString vectorFilename = dialog->filename();
     QString format = dialog->format();
+    QStringList datasourceOptions = dialog->datasourceOptions();
+
+    if ( format == "SpatiaLite" )
+    {
+      if ( !datasourceOptions.contains( "SPATIALITE=YES" ) )
+        datasourceOptions.append( "SPATIALITE=YES" );
+      format = "SQLite";
+    }
 
     if ( dialog->crs() < 0 )
     {
@@ -3400,7 +3406,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
               vlayer, vectorFilename, encoding, &destCRS, format,
               saveOnlySelection,
               &errorMessage,
-              dialog->datasourceOptions(), dialog->layerOptions(),
+              datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation() );
 
     QApplication::restoreOverrideCursor();
