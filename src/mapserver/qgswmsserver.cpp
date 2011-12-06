@@ -581,7 +581,12 @@ QImage* QgsWMSServer::getMap()
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
+  QgsDebugMsg("clearing filters");
   QgsMapLayerRegistry::instance()->mapLayers().clear();
+
+#ifdef QGISDEBUG
+  theImage->save( QDir::tempPath() + QDir::separator() + "lastrender.png" );
+#endif
   return theImage;
 }
 

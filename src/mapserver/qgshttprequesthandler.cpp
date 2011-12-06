@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <fcgi_stdio.h>
+#include "qgslogger.h"
 
 QgsHttpRequestHandler::QgsHttpRequestHandler(): QgsRequestHandler()
 {
@@ -42,6 +43,7 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
 
 void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& format ) const
 {
+  QgsDebugMsg("Checking byte array is ok to send...");
   if ( !ba )
   {
     return;
@@ -52,12 +54,16 @@ void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& for
     return;
   }
 
+  QgsDebugMsg("Byte array looks good, returning response...");
+  QgsDebugMsg(QString("Content size: %1").arg(ba->size()));
+  QgsDebugMsg(QString("Content format: %1").arg(format));
   printf( "Content-Type: " );
   printf( format.toLocal8Bit() );
   printf( "\n" );
   printf( "Content-Length: %d\n", ba->size() );
   printf( "\n" );
-  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  int result=fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  QgsDebugMsg(QString("Sent %1 bytes").arg(result));
 }
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
@@ -84,10 +90,12 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* img ) const
 {
   Q_UNUSED( service );
+  QgsDebugMsg("Sending getmap response...");
   if ( img )
   {
     if ( mFormat != "PNG" && mFormat != "JPG" )
     {
+      QgsDebugMsg("service exception - incorrect image format requested...");
       sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
       return;
     }

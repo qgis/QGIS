@@ -346,7 +346,7 @@ int main( int argc, char * argv[] )
       }
       catch ( QgsMapServiceException& ex )
       {
-        QgsDebugMsg( "Catched exception during GetMap request" );
+        QgsDebugMsg( "Caught exception during GetMap request" );
         theRequestHandler->sendServiceException( ex );
         delete theRequestHandler;
         delete theServer;
@@ -357,6 +357,7 @@ int main( int argc, char * argv[] )
       {
         QgsDebugMsg( "Sending GetMap response" );
         theRequestHandler->sendGetMapResponse( serviceString, result );
+        QgsDebugMsg( "Response sent" );
       }
       else
       {
@@ -477,6 +478,7 @@ int main( int argc, char * argv[] )
   }
 
   delete theMapRenderer;
+  QgsDebugMsg( "************* all done ***************" );
   return 0;
 }
 
