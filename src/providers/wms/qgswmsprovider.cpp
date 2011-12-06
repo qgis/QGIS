@@ -848,8 +848,15 @@ void QgsWmsProvider::tileReplyFinished()
 
       // myLocalImage.save( QString( "%1/%2-tile-%3.png" ).arg( QDir::tempPath() ).arg( mTileReqNo ).arg( tileNo ) );
 
-      QPainter p( cachedImage );
-      p.drawImage( dst, myLocalImage );
+      if ( !myLocalImage.isNull() )
+      {
+        QPainter p( cachedImage );
+        p.drawImage( dst, myLocalImage );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( reply->url().toString() ), tr( "WMS" ) );
+      }
 
 #if 0
       p.drawRect( dst ); // show tile bounds
@@ -919,8 +926,15 @@ void QgsWmsProvider::cacheReplyFinished()
     if ( contentType.startsWith( "image/" ) )
     {
       QImage myLocalImage = QImage::fromData( cacheReply->readAll() );
-      QPainter p( cachedImage );
-      p.drawImage( 0, 0, myLocalImage );
+      if ( !myLocalImage.isNull() )
+      {
+        QPainter p( cachedImage );
+        p.drawImage( 0, 0, myLocalImage );
+      }
+      else
+      {
+        QgsMessageLog::logMessage( tr( "Returned image is flawed [%1]" ).arg( cacheReply->url().toString() ), tr( "WMS" ) );
+      }
     }
     else
     {
