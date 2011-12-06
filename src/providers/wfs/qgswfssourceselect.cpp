@@ -262,11 +262,7 @@ void QgsWFSSourceSelect::addLayer()
     return;
   }
 
-  QString typeName = tItem->text( 1 );
-  QString crs = labelCoordRefSys->text();
-  QString filter = mFilterLineEdit->text();
   QgsRectangle bBox;
-
 #if 0
   // TODO: resolve [MD]
   //get current extent
@@ -277,13 +273,19 @@ void QgsWFSSourceSelect::addLayer()
   }
 #endif
 
-  //add a wfs layer to the map
-  QgsWFSConnection conn( cmbConnections->currentText() );
-  QString uri = conn.uriGetFeature( typeName, crs, filter, bBox );
+  QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
+  for ( ; sIt != selectedItems.constEnd(); ++sIt )
+  {
+    QString typeName = ( *sIt )->text( 1 );
+    QString crs = labelCoordRefSys->text();
+    QString filter = mFilterLineEdit->text();
 
-  emit addWfsLayer( uri, typeName );
-
-  accept();
+    //add a wfs layer to the map
+    QgsWFSConnection conn( cmbConnections->currentText() );
+    QString uri = conn.uriGetFeature( typeName, crs, filter, bBox );
+    emit addWfsLayer( uri, typeName );
+  }
 }
 
 void QgsWFSSourceSelect::changeCRS()
