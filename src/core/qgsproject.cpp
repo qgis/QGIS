@@ -1336,7 +1336,7 @@ void QgsProject::dumpProperties() const
 // return the absolute path from a filename read from project file
 QString QgsProject::readPath( QString src ) const
 {
-  if ( readBoolEntry( "Paths", "/Absolute", true ) )
+  if ( readBoolEntry( "Paths", "/Absolute", false ) )
   {
     return src;
   }
@@ -1383,6 +1383,11 @@ QString QgsProject::readPath( QString src ) const
   QString srcPath = src;
   QString projPath = fileName();
 
+  if ( projPath.isEmpty() )
+  {
+    return src;
+  }
+
 #if defined(Q_OS_WIN)
   srcPath.replace( "\\", "/" );
   projPath.replace( "\\", "/" );
@@ -1428,13 +1433,18 @@ QString QgsProject::readPath( QString src ) const
 // return the absolute or relative path to write it to the project file
 QString QgsProject::writePath( QString src ) const
 {
-  if ( readBoolEntry( "Paths", "/Absolute", true ) || src.isEmpty() )
+  if ( readBoolEntry( "Paths", "/Absolute", false ) || src.isEmpty() )
   {
     return src;
   }
 
   QString srcPath = src;
   QString projPath = fileName();
+
+  if ( projPath.isEmpty() )
+  {
+    return src;
+  }
 
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;

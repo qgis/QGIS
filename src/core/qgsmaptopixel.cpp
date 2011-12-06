@@ -143,3 +143,19 @@ void QgsMapToPixel::transformInPlace( std::vector<double>& x,
   for ( unsigned int i = 0; i < x.size(); ++i )
     transformInPlace( x[i], y[i] );
 }
+
+#ifdef ANDROID
+void QgsMapToPixel::transformInPlace( float& x, float& y ) const
+{
+  x = ( x - xMin ) / mMapUnitsPerPixel;
+  y = yMax - ( y - yMin ) / mMapUnitsPerPixel;
+}
+
+void QgsMapToPixel::transformInPlace( std::vector<float>& x,
+                                      std::vector<float>& y ) const
+{
+  assert( x.size() == y.size() );
+  for ( unsigned int i = 0; i < x.size(); ++i )
+    transformInPlace( x[i], y[i] );
+}
+#endif

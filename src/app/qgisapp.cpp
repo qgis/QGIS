@@ -6368,26 +6368,40 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
   {
     QApplication::setOverrideCursor( Qt::ArrowCursor );
-    QMessageBox::warning( NULL, tr( "Project file is older" ),
-                          tr( "<p>This project file was saved by an older version of QGIS."
-                              " When saving this project file, QGIS will update it to the latest version, "
-                              "possibly rendering it useless for older versions of QGIS."
-                              "<p>Even though QGIS developers try to maintain backwards "
-                              "compatibility, some of the information from the old project "
-                              "file might be lost."
-                              " To improve the quality of QGIS, we appreciate "
-                              "if you file a bug report at %3."
-                              " Be sure to include the old project file, and state the version of "
-                              "QGIS you used to discover the error."
-                              "<p>To remove this warning when opening an older project file, "
-                              "uncheck the box '%5' in the %4 menu."
-                              "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
-                          .arg( oldVersion )
-                          .arg( QGis::QGIS_VERSION )
-                          .arg( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " )
-                          .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
-                          .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) )
-                        );
+    QString text =  tr( "<p>This project file was saved by an older version of QGIS."
+                        " When saving this project file, QGIS will update it to the latest version, "
+                        "possibly rendering it useless for older versions of QGIS."
+                        "<p>Even though QGIS developers try to maintain backwards "
+                        "compatibility, some of the information from the old project "
+                        "file might be lost."
+                        " To improve the quality of QGIS, we appreciate "
+                        "if you file a bug report at %3."
+                        " Be sure to include the old project file, and state the version of "
+                        "QGIS you used to discover the error."
+                        "<p>To remove this warning when opening an older project file, "
+                        "uncheck the box '%5' in the %4 menu."
+                        "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
+                    .arg( oldVersion )
+                    .arg( QGis::QGIS_VERSION )
+                    .arg( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " )
+                    .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
+                    .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
+    QString title =  tr( "Project file is older" );
+
+#ifdef ANDROID
+    //this is needed to deal with http://hub.qgis.org/issues/4573
+    QMessageBox box(QMessageBox::Warning,title, tr("This project file was saved by an older version of QGIS"), QMessageBox::Ok, NULL);
+    box.setDetailedText(
+                text.remove(0, 3)
+                .replace(QString("<p>"),QString("\n\n"))
+                .replace(QString("<br>"),QString("\n"))
+                .replace(QString("<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> "),QString("\nhttp://hub.qgis.org/projects/quantum-gis"))
+                .replace(QRegExp("</?tt>"),QString(""))
+                );
+    box.exec();
+#else
+    QMessageBox::warning( NULL, title, text );
+#endif
     QApplication::restoreOverrideCursor();
   }
   return;
