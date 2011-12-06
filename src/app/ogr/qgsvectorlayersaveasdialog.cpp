@@ -36,6 +36,10 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
   for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
   {
     mFormatComboBox->addItem( it.key(), it.value() );
+    if ( it.key() == "SQLite" )
+    {
+      mFormatComboBox->addItem( "SpatiaLite", tr( "SpatiaLite" ) );
+    }
   }
 
   QString format = settings.value( "/UI/lastVectorFormat", "ESRI Shapefile" ).toString();

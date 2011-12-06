@@ -251,9 +251,7 @@ extern "C"
 
 #ifndef WIN32
 #include <dlfcn.h>
-#endif
-
-#ifdef WIN32
+#else
 #include <windows.h>
 #endif
 
@@ -1730,7 +1728,7 @@ void QgisApp::initLegend()
 
   QWidget *w = new QWidget( this );
   QLayout *l = new QVBoxLayout;
-  l->setMargin(0);
+  l->setMargin( 0 );
   l->addWidget( mMapLegend );
   l->addWidget( legendCb );
   w->setLayout( l );
@@ -1747,7 +1745,7 @@ void QgisApp::initLegend()
 
   w = new QWidget( this );
   l = new QVBoxLayout;
-  l->setMargin(0);
+  l->setMargin( 0 );
   l->addWidget( mMapLayerOrder );
   l->addWidget( orderCb );
   w->setLayout( l );
@@ -3331,6 +3329,14 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     QString encoding = dialog->encoding();
     QString vectorFilename = dialog->filename();
     QString format = dialog->format();
+    QStringList datasourceOptions = dialog->datasourceOptions();
+
+    if ( format == "SpatiaLite" )
+    {
+      if ( !datasourceOptions.contains( "SPATIALITE=YES" ) )
+        datasourceOptions.append( "SPATIALITE=YES" );
+      format = "SQLite";
+    }
 
     if ( dialog->crs() < 0 )
     {
@@ -3358,7 +3364,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
               vlayer, vectorFilename, encoding, &destCRS, format,
               saveOnlySelection,
               &errorMessage,
-              dialog->datasourceOptions(), dialog->layerOptions(),
+              datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation() );
 
     QApplication::restoreOverrideCursor();
@@ -6390,14 +6396,14 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
 
 #ifdef ANDROID
     //this is needed to deal with http://hub.qgis.org/issues/4573
-    QMessageBox box(QMessageBox::Warning,title, tr("This project file was saved by an older version of QGIS"), QMessageBox::Ok, NULL);
+    QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, NULL );
     box.setDetailedText(
-                text.remove(0, 3)
-                .replace(QString("<p>"),QString("\n\n"))
-                .replace(QString("<br>"),QString("\n"))
-                .replace(QString("<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> "),QString("\nhttp://hub.qgis.org/projects/quantum-gis"))
-                .replace(QRegExp("</?tt>"),QString(""))
-                );
+      text.remove( 0, 3 )
+      .replace( QString( "<p>" ), QString( "\n\n" ) )
+      .replace( QString( "<br>" ), QString( "\n" ) )
+      .replace( QString( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttp://hub.qgis.org/projects/quantum-gis" ) )
+      .replace( QRegExp( "</?tt>" ), QString( "" ) )
+    );
     box.exec();
 #else
     QMessageBox::warning( NULL, title, text );
