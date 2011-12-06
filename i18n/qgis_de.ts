@@ -1223,7 +1223,7 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type</source>
-        <translation>Symbolayertyp</translation>
+        <translation>Symbollayertyp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
