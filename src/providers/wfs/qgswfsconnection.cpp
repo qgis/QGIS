@@ -36,12 +36,17 @@ QgsWFSConnection::QgsWFSConnection( QString connName, QObject *parent ) :
   }
 }
 
-QString QgsWFSConnection::uriGetCapabilities()
+QString QgsWFSConnection::uriGetCapabilities() const
 {
   return mUri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
 }
 
-QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox )
+QString QgsWFSConnection::uriDescribeFeatureType( const QString& typeName ) const
+{
+  return mUri + "SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=" + typeName;
+}
+
+QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox ) const
 {
   //get CRS
   if ( !crsString.isEmpty() )

@@ -18,8 +18,10 @@
 #include "qgisinterface.h"
 #include "qgswfssourceselect.h"
 #include "qgswfsconnection.h"
+#include "qgswfsprovider.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -279,7 +281,7 @@ void QgsWFSSourceSelect::addLayer()
   {
     QString typeName = ( *sIt )->text( 1 );
     QString crs = labelCoordRefSys->text();
-    QString filter = mFilterLineEdit->text();
+    QString filter = ( *sIt )->text( 3 );
 
     //add a wfs layer to the map
     QgsWFSConnection conn( cmbConnections->currentText() );
@@ -363,4 +365,44 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
   dlg.exec();
   populateConnectionList();
   emit connectionsChanged();
+}
+
+void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  if ( item && column == 3 )
+  {
+    //get available fields for wfs layer
+    QgsWFSProvider p( "" );
+    QgsWFSConnection conn( cmbConnections->currentText() );
+    QString uri = conn.uriDescribeFeatureType( item->text( 1 ) );
+
+    QgsFieldMap fields;
+    QString geometryAttribute;
+    if ( p.describeFeatureType( uri, geometryAttribute, fields ) != 0 )
+    {
+      return;
+    }
+
+
+    //show expression builder
+    QgsExpressionBuilderDialog d( 0, item->text( 3 ) );
+
+    //add available attributes to expression builder
+    QgsExpressionBuilderWidget* w = d.expressionBuilder();
+    if ( !w )
+    {
+      return;
+    }
+
+    QgsFieldMap::const_iterator fieldIt = fields.constBegin();
+    for ( ; fieldIt != fields.constEnd(); ++fieldIt )
+    {
+      w->registerItem( tr( "Fields" ), fieldIt->name(), " " + fieldIt->name() + " ", "", QgsExpressionItem::Field );
+    }
+
+    if ( d.exec() == QDialog::Accepted )
+    {
+      item->setText( 3, w->getExpressionString() );
+    }
+  }
 }

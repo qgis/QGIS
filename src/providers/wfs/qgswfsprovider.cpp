@@ -47,12 +47,19 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
     : QgsVectorDataProvider( uri ),
     mNetworkRequestFinished( true ),
+    mEncoding( QgsWFSProvider::GET ),
     mUseIntersect( false ),
     mSourceCRS( 0 ),
     mFeatureCount( 0 ),
     mValid( true )
 {
   mSpatialIndex = 0;
+  if ( uri.isEmpty() )
+  {
+    mValid = false;
+    return;
+  }
+
   reloadData();
   if ( mValid )
   {
