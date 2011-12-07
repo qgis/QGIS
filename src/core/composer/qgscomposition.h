@@ -144,8 +144,9 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
       @param elem items parent element, e.g. <Composer> or <ComposerItemClipboard>
       @param doc xml document
+      @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
       @param pos item position. Optional, take position from xml if 0*/
-    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QPointF* pos = 0 );
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands = false, QPointF* pos = 0 );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );

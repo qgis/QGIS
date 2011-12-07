@@ -261,7 +261,7 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   return true;
 }
 
-void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QPointF* pos )
+void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands, QPointF* pos )
 {
   QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
   for ( int i = 0; i < composerLabelList.size(); ++i )
@@ -274,6 +274,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newLabel->setItemPosition( pos->x(), pos->y() );
     }
     addComposerLabel( newLabel );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newLabel, tr( "Label added" ) );
+    }
   }
   // map
   QDomNodeList composerMapList = elem.elementsByTagName( "ComposerMap" );
@@ -287,6 +291,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newMap->setItemPosition( pos->x(), pos->y() );
     }
     addComposerMap( newMap );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newMap, tr( "Map added" ) );
+    }
   }
   // arrow
   QDomNodeList composerArrowList = elem.elementsByTagName( "ComposerArrow" );
@@ -300,6 +308,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newArrow->setItemPosition( pos->x(), pos->y() );
     }
     addComposerArrow( newArrow );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newArrow, tr( "Arrow added" ) );
+    }
   }
   // scalebar
   QDomNodeList composerScaleBarList = elem.elementsByTagName( "ComposerScaleBar" );
@@ -313,6 +325,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newScaleBar->setItemPosition( pos->x(), pos->y() );
     }
     addComposerScaleBar( newScaleBar );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
+    }
   }
   // shape
   QDomNodeList composerShapeList = elem.elementsByTagName( "ComposerShape" );
@@ -326,6 +342,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newShape->setItemPosition( pos->x(), pos->y() );
     }
     addComposerShape( newShape );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newShape, tr( "Shape added" ) );
+    }
   }
   // picture
   QDomNodeList composerPictureList = elem.elementsByTagName( "ComposerPicture" );
@@ -339,6 +359,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newPicture->setItemPosition( pos->x(), pos->y() );
     }
     addComposerPicture( newPicture );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
+    }
   }
   // legend
   QDomNodeList composerLegendList = elem.elementsByTagName( "ComposerLegend" );
@@ -352,6 +376,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newLegend->setItemPosition( pos->x(), pos->y() );
     }
     addComposerLegend( newLegend );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
+    }
   }
   // table
   QDomNodeList composerTableList = elem.elementsByTagName( "ComposerAttributeTable" );
@@ -365,6 +393,10 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
       newTable->setItemPosition( pos->x(), pos->y() );
     }
     addComposerTable( newTable );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newTable, tr( "Table added" ) );
+    }
   }
 }
 

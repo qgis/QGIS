@@ -461,7 +461,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
         if ( composition() )
         {
           QPointF pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
-          composition()->addItemsFromXML( docElem, doc, &pt );
+          composition()->addItemsFromXML( docElem, doc, true, &pt );
         }
       }
     }
