@@ -1,14 +1,12 @@
 #include "qgswfsconnection.h"
-
+#include "qgsexpression.h"
 #include "qgslogger.h"
-
-#include <QDomDocument>
-#include <QSettings>
-#include <QStringList>
-
 #include "qgsnetworkaccessmanager.h"
+#include <QDomDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QSettings>
+#include <QStringList>
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
@@ -57,7 +55,12 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
   QString filterString;
   if ( !filter.isEmpty() )
   {
-    filterString = "&FILTER=" + filter;
+    QgsExpression filterExpression( filter );
+    QDomDocument filterDoc;
+    if ( filterExpression.toOGCFilter( filterDoc ) )
+    {
+      filterString = "&FILTER=" + filterDoc.toString();
+    }
   }
 
   QString bBoxString;
