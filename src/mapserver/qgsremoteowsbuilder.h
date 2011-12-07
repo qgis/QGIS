@@ -19,7 +19,7 @@
 #define QGSREMOTEOWSBUILDER_H
 
 #include "qgsmslayerbuilder.h"
-#include <map>
+#include <QMap>
 
 class QgsRasterLayer;
 class QgsVectorLayer;
@@ -28,7 +28,7 @@ class QgsVectorLayer;
 class QgsRemoteOWSBuilder: public QgsMSLayerBuilder
 {
   public:
-    QgsRemoteOWSBuilder( const std::map<QString, QString>& parameterMap );
+    QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap );
     ~QgsRemoteOWSBuilder();
 
     QgsMapLayer* createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
@@ -42,7 +42,7 @@ class QgsRemoteOWSBuilder: public QgsMSLayerBuilder
     /**Creates sos layer by analizing server url and LayerSensorObservationConstraints*/
     QgsVectorLayer* sosLayer( const QDomElement& remoteOWSElem, const QString& url, const QString& layerName, QList<QgsMapLayer*>& layersToRemove, bool allowCaching = true ) const;
 
-    std::map<QString, QString> mParameterMap;
+    QMap<QString, QString> mParameterMap;
 };
 
 #endif
