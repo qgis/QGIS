@@ -80,17 +80,11 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     /**Returns the composition or 0 in case of error*/
     QgsComposition* composition();
 
-    /**Remove item from the graphics scene*/
-    void removeItem( QgsComposerItem* item );
-
     /**Returns the composer main window*/
     QMainWindow* composerWindow();
 
     void setPaintingEnabled( bool enabled ) { mPaintingEnabled = enabled; }
     bool paintingEnabled() const { return mPaintingEnabled; }
-
-    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
-    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
 
   protected:
     void mousePressEvent( QMouseEvent* );
@@ -126,7 +120,7 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
 
     bool mPaintingEnabled;
 
-    void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
+    //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:
     /**Is emitted when selected item changed. If 0, no item is selected*/

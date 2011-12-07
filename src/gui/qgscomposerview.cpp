@@ -145,7 +145,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newLabelItem->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), newLabelItem->rect().width(), newLabelItem->rect().height() ) );
         composition()->addComposerLabel( newLabelItem );
         emit actionFinished();
-        pushAddRemoveCommand( newLabelItem, tr( "Label added" ) );
+        composition()->pushAddRemoveCommand( newLabelItem, tr( "Label added" ) );
       }
       break;
 
@@ -162,7 +162,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         }
         newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
         emit actionFinished();
-        pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
+        composition()->pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
       }
       break;
 
@@ -175,7 +175,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         composition()->addComposerLegend( newLegend );
         newLegend->updateLegend();
         emit actionFinished();
-        pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
+        composition()->pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
       }
       break;
     }
@@ -186,7 +186,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newPicture->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 30, 30 ) );
         composition()->addComposerPicture( newPicture );
         emit actionFinished();
-        pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
+        composition()->pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
       }
       break;
     case AddTable:
@@ -196,7 +196,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
         newTable->setSceneRect( QRectF( snappedScenePoint.x(), snappedScenePoint.y(), 50, 50 ) );
         composition()->addComposerTable( newTable );
         emit actionFinished();
-        pushAddRemoveCommand( newTable, tr( "Table added" ) );
+        composition()->pushAddRemoveCommand( newTable, tr( "Table added" ) );
       }
       break;
     default:
@@ -253,7 +253,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         delete mRubberBandLineItem;
         mRubberBandLineItem = 0;
         emit actionFinished();
-        pushAddRemoveCommand( composerArrow, tr( "Arrow added" ) );
+        composition()->pushAddRemoveCommand( composerArrow, tr( "Arrow added" ) );
       }
       break;
 
@@ -273,7 +273,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         delete mRubberBandItem;
         mRubberBandItem = 0;
         emit actionFinished();
-        pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
+        composition()->pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
       }
       break;
 
@@ -296,7 +296,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
         delete mRubberBandItem;
         mRubberBandItem = 0;
         emit actionFinished();
-        pushAddRemoveCommand( composerMap, tr( "Map added" ) );
+        composition()->pushAddRemoveCommand( composerMap, tr( "Map added" ) );
       }
       break;
 
@@ -439,7 +439,7 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
       ( *itemIt )->writeXML( documentElement, doc );
       if ( e->matches( QKeySequence::Cut ) )
       {
-        removeItem( *itemIt );
+        composition()->removeComposerItem( *itemIt );
       }
     }
     doc.appendChild( documentElement );
@@ -472,7 +472,10 @@ void QgsComposerView::keyPressEvent( QKeyEvent * e )
   {
     for ( ; itemIt != composerItemList.end(); ++itemIt )
     {
-      removeItem( *itemIt );
+      if ( composition() )
+      {
+        composition()->removeComposerItem( *itemIt );
+      }
     }
   }
 
@@ -575,39 +578,6 @@ QgsComposition* QgsComposerView::composition()
   return 0;
 }
 
-void QgsComposerView::removeItem( QgsComposerItem* item )
-{
-  QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
-  if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
-  {
-    composition()->removeItem( item );
-    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
-    if ( itemGroup && composition() )
-    {
-      //add add/remove item command for every item in the group
-      QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
-
-      QSet<QgsComposerItem*> groupedItems = itemGroup->items();
-      QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
-      for ( ; it != groupedItems.end(); ++it )
-      {
-        QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, composition(), "", parentCommand );
-        connectAddRemoveCommandSignals( subcommand );
-        emit itemRemoved( *it );
-      }
-
-      composition()->undoStack()->push( parentCommand );
-      delete itemGroup;
-      emit itemRemoved( itemGroup );
-    }
-    else
-    {
-      emit itemRemoved( item );
-      pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
-    }
-  }
-}
-
 void QgsComposerView::groupItems()
 {
   if ( !composition() )
@@ -675,30 +645,4 @@ QMainWindow* QgsComposerView::composerWindow()
   }
 
   return 0;
-}
-
-void QgsComposerView::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c )
-{
-  if ( !c )
-  {
-    return;
-  }
-
-  if ( composition() )
-  {
-    QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), composition(), SIGNAL( itemRemoved( QgsComposerItem* ) ) );
-    QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), composition(), SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
-  }
-}
-
-void QgsComposerView::pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state )
-{
-  if ( !composition() )
-  {
-    return;
-  }
-
-  QgsAddRemoveItemCommand* c = new QgsAddRemoveItemCommand( state, item, composition(), text );
-  connectAddRemoveCommandSignals( c );
-  composition()->undoStack()->push( c );
 }

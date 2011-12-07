@@ -22,6 +22,7 @@
 #include <QUndoStack>
 
 #include "qgscomposeritemcommand.h"
+#include "qgsaddremoveitemcommand.h"
 
 class QgsComposerItem;
 class QgsComposerMap;
@@ -204,6 +205,12 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
     /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
     void addComposerTable( QgsComposerAttributeTable* table );
 
+    /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
+    void removeComposerItem( QgsComposerItem* item );
+
+    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state = QgsAddRemoveItemCommand::Added );
+
   public slots:
     /**Casts object to the proper subclass type and calls corresponding itemAdded signal*/
     void sendItemAddedSignal( QgsComposerItem* item );
@@ -249,6 +256,8 @@ class CORE_EXPORT QgsComposition: public QGraphicsScene
 
     void loadSettings();
     void saveSettings();
+
+    void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 
   signals:
     void paperSizeChanged();

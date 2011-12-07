@@ -1046,6 +1046,57 @@ void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
   //pushAddRemoveCommand( table, tr( "Table added" ) );
 }
 
+void QgsComposition::removeComposerItem( QgsComposerItem* item )
+{
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
+  if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
+  {
+    removeItem( item );
+    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
+    if ( itemGroup )
+    {
+      //add add/remove item command for every item in the group
+      QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
+
+      QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+      for ( ; it != groupedItems.end(); ++it )
+      {
+        QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, this, "", parentCommand );
+        connectAddRemoveCommandSignals( subcommand );
+        emit itemRemoved( *it );
+      }
+
+      undoStack()->push( parentCommand );
+      delete itemGroup;
+      emit itemRemoved( itemGroup );
+    }
+    else
+    {
+      emit itemRemoved( item );
+      pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+    }
+  }
+}
+
+void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state )
+{
+  QgsAddRemoveItemCommand* c = new QgsAddRemoveItemCommand( state, item, this, text );
+  connectAddRemoveCommandSignals( c );
+  undoStack()->push( c );
+}
+
+void QgsComposition::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c )
+{
+  if ( !c )
+  {
+    return;
+  }
+
+  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+}
+
 void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
 {
   //cast and send proper signal

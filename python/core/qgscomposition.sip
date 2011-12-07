@@ -142,4 +142,27 @@ class QgsComposition: QGraphicsScene
     void endCommand();
     /**Deletes current command*/
     void cancelCommand();
+
+    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
+    //void addComposerArrow( QgsComposerArrow* arrow );
+    /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerLabel( QgsComposerLabel* label );
+    /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerMap( QgsComposerMap* map );
+    /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
+    /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerLegend( QgsComposerLegend* legend );
+    /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerPicture( QgsComposerPicture* picture );
+    /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerShape( QgsComposerShape* shape );
+    /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerTable( QgsComposerAttributeTable* table );
+
+    /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
+    void removeComposerItem( QgsComposerItem* item );
+
+    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state );
 };
