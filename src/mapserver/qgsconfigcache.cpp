@@ -40,27 +40,25 @@ QgsConfigCache::QgsConfigCache()
 
 QgsConfigCache::~QgsConfigCache()
 {
-  QHash<QString, QgsConfigParser*>::iterator configIt = mCachedConfigurations.begin();
-  for ( ; configIt != mCachedConfigurations.end(); ++configIt )
+  foreach( QgsConfigParser *parser, mCachedConfigurations.values() )
   {
-    delete configIt.value();
+    delete parser;
   }
 }
 
 QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
 {
   QCoreApplication::processEvents(); //check for updates from file system watcher
-  QgsConfigParser* p = 0;
-  QHash<QString, QgsConfigParser*>::const_iterator configIt = mCachedConfigurations.find( filePath );
-  if ( configIt == mCachedConfigurations.constEnd() )
+  QgsConfigParser* p = mCachedConfigurations.value( filePath, 0 );
+
+  if ( p )
   {
-    QgsDebugMsg( "Create new configuration" );
-    p = insertConfiguration( filePath );
+    QgsDebugMsg( "Return configuration from cache" );
   }
   else
   {
-    QgsDebugMsg( "Return configuration from cache" );
-    p = configIt.value();
+    QgsDebugMsg( "Create new configuration" );
+    p = insertConfiguration( filePath );
   }
 
   if ( p )
@@ -68,6 +66,7 @@ QgsConfigParser* QgsConfigCache::searchConfiguration( const QString& filePath )
     //there could be more layers in a project than allowed by the cache per default
     QgsMSLayerCache::instance()->setProjectMaxLayers( p->numberOfLayers() );
   }
+
   return p;
 }
 

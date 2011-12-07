@@ -36,16 +36,14 @@ QgsMSLayerCache* QgsMSLayerCache::instance()
 
 QgsMSLayerCache::QgsMSLayerCache()
 {
-
 }
 
 QgsMSLayerCache::~QgsMSLayerCache()
 {
   QgsDebugMsg( "removing all entries" );
-  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it;
-  for ( it = mEntries.begin(); it != mEntries.end(); ++it )
+  foreach( QgsMSLayerCacheEntry entry, mEntries )
   {
-    delete it->layerPointer;
+    delete entry.layerPointer;
   }
   delete mInstance;
 }
@@ -59,10 +57,9 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   }
 
   QPair<QString, QString> urlLayerPair = qMakePair( url, layerName );
-  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlLayerPair );
-  if ( it != mEntries.end() )
+  if ( mEntries.contains( urlLayerPair ) )
   {
-    delete it->layerPointer;
+    delete mEntries[ urlLayerPair ].layerPointer;
   }
 
   QgsMSLayerCacheEntry newEntry;
@@ -72,31 +69,31 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   newEntry.lastUsedTime = time( NULL );
   newEntry.temporaryFiles = tempFiles;
 
-  mEntries.insert( qMakePair( url, layerName ), newEntry );
+  mEntries.insert( urlLayerPair, newEntry );
 }
 
 QgsMapLayer* QgsMSLayerCache::searchLayer( const QString& url, const QString& layerName )
 {
   QPair<QString, QString> urlNamePair = qMakePair( url, layerName );
-  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlNamePair );
-  if ( it == mEntries.end() )
+  if ( !mEntries.contains( urlNamePair ) )
   {
     QgsDebugMsg( "Layer not found in cache" );
     return 0;
   }
   else
   {
-    it->lastUsedTime = time( NULL );
+    QgsMSLayerCacheEntry &entry = mEntries[ urlNamePair ];
+    entry.lastUsedTime = time( NULL );
 #ifdef DIAGRAMSERVER
     //delete any existing diagram overlays in vectorlayers
-    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( it->layerPointer );
+    QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( entry.layerPointer );
     if ( vl )
     {
       vl->removeOverlay( "diagram" );
     }
 #endif //DIAGRAMSERVER
     QgsDebugMsg( "Layer found in cache" );
-    return it->layerPointer;
+    return entry.layerPointer;
   }
 }
 
@@ -143,15 +140,15 @@ void QgsMSLayerCache::removeLeastUsedEntry()
 void QgsMSLayerCache::freeEntryRessources( QgsMSLayerCacheEntry& entry )
 {
   delete entry.layerPointer;
+
   //todo: remove the temporary files of a layer
-  QList<QString>::const_iterator it = entry.temporaryFiles.constBegin();
-  for ( ; it != entry.temporaryFiles.constEnd(); ++it )
+  foreach( QString file, entry.temporaryFiles )
   {
     //remove the temporary file
-    QFile removeFile( *it );
+    QFile removeFile( file );
     if ( !removeFile.remove() )
     {
-      QgsDebugMsg( "could not remove file: " + *it );
+      QgsDebugMsg( "could not remove file: " + file );
       QgsDebugMsg( removeFile.errorString() );
     }
   }

@@ -223,7 +223,7 @@ int main( int argc, char * argv[] )
       theRequestHandler = new QgsGetRequestHandler();
     }
 
-    std::map<QString, QString> parameterMap;
+    QMap<QString, QString> parameterMap;
 
     try
     {
@@ -237,17 +237,11 @@ int main( int argc, char * argv[] )
     }
 
     //set admin config file to wms server object
-    QString configFilePath = defaultConfigFilePath;
-    std::map<QString, QString>::const_iterator mapFileIt = parameterMap.find( "MAP" );
-    if ( mapFileIt != parameterMap.end() )
-    {
-      configFilePath = mapFileIt->second;
-      QgsDebugMsg( QString( "Configuration file path set to: %1" ).arg( defaultConfigFilePath ) );
-    }
-    else
+    if ( !parameterMap.contains( "MAP" ) )
     {
       QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
     }
+    QString configFilePath = parameterMap.value( "MAP", defaultConfigFilePath );
 
     QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
     if ( !adminConfigParser )
@@ -261,14 +255,9 @@ int main( int argc, char * argv[] )
     adminConfigParser->setParameterMap( parameterMap );
 
     //request to WMS?
-    QString serviceString( "WMS" );
-    std::map<QString, QString>::const_iterator serviceIt = parameterMap.find( "SERVICE" );
-    if ( serviceIt != parameterMap.end() )
-    {
-      serviceString = serviceIt->second;
-    }
+    QString serviceString = parameterMap.value( "SERVICE", "WMS" );
 #if 0
-    else
+    if ( !parameterMap.contains( "SERVICE" ) )
     {
       QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
@@ -292,8 +281,8 @@ int main( int argc, char * argv[] )
 
 
     //request type
-    std::map<QString, QString>::const_iterator requestIt = parameterMap.find( "REQUEST" );
-    if ( requestIt == parameterMap.end() )
+    QString request = parameterMap.value( "REQUEST" );
+    if ( request.isEmpty() )
     {
       //do some error handling
       QgsDebugMsg( "unable to find 'REQUEST' parameter, exiting..." );
@@ -303,16 +292,18 @@ int main( int argc, char * argv[] )
       continue;
     }
 
-    if ( requestIt->second == "GetCapabilities" )
+    QString version = parameterMap.value( "VERSION", "1.3.0" );
+
+    if ( request == "GetCapabilities" )
     {
-      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath );
+      const QDomDocument* capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
       if ( !capabilitiesDocument ) //capabilities xml not in cache. Create a new one
       {
         QgsDebugMsg( "Capabilities document not found in cache" );
         QDomDocument doc;
         try
         {
-          doc = theServer->getCapabilities();
+          doc = theServer->getCapabilities( version );
         }
         catch ( QgsMapServiceException& ex )
         {
@@ -321,8 +312,8 @@ int main( int argc, char * argv[] )
           delete theServer;
           continue;
         }
-        capabilitiesCache.insertCapabilitiesDocument( configFilePath, &doc );
-        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath );
+        capabilitiesCache.insertCapabilitiesDocument( configFilePath, version, &doc );
+        capabilitiesDocument = capabilitiesCache.searchCapabilitiesDocument( configFilePath, version );
       }
       else
       {
@@ -337,7 +328,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( requestIt->second == "GetMap" )
+    else if ( request == "GetMap" )
     {
       QImage* result = 0;
       try
@@ -369,12 +360,12 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( requestIt->second == "GetFeatureInfo" )
+    else if ( request == "GetFeatureInfo" )
     {
       QDomDocument featureInfoDoc;
       try
       {
-        if ( theServer->getFeatureInfo( featureInfoDoc ) != 0 )
+        if ( theServer->getFeatureInfo( featureInfoDoc, version ) != 0 )
         {
           delete theRequestHandler;
           delete theServer;
@@ -390,19 +381,12 @@ int main( int argc, char * argv[] )
       }
 
       //info format for GetFeatureInfo
-      QString infoFormat;
-      std::map<QString, QString>::const_iterator p_it = parameterMap.find( "INFO_FORMAT" );
-      if ( p_it != parameterMap.end() )
-      {
-        infoFormat = p_it->second;
-      }
-
-      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, infoFormat );
+      theRequestHandler->sendGetFeatureInfoResponse( featureInfoDoc, parameterMap.value( "INFO_FORMAT" ) );
       delete theRequestHandler;
       delete theServer;
       continue;
     }
-    else if ( requestIt->second == "GetStyle" )
+    else if ( request == "GetStyle" )
     {
       try
       {
@@ -418,7 +402,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( requestIt->second == "GetLegendGraphics" )
+    else if ( request == "GetLegendGraphics" )
     {
       QImage* result = 0;
       try
@@ -447,7 +431,7 @@ int main( int argc, char * argv[] )
       continue;
 
     }
-    else if ( requestIt->second == "GetPrint" )
+    else if ( request == "GetPrint" )
     {
       QByteArray* printOutput = 0;
       try
@@ -470,7 +454,7 @@ int main( int argc, char * argv[] )
     }
     else//unknown request
     {
-      QgsMapServiceException e( "OperationNotSupported", "Operation " + requestIt->second + " not supported" );
+      QgsMapServiceException e( "OperationNotSupported", "Operation " + request + " not supported" );
       theRequestHandler->sendServiceException( e );
       delete theRequestHandler;
       delete theServer;

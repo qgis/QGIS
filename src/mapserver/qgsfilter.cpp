@@ -38,13 +38,7 @@ QgsFilter::~QgsFilter()
 
 QVariant QgsFilter::propertyIndexValue( const QgsFeature& f ) const
 {
-  QgsAttributeMap featureAttributes = f.attributeMap();
-  QgsAttributeMap::const_iterator f_it = featureAttributes.find( mPropertyIndex );
-  if ( f_it == featureAttributes.constEnd() )
-  {
-    return QVariant();
-  }
-  return f_it.value();
+  return f.attributeMap().value( mPropertyIndex );
 }
 
 QList<int> QgsFilter::attributeIndices() const

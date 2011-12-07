@@ -68,7 +68,7 @@ class QgsSLDParser: public QgsConfigParser
     /**Returns the xml fragment of a style*/
     QDomDocument getStyle( const QString& styleName, const QString& layerName ) const;
 
-    virtual void setParameterMap( const std::map<QString, QString>& parameterMap ) { mParameterMap = parameterMap; }
+    virtual void setParameterMap( const QMap<QString, QString>& parameterMap ) { mParameterMap = parameterMap; }
 
     /**Creates a composition from the project file (delegated to the fallback parser)*/
     QgsComposition* initComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, QList< QgsComposerMap*>& mapList, QList< QgsComposerLabel* >& labelList ) const;
@@ -147,7 +147,7 @@ class QgsSLDParser: public QgsConfigParser
     QDomDocument* mXMLDoc;
 
     /**Map containing the WMS parameters of the request*/
-    std::map<QString, QString> mParameterMap;
+    QMap<QString, QString> mParameterMap;
 
     QString mSLDNamespace;
 };

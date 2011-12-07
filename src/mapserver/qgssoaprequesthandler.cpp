@@ -37,9 +37,9 @@ QgsSOAPRequestHandler::~QgsSOAPRequestHandler()
 
 }
 
-std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
+QMap<QString, QString> QgsSOAPRequestHandler::parseInput()
 {
-  std::map<QString, QString> result;
+  QMap<QString, QString> result;
   QString inputString = readPostBody();
 
   //QgsDebugMsg("input string is: " + inputString)
@@ -84,27 +84,27 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   if ( serviceString == "MS" )
   {
     QgsDebugMsg( "service = MS " );
-    result.insert( std::make_pair( "SERVICE", "MS" ) );
+    result.insert( "SERVICE", "MS" );
     mService = "MS";
   }
   else if ( serviceString == "WMS" )
   {
-    result.insert( std::make_pair( "SERVICE", "WMS" ) );
+    result.insert( "SERVICE", "WMS" );
     mService = "WMS";
   }
   else if ( serviceString == "MDS" )
   {
-    result.insert( std::make_pair( "SERVICE", "MDS" ) );
+    result.insert( "SERVICE", "MDS" );
     mService = "MDS";
   }
   else if ( serviceString == "MAS" )
   {
-    result.insert( std::make_pair( "SERVICE", "MAS" ) );
+    result.insert( "SERVICE", "MAS" );
     mService = "MAS";
   }
   else
   {
-    result.insert( std::make_pair( "SERVICE", "DISCOVERY" ) );
+    result.insert( "SERVICE", "DISCOVERY" );
     mService = "DISCOVERY";
   }
 
@@ -113,34 +113,33 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
   //if(firstChildElement.localName().compare("getCapabilities", Qt::CaseInsensitive) == 0)
   if ( firstChildElement.localName() == "GetCapabilities" || firstChildElement.localName() == "getCapabilities" )
   {
-    result.insert( std::make_pair( "REQUEST", "GetCapabilities" ) );
+    result.insert( "REQUEST", "GetCapabilities" );
   }
   //GetMap request
   //else if(firstChildElement.tagName().compare("getMap",Qt::CaseInsensitive) == 0)
   else if ( firstChildElement.localName() == "GetMap" || firstChildElement.localName() == "getMap" )
   {
-    result.insert( std::make_pair( "REQUEST", "GetMap" ) );
+    result.insert( "REQUEST", "GetMap" );
     parseGetMapElement( result, firstChildElement );
   }
   //GetDiagram request
   //else if(firstChildElement.tagName().compare("getDiagram", Qt::CaseInsensitive) == 0)
   else if ( firstChildElement.localName() == "GetDiagram" )
   {
-    result.insert( std::make_pair( "REQUEST", "GetDiagram" ) );
+    result.insert( "REQUEST", "GetDiagram" );
     parseGetMapElement( result, firstChildElement ); //reuse the method for GetMap
   }
   //GetFeatureInfo request
   else if ( firstChildElement.localName() == "GetFeatureInfo" )
   {
-    result.insert( std::make_pair( "REQUEST", "GetFeatureInfo" ) );
+    result.insert( "REQUEST", "GetFeatureInfo" );
     parseGetFeatureInfoElement( result, firstChildElement );
   }
 
   //set mFormat
-  std::map<QString, QString>::const_iterator formatIt = result.find( "FORMAT" );
-  if ( formatIt != result.end() )
+  QString formatString = result.value( "FORMAT" );
+  if ( !formatString.isEmpty() )
   {
-    QString formatString = formatIt->second;
     //remove the image/ in front of the format
     if ( formatString == "image/jpeg" || formatString == "JPG" || formatString == "jpg" )
     {
@@ -156,8 +155,9 @@ std::map<QString, QString> QgsSOAPRequestHandler::parseInput()
     }
     else
     {
-      throw QgsMapServiceException( "InvalidFormat", "Invalid format, only jpg and png are supported" );
+      throw QgsMapServiceException( "InvalidFormat", "Invalid format " + formatString + ", only jpg and png are supported" );
     }
+
     mFormat = formatString;
   }
 
@@ -452,7 +452,7 @@ void QgsSOAPRequestHandler::sendServiceException( const QgsMapServiceException& 
   sendHttpResponse( &ba, "text/xml" );
 }
 
-int QgsSOAPRequestHandler::parseGetMapElement( std::map<QString, QString>& parameterMap, const QDomElement& getMapElement ) const
+int QgsSOAPRequestHandler::parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const
 {
   QDomNodeList boundingBoxList = getMapElement.elementsByTagName( "BoundingBox" );
   if ( boundingBoxList.size() > 0 )
@@ -472,7 +472,7 @@ int QgsSOAPRequestHandler::parseGetMapElement( std::map<QString, QString>& param
     {
       epsgNumber = crsText.replace( 4, 1, ":" );//replace the underscore with a ':' to make it WMS compatible
     }
-    parameterMap.insert( std::make_pair( "CRS", epsgNumber ) );
+    parameterMap.insert( "CRS", epsgNumber );
   }
   QDomNodeList GMLList = getMapElement.elementsByTagNameNS( "http://www.eu-orchestra.org/services/ms", "GML" );
   if ( GMLList.size() > 0 )
@@ -480,7 +480,7 @@ int QgsSOAPRequestHandler::parseGetMapElement( std::map<QString, QString>& param
     QString gmlText;
     QTextStream gmlStream( &gmlText );
     GMLList.at( 0 ).save( gmlStream, 2 );
-    parameterMap.insert( std::make_pair( "GML", gmlText ) );
+    parameterMap.insert( "GML", gmlText );
   }
 
   //outputAttributes
@@ -500,13 +500,13 @@ int QgsSOAPRequestHandler::parseGetMapElement( std::map<QString, QString>& param
     //Replace some special characters
     sldString.replace( "&lt;", "<" );
     sldString.replace( "&gt;", ">" );
-    parameterMap.insert( std::make_pair( "SLD", sldString ) );
+    parameterMap.insert( "SLD", sldString );
   }
 
   return 0;
 }
 
-int QgsSOAPRequestHandler::parseGetFeatureInfoElement( std::map<QString, QString>& parameterMap, const QDomElement& getFeatureInfoElement ) const
+int QgsSOAPRequestHandler::parseGetFeatureInfoElement( QMap<QString, QString>& parameterMap, const QDomElement& getFeatureInfoElement ) const
 {
   QDomNodeList queryList = getFeatureInfoElement.elementsByTagName( "Query" );
   if ( queryList.size() < 1 )
@@ -522,7 +522,7 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( std::map<QString, QString
     return 0; //no error, but nothing to do
   }
   QString queryLayerString = queryLayerList.at( 0 ).toElement().text();
-  parameterMap.insert( std::make_pair( "QUERY_LAYERS", queryLayerString ) );
+  parameterMap.insert( "QUERY_LAYERS", queryLayerString );
 
   //find <XImagePoint>
   QDomNodeList xImageList = queryElem.elementsByTagName( "XImagePoint" );
@@ -536,7 +536,7 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( std::map<QString, QString
   {
     return 4;
   }
-  parameterMap.insert( std::make_pair( "I", QString::number( xPoint ) ) );
+  parameterMap.insert( "I", QString::number( xPoint ) );
 
   //find <YImagePoint>
   QDomNodeList yImageList = queryElem.elementsByTagName( "YImagePoint" );
@@ -549,7 +549,7 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( std::map<QString, QString
   {
     return 6;
   }
-  parameterMap.insert( std::make_pair( "J", QString::number( yPoint ) ) );
+  parameterMap.insert( "J", QString::number( yPoint ) );
 
   //find <FeatureCount>
   QDomNodeList featureCountList = queryElem.elementsByTagName( "FeatureCount" );
@@ -558,7 +558,7 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( std::map<QString, QString
     int featureCount = featureCountList.at( 0 ).toElement().text().toInt( &conversionSuccess );
     if ( conversionSuccess )
     {
-      parameterMap.insert( std::make_pair( "FEATURE_COUNT", QString::number( featureCount ) ) );
+      parameterMap.insert( "FEATURE_COUNT", QString::number( featureCount ) );
     }
   }
 
@@ -577,7 +577,7 @@ int QgsSOAPRequestHandler::parseGetFeatureInfoElement( std::map<QString, QString
   return 0;
 }
 
-int QgsSOAPRequestHandler::parseBoundingBoxElement( std::map<QString, QString>& parameterMap, const QDomElement& boundingBoxElement ) const
+int QgsSOAPRequestHandler::parseBoundingBoxElement( QMap<QString, QString>& parameterMap, const QDomElement& boundingBoxElement ) const
 {
   QString minx, miny, maxx, maxy;
 
@@ -608,18 +608,18 @@ int QgsSOAPRequestHandler::parseBoundingBoxElement( std::map<QString, QString>& 
   {
     maxy = upperBoundList.item( 0 ).toElement().text();
   }
-  parameterMap.insert( std::make_pair( "BBOX", minx + "," + miny + "," + maxx + "," + maxy ) );
+  parameterMap.insert( "BBOX", minx + "," + miny + "," + maxx + "," + maxy );
   return 0;
 }
 
-int QgsSOAPRequestHandler::parseOutputAttributesElement( std::map<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const
+int QgsSOAPRequestHandler::parseOutputAttributesElement( QMap<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const
 {
   //height
   QDomNodeList heightList = outputAttributesElement.elementsByTagName( "Height" );
   if ( heightList.size() > 0 )
   {
     QString heightString = heightList.item( 0 ).toElement().text();
-    parameterMap.insert( std::make_pair( "HEIGHT", heightString ) );
+    parameterMap.insert( "HEIGHT", heightString );
   }
 
   //width
@@ -627,7 +627,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( std::map<QString, QStri
   if ( widthList.size() > 0 )
   {
     QString widthString = widthList.item( 0 ).toElement().text();
-    parameterMap.insert( std::make_pair( "WIDTH", widthString ) );
+    parameterMap.insert( "WIDTH", widthString );
   }
 
   //format
@@ -635,7 +635,7 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( std::map<QString, QStri
   if ( formatList.size() > 0 )
   {
     QString formatString = formatList.item( 0 ).toElement().text();
-    parameterMap.insert( std::make_pair( "FORMAT", formatString ) );
+    parameterMap.insert( "FORMAT", formatString );
   }
 
   //background transparendy
@@ -646,11 +646,11 @@ int QgsSOAPRequestHandler::parseOutputAttributesElement( std::map<QString, QStri
     if ( bgTransparencyString.compare( "true", Qt::CaseInsensitive ) == 0
          || bgTransparencyString == "1" )
     {
-      parameterMap.insert( std::make_pair( "TRANSPARENT", "TRUE" ) );
+      parameterMap.insert( "TRANSPARENT", "TRUE" );
     }
     else
     {
-      parameterMap.insert( std::make_pair( "TRANSPARENT", "FALSE" ) );
+      parameterMap.insert( "TRANSPARENT", "FALSE" );
     }
   }
   return 0;
