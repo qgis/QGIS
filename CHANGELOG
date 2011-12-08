@@ -1,12 +1,12 @@
 Quantum GIS (QGIS) Changelog
 Change history for the QGIS Project
-Sunday November 13, 2011
+Thursday December 08, 2011
 
 
 ------------------------------------------------------------------------
 
 
-  1. Whats new in Version 1.7.2 'Wroclaw'?
+  1. Whats new in Version 1.7.3 'Wroclaw'?
   2. Whats new in Version 1.7.1 'Wroclaw'?
   3. Whats new in Version 1.7.0 'Wroclaw'?
     3.1. Symbology labels and diagrams
@@ -57,12 +57,27 @@ Sunday November 13, 2011
 ------------------------------------------------------------------------
 
 
-Last Updated: Sunday November 13, 2011
-Last Change : Sunday November 13, 2011
+Last Updated: Thursday December 08, 2011
+Last Change : Thursday December 08, 2011
 
 
-  1. Whats new in Version 1.7.2 'Wroclaw'?
+  1. Whats new in Version 1.7.3 'Wroclaw'?
   ========================================
+
+This is a bugfix release over version 1.7.2 and the following changes were made.
+
+- Fix #3581 Ftools: union tool leave holes in output
+- Fix #4500 Simplify tool freezes QGIS
+- Fix #4466 Fixes for 'v.what.vect' and 'v.generalize' modules in the GRASS plugin
+- Fix #4552 Patch for v.what.vect
+- Fix #4035 Print Composer shape combo box not refecting current shape
+- Partial Fix #3097 Add preference to set/override environment variables
+- Fix #2749 Move 'Add to Attributes List' button
+- Fix #4560 Wrong scale displayed in Map canvas
+- Partial Fix #4383 Ftools: Improve how processes are handled
+- And a lot of other smaller Bugfixes
+
+= Whats new in Version 1.7.2 'Wroclaw'? =
 
 This is a bugfix release over version 1.7.1. The following changes
 were made.
