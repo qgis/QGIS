@@ -213,7 +213,7 @@ void QgsMapRenderer::adjustExtentToSize()
 }
 
 
-void QgsMapRenderer::render( QPainter* painter, double* forceScaleFactor )
+void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 {
   //Lock render method for concurrent threads (e.g. from globe)
   QMutexLocker renderLock( &mRenderMutex );
@@ -282,9 +282,9 @@ void QgsMapRenderer::render( QPainter* painter, double* forceScaleFactor )
   double scaleFactor = 1.0;
   if ( mOutputUnits == QgsMapRenderer::Millimeters )
   {
-    if ( forceScaleFactor )
+    if ( forceWidthScale )
     {
-      scaleFactor = *forceScaleFactor;
+      scaleFactor = *forceWidthScale;
     }
     else
     {
