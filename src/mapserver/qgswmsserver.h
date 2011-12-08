@@ -155,6 +155,8 @@ class QgsWMSServer
     /**Clear all feature selections in the given layers*/
     void clearFeatureSelections( const QStringList& layerIds ) const;
 
+    void appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats );
+
     /**Map containing the WMS parameters*/
     QMap<QString, QString> mParameterMap;
     QgsConfigParser* mConfigParser;

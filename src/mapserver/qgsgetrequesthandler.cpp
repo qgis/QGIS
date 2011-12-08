@@ -5,7 +5,8 @@
 #include <QUrl>
 #include <stdlib.h>
 
-QgsGetRequestHandler::QgsGetRequestHandler(): QgsHttpRequestHandler()
+QgsGetRequestHandler::QgsGetRequestHandler()
+    : QgsHttpRequestHandler()
 {
 }
 

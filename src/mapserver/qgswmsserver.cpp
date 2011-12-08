@@ -69,6 +69,16 @@ QgsWMSServer::QgsWMSServer()
 {
 }
 
+void QgsWMSServer::appendFormats( QDomDocument &doc, QDomElement &elem, const QStringList &formats )
+{
+  foreach( QString format, formats )
+  {
+    QDomElement formatElem = doc.createElement( "Format"/*wms:Format*/ );
+    formatElem.appendChild( doc.createTextNode( format ) );
+    elem.appendChild( formatElem );
+  }
+}
+
 QDomDocument QgsWMSServer::getCapabilities( QString version )
 {
   QgsDebugMsg( "Entering." );
@@ -101,25 +111,25 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   //wms:Request element
   QDomElement requestElement = doc.createElement( "Request"/*wms:Request*/ );
   capabilityElement.appendChild( requestElement );
-  //wms:GetCapabilities
-  QDomElement getCapabilitiesElement = doc.createElement( "GetCapabilities"/*wms:GetCapabilities*/ );
-  requestElement.appendChild( getCapabilitiesElement );
-  QDomElement capabilitiesFormatElement = doc.createElement( "Format" );/*wms:Format*/
-  getCapabilitiesElement.appendChild( capabilitiesFormatElement );
-  QDomText capabilitiesFormatText = doc.createTextNode( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" );
-  capabilitiesFormatElement.appendChild( capabilitiesFormatText );
 
   QDomElement dcpTypeElement = doc.createElement( "DCPType"/*wms:DCPType*/ );
-  getCapabilitiesElement.appendChild( dcpTypeElement );
   QDomElement httpElement = doc.createElement( "HTTP"/*wms:HTTP*/ );
   dcpTypeElement.appendChild( httpElement );
+
+  QDomElement elem;
+
+  //wms:GetCapabilities
+  elem = doc.createElement( "GetCapabilities"/*wms:GetCapabilities*/ );
+  appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.wms_xml" : "text/xml" ) );
+  elem.appendChild( dcpTypeElement );
+  requestElement.appendChild( elem );
 
   //Prepare url
   //Some client requests already have http://<SERVER_NAME> in the REQUEST_URI variable
   QString hrefString;
   QString requestUrl = getenv( "REQUEST_URI" );
   QUrl mapUrl( requestUrl );
-  mapUrl.setHost( QString( getenv( "SERVER_NAME" ) ) );
+  mapUrl.setHost( getenv( "SERVER_NAME" ) );
 
   //Add non-default ports to url
   QString portString = getenv( "SERVER_PORT" );
@@ -193,60 +203,52 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
   olResourceElement.setAttribute( "xlink:href", hrefString );
   getElement.appendChild( olResourceElement );
 
+#if 0
   // POST already used by SOAP
-//  QDomElement postElement = doc.createElement("post"/*wms:SOAP*/);
-//  httpElement.appendChild(postElement);
-//  QDomElement postResourceElement = doc.createElement("OnlineResource"/*wms:OnlineResource*/);
-//  postResourceElement.setAttribute("xmlns:xlink","http://www.w3.org/1999/xlink");
-//  postResourceElement.setAttribute("xlink:type","simple");
-//  postResourceElement.setAttribute("xlink:href", "http://" + QString(getenv("SERVER_NAME")) + QString(getenv("REQUEST_URI")));
-//  postElement.appendChild(postResourceElement);
-//  dcpTypeElement.appendChild(postElement);
+  QDomElement postElement = doc.createElement( "post"/*wms:SOAP*/ );
+  httpElement.appendChild( postElement );
+  QDomElement postResourceElement = doc.createElement( "OnlineResource"/*wms:OnlineResource*/ );
+  postResourceElement.setAttribute( "xmlns:xlink", "http://www.w3.org/1999/xlink" );
+  postResourceElement.setAttribute( "xlink:type", "simple" );
+  postResourceElement.setAttribute( "xlink:href", "http://" + QString( getenv( "SERVER_NAME" ) ) + QString( getenv( "REQUEST_URI" ) ) );
+  postElement.appendChild( postResourceElement );
+  dcpTypeElement.appendChild( postElement );
+#endif
 
   //wms:GetMap
-  QDomElement getMapElement = doc.createElement( "GetMap"/*wms:GetMap*/ );
-  requestElement.appendChild( getMapElement );
-  QDomElement jpgFormatElement = doc.createElement( "Format"/*wms:Format*/ );
-  QDomText jpgFormatText = doc.createTextNode( "image/jpeg" );
-  jpgFormatElement.appendChild( jpgFormatText );
-  getMapElement.appendChild( jpgFormatElement );
-  QDomElement pngFormatElement = doc.createElement( "Format"/*wms:Format*/ );
-  QDomText pngFormatText = doc.createTextNode( "image/png" );
-  pngFormatElement.appendChild( pngFormatText );
-  getMapElement.appendChild( pngFormatElement );
-  QDomElement getMapDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-  getMapElement.appendChild( getMapDhcTypeElement );
+  elem = doc.createElement( "GetMap"/*wms:GetMap*/ );
+  appendFormats( doc, elem, QStringList() << "image/jpeg" << "image/png" );
+  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
+  requestElement.appendChild( elem );
 
   //wms:GetFeatureInfo
-  QDomElement getFeatureInfoElem = doc.createElement( "GetFeatureInfo" );
-  //text/plain
-  QDomElement textFormatElem = doc.createElement( "Format" );
-  QDomText textFormatText = doc.createTextNode( "text/plain" );
-  textFormatElem.appendChild( textFormatText );
-  getFeatureInfoElem.appendChild( textFormatElem );
-  //text/html
-  QDomElement htmlFormatElem = doc.createElement( "Format" );
-  QDomText htmlFormatText = doc.createTextNode( "text/html" );
-  htmlFormatElem.appendChild( htmlFormatText );
-  getFeatureInfoElem.appendChild( htmlFormatElem );
-  //text/xml
-  QDomElement xmlFormatElem = doc.createElement( "Format" );
-  QDomText xmlFormatText = doc.createTextNode( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" );
-  xmlFormatElem.appendChild( xmlFormatText );
-  getFeatureInfoElem.appendChild( xmlFormatElem );
+  elem = doc.createElement( "GetFeatureInfo" );
+  appendFormats( doc, elem, QStringList() << "text/plain" << "text/html" << "text/xml" );
+  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
+  requestElement.appendChild( elem );
 
-  //dcpType
-  QDomElement getFeatureInfoDhcTypeElement = dcpTypeElement.cloneNode().toElement();//this is the same as for 'GetCapabilities'
-  getFeatureInfoElem.appendChild( getFeatureInfoDhcTypeElement );
-  requestElement.appendChild( getFeatureInfoElem );
+  //wms:GetLegendGraphic
+  elem = doc.createElement( "GetLegendGraphic"/*wms:GetLegendGraphic*/ );
+  appendFormats( doc, elem, QStringList() << "jpeg" << "image/jpeg" << "image/png" );
+  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); // this is the same as for 'GetCapabilities'
+  requestElement.appendChild( elem );
+
+  //wms:GetStyles
+  elem = doc.createElement( "GetStyles"/*wms:GetStyles*/ );
+  appendFormats( doc, elem, QStringList() << "text/xml" );
+  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
+  requestElement.appendChild( elem );
+
+  //wms:GetPrint
+  elem = doc.createElement( "GetPrint"/*wms:GetPrint*/ );
+  appendFormats( doc, elem, QStringList() << "svg" << "png" << "pdf" );
+  elem.appendChild( dcpTypeElement.cloneNode().toElement() ); //this is the same as for 'GetCapabilities'
+  requestElement.appendChild( elem );
 
   //Exception element is mandatory
-  QDomElement exceptionElement = doc.createElement( "Exception" );
-  QDomElement exFormatElement = doc.createElement( "Format" );
-  QDomText formatText = doc.createTextNode( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" );
-  exFormatElement.appendChild( formatText );
-  exceptionElement.appendChild( exFormatElement );
-  capabilityElement.appendChild( exceptionElement );
+  elem = doc.createElement( "Exception" );
+  appendFormats( doc, elem, QStringList() << ( version == "1.1.1" ? "application/vnd.ogc.se_xml" : "text/xml" ) );
+  capabilityElement.appendChild( elem );
 
   //Insert <ComposerTemplate> elements derived from wms:_ExtendedCapabilities
   if ( mConfigParser )
@@ -271,6 +273,7 @@ QDomDocument QgsWMSServer::getCapabilities( QString version )
     doc.save( capabilitiesStream, 4 );
   }
 #endif
+
   return doc;
 }
 
@@ -832,7 +835,7 @@ QImage* QgsWMSServer::initializeRendering( QStringList& layersList, QStringList&
   }
   //pass external GML to the SLD parser.
   QString gml = mParameterMap.value( "GML" );
-  if( !gml.isEmpty() )
+  if ( !gml.isEmpty() )
   {
     QDomDocument* gmlDoc = new QDomDocument();
     if ( gmlDoc->setContent( gml, true ) )
