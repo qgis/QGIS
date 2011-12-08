@@ -106,7 +106,7 @@
    <item row="1" column="0">
     <widget class="QTreeWidget" name="treeWidget">
      <property name="selectionMode">
-      <enum>QAbstractItemView::MultiSelection</enum>
+      <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
      <property name="sortingEnabled">
       <bool>true</bool>

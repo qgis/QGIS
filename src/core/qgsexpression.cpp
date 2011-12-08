@@ -1006,6 +1006,12 @@ bool QgsExpression::NodeBinaryOperator::toOGCFilter( QDomDocument& doc, QDomElem
     case boGT:
       opElem = doc.createElement( "PropertyIsGreaterThan" );
       break;
+    case boOr:
+      opElem = doc.createElement( "Or" );
+      break;
+    case boAnd:
+      opElem = doc.createElement( "And" );
+      break;
     default:
       return false;
   }
@@ -1039,4 +1045,21 @@ bool QgsExpression::NodeColumnRef::toOGCFilter( QDomDocument& doc, QDomElement& 
   propertyElem.appendChild( propertyText );
   parent.appendChild( propertyElem );
   return true;
+}
+
+bool QgsExpression::NodeUnaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
+{
+  if ( mOp == uoNot )
+  {
+    QDomElement notElem = doc.createElement( "Not" );
+    if ( mOperand )
+    {
+      if ( mOperand->toOGCFilter( doc, notElem ) )
+      {
+        parent.appendChild( notElem );
+        return true;
+      }
+    }
+  }
+  return false;
 }
