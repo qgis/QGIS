@@ -236,12 +236,20 @@ int main( int argc, char * argv[] )
       continue;
     }
 
+    QMap<QString, QString>::const_iterator paramIt;
+
     //set admin config file to wms server object
-    if ( !parameterMap.contains( "MAP" ) )
+    QString configFilePath( defaultConfigFilePath );
+
+    paramIt = parameterMap.find( "MAP" );
+    if ( paramIt == parameterMap.constEnd() )
     {
       QgsDebugMsg( QString( "Using default configuration file path: %1" ).arg( defaultConfigFilePath ) );
     }
-    QString configFilePath = parameterMap.value( "MAP", defaultConfigFilePath );
+    else
+    {
+      configFilePath = paramIt.value();
+    }
 
     QgsConfigParser* adminConfigParser = QgsConfigCache::instance()->searchConfiguration( configFilePath );
     if ( !adminConfigParser )
@@ -255,14 +263,21 @@ int main( int argc, char * argv[] )
     adminConfigParser->setParameterMap( parameterMap );
 
     //request to WMS?
-    QString serviceString = parameterMap.value( "SERVICE", "WMS" );
-#if 0
-    if ( !parameterMap.contains( "SERVICE" ) )
+    QString serviceString;
+#ifndef QGISDEBUG
+    serviceString = parameterMap.value( "SERVICE", "WMS" );
+#else
+    paramIt = parameterMap.find( "SERVICE" );
+    if ( paramIt == parameterMap.constEnd() )
     {
       QgsDebugMsg( "unable to find 'SERVICE' parameter, exiting..." );
       theRequestHandler->sendServiceException( QgsMapServiceException( "ServiceNotSpecified", "Service not specified. The SERVICE parameter is mandatory" ) );
       delete theRequestHandler;
       continue;
+    }
+    else
+    {
+      serviceString = paramIt.value();
     }
 #endif
 
@@ -386,7 +401,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetStyle" )
+    else if ( request == "GetStyles" || request == "GetStyle" ) // GetStyle for compatibility with earlier QGIS versions
     {
       try
       {
@@ -402,7 +417,7 @@ int main( int argc, char * argv[] )
       delete theServer;
       continue;
     }
-    else if ( request == "GetLegendGraphics" )
+    else if ( request == "GetLegendGraphic" || request == "GetLegendGraphics" ) // GetLegendGraphics for compatibility with earlier QGIS versions
     {
       QImage* result = 0;
       try
@@ -416,8 +431,8 @@ int main( int argc, char * argv[] )
 
       if ( result )
       {
-        QgsDebugMsg( "Sending GetLegendGraphics response" );
-        //sending is the same for GetMap and GetLegendGraphics
+        QgsDebugMsg( "Sending GetLegendGraphic response" );
+        //sending is the same for GetMap and GetLegendGraphic
         theRequestHandler->sendGetMapResponse( serviceString, result );
       }
       else
@@ -465,5 +480,3 @@ int main( int argc, char * argv[] )
   QgsDebugMsg( "************* all done ***************" );
   return 0;
 }
-
-

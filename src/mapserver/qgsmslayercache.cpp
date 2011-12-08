@@ -57,9 +57,10 @@ void QgsMSLayerCache::insertLayer( const QString& url, const QString& layerName,
   }
 
   QPair<QString, QString> urlLayerPair = qMakePair( url, layerName );
-  if ( mEntries.contains( urlLayerPair ) )
+  QHash<QPair<QString, QString>, QgsMSLayerCacheEntry>::iterator it = mEntries.find( urlLayerPair );
+  if ( it != mEntries.end() )
   {
-    delete mEntries[ urlLayerPair ].layerPointer;
+    delete it.value().layerPointer;
   }
 
   QgsMSLayerCacheEntry newEntry;

@@ -24,12 +24,15 @@
 #include <QDomElement>
 #include <QTemporaryFile>
 
-QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap ): QgsMSLayerBuilder(), mParameterMap( parameterMap )
+QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap )
+    : QgsMSLayerBuilder()
+    , mParameterMap( parameterMap )
 {
 
 }
 
-QgsRemoteOWSBuilder::QgsRemoteOWSBuilder(): QgsMSLayerBuilder()
+QgsRemoteOWSBuilder::QgsRemoteOWSBuilder()
+    : QgsMSLayerBuilder()
 {
 
 }
@@ -39,7 +42,11 @@ QgsRemoteOWSBuilder::~QgsRemoteOWSBuilder()
 
 }
 
-QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
+  const QDomElement& elem,
+  const QString& layerName,
+  QList<QTemporaryFile*>& filesToRemove,
+  QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
   if ( elem.isNull() )
   {
