@@ -255,6 +255,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const { return mOperand->needsGeometry(); }
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const;
       protected:
         UnaryOperator mOp;
         Node* mOperand;
