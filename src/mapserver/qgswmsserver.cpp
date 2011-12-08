@@ -581,7 +581,7 @@ QImage* QgsWMSServer::getMap()
   restoreLayerFilters( originalLayerFilters );
   clearFeatureSelections( selectedLayerIdList );
 
-  QgsDebugMsg("clearing filters");
+  QgsDebugMsg( "clearing filters" );
   QgsMapLayerRegistry::instance()->mapLayers().clear();
 
 #ifdef QGISDEBUG
@@ -1700,7 +1700,7 @@ QMap<QString, QString> QgsWMSServer::applyRequestedLayerFilters( const QStringLi
         throw QgsMapServiceException( "Filter string rejected", "The filter string " + eqSplit.at( 1 ) +
                                       " has been rejected because of security reasons. Note: Text strings have to be enclosed in single or double quotes. " +
                                       "A space between each word / special character is mandatory. Allowed Keywords and special characters are " +
-                                      "AND,OR,IN,<,>=,>,>=,!=,',',(,). Not allowed are semicolons in the filter expression." );
+                                      "AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX. Not allowed are semicolons in the filter expression." );
       }
 
       //we need to find the maplayer objects matching the layer name
@@ -1832,7 +1832,9 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
          || tokenIt->compare( ">=" ) == 0
          || tokenIt->compare( "AND", Qt::CaseInsensitive ) == 0
          || tokenIt->compare( "OR", Qt::CaseInsensitive ) == 0
-         || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0 )
+         || tokenIt->compare( "IN", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "DMETAPHONE", Qt::CaseInsensitive ) == 0
+         || tokenIt->compare( "SOUNDEX", Qt::CaseInsensitive ) == 0 )
     {
       continue;
     }
