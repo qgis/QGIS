@@ -58,7 +58,7 @@ void QgsOraclePlugin::initGui()
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->layerToolBar()->addAction( mQActionPointer );
   mQGisIface->insertAddLayerAction( mQActionPointer );
 
 }
@@ -87,7 +87,7 @@ void QgsOraclePlugin::run()
 void QgsOraclePlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->layerToolBar()->removeAction( mQActionPointer );
   mQGisIface->removeAddLayerAction( mQActionPointer );
   delete mQActionPointer;
 }
