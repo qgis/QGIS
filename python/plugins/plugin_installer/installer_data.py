@@ -70,7 +70,7 @@ seenPluginGroup = "/Qgis/plugin-seen"
 
 # Repositories: (name, url, possible depreciated url)
 officialRepo = ("QGIS Official Repository",    "http://pyqgis.org/repo/official","")
-officialRepo2 = ("QGIS Official Repository 2",    "http://plugins.qgis.org/plugins","")
+officialRepo2 = ("QGIS Official Repository 2", "http://plugins.qgis.org/plugins/plugins.xml","http://plugins.qgis.org/plugins")
 contribRepo  = ("QGIS Contributed Repository", "http://pyqgis.org/repo/contributed","")
 authorRepos  = [("Aaron Racicot's Repository", "http://qgisplugins.z-pulley.com", ""),
                 ("Barry Rowlingson's Repository", "http://www.maths.lancs.ac.uk/~rowlings/Qgis/Plugins/plugins.xml", ""),
@@ -338,7 +338,13 @@ class Repositories(QObject):
       if url == officialRepo[1]:
         officialRepoPresent = True
       if url == officialRepo2[1]:
+        officialRepoPresent2 = True
+      if url == officialRepo[2]:
+        settings.setValue(key+"/url", QVariant(officialRepo[1])) # correct a depreciated url
         officialRepoPresent = True
+      if url == officialRepo2[2]:
+        settings.setValue(key+"/url", QVariant(officialRepo2[1])) # correct a depreciated url
+        officialRepoPresent2 = True
       for authorRepo in authorRepos:
         if url == authorRepo[2]:
           settings.setValue(key+"/url", QVariant(authorRepo[1])) # correct a depreciated url
@@ -658,7 +664,7 @@ class Plugins(QObject):
         # check if the plugin is allowed and if there isn't any better one added already.
         if (allowed != 1 or plugin["repository"] == officialRepo[0]) and (allowed == 3 or not plugin["experimental"]) \
         and not (self.mPlugins.has_key(key) and self.mPlugins[key]["version_avail"] and compareVersions(self.mPlugins[key]["version_avail"], plugin["version_avail"]) < 2):
-          # The mPlugins doct contains now locally installed plugins. 
+          # The mPlugins dict contains now locally installed plugins.
           # Now, add the available one if not present yet or update it if present already.
           if not self.mPlugins.has_key(key):
             self.mPlugins[key] = plugin   # just add a new plugin
