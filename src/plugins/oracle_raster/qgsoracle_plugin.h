@@ -19,6 +19,7 @@
 // Qt Includes
 #include <QObject>
 #include <QAction>
+#include <QToolBar>
 
 // QGIS Includes
 #include <qgisplugin.h>

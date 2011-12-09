@@ -70,7 +70,7 @@ void QgsSpitPlugin::initGui()
   connect( spitAction, SIGNAL( triggered() ), this, SLOT( spit() ) );
   // Add the icon to the toolbar and to the plugin menu
   qI->addToolBarIcon( spitAction );
-  qI->addPluginToMenu( tr( "&Spit" ), spitAction );
+  qI->addPluginToDatabaseMenu( tr( "&Spit" ), spitAction );
 
   // this is called when the icon theme is changed
   connect( qI, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -90,7 +90,7 @@ void QgsSpitPlugin::unload()
 {
   // remove the GUI
   qI->removeToolBarIcon( spitAction );
-  qI->removePluginMenu( tr( "&Spit" ), spitAction );
+  qI->removePluginDatabaseMenu( tr( "&Spit" ), spitAction );
   delete spitAction;
 }
 
