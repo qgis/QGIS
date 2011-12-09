@@ -5287,6 +5287,10 @@ void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
   menu->removeAction( action );
+  if ( menu->actions().count() == 0 )
+  {
+    mDatabaseMenu->removeAction( menu->menuAction() );
+  }
 
   // remove the Database menu from the menuBar if there are no more actions
   if ( mDatabaseMenu->actions().count() > 0 )
