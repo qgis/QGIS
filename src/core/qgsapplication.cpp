@@ -534,7 +534,7 @@ QString QgsApplication::reportStyleSheet()
   QColor myColor2 = myColor1;
   myColor2 = myColor2.lighter( 110 ); //10% lighter
   QString myStyle;
-  myStyle = ".glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+  myStyle = "p.glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
             "stop: 0 " + myColor1.name()  + ","
             "stop: 0.1 " + myColor2.name() + ","
             "stop: 0.5 " + myColor1.name()  + ","
@@ -544,6 +544,15 @@ QString QgsApplication::reportStyleSheet()
             "padding-left: 4px;"
             "padding-top: 20px;"
             "padding-bottom: 8px;"
+            "border: 1px solid #6c6c6c;"
+            "}"
+            "th.glossy{ background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, "
+            "stop: 0 " + myColor1.name()  + ","
+            "stop: 0.1 " + myColor2.name() + ","
+            "stop: 0.5 " + myColor1.name()  + ","
+            "stop: 0.9 " + myColor2.name() + ","
+            "stop: 1 " + myColor1.name() + ");"
+            "color: white;"
             "border: 1px solid #6c6c6c;"
             "}"
             ".overview{ font: 1.82em; font-weight: bold;}"
