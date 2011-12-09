@@ -2402,119 +2402,124 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   QString myMetadataQString;
 
   // Layer Properties section
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
-  myMetadataQString += layer.name;
-  myMetadataQString += "</td></tr>";
 
   // Use a nested table
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += "<table width=\"100%\">";
 
   // Table header
-  myMetadataQString += "<tr><th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr( "Property" ) + "</font>";
+  myMetadataQString += "<tr><th class=\"glossy\">";
+  myMetadataQString += tr( "Property" );
   myMetadataQString += "</th>";
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr( "Value" ) + "</font>";
+  myMetadataQString += "<th class=\"glossy\">";
+  myMetadataQString += tr( "Value" );
   myMetadataQString += "</th></tr>";
 
+  // Name
+  myMetadataQString += "<tr><td>";
+  myMetadataQString += tr( "Name" );
+  myMetadataQString += "</td>";
+  myMetadataQString += "<td>";
+  myMetadataQString += layer.name;
+  myMetadataQString += "</td></tr>";
+
   // Layer Visibility (as managed by this provider)
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Visibility" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += activeSubLayerVisibility.find( layer.name ).value() ? tr( "Visible" ) : tr( "Hidden" );
   myMetadataQString += "</td></tr>";
 
   // Layer Title
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Title" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += layer.title;
   myMetadataQString += "</td></tr>";
 
   // Layer Abstract
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Abstract" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += layer.abstract;
   myMetadataQString += "</td></tr>";
 
   // Layer Queryability
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Can Identify" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += layer.queryable ? tr( "Yes" ) : tr( "No" );
   myMetadataQString += "</td></tr>";
 
   // Layer Opacity
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Can be Transparent" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += layer.opaque ? tr( "No" ) : tr( "Yes" );
   myMetadataQString += "</td></tr>";
 
   // Layer Subsetability
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Can Zoom In" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += layer.noSubsets ? tr( "No" ) : tr( "Yes" );
   myMetadataQString += "</td></tr>";
 
   // Layer Server Cascade Count
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Cascade Count" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += QString::number( layer.cascaded );
   myMetadataQString += "</td></tr>";
 
   // Layer Fixed Width
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Fixed Width" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += QString::number( layer.fixedWidth );
   myMetadataQString += "</td></tr>";
 
   // Layer Fixed Height
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Fixed Height" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += QString::number( layer.fixedHeight );
   myMetadataQString += "</td></tr>";
 
   // Layer Fixed Height
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "WGS 84 Bounding Box" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += extentForLayer[ layer.name ].toString();
   myMetadataQString += "</td></tr>";
 
   // Layer Coordinate Reference Systems
   for ( int j = 0; j < qMin( layer.crs.size(), 10 ); j++ )
   {
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += tr( "Available in CRS" );
     myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += "<td>";
     myMetadataQString += layer.crs[j];
     myMetadataQString += "</td></tr>";
   }
 
   if ( layer.crs.size() > 10 )
   {
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += tr( "Available in CRS" );
     myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += "<td>";
     myMetadataQString += tr( "(and %n more)", "crs", layer.crs.size() - 10 );
     myMetadataQString += "</td></tr>";
   }
@@ -2522,7 +2527,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   // Layer Styles
   for ( int j = 0; j < layer.style.size(); j++ )
   {
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += tr( "Available in style" );
     myMetadataQString += "</td>";
     myMetadataQString += "<td>";
@@ -2531,26 +2536,26 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     myMetadataQString += "<table width=\"100%\">";
 
     // Layer Style Name
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><th class=\"glossy\">";
     myMetadataQString += tr( "Name" );
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += "</th>";
+    myMetadataQString += "<td>";
     myMetadataQString += layer.style[j].name;
     myMetadataQString += "</td></tr>";
 
     // Layer Style Title
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><th class=\"glossy\">";
     myMetadataQString += tr( "Title" );
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += "</th>";
+    myMetadataQString += "<td>";
     myMetadataQString += layer.style[j].title;
     myMetadataQString += "</td></tr>";
 
     // Layer Style Abstract
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><th class=\"glossy\">";
     myMetadataQString += tr( "Abstract" );
-    myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += "</th>";
+    myMetadataQString += "<td>";
     myMetadataQString += layer.style[j].abstract;
     myMetadataQString += "</td></tr>";
 
@@ -2598,67 +2603,67 @@ QString QgsWmsProvider::metadata()
   myMetadataQString += "</td></tr>";
 
   // Server Properties section
-  myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"serverproperties\"></a>";
+  myMetadataQString += "<tr><th class=\"glossy\"><a name=\"serverproperties\"></a>";
   myMetadataQString += tr( "Server Properties" );
-  myMetadataQString += "</td></tr>";
+  myMetadataQString += "</th></tr>";
 
   // Use a nested table
-  myMetadataQString += "<tr><td bgcolor=\"white\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += "<table width=\"100%\">";
 
   // Table header
-  myMetadataQString += "<tr><th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr( "Property" ) + "</font>";
+  myMetadataQString += "<tr><th class=\"glossy\">";
+  myMetadataQString += tr( "Property" );
   myMetadataQString += "</th>";
-  myMetadataQString += "<th bgcolor=\"black\">";
-  myMetadataQString += "<font color=\"white\">" + tr( "Value" ) + "</font>";
+  myMetadataQString += "<th class=\"glossy\">";
+  myMetadataQString += tr( "Value" );
   myMetadataQString += "</th></tr>";
 
   // WMS Version
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "WMS Version" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.version;
   myMetadataQString += "</td></tr>";
 
   // Service Title
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Title" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.service.title;
   myMetadataQString += "</td></tr>";
 
   // Service Abstract
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Abstract" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.service.abstract;
   myMetadataQString += "</td></tr>";
 
   // Service Keywords
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Keywords" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.service.keywordList.join( "<br />" );
   myMetadataQString += "</td></tr>";
 
   // Service Online Resource
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Online Resource" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += "-";
   myMetadataQString += "</td></tr>";
 
   // Service Contact Information
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Contact Person" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.service.contactInformation.contactPersonPrimary.contactPerson;
   myMetadataQString += "<br />";
   myMetadataQString += mCapabilities.service.contactInformation.contactPosition;
@@ -2667,75 +2672,75 @@ QString QgsWmsProvider::metadata()
   myMetadataQString += "</td></tr>";
 
   // Service Fees
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Fees" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.service.fees;
   myMetadataQString += "</td></tr>";
 
   // Service Access Constraints
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Access Constraints" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.service.accessConstraints;
   myMetadataQString += "</td></tr>";
 
   // GetMap Request Formats
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Image Formats" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.capability.request.getMap.format.join( "<br />" );
   myMetadataQString += "</td></tr>";
 
   // GetFeatureInfo Request Formats
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Identify Formats" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mCapabilities.capability.request.getFeatureInfo.format.join( "<br />" );
   myMetadataQString += "</td></tr>";
 
   // Layer Count (as managed by this provider)
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "Layer Count" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += QString::number( layersSupported.size() );
   myMetadataQString += "</td></tr>";
 
   // Tileset Count (as managed by this provider)
   if ( tilesetsSupported.size() > 0 )
   {
-    myMetadataQString += "<tr><td bgcolor=\"gray\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += tr( "Tileset Count" );
     myMetadataQString += "</td>";
-    myMetadataQString += "<td bgcolor=\"gray\">";
+    myMetadataQString += "<td>";
     myMetadataQString += QString::number( tilesetsSupported.size() );
     myMetadataQString += "</td></tr>";
   }
 
   // Base URL
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "GetCapabilitiesUrl" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += mBaseUrl;
   myMetadataQString += "</td></tr>";
 
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "GetMapUrl" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += getMapUrl() + ( mIgnoreGetMapUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
   myMetadataQString += "</td></tr>";
 
-  myMetadataQString += "<tr><td bgcolor=\"gray\">";
+  myMetadataQString += "<tr><td>";
   myMetadataQString += tr( "GetFeatureInfoUrl" );
   myMetadataQString += "</td>";
-  myMetadataQString += "<td bgcolor=\"gray\">";
+  myMetadataQString += "<td>";
   myMetadataQString += getFeatureInfoUrl() + ( mIgnoreGetFeatureInfoUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : "" );
   myMetadataQString += "</td></tr>";
 
@@ -2744,9 +2749,9 @@ QString QgsWmsProvider::metadata()
   myMetadataQString += "</td></tr>";
 
   // Layer properties
-  myMetadataQString += "<tr><td><a name=\"selectedlayers\"></a>";
-  myMetadataQString += tr( "Selected Layers:" );
-  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><th class=\"glossy\"><a name=\"selectedlayers\"></a>";
+  myMetadataQString += tr( "Selected Layers" );
+  myMetadataQString += "</th></tr>";
 
   for ( int i = 0; i < layersSupported.size(); i++ )
   {
@@ -2757,9 +2762,9 @@ QString QgsWmsProvider::metadata()
   } // for each layer
 
   // Layer properties
-  myMetadataQString += "<tr><td><a name=\"otherlayers\"></a>";
-  myMetadataQString += tr( "Other layers:" );
-  myMetadataQString += "</td></tr>";
+  myMetadataQString += "<tr><th class=\"glossy\"><a name=\"otherlayers\"></a>";
+  myMetadataQString += tr( "Other Layers" );
+  myMetadataQString += "</th></tr>";
 
   for ( int i = 0; i < layersSupported.size(); i++ )
   {
@@ -2772,62 +2777,62 @@ QString QgsWmsProvider::metadata()
   // Tileset properties
   if ( tilesetsSupported.size() > 0 )
   {
-    myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"tilesetproperties\"></a>";
+    myMetadataQString += "<tr><th class=\"glossy\"><a name=\"tilesetproperties\"></a>";
     myMetadataQString += tr( "Tileset Properties" );
-    myMetadataQString += "</td></tr>";
+    myMetadataQString += "</th></tr>";
 
     // Iterate through tilesets
-    myMetadataQString += "<tr><td bgcolor=\"white\">";
+    myMetadataQString += "<tr><td>";
     myMetadataQString += "<table width=\"100%\">";
 
     for ( int i = 0; i < tilesetsSupported.size(); i++ )
     {
-      myMetadataQString += "<tr><td bgcolor=\"white\" colspan=\"2\">";
+      myMetadataQString += "<tr><td colspan=\"2\">";
       myMetadataQString += tilesetsSupported[i].layers.join( ", " );
       myMetadataQString += "</td></tr>";
 
       // Table header
-      myMetadataQString += "<tr><th bgcolor=\"black\">";
-      myMetadataQString += "<font color=\"white\">" + tr( "Property" ) + "</font>";
+      myMetadataQString += "<tr><th class=\"glossy\">";
+      myMetadataQString += tr( "Property" );
       myMetadataQString += "</th>";
-      myMetadataQString += "<th bgcolor=\"black\">";
-      myMetadataQString += "<font color=\"white\">" + tr( "Value" ) + "</font>";
+      myMetadataQString += "<th class=\"glossy\">";
+      myMetadataQString += tr( "Value" );
       myMetadataQString += "</th></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr( "Selected" );
       myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += "<td class=\"glossy\">";
       myMetadataQString += mTiled && tilesetsSupported[i].layers.join( "," ) == activeSubLayers.join( "," ) ? tr( "Yes" ) : tr( "No" );
       myMetadataQString += "</td></tr>";
 
       if ( tilesetsSupported[i].styles.size() > 0 )
       {
-        myMetadataQString += "<tr><td bgcolor=\"gray\">";
+        myMetadataQString += "<tr><td class=\"glossy\">";
         myMetadataQString += tr( "Styles" );
         myMetadataQString += "</td>";
-        myMetadataQString += "<td bgcolor=\"gray\">";
+        myMetadataQString += "<td class=\"glossy\">";
         myMetadataQString += tilesetsSupported[i].styles.join( ", " );
         myMetadataQString += "</td></tr>";
       }
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr( "CRS" );
       myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += "<td class=\"glossy\">";
       myMetadataQString += tilesetsSupported[i].boundingBox.crs;
       myMetadataQString += "</td></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr( "Bounding Box" );
       myMetadataQString += "</td>";
-      myMetadataQString += "<td bgcolor=\"gray\">";
+      myMetadataQString += "<td class=\"glossy\">";
       myMetadataQString += tilesetsSupported[i].boundingBox.box.toString();
       myMetadataQString += "</td></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td class=\"glossy\">";
       myMetadataQString += tr( "Available in Resolutions" );
-      myMetadataQString += "</td><td bgcolor=\"gray\">";
+      myMetadataQString += "</td><td class=\"glossy\">";
 
       for ( int j = 0; j < tilesetsSupported[i].resolutions.size(); j++ )
       {
@@ -2842,36 +2847,36 @@ QString QgsWmsProvider::metadata()
 #if QT_VERSION >= 0x40500
     if ( mTiled )
     {
-      myMetadataQString += "<tr><td bgcolor=\"gray\"><a name=\"cachestats\"></a>";
+      myMetadataQString += "<tr><th class=\"glossy\"><a name=\"cachestats\"></a>";
       myMetadataQString += tr( "Cache stats" );
-      myMetadataQString += "</td></tr>";
-
-      // Iterate through tilesets
-      myMetadataQString += "<tr><td bgcolor=\"white\">";
-      myMetadataQString += "<table width=\"100%\">";
-
-      myMetadataQString += "<tr><th bgcolor=\"black\">";
-      myMetadataQString += "<font color=\"white\">" + tr( "Property" ) + "</font>";
-      myMetadataQString += "</th>";
-      myMetadataQString += "<th bgcolor=\"black\">";
-      myMetadataQString += "<font color=\"white\">" + tr( "Value" ) + "</font>";
       myMetadataQString += "</th></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      // Iterate through tilesets
+      myMetadataQString += "<tr><td>";
+      myMetadataQString += "<table width=\"100%\">";
+
+      myMetadataQString += "<tr><th class=\"glossy\">";
+      myMetadataQString += tr( "Property" );
+      myMetadataQString += "</th>";
+      myMetadataQString += "<th class=\"glossy\">";
+      myMetadataQString += tr( "Value" );
+      myMetadataQString += "</th></tr>";
+
+      myMetadataQString += "<tr><td>";
       myMetadataQString += tr( "Hits" );
-      myMetadataQString += "</td><td bgcolor=\"gray\">";
+      myMetadataQString += "</td><td>";
       myMetadataQString += QString::number( mCacheHits );
       myMetadataQString += "</td></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td>";
       myMetadataQString += tr( "Misses" );
-      myMetadataQString += "</td><td bgcolor=\"gray\">";
+      myMetadataQString += "</td><td>";
       myMetadataQString += QString::number( mCacheMisses );
       myMetadataQString += "</td></tr>";
 
-      myMetadataQString += "<tr><td bgcolor=\"gray\">";
+      myMetadataQString += "<tr><td>";
       myMetadataQString += tr( "Errors" );
-      myMetadataQString += "</td><td bgcolor=\"gray\">";
+      myMetadataQString += "</td><td>";
       myMetadataQString += QString::number( mErrors );
       myMetadataQString += "</td></tr>";
 

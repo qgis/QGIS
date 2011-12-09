@@ -27551,7 +27551,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1761"/>
         <source>Pyramid overviews:</source>
-        <translation>Pyramiden Überblicke:</translation>
+        <translation>Pyramidenübersichten:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1773"/>
@@ -34270,7 +34270,7 @@ URL %1 versucht</translation>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2671"/>
         <source>Fees</source>
-        <translation>Kosten</translation>
+        <translation>Gebühren</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2679"/>
