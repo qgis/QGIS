@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>337</height>
+    <width>371</width>
+    <height>341</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>Path to the GDAL binaries</string>
+        <string>Path to the GDAL executables</string>
        </property>
       </widget>
      </item>
@@ -45,6 +45,44 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSetBinPath">
+       <property name="text">
+        <string>Browse</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_8">
+     <item>
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Path to the GDAL python modules</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="pymod_tooltip_label">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string notr="true">##tooltip icon##</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <item>
+      <widget class="QLineEdit" name="leGdalPymodPath"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="btnSetPymodPath">
        <property name="text">
         <string>Browse</string>
        </property>
@@ -142,37 +180,6 @@
      </item>
      <item>
       <widget class="QPushButton" name="btnSetDriverPath">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="text">
-        <string>Browse</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_4">
-     <property name="enabled">
-      <bool>false</bool>
-     </property>
-     <property name="text">
-      <string>GDAL pymod path</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <item>
-      <widget class="QLineEdit" name="leGdalPythonPath">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="btnSetPythonPath">
        <property name="enabled">
         <bool>false</bool>
        </property>
