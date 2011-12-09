@@ -53,15 +53,23 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
   }
 
   QString filterString;
+
+  //if the xml comes from the dialog, it needs to be a string to pass the validity test
+  if ( filter.startsWith( "'" ) && filter.endsWith( "'" ) && filter.size() > 1 )
+  {
+    filter.chop( 1 );
+    filter.remove( 0, 1 );
+  }
+
   if ( !filter.isEmpty() )
   {
     //test if filterString is already an OGC filter xml
     QDomDocument filterDoc;
-    if( !filterDoc.setContent( filter ) )
+    if ( !filterDoc.setContent( filter ) )
     {
       //if not, if must be a QGIS expression
       QgsExpression filterExpression( filter );
-      if( !filterExpression.toOGCFilter( filterDoc ) )
+      if ( !filterExpression.toOGCFilter( filterDoc ) )
       {
         //error
       }

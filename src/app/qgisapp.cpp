@@ -1730,7 +1730,7 @@ void QgisApp::initLegend()
 
   QWidget *w = new QWidget( this );
   QLayout *l = new QVBoxLayout;
-  l->setMargin(0);
+  l->setMargin( 0 );
   l->addWidget( mMapLegend );
   l->addWidget( legendCb );
   w->setLayout( l );
@@ -1747,7 +1747,7 @@ void QgisApp::initLegend()
 
   w = new QWidget( this );
   l = new QVBoxLayout;
-  l->setMargin(0);
+  l->setMargin( 0 );
   l->addWidget( mMapLayerOrder );
   l->addWidget( orderCb );
   w->setLayout( l );
@@ -2444,6 +2444,11 @@ void QgisApp::addWfsLayer()
   }
   connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
            this , SLOT( addWfsLayer( QString, QString ) ) );
+
+  if ( mapCanvas() )
+  {
+    wfss->setProperty( "MapExtent", mapCanvas()->extent().toString() ); //hack to reenable wfs with extent setting
+  }
 
   wfss->exec();
   delete wfss;
@@ -6394,14 +6399,14 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
 
 #ifdef ANDROID
     //this is needed to deal with http://hub.qgis.org/issues/4573
-    QMessageBox box(QMessageBox::Warning,title, tr("This project file was saved by an older version of QGIS"), QMessageBox::Ok, NULL);
+    QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, NULL );
     box.setDetailedText(
-                text.remove(0, 3)
-                .replace(QString("<p>"),QString("\n\n"))
-                .replace(QString("<br>"),QString("\n"))
-                .replace(QString("<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> "),QString("\nhttp://hub.qgis.org/projects/quantum-gis"))
-                .replace(QRegExp("</?tt>"),QString(""))
-                );
+      text.remove( 0, 3 )
+      .replace( QString( "<p>" ), QString( "\n\n" ) )
+      .replace( QString( "<br>" ), QString( "\n" ) )
+      .replace( QString( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttp://hub.qgis.org/projects/quantum-gis" ) )
+      .replace( QRegExp( "</?tt>" ), QString( "" ) )
+    );
     box.exec();
 #else
     QMessageBox::warning( NULL, title, text );

@@ -51,10 +51,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
     buttonBox->button( QDialogButtonBox::Cancel )->hide();
   }
 
-  // keep the "use current view extent" checkbox hidden until
-  // the functionality is reintroduced [MD]
-  mBboxCheckBox->hide();
-
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
@@ -265,15 +261,12 @@ void QgsWFSSourceSelect::addLayer()
   }
 
   QgsRectangle bBox;
-#if 0
-  // TODO: resolve [MD]
-  //get current extent
-  QgsMapCanvas* canvas = mIface->mapCanvas();
-  if ( canvas && mBboxCheckBox->isChecked() )
+  QgsRectangle currentRectangle;
+  if ( mBboxCheckBox->isChecked() )
   {
-    QgsRectangle currentExtent = canvas->extent();
+    currentRectangle = mExtent;
   }
-#endif
+
 
   QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
   QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
@@ -285,7 +278,7 @@ void QgsWFSSourceSelect::addLayer()
 
     //add a wfs layer to the map
     QgsWFSConnection conn( cmbConnections->currentText() );
-    QString uri = conn.uriGetFeature( typeName, crs, filter, bBox );
+    QString uri = conn.uriGetFeature( typeName, crs, filter, currentRectangle );
     emit addWfsLayer( uri, typeName );
   }
 }
@@ -405,4 +398,26 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
       item->setText( 3, w->getExpressionString() );
     }
   }
+}
+
+void QgsWFSSourceSelect::showEvent( QShowEvent* event )
+{
+  Q_UNUSED( event );
+  QVariant extentVariant = property( "MapExtent" );
+  if ( extentVariant.isValid() )
+  {
+    QString extentString = extentVariant.toString();
+    QStringList minMaxSplit = extentString.split( ":" );
+    if ( minMaxSplit.size() > 1 )
+    {
+      QStringList xyMinSplit = minMaxSplit[0].split( "," );
+      QStringList xyMaxSplit = minMaxSplit[1].split( "," );
+      if ( xyMinSplit.size() > 1 && xyMaxSplit.size() > 1 )
+      {
+        mExtent.set( xyMinSplit[0].toDouble(), xyMinSplit[1].toDouble(), xyMaxSplit[0].toDouble(), xyMaxSplit[1].toDouble() );
+        return;
+      }
+    }
+  }
+  mBboxCheckBox->hide();
 }
