@@ -978,7 +978,7 @@ bool QgsExpression::toOGCFilter( QDomDocument& doc ) const
   }
 
   doc.clear();
-  QDomElement filterElem = doc.createElementNS( "http://www.opengis.net/fes/2.0", "Filter" );
+  QDomElement filterElem = doc.createElement( "Filter" );
   doc.appendChild( filterElem );
   return mRootNode->toOGCFilter( doc, filterElem );
 }

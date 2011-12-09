@@ -55,12 +55,19 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
   QString filterString;
   if ( !filter.isEmpty() )
   {
-    QgsExpression filterExpression( filter );
+    //test if filterString is already an OGC filter xml
     QDomDocument filterDoc;
-    if ( filterExpression.toOGCFilter( filterDoc ) )
+    if( !filterDoc.setContent( filter ) )
     {
-      filterString = "&FILTER=" + filterDoc.toString();
+      //if not, if must be a QGIS expression
+      QgsExpression filterExpression( filter );
+      if( !filterExpression.toOGCFilter( filterDoc ) )
+      {
+        //error
+      }
+
     }
+    filterString = "&FILTER=" + filterDoc.toString();
   }
 
   QString bBoxString;

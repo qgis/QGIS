@@ -27,6 +27,7 @@ class QgsWFSConnection : public QObject
     //! URI to get schema of wfs layer
     QString uriDescribeFeatureType( const QString& typeName ) const;
     //! URI to get features
+    //! @param filter can be an OGC filter xml or a QGIS expression (containing =,!=, <,>,<=, >=, AND, OR, NOT )
     QString uriGetFeature( QString typeName,
                            QString crs = QString(),
                            QString filter = QString(),

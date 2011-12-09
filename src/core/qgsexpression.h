@@ -122,8 +122,8 @@ class CORE_EXPORT QgsExpression
 
     //! Return the parsed expression as a string - useful for debugging
     QString dump() const;
-    //! Creates ogc filter xml document
-    //! @return true in case of success
+    //! Creates ogc filter xml document. Supports minimum standard filter according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
+    //! @return true in case of success. False if string contains something that goes beyond the minimum standard filter
     bool toOGCFilter( QDomDocument& doc ) const;
 
     //! Return calculator used for distance and area calculations
