@@ -1045,9 +1045,7 @@ class geoprocessingThread( QThread ):
                   int_geom = QgsGeometry( int_com.difference( int_sym ) )
                 try:
                   outFeat.setGeometry( int_geom )
-                  print outFeat.isValid()
                   outFeat.setAttributeMap( ftools_utils.combineVectorAttributes( atMapA, atMapB ) )
-                  print outFeat.isValid()
                   writer.addFeature( outFeat )
                 except:
                   FEATURE_EXCEPT = False
@@ -1056,7 +1054,6 @@ class geoprocessingThread( QThread ):
               GEOS_EXCEPT = False
               break
     del writer
-    print crs_match
     return GEOS_EXCEPT, FEATURE_EXCEPT, crs_match, None
 
   def union( self ):
@@ -1217,7 +1214,6 @@ class geoprocessingThread( QThread ):
               # intersects, but the geometry doesn't
               outFeat.setGeometry( diff_geom )
               outFeat.setAttributeMap( atMap )
-              print geom.wkbType()
               writer.addFeature( outFeat )
           except Exception, err:
             add = False
