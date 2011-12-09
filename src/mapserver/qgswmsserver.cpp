@@ -1776,6 +1776,12 @@ bool QgsWMSServer::testFilterStringSafety( const QString& filter ) const
 
     //numeric strings need to be quoted once either with single or with double quotes
 
+    //empty strings are ok
+    if ( *tokenIt == "''" )
+    {
+      continue;
+    }
+
     //single quote
     if ( tokenIt->size() > 2
          && ( *tokenIt )[0] == QChar( '\'' )
