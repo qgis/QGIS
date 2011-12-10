@@ -172,8 +172,6 @@ class SplitThread(QThread):
         self.emit(SIGNAL("rangeCalculated(PyQt_PyObject)"), len(unique))
 
         for i in unique:
-            print "I", i
-            print "INDEX", index
             check = QFile(baseName + "_" + unicode(i.toString().trimmed()) + ".shp")
             fName = check.fileName()
             if check.exists():
@@ -185,7 +183,6 @@ class SplitThread(QThread):
             provider.rewind()
             while provider.nextFeature(inFeat):
                 atMap = inFeat.attributeMap()
-                #print "AtMAP", atMAP
                 if atMap[index] == i:
                     writer.addFeature(inFeat)
             del writer
