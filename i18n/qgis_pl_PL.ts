@@ -3793,7 +3793,7 @@ Błąd geoprocesingu GEOS: Jeden lub więcej wejściowych obiektów ma błędną
     <message>
         <location filename="../src/ui/qgisapp.ui" line="367"/>
         <source>Label</source>
-        <translation>Etykieta</translation>
+        <translation>Etykietowanie</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="386"/>
@@ -14474,7 +14474,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="14"/>
         <source>Add PostGIS Table(s)</source>
-        <translation>Dodaj tabelę PostGIS</translation>
+        <translation>Dodaj tabele PostGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="31"/>
@@ -16971,7 +16971,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="202"/>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="205"/>
         <source>Zoom to Layer</source>
-        <translation>Powiększ do warstwy</translation>
+        <translation>Powiększ do zasięgu warstwy</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="208"/>
@@ -16999,7 +16999,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="235"/>
         <source>Ctrl+A</source>
-        <translation></translation>
+        <translation>Ctrl+A</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefpluginguibase.ui" line="240"/>
@@ -21145,7 +21145,7 @@ Może to być spowodowane problemem w sieci lokalnej lub problemem serwera WMS.<
         <location filename="../src/ui/qgslabelingguibase.ui" line="278"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="489"/>
         <source> mm</source>
-        <translation></translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="69"/>
@@ -22526,7 +22526,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="239"/>
         <source>Inline</source>
-        <translation></translation>
+        <translation>W linii</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="258"/>
@@ -23817,7 +23817,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="117"/>
         <source>Choose a name for the modified raster</source>
-        <translation></translation>
+        <translation>Wybierz nazwę dla zmodyfikowanego rastra</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="150"/>
@@ -30232,12 +30232,12 @@ Komunikat błędu:%2</translation>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="123"/>
         <source>Decimal number (double)</source>
-        <translation></translation>
+        <translation>Liczba zmiennoprzecinkowa (podwójnej precyzji)</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialiteprovider.cpp" line="124"/>
         <source>Whole number (integer)</source>
-        <translation></translation>
+        <translation>Liczba całkowita (integer)</translation>
     </message>
 </context>
 <context>
@@ -39737,7 +39737,7 @@ Wtyczka nie zostanie włączona.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="412"/>
         <source>Split lines to shorter segments</source>
-        <translation></translation>
+        <translation>Podziel linie na krótsze segmenty</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="413"/>
