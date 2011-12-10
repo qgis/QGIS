@@ -631,7 +631,7 @@ Section "Uninstall"
 	RMDir "$INSTDIR"
 	
 	;remove the Desktop ShortCut
-	SetShellVarContext current
+	SetShellVarContext all
 	Delete "$DESKTOP\Quantum GIS (${VERSION_NUMBER}).lnk"
 	
 	;remove the Programs Start ShortCut
