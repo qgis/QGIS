@@ -1,3 +1,9 @@
+qgis (1.7.3-1) UNRELEASED; urgency=low
+
+  * new upstream bugfix release
+
+ -- Jürgen E. Fischer <jef@norbit.de>  Sat, 10 Dec 2011 17:17:57 +0100
+
 qgis (1.7.2-1) UNRELEASED; urgency=low
 
   * new upstream bugfix release
