@@ -789,6 +789,12 @@ void QgsRasterLayerProperties::sync()
     leNoDataValue->insert( "" );
   }
 
+  populateTransparencyTable();
+
+  QgsDebugMsg( "populate colormap tab" );
+  /*
+   * Transparent Pixel Tab
+   */
   //restore colormap tab if the layer has custom classification
   syncColormapTab();
 

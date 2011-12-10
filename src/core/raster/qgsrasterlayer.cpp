@@ -99,6 +99,18 @@ QgsRasterLayer::QgsRasterLayer(
   // TODO, call constructor with provider key for now
   init();
   setDataProvider( "gdal", QStringList(), QStringList(), QString(), QString(), loadDefaultStyleFlag );
+
+  if ( mValid && loadDefaultStyleFlag )
+  {
+    bool defaultLoadedFlag = false;
+    loadDefaultStyle( defaultLoadedFlag );
+    // I'm no sure if this should be used somehow, in pre raster-providers there was
+    // only mLastViewPort init after this block, nothing to do with style
+    //if ( defaultLoadedFlag )
+    //{
+    //return;
+    //}
+  }
   return;
 
 
@@ -2449,18 +2461,6 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   //mark the layer as valid
   mValid = true;
 
-  //loadDefaultStyle() can not be called before the layer has actually be opened
-  // TODO ???
-  //if ( loadDefaultStyleFlag )
-  //{
-  //bool defaultLoadedFlag = false;
-  //loadDefaultStyle( defaultLoadedFlag );
-  //if ( defaultLoadedFlag )
-  //{
-  //return;
-  //}
-  //}
-
   QgsDebugMsg( "exiting." );
 } // QgsRasterLayer::setDataProvider
 
@@ -4021,7 +4021,7 @@ void QgsRasterLayer::drawPalettedSingleBandGray( QPainter * theQPainter, QgsRast
   int myAlphaValue = 0;
 
   while ( imageBuffer.nextScanLine( &imageScanLine, &rasterScanLine )
-         && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
+          && ( !transparencyImageBuffer || transparencyImageBuffer->nextScanLine( &transparencyImageScanLine, &transparencyRasterScanLine ) ) )
   {
     for ( int i = 0; i < theRasterViewPort->drawableAreaXDim; ++i )
     {
