@@ -51,6 +51,20 @@ This is a bugfix release over version 1.7.2 and the following changes were made.
 - Fix #2749 Move 'Add to Attributes List' button
 - Fix #4560 Wrong scale displayed in Map canvas
 - Partial Fix #4383 Ftools: Improve how processes are handled
+- Fix #3577 Adding a print composer doesn't dirty the document
+- Fix #3170 Many GDAL Tools don't work in OS X standalone
+- Fix #3723 Transparency settings are not applied from *.qml
+- Fix #3576 qml not read automagically for rasters
+- Fix #2977 Messy uninstallation of the standalone installer
+- Union and Symetrical difference works only on whole layer fixed
+- Save some time in node tool for geometry export and avoid detachs
+- Initialize default symbol to 0 in rule based renderer
+- Make relative paths default
+- Fix tab restoration in project properties
+- Add helpful info to GdalTools Settings dialog on how to configure GDAL path
+- New vector layer dialog - show CRS as authid-description pair instead of proj4 string
+- Fix crash with relative file paths if projPath is not yet defined
+- Add helpful info to GdalTools Settings dialog on how to configure GDAL path
 - And a lot of other smaller Bugfixes
 
 
