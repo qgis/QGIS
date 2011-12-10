@@ -3546,6 +3546,7 @@ QgsComposer* QgisApp::createNewComposer()
   emit composerAdded( newComposerObject->view() );
   connect( newComposerObject, SIGNAL( composerAdded( QgsComposerView* ) ), this, SIGNAL( composerAdded( QgsComposerView* ) ) );
   connect( newComposerObject, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ), this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
+  markDirty();
   return newComposerObject;
 }
 
@@ -3554,6 +3555,7 @@ void QgisApp::deleteComposer( QgsComposer* c )
   emit composerWillBeRemoved( c->view() );
   mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
+  markDirty();
   delete c;
 }
 
@@ -3598,6 +3600,7 @@ void QgisApp::deletePrintComposers()
   }
   mPrintComposers.clear();
   mLastComposerId = 0;
+  markDirty();
 }
 
 bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
