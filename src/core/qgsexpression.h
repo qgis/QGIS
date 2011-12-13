@@ -19,12 +19,12 @@
 #include <QStringList>
 #include <QVariant>
 #include <QList>
+#include <QDomDocument>
 
 #include "qgsfield.h"
 
 class QgsDistanceArea;
 class QgsFeature;
-class QDomDocument;
 class QDomElement;
 
 /**
