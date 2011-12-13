@@ -39,6 +39,7 @@
 #include <QCalendarWidget>
 #include <QDialogButtonBox>
 #include <QSettings>
+#include <QDir>
 
 void QgsAttributeEditor::selectFileName()
 {
@@ -58,7 +59,8 @@ void QgsAttributeEditor::selectFileName()
   if ( fileName.isNull() )
     return;
 
-  le->setText( fileName );
+  //le->setText( fileName );
+  le->setText( QDir::toNativeSeparators( fileName ) );
 }
 
 void QgsAttributeEditor::selectDate()
