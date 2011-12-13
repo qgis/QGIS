@@ -131,7 +131,7 @@
      </column>
      <column>
       <property name="text">
-       <string>cacheFeatures</string>
+       <string>cache features</string>
       </property>
      </column>
      <column>
