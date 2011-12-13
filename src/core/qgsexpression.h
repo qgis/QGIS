@@ -24,6 +24,8 @@
 
 class QgsDistanceArea;
 class QgsFeature;
+class QDomDocument;
+class QDomElement;
 
 /**
 Class for parsing and evaluation of expressions (formerly called "search strings").
@@ -120,6 +122,9 @@ class CORE_EXPORT QgsExpression
 
     //! Return the parsed expression as a string - useful for debugging
     QString dump() const;
+    //! Creates ogc filter xml document. Supports minimum standard filter according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
+    //! @return true in case of success. False if string contains something that goes beyond the minimum standard filter
+    bool toOGCFilter( QDomDocument& doc ) const;
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
@@ -222,6 +227,7 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const = 0;
         virtual bool needsGeometry() const = 0;
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const { return false; }
     };
 
     class NodeList
@@ -249,6 +255,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const { return mOperand->needsGeometry(); }
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const;
       protected:
         UnaryOperator mOp;
         Node* mOperand;
@@ -265,6 +272,8 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
         virtual bool needsGeometry() const { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const;
+
       protected:
         bool compare( double diff );
         int computeInt( int x, int y );
@@ -320,6 +329,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return QStringList(); }
         virtual bool needsGeometry() const { return false; }
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const;
       protected:
         QVariant mValue;
     };
@@ -334,6 +344,7 @@ class CORE_EXPORT QgsExpression
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return QStringList( mName ); }
         virtual bool needsGeometry() const { return false; }
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const;
       protected:
         QString mName;
         int mIndex;

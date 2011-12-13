@@ -140,6 +140,9 @@ class QgsWFSProvider: public QgsVectorDataProvider
       synchronize with changes in the data source*/
     virtual void reloadData();
 
+    /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
+    int describeFeatureType( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
+
   signals:
     void dataReadProgressMessage( QString message );
 
@@ -188,10 +191,6 @@ class QgsWFSProvider: public QgsVectorDataProvider
     QString mWfsNamespace;
     /**Server capabilities for this layer (generated from capabilities document)*/
     int mCapabilities;
-
-
-    /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
-    int describeFeatureType( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
 
     //encoding specific methods of getFeature
     int getFeatureGET( const QString& uri, const QString& geometryAttribute );

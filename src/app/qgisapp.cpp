@@ -2444,6 +2444,11 @@ void QgisApp::addWfsLayer()
   connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
            this , SLOT( addWfsLayer( QString, QString ) ) );
 
+  if ( mapCanvas() )
+  {
+    wfss->setProperty( "MapExtent", mapCanvas()->extent().toString() ); //hack to reenable wfs with extent setting
+  }
+
   wfss->exec();
   delete wfss;
 }
