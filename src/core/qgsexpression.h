@@ -227,7 +227,7 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const = 0;
         virtual bool needsGeometry() const = 0;
-        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const { return false; }
+        virtual bool toOGCFilter( QDomDocument& doc, QDomElement& parent ) const { Q_UNUSED( doc ); Q_UNUSED( parent ); return false; }
     };
 
     class NodeList
