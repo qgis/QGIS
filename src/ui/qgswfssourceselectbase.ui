@@ -112,7 +112,7 @@
       <bool>true</bool>
      </property>
      <property name="columnCount">
-      <number>4</number>
+      <number>5</number>
      </property>
      <column>
       <property name="text">
@@ -127,6 +127,11 @@
      <column>
       <property name="text">
        <string>Abstract</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>cacheFeatures</string>
       </property>
      </column>
      <column>
@@ -185,19 +190,12 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QCheckBox" name="mBboxCheckBox">
-     <property name="text">
-      <string>Only request features overlapping the current view extent</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
