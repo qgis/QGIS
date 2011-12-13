@@ -61,6 +61,7 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
   }
 
   reloadData();
+
   if ( mValid )
   {
     getLayerCapabilities();
@@ -230,15 +231,30 @@ void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
   mAttributesToFetch = fetchAttributes;
   mFetchGeom = fetchGeometry;
 
-  if ( rect.isEmpty() )
+  QString dsURI = dataSourceUri();
+  if ( dsURI.contains( "BBOX" ) )
   {
-    mSpatialFilter = mExtent;
+    QUrl url( dsURI );
+    url.removeQueryItem( "BBOX" );
+    url.addQueryItem( "BBOX", QString::number( rect.xMinimum() ) + "," + QString::number( rect.yMinimum() ) + ","
+                      + QString::number( rect.xMaximum() ) + "," + QString::number( rect.yMaximum() ) );
+    setDataSourceUri( url.toString() );
+    reloadData();
     mSelectedFeatures = mFeatures.keys();
+    mSpatialFilter = rect;
   }
   else
   {
-    mSpatialFilter = rect;
-    mSelectedFeatures = mSpatialIndex->intersects( mSpatialFilter );
+    if ( rect.isEmpty() )
+    {
+      mSpatialFilter = mExtent;
+      mSelectedFeatures = mFeatures.keys();
+    }
+    else
+    {
+      mSpatialFilter = rect;
+      mSelectedFeatures = mSpatialIndex->intersects( mSpatialFilter );
+    }
   }
 
   mFeatureIterator = mSelectedFeatures.begin();

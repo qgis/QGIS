@@ -42,16 +42,16 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
 {
   setupUi( this );
 
-  btnAdd = buttonBox->button( QDialogButtonBox::Ok );
+  btnAdd = buttonBox->button( QDialogButtonBox::Apply );
   btnAdd->setEnabled( false );
 
   if ( embeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Ok )->hide();
-    buttonBox->button( QDialogButtonBox::Cancel )->hide();
+    buttonBox->button( QDialogButtonBox::Apply )->hide();
+    buttonBox->button( QDialogButtonBox::Close )->hide();
   }
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
   connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
@@ -178,6 +178,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     newItem->setText( 0, featureType.title );
     newItem->setText( 1, featureType.name );
     newItem->setText( 2, featureType.abstract );
+    newItem->setCheckState( 3, Qt::Checked );
     treeWidget->addTopLevelItem( newItem );
 
     // insert the available CRS into mAvailableCRS
@@ -260,27 +261,26 @@ void QgsWFSSourceSelect::addLayer()
     return;
   }
 
-  QgsRectangle bBox;
-  QgsRectangle currentRectangle;
-  if ( mBboxCheckBox->isChecked() )
-  {
-    currentRectangle = mExtent;
-  }
-
-
   QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
   QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
   for ( ; sIt != selectedItems.constEnd(); ++sIt )
   {
     QString typeName = ( *sIt )->text( 1 );
     QString crs = labelCoordRefSys->text();
-    QString filter = ( *sIt )->text( 3 );
+    QString filter = ( *sIt )->text( 4 );
+
+    QgsRectangle currentRectangle;
+    if (( *sIt )->checkState( 3 ) == Qt::Unchecked )
+    {
+      currentRectangle = mExtent;
+    }
 
     //add a wfs layer to the map
     QgsWFSConnection conn( cmbConnections->currentText() );
     QString uri = conn.uriGetFeature( typeName, crs, filter, currentRectangle );
     emit addWfsLayer( uri, typeName );
   }
+  accept();
 }
 
 void QgsWFSSourceSelect::changeCRS()
@@ -419,5 +419,4 @@ void QgsWFSSourceSelect::showEvent( QShowEvent* event )
       }
     }
   }
-  mBboxCheckBox->hide();
 }
