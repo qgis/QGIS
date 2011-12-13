@@ -63,7 +63,11 @@ void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& for
   printf( "Content-Length: %d\n", ba->size() );
   printf( "\n" );
   int result = fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+#ifdef QGISDEBUG
   QgsDebugMsg( QString( "Sent %1 bytes" ).arg( result ) );
+#else
+  Q_UNUSED( result );
+#endif
 }
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
