@@ -2427,10 +2427,16 @@ void QgisApp::addWmsLayer()
 
 void QgisApp::addWfsLayer()
 {
+  if ( !mMapCanvas )
+  {
+    return;
+  }
+
   if ( mMapCanvas && mMapCanvas->isDrawing() )
   {
     return;
   }
+
   // Fudge for now
   QgsDebugMsg( "about to addWfsLayer" );
 
@@ -2444,7 +2450,12 @@ void QgisApp::addWfsLayer()
   connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
            this , SLOT( addWfsLayer( QString, QString ) ) );
 
+  wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() ); //hack to reenable wfs with extent setting
+
+  bool bkRenderFlag = mMapCanvas->renderFlag();
+  mMapCanvas->setRenderFlag( false );
   wfss->exec();
+  mMapCanvas->setRenderFlag( bkRenderFlag );
   delete wfss;
 }
 
