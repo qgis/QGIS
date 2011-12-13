@@ -28,40 +28,42 @@ QgsCapabilitiesCache::~QgsCapabilitiesCache()
 {
 }
 
-const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( const QString& configFilePath ) const
+const QDomDocument* QgsCapabilitiesCache::searchCapabilitiesDocument( QString configFilePath, QString version )
 {
   QCoreApplication::processEvents(); //get updates from file system watcher
-  QHash< QString, QDomDocument >::const_iterator it = mCachedCapabilities.find( configFilePath );
-  if ( it == mCachedCapabilities.constEnd() )
+
+  if ( mCachedCapabilities.contains( configFilePath ) && mCachedCapabilities[ configFilePath ].contains( version ) )
   {
-    return 0;
+    return &mCachedCapabilities[configFilePath][version];
   }
   else
   {
-    return &( it.value() );
+    return 0;
   }
 }
 
-void QgsCapabilitiesCache::insertCapabilitiesDocument( const QString& configFilePath, const QDomDocument* doc )
+void QgsCapabilitiesCache::insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc )
 {
   if ( mCachedCapabilities.size() > 40 )
   {
     //remove another cache entry to avoid memory problems
-    QHash<QString, QDomDocument>::iterator capIt = mCachedCapabilities.begin();
+    QHash<QString, QHash<QString, QDomDocument> >::iterator capIt = mCachedCapabilities.begin();
     mFileSystemWatcher.removePath( capIt.key() );
     mCachedCapabilities.erase( capIt );
   }
-  mCachedCapabilities.insert( configFilePath, doc->cloneNode().toDocument() );
-  mFileSystemWatcher.addPath( configFilePath );
+
+  if ( !mCachedCapabilities.contains( configFilePath ) )
+  {
+    mFileSystemWatcher.addPath( configFilePath );
+    mCachedCapabilities.insert( configFilePath, QHash<QString, QDomDocument>() );
+  }
+
+  mCachedCapabilities[ configFilePath ].insert( version, doc->cloneNode().toDocument() );
 }
 
 void QgsCapabilitiesCache::removeChangedEntry( const QString& path )
 {
   QgsDebugMsg( "Remove capabilities cache entry because file changed" );
-  QHash< QString, QDomDocument >::iterator it = mCachedCapabilities.find( path );
-  if ( it != mCachedCapabilities.end() )
-  {
-    mCachedCapabilities.erase( it );
-  }
+  mCachedCapabilities.remove( path );
   mFileSystemWatcher.removePath( path );
 }

@@ -24,15 +24,15 @@
 //standard includes
 #include <cassert>
 #include <cstdlib>
-#include <iostream>
-
 
 QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
                                   std::map<QString, QgsGPSDevice*>& devices,
                                   std::vector<QgsVectorLayer*> gpxMapLayers,
                                   QWidget* parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mGPXLayers( gpxMapLayers ),
-    mImporters( importers ), mDevices( devices )
+    : QDialog( parent, fl )
+    , mGPXLayers( gpxMapLayers )
+    , mImporters( importers )
+    , mDevices( devices )
 {
   setupUi( this );
   populatePortComboBoxes();

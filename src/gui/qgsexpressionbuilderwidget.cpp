@@ -17,8 +17,12 @@
 #include "qgslogger.h"
 #include "qgsexpression.h"
 #include "qgsmessageviewer.h"
+#include "qgsapplication.h"
 
+#include <QSettings>
 #include <QMenu>
+#include <QFile>
+#include <QTextStream>
 
 QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
     : QWidget( parent )
@@ -48,38 +52,41 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
-  registerItem( "Operators", "+", " + " );
-  registerItem( "Operators", "-", " -" );
-  registerItem( "Operators", "*", " * " );
-  registerItem( "Operators", "/", " / " );
-  registerItem( "Operators", "%", " % " );
-  registerItem( "Operators", "^", " ^ " );
-  registerItem( "Operators", "=", " = " );
-  registerItem( "Operators", ">", " > " );
-  registerItem( "Operators", "<", " < " );
-  registerItem( "Operators", "<>", " <> " );
-  registerItem( "Operators", "<=", " <= " );
-  registerItem( "Operators", ">=", " >= " );
-  registerItem( "Operators", "||", " || ", "<b>|| (String Concatenation)</b> "
-                "<br> Joins two values together into a string "
-                "<br> <i>Usage:</i><br>'Dia' || Diameter" );
-  registerItem( "Operators", "LIKE", " LIKE " );
-  registerItem( "Operators", "ILIKE", " ILIKE " );
-  registerItem( "Operators", "IS", " IS NOT " );
-  registerItem( "Operators", "OR", " OR " );
-  registerItem( "Operators", "AND", " AND " );
-  registerItem( "Operators", "NOT", " NOT " );
+  registerItem( tr( "Operators" ), "+", " + " );
+  registerItem( tr( "Operators" ), "-", " -" );
+  registerItem( tr( "Operators" ), "*", " * " );
+  registerItem( tr( "Operators" ), "/", " / " );
+  registerItem( tr( "Operators" ), "%", " % " );
+  registerItem( tr( "Operators" ), "^", " ^ " );
+  registerItem( tr( "Operators" ), "=", " = " );
+  registerItem( tr( "Operators" ), ">", " > " );
+  registerItem( tr( "Operators" ), "<", " < " );
+  registerItem( tr( "Operators" ), "<>", " <> " );
+  registerItem( tr( "Operators" ), "<=", " <= " );
+  registerItem( tr( "Operators" ), ">=", " >= " );
+  registerItem( tr( "Operators" ), "||", " || ",
+                QString( "<b>|| %1</b><br><i>%2</i><br><i>%3:</i>%4" )
+                .arg( tr( "(String Concatenation)" ) )
+                .arg( tr( "Joins two values together into a string" ) )
+                .arg( tr( "Usage" ) )
+                .arg( tr( "'Dia' || Diameter" ) ) );
+  registerItem( tr( "Operators" ), "LIKE", " LIKE " );
+  registerItem( tr( "Operators" ), "ILIKE", " ILIKE " );
+  registerItem( tr( "Operators" ), "IS", " IS NOT " );
+  registerItem( tr( "Operators" ), "OR", " OR " );
+  registerItem( tr( "Operators" ), "AND", " AND " );
+  registerItem( tr( "Operators" ), "NOT", " NOT " );
 
 
   // Load the fuctions from the QgsExpression class
   int count = QgsExpression::functionCount();
   for ( int i = 0; i < count; i++ )
   {
-    QgsExpression::FunctionDef func = QgsExpression::BuiltinFunctions[i];
+    QgsExpression::FunctionDef func = QgsExpression::BuiltinFunctions()[i];
     QString name = func.mName;
     if ( func.mParams >= 1 )
       name += "(";
-    registerItem( func.mGroup, func.mName, " " + name + " ", func.mHelpText );
+    registerItem( func.mGroup, func.mName, " " + name + " " );
   };
 }
 
@@ -106,18 +113,19 @@ void QgsExpressionBuilderWidget::on_expressionTree_clicked( const QModelIndex &i
   // right click so we just show the help.
   if ( item->getItemType() == QgsExpressionItem::Field )
   {
-    txtHelpText->setText( tr( "Double click to add field name to expression string. <br> "
+    txtHelpText->setHtml( tr( "Double click to add field name to expression string. <br> "
                               "Or right click to select loading value options then "
                               "double click an item in the value list to add it to the expression string." ) );
-    txtHelpText->setToolTip( txtHelpText->text() );
+    txtHelpText->setToolTip( txtHelpText->toPlainText() );
   }
   else
   {
     // Show the help for the current item.
     mValueGroupBox->hide();
     mValueListWidget->clear();
-    txtHelpText->setText( item->getHelpText() );
-    txtHelpText->setToolTip( txtHelpText->text() );
+    QString help = loadFunctionHelp( item );
+    txtHelpText->setText( help );
+    txtHelpText->setToolTip( txtHelpText->toPlainText() );
   }
 }
 
@@ -148,7 +156,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
   for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
   {
     QString fieldName = fieldIt.value().name();
-    registerItem( "Fields", fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
+    registerItem( tr( "Fields" ), fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
   }
 }
 
@@ -233,31 +241,31 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
   {
     if ( !mFeature.isValid() )
     {
-        mLayer->select( mLayer->pendingAllAttributesList() );
-        mLayer->nextFeature( mFeature );
+      mLayer->select( mLayer->pendingAllAttributesList() );
+      mLayer->nextFeature( mFeature );
     }
 
     if ( mFeature.isValid() )
     {
-        QVariant value = exp.evaluate( &mFeature, mLayer->pendingFields() );
-        if ( !exp.hasEvalError() )
-          lblPreview->setText( value.toString() );
+      QVariant value = exp.evaluate( &mFeature, mLayer->pendingFields() );
+      if ( !exp.hasEvalError() )
+        lblPreview->setText( value.toString() );
     }
     else
     {
-        // The feautre is invaild because we don't have one but that doesn't mean user can't
-        // build a expression string.  They just get no preview.
-        lblPreview->setText("");
+      // The feautre is invaild because we don't have one but that doesn't mean user can't
+      // build a expression string.  They just get no preview.
+      lblPreview->setText( "" );
     }
   }
 
   if ( exp.hasParserError() || exp.hasEvalError() )
   {
-    QString tooltip = "<b>Parser Error:</b> <br>" + exp.parserErrorString();
+    QString tooltip = QString( "<b>%1:</b><br>%2" ).arg( tr( "Parser Error" ) ).arg( exp.parserErrorString() );
     if ( exp.hasEvalError() )
-      tooltip += "<br><br> <b>Eval Error:</b> <br>" + exp.evalErrorString();
+      tooltip += QString( "<br><br><b>%1:</b><br>%2" ).arg( tr( "Eval Error" ) ).arg( exp.evalErrorString() );
 
-    lblPreview->setText( "Expression is invaild <a href=""more"">(more info)</a>" );
+    lblPreview->setText( tr( "Expression is invalid <a href=""more"">(more info)</a>" ) );
     lblPreview->setStyleSheet( "color: rgba(255, 6, 10,  255);" );
     txtExpressionString->setToolTip( tooltip );
     lblPreview->setToolTip( tooltip );
@@ -286,7 +294,7 @@ void QgsExpressionBuilderWidget::on_lblPreview_linkActivated( QString link )
 {
   Q_UNUSED( link );
   QgsMessageViewer * mv = new QgsMessageViewer( this );
-  mv->setWindowTitle( "More info on expression error" );
+  mv->setWindowTitle( tr( "More info on expression error" ) );
   mv->setMessageAsHtml( txtExpressionString->toolTip() );
   mv->exec();
 }
@@ -347,3 +355,74 @@ void QgsExpressionBuilderWidget::loadAllValues()
   fillFieldValues( fieldIndex, -1 );
 }
 
+QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functionName )
+{
+  if ( functionName != NULL )
+  {
+    // set up the path to the help file
+    QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/function_help/";
+    /*
+     * determine the locale and create the file name from
+     * the context id
+     */
+    QString lang = QLocale::system().name();
+
+    QSettings settings;
+    if ( settings.value( "locale/overrideFlag", false ).toBool() )
+    {
+      QLocale l( settings.value( "locale/userLocale", "en_US" ).toString() );
+      lang = l.name();
+    }
+    /*
+     * If the language isn't set on the system, assume en_US,
+     * otherwise we get the banner at the top of the help file
+     * saying it isn't available in "your" language. Some systems
+     * may be installed without the LANG environment being set.
+     */
+    if ( lang.length() == 0 || lang == "C" )
+    {
+      lang = "en_US";
+    }
+    QString fullHelpPath = helpFilesPath + functionName->text() + "-" + lang;
+    // get the help content and title from the localized file
+    QString helpContents;
+    QFile file( fullHelpPath );
+    // check to see if the localized version exists
+    if ( !file.exists() )
+    {
+      // change the file name to the en_US version (default)
+      fullHelpPath = helpFilesPath + functionName->text() + "-en_US";
+      file.setFileName( fullHelpPath );
+
+      // Check for some sort of english locale and if not found, include
+      // translate this for us message
+      if ( !lang.contains( "en_" ) )
+      {
+        helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team." ).arg( lang ) + "</i><hr />";
+      }
+
+    }
+    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    {
+      helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
+                     .arg( fullHelpPath );
+    }
+    else
+    {
+      QTextStream in( &file );
+      in.setCodec( "UTF-8" ); // Help files must be in Utf-8
+      while ( !in.atEnd() )
+      {
+        QString line = in.readLine();
+        helpContents += line;
+      }
+    }
+    file.close();
+
+    // Set the browser text to the help contents
+    QString myStyle = QgsApplication::reportStyleSheet();
+    helpContents = "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
+    return helpContents;
+  }
+  return "";
+}

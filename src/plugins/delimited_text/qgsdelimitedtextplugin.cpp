@@ -32,9 +32,6 @@ Functions:
 #include <QAction>
 #include <QFile>
 
-//non qt includes
-#include <iostream>
-
 //the gui subclass
 #include "qgsdelimitedtextplugingui.h"
 

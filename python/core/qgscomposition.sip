@@ -79,6 +79,9 @@ class QgsComposition: QGraphicsScene
     bool printAsRaster() const;
     void setPrintAsRaster(bool enabled);
 
+    double selectionTolerance() const;
+    void setSelectionTolerance( double tol );
+
     /**Returns pointer to map renderer of qgis map canvas*/
     QgsMapRenderer* mapRenderer();
 
@@ -98,6 +101,13 @@ class QgsComposition: QGraphicsScene
 
     /**Reads settings from xml file*/
     bool readXML( const QDomElement& compositionElem, const QDomDocument& doc );
+
+    /**Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
+      @param elem items parent element, e.g. <Composer> or <ComposerItemClipboard>
+      @param doc xml document
+      @param addUndoCommands insert AddItem commands if true (e.g. for copy/paste)
+      @param pos item position. Optional, take position from xml if 0*/
+    void addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands = false, QPointF* pos = 0 );
 
     /**Adds item to z list. Usually called from constructor of QgsComposerItem*/
     void addItemToZList( QgsComposerItem* item );
@@ -139,4 +149,27 @@ class QgsComposition: QGraphicsScene
     void endCommand();
     /**Deletes current command*/
     void cancelCommand();
+
+    /**Adds an arrow item to the graphics scene and advices composer to create a widget for it (through signal)*/
+    //void addComposerArrow( QgsComposerArrow* arrow );
+    /**Adds label to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerLabel( QgsComposerLabel* label );
+    /**Adds map to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerMap( QgsComposerMap* map );
+    /**Adds scale bar to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerScaleBar( QgsComposerScaleBar* scaleBar );
+    /**Adds legend to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerLegend( QgsComposerLegend* legend );
+    /**Adds picture to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerPicture( QgsComposerPicture* picture );
+    /**Adds a composer shape to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerShape( QgsComposerShape* shape );
+    /**Adds a composer table to the graphics scene and advices composer to create a widget for it (through signal)*/
+    void addComposerTable( QgsComposerAttributeTable* table );
+
+    /**Remove item from the graphics scene. Additionally to QGraphicsScene::removeItem, this function considers undo/redo command*/
+    void removeComposerItem( QgsComposerItem* item );
+
+    /**Convenience function to create a QgsAddRemoveItemCommand, connect its signals and push it to the undo stack*/
+    void pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state );
 };

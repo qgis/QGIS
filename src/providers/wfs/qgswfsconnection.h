@@ -21,14 +21,17 @@ class QgsWFSConnection : public QObject
     static void setSelectedConnection( QString name );
 
     //! base service URI
-    QString uri() { return mUri; }
+    QString uri() const { return mUri; }
     //! URI to get capabilities
-    QString uriGetCapabilities();
+    QString uriGetCapabilities() const;
+    //! URI to get schema of wfs layer
+    QString uriDescribeFeatureType( const QString& typeName ) const;
     //! URI to get features
+    //! @param filter can be an OGC filter xml or a QGIS expression (containing =,!=, <,>,<=, >=, AND, OR, NOT )
     QString uriGetFeature( QString typeName,
                            QString crs = QString(),
                            QString filter = QString(),
-                           QgsRectangle bBox = QgsRectangle() );
+                           QgsRectangle bBox = QgsRectangle() ) const;
 
     //! start network connection to get capabilities
     void requestCapabilities();

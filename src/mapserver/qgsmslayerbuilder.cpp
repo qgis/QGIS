@@ -53,13 +53,11 @@ QString QgsMSLayerBuilder::layerNameFromUri( const QString& uri ) const
   if ( uri.contains( "dbname" ) )
   {
     //take tablename
-    QStringList spaceSplit = uri.split( " " );
-    QStringList::const_iterator slIt;
-    for ( slIt = spaceSplit.constBegin(); slIt != spaceSplit.constEnd(); ++slIt )
+    foreach( QString token, uri.split( " " ) )
     {
-      if ( slIt->startsWith( "table" ) )
+      if ( token.startsWith( "table" ) )
       {
-        return slIt->section( "=", 1, 1 );
+        return token.section( "=", 1, 1 );
       }
     }
   }

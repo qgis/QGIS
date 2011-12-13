@@ -22,18 +22,7 @@ class GdalToolsBaseDialog(QDialog, Ui_Dialog):
       self.iface = iface
 
       self.process = QProcess(self)
-      gdalPath = Utils.getGdalPath()
-      if not gdalPath.isEmpty():
-          env = self.process.environment()
-          if env.isEmpty():
-            #env << "PATH=" + gdalPath
-            os.putenv( "PATH", str( gdalPath ) )
-          else:
-            if platform.system() == "Windows":
-              env.replaceInStrings( QRegExp( "^PATH=(.*)", Qt.CaseInsensitive ), "PATH=\\1;" + gdalPath )
-            else:
-              env.replaceInStrings( QRegExp( "^PATH=(.*)", Qt.CaseInsensitive ), "PATH=\\1:" + gdalPath )
-          self.process.setEnvironment( env )
+      Utils.setProcessEnvironment(self.process)
       self.connect(self.process, SIGNAL("error(QProcess::ProcessError)"), self.processError)
       self.connect(self.process, SIGNAL("finished(int, QProcess::ExitStatus)"), self.processFinished)
 

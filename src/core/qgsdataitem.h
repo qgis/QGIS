@@ -36,6 +36,7 @@ typedef int dataCapabilities_t();
 typedef QgsDataItem * dataItem_t( QString, QgsDataItem* );
 
 
+
 /** base class for all items in the model */
 class CORE_EXPORT QgsDataItem : public QObject
 {
@@ -79,6 +80,12 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     // list of actions provided by this item - usually used for popup menu on right-click
     virtual QList<QAction*> actions() { return QList<QAction*>(); }
+
+    // whether accepts drag&drop'd layers - e.g. for import
+    virtual bool acceptDrop() { return false; }
+
+    // try to process the data dropped on this item
+    virtual bool handleDrop( const QMimeData * /*data*/, Qt::DropAction /*action*/ ) { return false; }
 
     //
 

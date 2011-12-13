@@ -16,6 +16,7 @@
 #include "qgsogrdataitems.h"
 
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #include <QFileInfo>
 #include <QTextStream>
@@ -93,7 +94,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
     }
     else
     {
-      QgsDebugMsg( "Couldn't open file " + layerName + ".prj" );
+      QgsMessageLog::logMessage( tr( "Couldn't open file %1.prj" ).arg( layerName ), tr( "OGR" ) );
       return false;
     }
     OSRDestroySpatialReference( hSRS );
@@ -109,7 +110,7 @@ bool QgsOgrLayerItem::setCrs( QgsCoordinateReferenceSystem crs )
     }
     else
     {
-      QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
+      QgsMessageLog::logMessage( tr( "Couldn't open file %1.qpj" ).arg( layerName ), tr( "OGR" ) );
       return false;
     }
 

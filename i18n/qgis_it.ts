@@ -1807,7 +1807,7 @@ http://trac.faunalia.it/GdalTools-plugin</source>
         <translation>GDAL Tools (noto anche come Raster Tools) è un plugin per QuantumGIS che facilita l&apos;utilizzo di GDAL, fornendo un&apos;interfaccia grafica semplificata per i programmi più utilizzati.
 
 Il plugin è sviluppato da Faunalia (http://faunalia.it) in collaborazione con GIS-lab (http://gis-lab.info).
-Icone realizzare da Robert Szczepanek.
+Icone realizzate da Robert Szczepanek.
 Si ringrazia Silvio Grosso per la sponsorizzazione.
 
 Aiutateci a testare il plugin, informandoci sui eventuali bug, migliorando il codice o supportandoci economicamente.
@@ -14793,7 +14793,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="275"/>
         <source>Start import at row</source>
-        <translation>Inizia l&apos;importazione dalla colonna</translation>
+        <translation>Inizia l&apos;importazione dalla riga</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextpluginguibase.ui" line="293"/>
@@ -22434,7 +22434,7 @@ Può essere o un problema della propria connessione di rete o sul lato del serve
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="302"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation>Questa geometria non può essere semplificata. Verificare se la geometria ha abbastanza vertifici per la semplificazione.</translation>
+        <translation>Questa geometria non può essere semplificata. Verificare se la geometria ha abbastanza vertici per la semplificazione.</translation>
     </message>
 </context>
 <context>

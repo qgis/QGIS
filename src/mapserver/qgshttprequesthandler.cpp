@@ -29,6 +29,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <fcgi_stdio.h>
+#include "qgslogger.h"
 
 QgsHttpRequestHandler::QgsHttpRequestHandler(): QgsRequestHandler()
 {
@@ -42,6 +43,7 @@ QgsHttpRequestHandler::~QgsHttpRequestHandler()
 
 void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& format ) const
 {
+  QgsDebugMsg( "Checking byte array is ok to send..." );
   if ( !ba )
   {
     return;
@@ -52,12 +54,16 @@ void QgsHttpRequestHandler::sendHttpResponse( QByteArray* ba, const QString& for
     return;
   }
 
+  QgsDebugMsg( "Byte array looks good, returning response..." );
+  QgsDebugMsg( QString( "Content size: %1" ).arg( ba->size() ) );
+  QgsDebugMsg( QString( "Content format: %1" ).arg( format ) );
   printf( "Content-Type: " );
   printf( format.toLocal8Bit() );
   printf( "\n" );
   printf( "Content-Length: %d\n", ba->size() );
   printf( "\n" );
-  fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  int result = fwrite( ba->data(), ba->size(), 1, FCGI_stdout );
+  QgsDebugMsg( QString( "Sent %1 bytes" ).arg( result ) );
 }
 
 QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
@@ -84,10 +90,12 @@ QString QgsHttpRequestHandler::formatToMimeType( const QString& format ) const
 void QgsHttpRequestHandler::sendGetMapResponse( const QString& service, QImage* img ) const
 {
   Q_UNUSED( service );
+  QgsDebugMsg( "Sending getmap response..." );
   if ( img )
   {
     if ( mFormat != "PNG" && mFormat != "JPG" )
     {
+      QgsDebugMsg( "service exception - incorrect image format requested..." );
       sendServiceException( QgsMapServiceException( "InvalidFormat", "Output format '" + mFormat + "' is not supported in the GetMap request" ) );
       return;
     }
@@ -265,30 +273,24 @@ void QgsHttpRequestHandler::sendGetPrintResponse( QByteArray* ba ) const
   sendHttpResponse( ba, formatToMimeType( mFormat ) );
 }
 
-void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request, std::map<QString, QString>& parameters )
+void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters )
 {
   parameters.clear();
 
-  //parameters are separated by &
-  QStringList elements = request.split( "&" );
 
-  QString element, key, value;
-
-  //insert key and value into the map
-  for ( QStringList::const_iterator it = elements.begin(); it != elements.end(); ++it )
+  //insert key and value into the map (parameters are separated by &
+  foreach( QString element, request.split( "&" ) )
   {
-    element = *it;
     int sepidx = element.indexOf( "=", 0, Qt::CaseSensitive );
     if ( sepidx == -1 )
     {
       continue;
     }
 
-    key = element.left( sepidx );
-    value = element.mid( sepidx + 1 );
+    QString key = element.left( sepidx );
+    QString value = element.mid( sepidx + 1 );
     value.replace( "+", " " );
     value = QUrl::fromPercentEncoding( value.toLocal8Bit() ); //replace encoded special caracters and utf-8 encodings
-
 
     if ( key.compare( "SLD_BODY", Qt::CaseInsensitive ) == 0 )
     {
@@ -321,23 +323,21 @@ void QgsHttpRequestHandler::requestStringToParameterMap( const QString& request,
       value = QUrl::fromPercentEncoding( fileContents );
 
     }
-    parameters.insert( std::make_pair( key.toUpper(), value ) );
+    parameters.insert( key.toUpper(), value );
     QgsDebugMsg( "inserting pair " + key.toUpper() + " // " + value + " into the parameter map" );
   }
 
   //feature info format?
-  std::map<QString, QString>::const_iterator info_format_it = parameters.find( "INFO_FORMAT" );
-  if ( info_format_it != parameters.end() )
+  QString infoFormat = parameters.value( "INFO_FORMAT" );
+  if ( !infoFormat.isEmpty() )
   {
-    mFormat = info_format_it->second;
+    mFormat = infoFormat;
   }
   else //capabilities format or GetMap format
   {
-    std::map<QString, QString>::const_iterator formatIt = parameters.find( "FORMAT" );
-    if ( formatIt != parameters.end() )
+    QString formatString = parameters.value( "FORMAT" );
+    if ( !formatString.isEmpty() )
     {
-      QString formatString = formatIt->second;
-
       QgsDebugMsg( QString( "formatString is: %1" ).arg( formatString ) );
 
       //remove the image/ in front of the format

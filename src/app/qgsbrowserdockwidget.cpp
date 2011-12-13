@@ -32,6 +32,7 @@ class QgsBrowserTreeView : public QTreeView
       setSelectionMode( QAbstractItemView::ExtendedSelection );
       setContextMenuPolicy( Qt::CustomContextMenu );
       setHeaderHidden( true );
+      setDropIndicatorShown( true );
     }
 
     void dragEnterEvent( QDragEnterEvent* e )
@@ -42,9 +43,21 @@ class QgsBrowserTreeView : public QTreeView
     }
     void dragMoveEvent( QDragMoveEvent* e )
     {
-      // ignore all possibilities where an item could be dropped
-      // because we want that user drops the item on canvas / legend / app
-      e->ignore();
+      // do not accept drops above/below items
+      /*if ( dropIndicatorPosition() != QAbstractItemView::OnItem )
+      {
+        QgsDebugMsg("drag not on item");
+        e->ignore();
+        return;
+      }*/
+
+      QTreeView::dragMoveEvent( e );
+
+      if ( !e->provides( "application/x-vnd.qgis.qgis.uri" ) )
+      {
+        e->ignore();
+        return;
+      }
     }
 };
 

@@ -30,7 +30,7 @@
 #include "qgspythonutils.h"
 #include "qgisapp.h"
 #include "qgslogger.h"
-
+#include "qgsmessagelog.h"
 
 /* typedefs for plugins */
 typedef QgisPlugin *create_ui( QgisInterface * qI );
@@ -236,7 +236,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 {
   if ( !mPythonUtils || !mPythonUtils->isEnabled() )
   {
-    QgsDebugMsg( "Python is not enabled in QGIS." );
+    QgsMessageLog::logMessage( QObject::tr( "Python is not enabled in QGIS." ), QObject::tr( "Plugins" ) );
     return;
   }
 
@@ -261,9 +261,7 @@ void QgsPluginRegistry::loadPythonPlugin( QString packageName )
 
     // add to settings
     settings.setValue( "/PythonPlugins/" + packageName, true );
-    std::cout << "Loaded : " << pluginName.toLocal8Bit().constData() << " (package: "
-              << packageName.toLocal8Bit().constData() << ")" << std::endl; // OK
-
+    QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (package: %2)" ).arg( pluginName ).arg( packageName ), QObject::tr( "Plugins" ) );
   }
 }
 
@@ -288,9 +286,9 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
   myError += QObject::tr( "Library name is %1\n" ).arg( myLib.fileName() );
 
   bool loaded = myLib.load();
-  if ( ! loaded )
+  if ( !loaded )
   {
-    QgsDebugMsg( "Failed to load " + theFullPathName );
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
     return;
   }
 
@@ -317,6 +315,7 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
           addPlugin( baseName, QgsPluginMetadata( myLib.fileName(), pName(), pl ) );
           //add it to the qsettings file [ts]
           settings.setValue( "/Plugins/" + baseName, true );
+          QgsMessageLog::logMessage( QObject::tr( "Loaded %1 (Path: %2)" ).arg( pName() ).arg( myLib.fileName() ), QObject::tr( "Plugins" ) );
 
           QObject *o = dynamic_cast<QObject *>( pl );
           if ( o )
@@ -356,14 +355,14 @@ void QgsPluginRegistry::loadCppPlugin( QString theFullPathName )
       }
       else
       {
-        QgsDebugMsg( "Unable to find the class factory for " + theFullPathName );
+        QgsMessageLog::logMessage( QObject::tr( "Unable to find the class factory for %1." ).arg( theFullPathName ), QObject::tr( "Plugins" ) );
       }
 
     }
     break;
     default:
       // type is unknown
-      QgsDebugMsg( "Plugin " + theFullPathName + " did not return a valid type and cannot be loaded" );
+      QgsMessageLog::logMessage( QObject::tr( "Plugin %1 did not return a valid type and cannot be loaded" ).arg( theFullPathName ), QObject::tr( "Plugins" ) );
       break;
   }
 }
@@ -384,6 +383,8 @@ void QgsPluginRegistry::restoreSessionPlugins( QString thePluginDirString )
 
 #ifdef WIN32
   QString pluginExt = "*.dll";
+#elif ANDROID
+  QString pluginExt = "*plugin.so";
 #else
   QString pluginExt = "*.so*";
 #endif
@@ -448,8 +449,7 @@ bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
   bool loaded = myLib.load();
   if ( ! loaded )
   {
-    //QgsDebugMsg("Failed to load " + myLib.fileName());
-    //QgsDebugMsg("Reason: " + myLib.errorString());
+    QgsMessageLog::logMessage( QObject::tr( "Failed to load %1 (Reason: %2)" ).arg( myLib.fileName() ).arg( myLib.errorString() ), QObject::tr( "Plugins" ) );
     return false;
   }
 

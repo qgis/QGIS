@@ -1,14 +1,12 @@
 #include "qgswfsconnection.h"
-
+#include "qgsexpression.h"
 #include "qgslogger.h"
-
-#include <QDomDocument>
-#include <QSettings>
-#include <QStringList>
-
 #include "qgsnetworkaccessmanager.h"
+#include <QDomDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QSettings>
+#include <QStringList>
 
 static const QString WFS_NAMESPACE = "http://www.opengis.net/wfs";
 
@@ -36,12 +34,17 @@ QgsWFSConnection::QgsWFSConnection( QString connName, QObject *parent ) :
   }
 }
 
-QString QgsWFSConnection::uriGetCapabilities()
+QString QgsWFSConnection::uriGetCapabilities() const
 {
   return mUri + "SERVICE=WFS&REQUEST=GetCapabilities&VERSION=1.0.0";
 }
 
-QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox )
+QString QgsWFSConnection::uriDescribeFeatureType( const QString& typeName ) const
+{
+  return mUri + "SERVICE=WFS&REQUEST=DescribeFeatureType&VERSION=1.0.0&TYPENAME=" + typeName;
+}
+
+QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QString filter, QgsRectangle bBox ) const
 {
   //get CRS
   if ( !crsString.isEmpty() )
@@ -50,9 +53,29 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
   }
 
   QString filterString;
+
+  //if the xml comes from the dialog, it needs to be a string to pass the validity test
+  if ( filter.startsWith( "'" ) && filter.endsWith( "'" ) && filter.size() > 1 )
+  {
+    filter.chop( 1 );
+    filter.remove( 0, 1 );
+  }
+
   if ( !filter.isEmpty() )
   {
-    filterString = "&FILTER=" + filter;
+    //test if filterString is already an OGC filter xml
+    QDomDocument filterDoc;
+    if ( !filterDoc.setContent( filter ) )
+    {
+      //if not, if must be a QGIS expression
+      QgsExpression filterExpression( filter );
+      if ( !filterExpression.toOGCFilter( filterDoc ) )
+      {
+        //error
+      }
+
+    }
+    filterString = "&FILTER=" + filterDoc.toString();
   }
 
   QString bBoxString;

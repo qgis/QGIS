@@ -115,9 +115,9 @@ void QgsOfflineEditingPlugin::unload()
   disconnect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateActions() ) );
 
   // remove the GUI
-  mQGisIface->removePluginDatabaseMenu( "&Offline Editing", mActionConvertProject );
+  mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionConvertProject );
   mQGisIface->removeToolBarIcon( mActionConvertProject );
-  mQGisIface->removePluginDatabaseMenu( "&Offline Editing", mActionSynchronize );
+  mQGisIface->removePluginDatabaseMenu( tr( "&Offline Editing" ), mActionSynchronize );
   mQGisIface->removeToolBarIcon( mActionSynchronize );
   delete mActionConvertProject;
   delete mActionSynchronize;

@@ -17,6 +17,5 @@
 	<option key="alpha" answer="1.0" advanced="yes" />
 	<option key="beta" answer="1.0" advanced="yes" />
 	<option key="iterations" answer="1" advanced="yes"/>
-	<option key="layer" answer="1" advanced="yes"/>
 	<option key="output" />
 </qgisgrassmodule>

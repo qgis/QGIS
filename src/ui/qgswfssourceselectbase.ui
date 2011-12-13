@@ -105,11 +105,14 @@
    </item>
    <item row="1" column="0">
     <widget class="QTreeWidget" name="treeWidget">
+     <property name="selectionMode">
+      <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
      <property name="sortingEnabled">
       <bool>true</bool>
      </property>
      <property name="columnCount">
-      <number>3</number>
+      <number>4</number>
      </property>
      <column>
       <property name="text">
@@ -124,6 +127,11 @@
      <column>
       <property name="text">
        <string>Abstract</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Filter</string>
       </property>
      </column>
     </widget>
@@ -177,33 +185,19 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QLabel" name="mFilterStringLabel">
-       <property name="text">
-        <string>Filter</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLineEdit" name="mFilterLineEdit"/>
-     </item>
-    </layout>
-   </item>
-   <item row="4" column="0">
     <widget class="QCheckBox" name="mBboxCheckBox">
      <property name="text">
       <string>Only request features overlapping the current view extent</string>
      </property>
     </widget>
    </item>
-   <item row="5" column="0">
+   <item row="4" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

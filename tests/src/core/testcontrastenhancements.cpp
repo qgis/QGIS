@@ -52,14 +52,14 @@ void TestContrastEnhancements::initTestCase()
 //runs after all tests
 void TestContrastEnhancements::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "contrastenhancementest.html";
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgis_tests.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl( "file://" + myReportFile );
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
 }

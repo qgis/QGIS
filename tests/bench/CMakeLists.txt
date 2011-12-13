@@ -1,0 +1,64 @@
+########################################################
+# Files
+
+SET (BENCH_SRCS
+     main.cpp
+     qgsbench.cpp
+)
+
+SET (BENCH_MOC_HDRS
+     qgsbench.h
+)
+
+########################################################
+# Build
+
+QT4_WRAP_CPP (BENCH_MOC_SRCS  ${BENCH_MOC_HDRS})
+
+ADD_EXECUTABLE (qgis_bench MACOSX_BUNDLE WIN32 ${BENCH_SRCS} ${BENCH_MOC_SRCS} )
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src/core
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../src/core/raster
+  ${CMAKE_CURRENT_BINARY_DIR}
+#  ${GDAL_INCLUDE_DIR} # remove once raster layer is cleaned up
+)
+
+IF (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(../../src/core/spatialite/headers/spatialite)
+ELSE (WITH_INTERNAL_SPATIALITE)
+  INCLUDE_DIRECTORIES(${SQLITE3_INCLUDE_DIR})
+ENDIF (WITH_INTERNAL_SPATIALITE)
+
+TARGET_LINK_LIBRARIES(qgis_bench qgis_core)
+
+IF (NOT WITH_INTERNAL_SPATIALITE)
+  TARGET_LINK_LIBRARIES(qgis_bench ${SQLITE3_LIBRARY})
+ENDIF (NOT WITH_INTERNAL_SPATIALITE)
+
+TARGET_LINK_LIBRARIES(qgis_bench
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTSVG_LIBRARY}
+  ${QT_QTXML_LIBRARY}
+  ${QT_QTWEBKIT_LIBRARY}
+  ${QT_QTMAIN_LIBRARY}
+  ${QT_QTTEST_LIBRARY}
+)
+
+SET_TARGET_PROPERTIES(qgis_bench PROPERTIES
+  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
+  INSTALL_RPATH_USE_LINK_PATH true
+)
+
+########################################################
+# Install
+
+INSTALL (TARGETS qgis_bench
+  BUNDLE DESTINATION ${QGIS_BIN_DIR}
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+)
+IF (APPLE)
+  INSTALL (CODE "EXECUTE_PROCESS(COMMAND ln -sfh ../../../${QGIS_FW_SUBDIR} \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/${QGIS_BIN_DIR}/qgis_bench.app/Contents/Frameworks\")")
+ENDIF (APPLE)
+

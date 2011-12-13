@@ -39,6 +39,9 @@ class CORE_EXPORT QgsNumericScaleBarStyle: public QgsScaleBarStyle
     QgsNumericScaleBarStyle(); //forbidden
     /**Returns the text for the scale bar or an empty string in case of error*/
     QString scaleText() const;
+
+    /**Store last width (in mm) to keep alignement to left/middle/right side*/
+    mutable double mLastScaleBarWidth;
 };
 
 #endif

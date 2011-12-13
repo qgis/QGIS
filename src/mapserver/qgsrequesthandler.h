@@ -19,7 +19,7 @@
 #ifndef QGSWMSREQUESTHANDLER
 #define QGSWMSREQUESTHANDLER
 
-#include <map>
+#include <QMap>
 #include <QString>
 class QDomDocument;
 class QgsMapServiceException;
@@ -33,7 +33,7 @@ class QgsRequestHandler
     QgsRequestHandler() {}
     virtual ~QgsRequestHandler() {}
     /**Parses the input and creates a request neutral Parameter/Value map*/
-    virtual std::map<QString, QString> parseInput() = 0;
+    virtual QMap<QString, QString> parseInput() = 0;
     /**Sends the map image back to the client*/
     virtual void sendGetMapResponse( const QString& service, QImage* img ) const = 0;
     virtual void sendGetCapabilitiesResponse( const QDomDocument& doc ) const = 0;

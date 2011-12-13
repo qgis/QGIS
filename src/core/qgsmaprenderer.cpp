@@ -213,7 +213,7 @@ void QgsMapRenderer::adjustExtentToSize()
 }
 
 
-void QgsMapRenderer::render( QPainter* painter )
+void QgsMapRenderer::render( QPainter* painter, double* forceWidthScale )
 {
   //Lock render method for concurrent threads (e.g. from globe)
   QMutexLocker renderLock( &mRenderMutex );
@@ -282,7 +282,14 @@ void QgsMapRenderer::render( QPainter* painter )
   double scaleFactor = 1.0;
   if ( mOutputUnits == QgsMapRenderer::Millimeters )
   {
-    scaleFactor = sceneDpi / 25.4;
+    if ( forceWidthScale )
+    {
+      scaleFactor = *forceWidthScale;
+    }
+    else
+    {
+      scaleFactor = sceneDpi / 25.4;
+    }
   }
   double rasterScaleFactor = ( thePaintDevice->logicalDpiX() + thePaintDevice->logicalDpiY() ) / 2.0 / sceneDpi;
   if ( mRenderContext.rasterScaleFactor() != rasterScaleFactor )
@@ -364,11 +371,13 @@ void QgsMapRenderer::render( QPainter* painter )
       continue;
     }
 
-    QgsDebugMsg( "Rendering layer " + ml->name() );
-    QgsDebugMsg( "  Layer minscale " + QString( "%1" ).arg( ml->minimumScale() ) );
-    QgsDebugMsg( "  Layer maxscale " + QString( "%1" ).arg( ml->maximumScale() ) );
-    QgsDebugMsg( "  Scale dep. visibility enabled? " + QString( "%1" ).arg( ml->hasScaleBasedVisibility() ) );
-    QgsDebugMsg( "  Input extent: " + ml->extent().toString() );
+    QgsDebugMsg( QString( "layer %1:  minscale:%2  maxscale:%3  scaledepvis:%4  extent:%5" )
+                 .arg( ml->name() )
+                 .arg( ml->minimumScale() )
+                 .arg( ml->maximumScale() )
+                 .arg( ml->hasScaleBasedVisibility() )
+                 .arg( ml->extent().toString() )
+               );
 
     if ( !ml->hasScaleBasedVisibility() || ( ml->minimumScale() < mScale && mScale < ml->maximumScale() ) || mOverview )
     {
@@ -455,7 +464,7 @@ void QgsMapRenderer::render( QPainter* painter )
         {
           if ( !mySameAsLastFlag || ml->cacheImage() == 0 )
           {
-            QgsDebugMsg( "\n\n\nCaching enabled but layer redraw forced by extent change or empty cache\n\n\n" );
+            QgsDebugMsg( "Caching enabled but layer redraw forced by extent change or empty cache" );
             QImage * mypImage = new QImage( mRenderContext.painter()->device()->width(),
                                             mRenderContext.painter()->device()->height(), QImage::Format_ARGB32 );
             mypImage->fill( 0 );
@@ -471,7 +480,7 @@ void QgsMapRenderer::render( QPainter* painter )
           else if ( mySameAsLastFlag )
           {
             //draw from cached image
-            QgsDebugMsg( "\n\n\nCaching enabled --- drawing layer from cached image\n\n\n" );
+            QgsDebugMsg( "Caching enabled --- drawing layer from cached image" );
             mypContextPainter->drawImage( 0, 0, *( ml->cacheImage() ) );
             disconnect( ml, SIGNAL( drawingProgress( int, int ) ), this, SLOT( onDrawingProgress( int, int ) ) );
             //short circuit as there is nothing else to do...
@@ -899,6 +908,7 @@ QgsRectangle QgsMapRenderer::fullExtent()
 
 void QgsMapRenderer::setLayerSet( const QStringList& layers )
 {
+  QgsDebugMsg( QString( "Entering: %1" ).arg( layers.join( ", " ) ) );
   mLayerSet = layers;
   updateFullExtent();
 }

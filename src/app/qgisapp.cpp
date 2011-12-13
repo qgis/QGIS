@@ -126,6 +126,7 @@
 #include "qgsgpsinformationwidget.h"
 #include "qgslabelinggui.h"
 #include "qgslegend.h"
+#include "qgslayerorder.h"
 #include "qgslegendlayer.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -136,6 +137,8 @@
 #include "qgsmaptip.h"
 #include "qgsmergeattributesdialog.h"
 #include "qgsmessageviewer.h"
+#include "qgsmimedatautils.h"
+#include "qgsmessagelog.h"
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsoptions.h"
 #include "qgspastetransformations.h"
@@ -168,7 +171,8 @@
 #include "qgsvectorfilewriter.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectorlayerproperties.h"
-//#include "qgswmssourceselect.h"
+#include "qgsmessagelogviewer.h"
+
 #include "ogr/qgsogrsublayersdialog.h"
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
@@ -227,15 +231,14 @@
 //
 // Conditional Includes
 //
-#ifdef HAVE_POSTGRESQL
-#include "../providers/postgres/qgspgsourceselect.h"
 #ifdef HAVE_PGCONFIG
 #include <pg_config.h>
 #else
 #define PG_VERSION "unknown"
 #endif
-#endif
+
 #include <sqlite3.h>
+
 #ifdef HAVE_SPATIALITE
 extern "C"
 {
@@ -248,9 +251,7 @@ extern "C"
 
 #ifndef WIN32
 #include <dlfcn.h>
-#endif
-
-#ifdef WIN32
+#else
 #include <windows.h>
 #endif
 
@@ -277,7 +278,7 @@ static void setTitleBarText_( QWidget & qgisApp )
 {
   QString caption = QgisApp::tr( "Quantum GIS " );
 
-  if ( QString( QGis::QGIS_VERSION ).endsWith( "Trunk" ) )
+  if ( QString( QGis::QGIS_VERSION ).endsWith( "Alpha" ) )
   {
     caption += QString( "%1" ).arg( QGis::QGIS_DEV_VERSION );
   }
@@ -378,6 +379,7 @@ QgisApp *QgisApp::smInstance = 0;
 QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, Qt::WFlags fl )
     : QMainWindow( parent, fl )
     , mSplash( splash )
+    , mShowProjectionTab( false )
     , mPythonUtils( NULL )
     , mpTileScaleWidget( NULL )
 #ifdef Q_OS_WIN
@@ -425,6 +427,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // "theMapLegend" used to find this canonical instance later
   mMapLegend = new QgsLegend( mMapCanvas, this, "theMapLegend" );
 
+  mMapLayerOrder = new QgsLayerOrder( mMapLegend, this, "theMapLayerOrder" );
+
   // create undo widget
   mUndoWidget = new QgsUndoWidget( NULL, mMapCanvas );
   mUndoWidget->setObjectName( "Undo" );
@@ -467,6 +471,15 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mpGpsDock->setWidget( mpGpsWidget );
   mpGpsDock->hide();
 
+  mLogViewer = new QgsMessageLogViewer();
+
+  mLogDock = new QDockWidget( tr( "Log Messages" ), this );
+  mLogDock->setObjectName( "MessageLog" );
+  mLogDock->setAllowedAreas( Qt::BottomDockWidgetArea | Qt::TopDockWidgetArea );
+  addDockWidget( Qt::BottomDockWidgetArea, mLogDock );
+  mLogDock->setWidget( mLogViewer );
+  mLogDock->hide();
+
   mInternalClipboard = new QgsClipboard; // create clipboard
   mQgisInterface = new QgisAppInterface( this ); // create the interfce
 
@@ -483,12 +496,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   QString caption = tr( "Quantum GIS - %1 ('%2')" ).arg( QGis::QGIS_VERSION ).arg( QGis::QGIS_RELEASE_NAME );
   setWindowTitle( caption );
 
+  QgsMessageLog::logMessage( tr( "QGIS starting..." ) );
+
   // set QGIS specific srs validation
   QgsCoordinateReferenceSystem::setCustomSrsValidation( customSrsValidation_ );
 
   // set graphical message output
   QgsMessageOutput::setMessageOutputCreator( messageOutputViewer_ );
-
 
   // set graphical credential requester
   new QgsCredentialDialog( this );
@@ -564,6 +578,10 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   mSplash->showMessage( tr( "QGIS Ready!" ), Qt::AlignHCenter | Qt::AlignBottom );
 
+  QgsMessageLog::logMessage( QgsApplication::showSettings() );
+
+  QgsMessageLog::logMessage( tr( "QGIS Ready!" ) );
+
   mMapTipsVisible = false;
 
   // setup drag drop
@@ -594,11 +612,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
 
   // supposedly all actions have been added, now register them to the shortcut manager
   QgsShortcutsManager::instance()->registerAllChildrenActions( this );
-
-  //finally show all the application settings as initialised above
-  QgsDebugMsg( "\n\n\nApplication Settings:\n--------------------------\n" );
-  QgsDebugMsg( QgsApplication::showSettings() );
-  QgsDebugMsg( "\n--------------------------\n\n\n" );
 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
@@ -682,31 +695,18 @@ void QgisApp::dropEvent( QDropEvent *event )
       openFile( fileName );
     }
   }
-  if ( event->mimeData()->hasFormat( "application/x-vnd.qgis.qgis.uri" ) )
+  if ( QgsMimeDataUtils::isUriList( event->mimeData() ) )
   {
-    QByteArray encodedData = event->mimeData()->data( "application/x-vnd.qgis.qgis.uri" );
-    QDataStream stream( &encodedData, QIODevice::ReadOnly );
-    QString xUri; // extended uri: layer_type:provider_key:uri
-    while ( !stream.atEnd() )
+    QgsMimeDataUtils::UriList lst = QgsMimeDataUtils::decodeUriList( event->mimeData() );
+    foreach( const QgsMimeDataUtils::Uri& u, lst )
     {
-      stream >> xUri;
-      QgsDebugMsg( xUri );
-      QRegExp rx( "^([^:]+):([^:]+):([^:]+):(.+)" );
-      if ( rx.indexIn( xUri ) != -1 )
+      if ( u.layerType == "vector" )
       {
-        QString layerType = rx.cap( 1 );
-        QString providerKey = rx.cap( 2 );
-        QString name = rx.cap( 3 );
-        QString uri = rx.cap( 4 );
-        QgsDebugMsg( "type: " + layerType + " key: " + providerKey + " name: " + name + " uri: " + uri );
-        if ( layerType == "vector" )
-        {
-          addVectorLayer( uri, name, providerKey );
-        }
-        else if ( layerType == "raster" )
-        {
-          addRasterLayer( uri, name, providerKey, QStringList(), QStringList(), QString(), QString() );
-        }
+        addVectorLayer( u.uri, u.name, u.providerKey );
+      }
+      else if ( u.layerType == "raster" )
+      {
+        addRasterLayer( u.uri, u.name, u.providerKey, QStringList(), QStringList(), QString(), QString() );
       }
     }
   }
@@ -1091,6 +1091,10 @@ void QgisApp::createMenus()
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
 
+  // Help menu
+  // add What's this button to it
+  QAction* before = mActionHelpAPI;
+  mHelpMenu->insertAction( before, QWhatsThis::createAction() );
 }
 
 void QgisApp::createToolBars()
@@ -1659,7 +1663,7 @@ void QgisApp::createOverview()
   QSettings mySettings;
   // Anti Aliasing enabled by default as of QGIS 1.7
   mMapCanvas->enableAntiAliasing( mySettings.value( "/qgis/enable_anti_aliasing", true ).toBool() );
-  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", false ).toBool() );
+  mMapCanvas->useImageToRender( mySettings.value( "/qgis/use_qimage_to_render", true ).toBool() );
 
   int action = mySettings.value( "/qgis/wheel_action", 0 ).toInt();
   double zoomFactor = mySettings.value( "/qgis/zoom_factor", 2 ).toDouble();
@@ -1710,10 +1714,48 @@ void QgisApp::initLegend()
   mLegendDock = new QDockWidget( tr( "Layers" ), this );
   mLegendDock->setObjectName( "Legend" );
   mLegendDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
-  mLegendDock->setWidget( mMapLegend );
+
+  QCheckBox *legendCb = new QCheckBox( tr( "Control rendering order" ) );
+  legendCb->setChecked( true );
+
+  QCheckBox *orderCb = new QCheckBox( tr( "Control rendering order" ) );
+  orderCb->setChecked( false );
+
+  connect( legendCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( setUpdateDrawingOrder( bool ) ) );
+  connect( orderCb, SIGNAL( toggled( bool ) ), mMapLegend, SLOT( unsetUpdateDrawingOrder( bool ) ) );
+  connect( mMapLegend, SIGNAL( updateDrawingOrderChecked( bool ) ), legendCb, SLOT( setChecked( bool ) ) );
+  connect( mMapLegend, SIGNAL( updateDrawingOrderUnchecked( bool ) ), orderCb, SLOT( setChecked( bool ) ) );
+
+  QWidget *w = new QWidget( this );
+  QLayout *l = new QVBoxLayout;
+  l->setMargin( 0 );
+  l->addWidget( mMapLegend );
+  l->addWidget( legendCb );
+  w->setLayout( l );
+  mLegendDock->setWidget( w );
   addDockWidget( Qt::LeftDockWidgetArea, mLegendDock );
+
   // add to the Panel submenu
   mPanelMenu->addAction( mLegendDock->toggleViewAction() );
+
+  mMapLayerOrder->setWhatsThis( tr( "Map layer list that displays all layers in drawing order." ) );
+  mLayerOrderDock = new QDockWidget( tr( "Layer order" ), this );
+  mLayerOrderDock->setObjectName( "Legend" );
+  mLayerOrderDock->setAllowedAreas( Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea );
+
+  w = new QWidget( this );
+  l = new QVBoxLayout;
+  l->setMargin( 0 );
+  l->addWidget( mMapLayerOrder );
+  l->addWidget( orderCb );
+  w->setLayout( l );
+  mLayerOrderDock->setWidget( w );
+  addDockWidget( Qt::LeftDockWidgetArea, mLayerOrderDock );
+  mLayerOrderDock->hide();
+
+  // add to the Panel submenu
+  mPanelMenu->addAction( mLayerOrderDock->toggleViewAction() );
+
   return;
 }
 
@@ -1737,7 +1779,7 @@ bool QgisApp::createDB()
 
     if ( !isDbFileCopied )
     {
-      QgsDebugMsg( "[ERROR] Can not make qgis.db private copy" );
+      QgsMessageLog::logMessage( tr( "[ERROR] Can not make qgis.db private copy" ) );
       return false;
     }
   }
@@ -2314,7 +2356,7 @@ void QgisApp::addDatabaseLayers( QStringList const & layerPathList, QString cons
     }
     else
     {
-      QgsDebugMsg(( layerPath ) + " is an invalid layer - not loaded" );
+      QgsMessageLog::logMessage( tr( "%1 is an invalid layer - not loaded" ).arg( layerPath ) );
       QMessageBox::critical( this, tr( "Invalid Layer" ), tr( "%1 is an invalid layer and cannot be loaded." ).arg( layerPath ) );
       delete layer;
     }
@@ -2401,6 +2443,11 @@ void QgisApp::addWfsLayer()
   }
   connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
            this , SLOT( addWfsLayer( QString, QString ) ) );
+
+  if ( mapCanvas() )
+  {
+    wfss->setProperty( "MapExtent", mapCanvas()->extent().toString() ); //hack to reenable wfs with extent setting
+  }
 
   wfss->exec();
   delete wfss;
@@ -2910,7 +2957,7 @@ bool QgisApp::openLayer( const QString & fileName, bool allowInteractive )
   if ( !ok )
   {
     // we have no idea what this file is...
-    QgsDebugMsg( "Unable to load " + fileName );
+    QgsMessageLog::logMessage( tr( "Unable to load %1" ).arg( fileName ) );
   }
 
   return ok;
@@ -3288,6 +3335,14 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
     QString encoding = dialog->encoding();
     QString vectorFilename = dialog->filename();
     QString format = dialog->format();
+    QStringList datasourceOptions = dialog->datasourceOptions();
+
+    if ( format == "SpatiaLite" )
+    {
+      if ( !datasourceOptions.contains( "SPATIALITE=YES" ) )
+        datasourceOptions.append( "SPATIALITE=YES" );
+      format = "SQLite";
+    }
 
     if ( dialog->crs() < 0 )
     {
@@ -3315,7 +3370,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
               vlayer, vectorFilename, encoding, &destCRS, format,
               saveOnlySelection,
               &errorMessage,
-              dialog->datasourceOptions(), dialog->layerOptions(),
+              datasourceOptions, dialog->layerOptions(),
               dialog->skipAttributeCreation() );
 
     QApplication::restoreOverrideCursor();
@@ -3498,6 +3553,7 @@ QgsComposer* QgisApp::createNewComposer()
   emit composerAdded( newComposerObject->view() );
   connect( newComposerObject, SIGNAL( composerAdded( QgsComposerView* ) ), this, SIGNAL( composerAdded( QgsComposerView* ) ) );
   connect( newComposerObject, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ), this, SIGNAL( composerWillBeRemoved( QgsComposerView* ) ) );
+  markDirty();
   return newComposerObject;
 }
 
@@ -3506,6 +3562,7 @@ void QgisApp::deleteComposer( QgsComposer* c )
   emit composerWillBeRemoved( c->view() );
   mPrintComposers.remove( c );
   mPrintComposersMenu->removeAction( c->windowAction() );
+  markDirty();
   delete c;
 }
 
@@ -3550,6 +3607,7 @@ void QgisApp::deletePrintComposers()
   }
   mPrintComposers.clear();
   mLastComposerId = 0;
+  markDirty();
 }
 
 bool QgisApp::loadAnnotationItemsFromProject( const QDomDocument& doc )
@@ -4521,12 +4579,10 @@ void QgisApp::loadPythonSupport()
   pythonlib.setLoadHints( QLibrary::ResolveAllSymbolsHint | QLibrary::ExportExternalSymbolsHint );
   if ( !pythonlib.load() )
   {
-    //using stderr on purpose because we want end users to see this [TS]
-    QgsDebugMsg( "Couldn't load Python support library: " + pythonlib.errorString() );
     pythonlib.setFileName( pythonlibName );
     if ( !pythonlib.load() )
     {
-      qWarning( "Couldn't load Python support library: %s", pythonlib.errorString().toUtf8().data() );
+      QgsMessageLog::logMessage( tr( "Couldn't load Python support library: %1" ).arg( pythonlib.errorString() ) );
       return;
     }
   }
@@ -4537,7 +4593,7 @@ void QgisApp::loadPythonSupport()
   if ( !pythonlib_inst )
   {
     //using stderr on purpose because we want end users to see this [TS]
-    QgsDebugMsg( "Couldn't resolve python support library's instance() symbol." );
+    QgsMessageLog::logMessage( tr( "Couldn't resolve python support library's instance() symbol." ) );
     return;
   }
 
@@ -4552,7 +4608,7 @@ void QgisApp::loadPythonSupport()
     // init python runner
     QgsPythonRunner::setInstance( new QgsPythonRunnerImpl( mPythonUtils ) );
 
-    std::cout << "Python support ENABLED :-) " << std::endl; // OK
+    QgsMessageLog::logMessage( tr( "Python support ENABLED :-) " ) );
   }
   else
   {
@@ -5238,6 +5294,10 @@ void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
   menu->removeAction( action );
+  if ( menu->actions().count() == 0 )
+  {
+    mDatabaseMenu->removeAction( menu->menuAction() );
+  }
 
   // remove the Database menu from the menuBar if there are no more actions
   if ( mDatabaseMenu->actions().count() > 0 )
@@ -5466,6 +5526,7 @@ void QgisApp::showMapTip()
     }
   }
 }
+
 void QgisApp::projectPropertiesProjections()
 {
   // Driver to display the project props dialog and switch to the
@@ -6326,26 +6387,40 @@ void QgisApp::oldProjectVersionWarning( QString oldVersion )
   if ( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() )
   {
     QApplication::setOverrideCursor( Qt::ArrowCursor );
-    QMessageBox::warning( NULL, tr( "Project file is older" ),
-                          tr( "<p>This project file was saved by an older version of QGIS."
-                              " When saving this project file, QGIS will update it to the latest version, "
-                              "possibly rendering it useless for older versions of QGIS."
-                              "<p>Even though QGIS developers try to maintain backwards "
-                              "compatibility, some of the information from the old project "
-                              "file might be lost."
-                              " To improve the quality of QGIS, we appreciate "
-                              "if you file a bug report at %3."
-                              " Be sure to include the old project file, and state the version of "
-                              "QGIS you used to discover the error."
-                              "<p>To remove this warning when opening an older project file, "
-                              "uncheck the box '%5' in the %4 menu."
-                              "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
-                          .arg( oldVersion )
-                          .arg( QGis::QGIS_VERSION )
-                          .arg( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " )
-                          .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
-                          .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) )
-                        );
+    QString text =  tr( "<p>This project file was saved by an older version of QGIS."
+                        " When saving this project file, QGIS will update it to the latest version, "
+                        "possibly rendering it useless for older versions of QGIS."
+                        "<p>Even though QGIS developers try to maintain backwards "
+                        "compatibility, some of the information from the old project "
+                        "file might be lost."
+                        " To improve the quality of QGIS, we appreciate "
+                        "if you file a bug report at %3."
+                        " Be sure to include the old project file, and state the version of "
+                        "QGIS you used to discover the error."
+                        "<p>To remove this warning when opening an older project file, "
+                        "uncheck the box '%5' in the %4 menu."
+                        "<p>Version of the project file: %1<br>Current version of QGIS: %2" )
+                    .arg( oldVersion )
+                    .arg( QGis::QGIS_VERSION )
+                    .arg( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " )
+                    .arg( tr( "<tt>Settings:Options:General</tt>", "Menu path to setting options" ) )
+                    .arg( tr( "Warn me when opening a project file saved with an older version of QGIS" ) );
+    QString title =  tr( "Project file is older" );
+
+#ifdef ANDROID
+    //this is needed to deal with http://hub.qgis.org/issues/4573
+    QMessageBox box( QMessageBox::Warning, title, tr( "This project file was saved by an older version of QGIS" ), QMessageBox::Ok, NULL );
+    box.setDetailedText(
+      text.remove( 0, 3 )
+      .replace( QString( "<p>" ), QString( "\n\n" ) )
+      .replace( QString( "<br>" ), QString( "\n" ) )
+      .replace( QString( "<a href=\"http://hub.qgis.org/projects/quantum-gis\">http://hub.qgis.org/projects/quantum-gis</a> " ), QString( "\nhttp://hub.qgis.org/projects/quantum-gis" ) )
+      .replace( QRegExp( "</?tt>" ), QString( "" ) )
+    );
+    box.exec();
+#else
+    QMessageBox::warning( NULL, title, text );
+#endif
     QApplication::restoreOverrideCursor();
   }
   return;

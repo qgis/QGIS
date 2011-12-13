@@ -49,6 +49,7 @@
 %Include qgsmaptopixel.sip
 %Include qgsmarkercatalogue.sip
 %Include qgsmessageoutput.sip
+%Include qgsmessagelog.sip
 %Include qgsoverlayobject.sip
 %Include qgspluginlayer.sip
 %Include qgspluginlayerregistry.sip
@@ -82,6 +83,7 @@
 %Include qgsuniquevaluerenderer.sip
 %Include qgsattributeaction.sip
 %Include qgsvectordataprovider.sip
+%Include qgsvectorfieldsymbollayer.sip
 %Include qgsvectorfilewriter.sip
 %Include qgsvectorlayer.sip
 %Include qgsvectorlayerimport.sip

@@ -21,7 +21,9 @@
         <file>icons/about.png</file>
         <file>icons/dem.png</file>
         <file>icons/projection-export.png</file>
+        <file>icons/fillnodata.png</file>
         <file>icons/edit.png</file>
         <file>icons/reset.png</file>
+        <file>icons/tooltip.png</file>
     </qresource>
 </RCC>

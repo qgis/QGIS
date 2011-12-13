@@ -56,7 +56,7 @@ class QgsConfigParser
     virtual QDomDocument getStyle( const QString& styleName, const QString& layerName ) const = 0;
 
     /**Possibility to add a parameter map to the config parser. This is used by the SLD parser. Default implementation does nothing*/
-    virtual void setParameterMap( const std::map<QString, QString>& parameterMap )
+    virtual void setParameterMap( const QMap<QString, QString>& parameterMap )
     { Q_UNUSED( parameterMap ); }
 
     /**Returns if output are MM or PIXEL*/
@@ -152,11 +152,15 @@ class QgsConfigParser
 
     /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
     void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;
+
+#if 0
     /**Returns the <Ex_GeographicalBoundingBox of a layer element as a rectangle
-      @param layerElement <Layer> element in capabilities
-      @param rect out: bounding box as rectangle
-      @return true in case of success*/
+        @param layerElement <Layer> element in capabilities
+        @param rect out: bounding box as rectangle
+        @return true in case of success*/
     bool exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const;
+    bool latlonGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const;
+#endif
 
     /**Returns a list of supported EPSG coordinate system numbers from a layer*/
     QStringList createCRSListForLayer( QgsMapLayer* theMapLayer ) const;

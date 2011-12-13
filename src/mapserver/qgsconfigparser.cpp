@@ -38,28 +38,27 @@ QgsConfigParser::QgsConfigParser()
 QgsConfigParser::~QgsConfigParser()
 {
   //remove the external GML datasets
-  for ( QMap<QString, QDomDocument*>::iterator it = mExternalGMLDatasets.begin(); it != mExternalGMLDatasets.end(); ++it )
+  foreach( QDomDocument *doc, mExternalGMLDatasets.values() )
   {
-    delete it.value();
+    delete doc;
   }
 
   //remove the temporary files
-  for ( QList<QTemporaryFile*>::const_iterator it = mFilesToRemove.constBegin(); it != mFilesToRemove.constEnd(); ++it )
+  foreach( QTemporaryFile *file, mFilesToRemove )
   {
-    delete *it;
+    delete file;
   }
 
   //and also those the temporary file paths
-  for ( QList<QString>::const_iterator it = mFilePathsToRemove.constBegin(); it != mFilePathsToRemove.constEnd(); ++it )
+  foreach( QString path, mFilePathsToRemove )
   {
-    QFile::remove( *it );
+    QFile::remove( path );
   }
 
   //delete the layers in the list
-  QList<QgsMapLayer*>::iterator layer_it = mLayersToRemove.begin();
-  for ( ; layer_it != mLayersToRemove.end(); ++layer_it )
+  foreach( QgsMapLayer *layer, mLayersToRemove )
   {
-    delete *layer_it;
+    delete layer;
   }
 }
 
@@ -100,34 +99,48 @@ void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
 
   const QgsCoordinateReferenceSystem& wgs84 = QgsCRSCache::instance()->crsByAuthId( GEO_EPSG_CRS_AUTHID );
 
+  QString version = doc.documentElement().attribute( "version" );
+
   //Ex_GeographicBoundingBox
+  QDomElement ExGeoBBoxElement;
   //transform the layers native CRS into WGS84
   QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
   QgsRectangle wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
+  if ( version == "1.1.1" )   // WMS Version 1.1.1
+  {
+    ExGeoBBoxElement = doc.createElement( "LatLonBoundingBox" );
+    ExGeoBBoxElement.setAttribute( "minx", QString::number( wgs84BoundingRect.xMinimum() ) );
+    ExGeoBBoxElement.setAttribute( "maxx", QString::number( wgs84BoundingRect.xMaximum() ) );
+    ExGeoBBoxElement.setAttribute( "miny", QString::number( wgs84BoundingRect.yMinimum() ) );
+    ExGeoBBoxElement.setAttribute( "maxy", QString::number( wgs84BoundingRect.yMaximum() ) );
+  }
+  else // WMS Version 1.3.0
+  {
+    ExGeoBBoxElement = doc.createElement( "EX_GeographicBoundingBox" );
+    QDomElement wBoundLongitudeElement = doc.createElement( "westBoundLongitude" );
+    QDomText wBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) );
+    wBoundLongitudeElement.appendChild( wBoundLongitudeText );
+    ExGeoBBoxElement.appendChild( wBoundLongitudeElement );
+    QDomElement eBoundLongitudeElement = doc.createElement( "eastBoundLongitude" );
+    QDomText eBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) );
+    eBoundLongitudeElement.appendChild( eBoundLongitudeText );
+    ExGeoBBoxElement.appendChild( eBoundLongitudeElement );
+    QDomElement sBoundLatitudeElement = doc.createElement( "southBoundLatitude" );
+    QDomText sBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMinimum() ) );
+    sBoundLatitudeElement.appendChild( sBoundLatitudeText );
+    ExGeoBBoxElement.appendChild( sBoundLatitudeElement );
+    QDomElement nBoundLatitudeElement = doc.createElement( "northBoundLatitude" );
+    QDomText nBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMaximum() ) );
+    nBoundLatitudeElement.appendChild( nBoundLatitudeText );
+    ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
+  }
 
-  QDomElement ExGeoBBoxElement = doc.createElement( "EX_GeographicBoundingBox" );
-  QDomElement wBoundLongitudeElement = doc.createElement( "westBoundLongitude" );
-  QDomText wBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMinimum() ) );
-  wBoundLongitudeElement.appendChild( wBoundLongitudeText );
-  ExGeoBBoxElement.appendChild( wBoundLongitudeElement );
-  QDomElement eBoundLongitudeElement = doc.createElement( "eastBoundLongitude" );
-  QDomText eBoundLongitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.xMaximum() ) );
-  eBoundLongitudeElement.appendChild( eBoundLongitudeText );
-  ExGeoBBoxElement.appendChild( eBoundLongitudeElement );
-  QDomElement sBoundLatitudeElement = doc.createElement( "southBoundLatitude" );
-  QDomText sBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMinimum() ) );
-  sBoundLatitudeElement.appendChild( sBoundLatitudeText );
-  ExGeoBBoxElement.appendChild( sBoundLatitudeElement );
-  QDomElement nBoundLatitudeElement = doc.createElement( "northBoundLatitude" );
-  QDomText nBoundLatitudeText = doc.createTextNode( QString::number( wgs84BoundingRect.yMaximum() ) );
-  nBoundLatitudeElement.appendChild( nBoundLatitudeText );
-  ExGeoBBoxElement.appendChild( nBoundLatitudeElement );
 
   //BoundingBox element
   QDomElement bBoxElement = doc.createElement( "BoundingBox" );
   if ( layerCRS.isValid() )
   {
-    bBoxElement.setAttribute( "CRS", layerCRS.authid() );
+    bBoxElement.setAttribute( version == "1.1.1" ? "SRS" : "CRS", layerCRS.authid() );
   }
 
   bBoxElement.setAttribute( "minx", QString::number( layerExtent.xMinimum() ) );
@@ -135,7 +148,7 @@ void QgsConfigParser::appendLayerBoundingBoxes( QDomElement& layerElem,
   bBoxElement.setAttribute( "maxx", QString::number( layerExtent.xMaximum() ) );
   bBoxElement.setAttribute( "maxy", QString::number( layerExtent.yMaximum() ) );
 
-  QDomElement lastCRSElem = layerElem.lastChildElement( "CRS" );
+  QDomElement lastCRSElem = layerElem.lastChildElement( version == "1.1.1" ? "SRS" : "CRS" );
   if ( !lastCRSElem.isNull() )
   {
     layerElem.insertAfter( ExGeoBBoxElement, lastCRSElem );
@@ -179,7 +192,75 @@ QStringList QgsConfigParser::createCRSListForLayer( QgsMapLayer* theMapLayer ) c
   return crsNumbers;
 }
 
-bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const
+#if 0
+bool QgsConfigParser::latlonGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const //WMS 1.1.1?
+{
+  if ( layerElement.isNull() )
+  {
+    return false;
+  }
+
+  QDomElement latlonGeogElem = layerElement.firstChildElement( "LatLonBoundingBox" );
+  if ( latlonGeogElem.isNull() )
+  {
+    return false;
+  }
+
+  bool ok = true;
+  //minx
+  QString westBoundElem = latlonGeogElem.attribute( "minx" );
+  if ( westBoundElem.isNull() )
+  {
+    return false;
+  }
+  double minx = westBoundElem.toDouble( &ok );
+  if ( !ok )
+  {
+    return false;
+  }
+  //maxx
+  QString eastBoundElem = latlonGeogElem.attribute( "maxx" );
+  if ( eastBoundElem.isNull() )
+  {
+    return false;
+  }
+  double maxx = eastBoundElem.toDouble( &ok );
+  if ( !ok )
+  {
+    return false;
+  }
+  //miny
+  QString southBoundElem = latlonGeogElem.attribute( "miny" );
+  if ( southBoundElem.isNull() )
+  {
+    return false;
+  }
+  double miny = southBoundElem.toDouble( &ok );
+  if ( !ok )
+  {
+    return false;
+  }
+  //maxy
+  QString northBoundElem = latlonGeogElem.attribute( "maxy" );
+  if ( northBoundElem.isNull() )
+  {
+    return false;
+  }
+  double maxy = northBoundElem.toDouble( &ok );
+  if ( !ok )
+  {
+    return false;
+  }
+
+  rect.setXMinimum( minx );
+  rect.setXMaximum( maxx );
+  rect.setYMinimum( miny );
+  rect.setYMaximum( maxy );
+
+  return true;
+}
+
+bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, QgsRectangle& rect ) const //WMS 1.3.0
 {
   if ( layerElement.isNull() )
   {
@@ -245,6 +326,8 @@ bool QgsConfigParser::exGeographicBoundingBox( const QDomElement& layerElement, 
 
   return true;
 }
+#endif
+
 
 bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const
 {
@@ -255,7 +338,14 @@ bool QgsConfigParser::crsSetForLayer( const QDomElement& layerElement, QSet<QStr
 
   crsSet.clear();
 
-  QDomNodeList crsNodeList = layerElement.elementsByTagName( "CRS" );
+  QDomNodeList crsNodeList;
+  crsNodeList = layerElement.elementsByTagName( "CRS" ); // WMS 1.3.0
+  for ( int i = 0; i < crsNodeList.size(); ++i )
+  {
+    crsSet.insert( crsNodeList.at( i ).toElement().text() );
+  }
+
+  crsNodeList = layerElement.elementsByTagName( "SRS" ); // WMS 1.1.1
   for ( int i = 0; i < crsNodeList.size(); ++i )
   {
     crsSet.insert( crsNodeList.at( i ).toElement().text() );
@@ -291,10 +381,9 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
   }
   else //no crs constraint
   {
-    QStringList::const_iterator crsIt = crsList.constBegin();
-    for ( ; crsIt != crsList.constEnd(); ++crsIt )
+    foreach( QString crs, crsList )
     {
-      appendCRSElementToLayer( layerElement, titleElement, *crsIt, doc );
+      appendCRSElementToLayer( layerElement, titleElement, crs, doc );
 #if 0
       QDomElement crsElement = doc.createElement( "CRS" );
       QDomText crsText = doc.createTextNode( *crsIt );
@@ -307,7 +396,8 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
 
 void QgsConfigParser::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const
 {
-  QDomElement crsElement = doc.createElement( "CRS" );
+  QString version = doc.documentElement().attribute( "version" );
+  QDomElement crsElement = doc.createElement( version == "1.1.1" ? "SRS" : "CRS" );
   QDomText crsTextNode = doc.createTextNode( crsText );
   crsElement.appendChild( crsTextNode );
   layerElement.insertAfter( crsElement, titleElement );
@@ -324,35 +414,33 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     return 0;
   }
 
-  QMap< QString, QString >::const_iterator dpiIt = parameterMap.find( "DPI" );
-  if ( dpiIt != parameterMap.constEnd() )
+  QString dpi = parameterMap.value( "DPI" );
+  if ( !dpi.isEmpty() )
   {
-    c->setPrintResolution( dpiIt.value().toInt() );
+    c->setPrintResolution( dpi.toInt() );
   }
 
   //replace composer map parameters
-  QList<QgsComposerMap*>::iterator mapIt = composerMaps.begin();
-  QgsComposerMap* currentMap = 0;
-  for ( ; mapIt != composerMaps.end(); ++mapIt )
+  foreach( QgsComposerMap* currentMap, composerMaps )
   {
-    currentMap = *mapIt;
     if ( !currentMap )
     {
       continue;
     }
 
     QString mapId = "MAP" + QString::number( currentMap->id() );
-    QMap< QString, QString >::const_iterator extentIt = parameterMap.find( mapId + ":EXTENT" );
-    if ( extentIt == parameterMap.constEnd() ) //map extent is mandatory
+
+    QString extent = parameterMap.value( mapId + ":EXTENT" );
+    if ( extent.isEmpty() ) //map extent is mandatory
     {
       //remove map from composition if not referenced by the request
-      c->removeItem( *mapIt ); delete( *mapIt ); continue;
+      c->removeItem( currentMap ); delete currentMap; continue;
     }
 
-    QStringList coordList = extentIt.value().split( "," );
+    QStringList coordList = extent.split( "," );
     if ( coordList.size() < 4 )
     {
-      c->removeItem( *mapIt ); delete( *mapIt ); continue; //need at least four coordinates
+      c->removeItem( currentMap ); delete currentMap; continue; //need at least four coordinates
     }
 
     bool xMinOk, yMinOk, xMaxOk, yMaxOk;
@@ -362,14 +450,14 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     double ymax = coordList.at( 3 ).toDouble( &yMaxOk );
     if ( !xMinOk || !yMinOk || !xMaxOk || !yMaxOk )
     {
-      c->removeItem( *mapIt ); delete( *mapIt ); continue;
+      c->removeItem( currentMap ); delete currentMap; continue;
     }
 
     //Change x- and y- of extent for WMS 1.3.0 and geographic coordinate systems
-    QMap<QString, QString>::const_iterator versionIt = parameterMap.find( "VERSION" );
-    if ( versionIt != parameterMap.end() )
+    QString version = parameterMap.value( "VERSION" );
+    if ( !version.isEmpty() )
     {
-      if ( mapRenderer && versionIt.value() == "1.3.0" && mapRenderer->destinationCrs().geographicFlag() )
+      if ( mapRenderer && version == "1.3.0" && mapRenderer->destinationCrs().geographicFlag() )
       {
         //switch coordinates of extent
         double tmp;
@@ -382,11 +470,11 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     currentMap->setNewExtent( QgsRectangle( xmin, ymin, xmax, ymax ) );
 
     //scale
-    QMap< QString, QString >::const_iterator scaleIt = parameterMap.find( mapId + ":SCALE" );
-    if ( scaleIt != parameterMap.constEnd() )
+    QString scaleString = parameterMap.value( mapId + ":SCALE" );
+    if ( !scaleString.isEmpty() )
     {
       bool scaleOk;
-      double scale = scaleIt->toDouble( &scaleOk );
+      double scale = scaleString.toDouble( &scaleOk );
       if ( scaleOk )
       {
         currentMap->setNewScale( scale );
@@ -394,11 +482,11 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     }
 
     //rotation
-    QMap< QString, QString >::const_iterator rotationIt = parameterMap.find( mapId + ":ROTATION" );
-    if ( rotationIt != parameterMap.constEnd() )
+    QString rotationString = parameterMap.value( mapId + ":ROTATION" );
+    if ( !rotationString.isEmpty() )
     {
       bool rotationOk;
-      double rotation = rotationIt->toDouble( &rotationOk );
+      double rotation = rotationString.toDouble( &rotationOk );
       if ( rotationOk )
       {
         currentMap->setMapRotation( rotation );
@@ -406,18 +494,19 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     }
 
     //layers / styles
-    QMap< QString, QString >::const_iterator layersIt = parameterMap.find( mapId + ":LAYERS" );
-    QMap< QString, QString >::const_iterator stylesIt = parameterMap.find( mapId + ":STYLES" );
-    if ( layersIt != parameterMap.constEnd() )
+    QString layers = parameterMap.value( mapId + ":LAYERS" );
+    QString styles = parameterMap.value( mapId + ":STYLES" );
+    if ( !layers.isEmpty() )
     {
       QStringList layerSet;
-      QStringList wmsLayerList = layersIt->split( "," );
+      QStringList wmsLayerList = layers.split( "," );
       QStringList wmsStyleList;
 
-      if ( stylesIt != parameterMap.constEnd() )
+      if ( !styles.isEmpty() )
       {
-        wmsStyleList = stylesIt->split( "," );
+        wmsStyleList = styles.split( "," );
       }
+
       for ( int i = 0; i < wmsLayerList.size(); ++i )
       {
         QString styleName;
@@ -425,13 +514,12 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
         {
           styleName = wmsStyleList.at( i );
         }
-        QList<QgsMapLayer*> layerList = mapLayerFromStyle( wmsLayerList.at( i ), styleName );
-        QList<QgsMapLayer*>::const_iterator mapIdIt = layerList.constBegin();
-        for ( ; mapIdIt != layerList.constEnd(); ++mapIdIt )
+
+        foreach( QgsMapLayer *layer, mapLayerFromStyle( wmsLayerList.at( i ), styleName ) )
         {
-          if ( *mapIdIt )
+          if ( layer )
           {
-            layerSet.push_back(( *mapIdIt )->id() );
+            layerSet.push_back( layer->id() );
           }
         }
       }
@@ -441,61 +529,28 @@ QgsComposition* QgsConfigParser::createPrintComposition( const QString& composer
     }
 
     //grid space x / y
-    QMap< QString, QString >::const_iterator gridSpaceXIt = parameterMap.find( mapId + ":GRID_INTERVAL_X" );
-    if ( gridSpaceXIt != parameterMap.constEnd() )
-    {
-      bool intervalXOk;
-      double intervalX = gridSpaceXIt->toDouble( &intervalXOk );
-      if ( intervalXOk )
-      {
-        currentMap->setGridIntervalX( intervalX );
-      }
-    }
-    else
-    {
-      currentMap->setGridIntervalX( 0 );
-    }
-
-    QMap< QString, QString >::const_iterator gridSpaceYIt = parameterMap.find( mapId + ":GRID_INTERVAL_Y" );
-    if ( gridSpaceYIt != parameterMap.constEnd() )
-    {
-      bool intervalYOk;
-      double intervalY = gridSpaceYIt->toDouble( &intervalYOk );
-      if ( intervalYOk )
-      {
-        currentMap->setGridIntervalY( intervalY );
-      }
-    }
-    else
-    {
-      currentMap->setGridIntervalY( 0 );
-    }
+    currentMap->setGridIntervalX( parameterMap.value( mapId + ":GRID_INTERVAL_X" ).toDouble() );
+    currentMap->setGridIntervalY( parameterMap.value( mapId + ":GRID_INTERVAL_Y" ).toDouble() );
   }
 
   //replace label text
-  QList<QgsComposerLabel*>::const_iterator labelIt = composerLabels.constBegin();
-  QgsComposerLabel* currentLabel = 0;
-
-  for ( ; labelIt != composerLabels.constEnd(); ++labelIt )
+  foreach( QgsComposerLabel *currentLabel, composerLabels )
   {
-    currentLabel = *labelIt;
-    QMap< QString, QString >::const_iterator titleIt = parameterMap.find( currentLabel->id().toUpper() );
-    if ( titleIt == parameterMap.constEnd() )
+    QString title = parameterMap.value( currentLabel->id().toUpper() );
+
+    if ( title.isEmpty() )
     {
       //remove exported labels not referenced in the request
       if ( !currentLabel->id().isEmpty() )
       {
         c->removeItem( currentLabel );
-        delete( currentLabel );
+        delete currentLabel;
       }
       continue;
     }
 
-    if ( !titleIt.key().isEmpty() ) //no label text replacement with empty key
-    {
-      currentLabel->setText( titleIt.value() );
-      currentLabel->adjustSizeToText();
-    }
+    currentLabel->setText( title );
+    currentLabel->adjustSizeToText();
   }
 
   return c;

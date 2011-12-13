@@ -18,7 +18,7 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
     virtual QList<QAction*> actions();
 
     QString mConnInfo;
-    QVector<QgsPostgresLayerProperty> mLayerProperties;
+    QMap<QString, QVector<QgsPostgresLayerProperty> > mSchemasMap;
 
   public slots:
     void editConnection();
@@ -46,14 +46,13 @@ class QgsPGSchemaItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path,
-                     QString connInfo, QVector<QgsPostgresLayerProperty> layerProperties );
+                     QString connInfo );
     ~QgsPGSchemaItem();
 
     QVector<QgsDataItem*> createChildren();
 
   protected:
     QString mConnInfo;
-    QVector<QgsPostgresLayerProperty> mLayerProperties;
 };
 
 class QgsPGRootItem : public QgsDataCollectionItem

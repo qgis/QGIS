@@ -149,12 +149,14 @@ bool QgsGeometryAnalyzer::centroids( QgsVectorLayer* layer, const QString& shape
 {
   if ( !layer )
   {
+    QgsDebugMsg( "No layer passed to centroids" );
     return false;
   }
 
   QgsVectorDataProvider* dp = layer->dataProvider();
   if ( !dp )
   {
+    QgsDebugMsg( "No data provider for layer passed to centroids" );
     return false;
   }
 

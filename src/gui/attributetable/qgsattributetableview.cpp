@@ -23,9 +23,9 @@
 #include "qgsattributetablememorymodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
-
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgslogger.h"
 
 QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
     : QTableView( parent ), mModel( 0 ), mFilterModel( 0 ), mActionPopup( 0 )
@@ -63,9 +63,17 @@ void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
   // features in the current view. Otherwise we'll have to store
   // everything in the memory because using featureAtId() would be too slow
   if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectAtId )
+  {
+    QgsDebugMsg( "SelectAtId supported" );
     mModel = new QgsAttributeTableModel( layer );
+  }
   else
+  {
+    QgsDebugMsg( "SelectAtId NOT supported" );
     mModel = new QgsAttributeTableMemoryModel( layer );
+  }
+
+  mModel->loadLayer();
 
   mFilterModel = new QgsAttributeTableFilterModel( layer );
   mFilterModel->setSourceModel( mModel );

@@ -86,6 +86,7 @@ class PythonConsole(QDockWidget):
     self.setAllowedAreas(Qt.BottomDockWidgetArea)
     self.widget = QWidget()
     self.l = QVBoxLayout(self.widget)
+    self.l.setMargin(0)
     self.edit = PythonEdit()
     self.l.addWidget(self.edit)
     self.setWidget(self.widget)

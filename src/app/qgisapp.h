@@ -46,6 +46,7 @@ class QgsGeometry;
 class QgsFeature;
 
 class QgsLegend;
+class QgsLayerOrder;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
@@ -72,6 +73,8 @@ class QgsGPSInformationWidget;
 class QgsDecorationCopyright;
 class QgsDecorationNorthArrow;
 class QgsDecorationScaleBar;
+
+class QgsMessageLogViewer;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -440,6 +443,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     void versionReplyFinished();
 
+    QgsMessageLogViewer *logViewer() { return mLogViewer; }
+
   protected:
 
     //! Handle state changes (WindowTitleChange)
@@ -773,8 +778,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Activates label property tool
     void changeLabelProperties();
 
-
-
   signals:
     /** emitted when a key is pressed and we want non widget sublasses to be able
       to pick up on this (e.g. maplayer) */
@@ -904,10 +907,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
+    QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
     QDockWidget *mpTileScaleDock;
     QDockWidget *mpGpsDock;
-
+    QDockWidget *mLogDock;
 
 #ifdef Q_WS_MAC
     //! Window menu action to select this window
@@ -989,6 +993,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *mMapCanvas;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
+    //! Table of contents (legend) to order layers of the map
+    QgsLayerOrder *mMapLayerOrder;
     //! Cursor for the overview map
     QCursor *mOverviewMapCursor;
     //! scale factor
@@ -1075,6 +1081,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Persistent GPS toolbox
     QgsGPSInformationWidget * mpGpsWidget;
+
+    QgsMessageLogViewer *mLogViewer;
 
     QgsPalLabeling* mLBL;
 

@@ -16,6 +16,7 @@ from osgeo import gdal
 from osgeo.gdalconst import *
 from osgeo import ogr
 
+import os
 # to know the os
 import platform
 
@@ -47,14 +48,24 @@ def setLastUsedDir(filePath):
     settings.setValue( "/GdalTools/lastUsedDir", QVariant(dirPath) )
 
 # Retrieves GDAL binaries location
-def getGdalPath():
+def getGdalBinPath():
   settings = QSettings()
   return settings.value( "/GdalTools/gdalPath", QVariant( "" ) ).toString()
 
 # Stores GDAL binaries location
-def setGdalPath( path ):
+def setGdalBinPath( path ):
   settings = QSettings()
   settings.setValue( "/GdalTools/gdalPath", QVariant( path ) )
+
+# Retrieves GDAL python modules location
+def getGdalPymodPath():
+  settings = QSettings()
+  return settings.value( "/GdalTools/gdalPymodPath", QVariant( "" ) ).toString()
+
+# Stores GDAL python modules location
+def setGdalPymodPath( path ):
+  settings = QSettings()
+  settings.setValue( "/GdalTools/gdalPymodPath", QVariant( path ) )
 
 # Retrieves GDAL help files location
 def getHelpPath():
@@ -174,7 +185,6 @@ def getRasterFiles(path, recursive=False):
     rasters << path + "/" + f
 
   if recursive:
-    import os
     for myRoot, myDirs, myFiles in os.walk( unicode(path) ):
       for dir in myDirs:
         workDir = QDir( myRoot + "/" + dir )
@@ -760,3 +770,75 @@ class Version:
 
   def __str__(self):
     return ".".join(self.vers)
+
+
+def setProcessEnvironment(process):
+    envvar_list = {
+        "PATH" : getGdalBinPath(), 
+        "PYTHONPATH" : getGdalPymodPath()
+    }
+
+    sep = os.pathsep
+
+    for name, val in envvar_list.iteritems():
+      if val == None or val == "":
+        continue
+
+      envval = os.getenv(name)
+      if envval == None or envval == "":
+        envval = str(val)
+      elif not QString( envval ).split( sep ).contains( val, Qt.CaseInsensitive ):
+        envval += "%s%s" % (sep, str(val))
+      else:
+        envval = None
+
+      if envval != None:
+        os.putenv( name, envval )
+
+      if False:  # not needed because os.putenv() has already updated the environment for new child processes
+        env = QProcess.systemEnvironment()
+        if env.contains( QRegExp( "^%s=(.*)" % name, Qt.CaseInsensitive ) ):
+          env.replaceInStrings( QRegExp( "^%s=(.*)" % name, Qt.CaseInsensitive ), "%s=\\1%s%s" % (name, sep, gdalPath) )
+        else:
+          env << "%s=%s" % (name, val)
+        process.setEnvironment( env )
+
+
+def setMacOSXDefaultEnvironment():
+  # fix bug #3170: many GDAL Tools don't work in OS X standalone
+
+  if platform.system() != "Darwin":
+    return
+
+  # QgsApplication.prefixPath() contains the path to qgis executable (i.e. .../Qgis.app/MacOS)
+  # get the path to Qgis application folder
+  qgis_app = u"%s/.." % QgsApplication.prefixPath()
+  qgis_app = QDir( qgis_app ).absolutePath()   
+
+  qgis_bin = u"%s/bin" % QgsApplication.prefixPath()   # path to QGis bin folder
+  qgis_python = u"%s/Resources/python" % qgis_app    # path to QGis python folder
+
+  # path to the GDAL framework within the Qgis application folder (QGis standalone only)
+  qgis_standalone_gdal_path = u"%s/Frameworks/GDAL.framework" % qgis_app   
+
+  # path to the GDAL framework when installed as external framework
+  gdal_bin_path = u"/Library/Frameworks/GDAL.framework/Versions/%s/Programs" % str(GdalConfig.version())[:3]
+
+  if os.path.exists( qgis_standalone_gdal_path ):  # qgis standalone
+    # GDAL executables are in the QGis bin folder
+    if getGdalBinPath().isEmpty():
+      setGdalBinPath( qgis_bin )
+    # GDAL pymods are in the QGis python folder
+    if getGdalPymodPath().isEmpty():
+      setGdalPymodPath( qgis_python )
+
+  elif os.path.exists( gdal_bin_path ):
+    # GDAL executables are in the GDAL framework Programs folder
+    if getGdalBinPath().isEmpty():
+      setGdalBinPath( gdal_bin_path )
+
+
+# setup the MacOSX path to both GDAL executables and python modules
+if platform.system() == "Darwin":
+  setMacOSXDefaultEnvironment()
+

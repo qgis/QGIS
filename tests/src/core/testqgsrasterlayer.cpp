@@ -77,7 +77,7 @@ void TestQgsRasterLayer::initTestCase()
   QgsApplication::init( QString() );
   QgsApplication::initQgis();
   QString mySettings = QgsApplication::showSettings();
-  mySettings = mySettings.replace("\n","<br />");
+  mySettings = mySettings.replace( "\n", "<br />" );
   //create some objects that will be used in all tests...
   //create a raster layer that will be used in all tests...
   mTestDataDir = QString( TEST_DATA_DIR ) + QDir::separator(); //defined in CmakeLists.txt
@@ -103,14 +103,14 @@ void TestQgsRasterLayer::initTestCase()
 //runs after all tests
 void TestQgsRasterLayer::cleanupTestCase()
 {
-  QString myReportFile = QDir::tempPath() + QDir::separator() + "rastertest.html";
+  QString myReportFile = QDir::tempPath() + QDir::separator() + "qgistest.html";
   QFile myFile( myReportFile );
-  if ( myFile.open( QIODevice::WriteOnly ) )
+  if ( myFile.open( QIODevice::WriteOnly | QIODevice::Append ) )
   {
     QTextStream myQTextStream( &myFile );
     myQTextStream << mReport;
     myFile.close();
-    QDesktopServices::openUrl( "file://" + myReportFile );
+    //QDesktopServices::openUrl( "file:///" + myReportFile );
   }
 
 }

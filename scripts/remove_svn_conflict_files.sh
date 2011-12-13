@@ -10,3 +10,7 @@
 for FILE in `find . -name *.orig`; do echo "Deleting reject:  $FILE"; rm -i $FILE; done
 for FILE in `find . -name *.rej`; do echo "Deleting reject:  $FILE"; rm -i $FILE; done
 for FILE in `find . -name *.tmp | grep -v "\.svn"`; do echo "Deleting reject:  $FILE"; rm -i $FILE; done
+#rm $(git status | grep orig | awk '{print $2}')
+#rm $(git status | grep LOCAL | awk '{print $2}')
+#rm $(git status | grep REMOTE | awk '{print $2}')
+#

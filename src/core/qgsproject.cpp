@@ -323,6 +323,7 @@ struct QgsProject::Imp
     // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
     QgsProject::instance()->writeEntry( "PositionPrecision", "/Automatic", true );
     QgsProject::instance()->writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
+    QgsProject::instance()->writeEntry( "Paths", "/Absolute", false );
   }
 
 };  // struct QgsProject::Imp
@@ -336,6 +337,7 @@ QgsProject::QgsProject()
   // XXX THESE SHOULD BE MOVED TO STATUSBAR RELATED SOURCE
   writeEntry( "PositionPrecision", "/Automatic", true );
   writeEntry( "PositionPrecision", "/DecimalPlaces", 2 );
+  writeEntry( "Paths", "/Absolute", false );
   // XXX writeEntry() makes the project dirty, but it doesn't make sense
   // for a new project to be dirty, so let's clean it up
   dirty( false );
@@ -1334,7 +1336,7 @@ void QgsProject::dumpProperties() const
 // return the absolute path from a filename read from project file
 QString QgsProject::readPath( QString src ) const
 {
-  if ( readBoolEntry( "Paths", "/Absolute", true ) )
+  if ( readBoolEntry( "Paths", "/Absolute", false ) )
   {
     return src;
   }
@@ -1363,7 +1365,9 @@ QString QgsProject::readPath( QString src ) const
     // where the source file had to exist and only the project directory was stripped
     // from the filename.
     QFileInfo pfi( fileName() );
-    Q_ASSERT( pfi.exists() );
+    if ( !pfi.exists() )
+      return src;
+
     QFileInfo fi( pfi.canonicalPath() + "/" + src );
 
     if ( !fi.exists() )
@@ -1378,6 +1382,11 @@ QString QgsProject::readPath( QString src ) const
 
   QString srcPath = src;
   QString projPath = fileName();
+
+  if ( projPath.isEmpty() )
+  {
+    return src;
+  }
 
 #if defined(Q_OS_WIN)
   srcPath.replace( "\\", "/" );
@@ -1424,13 +1433,18 @@ QString QgsProject::readPath( QString src ) const
 // return the absolute or relative path to write it to the project file
 QString QgsProject::writePath( QString src ) const
 {
-  if ( readBoolEntry( "Paths", "/Absolute", true ) || src.isEmpty() )
+  if ( readBoolEntry( "Paths", "/Absolute", false ) || src.isEmpty() )
   {
     return src;
   }
 
   QString srcPath = src;
   QString projPath = fileName();
+
+  if ( projPath.isEmpty() )
+  {
+    return src;
+  }
 
 #if defined( Q_OS_WIN )
   const Qt::CaseSensitivity cs = Qt::CaseInsensitive;

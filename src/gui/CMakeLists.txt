@@ -60,6 +60,7 @@ qgsmaptoolemitpoint.cpp
 qgsmaptoolpan.cpp
 qgsmaptoolzoom.cpp
 qgsmessageviewer.cpp
+qgsmessagelogviewer.cpp
 qgsnewhttpconnection.cpp
 qgsnewvectorlayerdialog.cpp
 qgsnumericsortlistviewitem.cpp
@@ -123,6 +124,7 @@ qgsmapcanvas.h
 qgsmapoverviewcanvas.h
 qgsmaptoolemitpoint.h
 qgsmessageviewer.h
+qgsmessagelogviewer.h
 qgsnewhttpconnection.h
 qgsnewvectorlayerdialog.h
 qgscredentialdialog.h
@@ -181,6 +183,7 @@ SET(QGIS_GUI_UI_HDRS
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsdetaileditemwidgetbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsgenericprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessageviewer.h
+${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsmessagelogviewer.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgscredentialdialog.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsprojectionselectorbase.h
 ${CMAKE_CURRENT_BINARY_DIR}/../ui/ui_qgsquerybuilderbase.h
@@ -239,8 +242,6 @@ ENDIF(MSVC)
 ADD_LIBRARY(qgis_gui SHARED ${QGIS_GUI_SRCS} ${QGIS_GUI_MOC_SRCS} ${QGIS_GUI_HDRS} ${QGIS_GUI_MOC_HDRS})
 
 SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
-  VERSION ${COMPLETE_VERSION}
-  SOVERSION ${COMPLETE_VERSION}
   PUBLIC_HEADER "${QGIS_GUI_HDRS};${QGIS_GUI_MOC_HDRS}"
   CLEAN_DIRECT_OUTPUT 1
   FRAMEWORK 1
@@ -248,6 +249,14 @@ SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
   MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
   MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
   MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_gui)
+
+#generate unversioned libs for android
+IF (NOT ANDROID)
+  SET_TARGET_PROPERTIES(qgis_gui PROPERTIES
+    VERSION ${COMPLETE_VERSION}
+    SOVERSION ${COMPLETE_VERSION}
+    )
+ENDIF (NOT ANDROID)
 
 # make sure that UI files will be processed first
 ADD_DEPENDENCIES(qgis_gui ui)

@@ -18,8 +18,10 @@
 #include "qgisinterface.h"
 #include "qgswfssourceselect.h"
 #include "qgswfsconnection.h"
+#include "qgswfsprovider.h"
 #include "qgsnewhttpconnection.h"
 #include "qgsgenericprojectionselector.h"
+#include "qgsexpressionbuilderdialog.h"
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
@@ -48,10 +50,6 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
     buttonBox->button( QDialogButtonBox::Ok )->hide();
     buttonBox->button( QDialogButtonBox::Cancel )->hide();
   }
-
-  // keep the "use current view extent" checkbox hidden until
-  // the functionality is reintroduced [MD]
-  mBboxCheckBox->hide();
 
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
@@ -262,28 +260,27 @@ void QgsWFSSourceSelect::addLayer()
     return;
   }
 
-  QString typeName = tItem->text( 1 );
-  QString crs = labelCoordRefSys->text();
-  QString filter = mFilterLineEdit->text();
   QgsRectangle bBox;
-
-#if 0
-  // TODO: resolve [MD]
-  //get current extent
-  QgsMapCanvas* canvas = mIface->mapCanvas();
-  if ( canvas && mBboxCheckBox->isChecked() )
+  QgsRectangle currentRectangle;
+  if ( mBboxCheckBox->isChecked() )
   {
-    QgsRectangle currentExtent = canvas->extent();
+    currentRectangle = mExtent;
   }
-#endif
 
-  //add a wfs layer to the map
-  QgsWFSConnection conn( cmbConnections->currentText() );
-  QString uri = conn.uriGetFeature( typeName, crs, filter, bBox );
 
-  emit addWfsLayer( uri, typeName );
+  QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
+  for ( ; sIt != selectedItems.constEnd(); ++sIt )
+  {
+    QString typeName = ( *sIt )->text( 1 );
+    QString crs = labelCoordRefSys->text();
+    QString filter = ( *sIt )->text( 3 );
 
-  accept();
+    //add a wfs layer to the map
+    QgsWFSConnection conn( cmbConnections->currentText() );
+    QString uri = conn.uriGetFeature( typeName, crs, filter, currentRectangle );
+    emit addWfsLayer( uri, typeName );
+  }
 }
 
 void QgsWFSSourceSelect::changeCRS()
@@ -361,4 +358,66 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
   dlg.exec();
   populateConnectionList();
   emit connectionsChanged();
+}
+
+void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  if ( item && column == 3 )
+  {
+    //get available fields for wfs layer
+    QgsWFSProvider p( "" );
+    QgsWFSConnection conn( cmbConnections->currentText() );
+    QString uri = conn.uriDescribeFeatureType( item->text( 1 ) );
+
+    QgsFieldMap fields;
+    QString geometryAttribute;
+    if ( p.describeFeatureType( uri, geometryAttribute, fields ) != 0 )
+    {
+      return;
+    }
+
+
+    //show expression builder
+    QgsExpressionBuilderDialog d( 0, item->text( 3 ) );
+
+    //add available attributes to expression builder
+    QgsExpressionBuilderWidget* w = d.expressionBuilder();
+    if ( !w )
+    {
+      return;
+    }
+
+    QgsFieldMap::const_iterator fieldIt = fields.constBegin();
+    for ( ; fieldIt != fields.constEnd(); ++fieldIt )
+    {
+      w->registerItem( tr( "Fields" ), fieldIt->name(), " " + fieldIt->name() + " ", "", QgsExpressionItem::Field );
+    }
+
+    if ( d.exec() == QDialog::Accepted )
+    {
+      item->setText( 3, w->getExpressionString() );
+    }
+  }
+}
+
+void QgsWFSSourceSelect::showEvent( QShowEvent* event )
+{
+  Q_UNUSED( event );
+  QVariant extentVariant = property( "MapExtent" );
+  if ( extentVariant.isValid() )
+  {
+    QString extentString = extentVariant.toString();
+    QStringList minMaxSplit = extentString.split( ":" );
+    if ( minMaxSplit.size() > 1 )
+    {
+      QStringList xyMinSplit = minMaxSplit[0].split( "," );
+      QStringList xyMaxSplit = minMaxSplit[1].split( "," );
+      if ( xyMinSplit.size() > 1 && xyMaxSplit.size() > 1 )
+      {
+        mExtent.set( xyMinSplit[0].toDouble(), xyMinSplit[1].toDouble(), xyMaxSplit[0].toDouble(), xyMaxSplit[1].toDouble() );
+        return;
+      }
+    }
+  }
+  mBboxCheckBox->hide();
 }

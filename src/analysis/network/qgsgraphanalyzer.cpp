@@ -29,10 +29,10 @@
 void QgsGraphAnalyzer::shortestpath( const QgsGraph* source, int startPointIdx, int criterionNum, const QVector<int>& destPointCost, QVector<double>& cost, QgsGraph* treeResult )
 {
 
-  // QMap< cost, vertexIdx > not_begin
+  // QMultiMap< cost, vertexIdx > not_begin
   // I use it and not create any struct or class.
-  QMap< double, int > not_begin;
-  QMap< double, int >::iterator it;
+  QMultiMap< double, int > not_begin;
+  QMultiMap< double, int >::iterator it;
 
   // QVector< QPair< cost, arc id > result
   QVector< QPair< double, int > > result;

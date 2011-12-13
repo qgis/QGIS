@@ -18,6 +18,15 @@
 #include "qgscomposeritem.h"
 #include "qgscomposermap.h"
 #include "qgspaperitem.h"
+#include "qgscomposerarrow.h"
+#include "qgscomposerlabel.h"
+#include "qgscomposerlegend.h"
+#include "qgscomposermap.h"
+#include "qgscomposeritemgroup.h"
+#include "qgscomposerpicture.h"
+#include "qgscomposerscalebar.h"
+#include "qgscomposershape.h"
+#include "qgscomposerattributetable.h"
 #include "qgslogger.h"
 #include <QDomDocument>
 #include <QDomElement>
@@ -25,8 +34,8 @@
 #include <QSettings>
 
 QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
-    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSnapToGrid( false ),
-    mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
+    QGraphicsScene( 0 ), mMapRenderer( mapRenderer ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ), mSelectionTolerance( 0.0 ),
+    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
   setBackgroundBrush( Qt::gray );
 
@@ -36,14 +45,14 @@ QgsComposition::QgsComposition( QgsMapRenderer* mapRenderer ):
   addItem( mPaperItem );
   mPaperItem->setZValue( 0 );
   mPrintResolution = 300; //hardcoded default
-  loadGridAppearanceSettings();
+  loadSettings();
 }
 
 QgsComposition::QgsComposition():
     QGraphicsScene( 0 ), mMapRenderer( 0 ), mPlotStyle( QgsComposition::Preview ), mPaperItem( 0 ), mPrintAsRaster( false ),
-    mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
+    mSelectionTolerance( 0.0 ), mSnapToGrid( false ), mSnapGridResolution( 0.0 ), mSnapGridOffsetX( 0.0 ), mSnapGridOffsetY( 0.0 ), mActiveCommand( 0 )
 {
-  loadGridAppearanceSettings();
+  loadSettings();
 }
 
 QgsComposition::~QgsComposition()
@@ -77,7 +86,16 @@ double QgsComposition::paperWidth() const
 
 QgsComposerItem* QgsComposition::composerItemAt( const QPointF & position )
 {
-  QList<QGraphicsItem *> itemList = items( position );
+  QList<QGraphicsItem*> itemList;
+  if ( mSelectionTolerance <= 0.0 )
+  {
+    itemList = items( position );
+  }
+  else
+  {
+    itemList = items( QRectF( position.x() - mSelectionTolerance, position.y() - mSelectionTolerance, 2 * mSelectionTolerance, 2 * mSelectionTolerance ),
+                      Qt::IntersectsItemShape, Qt::DescendingOrder );
+  }
   QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
 
   for ( ; itemIt != itemList.end(); ++itemIt )
@@ -241,6 +259,145 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   }
 
   return true;
+}
+
+void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands, QPointF* pos )
+{
+  QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
+  for ( int i = 0; i < composerLabelList.size(); ++i )
+  {
+    QDomElement currentComposerLabelElem = composerLabelList.at( i ).toElement();
+    QgsComposerLabel* newLabel = new QgsComposerLabel( this );
+    newLabel->readXML( currentComposerLabelElem, doc );
+    if ( pos )
+    {
+      newLabel->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerLabel( newLabel );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newLabel, tr( "Label added" ) );
+    }
+  }
+  // map
+  QDomNodeList composerMapList = elem.elementsByTagName( "ComposerMap" );
+  for ( int i = 0; i < composerMapList.size(); ++i )
+  {
+    QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
+    QgsComposerMap* newMap = new QgsComposerMap( this );
+    newMap->readXML( currentComposerMapElem, doc );
+    if ( pos )
+    {
+      newMap->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerMap( newMap );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newMap, tr( "Map added" ) );
+    }
+  }
+  // arrow
+  QDomNodeList composerArrowList = elem.elementsByTagName( "ComposerArrow" );
+  for ( int i = 0; i < composerArrowList.size(); ++i )
+  {
+    QDomElement currentComposerArrowElem = composerArrowList.at( i ).toElement();
+    QgsComposerArrow* newArrow = new QgsComposerArrow( this );
+    newArrow->readXML( currentComposerArrowElem, doc );
+    if ( pos )
+    {
+      newArrow->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerArrow( newArrow );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newArrow, tr( "Arrow added" ) );
+    }
+  }
+  // scalebar
+  QDomNodeList composerScaleBarList = elem.elementsByTagName( "ComposerScaleBar" );
+  for ( int i = 0; i < composerScaleBarList.size(); ++i )
+  {
+    QDomElement currentComposerScaleBarElem = composerScaleBarList.at( i ).toElement();
+    QgsComposerScaleBar* newScaleBar = new QgsComposerScaleBar( this );
+    newScaleBar->readXML( currentComposerScaleBarElem, doc );
+    if ( pos )
+    {
+      newScaleBar->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerScaleBar( newScaleBar );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newScaleBar, tr( "Scale bar added" ) );
+    }
+  }
+  // shape
+  QDomNodeList composerShapeList = elem.elementsByTagName( "ComposerShape" );
+  for ( int i = 0; i < composerShapeList.size(); ++i )
+  {
+    QDomElement currentComposerShapeElem = composerShapeList.at( i ).toElement();
+    QgsComposerShape* newShape = new QgsComposerShape( this );
+    newShape->readXML( currentComposerShapeElem, doc );
+    if ( pos )
+    {
+      newShape->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerShape( newShape );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newShape, tr( "Shape added" ) );
+    }
+  }
+  // picture
+  QDomNodeList composerPictureList = elem.elementsByTagName( "ComposerPicture" );
+  for ( int i = 0; i < composerPictureList.size(); ++i )
+  {
+    QDomElement currentComposerPictureElem = composerPictureList.at( i ).toElement();
+    QgsComposerPicture* newPicture = new QgsComposerPicture( this );
+    newPicture->readXML( currentComposerPictureElem, doc );
+    if ( pos )
+    {
+      newPicture->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerPicture( newPicture );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newPicture, tr( "Picture added" ) );
+    }
+  }
+  // legend
+  QDomNodeList composerLegendList = elem.elementsByTagName( "ComposerLegend" );
+  for ( int i = 0; i < composerLegendList.size(); ++i )
+  {
+    QDomElement currentComposerLegendElem = composerLegendList.at( i ).toElement();
+    QgsComposerLegend* newLegend = new QgsComposerLegend( this );
+    newLegend->readXML( currentComposerLegendElem, doc );
+    if ( pos )
+    {
+      newLegend->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerLegend( newLegend );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newLegend, tr( "Legend added" ) );
+    }
+  }
+  // table
+  QDomNodeList composerTableList = elem.elementsByTagName( "ComposerAttributeTable" );
+  for ( int i = 0; i < composerTableList.size(); ++i )
+  {
+    QDomElement currentComposerTableElem = composerTableList.at( i ).toElement();
+    QgsComposerAttributeTable* newTable = new QgsComposerAttributeTable( this );
+    newTable->readXML( currentComposerTableElem, doc );
+    if ( pos )
+    {
+      newTable->setItemPosition( pos->x(), pos->y() );
+    }
+    addComposerTable( newTable );
+    if ( addUndoCommands )
+    {
+      pushAddRemoveCommand( newTable, tr( "Table added" ) );
+    }
+  }
 }
 
 void QgsComposition::addItemToZList( QgsComposerItem* item )
@@ -663,6 +820,7 @@ void QgsComposition::setSnapToGridEnabled( bool b )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setSnapGridResolution( double r )
@@ -672,6 +830,7 @@ void QgsComposition::setSnapGridResolution( double r )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetX( double offset )
@@ -681,6 +840,7 @@ void QgsComposition::setSnapGridOffsetX( double offset )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setSnapGridOffsetY( double offset )
@@ -690,6 +850,7 @@ void QgsComposition::setSnapGridOffsetY( double offset )
   {
     mPaperItem->update();
   }
+  saveSettings();
 }
 
 void QgsComposition::setGridPen( const QPen& p )
@@ -699,7 +860,7 @@ void QgsComposition::setGridPen( const QPen& p )
   {
     mPaperItem->update();
   }
-  saveGridAppearanceSettings();
+  saveSettings();
 }
 
 void QgsComposition::setGridStyle( GridStyle s )
@@ -709,10 +870,16 @@ void QgsComposition::setGridStyle( GridStyle s )
   {
     mPaperItem->update();
   }
-  saveGridAppearanceSettings();
+  saveSettings();
 }
 
-void QgsComposition::loadGridAppearanceSettings()
+void QgsComposition::setSelectionTolerance( double tol )
+{
+  mSelectionTolerance = tol;
+  saveSettings();
+}
+
+void QgsComposition::loadSettings()
 {
   //read grid style, grid color and pen width from settings
   QSettings s;
@@ -742,9 +909,11 @@ void QgsComposition::loadGridAppearanceSettings()
   {
     mGridStyle = Solid;
   }
+
+  mSelectionTolerance = s.value( "/qgis/composerSelectionTolerance", 0.0 ).toDouble();
 }
 
-void QgsComposition::saveGridAppearanceSettings()
+void QgsComposition::saveSettings()
 {
   //store grid appearance settings
   QSettings s;
@@ -765,6 +934,9 @@ void QgsComposition::saveGridAppearanceSettings()
   {
     s.setValue( "/qgis/composerGridStyle", "Crosses" );
   }
+
+  //store also selection tolerance
+  s.setValue( "/qgis/composerSelectionTolerance", mSelectionTolerance );
 }
 
 void QgsComposition::beginCommand( QgsComposerItem* item, const QString& commandText, QgsComposerMergeCommand::Context c )
@@ -808,4 +980,213 @@ void QgsComposition::cancelCommand()
 {
   delete mActiveCommand;
   mActiveCommand = 0;
+}
+
+void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
+{
+  addItem( arrow );
+  emit composerArrowAdded( arrow );
+  clearSelection();
+  arrow->setSelected( true );
+  emit selectedItemChanged( arrow );
+  //pushAddRemoveCommand( arrow, tr( "Arrow added" ) );
+}
+
+void QgsComposition::addComposerLabel( QgsComposerLabel* label )
+{
+  addItem( label );
+  emit composerLabelAdded( label );
+  clearSelection();
+  label->setSelected( true );
+  emit selectedItemChanged( label );
+  //pushAddRemoveCommand( label, tr( "Label added" ) );
+}
+
+void QgsComposition::addComposerMap( QgsComposerMap* map )
+{
+  addItem( map );
+  //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
+  map->setPreviewMode( QgsComposerMap::Cache );
+  map->cache();
+  emit composerMapAdded( map );
+  clearSelection();
+  map->setSelected( true );
+  emit selectedItemChanged( map );
+  //pushAddRemoveCommand( map, tr( "Map added" ) );
+}
+
+void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
+{
+  //take first available map
+  QList<const QgsComposerMap*> mapItemList = composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    scaleBar->setComposerMap( mapItemList.at( 0 ) );
+  }
+  scaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
+  addItem( scaleBar );
+  emit composerScaleBarAdded( scaleBar );
+  clearSelection();
+  scaleBar->setSelected( true );
+  emit selectedItemChanged( scaleBar );
+  //pushAddRemoveCommand( scaleBar, tr( "Scale bar added" ) );
+}
+
+void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
+{
+  //take first available map
+  QList<const QgsComposerMap*> mapItemList = composerMapItems();
+  if ( mapItemList.size() > 0 )
+  {
+    legend->setComposerMap( mapItemList.at( 0 ) );
+  }
+  addItem( legend );
+  emit composerLegendAdded( legend );
+  clearSelection();
+  legend->setSelected( true );
+  emit selectedItemChanged( legend );
+  //pushAddRemoveCommand( legend, tr( "Legend added" ) );
+}
+
+void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
+{
+  addItem( picture );
+  emit composerPictureAdded( picture );
+  clearSelection();
+  picture->setSelected( true );
+  emit selectedItemChanged( picture );
+  //pushAddRemoveCommand( picture, tr( "Picture added" ) );
+}
+
+void QgsComposition::addComposerShape( QgsComposerShape* shape )
+{
+  addItem( shape );
+  emit composerShapeAdded( shape );
+  clearSelection();
+  shape->setSelected( true );
+  emit selectedItemChanged( shape );
+  //pushAddRemoveCommand( shape, tr( "Shape added" ) );
+}
+
+void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
+{
+  addItem( table );
+  emit composerTableAdded( table );
+  clearSelection();
+  table->setSelected( true );
+  emit selectedItemChanged( table );
+  //pushAddRemoveCommand( table, tr( "Table added" ) );
+}
+
+void QgsComposition::removeComposerItem( QgsComposerItem* item )
+{
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap *>( item );
+  if ( !map || !map->isDrawing() ) //don't delete a composer map while it draws
+  {
+    removeItem( item );
+    QgsComposerItemGroup* itemGroup = dynamic_cast<QgsComposerItemGroup*>( item );
+    if ( itemGroup )
+    {
+      //add add/remove item command for every item in the group
+      QUndoCommand* parentCommand = new QUndoCommand( tr( "Remove item group" ) );
+
+      QSet<QgsComposerItem*> groupedItems = itemGroup->items();
+      QSet<QgsComposerItem*>::iterator it = groupedItems.begin();
+      for ( ; it != groupedItems.end(); ++it )
+      {
+        QgsAddRemoveItemCommand* subcommand = new QgsAddRemoveItemCommand( QgsAddRemoveItemCommand::Removed, *it, this, "", parentCommand );
+        connectAddRemoveCommandSignals( subcommand );
+        emit itemRemoved( *it );
+      }
+
+      undoStack()->push( parentCommand );
+      delete itemGroup;
+      emit itemRemoved( itemGroup );
+    }
+    else
+    {
+      emit itemRemoved( item );
+      pushAddRemoveCommand( item, tr( "Item deleted" ), QgsAddRemoveItemCommand::Removed );
+    }
+  }
+}
+
+void QgsComposition::pushAddRemoveCommand( QgsComposerItem* item, const QString& text, QgsAddRemoveItemCommand::State state )
+{
+  QgsAddRemoveItemCommand* c = new QgsAddRemoveItemCommand( state, item, this, text );
+  connectAddRemoveCommandSignals( c );
+  undoStack()->push( c );
+}
+
+void QgsComposition::connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c )
+{
+  if ( !c )
+  {
+    return;
+  }
+
+  QObject::connect( c, SIGNAL( itemRemoved( QgsComposerItem* ) ), this, SIGNAL( itemRemoved( QgsComposerItem* ) ) );
+  QObject::connect( c, SIGNAL( itemAdded( QgsComposerItem* ) ), this, SLOT( sendItemAddedSignal( QgsComposerItem* ) ) );
+}
+
+void QgsComposition::sendItemAddedSignal( QgsComposerItem* item )
+{
+  //cast and send proper signal
+  item->setSelected( true );
+  QgsComposerArrow* arrow = dynamic_cast<QgsComposerArrow*>( item );
+  if ( arrow )
+  {
+    emit composerArrowAdded( arrow );
+    emit selectedItemChanged( arrow );
+    return;
+  }
+  QgsComposerLabel* label = dynamic_cast<QgsComposerLabel*>( item );
+  if ( label )
+  {
+    emit composerLabelAdded( label );
+    emit selectedItemChanged( label );
+    return;
+  }
+  QgsComposerMap* map = dynamic_cast<QgsComposerMap*>( item );
+  if ( map )
+  {
+    emit composerMapAdded( map );
+    emit selectedItemChanged( map );
+    return;
+  }
+  QgsComposerScaleBar* scalebar = dynamic_cast<QgsComposerScaleBar*>( item );
+  if ( scalebar )
+  {
+    emit composerScaleBarAdded( scalebar );
+    emit selectedItemChanged( scalebar );
+    return;
+  }
+  QgsComposerLegend* legend = dynamic_cast<QgsComposerLegend*>( item );
+  if ( legend )
+  {
+    emit composerLegendAdded( legend );
+    emit selectedItemChanged( legend );
+    return;
+  }
+  QgsComposerPicture* picture = dynamic_cast<QgsComposerPicture*>( item );
+  if ( picture )
+  {
+    emit composerPictureAdded( picture );
+    emit selectedItemChanged( picture );
+    return;
+  }
+  QgsComposerShape* shape = dynamic_cast<QgsComposerShape*>( item );
+  if ( shape )
+  {
+    emit composerShapeAdded( shape );
+    emit selectedItemChanged( shape );
+    return;
+  }
+  QgsComposerAttributeTable* table = dynamic_cast<QgsComposerAttributeTable*>( item );
+  if ( table )
+  {
+    emit composerTableAdded( table );
+    emit selectedItemChanged( table );
+    return;
+  }
 }

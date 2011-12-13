@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include <cmath>
-#include <iostream>
 #include <cstdio>
 
 #include <cpl_conv.h>

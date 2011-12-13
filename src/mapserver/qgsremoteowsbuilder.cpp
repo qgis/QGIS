@@ -24,12 +24,15 @@
 #include <QDomElement>
 #include <QTemporaryFile>
 
-QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const std::map<QString, QString>& parameterMap ): QgsMSLayerBuilder(), mParameterMap( parameterMap )
+QgsRemoteOWSBuilder::QgsRemoteOWSBuilder( const QMap<QString, QString>& parameterMap )
+    : QgsMSLayerBuilder()
+    , mParameterMap( parameterMap )
 {
 
 }
 
-QgsRemoteOWSBuilder::QgsRemoteOWSBuilder(): QgsMSLayerBuilder()
+QgsRemoteOWSBuilder::QgsRemoteOWSBuilder()
+    : QgsMSLayerBuilder()
 {
 
 }
@@ -39,7 +42,11 @@ QgsRemoteOWSBuilder::~QgsRemoteOWSBuilder()
 
 }
 
-QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer( const QDomElement& elem, const QString& layerName, QList<QTemporaryFile*>& filesToRemove, QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
+QgsMapLayer* QgsRemoteOWSBuilder::createMapLayer(
+  const QDomElement& elem,
+  const QString& layerName,
+  QList<QTemporaryFile*>& filesToRemove,
+  QList<QgsMapLayer*>& layersToRemove, bool allowCaching ) const
 {
   if ( elem.isNull() )
   {
@@ -289,48 +296,40 @@ QgsRasterLayer* QgsRemoteOWSBuilder::wcsLayerFromUrl( const QString &url,
   QString wcsRequest = serverUrl + "?SERVICE=WCS&VERSION=1.0.0&REQUEST=GetCoverage&COVERAGE=" + coverageName + "&FORMAT=" + format;
 
   //CRS (or SRS)
-  std::map<QString, QString>::const_iterator crsIt = mParameterMap.find( "CRS" );
-  if ( crsIt == mParameterMap.end() )
+  QString crs = mParameterMap.value( "CRS", mParameterMap.value( "SRS" ) );
+  if ( crs.isEmpty() )
   {
-    crsIt = mParameterMap.find( "SRS" );
-    if ( crsIt == mParameterMap.end() )
-    {
-      QgsDebugMsg( "No CRS or SRS parameter found for wcs layer, returning 0" );
-      return 0;
-    }
+    QgsDebugMsg( "No CRS or SRS parameter found for wcs layer, returning 0" );
+    return 0;
   }
-  wcsRequest += "&CRS=";
-  wcsRequest += crsIt->second;
+  wcsRequest += "&CRS=" + crs;
 
   //width
-  std::map<QString, QString>::const_iterator widthIt = mParameterMap.find( "WIDTH" );
-  if ( widthIt == mParameterMap.end() )
+  QString width = mParameterMap.value( "WIDTH" );
+  if ( width.isEmpty() )
   {
     QgsDebugMsg( "No WIDTH parameter found for wcs layer, returning 0" );
     return 0;
   }
-  wcsRequest += "&WIDTH=";
-  wcsRequest += widthIt->second;
+  wcsRequest += "&WIDTH=" + width;
 
   //height
-  std::map<QString, QString>::const_iterator heightIt = mParameterMap.find( "HEIGHT" );
-  if ( heightIt == mParameterMap.end() )
+  QString height = mParameterMap.value( "HEIGHT" );
+  if ( height.isEmpty() )
   {
     QgsDebugMsg( "No HEIGHT parameter found for wcs layer, returning 0" );
     return 0;
   }
-  wcsRequest += "&HEIGHT=";
-  wcsRequest += heightIt->second;
+  wcsRequest += "&HEIGHT=" + height;
 
   //bbox
-  std::map<QString, QString>::const_iterator bboxIt = mParameterMap.find( "BBOX" );
-  if ( bboxIt == mParameterMap.end() )
+  QString bbox = mParameterMap.value( "BBOX" );
+  if ( bbox.isEmpty() )
   {
     QgsDebugMsg( "No BBOX parameter found for wcs layer, returning 0" );
     return 0;
   }
-  wcsRequest += "&BBOX=";
-  wcsRequest += bboxIt->second;
+  wcsRequest += "&BBOX=" + bbox;
 
   QgsDebugMsg( "WCS request is: " + wcsRequest );
 

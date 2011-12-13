@@ -124,6 +124,7 @@ SET(QGIS_APP_SRCS
   legend/qgslegendsymbologygroup.cpp
   legend/qgslegendsymbologyitem.cpp
   legend/qgslegendvectorsymbologyitem.cpp
+  legend/qgslayerorder.cpp
 
   ogr/qgsogrhelperfunctions.cpp
   ogr/qgsopenvectorlayerdialog.cpp
@@ -136,6 +137,13 @@ SET(QGIS_APP_SRCS
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 )
+
+IF (ANDROID)
+    SET(QGIS_APP_SRCS 
+        ${QGIS_APP_SRCS}
+        qtmain_android.cpp
+        )
+ENDIF (ANDROID)
 
 
 SET (QGIS_APP_MOC_HDRS
@@ -238,6 +246,7 @@ SET (QGIS_APP_MOC_HDRS
   legend/qgslegend.h
   legend/qgsapplegendinterface.h
   legend/qgslegendlayer.h
+  legend/qgslayerorder.h
 
   ogr/qgsopenvectorlayerdialog.h
   ogr/qgsnewogrconnection.h
@@ -385,6 +394,10 @@ INCLUDE_DIRECTORIES(
   gps
   )
 
+IF (ANDROID)
+    INCLUDE_DIRECTORIES(${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
+ENDIF (ANDROID)
+
 IF (HAVE_SPATIALITE)
   IF (WITH_INTERNAL_SPATIALITE)
     INCLUDE_DIRECTORIES(../core/spatialite/headers)
@@ -408,8 +421,11 @@ IF (POSTGRES_FOUND)
 ENDIF (POSTGRES_FOUND)
 
 #############
-
-ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
+IF (ANDROID)
+  ADD_LIBRARY(${QGIS_APP_NAME} SHARED ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${INDEX_SRC} ${QGIS_APP_HDRS} ${QGIS_APP_MOC_HDRS} ${IMAGE_RCC_SRCS})
+ELSE (ANDROID)
+  ADD_EXECUTABLE(${QGIS_APP_NAME} MACOSX_BUNDLE WIN32 ${QGIS_APP_SRCS} ${QGIS_APP_MOC_SRCS} ${IMAGE_RCC_SRCS})
+ENDIF (ANDROID)
 
 TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   ${QWT_LIBRARY}
@@ -423,6 +439,10 @@ TARGET_LINK_LIBRARIES(${QGIS_APP_NAME}
   qgis_gui
   qgis_analysis
 )
+
+IF (ANDROID)
+    TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} log)
+ENDIF (ANDROID)
 
 IF( WIN32 )
   ADD_DEFINITIONS(-DQWT_DLL)
@@ -455,7 +475,11 @@ ENDIF(MSVC)
 
 INSTALL(TARGETS ${QGIS_APP_NAME}
   BUNDLE DESTINATION ${QGIS_INSTALL_PREFIX}
-  RUNTIME DESTINATION ${QGIS_BIN_DIR})
+  RUNTIME DESTINATION ${QGIS_BIN_DIR}
+  LIBRARY DESTINATION ${QGIS_LIB_DIR}
+  ARCHIVE DESTINATION ${QGIS_LIB_DIR}
+  FRAMEWORK DESTINATION ${QGIS_FW_SUBDIR}
+  PUBLIC_HEADER DESTINATION ${QGIS_INCLUDE_DIR})
 
 IF (APPLE)
   INSTALL(CODE "EXECUTE_PROCESS(COMMAND /bin/echo -n \"APPLQGIS\" OUTPUT_FILE \"$ENV{DESTDIR}${CMAKE_INSTALL_PREFIX}/../PkgInfo\")")

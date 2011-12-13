@@ -52,13 +52,14 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   lstCoordinateSystems->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
+  // Hide (internal) ID column
+  lstCoordinateSystems->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
 
   lstRecent->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
   lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstRecent->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
-
-  cbxAuthority->addItem( tr( "All" ) );
-  cbxAuthority->addItems( authorities() );
+  // Hide (internal) ID column
+  lstRecent->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
 
   // Read settings from persistent storage
   QSettings settings;
@@ -135,7 +136,6 @@ QgsProjectionSelector::~QgsProjectionSelector()
   }
 }
 
-
 void QgsProjectionSelector::resizeEvent( QResizeEvent * theEvent )
 {
   lstCoordinateSystems->header()->resizeSection( NAME_COLUMN, theEvent->size().width() - 240 );
@@ -189,7 +189,6 @@ QString QgsProjectionSelector::ogcWmsCrsFilterAsSqlExpression( QSet<QString> * c
   {
     return sqlExpression;
   }
-
   /*
      Ref: WMS 1.3.0, section 6.7.3 "Layer CRS":
 
@@ -794,7 +793,8 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         newItem->setText( AUTHID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 2 ) ) );
         // display the qgis srs_id (field 1) in the third column of the list view
         newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 1 ) ) );
-
+        // expand also parent node
+        newItem->parent()->setExpanded(true);
       }
 
       // display the qgis deprecated in the user data of the item
@@ -866,121 +866,65 @@ void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *cu
     setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
 }
 
-void QgsProjectionSelector::on_pbnFind_clicked()
+
+void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt)
 {
-  QgsDebugMsg( "pbnFind..." );
-
-  QString mySearchString( sqlSafeString( leSearch->text() ) );
-
-  // Set up the query to retrieve the projection information needed to populate the list
-  QString mySql = "select srs_id from tbl_srs where ";
-  if ( cbxAuthority->currentIndex() > 0 )
-  {
-    mySql += QString( "auth_name='%1' AND " ).arg( cbxAuthority->currentText() );
-  }
-
-  if ( cbxHideDeprecated->isChecked() )
-  {
-    mySql += "not deprecated AND ";
-  }
-
-  if ( cbxMode->currentIndex() == 0 )
-  {
-    mySql += QString( "auth_id='%1'" ).arg( mySearchString );
-  }
-  else
-  {
-    mySql += "upper(description) like '%" + mySearchString.toUpper() + "%' ";
-
-    long myLargestSrsId = getLargestCRSIDMatch( QString( "%1 order by srs_id desc limit 1" ).arg( mySql ) );
-    QgsDebugMsg( QString( "Largest CRSID%1" ).arg( myLargestSrsId ) );
-
-    //a name search is ambiguous, so we find the first srsid after the current selected srsid
-    // each time the find button is pressed. This means we can loop through all matches.
-    if ( myLargestSrsId <= selectedCrsId() )
-    {
-      mySql = QString( "%1 order by srs_id limit 1" ).arg( mySql );
+    // filter recent crs's
+    QTreeWidgetItemIterator itr(lstRecent);
+    while (*itr) {
+        if ( (*itr)->childCount() == 0 )  // it's an end node aka a projection
+        {
+            if ( (*itr)->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              || (*itr)->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              )
+            {
+                (*itr)->setHidden(false);
+                QTreeWidgetItem * parent = (*itr)->parent();
+                while (parent != NULL)
+                {
+                    parent->setExpanded(true);
+                    parent->setHidden(false);
+                    parent = parent->parent();
+                }
+            }
+            else{
+                 (*itr)->setHidden(true);
+            }
+        }
+        else{
+             (*itr)->setHidden(true);
+        }
+        ++itr;
     }
-    else
-    {
-      // search ahead of the current position
-      mySql = QString( "%1 and srs_id > %2 order by srs_id limit 1" ).arg( mySql ).arg( selectedCrsId() );
+    // filter crs's
+    QTreeWidgetItemIterator it(lstCoordinateSystems);
+    while (*it) {
+        if ( (*it)->childCount() == 0 )  // it's an end node aka a projection
+        {
+            if ( (*it)->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              || (*it)->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+              )
+            {
+                (*it)->setHidden(false);
+                QTreeWidgetItem * parent = (*it)->parent();
+                while (parent != NULL)
+                {
+                    parent->setExpanded(true);
+                    parent->setHidden(false);
+                    parent = parent->parent();
+                }
+            }
+            else{
+                 (*it)->setHidden(true);
+            }
+        }
+        else{
+             (*it)->setHidden(true);
+        }
+        ++it;
     }
-  }
-  QgsDebugMsg( QString( " Search sql: %1" ).arg( mySql ) );
-
-  //
-  // Now perform the actual search
-  //
-
-  sqlite3      *myDatabase;
-  const char   *myTail;
-  sqlite3_stmt *myPreparedStatement;
-  int           myResult;
-  //check the db is available
-  myResult = sqlite3_open( mSrsDatabaseFileName.toUtf8().data(), &myDatabase );
-  if ( myResult )
-  {
-    // XXX This will likely never happen since on open, sqlite creates the
-    //     database if it does not exist. But we checked earlier for its existance
-    //     and aborted in that case. This is because we may be runnig from read only
-    //     media such as live cd and don't want to force trying to create a db.
-    showDBMissingWarning( mSrsDatabaseFileName );
-    return;
-  }
-
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    myResult = sqlite3_step( myPreparedStatement );
-    if ( myResult == SQLITE_ROW )
-    {
-      QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      setSelectedCrsId( mySrsId.toLong() );
-      // close the sqlite3 statement
-      sqlite3_finalize( myPreparedStatement );
-      sqlite3_close( myDatabase );
-      return;
-    }
-  }
-  //search the users db
-  QString myDatabaseFileName = QgsApplication::qgisUserDbFilePath();
-  QFileInfo myFileInfo;
-  myFileInfo.setFile( myDatabaseFileName );
-  if ( !myFileInfo.exists( ) ) //its not critical if this happens
-  {
-    QgsDebugMsg( QString( "%1\nUser db does not exist" ).arg( myDatabaseFileName ) );
-    return ;
-  }
-  myResult = sqlite3_open( myDatabaseFileName.toUtf8().data(), &myDatabase );
-  if ( myResult )
-  {
-    QgsDebugMsg( QString( "Can't open * user * database: %1" ).arg( sqlite3_errmsg( myDatabase ) ) );
-    //no need for assert because user db may not have been created yet
-    return;
-  }
-
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
-  // XXX Need to free memory from the error msg if one is set
-  if ( myResult == SQLITE_OK )
-  {
-    myResult = sqlite3_step( myPreparedStatement );
-    if ( myResult == SQLITE_ROW )
-    {
-      QString mySrsId = QString::fromUtf8(( char * )sqlite3_column_text( myPreparedStatement, 0 ) );
-      setSelectedCrsId( mySrsId.toLong() );
-      // close the sqlite3 statement
-      sqlite3_finalize( myPreparedStatement );
-      sqlite3_close( myDatabase );
-      return;
-    }
-  }
-
-  QMessageBox::information( this, tr( "Find projection" ), tr( "No matching projection found." ) );
-  lstCoordinateSystems->clearSelection();
-  teProjection->setText( "" );
 }
+
 
 long QgsProjectionSelector::getLargestCRSIDMatch( QString theSql )
 {
@@ -1094,7 +1038,7 @@ QStringList QgsProjectionSelector::authorities()
   return authorities;
 }
 
-/*!
+/*!linfinity qtcreator qgis
 * \brief Make the string safe for use in SQL statements.
 *  This involves escaping single quotes, double quotes, backslashes,
 *  and optionally, percentage symbols.  Percentage symbols are used

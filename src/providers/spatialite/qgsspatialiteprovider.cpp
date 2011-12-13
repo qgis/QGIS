@@ -28,6 +28,9 @@ email                : a.furieri@lqt.it
 
 #include "qgslogger.h"
 
+#include <QFileInfo>
+#include <QDir>
+
 #ifdef _MSC_VER
 #define strcasecmp(a,b) stricmp(a,b)
 #endif
@@ -792,8 +795,7 @@ bool QgsSpatiaLiteProvider::getFeature( sqlite3_stmt *stmt, bool fetchGeometry,
         }
         if ( fetchGeometry )
         {
-          QString geoCol = QString( "AsBinary(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
-          if ( strcasecmp( geoCol.toUtf8().constData(), sqlite3_column_name( stmt, ic ) ) == 0 )
+          if ( ic == mGeomColIdx )
           {
             if ( sqlite3_column_type( stmt, ic ) == SQLITE_BLOB )
             {
@@ -3244,6 +3246,7 @@ bool QgsSpatiaLiteProvider::prepareStatement(
   QString primaryKey = !isQuery ? "ROWID" : quotedIdentifier( mPrimaryKey );
 
   QString sql = QString( "SELECT %1" ).arg( primaryKey );
+  int colIdx = 1; // column 0 is primary key
   for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
   {
     const QgsField & fld = field( *it );
@@ -3255,10 +3258,12 @@ bool QgsSpatiaLiteProvider::prepareStatement(
       fieldname = QString( "AsText(%1)" ).arg( fieldname );
     }
     sql += "," + fieldname;
+    colIdx++;
   }
   if ( fetchGeometry )
   {
     sql += QString( ", AsBinary(%1)" ).arg( quotedIdentifier( mGeometryColumn ) );
+    mGeomColIdx = colIdx;
   }
   sql += QString( " FROM %1" ).arg( mQuery );
 
@@ -4894,4 +4899,145 @@ QGISEXTERN QgsVectorLayerImport::ImportError createEmptyLayer(
            uri, fields, wkbType, srs, overwrite,
            oldToNewAttrIdxMap, errorMessage, options
          );
+}
+
+// -------------
+
+static bool initializeSpatialMetadata( sqlite3 *sqlite_handle, QString& errCause )
+{
+  // attempting to perform self-initialization for a newly created DB
+  int ret;
+  char sql[1024];
+  char *errMsg = NULL;
+  int count = 0;
+  int i;
+  char **results;
+  int rows;
+  int columns;
+
+  if ( sqlite_handle == NULL )
+    return false;
+  // checking if this DB is really empty
+  strcpy( sql, "SELECT Count(*) from sqlite_master" );
+  ret = sqlite3_get_table( sqlite_handle, sql, &results, &rows, &columns, NULL );
+  if ( ret != SQLITE_OK )
+    return false;
+  if ( rows < 1 )
+    ;
+  else
+  {
+    for ( i = 1; i <= rows; i++ )
+      count = atoi( results[( i * columns ) + 0] );
+  }
+  sqlite3_free_table( results );
+
+  if ( count > 0 )
+    return false;
+
+  // all right, it's empty: proceding to initialize
+  strcpy( sql, "SELECT InitSpatialMetadata()" );
+  ret = sqlite3_exec( sqlite_handle, sql, NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to initialize SpatialMetadata:\n" );
+    errCause += QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+    return false;
+  }
+  spatial_ref_sys_init( sqlite_handle, 0 );
+  return true;
+}
+
+QGISEXTERN bool createDb( const QString& dbPath, QString& errCause )
+{
+  QgsDebugMsg( "creating a new db" );
+
+  QFileInfo fullPath = QFileInfo( dbPath );
+  QDir path = fullPath.dir();
+  QgsDebugMsg( QString( "making this dir: %1" ).arg( path.absolutePath() ) );
+
+  // Must be sure there is destination directory ~/.qgis
+  QDir().mkpath( path.absolutePath( ) );
+
+  // creating/opening the new database
+  spatialite_init( 0 );
+  sqlite3 *sqlite_handle;
+  int ret = sqlite3_open_v2( dbPath.toUtf8().constData(), &sqlite_handle, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, NULL );
+  if ( ret )
+  {
+    // an error occurred
+    errCause = QObject::tr( "Could not create a new database\n" );
+    errCause += QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) );
+    sqlite3_close( sqlite_handle );
+    return false;
+  }
+  // activating Foreign Key constraints
+  char *errMsg = NULL;
+  ret = sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", NULL, 0, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to activate FOREIGN_KEY constraints" );
+    sqlite3_free( errMsg );
+    sqlite3_close( sqlite_handle );
+    return false;
+  }
+  bool init_res = ::initializeSpatialMetadata( sqlite_handle, errCause );
+
+  // all done: closing the DB connection
+  sqlite3_close( sqlite_handle );
+
+  return init_res;
+}
+
+// -------------
+
+QGISEXTERN bool deleteLayer( const QString& dbPath, const QString& tableName, QString& errCause )
+{
+  QgsDebugMsg( "deleting layer " + tableName );
+
+  spatialite_init( 0 );
+  QgsSpatiaLiteProvider::SqliteHandles* hndl = QgsSpatiaLiteProvider::SqliteHandles::openDb( dbPath );
+  if ( !hndl )
+  {
+    errCause = QObject::tr( "Connection to database failed" );
+    return false;
+  }
+  sqlite3* sqlite_handle = hndl->handle();
+
+  // drop the table
+
+  QString sql = QString( "DROP TABLE " ) + QgsSpatiaLiteProvider::quotedIdentifier( tableName );
+  QgsDebugMsg( sql );
+  char *errMsg = NULL;
+  int ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    errCause = QObject::tr( "Unable to delete table %1:\n" ).arg( tableName );
+    errCause += QString::fromUtf8( errMsg );
+    sqlite3_free( errMsg );
+    QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+    return false;
+  }
+
+  // remove table from geometry columns
+  sql = QString( "DELETE FROM geometry_columns WHERE f_table_name = %1" )
+        .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) );
+  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), NULL, NULL, NULL );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( "sqlite error: " + QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) );
+  }
+
+  // TODO: remove spatial indexes?
+
+  // run VACUUM to free unused space and compact the database
+  ret = sqlite3_exec( sqlite_handle, "VACUUM", NULL, NULL, &errMsg );
+  if ( ret != SQLITE_OK )
+  {
+    QgsDebugMsg( "Failed to run VACUUM after deleting table on database " + dbPath );
+  }
+
+  QgsSpatiaLiteProvider::SqliteHandles::closeDb( hndl );
+
+  return true;
 }

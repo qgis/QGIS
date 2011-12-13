@@ -5,6 +5,7 @@
 #include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsdataprovider.h"
+#include "qgsmimedatautils.h"
 #include "qgslogger.h"
 #include "qgsproviderregistry.h"
 
@@ -117,6 +118,8 @@ Qt::ItemFlags QgsBrowserModel::flags( const QModelIndex & index ) const
       flags |= Qt::ItemIsDragEnabled;
     }
   }
+  if ( ptr->acceptDrop() )
+    flags |= Qt::ItemIsDropEnabled;
   return flags;
 }
 
@@ -342,11 +345,7 @@ QStringList QgsBrowserModel::mimeTypes() const
 
 QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
 {
-  QMimeData *mimeData = new QMimeData();
-  QByteArray encodedData;
-
-  QDataStream stream( &encodedData, QIODevice::WriteOnly );
-
+  QgsMimeDataUtils::UriList lst;
   foreach( const QModelIndex &index, indexes )
   {
     if ( index.isValid() )
@@ -355,25 +354,25 @@ QMimeData * QgsBrowserModel::mimeData( const QModelIndexList &indexes ) const
       if ( ptr->type() != QgsDataItem::Layer ) continue;
       QgsLayerItem *layer = ( QgsLayerItem* ) ptr;
       if ( layer->providerKey() == "wms" ) continue;
-      QString layerType;
-      switch ( layer->mapLayerType() )
-      {
-        case QgsMapLayer::VectorLayer:
-          layerType = "vector";
-          break;
-        case QgsMapLayer::RasterLayer:
-          layerType = "raster";
-          break;
-        default:
-          continue;
-      }
-      QString xUri = layerType + ":" + layer->providerKey() + ":" + layer->name() + ":" + layer->uri();
-      stream << xUri;
+      lst.append( QgsMimeDataUtils::Uri( layer ) );
     }
   }
+  return QgsMimeDataUtils::encodeUriList( lst );
+}
 
-  mimeData->setData( "application/x-vnd.qgis.qgis.uri", encodedData );
-  return mimeData;
+bool QgsBrowserModel::dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent )
+{
+  Q_UNUSED( row );
+  Q_UNUSED( column );
+
+  QgsDataItem* destItem = dataItem( parent );
+  if ( !destItem )
+  {
+    QgsDebugMsg( "DROP PROBLEM!" );
+    return false;
+  }
+
+  return destItem->handleDrop( data, action );
 }
 
 QgsDataItem *QgsBrowserModel::dataItem( const QModelIndex &idx ) const

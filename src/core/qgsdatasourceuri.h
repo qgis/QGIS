@@ -97,6 +97,9 @@ class CORE_EXPORT QgsDataSourceURI
     void setUseEstimatedMetadata( bool theFlag );
     bool useEstimatedMetadata() const;
 
+    void disableSelectAtId( bool theFlag );
+    bool selectAtIdDisabled() const;
+
     void clearSchema();
     void setSql( QString sql );
 
@@ -147,6 +150,8 @@ class CORE_EXPORT QgsDataSourceURI
     QString mKeyColumn;
     //Use estimated metadata flag
     bool mUseEstimatedMetadata;
+    //Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
+    bool mSelectAtIdDisabled;
 };
 
 #endif //QGSDATASOURCEURI_H

@@ -159,6 +159,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
   private:
     void fillFieldValues( int fieldIndex, int countLimit );
+    QString loadFunctionHelp( QgsExpressionItem* functionName );
 
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;

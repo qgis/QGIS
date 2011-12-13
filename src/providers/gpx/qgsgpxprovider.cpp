@@ -18,7 +18,6 @@
  ***************************************************************************/
 
 #include <algorithm>
-#include <iostream>
 #include <limits>
 #include <cstring>
 #include <cmath>
