@@ -31,6 +31,8 @@ from PyQt4.QtGui import *
 from qgis.core import *
 from qgis.gui import *
 
+import locale
+
 # From two input attribute maps, create single attribute map
 def combineVectorAttributes( atMapA, atMapB ):
     attribA = atMapA.values()
@@ -183,7 +185,7 @@ def getLayerNames( vTypes ):
             elif layer.type() == QgsMapLayer.RasterLayer:
                 if "Raster" in vTypes:
                     layerlist.append( unicode( layer.name() ) )
-    return layerlist
+    return sorted( layerlist, cmp=locale.strcoll )
 
 # Return list of names of all fields from input QgsVectorLayer
 def getFieldNames( vlayer ):
@@ -192,7 +194,7 @@ def getFieldNames( vlayer ):
     for name, field in fieldmap.iteritems():
         if not field.name() in fieldlist:
             fieldlist.append( unicode( field.name() ) )
-    return fieldlist
+    return sorted( fieldlist, cmp=locale.strcoll )
 
 # Return QgsVectorLayer from a layer name ( as string )
 def getVectorLayerByName( myName ):
