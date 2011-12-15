@@ -87,6 +87,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString const & name() const;
 
+    void setTitle( const QString& title ) { mTitle = title; }
+    const QString& title() const { return mTitle; }
+
+    void setAbstract( const QString& abstract ) { mAbstract = abstract; }
+    const QString& abstract() const { return mAbstract; }
+
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
     virtual void reload() {}
@@ -414,6 +420,11 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /** layer's Spatial reference system */
     QgsCoordinateReferenceSystem* mCRS;
+
+    QString mTitle;
+
+    /**Description of the layer*/
+    QString mAbstract;
 
   private:
 
