@@ -170,7 +170,7 @@ class QgsConfigParser
     @return true in case of success*/
     bool crsSetForLayer( const QDomElement& layerElement, QSet<QString> &crsSet ) const;
     void appendCRSElementsToLayer( QDomElement& layerElement, QDomDocument& doc, const QStringList &crsList ) const;
-    void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const;
+    void appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement, const QString& crsText, QDomDocument& doc ) const;
 
     void setDefaultLegendSettings();
 };
