@@ -860,6 +860,9 @@ void QgsRasterLayerProperties::sync()
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
   txtbMetadata->setHtml( mRasterLayer->metadata() );
 
+  mLayerTitleLineEdit->setText( mRasterLayer->title() );
+  mLayerAbstractTextEdit->setPlainText( mRasterLayer->abstract() );
+
 } // QgsRasterLayerProperties::sync()
 
 void QgsRasterLayerProperties::syncColormapTab()
@@ -1441,6 +1444,9 @@ void QgsRasterLayerProperties::apply()
   QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );
   mRasterLayer->thumbnailAsPixmap( &myQPixmap );
   pixmapThumbnail->setPixmap( myQPixmap );
+
+  mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
+  mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );

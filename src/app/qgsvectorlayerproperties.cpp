@@ -178,6 +178,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mOverlayDialogs.push_back( d );
   }
 
+  //layer title and abstract
+  if ( layer )
+  {
+    mLayerTitleLineEdit->setText( layer->title() );
+    mLayerAbstractTextEdit->setPlainText( layer->abstract() );
+  }
+
   tabWidget->setCurrentIndex( 0 );
 
   QSettings settings;
@@ -814,6 +821,10 @@ void QgsVectorLayerProperties::apply()
   {
     ( *it )->apply();
   }
+
+  //layer title and abstract
+  layer->setTitle( mLayerTitleLineEdit->text() );
+  layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
   // update symbology
   emit refreshLegend( layer->id(), false );
