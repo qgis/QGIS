@@ -362,7 +362,7 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
 
 void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
-  if ( item && column == 3 )
+  if ( item && column == 4 )
   {
     //get available fields for wfs layer
     QgsWFSProvider p( "" );
@@ -395,7 +395,7 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
 
     if ( d.exec() == QDialog::Accepted )
     {
-      item->setText( 3, w->getExpressionString() );
+      item->setText( 4, w->getExpressionString() );
     }
   }
 }
