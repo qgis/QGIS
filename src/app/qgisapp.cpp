@@ -2795,6 +2795,7 @@ bool QgisApp::fileSave()
     saveFileDialog->setFileMode( QFileDialog::AnyFile );
     saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
     saveFileDialog->setConfirmOverwrite( true );
+    saveFileDialog->selectFile( QgsProject::instance()->title() );
 
     if ( saveFileDialog->exec() == QDialog::Accepted )
     {
@@ -2840,8 +2841,6 @@ bool QgisApp::fileSave()
   return true;
 } // QgisApp::fileSave
 
-
-
 void QgisApp::fileSaveAs()
 {
   if ( mMapCanvas && mMapCanvas->isDrawing() )
@@ -2852,29 +2851,44 @@ void QgisApp::fileSaveAs()
   // Retrieve last used project dir from persistent settings
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Choose a file name to save the QGIS project file as" ), lastUsedDir, tr( "QGis files (*.qgs)" ) );
-  if ( saveFilePath.isNull() ) //canceled
+
+  std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
+    tr( "Choose a file name to save the QGIS project file as" ),
+    lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
+  saveFileDialog->setFileMode( QFileDialog::AnyFile );
+  saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
+  saveFileDialog->setConfirmOverwrite( true );
+  saveFileDialog->selectFile( QgsProject::instance()->title() );
+
+  QFileInfo fullPath;
+  if ( saveFileDialog->exec() == QDialog::Accepted )
+  {
+    //saveFilePath = saveFileDialog->selectedFiles().first();
+    fullPath.setFile( saveFileDialog->selectedFiles().first() );
+  }
+  else
   {
     return;
   }
-  QFileInfo myFI( saveFilePath );
-  QString myPath = myFI.path();
+
+  QString myPath = fullPath.path();
   settings.setValue( "/UI/lastProjectDir", myPath );
 
   // make sure the .qgs extension is included in the path name. if not, add it...
-  if ( "qgs" != myFI.suffix() )
+  if ( "qgs" != fullPath.suffix() )
   {
-    saveFilePath = myFI.filePath() + ".qgs";
+    myPath = fullPath.filePath() + ".qgs";
+    fullPath.setFile( myPath );
   }
 
-  QgsProject::instance()->setFileName( saveFilePath );
+  QgsProject::instance()->setFileName( fullPath.filePath() );
 
   if ( QgsProject::instance()->write() )
   {
     setTitleBarText_( *this ); // update title bar
     statusBar()->showMessage( tr( "Saved project to: %1" ).arg( QgsProject::instance()->fileName() ) );
     // add this to the list of recently used project files
-    saveRecentProjectPath( saveFilePath, settings );
+    saveRecentProjectPath( fullPath.filePath(), settings );
   }
   else
   {
