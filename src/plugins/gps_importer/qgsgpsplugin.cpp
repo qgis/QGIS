@@ -164,6 +164,10 @@ void QgsGPSPlugin::createGPX()
                                   tr( "GPS eXchange file (*.gpx)" ) );
   if ( !fileName.isEmpty() )
   {
+    if ( !fileName.toLower().endsWith( ".gpx" ) )
+    {
+      fileName += ".gpx";
+    }
     QFileInfo fileInfo( fileName );
     std::ofstream ofs( fileName.toUtf8() );
     if ( !ofs )
