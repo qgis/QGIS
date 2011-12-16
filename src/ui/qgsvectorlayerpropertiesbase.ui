@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>777</width>
+    <width>762</width>
     <height>672</height>
    </rect>
   </property>
@@ -20,49 +20,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="pbnLoadDefaultStyle">
-       <property name="text">
-        <string>Restore Default Style</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveDefaultStyle">
-       <property name="text">
-        <string>Save As Default</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnLoadStyle">
-       <property name="text">
-        <string>Load Style ...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveStyleAs">
-       <property name="text">
-        <string>Save Style ...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_8">
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -372,8 +330,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>755</width>
-            <height>542</height>
+            <width>746</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -590,8 +548,47 @@
       <attribute name="title">
        <string>Metadata</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_8">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
+        <widget class="QLabel" name="mLayerTitleLabel">
+         <property name="text">
+          <string>Title</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mLayerAbstractLabel">
+         <property name="text">
+          <string>Abstract</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QTextEdit" name="mLayerAbstractTextEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>50</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>80</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
         <widget class="QTextEdit" name="teMetadata">
          <property name="lineWidth">
           <number>2</number>
@@ -1195,6 +1192,48 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pbnLoadDefaultStyle">
+       <property name="text">
+        <string>Restore Default Style</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveDefaultStyle">
+       <property name="text">
+        <string>Save As Default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnLoadStyle">
+       <property name="text">
+        <string>Load Style ...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveStyleAs">
+       <property name="text">
+        <string>Save Style ...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>
