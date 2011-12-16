@@ -330,8 +330,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>340</width>
-            <height>445</height>
+            <width>746</width>
+            <height>569</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -569,10 +569,22 @@
        <item row="3" column="0">
         <widget class="QTextEdit" name="mLayerAbstractTextEdit">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
            <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
+           <verstretch>50</verstretch>
           </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>80</height>
+          </size>
          </property>
         </widget>
        </item>
