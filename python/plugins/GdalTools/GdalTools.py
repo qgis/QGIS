@@ -140,11 +140,11 @@ class GdalTools:
     self.translate.setStatusTip( QCoreApplication.translate( "GdalTools", "Converts raster data between different formats") )
     QObject.connect( self.translate, SIGNAL( "triggered()" ), self.doTranslate )
 
-    self.paletted = QAction( QIcon( ":icons/raster-paletted.png" ), QCoreApplication.translate( "GdalTools", "RGB to PCT" ), self.iface.mainWindow() )
+    self.paletted = QAction( QIcon( ":icons/24-to-8-bits.png" ), QCoreApplication.translate( "GdalTools", "RGB to PCT" ), self.iface.mainWindow() )
     self.paletted.setStatusTip( QCoreApplication.translate( "GdalTools", "Convert a 24bit RGB image to 8bit paletted" ) )
     QObject.connect( self.paletted, SIGNAL( "triggered()" ), self.doPaletted )
 
-    self.rgb = QAction( QIcon( ":icons/raster-paletted.png" ), QCoreApplication.translate( "GdalTools", "PCT to RGB" ), self.iface.mainWindow() )
+    self.rgb = QAction( QIcon( ":icons/8-to-24-bits.png" ), QCoreApplication.translate( "GdalTools", "PCT to RGB" ), self.iface.mainWindow() )
     self.rgb.setStatusTip( QCoreApplication.translate( "GdalTools", "Convert an 8bit paletted image to 24bit RGB" ) )
     QObject.connect( self.rgb, SIGNAL( "triggered()" ), self.doRGB )
 

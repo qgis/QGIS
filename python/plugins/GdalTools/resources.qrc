@@ -15,12 +15,13 @@
         <file>icons/projection-add.png</file>
         <file>icons/raster-overview.png</file>
         <file>icons/raster-clip.png</file>
-        <file>icons/raster-paletted.png</file>
         <file>icons/raster-rgb.png</file>
         <file>icons/tileindex.png</file>
         <file>icons/about.png</file>
         <file>icons/dem.png</file>
         <file>icons/projection-export.png</file>
+        <file>icons/24-to-8-bits.png</file>
+        <file>icons/8-to-24-bits.png</file>
         <file>icons/edit.png</file>
         <file>icons/reset.png</file>
         <file>icons/tooltip.png</file>
