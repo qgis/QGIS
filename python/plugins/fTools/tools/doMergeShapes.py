@@ -116,16 +116,15 @@ class Dialog( QDialog, Ui_Dialog ):
       baseDir = QFileInfo( files[ 0 ] ).absolutePath()
     else:
       baseDir = self.leInputDir.text()
+      # look for shapes with specified geometry type
+      self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
+      self.progressFiles.setRange( 0, self.inputFiles.count() )
 
     outFile = QFile( self.outFileName )
     if outFile.exists():
       if not QgsVectorFileWriter.deleteShapeFile( self.outFileName ):
         QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
         return
-
-    # look for shapes with specified geometry type
-    self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
 
     if self.inEncoding == None:
       self.inEncoding = "System"
