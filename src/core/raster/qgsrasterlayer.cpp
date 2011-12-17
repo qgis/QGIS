@@ -17,6 +17,7 @@ email                : tim at linfiniti.com
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsmaptopixel.h"
 #include "qgsproviderregistry.h"
@@ -580,7 +581,7 @@ QString QgsRasterLayer::contrastEnhancementAlgorithmAsString() const
  */
 bool QgsRasterLayer::copySymbologySettings( const QgsMapLayer& theOther )
 {
-  //preventwarnings
+  //prevent warnings
   if ( theOther.type() < 0 )
   {
     return false;
@@ -988,7 +989,7 @@ QString QgsRasterLayer::drawingStyleAsString() const
  */
 bool QgsRasterLayer::hasCompatibleSymbology( const QgsMapLayer& theOther ) const
 {
-  //preventwarnings
+  //prevent warnings
   if ( theOther.type() < 0 )
   {
     return false;
@@ -2144,7 +2145,7 @@ QLibrary* QgsRasterLayer::loadProviderLibrary( QString theProviderKey )
 
   if ( !loaded )
   {
-    QgsLogger::warning( "QgsRasterLayer::loadProviderLibrary: Failed to load " );
+    QgsMessageLog::logMessage( tr( "Failed to load provider %1 (Reason: %2)" ).arg( myLib->fileName() ).arg( myLib->errorString() ), tr( "Raster" ) );
     return NULL;
   }
   QgsDebugMsg( "Loaded data provider library" );
@@ -2168,7 +2169,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !classFactory )
   {
-    QgsLogger::warning( "QgsRasterLayer::loadProvider: Cannot resolve the classFactory function" );
+    QgsMessageLog::logMessage( tr( "Cannot resolve the classFactory function" ), tr( "Raster" ) );
     return NULL;
   }
   QgsDebugMsg( "Getting pointer to a mDataProvider object from the library" );
@@ -2182,7 +2183,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !myDataProvider )
   {
-    QgsLogger::warning( "QgsRasterLayer::loadProvider: Unable to instantiate the data provider plugin" );
+    QgsMessageLog::logMessage( tr( "Cannot to instantiate the data provider" ), tr( "Raster" ) );
     return NULL;
   }
   QgsDebugMsg( "Data driver created" );
@@ -2236,9 +2237,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                + QString( " with layer list of " ) + layers.join( ", " )
                + " and style list of " + styles.join( ", " )
                + " and format of " + format +  " and CRS of " + crs );
-  if ( ! mDataProvider->isValid() )
+  if ( !mDataProvider->isValid() )
   {
-    QgsLogger::warning( "QgsRasterLayer::setDataProvider: Data provider is invalid." );
+    if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !crs.isNull() )
+    {
+      QgsMessageLog::logMessage( tr( "Data provider is invalid (layers %1, styles %2, formats: %3)" )
+                                 .arg( layers.join( ", " ) )
+                                 .arg( styles.join( ", " ) )
+                                 .arg( format ),
+                                 tr( "Raster" ) );
+    }
     return;
   }
 
@@ -3593,9 +3601,9 @@ bool QgsRasterLayer::writeXml( QDomNode & layer_node,
 
   QDomElement mapLayerNode = layer_node.toElement();
 
-  if ( mapLayerNode.isNull() || ( "maplayer" != mapLayerNode.nodeName() ) )
+  if ( mapLayerNode.isNull() || "maplayer" != mapLayerNode.nodeName() )
   {
-    QgsLogger::warning( "QgsRasterLayer::writeXML() can't find <maplayer>" );
+    QgsMessageLog::logMessage( tr( "<maplayer> not found." ), tr( "Raster" ) );
     return false;
   }
 
@@ -4488,16 +4496,12 @@ bool QgsRasterLayer::hasBand( QString const & theBandName )
   for ( int i = 1; i <= mDataProvider->bandCount(); i++ )
   {
     QString myColorQString = mDataProvider->colorInterpretationName( i );
-#ifdef QGISDEBUG
-    QgsLogger::debug( "band", i, __FILE__, __FUNCTION__, __LINE__, 2 );
-#endif
+    QgsDebugMsgLevel( QString( "band%1" ).arg( i ), 2 );
 
     if ( myColorQString == theBandName )
     {
-#ifdef QGISDEBUG
-      QgsLogger::debug( "band", i, __FILE__, __FUNCTION__, __LINE__, 2 );
+      QgsDebugMsgLevel( QString( "band%1" ).arg( i ), 2 );
       QgsDebugMsgLevel( "Found band : " + theBandName, 2 );
-#endif
 
       return true;
     }
@@ -4595,7 +4599,8 @@ double QgsRasterLayer::readValue( void *data, int type, int index )
       return ( double )(( double * )data )[index];
       break;
     default:
-      QgsLogger::warning( "GDAL data type is not supported" );
+      QgsMessageLog::logMessage( tr( "GDAL data type %1 is not supported" ).arg( type ), tr( "Raster" ) );
+      break;
   }
 
   return mValidNoDataValue ? mNoDataValue : 0.0;
