@@ -149,10 +149,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void toggleBuildPyramidsButton();
 
   signals:
-
     /** emitted when changes to layer were saved to update legend */
     void refreshLegend( QString layerID, bool expandItem );
-
 
   private:
     /** \brief  A constant that signals property not used */

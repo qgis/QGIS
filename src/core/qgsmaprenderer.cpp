@@ -191,9 +191,9 @@ void QgsMapRenderer::adjustExtentToSize()
     dymax = mExtent.yMaximum() + whitespace;
   }
 
-  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2\n" ).arg( mapUnitsPerPixelX, 0, 'f', 8 ).arg( mapUnitsPerPixelY, 0, 'f', 8 ) );
-  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2\n" ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8 ) );
-  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2\n" ).arg( mExtent.width(), 0, 'f', 8 ).arg( mExtent.height(), 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Map units per pixel (x,y) : %1, %2" ).arg( mapUnitsPerPixelX, 0, 'f', 8 ).arg( mapUnitsPerPixelY, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Pixmap dimensions (x,y) : %1, %2" ).arg( myWidth, 0, 'f', 8 ).arg( myHeight, 0, 'f', 8 ) );
+  QgsDebugMsg( QString( "Extent dimensions (x,y) : %1, %2" ).arg( mExtent.width(), 0, 'f', 8 ).arg( mExtent.height(), 0, 'f', 8 ) );
   QgsDebugMsg( mExtent.toString() );
 
   // update extent

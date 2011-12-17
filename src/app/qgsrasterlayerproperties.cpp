@@ -320,10 +320,13 @@ void QgsRasterLayerProperties::populateColorMapTable( const QList<QgsColorRampSh
 }
 void QgsRasterLayerProperties::populateTransparencyTable()
 {
-  //Clear existsing color transparency list
+  QgsDebugMsg( "entering." );
+
+  //Clear existing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
   QString myNumberFormatter;
-  if ( rbtnThreeBand->isChecked() && QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
+  if ( rbtnThreeBand->isChecked() &&
+       QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
        QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
   {
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
@@ -356,7 +359,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   }
   else
   {
-    //Clear existing single band or pallet values gransparency list
+    //Clear existing single band or palette values transparency list
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
     {
       tableTransparency->removeRow( myTableRunner );
@@ -394,7 +397,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   tableTransparency->resizeRowsToContents();
 }
 
-/** Set the message indicating if any min max values are estimates */
+// Set the message indicating if any min max values are estimates
 void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 {
   bool myEstimatedValues = false;
@@ -761,6 +764,7 @@ void QgsRasterLayerProperties::sync()
   }
 
   QgsDebugMsg( "populate transparency tab" );
+
   /*
    * Transparent Pixel Tab
    */
