@@ -806,6 +806,8 @@ void QgsAttributeTableDialog::updateExtent()
 
 void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 {
+  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
+
   if ( mLayer->actions()->size() != 0 )
   {
 
@@ -819,12 +821,12 @@ void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex 
       if ( !action.runable() )
         continue;
 
-      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), mView, mModel, i, atIndex );
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), mView, mModel, i, sourceIndex );
       menu->addAction( action.name(), a, SLOT( execute() ) );
     }
   }
 
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), mView, mModel, -1, atIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), mView, mModel, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
 
