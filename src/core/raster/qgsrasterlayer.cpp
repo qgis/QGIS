@@ -36,6 +36,9 @@ email                : tim at linfiniti.com
 #include "qgsfreakoutshader.h"
 #include "qgscolorrampshader.h"
 
+//renderers
+#include "qgspalettedrasterrenderer.h"
+
 #include <cstdio>
 #include <cmath>
 #include <limits>
@@ -833,8 +836,22 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       {
         QgsDebugMsg( "PalettedColor drawing type detected..." );
 
+        //test
+        int bNumber = bandNumber( mGrayBandName );
+        QList<QgsColorRampShader::ColorRampItem> itemList = mRasterStatsList[ bNumber - 1].colorTable;
+        QColor* colorArray = new QColor[itemList.size()];
+        QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = itemList.constBegin();
+        for ( ; colorIt != itemList.constEnd(); ++colorIt )
+        {
+          colorArray[( int )colorIt->value] =  colorIt->color;
+        }
+
+        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size() );
+        renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+#if 0
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
                                      theQgsMapToPixel, bandNumber( mGrayBandName ) );
+#endif //0
         break;
       }
       // a "Palette" layer drawn in gray scale (using only one of the color components)
