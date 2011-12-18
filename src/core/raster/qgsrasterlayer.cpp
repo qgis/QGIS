@@ -2353,6 +2353,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mRasterType = GrayOrUndefined;
   }
 
+  // Set min/max values for single band if we have them ready (no need to calculate which is slow)
+  // don't set min/max on multiband even if available because it would cause stretch of bands and thus colors distortion
+  if ( mDataProvider->bandCount() == 1 && ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactMinimumMaximum ) )
+  {
+    setMinimumValue( 1, mDataProvider->minimumValue( 1 ) );
+    setMaximumValue( 1, mDataProvider->maximumValue( 1 ) );
+  }
+
   QgsDebugMsg( "mRasterType = " + QString::number( mRasterType ) );
   if ( mRasterType == ColorLayer )
   {
@@ -2433,6 +2441,14 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mTransparencyBandName = TRSTRING_NOT_SET;  //sensible default
     mDrawingStyle = SingleBandGray;  //sensible default
     mGrayBandName = bandName( 1 );
+
+    // If we have min/max available (without calculation), it is better to use StretchToMinimumMaximum
+    // TODO: in GUI there is 'Contrast enhancement - Default' which is overwritten here
+    //       and that is confusing
+    if ( mDataProvider->capabilities() & QgsRasterDataProvider::ExactMinimumMaximum )
+    {
+      setContrastEnhancementAlgorithm( QgsContrastEnhancement::StretchToMinimumMaximum );
+    }
 
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
