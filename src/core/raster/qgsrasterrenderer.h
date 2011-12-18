@@ -1,3 +1,20 @@
+/***************************************************************************
+                         qgsrasterrenderer.h
+                         -------------------
+    begin                : December 2011
+    copyright            : (C) 2011 by Marco Hugentobler
+    email                : marco at sourcepole dot ch
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
 #ifndef QGSRASTERRENDERER_H
 #define QGSRASTERRENDERER_H
 
@@ -5,12 +22,13 @@
 
 class QPainter;
 class QgsMapToPixel;
+class QgsRasterResampler;
 class QgsRasterViewPort;
 
 class QgsRasterRenderer
 {
   public:
-    QgsRasterRenderer( QgsRasterDataProvider* provider );
+    QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler = 0 );
     virtual ~QgsRasterRenderer();
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
@@ -18,16 +36,17 @@ class QgsRasterRenderer
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
     QgsRasterDataProvider* mProvider;
+    QgsRasterResampler* mResampler;
 };
 
 inline double QgsRasterRenderer::readValue( void *data, QgsRasterDataProvider::DataType type, int index )
 {
-  if( !mProvider )
+  if ( !mProvider )
   {
     return 0;
   }
 
-  if( !data )
+  if ( !data )
   {
     return mProvider->noDataValue();
   }

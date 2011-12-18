@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsrasterrenderer.cpp
-                         ---------------------
+                         qgsbilinearrasterresampler.h
+                         ----------------------------
     begin                : December 2011
     copyright            : (C) 2011 by Marco Hugentobler
     email                : marco at sourcepole dot ch
@@ -15,12 +15,22 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterrenderer.h"
+#ifndef QGSBILINEARRASTERRESAMPLER_H
+#define QGSBILINEARRASTERRESAMPLER_H
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler )
-{
-}
+#include "qgsrasterresampler.h"
+#include <QColor>
 
-QgsRasterRenderer::~QgsRasterRenderer()
+class QgsBilinearRasterResampler: public QgsRasterResampler
 {
-}
+  public:
+    QgsBilinearRasterResampler();
+    ~QgsBilinearRasterResampler();
+
+    void resample( const QImage& srcImage, QImage& dstImage ) const;
+
+  private:
+    QRgb resampleColorValue( double u, double v, QRgb col1, QRgb col2, QRgb col3, QRgb col4 ) const;
+};
+
+#endif // QGSBILINEARRASTERRESAMPLER_H

@@ -166,6 +166,7 @@ SET(QGIS_CORE_SRCS
 
   raster/qgsrasterrenderer.cpp
   raster/qgspalettedrasterrenderer.cpp
+  raster/qgsbilinearrasterresampler.cpp
 
   renderer/qgscontinuouscolorrenderer.cpp
   renderer/qgsgraduatedsymbolrenderer.cpp

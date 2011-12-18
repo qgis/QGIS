@@ -38,6 +38,7 @@ email                : tim at linfiniti.com
 
 //renderers
 #include "qgspalettedrasterrenderer.h"
+#include "qgsbilinearrasterresampler.h"
 
 #include <cstdio>
 #include <cmath>
@@ -846,7 +847,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
           colorArray[( int )colorIt->value] =  colorIt->color;
         }
 
-        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size() );
+        QgsBilinearRasterResampler resampler;
+        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), &resampler );
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,

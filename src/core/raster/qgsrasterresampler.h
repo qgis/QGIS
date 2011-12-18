@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsrasterrenderer.cpp
-                         ---------------------
+                         qgsrasterresampler.h
+                         --------------------
     begin                : December 2011
     copyright            : (C) 2011 by Marco Hugentobler
     email                : marco at sourcepole dot ch
@@ -15,12 +15,16 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsrasterrenderer.h"
+#ifndef QGSRASTERRESAMPLER_H
+#define QGSRASTERRESAMPLER_H
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler )
-{
-}
+class QImage;
 
-QgsRasterRenderer::~QgsRasterRenderer()
+/**Interface for resampling rasters (e.g. to have a smoother appearance)*/
+class QgsRasterResampler
 {
-}
+  public:
+    void resample( const QImage& srcImage, QImage& dstImage ) const;
+};
+
+#endif // QGSRASTERRESAMPLER_H
