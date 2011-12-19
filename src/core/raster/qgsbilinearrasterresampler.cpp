@@ -31,22 +31,39 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
   double nSrcPerDstX = ( double ) srcImage.width() / ( double ) dstImage.width();
   double nSrcPerDstY = ( double ) srcImage.height() / ( double ) dstImage.height();
 
-  double currentSrcRow = nSrcPerDstX / 2.0;
+  double currentSrcRow = nSrcPerDstX / 2.0 - 0.5;
   double currentSrcCol;
 
   QRgb px1, px2, px3, px4;
 
   for ( int i = 0; i < dstImage.height(); ++i )
   {
-    currentSrcCol = nSrcPerDstY / 2.0;
+    //avoid access to invalid rows
+    if ( currentSrcRow < 0 )
+    {
+      currentSrcRow += nSrcPerDstY;
+    }
+    else if ( currentSrcRow > srcImage.height() - 2 )
+    {
+      //todo: resample in one direction only
+      break;
+    }
+
+    currentSrcCol = nSrcPerDstY / 2.0 - 0.5;
     for ( int j = 0; j < dstImage.width(); ++j )
     {
+      if ( currentSrcCol > srcImage.width() - 2 )
+      {
+        //todo: resample in one direction only
+        currentSrcCol += nSrcPerDstX;
+        continue;
+      }
       px1 = srcImage.pixel( currentSrcCol, currentSrcRow );
       px2 = srcImage.pixel( currentSrcCol + 1, currentSrcRow );
       px3 = srcImage.pixel( currentSrcCol + 1, currentSrcRow + 1 );
       px4 = srcImage.pixel( currentSrcCol, currentSrcRow + 1 );
-      double u = currentSrcCol - ( int ) currentSrcCol;
-      double v = currentSrcRow - ( int ) currentSrcRow;
+      double u = currentSrcCol - ( int )currentSrcCol;
+      double v = currentSrcRow - ( int )currentSrcRow;
       dstImage.setPixel( j, i, resampleColorValue( u, v, px1, px2, px3, px4 ) );
       currentSrcCol += nSrcPerDstX;
     }
