@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgspalettedrasterrenderer.h"
+#include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrasterviewport.h"
 #include <QColor>
@@ -46,7 +47,13 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   if ( mResampler )
   {
     //read data at source resolution if zoomed in, else do oversampling with factor 2.5
-    double pixelRatio = theQgsMapToPixel->mapUnitsPerPixel() / ( mProvider->extent().width() / mProvider->xSize() );
+    QgsRectangle providerExtent = mProvider->extent();
+    if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
+    {
+      QgsCoordinateTransform t( viewPort->mSrcCRS, viewPort->mDestCRS );
+      providerExtent = t.transformBoundingBox( providerExtent );
+    }
+    double pixelRatio = theQgsMapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
     double oversampling = pixelRatio > 1.0 ? 2.5 : pixelRatio;
     nCols = viewPort->drawableAreaXDim * oversampling;
     nRows = viewPort->drawableAreaYDim * oversampling;
