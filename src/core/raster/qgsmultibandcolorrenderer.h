@@ -1,6 +1,6 @@
 /***************************************************************************
-                         qgsrasterresampler.h
-                         --------------------
+                         qgsmultibandcolorrenderer.h
+                         ---------------------------
     begin                : December 2011
     copyright            : (C) 2011 by Marco Hugentobler
     email                : marco at sourcepole dot ch
@@ -15,16 +15,24 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSRASTERRESAMPLER_H
-#define QGSRASTERRESAMPLER_H
+#ifndef QGSMULTIBANDCOLORRENDERER_H
+#define QGSMULTIBANDCOLORRENDERER_H
 
-class QImage;
+#include "qgsrasterrenderer.h"
 
-/**Interface for resampling rasters (e.g. to have a smoother appearance)*/
-class QgsRasterResampler
+/**Renderer for multiband images with the color components*/
+class QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
-    virtual void resample( const QImage& srcImage, QImage& dstImage ) const = 0;
+    QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler = 0 );
+    ~QgsMultiBandColorRenderer();
+
+    void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+
+  private:
+    int mRedBand;
+    int mGreenBand;
+    int mBlueBand;
 };
 
-#endif // QGSRASTERRESAMPLER_H
+#endif // QGSMULTIBANDCOLORRENDERER_H

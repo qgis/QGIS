@@ -39,6 +39,7 @@ email                : tim at linfiniti.com
 //renderers
 #include "qgspalettedrasterrenderer.h"
 #include "qgsbilinearrasterresampler.h"
+#include "qgsmultibandcolorrenderer.h"
 
 #include <cstdio>
 #include <cmath>
@@ -936,8 +937,16 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       }
       else
       {
+        int red = bandNumber( mRedBandName );
+        int green = bandNumber( mGreenBandName );
+        int blue = bandNumber( mBlueBandName );
+        QgsBilinearRasterResampler resampler;
+        QgsMultiBandColorRenderer r( mDataProvider, red, green, blue, &resampler );
+        r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+#if 0
         drawMultiBandColor( theQPainter, theRasterViewPort,
                             theQgsMapToPixel );
+#endif //0
       }
       break;
     case SingleBandColorDataStyle:

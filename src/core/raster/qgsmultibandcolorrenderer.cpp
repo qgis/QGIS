@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgspalettedrasterrenderer.cpp
+                         qgsmultibandcolorrenderer.cpp
                          -----------------------------
     begin                : December 2011
     copyright            : (C) 2011 by Marco Hugentobler
@@ -15,34 +15,40 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgspalettedrasterrenderer.h"
-#include "qgscoordinatetransform.h"
+#include "qgsmultibandcolorrenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrasterresampler.h"
 #include "qgsrasterviewport.h"
-#include <QColor>
 #include <QImage>
 #include <QPainter>
 
-QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber,
-    QColor* colorArray, int nColors, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
+QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler ):
+    QgsRasterRenderer( provider, resampler ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand )
 {
 }
 
-QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
+QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
 {
-  delete[] mColors;
 }
 
-void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
+void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
   if ( !p || !mProvider || !viewPort || !theQgsMapToPixel )
   {
     return;
   }
 
+  //read data from provider
+  int redTypeSize = mProvider->dataTypeSize( mRedBand ) / 8;
+  int greenTypeSize = mProvider->dataTypeSize( mGreenBand ) / 8;
+  int blueTypeSize = mProvider->dataTypeSize( mBlueBand ) / 8;
+
+  QgsRasterDataProvider::DataType redType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mRedBand );
+  QgsRasterDataProvider::DataType greenType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGreenBand );
+  QgsRasterDataProvider::DataType blueType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBlueBand );
+
   int nCols, nRows;
+
   if ( mResampler )
   {
     //read data at source resolution if zoomed in, else do oversampling with factor 2.5
@@ -63,37 +69,46 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     nRows = viewPort->drawableAreaYDim;
   }
 
-  //read data from provider
-  int typeSize = mProvider->dataTypeSize( mBandNumber ) / 8;
-  QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBandNumber );
-  void* rasterData = VSIMalloc( typeSize * nCols *  nRows );
-  mProvider->readBlock( mBandNumber, viewPort->mDrawnExtent, nCols, nRows,
-                        viewPort->mSrcCRS, viewPort->mDestCRS, rasterData );
-  int currentRasterPos = 0;
+  void* redData = VSIMalloc( redTypeSize * nCols *  nRows );
+  void* greenData = VSIMalloc( greenTypeSize * nCols *  nRows );
+  void* blueData = VSIMalloc( blueTypeSize * nCols *  nRows );
+
+  mProvider->readBlock( mRedBand, viewPort->mDrawnExtent, nCols, nRows,
+                        viewPort->mSrcCRS, viewPort->mDestCRS, redData );
+  mProvider->readBlock( mGreenBand, viewPort->mDrawnExtent, nCols, nRows,
+                        viewPort->mSrcCRS, viewPort->mDestCRS, greenData );
+  mProvider->readBlock( mBlueBand, viewPort->mDrawnExtent, nCols, nRows,
+                        viewPort->mSrcCRS, viewPort->mDestCRS, blueData );
 
   QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
   QRgb* imageScanLine = 0;
-  int val = 0;
+  int currentRasterPos = 0;
+  int redVal, greenVal, blueVal;
 
   for ( int i = 0; i < nRows; ++i )
   {
     imageScanLine = ( QRgb* )( img.scanLine( i ) );
     for ( int j = 0; j < nCols; ++j )
     {
-      val = readValue( rasterData, rasterType, currentRasterPos );
-      imageScanLine[j] = mColors[ val ].rgba();
+      redVal = readValue( redData, redType, currentRasterPos );
+      greenVal = readValue( greenData, greenType, currentRasterPos );
+      blueVal = readValue( blueData, blueType, currentRasterPos );
+      imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
       ++currentRasterPos;
     }
   }
-  CPLFree( rasterData );
 
-  if ( mResampler ) //resample to output resolution
+  CPLFree( redData );
+  CPLFree( greenData );
+  CPLFree( blueData );
+
+  if ( mResampler )
   {
     QImage dstImg( viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, QImage::Format_ARGB32_Premultiplied );
     mResampler->resample( img, dstImg );
     p->drawImage( QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() ), dstImg );
   }
-  else //use original image
+  else
   {
     p->drawImage( QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() ), img );
   }
