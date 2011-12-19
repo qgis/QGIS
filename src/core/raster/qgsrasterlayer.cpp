@@ -489,9 +489,12 @@ void QgsRasterLayer::computeMinimumMaximumFromLastExtent( int theBand, double* t
 
   if ( 0 < theBand && theBand <= ( int ) bandCount() )
   {
-    float myMin = std::numeric_limits<float>::max();
-    float myMax = -1 * std::numeric_limits<float>::max();
-    float myValue = 0.0;
+    // Was there any reason to use float for myMin, myMax, myValue?
+    // It was breaking Float64 data obviously, especially if an extreme value
+    // was used for NoDataValue.
+    double myMin = std::numeric_limits<double>::max();
+    double myMax = -1 * std::numeric_limits<double>::max();
+    double myValue = 0.0;
     for ( int myRow = 0; myRow < mLastViewPort.drawableAreaYDim; ++myRow )
     {
       for ( int myColumn = 0; myColumn < mLastViewPort.drawableAreaXDim; ++myColumn )
@@ -2737,8 +2740,8 @@ void QgsRasterLayer::setMinimumMaximumUsingDataset()
   if ( rasterType() == QgsRasterLayer::GrayOrUndefined || drawingStyle() == QgsRasterLayer::SingleBandGray || drawingStyle() == QgsRasterLayer::MultiBandSingleBandGray )
   {
     QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mGrayBandName ) );
-    float myMin = myRasterBandStats.minimumValue;
-    float myMax = myRasterBandStats.maximumValue;
+    double myMin = myRasterBandStats.minimumValue;
+    double myMax = myRasterBandStats.maximumValue;
     setMinimumValue( grayBandName(), myMin );
     setMaximumValue( grayBandName(), myMax );
     setUserDefinedGrayMinimumMaximum( false );
@@ -2746,8 +2749,8 @@ void QgsRasterLayer::setMinimumMaximumUsingDataset()
   else if ( rasterType() == QgsRasterLayer::Multiband )
   {
     QgsRasterBandStats myRasterBandStats = bandStatistics( bandNumber( mRedBandName ) );
-    float myMin = myRasterBandStats.minimumValue;
-    float myMax = myRasterBandStats.maximumValue;
+    double myMin = myRasterBandStats.minimumValue;
+    double myMax = myRasterBandStats.maximumValue;
     setMinimumValue( redBandName(), myMin );
     setMaximumValue( redBandName(), myMax );
 
