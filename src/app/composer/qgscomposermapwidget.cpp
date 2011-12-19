@@ -161,7 +161,7 @@ void QgsComposerMapWidget::on_mScaleLineEdit_editingFinished()
   mComposerMap->endCommand();
 }
 
-void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( int value )
+void QgsComposerMapWidget::on_mRotationSpinBox_valueChanged( double value )
 {
   if ( !mComposerMap )
   {
