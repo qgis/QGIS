@@ -139,16 +139,6 @@
             <property name="wordWrap">
              <bool>true</bool>
             </property>
-            <property name="buddy">
-             <cstring>mRotationSpinBox</cstring>
-            </property>
-           </widget>
-          </item>
-          <item row="7" column="1">
-           <widget class="QSpinBox" name="mRotationSpinBox">
-            <property name="maximum">
-             <number>359</number>
-            </property>
            </widget>
           </item>
           <item row="8" column="0" rowspan="2" colspan="2">
@@ -197,6 +187,13 @@
              </size>
             </property>
            </spacer>
+          </item>
+          <item row="7" column="1">
+           <widget class="QDoubleSpinBox" name="mRotationSpinBox">
+            <property name="maximum">
+             <double>360.000000000000000</double>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -326,7 +323,7 @@
         <x>0</x>
         <y>0</y>
         <width>377</width>
-        <height>720</height>
+        <height>695</height>
        </rect>
       </property>
       <attribute name="label">
@@ -639,7 +636,6 @@
   <tabstop>mWidthLineEdit</tabstop>
   <tabstop>mHeightLineEdit</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
-  <tabstop>mRotationSpinBox</tabstop>
   <tabstop>mKeepLayerListCheckBox</tabstop>
   <tabstop>mXMinLineEdit</tabstop>
   <tabstop>mXMaxLineEdit</tabstop>
