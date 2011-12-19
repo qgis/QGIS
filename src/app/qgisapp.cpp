@@ -1276,22 +1276,37 @@ void QgisApp::createStatusBar()
   mScaleLabel->setToolTip( tr( "Current map scale" ) );
   statusBar()->addPermanentWidget( mScaleLabel, 0 );
 
-  mScaleEdit = new QLineEdit( QString(), statusBar() );
+  mScaleEdit = new QComboBox( statusBar() );
   mScaleEdit->setObjectName( "mScaleEdit" );
   mScaleEdit->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
   mScaleEdit->setMaximumWidth( 100 );
   mScaleEdit->setMaximumHeight( 20 );
   mScaleEdit->setContentsMargins( 0, 0, 0, 0 );
-  mScaleEdit->setAlignment( Qt::AlignLeft );
   // QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*" );
   QRegExp validator( "\\d+\\.?\\d*:\\d+\\.?\\d*|\\d+\\.?\\d*" );
   mScaleEditValidator = new QRegExpValidator( validator, mScaleEdit );
   mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
+
+  // make editable and populate with predefined scales
+  mScaleEdit->setEditable( true );
+  mScaleEdit->addItem( "1:1000000" );
+  mScaleEdit->addItem( "1:500000" );
+  mScaleEdit->addItem( "1:250000" );
+  mScaleEdit->addItem( "1:100000" );
+  mScaleEdit->addItem( "1:50000" );
+  mScaleEdit->addItem( "1:25000" );
+  mScaleEdit->addItem( "1:10000" );
+  mScaleEdit->addItem( "1:5000" );
+  mScaleEdit->addItem( "1:2500" );
+  mScaleEdit->addItem( "1:1000" );
+  mScaleEdit->addItem( "1:500" );
+
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
-  connect( mScaleEdit, SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
+  connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );
+  connect( mScaleEdit->lineEdit(), SIGNAL( editingFinished() ), this, SLOT( userScale() ) );
 
   //stop rendering status bar widget
   mStopRenderButton = new QToolButton( statusBar() );
@@ -4340,13 +4355,12 @@ void QgisApp::showMouseCoordinate( const QgsPoint & p )
 void QgisApp::showScale( double theScale )
 {
   if ( theScale >= 1.0 )
-    mScaleEdit->setText( "1:" + QString::number( theScale, 'f', 0 ) );
+    mScaleEdit->setEditText( "1:" + QString::number( theScale, 'f', 0 ) );
   else if ( theScale > 0.0 )
-    mScaleEdit->setText( QString::number( 1.0 / theScale, 'f', 0 ) + ":1" );
+    mScaleEdit->setEditText( QString::number( 1.0 / theScale, 'f', 0 ) + ":1" );
   else
-    mScaleEdit->setText( tr( "Invalid scale" ) );
+    mScaleEdit->setEditText( tr( "Invalid scale" ) );
 
-  // Set minimum necessary width
   if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
     mScaleEdit->setMinimumWidth( mScaleEdit->width() );
@@ -4355,7 +4369,7 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
-  QStringList parts = mScaleEdit->text().split( ':' );
+  QStringList parts = mScaleEdit->currentText().split( ':' );
   if ( parts.size() == 2 )
   {
     bool leftOk, rightOk;

@@ -24,7 +24,7 @@ class QCursor;
 class QFileInfo;
 class QKeyEvent;
 class QLabel;
-class QLineEdit;
+class QComboBox;
 class QMenu;
 class QPixmap;
 class QProgressBar;
@@ -960,7 +960,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Widget that will live on the statusbar to display "scale 1:"
     QLabel * mScaleLabel;
     //! Widget that will live on the statusbar to display scale value
-    QLineEdit * mScaleEdit;
+    QComboBox * mScaleEdit;
     //! The validator for the mScaleEdit
     QValidator * mScaleEditValidator;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
