@@ -877,35 +877,45 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
 
-  if ( QgsRasterLayer::ColorRampShader != mRasterLayer->colorShadingAlgorithm() )
+  QgsDebugMsg( QString( "colorShadingAlgorithm = %1" ).arg( mRasterLayer->colorShadingAlgorithmAsString() ) );
+  if ( QgsRasterLayer::ColorRampShader == mRasterLayer->colorShadingAlgorithm() )
   {
-    return;
-  }
+    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->rasterShader()->rasterShaderFunction();
+    if ( myRasterShaderFunction )
+    {
+      //restore the colormap tab if layer has custom symbology
+      populateColorMapTable( myRasterShaderFunction->colorRampItemList() );
 
-  QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->rasterShader()->rasterShaderFunction();
-  if ( !myRasterShaderFunction )
-  {
-    return;
-  }
-  //restore the colormap tab if layer has custom symbology
-  populateColorMapTable( myRasterShaderFunction->colorRampItemList() );
+      sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
 
-  sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
-
-  //restor state of 'color interpolation' combo box
-  if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->colorRampType() )
-  {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
-  }
-  else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->colorRampType() )
-  {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
+      //restor state of 'color interpolation' combo box
+      if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->colorRampType() )
+      {
+        cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
+      }
+      else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->colorRampType() )
+      {
+        cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
+      }
+      else
+      {
+        cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+      }
+    }
   }
   else
   {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+    //load default color table if any so that user can return to it if previously switched to different shader, PseudoColorShader or FreakOutShader for example
+    // It would be better however to restore possibly previously modified color table
+    QgsDebugMsg( "use default color table" );
+    QList<QgsColorRampShader::ColorRampItem> myColorRampList;
+    if ( mRasterLayer->readColorTable( 1, &myColorRampList ) )
+    {
+      populateColorMapTable( myColorRampList );
+      // INTERPOLATED is used as default for Palette raster type
+      cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
+    }
   }
-
 }
 
 bool QgsRasterLayerProperties::validUserDefinedMinMax()
