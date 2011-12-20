@@ -78,8 +78,8 @@ void dxf2shpConverter::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
 
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+  mQGisIface->addVectorToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( tr( "&Dxf2Shp" ), mQActionPointer );
 
   // this is called when the icon theme is changed
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -111,8 +111,8 @@ void dxf2shpConverter::run()
 void dxf2shpConverter::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr( "&Dxf2Shp" ), mQActionPointer );
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginVectorMenu( tr( "&Dxf2Shp" ), mQActionPointer );
+  mQGisIface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 

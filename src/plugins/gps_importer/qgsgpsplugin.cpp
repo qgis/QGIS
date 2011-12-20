@@ -94,9 +94,10 @@ void QgsGPSPlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
-  mQGisInterface->layerToolBar()->addAction( mQActionPointer );
-  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
+  mQGisInterface->layerToolBar()->addAction( mCreateGPXAction );
+  mQGisInterface->insertAddLayerAction( mCreateGPXAction );
+  mQGisInterface->addPluginToVectorMenu( tr( "&Gps" ), mQActionPointer );
+  mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
   connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -202,9 +203,10 @@ void QgsGPSPlugin::drawVectorLayer( QString thePathNameQString,
 void QgsGPSPlugin::unload()
 {
   // remove the GUI
-  mQGisInterface->removePluginMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->removePluginMenu( tr( "&Gps" ), mCreateGPXAction );
-  mQGisInterface->removeToolBarIcon( mQActionPointer );
+  mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
+  mQGisInterface->removeAddLayerAction( mCreateGPXAction );
+  mQGisInterface->removePluginVectorMenu( tr( "&Gps" ), mQActionPointer );
+  mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 

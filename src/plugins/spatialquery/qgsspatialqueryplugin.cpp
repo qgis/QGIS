@@ -85,8 +85,8 @@ void QgsSpatialQueryPlugin::initGui()
   connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add the icon to the toolbar and to the plugin menu
-  mIface->addToolBarIcon( mSpatialQueryAction );
-  mIface->addPluginToMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
+  mIface->addVectorToolBarIcon( mSpatialQueryAction );
+  mIface->addPluginToVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
 }
 
@@ -94,8 +94,8 @@ void QgsSpatialQueryPlugin::initGui()
 void QgsSpatialQueryPlugin::unload()
 {
   // remove the GUI
-  mIface->removeToolBarIcon( mSpatialQueryAction );
-  mIface->removePluginMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
+  mIface->removeVectorToolBarIcon( mSpatialQueryAction );
+  mIface->removePluginVectorMenu( tr( "&Spatial Query" ), mSpatialQueryAction );
 
   delete mSpatialQueryAction;
 

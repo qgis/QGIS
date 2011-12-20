@@ -27,10 +27,10 @@ Functions:
 #include "qgsmaplayer.h"
 #include "qgsdelimitedtextplugin.h"
 
-
 #include <QMenu>
 #include <QAction>
 #include <QFile>
+#include <QToolBar>
 
 //the gui subclass
 #include "qgsdelimitedtextplugingui.h"
@@ -104,7 +104,7 @@ void QgsDelimitedTextPlugin::initGui()
   // Connect the action to the run
   connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  qGisInterface->addToolBarIcon( myQActionPointer );
+  qGisInterface->layerToolBar()->addAction( myQActionPointer );
   qGisInterface->insertAddLayerAction( myQActionPointer );
   // this is called when the icon theme is changed
   connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -139,8 +139,8 @@ void QgsDelimitedTextPlugin::drawVectorLayer( QString thePathNameQString,
 void QgsDelimitedTextPlugin::unload()
 {
   // remove the GUI
+  qGisInterface->layerToolBar()->removeAction( myQActionPointer );
   qGisInterface->removeAddLayerAction( myQActionPointer );
-  qGisInterface->removeToolBarIcon( myQActionPointer );
   delete myQActionPointer;
 }
 
