@@ -117,6 +117,14 @@ class GUI_EXPORT QgisInterface : public QObject
     //! Remove an action (icon) from the plugin toolbar
     virtual void removeToolBarIcon( QAction *qAction ) = 0;
 
+    //! Add an icon to the Raster toolbar
+    //! @note added in 2.0
+    virtual int addRasterToolBarIcon( QAction *qAction ) = 0;
+
+    //! Remove an action (icon) from the Raster toolbar
+    //! @note added in 2.0
+    virtual void removeRasterToolBarIcon( QAction *qAction ) = 0;
+
     //! Add toolbar with specified name
     virtual QToolBar * addToolBar( QString name ) = 0;
 
@@ -154,6 +162,16 @@ class GUI_EXPORT QgisInterface : public QObject
      * @note added in 1.7
      */
     virtual void removePluginDatabaseMenu( QString name, QAction* action ) = 0;
+
+    /** Add action to the Raster menu
+     * @note added in 2.0
+     */
+    virtual void addPluginToRasterMenu( QString name, QAction* action ) = 0;
+
+    /** Remove action from the Raster menu
+     * @note added in 2.0
+     */
+    virtual void removePluginRasterMenu( QString name, QAction* action ) = 0;
 
     /** Add a dock widget to the main window */
     virtual void addDockWidget( Qt::DockWidgetArea area, QDockWidget * dockwidget ) = 0;
@@ -224,6 +242,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual QMenu *layerMenu() = 0;
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
+    virtual QMenu *rasterMenu() = 0;
+    /** \note added in 1.7
+    */
+    virtual QMenu *databaseMenu() = 0;
     virtual QMenu *firstRightStandardMenu() = 0;
     virtual QMenu *windowMenu() = 0;
     virtual QMenu *helpMenu() = 0;

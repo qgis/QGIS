@@ -164,15 +164,36 @@ void QgisAppInterface::removePluginDatabaseMenu( QString name, QAction* action )
   qgis->removePluginDatabaseMenu( name, action );
 }
 
+void QgisAppInterface::addPluginToRasterMenu( QString name, QAction* action )
+{
+  qgis->addPluginToRasterMenu( name, action );
+}
+
+void QgisAppInterface::removePluginRasterMenu( QString name, QAction* action )
+{
+  qgis->removePluginRasterMenu( name, action );
+}
+
 int QgisAppInterface::addToolBarIcon( QAction * qAction )
 {
-  // add the menu to the master Plugins menu
   return qgis->addPluginToolBarIcon( qAction );
 }
+
 void QgisAppInterface::removeToolBarIcon( QAction *qAction )
 {
   qgis->removePluginToolBarIcon( qAction );
 }
+
+int QgisAppInterface::addRasterToolBarIcon( QAction * qAction )
+{
+  return qgis->addRasterToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeRasterToolBarIcon( QAction *qAction )
+{
+  qgis->removeRasterToolBarIcon( qAction );
+}
+
 QToolBar* QgisAppInterface::addToolBar( QString name )
 {
   return qgis->addToolBar( name );
@@ -277,6 +298,7 @@ QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
+QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
 QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
 QMenu *QgisAppInterface::firstRightStandardMenu() { return qgis->firstRightStandardMenu(); }
 QMenu *QgisAppInterface::windowMenu() { return qgis->windowMenu(); }

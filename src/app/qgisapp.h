@@ -528,6 +528,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToDatabaseMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the Database menu
     void removePluginDatabaseMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Raster menu (ie the user visible text on the menu item)
+    QMenu* getRasterMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Raster menu
+    void addPluginToRasterMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Raster menu
+    void removePluginRasterMenu( QString name, QAction* action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction* action );
     //! Remove "add layer" action to layer menu
@@ -536,6 +542,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     int addPluginToolBarIcon( QAction * qAction );
     //! Remove an icon from the plugin toolbar
     void removePluginToolBarIcon( QAction *qAction );
+    //! Add an icon to the Raster toolbar
+    int addRasterToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Raster toolbar
+    void removeRasterToolBarIcon( QAction *qAction );
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state
@@ -893,6 +903,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction* mActionPluginSeparator1;
     QAction* mActionPluginSeparator2;
+    QAction* mActionRasterSeparator;
 
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup;

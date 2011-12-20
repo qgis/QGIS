@@ -759,7 +759,7 @@ void QgisApp::createActions()
 {
   mActionPluginSeparator1 = NULL;  // plugin list separator will be created when the first plugin is loaded
   mActionPluginSeparator2 = NULL;  // python separator will be created only if python is found
-
+  mActionRasterSeparator = NULL;   // raster plugins list separator will be created when the first plugin is loaded
   // File Menu Items
 
   connect( mActionNewProject, SIGNAL( triggered() ), this, SLOT( fileNew() ) );
@@ -5286,6 +5286,55 @@ QMenu* QgisApp::getDatabaseMenu( QString menuName )
   return menu;
 }
 
+QMenu* QgisApp::getRasterMenu( QString menuName )
+{
+#ifdef Q_WS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  menuName.remove( QChar( '&' ) );
+#endif
+
+  QAction *before = NULL;
+  if ( !mActionRasterSeparator )
+  {
+    // First plugin - create plugin list separator
+    mActionRasterSeparator = mRasterMenu->insertSeparator( before );
+  }
+  else
+  {
+    QString dst = menuName;
+    dst.remove( QChar( '&' ) );
+    // Plugins exist - search between plugin separator and python separator or end of list
+    QList<QAction*> actions = mRasterMenu->actions();
+    for ( int i = actions.indexOf( mActionRasterSeparator ) + 1; i < actions.count(); i++ )
+    {
+      QString src = actions.at( i )->text();
+      src.remove( QChar( '&' ) );
+
+      int comp = dst.localeAwareCompare( src );
+      if ( comp < 0 )
+      {
+        // Add item before this one
+        before = actions.at( i );
+        break;
+      }
+      else if ( comp == 0 )
+      {
+        // Plugin menu item already exists
+        return actions.at( i )->menu();
+      }
+    }
+  }
+
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( menuName, this );
+  if ( before )
+    mRasterMenu->insertMenu( before, menu );
+  else
+    mRasterMenu->addMenu( menu );
+
+  return menu;
+}
+
 void QgisApp::insertAddLayerAction( QAction *action )
 {
   mLayerMenu->insertAction( mActionAddLayerSeparator, action );
@@ -5324,6 +5373,12 @@ void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
     menuBar()->addMenu( mDatabaseMenu );
 }
 
+void QgisApp::addPluginToRasterMenu( QString name, QAction* action )
+{
+  QMenu* menu = getRasterMenu( name );
+  menu->addAction( action );
+}
+
 void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
@@ -5348,14 +5403,44 @@ void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
   }
 }
 
+void QgisApp::removePluginRasterMenu( QString name, QAction* action )
+{
+  QMenu* menu = getRasterMenu( name );
+  menu->removeAction( action );
+  if ( menu->actions().count() == 0 )
+  {
+    mRasterMenu->removeAction( menu->menuAction() );
+  }
+
+  // Remove separator above plugins in Raster menu if no plugins remain
+  QList<QAction*> actions = mRasterMenu->actions();
+  if ( actions.indexOf( mActionRasterSeparator ) + 1 == actions.count() )
+  {
+    mRasterMenu->removeAction( mActionRasterSeparator );
+    mActionRasterSeparator = NULL;
+  }
+}
+
 int QgisApp::addPluginToolBarIcon( QAction * qAction )
 {
   mPluginToolBar->addAction( qAction );
   return 0;
 }
+
 void QgisApp::removePluginToolBarIcon( QAction *qAction )
 {
   mPluginToolBar->removeAction( qAction );
+}
+
+int QgisApp::addRasterToolBarIcon( QAction * qAction )
+{
+  mRasterToolBar->addAction( qAction );
+  return 0;
+}
+
+void QgisApp::removeRasterToolBarIcon( QAction *qAction )
+{
+  mRasterToolBar->removeAction( qAction );
 }
 
 void QgisApp::updateCRSStatusBar()

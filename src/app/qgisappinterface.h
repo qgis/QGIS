@@ -82,6 +82,11 @@ class QgisAppInterface : public QgisInterface
     int addToolBarIcon( QAction *qAction );
     //! Remove an icon (action) from the plugin toolbar
     void removeToolBarIcon( QAction *qAction );
+    //! Add an icon to the Raster toolbar
+    int addRasterToolBarIcon( QAction *qAction );
+    //! Remove an icon (action) from the Raster toolbar
+    void removeRasterToolBarIcon( QAction *qAction );
+
     //! Add toolbar with specified name
     QToolBar* addToolBar( QString name );
 
@@ -115,6 +120,11 @@ class QgisAppInterface : public QgisInterface
     void addPluginToDatabaseMenu( QString name, QAction* action );
     /** Remove action from the Database menu */
     void removePluginDatabaseMenu( QString name, QAction* action );
+
+    /** Add action to the Raster menu */
+    void addPluginToRasterMenu( QString name, QAction* action );
+    /** Remove action from the Raster menu */
+    void removePluginRasterMenu( QString name, QAction* action );
 
     /** Add "add layer" action to the layer menu */
     void insertAddLayerAction( QAction *action );
@@ -167,6 +177,7 @@ class QgisAppInterface : public QgisInterface
     virtual QMenu *layerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
+    virtual QMenu *rasterMenu();
     virtual QMenu *databaseMenu();
     virtual QMenu *firstRightStandardMenu();
     virtual QMenu *windowMenu();
