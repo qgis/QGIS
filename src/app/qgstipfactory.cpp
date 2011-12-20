@@ -190,6 +190,16 @@ QgsTipFactory::QgsTipFactory() : QObject()
                         " Page</a> for more details."
                       ) );
   addGenericTip( myTip );
+  // by gsherman
+  myTip.setTitle( tr( "Quantum GIS has Plugins!" ) );
+  myTip.setContent( tr( "Quantum GIS has plugins that extend its functionality."
+                        " QGIS ships with some core plugins you can explore from the"
+                        " Plugins->Manage Plugins menu. In addition there are over 150"
+                        " Python plugins contributed by the user community that can be"
+                        " installed from the Plugins->Fetch Python Plugins menu."
+                        " Don't miss out on all QGIS has to offer---check out the"
+                        " plugins and see what they can do for you." ) );
+  addGenericTip( myTip );
 
   /* Template for adding more tips
   myTip.setTitle(tr(""));
