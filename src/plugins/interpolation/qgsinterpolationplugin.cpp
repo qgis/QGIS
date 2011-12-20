@@ -44,8 +44,8 @@ void QgsInterpolationPlugin::initGui()
     mInterpolationAction = new QAction( QIcon(), tr( "&Interpolation" ), 0 );
     setCurrentTheme( "" );
     QObject::connect( mInterpolationAction, SIGNAL( triggered() ), this, SLOT( showInterpolationDialog() ) );
-    mIface->addToolBarIcon( mInterpolationAction );
-    mIface->addPluginToMenu( tr( "&Interpolation" ), mInterpolationAction );
+    mIface->addRasterToolBarIcon( mInterpolationAction );
+    mIface->addPluginToRasterMenu( tr( "&Interpolation" ), mInterpolationAction );
     // this is called when the icon theme is changed
     connect( mIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
   }
@@ -53,8 +53,8 @@ void QgsInterpolationPlugin::initGui()
 
 void QgsInterpolationPlugin::unload()
 {
-  mIface->removePluginMenu( tr( "&Interpolation" ), mInterpolationAction );
-  mIface->removeToolBarIcon( mInterpolationAction );
+  mIface->removePluginRasterMenu( tr( "&Interpolation" ), mInterpolationAction );
+  mIface->removeRasterToolBarIcon( mInterpolationAction );
   delete mInterpolationAction;
 }
 

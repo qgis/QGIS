@@ -49,10 +49,10 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
   //create Action
   if ( mIface )
   {
-    mAction = new QAction( QIcon( ":/raster/raster_terrain_icon.png" ), tr( "&Raster based terrain analysis..." ), 0 );
+    mAction = new QAction( QIcon( ":/raster/raster_terrain_icon.png" ), tr( "&Raster based terrain analysis" ), 0 );
     QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
-    mIface->addToolBarIcon( mAction );
-    mIface->addPluginToMenu( tr( "&Raster based terrain analysis..." ), mAction );
+    mIface->addRasterToolBarIcon( mAction );
+    mIface->addPluginToRasterMenu( tr( "&Raster based terrain analysis" ), mAction );
   }
 }
 
@@ -60,8 +60,8 @@ void QgsRasterTerrainAnalysisPlugin::unload()
 {
   if ( mIface )
   {
-    mIface->removePluginMenu( tr( "&Raster based terrain analysis..." ), mAction );
-    mIface ->removeToolBarIcon( mAction );
+    mIface->removePluginRasterMenu( tr( "&Raster based terrain analysis" ), mAction );
+    mIface ->removeRasterToolBarIcon( mAction );
     delete mAction;
   }
 }

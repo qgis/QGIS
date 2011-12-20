@@ -108,9 +108,9 @@ void QgsGeorefPlugin::initGui()
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add to the toolbar & menu
-  mQGisIface->addToolBarIcon( mActionRunGeoref );
-  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mActionRunGeoref );
-  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mActionAbout );
+  mQGisIface->addRasterToolBarIcon( mActionRunGeoref );
+  mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
+  mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionAbout );
 }
 
 // Slot called when the buffer menu item is triggered
@@ -126,9 +126,9 @@ void QgsGeorefPlugin::run()
 void QgsGeorefPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mActionAbout );
-  mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mActionRunGeoref );
-  mQGisIface->removeToolBarIcon( mActionRunGeoref );
+  mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionAbout );
+  mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
+  mQGisIface->removeRasterToolBarIcon( mActionRunGeoref );
 
   delete mActionRunGeoref;
   delete mActionAbout;

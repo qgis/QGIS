@@ -39,15 +39,17 @@ QgsZonalStatisticsPlugin::~QgsZonalStatisticsPlugin()
 
 void QgsZonalStatisticsPlugin::initGui()
 {
-  mAction = new QAction( tr( "&Zonal statistics..." ), 0 );
+  mAction = new QAction( tr( "&Zonal statistics" ), 0 );
   QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
-  mIface->addToolBarIcon( mAction );
-  mIface->addPluginToMenu( tr( "&Zonal statistics..." ), mAction );
+  mIface->addRasterToolBarIcon( mAction );
+  mIface->addPluginToRasterMenu( tr( "&Zonal statistics" ), mAction );
 }
 
 void QgsZonalStatisticsPlugin::unload()
 {
-
+  mIface->removeRasterToolBarIcon( mAction );
+  mIface->removePluginRasterMenu( tr( "&Zonal statistics" ), mAction );
+  delete mAction;
 }
 
 void QgsZonalStatisticsPlugin::run()
