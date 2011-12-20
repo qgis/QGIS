@@ -113,8 +113,8 @@ void RoadGraphPlugin::initGui()
   connect( mQSettingsAction, SIGNAL( triggered() ), this, SLOT( property() ) );
   connect( mInfoAction, SIGNAL( triggered() ), SLOT( about() ) );
 
-  mQGisIface->addPluginToMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->addPluginToMenu( tr( "Road graph" ), mInfoAction );
+  mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mInfoAction );
 
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
@@ -129,8 +129,8 @@ void RoadGraphPlugin::initGui()
 void RoadGraphPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->removePluginMenu( tr( "Road graph" ), mInfoAction );
+  mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mInfoAction );
 
   // disconnect
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
