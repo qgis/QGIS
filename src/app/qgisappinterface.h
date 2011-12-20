@@ -90,6 +90,10 @@ class QgisAppInterface : public QgisInterface
     int addVectorToolBarIcon( QAction *qAction );
     //! Remove an icon (action) from the Vector toolbar
     void removeVectorToolBarIcon( QAction *qAction );
+    //! Add an icon to the Database toolbar
+    int addDatabaseToolBarIcon( QAction *qAction );
+    //! Remove an icon (action) from the Database toolbar
+    void removeDatabaseToolBarIcon( QAction *qAction );
 
     //! Add toolbar with specified name
     QToolBar* addToolBar( QString name );
@@ -204,6 +208,7 @@ class QgisAppInterface : public QgisInterface
     virtual QToolBar *helpToolBar();
     virtual QToolBar *rasterToolBar();
     virtual QToolBar *vectorToolBar();
+    virtual QToolBar *databaseToolBar();
 
     //! File menu actions
     virtual QAction *actionNewProject();

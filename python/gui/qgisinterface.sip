@@ -76,6 +76,12 @@ class QgisInterface : QObject
     //! Remove an action (icon) from the Vector toolbar
     //! @note added in 2.0
     virtual void removeVectorToolBarIcon(QAction *qAction) = 0;
+    //! Add an icon to the Database toolbar
+    //! @note added in 2.0
+    virtual int addDatabaseToolBarIcon(QAction *qAction) =0;
+    //! Remove an action (icon) from the Database toolbar
+    //! @note added in 2.0
+    virtual void removeDatabaseToolBarIcon(QAction *qAction) = 0;
 
     //! Add toolbar with specified name
     virtual QToolBar* addToolBar(QString name)=0 /Factory/;
@@ -201,6 +207,7 @@ class QgisInterface : QObject
     virtual QMenu *settingsMenu() = 0;
     virtual QMenu *pluginMenu() = 0;
     virtual QMenu *rasterMenu() = 0;
+    //** @note added in 2.0
     virtual QMenu *vectorMenu() = 0;
     virtual QMenu *databaseMenu() = 0;
     virtual QMenu *firstRightStandardMenu() = 0;
@@ -217,7 +224,10 @@ class QgisInterface : QObject
     virtual QToolBar *pluginToolBar() = 0;
     virtual QToolBar *helpToolBar() = 0;
     virtual QToolBar *rasterToolBar() = 0;
+    //** @note added in 2.0
     virtual QToolBar *vectorToolBar() = 0;
+    //** @note added in 2.0
+    virtual QToolBar *databaseToolBar() = 0;
 
     //! File menu actions
     virtual QAction *actionNewProject() = 0;

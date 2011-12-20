@@ -340,6 +340,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *helpToolBar() { return mHelpToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
     QToolBar *vectorToolBar() { return mVectorToolBar; }
+    QToolBar *databaseToolBar() { return mDatabaseToolBar; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -558,6 +559,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     int addVectorToolBarIcon( QAction * qAction );
     //! Remove an icon from the Vector toolbar
     void removeVectorToolBarIcon( QAction *qAction );
+    //! Add an icon to the Database toolbar
+    int addDatabaseToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Database toolbar
+    void removeDatabaseToolBarIcon( QAction *qAction );
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state

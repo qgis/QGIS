@@ -133,6 +133,14 @@ class GUI_EXPORT QgisInterface : public QObject
     //! @note added in 2.0
     virtual void removeVectorToolBarIcon( QAction *qAction ) = 0;
 
+    //! Add an icon to the Database toolbar
+    //! @note added in 2.0
+    virtual int addDatabaseToolBarIcon( QAction *qAction ) = 0;
+
+    //! Remove an action (icon) from the Database toolbar
+    //! @note added in 2.0
+    virtual void removeDatabaseToolBarIcon( QAction *qAction ) = 0;
+
     //! Add toolbar with specified name
     virtual QToolBar * addToolBar( QString name ) = 0;
 
@@ -286,6 +294,9 @@ class GUI_EXPORT QgisInterface : public QObject
     /** \note added in 2.0
     */
     virtual QToolBar *vectorToolBar() = 0;
+    /** \note added in 2.0
+    */
+    virtual QToolBar *databaseToolBar() = 0;
 
     //! File menu actions
     virtual QAction *actionNewProject() = 0;

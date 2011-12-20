@@ -396,6 +396,17 @@
     <bool>false</bool>
    </attribute>
   </widget>
+  <widget class="QToolBar" name="mDatabaseToolBar">
+   <property name="windowTitle">
+    <string>Database</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
   <action name="mActionNewProject">
    <property name="icon">
     <iconset resource="../../images/images.qrc">

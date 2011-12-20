@@ -1121,6 +1121,7 @@ void QgisApp::createToolBars()
   << mHelpToolBar
   << mRasterToolBar
   << mVectorToolBar
+  << mDatabaseToolBar
   << mLabelToolBar;
 
   QList<QAction*> toolbarMenuActions;
@@ -5547,6 +5548,17 @@ int QgisApp::addVectorToolBarIcon( QAction * qAction )
 void QgisApp::removeVectorToolBarIcon( QAction *qAction )
 {
   mVectorToolBar->removeAction( qAction );
+}
+
+int QgisApp::addDatabaseToolBarIcon( QAction * qAction )
+{
+  mDatabaseToolBar->addAction( qAction );
+  return 0;
+}
+
+void QgisApp::removeDatabaseToolBarIcon( QAction *qAction )
+{
+  mDatabaseToolBar->removeAction( qAction );
 }
 
 void QgisApp::updateCRSStatusBar()

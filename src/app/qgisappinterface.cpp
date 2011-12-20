@@ -214,6 +214,16 @@ void QgisAppInterface::removeVectorToolBarIcon( QAction *qAction )
   qgis->removeVectorToolBarIcon( qAction );
 }
 
+int QgisAppInterface::addDatabaseToolBarIcon( QAction * qAction )
+{
+  return qgis->addDatabaseToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeDatabaseToolBarIcon( QAction *qAction )
+{
+  qgis->removeDatabaseToolBarIcon( qAction );
+}
+
 QToolBar* QgisAppInterface::addToolBar( QString name )
 {
   return qgis->addToolBar( name );
@@ -336,6 +346,7 @@ QToolBar *QgisAppInterface::pluginToolBar() { return qgis->pluginToolBar(); }
 QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
 QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }
 QToolBar *QgisAppInterface::vectorToolBar() { return qgis->vectorToolBar(); }
+QToolBar *QgisAppInterface::databaseToolBar() { return qgis->databaseToolBar(); }
 
 //! File menu actions
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }
