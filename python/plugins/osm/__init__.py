@@ -33,6 +33,15 @@ def description():
     return "Viewer and editor for OpenStreetMap data"
 
 
+def category():
+    """Function returns category of this plugin.
+
+    @return category of this plugin.
+    """
+
+    return "Plugins"
+
+
 def version():
     """Function returns version of this plugin.
 
@@ -64,5 +73,5 @@ def classFactory(iface):
 
     from OsmPlugin import OsmPlugin
     # return object of our plugin with reference to QGIS interface as the only argument
-    return OsmPlugin(iface) 
+    return OsmPlugin(iface)
 

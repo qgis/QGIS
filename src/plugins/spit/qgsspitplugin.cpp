@@ -32,6 +32,7 @@
 
 static const QString name_ = QObject::tr( "SPIT" );
 static const QString description_ = QObject::tr( "Shapefile to PostgreSQL/PostGIS Import Tool" );
+static const QString category_ = QObject::tr( "Database" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 static const QString icon_ = ":/spit.png";
@@ -45,7 +46,7 @@ static const QString icon_ = ":/spit.png";
 * @parma _qI Pointer to the QGIS interface object
 */
 QgsSpitPlugin::QgsSpitPlugin( QgisInterface * _qI )
-    : QgisPlugin( name_, description_, version_, type_ ),
+    : QgisPlugin( name_, description_, category_, version_, type_ ),
     qgisMainWindow( _qI->mainWindow() ),
     qI( _qI )
 {
@@ -140,6 +141,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)

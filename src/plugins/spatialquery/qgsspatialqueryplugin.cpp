@@ -47,6 +47,7 @@
 
 static const QString name_ = QObject::tr( "Spatial Query Plugin" );
 static const QString description_ = QObject::tr( "A plugin that makes spatial queries on vector layers" );
+static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 static const QString icon_ = ":/icons/spatialquery.png";
@@ -58,7 +59,7 @@ static const QString icon_ = ":/icons/spatialquery.png";
 * @parma mIface Pointer to the QGIS interface object
 */
 QgsSpatialQueryPlugin::QgsSpatialQueryPlugin( QgisInterface* iface )
-    : QgisPlugin( name_, description_, version_, type_ )
+    : QgisPlugin( name_, description_, category_, version_, type_ )
     , mDialog( 0 )
     , mIface( iface )
     , mSpatialQueryAction( 0 )
@@ -182,6 +183,13 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)

@@ -24,6 +24,7 @@
 
 static const QString name_ = QObject::tr( "Interpolation plugin" );
 static const QString description_ = QObject::tr( "A plugin for interpolation based on vertices of a vector layer" );
+static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.001" );
 static const QString icon_ = ":/interpolation.png";
 
@@ -104,6 +105,11 @@ QGISEXTERN QString description()
   return description_;
 }
 
+QGISEXTERN QString category()
+{
+  return category_;
+}
+
 QGISEXTERN QString version()
 {
   return version_;
@@ -123,6 +129,3 @@ QGISEXTERN void unload( QgisPlugin* theInterpolationPluginPointer )
 {
   delete theInterpolationPluginPointer;
 }
-
-
-

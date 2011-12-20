@@ -29,23 +29,26 @@
 #---------------------------------------------------------------------
 
 def name():
-	return "fTools"
+  return "fTools"
 
 def description():
-	return "Tools for vector data analysis and management"
+  return "Tools for vector data analysis and management"
+
+def category():
+  return "Vector"
 
 def version():
-	return "0.6.1"
-  
+  return "0.6.1"
+
 def qgisMinimumVersion():
-	return "1.4"
+  return "1.4"
 
 def icon():
-	return "icons/logo_small.png"
-	
+  return "icons/logo_small.png"
+
 def authorName():
-	return "Carson J. Q. Farmer"
+  return "Carson J. Q. Farmer"
 
 def classFactory( iface ):
-	from fTools import fToolsPlugin
-	return fToolsPlugin( iface )
+  from fTools import fToolsPlugin
+  return fToolsPlugin( iface )

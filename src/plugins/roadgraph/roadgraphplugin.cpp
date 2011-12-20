@@ -58,6 +58,7 @@
 
 static const QString sName = QObject::tr( "Road graph plugin" );
 static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
+static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
@@ -73,7 +74,7 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * @param theQgisInterface - Pointer to the QGIS interface object
  */
 RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
 
@@ -335,6 +336,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

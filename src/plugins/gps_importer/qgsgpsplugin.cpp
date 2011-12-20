@@ -49,6 +49,7 @@
 
 static const QString name_ = QObject::tr( "GPS Tools" );
 static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
+static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 static const QString icon_ = ":/gps_importer.png";
@@ -61,7 +62,7 @@ static const QString icon_ = ":/gps_importer.png";
  * @param _qI Pointer to the QGIS interface object
  */
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace ):
-    QgisPlugin( name_, description_, version_, type_ ),
+    QgisPlugin( name_, description_, category_, version_, type_ ),
     mQGisInterface( theQgisInterFace )
 {
   setupBabel();
@@ -722,6 +723,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)

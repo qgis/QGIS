@@ -111,6 +111,7 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
 
   QFontMetrics myTitleMetrics( titleFont( theOption ) );
   QFontMetrics myDetailMetrics( detailFont( theOption ) );
+  QFontMetrics myCategoryMetrics( categoryFont( theOption ) );
   int myTextStartX = theOption.rect.x() + horizontalSpacing();
   int myTextStartY = theOption.rect.y() + verticalSpacing();
   int myHeight = myTitleMetrics.height() + verticalSpacing();
@@ -200,6 +201,40 @@ void QgsDetailedItemDelegate::paintManually( QPainter * thepPainter,
                            myLine );
     myTextStartY += myDetailMetrics.height() - verticalSpacing();
   }
+
+  //
+  // Draw the category. Not sure if we need word wrapping for it.
+  //
+  thepPainter->setFont( categoryFont( theOption ) ); //return to original font set by client
+  thepPainter->drawText( myTextStartX,
+                         myTextStartY,
+                         theData.category() );
+
+  //
+  // Draw the category with word wrapping if needed
+  //
+  /*
+  myTextStartY += verticalSpacing();
+  if ( myIconFlag )
+  {
+    myTextStartY += verticalSpacing();
+  }
+  else
+  {
+    myTextStartY +=  myCategoryMetrics.height() + verticalSpacing();
+  }
+  myList =
+    wordWrap( theData.category(), myCategoryMetrics, theOption.rect.width() - myTextStartX );
+  QStringListIterator myLineWrapIter( myList );
+  while ( myLineWrapIter.hasNext() )
+  {
+    QString myLine = myLineWrapIter.next();
+    thepPainter->drawText( myTextStartX,
+                           myTextStartY,
+                           myLine );
+    myTextStartY += myCategoryMetrics.height() - verticalSpacing();
+  }
+  */
 } //render by manual painting
 
 
@@ -246,6 +281,7 @@ int QgsDetailedItemDelegate::height( const QStyleOptionViewItem & theOption,
 {
   QFontMetrics myTitleMetrics( titleFont( theOption ) );
   QFontMetrics myDetailMetrics( detailFont( theOption ) );
+  QFontMetrics myCategoryMetrics( categoryFont( theOption ) );
   //we don't word wrap the title so its easy to measure
   int myHeight = myTitleMetrics.height() + verticalSpacing();
   //the detail needs to be measured though
@@ -253,6 +289,13 @@ int QgsDetailedItemDelegate::height( const QStyleOptionViewItem & theOption,
                                  myDetailMetrics,
                                  theOption.rect.width() - ( mpCheckBox->width() + horizontalSpacing() ) );
   myHeight += ( myList.count() + 1 ) * ( myDetailMetrics.height() - verticalSpacing() );
+  //we don't word wrap the category so its easy to measure
+  myHeight += myCategoryMetrics.height() + verticalSpacing();
+  // if category should be wrapped use this code
+  //~ myList = wordWrap( theData.category(),
+                     //~ myCategoryMetrics,
+                     //~ theOption.rect.width() - ( mpCheckBox->width() + horizontalSpacing() ) );
+  //~ myHeight += ( myList.count() + 1 ) * ( myCategoryMetrics.height() - verticalSpacing() );
   return myHeight;
 }
 
@@ -260,6 +303,13 @@ int QgsDetailedItemDelegate::height( const QStyleOptionViewItem & theOption,
 QFont QgsDetailedItemDelegate::detailFont( const QStyleOptionViewItem &theOption ) const
 {
   QFont myFont = theOption.font;
+  return myFont;
+}
+
+QFont QgsDetailedItemDelegate::categoryFont( const QStyleOptionViewItem &theOption ) const
+{
+  QFont myFont = theOption.font;
+  myFont.setBold( true );
   return myFont;
 }
 

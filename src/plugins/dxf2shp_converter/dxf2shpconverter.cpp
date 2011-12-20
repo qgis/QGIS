@@ -35,6 +35,7 @@
 
 static const QString sName = QObject::tr( "Dxf2Shp Converter" );
 static const QString sDescription = QObject::tr( "Converts from dxf to shp file format" );
+static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/dxf2shp_converter.png";
@@ -51,7 +52,7 @@ static const QString sPluginIcon = ":/dxf2shp_converter.png";
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 dxf2shpConverter::dxf2shpConverter( QgisInterface *theQgisInterface ): QgisPlugin
-    ( sName, sDescription, sPluginVersion, sPluginType ), mQGisIface
+    ( sName, sDescription, sCategory, sPluginVersion, sPluginType ), mQGisIface
     ( theQgisInterface ) {}
 
 dxf2shpConverter::~dxf2shpConverter()
@@ -179,6 +180,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

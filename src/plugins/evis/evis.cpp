@@ -81,12 +81,13 @@
 
 static const QString sName = QObject::tr( "eVis" );
 static const QString sDescription = QObject::tr( "An event visualization tool - view images associated with vector features" );
+static const QString sCategory = QObject::tr( "Database" );
 static const QString sPluginVersion = QObject::tr( "Version 1.1.0" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 
 eVis::eVis( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
   mIdTool = 0;
@@ -224,6 +225,12 @@ QGISEXTERN QString name( )
 QGISEXTERN QString description( )
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category( )
+{
+  return sCategory;
 }
 
 // Return the type ( either UI or MapLayer plugin )

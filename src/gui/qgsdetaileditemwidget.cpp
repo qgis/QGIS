@@ -31,6 +31,7 @@ void QgsDetailedItemWidget::setData( QgsDetailedItemData theData )
 {
   lblTitle->setText( theData.title() );
   lblDetail->setText( theData.detail() );
+  lblCategory->setText( theData.category() );
   cbx->setVisible( theData.isCheckable() );
   cbx->setChecked( theData.isChecked() );
   lblIcon->setPixmap( theData.icon() );

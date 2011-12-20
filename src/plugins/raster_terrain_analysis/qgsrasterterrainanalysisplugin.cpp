@@ -31,6 +31,7 @@
 
 static const QString name_ = QObject::tr( "Raster Terrain Analysis plugin" );
 static const QString description_ = QObject::tr( "A plugin for raster based terrain analysis" );
+static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QString icon_ = ":/raster/raster_terrain_icon.png";
 
@@ -130,6 +131,11 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 QGISEXTERN QString version()

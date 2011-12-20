@@ -39,6 +39,7 @@ Functions:
 
 static const QString pluginVersion = QObject::tr( "Version 0.2" );
 static const QString description_ = QObject::tr( "Loads and displays delimited text files containing x,y coordinates" );
+static const QString category_ = QObject::tr( "Layers" );
 static const QString icon_ = ":/delimited_text.png";
 
 /**
@@ -54,7 +55,7 @@ QgsDelimitedTextPlugin::QgsDelimitedTextPlugin( QgisInterface * theQgisInterFace
   pluginNameQString = tr( "DelimitedTextLayer" );
   pluginVersionQString = pluginVersion;
   pluginDescriptionQString = description_;
-
+  pluginCategoryQString = category_;
 }
 
 QgsDelimitedTextPlugin::~QgsDelimitedTextPlugin()
@@ -77,6 +78,12 @@ QString QgsDelimitedTextPlugin::version()
 QString QgsDelimitedTextPlugin::description()
 {
   return pluginDescriptionQString;
+
+}
+
+QString QgsDelimitedTextPlugin::category()
+{
+  return pluginCategoryQString;
 
 }
 
@@ -191,6 +198,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)

@@ -65,6 +65,10 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      */
     virtual QString description();
     /**
+     * Virtual function to return a category of the plugin
+     */
+    virtual QString category();
+    /**
      * Return the plugin type
      */
     virtual int type();
@@ -138,6 +142,8 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     QString pluginVersionQString;
     //! Descrption of the plugin
     QString pluginDescriptionQString;
+    //! Category of the plugin
+    QString pluginCategoryQString;
     //! Plugin type as defined in QgisPlugin::PLUGINTYPE
     int pluginType;
     //! Pointer to our toolbar

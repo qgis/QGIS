@@ -60,6 +60,8 @@ class QgsSpitPlugin: public QObject, public QgisPlugin
     QString pVersion;
     //! Descrption of the plugin
     QString pDescription;
+    //! Category of the plugin
+    QString pCategory;
     //! Plugin type as defined in QgisPlugin::PLUGINTYPE
     int ptype;
     //! Pionter to QGIS main application object

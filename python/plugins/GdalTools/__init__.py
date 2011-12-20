@@ -21,6 +21,8 @@ def name():
   return "GdalTools"
 def description():
   return "Integrate gdal tools into qgis"
+def category():
+  return "Raster"
 def version():
   return "Version 1.2.29"
 def qgisMinimumVersion():

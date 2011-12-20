@@ -62,6 +62,7 @@
 
 static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Georeferencing rasters using GDAL" );
+static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/icons/mGeorefRun.png";
@@ -79,7 +80,7 @@ static const QString sPluginIcon = ":/icons/mGeorefRun.png";
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface ),
     mPluginGui( NULL )
 {
@@ -225,6 +226,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
