@@ -4029,7 +4029,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   QgsDebugMsg( "Getting geometry column: " + sql );
   result = connectionRO->PQexec( sql );
 
-  QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
+  QgsDebugMsg( QString( "geometry column query returned %1 rows" ).arg( PQntuples( result ) ) );
 
   if ( PQntuples( result ) > 0 )
   {
@@ -4117,7 +4117,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
       result = connectionRO->PQexec( sql );
 
-      if ( PQntuples( result ) == 1 )
+      if ( PQntuples( result ) == 1 && !PQgetisnull( result, 0, 0 ) )
       {
         fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
       }
