@@ -313,6 +313,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }
     QMenu *rasterMenu() { return mRasterMenu; }
+    QMenu *vectorMenu() { return mVectorMenu; }
 #ifdef Q_WS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
@@ -338,6 +339,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
+    QToolBar *vectorToolBar() { return mVectorToolBar; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -534,6 +536,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToRasterMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the Raster menu
     void removePluginRasterMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Vector menu (ie the user visible text on the menu item)
+    QMenu* getVectorMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Vector menu
+    void addPluginToVectorMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Vector menu
+    void removePluginVectorMenu( QString name, QAction* action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction* action );
     //! Remove "add layer" action to layer menu
@@ -546,6 +554,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     int addRasterToolBarIcon( QAction * qAction );
     //! Remove an icon from the Raster toolbar
     void removeRasterToolBarIcon( QAction *qAction );
+    //! Add an icon to the Vector toolbar
+    int addVectorToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Vector toolbar
+    void removeVectorToolBarIcon( QAction *qAction );
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state
@@ -996,6 +1008,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu * mPopupMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
+    //! Top level vector menu
+    QMenu *mVectorMenu;
     //! Popup menu for the map overview tools
     QMenu *toolPopupOverviews;
     //! Popup menu for the display tools

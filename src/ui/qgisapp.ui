@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>23</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -384,6 +384,17 @@
    <addaction name="mActionMoveLabel"/>
    <addaction name="mActionRotateLabel"/>
    <addaction name="mActionChangeLabelProperties"/>
+  </widget>
+  <widget class="QToolBar" name="mVectorToolBar">
+   <property name="windowTitle">
+    <string>Vector</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
   </widget>
   <action name="mActionNewProject">
    <property name="icon">

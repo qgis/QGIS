@@ -1090,6 +1090,9 @@ void QgisApp::createMenus()
   // Database Menu
   // don't add it yet, wait for a plugin
   mDatabaseMenu = new QMenu( tr( "&Database" ) );
+  // Vector Menu
+  // don't add it yet, wait for a plugin
+  mVectorMenu = new QMenu( tr( "Vect&or" ) );
 
   // Help menu
   // add What's this button to it
@@ -1117,6 +1120,7 @@ void QgisApp::createToolBars()
   << mPluginToolBar
   << mHelpToolBar
   << mRasterToolBar
+  << mVectorToolBar
   << mLabelToolBar;
 
   QList<QAction*> toolbarMenuActions;
@@ -5335,6 +5339,45 @@ QMenu* QgisApp::getRasterMenu( QString menuName )
   return menu;
 }
 
+QMenu* QgisApp::getVectorMenu( QString menuName )
+{
+#ifdef Q_WS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  menuName.remove( QChar( '&' ) );
+#endif
+  QString dst = menuName;
+  dst.remove( QChar( '&' ) );
+
+  QAction *before = NULL;
+  QList<QAction*> actions = mVectorMenu->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    QString src = actions.at( i )->text();
+    src.remove( QChar( '&' ) );
+
+    int comp = dst.localeAwareCompare( src );
+    if ( comp < 0 )
+    {
+      // Add item before this one
+      before = actions.at( i );
+      break;
+    }
+    else if ( comp == 0 )
+    {
+      // Plugin menu item already exists
+      return actions.at( i )->menu();
+    }
+  }
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( menuName, this );
+  if ( before )
+    mVectorMenu->insertMenu( before, menu );
+  else
+    mVectorMenu->addMenu( menu );
+
+  return menu;
+}
+
 void QgisApp::insertAddLayerAction( QAction *action )
 {
   mLayerMenu->insertAction( mActionAddLayerSeparator, action );
@@ -5379,6 +5422,34 @@ void QgisApp::addPluginToRasterMenu( QString name, QAction* action )
   menu->addAction( action );
 }
 
+void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
+{
+  QMenu* menu = getVectorMenu( name );
+  menu->addAction( action );
+
+  // add the Vector menu to the menuBar if not added yet
+  if ( mVectorMenu->actions().count() != 1 )
+    return;
+
+  QAction* before = NULL;
+  QList<QAction*> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mVectorMenu )
+      return;
+    if ( actions.at( i )->menu() == mRasterMenu )
+    {
+      before = actions.at( i );
+      break;
+    }
+  }
+
+  if ( before )
+    menuBar()->insertMenu( before, mVectorMenu );
+  else
+    menuBar()->addMenu( mVectorMenu );
+}
+
 void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
@@ -5421,6 +5492,30 @@ void QgisApp::removePluginRasterMenu( QString name, QAction* action )
   }
 }
 
+void QgisApp::removePluginVectorMenu( QString name, QAction* action )
+{
+  QMenu* menu = getVectorMenu( name );
+  menu->removeAction( action );
+  if ( menu->actions().count() == 0 )
+  {
+    mVectorMenu->removeAction( menu->menuAction() );
+  }
+
+  // remove the Vector menu from the menuBar if there are no more actions
+  if ( mVectorMenu->actions().count() > 0 )
+    return;
+
+  QList<QAction*> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mVectorMenu )
+    {
+      menuBar()->removeAction( actions.at( i ) );
+      return;
+    }
+  }
+}
+
 int QgisApp::addPluginToolBarIcon( QAction * qAction )
 {
   mPluginToolBar->addAction( qAction );
@@ -5441,6 +5536,17 @@ int QgisApp::addRasterToolBarIcon( QAction * qAction )
 void QgisApp::removeRasterToolBarIcon( QAction *qAction )
 {
   mRasterToolBar->removeAction( qAction );
+}
+
+int QgisApp::addVectorToolBarIcon( QAction * qAction )
+{
+  mVectorToolBar->addAction( qAction );
+  return 0;
+}
+
+void QgisApp::removeVectorToolBarIcon( QAction *qAction )
+{
+  mVectorToolBar->removeAction( qAction );
 }
 
 void QgisApp::updateCRSStatusBar()
