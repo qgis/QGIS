@@ -191,7 +191,7 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
 
 void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix )
 {
-  double val;
+  double val = 0;
   int index = 0;
 
   for ( int i = 0; i < nRows; ++i )
@@ -218,7 +218,7 @@ void QgsCubicRasterResampler::xDerivativeMatrix( int nCols, int nRows, double* m
 
 void QgsCubicRasterResampler::yDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix )
 {
-  double val;
+  double val = 0;
   int index = 0;
 
   for ( int i = 0; i < nRows; ++i )
@@ -227,15 +227,15 @@ void QgsCubicRasterResampler::yDerivativeMatrix( int nCols, int nRows, double* m
     {
       if ( i == 0 )
       {
-        val = colorMatrix[ index + nRows ] - colorMatrix[ index ];
+        val = colorMatrix[ index + nCols ] - colorMatrix[ index ];
       }
-      else if ( i == nRows - 1 )
+      else if ( i == ( nRows - 1 ) )
       {
-        val = colorMatrix[ index ] - colorMatrix[ index - nRows ];
+        val = colorMatrix[ index ] - colorMatrix[ index - nCols ];
       }
       else
       {
-        val = ( colorMatrix[ index + nRows ] - colorMatrix[ index - nRows ] ) / 2.0;
+        val = ( colorMatrix[ index + nCols ] - colorMatrix[ index - nCols ] ) / 2.0;
       }
       matrix[index] = val;
       ++index;
