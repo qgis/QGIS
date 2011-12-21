@@ -24,7 +24,7 @@ class QImage;
 class QgsRasterResampler
 {
   public:
-    virtual void resample( const QImage& srcImage, QImage& dstImage ) const = 0;
+    virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
 };
 
 #endif // QGSRASTERRESAMPLER_H

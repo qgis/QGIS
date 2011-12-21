@@ -942,7 +942,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         int red = bandNumber( mRedBandName );
         int green = bandNumber( mGreenBandName );
         int blue = bandNumber( mBlueBandName );
-        QgsBilinearRasterResampler resampler;
+        //QgsBilinearRasterResampler resampler;
+        QgsCubicRasterResampler resampler;
         QgsMultiBandColorRenderer r( mDataProvider, red, green, blue, &resampler );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0

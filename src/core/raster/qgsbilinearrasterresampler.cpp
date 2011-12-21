@@ -26,7 +26,7 @@ QgsBilinearRasterResampler::~QgsBilinearRasterResampler()
 {
 }
 
-void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstImage ) const
+void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstImage )
 {
   double nSrcPerDstX = ( double ) srcImage.width() / ( double ) dstImage.width();
   double nSrcPerDstY = ( double ) srcImage.height() / ( double ) dstImage.height();
