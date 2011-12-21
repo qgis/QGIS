@@ -456,6 +456,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
         break;
+      case QVariant::Invalid:
+        break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )
                         .arg( fldIt.value().name() )
