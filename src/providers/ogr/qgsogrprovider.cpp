@@ -351,7 +351,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
   if ( !mSubsetString.isEmpty() )
   {
     QString sql = QString( "SELECT * FROM %1 WHERE %2" )
-                  .arg( quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) )
+                  .arg( quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) ) )
                   .arg( mSubsetString );
     QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
     ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, NULL );
@@ -2106,7 +2106,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     return; //not a provider field
   }
 
-  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
