@@ -43,18 +43,26 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
     {
       currentSrcRow += nSrcPerDstY;
     }
-    else if ( currentSrcRow > srcImage.height() - 2 )
-    {
-      //todo: resample in one direction only
-      break;
-    }
 
     currentSrcCol = nSrcPerDstY / 2.0 - 0.5;
     for ( int j = 0; j < dstImage.width(); ++j )
     {
+      double u = currentSrcCol - ( int )currentSrcCol;
+      double v = currentSrcRow - ( int )currentSrcRow;
       if ( currentSrcCol > srcImage.width() - 2 )
       {
-        //todo: resample in one direction only
+        //resample in one direction only
+        px1 = srcImage.pixel( currentSrcCol, currentSrcRow );
+        px2 = srcImage.pixel( currentSrcCol, currentSrcRow + 1 );
+        dstImage.setPixel( j, i, resampleColorValue( v, px1, px2 ) );
+        currentSrcCol += nSrcPerDstX;
+        continue;
+      }
+      else if ( currentSrcRow > srcImage.height() - 2 )
+      {
+        px1 = srcImage.pixel( currentSrcCol, currentSrcRow );
+        px2 = srcImage.pixel( currentSrcCol + 1, currentSrcRow );
+        dstImage.setPixel( j, i, resampleColorValue( u, px1, px2 ) );
         currentSrcCol += nSrcPerDstX;
         continue;
       }
@@ -62,8 +70,6 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
       px2 = srcImage.pixel( currentSrcCol + 1, currentSrcRow );
       px3 = srcImage.pixel( currentSrcCol + 1, currentSrcRow + 1 );
       px4 = srcImage.pixel( currentSrcCol, currentSrcRow + 1 );
-      double u = currentSrcCol - ( int )currentSrcCol;
-      double v = currentSrcRow - ( int )currentSrcRow;
       dstImage.setPixel( j, i, resampleColorValue( u, v, px1, px2, px3, px4 ) );
       currentSrcCol += nSrcPerDstX;
     }
@@ -73,26 +79,13 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
 
 QRgb QgsBilinearRasterResampler::resampleColorValue( double u, double v, QRgb col1, QRgb col2, QRgb col3, QRgb col4 ) const
 {
-  double r1 = qRed( col1 );
-  double g1 = qGreen( col1 );
-  double b1 = qBlue( col1 );
-  double r2 = qRed( col2 );
-  double g2 = qGreen( col2 );
-  double b2 = qBlue( col2 );
-  double r3 = qRed( col3 );
-  double g3 = qGreen( col3 );
-  double b3 = qBlue( col3 );
-  double r4 = qRed( col4 );
-  double g4 = qGreen( col4 );
-  double b4 = qBlue( col4 );
+  int red = bilinearInterpolation( u, v, qRed( col1 ), qRed( col2 ), qRed( col3 ), qRed( col4 ) );
+  int green = bilinearInterpolation( u, v, qGreen( col1 ), qGreen( col2 ), qGreen( col3 ), qGreen( col4 ) );
+  int blue = bilinearInterpolation( u, v, qBlue( col1 ), qBlue( col2 ), qBlue( col3 ), qBlue( col4 ) );
+  return qRgb( red, green, blue );
+}
 
-  double rt1 = u * r2 + ( 1 - u ) * r1;
-  double gt1 = u * g2 + ( 1 - u ) * g1;
-  double bt1 = u * b2 + ( 1 - u ) * b1;
-
-  double rt2 = u * r3 + ( 1 - u ) * r4;
-  double gt2 = u * g3 + ( 1 - u ) * g4;
-  double bt2 = u * b3 + ( 1 - u ) * b4;
-
-  return qRgb( v * rt2 + ( 1 - v ) * rt1, v * gt2 + ( 1 - v ) * gt1,  v * bt2 + ( 1 - v ) * bt1 );
+QRgb QgsBilinearRasterResampler::resampleColorValue( double u, QRgb col1, QRgb col2 ) const
+{
+  return qRgb( qRed( col1 ) * ( 1 - u ) + qRed( col2 ) * u, qGreen( col1 ) * ( 1 - u ) + qGreen( col2 ) * u, qBlue( col1 ) * ( 1 - u ) + qBlue( col2 ) * u );
 }

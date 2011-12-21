@@ -39,6 +39,7 @@ email                : tim at linfiniti.com
 //renderers
 #include "qgspalettedrasterrenderer.h"
 #include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
 
 #include <cstdio>
@@ -848,7 +849,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
           colorArray[( int )colorIt->value] =  colorIt->color;
         }
 
-        QgsBilinearRasterResampler resampler;
+        //QgsBilinearRasterResampler resampler;
+        QgsCubicRasterResampler resampler;
         QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), &resampler );
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0

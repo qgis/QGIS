@@ -166,6 +166,7 @@ SET(QGIS_CORE_SRCS
 
   raster/qgsrasterrenderer.cpp
   raster/qgsbilinearrasterresampler.cpp
+  raster/qgscubicrasterresampler.cpp
   raster/qgspalettedrasterrenderer.cpp
   raster/qgsmultibandcolorrenderer.cpp
 
