@@ -98,7 +98,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
   leMaximumScale->setText( QString::number( lyr->maximumScale(), 'f' ) );
   leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
-  leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 1000, this ) );
+  leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
   leRedMin->setValidator( new QDoubleValidator( this ) );
   leRedMax->setValidator( new QDoubleValidator( this ) );
@@ -385,7 +385,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
     {
       tableTransparency->insertRow( myListRunner );
-      QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
+      QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%g", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
       QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].percentTransparent ) );
 
       tableTransparency->setItem( myListRunner, 0, myGrayItem );
@@ -786,7 +786,7 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit
   if ( mRasterLayer->isNoDataValueValid() )
   {
-    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'g' ) );
   }
   else
   {
@@ -3081,7 +3081,7 @@ void QgsRasterLayerProperties::on_btnResetNull_clicked( )
   mRasterLayer->resetNoDataValue();
   if ( mRasterLayer->isNoDataValueValid() )
   {
-    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'g' ) );
   }
   else
   {
