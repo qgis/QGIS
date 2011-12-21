@@ -196,19 +196,20 @@ static int cell_draw( char *name,
         }
         if ( G_is_null_value( ptr, data_type ) )
         {
+          // see comments in QgsGrassRasterProvider::noDataValue()
           if ( data_type == CELL_TYPE )
           {
-            int nul = -2147483647;
+            int nul = -2000000000;
             fwrite( &nul , 4, 1, fo );
           }
           else if ( data_type == DCELL_TYPE )
           {
-            double nul = 2.2250738585072014e-308;
+            double nul = -1e+300;
             fwrite( &nul , 8, 1, fo );
           }
           else if ( data_type == FCELL_TYPE )
           {
-            double nul = 1.17549435e-38F;
+            double nul = -1e+30;
             fwrite( &nul , 4, 1, fo );
           }
         }
