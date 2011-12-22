@@ -280,7 +280,7 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
       }
     }
     mNoDataValue.append( myNoDataValue );
-    QgsDebugMsg( QString( "mNoDataValue[%1] = %1" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
+    QgsDebugMsg( QString( "mNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mNoDataValue[i-1] ) );
   }
 
   mValid = true;
@@ -1512,11 +1512,8 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
     myRasterPyramid.xDim = ( int )( 0.5 + ( myWidth / ( double )myDivisor ) );
     myRasterPyramid.yDim = ( int )( 0.5 + ( myHeight / ( double )myDivisor ) );
     myRasterPyramid.exists = false;
-#ifdef QGISDEBUG
-    QgsLogger::debug( "Pyramid", myRasterPyramid.level, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "xDim", myRasterPyramid.xDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-    QgsLogger::debug( "yDim", myRasterPyramid.yDim, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+
+    QgsDebugMsg( QString( "Pyramid %1 xDim %2 yDim %3" ).arg( myRasterPyramid.level ).arg( myRasterPyramid.xDim ).arg( myRasterPyramid.yDim ) );
 
     //
     // Now we check if it actually exists in the raster layer
