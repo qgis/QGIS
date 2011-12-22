@@ -345,7 +345,9 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
 
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
+    // why is this: it overrides the default cursor in the splitter in the dialog
+    // commenting it now till somebody tells us why it is neccesary :-)
+    //QApplication::setOverrideCursor( Qt::ArrowCursor );
 
     if ( mySelector->exec() )
     {
@@ -354,7 +356,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
       srs->createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
-    QApplication::restoreOverrideCursor();
+    //QApplication::restoreOverrideCursor();
 
     delete mySelector;
   }
@@ -2869,8 +2871,8 @@ void QgisApp::fileSaveAs()
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
 
   std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-    tr( "Choose a file name to save the QGIS project file as" ),
-    lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
+      tr( "Choose a file name to save the QGIS project file as" ),
+      lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
   saveFileDialog->setFileMode( QFileDialog::AnyFile );
   saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
   saveFileDialog->setConfirmOverwrite( true );
