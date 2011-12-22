@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>430</width>
+    <width>450</width>
     <height>627</height>
    </rect>
   </property>
@@ -216,7 +216,7 @@
         <string>Specify the coordinate reference system of the layer's geometry.</string>
        </property>
        <property name="text">
-        <string>Find SRID</string>
+        <string>Specify CRS</string>
        </property>
       </widget>
      </item>
