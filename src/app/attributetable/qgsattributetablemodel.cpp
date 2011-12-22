@@ -506,7 +506,7 @@ void QgsAttributeTableModel::featureForm( QModelIndex &idx )
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    f.changeAttribute( i, data( index( idx.row(), i ), Qt::EditRole ) );
+    f.changeAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   QgsFeatureAction action( tr( "Attributes changed" ), f, mLayer, -1, this );
