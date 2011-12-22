@@ -1220,25 +1220,11 @@ QString QgsPostgresProvider::getPrimaryKey()
                 .arg( quotedValue( mQuery ) );
 
           Result ctidCheck = connectionRO->PQexec( sql );
-
           if ( PQntuples( ctidCheck ) == 1 )
           {
-            sql = QString( "SELECT max(substring(ctid::text from E'\\\\((\\\\d+),\\\\d+\\\\)')::integer) from %1" )
-                  .arg( mQuery );
-
-            Result ctidCheck = connectionRO->PQexec( sql );
-            if ( PQntuples( ctidCheck ) == 1 )
-            {
-              int id = QString( PQgetvalue( ctidCheck, 0, 0 ) ).toInt();
-
-              if ( id < 0x10000 )
-              {
-                // fallback to ctid
-                primaryKey = "ctid";
-                primaryKeyType = "tid";
-                mIsDbPrimaryKey = true;
-              }
-            }
+            primaryKey = "ctid";
+            primaryKeyType = "tid";
+            mIsDbPrimaryKey = true;
           }
         }
 
