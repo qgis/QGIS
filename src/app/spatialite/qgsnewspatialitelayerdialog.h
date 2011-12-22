@@ -64,6 +64,8 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
 
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
+
+    int mCrsId;
 };
 
 #endif // QGSNEWVECTORLAYERDIALOG_H

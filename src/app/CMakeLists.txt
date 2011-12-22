@@ -304,13 +304,11 @@ IF (HAVE_SPATIALITE)
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
     spatialite/qgsspatialitesourceselect.cpp
     spatialite/qgsnewspatialitelayerdialog.cpp
-    spatialite/qgsspatialitesridsdialog.cpp
     spatialite/qgsspatialitetablemodel.cpp
     )
   SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
     spatialite/qgsspatialitesourceselect.h
     spatialite/qgsnewspatialitelayerdialog.h
-    spatialite/qgsspatialitesridsdialog.h
     spatialite/qgsspatialitetablemodel.h
     )
 ENDIF (HAVE_SPATIALITE)
