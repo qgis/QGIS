@@ -343,7 +343,9 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
       mySelector->setSelectedCrsId( defaultCrs.srsid() );
     }
 
-    QApplication::setOverrideCursor( Qt::ArrowCursor );
+    // why is this: it overrides the default cursor in the splitter in the dialog
+    // commenting it now till somebody tells us why it is neccesary :-)
+    //QApplication::setOverrideCursor( Qt::ArrowCursor );
 
     if ( mySelector->exec() )
     {
@@ -352,7 +354,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
       srs->createFromOgcWmsCrs( mySelector->selectedAuthId() );
     }
 
-    QApplication::restoreOverrideCursor();
+    //QApplication::restoreOverrideCursor();
 
     delete mySelector;
   }
