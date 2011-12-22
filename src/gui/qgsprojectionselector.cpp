@@ -108,7 +108,7 @@ QgsProjectionSelector::~QgsProjectionSelector()
     mRecentProjections.removeAll( QString::number( crsId ) );
     mRecentProjections.prepend( QString::number( crsId ) );
     // Prune size of list
-    while ( mRecentProjections.size() > 4 )
+    while ( mRecentProjections.size() > 8 )
     {
       mRecentProjections.removeLast();
     }
