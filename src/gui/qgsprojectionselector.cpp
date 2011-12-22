@@ -861,9 +861,11 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
-  if ( current )
-    setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
+    // we receive a change event when we make dialog visible,
+    // on only when there is also a'previous' it is a real user induced event
+    if ( current && previous ) {
+        setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
+    }
 }
 
 
