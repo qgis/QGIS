@@ -191,12 +191,6 @@
    </item>
    <item row="3" column="0">
     <widget class="QTextEdit" name="teProjection">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
      <property name="minimumSize">
       <size>
        <width>0</width>
@@ -206,7 +200,7 @@
      <property name="maximumSize">
       <size>
        <width>16777215</width>
-       <height>50</height>
+       <height>90</height>
       </size>
      </property>
      <property name="baseSize">
