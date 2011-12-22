@@ -115,11 +115,7 @@ class GdalTools:
     self.projection.setStatusTip( QCoreApplication.translate( "GdalTools", "Add projection info to the raster" ) )
     QObject.connect( self.projection, SIGNAL( "triggered()" ), self.doProjection )
 
-    self.extractProj = QAction( QIcon( ":icons/projection-export.png" ), QCoreApplication.translate( "GdalTools", "Extract projection" ), self.iface.mainWindow() )
-    self.extractProj.setStatusTip( QCoreApplication.translate( "GdalTools", "Extract projection information from raster(s)" ) )
-    QObject.connect( self.extractProj, SIGNAL( "triggered()" ), self.doExtractProj )
-
-    self.projectionsMenu.addActions( [ self.warp, self.projection, self.extractProj ] )
+    self.projectionsMenu.addActions( [ self.warp, self.projection ] )
 
     # conversion menu (Rasterize (Vector to raster), Polygonize (Raster to vector), Translate, RGB to PCT, PCT to RGB)
     self.conversionMenu = QMenu( QCoreApplication.translate( "GdalTools", "Conversion" ) )
@@ -344,11 +340,6 @@ class GdalTools:
     from tools.doTileIndex import GdalToolsDialog as TileIndex
     d = TileIndex( self.iface )
     self.runToolDialog( d )
-
-  def doExtractProj( self ):
-    from tools.doExtractProj import GdalToolsDialog as ExtractProj
-    d = ExtractProj( self.iface )
-    d.exec_()
 
   def doDEM( self ):
     from tools.doDEM import GdalToolsDialog as DEM
