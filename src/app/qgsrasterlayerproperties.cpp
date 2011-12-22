@@ -325,7 +325,9 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   //Clear existsing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
   QString myNumberFormatter;
-  if ( rbtnThreeBand->isChecked() && QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
+  if ( tabPageSymbology &&
+       rbtnThreeBand->isChecked() &&
+       QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
        QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
   {
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
