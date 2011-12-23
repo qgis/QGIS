@@ -62,13 +62,13 @@ class MapServerExport:
     QObject.connect(self.action, SIGNAL("triggered()"), self.run) 
     QObject.connect(self.iface, SIGNAL("currentThemeChanged ( QString )"), self.setCurrentTheme)
     # Add toolbar button and menu item
-    self.iface.addToolBarIcon(self.action)
-    self.iface.addPluginToMenu("&MapServer Export...", self.action)
+    self.iface.addWebToolBarIcon(self.action)
+    self.iface.addPluginToWebMenu("&MapServer Export...", self.action)
 
   def unload(self):
     # Remove the plugin menu item and icon
-    self.iface.removePluginMenu("&MapServer Export...",self.action)
-    self.iface.removeToolBarIcon(self.action)
+    self.iface.removePluginWebMenu("&MapServer Export...",self.action)
+    self.iface.removeWebToolBarIcon(self.action)
 
   # run method that performs all the real work
   def run(self): 

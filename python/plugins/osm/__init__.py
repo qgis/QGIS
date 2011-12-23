@@ -39,7 +39,7 @@ def category():
     @return category of this plugin.
     """
 
-    return "Plugins"
+    return "Web"
 
 
 def version():
