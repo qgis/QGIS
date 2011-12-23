@@ -486,6 +486,6 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
   if ( !vlayer )
     return false;
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, QgisApp::instance() );
+  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, -1, QgisApp::instance() );
   return action.editFeature();
 }
