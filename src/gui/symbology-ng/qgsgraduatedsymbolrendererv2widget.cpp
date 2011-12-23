@@ -175,8 +175,10 @@ void QgsGraduatedSymbolRendererV2Widget::classifyGraduated()
     mode = QgsGraduatedSymbolRendererV2::Quantile;
 
   // create and set new renderer
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   QgsGraduatedSymbolRendererV2* r = QgsGraduatedSymbolRendererV2::createRenderer(
                                       mLayer, attrName, classes, mode, mGraduatedSymbol, ramp );
+  QApplication::restoreOverrideCursor();
   if ( !r )
   {
     QMessageBox::critical( this, tr( "Error" ), tr( "Renderer creation has failed." ) );
@@ -303,7 +305,6 @@ void QgsGraduatedSymbolRendererV2Widget::changeRange( int rangeIdx )
     populateRanges();
 
   }
-
 }
 
 void QgsGraduatedSymbolRendererV2Widget::addClass()
@@ -390,5 +391,3 @@ void QgsGraduatedSymbolRendererV2Widget::refreshSymbolView()
 {
   populateRanges();
 }
-
-
