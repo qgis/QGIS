@@ -34,7 +34,7 @@ class QgsFeatureAction : public QAction
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action, QObject *parent );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action, int defaultAttr, QObject *parent );
 
   public slots:
     void execute();

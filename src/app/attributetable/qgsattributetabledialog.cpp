@@ -815,7 +815,7 @@ void QgsAttributeTableDialog::addFeature()
     return;
 
   QgsFeature f;
-  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, this );
+  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, -1, this );
   if ( action.addFeature() )
   {
     mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );

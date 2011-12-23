@@ -127,7 +127,6 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
     }
   }
 
-
   return expanded_action;
 }
 
