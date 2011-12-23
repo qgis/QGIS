@@ -109,6 +109,11 @@ void QgsNewSpatialiteLayerDialog::on_toolButtonNewDatabase_clicked()
   if ( fileName.isEmpty() )
     return;
 
+  if ( !fileName.toLower().endsWith( ".sqlite" ) && !fileName.toLower().endsWith( ".db" ) )
+  {
+    fileName += ".sqlite";
+  }
+
   mDatabaseComboBox->insertItem( 0, fileName );
   mDatabaseComboBox->setCurrentIndex( 0 );
   createDb();
