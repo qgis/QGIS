@@ -424,9 +424,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == Qt::DisplayRole && mValueMaps.contains( index.column() ) )
+  if ( role == Qt::DisplayRole && mValueMaps.contains( fieldId ) )
   {
-    return mValueMaps[ index.column()]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
+    return mValueMaps[ fieldId ]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
   }
 
   return val.toString();
@@ -492,7 +492,7 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    attributes.insert( i, data( index( idx.row(), i ), Qt::EditRole ) );
+    attributes.insert( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );
@@ -509,7 +509,7 @@ void QgsAttributeTableModel::featureForm( QModelIndex &idx )
     f.changeAttribute( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, mLayer, -1, this );
+  QgsFeatureAction action( tr( "Attributes changed" ), f, mLayer, -1, -1, this );
   if ( mLayer->isEditable() )
     action.editFeature();
   else
