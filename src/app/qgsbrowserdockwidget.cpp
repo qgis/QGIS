@@ -74,7 +74,7 @@ QgsBrowserDockWidget::QgsBrowserDockWidget( QWidget * parent ) :
   mRefreshButton->setAutoRaise( true );
   connect( mRefreshButton, SIGNAL( clicked() ), this, SLOT( refresh() ) );
 
-  QVBoxLayout* layout = new QVBoxLayout( this );
+  QVBoxLayout* layout = new QVBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
   layout->addWidget( mRefreshButton );
