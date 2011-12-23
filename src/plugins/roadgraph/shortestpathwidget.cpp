@@ -59,7 +59,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   QWidget *myWidget = new QWidget( this );
   setWidget( myWidget );
 
-  QVBoxLayout *v = new QVBoxLayout( myWidget );
+  QVBoxLayout *v = new QVBoxLayout();
   QHBoxLayout *h = NULL;
   QLabel *l = NULL;
 
@@ -87,7 +87,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( selectBackPoint );
   v->addLayout( h );
 
-  h = new QHBoxLayout( this );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Criterion" ), myWidget );
   mCriterionName = new QComboBox( myWidget );
   mCriterionName->insertItem( 0, tr( "Length" ) );
@@ -96,7 +96,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mCriterionName );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Length" ), myWidget );
   mPathCostLineEdit = new QLineEdit( myWidget );
   mPathCostLineEdit->setReadOnly( true );
@@ -104,7 +104,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mPathCostLineEdit );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Time" ), myWidget );
   mPathTimeLineEdit = new QLineEdit( myWidget );
   mPathTimeLineEdit->setReadOnly( true );
@@ -112,7 +112,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mPathTimeLineEdit );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   mCalculate = new QPushButton( tr( "Calculate" ), myWidget );
   h->addWidget( mCalculate );
   QPushButton *pbExport = new QPushButton( tr( "Export" ), myWidget );
@@ -124,7 +124,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   h->addWidget( mClear );
   v->addLayout( h );
 
-  h = new QHBoxLayout( myWidget );
+  h = new QHBoxLayout();
   QPushButton *helpButton = new QPushButton( tr( "Help" ), this );
   helpButton->setIcon( this->style()->standardIcon( QStyle::SP_DialogHelpButton ) );
   h->addWidget( helpButton );
