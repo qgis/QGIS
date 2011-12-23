@@ -5449,7 +5449,12 @@ void QgisApp::addPluginToDatabaseMenu( QString name, QAction* action )
   {
     if ( actions.at( i )->menu() == mDatabaseMenu )
       return;
-    if ( actions.at( i )->menu() == mHelpMenu )
+    if ( actions.at( i )->menu() == mWebMenu )
+    {
+      before = actions.at( i );
+      break;
+    }
+    else if ( actions.at( i )->menu() == mHelpMenu )
     {
       before = actions.at( i );
       break;
