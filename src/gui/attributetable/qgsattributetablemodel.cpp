@@ -181,8 +181,9 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
 {
   if ( mFeatureMap.contains( fid ) )
   {
-    mFeatureMap[ fid ].changeAttribute( fieldCol( idx ), value );
+    mFeatureMap[ fid ].changeAttribute( idx, value );
   }
+
   setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 
@@ -460,9 +461,9 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
     }
   }
 
-  if ( role == Qt::DisplayRole && mValueMaps.contains( index.column() ) )
+  if ( role == Qt::DisplayRole && mValueMaps.contains( fieldId ) )
   {
-    return mValueMaps[ index.column()]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
+    return mValueMaps[ fieldId ]->key( val.toString(), QString( "(%1)" ).arg( val.toString() ) );
   }
 
   return val.toString();
@@ -528,7 +529,7 @@ void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx )
 
   for ( int i = 0; i < mAttributes.size(); i++ )
   {
-    attributes.insert( i, data( index( idx.row(), i ), Qt::EditRole ) );
+    attributes.insert( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
   }
 
   mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );
