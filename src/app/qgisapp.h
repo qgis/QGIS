@@ -314,6 +314,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *databaseMenu() { return mDatabaseMenu; }
     QMenu *rasterMenu() { return mRasterMenu; }
     QMenu *vectorMenu() { return mVectorMenu; }
+    QMenu *webMenu() { return mWebMenu; }
 #ifdef Q_WS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
@@ -341,6 +342,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *rasterToolBar() { return mRasterToolBar; }
     QToolBar *vectorToolBar() { return mVectorToolBar; }
     QToolBar *databaseToolBar() { return mDatabaseToolBar; }
+    QToolBar *webToolBar() { return mWebToolBar; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -543,6 +545,12 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToVectorMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the Vector menu
     void removePluginVectorMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Web menu (ie the user visible text on the menu item)
+    QMenu* getWebMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Web menu
+    void addPluginToWebMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Web menu
+    void removePluginWebMenu( QString name, QAction* action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction* action );
     //! Remove "add layer" action to layer menu
@@ -563,6 +571,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     int addDatabaseToolBarIcon( QAction * qAction );
     //! Remove an icon from the Database toolbar
     void removeDatabaseToolBarIcon( QAction *qAction );
+    //! Add an icon to the Web toolbar
+    int addWebToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Web toolbar
+    void removeWebToolBarIcon( QAction *qAction );
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state
@@ -1015,6 +1027,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *mDatabaseMenu;
     //! Top level vector menu
     QMenu *mVectorMenu;
+    //! Top level web menu
+    QMenu *mWebMenu;
     //! Popup menu for the map overview tools
     QMenu *toolPopupOverviews;
     //! Popup menu for the display tools

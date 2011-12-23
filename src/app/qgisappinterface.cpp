@@ -184,6 +184,16 @@ void QgisAppInterface::removePluginVectorMenu( QString name, QAction* action )
   qgis->removePluginVectorMenu( name, action );
 }
 
+void QgisAppInterface::addPluginToWebMenu( QString name, QAction* action )
+{
+  qgis->addPluginToWebMenu( name, action );
+}
+
+void QgisAppInterface::removePluginWebMenu( QString name, QAction* action )
+{
+  qgis->removePluginWebMenu( name, action );
+}
+
 int QgisAppInterface::addToolBarIcon( QAction * qAction )
 {
   return qgis->addPluginToolBarIcon( qAction );
@@ -222,6 +232,16 @@ int QgisAppInterface::addDatabaseToolBarIcon( QAction * qAction )
 void QgisAppInterface::removeDatabaseToolBarIcon( QAction *qAction )
 {
   qgis->removeDatabaseToolBarIcon( qAction );
+}
+
+int QgisAppInterface::addWebToolBarIcon( QAction * qAction )
+{
+  return qgis->addWebToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeWebToolBarIcon( QAction *qAction )
+{
+  qgis->removeWebToolBarIcon( qAction );
 }
 
 QToolBar* QgisAppInterface::addToolBar( QString name )
@@ -331,6 +351,7 @@ QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
 QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
 QMenu *QgisAppInterface::vectorMenu() { return qgis->vectorMenu(); }
 QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
+QMenu *QgisAppInterface::webMenu() { return qgis->webMenu(); }
 QMenu *QgisAppInterface::firstRightStandardMenu() { return qgis->firstRightStandardMenu(); }
 QMenu *QgisAppInterface::windowMenu() { return qgis->windowMenu(); }
 QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }
@@ -347,6 +368,7 @@ QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
 QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }
 QToolBar *QgisAppInterface::vectorToolBar() { return qgis->vectorToolBar(); }
 QToolBar *QgisAppInterface::databaseToolBar() { return qgis->databaseToolBar(); }
+QToolBar *QgisAppInterface::webToolBar() { return qgis->webToolBar(); }
 
 //! File menu actions
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }

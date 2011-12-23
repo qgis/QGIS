@@ -1095,6 +1095,9 @@ void QgisApp::createMenus()
   // Vector Menu
   // don't add it yet, wait for a plugin
   mVectorMenu = new QMenu( tr( "Vect&or" ) );
+  // Web Menu
+  // don't add it yet, wait for a plugin
+  mWebMenu = new QMenu( tr( "&Web" ) );
 
   // Help menu
   // add What's this button to it
@@ -1124,6 +1127,7 @@ void QgisApp::createToolBars()
   << mRasterToolBar
   << mVectorToolBar
   << mDatabaseToolBar
+  << mWebToolBar
   << mLabelToolBar;
 
   QList<QAction*> toolbarMenuActions;
@@ -5381,6 +5385,45 @@ QMenu* QgisApp::getVectorMenu( QString menuName )
   return menu;
 }
 
+QMenu* QgisApp::getWebMenu( QString menuName )
+{
+#ifdef Q_WS_MAC
+  // Mac doesn't have '&' keyboard shortcuts.
+  menuName.remove( QChar( '&' ) );
+#endif
+  QString dst = menuName;
+  dst.remove( QChar( '&' ) );
+
+  QAction *before = NULL;
+  QList<QAction*> actions = mWebMenu->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    QString src = actions.at( i )->text();
+    src.remove( QChar( '&' ) );
+
+    int comp = dst.localeAwareCompare( src );
+    if ( comp < 0 )
+    {
+      // Add item before this one
+      before = actions.at( i );
+      break;
+    }
+    else if ( comp == 0 )
+    {
+      // Plugin menu item already exists
+      return actions.at( i )->menu();
+    }
+  }
+  // It doesn't exist, so create
+  QMenu *menu = new QMenu( menuName, this );
+  if ( before )
+    mWebMenu->insertMenu( before, menu );
+  else
+    mWebMenu->addMenu( menu );
+
+  return menu;
+}
+
 void QgisApp::insertAddLayerAction( QAction *action )
 {
   mLayerMenu->insertAction( mActionAddLayerSeparator, action );
@@ -5453,6 +5496,34 @@ void QgisApp::addPluginToVectorMenu( QString name, QAction* action )
     menuBar()->addMenu( mVectorMenu );
 }
 
+void QgisApp::addPluginToWebMenu( QString name, QAction* action )
+{
+  QMenu* menu = getWebMenu( name );
+  menu->addAction( action );
+
+  // add the Vector menu to the menuBar if not added yet
+  if ( mWebMenu->actions().count() != 1 )
+    return;
+
+  QAction* before = NULL;
+  QList<QAction*> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mWebMenu )
+      return;
+    if ( actions.at( i )->menu() == mHelpMenu )
+    {
+      before = actions.at( i );
+      break;
+    }
+  }
+
+  if ( before )
+    menuBar()->insertMenu( before, mWebMenu );
+  else
+    menuBar()->addMenu( mWebMenu );
+}
+
 void QgisApp::removePluginDatabaseMenu( QString name, QAction* action )
 {
   QMenu* menu = getDatabaseMenu( name );
@@ -5519,6 +5590,30 @@ void QgisApp::removePluginVectorMenu( QString name, QAction* action )
   }
 }
 
+void QgisApp::removePluginWebMenu( QString name, QAction* action )
+{
+  QMenu* menu = getWebMenu( name );
+  menu->removeAction( action );
+  if ( menu->actions().count() == 0 )
+  {
+    mWebMenu->removeAction( menu->menuAction() );
+  }
+
+  // remove the Web menu from the menuBar if there are no more actions
+  if ( mWebMenu->actions().count() > 0 )
+    return;
+
+  QList<QAction*> actions = menuBar()->actions();
+  for ( int i = 0; i < actions.count(); i++ )
+  {
+    if ( actions.at( i )->menu() == mWebMenu )
+    {
+      menuBar()->removeAction( actions.at( i ) );
+      return;
+    }
+  }
+}
+
 int QgisApp::addPluginToolBarIcon( QAction * qAction )
 {
   mPluginToolBar->addAction( qAction );
@@ -5561,6 +5656,17 @@ int QgisApp::addDatabaseToolBarIcon( QAction * qAction )
 void QgisApp::removeDatabaseToolBarIcon( QAction *qAction )
 {
   mDatabaseToolBar->removeAction( qAction );
+}
+
+int QgisApp::addWebToolBarIcon( QAction * qAction )
+{
+  mWebToolBar->addAction( qAction );
+  return 0;
+}
+
+void QgisApp::removeWebToolBarIcon( QAction *qAction )
+{
+  mWebToolBar->removeAction( qAction );
 }
 
 void QgisApp::updateCRSStatusBar()

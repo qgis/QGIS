@@ -82,6 +82,12 @@ class QgisInterface : QObject
     //! Remove an action (icon) from the Database toolbar
     //! @note added in 2.0
     virtual void removeDatabaseToolBarIcon(QAction *qAction) = 0;
+    //! Add an icon to the Web toolbar
+    //! @note added in 2.0
+    virtual int addWebToolBarIcon(QAction *qAction) =0;
+    //! Remove an action (icon) from the Web toolbar
+    //! @note added in 2.0
+    virtual void removeWebToolBarIcon(QAction *qAction) = 0;
 
     //! Add toolbar with specified name
     virtual QToolBar* addToolBar(QString name)=0 /Factory/;
@@ -154,6 +160,16 @@ class QgisInterface : QObject
       */
     virtual void removePluginVectorMenu(QString name, QAction* action)=0;
 
+    /** Add action to the Web menu
+      * @note added in 2.0
+      */
+    virtual void addPluginToWebMenu(QString name, QAction* action)=0;
+
+    /** Remove action from the Web menu
+      * @note added in 2.0
+      */
+    virtual void removePluginWebMenu(QString name, QAction* action)=0;
+
     /** Add a dock widget to the main window
        @note added in 1.7 */
     virtual void addDockWidget ( Qt::DockWidgetArea area, QDockWidget * dockwidget )=0;
@@ -209,6 +225,8 @@ class QgisInterface : QObject
     virtual QMenu *rasterMenu() = 0;
     //** @note added in 2.0
     virtual QMenu *vectorMenu() = 0;
+    //** @note added in 2.0
+    virtual QMenu *webMenu() = 0;
     virtual QMenu *databaseMenu() = 0;
     virtual QMenu *firstRightStandardMenu() = 0;
     virtual QMenu *windowMenu() = 0;
@@ -228,6 +246,8 @@ class QgisInterface : QObject
     virtual QToolBar *vectorToolBar() = 0;
     //** @note added in 2.0
     virtual QToolBar *databaseToolBar() = 0;
+    //** @note added in 2.0
+    virtual QToolBar *webToolBar() = 0;
 
     //! File menu actions
     virtual QAction *actionNewProject() = 0;
