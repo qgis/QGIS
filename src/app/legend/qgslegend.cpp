@@ -765,11 +765,20 @@ void QgsLegend::legendGroupRemove()
     return;
   }
 
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   if ( lg )
   {
     removeGroup( lg );
   }
+
+  // Turn on rendering (if it was on previously)
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 }
 
 void QgsLegend::legendGroupSetCRS()
