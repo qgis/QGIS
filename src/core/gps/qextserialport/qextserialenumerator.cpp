@@ -104,7 +104,7 @@ QextSerialEnumerator::~QextSerialEnumerator( )
           infoList.append(info);
 
           CloseHandle( hPort );
-				}
+	}
 #endif
     }
 

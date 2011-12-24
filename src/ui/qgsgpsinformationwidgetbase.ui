@@ -335,6 +335,9 @@
                   <property name="enabled">
                    <bool>false</bool>
                   </property>
+                  <property name="editable">
+                   <bool>true</bool>
+                  </property>
                  </widget>
                 </item>
                 <item>

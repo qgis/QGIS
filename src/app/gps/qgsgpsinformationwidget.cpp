@@ -320,7 +320,7 @@ void QgsGPSInformationWidget::connectGps()
 
   if ( mRadUserPath->isChecked() )
   {
-    port = mCboDevices->itemData( mCboDevices->currentIndex() ).toString();
+    port = mCboDevices->currentText();
 
     if ( port.isEmpty() )
     {
