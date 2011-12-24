@@ -851,7 +851,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
 
         //QgsBilinearRasterResampler resampler;
         QgsCubicRasterResampler resampler;
-        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), &resampler );
+        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), 0 /*&resampler*/ );
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,

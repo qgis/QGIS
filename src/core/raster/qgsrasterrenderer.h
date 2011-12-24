@@ -28,6 +28,19 @@ class QgsRasterViewPort;
 class QgsRasterRenderer
 {
   public:
+
+    struct RasterPartInfo
+    {
+      int currentCol;
+      int currentRow;
+      int nCols;
+      int nRows;
+      int nColsPerPart;
+      int nRowsPerPart;
+      int nPartsPerDimension;
+      void* data;
+    };
+
     QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler = 0 );
     virtual ~QgsRasterRenderer();
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
@@ -35,8 +48,14 @@ class QgsRasterRenderer
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
+    void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversampling );
+    bool readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort, int& nCols, int& nRows, void** rasterData, int& topLeftCol, int& topLeftRow );
+    void stopRasterRead( int bandNumber );
+
+
     QgsRasterDataProvider* mProvider;
     QgsRasterResampler* mResampler;
+    QMap<int, RasterPartInfo> mRasterPartInfos;
 };
 
 inline double QgsRasterRenderer::readValue( void *data, QgsRasterDataProvider::DataType type, int index )

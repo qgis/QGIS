@@ -42,6 +42,53 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     return;
   }
 
+  double oversampling;
+  startRasterRead( mBandNumber, viewPort, theQgsMapToPixel, oversampling );
+
+  int nCols = 0;
+  int nRows = 0;
+  int topLeftCol = 0;
+  int topLeftRow = 0;
+  int currentRasterPos = 0;
+  QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBandNumber );
+  void* rasterData;
+
+  while ( readNextRasterPart( mBandNumber, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
+  {
+    //create image
+    QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QRgb* imageScanLine = 0;
+    int val = 0;
+
+    for ( int i = 0; i < nRows; ++i )
+    {
+      imageScanLine = ( QRgb* )( img.scanLine( i ) );
+      for ( int j = 0; j < nCols; ++j )
+      {
+        val = readValue( rasterData, rasterType, currentRasterPos );
+        imageScanLine[j] = mColors[ val ].rgba();
+        ++currentRasterPos;
+      }
+    }
+
+    //top left position in device coords
+    QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
+    tlPoint += QPointF( topLeftCol / oversampling, topLeftRow / oversampling );
+
+    //draw image
+    if ( mResampler ) //resample to output resolution
+    {
+      QImage dstImg( viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, QImage::Format_ARGB32_Premultiplied );
+      mResampler->resample( img, dstImg );
+      p->drawImage( tlPoint, dstImg );
+    }
+    else //use original image
+    {
+      p->drawImage( tlPoint, img );
+    }
+  }
+
+#if 0
   int nCols, nRows;
   if ( mResampler )
   {
@@ -97,4 +144,5 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   {
     p->drawImage( QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() ), img );
   }
+#endif //0
 }
