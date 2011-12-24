@@ -761,7 +761,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       }
 
       // labeling - register feature
-      if ( mRendererV2->symbolForFeature( fet ) != NULL )
+      if ( mRendererV2->symbolForFeature( fet ) != NULL && rendererContext.labelingEngine() )
       {
         if ( labeling )
         {
@@ -847,7 +847,7 @@ void QgsVectorLayer::drawRendererV2Levels( QgsRenderContext& rendererContext, bo
       mCachedGeometries[fet.id()] = *fet.geometry();
     }
 
-    if ( sym )
+    if ( sym && rendererContext.labelingEngine() )
     {
       if ( labeling )
       {
@@ -1094,7 +1094,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
         //double scale = rendererContext.scaleFactor() /  markerScaleFactor;
         drawFeature( rendererContext, fet, &marker );
 
-        if ( mRenderer->willRenderFeature( &fet ) )
+        if ( mRenderer->willRenderFeature( &fet ) && rendererContext.labelingEngine() )
         {
           if ( labeling )
           {
@@ -5289,46 +5289,46 @@ void QgsVectorLayer::updateAttributeMapIndex( QgsAttributeMap& map, int oldIndex
 
 void QgsVectorLayer::prepareLabelingAndDiagrams( QgsRenderContext& rendererContext, QgsAttributeList& attributes, bool& labeling )
 {
-  if ( rendererContext.labelingEngine() )
-  {
-    QSet<int> attrIndex;
-    if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
-    {
-      QSet<int>::const_iterator attIt = attrIndex.constBegin();
-      for ( ; attIt != attrIndex.constEnd(); ++attIt )
-      {
-        if ( !attributes.contains( *attIt ) )
-        {
-          attributes << *attIt;
-        }
-      }
-      labeling = true;
-    }
+  if ( !rendererContext.labelingEngine() )
+    return;
 
-    //register diagram layers
-    if ( mDiagramRenderer && mDiagramLayerSettings )
+  QSet<int> attrIndex;
+  if ( rendererContext.labelingEngine()->prepareLayer( this, attrIndex, rendererContext ) )
+  {
+    QSet<int>::const_iterator attIt = attrIndex.constBegin();
+    for ( ; attIt != attrIndex.constEnd(); ++attIt )
     {
-      mDiagramLayerSettings->renderer = mDiagramRenderer;
-      rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
-      //add attributes needed by the diagram renderer
-      QList<int> att = mDiagramRenderer->diagramAttributes();
-      QList<int>::const_iterator attIt = att.constBegin();
-      for ( ; attIt != att.constEnd(); ++attIt )
+      if ( !attributes.contains( *attIt ) )
       {
-        if ( !attributes.contains( *attIt ) )
-        {
-          attributes << *attIt;
-        }
+        attributes << *attIt;
       }
-      //and the ones needed for data defined diagram positions
-      if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
+    }
+    labeling = true;
+  }
+
+  //register diagram layers
+  if ( mDiagramRenderer && mDiagramLayerSettings )
+  {
+    mDiagramLayerSettings->renderer = mDiagramRenderer;
+    rendererContext.labelingEngine()->addDiagramLayer( this, mDiagramLayerSettings );
+    //add attributes needed by the diagram renderer
+    QList<int> att = mDiagramRenderer->diagramAttributes();
+    QList<int>::const_iterator attIt = att.constBegin();
+    for ( ; attIt != att.constEnd(); ++attIt )
+    {
+      if ( !attributes.contains( *attIt ) )
       {
-        attributes << mDiagramLayerSettings->xPosColumn;
+        attributes << *attIt;
       }
-      if ( mDiagramLayerSettings->yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->yPosColumn ) )
-      {
-        attributes << mDiagramLayerSettings->yPosColumn;
-      }
+    }
+    //and the ones needed for data defined diagram positions
+    if ( mDiagramLayerSettings->xPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->xPosColumn ) )
+    {
+      attributes << mDiagramLayerSettings->xPosColumn;
+    }
+    if ( mDiagramLayerSettings->yPosColumn >= 0 && !attributes.contains( mDiagramLayerSettings->yPosColumn ) )
+    {
+      attributes << mDiagramLayerSettings->yPosColumn;
     }
   }
 }
