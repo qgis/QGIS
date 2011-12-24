@@ -1,4 +1,3 @@
-
 %Module qgis.core 0
 
 %Import QtCore/QtCoremod.sip
