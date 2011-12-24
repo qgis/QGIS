@@ -1060,9 +1060,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
       }
 
       //double value = readValue( data, type, 0 );
-#ifdef QGISDEBUG
-      QgsLogger::debug( "value", value, 1, __FILE__, __FUNCTION__, __LINE__ );
-#endif
+      QgsDebugMsg( QString( "value=%1" ).arg( value ) );
       QString v;
 
       if ( mValidNoDataValue && ( fabs( value - mNoDataValue[i-1] ) <= TINY_VALUE || value != value ) )
