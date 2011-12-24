@@ -53,7 +53,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   pInfo.nCols = viewPort->drawableAreaXDim * oversampling;
   pInfo.nRows = viewPort->drawableAreaYDim * oversampling;
   int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mProvider->dataTypeSize( bandNumber );
-  int parts = totalMemoryUsage / 100000000 + 1;
+  int parts = totalMemoryUsage / 100000000 /*10000*/ + 1;
   pInfo.nPartsPerDimension = sqrt( parts );
   pInfo.nColsPerPart = pInfo.nCols / pInfo.nPartsPerDimension;
   pInfo.nRowsPerPart = pInfo.nRows / pInfo.nPartsPerDimension;
@@ -97,10 +97,10 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, QgsRasterViewPort* v
 
   //get subrectangle
   QgsRectangle viewPortExtent = viewPort->mDrawnExtent;
-  double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / pInfo.nCols * viewPortExtent.width();
-  double xmax = viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / pInfo.nCols * viewPortExtent.width();
-  double ymin = viewPortExtent.yMinimum() + ( pInfo.currentRow + nRows ) / pInfo.nRows * viewPortExtent.height();
-  double ymax = viewPortExtent.yMinimum() + pInfo.currentRow / pInfo.nRows * viewPortExtent.height();
+  double xmin = viewPortExtent.xMinimum() + pInfo.currentCol / ( double )pInfo.nCols * viewPortExtent.width();
+  double xmax = viewPortExtent.xMinimum() + ( pInfo.currentCol + nCols ) / ( double )pInfo.nCols * viewPortExtent.width();
+  double ymin = viewPortExtent.yMaximum() - ( pInfo.currentRow + nRows ) / ( double )pInfo.nRows * viewPortExtent.height();
+  double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / ( double )pInfo.nRows * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
   mProvider->readBlock( bandNumber, blockRect, nCols, nRows, viewPort->mSrcCRS, viewPort->mDestCRS, pInfo.data );
@@ -109,9 +109,11 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, QgsRasterViewPort* v
   topLeftRow = pInfo.currentRow;
 
   pInfo.currentCol += nCols;
-  pInfo.currentRow += nRows;
-
-  if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow != pInfo.nRows ) //start new row
+  if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow + nRows == pInfo.nRows ) //end of raster
+  {
+    pInfo.currentRow = pInfo.nRows;
+  }
+  else if ( pInfo.currentCol == pInfo.nCols ) //start new row
   {
     pInfo.currentCol = 0;
     pInfo.currentRow += pInfo.nRowsPerPart;

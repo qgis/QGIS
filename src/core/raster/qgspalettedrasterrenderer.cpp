@@ -59,6 +59,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
     int val = 0;
+    currentRasterPos = 0;
 
     for ( int i = 0; i < nRows; ++i )
     {
