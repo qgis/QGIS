@@ -33,7 +33,7 @@ class QgsNetworkAccessManager : QNetworkAccessManager
 
 %If (PROXY_FACTORY)
     //! insert a factory into the proxy factories list
-    void insertProxyFactory(QNetworkProxyFactory *factory /TransferTo/);
+    void insertProxyFactory(QNetworkProxyFactory *factory /Transfer/);
 
     //! remove a factory from the proxy factories list
     void removeProxyFactory(QNetworkProxyFactory *factory /TransferBack/);
