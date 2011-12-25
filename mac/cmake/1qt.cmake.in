@@ -85,7 +85,7 @@ ENDIF (NOT @OSX_HAVE_LOADERPATH@)
 MESSAGE (STATUS "Copying Qt frameworks...")
 EXECUTE_PROCESS (COMMAND mkdir -p "${QFWDIR}")
 FOREACH (QFW ${QTLISTQG})
-    IF (NOT IS_DIRECTORY "${QFWDIR}/${QFW}.framework")
+    IF (IS_DIRECTORY "@QT_LIBRARY_DIR@/${QFW}.framework/Versions/${QT_FWVER}" AND NOT IS_DIRECTORY "${QFWDIR}/${QFW}.framework")
         # reconstruct framework to avoid excessive copying, then deleting
         #   especially when debug variants are present
         EXECUTE_PROCESS (COMMAND mkdir -p "${QFWDIR}/${QFW}.framework/Versions/${QT_FWVER}")
