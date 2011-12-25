@@ -25,6 +25,12 @@ QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRaster
 
 QgsRasterRenderer::~QgsRasterRenderer()
 {
+  //remove remaining memory in partinfos
+  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.begin();
+  for ( ; partIt != mRasterPartInfos.end(); ++partIt )
+  {
+    CPLFree( partIt.value().data );
+  }
 }
 
 void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversampling )
@@ -34,6 +40,9 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   {
     return;
   }
+
+  //remove any previous part on that band
+  removePartInfo( bandNumber );
 
   //calculate oversampling factor
   if ( mResampler )
@@ -53,7 +62,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   pInfo.nCols = viewPort->drawableAreaXDim * oversampling;
   pInfo.nRows = viewPort->drawableAreaYDim * oversampling;
   int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mProvider->dataTypeSize( bandNumber );
-  int parts = totalMemoryUsage / 100000000 /*10000*/ + 1;
+  int parts = totalMemoryUsage / /*100000000*/ 100000 + 1;
   pInfo.nPartsPerDimension = sqrt( parts );
   pInfo.nColsPerPart = pInfo.nCols / pInfo.nPartsPerDimension;
   pInfo.nRowsPerPart = pInfo.nRows / pInfo.nPartsPerDimension;
@@ -124,4 +133,16 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, QgsRasterViewPort* v
 
 void QgsRasterRenderer::stopRasterRead( int bandNumber )
 {
+  removePartInfo( bandNumber );
+}
+
+void QgsRasterRenderer::removePartInfo( int bandNumber )
+{
+  QMap<int, RasterPartInfo>::iterator partIt = mRasterPartInfos.find( bandNumber );
+  if ( partIt != mRasterPartInfos.end() )
+  {
+    RasterPartInfo& pInfo = partIt.value();
+    CPLFree( pInfo.data );
+    mRasterPartInfos.remove( bandNumber );
+  }
 }

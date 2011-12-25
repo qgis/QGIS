@@ -88,4 +88,5 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       p->drawImage( tlPoint, img );
     }
   }
+  stopRasterRead( mBandNumber );
 }

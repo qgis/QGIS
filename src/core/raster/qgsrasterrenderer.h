@@ -56,6 +56,10 @@ class QgsRasterRenderer
     QgsRasterDataProvider* mProvider;
     QgsRasterResampler* mResampler;
     QMap<int, RasterPartInfo> mRasterPartInfos;
+
+  private:
+    /**Remove part into and release memory*/
+    void removePartInfo( int bandNumer );
 };
 
 inline double QgsRasterRenderer::readValue( void *data, QgsRasterDataProvider::DataType type, int index )
