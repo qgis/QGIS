@@ -51,6 +51,9 @@
    </item>
    <item row="2" column="1">
     <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
+     <property name="decimals">
+      <number>5</number>
+     </property>
      <property name="maximum">
       <double>99999999.000000000000000</double>
      </property>
@@ -93,6 +96,9 @@
    </item>
    <item row="3" column="1">
     <widget class="QDoubleSpinBox" name="mOffsetSpinBox">
+     <property name="decimals">
+      <number>5</number>
+     </property>
      <property name="minimum">
       <double>-99.000000000000000</double>
      </property>
