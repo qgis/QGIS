@@ -52,7 +52,7 @@
      <item row="1" column="1">
       <widget class="QDoubleSpinBox" name="spinAngle">
        <property name="decimals">
-        <number>1</number>
+        <number>2</number>
        </property>
        <property name="maximum">
         <double>360.000000000000000</double>
@@ -67,7 +67,7 @@
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetX">
          <property name="decimals">
-          <number>2</number>
+          <number>5</number>
          </property>
          <property name="minimum">
           <double>-100000.000000000000000</double>
@@ -80,7 +80,7 @@
        <item>
         <widget class="QDoubleSpinBox" name="spinOffsetY">
          <property name="decimals">
-          <number>2</number>
+          <number>5</number>
          </property>
          <property name="minimum">
           <double>-100000.000000000000000</double>

@@ -862,6 +862,9 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
               <property name="maximum">
                <double>99999.990000000005239</double>
               </property>

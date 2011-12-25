@@ -71,7 +71,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="decimals">
-        <number>2</number>
+        <number>5</number>
        </property>
        <property name="maximum">
         <double>100000.000000000000000</double>
@@ -94,7 +94,7 @@
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
        <property name="decimals">
-        <number>2</number>
+        <number>5</number>
        </property>
        <property name="minimum">
         <double>-100000.000000000000000</double>
