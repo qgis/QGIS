@@ -15,7 +15,7 @@ INCLUDE (@CMAKE_SOURCE_DIR@/cmake/MacBundleMacros.cmake)
 
 # Postgres
 
-IF (@POSTGRES_LIBRARY@ MATCHES ".*libpq.dylib")
+IF ("@POSTGRES_LIBRARY@" MATCHES ".*libpq.dylib")
     MESSAGE (STATUS "Copying libpq and updating library paths...")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@POSTGRES_LIBRARY@" "${QLIBDIR}/libpq.dylib")
     GET_INSTALL_NAME ("@POSTGRES_LIBRARY@" "libpq" PQLIB)
@@ -34,7 +34,7 @@ ENDIF ()
 
 # libfcgi (non-system)
 
-IF (@FCGI_LIBRARY@ MATCHES ".*libfcgi.dylib" AND NOT @FCGI_LIBRARY@ MATCHES "/usr/lib/.*")
+IF ("@FCGI_LIBRARY@" MATCHES ".*libfcgi.dylib" AND NOT "@FCGI_LIBRARY@" MATCHES "/usr/lib/.*")
     MESSAGE (STATUS "Copying libfcgi and updating library paths...")
     EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "@FCGI_LIBRARY@" "${QLIBDIR}/libfcgi.dylib")
     GET_INSTALL_NAME ("@FCGI_LIBRARY@" "libfcgi" FCGILIB)
