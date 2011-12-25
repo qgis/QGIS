@@ -103,6 +103,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   {
     QStandardItem *myItem = new QStandardItem( values[i].toString() );
     myItem->setEditable( false );
+    myItem->setData( values[i] );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
   }
 }
@@ -266,7 +267,13 @@ void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 
 void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
-  txtSQL->insertPlainText( "'" + mModelValues->data( index ).toString() + "'" );
+  QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
+  if( value.isNull() )
+    txtSQL->insertPlainText( "NULL" );
+  else if( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
+    txtSQL->insertPlainText( value.toString() );
+  else
+    txtSQL->insertPlainText( "'" + value.toString() + "'" );
 }
 
 void QgsQueryBuilder::on_btnLessEqual_clicked()
