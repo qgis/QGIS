@@ -207,6 +207,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
 
+    /** overloaded function used to sort menu entries alphabetically */
+    QMenu* createPopupMenu();
+
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
@@ -1088,6 +1091,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! project changed
     void projectChanged( const QDomDocument & );
+
+    bool cmpByText( QAction* a, QAction* b );
 };
 
 #endif
