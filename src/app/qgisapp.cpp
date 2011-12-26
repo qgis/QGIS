@@ -6725,7 +6725,8 @@ void QgisApp::newBookmark()
     {
       // create the bookmark
       QgsBookmarkItem *bmi = new QgsBookmarkItem( bookmarkName,
-          QgsProject::instance()->title(), mMapCanvas->extent(), -1,
+          QgsProject::instance()->title(), mMapCanvas->extent(),
+          mMapCanvas->mapRenderer()->destinationCrs().srsid(),
           QgsApplication::qgisUserDbFilePath() );
       bmi->store();
       delete bmi;

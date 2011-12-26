@@ -1,7 +1,8 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>QgsBookmarksBase</class>
- <widget class="QDialog" name="QgsBookmarksBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="QgsBookmarksBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
@@ -9,53 +10,30 @@
     <height>370</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Geospatial Bookmarks</string>
   </property>
-  <layout class="QGridLayout" >
-   <item row="0" column="0" >
-    <widget class="QTreeWidget" name="lstBookmarks" >
-     <property name="rootIsDecorated" >
-      <bool>false</bool>
+  <layout class="QGridLayout">
+   <item row="1" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
-     <property name="sortingEnabled" >
-      <bool>true</bool>
-     </property>
-     <property name="columnCount" >
-      <number>4</number>
-     </property>
-     <column>
-      <property name="text" >
-       <string>Name</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Project</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Extent</string>
-      </property>
-     </column>
-     <column>
-      <property name="text" >
-       <string>Id</string>
-      </property>
-     </column>
     </widget>
    </item>
-   <item row="1" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::NoButton</set>
+   <item row="0" column="0">
+    <widget class="QTreeView" name="lstBookmarks">
+     <property name="rootIsDecorated">
+      <bool>false</bool>
+     </property>
+     <property name="sortingEnabled">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
   </layout>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>lstBookmarks</tabstop>
   <tabstop>buttonBox</tabstop>
@@ -68,11 +46,11 @@
    <receiver>QgsBookmarksBase</receiver>
    <slot>reject()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>211</x>
      <y>342</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>274</x>
      <y>256</y>
     </hint>
