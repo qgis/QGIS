@@ -26,6 +26,11 @@ ENDIF ()
 # additional Qt may be needed by plugins
 SET (QTLISTQG ${QTLISTQG} QtMultimedia QtOpenGL)
 SET (PYQTLIST ${PYQTLIST} QtMultimedia QtOpenGL)
+# for tests
+IF (ENABLE_TESTS)
+    SET (QTLISTQG ${QTLISTQG} QtTest)
+    SET (PYQTLIST ${PYQTLIST} QtTest)
+ENDIF ()
 
 MYMESSAGE ("Qt list: ${QTLISTQG}")
 
@@ -141,8 +146,9 @@ ENDIF (QWT_CHG)
 
 # don't load plugins from system-installed Qt
 FILE (WRITE "${QAPPDIRC}/Resources/qt.conf" "")
-FILE (WRITE "${QBINDIR}/qgis_help.app/Contents/Resources/qt.conf" "")
-FILE (WRITE "${QBINDIR}/qbrowser.app/Contents/Resources/qt.conf" "")
+FOREACH (QA ${QGAPPLIST})
+    FILE (WRITE "${QBINDIR}/${QA}.app/Contents/Resources/qt.conf" "")
+ENDFOREACH (QA)
 
 ### update lib paths
 
