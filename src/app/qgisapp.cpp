@@ -374,6 +374,11 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
   }
 }
 
+static bool cmpByText_( QAction* a, QAction* b )
+{
+  return QString::localeAwareCompare( a->text(), b->text() ) < 0;
+}
+
 
 QgisApp *QgisApp::smInstance = 0;
 
@@ -1137,6 +1142,9 @@ void QgisApp::createToolBars()
     toolBar->toggleViewAction()->setObjectName( "mActionToggle" + toolBar->objectName().mid( 1 ) );
     toolbarMenuActions << toolBar->toggleViewAction();
   }
+
+  // sort actions in toolbar menu
+  qSort( toolbarMenuActions.begin(), toolbarMenuActions.end(), cmpByText_ );
 
   mToolbarMenu->addActions( toolbarMenuActions );
 
@@ -7130,4 +7138,47 @@ void QgisApp::toolButtonActionTriggered( QAction *action )
     settings.setValue( "/UI/annotationTool", 2 );
 
   bt->setDefaultAction( action );
+}
+
+QMenu* QgisApp::createPopupMenu()
+{
+  QMenu* menu = QMainWindow::createPopupMenu();
+  QList< QAction* > al = menu->actions();
+  QList< QAction* > panels, toolbars;
+
+  if( !al.isEmpty() )
+  {
+    bool found = false;
+    for ( int i = 0; i < al.size(); ++i )
+    {
+      if ( al[ i ]->isSeparator() )
+      {
+        found = true;
+        continue;
+      }
+
+      if ( !found )
+      {
+        panels.append( al[ i ] );
+      }
+      else
+      {
+        toolbars.append( al[ i ] );
+      }
+    }
+
+    qSort( panels.begin(), panels.end(), cmpByText_ );
+    foreach( QAction* a, panels )
+    {
+      menu->addAction( a );
+    }
+    menu->addSeparator();
+    qSort( toolbars.begin(), toolbars.end(), cmpByText_ );
+    foreach( QAction* a, toolbars )
+    {
+      menu->addAction( a );
+    }
+  }
+
+  return menu;
 }
