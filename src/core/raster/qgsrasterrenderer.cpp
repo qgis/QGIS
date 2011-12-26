@@ -19,7 +19,8 @@
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler )
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler ),
+    mOpacity( 255 )
 {
 }
 

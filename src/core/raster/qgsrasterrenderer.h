@@ -45,6 +45,9 @@ class QgsRasterRenderer
     virtual ~QgsRasterRenderer();
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
+    void setOpacity( double opacity ) { mOpacity = opacity; }
+    double opacity() const { return mOpacity; }
+
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
@@ -56,6 +59,7 @@ class QgsRasterRenderer
     QgsRasterDataProvider* mProvider;
     QgsRasterResampler* mResampler;
     QMap<int, RasterPartInfo> mRasterPartInfos;
+    double mOpacity; //global alpha value
 
   private:
     /**Remove part into and release memory*/

@@ -67,7 +67,9 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       for ( int j = 0; j < nCols; ++j )
       {
         val = readValue( rasterData, rasterType, currentRasterPos );
-        imageScanLine[j] = mColors[ val ].rgba();
+        //imageScanLine[j] = mColors[ val ].rgba();
+        QColor& currentColor = mColors[val];
+        imageScanLine[j] = qRgba( mOpacity * currentColor.red(), mOpacity * currentColor.green(), mOpacity * currentColor.blue(), mOpacity * 255 );
         ++currentRasterPos;
       }
     }
