@@ -10,14 +10,18 @@
 # regex stuff taken from GetPrerequisites
 
 FUNCTION (GET_INSTALL_NAME LIBFILE LIBNAME OUTVAR)
-    EXECUTE_PROCESS (COMMAND otool -L "${LIBFILE}" OUTPUT_VARIABLE iname_out)
-    # remove 1st line, it's just path to lib file
-    STRING (REGEX REPLACE ".*:\n" "" iname "${iname_out}")
-    IF (iname)
-        # find libname
-        STRING (REGEX MATCH "[^\n\t ]*${LIBNAME}[^\n ]*" iname "${iname}")
-    ENDIF (iname)
-    SET (${OUTVAR} ${iname} PARENT_SCOPE)
+    IF (EXISTS "${LIBFILE}")
+        EXECUTE_PROCESS (COMMAND otool -L "${LIBFILE}" OUTPUT_VARIABLE iname_out)
+        # remove 1st line, it's just path to lib file
+        STRING (REGEX REPLACE ".*:\n" "" iname "${iname_out}")
+        IF (iname)
+            # find libname
+            STRING (REGEX MATCH "[^\n\t ]*${LIBNAME}[^\n ]*" iname "${iname}")
+        ENDIF (iname)
+        SET (${OUTVAR} ${iname} PARENT_SCOPE)
+    ELSE ()
+        SET (${OUTVAR} "" PARENT_SCOPE)
+    ENDIF ()
 ENDFUNCTION (GET_INSTALL_NAME)
 
 # message only if verbose makefiles
@@ -31,6 +35,8 @@ ENDFUNCTION (MYMESSAGE)
 # install_name_tool -change CHANGE CHANGETO CHANGEBIN
 
 FUNCTION (INSTALLNAMETOOL_CHANGE CHANGE CHANGETO CHANGEBIN)
-    MYMESSAGE ("install_name_tool -change ${CHANGE} ${CHANGETO} \"${CHANGEBIN}\"")
-    EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
+    IF (EXISTS "${CHANGEBIN}" AND CHANGE AND CHANGETO)
+        MYMESSAGE ("install_name_tool -change ${CHANGE} ${CHANGETO} \"${CHANGEBIN}\"")
+        EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
+    ENDIF ()
 ENDFUNCTION (INSTALLNAMETOOL_CHANGE)
