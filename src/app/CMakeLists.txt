@@ -12,7 +12,6 @@ SET(QGIS_APP_SRCS
   qgsattributetypedialog.cpp
   qgsattributetypeloaddialog.cpp
   qgsattributetabledialog.cpp
-  qgsbookmarkitem.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
