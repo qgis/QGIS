@@ -367,7 +367,7 @@ QString QgsGdalProvider::metadata()
   myMetadata += tr( "Dataset Description" );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
-  myMetadata += QFile::decodeName( GDALGetDescription( mGdalDataset ) );
+  myMetadata += FROM8( GDALGetDescription( mGdalDataset ) );
   myMetadata += "</p>\n";
 
 
