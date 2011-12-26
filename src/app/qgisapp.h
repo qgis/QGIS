@@ -856,9 +856,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
       */
     void newProject();
 
-    //! emitted when a new bookmark is added
-    void bookmarkAdded();
-
     /** Signal emitted when the current theme is changed so plugins
      * can change there tool button icons.
      * @note This was added in QGIS 1.1

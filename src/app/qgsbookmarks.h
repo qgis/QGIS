@@ -17,37 +17,36 @@
 #ifndef QGSBOOKMARKS_H
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"
-#include <QDialog>
 #include "qgscontexthelp.h"
 
-class QString;
-class QWidget;
-class QTreeWidgetItem;
-struct sqlite3;
+#include <QDialog>
+
 class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
 
   public:
-    QgsBookmarks( QWidget *parent = 0, Qt::WFlags fl = 0 );
-    ~QgsBookmarks();
-    void restorePosition();
-  private slots:
-    void saveWindowLocation();
-    void on_btnUpdate_clicked();
-    void on_btnDelete_clicked();
-    void on_btnZoomTo_clicked();
-    void on_lstBookmarks_itemDoubleClicked( QTreeWidgetItem * );
-    void refreshBookmarks();
+    static void showBookmarks();
+    static void newBookmark();
 
+  private slots:
+    void addClicked();
+    void deleteClicked();
+    void zoomToBookmark();
+
+    void on_lstBookmarks_doubleClicked( const QModelIndex & );
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
-    QWidget *mParent;
-    void initialise();
-    int connectDb();
-    void zoomToBookmark();
-    sqlite3 *db;
+    QgsBookmarks( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    ~QgsBookmarks();
+
+    void saveWindowLocation();
+    void restorePosition();
+
+    static QgsBookmarks *sInstance;
 };
+
+
 #endif // QGSBOOKMARKS_H
 

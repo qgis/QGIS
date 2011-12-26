@@ -101,7 +101,6 @@
 #include "qgsapplication.h"
 #include "qgsattributeaction.h"
 #include "qgsattributetabledialog.h"
-#include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
@@ -6751,48 +6750,15 @@ void QgisApp::customProjection()
   myDialog->setAttribute( Qt::WA_DeleteOnClose );
   myDialog->show();
 }
-void QgisApp::showBookmarks()
-{
-  // Create or show the single instance of the Bookmarks modeless dialog.
-  // Closing a QWidget only hides it so it can be shown again later.
-  static QgsBookmarks *bookmarks = NULL;
-  if ( bookmarks == NULL )
-  {
-    bookmarks = new QgsBookmarks( this, Qt::WindowMinMaxButtonsHint );
-  }
-  bookmarks->show();
-  bookmarks->raise();
-  bookmarks->setWindowState( bookmarks->windowState() & ~Qt::WindowMinimized );
-  bookmarks->activateWindow();
-}
 
 void QgisApp::newBookmark()
 {
-  // Get the name for the bookmark. Everything else we fetch from
-  // the mapcanvas
+  QgsBookmarks::newBookmark();
+}
 
-  bool ok;
-  QString bookmarkName = QInputDialog::getText( this, tr( "New Bookmark" ),
-                         tr( "Enter a name for the new bookmark:" ), QLineEdit::Normal,
-                         QString::null, &ok );
-  if ( ok && !bookmarkName.isEmpty() )
-  {
-    if ( createDB() )
-    {
-      // create the bookmark
-      QgsBookmarkItem *bmi = new QgsBookmarkItem( bookmarkName,
-          QgsProject::instance()->title(), mMapCanvas->extent(), -1,
-          QgsApplication::qgisUserDbFilePath() );
-      bmi->store();
-      delete bmi;
-      // emit a signal to indicate that the bookmark was added
-      emit bookmarkAdded();
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark. Your user database may be missing or corrupted" ) );
-    }
-  }
+void QgisApp::showBookmarks()
+{
+  QgsBookmarks::showBookmarks();
 }
 
 // Slot that gets called when the project file was saved with an older
