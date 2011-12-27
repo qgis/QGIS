@@ -115,7 +115,7 @@ class GUI_EXPORT QgsProjectionSelector: public QWidget, private Ui::QgsProjectio
     void setOgcWmsCrsFilter( QSet<QString> crsFilter );
     void on_lstRecent_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
     void on_cbxHideDeprecated_stateChanged();
-    void on_leSearch_textChanged(const QString &);
+    void on_leSearch_textChanged( const QString & );
 
   protected:
     /** Used to ensure the projection list view is actually populated */

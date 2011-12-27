@@ -125,7 +125,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
     chkLineAbove->setChecked( lyr.placementFlags & QgsPalLayerSettings::AboveLine );
     chkLineBelow->setChecked( lyr.placementFlags & QgsPalLayerSettings::BelowLine );
     chkLineOn->setChecked( lyr.placementFlags & QgsPalLayerSettings::OnLine );
-    if ( ! ( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
+    if ( !( lyr.placementFlags & QgsPalLayerSettings::MapOrientation ) )
       chkLineOrientationDependent->setChecked( true );
   }
 
@@ -519,7 +519,7 @@ void QgsLabelingGui::updateUi()
   spinDecimals->setEnabled( chkFormattedNumbers->isChecked() );
 
   bool offline = chkLineAbove->isChecked() || chkLineBelow->isChecked();
-  offlineOptions->setEnabled ( offline );
+  offlineOptions->setEnabled( offline );
 }
 
 void QgsLabelingGui::changeBufferColor()

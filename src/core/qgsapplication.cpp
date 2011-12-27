@@ -505,14 +505,14 @@ void QgsApplication::exitQgis()
 QString QgsApplication::showSettings()
 {
   QString myState = tr( "Application state:\n"
-                             "Prefix:\t\t%1\n"
-                             "Plugin Path:\t\t%2\n"
-                             "Package Data Path:\t%3\n"
-                             "Active Theme Name:\t%4\n"
-                             "Active Theme Path:\t%5\n"
-                             "Default Theme Path:\t%6\n"
-                             "SVG Search Paths:\t%7\n"
-                             "User DB Path:\t%8\n" )
+                        "Prefix:\t\t%1\n"
+                        "Plugin Path:\t\t%2\n"
+                        "Package Data Path:\t%3\n"
+                        "Active Theme Name:\t%4\n"
+                        "Active Theme Path:\t%5\n"
+                        "Default Theme Path:\t%6\n"
+                        "SVG Search Paths:\t%7\n"
+                        "User DB Path:\t%8\n" )
                     .arg( mPrefixPath )
                     .arg( mPluginPath )
                     .arg( mPkgDataPath )
