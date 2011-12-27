@@ -2462,7 +2462,6 @@ void QgisApp::addWfsLayer()
     return;
   }
 
-  // Fudge for now
   QgsDebugMsg( "about to addWfsLayer" );
 
   // TODO: QDialog for now, switch to QWidget in future
@@ -2475,7 +2474,12 @@ void QgisApp::addWfsLayer()
   connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
            this , SLOT( addWfsLayer( QString, QString ) ) );
 
-  wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() ); //hack to reenable wfs with extent setting
+  //reenable wfs with extent setting: pass canvas info to source select
+  wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() );
+  if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  { //if "on the fly" reprojection is active, pass canvas CRS
+    wfss->setProperty( "MapCRS", mMapCanvas->mapRenderer()->destinationCrs().authid() );
+  }
 
   bool bkRenderFlag = mMapCanvas->renderFlag();
   mMapCanvas->setRenderFlag( false );
@@ -6832,7 +6836,7 @@ QMenu* QgisApp::createPopupMenu()
   QList< QAction* > al = menu->actions();
   QList< QAction* > panels, toolbars;
 
-  if( !al.isEmpty() )
+  if ( !al.isEmpty() )
   {
     bool found = false;
     for ( int i = 0; i < al.size(); ++i )

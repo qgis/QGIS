@@ -101,7 +101,7 @@ int QgsWFSData::getWFSData()
 
   if ( mainWindow )
   {
-    progressDialog = new QProgressDialog( tr( "Loading WFS data" ), tr( "Abort" ), 0, 0, mainWindow );
+    progressDialog = new QProgressDialog( tr( "Loading WFS data\n%1" ).arg( mTypeName ), tr( "Abort" ), 0, 0, mainWindow );
     progressDialog->setWindowModality( Qt::ApplicationModal );
     connect( this, SIGNAL( dataReadProgress( int ) ), progressDialog, SLOT( setValue( int ) ) );
     connect( this, SIGNAL( totalStepsUpdate( int ) ), progressDialog, SLOT( setMaximum( int ) ) );
