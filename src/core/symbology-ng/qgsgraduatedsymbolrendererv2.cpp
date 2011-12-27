@@ -27,6 +27,7 @@ qgsgraduatedsymbolrendererv2.cpp - Graduated Symbol Renderer Version 2
 #include <QSettings> // for legend
 #include <limits> // for jenks classification
 #include <cmath> // for pretty classification
+#include <ctime>
 
 QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
     : mLowerValue( lowerValue )
