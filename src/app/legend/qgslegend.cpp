@@ -809,6 +809,11 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
 
   QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   QSettings settings;
+  if ( !lg && currentItem() )
+  {
+    lg = dynamic_cast<QgsLegendGroup *>( currentItem()->parent() );
+  }
+
   if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
   {
     lg->insertChild( 0, llayer );
