@@ -100,6 +100,8 @@ QgsRasterLayer::QgsRasterLayer(
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
     , mInvertColor( false )
+    , mResampler( 0 )
+    , mRenderer( 0 )
 {
   QgsDebugMsg( "Entered" );
 
@@ -185,6 +187,8 @@ QgsRasterLayer::~QgsRasterLayer()
   mValid = false;
   delete mRasterShader;
   delete mDataProvider;
+  delete mResampler;
+  delete mRenderer;
 }
 
 //////////////////////////////////////////////////////////
@@ -849,9 +853,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
           colorArray[( int )colorIt->value] =  colorIt->color;
         }
 
-        //QgsBilinearRasterResampler resampler;
-        QgsCubicRasterResampler resampler;
-        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), 0 /*&resampler*/ );
+        QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), mResampler );
         renderer.setOpacity( mTransparencyLevel / 255.0 );
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
@@ -943,9 +945,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         int red = bandNumber( mRedBandName );
         int green = bandNumber( mGreenBandName );
         int blue = bandNumber( mBlueBandName );
-        //QgsBilinearRasterResampler resampler;
-        QgsCubicRasterResampler resampler;
-        QgsMultiBandColorRenderer r( mDataProvider, red, green, blue, &resampler );
+        QgsMultiBandColorRenderer r( mDataProvider, red, green, blue, mResampler );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawMultiBandColor( theQPainter, theRasterViewPort,
@@ -2854,6 +2854,18 @@ void QgsRasterLayer::setTransparentBandName( QString const & theBandName )
   mTransparencyBandName = validateBandName( theBandName );
 }
 
+void QgsRasterLayer::setResampler( QgsRasterResampler* resampler )
+{
+  delete mResampler;
+  mResampler = resampler;
+}
+
+void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
+{
+  delete mRenderer;
+  mRenderer = renderer;
+}
+
 void QgsRasterLayer::showProgress( int theValue )
 {
   emit progressUpdate( theValue );
@@ -2989,6 +3001,27 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
 {
   Q_UNUSED( errorMessage );
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
+
+  //resampler
+  QDomElement resamplerElem = mnl.firstChildElement( "resampler" );
+  if ( !resamplerElem.isNull() )
+  {
+    delete mResampler;
+    QString rText = resamplerElem.text();
+    if ( rText == "bilinear" )
+    {
+      mResampler = new QgsBilinearRasterResampler();
+    }
+    else if ( rText == "cubic" )
+    {
+      mResampler = new QgsCubicRasterResampler();
+    }
+    else //nearest neighbour
+    {
+      mResampler = 0;
+    }
+  }
+
   QDomNode snode = mnl.namedItem( "mDrawingStyle" );
   QDomElement myElement = snode.toElement();
   setDrawingStyle( myElement.text() );
@@ -3305,6 +3338,13 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   // <rasterproperties>
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
+
+  // resampler
+  QString resamplerName = mResampler ? mResampler->type() : "nearest neighbour";
+  QDomElement resamplerElem = document.createElement( "resampler" );
+  QDomText resamplerText = document.createTextNode( resamplerName );
+  resamplerElem.appendChild( resamplerText );
+  rasterPropertiesElement.appendChild( resamplerElem );
 
   QStringList sl = subLayers();
   QStringList sls = mDataProvider->subLayerStyles();

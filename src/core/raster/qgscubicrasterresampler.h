@@ -26,6 +26,7 @@ class QgsCubicRasterResampler: public QgsRasterResampler
     QgsCubicRasterResampler();
     ~QgsCubicRasterResampler();
     void resample( const QImage& srcImage, QImage& dstImage );
+    QString type() const { return "cubic"; }
 
   private:
     static void xDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix );

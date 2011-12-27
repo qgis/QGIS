@@ -50,6 +50,8 @@ class QgsMapToPixel;
 class QgsRectangle;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
+class QgsRasterRenderer;
+class QgsRasterResampler;
 class QImage;
 class QPixmap;
 class QSlider;
@@ -391,13 +393,21 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
     void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
 
+    /** Set raster resampler. Uses nearest neighbour resampling per default. Takes ownership of the resampler object*/
+    void setResampler( QgsRasterResampler* resampler );
+    const QgsRasterResampler* resampler() const { return mResampler; }
+
+    /**Set raster renderer. Takes ownership of the renderer object*/
+    void setRenderer( QgsRasterRenderer* renderer );
+    const QgsRasterRenderer* renderer() const { return mRenderer; }
+
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
 
     /** \brief  Accessor for transparent band name mapping */
     QString transparentBandName() const { return mTransparencyBandName; }
 
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? 
+    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
      * @deprecated in 2.0
      */
     Q_DECL_DEPRECATED bool usesProvider();
@@ -548,12 +558,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @note added in 2.0
      */
     QString providerType() const;
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @deprecated use providerType()
      */
     Q_DECL_DEPRECATED QString providerKey() const { return providerType(); }
@@ -926,6 +936,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QStringList mStyles;
     QString mFormat;
     QString mCrs;
+
+    QgsRasterResampler* mResampler;
+    QgsRasterRenderer* mRenderer;
 };
 
 /*#include <QColor>

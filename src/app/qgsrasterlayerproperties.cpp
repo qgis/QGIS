@@ -23,6 +23,8 @@
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgisapp.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayerproperties.h"
 #include "qgsgenericprojectionselector.h"
@@ -284,6 +286,22 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   }
   tableTransparency->horizontalHeader()->setResizeMode( 0, QHeaderView::Stretch );
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
+
+  //resampling
+  const QgsRasterResampler* resampler = mRasterLayer->resampler();
+  if ( !resampler )
+  {
+    mNearestNeighbourRadioButton->setChecked( true );
+  }
+  else if ( resampler->type() == "bilinear" )
+  {
+    mBilinearRadioButton->setChecked( true );
+  }
+  else if ( resampler->type() == "cubic" )
+  {
+    mCubicRadioButton->setChecked( true );
+  }
+
 } // QgsRasterLayerProperties ctor
 
 
@@ -1443,6 +1461,22 @@ void QgsRasterLayerProperties::apply()
   pixmapLegend->setPixmap( mRasterLayer->legendAsPixmap() );
   pixmapLegend->setScaledContents( true );
   pixmapLegend->repaint();
+
+  //resampling
+  if ( mNearestNeighbourRadioButton->isChecked() )
+  {
+    mRasterLayer->setResampler( 0 );
+  }
+  else if ( mBilinearRadioButton->isChecked() )
+  {
+    mRasterLayer->setResampler( new QgsBilinearRasterResampler() );
+  }
+  else if ( mCubicRadioButton->isChecked() )
+  {
+    mRasterLayer->setResampler( new QgsCubicRasterResampler() );
+  }
+
+
 
   //get the thumbnail for the layer
   QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );

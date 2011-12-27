@@ -18,6 +18,8 @@
 #ifndef QGSRASTERRESAMPLER_H
 #define QGSRASTERRESAMPLER_H
 
+#include <QString>
+
 class QImage;
 
 /**Interface for resampling rasters (e.g. to have a smoother appearance)*/
@@ -25,6 +27,7 @@ class QgsRasterResampler
 {
   public:
     virtual void resample( const QImage& srcImage, QImage& dstImage ) = 0;
+    virtual QString type() const = 0;
 };
 
 #endif // QGSRASTERRESAMPLER_H

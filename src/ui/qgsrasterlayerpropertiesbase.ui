@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>755</width>
-    <height>667</height>
+    <width>691</width>
+    <height>591</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,11 +44,8 @@
       <attribute name="title">
        <string>Style</string>
       </attribute>
-      <layout class="QGridLayout">
-       <property name="margin">
-        <number>0</number>
-       </property>
-       <item row="0" column="0" colspan="2">
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="1" colspan="3">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>Render as</string>
@@ -110,7 +107,7 @@
          </layout>
         </widget>
        </item>
-       <item row="1" column="0" colspan="2">
+       <item row="1" column="0" colspan="4">
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
@@ -131,7 +128,7 @@
              <property name="title">
               <string>RGB mode band selection and scaling</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_3">
+             <layout class="QGridLayout" name="gridLayout_8">
               <item row="0" column="0">
                <widget class="QLabel" name="lblRed">
                 <property name="text">
@@ -139,7 +136,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1" colspan="4">
+              <item row="0" column="1" colspan="2">
                <widget class="QComboBox" name="cboRed">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -168,7 +165,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1" colspan="4">
+              <item row="1" column="1" colspan="2">
                <widget class="QComboBox" name="cboGreen">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -197,7 +194,7 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1" colspan="4">
+              <item row="2" column="1" colspan="2">
                <widget class="QComboBox" name="cboBlue">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -548,6 +545,13 @@
                 </item>
                </layout>
               </item>
+              <item row="9" column="0">
+               <widget class="QLabel" name="lblMinMaxEstimateWarning">
+                <property name="text">
+                 <string>Note</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -739,21 +743,44 @@
          </widget>
         </widget>
        </item>
-       <item row="2" column="0" colspan="2">
-        <widget class="QLabel" name="lblMinMaxEstimateWarning">
-         <property name="text">
-          <string>Note</string>
-         </property>
-        </widget>
-       </item>
-       <item row="4" column="0" colspan="2">
+       <item row="2" column="0" rowspan="2" colspan="4">
         <widget class="Line" name="line">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
+       <item row="4" column="1">
+        <widget class="QGroupBox" name="mResamplingGroupBox">
+         <property name="title">
+          <string>Resampling</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_7">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="mNearestNeighbourRadioButton">
+            <property name="text">
+             <string>Nearest neighbour</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="mBilinearRadioButton">
+            <property name="text">
+             <string>Bilinear</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QRadioButton" name="mCubicRadioButton">
+            <property name="text">
+             <string>Cubic</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="4" column="2">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Load min / max values from band</string>
@@ -841,7 +868,7 @@
          </layout>
         </widget>
        </item>
-       <item row="5" column="1">
+       <item row="4" column="3">
         <widget class="QGroupBox" name="groupBox_8">
          <property name="title">
           <string>Contrast enhancement</string>
@@ -1805,6 +1832,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;&quot;&gt;&lt;/p&gt;
