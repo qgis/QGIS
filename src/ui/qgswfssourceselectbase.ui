@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
+    <width>592</width>
     <height>439</height>
    </rect>
   </property>
@@ -114,6 +114,12 @@
      <property name="columnCount">
       <number>5</number>
      </property>
+     <attribute name="headerMinimumSectionSize">
+      <number>27</number>
+     </attribute>
+     <attribute name="headerMinimumSectionSize">
+      <number>27</number>
+     </attribute>
      <column>
       <property name="text">
        <string>Title</string>
@@ -131,7 +137,11 @@
      </column>
      <column>
       <property name="text">
-       <string>cache features</string>
+       <string>Cache
+Features</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
      <column>
