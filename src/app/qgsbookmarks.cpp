@@ -58,7 +58,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
   // Create the zoomto and delete buttons and add them to the
   // toolbar
   //
-  QPushButton * btnUpdate = new QPushButton( tr( "&Update" ) );
+  //QPushButton * btnUpdate = new QPushButton( tr( "&Update" ) );
   QPushButton * btnDelete = new QPushButton( tr( "&Delete" ) );
   QPushButton * btnZoomTo = new QPushButton( tr( "&Zoom to" ) );
   btnZoomTo->setDefault( true );
@@ -66,7 +66,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent, Qt::WFlags fl )
   buttonBox->addButton( btnDelete, QDialogButtonBox::ActionRole );
   buttonBox->addButton( btnZoomTo, QDialogButtonBox::ActionRole );
   // connect the slot up to catch when a bookmark is updated
-  connect( btnUpdate, SIGNAL( clicked() ), this, SLOT( on_btnUpdate_clicked() ) );
+  //connect( btnUpdate, SIGNAL( clicked() ), this, SLOT( on_btnUpdate_clicked() ) );
   // connect the slot up to catch when a bookmark is deleted
   connect( btnDelete, SIGNAL( clicked() ), this, SLOT( on_btnDelete_clicked() ) );
   // connect the slot up to catch when a bookmark is zoomed to
@@ -85,7 +85,6 @@ QgsBookmarks::~QgsBookmarks()
 
 void QgsBookmarks::refreshBookmarks()
 {
-  //lstBookmarks->clear();
   initialise();
 }
 // Initialise the bookmark tree from the database
@@ -94,15 +93,14 @@ void QgsBookmarks::initialise()
   this->connectDb();
   QSqlTableModel *model = new QSqlTableModel(0, db);
   model->setTable( "tbl_bookmarks" );
-  // this should work, but then the table is not editable anymore:
-  //    QSqlQuery::value: not positioned on a valid record
-  // seems a qt bug
-  //model->removeColumn(0);
-  //model->removeColumn(6);
   model->select();
   lstBookmarks->setModel( model );
+  // hide id column
   lstBookmarks->setColumnHidden(0, true);
+  // hide srid column
   lstBookmarks->setColumnHidden(7, true);
+
+  lstBookmarks->setEditTriggers(QAbstractItemView::EditKeyPressed);
 }
 
 void QgsBookmarks::restorePosition()
@@ -115,12 +113,6 @@ void QgsBookmarks::saveWindowLocation()
 {
   QSettings settings;
   settings.setValue( "/Windows/Bookmarks/geometry", saveGeometry() );
-}
-
-// REMOVE ?
-void QgsBookmarks::on_btnUpdate_clicked()
-{
-  // get the current item
 }
 
 void QgsBookmarks::on_btnDelete_clicked()
@@ -139,10 +131,25 @@ void QgsBookmarks::on_btnDelete_clicked()
   }
 }
 
+/*void QgsBookmarks::on_lstBookmarks_clicked(const QModelIndex & index)
+{
+  Q_UNUSED( index );
+  zoomToBookmark();
+}*/
+
+void QgsBookmarks::on_lstBookmarks_doubleClicked(const QModelIndex & index)
+{
+  Q_UNUSED( index );
+  zoomToBookmark();
+}
+
 void QgsBookmarks::on_btnZoomTo_clicked()
 {
-  //zoomToBookmark();
+  zoomToBookmark();
+}
 
+void QgsBookmarks::zoomToBookmark()
+{
     QModelIndex index = lstBookmarks->currentIndex();
     if ( index.isValid() )
     {
@@ -170,21 +177,6 @@ void QgsBookmarks::on_btnZoomTo_clicked()
         // redraw the map
         QgisApp::instance()->mapCanvas()->refresh();\
     }
-}
-
-// REMOVE?
-/*void QgsBookmarks::on_lstBookmarks_itemDoubleClicked( QTreeWidgetItem *lvi )
-{
-  Q_UNUSED( lvi );
-  zoomToBookmark();
-}*/
-
-// REMOVE?
-void QgsBookmarks::zoomToBookmark()
-{
-  // Need to fetch the extent for the selected bookmark and then redraw
-  // the map
-  // get the current item
 }
 
 int QgsBookmarks::connectDb()
