@@ -857,17 +857,11 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsProjectionSelector::on_lstRecent_itemClicked(QTreeWidgetItem * item)
 {
-  Q_UNUSED( previous );
-  // we receive a change event when we make dialog visible,
-  // 'previous' is null on first selection, so check only 'current'
-  if ( current )
-  {
-    setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
-  }
+  setSelectedCrsId( item->text( QGIS_CRS_ID_COLUMN ).toLong() );
+  item->setSelected(true);
 }
-
 
 void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
 {
