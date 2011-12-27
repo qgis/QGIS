@@ -23,6 +23,7 @@
 class QPainter;
 class QgsMapToPixel;
 class QgsRasterResampler;
+class QgsRasterTransparency;
 class QgsRasterViewPort;
 
 class QgsRasterRenderer
@@ -45,8 +46,16 @@ class QgsRasterRenderer
     virtual ~QgsRasterRenderer();
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
+    bool usesTransparency() const;
+
     void setOpacity( double opacity ) { mOpacity = opacity; }
     double opacity() const { return mOpacity; }
+
+    void setRasterTransparency( QgsRasterTransparency* t ) { mRasterTransparency = t; }
+    const QgsRasterTransparency* rasterTransparency() const { return mRasterTransparency; }
+
+    void setAlphaBand( int band ) { mAlphaBand = band; }
+    int alphaBand() const { return mAlphaBand; }
 
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
@@ -59,7 +68,14 @@ class QgsRasterRenderer
     QgsRasterDataProvider* mProvider;
     QgsRasterResampler* mResampler;
     QMap<int, RasterPartInfo> mRasterPartInfos;
-    double mOpacity; //global alpha value
+
+    /**Global alpha value (0-1)*/
+    double mOpacity;
+    /**Raster transparency per color or value. Overwrites global alpha value*/
+    QgsRasterTransparency* mRasterTransparency;
+    /**Read alpha value from band. Is combined with value from raster transparency / global alpha value.
+        Default: -1 (not set)*/
+    int mAlphaBand;
 
   private:
     /**Remove part into and release memory*/

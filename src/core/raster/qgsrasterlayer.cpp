@@ -843,7 +843,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       {
         QgsDebugMsg( "PalettedColor drawing type detected..." );
 
-        //test
+        //create color array for renderer
         int bNumber = bandNumber( mGrayBandName );
         QList<QgsColorRampShader::ColorRampItem> itemList = mRasterStatsList[ bNumber - 1].colorTable;
         QColor* colorArray = new QColor[itemList.size()];
@@ -854,7 +854,17 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         }
 
         QgsPalettedRasterRenderer renderer( mDataProvider, bNumber, colorArray, itemList.size(), mResampler );
+        //opacity settings for renderer
         renderer.setOpacity( mTransparencyLevel / 255.0 );
+        renderer.setRasterTransparency( &mRasterTransparency );
+        if ( mTransparencyBandName != TRSTRING_NOT_SET )
+        {
+          int tBandNr = bandNumber( mTransparencyBandName );
+          if ( tBandNr > 0 )
+          {
+            renderer.setAlphaBand( tBandNr );
+          }
+        }
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
@@ -946,6 +956,19 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         int green = bandNumber( mGreenBandName );
         int blue = bandNumber( mBlueBandName );
         QgsMultiBandColorRenderer r( mDataProvider, red, green, blue, mResampler );
+
+        //opacity settings for renderer
+        r.setOpacity( mTransparencyLevel / 255.0 );
+        r.setRasterTransparency( &mRasterTransparency );
+        if ( mTransparencyBandName != TRSTRING_NOT_SET )
+        {
+          int tBandNr = bandNumber( mTransparencyBandName );
+          if ( tBandNr > 0 )
+          {
+            r.setAlphaBand( tBandNr );
+          }
+        }
+
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawMultiBandColor( theQPainter, theRasterViewPort,

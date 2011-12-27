@@ -19,6 +19,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsmaptopixel.h"
 #include "qgsrasterresampler.h"
+#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include <QColor>
 #include <QImage>
@@ -43,7 +44,18 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   }
 
   double oversampling;
+  QgsRasterDataProvider::DataType transparencyType;
+  if ( mAlphaBand > 0 )
+  {
+    transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
+  }
   startRasterRead( mBandNumber, viewPort, theQgsMapToPixel, oversampling );
+
+  //Read alpha band if necessary
+  if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
+  {
+    startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversampling );
+  }
 
   int nCols = 0;
   int nRows = 0;
@@ -52,9 +64,22 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   int currentRasterPos = 0;
   QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBandNumber );
   void* rasterData;
+  double currentOpacity = mOpacity;
+
+  bool hasTransparency = usesTransparency();
+  void* transparencyData;
 
   while ( readNextRasterPart( mBandNumber, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
   {
+    if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
+    {
+      readNextRasterPart( mAlphaBand, viewPort, nCols, nRows, &transparencyData, topLeftCol, topLeftRow );
+    }
+    else if ( mAlphaBand == mBandNumber )
+    {
+      transparencyData = rasterData;
+    }
+
     //create image
     QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
@@ -67,9 +92,24 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       for ( int j = 0; j < nCols; ++j )
       {
         val = readValue( rasterData, rasterType, currentRasterPos );
-        //imageScanLine[j] = mColors[ val ].rgba();
-        QColor& currentColor = mColors[val];
-        imageScanLine[j] = qRgba( mOpacity * currentColor.red(), mOpacity * currentColor.green(), mOpacity * currentColor.blue(), mOpacity * 255 );
+        if ( !hasTransparency )
+        {
+          imageScanLine[j] = mColors[ val ].rgba();
+        }
+        else
+        {
+          currentOpacity = mOpacity;
+          if ( mRasterTransparency )
+          {
+            currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
+          }
+          if ( mAlphaBand >= 0 )
+          {
+            currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
+          }
+          QColor& currentColor = mColors[val];
+          imageScanLine[j] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
+        }
         ++currentRasterPos;
       }
     }
@@ -90,5 +130,11 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       p->drawImage( tlPoint, img );
     }
   }
+
+  //stop raster reading
   stopRasterRead( mBandNumber );
+  if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
+  {
+    stopRasterRead( mAlphaBand );
+  }
 }

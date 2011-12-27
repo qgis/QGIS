@@ -16,11 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderer.h"
+#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler ),
-    mOpacity( 255 )
+    mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 )
 {
 }
 
@@ -146,4 +147,9 @@ void QgsRasterRenderer::removePartInfo( int bandNumber )
     CPLFree( pInfo.data );
     mRasterPartInfos.remove( bandNumber );
   }
+}
+
+bool QgsRasterRenderer::usesTransparency() const
+{
+  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !doubleNear( mOpacity, 1.0 ) );
 }

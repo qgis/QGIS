@@ -168,3 +168,8 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
 
   return theGlobalTransparency;
 }
+
+bool QgsRasterTransparency::isEmpty() const
+{
+  return ( mTransparentThreeValuePixelList.isEmpty() && mTransparentSingleValuePixelList.isEmpty() );
+}
