@@ -765,7 +765,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Calendar:
     {
       QLineEdit* le = qobject_cast<QLineEdit*>( editor );
-      if( !le )
+      if ( !le )
       {
         le = editor->findChild<QLineEdit *>();
       }

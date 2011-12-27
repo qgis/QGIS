@@ -256,10 +256,10 @@ void QgsLegend::removeLayer( QString layerId )
 
       if ( ll && ll->layer() && ll->layer()->id() == layerId )
       {
-        if( !ll->isVisible() )
-	{
+        if ( !ll->isVisible() )
+        {
           invLayerRemoved = true;
-	}
+        }
         removeItem( ll );
         delete ll;
         break;
@@ -269,7 +269,7 @@ void QgsLegend::removeLayer( QString layerId )
   updateMapCanvasLayerSet();
   adjustIconSize();
 
-  if( invLayerRemoved )
+  if ( invLayerRemoved )
     emit invisibleLayerRemoved();
 }
 

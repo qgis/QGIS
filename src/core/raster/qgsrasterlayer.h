@@ -397,7 +397,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief  Accessor for transparent band name mapping */
     QString transparentBandName() const { return mTransparencyBandName; }
 
-    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data? 
+    /**  \brief [ data provider interface ] Does this layer use a provider for setting/retrieving data?
      * @deprecated in 2.0
      */
     Q_DECL_DEPRECATED bool usesProvider();
@@ -548,12 +548,12 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned */
     QPixmap paletteAsPixmap( int theBandNumber = 1 );
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @note added in 2.0
      */
     QString providerType() const;
 
-    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer? 
+    /**  \brief [ data provider interface ] Which provider is being used for this Raster Layer?
      * @deprecated use providerType()
      */
     Q_DECL_DEPRECATED QString providerKey() const { return providerType(); }
