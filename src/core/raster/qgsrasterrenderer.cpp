@@ -64,7 +64,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   pInfo.nCols = viewPort->drawableAreaXDim * oversampling;
   pInfo.nRows = viewPort->drawableAreaYDim * oversampling;
   int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mProvider->dataTypeSize( bandNumber );
-  int parts = totalMemoryUsage / 100000000 + 1;
+  int parts = totalMemoryUsage / /*100000000*/ 100000 + 1;
   pInfo.nPartsPerDimension = sqrt( parts );
   pInfo.nColsPerPart = pInfo.nCols / pInfo.nPartsPerDimension;
   pInfo.nRowsPerPart = pInfo.nRows / pInfo.nPartsPerDimension;

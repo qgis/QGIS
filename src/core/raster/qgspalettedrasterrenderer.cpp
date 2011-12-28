@@ -103,7 +103,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
           {
             currentOpacity = mRasterTransparency->alphaValue( val, mOpacity * 255 ) / 255.0;
           }
-          if ( mAlphaBand >= 0 )
+          if ( mAlphaBand > 0 )
           {
             currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
           }
@@ -121,7 +121,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     //draw image
     if ( mResampler ) //resample to output resolution
     {
-      QImage dstImg( viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, QImage::Format_ARGB32_Premultiplied );
+      QImage dstImg( nCols / oversampling + 0.5, nRows / oversampling + 0.5, QImage::Format_ARGB32_Premultiplied );
       mResampler->resample( img, dstImg );
       p->drawImage( tlPoint, dstImg );
     }

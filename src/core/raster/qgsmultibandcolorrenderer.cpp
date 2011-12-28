@@ -18,9 +18,11 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrasterresampler.h"
+#include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include <QImage>
 #include <QPainter>
+#include <QSet>
 
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler ):
     QgsRasterRenderer( provider, resampler ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand )
@@ -38,78 +40,118 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     return;
   }
 
-  //read data from provider
-  int redTypeSize = mProvider->dataTypeSize( mRedBand ) / 8;
-  int greenTypeSize = mProvider->dataTypeSize( mGreenBand ) / 8;
-  int blueTypeSize = mProvider->dataTypeSize( mBlueBand ) / 8;
-
   QgsRasterDataProvider::DataType redType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mRedBand );
   QgsRasterDataProvider::DataType greenType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGreenBand );
   QgsRasterDataProvider::DataType blueType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBlueBand );
-
-  int nCols, nRows;
-
-  if ( mResampler )
+  QgsRasterDataProvider::DataType transparencyType;
+  if ( mAlphaBand > 0 )
   {
-    //read data at source resolution if zoomed in, else do oversampling with factor 2.5
-    QgsRectangle providerExtent = mProvider->extent();
-    if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
+    transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
+  }
+
+  double oversampling;
+  QSet<int> bands;
+  bands << mRedBand << mGreenBand << mBlueBand;
+  if ( mAlphaBand > 0 )
+  {
+    bands << mAlphaBand;
+  }
+
+  QMap<int, void*> bandData;
+  void* defaultPointer;
+  QSet<int>::const_iterator bandIt = bands.constBegin();
+  for ( ; bandIt != bands.constEnd(); ++bandIt )
+  {
+    bandData.insert( *bandIt, defaultPointer );
+    startRasterRead( *bandIt, viewPort, theQgsMapToPixel, oversampling );
+  }
+
+  void* redData;
+  void* greenData;
+  void* blueData;
+  void* alphaData;
+  int nCols, nRows, topLeftCol, topLeftRow;
+
+  bool readSuccess;
+  while ( true )
+  {
+    QSet<int>::const_iterator bandIt = bands.constBegin();
+    for ( ; bandIt != bands.constEnd(); ++bandIt )
     {
-      QgsCoordinateTransform t( viewPort->mSrcCRS, viewPort->mDestCRS );
-      providerExtent = t.transformBoundingBox( providerExtent );
+      readSuccess = readNextRasterPart( *bandIt, viewPort, nCols, nRows, &bandData[*bandIt], topLeftCol, topLeftRow );
     }
-    double pixelRatio = theQgsMapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
-    double oversampling = pixelRatio > 1.0 ? 2.5 : pixelRatio;
-    nCols = viewPort->drawableAreaXDim * oversampling;
-    nRows = viewPort->drawableAreaYDim * oversampling;
-  }
-  else
-  {
-    nCols = viewPort->drawableAreaXDim;
-    nRows = viewPort->drawableAreaYDim;
-  }
 
-  void* redData = VSIMalloc( redTypeSize * nCols *  nRows );
-  void* greenData = VSIMalloc( greenTypeSize * nCols *  nRows );
-  void* blueData = VSIMalloc( blueTypeSize * nCols *  nRows );
-
-  mProvider->readBlock( mRedBand, viewPort->mDrawnExtent, nCols, nRows,
-                        viewPort->mSrcCRS, viewPort->mDestCRS, redData );
-  mProvider->readBlock( mGreenBand, viewPort->mDrawnExtent, nCols, nRows,
-                        viewPort->mSrcCRS, viewPort->mDestCRS, greenData );
-  mProvider->readBlock( mBlueBand, viewPort->mDrawnExtent, nCols, nRows,
-                        viewPort->mSrcCRS, viewPort->mDestCRS, blueData );
-
-  QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
-  QRgb* imageScanLine = 0;
-  int currentRasterPos = 0;
-  int redVal, greenVal, blueVal;
-
-  for ( int i = 0; i < nRows; ++i )
-  {
-    imageScanLine = ( QRgb* )( img.scanLine( i ) );
-    for ( int j = 0; j < nCols; ++j )
+    if ( !readSuccess )
     {
-      redVal = readValue( redData, redType, currentRasterPos );
-      greenVal = readValue( greenData, greenType, currentRasterPos );
-      blueVal = readValue( blueData, blueType, currentRasterPos );
-      imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
-      ++currentRasterPos;
+      break;
+    }
+
+    redData = bandData[mRedBand];
+    greenData = bandData[mGreenBand];
+    blueData = bandData[mBlueBand];
+    if ( mAlphaBand > 0 )
+    {
+      alphaData = bandData[mAlphaBand];
+    }
+
+    QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QRgb* imageScanLine = 0;
+    int currentRasterPos = 0;
+    int redVal, greenVal, blueVal;
+    double currentOpacity = mOpacity; //opacity (between 0 and 1)
+
+    for ( int i = 0; i < nRows; ++i )
+    {
+      imageScanLine = ( QRgb* )( img.scanLine( i ) );
+      for ( int j = 0; j < nCols; ++j )
+      {
+        redVal = readValue( redData, redType, currentRasterPos );
+        greenVal = readValue( greenData, greenType, currentRasterPos );
+        blueVal = readValue( blueData, blueType, currentRasterPos );
+
+        //opacity
+        currentOpacity = mOpacity;
+        if ( mRasterTransparency )
+        {
+          currentOpacity = mRasterTransparency->alphaValue( redVal, greenVal, blueVal, mOpacity * 255 ) / 255.0;
+        }
+        if ( mAlphaBand > 0 )
+        {
+          currentOpacity *= ( readValue( alphaData, transparencyType, currentRasterPos ) / 255.0 );
+        }
+
+        if ( doubleNear( currentOpacity, 255 ) )
+        {
+          imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+        }
+        else
+        {
+          imageScanLine[j] = qRgba( currentOpacity * redVal, currentOpacity * greenVal, currentOpacity * blueVal, currentOpacity * 255 );
+        }
+        ++currentRasterPos;
+      }
+    }
+
+    //draw image
+    //top left position in device coords
+    QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
+    tlPoint += QPointF( topLeftCol / oversampling, topLeftRow / oversampling );
+
+    if ( mResampler ) //resample to output resolution
+    {
+      QImage dstImg( nCols / oversampling + 0.5, nRows / oversampling + 0.5, QImage::Format_ARGB32_Premultiplied );
+      mResampler->resample( img, dstImg );
+      p->drawImage( tlPoint, dstImg );
+    }
+    else //use original image
+    {
+      p->drawImage( tlPoint, img );
     }
   }
 
-  CPLFree( redData );
-  CPLFree( greenData );
-  CPLFree( blueData );
-
-  if ( mResampler )
+  bandIt = bands.constBegin();
+  for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    QImage dstImg( viewPort->drawableAreaXDim, viewPort->drawableAreaYDim, QImage::Format_ARGB32_Premultiplied );
-    mResampler->resample( img, dstImg );
-    p->drawImage( QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() ), dstImg );
-  }
-  else
-  {
-    p->drawImage( QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() ), img );
+    stopRasterRead( *bandIt );
   }
 }
