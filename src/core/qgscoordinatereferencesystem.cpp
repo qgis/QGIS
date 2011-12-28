@@ -455,7 +455,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
 
   if ( myRecord.empty() )
   {
-    // match all arameters individually:
+    // match all parameters individually:
     // - order of parameters doesn't matter
     // - found definition may have more parameters (like +towgs84 in GDAL)
     // - retry without datum, if no match is found (looks like +datum<>WGS84 was dropped in GDAL)
@@ -463,7 +463,10 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     QString sql = "SELECT * FROM tbl_srs WHERE ";
     QString delim = "";
     QString datum;
-    foreach( QString param, theProj4String.split( " ", QString::SkipEmptyParts ) )
+
+    // split on spaces followed by a plus sign (+) to deal
+    // also with parameters containing spaces (e.g. +nadgrids)
+    foreach( QString param, theProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param ) ) );
       if ( param.startsWith( "+datum=" ) )
