@@ -31,7 +31,7 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
   double nSrcPerDstX = ( double ) srcImage.width() / ( double ) dstImage.width();
   double nSrcPerDstY = ( double ) srcImage.height() / ( double ) dstImage.height();
 
-  double currentSrcRow = nSrcPerDstX / 2.0 - 0.5;
+  double currentSrcRow = nSrcPerDstY / 2.0 - 0.5;
   double currentSrcCol;
 
   QRgb px1, px2, px3, px4;
@@ -44,7 +44,7 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
       currentSrcRow += nSrcPerDstY;
     }
 
-    currentSrcCol = nSrcPerDstY / 2.0 - 0.5;
+    currentSrcCol = nSrcPerDstX / 2.0 - 0.5;
     for ( int j = 0; j < dstImage.width(); ++j )
     {
       double u = currentSrcCol - ( int )currentSrcCol;
