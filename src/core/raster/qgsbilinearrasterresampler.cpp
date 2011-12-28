@@ -17,6 +17,7 @@
 
 #include "qgsbilinearrasterresampler.h"
 #include <QImage>
+#include <cmath>
 
 QgsBilinearRasterResampler::QgsBilinearRasterResampler()
 {
@@ -33,43 +34,74 @@ void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstIm
 
   double currentSrcRow = nSrcPerDstY / 2.0 - 0.5;
   double currentSrcCol;
+  int currentSrcRowInt, currentSrcColInt;
+  double u, v;
 
   QRgb px1, px2, px3, px4;
 
   for ( int i = 0; i < dstImage.height(); ++i )
   {
-    //avoid access to invalid rows
-    if ( currentSrcRow < 0 )
-    {
-      currentSrcRow += nSrcPerDstY;
-    }
-
     currentSrcCol = nSrcPerDstX / 2.0 - 0.5;
+    currentSrcRowInt = floor( currentSrcRow );
+    v = currentSrcRow - currentSrcRowInt;
+
     for ( int j = 0; j < dstImage.width(); ++j )
     {
-      double u = currentSrcCol - ( int )currentSrcCol;
-      double v = currentSrcRow - ( int )currentSrcRow;
-      if ( currentSrcCol > srcImage.width() - 2 )
+      currentSrcColInt = floor( currentSrcCol );
+      u = currentSrcCol - currentSrcColInt;
+
+      //handle eight edge-cases
+      if( currentSrcRowInt < 0 || currentSrcRowInt >= (srcImage.height() - 1) || currentSrcColInt < 0 || currentSrcColInt >= (srcImage.width() - 1) )
       {
-        //resample in one direction only
-        px1 = srcImage.pixel( currentSrcCol, currentSrcRow );
-        px2 = srcImage.pixel( currentSrcCol, currentSrcRow + 1 );
-        dstImage.setPixel( j, i, resampleColorValue( v, px1, px2 ) );
+        //pixels at the border of the source image needs to be handled in a special way
+        if( currentSrcRowInt < 0 && currentSrcColInt < 0 )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel(0, 0) );
+        }
+        else if( currentSrcRowInt < 0 && currentSrcColInt >= ( srcImage.width() - 1 ) )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( srcImage.width() - 1, 0 ) );
+        }
+        else if( currentSrcRowInt >= (srcImage.height() - 1) && currentSrcColInt >= ( srcImage.width() - 1 ) )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( srcImage.width() - 1, srcImage.height() - 1 ) );
+        }
+        else if( currentSrcRowInt >= (srcImage.height() - 1) && currentSrcColInt < 0 )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( 0, srcImage.height() - 1 ) );
+        }
+        else if( currentSrcRowInt < 0 )
+        {
+          px1 = srcImage.pixel( currentSrcColInt, 0 );
+          px2 = srcImage.pixel( currentSrcColInt + 1, 0 );
+          dstImage.setPixel( j, i, resampleColorValue( u, px1, px2 ) );
+        }
+        else if( currentSrcRowInt >= (srcImage.height() - 1) )
+        {
+          px1 = srcImage.pixel( currentSrcColInt, srcImage.height() - 1 );
+          px2 = srcImage.pixel( currentSrcColInt + 1, srcImage.height() - 1 );
+          dstImage.setPixel( j, i, resampleColorValue( u, px1, px2 ) );
+        }
+        else if( currentSrcColInt < 0 )
+        {
+          px1 = srcImage.pixel( 0, currentSrcRowInt );
+          px2 = srcImage.pixel( 0, currentSrcRowInt + 1);
+          dstImage.setPixel( j, i, resampleColorValue( v, px1, px2 ) );
+        }
+        else if( currentSrcColInt >= ( srcImage.width() - 1 ) )
+        {
+          px1 = srcImage.pixel( srcImage.width() - 1, currentSrcRowInt );
+          px2 = srcImage.pixel( srcImage.width() - 1, currentSrcRowInt + 1);
+          dstImage.setPixel( j, i, resampleColorValue( v, px1, px2 ) );
+        }
         currentSrcCol += nSrcPerDstX;
         continue;
       }
-      else if ( currentSrcRow > srcImage.height() - 2 )
-      {
-        px1 = srcImage.pixel( currentSrcCol, currentSrcRow );
-        px2 = srcImage.pixel( currentSrcCol + 1, currentSrcRow );
-        dstImage.setPixel( j, i, resampleColorValue( u, px1, px2 ) );
-        currentSrcCol += nSrcPerDstX;
-        continue;
-      }
-      px1 = srcImage.pixel( currentSrcCol, currentSrcRow );
-      px2 = srcImage.pixel( currentSrcCol + 1, currentSrcRow );
-      px3 = srcImage.pixel( currentSrcCol + 1, currentSrcRow + 1 );
-      px4 = srcImage.pixel( currentSrcCol, currentSrcRow + 1 );
+
+      px1 = srcImage.pixel( currentSrcColInt, currentSrcRowInt );
+      px2 = srcImage.pixel( currentSrcColInt + 1, currentSrcRowInt );
+      px3 = srcImage.pixel( currentSrcColInt + 1, currentSrcRowInt + 1 );
+      px4 = srcImage.pixel( currentSrcColInt, currentSrcRowInt + 1 );
       dstImage.setPixel( j, i, resampleColorValue( u, v, px1, px2, px3, px4 ) );
       currentSrcCol += nSrcPerDstX;
     }
