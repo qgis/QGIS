@@ -57,6 +57,9 @@ class QgsRasterRenderer
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
+    void setInvertColor( bool invert ){ mInvertColor = invert; }
+    bool invertColor() const { return mInvertColor; }
+
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
@@ -76,6 +79,8 @@ class QgsRasterRenderer
     /**Read alpha value from band. Is combined with value from raster transparency / global alpha value.
         Default: -1 (not set)*/
     int mAlphaBand;
+
+    bool mInvertColor;
 
   private:
     /**Remove part into and release memory*/
