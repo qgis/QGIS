@@ -121,7 +121,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     //draw image
     if ( mResampler ) //resample to output resolution
     {
-      QImage dstImg( nCols / oversampling + 0.5, nRows / oversampling + 0.5, QImage::Format_ARGB32_Premultiplied );
+      QImage dstImg( nCols / oversampling, nRows / oversampling, QImage::Format_ARGB32_Premultiplied );
       mResampler->resample( img, dstImg );
       p->drawImage( tlPoint, dstImg );
     }

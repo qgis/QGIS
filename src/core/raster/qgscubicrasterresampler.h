@@ -19,6 +19,7 @@
 #define QGSCUBICRASTERRESAMPLER_H
 
 #include "qgsrasterresampler.h"
+#include <QColor>
 
 class QgsCubicRasterResampler: public QgsRasterResampler
 {
@@ -35,6 +36,9 @@ class QgsCubicRasterResampler: public QgsRasterResampler
     void calculateControlPoints( int nCols, int nRows, int currentRow, int currentCol, int* redMatrix, int* greenMatrix, int* blueMatrix,
                                  double* xDerivativeMatrixRed, double* xDerivativeMatrixGreen, double* xDerivativeMatrixBlue,
                                  double* yDerivativeMatrixRed, double* yDerivativeMatrixGreen, double* yDerivativeMatrixBlue );
+
+    /**Use cubic curve interpoation at the borders of the raster*/
+    QRgb curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue , double d2red, double d2green, double d2blue );
 
     static double calcBernsteinPoly( int n, int i, double t );
     static int lower( int n, int i );

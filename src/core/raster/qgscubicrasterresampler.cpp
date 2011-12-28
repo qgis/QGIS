@@ -17,6 +17,7 @@
 
 #include "qgscubicrasterresampler.h"
 #include <QImage>
+#include <cmath>
 
 QgsCubicRasterResampler::QgsCubicRasterResampler()
 {
@@ -69,7 +70,7 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
   double nSrcPerDstX = ( double ) srcImage.width() / ( double ) dstImage.width();
   double nSrcPerDstY = ( double ) srcImage.height() / ( double ) dstImage.height();
 
-  double currentSrcRow = nSrcPerDstX / 2.0 - 0.5;
+  double currentSrcRow = nSrcPerDstY / 2.0 - 0.5;
   double currentSrcCol;
   int currentSrcColInt;
   int currentSrcRowInt;
@@ -79,25 +80,75 @@ void QgsCubicRasterResampler::resample( const QImage& srcImage, QImage& dstImage
   int r, g, b;
   //bernstein polynomials
   double bp0u, bp1u, bp2u, bp3u, bp0v, bp1v, bp2v, bp3v;
+  double u, v;
 
   for ( int i = 0; i < dstImage.height(); ++i )
   {
-    currentSrcRowInt = ( int ) currentSrcRow;
+    currentSrcRowInt = floor( currentSrcRow );
+    v = currentSrcRow - currentSrcRowInt;
 
-    currentSrcCol = nSrcPerDstY / 2.0 - 0.5;
+    currentSrcCol = nSrcPerDstX / 2.0 - 0.5;
     for ( int j = 0; j < dstImage.width(); ++j )
     {
-      double u = currentSrcCol - ( int )currentSrcCol;
-      double v = currentSrcRow - ( int )currentSrcRow;
+      currentSrcColInt = floor( currentSrcCol );
+      u = currentSrcCol - currentSrcColInt;
 
-      //out of bounds check
-      currentSrcColInt = ( int )currentSrcCol;
-      if ( currentSrcColInt < 0 || currentSrcColInt > srcImage.width() - 2
-           || currentSrcRowInt < 0 || currentSrcRowInt > srcImage.height() - 2 )
+      //handle eight edge-cases
+      if ( currentSrcRowInt < 0 || currentSrcRowInt >= ( srcImage.height() - 1 ) || currentSrcColInt < 0 || currentSrcColInt >= ( srcImage.width() - 1 ) )
       {
-        lastSrcColInt = currentSrcColInt;
+        QRgb px1, px2;
+        //pixels at the border of the source image needs to be handled in a special way
+        if ( currentSrcRowInt < 0 && currentSrcColInt < 0 )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( 0, 0 ) );
+        }
+        else if ( currentSrcRowInt < 0 && currentSrcColInt >= ( srcImage.width() - 1 ) )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( srcImage.width() - 1, 0 ) );
+        }
+        else if ( currentSrcRowInt >= ( srcImage.height() - 1 ) && currentSrcColInt >= ( srcImage.width() - 1 ) )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( srcImage.width() - 1, srcImage.height() - 1 ) );
+        }
+        else if ( currentSrcRowInt >= ( srcImage.height() - 1 ) && currentSrcColInt < 0 )
+        {
+          dstImage.setPixel( j, i, srcImage.pixel( 0, srcImage.height() - 1 ) );
+        }
+        else if ( currentSrcRowInt < 0 )
+        {
+          px1 = srcImage.pixel( currentSrcColInt, 0 );
+          px2 = srcImage.pixel( currentSrcColInt + 1, 0 );
+          dstImage.setPixel( j, i, curveInterpolation( px1, px2, u, xDerivativeMatrixRed[ currentSrcColInt ], xDerivativeMatrixGreen[ currentSrcColInt ],
+                             xDerivativeMatrixBlue[ currentSrcColInt ], xDerivativeMatrixRed[ currentSrcColInt + 1 ], xDerivativeMatrixGreen[ currentSrcColInt + 1 ],
+                             xDerivativeMatrixBlue[ currentSrcColInt + 1 ] ) );
+        }
+        else if ( currentSrcRowInt >= ( srcImage.height() - 1 ) )
+        {
+          int idx = ( srcImage.height() - 1 ) * srcImage.width() + currentSrcColInt;
+          px1 = srcImage.pixel( currentSrcColInt, srcImage.height() - 1 );
+          px2 = srcImage.pixel( currentSrcColInt + 1, srcImage.height() - 1 );
+          dstImage.setPixel( j, i, curveInterpolation( px1, px2, u, xDerivativeMatrixRed[ idx ], xDerivativeMatrixGreen[ idx ], xDerivativeMatrixBlue[idx],
+                             xDerivativeMatrixRed[ idx + 1 ], xDerivativeMatrixGreen[ idx + 1 ], xDerivativeMatrixBlue[idx + 1] ) );
+        }
+        else if ( currentSrcColInt < 0 )
+        {
+          int idx1 = currentSrcRowInt * srcImage.width();
+          int idx2 = idx1 + srcImage.width();
+          px1 = srcImage.pixel( 0, currentSrcRowInt );
+          px2 = srcImage.pixel( 0, currentSrcRowInt + 1 );
+          dstImage.setPixel( j, i, curveInterpolation( px1, px2, v, yDerivativeMatrixRed[ idx1 ], yDerivativeMatrixGreen[ idx1 ], yDerivativeMatrixBlue[ idx1],
+                             yDerivativeMatrixRed[ idx2 ], yDerivativeMatrixGreen[ idx2 ], yDerivativeMatrixBlue[ idx2] ) );
+        }
+        else if ( currentSrcColInt >= ( srcImage.width() - 1 ) )
+        {
+          int idx1 = currentSrcRowInt * srcImage.width() + srcImage.width() - 1;
+          int idx2 = idx1 + srcImage.width();
+          px1 = srcImage.pixel( srcImage.width() - 1, currentSrcRowInt );
+          px2 = srcImage.pixel( srcImage.width() - 1, currentSrcRowInt + 1 );
+          dstImage.setPixel( j, i, curveInterpolation( px1, px2, v, yDerivativeMatrixRed[ idx1 ], yDerivativeMatrixGreen[ idx1 ], yDerivativeMatrixBlue[ idx1],
+                             yDerivativeMatrixRed[ idx2 ], yDerivativeMatrixGreen[ idx2 ], yDerivativeMatrixBlue[ idx2] ) );
+        }
         currentSrcCol += nSrcPerDstX;
-        dstImage.setPixel( j, i, qRgb( 0, 0, 255 ) );
         continue;
       }
 
@@ -259,24 +310,44 @@ void QgsCubicRasterResampler::calculateControlPoints( int nCols, int nRows, int 
   cRed33 = redMatrix[idx11]; cGreen33 = greenMatrix[idx11]; cBlue33 = blueMatrix[idx11];
 
   //control points near c00
-  cRed10 = cRed00 + 0.3 * xDerivativeMatrixRed[idx00]; cGreen10 = cGreen00 + 0.3 * xDerivativeMatrixGreen[idx00]; cBlue10 = cBlue00 + 0.3 * xDerivativeMatrixBlue[idx00];
-  cRed01 = cRed00 + 0.3 * yDerivativeMatrixRed[idx00]; cGreen01 = cGreen00 + 0.3 * yDerivativeMatrixGreen[idx00]; cBlue01 = cBlue00 + 0.3 * yDerivativeMatrixBlue[idx00];
-  cRed11 = cRed10 + 0.3 * yDerivativeMatrixRed[idx00]; cGreen11 = cGreen10 + 0.3 * yDerivativeMatrixGreen[idx00]; cBlue11 = cBlue10 + 0.3 * yDerivativeMatrixBlue[idx00];
+  cRed10 = cRed00 + 0.333 * xDerivativeMatrixRed[idx00]; cGreen10 = cGreen00 + 0.333 * xDerivativeMatrixGreen[idx00]; cBlue10 = cBlue00 + 0.333 * xDerivativeMatrixBlue[idx00];
+  cRed01 = cRed00 + 0.333 * yDerivativeMatrixRed[idx00]; cGreen01 = cGreen00 + 0.333 * yDerivativeMatrixGreen[idx00]; cBlue01 = cBlue00 + 0.333 * yDerivativeMatrixBlue[idx00];
+  cRed11 = cRed10 + 0.333 * yDerivativeMatrixRed[idx00]; cGreen11 = cGreen10 + 0.333 * yDerivativeMatrixGreen[idx00]; cBlue11 = cBlue10 + 0.333 * yDerivativeMatrixBlue[idx00];
 
   //control points near c30
-  cRed20 = cRed30 - 0.3 * xDerivativeMatrixRed[idx10]; cGreen20 = cGreen30 - 0.3 * xDerivativeMatrixGreen[idx10]; cBlue20 = cBlue30 - 0.3 * xDerivativeMatrixBlue[idx10];
-  cRed31 = cRed30 + 0.3 * yDerivativeMatrixRed[idx10]; cGreen31 = cGreen30 + 0.3 * yDerivativeMatrixGreen[idx10]; cBlue31 = cBlue30 + 0.3 * yDerivativeMatrixBlue[idx10];
-  cRed21 = cRed20 + 0.3 * yDerivativeMatrixRed[idx10]; cGreen21 = cGreen20 + 0.3 * yDerivativeMatrixGreen[idx10]; cBlue21 = cBlue20 + 0.3 * yDerivativeMatrixBlue[idx10];
+  cRed20 = cRed30 - 0.333 * xDerivativeMatrixRed[idx10]; cGreen20 = cGreen30 - 0.333 * xDerivativeMatrixGreen[idx10]; cBlue20 = cBlue30 - 0.333 * xDerivativeMatrixBlue[idx10];
+  cRed31 = cRed30 + 0.333 * yDerivativeMatrixRed[idx10]; cGreen31 = cGreen30 + 0.333 * yDerivativeMatrixGreen[idx10]; cBlue31 = cBlue30 + 0.333 * yDerivativeMatrixBlue[idx10];
+  cRed21 = cRed20 + 0.333 * yDerivativeMatrixRed[idx10]; cGreen21 = cGreen20 + 0.333 * yDerivativeMatrixGreen[idx10]; cBlue21 = cBlue20 + 0.333 * yDerivativeMatrixBlue[idx10];
 
   //control points near c03
-  cRed13 = cRed03 + 0.3 * xDerivativeMatrixRed[idx01]; cGreen13 = cGreen03 + 0.3 * xDerivativeMatrixGreen[idx01]; cBlue13 = cBlue03 + 0.3 * xDerivativeMatrixBlue[idx01];
-  cRed02 = cRed03 - 0.3 * yDerivativeMatrixRed[idx01]; cGreen02 = cGreen03 - 0.3 * yDerivativeMatrixGreen[idx01]; cBlue02 = cBlue03 - 0.3 * yDerivativeMatrixBlue[idx01];
-  cRed12 = cRed02 + 0.3 * xDerivativeMatrixRed[idx01]; cGreen12 = cGreen02 + 0.3 * xDerivativeMatrixGreen[idx01]; cBlue12 = cBlue02 + 0.3 * xDerivativeMatrixBlue[idx01];
+  cRed13 = cRed03 + 0.333 * xDerivativeMatrixRed[idx01]; cGreen13 = cGreen03 + 0.333 * xDerivativeMatrixGreen[idx01]; cBlue13 = cBlue03 + 0.333 * xDerivativeMatrixBlue[idx01];
+  cRed02 = cRed03 - 0.333 * yDerivativeMatrixRed[idx01]; cGreen02 = cGreen03 - 0.333 * yDerivativeMatrixGreen[idx01]; cBlue02 = cBlue03 - 0.333 * yDerivativeMatrixBlue[idx01];
+  cRed12 = cRed02 + 0.333 * xDerivativeMatrixRed[idx01]; cGreen12 = cGreen02 + 0.333 * xDerivativeMatrixGreen[idx01]; cBlue12 = cBlue02 + 0.333 * xDerivativeMatrixBlue[idx01];
 
   //control points near c33
-  cRed23 = cRed33 - 0.3 * xDerivativeMatrixRed[idx11]; cGreen23 = cGreen33 - 0.3 * xDerivativeMatrixGreen[idx11]; cBlue23 = cBlue33 - 0.3 * xDerivativeMatrixBlue[idx11];
-  cRed32 = cRed33 - 0.3 * yDerivativeMatrixRed[idx11]; cGreen32 = cGreen33 - 0.3 * yDerivativeMatrixGreen[idx11]; cBlue32 = cBlue33 - 0.3 * yDerivativeMatrixBlue[idx11];
-  cRed22 = cRed32 - 0.3 * xDerivativeMatrixRed[idx11]; cGreen22 = cGreen32 - 0.3 * xDerivativeMatrixGreen[idx11]; cBlue22 = cBlue32 - 0.3 * xDerivativeMatrixBlue[idx11];
+  cRed23 = cRed33 - 0.333 * xDerivativeMatrixRed[idx11]; cGreen23 = cGreen33 - 0.333 * xDerivativeMatrixGreen[idx11]; cBlue23 = cBlue33 - 0.333 * xDerivativeMatrixBlue[idx11];
+  cRed32 = cRed33 - 0.333 * yDerivativeMatrixRed[idx11]; cGreen32 = cGreen33 - 0.333 * yDerivativeMatrixGreen[idx11]; cBlue32 = cBlue33 - 0.333 * yDerivativeMatrixBlue[idx11];
+  cRed22 = cRed32 - 0.333 * xDerivativeMatrixRed[idx11]; cGreen22 = cGreen32 - 0.333 * xDerivativeMatrixGreen[idx11]; cBlue22 = cBlue32 - 0.333 * xDerivativeMatrixBlue[idx11];
+}
+
+QRgb QgsCubicRasterResampler::curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue , double d2red, double d2green, double d2blue )
+{
+  //control points
+  double p0r = qRed( pt1 ); double p1r = p0r + 0.333 * d1red; double p3r = qRed( pt2 ); double p2r = p3r - 0.333 * d2red;
+  double p0g = qGreen( pt1 ); double p1g = p0g + 0.333 * d1green; double p3g = qGreen( pt2 ); double p2g = p3g - 0.333 * d2green;
+  double p0b = qBlue( pt1 ); double p1b = p0b + 0.333 * d1blue; double p3b = qBlue( pt2 ); double p2b = p3b - 0.333 * d2blue;
+
+  //bernstein polynomials
+  double bp0 = calcBernsteinPoly( 3, 0, t );
+  double bp1 = calcBernsteinPoly( 3, 1, t );
+  double bp2 = calcBernsteinPoly( 3, 2, t );
+  double bp3 = calcBernsteinPoly( 3, 3, t );
+
+  int red = bp0 * p0r + bp1 * p1r + bp2 * p2r + bp3 * p3r;
+  int green = bp0 * p0g + bp1 * p1g + bp2 * p2g + bp3 * p3g;
+  int blue = bp0 * p0b + bp1 * p1b + bp2 * p2b + bp3 * p3b;
+
+  return qRgb( red, green, blue );
 }
 
 double QgsCubicRasterResampler::calcBernsteinPoly( int n, int i, double t )
