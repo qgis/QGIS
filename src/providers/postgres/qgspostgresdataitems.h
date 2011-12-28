@@ -3,57 +3,13 @@
 
 #include "qgsdataitem.h"
 
-#include "qgspostgresprovider.h"
+#include "qgspostgresconn.h"
+#include "qgspgsourceselect.h"
 
-class QgsPGConnectionItem : public QgsDataCollectionItem
-{
-    Q_OBJECT
-  public:
-    QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsPGConnectionItem();
-
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
-
-    virtual QList<QAction*> actions();
-
-    QString mConnInfo;
-    QMap<QString, QVector<QgsPostgresLayerProperty> > mSchemasMap;
-
-  public slots:
-    void editConnection();
-    void deleteConnection();
-};
-
-// WMS Layers may be nested, so that they may be both QgsDataCollectionItem and QgsLayerItem
-// We have to use QgsDataCollectionItem and support layer methods if necessary
-class QgsPGLayerItem : public QgsLayerItem
-{
-    Q_OBJECT
-  public:
-    QgsPGLayerItem( QgsDataItem* parent, QString name, QString path,
-                    QString connInfo, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperties );
-    ~QgsPGLayerItem();
-
-    QString createUri();
-
-    QString mConnInfo;
-    QgsPostgresLayerProperty mLayerProperty;
-};
-
-class QgsPGSchemaItem : public QgsDataCollectionItem
-{
-    Q_OBJECT
-  public:
-    QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path,
-                     QString connInfo );
-    ~QgsPGSchemaItem();
-
-    QVector<QgsDataItem*> createChildren();
-
-  protected:
-    QString mConnInfo;
-};
+class QgsPGRootItem;
+class QgsPGConnectionItem;
+class QgsPGSchemaItem;
+class QgsPGLayerItem;
 
 class QgsPGRootItem : public QgsDataCollectionItem
 {
@@ -73,5 +29,54 @@ class QgsPGRootItem : public QgsDataCollectionItem
     void newConnection();
 };
 
+class QgsPGConnectionItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsPGConnectionItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsPGConnectionItem();
+
+    QVector<QgsDataItem*> createChildren();
+    virtual bool equal( const QgsDataItem *other );
+    virtual QList<QAction*> actions();
+
+    QgsPostgresConn *connection() const { return mConn; }
+
+  public slots:
+    void editConnection();
+    void deleteConnection();
+
+    void setLayerType( QgsPostgresLayerProperty layerProperty );
+
+  private:
+    QgsPostgresConn *mConn;
+    QMap<QString, QgsPGSchemaItem * > mSchemaMap;
+};
+
+class QgsPGSchemaItem : public QgsDataCollectionItem
+{
+    Q_OBJECT
+  public:
+    QgsPGSchemaItem( QgsDataItem* parent, QString name, QString path );
+    ~QgsPGSchemaItem();
+
+    QVector<QgsDataItem*> createChildren();
+
+    void addLayer( QgsPostgresLayerProperty layerProperty );
+};
+
+class QgsPGLayerItem : public QgsLayerItem
+{
+    Q_OBJECT
+
+  public:
+    QgsPGLayerItem( QgsDataItem* parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsPostgresLayerProperty layerProperties );
+    ~QgsPGLayerItem();
+
+    QString createUri();
+
+  private:
+    QgsPostgresLayerProperty mLayerProperty;
+};
 
 #endif // QGSPOSTGRESDATAITEMS_H

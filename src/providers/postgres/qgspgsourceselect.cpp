@@ -21,14 +21,13 @@ email                : sherman at mrcc.com
 #include "qgslogger.h"
 #include "qgsapplication.h"
 #include "qgscontexthelp.h"
-#include "qgspostgresconnection.h"
 #include "qgspostgresprovider.h"
 #include "qgspgnewconnection.h"
 #include "qgsmanageconnectionsdialog.h"
 #include "qgsquerybuilder.h"
 #include "qgsdatasourceuri.h"
 #include "qgsvectorlayer.h"
-#include "qgscredentials.h"
+#include "qgscolumntypethread.h"
 
 #include <QFileDialog>
 #include <QInputDialog>
@@ -38,13 +37,76 @@ email                : sherman at mrcc.com
 #include <QHeaderView>
 #include <QStringList>
 
-#ifdef HAVE_PGCONFIG
-#include <pg_config.h>
-#endif
+/** Used to create an editor for when the user tries to change the contents of a cell */
+QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( option );
+  if ( index.column() == QgsPgTableModel::dbtmSql )
+  {
+    QLineEdit *le = new QLineEdit( parent );
+    le->setText( index.data( Qt::DisplayRole ).toString() );
+    return le;
+  }
 
-// Note: Because the the geometry type select SQL is also in the qgspostgresprovider
-// code this parameter is duplicated there.
-static const int sGeomTypeSelectLimit = 100;
+  if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
+  {
+    QComboBox *cb = new QComboBox( parent );
+    foreach( QGis::WkbType type,
+             QList<QGis::WkbType>()
+             << QGis::WKBPoint
+             << QGis::WKBLineString
+             << QGis::WKBPolygon
+             << QGis::WKBMultiPoint
+             << QGis::WKBMultiLineString
+             << QGis::WKBMultiPolygon
+             << QGis::WKBNoGeometry )
+    {
+      cb->addItem( QgsPgTableModel::iconForType( type ), QgsPgTableModel::displayStringForType( type ).toUpper(), type );
+    }
+    cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
+    return cb;
+  }
+
+  if ( index.column() == QgsPgTableModel::dbtmPkCol )
+  {
+    QStringList values = index.data( Qt::UserRole + 1 ).toStringList();
+
+    if ( values.size() > 0 )
+    {
+      QComboBox *cb = new QComboBox( parent );
+      cb->addItems( values );
+      cb->setCurrentIndex( cb->findText( index.data( Qt::DisplayRole ).toString() ) );
+      return cb;
+    }
+  }
+
+  return 0;
+}
+
+void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QComboBox *cb = qobject_cast<QComboBox *>( editor );
+  if ( cb )
+  {
+    if ( index.column() == QgsPgTableModel::dbtmType )
+    {
+      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+
+      model->setData( index, QgsPgTableModel::iconForType( type ), Qt::DecorationRole );
+      model->setData( index, type != QGis::WKBUnknown ? QgsPgTableModel::displayStringForType( type ) : tr( "Select..." ) );
+      model->setData( index, type, Qt::UserRole + 2 );
+    }
+    else if ( index.column() == QgsPgTableModel::dbtmPkCol )
+    {
+      model->setData( index, cb->currentText() );
+      model->setData( index, cb->currentText(), Qt::UserRole + 2 );
+    }
+  }
+
+  QLineEdit *le = qobject_cast<QLineEdit *>( editor );
+  if ( le )
+    model->setData( index, le->text() );
+}
 
 QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool managerMode, bool embeddedMode )
     : QDialog( parent, fl )
@@ -86,6 +148,7 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
   mSearchColumnComboBox->addItem( tr( "Type" ) );
   mSearchColumnComboBox->addItem( tr( "Geometry column" ) );
   mSearchColumnComboBox->addItem( tr( "Primary key column" ) );
+  mSearchColumnComboBox->addItem( tr( "SRID" ) );
   mSearchColumnComboBox->addItem( tr( "Sql" ) );
 
   mProxyModel.setParent( this );
@@ -214,7 +277,7 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 void QgsPgSourceSelect::on_cmbConnections_activated( int )
 {
   // Remember which database was selected.
-  QgsPostgresConnection::setSelectedConnection( cmbConnections->currentText() );
+  QgsPostgresConn::setSelectedConnection( cmbConnections->currentText() );
 
   cbxAllowGeometrylessTables->blockSignals( true );
   QSettings settings;
@@ -270,27 +333,31 @@ void QgsPgSourceSelect::on_mSearchColumnComboBox_currentIndexChanged( const QStr
   }
   else if ( text == tr( "Schema" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmSchema );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmSchema );
   }
   else if ( text == tr( "Table" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmTable );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmTable );
   }
   else if ( text == tr( "Type" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmType );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmType );
   }
   else if ( text == tr( "Geometry column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmGeomCol );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmGeomCol );
   }
   else if ( text == tr( "Primary key column" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmPkCol );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmPkCol );
+  }
+  else if ( text == tr( "SRID" ) )
+  {
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmSrid );
   }
   else if ( text == tr( "Sql" ) )
   {
-    mProxyModel.setFilterKeyColumn( QgsDbTableModel::dbtmSql );
+    mProxyModel.setFilterKeyColumn( QgsPgTableModel::dbtmSql );
   }
 }
 
@@ -300,13 +367,11 @@ void QgsPgSourceSelect::on_mSearchModeComboBox_currentIndexChanged( const QStrin
   on_mSearchTableEdit_textChanged( mSearchTableEdit->text() );
 }
 
-void QgsPgSourceSelect::setLayerType( QString schema,
-                                      QString table, QString column,
-                                      QString type )
+void QgsPgSourceSelect::setLayerType( QgsPostgresLayerProperty layerProperty )
 {
-  mTableModel.setGeometryTypesForTable( schema, table, column, type );
-  mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmTable, Qt::AscendingOrder );
-  mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmSchema, Qt::AscendingOrder );
+  mTableModel.setGeometryTypesForTable( layerProperty );
+  mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
+  mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
 }
 
 QgsPgSourceSelect::~QgsPgSourceSelect()
@@ -315,8 +380,6 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
   {
     mColumnTypeThread->stop();
     mColumnTypeThread->wait();
-    delete mColumnTypeThread;
-    mColumnTypeThread = NULL;
   }
 
   QSettings settings;
@@ -330,7 +393,7 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
 
 void QgsPgSourceSelect::populateConnectionList()
 {
-  QStringList keys = QgsPostgresConnection::connectionList();
+  QStringList keys = QgsPostgresConn::connectionList();
   QStringList::Iterator it = keys.begin();
   cmbConnections->clear();
   while ( it != keys.end() )
@@ -349,47 +412,31 @@ void QgsPgSourceSelect::populateConnectionList()
 
 QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
 {
-  QString schemaName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmSchema ) )->text();
-  QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmTable ) )->text();
-  QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmGeomCol ) )->text();
-  QString pkColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmPkCol ) )->text();
-  bool selectAtId = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmSelectAtId ) )->checkState() == Qt::Checked;
-  QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), QgsDbTableModel::dbtmSql ) )->text();
+  QGis::WkbType geomType = ( QGis::WkbType ) mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( geomType == QGis::WKBUnknown )
+    // no geometry type selected
+    return QString::null;
 
-  if ( geomColumnName.contains( " AS " ) )
-  {
-    int a = geomColumnName.indexOf( " AS " );
-    QString typeName = geomColumnName.mid( a + 4 ); //only the type name
-    geomColumnName = geomColumnName.left( a ); //only the geom column name
-    QString geomFilter;
+  QStandardItem *pkItem = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmPkCol ) );
+  QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
 
-    if ( typeName == "POINT" )
-    {
-      geomFilter = QString( "upper(geometrytype(\"%1\")) IN ('POINT','MULTIPOINT')" ).arg( geomColumnName );
-    }
-    else if ( typeName == "LINESTRING" )
-    {
-      geomFilter = QString( "upper(geometrytype(\"%1\")) IN ('LINESTRING','MULTILINESTRING')" ).arg( geomColumnName );
-    }
-    else if ( typeName == "POLYGON" )
-    {
-      geomFilter = QString( "upper(geometrytype(\"%1\")) IN ('POLYGON','MULTIPOLYGON')" ).arg( geomColumnName );
-    }
+  if ( pkItem->data( Qt::UserRole + 1 ).toStringList().size() > 0 && pkColumnName.isEmpty() )
+    // no primary key for view selected
+    return QString::null;
 
-    if ( !geomFilter.isEmpty() && !sql.contains( geomFilter ) )
-    {
-      if ( !sql.isEmpty() )
-      {
-        sql += " AND ";
-      }
+  QString schemaName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmSchema ) )->text();
+  QString tableName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmTable ) )->text();
+  QString geomColumnName = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmGeomCol ) )->text();
 
-      sql += geomFilter;
-    }
-  }
+  QString srid = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmSrid ) )->text();
+  bool selectAtId = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmSelectAtId ) )->checkState() == Qt::Checked;
+  QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmSql ) )->text();
 
   QgsDataSourceURI uri( m_connInfo );
-  uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
+  uri.setDataSource( schemaName, tableName, geomType != QGis::WKBNoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
   uri.setUseEstimatedMetadata( mUseEstimatedMetadata );
+  uri.setGeometryType( geomType );
+  uri.setSrid( srid );
   uri.disableSelectAtId( !selectAtId );
 
   return uri.uri();
@@ -412,7 +459,11 @@ void QgsPgSourceSelect::addTables()
     }
 
     QModelIndex index = mProxyModel.mapToSource( *selected_it );
-    m_selectedTables << layerURI( index );
+    QString uri = layerURI( index );
+    if ( uri.isNull() )
+      continue;
+
+    m_selectedTables << uri;
   }
 
   if ( m_selectedTables.empty() )
@@ -433,23 +484,22 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   if ( mColumnTypeThread )
   {
     mColumnTypeThread->stop();
-    mColumnTypeThread = 0;
+    return;
   }
 
   QModelIndex rootItemIndex = mTableModel.indexFromItem( mTableModel.invisibleRootItem() );
   mTableModel.removeRows( 0, mTableModel.rowCount( rootItemIndex ), rootItemIndex );
 
   // populate the table list
-  QgsPostgresConnection connection( cmbConnections->currentText() );
-  QgsDataSourceURI uri( connection.connectionInfo() );
+  QgsDataSourceURI uri = QgsPostgresConn::connUri( cmbConnections->currentText() );
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
 
   m_connInfo = uri.connectionInfo();
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
 
-  QgsPostgresProvider *pgProvider = connection.provider();
-  if ( pgProvider )
+  QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), true );
+  if ( conn )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
@@ -461,43 +511,47 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
     bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
     QVector<QgsPostgresLayerProperty> layers;
-    if ( pgProvider->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
+    if ( conn->supportedLayers( layers, searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
     {
       // Add the supported layers to the table
       foreach( QgsPostgresLayerProperty layer, layers )
       {
         QString type = layer.type;
-        if ( !searchGeometryColumnsOnly && layer.geometryColName != QString::null )
+        if ( !searchGeometryColumnsOnly && !layer.geometryColName.isNull() )
         {
           if ( type == "GEOMETRY" || type == QString::null )
           {
-            addSearchGeometryColumn( layer.schemaName, layer.tableName, layer.geometryColName );
-            type = tr( "Waiting" );
+            addSearchGeometryColumn( layer );
+            type = "";
           }
         }
         QgsDebugMsg( QString( "adding table %1.%2" ).arg( layer.schemaName ).arg( layer.tableName ) );
-        mTableModel.addTableEntry( type, layer.schemaName, layer.tableName, layer.geometryColName, layer.pkCols, layer.sql );
+
+        layer.type = type;
+        mTableModel.addTableEntry( layer );
       }
 
       // Start the thread that gets the geometry type for relations that
       // may take a long time to return
-      if ( mColumnTypeThread != NULL )
+      if ( mColumnTypeThread )
       {
-        connect( mColumnTypeThread, SIGNAL( setLayerType( QString, QString, QString, QString ) ),
-                 this, SLOT( setLayerType( QString, QString, QString, QString ) ) );
+        connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
+                 this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
+        connect( mColumnTypeThread, SIGNAL( finished() ),
+                 this, SLOT( columnThreadFinished() ) );
+
+        btnConnect->setText( tr( "Stop" ) );
 
         // Do it in a thread.
         mColumnTypeThread->start();
       }
     }
 
-    // BEGIN CHANGES ECOS
     if ( cmbConnections->count() > 0 )
       mAddButton->setEnabled( true );
-    // END CHANGES ECOS
 
-    mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmTable, Qt::AscendingOrder );
-    mTablesTreeView->sortByColumn( QgsDbTableModel::dbtmSchema, Qt::AscendingOrder );
+    mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
+    mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
 
     //if we have only one schema item, expand it by default
     int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
@@ -510,8 +564,10 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
       }
     }
 
-    delete pgProvider;
-    QApplication::restoreOverrideCursor();
+    conn->disconnect();
+
+    if ( !mColumnTypeThread )
+      QApplication::restoreOverrideCursor();
   }
   else
   {
@@ -520,6 +576,14 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
                           tr( "Postgres/PostGIS Provider" ),
                           tr( "Could not open the Postgres/PostGIS Provider" ) );
   }
+}
+
+void QgsPgSourceSelect::columnThreadFinished()
+{
+  delete mColumnTypeThread;
+  mColumnTypeThread = 0;
+  btnConnect->setText( tr( "Connect" ) );
+  QApplication::restoreOverrideCursor();
 }
 
 QStringList QgsPgSourceSelect::selectedTables()
@@ -541,7 +605,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   }
 
   QModelIndex idx = mProxyModel.mapToSource( index );
-  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsDbTableModel::dbtmTable ) )->text();
+  QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
 
   QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, "postgres" );
 
@@ -562,31 +626,34 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   delete vlayer;
 }
 
-void QgsPgSourceSelect::addSearchGeometryColumn( const QString &schema, const QString &table, const QString &column )
+void QgsPgSourceSelect::addSearchGeometryColumn( QgsPostgresLayerProperty layerProperty )
 {
   // store the column details and do the query in a thread
-  if ( mColumnTypeThread == NULL )
+  if ( !mColumnTypeThread )
   {
-    mColumnTypeThread = new QgsGeomColumnTypeThread();
-    mColumnTypeThread->setConnInfo( m_connInfo, mUseEstimatedMetadata );
+    QgsPostgresConn *conn = QgsPostgresConn::connectDb( m_connInfo, true /* readonly */ );
+    if ( conn )
+    {
+      mColumnTypeThread = new QgsGeomColumnTypeThread( conn, mUseEstimatedMetadata );
+    }
   }
-  mColumnTypeThread->addGeometryColumn( schema, table, column );
+  mColumnTypeThread->addGeometryColumn( layerProperty );
 }
 
 QString QgsPgSourceSelect::fullDescription( QString schema, QString table,
     QString column, QString type )
 {
   QString full_desc = "";
-  if ( schema.length() > 0 )
-    full_desc = '"' + schema + "\".\"";
-  full_desc += table + "\" (" + column + ") " + type;
+  if ( !schema.isEmpty() )
+    full_desc = QgsPostgresConn::quotedIdentifier( schema ) + ".";
+  full_desc += QgsPostgresConn::quotedIdentifier( table ) + " (" + column + ") " + type;
   return full_desc;
 }
 
 void QgsPgSourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
-  QString toSelect = QgsPostgresConnection::selectedConnection();
+  QString toSelect = QgsPostgresConn::selectedConnection();
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )
@@ -601,113 +668,4 @@ void QgsPgSourceSelect::setConnectionListPosition()
 void QgsPgSourceSelect::setSearchExpression( const QString& regexp )
 {
   Q_UNUSED( regexp );
-}
-
-void QgsGeomColumnTypeThread::setConnInfo( QString conninfo, bool useEstimatedMetadata )
-{
-  mConnInfo = conninfo;
-  mUseEstimatedMetadata = useEstimatedMetadata;
-}
-
-void QgsGeomColumnTypeThread::addGeometryColumn( QString schema, QString table, QString column )
-{
-  schemas.push_back( schema );
-  tables.push_back( table );
-  columns.push_back( column );
-}
-
-void QgsGeomColumnTypeThread::stop()
-{
-  mStopped = true;
-}
-
-void QgsGeomColumnTypeThread::getLayerTypes()
-{
-  mStopped = false;
-
-  PGconn *pd = PQconnectdb( mConnInfo.toLocal8Bit() );
-  // check the connection status
-  if ( PQstatus( pd ) != CONNECTION_OK )
-  {
-    PQfinish( pd );
-
-    QgsDataSourceURI uri( mConnInfo );
-    QString username = uri.username();
-    QString password = uri.password();
-
-    // use cached credentials
-    bool ok = QgsCredentials::instance()->get( mConnInfo, username, password, QString::fromUtf8( PQerrorMessage( pd ) ) );
-    if ( !ok )
-      return;
-
-    if ( !username.isEmpty() )
-      uri.setUsername( username );
-
-    if ( !password.isEmpty() )
-      uri.setPassword( password );
-
-    pd = PQconnectdb( uri.connectionInfo().toLocal8Bit() );
-    if ( PQstatus( pd ) == CONNECTION_OK )
-      QgsCredentials::instance()->put( mConnInfo, username, password );
-
-  }
-
-  if ( PQstatus( pd ) == CONNECTION_OK )
-  {
-    PQsetClientEncoding( pd, QString( "UNICODE" ).toLocal8Bit() );
-
-    PGresult *res = PQexec( pd, "SET application_name='Quantum GIS'" );
-    if ( !res || PQresultStatus( res ) != PGRES_COMMAND_OK )
-    {
-      PQclear( res );
-      res = PQexec( pd, "ROLLBACK" );
-    }
-    PQclear( res );
-
-    for ( uint i = 0; i < schemas.size() && !mStopped; i++ )
-    {
-      QString query = QString( "select distinct "
-                               "case"
-                               " when upper(geometrytype(%1)) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                               " when upper(geometrytype(%1)) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                               " when upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
-                               " end "
-                               "from " ).arg( "\"" + columns[i] + "\"" );
-      if ( mUseEstimatedMetadata )
-      {
-        query += QString( "(select %1 from %2 where %1 is not null limit %3) as t" )
-                 .arg( "\"" + columns[i] + "\"" )
-                 .arg( "\"" + schemas[i] + "\".\"" + tables[i] + "\"" )
-                 .arg( sGeomTypeSelectLimit );
-      }
-      else
-      {
-        query += "\"" + schemas[i] + "\".\"" + tables[i] + "\"";
-      }
-
-      QgsDebugMsg( "sql: " + query );
-
-      PGresult *gresult = PQexec( pd, query.toUtf8() );
-      QString type;
-      if ( PQresultStatus( gresult ) == PGRES_TUPLES_OK )
-      {
-        QStringList types;
-
-        for ( int j = 0; j < PQntuples( gresult ); j++ )
-        {
-          QString type = QString::fromUtf8( PQgetvalue( gresult, j, 0 ) );
-          if ( type != "" )
-            types += type;
-        }
-
-        type = types.join( "," );
-      }
-      PQclear( gresult );
-
-      // Now tell the layer list dialog box...
-      emit setLayerType( schemas[i], tables[i], columns[i], type );
-    }
-  }
-
-  PQfinish( pd );
 }
