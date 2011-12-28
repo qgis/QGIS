@@ -119,6 +119,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       */
     void loadFieldNames();
 
+    void loadFieldNames( QgsFieldMap fields );
+
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
     QString getExpressionString();
@@ -136,6 +138,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void registerItem( QString group, QString label, QString expressionText,
                        QString helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
+
 
   public slots:
     void on_expressionTree_clicked( const QModelIndex &index );
