@@ -43,18 +43,18 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     return;
   }
 
-  double oversampling;
+  double oversamplingX, oversamplingY;
   QgsRasterDataProvider::DataType transparencyType;
   if ( mAlphaBand > 0 )
   {
     transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
   }
-  startRasterRead( mBandNumber, viewPort, theQgsMapToPixel, oversampling );
+  startRasterRead( mBandNumber, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
 
   //Read alpha band if necessary
   if ( mAlphaBand > 0 && mAlphaBand != mBandNumber )
   {
-    startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversampling );
+    startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
   }
 
   int nCols = 0;
@@ -116,12 +116,12 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
     //top left position in device coords
     QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
-    tlPoint += QPointF( topLeftCol / oversampling, topLeftRow / oversampling );
+    tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
 
     //draw image
     if ( mResampler ) //resample to output resolution
     {
-      QImage dstImg( nCols / oversampling, nRows / oversampling, QImage::Format_ARGB32_Premultiplied );
+      QImage dstImg( nCols / oversamplingX, nRows / oversamplingY, QImage::Format_ARGB32_Premultiplied );
       mResampler->resample( img, dstImg );
       p->drawImage( tlPoint, dstImg );
     }

@@ -21,7 +21,7 @@
 #include "qgsmaptopixel.h"
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler ),
-  mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false )
+    mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false )
 {
 }
 
@@ -35,9 +35,8 @@ QgsRasterRenderer::~QgsRasterRenderer()
   }
 }
 
-void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversampling )
+void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY )
 {
-  oversampling = 1.0; //default (e.g. for nearest neighbour)
   if ( !viewPort || !mapToPixel || !mProvider )
   {
     return;
@@ -47,6 +46,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   removePartInfo( bandNumber );
 
   //calculate oversampling factor
+  double oversampling = 1.0; //approximate global oversampling factor
   if ( mResampler )
   {
     QgsRectangle providerExtent = mProvider->extent();
@@ -63,11 +63,16 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   RasterPartInfo pInfo;
   pInfo.nCols = viewPort->drawableAreaXDim * oversampling;
   pInfo.nRows = viewPort->drawableAreaYDim * oversampling;
+
+  //effective oversampling factors are different to global one because of rounding
+  oversamplingX = ( double )pInfo.nCols / viewPort->drawableAreaXDim;
+  oversamplingY = ( double )pInfo.nRows / viewPort->drawableAreaYDim;
+
   int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mProvider->dataTypeSize( bandNumber );
-  int parts = totalMemoryUsage / 100000000 /*100000*/ + 1;
+  int parts = totalMemoryUsage / 100000 + 1;
   pInfo.nPartsPerDimension = sqrt( parts );
-  pInfo.nColsPerPart = pInfo.nCols / pInfo.nPartsPerDimension;
-  pInfo.nRowsPerPart = pInfo.nRows / pInfo.nPartsPerDimension;
+  pInfo.nColsPerPart = floor( pInfo.nCols / pInfo.nPartsPerDimension / oversamplingX ) * oversamplingX;
+  pInfo.nRowsPerPart = floor( pInfo.nRows / pInfo.nPartsPerDimension / oversamplingY ) * oversamplingY;
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
   pInfo.data = 0;

@@ -57,13 +57,13 @@ class QgsRasterRenderer
     void setAlphaBand( int band ) { mAlphaBand = band; }
     int alphaBand() const { return mAlphaBand; }
 
-    void setInvertColor( bool invert ){ mInvertColor = invert; }
+    void setInvertColor( bool invert ) { mInvertColor = invert; }
     bool invertColor() const { return mInvertColor; }
 
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
-    void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversampling );
+    void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY );
     bool readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort, int& nCols, int& nRows, void** rasterData, int& topLeftCol, int& topLeftRow );
     void stopRasterRead( int bandNumber );
 
