@@ -41,6 +41,7 @@ email                : tim at linfiniti.com
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgssinglebandgrayrenderer.h"
 
 #include <cstdio>
 #include <cmath>
@@ -815,8 +816,24 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       }
       else
       {
+        QgsSingleBandGrayRenderer r( mDataProvider, bandNumber( mGrayBandName ), mResampler );
+        r.setOpacity( mTransparencyLevel / 255.0 );
+        r.setRasterTransparency( &mRasterTransparency );
+        if ( mTransparencyBandName != TRSTRING_NOT_SET )
+        {
+          int tBandNr = bandNumber( mTransparencyBandName );
+          if ( tBandNr > 0 )
+          {
+            r.setAlphaBand( tBandNr );
+          }
+        }
+        r.setInvertColor( mInvertColor );
+        r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+
+#if 0
         drawSingleBandGray( theQPainter, theRasterViewPort,
                             theQgsMapToPixel, bandNumber( mGrayBandName ) );
+#endif //0
         break;
       }
       // a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
