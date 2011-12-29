@@ -146,7 +146,7 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
     if ( mResampler ) //resample to output resolution
     {
-      QImage dstImg( nCols / oversamplingX, nRows / oversamplingY, QImage::Format_ARGB32_Premultiplied );
+      QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
       mResampler->resample( img, dstImg );
       p->drawImage( tlPoint, dstImg );
     }

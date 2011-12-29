@@ -129,9 +129,18 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     //draw image
     if ( mResampler ) //resample to output resolution
     {
-      QImage dstImg( nCols / oversamplingX, nRows / oversamplingY, QImage::Format_ARGB32_Premultiplied );
+      QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
       mResampler->resample( img, dstImg );
       p->drawImage( tlPoint, dstImg );
+
+      //debug output
+      qWarning("*************************************************");
+      qWarning("topleft:");
+      qWarning( QString::number( tlPoint.x() ).toLocal8Bit().data() );
+      qWarning( QString::number( tlPoint.y() ).toLocal8Bit().data() );
+      qWarning("width/height:");
+      qWarning( QString::number( nCols / oversamplingX ).toLocal8Bit().data() );
+      qWarning( QString::number( nRows / oversamplingY ).toLocal8Bit().data() );
     }
     else //use original image
     {
