@@ -95,6 +95,13 @@ void QgsBookmarks::initialise()
   model->setTable( "tbl_bookmarks" );
   model->select();
   lstBookmarks->setModel( model );
+  // set better headers then column names from table
+  lstBookmarks->model()->setHeaderData(1, Qt::Horizontal, QObject::tr("Name"));
+  lstBookmarks->model()->setHeaderData(2, Qt::Horizontal, QObject::tr("Project"));
+  lstBookmarks->model()->setHeaderData(3, Qt::Horizontal, QObject::tr("xMin"));
+  lstBookmarks->model()->setHeaderData(4, Qt::Horizontal, QObject::tr("yMin"));
+  lstBookmarks->model()->setHeaderData(5, Qt::Horizontal, QObject::tr("xMax"));
+  lstBookmarks->model()->setHeaderData(6, Qt::Horizontal, QObject::tr("yMax"));
   // hide id column
   lstBookmarks->setColumnHidden(0, true);
   // hide srid column
