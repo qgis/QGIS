@@ -59,6 +59,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   setupUi( this );
 
   treeRules->setRenderer( mRenderer );
+  treeRules->setSelectionMode(QAbstractItemView::SingleSelection);
   mRefineMenu = new QMenu( btnRefineRule );
   mRefineMenu->addAction( tr( "Add scales" ), this, SLOT( refineRuleScales() ) );
   mRefineMenu->addAction( tr( "Add categories" ), this, SLOT( refineRuleCategories() ) );
