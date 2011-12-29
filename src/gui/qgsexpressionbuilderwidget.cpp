@@ -33,6 +33,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   // The open and save button are for future.
   btnOpen->hide();
   btnSave->hide();
+  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel( );
   mProxyModel = new QgsExpressionItemSearchProxy();
@@ -157,11 +158,17 @@ void QgsExpressionBuilderWidget::loadFieldNames()
 
 void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
 {
+  if ( fields.isEmpty() )
+      return;
+
+  QStringList fieldNames;
   foreach( QgsField field, fields )
   {
     QString fieldName = field.name();
+    fieldNames << fieldName;
     registerItem( tr( "Fields" ), fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
   }
+  highlighter->addFields( fieldNames );
 }
 
 void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit )
