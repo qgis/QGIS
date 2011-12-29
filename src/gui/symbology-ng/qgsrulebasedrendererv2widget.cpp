@@ -216,7 +216,7 @@ void QgsRuleBasedRendererV2Widget::increasePriority()
     }
 
   }
-
+  treeRules->sortByColumn(4, Qt::AscendingOrder);  // busy with priority: more clear if we order by prio now
 }
 
 
@@ -245,6 +245,7 @@ void QgsRuleBasedRendererV2Widget::decreasePriority()
       }
     }
   }
+  treeRules->sortByColumn(4, Qt::AscendingOrder);  // busy with priority: more clear if we order by prio now
 }
 
 
