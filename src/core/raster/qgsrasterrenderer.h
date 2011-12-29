@@ -38,7 +38,6 @@ class QgsRasterRenderer
       int nRows;
       int nColsPerPart;
       int nRowsPerPart;
-      int nPartsPerDimension;
       void* data;
     };
 

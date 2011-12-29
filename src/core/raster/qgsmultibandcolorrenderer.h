@@ -20,6 +20,8 @@
 
 #include "qgsrasterrenderer.h"
 
+class QgsContrastEnhancement;
+
 /**Renderer for multiband images with the color components*/
 class QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
@@ -29,10 +31,15 @@ class QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
+    const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
+    void setContrastEnhancement( QgsContrastEnhancement* ce ) { mContrastEnhancement = ce; }
+
   private:
     int mRedBand;
     int mGreenBand;
     int mBlueBand;
+
+    QgsContrastEnhancement* mContrastEnhancement;
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

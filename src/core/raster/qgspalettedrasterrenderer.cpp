@@ -108,7 +108,15 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
             currentOpacity *= ( readValue( transparencyData, transparencyType, currentRasterPos ) / 255.0 );
           }
           QColor& currentColor = mColors[val];
-          imageScanLine[j] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
+
+          if ( mInvertColor )
+          {
+            imageScanLine[j] = qRgba( currentOpacity * currentColor.blue(), currentOpacity * currentColor.green(), currentOpacity * currentColor.red(), currentOpacity * 255 );
+          }
+          else
+          {
+            imageScanLine[j] = qRgba( currentOpacity * currentColor.red(), currentOpacity * currentColor.green(), currentOpacity * currentColor.blue(), currentOpacity * 255 );
+          }
         }
         ++currentRasterPos;
       }

@@ -865,6 +865,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
             renderer.setAlphaBand( tBandNr );
           }
         }
+        renderer.setInvertColor( mInvertColor );
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
@@ -968,7 +969,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
             r.setAlphaBand( tBandNr );
           }
         }
-
+        r.setInvertColor( mInvertColor );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 #if 0
         drawMultiBandColor( theQPainter, theRasterViewPort,

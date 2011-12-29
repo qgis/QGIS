@@ -25,7 +25,7 @@
 #include <QSet>
 
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand )
+    QgsRasterRenderer( provider, resampler ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ), mContrastEnhancement( 0 )
 {
 }
 
@@ -108,6 +108,13 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
         redVal = readValue( redData, redType, currentRasterPos );
         greenVal = readValue( greenData, greenType, currentRasterPos );
         blueVal = readValue( blueData, blueType, currentRasterPos );
+
+        if ( mInvertColor )
+        {
+          redVal = 255 - redVal;
+          greenVal = 255 - greenVal;
+          blueVal = 255 - blueVal;
+        }
 
         //opacity
         currentOpacity = mOpacity;
