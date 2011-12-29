@@ -1736,6 +1736,7 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "money" ||
                 fieldTypeName == "ltree" ||
+                fieldTypeName == "uuid" ||
                 fieldTypeName.startsWith( "time" ) ||
                 fieldTypeName.startsWith( "date" ) )
       {
