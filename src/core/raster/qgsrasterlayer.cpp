@@ -816,7 +816,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       }
       else
       {
-        QgsSingleBandGrayRenderer r( mDataProvider, bandNumber( mGrayBandName ), mResampler );
+        int grayBand = bandNumber( mGrayBandName );
+        QgsSingleBandGrayRenderer r( mDataProvider, grayBand, mResampler );
         r.setOpacity( mTransparencyLevel / 255.0 );
         r.setRasterTransparency( &mRasterTransparency );
         if ( mTransparencyBandName != TRSTRING_NOT_SET )
@@ -828,6 +829,21 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
           }
         }
         r.setInvertColor( mInvertColor );
+        if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum && mStandardDeviations > 0 )
+        {
+          mGrayMinimumMaximumEstimated = false;
+          QgsRasterBandStats myGrayBandStats = bandStatistics( grayBand );
+          setMaximumValue( grayBand, myGrayBandStats.mean + ( mStandardDeviations * myGrayBandStats.stdDev ) );
+          setMinimumValue( grayBand, myGrayBandStats.mean - ( mStandardDeviations * myGrayBandStats.stdDev ) );
+          r.setContrastEnhancement( contrastEnhancement( grayBand ) );
+        }
+        else if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum )
+        {
+          mGrayMinimumMaximumEstimated = true;
+          setMaximumValue( grayBand, mDataProvider->maximumValue( grayBand ) );
+          setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );
+          r.setContrastEnhancement( contrastEnhancement( grayBand ) );
+        }
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
 #if 0
