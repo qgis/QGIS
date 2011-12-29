@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionhighlighter.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
@@ -169,6 +170,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
+    QgsExpressionHighlighter* highlighter;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

@@ -75,6 +75,7 @@ qgsludialog.cpp
 qgssearchquerybuilder.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
+qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 )
 
@@ -135,6 +136,7 @@ qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
 qgsexpressionbuilderwidget.h
+qgsexpressionhighlighter.h
 qgsquerybuilder.h
 )
 
@@ -170,6 +172,7 @@ qgsattributeeditor.h
 qgsfieldvalidator.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
+qgsexpressionhighlighter.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetablememorymodel.h
