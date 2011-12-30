@@ -162,7 +162,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
   {
     QString fieldName = field.name();
     fieldNames << fieldName;
-    registerItem( tr( "Fields" ), fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
+    registerItem( tr( "Fields" ), fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
   }
   highlighter->addFields( fieldNames );
 }
