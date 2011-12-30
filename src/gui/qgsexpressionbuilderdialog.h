@@ -19,6 +19,9 @@
 #include <QDialog>
 #include "ui_qgsexpressionbuilderdialogbase.h"
 
+/** A generic dialog for building expression strings
+  * @remarks This class also shows an example on how to use QgsExpressionBuilderWidget
+  */
 class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExpressionBuilderDialogBase
 {
   public:
@@ -28,6 +31,8 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     QgsExpressionBuilderWidget* expressionBuilder();
 
     void setExpressionText( QString text );
+
+    QString getExpressionText();
 
   protected:
     /**

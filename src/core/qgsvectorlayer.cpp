@@ -3048,37 +3048,61 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       EditType editType = ( EditType ) editTypeElement.attribute( "type" ).toInt();
       mEditTypes.insert( name, editType );
 
-      if ( editType == ValueMap && editTypeNode.hasChildNodes() )
+      switch ( editType )
       {
-        mValueMaps.insert( name, QMap<QString, QVariant>() );
+        case ValueMap:
+          if ( editTypeNode.hasChildNodes() )
+          {
+            mValueMaps.insert( name, QMap<QString, QVariant>() );
 
-        QDomNodeList valueMapNodes = editTypeNode.childNodes();
-        for ( int j = 0; j < valueMapNodes.size(); j++ )
+            QDomNodeList valueMapNodes = editTypeNode.childNodes();
+            for ( int j = 0; j < valueMapNodes.size(); j++ )
+            {
+              QDomElement value = valueMapNodes.at( j ).toElement();
+              mValueMaps[ name ].insert( value.attribute( "key" ), value.attribute( "value" ) );
+            }
+          }
+          break;
+
+        case EditRange:
+        case SliderRange:
+        case DialRange:
         {
-          QDomElement value = valueMapNodes.at( j ).toElement();
-          mValueMaps[ name ].insert( value.attribute( "key" ), value.attribute( "value" ) );
-        }
-      }
-      else if ( editType == EditRange || editType == SliderRange )
-      {
-        QVariant min = editTypeElement.attribute( "min" );
-        QVariant max = editTypeElement.attribute( "max" );
-        QVariant step = editTypeElement.attribute( "step" );
+          QVariant min = editTypeElement.attribute( "min" );
+          QVariant max = editTypeElement.attribute( "max" );
+          QVariant step = editTypeElement.attribute( "step" );
 
-        mRanges[ name ] = RangeData( min, max, step );
-      }
-      else if ( editType == CheckBox )
-      {
-        mCheckedStates[ name ] = QPair<QString, QString>( editTypeElement.attribute( "checked" ), editTypeElement.attribute( "unchecked" ) );
-      }
-      else if ( editType == ValueRelation )
-      {
-        QString id = editTypeElement.attribute( "layer" );
-        QString key = editTypeElement.attribute( "key" );
-        QString value = editTypeElement.attribute( "value" );
-        bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
-        bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
-        mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue );
+          mRanges[ name ] = RangeData( min, max, step );
+        }
+        break;
+
+        case CheckBox:
+          mCheckedStates[ name ] = QPair<QString, QString>( editTypeElement.attribute( "checked" ), editTypeElement.attribute( "unchecked" ) );
+          break;
+
+        case ValueRelation:
+        {
+          QString id = editTypeElement.attribute( "layer" );
+          QString key = editTypeElement.attribute( "key" );
+          QString value = editTypeElement.attribute( "value" );
+          bool allowNull = editTypeElement.attribute( "allowNull" ) == "true";
+          bool orderByValue = editTypeElement.attribute( "orderByValue" ) == "true";
+          mValueRelations[ name ] = ValueRelationData( id, key, value, allowNull, orderByValue );
+        }
+        break;
+
+        case Classification:
+        case FileName:
+        case Immutable:
+        case Hidden:
+        case LineEdit:
+        case TextEdit:
+        case Calendar:
+        case Enumeration:
+        case UniqueValues:
+        case UniqueValuesEditable:
+        case UuidGenerator:
+          break;
       }
     }
   }
@@ -3297,6 +3321,7 @@ bool QgsVectorLayer::writeSymbology( QDomNode& node, QDomDocument& doc, QString&
         case Calendar:
         case Enumeration:
         case Immutable:
+        case UuidGenerator:
           break;
       }
 

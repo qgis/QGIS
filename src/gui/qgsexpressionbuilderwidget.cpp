@@ -33,6 +33,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   // The open and save button are for future.
   btnOpen->hide();
   btnSave->hide();
+  highlighter = new QgsExpressionHighlighter( txtExpressionString->document() );
 
   mModel = new QStandardItemModel( );
   mProxyModel = new QgsExpressionItemSearchProxy();
@@ -41,15 +42,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  connect( btnPlusPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnMinusPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnDividePushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnMultiplyPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnExpButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnConcatButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnOpenBracketPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnCloseBracketPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
 
+  foreach (QPushButton* button, this->mOperatorsGroupBox->findChildren<QPushButton *>())
+  {
+      connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
+  }
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
   registerItem( tr( "Operators" ), "+", " + " );
@@ -152,12 +149,22 @@ void QgsExpressionBuilderWidget::loadFieldNames()
     return;
 
   const QgsFieldMap fieldMap = mLayer->pendingFields();
-  QgsFieldMap::const_iterator fieldIt = fieldMap.constBegin();
-  for ( ; fieldIt != fieldMap.constEnd(); ++fieldIt )
+  loadFieldNames( fieldMap );
+}
+
+void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
+{
+  if ( fields.isEmpty() )
+      return;
+
+  QStringList fieldNames;
+  foreach( QgsField field, fields )
   {
-    QString fieldName = fieldIt.value().name();
-    registerItem( tr( "Fields" ), fieldName, " " + fieldName + " ", "", QgsExpressionItem::Field );
+    QString fieldName = field.name();
+    fieldNames << fieldName;
+    registerItem( tr( "Fields" ), fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
   }
+  highlighter->addFields( fieldNames );
 }
 
 void QgsExpressionBuilderWidget::fillFieldValues( int fieldIndex, int countLimit )
@@ -357,72 +364,71 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functionName )
 {
-  if ( functionName != NULL )
+  if ( functionName == NULL )
+    return "";
+
+  // set up the path to the help file
+  QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/function_help/";
+  /*
+   * determine the locale and create the file name from
+   * the context id
+   */
+  QString lang = QLocale::system().name();
+
+  QSettings settings;
+  if ( settings.value( "locale/overrideFlag", false ).toBool() )
   {
-    // set up the path to the help file
-    QString helpFilesPath = QgsApplication::pkgDataPath() + "/resources/function_help/";
-    /*
-     * determine the locale and create the file name from
-     * the context id
-     */
-    QString lang = QLocale::system().name();
-
-    QSettings settings;
-    if ( settings.value( "locale/overrideFlag", false ).toBool() )
-    {
-      QLocale l( settings.value( "locale/userLocale", "en_US" ).toString() );
-      lang = l.name();
-    }
-    /*
-     * If the language isn't set on the system, assume en_US,
-     * otherwise we get the banner at the top of the help file
-     * saying it isn't available in "your" language. Some systems
-     * may be installed without the LANG environment being set.
-     */
-    if ( lang.length() == 0 || lang == "C" )
-    {
-      lang = "en_US";
-    }
-    QString fullHelpPath = helpFilesPath + functionName->text() + "-" + lang;
-    // get the help content and title from the localized file
-    QString helpContents;
-    QFile file( fullHelpPath );
-    // check to see if the localized version exists
-    if ( !file.exists() )
-    {
-      // change the file name to the en_US version (default)
-      fullHelpPath = helpFilesPath + functionName->text() + "-en_US";
-      file.setFileName( fullHelpPath );
-
-      // Check for some sort of english locale and if not found, include
-      // translate this for us message
-      if ( !lang.contains( "en_" ) )
-      {
-        helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team." ).arg( lang ) + "</i><hr />";
-      }
-
-    }
-    if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
-    {
-      helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
-                     .arg( fullHelpPath );
-    }
-    else
-    {
-      QTextStream in( &file );
-      in.setCodec( "UTF-8" ); // Help files must be in Utf-8
-      while ( !in.atEnd() )
-      {
-        QString line = in.readLine();
-        helpContents += line;
-      }
-    }
-    file.close();
-
-    // Set the browser text to the help contents
-    QString myStyle = QgsApplication::reportStyleSheet();
-    helpContents = "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
-    return helpContents;
+    QLocale l( settings.value( "locale/userLocale", "en_US" ).toString() );
+    lang = l.name();
   }
-  return "";
+  /*
+   * If the language isn't set on the system, assume en_US,
+   * otherwise we get the banner at the top of the help file
+   * saying it isn't available in "your" language. Some systems
+   * may be installed without the LANG environment being set.
+   */
+  if ( lang.length() == 0 || lang == "C" )
+  {
+    lang = "en_US";
+  }
+  QString fullHelpPath = helpFilesPath + functionName->text() + "-" + lang;
+  // get the help content and title from the localized file
+  QString helpContents;
+  QFile file( fullHelpPath );
+  // check to see if the localized version exists
+  if ( !file.exists() )
+  {
+    // change the file name to the en_US version (default)
+    fullHelpPath = helpFilesPath + functionName->text() + "-en_US";
+    file.setFileName( fullHelpPath );
+
+    // Check for some sort of english locale and if not found, include
+    // translate this for us message
+    if ( !lang.contains( "en_" ) )
+    {
+      helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team." ).arg( lang ) + "</i><hr />";
+    }
+
+  }
+  if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
+  {
+    helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
+                   .arg( fullHelpPath );
+  }
+  else
+  {
+    QTextStream in( &file );
+    in.setCodec( "UTF-8" ); // Help files must be in Utf-8
+    while ( !in.atEnd() )
+    {
+      QString line = in.readLine();
+      helpContents += line;
+    }
+  }
+  file.close();
+
+  // Set the browser text to the help contents
+  QString myStyle = QgsApplication::reportStyleSheet();
+  helpContents = "<head><style>" + myStyle + "</style></head><body>" + helpContents + "</body>";
+  return helpContents;
 }
