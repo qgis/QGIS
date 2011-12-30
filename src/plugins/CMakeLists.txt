@@ -40,3 +40,5 @@ IF (OSGEARTH_FOUND)
 ENDIF (OSGEARTH_FOUND)
 
 # headers installed in qgis_core target
+
+SUBDIRS (heatmap)
