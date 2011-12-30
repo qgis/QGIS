@@ -64,6 +64,8 @@ class QgsRasterRenderer
 
     void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY );
     bool readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort, int& nCols, int& nRows, void** rasterData, int& topLeftCol, int& topLeftRow );
+    void drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,
+                    int nCols, int nRows, double oversamplingX, double oversamplingY ) const;
     void stopRasterRead( int bandNumber );
 
 

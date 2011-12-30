@@ -17,10 +17,7 @@
 
 #include "qgssinglebandgrayrenderer.h"
 #include "qgscontrastenhancement.h"
-#include "qgsrasterresampler.h"
-#include "qgsrasterviewport.h"
 #include <QImage>
-#include <QPainter>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand, QgsRasterResampler* resampler ):
     QgsRasterRenderer( provider, resampler ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
@@ -78,21 +75,7 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       }
     }
 
-    //draw image
-    //top left position in device coords
-    QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
-    tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
-
-    if ( mResampler ) //resample to output resolution
-    {
-      QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
-      mResampler->resample( img, dstImg );
-      p->drawImage( tlPoint, dstImg );
-    }
-    else //use original image
-    {
-      p->drawImage( tlPoint, img );
-    }
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, nCols, nRows, oversamplingX, oversamplingY );
   }
 
   stopRasterRead( mGrayBand );

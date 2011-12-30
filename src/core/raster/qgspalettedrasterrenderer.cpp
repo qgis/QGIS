@@ -16,14 +16,9 @@
  ***************************************************************************/
 
 #include "qgspalettedrasterrenderer.h"
-#include "qgscoordinatetransform.h"
-#include "qgsmaptopixel.h"
-#include "qgsrasterresampler.h"
 #include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
 #include <QColor>
 #include <QImage>
-#include <QPainter>
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber,
     QColor* colorArray, int nColors, QgsRasterResampler* resampler ):
@@ -44,7 +39,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   }
 
   double oversamplingX, oversamplingY;
-  QgsRasterDataProvider::DataType transparencyType;
+  QgsRasterDataProvider::DataType transparencyType = QgsRasterDataProvider::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
     transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
@@ -122,30 +117,7 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       }
     }
 
-    //top left position in device coords
-    QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
-    tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
-
-    //draw image
-    if ( mResampler ) //resample to output resolution
-    {
-      QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
-      mResampler->resample( img, dstImg );
-      p->drawImage( tlPoint, dstImg );
-
-      //debug output
-      qWarning("*************************************************");
-      qWarning("topleft:");
-      qWarning( QString::number( tlPoint.x() ).toLocal8Bit().data() );
-      qWarning( QString::number( tlPoint.y() ).toLocal8Bit().data() );
-      qWarning("width/height:");
-      qWarning( QString::number( nCols / oversamplingX ).toLocal8Bit().data() );
-      qWarning( QString::number( nRows / oversamplingY ).toLocal8Bit().data() );
-    }
-    else //use original image
-    {
-      p->drawImage( tlPoint, img );
-    }
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, nCols, nRows, oversamplingX, oversamplingY );
   }
 
   //stop raster reading

@@ -16,12 +16,8 @@
  ***************************************************************************/
 
 #include "qgsmultibandcolorrenderer.h"
-#include "qgsmaptopixel.h"
-#include "qgsrasterresampler.h"
 #include "qgsrastertransparency.h"
-#include "qgsrasterviewport.h"
 #include <QImage>
-#include <QPainter>
 #include <QSet>
 
 QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler ):
@@ -43,7 +39,7 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   QgsRasterDataProvider::DataType redType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mRedBand );
   QgsRasterDataProvider::DataType greenType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGreenBand );
   QgsRasterDataProvider::DataType blueType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBlueBand );
-  QgsRasterDataProvider::DataType transparencyType;
+  QgsRasterDataProvider::DataType transparencyType = QgsRasterDataProvider::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
     transparencyType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
@@ -58,7 +54,7 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   }
 
   QMap<int, void*> bandData;
-  void* defaultPointer;
+  void* defaultPointer = 0;
   QSet<int>::const_iterator bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
@@ -66,19 +62,19 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     startRasterRead( *bandIt, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
   }
 
-  void* redData;
-  void* greenData;
-  void* blueData;
-  void* alphaData;
+  void* redData = 0;
+  void* greenData = 0;
+  void* blueData = 0;
+  void* alphaData = 0;
   int nCols, nRows, topLeftCol, topLeftRow;
 
-  bool readSuccess;
+  bool readSuccess = true;
   while ( true )
   {
     QSet<int>::const_iterator bandIt = bands.constBegin();
     for ( ; bandIt != bands.constEnd(); ++bandIt )
     {
-      readSuccess = readNextRasterPart( *bandIt, viewPort, nCols, nRows, &bandData[*bandIt], topLeftCol, topLeftRow );
+      readSuccess = readSuccess && readNextRasterPart( *bandIt, viewPort, nCols, nRows, &bandData[*bandIt], topLeftCol, topLeftRow );
     }
 
     if ( !readSuccess )
@@ -139,21 +135,7 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       }
     }
 
-    //draw image
-    //top left position in device coords
-    QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
-    tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
-
-    if ( mResampler ) //resample to output resolution
-    {
-      QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
-      mResampler->resample( img, dstImg );
-      p->drawImage( tlPoint, dstImg );
-    }
-    else //use original image
-    {
-      p->drawImage( tlPoint, img );
-    }
+    drawImage( p, viewPort, img, topLeftCol, topLeftRow, nCols, nRows, oversamplingX, oversamplingY );
   }
 
   bandIt = bands.constBegin();

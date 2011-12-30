@@ -16,9 +16,12 @@
  ***************************************************************************/
 
 #include "qgsrasterrenderer.h"
+#include "qgsrasterresampler.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
+#include <QImage>
+#include <QPainter>
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler ),
     mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false )
@@ -56,7 +59,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
       providerExtent = t.transformBoundingBox( providerExtent );
     }
     double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
-    oversampling = pixelRatio > 1.0 ? 2.5 : pixelRatio;
+    oversampling = pixelRatio > 1.0 ? 1.0 : pixelRatio;
   }
 
   //split raster into small portions if necessary
@@ -157,4 +160,29 @@ void QgsRasterRenderer::removePartInfo( int bandNumber )
 bool QgsRasterRenderer::usesTransparency() const
 {
   return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !doubleNear( mOpacity, 1.0 ) );
+}
+
+void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,
+                                   int nCols, int nRows, double oversamplingX, double oversamplingY ) const
+{
+  if ( !p || !viewPort )
+  {
+    return;
+  }
+
+  //top left position in device coords
+  QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
+  tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
+
+  //draw image
+  if ( mResampler && !( doubleNear( oversamplingX, 1.0 ) && doubleNear( oversamplingY, 1.0 ) ) ) //resampling with factor 1.0 not useful
+  {
+    QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
+    mResampler->resample( img, dstImg );
+    p->drawImage( tlPoint, dstImg );
+  }
+  else //use original image
+  {
+    p->drawImage( tlPoint, img );
+  }
 }
