@@ -169,9 +169,17 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   QgsLegendGroup *group;
 
   if ( parentGroup )
+  {
     group = new QgsLegendGroup( parentGroup, name );
+  }
   else
+  {
     group = new QgsLegendGroup( this, name );
+    if ( currentItem() )
+    {
+      moveItem( group, currentItem() );
+    }
+  }
 
   QModelIndex groupIndex = indexFromItem( group );
   setExpanded( groupIndex, expand );
@@ -808,19 +816,34 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   blockSignals( false );
 
   QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
-  QSettings settings;
   if ( !lg && currentItem() )
   {
     lg = dynamic_cast<QgsLegendGroup *>( currentItem()->parent() );
   }
 
-  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  int index;
+  if ( lg )
   {
-    lg->insertChild( 0, llayer );
+    index = lg->indexOfChild( currentItem() );
   }
   else
   {
-    insertTopLevelItem( 0, llayer );
+    index = indexOfTopLevelItem( currentItem() );
+  }
+
+  if ( index < 0 )
+  {
+    index = 0;
+  }
+
+  QSettings settings;
+  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  {
+    lg->insertChild( index, llayer );
+  }
+  else
+  {
+    insertTopLevelItem( index, llayer );
     setCurrentItem( llayer );
   }
 

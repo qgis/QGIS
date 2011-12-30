@@ -42,15 +42,11 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
-  connect( btnPlusPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnMinusPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnDividePushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnMultiplyPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnExpButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnConcatButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnOpenBracketPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
-  connect( btnCloseBracketPushButton, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
 
+  foreach (QPushButton* button, this->mOperatorsGroupBox->findChildren<QPushButton *>())
+  {
+      connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
+  }
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
   registerItem( tr( "Operators" ), "+", " + " );
