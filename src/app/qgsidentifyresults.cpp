@@ -460,6 +460,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   {
     mActionPopup->addSeparator();
 
+    int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
+
     // The assumption is made that an instance of QgsIdentifyResults is
     // created for each new Identify Results dialog box, and that the
     // contents of the popup menu doesn't change during the time that
@@ -471,7 +473,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ idx ], vlayer, i, idx, this );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx, this );
       mActionPopup->addAction( QgisApp::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
     }
   }
