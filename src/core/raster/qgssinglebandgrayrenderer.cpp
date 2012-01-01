@@ -17,6 +17,7 @@
 
 #include "qgssinglebandgrayrenderer.h"
 #include "qgscontrastenhancement.h"
+#include "qgsrastertransparency.h"
 #include <QImage>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand, QgsRasterResampler* resampler ):
@@ -37,20 +38,40 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
   double oversamplingX, oversamplingY;
   startRasterRead( mGrayBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
+  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+  {
+    startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
+  }
 
   int nCols = 0;
   int nRows = 0;
   int topLeftCol = 0;
   int topLeftRow = 0;
   QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGrayBand );
+  QgsRasterDataProvider::DataType alphaType = QgsRasterDataProvider::UnknownDataType;
+  if ( mAlphaBand > 0 )
+  {
+    alphaType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mAlphaBand );
+  }
   void* rasterData;
-  //double currentOpacity = mOpacity;
+  void* alphaData;
+  double currentAlpha = mOpacity;
   int grayVal;
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
 
   while ( readNextRasterPart( mGrayBand, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
   {
+    if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+    {
+      readNextRasterPart( mAlphaBand, viewPort, nCols, nRows, &alphaData, topLeftCol, topLeftRow );
+    }
+    else if ( mAlphaBand > 0 )
+    {
+      alphaData = rasterData;
+    }
+
+
     //create image
     QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
@@ -79,7 +100,25 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
           grayVal = 255 - grayVal;
         }
 
-        imageScanLine[j] = qRgba( grayVal, grayVal, grayVal, 255 );
+        //alpha
+        currentAlpha = mOpacity;
+        if ( mRasterTransparency )
+        {
+          currentAlpha = mRasterTransparency->alphaValue( grayVal, mOpacity * 255 ) / 255.0;
+        }
+        if ( mAlphaBand > 0 )
+        {
+          currentAlpha *= ( readValue( alphaData, alphaType, currentRasterPos ) / 255.0 );
+        }
+
+        if ( doubleNear( currentAlpha, 255 ) )
+        {
+          imageScanLine[j] = qRgba( grayVal, grayVal, grayVal, 255 );
+        }
+        else
+        {
+          imageScanLine[j] = qRgba( currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * grayVal, currentAlpha * 255 );
+        }
         ++currentRasterPos;
       }
     }
@@ -88,4 +127,9 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   }
 
   stopRasterRead( mGrayBand );
+  if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
+  {
+    stopRasterRead( mAlphaBand );
+  }
+
 }
