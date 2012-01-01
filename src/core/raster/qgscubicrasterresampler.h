@@ -34,11 +34,13 @@ class QgsCubicRasterResampler: public QgsRasterResampler
     static void yDerivativeMatrix( int nCols, int nRows, double* matrix, const int* colorMatrix );
 
     void calculateControlPoints( int nCols, int nRows, int currentRow, int currentCol, int* redMatrix, int* greenMatrix, int* blueMatrix,
-                                 double* xDerivativeMatrixRed, double* xDerivativeMatrixGreen, double* xDerivativeMatrixBlue,
-                                 double* yDerivativeMatrixRed, double* yDerivativeMatrixGreen, double* yDerivativeMatrixBlue );
+                                 int* alphaMatrix, double* xDerivativeMatrixRed, double* xDerivativeMatrixGreen, double* xDerivativeMatrixBlue,
+                                 double* xDerivativeMatrixAlpha, double* yDerivativeMatrixRed, double* yDerivativeMatrixGreen, double* yDerivativeMatrixBlue,
+                                 double* yDerivativeMatrixAlpha );
 
     /**Use cubic curve interpoation at the borders of the raster*/
-    QRgb curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue , double d2red, double d2green, double d2blue );
+    QRgb curveInterpolation( QRgb pt1, QRgb pt2, double t, double d1red, double d1green, double d1blue, double d1alpha, double d2red, double d2green,
+                             double d2blue, double d2alpha );
 
     static double calcBernsteinPoly( int n, int i, double t );
     static int lower( int n, int i );
@@ -56,6 +58,9 @@ class QgsCubicRasterResampler: public QgsRasterResampler
     //blue
     double cBlue00; double cBlue10; double cBlue20; double cBlue30; double cBlue01; double cBlue11; double cBlue21; double cBlue31;
     double cBlue02; double cBlue12; double cBlue22; double cBlue32; double cBlue03; double cBlue13; double cBlue23; double cBlue33;
+    //alpha
+    double cAlpha00; double cAlpha10; double cAlpha20; double cAlpha30; double cAlpha01; double cAlpha11; double cAlpha21; double cAlpha31;
+    double cAlpha02; double cAlpha12; double cAlpha22; double cAlpha32; double cAlpha03; double cAlpha13; double cAlpha23; double cAlpha33;
 };
 
 #endif // QGSCUBICRASTERRESAMPLER_H
