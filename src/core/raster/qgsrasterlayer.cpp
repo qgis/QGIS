@@ -835,15 +835,14 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
           QgsRasterBandStats myGrayBandStats = bandStatistics( grayBand );
           setMaximumValue( grayBand, myGrayBandStats.mean + ( mStandardDeviations * myGrayBandStats.stdDev ) );
           setMinimumValue( grayBand, myGrayBandStats.mean - ( mStandardDeviations * myGrayBandStats.stdDev ) );
-          r.setContrastEnhancement( contrastEnhancement( grayBand ) );
         }
         else if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum )
         {
           mGrayMinimumMaximumEstimated = true;
           setMaximumValue( grayBand, mDataProvider->maximumValue( grayBand ) );
-          setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );
-          r.setContrastEnhancement( contrastEnhancement( grayBand ) );
+          setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );     
         }
+        r.setContrastEnhancement( contrastEnhancement( grayBand ) );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
 #if 0

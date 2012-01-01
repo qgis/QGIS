@@ -46,6 +46,8 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   void* rasterData;
   //double currentOpacity = mOpacity;
   int grayVal;
+  QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
+
 
   while ( readNextRasterPart( mGrayBand, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
   {
@@ -60,8 +62,15 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       for ( int j = 0; j < nCols; ++j )
       {
         grayVal = readValue( rasterData, rasterType, currentRasterPos );
+
         if ( mContrastEnhancement )
         {
+          if ( !mContrastEnhancement->isValueInDisplayableRange( grayVal ) )
+          {
+            imageScanLine[ j ] = myDefaultColor;
+            ++currentRasterPos;
+            continue;
+          }
           grayVal = mContrastEnhancement->enhanceContrast( grayVal );
         }
 
