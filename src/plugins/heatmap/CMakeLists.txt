@@ -5,6 +5,7 @@
 SET (heatmap_SRCS
      heatmap.cpp
      heatmapgui.cpp
+     qgsfrequencyinterpolator.cpp
 )
 
 SET (heatmap_UIS heatmapguibase.ui)
@@ -12,6 +13,7 @@ SET (heatmap_UIS heatmapguibase.ui)
 SET (heatmap_MOC_HDRS
      heatmap.h
      heatmapgui.h
+     qgsfrequencyinterpolator.h
 )
 
 SET (heatmap_RCCS  heatmap.qrc)
@@ -30,7 +32,7 @@ ADD_LIBRARY (heatmapplugin MODULE ${heatmap_SRCS} ${heatmap_MOC_SRCS} ${heatmap_
 INCLUDE_DIRECTORIES(
      ${CMAKE_CURRENT_BINARY_DIR}
      ../../core ../../core/raster ../../core/renderer ../../core/symbology
-     ../../gui
+     ../../gui ../../analysis/interpolation
      ..
 )
 

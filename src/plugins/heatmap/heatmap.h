@@ -40,6 +40,7 @@
 
 //QGIS includes
 #include "../qgisplugin.h"
+#include "qgsvectorlayer.h"
 
 //forward declarations
 class QAction;
@@ -47,10 +48,11 @@ class QToolBar;
 
 class QgisInterface;
 
+
 /**
-* \class Plugin
-* \brief [name] plugin for QGIS
-* [description]
+* \class Heatmap
+* \brief Heatmap plugin for QGIS
+* Create a Heatmap raster from the input point vector
 */
 class Heatmap: public QObject, public QgisPlugin
 {
@@ -83,7 +85,7 @@ class Heatmap: public QObject, public QgisPlugin
     void help();
 
     //! The worker slot, which creates the heatmap
-    void createRasterOutput();
+    void createRasterOutput( QgsVectorLayer* );
 
   private:
 

@@ -15,6 +15,8 @@
 #include <QDialog>
 #include <ui_heatmapguibase.h>
 
+#include "qgsvectorlayer.h"
+
 /**
 @author Tim Sutton
 */
@@ -35,7 +37,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mBrowseButton_clicked();
 
   signals:
-    void createRasterOutput();
+    void createRasterOutput( QgsVectorLayer* );
 
 };
 

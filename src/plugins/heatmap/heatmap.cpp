@@ -1,7 +1,7 @@
 /***************************************************************************
-  heatmap.cpp
-  Generate a heatmap raster for a input point vector.
-  -------------------
+                            heatmap.cpp
+        Generate a heatmap raster for a input point vector
+        --------------------------------------------------
          begin                : [29 Dec 2011]
          copyright            : [(C) Arunmozhi and 2012]
          email                : [aruntheguy at gmail dot com]
@@ -21,6 +21,9 @@
 
 #include <qgisinterface.h>
 #include <qgisgui.h>
+#include <qgis.h>
+
+#include "qgsvectorlayer.h"
 
 #include "heatmap.h"
 #include "heatmapgui.h"
@@ -31,6 +34,7 @@
 
 #include <QAction>
 #include <QToolBar>
+#include <QMessageBox>
 
 
 static const QString sName = QObject::tr( "Heatmap" );
@@ -96,7 +100,7 @@ void Heatmap::run()
   myHeatmapPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   // Listen for the signal from gui to create the raster
-  connect( myHeatmapPluginGui, SIGNAL( createRasterOutput() ), this, SLOT( createRasterOutput() ) );
+  connect( myHeatmapPluginGui, SIGNAL( createRasterOutput( QgsVectorLayer* ) ), this, SLOT( createRasterOutput( QgsVectorLayer* ) ) );
 
   myHeatmapPluginGui->show();
 }
@@ -110,10 +114,20 @@ void Heatmap::unload()
   delete mQActionPointer;
 }
 
-void Heatmap::createRasterOutput()
+// Create Raster and load it into view
+void Heatmap::createRasterOutput( QgsVectorLayer* theLayer )
 {
-    // Create the raster and load it into the view
+    // Check if it is a point layer
+    if( theLayer->geometryType() != 0 )
+    {
+        QMessageBox msgBox;
+        msgBox.setText( "The Vector layer selected is not a Point layer" );
+        msgBox.exec();
+        return;
+    }
+
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 //

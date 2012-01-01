@@ -95,8 +95,22 @@ void HeatmapGui::enableOrDisableOkButton()
 
 void HeatmapGui::on_mButtonBox_accepted()
 {
-    //emit signal to start working logic
+    QString myLayerName = mInputVectorCombo->currentText();
 
+    QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+    QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
+
+    while(layers.hasNext())
+        {
+            layers.next();
+            QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
+            if( vl->name() == myLayerName )
+                {
+                    emit createRasterOutput(vl);
+                }
+        }
+
+    //emit signal to start working logic
 
     // and finally
     accept();
