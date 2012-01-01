@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionhighlighter.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
@@ -119,6 +120,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       */
     void loadFieldNames();
 
+    void loadFieldNames( QgsFieldMap fields );
+
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
     QString getExpressionString();
@@ -136,6 +139,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void registerItem( QString group, QString label, QString expressionText,
                        QString helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
+
 
   public slots:
     void on_expressionTree_clicked( const QModelIndex &index );
@@ -166,6 +170,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
+    QgsExpressionHighlighter* highlighter;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

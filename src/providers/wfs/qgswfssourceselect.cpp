@@ -422,11 +422,7 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
       return;
     }
 
-    QgsFieldMap::const_iterator fieldIt = fields.constBegin();
-    for ( ; fieldIt != fields.constEnd(); ++fieldIt )
-    {
-      w->registerItem( tr( "Fields" ), fieldIt->name(), " " + fieldIt->name() + " ", "", QgsExpressionItem::Field );
-    }
+    w->loadFieldNames( fields );
 
     if ( d.exec() == QDialog::Accepted )
     {

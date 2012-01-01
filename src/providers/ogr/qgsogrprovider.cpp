@@ -460,7 +460,19 @@ QStringList QgsOgrProvider::subLayers() const
 
 void QgsOgrProvider::setEncoding( const QString& e )
 {
+#if defined(OLCStringsAsUTF8)
+  if ( !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  {
+    QgsVectorDataProvider::setEncoding( e );
+  }
+  else
+  {
+    QgsVectorDataProvider::setEncoding( "UTF-8" );
+  }
+#else
   QgsVectorDataProvider::setEncoding( e );
+#endif
+
   loadFields();
 }
 
@@ -523,17 +535,17 @@ void QgsOgrProvider::loadFields()
       mAttributeFields.insert(
         i, QgsField(
           //TODO: fix this hack
-          #ifdef ANDROID
-            OGR_Fld_GetNameRef( fldDef ),
-          #else
-            mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ),
-          #endif
+#ifdef ANDROID
+          OGR_Fld_GetNameRef( fldDef ),
+#else
+          mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ),
+#endif
           varType,
-          #ifdef ANDROID
-            OGR_GetFieldTypeName( ogrType ),
-          #else
-            mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
-          #endif
+#ifdef ANDROID
+          OGR_GetFieldTypeName( ogrType ),
+#else
+          mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+#endif
           OGR_Fld_GetWidth( fldDef ),
           OGR_Fld_GetPrecision( fldDef ) ) );
     }
@@ -2117,7 +2129,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     sql += QString( " WHERE %1" ).arg( mSubsetString );
   }
 
-  sql += QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+  sql += QString( " ORDER BY %1 ASC" ).arg( fld.name() );  // quoting of fieldname produces a syntax error
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
   OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
@@ -2127,7 +2139,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   OGRFeatureH f;
   while ( 0 != ( f = OGR_L_GetNextFeature( l ) ) )
   {
-    uniqueValues << convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+    uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
 
     if ( limit >= 0 && uniqueValues.size() >= limit )
@@ -2169,7 +2181,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
     return QVariant();
   }
 
-  QVariant value = convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -2208,7 +2220,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
     return QVariant();
   }
 
-  QVariant value = convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );

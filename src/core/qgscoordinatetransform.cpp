@@ -392,20 +392,20 @@ void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
     std::vector<double> xd( x.size() );
     std::vector<double> yd( y.size() );
     std::vector<double> zd( z.size() );
-    for( int i = 0; i < vectorSize; ++i )
+    for ( int i = 0; i < vectorSize; ++i )
     {
-        xd[i] = x[i];
-        yd[i] = y[i];
-        zd[i] = z[i];
+      xd[i] = x[i];
+      yd[i] = y[i];
+      zd[i] = z[i];
     }
     transformCoords( x.size(), &xd[0], &yd[0], &zd[0], direction );
 
     //copy back
-    for( int i = 0; i < vectorSize; ++i )
+    for ( int i = 0; i < vectorSize; ++i )
     {
-        x[i] = xd[i];
-        y[i] = yd[i];
-        z[i] = zd[i];
+      x[i] = xd[i];
+      y[i] = yd[i];
+      z[i] = zd[i];
     }
   }
   catch ( QgsCsException &cse )

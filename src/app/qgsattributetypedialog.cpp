@@ -279,6 +279,10 @@ void QgsAttributeTypeDialog::setPageForEditType( QgsVectorLayer::EditType editTy
     case QgsVectorLayer::ValueRelation:
       setPage( 12 );
       break;
+
+    case QgsVectorLayer::UuidGenerator:
+      setPage( 13 );
+      break;
   }
 }
 
@@ -419,7 +423,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     break;
 
     case QgsVectorLayer::UniqueValuesEditable:
-      editableUniqueValues->setChecked( editType == QgsVectorLayer::UniqueValuesEditable );
+      editableUniqueValues->setChecked( true );
       break;
 
     case QgsVectorLayer::ValueRelation:
@@ -440,6 +444,7 @@ void QgsAttributeTypeDialog::setIndex( int index, QgsVectorLayer::EditType editT
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::TextEdit:
     case QgsVectorLayer::Calendar:
+    case QgsVectorLayer::UuidGenerator:
       break;
   }
 }
@@ -599,6 +604,9 @@ void QgsAttributeTypeDialog::accept()
       mValueRelationData.mValue = valueRelationValueColumn->currentText();
       mValueRelationData.mAllowNull = valueRelationAllowNull->isChecked();
       mValueRelationData.mOrderByValue = valueRelationOrderByValue->isChecked();
+      break;
+    case 13:
+      mEditType = QgsVectorLayer::UuidGenerator;
       break;
   }
 

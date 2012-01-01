@@ -20,9 +20,9 @@
 
 class QgsMessageLogConsole;
 
-void (*QgsMessageLog::gmLogger)( QString message, QString tag, int level ) = 0;
+void ( *QgsMessageLog::gmLogger )( QString message, QString tag, int level ) = 0;
 
-void QgsMessageLog::setLogger( void (*f)( QString message, QString tag, int level ) )
+void QgsMessageLog::setLogger( void ( *f )( QString message, QString tag, int level ) )
 {
   gmLogger = f;
 }
@@ -31,7 +31,7 @@ void QgsMessageLog::logMessage( QString message, QString tag, int level )
 {
   QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( tag ).arg( level ).arg( message ) );
 
-  if( !gmLogger )
+  if ( !gmLogger )
     QgsMessageLogConsole::logger( message, tag, level );
   else
     gmLogger( message, tag, level );

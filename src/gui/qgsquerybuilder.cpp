@@ -18,6 +18,7 @@
 #include <QMessageBox>
 #include <QRegExp>
 #include <QPushButton>
+#include <QSettings>
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 
@@ -99,12 +100,18 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   QList<QVariant> values;
   mLayer->uniqueValues( idx, values, limit );
 
+  QSettings settings;
+  QString nullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+
+  QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
+
   for ( int i = 0; i < values.size(); i++ )
   {
-    QStandardItem *myItem = new QStandardItem( values[i].toString() );
+    QStandardItem *myItem = new QStandardItem( values[i].isNull() ? nullValue : values[i].toString() );
     myItem->setEditable( false );
-    myItem->setData( values[i] );
+    myItem->setData( values[i], Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
+    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( values[i].isNull() ).arg( values[i].isNull() ? nullValue : values[i].toString() ) );
   }
 }
 
@@ -268,9 +275,9 @@ void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
 void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
 {
   QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
-  if( value.isNull() )
+  if ( value.isNull() )
     txtSQL->insertPlainText( "NULL" );
-  else if( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
+  else if ( value.type() == QVariant::Int || value.type() == QVariant::Double || value.type() == QVariant::LongLong )
     txtSQL->insertPlainText( value.toString() );
   else
     txtSQL->insertPlainText( "'" + value.toString() + "'" );
