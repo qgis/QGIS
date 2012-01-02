@@ -1451,6 +1451,26 @@ De plugin wordt niet geactiveerd.</translation>
         <source>Tool to analyze and visualize DEMs</source>
         <translation>Gereedschap om DEM&apos;s te analyseren en visualiseren</translation>
     </message>
+    <message>
+        <source>Projections</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Conversion</source>
+        <translation type="unfinished">Converteren</translation>
+    </message>
+    <message>
+        <source>Extraction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Analysis</source>
+        <translation type="unfinished">Analyse</translation>
+    </message>
+    <message>
+        <source>Miscellaneous</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsAboutDialog</name>
@@ -1817,6 +1837,26 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
         <source>Select the input directory with files for convert</source>
         <translation>Selecteer de invoermap met de te converteren bestanden</translation>
     </message>
+    <message>
+        <source>Edit</source>
+        <translation type="unfinished">Bewerken</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation type="unfinished">Terug naar beginwaarden</translation>
+    </message>
+    <message>
+        <source>Finished</source>
+        <translation type="unfinished">Klaar</translation>
+    </message>
+    <message>
+        <source>Processing completed.</source>
+        <translation type="unfinished">Verwerking afgerond.</translation>
+    </message>
+    <message>
+        <source>%1 not created.</source>
+        <translation type="unfinished">%1 niet aangemaakt.</translation>
+    </message>
 </context>
 <context>
     <name>GdalToolsExtentSelector</name>
@@ -1883,7 +1923,7 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>Path to the GDAL binaries</source>
-        <translation>Pad naar GDAL programma&apos;s</translation>
+        <translation type="obsolete">Pad naar GDAL programma&apos;s</translation>
     </message>
     <message>
         <source>Browse</source>
@@ -1903,7 +1943,7 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     </message>
     <message>
         <source>GDAL pymod path</source>
-        <translation>GDAL pymod pad</translation>
+        <translation type="obsolete">GDAL pymod pad</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
@@ -1912,6 +1952,37 @@ Deaktiveer de &quot;Gebruik doorsnede extent&quot;-optie om een niet leeg result
     <message>
         <source>Select directory with the GDAL documentation</source>
         <translation>Selecteer de map met GDAL documentatie</translation>
+    </message>
+    <message>
+        <source>Path to the GDAL executables</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to the GDAL python modules</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A list of colon-separated (Linux and MacOS) or 
+semicolon-separated (Windows) paths to both binaries 
+and python executables.
+
+MacOS users usually need to set it to something like
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>A list of colon-separated (Linux and MacOS) or 
+semicolon-separated (Windows) paths to python modules.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Useful to open local GDAL documentation instead of online help 
+when pressing on the tool dialog&apos;s Help button.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select directory with GDAL python modules</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2676,10 +2747,6 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
     <message>
         <source>Slope</source>
         <translation>&apos;Slope&apos;</translation>
-    </message>
-    <message>
-        <source>Create an output alpha band</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3876,6 +3943,34 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
         <source>Removes all selected members.</source>
         <translation>Verwijdert alle geselecteerde onderdelen.</translation>
     </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished">Opslaan</translation>
+    </message>
+    <message>
+        <source>Edit OSM relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>for grouping boundaries and marking enclaves / exclaves</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>to put holes into areas (might have to be renamed, see article)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>any kind of turn restriction</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>like bus routes, cycle routes and numbered highways</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OsmDownloadDlg</name>
@@ -3982,6 +4077,18 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     <message>
         <source>Cancel</source>
         <translation>Annuleren</translation>
+    </message>
+    <message>
+        <source>Check your internet connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Choose file to save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Files (*.osm)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4110,6 +4217,18 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
         <source>Remove this feature</source>
         <translation>Object verwijderen</translation>
     </message>
+    <message>
+        <source>Snapping ON. Hold Ctrl to disable it.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hide OSM Edit History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show OSM Edit History</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OsmImportDlg</name>
@@ -4128,6 +4247,30 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     <message>
         <source>Import only current selection</source>
         <translation>Alleen huidige selectie importeren</translation>
+    </message>
+    <message>
+        <source>Layer doesn&apos;t exist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The selected layer doesn&apos;t exist anymore!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Importing features...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cancel</source>
+        <translation type="unfinished">Annuleren</translation>
+    </message>
+    <message>
+        <source>Import</source>
+        <translation type="unfinished">Importeren</translation>
+    </message>
+    <message>
+        <source>Import has been completed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4155,6 +4298,144 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     <message>
         <source>Replace current data (current layers will be removed)</source>
         <translation>Huidige data vervangen (huidige laag zal worden verwijderd)</translation>
+    </message>
+    <message>
+        <source>Choose an Open Street Map file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Files (*.osm)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter path to OSM data file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Path to OSM file is invalid: %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Fout</translation>
+    </message>
+    <message>
+        <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load polygon layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load line layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load point layer.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not connect to setRenderer signal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Failed to load layers: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OsmPlugin</name>
+    <message>
+        <source>Load OSM from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Load OpenStreetMap from file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import data from a layer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Import data from a layer to OpenStreetMap</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Save OSM to file</source>
+        <translation type="unfinished">OSM naar bestand opslaan</translation>
+    </message>
+    <message>
+        <source>Save OpenStreetMap to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Download OSM data</source>
+        <translation type="unfinished">OSM data Downloaden</translation>
+    </message>
+    <message>
+        <source>Download OpenStreetMap data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload OSM data</source>
+        <translation type="unfinished">OSM data Uploaden</translation>
+    </message>
+    <message>
+        <source>Upload OpenStreetMap data</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show/Hide OSM Feature Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show/Hide OpenStreetMap Feature Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sorry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You don&apos;t have OSM provider installed!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Save to file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
+Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Upload</source>
+        <translation type="unfinished">OSM Uploaden</translation>
+    </message>
+    <message>
+        <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
+Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Import</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
+Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>There are currently no available vector layers.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4222,6 +4503,14 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     <message>
         <source>Tags</source>
         <translation>Tags</translation>
+    </message>
+    <message>
+        <source>Choose an Open Street Map file</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OSM Files (*.osm)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4308,6 +4597,74 @@ Ruimtelijk Referentie Systeem (CRS) fout: 1 of meer invoerlagen missen CRS-infor
     <message>
         <source>Save password</source>
         <translation>Wachtwoord bewaren</translation>
+    </message>
+    <message>
+        <source>Upload</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node addition failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node update failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Node deletion failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Way addition failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Way update failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Way deletion failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation addition failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation update failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Relation deletion failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Changeset closing failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Authentication failed. Please try again with correct login and password.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting host failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting user and password failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Setting proxy failed.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6173,7 +6530,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Plugins</source>
-        <translation>Plugins</translation>
+        <translation type="obsolete">Plugins</translation>
     </message>
     <message>
         <source>Problem deleting features</source>
@@ -6394,7 +6751,7 @@ Dubbelklik op een laag in de legenda om de verschijning of andere eigenschappen 
     </message>
     <message>
         <source>Version</source>
-        <translation>Versie</translation>
+        <translation type="obsolete">Versie</translation>
     </message>
     <message>
         <source>&amp;View</source>
@@ -7470,291 +7827,287 @@ QWT Version: %1.</source>
     </message>
     <message utf8="true">
         <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
-        <translation>Wat is nieuw in Versie 1.7.0 &apos;Wrocław&apos;?</translation>
+        <translation type="obsolete">Wat is nieuw in Versie 1.7.0 &apos;Wrocław&apos;?</translation>
     </message>
     <message utf8="true">
         <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
-        <translation>Deze versie is genoemd naar de stad Wrocław in Polen. De afdeling Klimatologie en Atmosfeerbescherming van de Universiteit van Wrocław verzorgde onze laatste ontwikkelaars-bijeenkomst in november 2010. Merk op dat dit een versie is uit onze &apos;cutting edge&apos; serie. Deze bevat nieuwe onderdelen en uitbreidingen op de interface van QGIS 1.0.x en 1.6.0. Zoals bij elke software het geval is, kunnen er &apos;bugs&apos; of problemen zijn die niet optijd opgelost konden worden voor het uitbrengen van deze versie. Daarom adviseren we deze versie te testen voordat deze en-masse wordt uitgerold naar uw gebruikers.</translation>
+        <translation type="obsolete">Deze versie is genoemd naar de stad Wrocław in Polen. De afdeling Klimatologie en Atmosfeerbescherming van de Universiteit van Wrocław verzorgde onze laatste ontwikkelaars-bijeenkomst in november 2010. Merk op dat dit een versie is uit onze &apos;cutting edge&apos; serie. Deze bevat nieuwe onderdelen en uitbreidingen op de interface van QGIS 1.0.x en 1.6.0. Zoals bij elke software het geval is, kunnen er &apos;bugs&apos; of problemen zijn die niet optijd opgelost konden worden voor het uitbrengen van deze versie. Daarom adviseren we deze versie te testen voordat deze en-masse wordt uitgerold naar uw gebruikers.</translation>
     </message>
     <message>
         <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation>Deze versie bevat meer dan 277 &apos;bug fixes&apos; en veel nieuwe onderdelen en verbeteringen. Het is onmogelijk om alles wat veranderd is hier te beschrijven, daarom wordt slechts een lijst met de belangrijkste nieuwe onderdelen gegeven.</translation>
+        <translation type="obsolete">Deze versie bevat meer dan 277 &apos;bug fixes&apos; en veel nieuwe onderdelen en verbeteringen. Het is onmogelijk om alles wat veranderd is hier te beschrijven, daarom wordt slechts een lijst met de belangrijkste nieuwe onderdelen gegeven.</translation>
     </message>
     <message>
         <source>Symbology labels and diagrams</source>
-        <translation>Symbologie, labels en diagrammen</translation>
+        <translation type="obsolete">Symbologie, labels en diagrammen</translation>
     </message>
     <message>
         <source>New symbology now used by default!</source>
-        <translation>Nieuwe symbologie wordt nu standaard gebruikt!</translation>
+        <translation type="obsolete">Nieuwe symbologie wordt nu standaard gebruikt!</translation>
     </message>
     <message>
         <source>Diagram system that uses the same smart placement system as labeling-ng</source>
-        <translation>Het Diagram-systeem gebruikt hetzelfde intelligente plaatsingssysteem als het labelen</translation>
+        <translation type="obsolete">Het Diagram-systeem gebruikt hetzelfde intelligente plaatsingssysteem als het labelen</translation>
     </message>
     <message>
         <source>Export and import of styles (symbology-ng).</source>
-        <translation>Exporteren en importeren van stijlen (symbology-ng).</translation>
+        <translation type="obsolete">Exporteren en importeren van stijlen (symbology-ng).</translation>
     </message>
     <message>
         <source>Labels for rules in rule-based renderers.</source>
-        <translation>Labels voor de regels bij de regelgebaseerder renderers.</translation>
+        <translation type="obsolete">Labels voor de regels bij de regelgebaseerder renderers.</translation>
     </message>
     <message>
         <source>Ability to set label distance in map units.</source>
-        <translation>Mogelijkheid om label-afstand in te stellen in kaarteenheden.</translation>
+        <translation type="obsolete">Mogelijkheid om label-afstand in te stellen in kaarteenheden.</translation>
     </message>
     <message>
         <source>Rotation for svg fills.</source>
-        <translation>Hoek voor SVG-vuling.</translation>
+        <translation type="obsolete">Hoek voor SVG-vuling.</translation>
     </message>
     <message>
         <source>Font marker can have an X,Y offset.</source>
-        <translation>X,Y-verschuiving voor font-symbolen.</translation>
+        <translation type="obsolete">X,Y-verschuiving voor font-symbolen.</translation>
     </message>
     <message>
         <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
-        <translation>Gebruik de lijnsymbologie als omtrek van een polygoonsymbool.</translation>
+        <translation type="obsolete">Gebruik de lijnsymbologie als omtrek van een polygoonsymbool.</translation>
     </message>
     <message>
         <source>Option to put marker on the central point of a line.</source>
-        <translation>Plaats een puntsymbool op het midden van een lijn.</translation>
+        <translation type="obsolete">Plaats een puntsymbool op het midden van een lijn.</translation>
     </message>
     <message>
         <source>Option to put marker only on first/last vertex of a line.</source>
-        <translation>Plaats puntsumbolen op alleen de uiteinden van een lijn.</translation>
+        <translation type="obsolete">Plaats puntsumbolen op alleen de uiteinden van een lijn.</translation>
     </message>
     <message>
         <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
-        <translation>Plaats een puntsymbool op het midden van een polygoon met de &quot;centroid fill&quot;-laag.</translation>
+        <translation type="obsolete">Plaats een puntsymbool op het midden van een polygoon met de &quot;centroid fill&quot;-laag.</translation>
     </message>
     <message>
         <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
-        <translation>Plaats puntsymbolen op elk knikpunt van een lijn.</translation>
+        <translation type="obsolete">Plaats puntsymbolen op elk knikpunt van een lijn.</translation>
     </message>
     <message>
         <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
-        <translation>Tools voor het verplaatsen, roteren en aanpassen van labels op basis van data.</translation>
+        <translation type="obsolete">Tools voor het verplaatsen, roteren en aanpassen van labels op basis van data.</translation>
     </message>
     <message>
         <source>New Tools</source>
-        <translation>Nieuwe Tools</translation>
+        <translation type="obsolete">Nieuwe Tools</translation>
     </message>
     <message>
         <source>Added GUI for gdaldem.</source>
-        <translation>GUI voor gdaldem toegevoegd.</translation>
+        <translation type="obsolete">GUI voor gdaldem toegevoegd.</translation>
     </message>
     <message>
         <source>Added &apos;Lines to polygons&apos; tool to vector menu.</source>
-        <translation>&apos;Lijnen naar polygonen&apos;-tool aan het vectormenu toegevoegd.</translation>
+        <translation type="obsolete">&apos;Lijnen naar polygonen&apos;-tool aan het vectormenu toegevoegd.</translation>
     </message>
     <message>
         <source>Added field calculator with functions like $x, $y and $perimeter.</source>
-        <translation>Veldcalculator met functies als $x, $y en $perimeter (omtrek) toegevoegd.</translation>
+        <translation type="obsolete">Veldcalculator met functies als $x, $y en $perimeter (omtrek) toegevoegd.</translation>
     </message>
     <message>
         <source>Added voronoi polygon tool to Vector menu.</source>
-        <translation>Voronoi-polygoon tool toegevoegd aan het vectormenu.</translation>
+        <translation type="obsolete">Voronoi-polygoon tool toegevoegd aan het vectormenu.</translation>
     </message>
     <message>
         <source>User interface updates</source>
-        <translation>Gebruikers-interface aanpassingen</translation>
+        <translation type="obsolete">Gebruikers-interface aanpassingen</translation>
     </message>
     <message>
         <source>Allow managing missing layers in a list.</source>
-        <translation>Toestaan om naar missende lagen te zoeken in een lijst.</translation>
+        <translation type="obsolete">Toestaan om naar missende lagen te zoeken in een lijst.</translation>
     </message>
     <message>
         <source>Zoom to group of layers.</source>
-        <translation>Zoom in op een groep kaartlagen.</translation>
+        <translation type="obsolete">Zoom in op een groep kaartlagen.</translation>
     </message>
     <message>
         <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
-        <translation>&apos;Tip van de dag&apos; tijdens het opstarten. Kan worden aan- of uitgezet in het opties-venster.</translation>
+        <translation type="obsolete">&apos;Tip van de dag&apos; tijdens het opstarten. Kan worden aan- of uitgezet in het opties-venster.</translation>
     </message>
     <message>
         <source>Better organisation of menus, separate database menu added.</source>
-        <translation>Beter georganiseerde menu&apos;s, apart database-menu toegevoegd.</translation>
+        <translation type="obsolete">Beter georganiseerde menu&apos;s, apart database-menu toegevoegd.</translation>
     </message>
     <message>
         <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
-        <translation>Mogelijkheid om het aantal objecten per legenda-klasse te tonen. Toegankelijk met een rechtermuis-klik op de kaartlaag.</translation>
+        <translation type="obsolete">Mogelijkheid om het aantal objecten per legenda-klasse te tonen. Toegankelijk met een rechtermuis-klik op de kaartlaag.</translation>
     </message>
     <message>
         <source>General clean-ups and usability improvements.</source>
-        <translation>Algemene opschoning en verbeteringen.</translation>
+        <translation type="obsolete">Algemene opschoning en verbeteringen.</translation>
     </message>
     <message>
         <source>CRS Handling</source>
-        <translation>CRS Gebruik</translation>
+        <translation type="obsolete">CRS Gebruik</translation>
     </message>
     <message>
         <source>Show active crs in status bar.</source>
-        <translation>Toon het active crs in de statusbalk.</translation>
+        <translation type="obsolete">Toon het active crs in de statusbalk.</translation>
     </message>
     <message>
         <source>Assign layer CRS to project (in the legend context menu).</source>
-        <translation>Pas het CRS van een kaartlaag toe op het hele project. </translation>
+        <translation type="obsolete">Pas het CRS van een kaartlaag toe op het hele project. </translation>
     </message>
     <message>
         <source>Select default CRS for new projects.</source>
-        <translation>Selecteer een standaard CRS voor nieuwe projecten.</translation>
+        <translation type="obsolete">Selecteer een standaard CRS voor nieuwe projecten.</translation>
     </message>
     <message>
         <source>Allow setting CRS for multiple layers at once.</source>
-        <translation>Stel een CRS voor meerdere kaartlagen tegelijk in.</translation>
+        <translation type="obsolete">Stel een CRS voor meerdere kaartlagen tegelijk in.</translation>
     </message>
     <message>
         <source>Default to last selection when prompting for CRS.</source>
-        <translation>Standaard naar laatste keuze wanneer er om een CRS wordt gevraagd.</translation>
+        <translation type="obsolete">Standaard naar laatste keuze wanneer er om een CRS wordt gevraagd.</translation>
     </message>
     <message>
         <source>Rasters</source>
-        <translation>Rasters</translation>
+        <translation type="obsolete">Rasters</translation>
     </message>
     <message>
         <source>Added AND and OR operator for raster calculator</source>
-        <translation>AND- en OR-operatoren aan rastercalculator toegevoegd</translation>
+        <translation type="obsolete">AND- en OR-operatoren aan rastercalculator toegevoegd</translation>
     </message>
     <message>
         <source>On-the-fly reprojection of rasters added!</source>
-        <translation>Gelijktijdige (on-the-fly) transformatie voor rasters toegevoegd!</translation>
+        <translation type="obsolete">Gelijktijdige (on-the-fly) transformatie voor rasters toegevoegd!</translation>
     </message>
     <message>
         <source>Proper implementation of raster providers.</source>
-        <translation>Keurige implementatie van raster-providers.</translation>
+        <translation type="obsolete">Keurige implementatie van raster-providers.</translation>
     </message>
     <message>
         <source>Added raster toolbar with histogram stretch functions.</source>
-        <translation>Raster-werkbalk met histogram-functies toegevoegd.</translation>
+        <translation type="obsolete">Raster-werkbalk met histogram-functies toegevoegd.</translation>
     </message>
     <message>
         <source>Providers and Data Handling</source>
-        <translation>Data-ondersteuning</translation>
+        <translation type="obsolete">Data-ondersteuning</translation>
     </message>
     <message>
         <source>New SQLAnywhere vector provider.</source>
-        <translation>Nieuwe SQLAnywhere vector-provider.</translation>
+        <translation type="obsolete">Nieuwe SQLAnywhere vector-provider.</translation>
     </message>
     <message>
         <source>Table join support.</source>
-        <translation>Ondersteuning voor het koppelen van tabellen.</translation>
+        <translation type="obsolete">Ondersteuning voor het koppelen van tabellen.</translation>
     </message>
     <message>
         <source>Feature form updates</source>
-        <translation>Object-formulier updaten</translation>
+        <translation type="obsolete">Object-formulier updaten</translation>
     </message>
     <message>
         <source>Make NULL value string representation configurable.</source>
-        <translation>Instelbare tekst-representatie van NULL-waarde.</translation>
+        <translation type="obsolete">Instelbare tekst-representatie van NULL-waarde.</translation>
     </message>
     <message>
         <source>Fix feature updates in feature form from attribute table.</source>
-        <translation>Verbeter de object-updates in het object-formulier van de attribuuttabel.</translation>
+        <translation type="obsolete">Verbeter de object-updates in het object-formulier van de attribuuttabel.</translation>
     </message>
     <message>
         <source>Add support for NULL values in value maps (comboboxes).</source>
-        <translation>Ondersteuning voor NULL-waardes in waardenlijsten (keuzemenu&apos;s).</translation>
+        <translation type="obsolete">Ondersteuning voor NULL-waardes in waardenlijsten (keuzemenu&apos;s).</translation>
     </message>
     <message>
         <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
-        <translation>Gebruik laagnamen in plaats van id&apos;s in keuzelijst bij het laden van waardelijsten van kaartlagen.</translation>
+        <translation type="obsolete">Gebruik laagnamen in plaats van id&apos;s in keuzelijst bij het laden van waardelijsten van kaartlagen.</translation>
     </message>
     <message>
         <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
-        <translation>Ondersteuning voor expressies in object-formulier-velden: wijzigingen van regels in het formulier die beginnen met &quot;expr_&quot; worden uitgerekend. De waarde wordt geïnterpreteerd als veldcalculator-invoer en vervangen door de berekende waarde.</translation>
+        <translation type="obsolete">Ondersteuning voor expressies in object-formulier-velden: wijzigingen van regels in het formulier die beginnen met &quot;expr_&quot; worden uitgerekend. De waarde wordt geïnterpreteerd als veldcalculator-invoer en vervangen door de berekende waarde.</translation>
     </message>
     <message>
         <source>Support searching for NULL in attribute table.</source>
-        <translation>Zoeken naar NULL-waarde in attributentabel.</translation>
+        <translation type="obsolete">Zoeken naar NULL-waarde in attributentabel.</translation>
     </message>
     <message>
         <source>Attribute editing improvements</source>
-        <translation>Verbeterde aanpassing van attributen</translation>
+        <translation type="obsolete">Verbeterde aanpassing van attributen</translation>
     </message>
     <message>
         <source>Improved interactive attribute editing in table (adding/deleting features, attribute update).</source>
-        <translation>Verbeterde interactieve aanpassing van attributentabel (opbjecten toevoegen/verwijderen, attributen updaten).</translation>
+        <translation type="obsolete">Verbeterde interactieve aanpassing van attributentabel (opbjecten toevoegen/verwijderen, attributen updaten).</translation>
     </message>
     <message>
         <source>Allow adding of geometryless features.</source>
-        <translation>Toevoegen van objecten zonder geometrie toestaan.</translation>
+        <translation type="obsolete">Toevoegen van objecten zonder geometrie toestaan.</translation>
     </message>
     <message>
         <source>Fixed attribute undo/redo.</source>
-        <translation>Herstelde Ongedaan maken/Opniew voor attributen.</translation>
+        <translation type="obsolete">Herstelde Ongedaan maken/Opniew voor attributen.</translation>
     </message>
     <message>
         <source>Improved attribute handling.</source>
-        <translation>Verbeterde attribuutfunctionaliteit.</translation>
+        <translation type="obsolete">Verbeterde attribuutfunctionaliteit.</translation>
     </message>
     <message>
         <source>Optionally re-use entered attribute values for next digitized feature.</source>
-        <translation>Opnieuw gebruiken van laatstgebruikte attribuutwaarden bij het digitaliseren van nieuwe kaartobjecten.</translation>
+        <translation type="obsolete">Opnieuw gebruiken van laatstgebruikte attribuutwaarden bij het digitaliseren van nieuwe kaartobjecten.</translation>
     </message>
     <message>
         <source>Allow merging/assigning attribute values to a set of features.</source>
-        <translation>Toestaan van samenvoegen/toekennen van attribuutwaarden aan meerdere objecten tegelijk.</translation>
+        <translation type="obsolete">Toestaan van samenvoegen/toekennen van attribuutwaarden aan meerdere objecten tegelijk.</translation>
     </message>
     <message>
         <source>Allow OGR &apos;save as&apos; without attributes (for eg. DGN/DXF).</source>
-        <translation>Toestaan van OGR &apos;Opslaan als...&apos; zonder attributen (bijvoorbeeld DGN/DXF).</translation>
+        <translation type="obsolete">Toestaan van OGR &apos;Opslaan als...&apos; zonder attributen (bijvoorbeeld DGN/DXF).</translation>
     </message>
     <message>
         <source>Api and Developer Centric</source>
-        <translation>Api en Ontwikkeling</translation>
+        <translation type="obsolete">Api en Ontwikkeling</translation>
     </message>
     <message>
         <source>Refactored attribute dialog calls to QgsFeatureAttribute.</source>
-        <translation>Vernieuwde attribuut-dialoog aanroep voor QgsFeatureAttribute.</translation>
+        <translation type="obsolete">Vernieuwde attribuut-dialoog aanroep voor QgsFeatureAttribute.</translation>
     </message>
     <message>
         <source>Added QgsVectorLayer::featureAdded signal.</source>
-        <translation>Signal QgsVectorLayer::featureAdded toegevoegd.</translation>
+        <translation type="obsolete">Signal QgsVectorLayer::featureAdded toegevoegd.</translation>
     </message>
     <message>
         <source>Layer menu function added.</source>
-        <translation>Kaartlaag menu functie toegevoegd.</translation>
+        <translation type="obsolete">Kaartlaag menu functie toegevoegd.</translation>
     </message>
     <message>
         <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
-        <translation>Optie om c++ plugins te laden uit op te geven mappen. QGIS herstart vereist.</translation>
+        <translation type="obsolete">Optie om c++ plugins te laden uit op te geven mappen. QGIS herstart vereist.</translation>
     </message>
     <message>
         <source>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</source>
-        <translation>Geheel vernieuwde geometrie-controle tool voor fTools. Aanmerkelijk sneller, meer relevante foutmeldingen en ondersteun het inzoomen op fouten. Zie de nieuwe QgsGeometry.validateGeometry functie</translation>
-    </message>
-    <message>
-        <source>QGIS Mapserver</source>
-        <translation></translation>
+        <translation type="obsolete">Geheel vernieuwde geometrie-controle tool voor fTools. Aanmerkelijk sneller, meer relevante foutmeldingen en ondersteun het inzoomen op fouten. Zie de nieuwe QgsGeometry.validateGeometry functie</translation>
     </message>
     <message>
         <source>Ability to specify wms service capabilities in the properties section of the project file (instead of wms_metadata.xml file).</source>
-        <translation>Mogelijkheid om de wms-service mogelijkheden te specificeren in de properties-sectie van het projectbestand (in plaats van het wms_metadata.xml bestand).</translation>
+        <translation type="obsolete">Mogelijkheid om de wms-service mogelijkheden te specificeren in de properties-sectie van het projectbestand (in plaats van het wms_metadata.xml bestand).</translation>
     </message>
     <message>
         <source>Support for wms printing with GetPrint-Request.</source>
-        <translation>Ondersteuning voor het printen van wms  met de GetPrint-Request.</translation>
+        <translation type="obsolete">Ondersteuning voor het printen van wms  met de GetPrint-Request.</translation>
     </message>
     <message>
         <source>Support for icons of plugins in the plugin manager dialog.</source>
-        <translation>Ondersteuning voor icons van plugins in het Plugin Manager dialoogscherm.</translation>
+        <translation type="obsolete">Ondersteuning voor icons van plugins in het Plugin Manager dialoogscherm.</translation>
     </message>
     <message>
         <source>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</source>
-        <translation>Quickprint plugin verwijderd - gebruik de Easyprint plugin uit de plugin repo.</translation>
+        <translation type="obsolete">Quickprint plugin verwijderd - gebruik de Easyprint plugin uit de plugin repo.</translation>
     </message>
     <message>
         <source>Removed ogr convertor plugin - use &apos;save as&apos; context menu rather.</source>
-        <translation>OGR Convertor plugin verwijderd - gebruik &apos;opslaan als...&apos; uit het context-menu.</translation>
+        <translation type="obsolete">OGR Convertor plugin verwijderd - gebruik &apos;opslaan als...&apos; uit het context-menu.</translation>
     </message>
     <message>
         <source>Printing</source>
-        <translation>Afdrukken</translation>
+        <translation type="obsolete">Afdrukken</translation>
     </message>
     <message>
         <source>Undo/Redo support for the print composer</source>
-        <translation>Ondersteuning voor Ongedaan maken/Opnieuw in de Layouter</translation>
+        <translation type="obsolete">Ondersteuning voor Ongedaan maken/Opnieuw in de Layouter</translation>
     </message>
     <message>
         <source>Current CRS: %1 (OTFR enabled)</source>
@@ -7898,6 +8251,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Translators</source>
         <translation>Vertalers</translation>
+    </message>
+</context>
+<context>
+    <name>QgsAddAttrDialog</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Waarschuwing</translation>
+    </message>
+    <message>
+        <source>Invalid field name. This field name is reserved and cannot be used.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13624,6 +13988,10 @@ p, li { white-space: pre-wrap; }
         <source>Add class</source>
         <translation>Klasse toevoegen</translation>
     </message>
+    <message>
+        <source>Renderer creation has failed.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsGrassAttributes</name>
@@ -14730,6 +15098,18 @@ op regel %2 kolom %3</translation>
     <message>
         <source>%1:&amp;nbsp;missing value</source>
         <translation>%1:&amp;nbsp;missende waarde</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished">Waarschuwing</translation>
+    </message>
+    <message>
+        <source>Cannot parse version_min %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cannot parse version_max %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18225,6 +18605,18 @@ p, li { white-space: pre-wrap; }
         <source>@</source>
         <translation>@</translation>
     </message>
+    <message>
+        <source>Unable to open the database</source>
+        <translation type="unfinished">Database openen mislukt</translation>
+    </message>
+    <message>
+        <source>Error</source>
+        <translation type="unfinished">Fout</translation>
+    </message>
+    <message>
+        <source>Failed to load SRIDS: %1</source>
+        <translation type="unfinished">Laden mislukt van SRIDS: %1</translation>
+    </message>
 </context>
 <context>
     <name>QgsNewSpatialiteLayerDialogBase</name>
@@ -18290,7 +18682,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>EPSG SRID</source>
-        <translation>EPSG SRID</translation>
+        <translation type="obsolete">EPSG SRID</translation>
     </message>
     <message>
         <source>Spatial Reference Id</source>
@@ -18302,7 +18694,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Find SRID</source>
-        <translation>Vind SRID</translation>
+        <translation type="obsolete">Vind SRID</translation>
     </message>
     <message>
         <source>Add an integer id field as the primary key for the new layer</source>
@@ -18342,7 +18734,15 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove selected attribute</source>
-        <translation>Verwijder geselecteerde attribuut</translation>
+        <translation type="obsolete">Verwijder geselecteerde attribuut</translation>
+    </message>
+    <message>
+        <source>Specify CRS</source>
+        <translation type="unfinished">Geef het CRS</translation>
+    </message>
+    <message>
+        <source>Remove attribute</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -18424,11 +18824,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Remove selected attribute</source>
-        <translation>Verwijder geselecteerde attribuut</translation>
+        <translation type="obsolete">Verwijder geselecteerde attribuut</translation>
     </message>
     <message>
         <source>CRS ID</source>
-        <translation>CRS ID</translation>
+        <translation type="obsolete">CRS ID</translation>
     </message>
     <message>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
@@ -18437,6 +18837,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Specify CRS</source>
         <translation>Geef het CRS</translation>
+    </message>
+    <message>
+        <source>Remove attribute</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22356,7 +22760,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Calculating stats for %1</source>
-        <translation>Berekenen statistieken voor %1</translation>
+        <translation type="obsolete">Berekenen statistieken voor %1</translation>
     </message>
     <message>
         <source>Layer Extent (layer original source projection): </source>
@@ -24656,19 +25060,19 @@ p, li { white-space: pre-wrap; }
     <name>QgsSpatialiteSridsDialog</name>
     <message>
         <source>SpatiaLite Database</source>
-        <translation>SpatiaLite Databases</translation>
+        <translation type="obsolete">SpatiaLite Databases</translation>
     </message>
     <message>
         <source>Unable to open the database</source>
-        <translation>Database openen mislukt</translation>
+        <translation type="obsolete">Database openen mislukt</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Fout</translation>
+        <translation type="obsolete">Fout</translation>
     </message>
     <message>
         <source>Failed to load SRIDS: %1</source>
-        <translation>Laden mislukt van SRIDS: %1</translation>
+        <translation type="obsolete">Laden mislukt van SRIDS: %1</translation>
     </message>
 </context>
 <context>
@@ -25083,7 +25487,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -25102,6 +25506,32 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message utf8="true">
+        <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;We work really hard to make this nice software for you. See all the cool features it has? Get a warm fuzzy feeling when you use it? Quantum GIS is a labour of love by a dedicated team of developers. We want you to copy &amp;amp; share it and put it in the hands of as many people as possible. If QGIS is saving you money or you like our work and have the financial ability to help, please consider sponsoring the development of Quantum GIS. We use money from sponsors to pay for travel and costs related to our bi-annual hackfests, and to generally support the goals of our project.  Please see the &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; for more details. In the list below you can see the fine people and companies that are helping us financially - a great big &apos;thank you&apos; to you all!&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;SILVER SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.vorarlberg.at&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;State of Vorarlberg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Austria (11.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.agi.so.ch&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Kanton Solothurn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Switzerland (4.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -26979,6 +27409,14 @@ Moeten de bestaande klassen worden verwijderd voor de nieuwe klassificatie?</tra
     <message>
         <source>Data defined position</source>
         <translation>Data-bepaalde positie</translation>
+    </message>
+    <message>
+        <source>Provider-specific options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Encoding</source>
+        <translation type="unfinished">Encoding</translation>
     </message>
 </context>
 <context>
@@ -30456,7 +30894,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Config</source>
-        <translation>Configureer</translation>
+        <translation type="obsolete">Configureer</translation>
     </message>
     <message>
         <source>Connect nodes by shortest route (traveling salesman)</source>
@@ -30484,7 +30922,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Convert a raster to vector</source>
-        <translation>Converteer raster naar vector</translation>
+        <translation type="obsolete">Converteer raster naar vector</translation>
     </message>
     <message>
         <source>Convert a raster to vector within GRASS</source>
@@ -30492,7 +30930,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Convert a vector to raster</source>
-        <translation>Converteer vector naar raster</translation>
+        <translation type="obsolete">Converteer vector naar raster</translation>
     </message>
     <message>
         <source>Convert a vector to raster within GRASS</source>
@@ -30764,7 +31202,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Database parameters</source>
-        <translation>Database-parameters</translation>
+        <translation type="obsolete">Database-parameters</translation>
     </message>
     <message>
         <source>Delaunay triangulation (areas)</source>
@@ -30876,7 +31314,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export</source>
-        <translation>Exporteer</translation>
+        <translation type="obsolete">Exporteer</translation>
     </message>
     <message>
         <source>Export 3 GRASS rasters (R,G,B) to PPM image at the resolution of the current region</source>
@@ -30888,7 +31326,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export raster</source>
-        <translation>Exporteer rasterlaag</translation>
+        <translation type="obsolete">Exporteer rasterlaag</translation>
     </message>
     <message>
         <source>Export raster as non-georeferenced PNG image format</source>
@@ -30956,7 +31394,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export vector</source>
-        <translation>Exporteer vectorlaag</translation>
+        <translation type="obsolete">Exporteer vectorlaag</translation>
     </message>
     <message>
         <source>Generate raster of cumulative cost of moving between locations based on cost input raster and starting point(s) coordinates</source>
@@ -31008,7 +31446,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Export vector to PostGIS</source>
-        <translation>Exporteer vectorlaag naar PostGIS</translation>
+        <translation type="obsolete">Exporteer vectorlaag naar PostGIS</translation>
     </message>
     <message>
         <source>Export vector to PostGIS (PostgreSQL) database table</source>
@@ -31052,7 +31490,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Bestand</translation>
+        <translation type="obsolete">Bestand</translation>
     </message>
     <message>
         <source>File management</source>
@@ -31144,7 +31582,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation>Importeren</translation>
+        <translation type="obsolete">Importeren</translation>
     </message>
     <message>
         <source>Import ASCII raster</source>
@@ -31252,7 +31690,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Import raster</source>
-        <translation>Importeer raster</translation>
+        <translation type="obsolete">Importeer raster</translation>
     </message>
     <message>
         <source>Import raster from ASCII polygon/line</source>
@@ -31280,7 +31718,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Import vector</source>
-        <translation>Importeer verctorlaag</translation>
+        <translation type="obsolete">Importeer verctorlaag</translation>
     </message>
     <message>
         <source>Import vector from gps using gpsbabel</source>
@@ -31400,10 +31838,6 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Name for the output raster map (optional)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Name of the table to create</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -31588,7 +32022,7 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Region</source>
-        <translation>Regio</translation>
+        <translation type="obsolete">Regio</translation>
     </message>
     <message>
         <source>Region settings</source>
@@ -31648,10 +32082,6 @@ Plugin wordt niet geladen.</translation>
     </message>
     <message>
         <source>Rename column in attribute table</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Report and statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

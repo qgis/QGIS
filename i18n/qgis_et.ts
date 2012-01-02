@@ -1155,7 +1155,7 @@ Kas soovid jätkata?</translation>
     </message>
     <message>
         <source>Select files to merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Vali failid kokkupanekuks</translation>
     </message>
     <message>
         <source>Input files</source>
@@ -1984,7 +1984,7 @@ Lülita välja valik &quot;Kasuta täisnurkset ulatust&quot;, et tekiks sisuga v
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="22"/>
         <source>Path to the GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Tee GDAL käivitusfailidele</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="49"/>
@@ -1998,7 +1998,7 @@ Lülita välja valik &quot;Kasuta täisnurkset ulatust&quot;, et tekiks sisuga v
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="60"/>
         <source>Path to the GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Tee GDAL python moodulitele</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="98"/>
@@ -2038,12 +2038,18 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimekiri kooloniga eraldatud (Linux ja MacOS) või 
+semikooloniga eraldatud (Windows) asukohateed käivitusfailidele
+ja python käivitusfailidele.
+
+MacOS kasutajad tavaliselt peavad selle määrama midagi sarnast nagu
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nimekiri kooloniga eraldatud (Linux ja MacOS) või 
+semikooloniga eraldatud (Windows) asukohateed python moodulitele.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
@@ -2057,7 +2063,7 @@ vajutades tööriista dialoogis Abi nuppu.</translation>
     </message>
     <message>
         <source>Select directory with GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Vali kataloog GDAL python moodulitele</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
@@ -3653,7 +3659,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Capture Point</source>
-        <translation type="unfinished"></translation>
+        <translation>Punkti asetamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="545"/>
@@ -3663,22 +3669,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="557"/>
         <source>Capture Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Joone joonistamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="560"/>
         <source>Ctrl+/</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="572"/>
         <source>Capture Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Pinna joonestamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>Ctrl+?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="587"/>
@@ -4120,7 +4126,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1224"/>
         <source>Live GPS tracking</source>
-        <translation type="unfinished">Otse GPS ühendus</translation>
+        <translation>Otse saadud GPS-i jäljend</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1229"/>
@@ -5841,7 +5847,7 @@ See teade on eeldatavasti seetõttu, et ei ole DISPLAY keskkonas muutujad seadis
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="569"/>
         <source>Unknown error!</source>
-        <translation type="unfinished">Tundmatu viga!</translation>
+        <translation>Tundmatu viga!</translation>
     </message>
     <message>
         <source>Geometry is 0</source>
@@ -6190,12 +6196,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="51"/>
         <source>CopyrightLabel</source>
-        <translation type="unfinished">AutoriõiguseMärk</translation>
+        <translation>AutoriõiguseMärk</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="52"/>
         <source>Draws copyright information</source>
-        <translation type="unfinished">Lisab aitoriõiguste informatsiooni</translation>
+        <translation>Lisab aitoriõiguste informatsiooni</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="44"/>
@@ -6662,12 +6668,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="59"/>
         <source>NorthArrow</source>
-        <translation type="unfinished">PõhjaNool</translation>
+        <translation>PõhjaNool</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="60"/>
         <source>Displays a north arrow overlayed onto the map</source>
-        <translation type="unfinished">Näitab põhja suunanoolt, mida näidatakse kaardi peal</translation>
+        <translation>Näitab põhja suunanoolt, mida näidatakse kaardi peal</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="31"/>
@@ -6692,17 +6698,17 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="26"/>
         <source>Displacement plugin</source>
-        <translation type="unfinished">Kõrvalenihutamise plugin</translation>
+        <translation>Kõrvalenihutamise plugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="27"/>
         <source>Adds a new renderer that automatically handles point displacement in case they have the same position</source>
-        <translation type="unfinished">Lisab uue renderdaja, mis automaatselt tegeleb kõrvalenihutatud punktiga juhul kui nad on samal positsioonil</translation>
+        <translation>Lisab uue renderdaja, mis automaatselt tegeleb kõrvalenihutatud punktiga juhul kui nad on samal positsioonil</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="45"/>
         <source>Point Displacement</source>
-        <translation type="unfinished">Punkti kõrvalenihutamine</translation>
+        <translation>Punkti kõrvalenihutamine</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="32"/>
@@ -6727,12 +6733,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="63"/>
         <source>ScaleBar</source>
-        <translation type="unfinished">Skaala</translation>
+        <translation>Skaala</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="64"/>
         <source>Draws a scale bar</source>
-        <translation type="unfinished">Koostab skaala</translation>
+        <translation>Koostab skaala</translation>
     </message>
     <message>
         <location filename="../src/plugins/spatialquery/qgsspatialquery.cpp" line="58"/>
@@ -6822,12 +6828,12 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="31"/>
         <source>WFS plugin</source>
-        <translation type="unfinished">WFS plugin</translation>
+        <translation>WFS plugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="32"/>
         <source>Adds WFS layers to the QGIS canvas</source>
-        <translation type="unfinished">Lisab WFS kihid QGIS kaardiaknasse</translation>
+        <translation>Lisab WFS kihid QGIS kaardiaknasse</translation>
     </message>
     <message>
         <source>Zonal statistics plugin</source>
@@ -8207,60 +8213,68 @@ Palun kontakteeru arendajatega.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1922"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hetkel kasutad QGIS versiooni %1 mis on koodimääranguga %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1926"/>
         <source>
 GDAL/OGR Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+GDAL/OGR versioon: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1929"/>
         <source>
 PostgreSQL Client Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+PostgreSQL kliendi versioon: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1931"/>
         <source>
 No PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+PostGIS tugi puudub.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1935"/>
         <source>
 SpatiaLite Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+SpatiaLite versioon: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1937"/>
         <source>
 No SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+SpatiaLite toetus puudub.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1940"/>
         <source>
 QWT Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+QWT versioon: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1943"/>
         <source>
 This copy of QGIS writes debugging output.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+See QGIS koopia kirjutab silumise (debugging) väljundi.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1946"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Käesolev süsteem on kompileeritud Qt %1-ga aga hetkel ta töötab Qt %2-s</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2504"/>
         <source>Save As</source>
-        <translation type="unfinished">Salvesta nimega</translation>
+        <translation>Salvesta nimega</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2990"/>
@@ -8535,7 +8549,7 @@ Veateade: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4715"/>
         <source>QGIS - Changes in SVN since last release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - Muudatused SVN-is peale viimast väljalaset</translation>
     </message>
     <message>
         <source>Couldn&apos;t load Python support library: %1</source>
@@ -8599,12 +8613,12 @@ Veateade: %2
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4747"/>
         <source>Network error while communicating with server</source>
-        <translation type="unfinished">Viga võrgus kui oli kommunikatsioon serveriga</translation>
+        <translation>Viga võrgus kui on kommunikatsioon serveriga</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4750"/>
         <source>Unknown network socket error</source>
-        <translation type="unfinished">Tundmatu võrgu ühenduse viga</translation>
+        <translation>Tundmatu võrgu ühenduse viga</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4755"/>
@@ -8852,7 +8866,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="73"/>
         <source>Version</source>
-        <translation type="unfinished">Versioon</translation>
+        <translation>Versioon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="99"/>
@@ -8950,12 +8964,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="80"/>
         <source>Warning</source>
-        <translation type="unfinished">Hoiatus</translation>
+        <translation>Hoiatus</translation>
     </message>
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="81"/>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lubamatu välja nimi. Selline välja nimi on reserveeritud ja selle kasutus on piiratud.</translation>
     </message>
 </context>
 <context>
@@ -9568,7 +9582,7 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="160"/>
         <source>Invert selection (Ctrl+S)</source>
-        <translation type="unfinished"></translation>
+        <translation>Keera valik ümber (Ctrl+R)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetabledialog.ui" line="264"/>
@@ -9666,17 +9680,17 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="562"/>
         <source>Search string parsing error</source>
-        <translation type="unfinished">Otsingu kirjelduse viga</translation>
+        <translation>Otsingu kirjelduse viga</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="569"/>
         <source>Search results</source>
-        <translation type="unfinished">Otsingutulemused</translation>
+        <translation>Otsingutulemused</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetabledialog.cpp" line="569"/>
         <source>You&apos;ve supplied an empty search string.</source>
-        <translation type="unfinished">Teostasid tühja otsingu.</translation>
+        <translation>Teostasid tühja otsingu.</translation>
     </message>
     <message>
         <source>Parsing error</source>
@@ -9750,7 +9764,7 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/app/attributetable/qgsattributetablemodel.cpp" line="512"/>
         <source>Attributes changed</source>
-        <translation type="unfinished">Atribuudid muudetud</translation>
+        <translation>Atribuudid muudetud</translation>
     </message>
 </context>
 <context>
@@ -9758,13 +9772,13 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="99"/>
         <source>Run action</source>
-        <translation type="unfinished">Käivita tegevus</translation>
+        <translation>Käivita tegevus</translation>
     </message>
     <message>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="114"/>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="115"/>
         <source>Open form</source>
-        <translation type="unfinished">Ava vorm</translation>
+        <translation>Ava vorm</translation>
     </message>
 </context>
 <context>
@@ -9856,7 +9870,7 @@ Kasutaja AB andmebaas:	%8</translation>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="150"/>
         <source>Allows to set numeric values from a specified range. The edit widget can be either a slider or a spin box.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lubab lisada numbreid määratud vahemikus. Redigeerimisseade võib olla kas liugur või kerimiskast.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributetypeedit.ui" line="165"/>
@@ -11216,7 +11230,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="150"/>
         <source>Label id</source>
-        <translation type="unfinished"></translation>
+        <translation>Märgise id</translation>
     </message>
 </context>
 <context>
@@ -11257,7 +11271,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="47"/>
         <source>Item Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Objekti valikud</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="111"/>
@@ -12538,12 +12552,12 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="401"/>
         <source>Remove item group</source>
-        <translation type="unfinished">Eemalda objekti grupp</translation>
+        <translation>Eemalda objekti grupp</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="419"/>
         <source>Item deleted</source>
-        <translation type="unfinished">Objekt kustutatud</translation>
+        <translation>Objekt kustutatud</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="474"/>
@@ -13182,38 +13196,38 @@ vigade tõttu tegemata: %3</translation>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="67"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">All vasakul</translation>
+        <translation>All vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="67"/>
         <source>Top Left</source>
-        <translation type="unfinished">Ülal vasakul</translation>
+        <translation>Ülal vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="68"/>
         <source>Top Right</source>
-        <translation type="unfinished">Ülal paremal</translation>
+        <translation>Ülal paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="68"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">All paremal</translation>
+        <translation>All paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="80"/>
         <source>&amp;Copyright Label</source>
-        <translation type="unfinished">&amp;Autoriõiguse märk</translation>
+        <translation>&amp;Autoriõiguse märk</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="82"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="unfinished">Loob autoriõiguse märgi ja mida näidatakse kaardiaknas.</translation>
+        <translation>Loob autoriõiguse märgi ja mida näidatakse kaardiaknas.</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="95"/>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="210"/>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Tunnusmärgid</translation>
+        <translation>&amp;Tunnusmärgid</translation>
     </message>
 </context>
 <context>
@@ -13221,17 +13235,17 @@ vigade tõttu tegemata: %3</translation>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="14"/>
         <source>Copyright Label Plugin</source>
-        <translation type="unfinished">Autoriõiguse märgi plugin</translation>
+        <translation>Autoriõiguse märgi plugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
         <source>Enable copyright label</source>
-        <translation type="unfinished">Autoriõiguse märgi lubamine</translation>
+        <translation>Autoriõiguse märgi lubamine</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
-        <translation type="unfinished">&amp;Lisa oma autoriõiguse märgis siia:</translation>
+        <translation>&amp;Lisa oma autoriõiguse märgis siia:</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="45"/>
@@ -13240,56 +13254,56 @@ vigade tõttu tegemata: %3</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2009&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2011&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Verdana&apos;;&quot;&gt;© QGIS 2012&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="56"/>
         <source>&amp;Placement</source>
-        <translation type="unfinished">&amp;Paiknemine</translation>
+        <translation>&amp;Paiknemine</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="67"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">All vasakul</translation>
+        <translation>All vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="72"/>
         <source>Top Left</source>
-        <translation type="unfinished">Ülal vasakul</translation>
+        <translation>Ülal vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="77"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">All paremal</translation>
+        <translation>All paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="82"/>
         <source>Top Right</source>
-        <translation type="unfinished">Ülal paremal</translation>
+        <translation>Ülal paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="90"/>
         <source>&amp;Orientation</source>
-        <translation type="unfinished">&amp;Suund</translation>
+        <translation>&amp;Suund</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="101"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horisontaalne</translation>
+        <translation>Horisontaalne</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="106"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikaalne</translation>
+        <translation>Vertikaalne</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="114"/>
         <source>&amp;Color</source>
-        <translation type="unfinished">&amp;Värvus</translation>
+        <translation>&amp;Värvus</translation>
     </message>
 </context>
 <context>
@@ -14092,7 +14106,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsdelattrdialogbase.ui" line="13"/>
         <source>Delete Attributes</source>
-        <translation>Kustuta atribuudid</translation>
+        <translation>Kustuta veerg</translation>
     </message>
 </context>
 <context>
@@ -14782,7 +14796,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsfieldcalculator.cpp" line="233"/>
         <source>An error occured while evaluating the calculation string.</source>
-        <translation type="unfinished">Viga ilmnes kui kontrolliti arvutuslausendit.</translation>
+        <translation>Ilmnes viga lausendi kontrollimisel.</translation>
     </message>
 </context>
 <context>
@@ -15197,7 +15211,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="359"/>
         <source>Disconnect</source>
-        <translation type="unfinished">Lahti ühendatud</translation>
+        <translation>Ühenda lahti</translation>
     </message>
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="368"/>
@@ -15207,7 +15221,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/gps/qgsgpsinformationwidget.cpp" line="370"/>
         <source>Connect</source>
-        <translation type="unfinished">Ühenda</translation>
+        <translation>Ühenda</translation>
     </message>
     <message>
         <source>Dis&amp;connect</source>
@@ -15411,7 +15425,7 @@ Veateade: %2
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Vorm</translation>
+        <translation>Vorm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="34"/>
@@ -15427,52 +15441,52 @@ Veateade: %2
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="108"/>
         <source>Connect</source>
-        <translation type="unfinished">Ühenda</translation>
+        <translation>Ühenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="140"/>
         <source> Latitude</source>
-        <translation type="unfinished"> Laiuskraad</translation>
+        <translation> Laiuskraad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="156"/>
         <source> Longitude</source>
-        <translation type="unfinished"> Pikkuskraad</translation>
+        <translation> Pikkuskraad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="172"/>
         <source> Elevation</source>
-        <translation type="unfinished"> Kõrgus</translation>
+        <translation> Kõrgus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="194"/>
         <source>Vertical Accuracy</source>
-        <translation type="unfinished">Vertikaalne täpsus</translation>
+        <translation>Vertikaalne täpsus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="207"/>
         <source>Horizontal Accuracy</source>
-        <translation type="unfinished">Horisontaalne täpsus</translation>
+        <translation>Horisontaalne täpsus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="220"/>
         <source>Add vertex</source>
-        <translation type="unfinished">Lisa verteks</translation>
+        <translation>Lisa verteks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="235"/>
         <source>Add feature</source>
-        <translation type="unfinished">Nähtuse lisamine</translation>
+        <translation>Nähtuse lisamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="254"/>
         <source>Reset current feature</source>
-        <translation type="unfinished">lähtesta see vahend</translation>
+        <translation>Lähtesta see nähtus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="297"/>
         <source>GPS connection</source>
-        <translation type="unfinished">GPS ühendus</translation>
+        <translation>GPS ühendus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="303"/>
@@ -15482,12 +15496,12 @@ Veateade: %2
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="313"/>
         <source>Use path / port below</source>
-        <translation type="unfinished">Kasuta allolevat teed / porti</translation>
+        <translation>Kasuta allolevat teed / porti</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="322"/>
         <source>Path to serial device</source>
-        <translation type="unfinished">Tee järgseadmeni</translation>
+        <translation>Tee järgseadmeni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="364"/>
@@ -15507,17 +15521,17 @@ Veateade: %2
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="411"/>
         <source>ddddd; </source>
-        <translation type="unfinished">ddddd; </translation>
+        <translation>ddddd; </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="423"/>
         <source>Connection to gpsd</source>
-        <translation type="unfinished">Ühendus gpsd-ga</translation>
+        <translation>Ühendus gpsd-ga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="433"/>
         <source>GPS cursor size</source>
-        <translation type="unfinished">GPS kursori suurus</translation>
+        <translation>GPS kursori suurus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="467"/>
@@ -15532,22 +15546,22 @@ Veateade: %2
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="497"/>
         <source>GPS digitizing</source>
-        <translation type="unfinished">GPS-i digimine</translation>
+        <translation>GPS-i digimine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="503"/>
         <source>Auto-add vertices</source>
-        <translation type="unfinished">Auto-lisa käänupunkte</translation>
+        <translation>Automaatne käänupunktide lisamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="513"/>
         <source>GPS map recenter</source>
-        <translation type="unfinished">GPS kaart taaskeskele</translation>
+        <translation>GPS kaart tsentreeri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="519"/>
         <source>when leaving extents</source>
-        <translation type="unfinished">hetkel kui ületab määratud ulatust</translation>
+        <translation>hetkel kui ületab määratud ulatust</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgpsinformationwidgetbase.ui" line="526"/>
@@ -17816,17 +17830,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1876"/>
         <source>Left: %1   </source>
-        <translation type="unfinished"></translation>
+        <translation>Vasakul: %1   </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1877"/>
         <source>Middle: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Keskel: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1878"/>
         <source>Right: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Paremal: %1</translation>
     </message>
     <message>
         <source>Left: %1</source>
@@ -18056,13 +18070,13 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="235"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>New point</source>
-        <translation type="unfinished">Uus punkt</translation>
+        <translation>Uus punkt</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="235"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>Undo last point</source>
-        <translation type="unfinished"></translation>
+        <translation>Võta viimane punkt tagasi</translation>
     </message>
     <message>
         <source>Undo last vertex</source>
@@ -19801,17 +19815,17 @@ või muuda järgnevaid väärtusi</translation>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="400"/>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="412"/>
         <source>Warning</source>
-        <translation type="unfinished">Hoiatus</translation>
+        <translation>Hoiatus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="400"/>
         <source>Cannot open vector %1 in mapset %2 on level 2 (topology not available, try to rebuild topology using v.build module).</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa lahti vektorit %1 kaardiaknas %2 kihil 2 (topoloogia pole saadaval, püüa uuesti topoloogia luua kasutades v. loomise moodulit).</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="412"/>
         <source>Cannot open vector %1 in mapset %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa lahti vektorit %1 kaardiaknas %2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassselect.cpp" line="469"/>
@@ -20124,7 +20138,7 @@ real %2 veerus %3</translation>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="139"/>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
-        <translation type="unfinished">See abifaili ei ole sinu keeles %1 kättesaadav. Kui soovid seda tõlkida, palun kontakteeru QGIS arendusmeeskonnaga.</translation>
+        <translation>See abifaili ei ole sinu keeles %1 kättesaadav. Kui soovid seda tõlkida, palun kontakteeru QGIS arendusmeeskonnaga.</translation>
     </message>
     <message>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team.</source>
@@ -20882,7 +20896,7 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="598"/>
         <source>&amp;Italic</source>
-        <translation>&amp;Kaldkiri</translation>
+        <translation>&amp;Kursiivis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="617"/>
@@ -21071,12 +21085,12 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="26"/>
         <source>Label this layer</source>
-        <translation type="unfinished">Märgised sellele kihile</translation>
+        <translation>Märgised sellele kihile</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="46"/>
         <source>Field with labels</source>
-        <translation type="unfinished">Märgiste väli</translation>
+        <translation>Märgiste väli</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="69"/>
@@ -21220,7 +21234,7 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="466"/>
         <source>Multiline labels</source>
-        <translation type="unfinished">Mitmerealine märgis</translation>
+        <translation>Mitmerealine märgis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="473"/>
@@ -21343,17 +21357,17 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="756"/>
         <source>Orientation</source>
-        <translation type="unfinished">Suund</translation>
+        <translation>Suund</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="763"/>
         <source>map</source>
-        <translation type="unfinished">kaart</translation>
+        <translation>kaart</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="773"/>
         <source>line</source>
-        <translation type="unfinished">joon</translation>
+        <translation>joon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="837"/>
@@ -21373,7 +21387,7 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="900"/>
         <source>Italic</source>
-        <translation>Kaldkiri</translation>
+        <translation>Kursiivis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="910"/>
@@ -21554,7 +21568,7 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="598"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="660"/>
         <source>Updating feature count for layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Värskendan nähtuste loendit kihile </translation>
     </message>
     <message>
         <source>Updating feature count for layer %1</source>
@@ -21848,7 +21862,7 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="714"/>
         <source>The directory containing your dataset needs to be writeable!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kataloog, kus sinu andmed asuvad, peab olema kirjutusõigusega!</translation>
     </message>
     <message>
         <location filename="../src/core/qgsmaplayer.cpp" line="728"/>
@@ -21998,75 +22012,75 @@ Probleemiks võib olla võrguühenduses või WMS serveriga.</numerusform>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="44"/>
         <source>Not a vector layer</source>
-        <translation type="unfinished">Ei ole vektorkiht</translation>
+        <translation>Ei ole vektorkiht</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="45"/>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished">See kiht ei ole vektorkiht</translation>
+        <translation>See kiht ei ole vektorkiht</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="52"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Kiht ei ole redigeeritav</translation>
+        <translation>Kiht ei ole redigeeritav</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="53"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ei saa redigeerida vektorkihti. Kasuta &apos;Redigeerimisžiimi lülitit&apos;, et kiht redigeeritavaks muuta.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="63"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="122"/>
         <source>No feature selected. Please select a feature with the selection tool or in the attribute table</source>
-        <translation type="unfinished">Nähtusi ei ole valitud. Palun vali nähtus atribuuttabelist valiku tegemise töövahendiga</translation>
+        <translation>Nähtusi ei ole valitud. Palun vali nähtus atribuuttabelist valiku tegemise töövahendiga</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="67"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="126"/>
         <source>Several features are selected. Please select only one feature to which an island should be added.</source>
-        <translation type="unfinished">Mitmed nähtused valitud. Palun vali ainult üks nähtus millele saar lisatakse.</translation>
+        <translation>Mitu nähtust valitud. Palun vali ainult üks nähtus millele saar lisatakse.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="72"/>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="132"/>
         <source>Error, could not add island</source>
-        <translation type="unfinished"></translation>
+        <translation>Viga, ei saanud saart lisada</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="88"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished">Koordinaatide transformeerimise viga</translation>
+        <translation>Koordinaatide transformeerimise viga</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="89"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished">Ei saa transformeerida punkti kihi koordinaatsüsteemi</translation>
+        <translation>Ei saa transformeerida punkti kihi koordinaatsüsteemi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="102"/>
         <source>Part added</source>
-        <translation type="unfinished">Osa lisatud</translation>
+        <translation>Osa lisatud</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="110"/>
         <source>Selected feature is not a multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Valitud nähtus ei ole multipolygon pind</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="114"/>
         <source>New ring is not a valid geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Uus sisepiir ei ole lubatud geomeetriaga</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="118"/>
         <source>New polygon ring not disjoint with existing polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Uue pinna sisepiir ei ole kooskõlas olemasolevate pindadega</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooladdisland.cpp" line="130"/>
         <source>Selected geometry could not be found</source>
-        <translation type="unfinished">Valitud geomeetriat ei leitud</translation>
+        <translation>Valitud geomeetriat ei leitud</translation>
     </message>
 </context>
 <context>
@@ -23230,7 +23244,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="288"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
-        <translation type="unfinished">Ei saa tuvastada SpatialMetadata:
+        <translation>Ei saa tuvastada SpatialMetadata:
 </translation>
     </message>
     <message>
@@ -23247,28 +23261,28 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="326"/>
         <source>Could not create a new database
 </source>
-        <translation type="unfinished">Ei saanud luua uut andmebaasi
+        <translation>Ei saanud luua uut andmebaasi
 </translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="337"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
-        <translation type="unfinished">Ei saanud aktiveerida FOREIGN_KEY piiranguid</translation>
+        <translation>Ei saanud aktiveerida FOREIGN_KEY piiranguid</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="198"/>
         <source>Unable to open the database</source>
-        <translation type="unfinished">Ei saa andmebaasi avada</translation>
+        <translation>Ei saa andmebaasi avada</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Error</source>
-        <translation type="unfinished">Viga</translation>
+        <translation>Viga</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation type="unfinished">Laadimine ebaõnnestus SRID-idel: %1</translation>
+        <translation>SRID-id laadimine ebaõnnestus: %1</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="360"/>
@@ -23415,7 +23429,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="385"/>
         <source>Remove attribute</source>
-        <translation type="unfinished">Eemalda atribuut</translation>
+        <translation>Eemalda veerg</translation>
     </message>
     <message>
         <source>EPSG SRID</source>
@@ -23449,7 +23463,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="238"/>
         <source>New attribute</source>
-        <translation>Uus atribuut</translation>
+        <translation>Uue veeru lisamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="250"/>
@@ -23460,32 +23474,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="266"/>
         <source>An attribute name</source>
-        <translation>Atribuudi nimi</translation>
+        <translation>Veeru nimi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="328"/>
         <source>Attributes list</source>
-        <translation>Atribuutide loend</translation>
+        <translation>Veergude loend</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="305"/>
         <source>Add attribute to list</source>
-        <translation>Lisa atribuutide nimekirja</translation>
+        <translation>Lisa veergude nimekirja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="219"/>
         <source>Specify CRS</source>
-        <translation type="unfinished">Määra CRS</translation>
+        <translation>Määra CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="311"/>
         <source>Add to attributes list</source>
-        <translation>Lisa atribuut nimekirja</translation>
+        <translation>Lisa veerg nimekirja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="382"/>
         <source>Delete selected attribute</source>
-        <translation>Kustuta valitud atribuut</translation>
+        <translation>Kustuta valitud veerg</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -23556,7 +23570,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="73"/>
         <source>New attribute</source>
-        <translation>Uus atribuut</translation>
+        <translation>Uue veeru lisamine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="79"/>
@@ -23579,17 +23593,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="160"/>
         <source>Attributes list</source>
-        <translation>Atribuutide loend</translation>
+        <translation>Veergude loend</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="224"/>
         <source>Delete selected attribute</source>
-        <translation>Kustuta valitud atribuut</translation>
+        <translation>Kustuta veerg</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="227"/>
         <source>Remove attribute</source>
-        <translation>Eemalda atribuut</translation>
+        <translation>Eemalda veerg</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -23598,12 +23612,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="137"/>
         <source>Add attribute to list</source>
-        <translation>Lisa atribuutide nimekirja</translation>
+        <translation>Lisa veerg nimekirja</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="143"/>
         <source>Add to attributes list</source>
-        <translation>Lisa atribuut nimekirja</translation>
+        <translation>Lisa veergude nimekirja</translation>
     </message>
     <message>
         <source>CRS ID</source>
@@ -23626,43 +23640,43 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="82"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">All vasakul</translation>
+        <translation>All vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="82"/>
         <source>Top Left</source>
-        <translation type="unfinished">Ülal vasakul</translation>
+        <translation>Ülal vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="83"/>
         <source>Top Right</source>
-        <translation type="unfinished">Ülal paremal</translation>
+        <translation>Ülal paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="83"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">All paremal</translation>
+        <translation>All paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="96"/>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished">&amp;Põhja nool</translation>
+        <translation>&amp;Põhja nool</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="98"/>
         <source>Creates a north arrow that is displayed on the map canvas</source>
-        <translation type="unfinished">Näitab põhja suunanoolt, mida näidatakse kaardiaknas</translation>
+        <translation>Näitab põhja suunanoolt, mida näidatakse kaardiaknas</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="107"/>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="259"/>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Tunnusmärgid</translation>
+        <translation>&amp;Tunnusmärgid</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="250"/>
         <source>North arrow pixmap not found</source>
-        <translation type="unfinished">Põhjasuuna nool pixmapina ei leitud</translation>
+        <translation>Põhjasuuna nool pixmapina ei leitud</translation>
     </message>
 </context>
 <context>
@@ -23670,7 +23684,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/plugingui.cpp" line="150"/>
         <source>Pixmap not found</source>
-        <translation type="unfinished">Pikselraster leidmata</translation>
+        <translation>Pixmap leidmata</translation>
     </message>
 </context>
 <context>
@@ -23678,57 +23692,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="14"/>
         <source>North Arrow Plugin</source>
-        <translation type="unfinished">Põhja noole plugin</translation>
+        <translation>Põhja noole plugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="35"/>
         <source>Preview of north arrow</source>
-        <translation type="unfinished">Põhja noole eelvaade</translation>
+        <translation>Põhja noole eelvaade</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="52"/>
         <source>Angle</source>
-        <translation type="unfinished">Nurk</translation>
+        <translation>Nurk</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="94"/>
         <source>Placement</source>
-        <translation type="unfinished">Paiknemine</translation>
+        <translation>Paiknemine</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="104"/>
         <source>Placement on screen</source>
-        <translation type="unfinished">Asukoht ekraanil</translation>
+        <translation>Asukoht ekraanil</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="108"/>
         <source>Top Left</source>
-        <translation type="unfinished">Ülal vasakul</translation>
+        <translation>Ülal vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="113"/>
         <source>Top Right</source>
-        <translation type="unfinished">Ülal paremal</translation>
+        <translation>Ülal paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="118"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">All vasakul</translation>
+        <translation>All vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="123"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">All paremal</translation>
+        <translation>All paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="131"/>
         <source>Enable North Arrow</source>
-        <translation type="unfinished">Näita Põhja suuna noolt</translation>
+        <translation>Näita Põhja suuna noolt</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="147"/>
         <source>Set direction automatically</source>
-        <translation type="unfinished">Määra suund automaatselt</translation>
+        <translation>Määra suund automaatselt</translation>
     </message>
 </context>
 <context>
@@ -24522,7 +24536,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="355"/>
         <source>Add new layers to selected group</source>
-        <translation type="unfinished">Lisa uued kihid valitud gruppi</translation>
+        <translation>Lisa uued kihid valitud gruppi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="370"/>
@@ -25531,7 +25545,7 @@ Täiendav veateade:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="544"/>
         <source>Connection failed</source>
-        <translation type="unfinished">Ühendus ebaõnnestus</translation>
+        <translation>Ühendus ebaõnnestus</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="545"/>
@@ -25541,7 +25555,7 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation type="unfinished">Ühendus %1 %2-ga ebaõnnestus. Kas andmebaas on maas või sinu seaded on valed.
+        <translation>Ühendus %1 %2-ga ebaõnnestus. Kas andmebaas on maas või sinu seaded on valed.
 
 Kontrolli oma kasutajanime ja parooli ning proovi uuesti.
 
@@ -25553,12 +25567,12 @@ Andmebaas vastas:
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="805"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="867"/>
         <source>Accessible tables could not be determined</source>
-        <translation type="unfinished">Ligipääsetavaid tabeleid ei tuvastanud</translation>
+        <translation>Ligipääsetavaid tabeleid ei suudetud tuvastada</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="746"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished">Ühendus andmebaasiga õnnestus, ligipääsetavaid tabeleid ei tuvastatud.</translation>
+        <translation>Ühendus andmebaasiga õnnestus, ligipääsetavaid tabeleid ei suudetud tuvastada.</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="806"/>
@@ -25568,7 +25582,7 @@ Andmebaas vastas:
 The error message from the database was:
 %1
 </source>
-        <translation type="unfinished">Ühendus andmebaasiga õnnestus, ligipääsetavaid tabeleid ei tuvastatud.
+        <translation>Ühendus andmebaasiga õnnestus, ligipääsetavaid tabeleid ei suudetud tuvastada.
 
 Veateade andmebaasilt:
 %1
@@ -25582,12 +25596,12 @@ Veateade andmebaasilt:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="884"/>
         <source>No geometry</source>
-        <translation type="unfinished">Geomeetriata</translation>
+        <translation>Geomeetriata</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="896"/>
         <source>No accessible tables found</source>
-        <translation type="unfinished">Ligipääsetavaid tabeleid ei tuvastatud</translation>
+        <translation>Ligipääsetavaid tabeleid ei tuvastatud</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="897"/>
@@ -25595,7 +25609,7 @@ Veateade andmebaasilt:
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation type="unfinished">Ühendus andmebaasiga õnnestus, ligipääsetavaid tabeleid ei tuvastatud.
+        <translation>Ühendus andmebaasiga õnnestus, ligipääsetavaid tabeleid ei tuvastatud.
 
 Kontrolli et sul oleks SELECT õigused PostGIS tabelis olevale
 geomeetriale.</translation>
@@ -26735,20 +26749,29 @@ int4 with a unique constraint on it (which includes the
 primary key), has a PostgreSQL oid column or has a ctid
 column with a 16bit block number.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tabelil puudub veerg, mis oleks sobiv võtmeväljaks.
+
+Quantum GIS-is on nõutav, tabelis peab olema vastav veerg kas siis
+init4 unikaalse väljana (kus asuks primaarvõti),
+oleks PostgreSQLoid veerg või
+oleks ctid veerg milles 16bit-ine tüki number.
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1310"/>
         <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-int4 type columns as a key into the table.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Unikaalväärtuste veerg  &apos;%1&apos; on sobimatu, kuna Quantum GIS ei luba mitte-init4 tüüpi veerge kasutada tabelis võtmeväljana.
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1629"/>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
 Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type int4 and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
 The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nähtav &apos;%1.%2&apos; ei sisalda veergu, mis sobiks võtmeväljaks.
+Quantum GIS-is on nõutud, et kasutataks veergu mida saab kasutada võtmeväljana. Sellised veerud peavad olema: täisarvud ja võtmeväljaks määratud, olema unikaalse sisuga või olema PostgreSQL oid veerg. Et parandada toimivust peaks veerg olema ka indekseeritud.
+Näha on valikus allolevad veerud, kuid ükski neist ei sobi eelkirjeldatud nõuetele:</translation>
     </message>
     <message>
         <source>Connection to database failed</source>
@@ -27200,7 +27223,7 @@ Result: %3 (%4)</translation>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="984"/>
         <source>%1 is not writeable. Please adjust permissions (if possible) and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ei ole kirjutatav. Palun seadista õigusi (kui võimalik) ja proovi uuesti.</translation>
     </message>
     <message>
         <source>%1 is not writable. Please adjust permissions (if possible) and try again.</source>
@@ -27557,7 +27580,7 @@ Kas jätkan?</translation>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="61"/>
         <source>All</source>
-        <translation type="unfinished">Kõik</translation>
+        <translation>Kõik</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="600"/>
@@ -27577,12 +27600,12 @@ Kas jätkan?</translation>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="981"/>
         <source>Find projection</source>
-        <translation type="unfinished">Leia projektsioon</translation>
+        <translation>Leia projektsioon</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="981"/>
         <source>No matching projection found.</source>
-        <translation type="unfinished">Sobivat projektsiooni ei leitud.</translation>
+        <translation>Sobivat projektsiooni ei leitud.</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectionselector.cpp" line="1120"/>
@@ -27636,22 +27659,22 @@ Selle tõttu projektsiooni valija ka ei toimi...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="105"/>
         <source>Search</source>
-        <translation type="unfinished">Otsi</translation>
+        <translation>Otsi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="113"/>
         <source>Authority</source>
-        <translation type="unfinished">Kodeerija</translation>
+        <translation>Kodeerija</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="123"/>
         <source>Search for</source>
-        <translation type="unfinished">Otsi selle</translation>
+        <translation>Otsi selle</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="136"/>
         <source>Name</source>
-        <translation type="unfinished">Nimi</translation>
+        <translation>Nimi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="157"/>
@@ -27661,7 +27684,7 @@ Selle tõttu projektsiooni valija ka ei toimi...</translation>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="177"/>
         <source>Find</source>
-        <translation type="unfinished">Otsi</translation>
+        <translation>Otsi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsprojectionselectorbase.ui" line="192"/>
@@ -28697,7 +28720,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1580"/>
         <source>The file was not writeable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fail ei olnud kirjutatav. Mõned formaadid ei toeta püramiid ülevaateid. Tutvu GDAL dokumentatsiooniga kui soovid täpsemalt teada.</translation>
     </message>
     <message>
         <source>The file was not writable. Some formats do not support pyramid overviews. Consult the GDAL documentation if in doubt.</source>
@@ -29357,7 +29380,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans&apos;;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -29506,7 +29529,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="55"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="63"/>
         <source>&amp;Raster based terrain analysis...</source>
-        <translation type="unfinished">&amp;Rasteripõhine pinnavormi analüüs...</translation>
+        <translation>&amp;Rasteripõhine pinnavormi analüüs...</translation>
     </message>
     <message>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="88"/>
@@ -29618,7 +29641,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="453"/>
         <source>Filter is empty</source>
-        <translation type="unfinished">Filtri käsurida on tühi</translation>
+        <translation>Filtri käsurida on tühi</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="474"/>
@@ -30131,129 +30154,129 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="80"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">All vasakul</translation>
+        <translation>All vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="80"/>
         <source>Top Left</source>
-        <translation type="unfinished">Ülal vasakul</translation>
+        <translation>Ülal vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="81"/>
         <source>Top Right</source>
-        <translation type="unfinished">Ülal paremal</translation>
+        <translation>Ülal paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="81"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">All paremal</translation>
+        <translation>All paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="83"/>
         <source>Tick Down</source>
-        <translation type="unfinished">Näita allapoole</translation>
+        <translation>Näita allapoole</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="83"/>
         <source>Tick Up</source>
-        <translation type="unfinished">Nihuta alla</translation>
+        <translation>Näita ülespoole</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="84"/>
         <source>Bar</source>
-        <translation type="unfinished">Tulp</translation>
+        <translation>Tulp</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="84"/>
         <source>Box</source>
-        <translation type="unfinished">Kast</translation>
+        <translation>Kast</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="104"/>
         <source>&amp;Scale Bar</source>
-        <translation type="unfinished">&amp;Joonmõõtkava</translation>
+        <translation>&amp;Joonmõõtkava</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="106"/>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation type="unfinished">Loob joonmõõtkava mida näidatakse kaardiaknas</translation>
+        <translation>Loob joonmõõtkava mida näidatakse kaardiaknas</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="115"/>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="551"/>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Tunnusmärgid</translation>
+        <translation>&amp;Tunnusmärgid</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="167"/>
         <source> metres/km</source>
-        <translation type="unfinished">meetrid/km</translation>
+        <translation>meetrid/km</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="168"/>
         <source> feet/miles</source>
-        <translation type="unfinished">jalad/miilid</translation>
+        <translation>jalad/miilid</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="169"/>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="297"/>
         <source> degrees</source>
-        <translation type="unfinished">kraadid</translation>
+        <translation>kraadid</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="247"/>
         <source> km</source>
-        <translation type="unfinished"> km</translation>
+        <translation> km</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="252"/>
         <source> mm</source>
-        <translation type="unfinished"> mm</translation>
+        <translation> mm</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="257"/>
         <source> cm</source>
-        <translation type="unfinished"> cm</translation>
+        <translation> cm</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="261"/>
         <source> m</source>
-        <translation type="unfinished"> m</translation>
+        <translation> m</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="266"/>
         <source> miles</source>
-        <translation type="unfinished"> miili</translation>
+        <translation> miili</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="273"/>
         <source> mile</source>
-        <translation type="unfinished"> miil</translation>
+        <translation> miil</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="280"/>
         <source> inches</source>
-        <translation type="unfinished"> tolli</translation>
+        <translation> tolli</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="286"/>
         <source> foot</source>
-        <translation type="unfinished"> jalg</translation>
+        <translation> jalg</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="290"/>
         <source> feet</source>
-        <translation type="unfinished"> jalga</translation>
+        <translation> jalga</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="295"/>
         <source> degree</source>
-        <translation type="unfinished"> kraad</translation>
+        <translation> kraad</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="300"/>
         <source> unknown</source>
-        <translation type="unfinished"> tundmatu</translation>
+        <translation> tundmatu</translation>
     </message>
 </context>
 <context>
@@ -30261,88 +30284,88 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="14"/>
         <source>Scale Bar Plugin</source>
-        <translation type="unfinished">Joonmõõtkava plugin</translation>
+        <translation>Joonmõõtkava plugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="31"/>
         <source>Placement</source>
-        <translation type="unfinished">Paiknemine</translation>
+        <translation>Paiknemine</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="48"/>
         <source>Top Left</source>
-        <translation type="unfinished">Ülal vasakul</translation>
+        <translation>Ülal vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="53"/>
         <source>Top Right</source>
-        <translation type="unfinished">Ülal paremal</translation>
+        <translation>Ülal paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="58"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">All vasakul</translation>
+        <translation>All vasakul</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="63"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">All paremal</translation>
+        <translation>All paremal</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="77"/>
         <source>Scale bar style</source>
-        <translation type="unfinished">Joonmõõtkava stiil</translation>
+        <translation>Joonmõõtkava stiil</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="93"/>
         <source>Select the style of the scale bar</source>
-        <translation type="unfinished">Vali kujundus joonmõõtkavale</translation>
+        <translation>Vali kujundus joonmõõtkavale</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="97"/>
         <source>Tick Down</source>
-        <translation type="unfinished">Näita allapoole</translation>
+        <translation>Näita allapoole</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="102"/>
         <source>Tick Up</source>
-        <translation type="unfinished">Näita ülespoole</translation>
+        <translation>Näita ülespoole</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="107"/>
         <source>Box</source>
-        <translation type="unfinished">Ristkülik</translation>
+        <translation>Ristkülik</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="112"/>
         <source>Bar</source>
-        <translation type="unfinished">Tulp</translation>
+        <translation>Tulp</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="126"/>
         <source>Color of bar</source>
-        <translation type="unfinished">Tulba värvus</translation>
+        <translation>Tulba värvus</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="142"/>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="145"/>
         <source>Click to select the color</source>
-        <translation type="unfinished">Kliki et valida värv</translation>
+        <translation>Kliki et valida värv</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="161"/>
         <source>Size of bar</source>
-        <translation type="unfinished">Tulba suurus</translation>
+        <translation>Tulba suurus</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="187"/>
         <source>Enable scale bar</source>
-        <translation type="unfinished">Näita mõõtkava</translation>
+        <translation>Näita mõõtkava</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/pluginguibase.ui" line="203"/>
         <source>Automatically snap to round number on resize</source>
-        <translation type="unfinished">Automaatselt teisenda ümardatud numbrile mõõtkava muutudes</translation>
+        <translation>Automaatselt teisenda ümardatud numbrile mõõtkava muutudes</translation>
     </message>
 </context>
 <context>
@@ -30472,7 +30495,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="446"/>
         <source>Error creating search tree</source>
-        <translation type="unfinished">Viga otsingupuu loomisel</translation>
+        <translation>Viga otsingupuu loomisel</translation>
     </message>
     <message>
         <location filename="../src/gui/qgssearchquerybuilder.cpp" line="469"/>
@@ -30806,7 +30829,7 @@ Veateade oli:
     <message>
         <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="273"/>
         <source>seems to be a valid SQLite DB, but not a SpatiaLite&apos;s one ...</source>
-        <translation type="unfinished"></translation>
+        <translation>tundub olevat sobiv SQLite DB, kuid mitte SpatiaLite oma ...</translation>
     </message>
     <message>
         <source>Database does not exist: %1</source>
@@ -30840,7 +30863,7 @@ Veateade oli:
         <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="658"/>
         <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="862"/>
         <source>unknown error cause</source>
-        <translation type="unfinished">vea põhjus teadmata</translation>
+        <translation>vea põhjus teadmata</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsspatialitesourceselect.cpp" line="310"/>
@@ -31867,7 +31890,29 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Cantarell&apos;; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Me pingutame tõsiselt, et see tarkvara oleks sulle sobiv. Tutvu kõigi huvitavate omadustega mis seal on? Tunne mõnusat surinat programmi kasutades! Loodud Quantum GIS on arendajate meeskonna armastus töö vastu ja suur pühendumine sellele. Me soovime et kopeeriksid &amp;amp; jagaksid seda. Levitaksid nii paljudele inimestele kui suudad. Kui QGIS hoiab sinu raha kokku või kui sulle meeldib meie tehtu ning sul on võimalus finantsiliselt aidata, palun kaalu Quantum GIS arenduse sponsoreerimist. Me kasutame sponsorite raha ainult reisikulude, 2x aastas toimuvate hackfest-ide ning projekti eesmärkide täitmiseks.  Palun vaata ka &lt;/span&gt;&lt;a href=&quot;http://qgis.org/en/sponsorship.html&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;QGIS Sponsorship Web Page&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt; detailsemaks tutvumiseks. Allolev nimekiri sisaldab kõiki häid inimesi ja ettevõtteid, kes meid finantsiliselt on toetanud - suur aitäh neile!&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2011 Sponsors&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:10pt; font-weight:600;&quot;&gt;SILVER SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.vorarlberg.at&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;State of Vorarlberg&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt;&quot;&gt; &lt;/span&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Austria (11.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.agi.so.ch&quot;&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Kanton Solothurn&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:&apos;Courier New,courier&apos;; font-size:10pt; color:#333333;&quot;&gt;, Switzerland (4.2011)&lt;/span&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.municipia.pt&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Municípia, SA&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;2010 Sponsors&lt;/span&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;BRONZE SPONSORS&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:10pt; font-weight:600;&quot;&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://www.gfosservices.com&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;Studio Associato Gfosservices&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;http://nextgis.org&quot;&gt;&lt;span style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; text-decoration: underline; color:#0000ff;&quot;&gt;NEXTGIS&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Ubuntu&apos;; font-size:14pt; font-weight:600;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message utf8="true">
         <source>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
@@ -32727,7 +32772,7 @@ Detailsemat infot saab &lt;a href=&quot;http://www.qgis.org/en/community/mailing
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="100"/>
         <source>In the print composer tool bar you can find two buttons for moving elements. The left one (a selection cursor with the hand symbol) selects and moves elements in the layout. After selecting the element with this tool you can also move them around with the arrow keys. For accurate positioning use the &lt;strong&gt;Position and Size&lt;/strong&gt; dialogue, which can be found in the tab &lt;strong&gt;Item &amp;rarr; General Options &amp;rarr; Position and Size&lt;/strong&gt;. For easier positioning you can also set specific anchor points of the element within this dialogue. The other move tool (the globe icon combined with the hand icon) allows to move the map content within a map frame.</source>
-        <translation type="unfinished"></translation>
+        <translation>Väljatrüki kujunduse tööriistaribal on kaks nuppu elementide nihutamiseks. Vasakpoolne (kursori ja käe kujutisega) valib ja nihutab elemente trükivaates. Peale elemendi valimist selle tööriistaga saad objekte nihutada ka noole klahvidega. Täpseks paigutamiseks kasuta &lt;strong&gt;Paiknemine ja suurus&lt;/strong&gt; dialoogi. Selle leiad valikukaardilt &lt;strong&gt;Objekt &amp;rarr; Üldised valikud &amp;rarr; Paiknemine ja suurus&lt;/strong&gt;. Mugavamaks ja täpsemaks paigutamiseks võid dialoogis määrata elemendile kindlad ankrupunktid. Teine nihutamise nupp (maakera ja käe kujutis) lubab nihutada kaarti raami sees.</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipfactory.cpp" line="114"/>
@@ -33780,90 +33825,90 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="870"/>
         <source>General:</source>
-        <translation type="unfinished">Üldine:</translation>
+        <translation>Üldine:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="877"/>
         <source>Layer comment: %1</source>
-        <translation type="unfinished">Kihi märkus: %1</translation>
+        <translation>Kihi märkus: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="883"/>
         <source>Storage type of this layer: %1</source>
-        <translation type="unfinished">Kihi salvestamise tüüp: %1</translation>
+        <translation>Kihi salvestamise tüüp: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="888"/>
         <source>Source for this layer: %1</source>
-        <translation type="unfinished">Selle kihi allikas: %1</translation>
+        <translation>Selle kihi allikas: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="904"/>
         <source>Geometry type of the features in this layer: %1</source>
-        <translation type="unfinished">Sellel kihil oleva nähtuse geomeetriatüüp: %1</translation>
+        <translation>Sellel kihil oleva nähtuse geomeetriatüüp: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="911"/>
         <source>The number of features in this layer: %1</source>
-        <translation type="unfinished">Sellel kihil olevate nähtuste arv: %1</translation>
+        <translation>Sellel kihil olevate nähtuste arv: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="915"/>
         <source>Editing capabilities of this layer: %1</source>
-        <translation type="unfinished">Kihi redigeerimisvõimekus kihile: %1</translation>
+        <translation>Kihi redigeerimisvõimalused kihile: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="922"/>
         <source>Extents:</source>
-        <translation type="unfinished">Ulatused:</translation>
+        <translation>Ulatused:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="974"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="980"/>
         <source>In layer spatial reference system units : </source>
-        <translation type="unfinished">Kihi ruumilise referentssüsteemi ühikud : </translation>
+        <translation>Kihi ruumilise referentssüsteemi ühikud : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="975"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="993"/>
         <source>xMin,yMin %1,%2 : xMax,yMax %3,%4</source>
-        <translation type="unfinished">xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
+        <translation>xMin,yMin %1,%2 : xMax,yMax %3,%4</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="980"/>
         <source>Empty</source>
-        <translation type="unfinished">Tühi</translation>
+        <translation>Tühi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="992"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1030"/>
         <source>In project spatial reference system units : </source>
-        <translation type="unfinished">Projektis ruumilise referentssüsteemi ühikud : </translation>
+        <translation>Projektis ruumilise referentssüsteemi ühikud : </translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1005"/>
         <source>Layer Spatial Reference System:</source>
-        <translation type="unfinished">Kihi Ruumiline referentssüsteem:</translation>
+        <translation>Kihi Ruumiline referentssüsteem:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1017"/>
         <source>Project (Output) Spatial Reference System:</source>
-        <translation type="unfinished">Projekti (Väljundi) Ruumiline referentssüsteem:</translation>
+        <translation>Projekti (Väljundi) Ruumiline referentssüsteem:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1031"/>
         <source>(Invalid transformation of layer extents)</source>
-        <translation type="unfinished">(Vigane kihi ulatuse transformeerimine)</translation>
+        <translation>(Vigane transformeerimine kihi ulatuses)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1041"/>
         <source>Attribute field info:</source>
-        <translation type="unfinished">Atribuutvälja info:</translation>
+        <translation>Atribuutvälja info:</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1048"/>
         <source>Field</source>
-        <translation type="unfinished">Väli</translation>
+        <translation>Väli</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1136"/>
@@ -34431,7 +34476,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/ui/qgsvectorlayersaveasdialogbase.ui" line="139"/>
         <source>This allows to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
-        <translation type="unfinished"></translation>
+        <translation>See võimaldab takistada atribuutide loomist, kuna mõned OGR draiverid (n DGN, DXF) ei toeta seda.</translation>
     </message>
     <message>
         <source>This allows one to surpress attribute creation as some OGR drivers (eg. DGN, DXF) don&apos;t support it.</source>
@@ -34514,7 +34559,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="104"/>
         <source>Loading WFS data</source>
-        <translation type="unfinished">Laen WFS andmeid</translation>
+        <translation>Laen WFS andmeid</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="104"/>
@@ -34527,7 +34572,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="53"/>
         <source>Add W&amp;FS layer...</source>
-        <translation type="unfinished">Lisa W&amp;FS kiht...</translation>
+        <translation>Lisa W&amp;FS kiht...</translation>
     </message>
 </context>
 <context>
@@ -34588,7 +34633,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="288"/>
         <source>GetCapabilities Error</source>
-        <translation type="unfinished">GetCapabilities viga</translation>
+        <translation>GetCapabilities viga</translation>
     </message>
     <message>
         <source>Server Exception</source>
@@ -34713,7 +34758,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="182"/>
         <source>Only request features overlapping the current view extent</source>
-        <translation type="unfinished">Küsi ainult kaardiaknasse jäävate nähtuste ulatuses</translation>
+        <translation>Küsi ainult kaardiaknasse jäävate nähtuste ulatuses</translation>
     </message>
 </context>
 <context>
@@ -34819,7 +34864,7 @@ Kas enne uut, peaks olemasolev klassifikatsioon olema kustutatud?</translation>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished">WMS parool %1-le</translation>
+        <translation>WMS parool %1-le</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="500"/>
@@ -35635,12 +35680,12 @@ Vastus oli:
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2701"/>
         <source>Selected Layers:</source>
-        <translation type="unfinished">Valitud kihid:</translation>
+        <translation>Valitud kihid:</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2714"/>
         <source>Other layers:</source>
-        <translation type="unfinished">Ülejäänud kihid:</translation>
+        <translation>Ülejäänud kihid:</translation>
     </message>
     <message>
         <location filename="../src/providers/wms/qgswmsprovider.cpp" line="2751"/>
@@ -36003,7 +36048,7 @@ Vastus oli:
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="100"/>
         <source>Show road&apos;s direction</source>
-        <translation type="unfinished">Näita teekonna suunda</translation>
+        <translation>Näita teekonna suunda</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="101"/>
@@ -36018,7 +36063,7 @@ Vastus oli:
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="105"/>
         <source>Roads direction viewer</source>
-        <translation type="unfinished">Teede suunalisuse näitaja</translation>
+        <translation>Teede suunalisuse näitaja</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/roadgraphplugin.cpp" line="106"/>
