@@ -41,6 +41,7 @@ email                : tim at linfiniti.com
 #include "qgsbilinearrasterresampler.h"
 #include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
+#include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 
 #include <cstdio>
@@ -151,6 +152,8 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     , mStyles( styles )
     , mFormat( format )
     , mCrs( crs )
+    , mResampler( 0 )
+    , mRenderer( 0 )
 {
   Q_UNUSED( dummy );
 
@@ -840,7 +843,7 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         {
           mGrayMinimumMaximumEstimated = true;
           setMaximumValue( grayBand, mDataProvider->maximumValue( grayBand ) );
-          setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );     
+          setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );
         }
         r.setContrastEnhancement( contrastEnhancement( grayBand ) );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
@@ -1017,8 +1020,12 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       }
       else
       {
+        QgsSingleBandColorDataRenderer r( mDataProvider, bandNumber( mGrayBandName ), mResampler );
+        r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+#if 0
         drawSingleBandColorData( theQPainter, theRasterViewPort,
                                  theQgsMapToPixel, bandNumber( mGrayBandName ) );
+#endif //0
         break;
       }
 
