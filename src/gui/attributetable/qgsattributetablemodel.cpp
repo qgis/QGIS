@@ -179,11 +179,6 @@ void QgsAttributeTableModel::layerDeleted()
 
 void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )
 {
-  if ( mFeatureMap.contains( fid ) )
-  {
-    mFeatureMap[ fid ].changeAttribute( idx, value );
-  }
-
   setData( index( idToRow( fid ), fieldCol( idx ) ), value, Qt::EditRole );
 }
 
@@ -474,10 +469,17 @@ bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &
   if ( !index.isValid() || role != Qt::EditRole || !mLayer->isEditable() )
     return false;
 
-  QgsFeatureId rowId = rowToId( index.row() );
-  if ( mFeat.id() == rowId || featureAtId( rowId ) )
+  QgsFeatureId fid = rowToId( index.row() );
+  int idx = fieldIdx( index.column() );
+
+  if ( mFeatureMap.contains( fid ) )
   {
-    mFeat.changeAttribute( mAttributes[ index.column()], value );
+    mFeatureMap[ fid ].changeAttribute( idx, value );
+  }
+
+  if ( mFeat.id() == fid || featureAtId( fid ) )
+  {
+    mFeat.changeAttribute( idx, value );
   }
 
   if ( !mLayer->isModified() )
@@ -504,6 +506,13 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
+  for( int row = index1.row(); row < index2.row(); row++ )
+  {
+    QgsFeatureId fid = rowToId( row );
+    mFeatureMap.remove( fid );
+    mFeatureQueue.removeOne( fid );
+  }
+
   mFeat.setFeatureId( std::numeric_limits<int>::min() );
   emit dataChanged( index1, index2 );
 }
