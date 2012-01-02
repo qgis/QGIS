@@ -24,7 +24,10 @@
 #include <qgis.h>
 
 #include "qgsvectorlayer.h"
+#include "qgsinterpolator.h"
+#include "qgsgridfilewriter.h"
 
+#include "qgsfrequencyinterpolator.h"
 #include "heatmap.h"
 #include "heatmapgui.h"
 
@@ -35,6 +38,7 @@
 #include <QAction>
 #include <QToolBar>
 #include <QMessageBox>
+#include <QFileInfo>
 
 
 static const QString sName = QObject::tr( "Heatmap" );
@@ -100,7 +104,7 @@ void Heatmap::run()
   myHeatmapPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   // Listen for the signal from gui to create the raster
-  connect( myHeatmapPluginGui, SIGNAL( createRasterOutput( QgsVectorLayer* ) ), this, SLOT( createRasterOutput( QgsVectorLayer* ) ) );
+  connect( myHeatmapPluginGui, SIGNAL( createRasterOutput( QgsVectorLayer*, QString ) ), this, SLOT( createRasterOutput( QgsVectorLayer*, QString ) ) );
 
   myHeatmapPluginGui->show();
 }
@@ -115,8 +119,11 @@ void Heatmap::unload()
 }
 
 // Create Raster and load it into view
-void Heatmap::createRasterOutput( QgsVectorLayer* theLayer )
+void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName )
 {
+    int myColumns, myRows;
+    double myXCellSize, myYCellSize;
+
     // Check if it is a point layer
     if( theLayer->geometryType() != 0 )
     {
@@ -126,7 +133,51 @@ void Heatmap::createRasterOutput( QgsVectorLayer* theLayer )
         return;
     }
 
+    // List to hold the point layer - holds the single layer
+    QList< QgsInterpolator::LayerData > myLayerList;
+    
+    QgsVectorDataProvider* myProvider = theLayer->dataProvider();
+    if( !myProvider )
+    {
+        return;
+    }
+
+    QgsInterpolator::LayerData myLayerData;
+    myLayerData.vectorLayer = theLayer;
+    // Hardcoding things to test TODO Make them appropriate
+    myLayerData.mInputType = QgsInterpolator::POINTS;
+    myLayerData.zCoordInterpolation = true;
+    myLayerData.interpolationAttribute = -1;
+
+    myLayerList.append( myLayerData );
+
+    QgsFrequencyInterpolator* myInterpolator = new QgsFrequencyInterpolator( myLayerList );
+    if ( !myInterpolator )
+    {
+        return;
+    }
+
+    // Bounding Box
+    QgsRectangle myBBox = theLayer->extent();
+
+    // Rows & Columns
+    myColumns = 500;
+    //Cell Sizes are Equal
+    myXCellSize = myBBox.width()/myColumns;
+    myYCellSize = myXCellSize;
+    //Calculate rows based on cellsize
+    myRows = myBBox.height()/myYCellSize;
+
+    QgsGridFileWriter myWriter( myInterpolator, theFileName, myBBox, myColumns, myRows, myXCellSize, myYCellSize );
+    if( myWriter.writeFile( true ) == 0 )
+    {
+        mQGisIface->addRasterLayer( theFileName, QFileInfo( theFileName ).baseName() );
+    }
+
+    delete myInterpolator;
+
 }
+
 
 
 //////////////////////////////////////////////////////////////////////////

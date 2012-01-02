@@ -16,6 +16,8 @@
  ***************************************************************************/
 
 #include "qgsfrequencyinterpolator.h"
+#include <cmath>
+#include <limits>
 
 QgsFrequencyInterpolator::QgsFrequencyInterpolator( const QList<LayerData>& layerData ): QgsInterpolator( layerData ), mBufferRadius( 5.0 ), mDecayLimit( 0.5 )
 {
@@ -34,6 +36,9 @@ QgsFrequencyInterpolator::~QgsFrequencyInterpolator()
 
 int QgsFrequencyInterpolator::interpolatePoint( double x, double y, double& result )
 {
+    double distance;
+    double minDistance = 100.0; // An aribitrarily high value
+
     if( !mDataIsCached )
     {
         cacheBaseData();
@@ -41,15 +46,16 @@ int QgsFrequencyInterpolator::interpolatePoint( double x, double y, double& resu
 
     QVector<vertexData>::iterator vertex_it = mCachedBaseData.begin();
 
-    result = 0.0;
-
     for( ; vertex_it != mCachedBaseData.end(); ++vertex_it)
     {
-        if( (vertex_it->x == x) && (vertex_it->y == y) )
+        distance = sqrt(( vertex_it->x - x ) * ( vertex_it->x - x ) + ( vertex_it->y - y ) * ( vertex_it->y - y ));
+        if( distance < minDistance )
         {
-            result += 1.0;
+            minDistance = distance;
         }
     }
+
+    result = 1/minDistance;
 
     return 0;
 

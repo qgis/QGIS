@@ -37,7 +37,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mBrowseButton_clicked();
 
   signals:
-    void createRasterOutput( QgsVectorLayer* );
+    void createRasterOutput( QgsVectorLayer*, QString );
 
 };
 

@@ -22,6 +22,7 @@
 #include <QMap>
 #include <QMapIterator>
 #include <QSettings>
+#include <QMessageBox>
 
 
 HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
@@ -95,8 +96,22 @@ void HeatmapGui::enableOrDisableOkButton()
 
 void HeatmapGui::on_mButtonBox_accepted()
 {
-    QString myLayerName = mInputVectorCombo->currentText();
+    // Setting Filename
+    QString myFileName = mOutputRasterLineEdit->text();
+    QFileInfo myFileInfo( myFileName );
+    if( myFileName.isEmpty() || !myFileInfo.dir().exists() )
+    {
+        QMessageBox::information( 0, tr("Output filename is Invalid!"), tr("Kindly Enter a valid output file path/name") );
+    }
+    QString suffix = myFileInfo.suffix();
+    if( suffix.isEmpty() )
+    {
+        myFileName.append(".asc");
+    }
 
+    // Select Layer and emit signal
+    QString myLayerName = mInputVectorCombo->currentText();
+    
     QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
     QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
 
@@ -106,7 +121,7 @@ void HeatmapGui::on_mButtonBox_accepted()
             QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
             if( vl->name() == myLayerName )
                 {
-                    emit createRasterOutput(vl);
+                    emit createRasterOutput(vl, myFileName );
                 }
         }
 

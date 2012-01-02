@@ -85,7 +85,7 @@ class Heatmap: public QObject, public QgisPlugin
     void help();
 
     //! The worker slot, which creates the heatmap
-    void createRasterOutput( QgsVectorLayer* );
+    void createRasterOutput( QgsVectorLayer*, QString );
 
   private:
 
@@ -105,6 +105,7 @@ class Heatmap: public QObject, public QgisPlugin
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
+
 };
 
 #endif //Heatmap_H
