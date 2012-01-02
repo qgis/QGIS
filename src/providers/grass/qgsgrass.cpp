@@ -451,31 +451,13 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
     return QObject::tr( "%1 is not a GRASS mapset." ).arg( mapsetPath );
   }
 
+#ifndef Q_OS_WIN
   QString lock = mapsetPath + "/.gislock";
   QFile lockFile( lock );
-#if WIN32
-  // lock on Windows doesn't support locking (see #808)
-  if ( lockFile.exists() )
-    return QObject::tr( "Mapset is already in use." );
-
-  lockFile.open( QIODevice::WriteOnly );
-#ifndef _MSC_VER
-  int pid = getpid();
-#else
-  int pid = GetCurrentProcessId();
-#endif
-  lockFile.write( QString( "%1" ).arg( pid ).toUtf8() );
-  lockFile.close();
-#else
   QProcess *process = new QProcess();
   QString lockProgram( gisBase + "/etc/lock" );
 
-  // TODO: getpid() probably is not portable
-#ifndef _MSC_VER
   int pid = getpid();
-#else
-  int pid = GetCurrentProcessId();
-#endif
   QgsDebugMsg( QString( "pid = %1" ).arg( pid ) );
 
   process->start( lockProgram, QStringList() << lock << QString::number( pid ) );
