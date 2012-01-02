@@ -244,7 +244,7 @@ extern "C"
 {
 #include <spatialite.h>
 }
-#include "spatialite/qgsnewspatialitelayerdialog.h"
+#include "qgsnewspatialitelayerdialog.h"
 #endif
 
 #include "qgspythonutils.h"
