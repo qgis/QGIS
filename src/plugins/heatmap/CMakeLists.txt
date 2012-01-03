@@ -5,7 +5,6 @@
 SET (heatmap_SRCS
      heatmap.cpp
      heatmapgui.cpp
-     qgsfrequencyinterpolator.cpp
 )
 
 SET (heatmap_UIS heatmapguibase.ui)
@@ -13,7 +12,6 @@ SET (heatmap_UIS heatmapguibase.ui)
 SET (heatmap_MOC_HDRS
      heatmap.h
      heatmapgui.h
-     qgsfrequencyinterpolator.h
 )
 
 SET (heatmap_RCCS  heatmap.qrc)

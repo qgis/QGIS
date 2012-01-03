@@ -105,6 +105,17 @@ class Heatmap: public QObject, public QgisPlugin
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
+    
+    /*
+     * @Name createDecayBufer
+     * @params:
+     * QVector& -> A 2D vector representing the Grid
+     * int -> xPosition
+     * int -> yPosition
+     * int -> Buffer pixelExtend
+     * double -> decayLevel at the end of buffer
+     */
+    void createDecayBuffer( QVector< QVector<double> >&, int, int, int, double );
 
 };
 

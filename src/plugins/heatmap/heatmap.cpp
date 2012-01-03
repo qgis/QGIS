@@ -26,8 +26,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsinterpolator.h"
 #include "qgsgridfilewriter.h"
+#include "qgsvectordataprovider.h"
+#include "qgsgeometry.h"
 
-#include "qgsfrequencyinterpolator.h"
 #include "heatmap.h"
 #include "heatmapgui.h"
 
@@ -40,6 +41,8 @@
 #include <QMessageBox>
 #include <QFileInfo>
 
+// C++ Std Libraries
+#include <cmath>
 
 static const QString sName = QObject::tr( "Heatmap" );
 static const QString sDescription = QObject::tr( "Generate a heatmap raster for a input point vector." );
@@ -133,26 +136,8 @@ void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName 
         return;
     }
 
-    // List to hold the point layer - holds the single layer
-    QList< QgsInterpolator::LayerData > myLayerList;
-    
     QgsVectorDataProvider* myProvider = theLayer->dataProvider();
     if( !myProvider )
-    {
-        return;
-    }
-
-    QgsInterpolator::LayerData myLayerData;
-    myLayerData.vectorLayer = theLayer;
-    // Hardcoding things to test TODO Make them appropriate
-    myLayerData.mInputType = QgsInterpolator::POINTS;
-    myLayerData.zCoordInterpolation = true;
-    myLayerData.interpolationAttribute = -1;
-
-    myLayerList.append( myLayerData );
-
-    QgsFrequencyInterpolator* myInterpolator = new QgsFrequencyInterpolator( myLayerList );
-    if ( !myInterpolator )
     {
         return;
     }
@@ -168,13 +153,129 @@ void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName 
     //Calculate rows based on cellsize
     myRows = myBBox.height()/myYCellSize;
 
-    QgsGridFileWriter myWriter( myInterpolator, theFileName, myBBox, myColumns, myRows, myXCellSize, myYCellSize );
-    if( myWriter.writeFile( true ) == 0 )
+    // Actual code to do the plotting on raster
+
+    QgsAttributeList dummyList;
+
+    myProvider->select(dummyList);
+
+    QgsFeature myFeature;
+    // A 2D container
+    QVector< QVector<double> > myRasterGrid( myRows, QVector<double>(myColumns, 0) );
+    while( myProvider->nextFeature( myFeature ) )
     {
-        mQGisIface->addRasterLayer( theFileName, QFileInfo( theFileName ).baseName() );
+        QgsGeometry* myPointGeometry;
+        myPointGeometry = myFeature.geometry();
+        // convert the geometry to point
+        QgsPoint myPoint;
+        myPoint = myPointGeometry->asPoint();
+        if( ( myPoint.x() == 0 ) && ( myPoint.y() == 0 ) )
+        {
+            continue;
+        }
+        // calculate the pixel position ( xColumn, yRow ) of the point
+        int xPosition, yPosition;
+        xPosition = ( myPoint.x() - myBBox.xMinimum() )/ myXCellSize;
+        yPosition = ( myBBox.yMaximum() - myPoint.y() )/ myYCellSize;
+        // Accomodating the min and max tradeoff min accuracy 
+        if( xPosition != 0 )
+        {
+            xPosition -= 1;
+        }
+        if( yPosition != 0 )
+        {
+            yPosition -= 1;
+        }
+
+        // TODO Get buffersize (in Pixels) and Decay from the GUI
+        int theBufferSize = 10;
+        double theDecay = 0.8;
+
+        // store the value at x,y of a 2D data structure (QVector may be!)
+        myRasterGrid[yPosition][xPosition] += 1.0;
+
+        createDecayBuffer( myRasterGrid, xPosition, yPosition, theBufferSize, theDecay );
     }
 
-    delete myInterpolator;
+    // Write the grid file
+    QFile outputFile( theFileName );
+
+    if( !outputFile.open( QFile::WriteOnly ) )
+    {
+        return;
+    }
+
+    QTextStream outStream( &outputFile );
+    outStream.setRealNumberPrecision(8);
+    // Header section
+    outStream << "NCOLS " << myColumns << endl;
+    outStream << "NROWS " << myRows << endl;
+    outStream << "XLLCORNER " << myBBox.xMinimum() << endl;
+    outStream << "YLLCORNER " <<  myBBox.yMinimum() << endl;
+    if ( myXCellSize == myYCellSize ) //standard way
+    {
+         outStream << "CELLSIZE " << myXCellSize << endl;
+    }
+    else //this is supported by GDAL but probably not by other products
+    {
+        outStream << "DX " << myXCellSize << endl;
+        outStream << "DY " << myYCellSize << endl;
+    }
+    outStream << "NODATA_VALUE -9999" << endl;
+
+    for( int i = 0; i < myRows; i+=1 )
+    {
+        for( int j = 0; j < myColumns; j+=1 )
+        {
+            if(myRasterGrid[i][j] == 0)
+            {
+                outStream<<"-9999 ";
+            }
+            else
+            {
+                outStream<<myRasterGrid[i][j]<<" ";
+            }
+        }
+        outStream<<endl;
+    }
+
+    // Open the file in QGIS window
+    mQGisIface->addRasterLayer( theFileName, QFileInfo( theFileName ).baseName() );
+}
+
+// Fuction which computes buffers
+void Heatmap::createDecayBuffer( QVector< QVector<double> >& theGrid, int xPos, int yPos, int theBuffer, double theDecay )
+{
+    double distance,pixelValue;
+    for( int x = 0; x <= theBuffer; x += 1 )
+    {
+        for( int y = 0; y <= theBuffer; y += 1 )
+        {
+            // The radial distance should be the buffer value
+            distance = sqrt( pow(x,2) + pow(y,2) );
+            if( distance <= theBuffer )
+            {
+                pixelValue = 1 - ( (1-theDecay) * distance / theBuffer );
+                if( ((xPos + x) < theGrid[0].size()) && ((yPos + y) < theGrid.size()) )
+                {
+                    theGrid[ yPos + y ][xPos + x] += pixelValue;
+                }
+                if( ((xPos + x) < theGrid[0].size()) && ((yPos - y) > 0 ) )
+                {
+                    theGrid[ yPos - y ][ xPos + x ] += pixelValue;
+                }
+                if( ((xPos - x) > 0) && ((yPos + y) < theGrid.size()) )
+                {
+                    theGrid[ yPos + y ][xPos - x] += pixelValue;
+                }
+                if( ((xPos - x) > 0) && ((yPos - y) > 0 ) )
+                {
+                    theGrid[ yPos - y ][ xPos - x ] += pixelValue;
+                }
+            }
+        }
+    }
+
 
 }
 
