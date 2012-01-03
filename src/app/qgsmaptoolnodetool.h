@@ -19,6 +19,8 @@
 #include "qgsmaptoolvertexedit.h"
 #include "qgsfeature.h"
 #include "qgsvertexmarker.h"
+#include "qgsgeometryvalidator.h"
+
 #include <QRect>
 #include <QRubberBand>
 
@@ -169,6 +171,9 @@ class SelectionFeature: public QObject
      */
     QgsVectorLayer* vlayer();
 
+  public slots:
+    void addError( QgsGeometry::Error );
+    void validationFinished();
 
   private:
     /**
@@ -214,6 +219,8 @@ class SelectionFeature: public QObject
     QList<VertexEntry> mVertexMap;
     QgsMapCanvas* mCanvas;
 
+    QgsGeometryValidator *mValidator;
+    QString mTip;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
 };

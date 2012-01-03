@@ -21,13 +21,13 @@
 #include "qgsvectordataprovider.h"
 #include "qgstolerance.h"
 #include "qgsgeometry.h"
-#include <cmath>
-#include <QMouseEvent>
-#include <QMessageBox>
 #include "qgslogger.h"
 #include "qgisapp.h"
 #include "qgslegend.h"
 
+#include <cmath>
+#include <QMouseEvent>
+#include <QMessageBox>
 #include <QStatusBar>
 
 
@@ -458,7 +458,7 @@ bool QgsMapToolNodeTool::checkCorrectnessOfFeature( QgsVectorLayer *vlayer )
     qDebug( "feature doesn't exist any more" );
     QMessageBox::warning( NULL,
                           tr( "Node tool" ),
-                          tr( "Feature was deleted on background.\n" ),
+                          tr( "Feature was deleted on background." ),
                           QMessageBox::Ok ,
                           QMessageBox::Ok );
     delete mSelectionFeature;
@@ -890,6 +890,7 @@ SelectionFeature::SelectionFeature()
   mFeature = new QgsFeature();
   mFeatureId = 0;
   mFeatureSelected = false;
+  mValidator = 0;
 }
 
 SelectionFeature::~SelectionFeature()
@@ -899,6 +900,12 @@ SelectionFeature::~SelectionFeature()
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     delete mGeomErrorMarkers.takeFirst();
+  }
+
+  if( mValidator )
+  {
+    mValidator->deleteLater();
+    mValidator = 0;
   }
 }
 
@@ -954,43 +961,63 @@ void SelectionFeature::setSelectedFeature( QgsFeatureId featureId,
 
 void SelectionFeature::validateGeometry( QgsGeometry *g )
 {
-  if ( g == NULL )
-    g = mFeature->geometry();
-
-  if ( g->isGeosValid() )
-  {
-    QgsDebugMsg( "geometry is valid - not validating." );
+  QSettings settings;
+  if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
     return;
-  }
+
+  if ( !g )
+    g = mFeature->geometry();
 
   QgsDebugMsg( "validating geometry" );
 
-  g->validateGeometry( mGeomErrors );
+  mTip.clear();
 
+  mGeomErrors.clear();
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  QString tip;
-
-  for ( int i = 0; i < mGeomErrors.size(); i++ )
+  if( mValidator )
   {
-    tip += mGeomErrors[i].what() + "\n";
-    if ( !mGeomErrors[i].hasWhere() )
-      continue;
+    mValidator->deleteLater();
+    mValidator = 0;
+  }
 
-    QgsVertexMarker *vm = createVertexMarker( mGeomErrors[i].where(), QgsVertexMarker::ICON_X );
-    vm->setToolTip( mGeomErrors[i].what() );
+  mValidator = new QgsGeometryValidator( g );
+  connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
+  connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
+  mValidator->start();
+
+  QStatusBar *sb = QgisApp::instance()->statusBar();
+  sb->showMessage( tr( "Validation started." ) );
+}
+
+void SelectionFeature::addError( QgsGeometry::Error e )
+{
+  mGeomErrors << e;
+  if ( !mTip.isEmpty() )
+    mTip += "\n";
+  mTip += e.what();
+
+  if ( e.hasWhere() )
+  {
+    QgsVertexMarker *vm = createVertexMarker( e.where(), QgsVertexMarker::ICON_X );
+    vm->setToolTip( e.what() );
     vm->setColor( Qt::green );
     vm->setZValue( vm->zValue() + 1 );
     mGeomErrorMarkers << vm;
   }
 
   QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( QObject::tr( "%n geometry error(s) found.", "number of geometry errors", mGeomErrors.size() ) );
-  if ( !tip.isEmpty() )
-    sb->setToolTip( tip );
+  sb->showMessage( e.what() );
+  sb->setToolTip( mTip );
+}
+
+void SelectionFeature::validationFinished()
+{
+  QStatusBar *sb = QgisApp::instance()->statusBar();
+  sb->showMessage( tr( "Validation finished." ) );
 }
 
 void SelectionFeature::deleteSelectedVertexes()
@@ -1043,7 +1070,7 @@ void SelectionFeature::deleteSelectedVertexes()
   {
     QMessageBox::warning( NULL,
                           tr( "Node tool" ),
-                          tr( "Result geometry is invalid. Reverting last changes.\n" ),
+                          tr( "Result geometry is invalid. Reverting last changes." ),
                           QMessageBox::Ok ,
                           QMessageBox::Ok );
   }
@@ -1060,7 +1087,6 @@ void SelectionFeature::deleteSelectedVertexes()
 
   updateFromFeature();
 }
-
 
 void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
 {
@@ -1117,7 +1143,7 @@ void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
   {
     QMessageBox::warning( NULL,
                           tr( "Node tool" ),
-                          tr( "Result geometry is invalid. Reverting last changes.\n" ),
+                          tr( "Result geometry is invalid. Reverting last changes." ),
                           QMessageBox::Ok ,
                           QMessageBox::Ok );
     //redo last operations

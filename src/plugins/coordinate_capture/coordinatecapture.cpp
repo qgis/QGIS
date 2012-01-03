@@ -50,7 +50,7 @@
 
 static const QString sName = QObject::tr( "Coordinate Capture" );
 static const QString sDescription = QObject::tr( "Capture mouse coordinates in different CRS" );
-static const QString sCategory = QObject::tr( "Plugins" );
+static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QString sPluginIcon = ":/coordinate_capture/coordinate_capture.png";
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
@@ -66,9 +66,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
 }
 
@@ -98,7 +98,7 @@ void CoordinateCapture::initGui()
   mQActionPointer->setWhatsThis( tr( "Click on the map to view coordinates and capture to clipboard." ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  mQGisIface->addPluginToMenu( tr( "&Coordinate Capture" ), mQActionPointer );
+  mQGisIface->addPluginToVectorMenu( tr( "&Coordinate Capture" ), mQActionPointer );
 
   // create our map tool
   mpMapTool = new CoordinateCaptureMapTool( mQGisIface->mapCanvas() );

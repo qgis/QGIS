@@ -18,6 +18,7 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsproviderregistry.h"
 #include "qgsexception.h"
+#include "qgsgeometry.h"
 
 #include <QDir>
 #include <QFileOpenEvent>
@@ -72,6 +73,8 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
 }
 void QgsApplication::init( QString customConfigPath )
 {
+  qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
+
   // check if QGIS is run from build directory (not the install directory)
   QDir appDir( applicationDirPath() );
   if ( appDir.exists( "source_path.txt" ) )
