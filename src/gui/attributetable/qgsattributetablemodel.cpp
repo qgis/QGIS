@@ -506,7 +506,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
-  for( int row = index1.row(); row < index2.row(); row++ )
+  for( int row = index1.row(); row <= index2.row(); row++ )
   {
     QgsFeatureId fid = rowToId( row );
     mFeatureMap.remove( fid );
