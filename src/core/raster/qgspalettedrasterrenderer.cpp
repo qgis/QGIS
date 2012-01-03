@@ -17,6 +17,7 @@
 
 #include "qgspalettedrasterrenderer.h"
 #include "qgsrastertransparency.h"
+#include "qgsrasterviewport.h"
 #include <QColor>
 #include <QImage>
 
@@ -61,7 +62,8 @@ void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   void* rasterData;
   double currentOpacity = mOpacity;
 
-  bool hasTransparency = usesTransparency();
+  //rendering is faster without considering user-defined transparency
+  bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
   void* transparencyData;
 
   while ( readNextRasterPart( mBandNumber, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )

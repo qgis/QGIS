@@ -72,8 +72,8 @@ class CORE_EXPORT QgsRasterTransparency
     /** \brief Return the transparency value for a RGB Pixel */
     int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
 
-    /**True if there are no entries in the pixel lists*/
-    bool isEmpty() const;
+    /**True if there are no entries in the pixel lists except the nodata value*/
+    bool isEmpty( double nodataValue ) const;
 
   private:
     /** \brief The list to hold transparency values for RGB layers */

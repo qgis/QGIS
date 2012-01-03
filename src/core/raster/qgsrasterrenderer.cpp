@@ -157,9 +157,15 @@ void QgsRasterRenderer::removePartInfo( int bandNumber )
   }
 }
 
-bool QgsRasterRenderer::usesTransparency() const
+bool QgsRasterRenderer::usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const
 {
-  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty() ) || !doubleNear( mOpacity, 1.0 ) );
+  //transparency is always used if on-the-fly reprojection is enabled
+  bool reprojectionEnabled = ( srcSRS.isValid() && dstSRS.isValid() && srcSRS != dstSRS );
+  if ( !mProvider || reprojectionEnabled )
+  {
+    return true;
+  }
+  return ( mAlphaBand > 0 || ( mRasterTransparency && !mRasterTransparency->isEmpty( mProvider->noDataValue() ) ) || !doubleNear( mOpacity, 1.0 ) );
 }
 
 void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,

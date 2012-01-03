@@ -45,7 +45,7 @@ class QgsRasterRenderer
     virtual ~QgsRasterRenderer();
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
-    bool usesTransparency() const;
+    bool usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const;
 
     void setOpacity( double opacity ) { mOpacity = opacity; }
     double opacity() const { return mOpacity; }

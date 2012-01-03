@@ -18,6 +18,7 @@ email                : ersts@amnh.org
 #include <QList>
 
 #include "qgsrastertransparency.h"
+#include "qgis.h"
 
 QgsRasterTransparency::QgsRasterTransparency()
 {
@@ -169,7 +170,13 @@ int QgsRasterTransparency::alphaValue( double theRedValue, double theGreenValue,
   return theGlobalTransparency;
 }
 
-bool QgsRasterTransparency::isEmpty() const
+bool QgsRasterTransparency::isEmpty( double nodataValue ) const
 {
-  return ( mTransparentThreeValuePixelList.isEmpty() && mTransparentSingleValuePixelList.isEmpty() );
+  return (
+           ( mTransparentSingleValuePixelList.isEmpty() ||
+             ( mTransparentSingleValuePixelList.size() == 1 && doubleNear( mTransparentSingleValuePixelList.at( 0 ).pixelValue, nodataValue ) ) )
+           &&
+           ( mTransparentThreeValuePixelList.isEmpty() ||
+             ( mTransparentThreeValuePixelList.size() == 1 && doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
+               doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) && doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
 }
