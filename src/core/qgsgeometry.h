@@ -415,13 +415,13 @@ class CORE_EXPORT QgsGeometry
      */
     int avoidIntersections();
 
-
     class Error
     {
         QString message;
         QgsPoint location;
         bool hasLocation;
       public:
+        Error() : message( "none" ), hasLocation( false ) {}
         Error( QString m ) : message( m ), hasLocation( false ) {}
         Error( QString m, QgsPoint p ) : message( m ), location( p ), hasLocation( true ) {}
 
@@ -434,9 +434,6 @@ class CORE_EXPORT QgsGeometry
      * @note added in 1.5
      **/
     void validateGeometry( QList<Error> &errors );
-
-    static void validatePolyline( QList<Error> &errors, int i, QgsPolyline polyline, bool ring = false );
-    static void validatePolygon( QList<Error> &errors, int i, const QgsPolygon &polygon );
 
   private:
     // Private variables
@@ -565,10 +562,6 @@ class CORE_EXPORT QgsGeometry
 
     /** return polygon from wkb */
     QgsPolygon asPolygon( unsigned char*& ptr, bool hasZValue );
-
-    static void checkRingIntersections( QList<Error> &errors,
-                                        int p0, int i0, const QgsPolyline &ring0,
-                                        int p1, int i1, const QgsPolyline &ring1 );
 
     static bool geosRelOp( char( *op )( const GEOSGeometry*, const GEOSGeometry * ),
                            QgsGeometry *a, QgsGeometry *b );

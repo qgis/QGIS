@@ -65,9 +65,9 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * an interface object that provides access to exposed functions in QGIS.
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
-CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
-    mQGisIface( theQgisInterface )
+CoordinateCapture::CoordinateCapture( QgisInterface * theQgisInterface )
+    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    , mQGisIface( theQgisInterface )
 {
 }
 

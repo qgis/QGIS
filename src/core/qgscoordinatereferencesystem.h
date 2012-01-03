@@ -432,6 +432,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
     bool loadFromDb( QString db, QString expression, QString value );
 
     QString mValidationHint;
+    mutable QString mWkt;
 
     static CUSTOM_CRS_VALIDATION mCustomSrsValidation;
 };

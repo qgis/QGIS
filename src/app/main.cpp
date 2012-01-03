@@ -21,7 +21,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
-#include <QMessageBox>
 #include <QPixmap>
 #include <QLocale>
 #include <QSettings>
@@ -35,6 +34,7 @@
 
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
+#include "qgsmessagelog.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -164,11 +164,20 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtWarningMsg:
       fprintf( stderr, "Warning: %s\n", msg );
 
+#ifdef QGISDEBUG
+      if ( 0 == strncmp( msg, "Object::", 8 )
+           || 0 == strncmp( msg, "QWidget::", 9 )
+           || 0 == strncmp( msg, "QPainter::", 10 ) )
+      {
+        QgsMessageLog::logMessage( msg, "Qt" );
+      }
+#endif
+
       // TODO: Verify this code in action.
       if ( 0 == strncmp( msg, "libpng error:", 13 ) )
       {
         // Let the user know
-        QMessageBox::warning( 0, "libpng Error", msg );
+        QgsMessageLog::logMessage( msg, "libpng" );
       }
 
       break;
