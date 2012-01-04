@@ -21,6 +21,8 @@
 
 #include <qgis.h>
 
+#define ABISYM(x)  x ## VERSION_INT
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
@@ -219,13 +221,13 @@ class CORE_EXPORT QgsApplication: public QApplication
 
     /** Indicates whether running from build directory (not installed)
        @note added in 2.0 */
-    static bool isRunningFromBuildDir() { return mRunningFromBuildDir; }
+    static bool isRunningFromBuildDir() { return ABISYM( mRunningFromBuildDir ); }
     /** Returns path to the source directory. Valid only when running from build directory
         @note added in 2.0 */
-    static QString buildSourcePath() { return mBuildSourcePath; }
+    static QString buildSourcePath() { return ABISYM( mBuildSourcePath ); }
     /** Returns path to the build output directory. Valid only when running from build directory
         @note added in 2.0 */
-    static QString buildOutputPath() { return mBuildOutputPath; }
+    static QString buildOutputPath() { return ABISYM( mBuildOutputPath ); }
 
     /** Sets the GDAL_SKIP environment variable to include the specified driver
      * and then calls GDALDriverManager::AutoSkipDrivers() to unregister it. The
@@ -245,7 +247,7 @@ class CORE_EXPORT QgsApplication: public QApplication
      * GDAL_SKIP environment variable)
      * @note added in 2.0
      */
-    static QStringList skippedGdalDrivers( ) { return mGdalSkipList; };
+    static QStringList skippedGdalDrivers( ) { return ABISYM( mGdalSkipList ); };
 
     /** Apply the skipped drivers list to gdal
      * @see skipGdalDriver
@@ -258,29 +260,29 @@ class CORE_EXPORT QgsApplication: public QApplication
     void preNotify( QObject * receiver, QEvent * event, bool * done );
 
   private:
-    static QObject* mFileOpenEventReceiver;
-    static QStringList mFileOpenEventList;
+    static QObject* ABISYM( mFileOpenEventReceiver );
+    static QStringList ABISYM( mFileOpenEventList );
 
-    static QString mPrefixPath;
-    static QString mPluginPath;
-    static QString mPkgDataPath;
-    static QString mLibraryPath;
-    static QString mLibexecPath;
-    static QString mThemeName;
-    static QStringList mDefaultSvgPaths;
+    static QString ABISYM( mPrefixPath );
+    static QString ABISYM( mPluginPath );
+    static QString ABISYM( mPkgDataPath );
+    static QString ABISYM( mLibraryPath );
+    static QString ABISYM( mLibexecPath );
+    static QString ABISYM( mThemeName );
+    static QStringList ABISYM( mDefaultSvgPaths );
 
-    static QString mConfigPath;
+    static QString ABISYM( mConfigPath );
 
     /** true when running from build directory, i.e. without 'make install' */
-    static bool mRunningFromBuildDir;
+    static bool ABISYM( mRunningFromBuildDir );
     /** path to the source directory. valid only when running from build directory. */
-    static QString mBuildSourcePath;
+    static QString ABISYM( mBuildSourcePath );
     /** path to the output directory of the build. valid only when running from build directory */
-    static QString mBuildOutputPath;
+    static QString ABISYM( mBuildOutputPath );
     /** List of gdal drivers to be skipped. Uses GDAL_SKIP to exclude them.
      * @see skipGdalDriver, restoreGdalDriver
      * @note added in 2.0 */
-    static QStringList mGdalSkipList;
+    static QStringList ABISYM( mGdalSkipList );
 };
 
 #endif
