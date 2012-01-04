@@ -86,7 +86,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
 
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
 
-  treeRules->populateRules();
+  treeRules->setGrouping( QgsRendererRulesTreeWidget::NoGrouping );
 }
 
 QgsRuleBasedRendererV2Widget::~QgsRuleBasedRendererV2Widget()
@@ -511,7 +511,7 @@ void QgsRendererRulesTreeWidget::setRenderer( QgsRuleBasedRendererV2* r )
 void QgsRendererRulesTreeWidget::setGrouping( Grouping g )
 {
   mGrouping = g;
-  setRootIsDecorated( mGrouping != NoGrouping );
+  setRootIsDecorated( true ); //mGrouping != NoGrouping );
   populateRules();
 }
 
@@ -569,46 +569,52 @@ void QgsRendererRulesTreeWidget::populateRules()
   setColumnWidth( 1, 200 ); // make the column for filter a bit bigger
 }
 
+QTreeWidgetItem* QgsRendererRulesTreeWidget::populateRulesNoGrouping( QgsRuleBasedRendererV2::Rule* rule, int i, QTreeWidgetItem* parentItem )
+{
+  QTreeWidgetItem* item = new QTreeWidgetItem( parentItem );
+
+  QString txtLabel = rule->label();
+  item->setText( 0, txtLabel );
+  item->setData( 0, Qt::UserRole + 1, i );
+  if ( rule->symbol() )
+  {
+    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) ) );
+  }
+
+  QString txtRule = rule->filterExpression();
+  if ( txtRule.isEmpty() )
+    txtRule = tr( "(no filter)" );
+  item->setText( 1, txtRule );
+
+  if ( rule->dependsOnScale() )
+  {
+    item->setText( 2, formatScale( rule->scaleMinDenom(), mLongestMinDenom ) );
+    item->setText( 3, formatScale( rule->scaleMaxDenom(), mLongestMaxDenom ) );
+    item->setTextAlignment( 2, Qt::AlignRight );
+    item->setTextAlignment( 3, Qt::AlignRight );
+  }
+
+  // process children
+  QgsRuleBasedRendererV2::RuleList& children = rule->children();
+  for ( int i = 0; i < children.count(); ++i )
+  {
+    populateRulesNoGrouping( children[i], i, item );
+  }
+
+  return item;
+}
+
 void QgsRendererRulesTreeWidget::populateRulesNoGrouping()
 {
   QList<QTreeWidgetItem *> lst;
 
-  for ( int i = 0; i < mR->ruleCount(); ++i )
-  {
-    QgsRuleBasedRendererV2::Rule* rule = mR->ruleAt( i );
+  QgsRuleBasedRendererV2::Rule* rule = mR->rootRule();
+  QTreeWidgetItem* item = populateRulesNoGrouping( rule, -1, NULL );
 
-    QTreeWidgetItem* item = new QTreeWidgetItem;
-
-    QString txtLabel = rule->label();
-    item->setText( 0, txtLabel );
-    item->setData( 0, Qt::UserRole + 1, i );
-    item->setIcon( 0, QgsSymbolLayerV2Utils::symbolPreviewIcon( rule->symbol(), QSize( 16, 16 ) ) );
-
-    QString txtRule = rule->filterExpression();
-    if ( txtRule.isEmpty() )
-      txtRule = tr( "(no filter)" );
-    item->setText( 1, txtRule );
-
-    if ( rule->dependsOnScale() )
-    {
-      item->setText( 2, formatScale( rule->scaleMinDenom(), mLongestMinDenom ) );
-      item->setText( 3, formatScale( rule->scaleMaxDenom(), mLongestMaxDenom ) );
-      item->setTextAlignment( 2, Qt::AlignRight );
-      item->setTextAlignment( 3, Qt::AlignRight );
-    }
-
-    //item->setBackground( 1, Qt::lightGray );
-    //item->setBackground( 3, Qt::lightGray );
-
-    // Priority (Id): add 1 to rule number and convert to string
-    item->setText( 4,  QString( "%1" ).arg( i + 1, 4 ) );
-    item->setTextAlignment( 4, Qt::AlignRight );
-    lst << item;
-  }
-
-
+  lst << item;
   addTopLevelItems( lst );
 }
+
 
 void QgsRendererRulesTreeWidget::populateRulesGroupByScale()
 {
