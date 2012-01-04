@@ -153,20 +153,20 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
 
 void QgsLogger::warning( const QString& msg )
 {
-  qWarning( "%s", msg.toLocal8Bit().constData() );
   logMessageToFile( msg );
+  qWarning( "%s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::critical( const QString& msg )
 {
-  qCritical( "%s", msg.toLocal8Bit().constData() );
   logMessageToFile( msg );
+  qCritical( "%s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::fatal( const QString& msg )
 {
-  qFatal( "%s", msg.toLocal8Bit().constData() );
   logMessageToFile( msg );
+  qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
 int QgsLogger::debugLevel()

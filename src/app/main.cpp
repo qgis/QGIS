@@ -74,6 +74,10 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
+#if defined(linux)
+#include <execinfo.h>
+#endif
+
 // (if Windows/Mac, use icon from resource)
 #if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
 #include "../../images/themes/default/qgis.xpm" // Linux
@@ -182,8 +186,15 @@ void myMessageOutput( QtMsgType type, const char *msg )
 
       break;
     case QtFatalMsg:
-      fprintf( stderr, "Fatal: %s\n", msg );
+    {
+      fprintf( stderr, "Fatal: %s\nStacktrace (run through c++filt):\n", msg );
+#ifdef linux
+      void *buffer[256];
+      int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+      backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+#endif
       abort();                    // deliberately core dump
+    }
   }
 }
 
