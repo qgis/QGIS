@@ -285,7 +285,7 @@ void QgsAttributeActionDialog::rowSelected( int row )
     actionType->setCurrentIndex( actionType->findText( attributeActionTable->item( row, 0 )->text() ) );
     actionName->setText( attributeActionTable->item( row, 1 )->text() );
     actionAction->setText( attributeActionTable->item( row, 2 )->text() );
-    captureCB->setChecked( item->checkState() == Qt::Checked );
+    captureCB->setChecked( attributeActionTable->item( row, 3 )->checkState() == Qt::Checked );
   }
 }
 
