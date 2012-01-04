@@ -1202,7 +1202,6 @@ class geoprocessingThread( QThread ):
       else:
         for id in intersects:
           vproviderA.featureAtId( int( id ), inFeatB , True, allAttrsA )
-          atMapB = inFeatB.attributeMap()
           tmpGeom = QgsGeometry( inFeatB.geometry() )
 
           try:
@@ -1222,7 +1221,7 @@ class geoprocessingThread( QThread ):
         if add:
           try:
             outFeat.setGeometry( diff_geom )
-            outFeat.setAttributeMap( atMapB )
+            outFeat.setAttributeMap( atMap )
             writer.addFeature( outFeat )
           except Exception, err:
             FEATURE_EXCEPT = False
