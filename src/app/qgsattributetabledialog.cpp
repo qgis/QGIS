@@ -778,10 +778,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 
     if ( col >= 0 )
     {
-      QModelIndex idx0 = mModel->index( 0, col );
-      QModelIndex idx1 = mModel->index( mModel->rowCount() - 1, col );
-
-      mModel->reload( idx0, idx1 );
+      mModel->reload( mModel->index( 0, col ), mModel->index( mModel->rowCount() - 1, col ) );
     }
   }
 }
