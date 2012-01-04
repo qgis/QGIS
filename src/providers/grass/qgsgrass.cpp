@@ -49,7 +49,7 @@ extern "C"
 #define G__setenv(name,value) G__setenv( ( char * ) (name), (char *) (value) )
 #endif
 
-#if defined(WIN32)
+#ifdef Q_OS_WIN
 #include <windows.h>
 QString GRASS_LIB_EXPORT QgsGrass::shortPath( const QString &path )
 {
@@ -119,7 +119,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
   // This is set when QGIS is run from within GRASS
   // or when set explicitly by the user.
   // This value should always take precedence.
-#if WIN32
+#ifdef Q_OS_WIN
   QString gisBase = getenv( "WINGISBASE" ) ? getenv( "WINGISBASE" ) : getenv( "GISBASE" );
   gisBase = shortPath( gisBase );
 #else
@@ -138,7 +138,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
     // Erase gisbase from settings because it does not exists
     settings.setValue( "/GRASS/gisbase", "" );
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
     // Use the applicationDirPath()/grass
     gisBase = shortPath( QCoreApplication::applicationDirPath() + "/grass" );
     QgsDebugMsg( QString( "GRASS gisBase = %1" ).arg( gisBase ) );
@@ -179,7 +179,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
       userGisbase = false;
       break;
     }
-#if defined(WIN32)
+#ifdef Q_OS_WIN32
     gisBase = shortPath( gisBase );
 #endif
   }
@@ -200,7 +200,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
   putEnv( "GISBASE", gisBase );
 
   // Add path to GRASS modules
-#ifdef WIN32
+#ifdef Q_OS_WIN
   QString sep = ";";
 #else
   QString sep = ":";
@@ -213,7 +213,7 @@ void GRASS_LIB_EXPORT QgsGrass::init( void )
   // QgsApplication::prefixPath(), we have to add them
   // to PATH to enable running of GRASS modules
   // and database drivers
-#ifdef WIN32
+#ifdef Q_OS_WIN
   // It seems that QgsApplication::prefixPath()
   // is not initialized at this point
   path.append( sep + shortPath( QCoreApplication::applicationDirPath() ) );
@@ -343,7 +343,7 @@ void QgsGrass::setLocation( QString gisdbase, QString location )
   init();
 
   // Set principal GRASS variables (in memory)
-#if defined(WIN32)
+#ifdef Q_OS_WIN
   G__setenv( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
   // This does not work for GISBASE with non ascii chars on Windows XP,
@@ -364,7 +364,7 @@ void QgsGrass::setMapset( QString gisdbase, QString location, QString mapset )
   init();
 
   // Set principal GRASS variables (in memory)
-#if defined(WIN32)
+#ifdef Q_OS_WIN
   G__setenv( "GISDBASE", shortPath( gisdbase ).toUtf8().data() );
 #else
   G__setenv( "GISDBASE", gisdbase.toUtf8().data() );
@@ -453,14 +453,20 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( QString gisdbase, QString locatio
     return QObject::tr( "%1 is not a GRASS mapset." ).arg( mapsetPath );
   }
 
-#ifndef Q_OS_WIN
   QString lock = mapsetPath + "/.gislock";
+
+#ifndef _MSC_VER
+  int pid = getpid();
+#else
+  int pid = GetCurrentProcessId();
+#endif
+
+  QgsDebugMsg( QString( "pid = %1" ).arg( pid ) );
+
+#ifndef Q_OS_WIN
   QFile lockFile( lock );
   QProcess *process = new QProcess();
   QString lockProgram( gisBase + "/etc/lock" );
-
-  int pid = getpid();
-  QgsDebugMsg( QString( "pid = %1" ).arg( pid ) );
 
   process->start( lockProgram, QStringList() << lock << QString::number( pid ) );
   if ( !process->waitForStarted() )
@@ -477,7 +483,7 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( QString gisdbase, QString locatio
 
   if ( status > 0 )
     return QObject::tr( "Mapset is already in use." );
-#endif // !WIN32
+#endif // Q_OS_WIN
 
   // Create temporary directory
   QFileInfo info( mapsetPath );
@@ -490,13 +496,17 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( QString gisdbase, QString locatio
     QFileInfo dirInfo( mTmp );
     if ( !dirInfo.isWritable() )
     {
+#ifndef Q_OS_WIN
       lockFile.remove();
+#endif
       return QObject::tr( "Temporary directory %1 exists but is not writable" ).arg( mTmp );
     }
   }
   else if ( !dir.mkdir( mTmp ) )
   {
+#ifndef Q_OS_WIN
     lockFile.remove();
+#endif
     return QObject::tr( "Cannot create temporary directory %1" ).arg( mTmp );
   }
 
@@ -510,7 +520,9 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( QString gisdbase, QString locatio
   QFile out( mGisrc );
   if ( !out.open( QIODevice::WriteOnly ) )
   {
+#ifndef Q_OS_WIN
     lockFile.remove();
+#endif
     return QObject::tr( "Cannot create %1" ).arg( mGisrc );
   }
   QTextStream stream( &out );
@@ -556,7 +568,7 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( QString gisdbase, QString locatio
 
   // Reinitialize GRASS
   G__setenv( "GISRC", mGisrc.toUtf8().data() );
-#if defined(WIN32)
+#ifdef Q_OS_WIN
   G__setenv( "GISDBASE", shortPath( gisdbase ).toLocal8Bit().data() );
 #else
   G__setenv( "GISDBASE", gisdbase.toUtf8().data() );
@@ -569,12 +581,14 @@ QString GRASS_LIB_EXPORT QgsGrass::openMapset( QString gisdbase, QString locatio
 
   active = true;
 
+#ifndef Q_OS_WIN
   // Close old mapset
   if ( mMapsetLock.length() > 0 )
   {
     QFile file( mMapsetLock );
     file.remove();
   }
+#endif
 
   mMapsetLock = lock;
 
@@ -587,11 +601,13 @@ QString QgsGrass::closeMapset( )
 
   if ( mMapsetLock.length() > 0 )
   {
+#ifndef Q_OS_WIN
     QFile file( mMapsetLock );
     if ( !file.remove() )
     {
       return QObject::tr( "Cannot remove mapset lock: %1" ).arg( mMapsetLock );
     }
+#endif
     mMapsetLock = "";
 
     putenv(( char * ) "GISRC" );
@@ -788,7 +804,7 @@ QStringList GRASS_LIB_EXPORT QgsGrass::vectorLayers( QString gisdbase,
     // Vect_close here is correct, it should work, but it seems to cause
     // crash on win http://trac.osgeo.org/qgis/ticket/2003
     // disabled on win test it
-#if !defined(WIN32)
+#ifndef Q_OS_WIN
     Vect_close( &map );
 #endif
     return list;
@@ -1130,7 +1146,7 @@ QProcess GRASS_LIB_EXPORT *QgsGrass::startModule( QString gisdbase, QString loca
   QgsDebugMsg( QString( "gisdbase = %1 location = %2" ).arg( gisdbase ).arg( location ) );
   QProcess *process = new QProcess();
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   module += ".exe";
 #endif
 
