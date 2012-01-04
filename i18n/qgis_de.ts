@@ -1177,7 +1177,7 @@ Soll sie dem Projekt als neuer Layer hinzugefügt werden?</translation>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="31"/>
         <source>Symbol layer type</source>
-        <translation type="unfinished">Symbollayertyp</translation>
+        <translation>Symbollayertyp</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssymbolv2propertiesdialogbase.ui" line="20"/>
@@ -1365,14 +1365,6 @@ Erweiterung wird nicht aktiviert.</translation>
     <message>
         <source>Projections</source>
         <translation>Projektionen</translation>
-    </message>
-    <message>
-        <source>Extract projection</source>
-        <translation type="obsolete">Projektion extrahieren</translation>
-    </message>
-    <message>
-        <source>Extract projection information from raster(s)</source>
-        <translation type="obsolete">Projektionsinformationen aus Raster(n) extrahieren</translation>
     </message>
     <message>
         <source>Conversion</source>
@@ -1905,13 +1897,9 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <translation>GDAL-Werkzeugeinstellungen</translation>
     </message>
     <message>
-        <source>Path to the GDAL binaries</source>
-        <translation type="obsolete">Pfad zu den GDAL-Programmen</translation>
-    </message>
-    <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="22"/>
         <source>Path to the GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad zu GDAL-Programmdateien</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="49"/>
@@ -1925,7 +1913,7 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="60"/>
         <source>Path to the GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Pfad zu GDAL-Pythonmodulen</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="98"/>
@@ -1943,27 +1931,30 @@ Deaktivieren Sie die Option &quot;Geschnittene Ausdehnung verwenden&quot; um ein
         <translation>GDAL-Treiberpfad</translation>
     </message>
     <message>
-        <source>GDAL pymod path</source>
-        <translation type="obsolete">GDAL-PyMod-Pfad</translation>
-    </message>
-    <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to both binaries 
 and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Eine Liste von durch Doppelpunkte (Linux und MacOS) oder 
+Semilokons (Windows) getrennten Pfaden zu sowohl den Programme 
+als auch den Pythonskripten.
+
+MacOS-Benutzer brauchen normalerweise etwas wie 
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>Liste von durch Doppelpunkte (Linux und MacOS) oder 
+Semikolons (Windows) getrennte Pfade zu den Pythonmodulen.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nützlich um die GDAL-Dokumentation statt der Onlinehilfe 
+zu öffnen, wenn der Hilfeknopf des Werkzeugs angeklickt wird.</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
@@ -1971,7 +1962,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Select directory with GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Verzeichnis der GDAL-Pythonmodule wählen</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
@@ -5758,8 +5749,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>GISBASE nicht gesetzt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="459"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="495"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="477"/>
         <source>Mapset is already in use.</source>
         <translation>Mapset wird bereits benutzt.</translation>
     </message>
@@ -5771,15 +5761,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="810"/>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="841"/>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="852"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="982"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="999"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1035"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1157"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1221"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1246"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1276"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1305"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1328"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="964"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="981"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1017"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1139"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1203"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1228"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1258"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1287"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1310"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="137"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="188"/>
@@ -5800,17 +5790,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>Keine aktiven Layer gefunden</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="983"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="965"/>
         <source>Cannot read raster map region</source>
         <translation>Konnte &apos;region&apos; der Rasterkarte nicht lesen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1000"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="982"/>
         <source>Cannot read vector map region</source>
         <translation>Konnte &apos;region der Vektorkarte nicht lesen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1036"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1018"/>
         <source>Cannot read region</source>
         <translation>Konnte &apos;region&apos; nicht lesen</translation>
     </message>
@@ -5983,78 +5973,78 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>%1 ist kein GRASS-Mapset.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="485"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="467"/>
         <source>Cannot start %1/etc/lock</source>
         <translation>Kann %1/etc/lock nicht starten</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="510"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="492"/>
         <source>Temporary directory %1 exists but is not writable</source>
         <translation>Temporäres Verzeichnis %1 ist vorhanden, ist aber schreibgeschützt</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="516"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="498"/>
         <source>Cannot create temporary directory %1</source>
         <translation>Kann temporäres Verzeichnis %1 nicht erzeugen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="530"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="512"/>
         <source>Cannot create %1</source>
         <translation>Kann %1 nicht erzeugen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="608"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="590"/>
         <source>Cannot remove mapset lock: %1</source>
         <translation>Kann Mapset-Sperre nicht entfernen: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1056"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1038"/>
         <source>Cannot open GISRC file</source>
         <translation>Kann GISRC-Datei nicht öffnen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1076"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1058"/>
         <source>Cannot start module</source>
         <translation>Kann Modul nicht starten</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1077"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1059"/>
         <source>command: %1 %2</source>
         <translation>Befehl: %1 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1096"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1078"/>
         <source>Cannot run module</source>
         <translation>Kann Modul nicht ausführen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1097"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1079"/>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
         <translation>Befehl: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1158"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1140"/>
         <source>Cannot get projection </source>
         <translation>Kann Projektion nicht bestimmen </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1222"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1247"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1204"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1229"/>
         <source>Cannot get raster extent</source>
         <translation>Kann Rastergrenzen nicht bestimmen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1277"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1259"/>
         <source>Cannot get map info</source>
         <translation>Konnte Karteninfo nicht bekommen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1306"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1288"/>
         <source>Cannot get colors</source>
         <translation>Konnte Farben nicht bekommen</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1329"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1311"/>
         <source>Cannot query raster </source>
         <translation>Kann Raster nicht abfragen </translation>
     </message>
@@ -8018,12 +8008,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="80"/>
         <source>Warning</source>
-        <translation type="unfinished">Warnung</translation>
+        <translation>Warnung</translation>
     </message>
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="81"/>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültiger Feldname. Dieser Feldname ist reserviert und kann nicht benutzt werden.</translation>
     </message>
 </context>
 <context>
@@ -15035,7 +15025,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="185"/>
         <source>Renderer creation has failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Darstellungserzeugung gescheitert.</translation>
     </message>
 </context>
 <context>
@@ -20695,17 +20685,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="198"/>
         <source>Unable to open the database</source>
-        <translation type="unfinished">Datenbank konnte nicht geöffnet werden</translation>
+        <translation>Datenbank konnte nicht geöffnet werden</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Error</source>
-        <translation type="unfinished">Fehler</translation>
+        <translation>Fehler</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation type="unfinished">Konnte SRID %1 nicht laden</translation>
+        <translation>Konnte SRID %1 nicht laden</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="288"/>
@@ -20870,11 +20860,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="385"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>EPSG SRID</source>
-        <translation type="obsolete">EPSG-SRID</translation>
+        <translation>Attribut entfernen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="197"/>
@@ -20886,10 +20872,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="216"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
         <translation>Koordinatenbezugssystem dieses Layers angeben.</translation>
-    </message>
-    <message>
-        <source>Find SRID</source>
-        <translation type="obsolete">SRID suchen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="228"/>
@@ -20931,7 +20913,7 @@ Primärschlüssel erzeugen</translation>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="219"/>
         <source>Specify CRS</source>
-        <translation type="unfinished">KBS angeben</translation>
+        <translation>KBS angeben</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="311"/>
@@ -20942,10 +20924,6 @@ Primärschlüssel erzeugen</translation>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="382"/>
         <source>Delete selected attribute</source>
         <translation>Gewähltes Attribut löschen</translation>
-    </message>
-    <message>
-        <source>Remove selected attribute</source>
-        <translation type="obsolete">Gewähltes Attribut löschen</translation>
     </message>
 </context>
 <context>
@@ -21041,11 +21019,7 @@ Primärschlüssel erzeugen</translation>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="227"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>CRS ID</source>
-        <translation type="obsolete">KBS-ID</translation>
+        <translation>Attribut entfernen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="254"/>
@@ -21067,10 +21041,6 @@ Primärschlüssel erzeugen</translation>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="224"/>
         <source>Delete selected attribute</source>
         <translation>Gewähltes Attribut löschen</translation>
-    </message>
-    <message>
-        <source>Remove selected attribute</source>
-        <translation type="obsolete">Gewähltes Attribut löschen</translation>
     </message>
 </context>
 <context>
@@ -28141,25 +28111,6 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="161"/>
         <source>DEBUG</source>
         <translation>DEBUG</translation>
-    </message>
-</context>
-<context>
-    <name>QgsSpatialiteSridsDialog</name>
-    <message>
-        <source>SpatiaLite Database</source>
-        <translation type="obsolete">SpatiaLite-Datenbank</translation>
-    </message>
-    <message>
-        <source>Unable to open the database</source>
-        <translation type="obsolete">Datenbank konnte nicht geöffnet werden</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>Failed to load SRIDS: %1</source>
-        <translation type="obsolete">Konnte SRID %1 nicht laden</translation>
     </message>
 </context>
 <context>
