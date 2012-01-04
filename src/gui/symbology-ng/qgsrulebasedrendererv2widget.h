@@ -45,6 +45,8 @@ class GUI_EXPORT QgsRendererRulesTreeWidget : public QTreeWidget
     void populateRulesGroupByScale();
     void populateRulesGroupByFilter();
 
+    QTreeWidgetItem* populateRulesNoGrouping( QgsRuleBasedRendererV2::Rule* rule, int i, QTreeWidgetItem* parentItem );
+
     QString formatScaleRange( int minDenom, int maxDenom );
 
     QString formatScale( int denom, int size = 0 );
