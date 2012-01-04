@@ -93,7 +93,7 @@ class SelectionFeature: public QObject
      * @param canvas mapCanvas on which we are working
      * @param feature feature with which we work this parameter is not mandatory if it's not filled feature will be loaded
      */
-    void setSelectedFeature( QgsFeatureId featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
 
     /**
      * Function to select vertex with number
@@ -330,13 +330,13 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * @param vertexMap map of vertexes
      * @param vertex currently processed vertex
      */
-    void createTopologyRubbedBands( QgsVectorLayer* vlayer, const QList<VertexEntry*> &vertexMap, int vertex );
+    void createTopologyRubberBands( QgsVectorLayer* vlayer, const QList<VertexEntry*> &vertexMap, int vertex );
 
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;
 
     /** rubber bands */
-    QList<QgsRubberBand*> mQgsRubberBands;
+    QList<QgsRubberBand*> mRubberBands;
 
     /** list of topology rubber bands */
     QList<QgsRubberBand*> mTopologyRubberBand;
