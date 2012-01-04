@@ -248,7 +248,7 @@ void QgsAttributeTableModel::loadLayer()
 
   if ( behaviour == 1 )
   {
-    beginInsertRows( QModelIndex(), 0, mLayer->selectedFeatureCount() );
+    beginInsertRows( QModelIndex(), 0, mLayer->selectedFeatureCount() - 1 );
     foreach( QgsFeatureId fid, mLayer->selectedFeaturesIds() )
     {
       featureAdded( fid, false );
@@ -371,21 +371,31 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 {
-  QgsAttributeMap row;
-  QgsAttributeList attrs;
-  QgsFeature f;
-
-  attrs.append( mAttributes[column] );
-
   emit layoutAboutToBeChanged();
 // QgsDebugMsg("SORTing");
 
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+
+  QgsRectangle rect;
+  if ( behaviour == 2 )
+  {
+    // current canvas only
+    rect = mCurrentExtent;
+  }
+
   mSortList.clear();
-  mLayer->select( attrs, QgsRectangle(), false );
+
+  int idx = fieldIdx( column );
+  mLayer->select( QgsAttributeList() << idx, rect, false );
+
+  QgsFeature f;
   while ( mLayer->nextFeature( f ) )
   {
-    row = f.attributeMap();
-    mSortList.append( QgsAttributeTableIdColumnPair( f.id(), row[ mAttributes[column] ] ) );
+    if ( behaviour == 1 && !mIdRowMap.contains( f.id() ) )
+      continue;
+
+    mSortList << QgsAttributeTableIdColumnPair( f.id(), f.attributeMap()[idx] );
   }
 
   if ( order == Qt::AscendingOrder )
@@ -506,7 +516,7 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 
 void QgsAttributeTableModel::reload( const QModelIndex &index1, const QModelIndex &index2 )
 {
-  for( int row = index1.row(); row <= index2.row(); row++ )
+  for ( int row = index1.row(); row <= index2.row(); row++ )
   {
     QgsFeatureId fid = rowToId( row );
     mFeatureMap.remove( fid );
