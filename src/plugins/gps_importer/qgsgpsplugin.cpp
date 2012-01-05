@@ -49,6 +49,7 @@
 
 static const QString name_ = QObject::tr( "GPS Tools" );
 static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
+static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 static const QString icon_ = ":/gps_importer.png";
@@ -61,7 +62,7 @@ static const QString icon_ = ":/gps_importer.png";
  * @param _qI Pointer to the QGIS interface object
  */
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace ):
-    QgisPlugin( name_, description_, version_, type_ ),
+    QgisPlugin( name_, description_, category_, version_, type_ ),
     mQGisInterface( theQgisInterFace )
 {
   setupBabel();
@@ -85,7 +86,7 @@ QgsGPSPlugin::~QgsGPSPlugin()
 void QgsGPSPlugin::initGui()
 {
   // add an action to the toolbar
-  mQActionPointer = new QAction( QIcon(), tr( "&Gps Tools" ), this );
+  mQActionPointer = new QAction( QIcon(), tr( "&GPS Tools" ), this );
   mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
   setCurrentTheme( "" );
 
@@ -94,9 +95,10 @@ void QgsGPSPlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
-  mQGisInterface->layerToolBar()->addAction( mQActionPointer );
-  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
+  mQGisInterface->layerToolBar()->addAction( mCreateGPXAction );
+  mQGisInterface->insertAddLayerAction( mCreateGPXAction );
+  mQGisInterface->addPluginToVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
   connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -202,9 +204,10 @@ void QgsGPSPlugin::drawVectorLayer( QString thePathNameQString,
 void QgsGPSPlugin::unload()
 {
   // remove the GUI
-  mQGisInterface->removePluginMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->removePluginMenu( tr( "&Gps" ), mCreateGPXAction );
-  mQGisInterface->removeToolBarIcon( mQActionPointer );
+  mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
+  mQGisInterface->removeAddLayerAction( mCreateGPXAction );
+  mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
@@ -720,6 +723,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)

@@ -116,12 +116,12 @@ class OsmPlugin:
         self.toolBar.addAction(self.actionSave)
 
         # populate plugins menu
-        self.iface.addPluginToMenu("&OpenStreetMap", self.actionLoad)
-        self.iface.addPluginToMenu("&OpenStreetMap", self.actionDockWidget)
-        self.iface.addPluginToMenu("&OpenStreetMap", self.actionDownload)
-        self.iface.addPluginToMenu("&OpenStreetMap", self.actionUpload)
-        self.iface.addPluginToMenu("&OpenStreetMap", self.actionImport)
-        self.iface.addPluginToMenu("&OpenStreetMap", self.actionSave)
+        self.iface.addPluginToWebMenu("&OpenStreetMap", self.actionLoad)
+        self.iface.addPluginToWebMenu("&OpenStreetMap", self.actionDockWidget)
+        self.iface.addPluginToWebMenu("&OpenStreetMap", self.actionDownload)
+        self.iface.addPluginToWebMenu("&OpenStreetMap", self.actionUpload)
+        self.iface.addPluginToWebMenu("&OpenStreetMap", self.actionImport)
+        self.iface.addPluginToWebMenu("&OpenStreetMap", self.actionSave)
 
         # create manager of sqlite database(-s)
         self.dbm=OsmDatabaseManager(self)
@@ -153,12 +153,12 @@ class OsmPlugin:
         self.dockWidget.mapTool=None
 
         # remove the plugin menu items
-        self.iface.removePluginMenu("&OpenStreetMap",self.actionLoad)
-        self.iface.removePluginMenu("&OpenStreetMap",self.actionSave)
-        self.iface.removePluginMenu("&OpenStreetMap",self.actionDownload)
-        self.iface.removePluginMenu("&OpenStreetMap",self.actionUpload)
-        self.iface.removePluginMenu("&OpenStreetMap",self.actionImport)
-        self.iface.removePluginMenu("&OpenStreetMap",self.actionDockWidget)
+        self.iface.removePluginWebMenu("&OpenStreetMap",self.actionLoad)
+        self.iface.removePluginWebMenu("&OpenStreetMap",self.actionSave)
+        self.iface.removePluginWebMenu("&OpenStreetMap",self.actionDownload)
+        self.iface.removePluginWebMenu("&OpenStreetMap",self.actionUpload)
+        self.iface.removePluginWebMenu("&OpenStreetMap",self.actionImport)
+        self.iface.removePluginWebMenu("&OpenStreetMap",self.actionDockWidget)
 
         self.dockWidget.close()
         if self.dockWidget.rubBand:

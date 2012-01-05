@@ -215,7 +215,7 @@ void QgsAttributeTableDialog::on_mSelectedToTopButton_clicked()
 #endif
 
   // just select proper rows
-  //mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount(), mModel->columnCount()));
+  //mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount() - 1 , mModel->columnCount() - 1));
   //mModel->changeLayout();
   mModel->resetModel();
   updateSelection();
@@ -677,7 +677,7 @@ void QgsAttributeTableDialog::editingToggled()
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
 
   // (probably reload data if user stopped editing - possible revert)
-  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
 
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
@@ -700,7 +700,7 @@ void QgsAttributeTableDialog::revert()
 {
   mLayer->rollBack();
   mModel->revert();
-  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
 }
 
 void QgsAttributeTableDialog::on_mAddAttribute_clicked()
@@ -724,7 +724,7 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
   }
 }
 
@@ -765,7 +765,7 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
   }
 }
 
@@ -778,8 +778,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 
     if ( col >= 0 )
     {
-      mModel->reload( mModel->index( 0, col ),
-                      mModel->index( mModel->rowCount(), col ) );
+      mModel->reload( mModel->index( 0, col ), mModel->index( mModel->rowCount() - 1, col ) );
     }
   }
 }
@@ -791,10 +790,10 @@ void QgsAttributeTableDialog::addFeature()
     return;
 
   QgsFeature f;
-  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, this );
+  QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, -1, this );
   if ( action.addFeature() )
   {
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
   }
 }
 
@@ -806,6 +805,8 @@ void QgsAttributeTableDialog::updateExtent()
 
 void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 {
+  QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
+
   if ( mLayer->actions()->size() != 0 )
   {
 
@@ -819,12 +820,12 @@ void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex 
       if ( !action.runable() )
         continue;
 
-      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), mView, mModel, i, atIndex );
+      QgsAttributeTableAction *a = new QgsAttributeTableAction( action.name(), mView, mModel, i, sourceIndex );
       menu->addAction( action.name(), a, SLOT( execute() ) );
     }
   }
 
-  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), mView, mModel, -1, atIndex );
+  QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), mView, mModel, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
 }
 
@@ -837,7 +838,7 @@ void QgsAttributeTableAction::featureForm()
 {
   QgsFeature f = mModel->feature( mFieldIdx );
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, mModel->layer(), -1, this );
+  QgsFeatureAction action( tr( "Attributes changed" ), f, mModel->layer(), -1, -1, this );
   if ( mModel->layer()->isEditable() )
     action.editFeature();
   else

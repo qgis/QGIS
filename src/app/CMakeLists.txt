@@ -11,6 +11,7 @@ SET(QGIS_APP_SRCS
   qgsattributedialog.cpp
   qgsattributetypedialog.cpp
   qgsattributetypeloaddialog.cpp
+  qgsattributetabledialog.cpp
   qgsbookmarkitem.cpp
   qgsbookmarks.cpp
   qgsbrowserdockwidget.cpp
@@ -96,7 +97,6 @@ SET(QGIS_APP_SRCS
   qgshighlight.cpp
   qgshandlebadlayers.cpp
 
-
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
   composer/qgscomposerarrowwidget.cpp
@@ -132,14 +132,12 @@ SET(QGIS_APP_SRCS
   ogr/qgsogrsublayersdialog.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
-  attributetable/qgsattributetabledialog.cpp
-
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
 )
 
 IF (ANDROID)
-    SET(QGIS_APP_SRCS 
+    SET(QGIS_APP_SRCS
         ${QGIS_APP_SRCS}
         qtmain_android.cpp
         )
@@ -157,6 +155,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributedialog.h
   qgsattributetypedialog.h
   qgsattributetypeloaddialog.h
+  qgsattributetabledialog.h
   qgsbookmarks.h
   qgsbrowserdockwidget.h
   qgsconfigureshortcutsdialog.h
@@ -253,8 +252,6 @@ SET (QGIS_APP_MOC_HDRS
   ogr/qgsogrsublayersdialog.h
   ogr/qgsvectorlayersaveasdialog.h
 
-  attributetable/qgsattributetabledialog.h
-
   gps/qgsgpsinformationwidget.h
   )
 
@@ -330,12 +327,10 @@ ENDIF (POSTGRES_FOUND)
 
 IF (HAVE_SPATIALITE)
   SET (QGIS_APP_SRCS ${QGIS_APP_SRCS}
-    spatialite/qgsnewspatialitelayerdialog.cpp
-    spatialite/qgsspatialitesridsdialog.cpp
+    qgsnewspatialitelayerdialog.cpp
     )
   SET (QGIS_APP_MOC_HDRS ${QGIS_APP_MOC_HDRS}
-    spatialite/qgsnewspatialitelayerdialog.h
-    spatialite/qgsspatialitesridsdialog.h
+    qgsnewspatialitelayerdialog.h
     )
 ENDIF (HAVE_SPATIALITE)
 

@@ -41,8 +41,10 @@ class QgsRasterPyramid;
 
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
 #define TO8F(x) (x).toUtf8().constData()
+#define FROM8(x) QString::fromUtf8(x)
 #else
 #define TO8F(x) QFile::encodeName( x ).constData()
+#define FROM8(x) QString::fromLocal8Bit(x)
 #endif
 
 
@@ -255,6 +257,9 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** Emit a signal to notify of the progress event. */
     void emitProgress( int theType, double theProgress, QString theMessage );
+
+  signals:
+    void statusChanged( QString );
 
   private:
     // initialize CRS from wkt

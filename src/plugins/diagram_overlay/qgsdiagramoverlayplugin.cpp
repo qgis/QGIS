@@ -34,9 +34,10 @@
 
 static const QString pluginName = QObject::tr( "Diagram Overlay" );
 static const QString pluginDescription = QObject::tr( "A plugin for placing diagrams on vector layers" );
+static const QString pluginCategory = QObject::tr( "Plugins" );
 static const QString pluginVersion = QObject::tr( "Version 0.0.1" );
 
-QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin( QgisInterface* iface ): QObject(), QgsVectorOverlayPlugin( pluginName, pluginDescription, pluginVersion ), mInterface( iface )
+QgsDiagramOverlayPlugin::QgsDiagramOverlayPlugin( QgisInterface* iface ): QObject(), QgsVectorOverlayPlugin( pluginName, pluginDescription, pluginCategory, pluginVersion ), mInterface( iface )
 {
   if ( iface && iface->mainWindow() )
   {
@@ -139,6 +140,11 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return pluginDescription;
+}
+
+QGISEXTERN QString category()
+{
+  return pluginCategory;
 }
 
 QGISEXTERN QString version()

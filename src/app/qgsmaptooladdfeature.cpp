@@ -42,7 +42,7 @@ QgsMapToolAddFeature::~QgsMapToolAddFeature()
 
 bool QgsMapToolAddFeature::addFeature( QgsVectorLayer *vlayer, QgsFeature *f )
 {
-  QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, this );
+  QgsFeatureAction action( tr( "add feature" ), *f, vlayer, -1, -1, this );
   return action.addFeature();
 }
 

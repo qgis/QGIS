@@ -36,18 +36,26 @@ void QgsDetailedItemData::setDetail( const QString theDetail )
   mDetail = theDetail;
 }
 
+void QgsDetailedItemData::setCategory( const QString theCategory )
+{
+  mCategory = theCategory;
+}
+
 void QgsDetailedItemData::setIcon( const QPixmap theIcon )
 {
   mPixmap = theIcon;
 }
+
 void QgsDetailedItemData::setCheckable( const bool theFlag )
 {
   mCheckableFlag = theFlag;
 }
+
 void QgsDetailedItemData::setChecked( const bool theFlag )
 {
   mCheckedFlag = theFlag;
 }
+
 void QgsDetailedItemData::setRenderAsWidget( const bool theFlag )
 {
   mRenderAsWidgetFlag = theFlag;
@@ -61,6 +69,11 @@ QString QgsDetailedItemData::title() const
 QString QgsDetailedItemData::detail() const
 {
   return mDetail;
+}
+
+QString QgsDetailedItemData::category() const
+{
+  return mCategory;
 }
 
 QPixmap QgsDetailedItemData::icon() const

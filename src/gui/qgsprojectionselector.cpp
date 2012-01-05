@@ -53,13 +53,13 @@ QgsProjectionSelector::QgsProjectionSelector( QWidget* parent, const char *name,
   lstCoordinateSystems->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstCoordinateSystems->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
   // Hide (internal) ID column
-  lstCoordinateSystems->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
+  lstCoordinateSystems->setColumnHidden( QGIS_CRS_ID_COLUMN, true );
 
   lstRecent->header()->setResizeMode( AUTHID_COLUMN, QHeaderView::Stretch );
   lstRecent->header()->resizeSection( QGIS_CRS_ID_COLUMN, 0 );
   lstRecent->header()->setResizeMode( QGIS_CRS_ID_COLUMN, QHeaderView::Fixed );
   // Hide (internal) ID column
-  lstRecent->setColumnHidden(QGIS_CRS_ID_COLUMN, true);
+  lstRecent->setColumnHidden( QGIS_CRS_ID_COLUMN, true );
 
   // Read settings from persistent storage
   QSettings settings;
@@ -108,7 +108,7 @@ QgsProjectionSelector::~QgsProjectionSelector()
     mRecentProjections.removeAll( QString::number( crsId ) );
     mRecentProjections.prepend( QString::number( crsId ) );
     // Prune size of list
-    while ( mRecentProjections.size() > 4 )
+    while ( mRecentProjections.size() > 8 )
     {
       mRecentProjections.removeLast();
     }
@@ -794,7 +794,7 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
         // display the qgis srs_id (field 1) in the third column of the list view
         newItem->setText( QGIS_CRS_ID_COLUMN, QString::fromUtf8(( char * )sqlite3_column_text( ppStmt, 1 ) ) );
         // expand also parent node
-        newItem->parent()->setExpanded(true);
+        newItem->parent()->setExpanded( true );
       }
 
       // display the qgis deprecated in the user data of the item
@@ -861,68 +861,77 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
 
 void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
 {
-  Q_UNUSED( previous );
-  if ( current )
+  // we receive a change event when we make dialog visible,
+  // on only when there is also a'previous' it is a real user induced event
+  if ( current && previous )
+  {
     setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
+  }
 }
 
 
-void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt)
+void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
 {
-    // filter recent crs's
-    QTreeWidgetItemIterator itr(lstRecent);
-    while (*itr) {
-        if ( (*itr)->childCount() == 0 )  // it's an end node aka a projection
+  // filter recent crs's
+  QTreeWidgetItemIterator itr( lstRecent );
+  while ( *itr )
+  {
+    if (( *itr )->childCount() == 0 ) // it's an end node aka a projection
+    {
+      if (( *itr )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+          || ( *itr )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+         )
+      {
+        ( *itr )->setHidden( false );
+        QTreeWidgetItem * parent = ( *itr )->parent();
+        while ( parent != NULL )
         {
-            if ( (*itr)->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-              || (*itr)->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-              )
-            {
-                (*itr)->setHidden(false);
-                QTreeWidgetItem * parent = (*itr)->parent();
-                while (parent != NULL)
-                {
-                    parent->setExpanded(true);
-                    parent->setHidden(false);
-                    parent = parent->parent();
-                }
-            }
-            else{
-                 (*itr)->setHidden(true);
-            }
+          parent->setExpanded( true );
+          parent->setHidden( false );
+          parent = parent->parent();
         }
-        else{
-             (*itr)->setHidden(true);
-        }
-        ++itr;
+      }
+      else
+      {
+        ( *itr )->setHidden( true );
+      }
     }
-    // filter crs's
-    QTreeWidgetItemIterator it(lstCoordinateSystems);
-    while (*it) {
-        if ( (*it)->childCount() == 0 )  // it's an end node aka a projection
+    else
+    {
+      ( *itr )->setHidden( true );
+    }
+    ++itr;
+  }
+  // filter crs's
+  QTreeWidgetItemIterator it( lstCoordinateSystems );
+  while ( *it )
+  {
+    if (( *it )->childCount() == 0 ) // it's an end node aka a projection
+    {
+      if (( *it )->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+          || ( *it )->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
+         )
+      {
+        ( *it )->setHidden( false );
+        QTreeWidgetItem * parent = ( *it )->parent();
+        while ( parent != NULL )
         {
-            if ( (*it)->text( NAME_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-              || (*it)->text( AUTHID_COLUMN ).contains( theFilterTxt, Qt::CaseInsensitive )
-              )
-            {
-                (*it)->setHidden(false);
-                QTreeWidgetItem * parent = (*it)->parent();
-                while (parent != NULL)
-                {
-                    parent->setExpanded(true);
-                    parent->setHidden(false);
-                    parent = parent->parent();
-                }
-            }
-            else{
-                 (*it)->setHidden(true);
-            }
+          parent->setExpanded( true );
+          parent->setHidden( false );
+          parent = parent->parent();
         }
-        else{
-             (*it)->setHidden(true);
-        }
-        ++it;
+      }
+      else
+      {
+        ( *it )->setHidden( true );
+      }
     }
+    else
+    {
+      ( *it )->setHidden( true );
+    }
+    ++it;
+  }
 }
 
 

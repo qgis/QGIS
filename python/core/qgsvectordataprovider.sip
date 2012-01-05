@@ -42,7 +42,9 @@ class QgsVectorDataProvider : QgsDataProvider
         ChangeGeometries =             256,
         SelectGeometryAtId =           512,
         RandomSelectGeometryAtId =     1024,
-        SequentialSelectGeometryAtId = 2048
+        SequentialSelectGeometryAtId = 2048,
+        CreateAttributeIndex =         4096,
+        SetEncoding =                  8192,
       };
 
       /** bitmask of all provider's editing capabilities */

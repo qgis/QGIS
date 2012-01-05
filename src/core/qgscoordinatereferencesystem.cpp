@@ -171,6 +171,7 @@ QgsCoordinateReferenceSystem& QgsCoordinateReferenceSystem::operator=( const Qgs
     mAuthId = srs.mAuthId;
     mIsValidFlag = srs.mIsValidFlag;
     mValidationHint = srs.mValidationHint;
+    mWkt = srs.mWkt;
     if ( mIsValidFlag )
     {
       OSRDestroySpatialReference( mCRS );
@@ -217,6 +218,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
 {
   QgsDebugMsgLevel( "load CRS from " + db + " where " + expression + " is " + value, 3 );
   mIsValidFlag = false;
+  mWkt.clear();
 
   QFileInfo myInfo( db );
   if ( !myInfo.exists() )
@@ -292,6 +294,7 @@ bool QgsCoordinateReferenceSystem::loadFromDb( QString db, QString expression, Q
 bool QgsCoordinateReferenceSystem::createFromWkt( QString theWkt )
 {
   mIsValidFlag = false;
+  mWkt.clear();
 
   if ( theWkt.isEmpty() )
   {
@@ -369,6 +372,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
   //
   QgsDebugMsg( "proj4: " + theProj4String );
   mIsValidFlag = false;
+  mWkt.clear();
 
   QRegExp myProjRegExp( "\\+proj=(\\S+)" );
   int myStart = myProjRegExp.indexIn( theProj4String );
@@ -455,7 +459,7 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
 
   if ( myRecord.empty() )
   {
-    // match all arameters individually:
+    // match all parameters individually:
     // - order of parameters doesn't matter
     // - found definition may have more parameters (like +towgs84 in GDAL)
     // - retry without datum, if no match is found (looks like +datum<>WGS84 was dropped in GDAL)
@@ -463,7 +467,10 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
     QString sql = "SELECT * FROM tbl_srs WHERE ";
     QString delim = "";
     QString datum;
-    foreach( QString param, theProj4String.split( " ", QString::SkipEmptyParts ) )
+
+    // split on spaces followed by a plus sign (+) to deal
+    // also with parameters containing spaces (e.g. +nadgrids)
+    foreach( QString param, theProj4String.split( QRegExp( "\\s+(?=\\+)" ), QString::SkipEmptyParts ) )
     {
       QString arg = QString( "' '||parameters||' ' LIKE %1" ).arg( quotedValue( QString( "% %1 %" ).arg( param ) ) );
       if ( param.startsWith( "+datum=" ) )
@@ -561,7 +568,6 @@ bool QgsCoordinateReferenceSystem::createFromProj4( const QString theProj4String
       }
     }
   }
-
 
   return mIsValidFlag;
 }
@@ -782,6 +788,7 @@ void QgsCoordinateReferenceSystem::setProj4String( QString theProj4String )
   OSRDestroySpatialReference( mCRS );
   mCRS = OSRNewSpatialReference( NULL );
   mIsValidFlag = OSRImportFromProj4( mCRS, theProj4String.toLatin1().constData() ) == OGRERR_NONE;
+  mWkt.clear();
   setMapUnits();
 
 #if defined(QGISDEBUG) && QGISDEBUG>=3
@@ -974,33 +981,7 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
 bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &theSrs )
 {
-  if ( !mIsValidFlag || !theSrs.mIsValidFlag )
-  {
-    return false;
-  }
-  char *thisStr;
-  char *otherStr;
-
-  // OSRIsSame is not relaibel when it comes to comparing +towgs84 parameters
-  // Use string compare on WKT instead.
-  if (( OSRExportToWkt( mCRS, &thisStr ) == OGRERR_NONE ) )
-  {
-    if ( OSRExportToWkt( theSrs.mCRS, &otherStr ) == OGRERR_NONE )
-    {
-      QgsDebugMsgLevel( QString( "Comparing " ) + thisStr, 3 );
-      QgsDebugMsgLevel( QString( "     with " ) + otherStr, 3 );
-      if ( !strcmp( thisStr, otherStr ) )
-      {
-        QgsDebugMsgLevel( QString( "MATCHED!" ) + otherStr, 3 );
-        CPLFree( thisStr );
-        CPLFree( otherStr );
-        return true;
-      }
-      CPLFree( otherStr );
-    }
-    CPLFree( thisStr );
-  }
-  return false;
+  return mIsValidFlag && theSrs.mIsValidFlag && toWkt() == theSrs.toWkt();
 }
 
 bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs )
@@ -1017,15 +998,16 @@ bool QgsCoordinateReferenceSystem::equals( QString theProj4String )
 
 QString QgsCoordinateReferenceSystem::toWkt() const
 {
-  QString myWkt;
-  char* Wkt;
-  if ( OSRExportToWkt( mCRS, &Wkt ) == OGRERR_NONE )
+  if ( mWkt.isEmpty() )
   {
-    myWkt = Wkt;
-    OGRFree( Wkt );
+    char *wkt;
+    if ( OSRExportToWkt( mCRS, &wkt ) == OGRERR_NONE )
+    {
+      mWkt = wkt;
+      OGRFree( wkt );
+    }
   }
-
-  return myWkt;
+  return mWkt;
 }
 
 bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )

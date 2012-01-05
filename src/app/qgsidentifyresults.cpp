@@ -429,6 +429,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
 
   mActionPopup = new QMenu();
 
+  int idx = 0;
   QTreeWidgetItem *featItem = featureItem( item );
   if ( featItem )
   {
@@ -440,6 +441,11 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
     mActionPopup->addAction( tr( "Copy attribute value" ), this, SLOT( copyAttributeValue() ) );
     mActionPopup->addAction( tr( "Copy feature attributes" ), this, SLOT( copyFeatureAttributes() ) );
     mActionPopup->addSeparator();
+
+    if ( item->parent() == featItem && item->childCount() == 0 )
+    {
+      idx = item->data( 0, Qt::UserRole + 1 ).toInt();
+    }
   }
 
   mActionPopup->addAction( tr( "Clear results" ), this, SLOT( clear() ) );
@@ -454,6 +460,8 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
   {
     mActionPopup->addSeparator();
 
+    int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
+
     // The assumption is made that an instance of QgsIdentifyResults is
     // created for each new Identify Results dialog box, and that the
     // contents of the popup menu doesn't change during the time that
@@ -465,8 +473,7 @@ void QgsIdentifyResults::contextMenuEvent( QContextMenuEvent* event )
       if ( !action.runable() )
         continue;
 
-      int idx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ idx ], vlayer, i, this );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), mFeatures[ featIdx ], vlayer, i, idx, this );
       mActionPopup->addAction( QgisApp::getThemeIcon( "/mAction.png" ), action.name(), a, SLOT( execute() ) );
     }
   }
@@ -882,7 +889,7 @@ void QgsIdentifyResults::featureForm()
   if ( !vlayer->featureAtId( fid, f ) )
     return;
 
-  QgsFeatureAction action( tr( "Attribute changes" ), f, vlayer, idx, this );
+  QgsFeatureAction action( tr( "Attribute changes" ), f, vlayer, idx, -1, this );
   if ( vlayer->isEditable() )
   {
     if ( action.editFeature() )

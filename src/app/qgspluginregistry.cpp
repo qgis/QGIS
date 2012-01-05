@@ -36,6 +36,7 @@
 typedef QgisPlugin *create_ui( QgisInterface * qI );
 typedef QString name_t();
 typedef QString description_t();
+typedef QString category_t();
 typedef int type_t();
 
 
@@ -455,12 +456,13 @@ bool QgsPluginRegistry::checkCppPlugin( QString pluginFullPath )
 
   name_t * myName = ( name_t * ) cast_to_fptr( myLib.resolve( "name" ) );
   description_t *  myDescription = ( description_t * )  cast_to_fptr( myLib.resolve( "description" ) );
+  category_t *  myCategory = ( category_t * )  cast_to_fptr( myLib.resolve( "category" ) );
   version_t *  myVersion = ( version_t * ) cast_to_fptr( myLib.resolve( "version" ) );
 
-  if ( myName && myDescription  && myVersion )
+  if ( myName && myDescription && myVersion  && myCategory )
     return true;
 
-  QgsDebugMsg( "Failed to get name, description, or type for " + myLib.fileName() );
+  QgsDebugMsg( "Failed to get name, description, category or type for " + myLib.fileName() );
   return false;
 }
 
@@ -471,7 +473,7 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
   if ( !mPythonUtils->loadPlugin( packageName ) )
     return false;
 
-  QString pluginName, description, version;
+  QString pluginName, description, category, version;
 
   // get information from the plugin
   // if there are some problems, don't continue with metadata retreival
@@ -481,6 +483,8 @@ bool QgsPluginRegistry::checkPythonPlugin( QString packageName )
     description = mPythonUtils->getPluginMetadata( packageName, "description" );
     if ( description != "__error__" )
       version = mPythonUtils->getPluginMetadata( packageName, "version" );
+    // for Python plugins category still optional, by default used "Plugins" category
+    //category = mPythonUtils->getPluginMetadata( packageName, "category" );
   }
 
   if ( pluginName == "__error__" || description == "__error__" || version == "__error__" )

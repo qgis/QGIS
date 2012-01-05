@@ -82,6 +82,23 @@ class QgisAppInterface : public QgisInterface
     int addToolBarIcon( QAction *qAction );
     //! Remove an icon (action) from the plugin toolbar
     void removeToolBarIcon( QAction *qAction );
+    //! Add an icon to the Raster toolbar
+    int addRasterToolBarIcon( QAction *qAction );
+    //! Remove an icon (action) from the Raster toolbar
+    void removeRasterToolBarIcon( QAction *qAction );
+    //! Add an icon to the Vector toolbar
+    int addVectorToolBarIcon( QAction *qAction );
+    //! Remove an icon (action) from the Vector toolbar
+    void removeVectorToolBarIcon( QAction *qAction );
+    //! Add an icon to the Database toolbar
+    int addDatabaseToolBarIcon( QAction *qAction );
+    //! Remove an icon (action) from the Database toolbar
+    void removeDatabaseToolBarIcon( QAction *qAction );
+    //! Add an icon to the Web toolbar
+    int addWebToolBarIcon( QAction *qAction );
+    //! Remove an icon (action) from the Web toolbar
+    void removeWebToolBarIcon( QAction *qAction );
+
     //! Add toolbar with specified name
     QToolBar* addToolBar( QString name );
 
@@ -115,6 +132,21 @@ class QgisAppInterface : public QgisInterface
     void addPluginToDatabaseMenu( QString name, QAction* action );
     /** Remove action from the Database menu */
     void removePluginDatabaseMenu( QString name, QAction* action );
+
+    /** Add action to the Raster menu */
+    void addPluginToRasterMenu( QString name, QAction* action );
+    /** Remove action from the Raster menu */
+    void removePluginRasterMenu( QString name, QAction* action );
+
+    /** Add action to the Vector menu */
+    void addPluginToVectorMenu( QString name, QAction* action );
+    /** Remove action from the Raster menu */
+    void removePluginVectorMenu( QString name, QAction* action );
+
+    /** Add action to the Web menu */
+    void addPluginToWebMenu( QString name, QAction* action );
+    /** Remove action from the Web menu */
+    void removePluginWebMenu( QString name, QAction* action );
 
     /** Add "add layer" action to the layer menu */
     void insertAddLayerAction( QAction *action );
@@ -167,7 +199,10 @@ class QgisAppInterface : public QgisInterface
     virtual QMenu *layerMenu();
     virtual QMenu *settingsMenu();
     virtual QMenu *pluginMenu();
+    virtual QMenu *rasterMenu();
+    virtual QMenu *vectorMenu();
     virtual QMenu *databaseMenu();
+    virtual QMenu *webMenu();
     virtual QMenu *firstRightStandardMenu();
     virtual QMenu *windowMenu();
     virtual QMenu *helpMenu();
@@ -182,6 +217,9 @@ class QgisAppInterface : public QgisInterface
     virtual QToolBar *pluginToolBar();
     virtual QToolBar *helpToolBar();
     virtual QToolBar *rasterToolBar();
+    virtual QToolBar *vectorToolBar();
+    virtual QToolBar *databaseToolBar();
+    virtual QToolBar *webToolBar();
 
     //! File menu actions
     virtual QAction *actionNewProject();

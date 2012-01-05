@@ -25,6 +25,9 @@
      </item>
      <item>
       <widget class="QDoubleSpinBox" name="mTextureWidthSpinBox">
+       <property name="decimals">
+        <number>5</number>
+       </property>
        <property name="maximum">
         <double>99999999.000000000000000</double>
        </property>

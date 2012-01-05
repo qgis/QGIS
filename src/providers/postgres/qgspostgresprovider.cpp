@@ -1736,6 +1736,7 @@ bool QgsPostgresProvider::loadFields()
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "money" ||
                 fieldTypeName == "ltree" ||
+                fieldTypeName == "uuid" ||
                 fieldTypeName.startsWith( "time" ) ||
                 fieldTypeName.startsWith( "date" ) )
       {
@@ -2044,25 +2045,11 @@ QString QgsPostgresProvider::getPrimaryKey()
                 .arg( quotedValue( mQuery ) );
 
           Result ctidCheck = connectionRO->PQexec( sql );
-
           if ( PQntuples( ctidCheck ) == 1 )
           {
-            sql = QString( "SELECT max(substring(ctid::text from E'\\\\((\\\\d+),\\\\d+\\\\)')::integer) from %1" )
-                  .arg( mQuery );
-
-            Result ctidCheck = connectionRO->PQexec( sql );
-            if ( PQntuples( ctidCheck ) == 1 )
-            {
-              int id = QString( PQgetvalue( ctidCheck, 0, 0 ) ).toInt();
-
-              if ( id < 0x10000 )
-              {
-                // fallback to ctid
-                primaryKey = "ctid";
-                primaryKeyType = "tid";
-                mIsDbPrimaryKey = true;
-              }
-            }
+            primaryKey = "ctid";
+            primaryKeyType = "tid";
+            mIsDbPrimaryKey = true;
           }
         }
 
@@ -4029,7 +4016,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   QgsDebugMsg( "Getting geometry column: " + sql );
   result = connectionRO->PQexec( sql );
 
-  QgsDebugMsg( "geometry column query returned " + QString::number( PQntuples( result ) ) );
+  QgsDebugMsg( QString( "geometry column query returned %1 rows" ).arg( PQntuples( result ) ) );
 
   if ( PQntuples( result ) > 0 )
   {
@@ -4117,7 +4104,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
       result = connectionRO->PQexec( sql );
 
-      if ( PQntuples( result ) == 1 )
+      if ( PQntuples( result ) == 1 && !PQgetisnull( result, 0, 0 ) )
       {
         fType = QString::fromUtf8( PQgetvalue( result, 0, 0 ) );
       }

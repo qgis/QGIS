@@ -236,7 +236,7 @@ void QgsGPSPluginGui::on_buttonBox_rejected()
 
 void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
 {
-  QgsLogger::debug( " Gps File Importer::pbnGPXSelectFile_clicked() " );
+  QgsLogger::debug( " GPS File Importer::pbnGPXSelectFile_clicked() " );
   QString myFileTypeQString;
   QString myFilterString = tr( "GPS eXchange format (*.gpx)" );
   QSettings settings;

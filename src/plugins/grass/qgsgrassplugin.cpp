@@ -64,6 +64,7 @@ QgsGrassPlugin::QgsGrassPlugin( QgisInterface * theQgisInterFace ):
   pluginNameQString = tr( "GrassVector" );
   pluginVersionQString = tr( "0.1" );
   pluginDescriptionQString = tr( "GRASS layer" );
+  pluginCategoryQString = tr( "Plugins" );
 }
 
 QgsGrassPlugin::~QgsGrassPlugin()
@@ -89,6 +90,11 @@ QString QgsGrassPlugin::version()
 QString QgsGrassPlugin::description()
 {
   return pluginDescriptionQString;
+}
+
+QString QgsGrassPlugin::category()
+{
+  return pluginCategoryQString;
 }
 
 void QgsGrassPlugin::help()
@@ -927,6 +933,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return QObject::tr( "GRASS layer" );
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return QObject::tr( "Plugins" );
 }
 
 // Return the type (either UI or MapLayer plugin)

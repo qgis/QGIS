@@ -164,15 +164,86 @@ void QgisAppInterface::removePluginDatabaseMenu( QString name, QAction* action )
   qgis->removePluginDatabaseMenu( name, action );
 }
 
+void QgisAppInterface::addPluginToRasterMenu( QString name, QAction* action )
+{
+  qgis->addPluginToRasterMenu( name, action );
+}
+
+void QgisAppInterface::removePluginRasterMenu( QString name, QAction* action )
+{
+  qgis->removePluginRasterMenu( name, action );
+}
+
+void QgisAppInterface::addPluginToVectorMenu( QString name, QAction* action )
+{
+  qgis->addPluginToVectorMenu( name, action );
+}
+
+void QgisAppInterface::removePluginVectorMenu( QString name, QAction* action )
+{
+  qgis->removePluginVectorMenu( name, action );
+}
+
+void QgisAppInterface::addPluginToWebMenu( QString name, QAction* action )
+{
+  qgis->addPluginToWebMenu( name, action );
+}
+
+void QgisAppInterface::removePluginWebMenu( QString name, QAction* action )
+{
+  qgis->removePluginWebMenu( name, action );
+}
+
 int QgisAppInterface::addToolBarIcon( QAction * qAction )
 {
-  // add the menu to the master Plugins menu
   return qgis->addPluginToolBarIcon( qAction );
 }
+
 void QgisAppInterface::removeToolBarIcon( QAction *qAction )
 {
   qgis->removePluginToolBarIcon( qAction );
 }
+
+int QgisAppInterface::addRasterToolBarIcon( QAction * qAction )
+{
+  return qgis->addRasterToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeRasterToolBarIcon( QAction *qAction )
+{
+  qgis->removeRasterToolBarIcon( qAction );
+}
+
+int QgisAppInterface::addVectorToolBarIcon( QAction * qAction )
+{
+  return qgis->addVectorToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeVectorToolBarIcon( QAction *qAction )
+{
+  qgis->removeVectorToolBarIcon( qAction );
+}
+
+int QgisAppInterface::addDatabaseToolBarIcon( QAction * qAction )
+{
+  return qgis->addDatabaseToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeDatabaseToolBarIcon( QAction *qAction )
+{
+  qgis->removeDatabaseToolBarIcon( qAction );
+}
+
+int QgisAppInterface::addWebToolBarIcon( QAction * qAction )
+{
+  return qgis->addWebToolBarIcon( qAction );
+}
+
+void QgisAppInterface::removeWebToolBarIcon( QAction *qAction )
+{
+  qgis->removeWebToolBarIcon( qAction );
+}
+
 QToolBar* QgisAppInterface::addToolBar( QString name )
 {
   return qgis->addToolBar( name );
@@ -277,7 +348,10 @@ QMenu *QgisAppInterface::viewMenu() { return qgis->viewMenu(); }
 QMenu *QgisAppInterface::layerMenu() { return qgis->layerMenu(); }
 QMenu *QgisAppInterface::settingsMenu() { return qgis->settingsMenu(); }
 QMenu *QgisAppInterface::pluginMenu() { return qgis->pluginMenu(); }
+QMenu *QgisAppInterface::rasterMenu() { return qgis->rasterMenu(); }
+QMenu *QgisAppInterface::vectorMenu() { return qgis->vectorMenu(); }
 QMenu *QgisAppInterface::databaseMenu() { return qgis->databaseMenu(); }
+QMenu *QgisAppInterface::webMenu() { return qgis->webMenu(); }
 QMenu *QgisAppInterface::firstRightStandardMenu() { return qgis->firstRightStandardMenu(); }
 QMenu *QgisAppInterface::windowMenu() { return qgis->windowMenu(); }
 QMenu *QgisAppInterface::helpMenu() { return qgis->helpMenu(); }
@@ -292,6 +366,9 @@ QToolBar *QgisAppInterface::attributesToolBar() { return qgis->attributesToolBar
 QToolBar *QgisAppInterface::pluginToolBar() { return qgis->pluginToolBar(); }
 QToolBar *QgisAppInterface::helpToolBar() { return qgis->helpToolBar(); }
 QToolBar *QgisAppInterface::rasterToolBar() { return qgis->rasterToolBar(); }
+QToolBar *QgisAppInterface::vectorToolBar() { return qgis->vectorToolBar(); }
+QToolBar *QgisAppInterface::databaseToolBar() { return qgis->databaseToolBar(); }
+QToolBar *QgisAppInterface::webToolBar() { return qgis->webToolBar(); }
 
 //! File menu actions
 QAction *QgisAppInterface::actionNewProject() { return qgis->actionNewProject(); }
@@ -409,6 +486,6 @@ bool QgisAppInterface::openFeatureForm( QgsVectorLayer *vlayer, QgsFeature &f, b
   if ( !vlayer )
     return false;
 
-  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, QgisApp::instance() );
+  QgsFeatureAction action( tr( "Attributes changed" ), f, vlayer, -1, -1, QgisApp::instance() );
   return action.editFeature();
 }

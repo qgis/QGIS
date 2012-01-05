@@ -23,6 +23,7 @@
 #include "qgsmaprenderer.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsgeometryvalidator.h"
 
 #include <QCursor>
 #include <QPixmap>
@@ -35,6 +36,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas* canvas, enum CaptureMode too
     : QgsMapToolEdit( canvas )
     , mCaptureMode( tool )
     , mRubberBand( 0 )
+    , mValidator( 0 )
 {
   mCaptureModeFromLayer = tool == CaptureNone;
   mCapturing = false;
@@ -52,6 +54,12 @@ QgsMapToolCapture::~QgsMapToolCapture()
     delete mSnappingMarkers.takeFirst();
 
   stopCapturing();
+
+  if( mValidator )
+  {
+    mValidator->deleteLater();
+    mValidator = 0;
+  }
 }
 
 void QgsMapToolCapture::deactivate()
@@ -271,11 +279,24 @@ void QgsMapToolCapture::closePolygon()
 
 void QgsMapToolCapture::validateGeometry()
 {
+  QSettings settings;
+  if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
+    return;
+
+  if( mValidator )
+  {
+    mValidator->deleteLater();
+    mValidator = 0;
+  }
+
+  mTip = "";
   mGeomErrors.clear();
   while ( !mGeomErrorMarkers.isEmpty() )
   {
     delete mGeomErrorMarkers.takeFirst();
   }
+
+  QgsGeometry *g;
 
   switch ( mCaptureMode )
   {
@@ -285,38 +306,59 @@ void QgsMapToolCapture::validateGeometry()
     case CaptureLine:
       if ( mCaptureList.size() < 2 )
         return;
-      QgsGeometry::validatePolyline( mGeomErrors, 0, mCaptureList.toVector() );
+      g = QgsGeometry::fromPolyline( mCaptureList.toVector() );
       break;
     case CapturePolygon:
       if ( mCaptureList.size() < 3 )
         return;
-      QgsGeometry::validatePolyline( mGeomErrors, 0, mCaptureList.toVector() << mCaptureList[0], true );
+      g = QgsGeometry::fromPolygon( QgsPolygon() << ( QgsPolyline () << mCaptureList.toVector() << mCaptureList[0] ) );
       break;
   }
 
+  if ( !g )
+    return;
+
+  mValidator = new QgsGeometryValidator( g );
+  connect( mValidator, SIGNAL( errorFound( QgsGeometry::Error ) ), this, SLOT( addError( QgsGeometry::Error ) ) );
+  connect( mValidator, SIGNAL( finished() ), this, SLOT( validationFinished() ) );
+  mValidator->start();
+
+  QStatusBar *sb = QgisApp::instance()->statusBar();
+  sb->showMessage( tr( "Validation started." ) );
+}
+
+void QgsMapToolCapture::addError( QgsGeometry::Error e )
+{
+  mGeomErrors << e;
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
   if ( !vlayer )
     return;
 
-  QString tip;
-  for ( int i = 0; i < mGeomErrors.size(); i++ )
-  {
-    tip += mGeomErrors[i].what() + "\n";
-    if ( !mGeomErrors[i].hasWhere() )
-      continue;
+  if ( !mTip.isEmpty() )
+    mTip += "\n";
 
+  mTip += e.what();
+
+  if ( e.hasWhere() )
+  {
     QgsVertexMarker *vm =  new QgsVertexMarker( mCanvas );
-    vm->setCenter( mCanvas->mapRenderer()->layerToMapCoordinates( vlayer, mGeomErrors[i].where() ) );
+    vm->setCenter( mCanvas->mapRenderer()->layerToMapCoordinates( vlayer, e.where() ) );
     vm->setIconType( QgsVertexMarker::ICON_X );
     vm->setPenWidth( 2 );
-    vm->setToolTip( mGeomErrors[i].what() );
+    vm->setToolTip( e.what() );
     vm->setColor( Qt::green );
     vm->setZValue( vm->zValue() + 1 );
     mGeomErrorMarkers << vm;
   }
 
   QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( QObject::tr( "%n geometry error(s) found.", "number of geometry errors", mGeomErrors.size() ) );
-  if ( !tip.isEmpty() )
-    sb->setToolTip( tip );
+  sb->showMessage( e.what() );
+  if ( !mTip.isEmpty() )
+    sb->setToolTip( mTip );
+}
+
+void QgsMapToolCapture::validationFinished()
+{
+  QStatusBar *sb = QgisApp::instance()->statusBar();
+  sb->showMessage( tr( "Validation finished." ) );
 }

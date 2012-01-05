@@ -629,10 +629,10 @@ class QgsSymbolV2RenderContext
     void setAlpha( qreal alpha );
 
     bool selected() const;
-    void setSelected( bool selected ) const;
+    void setSelected( bool selected );
 
     //! @note added in 1.5
-    int renderHints() const;
+    int renderHints();
     //! @note added in 1.5
     void setRenderHints( int hints );
 
