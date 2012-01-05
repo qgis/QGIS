@@ -508,7 +508,7 @@
         <string>Output preview is generated &lt;br&gt; using the first feature from the layer.</string>
        </property>
        <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
+        <enum>QFrame::NoFrame</enum>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Sunken</enum>
