@@ -59,7 +59,7 @@ RgShortestPathWidget::RgShortestPathWidget( QWidget* theParent, RoadGraphPlugin 
   QWidget *myWidget = new QWidget( this );
   setWidget( myWidget );
 
-  QVBoxLayout *v = new QVBoxLayout();
+  QVBoxLayout *v = new QVBoxLayout( myWidget );
   QHBoxLayout *h = NULL;
   QLabel *l = NULL;
 
