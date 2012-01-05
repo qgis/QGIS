@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "qgssinglebandcolordatarenderer.h"
+#include "qgsrasterviewport.h"
 #include <QImage>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band, QgsRasterResampler* resampler ):
@@ -41,16 +42,29 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
   int topLeftCol, topLeftRow, nCols, nRows, currentRasterPos;
   void* rasterData;
 
+  bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
+
   while ( readNextRasterPart( mBand, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
   {
     currentRasterPos = 0;
-    QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QImage img( nCols, nRows, QImage::Format_ARGB32 );
+    uchar* scanLine = 0;
     for ( int i = 0; i < nRows; ++i )
     {
-      memcpy( img.scanLine( i ), &((( uint* )rasterData )[currentRasterPos] ), nCols * 4 );
-      for ( int j = 0; j < nCols; ++j )
+      scanLine = img.scanLine( i );
+      if( !hasTransparency )
       {
-        ++currentRasterPos;
+        memcpy( scanLine, &((( uint* )rasterData )[currentRasterPos] ), nCols * 4 );
+        currentRasterPos += nCols;
+      }
+      else
+      {
+        for ( int j = 0; j < nCols; ++j )
+        {
+          QRgb c( ( (uint*)(rasterData) )[currentRasterPos] );
+          scanLine[i] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), 255 );
+          ++currentRasterPos;
+        }
       }
     }
 
