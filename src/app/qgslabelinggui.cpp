@@ -137,6 +137,7 @@ QgsLabelingGui::QgsLabelingGui( QgsPalLabeling* lbl, QgsVectorLayer* layer, QgsM
   chkMergeLines->setChecked( lyr.mergeLines );
   mMinSizeSpinBox->setValue( lyr.minFeatureSize );
   chkAddDirectionSymbol->setChecked( lyr.addDirectionSymbol );
+  wrapCharacterEdit->setText( lyr.wrapChar );
 
   bool scaleBased = ( lyr.scaleMin != 0 && lyr.scaleMax != 0 );
   chkScaleBasedVisibility->setChecked( scaleBased );
@@ -320,6 +321,7 @@ QgsPalLayerSettings QgsLabelingGui::layerSettings()
   }
   lyr.minFeatureSize = mMinSizeSpinBox->value();
   lyr.fontSizeInMapUnits = ( mFontSizeUnitComboBox->currentIndex() == 1 );
+  lyr.wrapChar = wrapCharacterEdit->text();
 
   //data defined labeling
   setDataDefinedProperty( mSizeAttributeComboBox, QgsPalLayerSettings::Size, lyr );
