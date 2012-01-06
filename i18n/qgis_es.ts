@@ -1700,19 +1700,19 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecciones</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished">Conversión</translation>
+        <translation>Conversión</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Extracción</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished">Análisis</translation>
+        <translation>Análisis</translation>
     </message>
     <message>
         <source>Tool to analyze and visualize DEMs</source>
@@ -1720,7 +1720,7 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Miscelánea</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
@@ -1917,13 +1917,13 @@ Do you want terminate it anyway?</source>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="66"/>
         <source>Edit</source>
-        <translation type="unfinished">Editar</translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="79"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="82"/>
         <source>Reset</source>
-        <translation type="unfinished">Restablecer</translation>
+        <translation>Restablecer</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
@@ -2075,15 +2075,15 @@ Desactive la opción &quot;Usar extensión de la intersección&quot; para obtene
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Terminado</translation>
+        <translation>Terminado</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Proceso completado.</translation>
+        <translation>Proceso completado.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="unfinished">No se ha creado %1.</translation>
+        <translation>No se ha creado %1.</translation>
     </message>
     <message>
         <source>Assign projection</source>
@@ -2231,7 +2231,7 @@ Desactive la opción &quot;Usar extensión de la intersección&quot; para obtene
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="22"/>
         <source>Path to the GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta a los ejecutables de GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="49"/>
@@ -2245,7 +2245,7 @@ Desactive la opción &quot;Usar extensión de la intersección&quot; para obtene
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="60"/>
         <source>Path to the GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta a los módulos python de GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="98"/>
@@ -2273,17 +2273,27 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Una lista de rutas separadas por dos puntos 
+(Linux y MacOS) o punto y coma (Windows) tanto a los 
+binarios y como a los ejecutables de python.
+
+Los usuarios de MacOS normalmente necesitan 
+establecer esto a algo como 
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>Una lista de rutas separadas por dos puntos 
+(Linux y MacOS) o punto y coma (Windows) a los 
+módulos de python.
+</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="unfinished"></translation>
+        <translation>Útil para abrir documentación local de GDAL en vez de la ayuda 
+en línea cuando se pulsa el botón Ayuda del diálogo de la herramienta.</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
@@ -2291,7 +2301,7 @@ when pressing on the tool dialog&apos;s Help button.</source>
     </message>
     <message>
         <source>Select directory with GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar el directorio con los módulos python de GDAL</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
@@ -4891,31 +4901,31 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <source>Edit OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar relación de OSM</translation>
     </message>
     <message>
         <source>for grouping boundaries and marking enclaves / exclaves</source>
-        <translation type="unfinished"></translation>
+        <translation>para agrupar contornos y hacer enclaves / exclaves</translation>
     </message>
     <message>
         <source>to put holes into areas (might have to be renamed, see article)</source>
-        <translation type="unfinished"></translation>
+        <translation>para hacer agujeros dentro de áreas (puede ser necesario cambiar el nombre, ver artículo)</translation>
     </message>
     <message>
         <source>any kind of turn restriction</source>
-        <translation type="unfinished"></translation>
+        <translation>cualquier tipo de restricción de giro</translation>
     </message>
     <message>
         <source>like bus routes, cycle routes and numbered highways</source>
-        <translation type="unfinished"></translation>
+        <translation>como rutas de autobús o bicicleta y carreteras numeradas</translation>
     </message>
     <message>
         <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
-        <translation type="unfinished"></translation>
+        <translation>dispositivos de control de tráfico; radares, cámaras de semáforos, controles de peso, ...</translation>
     </message>
     <message>
         <source>OSM Information</source>
@@ -4942,7 +4952,7 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Check your internet connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Compruebe su conexión a internet</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
@@ -4954,11 +4964,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Choose file to save</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione el archivo a guardar</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos OSM (*.osm)</translation>
     </message>
     <message>
         <source>Getting data</source>
@@ -5227,15 +5237,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Snapping ON. Hold Ctrl to disable it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoensamblado ACTIVO. Mantenga pulsado Ctrl para desactivarlo.</translation>
     </message>
     <message>
         <source>Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar historial de edición de OSM</translation>
     </message>
     <message>
         <source>Show OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar historial de edición de OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="100"/>
@@ -5283,27 +5293,27 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Layer doesn&apos;t exist</source>
-        <translation type="unfinished"></translation>
+        <translation>La capa no existe</translation>
     </message>
     <message>
         <source>The selected layer doesn&apos;t exist anymore!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡La capa seleccionada ya no existe!</translation>
     </message>
     <message>
         <source>Importing features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar objetos espaciales...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importar</translation>
+        <translation>Importar</translation>
     </message>
     <message>
         <source>Import has been completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha completado la importación.</translation>
     </message>
 </context>
 <context>
@@ -5340,152 +5350,155 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un archivo de OpenStreetMap</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos OSM (*.osm)</translation>
     </message>
     <message>
         <source>OSM Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar OSM</translation>
     </message>
     <message>
         <source>Please enter path to OSM data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, introduzca la ruta al archivo de datos de OSM.</translation>
     </message>
     <message>
         <source>Path to OSM file is invalid: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>La ruta al archivo OSM no es válida: %1.</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
-        <translation type="unfinished"></translation>
+        <translation>Las capas del archivo OSM &quot;%1&quot; ya están cargadas.</translation>
     </message>
     <message>
         <source>Failed to load polygon layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar la capa de polígonos.</translation>
     </message>
     <message>
         <source>Failed to load line layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar la capa de líneas.</translation>
     </message>
     <message>
         <source>Failed to load point layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar la capa de puntos.</translation>
     </message>
     <message>
         <source>Could not connect to setRenderer signal.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo conectar con la señal setRenderer.</translation>
     </message>
     <message>
         <source>Failed to load layers: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudieron cargar las capas: %1</translation>
     </message>
 </context>
 <context>
     <name>OsmPlugin</name>
     <message>
         <source>Load OSM from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar OSM de archivo</translation>
     </message>
     <message>
         <source>Load OpenStreetMap from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar OpenStreetMap de archivo</translation>
     </message>
     <message>
         <source>Import data from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar datos de una capa</translation>
     </message>
     <message>
         <source>Import data from a layer to OpenStreetMap</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar datos de una capa a OpenStreetMap</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Guardar OSM a archivo</translation>
+        <translation>Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>Save OpenStreetMap to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar OpenStreetMap a archivo</translation>
     </message>
     <message>
         <source>Download OSM data</source>
-        <translation type="unfinished">Descargar datos de OSM</translation>
+        <translation>Descargar datos de OSM</translation>
     </message>
     <message>
         <source>Download OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Descargar datos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation type="unfinished">Subir datos de OSM</translation>
+        <translation>Subir datos de OSM</translation>
     </message>
     <message>
         <source>Upload OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir datos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Show/Hide OSM Feature Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/Ocultar Administrador de objetos de OSM</translation>
     </message>
     <message>
         <source>Show/Hide OpenStreetMap Feature Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/Ocultar Administrador de objetos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Lo siento</translation>
     </message>
     <message>
         <source>You don&apos;t have OSM provider installed!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No tiene proveedor de OSM instalado!</translation>
     </message>
     <message>
         <source>OSM Save to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué guardar.</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">Subir a OSM</translation>
+        <translation>Subir a OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué subir.</translation>
     </message>
     <message>
         <source>OSM Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importacioń de OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué capa será el destino de la importación.</translation>
     </message>
     <message>
         <source>There are currently no available vector layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualmente no hay capas vectoriales disponibles.</translation>
     </message>
 </context>
 <context>
     <name>OsmSaveDlg</name>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un archivo de OpenStreetMap</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos OSM (*.osm)</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
@@ -5601,7 +5614,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     <name>OsmUploadDlg</name>
     <message>
         <source>Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir</translation>
     </message>
     <message>
         <source>OSM Upload</source>
@@ -5613,67 +5626,67 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Node addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al añadir nodo.</translation>
     </message>
     <message>
         <source>Node update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al actualizar nodo.</translation>
     </message>
     <message>
         <source>Node deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al borrar nodo.</translation>
     </message>
     <message>
         <source>Way addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al añadir vía.</translation>
     </message>
     <message>
         <source>Way update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al actualizar vía.</translation>
     </message>
     <message>
         <source>Way deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al borrar vía.</translation>
     </message>
     <message>
         <source>Relation addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al añadir relación.</translation>
     </message>
     <message>
         <source>Relation update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al actualizar relación.</translation>
     </message>
     <message>
         <source>Relation deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al borrar relación.</translation>
     </message>
     <message>
         <source>Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede establecer conexión con el servidor de OpenStreetMap. Por favor, compruebe la configuración de su proxy y, cortafuegos y pruebe de nuevo.</translation>
     </message>
     <message>
         <source>Changeset closing failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al cerrar el conjunto de cambios.</translation>
     </message>
     <message>
         <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló el proceso de subida. El servidor de OpenStreetMap respondió: %1 - %2.</translation>
     </message>
     <message>
         <source>Authentication failed. Please try again with correct login and password.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la autenticación. Por favor, pruebe de nuevo con el usuario y contraseña correctos.</translation>
     </message>
     <message>
         <source>Setting host failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al establecer el servidor.</translation>
     </message>
     <message>
         <source>Setting user and password failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al establecer usuario y contraseña.</translation>
     </message>
     <message>
         <source>Setting proxy failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al establecer el proxy.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
@@ -6419,8 +6432,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>GISBASE no establecida.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="459"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="495"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="477"/>
         <source>Mapset is already in use.</source>
         <translation>El directorio de mapas ya está en uso.</translation>
     </message>
@@ -6432,15 +6444,15 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="810"/>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="841"/>
         <location filename="../src/providers/gdal/qgsgdalprovider.cpp" line="852"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="982"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="999"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1035"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1157"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1221"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1246"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1276"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1305"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1328"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="964"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="981"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1017"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1139"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1203"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1228"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1258"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1287"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1310"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="59"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="137"/>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="188"/>
@@ -6461,17 +6473,17 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>No se han encontrado capas activas</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="983"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="965"/>
         <source>Cannot read raster map region</source>
         <translation>No se puede la región del mapa ráster</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1000"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="982"/>
         <source>Cannot read vector map region</source>
         <translation>No se puede leer la región del mapa vectorial</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1036"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1018"/>
         <source>Cannot read region</source>
         <translation>No se puede leer la región</translation>
     </message>
@@ -6665,78 +6677,78 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <translation>%1 no es un directorio de mapas de GRASS.</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="485"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="467"/>
         <source>Cannot start %1/etc/lock</source>
         <translation>No se puede iniciar %1/etc/lock</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="510"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="492"/>
         <source>Temporary directory %1 exists but is not writable</source>
         <translation>El directorio temporal %1 existe pero no se puede escribir en él</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="516"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="498"/>
         <source>Cannot create temporary directory %1</source>
         <translation>No se puede crear el directorio temporal %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="530"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="512"/>
         <source>Cannot create %1</source>
         <translation>No se puede crear %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="608"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="590"/>
         <source>Cannot remove mapset lock: %1</source>
         <translation>NO se puede eliminar el bloqueo del directorio de mapas: %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1056"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1038"/>
         <source>Cannot open GISRC file</source>
         <translation>No se puede abrir el archivo GISRC</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1076"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1058"/>
         <source>Cannot start module</source>
         <translation>No se puede iniciar el módulo</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1077"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1059"/>
         <source>command: %1 %2</source>
         <translation>orden: %1 %2</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1096"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1078"/>
         <source>Cannot run module</source>
         <translation>No se puede ejecutar el módulo</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1097"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1079"/>
         <source>command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
         <translation>orden: %1 %2&lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1158"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1140"/>
         <source>Cannot get projection </source>
         <translation>No se puede obtener la proyección </translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1222"/>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1247"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1204"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1229"/>
         <source>Cannot get raster extent</source>
         <translation>No se puede obtener la extensión del ráster</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1277"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1259"/>
         <source>Cannot get map info</source>
         <translation>No se puede obtener información del mapa</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1306"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1288"/>
         <source>Cannot get colors</source>
         <translation>No se pueden obtener colores</translation>
     </message>
     <message>
-        <location filename="../src/providers/grass/qgsgrass.cpp" line="1329"/>
+        <location filename="../src/providers/grass/qgsgrass.cpp" line="1311"/>
         <source>Cannot query raster </source>
         <translation>No se puede consultar el ráster </translation>
     </message>
@@ -10486,12 +10498,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="80"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <location filename="../src/app/qgsaddattrdialog.cpp" line="81"/>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de campo no válido. Este nombre de campo está reservado y no se puede usar.</translation>
     </message>
 </context>
 <context>
@@ -11589,7 +11601,7 @@ El error fue: %2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="60"/>
         <source>&amp;Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Act&amp;ualizar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="62"/>
@@ -11599,23 +11611,24 @@ El error fue: %2</translation>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="162"/>
         <source>Really Update?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Actualizar realmente?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="163"/>
         <source>Are you sure you want to update the %1 bookmark?</source>
-        <translation type="unfinished"></translation>
+        <translation>¿Está seguro de que quiere actualizar el marcador %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="192"/>
         <source>Error updating bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Error al actualizar marcador</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="193"/>
         <source>Failed to update the %1 bookmark. The database said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo actualizar el marcador %1. La base de datos dijo:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsbookmarks.cpp" line="223"/>
@@ -12748,7 +12761,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="435"/>
         <source>Legend map changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiado el mapa de la leyenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="546"/>
@@ -12769,12 +12782,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="671"/>
         <source>Map %1</source>
-        <translation type="unfinished">Mapa %1</translation>
+        <translation>Mapa %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="673"/>
         <source>None</source>
-        <translation type="unfinished">Nada</translation>
+        <translation>Nada</translation>
     </message>
 </context>
 <context>
@@ -12857,7 +12870,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="185"/>
         <source>Map</source>
-        <translation type="unfinished">Mapa</translation>
+        <translation>Mapa</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlegendwidgetbase.ui" line="213"/>
@@ -17738,7 +17751,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsgraduatedsymbolrendererv2widget.cpp" line="185"/>
         <source>Renderer creation has failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>La creación del renderizador ha fallado.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsgraduatedsymbolrendererv2widget.ui" line="170"/>
@@ -19181,17 +19194,17 @@ en la línea %2 columna %3</translation>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2059"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2077"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2059"/>
         <source>Cannot parse version_min %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede procesar version_min %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2077"/>
         <source>Cannot parse version_max %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede procesar version_max %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2123"/>
@@ -20695,7 +20708,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <translation>Comprimir todo</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsidentifyresults.cpp" line="885"/>
+        <location filename="../src/app/qgsidentifyresults.cpp" line="886"/>
         <source>Attribute changes</source>
         <translation>Cambios de atributo</translation>
     </message>
@@ -22912,7 +22925,7 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="91"/>
         <source>The geometry is invalid. Please repair before trying to split it.</source>
-        <translation type="unfinished"></translation>
+        <translation>La geometría no es válida. Por favor, repárela antes de intentar dividirla.</translation>
     </message>
 </context>
 <context>
@@ -23544,17 +23557,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="198"/>
         <source>Unable to open the database</source>
-        <translation type="unfinished">No se puede abrir la base de datos</translation>
+        <translation>No se puede abrir la base de datos</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation type="unfinished">No se pudieron cargar los SRID: %1</translation>
+        <translation>No se pudieron cargar los SRIDS: %1</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="288"/>
@@ -23734,7 +23747,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="385"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar atributo</translation>
     </message>
     <message>
         <source>EPSG SRID</source>
@@ -23794,7 +23807,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="219"/>
         <source>Specify CRS</source>
-        <translation type="unfinished">Especificar SRC</translation>
+        <translation>Especificar SRC</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="311"/>
@@ -23914,7 +23927,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="227"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar atributo</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -30031,12 +30044,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="59"/>
         <source>Priority</source>
-        <translation type="unfinished">Prioridad</translation>
+        <translation>Prioridad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="62"/>
         <source>Priority when symbol levels are enabled (only first matching rule will be applied)</source>
-        <translation type="unfinished"></translation>
+        <translation>Prioridad cuando los niveles de símbolos estén activos (sólo se aplicará la primera regla que se cumpla)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="75"/>
@@ -30052,19 +30065,19 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="190"/>
         <source>None</source>
         <comment>No grouping for displaying rules</comment>
-        <translation type="unfinished">Nada</translation>
+        <translation>Ninguno</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="200"/>
         <source>By filter</source>
         <comment>Group rules by filter</comment>
-        <translation type="unfinished"></translation>
+        <translation>Por filtro</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="207"/>
         <source>By scale</source>
         <comment>Group rules by scale</comment>
-        <translation type="unfinished"></translation>
+        <translation>Por escala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="82"/>
@@ -30079,27 +30092,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="103"/>
         <source>Increase priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Incrementar prioridad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="110"/>
         <source>Decrease priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Disminuir prioridad</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="143"/>
         <source>Enable symbol levels</source>
-        <translation type="unfinished">Activar niveles de símbolos</translation>
+        <translation>Activar niveles de símbolos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="156"/>
         <source>Use only first matched rule</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar sólo la primera regla que se cumpla</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="169"/>
         <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation>Comportamiento</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrulebasedrendererv2widget.ui" line="183"/>
@@ -33776,7 +33789,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="980"/>
         <source>Empty</source>
-        <translation type="unfinished">Vacío</translation>
+        <translation>Vacío</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="992"/>
@@ -34260,12 +34273,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="563"/>
         <source>Provider-specific options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones específicas del proveedor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="569"/>
         <source>Encoding</source>
-        <translation type="unfinished">Codificación</translation>
+        <translation>Codificación</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="639"/>
@@ -35095,7 +35108,7 @@ Esto puede ser un error de configuración del servidor. ¿Se debe usar la URL?</
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="158"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="407"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="390"/>
         <source>Title</source>
         <translation>Título</translation>
     </message>
@@ -35118,104 +35131,101 @@ Esto puede ser un error de configuración del servidor. ¿Se debe usar la URL?</
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="190"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="249"/>
         <source>Save</source>
         <translation>Guardar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="197"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="256"/>
         <source>Load connections from file</source>
         <translation>Cargar conexiones de archivo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="200"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="259"/>
         <source>Load</source>
         <translation>Cargar</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="267"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="250"/>
         <source>Layer Order</source>
         <translation>Orden de capas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="273"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="256"/>
         <source>Move selected layer UP</source>
-        <translation type="unfinished"></translation>
+        <translation>SUBIR la capa seleccionada</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="276"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="259"/>
         <source>Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Arriba</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="283"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="266"/>
         <source>Move selected layer DOWN</source>
-        <translation type="unfinished"></translation>
+        <translation>BAJAR la capa seleccionada</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="286"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="269"/>
         <source>Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Abajo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="310"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="293"/>
         <source>Layer</source>
         <translation>Capa</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="315"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="298"/>
         <source>Style</source>
         <translation>Estilo</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="324"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="307"/>
         <source>Tilesets</source>
         <translation>Conjuntos de teselas</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="351"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="334"/>
         <source>Styles</source>
         <translation>Estilos</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="356"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="339"/>
         <source>Size</source>
         <translation>Tamaño</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="361"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="344"/>
         <source>Format</source>
         <translation>Formato</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="366"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="349"/>
         <source>CRS</source>
         <translation>SRC</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="375"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="358"/>
         <source>Server Search</source>
         <translation>Búsqueda de servidor</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="384"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="367"/>
         <source>Search</source>
         <translation>Búsqueda</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="417"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="400"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="412"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="395"/>
         <source>Description</source>
         <translation>Descripción</translation>
     </message>
     <message>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="425"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="408"/>
         <source>Add selected row to WMS list</source>
         <translation>Añadir la fila seleccionada a la lista WMS</translation>
     </message>
@@ -35226,7 +35236,7 @@ Esto puede ser un error de configuración del servidor. ¿Se debe usar la URL?</
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
-        <location filename="../src/ui/qgswmssourceselectbase.ui" line="346"/>
+        <location filename="../src/ui/qgswmssourceselectbase.ui" line="329"/>
         <source>Layers</source>
         <translation>Capas</translation>
     </message>
