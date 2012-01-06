@@ -36,6 +36,11 @@ IF (WITH_GLOBE)
   ADD_SUBDIRECTORY(globe)
 ENDIF (WITH_GLOBE)
 
+
+IF (QT_MOBILITY_SENSORS_FOUND)
+  ADD_SUBDIRECTORY(compass)
+ENDIF (QT_MOBILITY_SENSORS_FOUND)
+
 # headers installed in qgis_core target
 
 SUBDIRS (heatmap)

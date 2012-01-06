@@ -80,6 +80,17 @@ IF (WITH_BINDINGS)
   SET (BINDINGS_GLOBAL_INSTALL FALSE CACHE BOOL "Install bindings to global python directory? (might need root)")
 ENDIF (WITH_BINDINGS)
 
+#BUILD WITH QtMobility by default on android only. Other platform can force it
+IF (ANDROID)
+    SET (DEFAULT_WITH_QTMOBILITY TRUE)
+ELSE (ANDROID)
+    SET (DEFAULT_WITH_QTMOBILITY FALSE)
+ENDIF (ANDROID)
+SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines QtMobility related code should be build (for example internal GPS)")
+IF (WITH_QTMOBILITY)
+    FIND_PACKAGE(QtMobility 1.1.0)
+ENDIF (WITH_QTMOBILITY)
+
 SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
 IF (WITH_GLOBE)
   SET(QT_USE_QTOPENGL 1)
