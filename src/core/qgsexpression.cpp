@@ -541,6 +541,12 @@ QString QgsExpression::dump() const
   return mRootNode->dump();
 }
 
+void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
+{
+  if ( mRootNode )
+    mRootNode->accept( v );
+}
+
 
 ///////////////////////////////////////////////
 // nodes
@@ -968,98 +974,4 @@ bool QgsExpression::NodeColumnRef::prepare( QgsExpression* parent, const QgsFiel
 QString QgsExpression::NodeColumnRef::dump() const
 {
   return mName;
-}
-
-bool QgsExpression::toOGCFilter( QDomDocument& doc ) const
-{
-  if ( !mRootNode )
-  {
-    return false;
-  }
-
-  doc.clear();
-  QDomElement filterElem = doc.createElement( "Filter" );
-  doc.appendChild( filterElem );
-  return mRootNode->toOGCFilter( doc, filterElem );
-}
-
-bool QgsExpression::NodeBinaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement opElem;
-  switch ( mOp )
-  {
-    case boEQ:
-      opElem = doc.createElement( "PropertyIsEqualTo" );
-      break;
-    case boNE:
-      opElem = doc.createElement( "PropertyIsNotEqualTo" );
-      break;
-    case boLE:
-      opElem = doc.createElement( "PropertyIsLessThanOrEqualTo" );
-      break;
-    case boGE:
-      opElem = doc.createElement( "PropertyIsLessThanOrEqualTo" );
-      break;
-    case boLT:
-      opElem = doc.createElement( "PropertyIsLessThan" );
-      break;
-    case boGT:
-      opElem = doc.createElement( "PropertyIsGreaterThan" );
-      break;
-    case boOr:
-      opElem = doc.createElement( "Or" );
-      break;
-    case boAnd:
-      opElem = doc.createElement( "And" );
-      break;
-    default:
-      return false;
-  }
-
-  if ( mOpLeft )
-  {
-    mOpLeft->toOGCFilter( doc, opElem );
-  }
-  if ( mOpRight )
-  {
-    mOpRight->toOGCFilter( doc, opElem );
-  }
-
-  parent.appendChild( opElem );
-  return true;
-}
-
-bool QgsExpression::NodeLiteral::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement literalElem = doc.createElement( "Literal" );
-  QDomText literalText = doc.createTextNode( mValue.toString() );
-  literalElem.appendChild( literalText );
-  parent.appendChild( literalElem );
-  return true;
-}
-
-bool QgsExpression::NodeColumnRef::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement propertyElem = doc.createElement( "PropertyName" );
-  QDomText propertyText = doc.createTextNode( mName );
-  propertyElem.appendChild( propertyText );
-  parent.appendChild( propertyElem );
-  return true;
-}
-
-bool QgsExpression::NodeUnaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  if ( mOp == uoNot )
-  {
-    QDomElement notElem = doc.createElement( "Not" );
-    if ( mOperand )
-    {
-      if ( mOperand->toOGCFilter( doc, notElem ) )
-      {
-        parent.appendChild( notElem );
-        return true;
-      }
-    }
-  }
-  return false;
 }
