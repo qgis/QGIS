@@ -2,6 +2,7 @@
 #include "qgsexpression.h"
 #include "qgslogger.h"
 #include "qgsnetworkaccessmanager.h"
+#include "qgswfsutils.h"
 #include <QDomDocument>
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -69,7 +70,7 @@ QString QgsWFSConnection::uriGetFeature( QString typeName, QString crsString, QS
     {
       //if not, if must be a QGIS expression
       QgsExpression filterExpression( filter );
-      if ( !filterExpression.toOGCFilter( filterDoc ) )
+      if ( !QgsWFSUtils::expressionToOGCFilter( filterExpression, filterDoc ) )
       {
         //error
       }
