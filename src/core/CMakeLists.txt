@@ -171,6 +171,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsmultibandcolorrenderer.cpp
   raster/qgssinglebandcolordatarenderer.cpp
   raster/qgssinglebandgrayrenderer.cpp
+  raster/qgssinglebandpseudocolorrenderer.cpp
 
   renderer/qgscontinuouscolorrenderer.cpp
   renderer/qgsgraduatedsymbolrenderer.cpp

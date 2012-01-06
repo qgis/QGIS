@@ -42,6 +42,7 @@ email                : tim at linfiniti.com
 #include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 
 #include <cstdio>
@@ -863,8 +864,36 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       }
       else
       {
+        //init
+        int bandNo = bandNumber( mGrayBandName );
+        QgsRasterBandStats myRasterBandStats = bandStatistics( bandNo );
+        double myMinimumValue = 0.0;
+        double myMaximumValue = 0.0;
+        //Use standard deviations if set, otherwise, use min max of band
+        if ( mStandardDeviations > 0 )
+        {
+          myMinimumValue = ( myRasterBandStats.mean - ( mStandardDeviations * myRasterBandStats.stdDev ) );
+          myMaximumValue = ( myRasterBandStats.mean + ( mStandardDeviations * myRasterBandStats.stdDev ) );
+        }
+        else
+        {
+          myMinimumValue = myRasterBandStats.minimumValue;
+          myMaximumValue = myRasterBandStats.maximumValue;
+        }
+
+        mRasterShader->setMinimumValue( myMinimumValue );
+        mRasterShader->setMaximumValue( myMaximumValue );
+
+        QgsSingleBandPseudoColorRenderer r( mDataProvider, bandNo, mRasterShader, mResampler );
+        r.setOpacity( mTransparencyLevel / 255.0 );
+        r.setRasterTransparency( &mRasterTransparency );
+        r.setInvertColor( mInvertColor );
+        r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+
+#if 0
         drawSingleBandPseudoColor( theQPainter, theRasterViewPort,
                                    theQgsMapToPixel, bandNumber( mGrayBandName ) );
+#endif //0
         break;
       }
       // a single band with a color map
