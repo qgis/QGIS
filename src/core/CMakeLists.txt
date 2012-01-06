@@ -192,6 +192,13 @@ ELSE(WIN32)
     ADD_DEFINITIONS(-D_TTY_POSIX_)
 ENDIF(WIN32)
 
+IF (QT_MOBILITY_LOCATION_FOUND)
+    SET(QGIS_CORE_SRCS
+        ${QGIS_CORE_SRCS}
+        gps/qgsqtlocationconnection.cpp
+        )
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
+
 IF (WITH_INTERNAL_SPATIALITE)
   IF (WIN32 OR APPLE OR ANDROID)
     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
@@ -274,6 +281,13 @@ SET(QGIS_CORE_MOC_HDRS
   gps/qextserialport/qextserialport.h
   gps/qextserialport/qextserialenumerator.h
 )
+
+IF (QT_MOBILITY_LOCATION_FOUND)
+    SET(QGIS_CORE_MOC_HDRS
+        ${QGIS_CORE_MOC_HDRS}
+        gps/qgsqtlocationconnection.h
+        )
+ENDIF (QT_MOBILITY_LOCATION_FOUND)
 
 QT4_WRAP_CPP(QGIS_CORE_MOC_SRCS ${QGIS_CORE_MOC_HDRS})
 

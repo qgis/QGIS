@@ -1,5 +1,5 @@
 /***************************************************************************
-               qgsgpsinformationwidget.h  -  description
+               qgsgpsinformationwidget.cpp  -  description
                              -------------------
     begin                : Sat Jan 01 2010
     copyright            : (C) 2010 by Tim Sutton and Marco Hugentobler
@@ -184,6 +184,10 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   {
     mRadAutodetect->setChecked( true );
   }
+  else if ( myPortMode == "internalGPS" )
+  {
+    mRadInternal->setChecked( true );
+  }
   else if ( myPortMode == "explicitPort" )
   {
     mRadUserPath->setChecked( true );
@@ -192,6 +196,11 @@ QgsGPSInformationWidget::QgsGPSInformationWidget( QgsMapCanvas * thepCanvas, QWi
   {
     mRadGpsd->setChecked( true );
   }
+  //disable the internal port method if build is without QtLocation
+#ifndef HAVE_QT_MOBILITY_LOCATION
+  mRadInternal->setDisabled( true );
+  mRadAutodetect->setChecked( true );
+#endif
 
   //auto digitising behaviour
   mCbxAutoAddVertices->setChecked( mySettings.value( "/gps/autoAddVertices", "false" ).toBool() );
@@ -255,6 +264,10 @@ QgsGPSInformationWidget::~QgsGPSInformationWidget()
   if ( mRadAutodetect->isChecked() )
   {
     mySettings.setValue( "/gps/portMode", "scanPorts" );
+  }
+  else if ( mRadInternal->isChecked() )
+  {
+    mySettings.setValue( "/gps/portMode", "internalGPS" );
   }
   else if ( mRadUserPath->isChecked() )
   {
@@ -405,6 +418,10 @@ void QgsGPSInformationWidget::connectGps()
   else if ( mRadGpsd->isChecked() )
   {
     port = QString( "%1:%2:%3" ).arg( mGpsdHost->text() ).arg( mGpsdPort->text() ).arg( mGpsdDevice->text() );
+  }
+  else if ( mRadInternal->isChecked() )
+  {
+    port = QString( "internalGPS" );
   }
 
   mGPSPlainTextEdit->appendPlainText( tr( "Connecting..." ) );

@@ -22,6 +22,10 @@
 #include "qgsnmeaconnection.h"
 #include "qgsgpsdconnection.h"
 
+#ifdef HAVE_QT_MOBILITY_LOCATION
+#include "qgsqtlocationconnection.h"
+#endif
+
 #include <QStringList>
 #include <QFileInfo>
 #include <QTimer>
@@ -145,6 +149,16 @@ void QgsGPSDetector::advance()
 
       mConn = new QgsGpsdConnection( gpsParams[0], gpsParams[1].toShort(), gpsParams[2] );
     }
+    else if( mPortList[ mPortIndex ].first.contains( "internalGPS" ) )
+    {
+        qDebug("Creating QtLocation GPS connection");
+#ifdef HAVE_QT_MOBILITY_LOCATION
+        mConn = new QgsQtLocationConnection();
+#else
+        qWarning("QT_MOBILITY_LOCATION not found and mPortList matches internalGPS, this should never happen");
+#endif
+    }
+
     else
     {
       QextSerialPort *serial = new QextSerialPort( mPortList[ mPortIndex ].first, QextSerialPort::EventDriven );
