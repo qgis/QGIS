@@ -29,16 +29,6 @@ class QgsBilinearRasterResampler: public QgsRasterResampler
 
     void resample( const QImage& srcImage, QImage& dstImage );
     QString type() const { return "bilinear"; }
-
-  private:
-    QRgb resampleColorValue( double u, double v, QRgb col1, QRgb col2, QRgb col3, QRgb col4 ) const;
-    QRgb resampleColorValue( double u, QRgb col1, QRgb col2 ) const;
-    inline double bilinearInterpolation( double u, double v, int val1, int val2, int val3, int val4 ) const;
 };
-
-double QgsBilinearRasterResampler::bilinearInterpolation( double u, double v, int val1, int val2, int val3, int val4 ) const
-{
-  return ( val1 * ( 1 - u ) * ( 1 - v ) + val2 * ( 1 - v ) * u + val4 * ( 1 - u ) * v + val3 * u * v );
-}
 
 #endif // QGSBILINEARRASTERRESAMPLER_H
