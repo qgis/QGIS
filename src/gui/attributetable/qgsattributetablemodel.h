@@ -27,6 +27,8 @@
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsattributetableidcolumnpair.h"
 
+class QgsMapCanvas;
+
 class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 {
     Q_OBJECT
@@ -37,7 +39,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param theLayer layer pointer
      * @param parent parent pointer
      */
-    QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent = 0 );
+    QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorLayer *theLayer, QObject *parent = 0 );
     /**
      * Returns the number of rows
      * @param parent parent index
@@ -138,22 +140,16 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     /** return feature attributes at given index */
     QgsFeature feature( QModelIndex &idx );
 
-    /** In case the table's behaviour is to show only features from current extent,
-      this is a method how to let the model know what extent to use without having
-      to explicitly ask any canvas */
-    static void setCurrentExtent( const QgsRectangle& extent ) { mCurrentExtent = extent; }
-
   signals:
     /**
      * Model has been changed
      */
     void modelChanged();
-    /**
-     * Sets new number of rows
-     * @param oldNum old row number
-     * @param newNum new row number
-     */
-    void setNumRows( int oldNum, int newNum );
+
+    void progress( int i, bool &cancel );
+
+  public slots:
+    void extentsChanged();
 
   private slots:
     /**
@@ -166,6 +162,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param idx attribute index
      */
     virtual void attributeDeleted( int idx );
+
   protected slots:
     /**
      * Launched when attribute value has been changed
@@ -191,6 +188,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     virtual void layerDeleted();
 
   protected:
+    QgsMapCanvas *mCanvas;
     QgsVectorLayer *mLayer;
     int mFieldCount;
 
@@ -205,7 +203,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QHash<int, QgsFeatureId> mRowIdMap;
 
     //! useful when showing only features from a particular extent
-    static QgsRectangle mCurrentExtent;
+    QgsRectangle mCurrentExtent;
 
     /**
      * Initializes id <-> row maps
