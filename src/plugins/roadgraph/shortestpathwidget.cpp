@@ -383,10 +383,10 @@ void RgShortestPathWidget::exportPath()
     if ( l.empty() )
       break;
     const QgsGraphArc& e = path.arc( l.front() );
-    p.push_front( path.vertex( e.inVertex() ).point() );
+    p.push_front( ct.transform( path.vertex( e.inVertex() ).point() ) );
     stopVertexIdx = e.outVertex();
   }
-  p.push_front( p1 );
+  p.push_front( ct.transform( p1 ) );
 
   vl->startEditing();
   QgsFeature f;
