@@ -91,7 +91,7 @@ class QgsExpressionOGCVisitor : public QgsExpression::Visitor
       mResult = true;
     }
 
-    void visit( QgsExpression::NodeCondition* n ) { mResult = false; }
+    void visit( QgsExpression::NodeCondition* n ) { Q_UNUSED( n ); mResult = false; }
 
   protected:
     QDomDocument mDoc;

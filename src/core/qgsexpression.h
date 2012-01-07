@@ -210,7 +210,7 @@ class CORE_EXPORT QgsExpression
 
     class Visitor; // visitor interface is defined below
 
-    class Node
+    class CORE_EXPORT Node
     {
       public:
         virtual ~Node() {}
@@ -231,7 +231,7 @@ class CORE_EXPORT QgsExpression
         virtual void accept( Visitor& v ) = 0;
     };
 
-    class NodeList
+    class CORE_EXPORT NodeList
     {
       public:
         NodeList() {}
@@ -245,7 +245,7 @@ class CORE_EXPORT QgsExpression
         QList<Node*> mList;
     };
 
-    class NodeUnaryOperator : public Node
+    class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
         NodeUnaryOperator( UnaryOperator op, Node* operand ) : mOp( op ), mOperand( operand ) {}
@@ -266,7 +266,7 @@ class CORE_EXPORT QgsExpression
         Node* mOperand;
     };
 
-    class NodeBinaryOperator : public Node
+    class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
         NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight ) : mOp( op ), mOpLeft( opLeft ), mOpRight( opRight ) {}
@@ -293,7 +293,7 @@ class CORE_EXPORT QgsExpression
         Node* mOpRight;
     };
 
-    class NodeInOperator : public Node
+    class CORE_EXPORT NodeInOperator : public Node
     {
       public:
         NodeInOperator( Node* node, NodeList* list, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
@@ -316,7 +316,7 @@ class CORE_EXPORT QgsExpression
         bool mNotIn;
     };
 
-    class NodeFunction : public Node
+    class CORE_EXPORT NodeFunction : public Node
     {
       public:
         NodeFunction( int fnIndex, NodeList* args ): mFnIndex( fnIndex ), mArgs( args ) {}
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsExpression
         NodeList* mArgs;
     };
 
-    class NodeLiteral : public Node
+    class CORE_EXPORT NodeLiteral : public Node
     {
       public:
         NodeLiteral( QVariant value ) : mValue( value ) {}
@@ -357,7 +357,7 @@ class CORE_EXPORT QgsExpression
         QVariant mValue;
     };
 
-    class NodeColumnRef : public Node
+    class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
         NodeColumnRef( QString name ) : mName( name ), mIndex( -1 ) {}
@@ -376,7 +376,7 @@ class CORE_EXPORT QgsExpression
         int mIndex;
     };
 
-    class WhenThen
+    class CORE_EXPORT WhenThen
     {
       public:
         WhenThen( Node* whenExp, Node* thenExp ) : mWhenExp( whenExp ), mThenExp( thenExp ) {}
@@ -388,7 +388,7 @@ class CORE_EXPORT QgsExpression
     };
     typedef QList<WhenThen*> WhenThenList;
 
-    class NodeCondition : public Node
+    class CORE_EXPORT NodeCondition : public Node
     {
       public:
         NodeCondition( WhenThenList* conditions, Node* elseExp = NULL ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
@@ -410,7 +410,7 @@ class CORE_EXPORT QgsExpression
 
     /** support for visitor pattern - algorithms dealing with the expressions
         may be implemented without modifying the Node classes */
-    class Visitor
+    class CORE_EXPORT Visitor
     {
       public:
         virtual ~Visitor() {}

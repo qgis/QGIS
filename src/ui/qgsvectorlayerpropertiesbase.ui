@@ -548,7 +548,7 @@
       <attribute name="title">
        <string>Metadata</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_15">
        <item row="0" column="0">
         <widget class="QLabel" name="mLayerTitleLabel">
          <property name="text">
