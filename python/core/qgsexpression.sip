@@ -259,6 +259,32 @@ public:
         virtual void accept( QgsExpression::Visitor& v );
     };
 
+    class WhenThen
+    {
+    public:
+      WhenThen( QgsExpression::Node* whenExp, QgsExpression::Node* thenExp );
+      ~WhenThen();
+
+    //protected:
+      QgsExpression::Node* mWhenExp;
+      QgsExpression::Node* mThenExp;
+    };
+    typedef QList<QgsExpression::WhenThen*> WhenThenList;
+
+    class NodeCondition : QgsExpression::Node
+    {
+    public:
+      NodeCondition( QgsExpression::WhenThenList* conditions, QgsExpression::Node* elseExp = NULL );
+      ~NodeCondition();
+
+      virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
+      virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+      virtual QString dump() const;
+      virtual QStringList referencedColumns() const;
+      virtual bool needsGeometry() const;
+      virtual void accept( QgsExpression::Visitor& v );
+    };
+
     //////
 
     /** support for visitor pattern - algorithms dealing with the expressions
@@ -273,6 +299,7 @@ public:
       virtual void visit( QgsExpression::NodeFunction* n ) = 0;
       virtual void visit( QgsExpression::NodeLiteral* n ) = 0;
       virtual void visit( QgsExpression::NodeColumnRef* n ) = 0;
+      virtual void visit( QgsExpression::NodeCondition* n ) = 0;
     };
 
     /** entry function for the visitor pattern */
