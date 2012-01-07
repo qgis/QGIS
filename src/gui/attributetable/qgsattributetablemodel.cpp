@@ -24,13 +24,11 @@
 
 #include <QtGui>
 #include <QVariant>
+
 #include <limits>
 
-QgsRectangle QgsAttributeTableModel::mCurrentExtent; // static member
-
-
-QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent )
-    : QAbstractTableModel( parent )
+QgsAttributeTableModel::QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorLayer *theLayer, QObject *parent )
+    : QAbstractTableModel( parent ), mCanvas( canvas ), mLayer( theLayer )
 {
   QgsDebugMsg( "entered." );
 
@@ -38,7 +36,6 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   mFeatureMap.clear();
   mFeatureQueue.clear();
 
-  mLayer = theLayer;
   loadAttributes();
 
   connect( mLayer, SIGNAL( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ), this, SLOT( attributeValueChanged( QgsFeatureId, int, const QVariant& ) ) );
@@ -46,6 +43,9 @@ QgsAttributeTableModel::QgsAttributeTableModel( QgsVectorLayer *theLayer, QObjec
   connect( mLayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
   connect( mLayer, SIGNAL( attributeAdded( int ) ), this, SLOT( attributeAdded( int ) ) );
   connect( mLayer, SIGNAL( attributeDeleted( int ) ), this, SLOT( attributeDeleted( int ) ) );
+
+  connect( mCanvas, SIGNAL( extentsChanged() ), this, SLOT( extentsChanged() ) );
+  extentsChanged();
 }
 
 bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
@@ -245,6 +245,7 @@ void QgsAttributeTableModel::loadLayer()
 
   QSettings settings;
   int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+  int i = 0;
 
   if ( behaviour == 1 )
   {
@@ -252,6 +253,11 @@ void QgsAttributeTableModel::loadLayer()
     foreach( QgsFeatureId fid, mLayer->selectedFeaturesIds() )
     {
       featureAdded( fid, false );
+
+      bool cancel = false;
+      emit progress( i++, cancel );
+      if ( cancel )
+        break;
     }
     endInsertRows();
   }
@@ -267,9 +273,14 @@ void QgsAttributeTableModel::loadLayer()
     mLayer->select( QgsAttributeList(), rect, false );
 
     QgsFeature f;
-    for ( int i = 0; mLayer->nextFeature( f ); ++i )
+    for ( i = 0; mLayer->nextFeature( f ); ++i )
     {
       featureAdded( f.id() );
+
+      bool cancel = false;
+      emit progress( i, cancel );
+      if ( cancel )
+        break;
     }
   }
 
@@ -566,4 +577,9 @@ QgsFeature QgsAttributeTableModel::feature( QModelIndex &idx )
   }
 
   return f;
+}
+
+void QgsAttributeTableModel::extentsChanged()
+{
+  mCurrentExtent = mCanvas->mapRenderer()->mapToLayerCoordinates( mLayer, mCanvas->extent() );
 }

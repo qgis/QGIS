@@ -26,8 +26,9 @@
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgslogger.h"
+#include "qgsmapcanvas.h"
 
-QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
+QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent ), mModel( 0 ), mFilterModel( 0 ), mActionPopup( 0 )
 {
   QSettings settings;
@@ -43,15 +44,15 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
   setSortingEnabled( true );
 }
 
-void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
+void QgsAttributeTableView::setCanvasAndLayer( QgsMapCanvas *canvas, QgsVectorLayer *layer )
 {
-  if ( layer == NULL )
+  if ( !layer )
   {
-    setModel( NULL );
+    setModel( 0 );
     delete mModel;
-    mModel = NULL;
+    mModel = 0;
     delete mFilterModel;
-    mFilterModel = NULL;
+    mFilterModel = 0;
     return;
   }
 
@@ -65,15 +66,13 @@ void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
   if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectAtId )
   {
     QgsDebugMsg( "SelectAtId supported" );
-    mModel = new QgsAttributeTableModel( layer );
+    mModel = new QgsAttributeTableModel( canvas, layer );
   }
   else
   {
     QgsDebugMsg( "SelectAtId NOT supported" );
-    mModel = new QgsAttributeTableMemoryModel( layer );
+    mModel = new QgsAttributeTableMemoryModel( canvas, layer );
   }
-
-  mModel->loadLayer();
 
   mFilterModel = new QgsAttributeTableFilterModel( layer );
   mFilterModel->setSourceModel( mModel );
