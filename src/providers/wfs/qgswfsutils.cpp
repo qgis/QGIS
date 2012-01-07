@@ -91,6 +91,8 @@ class QgsExpressionOGCVisitor : public QgsExpression::Visitor
       mResult = true;
     }
 
+    void visit( QgsExpression::NodeCondition* n ) { mResult = false; }
+
   protected:
     QDomDocument mDoc;
     QDomElement mParent;

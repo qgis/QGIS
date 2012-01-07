@@ -975,3 +975,88 @@ QString QgsExpression::NodeColumnRef::dump() const
 {
   return mName;
 }
+
+//
+
+QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* f )
+{
+  foreach( WhenThen* cond, mConditions )
+  {
+    QVariant vWhen = cond->mWhenExp->eval( parent, f );
+    TVL tvl = getTVLValue( vWhen, parent );
+    ENSURE_NO_EVAL_ERROR;
+    if ( tvl == True )
+    {
+      QVariant vRes = cond->mThenExp->eval( parent, f );
+      ENSURE_NO_EVAL_ERROR;
+      return vRes;
+    }
+  }
+
+  if ( mElseExp )
+  {
+    QVariant vElse = mElseExp->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
+    return vElse;
+  }
+
+  // return NULL if no condition is matching
+  return QVariant();
+}
+
+bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+{
+  bool res;
+  foreach( WhenThen* cond, mConditions )
+  {
+    res = cond->mWhenExp->prepare( parent, fields )
+          & cond->mThenExp->prepare( parent, fields );
+    if ( !res ) return false;
+  }
+
+  if ( mElseExp )
+    return mElseExp->prepare( parent, fields );
+
+  return true;
+}
+
+QString QgsExpression::NodeCondition::dump() const
+{
+  QString msg = "CONDITION:\n";
+  foreach( WhenThen* cond, mConditions )
+  {
+    msg += QString( "- WHEN %1 THEN %2\n" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
+  }
+  if ( mElseExp )
+    msg += QString( "- ELSE %1" ).arg( mElseExp->dump() );
+  return msg;
+}
+
+QStringList QgsExpression::NodeCondition::referencedColumns() const
+{
+  QStringList lst;
+  foreach( WhenThen* cond, mConditions )
+  {
+    lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->referencedColumns();
+
+  return lst;
+}
+
+bool QgsExpression::NodeCondition::needsGeometry() const
+{
+  foreach( WhenThen* cond, mConditions )
+  {
+    if ( cond->mWhenExp->needsGeometry() ||
+         cond->mThenExp->needsGeometry() )
+      return true;
+  }
+
+  if ( mElseExp && mElseExp->needsGeometry() )
+    return true;
+
+  return false;
+}

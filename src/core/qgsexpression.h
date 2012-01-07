@@ -376,6 +376,36 @@ class CORE_EXPORT QgsExpression
         int mIndex;
     };
 
+    class WhenThen
+    {
+      public:
+        WhenThen( Node* whenExp, Node* thenExp ) : mWhenExp( whenExp ), mThenExp( thenExp ) {}
+        ~WhenThen() { delete mWhenExp; delete mThenExp; }
+
+        //protected:
+        Node* mWhenExp;
+        Node* mThenExp;
+    };
+    typedef QList<WhenThen*> WhenThenList;
+
+    class NodeCondition : public Node
+    {
+      public:
+        NodeCondition( WhenThenList* conditions, Node* elseExp = NULL ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
+        ~NodeCondition() { delete mElseExp; foreach( WhenThen* cond, mConditions ) delete cond; }
+
+        virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
+        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual QString dump() const;
+        virtual QStringList referencedColumns() const;
+        virtual bool needsGeometry() const;
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
+      protected:
+        WhenThenList mConditions;
+        Node* mElseExp;
+    };
+
     //////
 
     /** support for visitor pattern - algorithms dealing with the expressions
@@ -390,6 +420,7 @@ class CORE_EXPORT QgsExpression
         virtual void visit( NodeFunction* n ) = 0;
         virtual void visit( NodeLiteral* n ) = 0;
         virtual void visit( NodeColumnRef* n ) = 0;
+        virtual void visit( NodeCondition* n ) = 0;
     };
 
     /** entry function for the visitor pattern */
