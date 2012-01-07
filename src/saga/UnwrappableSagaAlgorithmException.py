@@ -1,0 +1,2 @@
+class UnwrappableSagaAlgorithmException(Exception):
+    pass
