@@ -2,9 +2,9 @@
                             heatmap.cpp
         Generate a heatmap raster for a input point vector
         --------------------------------------------------
-         begin                : [29 Dec 2011]
-         copyright            : [(C) Arunmozhi and 2012]
-         email                : [aruntheguy at gmail dot com]
+         begin                : 29 Dec 2011
+         copyright            : (C) 2012 by Arunmozhi
+         email                : aruntheguy at gmail dot com
 
  ***************************************************************************
  *                                                                         *
@@ -107,7 +107,8 @@ void Heatmap::run()
   myHeatmapPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   // Listen for the signal from gui to create the raster
-  connect( myHeatmapPluginGui, SIGNAL( createRasterOutput( QgsVectorLayer*, QString ) ), this, SLOT( createRasterOutput( QgsVectorLayer*, QString ) ) );
+  connect( myHeatmapPluginGui, SIGNAL( createRasterOutput( QgsVectorLayer*, QString, int, double ) ),
+            this, SLOT( createRasterOutput( QgsVectorLayer*, QString, int, double ) ) );
 
   myHeatmapPluginGui->show();
 }
@@ -122,7 +123,7 @@ void Heatmap::unload()
 }
 
 // Create Raster and load it into view
-void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName )
+void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName, int theBufferSize, double theDecay )
 {
     int myColumns, myRows;
     double myXCellSize, myYCellSize;
@@ -187,10 +188,6 @@ void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName 
             yPosition -= 1;
         }
 
-        // TODO Get buffersize (in Pixels) and Decay from the GUI
-        int theBufferSize = 10;
-        double theDecay = 0.8;
-
         // store the value at x,y of a 2D data structure (QVector may be!)
         myRasterGrid[yPosition][xPosition] += 1.0;
 
@@ -238,6 +235,8 @@ void Heatmap::createRasterOutput( QgsVectorLayer* theLayer, QString theFileName 
         }
         outStream<<endl;
     }
+
+    myRasterGrid.clear();
 
     // Open the file in QGIS window
     mQGisIface->addRasterLayer( theFileName, QFileInfo( theFileName ).baseName() );

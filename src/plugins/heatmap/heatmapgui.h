@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
+ *   Copyright (C) 2012 by Arunmozhi                                       *
+ *   aruntheguy at gmail dot com                                           *
  *                                                                         *
  *   This is a plugin generated from the QGIS plugin template              *
  *                                                                         *
@@ -37,7 +37,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     void on_mBrowseButton_clicked();
 
   signals:
-    void createRasterOutput( QgsVectorLayer*, QString );
+    void createRasterOutput( QgsVectorLayer*, QString, int, double );
 
 };
 

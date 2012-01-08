@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (C) 2003 by Tim Sutton                                      *
- *   tim@linfiniti.com                                                     *
+ *   Copyright (C) 2012 by Arunmozhi                                       *
+ *   aruntheguy at gmail dot com                                           *
  *                                                                         *
  *   This is a plugin generated from the QGIS plugin template              *
  *                                                                         *
@@ -96,6 +96,15 @@ void HeatmapGui::enableOrDisableOkButton()
 
 void HeatmapGui::on_mButtonBox_accepted()
 {
+    int myBuffer;
+    double myDecay;
+
+    QString bufferValue = mBufferLineEdit->text();
+    myBuffer = bufferValue.toInt();
+
+    QString decayValue = mDecayLineEdit->text();
+    myDecay = bufferValue.toDouble();
+
     // Setting Filename
     QString myFileName = mOutputRasterLineEdit->text();
     QFileInfo myFileInfo( myFileName );
@@ -111,7 +120,7 @@ void HeatmapGui::on_mButtonBox_accepted()
 
     // Select Layer and emit signal
     QString myLayerName = mInputVectorCombo->currentText();
-    
+
     QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
     QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
 
@@ -121,7 +130,7 @@ void HeatmapGui::on_mButtonBox_accepted()
             QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
             if( vl->name() == myLayerName )
                 {
-                    emit createRasterOutput(vl, myFileName );
+                    emit createRasterOutput(vl, myFileName, myBuffer, myDecay );
                 }
         }
 

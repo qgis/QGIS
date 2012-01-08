@@ -1,9 +1,9 @@
 /***************************************************************************
     heatmap.h
     -------------------
-    begin                : Jan 21, 2004
-    copyright            : (C) 2004 by Tim Sutton
-    email                : tim@linfiniti.com
+    begin                : Dec 29, 2011
+    copyright            : (C) 2012 by Arunmozhi
+    email                : aruntheguy at gmail dot com
 
  ***************************************************************************/
 
@@ -85,7 +85,7 @@ class Heatmap: public QObject, public QgisPlugin
     void help();
 
     //! The worker slot, which creates the heatmap
-    void createRasterOutput( QgsVectorLayer*, QString );
+    void createRasterOutput( QgsVectorLayer*, QString, int, double );
 
   private:
 

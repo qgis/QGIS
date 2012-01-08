@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>160</height>
+    <width>397</width>
+    <height>237</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -84,8 +84,8 @@
   <widget class="QDialogButtonBox" name="mButtonBox">
    <property name="geometry">
     <rect>
-     <x>15</x>
-     <y>110</y>
+     <x>10</x>
+     <y>200</y>
      <width>361</width>
      <height>27</height>
     </rect>
@@ -93,6 +93,71 @@
    <property name="standardButtons">
     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
    </property>
+  </widget>
+  <widget class="QGroupBox" name="mPointAttributeBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>371</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Heatmap Point Attributes</string>
+   </property>
+   <widget class="QLabel" name="mBufferLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>27</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Buffer Radius</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="mDecayLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>56</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Decay Ratio</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="mBufferLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>20</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>10</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="mDecayLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>50</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0.5</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
