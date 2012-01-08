@@ -590,6 +590,110 @@ QString QgsRasterLayer::contrastEnhancementAlgorithmAsString() const
   return QString( "NoEnhancement" );
 }
 
+void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle )
+{
+  QgsRasterRenderer* renderer = 0;
+
+  switch ( theDrawingStyle )
+  {
+    case PalettedColor:
+    {
+      //create color array for renderer
+      int grayBand = bandNumber( grayBandName() );
+      QList<QgsColorRampShader::ColorRampItem> itemList = mRasterStatsList[ grayBand - 1].colorTable;
+      QColor* colorArray = new QColor[itemList.size()];
+      QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = itemList.constBegin();
+      for ( ; colorIt != itemList.constEnd(); ++colorIt )
+      {
+        colorArray[( int )colorIt->value] =  colorIt->color;
+      }
+      renderer = new QgsPalettedRasterRenderer( mDataProvider,
+          grayBand,
+          colorArray,
+          itemList.size(),
+          mResampler );
+      break;
+    }
+    case SingleBandGray:
+    {
+      int grayBand = bandNumber( mGrayBandName );
+      renderer = new QgsSingleBandGrayRenderer( mDataProvider, grayBand, mResampler );
+      if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum && mStandardDeviations > 0 )
+      {
+        mGrayMinimumMaximumEstimated = false;
+        QgsRasterBandStats myGrayBandStats = bandStatistics( grayBand );
+        setMaximumValue( grayBand, myGrayBandStats.mean + ( mStandardDeviations * myGrayBandStats.stdDev ) );
+        setMinimumValue( grayBand, myGrayBandStats.mean - ( mStandardDeviations * myGrayBandStats.stdDev ) );
+      }
+      else if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum )
+      {
+        mGrayMinimumMaximumEstimated = true;
+        setMaximumValue( grayBand, mDataProvider->maximumValue( grayBand ) );
+        setMinimumValue( grayBand, mDataProvider->minimumValue( grayBand ) );
+      }
+      (( QgsSingleBandGrayRenderer* )renderer )->setContrastEnhancement( contrastEnhancement( grayBand ) );
+      break;
+    }
+    case SingleBandPseudoColor:
+    {
+      int bandNo = bandNumber( mGrayBandName );
+      QgsRasterBandStats myRasterBandStats = bandStatistics( bandNo );
+      double myMinimumValue = 0.0;
+      double myMaximumValue = 0.0;
+      //Use standard deviations if set, otherwise, use min max of band
+      if ( mStandardDeviations > 0 )
+      {
+        myMinimumValue = ( myRasterBandStats.mean - ( mStandardDeviations * myRasterBandStats.stdDev ) );
+        myMaximumValue = ( myRasterBandStats.mean + ( mStandardDeviations * myRasterBandStats.stdDev ) );
+      }
+      else
+      {
+        myMinimumValue = myRasterBandStats.minimumValue;
+        myMaximumValue = myRasterBandStats.maximumValue;
+      }
+
+      mRasterShader->setMinimumValue( myMinimumValue );
+      mRasterShader->setMaximumValue( myMaximumValue );
+
+      renderer = new QgsSingleBandPseudoColorRenderer( mDataProvider, bandNo, mRasterShader, mResampler );
+      break;
+    }
+    case MultiBandColor:
+    {
+      int red = bandNumber( mRedBandName );
+      int green = bandNumber( mGreenBandName );
+      int blue = bandNumber( mBlueBandName );
+      renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue, mResampler );
+      break;
+    }
+    case SingleBandColorDataStyle:
+    {
+      renderer = new QgsSingleBandColorDataRenderer( mDataProvider, bandNumber( mGrayBandName ), mResampler );
+      break;
+    }
+    default:
+      break;
+  }
+
+  if ( !renderer )
+  {
+    return;
+  }
+
+  renderer->setOpacity( mTransparencyLevel / 255.0 );
+  renderer->setRasterTransparency( &mRasterTransparency );
+  if ( mTransparencyBandName != TRSTRING_NOT_SET )
+  {
+    int tBand = bandNumber( mTransparencyBandName );
+    if ( tBand > 0 )
+    {
+      renderer->setAlphaBand( tBand );
+    }
+  }
+  renderer->setInvertColor( mInvertColor );
+  setRenderer( renderer );
+}
+
 /**
  * @note Note implemented yet
  * @return always returns false
@@ -808,6 +912,12 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
   // procedure to use :
   //
 
+  if ( mRenderer )
+  {
+    mRenderer->draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
+  }
+
+#if 0
   QgsDebugMsg( "mDrawingStyle = " + QString::number( mDrawingStyle ) );
   switch ( mDrawingStyle )
   {
@@ -849,10 +959,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         r.setContrastEnhancement( contrastEnhancement( grayBand ) );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
-#if 0
-        drawSingleBandGray( theQPainter, theRasterViewPort,
-                            theQgsMapToPixel, bandNumber( mGrayBandName ) );
-#endif //0
+        //drawSingleBandGray( theQPainter, theRasterViewPort,
+        theQgsMapToPixel, bandNumber( mGrayBandName ) );
         break;
       }
       // a "Gray" or "Undefined" layer drawn using a pseudocolor algorithm
@@ -890,10 +998,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         r.setInvertColor( mInvertColor );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
 
-#if 0
-        drawSingleBandPseudoColor( theQPainter, theRasterViewPort,
-                                   theQgsMapToPixel, bandNumber( mGrayBandName ) );
-#endif //0
+        //drawSingleBandPseudoColor( theQPainter, theRasterViewPort,
+        theQgsMapToPixel, bandNumber( mGrayBandName ) );
         break;
       }
       // a single band with a color map
@@ -931,10 +1037,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         }
         renderer.setInvertColor( mInvertColor );
         renderer.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-#if 0
-        drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
-                                     theQgsMapToPixel, bandNumber( mGrayBandName ) );
-#endif //0
+        //drawPalettedSingleBandColor( theQPainter, theRasterViewPort,
+        theQgsMapToPixel, bandNumber( mGrayBandName ) );
         break;
       }
       // a "Palette" layer drawn in gray scale (using only one of the color components)
@@ -1035,10 +1139,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
         }
         r.setInvertColor( mInvertColor );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-#if 0
-        drawMultiBandColor( theQPainter, theRasterViewPort,
-                            theQgsMapToPixel );
-#endif //0
+        //drawMultiBandColor( theQPainter, theRasterViewPort,
+        theQgsMapToPixel );
       }
       break;
     case SingleBandColorDataStyle:
@@ -1051,10 +1153,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       {
         QgsSingleBandColorDataRenderer r( mDataProvider, bandNumber( mGrayBandName ), mResampler );
         r.draw( theQPainter, theRasterViewPort, theQgsMapToPixel );
-#if 0
-        drawSingleBandColorData( theQPainter, theRasterViewPort,
-                                 theQgsMapToPixel, bandNumber( mGrayBandName ) );
-#endif //0
+        //drawSingleBandColorData( theQPainter, theRasterViewPort,
+        theQgsMapToPixel, bandNumber( mGrayBandName ) );
         break;
       }
 
@@ -1062,6 +1162,8 @@ void QgsRasterLayer::draw( QPainter * theQPainter,
       break;
 
   }
+#endif //0
+
   QgsDebugMsg( QString( "raster draw time (ms): %1" ).arg( time.elapsed() ) );
 } //end of draw method
 
@@ -2221,7 +2323,7 @@ void QgsRasterLayer::init()
   mRGBMinimumMaximumEstimated = true;
   mGrayMinimumMaximumEstimated = true;
 
-  mDrawingStyle = QgsRasterLayer::UndefinedDrawingStyle;
+  setDrawingStyle( QgsRasterLayer::UndefinedDrawingStyle );
   mContrastEnhancementAlgorithm = QgsContrastEnhancement::NoEnhancement;
   mColorShadingAlgorithm = QgsRasterLayer::UndefinedShader;
   mRasterShader = new QgsRasterShader();
@@ -2400,7 +2502,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   QgsDebugMsg( "mLayerName: " + name() );
 
   // set up the raster drawing style
-  mDrawingStyle = MultiBandColor;  //sensible default
+  setDrawingStyle( MultiBandColor );  //sensible default
 
   // Setup source CRS
   if ( mProviderKey == "wms" )
@@ -2481,7 +2583,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   if ( mRasterType == ColorLayer )
   {
     QgsDebugMsg( "Setting mDrawingStyle to SingleBandColorDataStyle " + QString::number( SingleBandColorDataStyle ) );
-    mDrawingStyle = SingleBandColorDataStyle;
+    setDrawingStyle( SingleBandColorDataStyle );
     mGrayBandName = bandName( 1 );  //sensible default
   }
   else if ( mRasterType == Palette )
@@ -2493,7 +2595,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mGrayBandName = bandName( 1 );  //sensible default
     QgsDebugMsg( mGrayBandName );
 
-    mDrawingStyle = PalettedColor; //sensible default
+    setDrawingStyle( PalettedColor ); //sensible default
 
     //Set up a new color ramp shader
     setColorShadingAlgorithm( ColorRampShader );
@@ -2541,7 +2643,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
     mTransparencyBandName = TRSTRING_NOT_SET;
     mGrayBandName = TRSTRING_NOT_SET;  //sensible default
-    mDrawingStyle = MultiBandColor;  //sensible default
+    setDrawingStyle( MultiBandColor );  //sensible default
 
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )

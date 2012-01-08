@@ -373,7 +373,9 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
 
     /** \brief Mutator for drawing style */
-    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; }
+    void setDrawingStyle( const DrawingStyle &  theDrawingStyle ) { mDrawingStyle = theDrawingStyle; setRendererForDrawingStyle( theDrawingStyle ); }
+    /**Sets corresponding renderer for style*/
+    void setRendererForDrawingStyle( const DrawingStyle &  theDrawingStyle );
 
     /** \brief Mutator for mGrayMinimumMaximumEstimated */
     void setGrayMinimumMaximumEstimated( bool theBool ) { mGrayMinimumMaximumEstimated = theBool; }
@@ -395,6 +397,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** Set raster resampler. Uses nearest neighbour resampling per default. Takes ownership of the resampler object*/
     void setResampler( QgsRasterResampler* resampler );
+    QgsRasterResampler* resampler() { return mResampler; }
     const QgsRasterResampler* resampler() const { return mResampler; }
 
     /**Set raster renderer. Takes ownership of the renderer object*/
@@ -570,6 +573,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     /** \brief Returns the number of raster units per each raster pixel. In a world file, this is normally the first row (without the sign) */
     double rasterUnitsPerPixel();
+
+    const RasterStatsList rasterStatsList() const { return mRasterStatsList; }
 
     /** \brief Read color table from GDAL raster band */
     // Keep this for QgsRasterLayerProperties
