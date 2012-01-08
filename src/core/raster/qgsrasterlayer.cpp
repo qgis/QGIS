@@ -2657,8 +2657,8 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mGreenBandName = TRSTRING_NOT_SET; //sensible default
     mBlueBandName = TRSTRING_NOT_SET;  //sensible default
     mTransparencyBandName = TRSTRING_NOT_SET;  //sensible default
-    mDrawingStyle = SingleBandGray;  //sensible default
     mGrayBandName = bandName( 1 );
+    setDrawingStyle( SingleBandGray );  //sensible default
 
     // read standard deviations
     if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
