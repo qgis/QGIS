@@ -39,6 +39,8 @@ IF (WITH_GRASS)
   SET (GRASS_PREFIX ${GRASS_PREFIX} CACHE PATH "Path to GRASS base directory")
 ENDIF (WITH_GRASS)
 
+SET (WITH_DESKTOP TRUE CACHE BOOL "Determines whether QGIS desktop should be built")
+
 # mapserver by us disabled default because it needs FastCGI (which is optional dependency)
 SET (WITH_MAPSERVER FALSE CACHE BOOL "Determines whether QGIS mapserver should be built")
 
@@ -134,8 +136,6 @@ ENDIF(NOT WIN32 AND NOT ANDROID)
 
 # required
 FIND_PACKAGE(Proj)
-FIND_PACKAGE(Expat)    # GPS importer plugin
-FIND_PACKAGE(GSL)      # Georeferencer
 FIND_PACKAGE(GEOS)
 FIND_PACKAGE(GDAL)
 
@@ -186,7 +186,9 @@ SET(QT_USE_QTXML 1)
 SET(QT_USE_QTNETWORK 1)
 SET(QT_USE_QTSVG 1)
 SET(QT_USE_QTSQL 1)
-SET(QT_USE_QTWEBKIT 1)
+IF(WITH_DESKTOP)
+  SET(QT_USE_QTWEBKIT 1)
+ENDIF(WITH_DESKTOP)
 
 IF (NOT QT_QTXML_FOUND OR NOT QT_QTNETWORK_FOUND OR NOT QT_QTSVG_FOUND OR NOT QT_QTSQL_FOUND OR NOT QT_QTWEBKIT_FOUND)
   MESSAGE(SEND_ERROR "Some Qt4 modules haven't been found!")
