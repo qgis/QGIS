@@ -18,7 +18,9 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <QSettings>
+
 #include <math.h>
+#include <limits>
 
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -136,13 +138,16 @@ static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 static int getIntValue( const QVariant& value, QgsExpression* parent )
 {
   bool ok;
-  int x = value.toInt( &ok );
-  if ( !ok )
+  qint64 x = value.toLongLong(&ok);
+  if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
+  {
+    return x;
+  }
+  else
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
     return 0;
   }
-  return x;
 }
 
 
