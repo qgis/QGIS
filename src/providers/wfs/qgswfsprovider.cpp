@@ -2355,7 +2355,10 @@ void QgsWFSProvider::appendSupportedOperations( const QDomElement& operationsEle
 //initialization for getRenderedOnly option
 //(formerly "Only request features overlapping the current view extent")
 bool QgsWFSProvider::initGetRenderedOnly( const QgsRectangle rect )
-{ //find our layer
+{
+  Q_UNUSED( rect );
+
+  //find our layer
   QMap<QString, QgsMapLayer*> layers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::const_iterator layersIt = layers.begin();
   for ( ; layersIt != layers.end() ; ++layersIt )

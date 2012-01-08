@@ -811,7 +811,6 @@ void QgsProjectionSelector::loadCrsList( QSet<QString> *crsFilter )
   mProjListDone = true;
 }
 
-
 // New coordinate system selected from the list
 void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem )
 {
@@ -820,7 +819,6 @@ void QgsProjectionSelector::coordinateSystemSelected( QTreeWidgetItem * theItem 
   if ( theItem && theItem->childCount() == 0 )
   {
     // Found a real CRS
-    QString myDescription;
     emit sridSelected( QString::number( selectedCrsId() ) );
     QString myProjString = selectedProj4String();
     lstCoordinateSystems->scrollToItem( theItem );
@@ -859,16 +857,11 @@ void QgsProjectionSelector::on_cbxHideDeprecated_stateChanged()
     hideDeprecated( lstCoordinateSystems->topLevelItem( i ) );
 }
 
-void QgsProjectionSelector::on_lstRecent_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *previous )
+void QgsProjectionSelector::on_lstRecent_itemClicked(QTreeWidgetItem * item)
 {
-  // we receive a change event when we make dialog visible,
-  // on only when there is also a'previous' it is a real user induced event
-  if ( current && previous )
-  {
-    setSelectedCrsId( current->text( QGIS_CRS_ID_COLUMN ).toLong() );
-  }
+  setSelectedCrsId( item->text( QGIS_CRS_ID_COLUMN ).toLong() );
+  item->setSelected(true);
 }
-
 
 void QgsProjectionSelector::on_leSearch_textChanged( const QString & theFilterTxt )
 {

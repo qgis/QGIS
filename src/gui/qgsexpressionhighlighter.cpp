@@ -15,32 +15,45 @@
 
 #include "qgsexpressionhighlighter.h"
 
-QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent)
+QgsExpressionHighlighter::QgsExpressionHighlighter( QTextDocument *parent )
     : QSyntaxHighlighter( parent )
 {
   HighlightingRule rule;
 
+  keywordFormat.setForeground( Qt::darkBlue );
+  keywordFormat.setFontWeight( QFont::Bold );
+  QStringList keywordPatterns;
+  keywordPatterns << "\\bCASE\\b" << "\\bWHEN\\b" << "\\bTHEN\\b"
+  << "\\bELSE\\b" << "\\bEND\\b";
+
+  foreach( const QString &pattern, keywordPatterns )
+  {
+    rule.pattern = QRegExp( pattern, Qt::CaseInsensitive );
+    rule.format = keywordFormat;
+    highlightingRules.append( rule );
+  }
+
   quotationFormat.setForeground( Qt::darkGreen );
-  rule.pattern = QRegExp( "\'.*\'" );
+  rule.pattern = QRegExp( "\'[^\'\r\n]*\'" );
   rule.format = quotationFormat;
   highlightingRules.append( rule );
 
   columnNameFormat.setForeground( Qt::darkRed );
-  rule.pattern = QRegExp( "\".*\"" );
+  rule.pattern = QRegExp( "\"[^\"\r\n]*\"" );
   rule.format = columnNameFormat;
   highlightingRules.append( rule );
 }
 
-void QgsExpressionHighlighter::addFields(QStringList fieldList)
+void QgsExpressionHighlighter::addFields( QStringList fieldList )
 {
-    columnNameFormat.setForeground( Qt::darkRed );
-    HighlightingRule rule;
-    foreach (const QString field, fieldList)
-    {
-        rule.pattern = QRegExp("\\b" + field + "\\b");
-        rule.format = columnNameFormat;
-        highlightingRules.append( rule );
-    }
+  columnNameFormat.setForeground( Qt::darkRed );
+  HighlightingRule rule;
+  foreach( const QString field, fieldList )
+  {
+    rule.pattern = QRegExp( "\\b" + field + "\\b" );
+    rule.format = columnNameFormat;
+    highlightingRules.append( rule );
+  }
 }
 
 void QgsExpressionHighlighter::highlightBlock( const QString &text )

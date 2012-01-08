@@ -268,8 +268,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     @note this method was added in version 1.1*/
     QgsOverlayObjectPositionManager* overlayManagerFromSettings();
 
-  protected:
-
     //! indicates drawing in progress
     static bool mDrawing;
 
@@ -323,6 +321,11 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Locks rendering loop for concurrent draws
     QMutex mRenderMutex;
+
+  private:
+    QgsCoordinateTransform *tr( QgsMapLayer *layer );
+    QgsCoordinateTransform *mCachedTr;
+    QgsMapLayer *mCachedTrForLayer;
 };
 
 #endif

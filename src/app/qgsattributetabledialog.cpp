@@ -215,7 +215,7 @@ void QgsAttributeTableDialog::on_mSelectedToTopButton_clicked()
 #endif
 
   // just select proper rows
-  //mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount(), mModel->columnCount()));
+  //mModel->reload(mModel->index(0,0), mModel->index(mModel->rowCount() - 1 , mModel->columnCount() - 1));
   //mModel->changeLayout();
   mModel->resetModel();
   updateSelection();
@@ -677,7 +677,7 @@ void QgsAttributeTableDialog::editingToggled()
   mAddFeature->setEnabled( canAddFeatures && mLayer->isEditable() && mLayer->geometryType() == QGis::NoGeometry );
 
   // (probably reload data if user stopped editing - possible revert)
-  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
 
   // not necessary to set table read only if layer is not editable
   // because model always reflects actual state when returning item flags
@@ -700,7 +700,7 @@ void QgsAttributeTableDialog::revert()
 {
   mLayer->rollBack();
   mModel->revert();
-  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+  mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
 }
 
 void QgsAttributeTableDialog::on_mAddAttribute_clicked()
@@ -724,7 +724,7 @@ void QgsAttributeTableDialog::on_mAddAttribute_clicked()
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
   }
 }
 
@@ -765,7 +765,7 @@ void QgsAttributeTableDialog::on_mRemoveAttribute_clicked()
       mLayer->destroyEditCommand();
     }
     // update model - a field has been added or updated
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
   }
 }
 
@@ -778,8 +778,7 @@ void QgsAttributeTableDialog::on_mOpenFieldCalculator_clicked()
 
     if ( col >= 0 )
     {
-      mModel->reload( mModel->index( 0, col ),
-                      mModel->index( mModel->rowCount(), col ) );
+      mModel->reload( mModel->index( 0, col ), mModel->index( mModel->rowCount() - 1, col ) );
     }
   }
 }
@@ -794,7 +793,7 @@ void QgsAttributeTableDialog::addFeature()
   QgsFeatureAction action( tr( "Geometryless feature added" ), f, mLayer, -1, -1, this );
   if ( action.addFeature() )
   {
-    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount(), mModel->columnCount() ) );
+    mModel->reload( mModel->index( 0, 0 ), mModel->index( mModel->rowCount() - 1, mModel->columnCount() - 1 ) );
   }
 }
 

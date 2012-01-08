@@ -140,6 +140,11 @@ string      "'"{str_char}*"'"
 
 "NULL"	{ return NULLVALUE; }
 
+"CASE" { return CASE; }
+"WHEN" { return WHEN; }
+"THEN" { return THEN; }
+"ELSE" { return ELSE; }
+"END"  { return END;  }
 
 [()]      { return yytext[0]; }
 

@@ -19,24 +19,49 @@
 #include "qgsmaptoolvertexedit.h"
 #include "qgsfeature.h"
 #include "qgsvertexmarker.h"
+#include "qgsgeometryvalidator.h"
+#include "qgsmapcanvas.h"
+#include "qgslogger.h"
+
 #include <QRect>
 #include <QRubberBand>
 
 class QgsRubberBand;
 
-/**
- * Structure to store entry about vertex of the feature
- */
-struct VertexEntry
+class VertexEntry
 {
-  bool selected;
-  QgsPoint point;
-  int equals;
-  QgsVertexMarker* vertexMarker;
-  bool inRubberBand;
-  int rubberBandNr;
-  int index;
-  int originalIndex;
+    bool mSelected;
+    QgsPoint mPoint;
+    int mEquals;
+    bool mInRubberBand;
+    int mRubberBandNr;
+    int mIndex;
+    int mOriginalIndex;
+    int mPenWidth;
+    QString mToolTip;
+    QgsVertexMarker::IconType mType;
+    QgsVertexMarker *mMarker;
+    QgsMapCanvas *mCanvas;
+    QgsMapLayer *mLayer;
+  public:
+    VertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, QgsPoint p, int originalIndex, QString tooltip = QString::null, QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX, int penWidth = 2 );
+    ~VertexEntry();
+
+    QgsPoint point() const { return mPoint; }
+    int equals() const { return mEquals; }
+    bool isSelected() const { return mSelected; }
+    bool isInRubberBand() const { return mInRubberBand; }
+
+    void setCenter( QgsPoint p );
+    void moveCenter( double x, double y );
+    void setEqual( int index ) { mEquals = index; }
+    void setSelected( bool selected = true );
+    void setInRubberBand( bool inRubberBand = true ) { mInRubberBand = inRubberBand; }
+    int rubberBandNr() const { return mRubberBandNr; }
+    int index() { return mIndex; }
+
+    void setRubberBandValues( bool inRubberBand, int rubberBandNr, int indexInRubberBand );
+    void update();
 };
 
 /**
@@ -68,7 +93,7 @@ class SelectionFeature: public QObject
      * @param canvas mapCanvas on which we are working
      * @param feature feature with which we work this parameter is not mandatory if it's not filled feature will be loaded
      */
-    void setSelectedFeature( QgsFeatureId featureId,  QgsVectorLayer* vlayer,  QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
 
     /**
      * Function to select vertex with number
@@ -129,7 +154,7 @@ class SelectionFeature: public QObject
      * Getting vertex map of vertexes
      * @return currently used vertex map
      */
-    QList<VertexEntry> vertexMap();
+    QList<VertexEntry*> &vertexMap();
 
     /**
      * Getting currently edited feature
@@ -143,32 +168,19 @@ class SelectionFeature: public QObject
     void updateFromFeature();
 
     /**
-     * Sets values for rubber band
-     * @param index index of vertex for rubberbanf
-     * @param inRubberBand flag if vertex is already in rubber band
-     * @param rubberBandNr number of geometry (rubber band) in which this vertex should be)
-     * @param indexInRubberBand
-     */
-    void setRubberBandValues( int index, bool inRubberBand, int rubberBandNr, int indexInRubberBand );
-
-    /**
      * Clears data about vertexes if they are in rubber band for moving etc.
      */
     void cleanRubberBandsData();
 
     /**
-     * Function connecting all necessary thing to create vertex marker
-     * @param center center of marker
-     * @return created vertex marker
-     */
-    QgsVertexMarker* createVertexMarker( QgsPoint center, QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX );
-
-    /**
      * Getter for getting vector layer which selection is working
      * @return used vector layer
      */
-    QgsVectorLayer* vlayer();
+    QgsVectorLayer *vlayer();
 
+  public slots:
+    void addError( QgsGeometry::Error );
+    void validationFinished();
 
   private:
     /**
@@ -211,9 +223,11 @@ class SelectionFeature: public QObject
     bool mFeatureSelected;
     QgsVectorLayer* mVlayer;
     QgsRubberBand* mRubberBand;
-    QList<VertexEntry> mVertexMap;
+    QList<VertexEntry*> mVertexMap;
     QgsMapCanvas* mCanvas;
 
+    QgsGeometryValidator *mValidator;
+    QString mTip;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
 };
@@ -316,13 +330,13 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
      * @param vertexMap map of vertexes
      * @param vertex currently processed vertex
      */
-    void createTopologyRubbedBands( QgsVectorLayer* vlayer, QList<VertexEntry> vertexMap, int vertex );
+    void createTopologyRubberBands( QgsVectorLayer* vlayer, const QList<VertexEntry*> &vertexMap, int vertex );
 
     /** The position of the vertex to move (in map coordinates) to exclude later from snapping*/
     QList<QgsPoint> mExcludePoint;
 
     /** rubber bands */
-    QList<QgsRubberBand*> mQgsRubberBands;
+    QList<QgsRubberBand*> mRubberBands;
 
     /** list of topology rubber bands */
     QList<QgsRubberBand*> mTopologyRubberBand;
@@ -375,6 +389,5 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     /** flag to tell if edition points */
     bool mIsPoint;
 };
-
 
 #endif
