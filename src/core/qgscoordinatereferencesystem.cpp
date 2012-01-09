@@ -29,7 +29,7 @@
 #include "qgsapplication.h"
 #include "qgscrscache.h"
 #include "qgslogger.h"
-#include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 #include "qgis.h" //const vals declared here
 
 #include <sqlite3.h>
@@ -1094,7 +1094,7 @@ bool QgsCoordinateReferenceSystem::readXML( QDomNode & theNode )
         setMapUnits();
 
         //@TODO this srs needs to be validated!!!
-        mIsValidFlag = true;//shamelessly hard coded for now
+        mIsValidFlag = true; //shamelessly hard coded for now
       }
     }
   }
@@ -1238,13 +1238,10 @@ int QgsCoordinateReferenceSystem::openDb( QString path, sqlite3 **db )
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     // ... unfortunately it happens on Windows
-    QgsMessageOutput* output = QgsMessageOutput::createMessageOutput();
-    output->setTitle( "Error" );
-    output->setMessage( QObject::tr( "Could not open CRS database %1<br>Error(%2): %3" )
-                        .arg( path )
-                        .arg( myResult )
-                        .arg( sqlite3_errmsg( *db ) ), QgsMessageOutput::MessageText );
-    output->showMessage();
+    QgsMessageLog::logMessage( QObject::tr( "Could not open CRS database %1\nError(%2): %3" )
+                               .arg( path )
+                               .arg( myResult )
+                               .arg( sqlite3_errmsg( *db ) ), QObject::tr( "CRS" ) );
   }
   return myResult;
 }
@@ -1346,6 +1343,9 @@ bool QgsCoordinateReferenceSystem::saveAsUserCRS()
   QgsDebugMsg( QString( "Update or insert sql \n%1" ).arg( mySql ) );
   myResult = sqlite3_prepare( myDatabase, mySql.toUtf8(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
   sqlite3_step( myPreparedStatement );
+
+  QgsMessageLog::logMessage( QObject::tr( "Saved user CRS [%1]" ).arg( toProj4() ), QObject::tr( "CRS" ) );
+
   // XXX Need to free memory from the error msg if one is set
   return myResult == SQLITE_OK;
 }
