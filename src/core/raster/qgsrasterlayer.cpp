@@ -649,10 +649,25 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
   if ( rendererContext.coordinateTransform() )
   {
     QgsDebugMsg( "coordinateTransform set -> project extents." );
-    myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox(
-                              rendererContext.extent() );
-    myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox(
-                               mLayerExtent );
+    try
+    {
+      myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsMessageLog::logMessage( tr( "Could not reproject view extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
+      myProjectedViewExtent = rendererContext.extent();
+    }
+
+    try
+    {
+      myProjectedLayerExtent = rendererContext.coordinateTransform()->transformBoundingBox( mLayerExtent );
+    }
+    catch ( QgsCsException &cs )
+    {
+      QgsMessageLog::logMessage( tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
+      myProjectedLayerExtent = mLayerExtent;
+    }
   }
   else
   {

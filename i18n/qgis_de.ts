@@ -12958,7 +12958,7 @@ Sollen die vorhandenen Klassen vor der Klassifizierung gelöscht werden?</transl
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="553"/>
         <source>forward transform</source>
-        <translation>Transformation</translation>
+        <translation>Vorwärtstransformation</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="573"/>
