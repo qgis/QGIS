@@ -105,6 +105,12 @@ int QgsPostgresResult::PQftable( int col )
   return ::PQftable( mRes, col );
 }
 
+int QgsPostgresResult::PQftablecol( int col )
+{
+  Q_ASSERT( mRes );
+  return ::PQftablecol( mRes, col );
+}
+
 int QgsPostgresResult::PQftype( int col )
 {
   Q_ASSERT( mRes );
