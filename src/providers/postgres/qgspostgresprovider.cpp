@@ -537,10 +537,22 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
 
     if ( whereClause.isEmpty() )
     {
-      QString qBox = QString( "%1('BOX3D(%2)'::box3d,%3)" )
-                     .arg( mConnectionRO->majorVersion() < 2 ? "setsrid" : "st_setsrid" )
-                     .arg( rect.asWktCoordinates() )
-                     .arg( mDetectedSrid );
+      QString qBox;
+      if ( mConnectionRO->majorVersion() < 2 )
+      {
+        qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
+               .arg( rect.asWktCoordinates() )
+               .arg( mDetectedSrid );
+      }
+      else
+      {
+        qBox = QString( "st_makeenvelope(%1,%2,%3,%4,%5)" )
+               .arg( rect.xMinimum() )
+               .arg( rect.yMinimum() )
+               .arg( rect.xMaximum() )
+               .arg( rect.yMaximum() )
+               .arg( mDetectedSrid );
+      }
 
       whereClause = QString( "%1 && %2" )
                     .arg( quotedIdentifier( mGeometryColumn ) )
