@@ -1,7 +1,3 @@
-FIND_PACKAGE(Expat)    # GPS importer plugin
-
-IF(EXPAT_FOUND)
-
 ########################################################
 # Files
 
@@ -60,5 +56,3 @@ TARGET_LINK_LIBRARIES(gpsimporterplugin
 INSTALL(TARGETS gpsimporterplugin
   RUNTIME DESTINATION ${QGIS_PLUGIN_DIR}
   LIBRARY DESTINATION ${QGIS_PLUGIN_DIR})
-
-ENDIF(EXPAT_FOUND)
