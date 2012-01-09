@@ -296,7 +296,7 @@ void QgsMapToolCapture::validateGeometry()
     delete mGeomErrorMarkers.takeFirst();
   }
 
-  QgsGeometry *g;
+  QgsGeometry *g = 0;
 
   switch ( mCaptureMode )
   {

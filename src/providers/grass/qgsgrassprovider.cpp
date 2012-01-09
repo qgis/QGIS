@@ -2481,7 +2481,7 @@ QVector<QgsDataItem*> QgsGrassMapsetItem::createChildren()
 
     QString path = mPath + QDir::separator() + "vector" + QDir::separator() + name;
 
-    QgsDataCollectionItem *map;
+    QgsDataCollectionItem *map = 0;
     if ( layerNames.size() != 1 )
       map = new QgsDataCollectionItem( this, name );
     foreach( QString layerName, layerNames )
