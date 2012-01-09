@@ -1390,21 +1390,33 @@ QgsRectangle QgsVectorLayer::boundingBoxOfSelected()
   }
 
   QgsRectangle r, retval;
-
-
-  select( QgsAttributeList(), QgsRectangle(), true );
-
   retval.setMinimal();
 
   QgsFeature fet;
-  while ( nextFeature( fet ) )
+  if ( mDataProvider->capabilities() & QgsVectorDataProvider::SelectAtId )
   {
-    if ( mSelectedFeatureIds.contains( fet.id() ) )
+    foreach( QgsFeatureId fid, mSelectedFeatureIds )
     {
-      if ( fet.geometry() )
+      if ( featureAtId( fid, fet, true, false ) && fet.geometry() )
       {
         r = fet.geometry()->boundingBox();
         retval.combineExtentWith( &r );
+      }
+    }
+  }
+  else
+  {
+    select( QgsAttributeList(), QgsRectangle(), true );
+
+    while ( nextFeature( fet ) )
+    {
+      if ( mSelectedFeatureIds.contains( fet.id() ) )
+      {
+        if ( fet.geometry() )
+        {
+          r = fet.geometry()->boundingBox();
+          retval.combineExtentWith( &r );
+        }
       }
     }
   }
@@ -5428,7 +5440,7 @@ QString QgsVectorLayer::metadata()
   myMetadata += tr( "Extents:" );
   myMetadata += "</td></tr>";
   //extents in layer cs  TODO...maybe make a little nested table to improve layout...
-  myMetadata += "<tr><td>";
+  myMetadata += "<tr><td>" + tr( "In layer spatial reference system units : " );
 
   // Try to be a bit clever over what number format we use for the
   // extents. Some people don't like it using scientific notation when the
@@ -5440,44 +5452,51 @@ QString QgsVectorLayer::metadata()
   // - for all smaller numbers let the OS decide which format to use (it will
   // generally use non-scientific unless the number gets much less than 1).
 
-  QString xMin, yMin, xMax, yMax;
-  double changeoverValue = 99999; // The 'largest' 5 digit number
-  if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
+  if ( !myExtent.isEmpty() )
   {
-    xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
+    QString xMin, yMin, xMax, yMax;
+    double changeoverValue = 99999; // The 'largest' 5 digit number
+    if ( qAbs( myExtent.xMinimum() ) > changeoverValue )
+    {
+      xMin = QString( "%1" ).arg( myExtent.xMinimum(), 0, 'f', 2 );
+    }
+    else
+    {
+      xMin = QString( "%1" ).arg( myExtent.xMinimum() );
+    }
+    if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
+    {
+      yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
+    }
+    else
+    {
+      yMin = QString( "%1" ).arg( myExtent.yMinimum() );
+    }
+    if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
+    {
+      xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
+    }
+    else
+    {
+      xMax = QString( "%1" ).arg( myExtent.xMaximum() );
+    }
+    if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
+    {
+      yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
+    }
+    else
+    {
+      yMax = QString( "%1" ).arg( myExtent.yMaximum() );
+    }
+
+    myMetadata += tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
+                  .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
   }
   else
   {
-    xMin = QString( "%1" ).arg( myExtent.xMinimum() );
-  }
-  if ( qAbs( myExtent.yMinimum() ) > changeoverValue )
-  {
-    yMin = QString( "%1" ).arg( myExtent.yMinimum(), 0, 'f', 2 );
-  }
-  else
-  {
-    yMin = QString( "%1" ).arg( myExtent.yMinimum() );
-  }
-  if ( qAbs( myExtent.xMaximum() ) > changeoverValue )
-  {
-    xMax = QString( "%1" ).arg( myExtent.xMaximum(), 0, 'f', 2 );
-  }
-  else
-  {
-    xMax = QString( "%1" ).arg( myExtent.xMaximum() );
-  }
-  if ( qAbs( myExtent.yMaximum() ) > changeoverValue )
-  {
-    yMax = QString( "%1" ).arg( myExtent.yMaximum(), 0, 'f', 2 );
-  }
-  else
-  {
-    yMax = QString( "%1" ).arg( myExtent.yMaximum() );
+    myMetadata += tr( "unknown extent" );
   }
 
-  myMetadata += tr( "In layer spatial reference system units : " )
-                + tr( "xMin,yMin %1,%2 : xMax,yMax %3,%4" )
-                .arg( xMin ).arg( yMin ).arg( xMax ).arg( yMax );
   myMetadata += "</td></tr>";
 
   //extents in project cs
