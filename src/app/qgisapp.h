@@ -24,7 +24,6 @@ class QCursor;
 class QFileInfo;
 class QKeyEvent;
 class QLabel;
-class QComboBox;
 class QMenu;
 class QPixmap;
 class QProgressBar;
@@ -75,6 +74,8 @@ class QgsDecorationNorthArrow;
 class QgsDecorationScaleBar;
 
 class QgsMessageLogViewer;
+
+class QgsScaleComboBox;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -1003,7 +1004,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Widget that will live on the statusbar to display "scale 1:"
     QLabel * mScaleLabel;
     //! Widget that will live on the statusbar to display scale value
-    QComboBox * mScaleEdit;
+    QgsScaleComboBox * mScaleEdit;
     //! The validator for the mScaleEdit
     QValidator * mScaleEditValidator;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"

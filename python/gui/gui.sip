@@ -30,6 +30,7 @@
 %Include qgsprojectionselector.sip
 %Include qgsquickprint.sip
 %Include qgsrubberband.sip
+%Include qgsscalecombobox.sip
 %Include qgstextannotationitem.sip
 %Include qgsvertexmarker.sip
 %Include qgssearchquerybuilder.sip
