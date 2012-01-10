@@ -37,7 +37,7 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * Constructor
      * @param theLayer layer pointer
      */
-    QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer );
+    QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer );
 
     /**
      * Returns the number of rows

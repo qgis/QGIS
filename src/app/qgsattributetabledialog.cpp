@@ -54,10 +54,8 @@ class QgsAttributeTableDock : public QDockWidget
 
 
 QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWidget *parent, Qt::WindowFlags flags )
-    : QDialog( parent, flags ), mDock( NULL )
+    : QDialog( parent, flags ), mDock( 0 ), mLayer( theLayer ), mProgress( 0 ), mWorkaround( false )
 {
-  mLayer = theLayer;
-
   setupUi( this );
 
   setAttribute( Qt::WA_DeleteOnClose );
@@ -65,13 +63,14 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
 
-  // extent has to be set before the model is created
-  QgsAttributeTableModel::setCurrentExtent( QgisApp::instance()->mapCanvas()->extent() );
-  connect( QgisApp::instance()->mapCanvas(), SIGNAL( extentsChanged() ), this, SLOT( updateExtent() ) );
+  mView->setCanvasAndLayer( QgisApp::instance()->mapCanvas(), mLayer );
 
-  mView->setLayer( mLayer );
   mFilterModel = ( QgsAttributeTableFilterModel * ) mView->model();
-  mModel = ( QgsAttributeTableModel * )(( QgsAttributeTableFilterModel * )mView->model() )->sourceModel();
+  mModel = qobject_cast<QgsAttributeTableModel * >( dynamic_cast<QgsAttributeTableFilterModel *>( mView->model() )->sourceModel() );
+
+  connect( mModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
+  mModel->loadLayer();
+  delete mProgress;
 
   mQuery = query;
   mColumnBox = columnBox;
@@ -127,20 +126,21 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   // info from layer to table
   connect( mLayer, SIGNAL( editingStarted() ), this, SLOT( editingToggled() ) );
   connect( mLayer, SIGNAL( editingStopped() ), this, SLOT( editingToggled() ) );
+  connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
+  connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
 
   connect( searchButton, SIGNAL( clicked() ), this, SLOT( search() ) );
   connect( mAddFeature, SIGNAL( clicked() ), this, SLOT( addFeature() ) );
 
-  connect( mLayer, SIGNAL( selectionChanged() ), this, SLOT( updateSelectionFromLayer() ) );
-  connect( mLayer, SIGNAL( layerDeleted() ), this, SLOT( close() ) );
   connect( mView->verticalHeader(), SIGNAL( sectionClicked( int ) ), this, SLOT( updateRowSelection( int ) ) );
   connect( mView->verticalHeader(), SIGNAL( sectionPressed( int ) ), this, SLOT( updateRowPressed( int ) ) );
+
   connect( mModel, SIGNAL( modelChanged() ), this, SLOT( updateSelection() ) );
 
   connect( mView, SIGNAL( willShowContextMenu( QMenu*, QModelIndex ) ), this, SLOT( viewWillShowContextMenu( QMenu*, QModelIndex ) ) );
 
   mLastClickedHeaderIndex = 0;
-  mSelectionModel = new QItemSelectionModel( mFilterModel );
+  mSelectionModel = new QItemSelectionModel( mFilterModel, this );
   updateSelectionFromLayer();
 
   //make sure to show all recs on first load
@@ -149,7 +149,6 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
 
 QgsAttributeTableDialog::~QgsAttributeTableDialog()
 {
-  delete mSelectionModel;
 }
 
 void QgsAttributeTableDialog::updateTitle()
@@ -797,12 +796,6 @@ void QgsAttributeTableDialog::addFeature()
   }
 }
 
-void QgsAttributeTableDialog::updateExtent()
-{
-  // let the model know about the new extent (we may be showing only features from current extent)
-  QgsAttributeTableModel::setCurrentExtent( QgisApp::instance()->mapCanvas()->extent() );
-}
-
 void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex )
 {
   QModelIndex sourceIndex = mFilterModel->mapToSource( atIndex );
@@ -827,6 +820,38 @@ void QgsAttributeTableDialog::viewWillShowContextMenu( QMenu* menu, QModelIndex 
 
   QgsAttributeTableAction *a = new QgsAttributeTableAction( tr( "Open form" ), mView, mModel, -1, sourceIndex );
   menu->addAction( tr( "Open form" ), a, SLOT( featureForm() ) );
+}
+
+void QgsAttributeTableDialog::progress( int i, bool &cancel )
+{
+  if ( !mProgress )
+  {
+    mProgress = new QProgressDialog( tr( "Loading feature attributes..." ), tr( "Abort" ), 0, 0, this );
+    mProgress->setWindowTitle( tr( "Attribute table" ) );
+    mProgress->setWindowModality( Qt::WindowModal );
+    mStarted.start();
+  }
+
+  mProgress->setValue( i );
+
+  if ( i > 0 && i % 1000 == 0 )
+  {
+    mProgress->setLabelText( tr( "%1 features loaded." ).arg( i ) );
+  }
+
+  if ( !mProgress->isVisible() && mStarted.elapsed() > mProgress->minimumDuration()*5 / 4 )
+  {
+    // for some reason this is sometimes necessary
+    mProgress->show();
+    mWorkaround = true;
+  }
+
+  if ( mWorkaround )
+  {
+    QCoreApplication::processEvents();
+  }
+
+  cancel = mProgress->wasCanceled();
 }
 
 void QgsAttributeTableAction::execute()

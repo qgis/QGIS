@@ -18,7 +18,9 @@
 #include <QtDebug>
 #include <QDomDocument>
 #include <QSettings>
+
 #include <math.h>
+#include <limits>
 
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
@@ -136,13 +138,16 @@ static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 static int getIntValue( const QVariant& value, QgsExpression* parent )
 {
   bool ok;
-  int x = value.toInt( &ok );
-  if ( !ok )
+  qint64 x = value.toLongLong(&ok);
+  if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
+  {
+    return x;
+  }
+  else
   {
     parent->setEvalErrorString( QObject::tr( "Cannot convert '%1' to int" ).arg( value.toString() ) );
     return 0;
   }
-  return x;
 }
 
 
@@ -539,6 +544,12 @@ QString QgsExpression::dump() const
     return QObject::tr( "(no root)" );
 
   return mRootNode->dump();
+}
+
+void QgsExpression::acceptVisitor( QgsExpression::Visitor& v )
+{
+  if ( mRootNode )
+    mRootNode->accept( v );
 }
 
 
@@ -970,96 +981,87 @@ QString QgsExpression::NodeColumnRef::dump() const
   return mName;
 }
 
-bool QgsExpression::toOGCFilter( QDomDocument& doc ) const
+//
+
+QVariant QgsExpression::NodeCondition::eval( QgsExpression* parent, QgsFeature* f )
 {
-  if ( !mRootNode )
+  foreach( WhenThen* cond, mConditions )
   {
-    return false;
-  }
-
-  doc.clear();
-  QDomElement filterElem = doc.createElement( "Filter" );
-  doc.appendChild( filterElem );
-  return mRootNode->toOGCFilter( doc, filterElem );
-}
-
-bool QgsExpression::NodeBinaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement opElem;
-  switch ( mOp )
-  {
-    case boEQ:
-      opElem = doc.createElement( "PropertyIsEqualTo" );
-      break;
-    case boNE:
-      opElem = doc.createElement( "PropertyIsNotEqualTo" );
-      break;
-    case boLE:
-      opElem = doc.createElement( "PropertyIsLessThanOrEqualTo" );
-      break;
-    case boGE:
-      opElem = doc.createElement( "PropertyIsLessThanOrEqualTo" );
-      break;
-    case boLT:
-      opElem = doc.createElement( "PropertyIsLessThan" );
-      break;
-    case boGT:
-      opElem = doc.createElement( "PropertyIsGreaterThan" );
-      break;
-    case boOr:
-      opElem = doc.createElement( "Or" );
-      break;
-    case boAnd:
-      opElem = doc.createElement( "And" );
-      break;
-    default:
-      return false;
-  }
-
-  if ( mOpLeft )
-  {
-    mOpLeft->toOGCFilter( doc, opElem );
-  }
-  if ( mOpRight )
-  {
-    mOpRight->toOGCFilter( doc, opElem );
-  }
-
-  parent.appendChild( opElem );
-  return true;
-}
-
-bool QgsExpression::NodeLiteral::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement literalElem = doc.createElement( "Literal" );
-  QDomText literalText = doc.createTextNode( mValue.toString() );
-  literalElem.appendChild( literalText );
-  parent.appendChild( literalElem );
-  return true;
-}
-
-bool QgsExpression::NodeColumnRef::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  QDomElement propertyElem = doc.createElement( "PropertyName" );
-  QDomText propertyText = doc.createTextNode( mName );
-  propertyElem.appendChild( propertyText );
-  parent.appendChild( propertyElem );
-  return true;
-}
-
-bool QgsExpression::NodeUnaryOperator::toOGCFilter( QDomDocument& doc, QDomElement& parent ) const
-{
-  if ( mOp == uoNot )
-  {
-    QDomElement notElem = doc.createElement( "Not" );
-    if ( mOperand )
+    QVariant vWhen = cond->mWhenExp->eval( parent, f );
+    TVL tvl = getTVLValue( vWhen, parent );
+    ENSURE_NO_EVAL_ERROR;
+    if ( tvl == True )
     {
-      if ( mOperand->toOGCFilter( doc, notElem ) )
-      {
-        parent.appendChild( notElem );
-        return true;
-      }
+      QVariant vRes = cond->mThenExp->eval( parent, f );
+      ENSURE_NO_EVAL_ERROR;
+      return vRes;
     }
   }
+
+  if ( mElseExp )
+  {
+    QVariant vElse = mElseExp->eval( parent, f );
+    ENSURE_NO_EVAL_ERROR;
+    return vElse;
+  }
+
+  // return NULL if no condition is matching
+  return QVariant();
+}
+
+bool QgsExpression::NodeCondition::prepare( QgsExpression* parent, const QgsFieldMap& fields )
+{
+  bool res;
+  foreach( WhenThen* cond, mConditions )
+  {
+    res = cond->mWhenExp->prepare( parent, fields )
+          & cond->mThenExp->prepare( parent, fields );
+    if ( !res ) return false;
+  }
+
+  if ( mElseExp )
+    return mElseExp->prepare( parent, fields );
+
+  return true;
+}
+
+QString QgsExpression::NodeCondition::dump() const
+{
+  QString msg = "CONDITION:\n";
+  foreach( WhenThen* cond, mConditions )
+  {
+    msg += QString( "- WHEN %1 THEN %2\n" ).arg( cond->mWhenExp->dump() ).arg( cond->mThenExp->dump() );
+  }
+  if ( mElseExp )
+    msg += QString( "- ELSE %1" ).arg( mElseExp->dump() );
+  return msg;
+}
+
+QStringList QgsExpression::NodeCondition::referencedColumns() const
+{
+  QStringList lst;
+  foreach( WhenThen* cond, mConditions )
+  {
+    lst += cond->mWhenExp->referencedColumns() + cond->mThenExp->referencedColumns();
+  }
+
+  if ( mElseExp )
+    lst += mElseExp->referencedColumns();
+
+  return lst;
+}
+
+bool QgsExpression::NodeCondition::needsGeometry() const
+{
+  foreach( WhenThen* cond, mConditions )
+  {
+    if ( cond->mWhenExp->needsGeometry() ||
+         cond->mThenExp->needsGeometry() )
+      return true;
+  }
+
+  if ( mElseExp && mElseExp->needsGeometry() )
+    return true;
+
   return false;
 }

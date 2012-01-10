@@ -378,13 +378,10 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       {
         case QGis::Point:
           return QgisApp::getThemePixmap( "/mIconPointLayer.png" );
-          break;
         case QGis::Line:
           return QgisApp::getThemePixmap( "/mIconLineLayer.png" );
-          break;
         case QGis::Polygon:
           return QgisApp::getThemePixmap( "/mIconPolygonLayer.png" );
-          break;
         case QGis::NoGeometry:
           return QgisApp::getThemePixmap( "/mIconTableLayer.png" );
         default:

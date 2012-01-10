@@ -90,7 +90,7 @@ class CORE_EXPORT QGis
       DegreesMinutesSeconds = 4,
       DegreesDecimalMinutes = 5,
       UnknownUnit = 3
-    } ;
+    };
 
     //! User defined event types
     enum UserEvent

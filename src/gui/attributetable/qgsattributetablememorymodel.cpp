@@ -27,8 +27,8 @@
 // In-Memory model //
 /////////////////////
 
-QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer )
-    : QgsAttributeTableModel( theLayer )
+QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer )
+    : QgsAttributeTableModel( theCanvas, theLayer )
 {
   QgsDebugMsg( "entered." );
 }

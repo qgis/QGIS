@@ -521,7 +521,7 @@
       <attribute name="title">
        <string>GDAL</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_27">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_13">
          <property name="title">
