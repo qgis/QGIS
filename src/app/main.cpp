@@ -173,6 +173,14 @@ void myMessageOutput( QtMsgType type, const char *msg )
            || 0 == strncmp( msg, "QWidget::", 9 )
            || 0 == strncmp( msg, "QPainter::", 10 ) )
       {
+#if 0
+#ifdef linux
+        fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+        void *buffer[256];
+        int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+        backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+#endif
+#endif
         QgsMessageLog::logMessage( msg, "Qt" );
       }
 #endif

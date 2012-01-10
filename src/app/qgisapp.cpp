@@ -479,7 +479,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mpGpsDock->setWidget( mpGpsWidget );
   mpGpsDock->hide();
 
-  mLogViewer = new QgsMessageLogViewer();
+  mLogViewer = new QgsMessageLogViewer( statusBar(), this );
 
   mLogDock = new QDockWidget( tr( "Log Messages" ), this );
   mLogDock->setObjectName( "MessageLog" );
