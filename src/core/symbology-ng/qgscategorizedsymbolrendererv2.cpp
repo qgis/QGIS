@@ -139,7 +139,10 @@ QgsSymbolV2* QgsCategorizedSymbolRendererV2::symbolForFeature( QgsFeature& featu
   // find the right symbol for the category
   QgsSymbolV2* symbol = symbolForValue( *ita );
   if ( symbol == NULL )
-    return NULL;
+  {
+    // if no symbol found use default one
+    return symbolForValue( QVariant( "" ) );
+  }
 
   if ( mRotationFieldIdx == -1 && mSizeScaleFieldIdx == -1 )
     return symbol; // no data-defined rotation/scaling - just return the symbol
