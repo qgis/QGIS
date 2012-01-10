@@ -1242,47 +1242,47 @@ Are you sure you want to proceed?</source>
     </message>
     <message>
         <source>Build spatial index</source>
-        <translation type="unfinished"></translation>
+        <translation>Construir índice espacial</translation>
     </message>
     <message>
         <source>Select files from disk</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar archivos de disco</translation>
     </message>
     <message>
         <source>Select files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar archivo...</translation>
     </message>
     <message>
         <source>Select all</source>
-        <translation type="unfinished">Seleccionar todo</translation>
+        <translation>Seleccionar todo</translation>
     </message>
     <message>
         <source>Select none</source>
-        <translation type="unfinished"></translation>
+        <translation>No seleccionar nada</translation>
     </message>
     <message>
         <source>Clear list</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpiar lista</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Terminado</translation>
+        <translation>Terminado</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Proceso completado.</translation>
+        <translation>Proceso completado.</translation>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Densificar geometrías</translation>
     </message>
     <message>
         <source>Vertices to add</source>
-        <translation type="unfinished"></translation>
+        <translation>Vértices a añadir</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
 </context>
 <context>
@@ -1578,39 +1578,39 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyecciones</translation>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraer proyección</translation>
     </message>
     <message>
         <source>Extract projection information from raster(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraer información de la proyección de ráster(s)</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished">Conversión</translation>
+        <translation>Conversión</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Extracción</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished">Análisis</translation>
+        <translation>Análisis</translation>
     </message>
     <message>
         <source>Fill nodata</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar sin datos</translation>
     </message>
     <message>
         <source>Fill raster regions by interpolation from edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar regiones del ráster por interpolación de los bordes</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Miscelánea</translation>
     </message>
 </context>
 <context>
@@ -1981,47 +1981,47 @@ Desactive la opción &quot;Usar extensión de la intersección&quot; para obtene
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Editar</translation>
+        <translation>Editar</translation>
     </message>
     <message>
         <source>Reset</source>
-        <translation type="unfinished">Restablecer</translation>
+        <translation>Restablecer</translation>
     </message>
     <message>
         <source>Extract projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraer proyección</translation>
     </message>
     <message>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished">Modo de lotes (para procesar todo el directorio)</translation>
+        <translation>Modo de lotes (para procesar todo el directorio)</translation>
     </message>
     <message>
         <source>&amp;Input file</source>
-        <translation type="unfinished">Arch&amp;ivo de entrada</translation>
+        <translation>Arch&amp;ivo de entrada</translation>
     </message>
     <message>
         <source>Recurse subdirectories</source>
-        <translation type="unfinished">Subdirectorios de forma recursiva</translation>
+        <translation>Subdirectorios de forma recursiva</translation>
     </message>
     <message>
         <source>Create also prj file</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear también archivo prj</translation>
     </message>
     <message>
         <source>Select the files to analyse</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar los archivos a analizar</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished">Terminado</translation>
+        <translation>Terminado</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Proceso completado.</translation>
+        <translation>Proceso completado.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="unfinished">No se ha creado %1.</translation>
+        <translation>No se ha creado %1.</translation>
     </message>
 </context>
 <context>
@@ -2121,11 +2121,11 @@ Desactive la opción &quot;Usar extensión de la intersección&quot; para obtene
     </message>
     <message>
         <source>Path to the GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta a los ejecutables de GDAL</translation>
     </message>
     <message>
         <source>Path to the GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Ruta a los módulos python de GDAL</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
@@ -2134,21 +2134,30 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="unfinished"></translation>
+        <translation>Una lista de rutas separadas por dos puntos 
+(Linux y MacOS) o punto y coma (Windows) tanto a los 
+binarios y como a los ejecutables de python.
+
+Los usuarios de MacOS normalmente necesitan 
+establecer esto a algo como 
+/Library/Frameworks/GDAL.framework/Versions/1.8/Programs</translation>
     </message>
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="unfinished"></translation>
+        <translation>Una lista de rutas separadas por dos puntos 
+(Linux y MacOS) o punto y coma (Windows) a los 
+módulos de python.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="unfinished"></translation>
+        <translation>Útil para abrir documentación local de GDAL en vez de la ayuda 
+en línea cuando se pulsa el botón Ayuda del diálogo de la herramienta.</translation>
     </message>
     <message>
         <source>Select directory with GDAL python modules</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccionar el directorio con los módulos python de GDAL</translation>
     </message>
 </context>
 <context>
@@ -3109,39 +3118,40 @@ El valor «gris» (de GDAL 1.7.0) habilita expandir un conjunto de datos con una
     </message>
     <message>
         <source>Create an output alpha band</source>
-        <translation type="unfinished"></translation>
+        <translation>Crear una banda alfa de salida</translation>
     </message>
     <message>
         <source>&amp;Output file for contour lines (vector)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archiv&amp;o de salida para curvas de nivel (vectorial)</translation>
     </message>
     <message>
         <source>Fill Nodata</source>
-        <translation type="unfinished"></translation>
+        <translation>Rellenar sin datos</translation>
     </message>
     <message>
         <source>Search distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Distancia de búsqueda</translation>
     </message>
     <message>
         <source>Smooth iterations</source>
-        <translation type="unfinished"></translation>
+        <translatorcomment>Podría ser también Suavizar iteraciones</translatorcomment>
+        <translation>Iteraciones suaves</translation>
     </message>
     <message>
         <source>Band to operate on</source>
-        <translation type="unfinished"></translation>
+        <translation>Banda sobre la que operar</translation>
     </message>
     <message>
         <source>Validity mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Máscara de validación</translation>
     </message>
     <message>
         <source>Do not use the default validity mask</source>
-        <translation type="unfinished"></translation>
+        <translation>No usar la máscara de validación predeterminada</translation>
     </message>
     <message>
         <source>Use mask</source>
-        <translation type="unfinished"></translation>
+        <translation>Usar máscara</translation>
     </message>
 </context>
 <context>
@@ -3491,27 +3501,27 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     <name>GlobePlugin</name>
     <message>
         <source>Globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Globo</translation>
     </message>
     <message>
         <source>Launch Globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanzar Globo</translation>
     </message>
     <message>
         <source>Globe Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración de Globo</translation>
     </message>
     <message>
         <source>Overlay data on a 3D globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Superoner datos en un globo 3D</translation>
     </message>
     <message>
         <source>Settings for 3D globe</source>
-        <translation type="unfinished"></translation>
+        <translation>Configuración para globe 3D</translation>
     </message>
     <message>
         <source>&amp;Globe</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Globo</translation>
     </message>
 </context>
 <context>
@@ -4206,27 +4216,27 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>&amp;Decorations</source>
-        <translation type="unfinished">&amp;Ilustraciones</translation>
+        <translation>&amp;Ilustraciones</translation>
     </message>
     <message>
         <source>Vector</source>
-        <translation type="unfinished">Vectorial</translation>
+        <translation>Vectorial</translation>
     </message>
     <message>
         <source>Database</source>
-        <translation type="unfinished">Base de datos</translation>
+        <translation>Base de datos</translation>
     </message>
     <message>
         <source>Web</source>
-        <translation type="unfinished">Web</translation>
+        <translation>Web</translation>
     </message>
     <message>
         <source>Add feature</source>
-        <translation type="unfinished">Añadir objeto espacial</translation>
+        <translation>Añadir objeto espacial</translation>
     </message>
     <message>
         <source>Customization...</source>
-        <translation type="unfinished"></translation>
+        <translation>Personalización...</translation>
     </message>
     <message>
         <source>mActionCatchForCustomization</source>
@@ -4234,11 +4244,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>This is here just to avoid shortcut conflicts, the shortcut is caught in QgsCustomization</source>
-        <translation type="unfinished"></translation>
+        <translation>Esto está aquí para evitar conflitos en atajos de teclado, el atajo es cogido en QgsCustomization</translation>
     </message>
     <message>
         <source>Ctrl+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <source>Embed layers and groups...</source>
@@ -4250,35 +4260,35 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>&amp;Copyright Label</source>
-        <translation type="unfinished">Etiqueta de &amp;Copyright</translation>
+        <translation>Etiqueta de &amp;Copyright</translation>
     </message>
     <message>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="unfinished">Crea una etiqueta de copyright que se muestra en la vista del mapa.</translation>
+        <translation>Crea una etiqueta de copyright que se muestra en la vista del mapa.</translation>
     </message>
     <message>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished">Flecha de &amp;Norte</translation>
+        <translation>Flecha de &amp;Norte</translation>
     </message>
     <message>
         <source>&quot;Creates a north arrow that is displayed on the map canvas&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>&quot;Crea una flecha de norte que se muestra en la vista del mapa&quot;</translation>
     </message>
     <message>
         <source>&amp;Scale Bar</source>
-        <translation type="unfinished">Barra de &amp;escala</translation>
+        <translation>Barra de e&amp;scala</translation>
     </message>
     <message>
         <source>Creates a scale bar that is displayed on the map canvas</source>
-        <translation type="unfinished">Crea una barra de escala que se muestra en la Vista del mapa</translation>
+        <translation>Crea una barra de escala que se muestra en la Vista del mapa</translation>
     </message>
     <message>
         <source>Add WFS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir capa WFS...</translation>
     </message>
     <message>
         <source>Add WFS Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Añadir capa WFS</translation>
     </message>
 </context>
 <context>
@@ -4446,31 +4456,31 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
+        <translation>Guardar</translation>
     </message>
     <message>
         <source>Edit OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Editar relación de OSM</translation>
     </message>
     <message>
         <source>for grouping boundaries and marking enclaves / exclaves</source>
-        <translation type="unfinished"></translation>
+        <translation>para agrupar contornos y hacer enclaves / exclaves</translation>
     </message>
     <message>
         <source>to put holes into areas (might have to be renamed, see article)</source>
-        <translation type="unfinished"></translation>
+        <translation>para hacer agujeros dentro de áreas (puede ser necesario cambiar el nombre, ver artículo)</translation>
     </message>
     <message>
         <source>any kind of turn restriction</source>
-        <translation type="unfinished"></translation>
+        <translation>cualquier tipo de restricción de giro</translation>
     </message>
     <message>
         <source>like bus routes, cycle routes and numbered highways</source>
-        <translation type="unfinished"></translation>
+        <translation>como rutas de autobús o bicicleta y carreteras numeradas</translation>
     </message>
     <message>
         <source>traffic enforcement devices; speed cameras, redlight cameras, weight checks, ...</source>
-        <translation type="unfinished"></translation>
+        <translation>dispositivos de control de tráfico; radares, cámaras de semáforos, controles de peso, ...</translation>
     </message>
 </context>
 <context>
@@ -4581,15 +4591,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Check your internet connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Compruebe su conexión a internet</translation>
     </message>
     <message>
         <source>Choose file to save</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione el archivo a guardar</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos OSM (*.osm)</translation>
     </message>
 </context>
 <context>
@@ -4720,15 +4730,15 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Snapping ON. Hold Ctrl to disable it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoensamblado ACTIVO. Mantenga pulsado Ctrl para desactivarlo.</translation>
     </message>
     <message>
         <source>Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Ocultar historial de edición de OSM</translation>
     </message>
     <message>
         <source>Show OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar historial de edición de OSM</translation>
     </message>
 </context>
 <context>
@@ -4751,27 +4761,27 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Layer doesn&apos;t exist</source>
-        <translation type="unfinished"></translation>
+        <translation>La capa no existe</translation>
     </message>
     <message>
         <source>The selected layer doesn&apos;t exist anymore!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡La capa seleccionada ya no existe!</translation>
     </message>
     <message>
         <source>Importing features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar objetos espaciales...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
+        <translation>Cancelar</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importar</translation>
+        <translation>Importar</translation>
     </message>
     <message>
         <source>Import has been completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Se ha completado la importación.</translation>
     </message>
 </context>
 <context>
@@ -4802,141 +4812,144 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un archivo de OpenStreetMap</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos OSM (*.osm)</translation>
     </message>
     <message>
         <source>OSM Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar OSM</translation>
     </message>
     <message>
         <source>Please enter path to OSM data file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Por favor, introduzca la ruta al archivo de datos de OSM.</translation>
     </message>
     <message>
         <source>Path to OSM file is invalid: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>La ruta al archivo OSM no es válida: %1.</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Error</translation>
+        <translation>Error</translation>
     </message>
     <message>
         <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
-        <translation type="unfinished"></translation>
+        <translation>Las capas del archivo OSM &quot;%1&quot; ya están cargadas.</translation>
     </message>
     <message>
         <source>Failed to load polygon layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar la capa de polígonos.</translation>
     </message>
     <message>
         <source>Failed to load line layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar la capa de líneas.</translation>
     </message>
     <message>
         <source>Failed to load point layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar la capa de puntos.</translation>
     </message>
     <message>
         <source>Could not connect to setRenderer signal.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo conectar con la señal setRenderer.</translation>
     </message>
     <message>
         <source>Failed to load layers: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudieron cargar las capas: %1</translation>
     </message>
 </context>
 <context>
     <name>OsmPlugin</name>
     <message>
         <source>Load OSM from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar OSM de archivo</translation>
     </message>
     <message>
         <source>Load OpenStreetMap from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargar OpenStreetMap de archivo</translation>
     </message>
     <message>
         <source>Import data from a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar datos de una capa</translation>
     </message>
     <message>
         <source>Import data from a layer to OpenStreetMap</source>
-        <translation type="unfinished"></translation>
+        <translation>Importar datos de una capa a OpenStreetMap</translation>
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Guardar OSM a archivo</translation>
+        <translation>Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>Save OpenStreetMap to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar OpenStreetMap a archivo</translation>
     </message>
     <message>
         <source>Download OSM data</source>
-        <translation type="unfinished">Descargar datos de OSM</translation>
+        <translation>Descargar datos de OSM</translation>
     </message>
     <message>
         <source>Download OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Descargar datos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation type="unfinished">Subir datos de OSM</translation>
+        <translation>Subir datos de OSM</translation>
     </message>
     <message>
         <source>Upload OpenStreetMap data</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir datos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Show/Hide OSM Feature Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/Ocultar Administrador de objetos de OSM</translation>
     </message>
     <message>
         <source>Show/Hide OpenStreetMap Feature Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Mostrar/Ocultar Administrador de objetos de OpenStreetMap</translation>
     </message>
     <message>
         <source>Sorry</source>
-        <translation type="unfinished"></translation>
+        <translation>Lo siento</translation>
     </message>
     <message>
         <source>You don&apos;t have OSM provider installed!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡No tiene proveedor de OSM instalado!</translation>
     </message>
     <message>
         <source>OSM Save to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Guardar OSM a archivo</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué guardar.</translation>
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">Subir a OSM</translation>
+        <translation>Subir a OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what to upload.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué subir.</translation>
     </message>
     <message>
         <source>OSM Import</source>
-        <translation type="unfinished"></translation>
+        <translation>Importacioń de OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
 Please change this situation first, because OSM Plugin doesn&apos;t know what layer will be destination of the import.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ningún dato de OSM está cargado/descargado o ninguna capa de OSM está seleccionada en el panel Capas.
+Por favor, cambie esta situación primero, porque el complemento de OSM no sabe qué capa será el destino de la importación.</translation>
     </message>
     <message>
         <source>There are currently no available vector layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Actualmente no hay capas vectoriales disponibles.</translation>
     </message>
 </context>
 <context>
@@ -5007,11 +5020,11 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Seleccione un archivo de OpenStreetMap</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Archivos OSM (*.osm)</translation>
     </message>
 </context>
 <context>
@@ -5101,71 +5114,71 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what la
     </message>
     <message>
         <source>Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Subir</translation>
     </message>
     <message>
         <source>Node addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al añadir nodo.</translation>
     </message>
     <message>
         <source>Node update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al actualizar nodo.</translation>
     </message>
     <message>
         <source>Node deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al borrar nodo.</translation>
     </message>
     <message>
         <source>Way addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al añadir vía.</translation>
     </message>
     <message>
         <source>Way update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al actualizar vía.</translation>
     </message>
     <message>
         <source>Way deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al borrar vía.</translation>
     </message>
     <message>
         <source>Relation addition failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al añadir relación.</translation>
     </message>
     <message>
         <source>Relation update failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al actualizar relación.</translation>
     </message>
     <message>
         <source>Relation deletion failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al borrar relación.</translation>
     </message>
     <message>
         <source>Connection to OpenStreetMap server cannot be established. Please check your proxy settings, firewall settings and try again.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede establecer conexión con el servidor de OpenStreetMap. Por favor, compruebe la configuración de su proxy y, cortafuegos y pruebe de nuevo.</translation>
     </message>
     <message>
         <source>Changeset closing failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al cerrar el conjunto de cambios.</translation>
     </message>
     <message>
         <source>Upload process failed. OpenStreetMap server response: %1 - %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló el proceso de subida. El servidor de OpenStreetMap respondió: %1 - %2.</translation>
     </message>
     <message>
         <source>Authentication failed. Please try again with correct login and password.</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la autenticación. Por favor, pruebe de nuevo con el usuario y contraseña correctos.</translation>
     </message>
     <message>
         <source>Setting host failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al establecer el servidor.</translation>
     </message>
     <message>
         <source>Setting user and password failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al establecer usuario y contraseña.</translation>
     </message>
     <message>
         <source>Setting proxy failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fallo al establecer el proxy.</translation>
     </message>
 </context>
 <context>
@@ -5982,7 +5995,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>Could not open CRS database %1&lt;br&gt;Error(%2): %3</source>
-        <translation>No se pudo abrir la base de datos de SRC %1 &lt;br&gt;Error(%2): %3</translation>
+        <translation type="obsolete">No se pudo abrir la base de datos de SRC %1 &lt;br&gt;Error(%2): %3</translation>
     </message>
     <message>
         <source>Generated CRS</source>
@@ -6048,10 +6061,9 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message numerus="yes">
         <source>%n geometry error(s) found.</source>
         <comment>number of geometry errors</comment>
-        <translation type="unfinished">
-            <numerusform>Se han encontrado %n errores de geometría.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation type="obsolete">
+            <numerusform>Se ha encontrado un error de geometría.</numerusform>
+            <numerusform>Se han encontrado %n errores de geometría.</numerusform>
         </translation>
     </message>
     <message>
@@ -6064,7 +6076,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <source>stopping validation after more than 100 errors</source>
-        <translation>se detiene la validación después de más 100 errores</translation>
+        <translation type="obsolete">se detiene la validación después de más 100 errores</translation>
     </message>
     <message>
         <source>ring %1 with less than three points</source>
@@ -6081,10 +6093,9 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     <message numerus="yes">
         <source>line %1 contains %n duplicate node(s) at %2</source>
         <comment>number of duplicate nodes</comment>
-        <translation type="unfinished">
-            <numerusform>la línea %1 contiene %n nodos duplicados en %2
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>la línea %1 contiene un nodo duplicado en %2</numerusform>
+            <numerusform>la línea %1 contiene %n nodos duplicados en %2</numerusform>
         </translation>
     </message>
     <message>
@@ -6543,19 +6554,19 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Python is not enabled in QGIS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Python no está activado en QGIS.</translation>
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Complementos</translation>
+        <translation>Complementos</translation>
     </message>
     <message>
         <source>Loaded %1 (package: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 cargado (paquete: %2)</translation>
     </message>
     <message>
         <source>Failed to load %1 (Reason: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar %1 (motivo: %2)</translation>
     </message>
     <message>
         <source>Loaded %1 (Path: %2)</source>
@@ -6723,11 +6734,11 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Globe</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Globo</translation>
     </message>
     <message>
         <source>Overlay data on a 3D globe</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Superoner datos en un globo 3D</translation>
     </message>
     <message>
         <source>Zonal statistics plugin</source>
@@ -6829,6 +6840,39 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     <message>
         <source>Unable to delete table %1:
 </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open CRS database %1
+Error(%2): %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">SRC</translation>
+    </message>
+    <message>
+        <source>Saved user CRS [%1]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GEOS error:%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown geometry type %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry validation was aborted.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry is valid.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry has %1 errors.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -9678,6 +9722,17 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsAddAttrDialog</name>
+    <message>
+        <source>Warning</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid field name. This field name is reserved and cannot be used.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsAddAttrDialogBase</name>
     <message>
         <source>Add Attribute</source>
@@ -10400,6 +10455,22 @@ User DB Path:	%8
         <source>Open form</source>
         <translation type="unfinished">Abrir formulario</translation>
     </message>
+    <message>
+        <source>Loading feature attributes...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Abort</source>
+        <translation type="unfinished">Abortar</translation>
+    </message>
+    <message>
+        <source>Attribute table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 features loaded.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeTableModel</name>
@@ -10629,6 +10700,14 @@ El error fue: %2</translation>
     </message>
     <message>
         <source>Order by value</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UUID generator</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Read-only field that generates a UUID if empty.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -13171,7 +13250,7 @@ Should the existing classes be deleted before classification?</source>
 %2
 failed with error: %3
 </source>
-        <translation>%1 de
+        <translation type="obsolete">%1 de
 %2
 falló con error: %3
 </translation>
@@ -13179,6 +13258,12 @@ falló con error: %3
     <message>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
         <translation>Las coordenadas no se puede reproyectar. El SRC es:%1</translation>
+    </message>
+    <message>
+        <source>%1 of
+%2PROJ.4: %3 +to %4
+Error: %5</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -13602,59 +13687,51 @@ p, li { white-space: pre-wrap; }
     <name>QgsDbTableModel</name>
     <message>
         <source>Schema</source>
-        <translation>Esquema</translation>
+        <translation type="obsolete">Esquema</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation>Tabla</translation>
+        <translation type="obsolete">Tabla</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>Geometry column</source>
-        <translation>Columna de geometría</translation>
+        <translation type="obsolete">Columna de geometría</translation>
     </message>
     <message>
         <source>Primary key column</source>
-        <translation>Columna de clave primaria</translation>
+        <translation type="obsolete">Columna de clave primaria</translation>
     </message>
     <message>
         <source>Sql</source>
-        <translation>Sql</translation>
+        <translation type="obsolete">Sql</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation>Punto</translation>
+        <translation type="obsolete">Punto</translation>
     </message>
     <message>
         <source>Multipoint</source>
-        <translation>Múltiples puntos</translation>
+        <translation type="obsolete">Múltiples puntos</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation>Línea</translation>
+        <translation type="obsolete">Línea</translation>
     </message>
     <message>
         <source>Multiline</source>
-        <translation>Múltiples línea</translation>
+        <translation type="obsolete">Múltiples línea</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation>Polígono</translation>
+        <translation type="obsolete">Polígono</translation>
     </message>
     <message>
         <source>Multipolygon</source>
-        <translation>Múltiples polígono</translation>
-    </message>
-    <message>
-        <source>Select at id</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Múltiples polígono</translation>
     </message>
 </context>
 <context>
@@ -14633,6 +14710,10 @@ p, li { white-space: pre-wrap; }
         <source>Output preview:   </source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>=</source>
+        <translation type="unfinished">=</translation>
+    </message>
 </context>
 <context>
     <name>QgsFeatureAction</name>
@@ -15570,7 +15651,7 @@ gray = no data
     <name>QgsGPSPlugin</name>
     <message>
         <source>&amp;Gps Tools</source>
-        <translation>Herramientas &amp;GPS</translation>
+        <translation type="obsolete">Herramientas &amp;GPS</translation>
     </message>
     <message>
         <source>&amp;Create new GPX layer</source>
@@ -15582,7 +15663,7 @@ gray = no data
     </message>
     <message>
         <source>&amp;Gps</source>
-        <translation>&amp;GPS</translation>
+        <translation type="obsolete">&amp;GPS</translation>
     </message>
     <message>
         <source>Save new GPX file as...</source>
@@ -15695,6 +15776,14 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
     <message>
         <source>This device does not support uploading of %1.</source>
         <translation>El dispositivo no admite la carga de %1.</translation>
+    </message>
+    <message>
+        <source>&amp;GPS Tools</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;GPS</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16552,7 +16641,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsGlobePluginDialogGuiBase</name>
     <message>
         <source>Globe Settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Configuración de Globo</translation>
     </message>
     <message>
         <source>Elevation</source>
@@ -20015,6 +20104,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.
         <source>Line orientation dependent position</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Wrap label on character</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegend</name>
@@ -20672,6 +20765,17 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.
     </message>
 </context>
 <context>
+    <name>QgsMapToolCapture</name>
+    <message>
+        <source>Validation started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Validation finished.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsMapToolChangeLabelProperties</name>
     <message>
         <source>Label properties changed</source>
@@ -20822,12 +20926,16 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.
     <message>
         <source>Feature was deleted on background.
 </source>
-        <translation>El objeto espacial se borró en segundo plano.
+        <translation type="obsolete">El objeto espacial se borró en segundo plano.
 </translation>
     </message>
     <message>
         <source>Inserted vertex</source>
         <translation>Vértice insertado</translation>
+    </message>
+    <message>
+        <source>Feature was deleted on background.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -22500,6 +22608,18 @@ p, li { white-space: pre-wrap; }
         <source>Popmusic chain (very slow)</source>
         <translation>Popmusic chain (muy lento)</translation>
     </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>QGIS</source>
+        <translation type="unfinished">QGIS</translation>
+    </message>
+    <message>
+        <source>GEOS</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOptionsBase</name>
@@ -22977,7 +23097,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Enter attribute values</source>
-        <translation>Introducir valores de los atributos</translation>
+        <translation type="obsolete">Introducir valores de los atributos</translation>
     </message>
     <message>
         <source>Suppress attributes pop-up windows after each created feature</source>
@@ -23070,6 +23190,14 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Plugins</source>
         <translation type="unfinished">Complementos</translation>
+    </message>
+    <message>
+        <source>Other settings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Validate geometries</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23327,10 +23455,16 @@ Las funciones de geoprocesamiento sólo están disponibles para capas PostgreSQL
 
 Extended error information:
 %1</source>
-        <translation>Falló la conexión - Compruebe la configuracioń y vuelva a probar.
+        <translation type="obsolete">Falló la conexión - Compruebe la configuracioń y vuelva a probar.
 
 Información de error ampliada:
 %1</translation>
+    </message>
+    <message>
+        <source>Connection failed - Check settings and try again.
+
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23582,7 +23716,7 @@ El mensaje de error de la base de datos fue:
     </message>
     <message>
         <source>Waiting</source>
-        <translation>Esperando</translation>
+        <translation type="obsolete">Esperando</translation>
     </message>
     <message>
         <source>No geometry</source>
@@ -23609,6 +23743,18 @@ lleve la geometría PostGIS.</translation>
     <message>
         <source>Could not open the Postgres/PostGIS Provider</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished">SRID</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connect</source>
+        <translation type="unfinished">Conectar</translation>
     </message>
 </context>
 <context>
@@ -23656,6 +23802,92 @@ lleve la geometría PostGIS.</translation>
     <message>
         <source>Build query</source>
         <translation type="obsolete">Construir consulta</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgSourceSelectDelegate</name>
+    <message>
+        <source>Select...</source>
+        <translation type="unfinished">Seleccionar...</translation>
+    </message>
+</context>
+<context>
+    <name>QgsPgTableModel</name>
+    <message>
+        <source>Schema</source>
+        <translation type="unfinished">Esquema</translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished">Tabla</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Geometry column</source>
+        <translation type="unfinished">Columna de geometría</translation>
+    </message>
+    <message>
+        <source>SRID</source>
+        <translation type="unfinished">SRID</translation>
+    </message>
+    <message>
+        <source>Primary key column</source>
+        <translation type="unfinished">Columna de clave primaria</translation>
+    </message>
+    <message>
+        <source>Select at id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sql</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Waiting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select...</source>
+        <translation type="unfinished">Seleccionar...</translation>
+    </message>
+    <message>
+        <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">Punto</translation>
+    </message>
+    <message>
+        <source>Multipoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">Línea</translation>
+    </message>
+    <message>
+        <source>Multiline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">Polígono</translation>
+    </message>
+    <message>
+        <source>Multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No Geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24578,10 +24810,118 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPostgresConn</name>
+    <message>
+        <source>Connection to database failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>error in setting encoding</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>undefined return value from encoding setting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your database has no working PostGIS support.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQL:%1
+result:%2
+error:%3
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but the accessible tables could not be determined.</source>
+        <translation type="unfinished">La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.</translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
+%1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but the accessible tables could not be determined.
+The error message from the database was:
+%1
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to get list of spatially enabled tables from the database</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Retrieval of postgis version failed</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not parse postgis version string &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Errornous query: %1 returned %2 [%3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query failed: %1
+Error: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query: %1 returned %2 [%3]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 cursor states lost.
+SQL: %2
+Result: %3 (%4)</source>
+        <translation type="unfinished">El cursor %1 permanece perdido.
+SQL: %2
+Resultado: %3 (%4)</translation>
+    </message>
+    <message>
+        <source>resetting bad connection.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>retry after reset succeeded.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>retry after reset failed again.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>connection still bad after reset.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>bad connection, not retrying.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPostgresProvider</name>
     <message>
         <source>Unable to access relation</source>
-        <translation>No se puede acceder a la relación</translation>
+        <translation type="obsolete">No se puede acceder a la relación</translation>
     </message>
     <message>
         <source>Unable to access the %1 relation.
@@ -24629,30 +24969,30 @@ SQL: %3</translation>
     </message>
     <message>
         <source>No PostGIS Support!</source>
-        <translation>¡Sin capacidad para PostGIS!</translation>
+        <translation type="obsolete">¡Sin capacidad para PostGIS!</translation>
     </message>
     <message>
         <source>Your database has no working PostGIS support.
 </source>
-        <translation>Su base de datos no tiene capacidad para trabajar con PostGIS.
+        <translation type="obsolete">Su base de datos no tiene capacidad para trabajar con PostGIS.
 </translation>
     </message>
     <message>
         <source>No GEOS Support!</source>
-        <translation>¡Sin capacidad para GEOS!</translation>
+        <translation type="obsolete">¡Sin capacidad para GEOS!</translation>
     </message>
     <message>
         <source>Your PostGIS installation has no GEOS support.
 Feature selection and identification will not work properly.
 Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation>Su instalación de PostGIS no admite GEOS.
+        <translation type="obsolete">Su instalación de PostGIS no admite GEOS.
 La selección e identificación de objetos espaciales no funcionarán correctamente.
 Instale PostGIS con capacidad para GEOS (http://geos.refractions.net)
 </translation>
     </message>
     <message>
         <source>Ambiguous field!</source>
-        <translation>¡Campo ambiguo!</translation>
+        <translation type="obsolete">¡Campo ambiguo!</translation>
     </message>
     <message>
         <source>Duplicate field %1 found
@@ -24662,7 +25002,7 @@ Instale PostGIS con capacidad para GEOS (http://geos.refractions.net)
     </message>
     <message>
         <source>PostgreSQL in recovery</source>
-        <translation>PostgreSQL en recuperación</translation>
+        <translation type="obsolete">PostgreSQL en recuperación</translation>
     </message>
     <message>
         <source>PostgreSQL is still in recovery after a database crash
@@ -24674,7 +25014,7 @@ Se denegarán accesos de escritura.</translation>
     </message>
     <message>
         <source>Unable execute the query</source>
-        <translation>No se puede ejecutar la consulta</translation>
+        <translation type="obsolete">No se puede ejecutar la consulta</translation>
     </message>
     <message>
         <source>Unable to execute the query.
@@ -24688,7 +25028,7 @@ SQL: %2</translation>
     </message>
     <message>
         <source>No suitable key column in table</source>
-        <translation>No hay una columna de clave adecuada</translation>
+        <translation type="obsolete">No hay una columna de clave adecuada</translation>
     </message>
     <message>
         <source>The table has no column suitable for use as a key.
@@ -24714,29 +25054,29 @@ una columna CTID con un número de bloque de 16bit.
     </message>
     <message>
         <source>and </source>
-        <translation>y </translation>
+        <translation type="obsolete">y </translation>
     </message>
     <message>
         <source>The unique index based on columns %1 is unsuitable because Quantum GIS does not currently support multiple columns as a key into the table.
 </source>
-        <translation>El índice único basado en la columna %1 no es adecuado porque Quantum GIS actualmente no admite múltiples columnas como clave de una tabla.
+        <translation type="obsolete">El índice único basado en la columna %1 no es adecuado porque Quantum GIS actualmente no admite múltiples columnas como clave de una tabla.
 </translation>
     </message>
     <message>
         <source>Unable to find a key column</source>
-        <translation>No se puede encontrar una columna de clave</translation>
+        <translation type="obsolete">No se puede encontrar una columna de clave</translation>
     </message>
     <message>
         <source>and is suitable.</source>
-        <translation>y es adecuada.</translation>
+        <translation type="obsolete">y es adecuada.</translation>
     </message>
     <message>
         <source> and has a suitable constraint)</source>
-        <translation> y tiene la reserva adecuada)</translation>
+        <translation type="obsolete"> y tiene la reserva adecuada)</translation>
     </message>
     <message>
         <source> and does not have a suitable constraint)</source>
-        <translation> y no tiene la reserva adecuada)</translation>
+        <translation type="obsolete"> y no tiene la reserva adecuada)</translation>
     </message>
     <message>
         <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
@@ -24748,11 +25088,11 @@ La vista que ha seleccionado tiene las siguientes columnas, ninguna de las cuale
     </message>
     <message>
         <source>No suitable key column in view</source>
-        <translation>No hay una columna de clave adecuada en la vista</translation>
+        <translation type="obsolete">No hay una columna de clave adecuada en la vista</translation>
     </message>
     <message>
         <source>Unknown geometry type</source>
-        <translation>Tipo de geometría desconocido</translation>
+        <translation type="obsolete">Tipo de geometría desconocido</translation>
     </message>
     <message>
         <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
@@ -24761,28 +25101,28 @@ La vista que ha seleccionado tiene las siguientes columnas, ninguna de las cuale
     <message>
         <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
 %3</source>
-        <translation>Quantum GIS no pudo determinar el tipo y srid de la columna %1 en %2, El registro de comunicación de la base de datos fue:
+        <translation type="obsolete">Quantum GIS no pudo determinar el tipo y srid de la columna %1 en %2, El registro de comunicación de la base de datos fue:
 %3</translation>
     </message>
     <message>
         <source>Unable to get feature type and srid</source>
-        <translation>No se ha podido obtener el tipo ni el srid del objeto espacial</translation>
+        <translation type="obsolete">No se ha podido obtener el tipo ni el srid del objeto espacial</translation>
     </message>
     <message>
         <source>Query failed</source>
-        <translation>Falló la consulta</translation>
+        <translation type="obsolete">Falló la consulta</translation>
     </message>
     <message>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
-        <translation>El cursor %1 permanece perdido.
+        <translation type="obsolete">El cursor %1 permanece perdido.
 SQL: %2
 Resultado: %3 (%4)</translation>
     </message>
     <message>
         <source>Error while adding features</source>
-        <translation>Error al añadir objetos espaciales</translation>
+        <translation type="obsolete">Error al añadir objetos espaciales</translation>
     </message>
     <message>
         <source>Whole number (integer - 32bit)</source>
@@ -24802,97 +25142,57 @@ Resultado: %3 (%4)</translation>
     </message>
     <message>
         <source>Error while deleting features</source>
-        <translation>Error al borrar objetos espaciales</translation>
+        <translation type="obsolete">Error al borrar objetos espaciales</translation>
     </message>
     <message>
         <source>Error while adding attributes</source>
-        <translation>Error al añadir atributos</translation>
+        <translation type="obsolete">Error al añadir atributos</translation>
     </message>
     <message>
         <source>Error while deleting attributes</source>
-        <translation>Error al borrar atributos</translation>
+        <translation type="obsolete">Error al borrar atributos</translation>
     </message>
     <message>
         <source>Error while changing attributes</source>
-        <translation>Error al cambiar atributos</translation>
+        <translation type="obsolete">Error al cambiar atributos</translation>
     </message>
     <message>
         <source>unexpected PostgreSQL error</source>
-        <translation>error inesperado de PostgreSQL</translation>
+        <translation type="obsolete">error inesperado de PostgreSQL</translation>
     </message>
     <message>
         <source>Error while changing geometry values</source>
-        <translation>Error al cambiar los valores de la geometría</translation>
+        <translation type="obsolete">Error al cambiar los valores de la geometría</translation>
     </message>
     <message>
         <source>&apos;%1&apos; derives from &apos;%2.%3.%4&apos; </source>
-        <translation>&apos;%1&apos; procede de &apos;%2.%3.%4&apos; </translation>
+        <translation type="obsolete">&apos;%1&apos; procede de &apos;%2.%3.%4&apos; </translation>
     </message>
     <message>
         <source>and is not suitable (type is %1)</source>
-        <translation>y no es adecuado (el tipo es %1)</translation>
+        <translation type="obsolete">y no es adecuado (el tipo es %1)</translation>
     </message>
     <message>
         <source>Note: &apos;%1&apos; initially appeared suitable but does not contain unique data, so is not suitable.
 </source>
-        <translation>Nota: &apos;%1&apos; inicialmente parecía adecuado, pero no contiene datos únicos, así que no lo es.
+        <translation type="obsolete">Nota: &apos;%1&apos; inicialmente parecía adecuado, pero no contiene datos únicos, así que no lo es.
 </translation>
     </message>
     <message>
-        <source>Connection to database failed. Import of layer aborted.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>PostgreSQL</source>
-        <translation type="unfinished">PostgreSQL</translation>
-    </message>
-    <message>
-        <source>creation of data source %1 failed.
-Error: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The layer %1 just created is not valid or not supported by the provider.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>error creating field %1: unsupported type</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>error creating fields</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">PostgreSQL</translation>
     </message>
     <message>
         <source>invalid PostgreSQL layer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Connection to database failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>error in setting encoding</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>undefined return value from encoding setting</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>SQL:%1
-result:%2
-error:%3
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Accessible tables could not be determined</source>
-        <translation type="unfinished">No se pudieron determinar las tablas accesibles</translation>
+        <translation type="obsolete">No se pudieron determinar las tablas accesibles</translation>
     </message>
     <message>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished">La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.</translation>
+        <translation type="obsolete">La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.</translation>
     </message>
     <message>
         <source>Database connection was successful, but the accessible tables could not be determined.
@@ -24900,7 +25200,7 @@ error:%3
 The error message from the database was:
 %1
 </source>
-        <translation type="unfinished">La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.
+        <translation type="obsolete">La conexión a la base de datos tuvo éxito, pero no se pudieron determinar las tablas accesibles.
 
 El mensaje de error de la base de datos fue:
 %1
@@ -24908,21 +25208,17 @@ El mensaje de error de la base de datos fue:
     </message>
     <message>
         <source>No accessible tables found</source>
-        <translation type="unfinished">No se encontraron tablas accesibles</translation>
+        <translation type="obsolete">No se encontraron tablas accesibles</translation>
     </message>
     <message>
         <source>Database connection was successful, but no accessible tables were found.
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation type="unfinished">La conexión a la base de datos tuvo éxito, pero no se encontraron tablas accesibles.
+        <translation type="obsolete">La conexión a la base de datos tuvo éxito, pero no se encontraron tablas accesibles.
 
 Por favor, verifique que tiene privilegios para SELECT sobre una tabla que
 lleve la geometría PostGIS.</translation>
-    </message>
-    <message>
-        <source>Unable to get list of spatially enabled tables from the database</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Couldn&apos;t get the feature geometry in binary form</source>
@@ -24934,11 +25230,6 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>nextFeature() without select()</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>fetching from cursor %1 failed
-Database error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -24958,89 +25249,65 @@ Database error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The table has no column suitable for use as a key.
-
-Quantum GIS requires that the table either has a column of type
-integer with an unique constraint on it (which includes the
-primary key), has a PostgreSQL oid column or has a ctid
-column.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unexpected relation type of &apos;%1&apos;.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The unique index on column &apos;%1&apos; is unsuitable because Quantum GIS does not currently support non-integer typed columns as a key into the table.
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Relation %1.%2 doesn&apos;t exist in the pg_class table. This shouldn&apos;t happen and is odd.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The view &apos;%1.%2&apos; has no column suitable for use as a unique key.
-Quantum GIS requires that the view has a column that can be used as a unique key. Such a column should be derived from a table column of type integer and be a primary key, have a unique constraint on it, or be a PostgreSQL oid column. To improve performance the column should also be indexed.
-The view you selected has the following columns, none of which satisfy the above conditions:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Retrieval of postgis version failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Could not parse postgis version string &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>extents query failed: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>no oid found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Failed to get geometry details for PostGIS column %1.%2.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Errornous query: %1 returned %2 [%3]</source>
+        <source>PostGIS</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Query failed: %1
-Error: %2</source>
+        <source>Fetching from cursor %1 failed
+Database error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Query: %1 returned no result buffer</source>
+        <source>The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Query: %1 returned %2 [%3]</source>
+        <source>Unexpected relation type &apos;%1&apos;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>resetting bad connection.</source>
+        <source>Error while adding features.
+Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>retry after reset succeeded.</source>
+        <source>Error while deleting features.
+Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>retry after reset failed again.</source>
+        <source>Error while adding attributes. Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>connection still bad after reset.</source>
+        <source>Error while deleting attributes.
+Error: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>bad connection, not retrying.</source>
+        <source>Error while changing attributes.
+Error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error while changing geometry values.
+Error: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>result of extents query invalid: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to get feature type or srid for %1 of %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26132,6 +26399,14 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>GDAL data type %1 is not supported</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not reproject view extent: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not reproject layer extent: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -30473,6 +30748,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Comment</source>
         <translation type="unfinished">Comentario</translation>
     </message>
+    <message>
+        <source>unknown extent</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorLayerProperties</name>
@@ -30838,6 +31117,10 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Value relation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UUID generator</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -31381,7 +31664,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Fields</source>
-        <translation type="unfinished">Campos</translation>
+        <translation type="obsolete">Campos</translation>
     </message>
 </context>
 <context>
@@ -33191,8 +33474,20 @@ Descripción: %3</translation>
     <message>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
-        <translation>La geometría resultante no es válida. Se revierten los últimos cambios. 
+        <translation type="obsolete">La geometría resultante no es válida. Se revierten los últimos cambios. 
 </translation>
+    </message>
+    <message>
+        <source>Validation started.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Validation finished.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Result geometry is invalid. Reverting last changes.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -34718,7 +35013,7 @@ El complemento no se activará.</translation>
     </message>
     <message>
         <source>Densify geometries</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Densificar geometrías</translation>
     </message>
     <message>
         <source>Create spatial index</source>
