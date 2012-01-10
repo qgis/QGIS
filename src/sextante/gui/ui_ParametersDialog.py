@@ -1,5 +1,9 @@
 from PyQt4 import QtCore, QtGui
 from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.parameters.ParameterVector import ParameterVector
+from sextante.parameters.ParameterBoolean import ParameterBoolean
+from sextante.parameters.ParameterSelection import ParameterSelection
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -43,18 +47,34 @@ class Ui_ParametersDialog(object):
 
     def getItemFromParameter(self, param):
 
-        item = QtGui.QComboBox()
-        item.addItems(QGisLayers.getLayers())
-        #item = QtGui.QLineEdit()
-        #item.setFlags(QtCore.Qt.ItemIsEnabled|QtCore.Qt.ItemIsEditable)
+        if isinstance(param, ParameterRaster):
+            item = QtGui.QComboBox()
+            layers = QGisLayers.getRasterLayers()
+            for layer in layers:
+                item.addItem(layer.name())
+        elif isinstance(param, ParameterVector):
+            item = QtGui.QComboBox()
+            layers = QGisLayers.getVectorLayers()
+            for layer in layers:
+                item.addItem(layer.name())
+        elif isinstance(param, ParameterBoolean):
+            item = QtGui.QComboBox()
+            item.addItem("Yes")
+            item.addItem("No")
+        elif isinstance(param, ParameterSelection):
+            item = QtGui.QComboBox()
+            item.addItems(param.options)
+        else:
+            item = QtGui.QLineEdit()
+
         return item
 
 
     def setTableContent(self):
-        params = self.alg.parameters.values()
-        outputs = self.alg.outputs.values()
-        numParams = len(self.alg.parameters.values())
-        numOutputs = len(self.alg.outputs.values())
+        params = self.alg.parameters
+        outputs = self.alg.outputs
+        numParams = len(self.alg.parameters)
+        numOutputs = len(self.alg.outputs)
         self.tableWidget.setRowCount(numParams + numOutputs)
 
         i=0

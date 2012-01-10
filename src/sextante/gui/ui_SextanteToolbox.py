@@ -50,20 +50,25 @@ class Ui_SextanteToolbox(object):
 
 
     def fillTree(self):
-        groups = {}
         layersCount = QGisLayers.getLayersCount()
-        algs = Sextante.algs.values()
-        for alg in algs:
-            if alg.group in groups:
-                groupItem = groups[alg.group]
-            else:
-                groupItem = QtGui.QTreeWidgetItem()
-                groupItem.setText(0,alg.group)
-                groups[alg.group] = groupItem
-            algItem = TreeAlgorithmItem(alg, layersCount)
-            groupItem.addChild(algItem)
-        for groupItem in groups.values():
-            self.algorithmTree.addTopLevelItem(groupItem)
+        for providerName in Sextante.algs.keys():
+            groups = {}
+            provider = Sextante.algs[providerName]
+            algs = provider.values()
+            for alg in algs:
+                if alg.group in groups:
+                    groupItem = groups[alg.group]
+                else:
+                    groupItem = QtGui.QTreeWidgetItem()
+                    groupItem.setText(0,alg.group)
+                    groups[alg.group] = groupItem
+                    algItem = TreeAlgorithmItem(alg, layersCount)
+                    groupItem.addChild(algItem)
+            providerItem = QtGui.QTreeWidgetItem()
+            providerItem.setText(0,providerName)
+            for groupItem in groups.values():
+                providerItem.addChild(groupItem)
+            self.algorithmTree.addTopLevelItem(providerItem)
 
 
 

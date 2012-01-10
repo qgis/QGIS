@@ -21,7 +21,8 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                 except Exception:
                     pass
 
-
+    def getName(self):
+        return "SAGA"
 
 
 

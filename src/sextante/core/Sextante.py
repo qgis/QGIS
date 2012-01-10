@@ -16,14 +16,18 @@ class Sextante:
     @staticmethod
     def loadAlgorithms():
         for provider in Sextante.providers:
-            algs = provider.algs
-            for alg in algs:
-                Sextante.algs[alg.commandLineName()] = alg
+            providerAlgs = provider.algs
+            algs = {}
+            for alg in providerAlgs:
+                algs[alg.commandLineName()] = alg
+            Sextante.algs[provider.getName()] = algs
 
     @staticmethod
     def getAlgorithm(name):
-        return Sextante.algs[name]
-
+        for provider in Sextante.algs.values():
+            if name in provider:
+                return provider[name]
+        return None
 
     @staticmethod
     def asStr():

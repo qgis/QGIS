@@ -5,11 +5,22 @@ class QGisLayers:
     iface = None;
 
     @staticmethod
-    def getLayers():
+    def getRasterLayers():
         layers = QGisLayers.iface.legendInterface().layers()
         layerNames = list()
-        for l in layers:
-            layerNames.append(l.name())
+
+        for layer in layers:
+            if layer.type() == layer.RasterLayer :
+                layerNames.append(layer)
+        return layerNames
+
+    @staticmethod
+    def getVectorLayers():
+        layers = QGisLayers.iface.legendInterface().layers()
+        layerNames = list()
+        for layer in layers:
+            if layer.type() == layer.VectorLayer :
+                layerNames.append(layer)
         return layerNames
 
 

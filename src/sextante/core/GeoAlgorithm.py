@@ -4,8 +4,8 @@ from sextante.parameters.Parameter import Parameter
 class GeoAlgorithm:
 
     def __init__(self):
-        self.parameters = {}
-        self.outputs = {}
+        self.parameters = list()
+        self.outputs = list()
         self.name = ""
         self.group = ""
         self.defineCharacteristics()
@@ -25,46 +25,24 @@ class GeoAlgorithm:
 
     def processAlgorithm(self):
         pass
-#===============================================================================
-#
-#    @property
-#    def outputs(self):
-#        return self._outputs
-#
-#    @property
-#    def parameters(self):
-#        return self._parameters
-#
-#    @property
-#    def group(self):
-#        return self._group
-#
-#    @group.setter
-#    def group(self, g):
-#        self._group = g
-#
-#    @property
-#    def name(self):
-#        return self._name
-#
-#    @name.setter
-#    def name(self, name):
-#        self._name = name
-#===============================================================================
 
     def putOutput(self, output):
         if isinstance(output, Output):
-            self.outputs[output.name] = output
-
+            self.outputs.append(output)
 
     def putParameter(self, param):
         if isinstance(param, Parameter):
-            self.parameters[param.name] = param
+            self.parameters.append(param)
 
     def setParameterValue(self, paramName, value):
-        param = self.parameters[paramName]
-        if param != None:
-            param.value = value
+        for param in self.parameters:
+            if param.name == paramName:
+                param.value = value
+
+    def setOutputValue(self, outputName, value):
+        for out in self.outputs:
+            if out.name == outputName:
+                out.value = value
 
     def canBeExecuted(self, layersCount):
         return True
