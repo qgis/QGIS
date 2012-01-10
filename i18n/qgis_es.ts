@@ -2286,8 +2286,7 @@ establecer esto a algo como
 semicolon-separated (Windows) paths to python modules.</source>
         <translation>Una lista de rutas separadas por dos puntos 
 (Linux y MacOS) o punto y coma (Windows) a los 
-módulos de python.
-</translation>
+módulos de python.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
@@ -30321,7 +30320,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="104"/>
         <source>&amp;Scale Bar</source>
-        <translation>Barra de &amp;escala</translation>
+        <translation>Barra de e&amp;scala</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="106"/>
@@ -32283,12 +32282,12 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2120"/>
         <source>Because Quantum GIS supports only planar data, the SQL Anywhere data provider will transform the data to the compatible planar projection (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Dado que Quantum GIS sólo admite datos planos, el proveedor de datos SQL Anywhere transformará los datos a la proyección plana compatible (SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2137"/>
         <source>Because Quantum GIS supports only planar data and no compatible planar projection was found, the SQL Anywhere data provider will attempt to transform the data to planar WGS 84 (SRID=%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Dado que Quantum GIS sólo admite datos planos y no se ha encontrado ninguna proyección plana compatible, el proveedor de datos SQL Anywhere intentará transformar los datos a WGS84 plana (SRID=%1).</translation>
     </message>
     <message>
         <location filename="../src/providers/sqlanywhere/qgssqlanywhereprovider.cpp" line="2145"/>
@@ -32300,7 +32299,9 @@ Quantum GIS necesita que la relación tenga una columna entera no mayor de 32 bi
         <source>Column %1 (%2) contains geometries belonging to a round earth spatial reference system (SRID=%3). %4
 
 Updates to geometry values will be disabled, and query performance may be poor because spatial indexes will not be utilized. To improve performance, consider creating a spatial index on a new (possibly computed) column containing a planar projection of these geometries. For help, refer to the descriptions of the ST_SRID(INT) and ST_Transform(INT) methods in the SQL Anywhere documentation.</source>
-        <translation type="unfinished"></translation>
+        <translation>La columna %1 (%2) contiene geometrías que pertenecen a un sistema de referencia espacial esférico (SRID=%3). %4
+
+Se desactivarán las actualizaciones de los valores de la geometría y el rendimiento de las consultas puede ser pobre porque no se usarán índices espaciales. Para mejorar el rendimiento piense en crear un índice espacial en una columna nueva (posiblemente procesada) que contenga una proyección plana de esas geometrías. Para ayuda, consulte las descripciones los métodos ST_SRID(INT) y ST_Transform(INT) en la documentación de SQL Anywhere.</translation>
     </message>
 </context>
 <context>
@@ -40256,7 +40257,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="356"/>
         <source>Remove vertices in threshold from lines and boundaries, boundary is pruned only if topology is not damaged (new intersection, changed attachement of centroid), first and last segment of the boundary is never changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Eliminar vértices de líneas y contornos dentro del umbral. Los contornos sólo se recortan si la topología no se daña (nueva intersección, cambio en la colocación de centroides). El primer y último segmento de un contorno nunca se cambian.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="357"/>
@@ -40430,7 +40431,7 @@ El complemento no se activará.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="390"/>
         <source>Shrink current region until it meets non-NULL data from raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Reducir la región actual hasta que se ajuste a datos no NULOS del ráster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="391"/>
