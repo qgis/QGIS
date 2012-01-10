@@ -160,6 +160,7 @@
 #include "qgsrasterlayerproperties.h"
 #include "qgsrectangle.h"
 #include "qgsrenderer.h"
+#include "qgsscalecombobox.h"
 #include "qgsshortcutsmanager.h"
 #include "qgssnappingdialog.h"
 #include "qgssponsors.h"
@@ -1284,7 +1285,7 @@ void QgisApp::createStatusBar()
   mScaleLabel->setToolTip( tr( "Current map scale" ) );
   statusBar()->addPermanentWidget( mScaleLabel, 0 );
 
-  mScaleEdit = new QComboBox( statusBar() );
+  mScaleEdit = new QgsScaleComboBox( statusBar() );
   mScaleEdit->setObjectName( "mScaleEdit" );
   mScaleEdit->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
@@ -1297,20 +1298,6 @@ void QgisApp::createStatusBar()
   mScaleEdit->setValidator( mScaleEditValidator );
   mScaleEdit->setWhatsThis( tr( "Displays the current map scale" ) );
   mScaleEdit->setToolTip( tr( "Current map scale (formatted as x:y)" ) );
-
-  // make editable and populate with predefined scales
-  mScaleEdit->setEditable( true );
-  mScaleEdit->addItem( "1:1000000" );
-  mScaleEdit->addItem( "1:500000" );
-  mScaleEdit->addItem( "1:250000" );
-  mScaleEdit->addItem( "1:100000" );
-  mScaleEdit->addItem( "1:50000" );
-  mScaleEdit->addItem( "1:25000" );
-  mScaleEdit->addItem( "1:10000" );
-  mScaleEdit->addItem( "1:5000" );
-  mScaleEdit->addItem( "1:2500" );
-  mScaleEdit->addItem( "1:1000" );
-  mScaleEdit->addItem( "1:500" );
 
   statusBar()->addPermanentWidget( mScaleEdit, 0 );
   connect( mScaleEdit, SIGNAL( currentIndexChanged( const QString & ) ), this, SLOT( userScale() ) );

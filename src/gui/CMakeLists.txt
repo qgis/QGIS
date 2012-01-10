@@ -69,6 +69,7 @@ qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrubberband.cpp
+qgsscalecombobox.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
@@ -135,6 +136,7 @@ qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
+qgsscalecombobox.h
 qgsexpressionbuilderwidget.h
 qgsexpressionhighlighter.h
 qgsquerybuilder.h
@@ -167,6 +169,7 @@ qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
+qgsscalecombobox.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
 qgsfieldvalidator.h
