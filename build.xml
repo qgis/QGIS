@@ -1,0 +1,15 @@
+<project name="SEXTANTE_LIB" default="copy" basedir=".">
+    <description>
+        SEXTANTE
+    </description>
+    <property name="version.number" value="0.1"/>
+
+  <target name="copy"
+    description="copy files">
+
+    <copy todir="C:/Users/volaya/.qgis/python/plugins/sextante">
+        <fileset dir="src/sextante" includes="**"/>
+    </copy>
+
+  </target>
+</project>
