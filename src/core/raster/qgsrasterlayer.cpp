@@ -614,6 +614,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
           mResampler );
       break;
     }
+    case MultiBandSingleBandGray:
     case SingleBandGray:
     {
       int grayBand = bandNumber( mGrayBandName );
