@@ -453,9 +453,11 @@ bool QgsPostgresProvider::getFeature( QgsPostgresResult &queryResult, int row, b
     switch ( mPrimaryKeyType )
     {
       case pktOid:
-      case pktInt:
       case pktTid:
+      case pktInt:
         fid = mConnectionRO->getBinaryInt( queryResult, row, col++ );
+        if ( mPrimaryKeyType == pktInt && fetchAttributes.contains( mPrimaryKeyAttrs[0] ) )
+          feature.addAttribute( mPrimaryKeyAttrs[0], fid );
         break;
 
       case pktFidMap:
@@ -2658,7 +2660,7 @@ bool QgsPostgresProvider::getGeometryDetails()
 
     if ( srid.isEmpty() )
     {
-      srid = layerProperty.srid;
+      srid = QString::number( layerProperty.srid );
     }
 
     if ( type.isEmpty() && !type.contains( "," ) )
@@ -2697,7 +2699,6 @@ bool QgsPostgresProvider::getGeometryDetails()
       QgsMessageLog::logMessage( tr( "Editing and adding disabled for 2D+ layer (%1; %2)" ).arg( mGeometryColumn ).arg( mQuery ) );
       mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
     }
-
 
     QgsDebugMsg( "Detected SRID is " + mDetectedSrid );
     QgsDebugMsg( "Requested SRID is " + mRequestedSrid );
