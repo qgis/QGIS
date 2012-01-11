@@ -67,6 +67,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbSize->addItem( "16" );
   cmbSize->addItem( "24" );
   cmbSize->addItem( "32" );
+#ifdef ANDROID
+  int defaultCmbSize = 32;
+#else
+  int defaultCmbSize = 24;
+#endif
 
   QStringList styles = QStyleFactory::keys();
   foreach( QString style, styles )
@@ -281,7 +286,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
-  cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", 24 ).toString() ) );
+  cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", defaultCmbSize ).toString() ) );
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
