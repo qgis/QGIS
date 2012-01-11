@@ -28,7 +28,7 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return children;
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  if ( !mConn->supportedLayers( layerProperties, true, false, false ) )
+  if ( !mConn->supportedLayers( layerProperties, false, true, false ) )
   {
     children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
     return children;
@@ -57,15 +57,21 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
 
           connect( columnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
                    this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
-          columnTypeThread->start();
+          connect( this, SIGNAL( addGeometryColumn( QgsPostgresLayerProperty ) ),
+                   columnTypeThread, SLOT( addGeometryColumn( QgsPostgresLayerProperty ) ) );
         }
       }
-      columnTypeThread->addGeometryColumn( layerProperty );
+
+      emit addGeometryColumn( layerProperty );
+
       continue;
     }
 
     schemaItem->addLayer( layerProperty );
   }
+
+  if ( columnTypeThread )
+    columnTypeThread->start();
 
   return children;
 }
@@ -82,8 +88,8 @@ void QgsPGConnectionItem::setLayerType( QgsPostgresLayerProperty layerProperty )
 
   foreach( QString type, layerProperty.type.split( ",", QString::SkipEmptyParts ) )
   {
-    QGis::WkbType wkbType = QgsPgTableModel::qgisTypeFromDbType( type );
-    if ( wkbType == QGis::WKBUnknown )
+    QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( type );
+    if ( geomType == QGis::UnknownGeometry )
     {
       QgsDebugMsg( QString( "unsupported geometry type:%1" ).arg( type ) );
       continue;
@@ -166,7 +172,7 @@ QString QgsPGLayerItem::createUri()
   QgsDataSourceURI uri( connItem->connection()->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
   uri.setSrid( QString::number( mLayerProperty.srid ) );
-  uri.setGeometryType( QgsPgTableModel::qgisTypeFromDbType( mLayerProperty.type ) );
+  uri.setGeometryType( QgsPostgresConn::geomTypeFromPostgis( mLayerProperty.type ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
   return uri.uri();
 }
@@ -190,35 +196,35 @@ QgsPGSchemaItem::~QgsPGSchemaItem()
 
 void QgsPGSchemaItem::addLayer( QgsPostgresLayerProperty layerProperty )
 {
-  QGis::WkbType wkbType = QgsPgTableModel::qgisTypeFromDbType( layerProperty.type );
-  QString name = layerProperty.tableName + "." + layerProperty.geometryColName;
+  QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( layerProperty.type );
+  QString tip = tr( "%1 as %2" ).arg( layerProperty.geometryColName ).arg( QgsPostgresConn::displayStringForGeomType( geomType ) );
 
   QgsLayerItem::LayerType layerType;
-  if ( layerProperty.type.contains( "POINT" ) )
+  switch ( geomType )
   {
-    layerType = QgsLayerItem::Point;
-  }
-  else if ( layerProperty.type.contains( "LINE" ) )
-  {
-    layerType = QgsLayerItem::Line;
-  }
-  else if ( layerProperty.type.contains( "POLYGON" ) )
-  {
-    layerType = QgsLayerItem::Polygon;
-  }
-  else if ( layerProperty.type.isEmpty() && layerProperty.geometryColName.isEmpty() )
-  {
-    layerType = QgsLayerItem::TableLayer;
-    name = layerProperty.tableName;
-  }
-  else
-  {
-    return;
+    case QGis::Point:
+      layerType = QgsLayerItem::Point;
+      break;
+    case QGis::Line:
+      layerType = QgsLayerItem::Line;
+      break;
+    case QGis::Polygon:
+      layerType = QgsLayerItem::Polygon;
+      break;
+    default:
+      if ( layerProperty.type.isEmpty() && layerProperty.geometryColName.isEmpty() )
+      {
+        layerType = QgsLayerItem::TableLayer;
+        tip = tr( "as geometryless table" );
+      }
+      else
+      {
+        return;
+      }
   }
 
-  name += " (" + QgsPgTableModel::displayStringForType( wkbType ) + ")";
-
-  QgsPGLayerItem *layerItem = new QgsPGLayerItem( this, name, mPath + "/" + name, layerType, layerProperty );
+  QgsPGLayerItem *layerItem = new QgsPGLayerItem( this, layerProperty.tableName, mPath + "/" + layerProperty.tableName, layerType, layerProperty );
+  layerItem->setToolTip( tip );
   addChild( layerItem );
 }
 
