@@ -409,18 +409,13 @@ bool QgsPostgresProvider::declareCursor(
 
     if ( fetchGeometry )
     {
-      if ( isGeography )
-      {
-        query += QString( ",st_asbinary(%1)" )
-                 .arg( quotedIdentifier( geometryColumn ) );
-      }
-      else
-      {
-        query += QString( ",%1(%2,'%3')" )
-                 .arg( connectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
-                 .arg( quotedIdentifier( geometryColumn ) )
-                 .arg( endianString() );
-      }
+      // The ::geometry cast is to deal cleanly with geography, see
+      // http://postgis.refractions.net/pipermail/postgis-devel/2012-January/017468.html
+      query += QString( ",%1(%2(%3::geometry),'%4')" )
+               .arg( connectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
+               .arg( connectionRO->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
+               .arg( quotedIdentifier( geometryColumn ) )
+               .arg( endianString() );
     }
 
     for ( QgsAttributeList::const_iterator it = fetchAttributes.constBegin(); it != fetchAttributes.constEnd(); ++it )
@@ -3190,10 +3185,11 @@ bool QgsPostgresProvider::getGeometryDetails()
     // Didn't find what we need in the geometry_columns table, so
     // get stuff from the relevant column instead. This may (will?)
     // fail if there is no data in the relevant table.
-    sql = QString( "select %1(%2),upper(geometrytype(%2)) from %3" )
+    sql = QString( "select %1(%2),upper(geometrytype(%2%4)) from %3" )
           .arg( connectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
           .arg( quotedIdentifier( geometryColumn ) )
-          .arg( mQuery );
+          .arg( mQuery )
+          .arg( isGeography ? "::geometry" : "" );
 
     //it is possible that the where clause restricts the feature type
     if ( !sqlWhereClause.isEmpty() )
@@ -3220,11 +3216,13 @@ bool QgsPostgresProvider::getGeometryDetails()
       // check to see if there is a unique geometry type
       sql = QString( "select distinct "
                      "case"
-                     " when upper(geometrytype(%1)) IN ('POINT','MULTIPOINT') THEN 'POINT'"
-                     " when upper(geometrytype(%1)) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
-                     " when upper(geometrytype(%1)) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
+                     " when upper(geometrytype(%1%2)) IN ('POINT','MULTIPOINT') THEN 'POINT'"
+                     " when upper(geometrytype(%1%2)) IN ('LINESTRING','MULTILINESTRING') THEN 'LINESTRING'"
+                     " when upper(geometrytype(%1%2)) IN ('POLYGON','MULTIPOLYGON') THEN 'POLYGON'"
                      " end "
-                     "from " ).arg( quotedIdentifier( geometryColumn ) );
+                     "from " )
+            .arg( quotedIdentifier( geometryColumn ) )
+            .arg( isGeography ? "::geometry" : "" );
       if ( mUseEstimatedMetadata )
       {
         sql += QString( "(select %1 from %2 where %1 is not null" )
