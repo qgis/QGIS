@@ -67,10 +67,10 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
     invisibleRootItem()->setChild( invisibleRootItem()->rowCount(), schemaItem );
   }
 
-  QGis::WkbType wkbType = qgisTypeFromDbType( layerProperty.type );
-  if ( wkbType == QGis::WKBUnknown && layerProperty.geometryColName.isEmpty() )
+  QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( layerProperty.type );
+  if ( geomType == QGis::UnknownGeometry && layerProperty.geometryColName.isEmpty() )
   {
-    wkbType = QGis::WKBNoGeometry;
+    geomType = QGis::NoGeometry;
   }
 
   QList<QStandardItem*> childItemList;
@@ -78,10 +78,10 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
   schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
-  QStandardItem *typeItem = new QStandardItem( iconForType( wkbType ), wkbType == QGis::WKBUnknown ? tr( "Waiting..." ) : displayStringForType( wkbType ) );
-  typeItem->setData( wkbType == QGis::WKBUnknown, Qt::UserRole + 1 );
-  typeItem->setData( wkbType, Qt::UserRole + 2 );
-  typeItem->setFlags(( wkbType != QGis::WKBUnknown ? Qt::ItemIsEnabled : Qt::NoItemFlags ) | Qt::ItemIsSelectable | Qt::ItemIsEditable );
+  QStandardItem *typeItem = new QStandardItem( iconForGeomType( geomType ), geomType == QGis::UnknownGeometry ? tr( "Waiting..." ) : QgsPostgresConn::displayStringForGeomType( geomType ) );
+  typeItem->setData( geomType == QGis::UnknownGeometry, Qt::UserRole + 1 );
+  typeItem->setData( geomType, Qt::UserRole + 2 );
+  typeItem->setFlags(( geomType != QGis::UnknownGeometry ? Qt::ItemIsEnabled : Qt::NoItemFlags ) | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
   tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -245,12 +245,12 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
       else
       {
         // update existing row
-        QGis::WkbType wkbType = qgisTypeFromDbType( typeList.at( 0 ) );
+        QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( typeList.at( 0 ) );
 
-        typeItem->setIcon( iconForType( wkbType ) );
-        typeItem->setText( displayStringForType( wkbType ) );
+        typeItem->setIcon( iconForGeomType( geomType ) );
+        typeItem->setText( QgsPostgresConn::displayStringForGeomType( geomType ) );
         typeItem->setData( false, Qt::UserRole + 1 );
-        typeItem->setData( wkbType, Qt::UserRole + 2 );
+        typeItem->setData( geomType, Qt::UserRole + 2 );
 
         for ( int j = 1; j < typeList.size(); j++ )
         {
@@ -264,96 +264,19 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
   }
 }
 
-QIcon QgsPgTableModel::iconForType( QGis::WkbType type )
+QIcon QgsPgTableModel::iconForGeomType( QGis::GeometryType type )
 {
-  if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D || type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
+  switch ( type )
   {
-    return QIcon( QgsDataItem::getThemePixmap( "/mIconPointLayer.png" ) );
-  }
-  else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D || type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
-  {
-    return QIcon( QgsDataItem::getThemePixmap( "/mIconLineLayer.png" ) );
-  }
-  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D || type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
-  {
-    return QIcon( QgsDataItem::getThemePixmap( "/mIconPolygonLayer.png" ) );
-  }
-  else if ( type == QGis::WKBNoGeometry )
-  {
-    return QIcon( QgsDataItem::getThemePixmap( "/mIconTableLayer.png" ) );
-  }
-  else
-  {
-    return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
-  }
-}
-
-QString QgsPgTableModel::displayStringForType( QGis::WkbType type )
-{
-  if ( type == QGis::WKBPoint || type == QGis::WKBPoint25D )
-  {
-    return tr( "Point" );
-  }
-  else if ( type == QGis::WKBMultiPoint || type == QGis::WKBMultiPoint25D )
-  {
-    return tr( "Multipoint" );
-  }
-  else if ( type == QGis::WKBLineString || type == QGis::WKBLineString25D )
-  {
-    return tr( "Line" );
-  }
-  else if ( type == QGis::WKBMultiLineString || type == QGis::WKBMultiLineString25D )
-  {
-    return tr( "Multiline" );
-  }
-  else if ( type == QGis::WKBPolygon || type == QGis::WKBPolygon25D )
-  {
-    return tr( "Polygon" );
-  }
-  else if ( type == QGis::WKBMultiPolygon || type == QGis::WKBMultiPolygon25D )
-  {
-    return tr( "Multipolygon" );
-  }
-  else if ( type == QGis::WKBNoGeometry )
-  {
-    return tr( "No Geometry" );
-  }
-  else
-  {
-    return tr( "Unknown" );
-  }
-}
-
-QGis::WkbType QgsPgTableModel::qgisTypeFromDbType( QString dbType )
-{
-  dbType = dbType.toUpper();
-
-  if ( dbType == "POINT" )
-  {
-    return QGis::WKBPoint;
-  }
-  else if ( dbType == "MULTIPOINT" )
-  {
-    return QGis::WKBMultiPoint;
-  }
-  else if ( dbType == "LINESTRING" )
-  {
-    return QGis::WKBLineString;
-  }
-  else if ( dbType == "MULTILINESTRING" )
-  {
-    return QGis::WKBMultiLineString;
-  }
-  else if ( dbType == "POLYGON" )
-  {
-    return QGis::WKBPolygon;
-  }
-  else if ( dbType == "MULTIPOLYGON" )
-  {
-    return QGis::WKBMultiPolygon;
-  }
-  else
-  {
-    return QGis::WKBUnknown;
+    case QGis::Point:
+      return QIcon( QgsDataItem::getThemePixmap( "/mIconPointLayer.png" ) );
+    case QGis::Line:
+      return QIcon( QgsDataItem::getThemePixmap( "/mIconLineLayer.png" ) );
+    case QGis::Polygon:
+      return QIcon( QgsDataItem::getThemePixmap( "/mIconPolygonLayer.png" ) );
+    case QGis::NoGeometry:
+      return QIcon( QgsDataItem::getThemePixmap( "/mIconTableLayer.png" ) );
+    default:
+      return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
   }
 }

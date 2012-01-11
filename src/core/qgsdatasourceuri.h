@@ -118,8 +118,9 @@ class CORE_EXPORT QgsDataSourceURI
     void setKeyColumn( QString column );
 
     // added in 1.9
-    QGis::WkbType geometryType() const;
-    void setGeometryType( QGis::WkbType type );
+    QGis::GeometryType geometryType() const;
+    void setGeometryType( QGis::GeometryType type );
+
     QString srid() const;
     void setSrid( QString srid );
 
@@ -159,7 +160,7 @@ class CORE_EXPORT QgsDataSourceURI
     //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
     //! geometry type (or QGis::WKBUnknown if not specified)
-    QGis::WkbType mGeometryType;
+    QGis::GeometryType mGeometryType;
     //! SRID or a null string if not specified
     QString mSrid;
 };

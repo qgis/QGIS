@@ -29,7 +29,6 @@ class QgsGeomColumnTypeThread : public QThread
     Q_OBJECT
   public:
     QgsGeomColumnTypeThread( QgsPostgresConn *conn, bool useEstimatedMetaData );
-    void addGeometryColumn( QgsPostgresLayerProperty layerProperty );
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
@@ -39,6 +38,7 @@ class QgsGeomColumnTypeThread : public QThread
     void setLayerType( QgsPostgresLayerProperty layerProperty );
 
   public slots:
+    void addGeometryColumn( QgsPostgresLayerProperty layerProperty );
     void stop();
 
   private:

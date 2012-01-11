@@ -124,12 +124,8 @@ class QgsPostgresProvider : public QgsVectorDataProvider
      */
     QGis::WkbType geometryType() const;
 
-
     /** return the number of layers for the current data source
-
-    @note
-
-    Should this be subLayerCount() instead?
+     * @note Should this be subLayerCount() instead?
     */
     size_t layerCount() const;
 
@@ -421,10 +417,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     QgsRectangle mLayerExtent;       //! Rectangle that contains the extent (bounding box) of the layer
     mutable long mFeaturesCounted;   //! Number of features in the layer
 
-    QGis::WkbType mDetectedGeomType;  //! geometry type detected in the database
-    QGis::WkbType mRequestedGeomType; //! geometry type requested in the uri
-    QString mDetectedSrid;            //! Spatial reference detected in the database
-    QString mRequestedSrid;           //! Spatial reference requested in the uri
+    QGis::GeometryType mDetectedGeomType;  //! geometry type detected in the database
+    QGis::GeometryType mRequestedGeomType; //! geometry type requested in the uri
+    QString mDetectedSrid;                 //! Spatial reference detected in the database
+    QString mRequestedSrid;                //! Spatial reference requested in the uri
 
     /**
      * Feature queue that GetNextFeature will retrieve from

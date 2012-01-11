@@ -63,6 +63,7 @@ class CORE_EXPORT QGis
       WKBMultiLineString25D,
       WKBMultiPolygon25D,
     };
+
     enum GeometryType
     {
       Point,

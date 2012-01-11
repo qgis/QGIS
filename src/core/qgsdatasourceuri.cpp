@@ -27,7 +27,7 @@ QgsDataSourceURI::QgsDataSourceURI()
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
-    , mGeometryType( QGis::WKBUnknown )
+    , mGeometryType( QGis::UnknownGeometry )
 {
   // do nothing
 }
@@ -37,7 +37,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
-    , mGeometryType( QGis::WKBUnknown )
+    , mGeometryType( QGis::UnknownGeometry )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -134,31 +134,19 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
         QString geomTypeUpper = pval.toUpper();
         if ( geomTypeUpper == "POINT" )
         {
-          mGeometryType = QGis::WKBPoint;
-        }
-        else if ( geomTypeUpper == "MULTIPOINT" )
-        {
-          mGeometryType = QGis::WKBMultiPoint;
+          mGeometryType = QGis::Point;
         }
         else if ( geomTypeUpper == "LINESTRING" )
         {
-          mGeometryType = QGis::WKBLineString;
-        }
-        else if ( geomTypeUpper == "MULTILINESTRING" )
-        {
-          mGeometryType = QGis::WKBMultiLineString;
+          mGeometryType = QGis::Line;
         }
         else if ( geomTypeUpper == "POLYGON" )
         {
-          mGeometryType = QGis::WKBPolygon;
-        }
-        else if ( geomTypeUpper == "MULTIPOLYGON" )
-        {
-          mGeometryType = QGis::WKBMultiPolygon;
+          mGeometryType = QGis::Polygon;
         }
         else
         {
-          mGeometryType = QGis::WKBUnknown;
+          mGeometryType = QGis::UnknownGeometry;
         }
       }
       else if ( pname == "selectatid" )
@@ -526,9 +514,9 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " srid=%1" ).arg( mSrid );
   }
 
-  if ( mGeometryType != QGis::WKBUnknown && mGeometryType != QGis::WKBNoGeometry )
+  if ( mGeometryType != QGis::UnknownGeometry && mGeometryType != QGis::NoGeometry )
   {
-    theUri += QString( " type=%1" ).arg( QGis::qgisFeatureTypes[mGeometryType] + 3 );
+    theUri += QString( " type=%1" ).arg( QGis::qgisVectorGeometryType[mGeometryType] );
   }
 
   if ( mSelectAtIdDisabled )
@@ -601,12 +589,12 @@ void QgsDataSourceURI::setDatabase( const QString &database )
   mDatabase = database;
 }
 
-QGis::WkbType QgsDataSourceURI::geometryType() const
+QGis::GeometryType QgsDataSourceURI::geometryType() const
 {
   return mGeometryType;
 }
 
-void QgsDataSourceURI::setGeometryType( QGis::WkbType geometryType )
+void QgsDataSourceURI::setGeometryType( QGis::GeometryType geometryType )
 {
   mGeometryType = geometryType;
 }

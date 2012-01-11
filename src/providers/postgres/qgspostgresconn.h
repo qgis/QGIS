@@ -22,7 +22,6 @@
 #include <QStringList>
 #include <QVector>
 #include <QMap>
-#include <QMutex>
 
 #include "qgis.h"
 #include "qgsdatasourceuri.h"
@@ -45,6 +44,7 @@ struct QgsPostgresLayerProperty
   QString     geometryColName;
   QStringList pkCols;
   int         srid;
+  bool        isGeography;
   QString     sql;
 };
 
@@ -123,7 +123,7 @@ class QgsPostgresConn : public QObject
     //
 
     // run a query and check for errors
-    PGresult *PQexec( QString query );
+    PGresult *PQexec( QString query, bool logError = true );
     void PQfinish();
     QString PQerrorMessage();
     int PQsendQuery( QString query );
@@ -162,10 +162,19 @@ class QgsPostgresConn : public QObject
 
     static const int sGeomTypeSelectLimit;
 
-    static QString postgisGeometryTypeName( QGis::WkbType wkbType );
-    static int postgisGeometryTypeDim( QGis::WkbType wkbType );
-    static void postgisGeometryType( QGis::WkbType wkbType, QString &geometryType, int &dim );
+    static QString displayStringForGeomType( QGis::GeometryType geomType );
+    static QString displayStringForWkbType( QGis::WkbType wkbType );
+
     static QGis::WkbType wkbTypeFromPostgis( QString type );
+    static QGis::GeometryType geomTypeFromPostgis( QString dbType );
+
+    static QString postgisWkbTypeName( QGis::WkbType wkbType );
+    static int postgisWkbTypeDim( QGis::WkbType wkbType );
+    static void postgisWkbType( QGis::WkbType wkbType, QString &geometryType, int &dim );
+
+    static QString postgisTypeFilter( QString geomCol, QGis::GeometryType geomtype, bool isGeography );
+
+    static QGis::WkbType wkbTypeFromGeomType( QGis::GeometryType geomtype );
 
     static QStringList connectionList();
     static QString selectedConnection();
