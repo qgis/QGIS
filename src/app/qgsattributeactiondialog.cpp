@@ -22,11 +22,12 @@ back to QgsVectorLayer.
 
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QMessageBox>
-
+#include <QSettings>
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
     const QgsFieldMap& fields,
@@ -50,6 +51,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   connect( insertButton, SIGNAL( clicked() ), this, SLOT( insert() ) );
   connect( updateButton, SIGNAL( clicked() ), this, SLOT( update() ) );
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
+  connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
 
   init();
   // Populate the combo box with the field names. Will the field names
@@ -143,14 +145,34 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 
 void QgsAttributeActionDialog::browse()
 {
-  // Popup a file browser and place the results into the actionName
-  // widget
-
+  // Popup a file browser and place the results into the action widget
   QString action = QFileDialog::getOpenFileName(
                      this, tr( "Select an action", "File dialog window title" ) );
 
   if ( !action.isNull() )
     actionAction->insert( action );
+}
+
+void QgsAttributeActionDialog::insertExpression()
+{
+  QString selText = actionAction->selectedText();
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+    selText = selText.mid( 2, selText.size() - 3 );
+
+  // display the expression builder
+  QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
+  dlg.setWindowTitle( tr( "Insert expression" ) );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionBuilder()->getExpressionString();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
+    {
+      actionAction->insert( "[%" + expression + "%]" );
+    }
+  }
 }
 
 void QgsAttributeActionDialog::remove()
@@ -234,13 +256,14 @@ void QgsAttributeActionDialog::update()
 
 void QgsAttributeActionDialog::insertField()
 {
-  // Take the selected field, preprend a % and insert into the action
-  // field at the cursor position
+  // Convert the selected field to an expression and
+  // insert it into the action at the cursor position
 
   if ( !fieldComboBox->currentText().isNull() )
   {
-    QString field( "%" );
+    QString field = "[% \"";
     field += fieldComboBox->currentText();
+    field += "\" %]";
     actionAction->insert( field );
   }
 }
