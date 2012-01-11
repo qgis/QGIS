@@ -231,6 +231,7 @@ class QgisAppInterface : public QgisInterface
     virtual QAction *actionSelectFreehand();
     virtual QAction *actionSelectRadius();
     virtual QAction *actionIdentify();
+    virtual QAction *actionFeatureAction();
     virtual QAction *actionMeasure();
     virtual QAction *actionMeasureArea();
     virtual QAction *actionViewSeparator1();
