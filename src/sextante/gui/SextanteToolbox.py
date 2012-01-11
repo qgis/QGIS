@@ -27,6 +27,7 @@ class Ui_SextanteToolbox(object):
         self.toolbox = SextanteToolbox
         SextanteToolbox.setObjectName(_fromUtf8("SextanteToolbox"))
         SextanteToolbox.resize(400, 300)
+        SextanteToolbox.setWindowTitle("SEXTANTE Toolbox")
         self.verticalLayoutWidget = QtGui.QWidget(SextanteToolbox)
         self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 9, 381, 281))
         self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
@@ -43,8 +44,6 @@ class Ui_SextanteToolbox(object):
         self.verticalLayout.addWidget(self.searchBox)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
         self.fillTree()
-
-        self.retranslateUi(SextanteToolbox)
         QtCore.QMetaObject.connectSlotsByName(SextanteToolbox)
 
     def executeAlgorithm(self):
@@ -87,9 +86,6 @@ class Ui_SextanteToolbox(object):
                 if text != "":
                     groupItem.setExpanded(True)
 
-
-    def retranslateUi(self, SextantePlugin):
-        SextantePlugin.setWindowTitle("SEXTANTE Toolbox")
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
 

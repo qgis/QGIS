@@ -6,6 +6,8 @@ from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.parameters.ParameterVector import ParameterVector
 from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
+from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
+from sextante.gui.MultipleInputPanel import MultipleInputPanel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -71,6 +73,12 @@ class Ui_ParametersDialog(object):
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()
             item.addItems(param.options)
+        elif isinstance(param, ParameterMultipleInput):
+            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                options = QGisLayers.getVectorLayers()
+            else:
+                options = QGisLayers.getRasterLayers()
+            item = MultipleInputPanel(options)
         else:
             item = QtGui.QLineEdit()
 
