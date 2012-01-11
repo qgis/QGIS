@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>28</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -1573,6 +1573,21 @@
    </property>
    <property name="toolTip">
     <string>Add WFS Layer</string>
+   </property>
+  </action>
+  <action name="mActionFeatureAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mAction.png</normaloff>:/images/themes/default/mAction.png</iconset>
+   </property>
+   <property name="text">
+    <string>Feature Action</string>
+   </property>
+   <property name="toolTip">
+    <string>Run feature action</string>
    </property>
   </action>
  </widget>

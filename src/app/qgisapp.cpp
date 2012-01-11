@@ -205,6 +205,7 @@
 #include "qgsmaptooldeletering.h"
 #include "qgsmaptooldeletepart.h"
 #include "qgsmaptooldeletevertex.h"
+#include "qgsmaptoolfeatureaction.h"
 #include "qgsmaptoolformannotation.h"
 #include "qgsmaptoolidentify.h"
 #include "qgsmaptoolmeasureangle.h"
@@ -640,6 +641,7 @@ QgisApp::~QgisApp()
   delete mMapTools.mZoomOut;
   delete mMapTools.mPan;
   delete mMapTools.mIdentify;
+  delete mMapTools.mFeatureAction;
   delete mMapTools.mMeasureDist;
   delete mMapTools.mMeasureArea;
   delete mMapTools.mMeasureAngle;
@@ -814,6 +816,7 @@ void QgisApp::createActions()
   connect( mActionSelectRadius, SIGNAL( triggered() ), this, SLOT( selectByRadius() ) );
   connect( mActionDeselectAll, SIGNAL( triggered() ), this, SLOT( deselectAll() ) );
   connect( mActionIdentify, SIGNAL( triggered() ), this, SLOT( identify() ) );
+  connect( mActionFeatureAction, SIGNAL( triggered() ), this, SLOT( doFeatureAction() ) );
   connect( mActionMeasure, SIGNAL( triggered() ), this, SLOT( measure() ) );
   connect( mActionMeasureArea, SIGNAL( triggered() ), this, SLOT( measureArea() ) );
   connect( mActionMeasureAngle, SIGNAL( triggered() ), this, SLOT( measureAngle() ) );
@@ -989,6 +992,7 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionZoomIn );
   mMapToolGroup->addAction( mActionZoomOut );
   mMapToolGroup->addAction( mActionIdentify );
+  mMapToolGroup->addAction( mActionFeatureAction );
   mMapToolGroup->addAction( mActionSelect );
   mMapToolGroup->addAction( mActionSelectRectangle );
   mMapToolGroup->addAction( mActionSelectPolygon );
@@ -1171,6 +1175,18 @@ void QgisApp::createToolBars()
   QAction* selectAction = mAttributesToolBar->insertWidget( mActionDeselectAll, bt );
   selectAction->setObjectName( "ActionSelect" );
   connect( bt, SIGNAL( triggered( QAction * ) ), this, SLOT( toolButtonActionTriggered( QAction * ) ) );
+
+  // feature action tool button
+
+  bt = new QToolButton( mAttributesToolBar );
+  bt->setPopupMode( QToolButton::MenuButtonPopup );
+  bt->setDefaultAction( mActionFeatureAction );
+  mFeatureActionMenu = new QMenu( bt );
+  connect( mFeatureActionMenu, SIGNAL( triggered( QAction * ) ), this, SLOT( updateDefaultFeatureAction( QAction * ) ) );
+  connect( mFeatureActionMenu, SIGNAL( aboutToShow() ), this, SLOT( refreshFeatureActions() ) );
+  bt->setMenu( mFeatureActionMenu );
+  QAction* featureActionAction = mAttributesToolBar->insertWidget( selectAction, bt );
+  featureActionAction->setObjectName( "ActionFeatureAction" );
 
   // measure tool button
 
@@ -1478,6 +1494,7 @@ void QgisApp::setTheme( QString theThemeName )
   mActionZoomToLayer->setIcon( getThemeIcon( "/mActionZoomToLayer.png" ) );
   mActionZoomActualSize->setIcon( getThemeIcon( "/mActionZoomActual.png" ) );
   mActionIdentify->setIcon( getThemeIcon( "/mActionIdentify.png" ) );
+  mActionFeatureAction->setIcon( getThemeIcon( "/mAction.png" ) );
   mActionSelect->setIcon( getThemeIcon( "/mActionSelect.png" ) );
   mActionSelectRectangle->setIcon( getThemeIcon( "/mActionSelectRectangle.png" ) );
   mActionSelectPolygon->setIcon( getThemeIcon( "/mActionSelectPolygon.png" ) );
@@ -1604,6 +1621,8 @@ void QgisApp::createCanvasTools()
   mMapTools.mPan->setAction( mActionPan );
   mMapTools.mIdentify = new QgsMapToolIdentify( mMapCanvas );
   mMapTools.mIdentify->setAction( mActionIdentify );
+  mMapTools.mFeatureAction = new QgsMapToolFeatureAction( mMapCanvas );
+  mMapTools.mFeatureAction->setAction( mActionFeatureAction );
   mMapTools.mMeasureDist = new QgsMeasureTool( mMapCanvas, false /* area */ );
   mMapTools.mMeasureDist->setAction( mActionMeasure );
   mMapTools.mMeasureArea = new QgsMeasureTool( mMapCanvas, true /* area */ );
@@ -3272,6 +3291,48 @@ void QgisApp::zoomActualSize()
 void QgisApp::identify()
 {
   mMapCanvas->setMapTool( mMapTools.mIdentify );
+}
+
+void QgisApp::doFeatureAction()
+{
+  mMapCanvas->setMapTool( mMapTools.mFeatureAction );
+}
+
+void QgisApp::updateDefaultFeatureAction( QAction *action )
+{
+  foreach( QAction *a, mFeatureActionMenu->actions() )
+  {
+    a->setChecked( a == action );
+  }
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !vlayer )
+    return;
+
+  int index = mFeatureActionMenu->actions().indexOf( action );
+  vlayer->actions()->setDefaultAction( index );
+
+  doFeatureAction();
+}
+
+void QgisApp::refreshFeatureActions()
+{
+  mFeatureActionMenu->clear();
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
+  if ( !vlayer )
+    return;
+
+  QgsAttributeAction *actions = vlayer->actions();
+  for ( int i = 0; i < actions->size(); i++ )
+  {
+    QAction *action = mFeatureActionMenu->addAction( actions->at( i ).name() );
+    action->setCheckable( true );
+    if ( i == actions->defaultAction() )
+    {
+      action->setChecked( true );
+    }
+  }
 }
 
 void QgisApp::measure()
@@ -6019,7 +6080,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerProperties->setEnabled( false );
     mActionLayerSubsetString->setEnabled( false );
     mActionAddToOverview->setEnabled( false );
-
+    mActionFeatureAction->setEnabled( false );
     mActionAddFeature->setEnabled( false );
     mActionMoveFeature->setEnabled( false );
     mActionNodeTool->setEnabled( false );
@@ -6077,6 +6138,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
+    mActionFeatureAction->setEnabled( vlayer->actions()->size() > 0 );
 
     if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
     {
@@ -6244,6 +6306,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       mActionFullHistogramStretch->setEnabled( false );
     }
     mActionLayerSubsetString->setEnabled( false );
+    mActionFeatureAction->setEnabled( false );
     mActionSelect->setEnabled( false );
     mActionSelectRectangle->setEnabled( false );
     mActionSelectPolygon->setEnabled( false );

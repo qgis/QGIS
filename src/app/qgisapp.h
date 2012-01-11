@@ -246,6 +246,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSelectFreehand() { return mActionSelectFreehand; }
     QAction *actionSelectRadius() { return mActionSelectRadius; }
     QAction *actionIdentify() { return mActionIdentify; }
+    QAction *actionFeatureAction() { return mActionFeatureAction; }
     QAction *actionMeasure() { return mActionMeasure; }
     QAction *actionMeasureArea() { return mActionMeasureArea; }
     QAction *actionZoomFullExtent() { return mActionZoomFullExtent; }
@@ -757,6 +758,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Measure angle
     void measureAngle();
 
+    //! Run the default feature action on the current layer
+    void doFeatureAction();
+    //! Set the default feature action for the current layer
+    void updateDefaultFeatureAction( QAction *action );
+    //! Refresh the list of feature actions of the current layer
+    void refreshFeatureActions();
+
     //annotations
     void addFormAnnotation();
     void addTextAnnotation();
@@ -969,6 +977,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mZoomOut;
         QgsMapTool* mPan;
         QgsMapTool* mIdentify;
+        QgsMapTool* mFeatureAction;
         QgsMapTool* mMeasureDist;
         QgsMapTool* mMeasureArea;
         QgsMapTool* mMeasureAngle;
@@ -1025,6 +1034,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton * mOnTheFlyProjectionStatusButton;
+    //! Menu that contains the list of actions of the selected vector layer
+    QMenu *mFeatureActionMenu;
     //! Popup menu
     QMenu * mPopupMenu;
     //! Top level database menu

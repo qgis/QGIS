@@ -421,6 +421,7 @@ QAction *QgisAppInterface::actionSelectPolygon() { return qgis->actionSelectPoly
 QAction *QgisAppInterface::actionSelectFreehand() { return qgis->actionSelectFreehand(); }
 QAction *QgisAppInterface::actionSelectRadius() { return qgis->actionSelectRadius(); }
 QAction *QgisAppInterface::actionIdentify() { return qgis->actionIdentify(); }
+QAction *QgisAppInterface::actionFeatureAction() { return qgis->actionFeatureAction(); }
 QAction *QgisAppInterface::actionMeasure() { return qgis->actionMeasure(); }
 QAction *QgisAppInterface::actionMeasureArea() { return qgis->actionMeasureArea(); }
 QAction *QgisAppInterface::actionViewSeparator1() { return 0; }

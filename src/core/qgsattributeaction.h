@@ -178,6 +178,10 @@ class  CORE_EXPORT QgsAttributeAction
     //! @deprecated Initialize QgsPythonRunner instead
     static void setPythonExecute( void ( * )( const QString & ) );
 
+    //! Whether the action is the default action
+    int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? 0 : mDefaultAction; }
+    void setDefaultAction( int actionNumber ) { mDefaultAction = actionNumber ; }
+
   private:
     QList<QgsAction> mActions;
     QgsVectorLayer *mLayer;
@@ -185,6 +189,8 @@ class  CORE_EXPORT QgsAttributeAction
 
     void runAction( const QgsAction &action,
                    void ( *executePython )( const QString & ) = 0 );
+
+    int mDefaultAction;
 };
 
 #endif
