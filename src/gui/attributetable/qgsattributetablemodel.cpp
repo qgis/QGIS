@@ -555,21 +555,13 @@ void QgsAttributeTableModel::incomingChangeLayout()
 
 void QgsAttributeTableModel::executeAction( int action, const QModelIndex &idx ) const
 {
-  QgsAttributeMap attributes;
-
-  for ( int i = 0; i < mAttributes.size(); i++ )
-  {
-    attributes.insert( mAttributes[i], data( index( idx.row(), i ), Qt::EditRole ) );
-  }
-
-  mLayer->actions()->doAction( action, attributes, fieldIdx( idx.column() ) );
+  QgsFeature f = feature( idx );
+  mLayer->actions()->doAction( action, f, fieldIdx( idx.column() ) );
 }
 
-QgsFeature QgsAttributeTableModel::feature( QModelIndex &idx )
+QgsFeature QgsAttributeTableModel::feature( const QModelIndex &idx ) const
 {
   QgsFeature f;
-  QgsAttributeMap attributes;
-
   f.setFeatureId( rowToId( idx.row() ) );
   for ( int i = 0; i < mAttributes.size(); i++ )
   {

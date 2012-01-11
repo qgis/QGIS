@@ -22,15 +22,23 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <QList>
-
-#include <QStringList>
-#include <QDomElement>
-
 #include "qgsattributeaction.h"
 #include "qgspythonrunner.h"
 #include "qgsrunprocess.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include <qgslogger.h>
+#include "qgsexpression.h"
+
+#include <QList>
+#include <QStringList>
+#include <QDomElement>
+#include <QSettings>
+#include <QDesktopServices>
+#include <QUrl>
+#include <QDir>
+#include <QFileInfo>
+
 
 void QgsAttributeAction::addAction( QgsAction::ActionType type, QString name, QString action, bool capture )
 {
@@ -44,7 +52,6 @@ void QgsAttributeAction::doAction( int index, const QgsAttributeMap &attributes,
     return;
 
   const QgsAction &action = at( index );
-
   if ( !action.runable() )
     return;
 
@@ -58,29 +65,67 @@ void QgsAttributeAction::doAction( int index, const QgsAttributeMap &attributes,
   // the UI and the code in this function to select on the
   // action.capture() return value.
 
-  // The QgsRunProcess instance created by this static function
-  // deletes itself when no longer needed.
   QString expandedAction = expandAction( action.action(), attributes, defaultValueIndex );
+  if ( expandedAction.isEmpty() )
+    return;
+
+  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
+  runAction( newAction, executePython );
+}
+
+void QgsAttributeAction::doAction( int index, QgsFeature &feat, int defaultValueIndex )
+{
+  QMap<QString, QVariant> substitutionMap;
+  if ( defaultValueIndex >= 0 )
+    substitutionMap.insert( "$currfield", QVariant( defaultValueIndex ) );
+
+  doAction( index, feat, &substitutionMap );
+}
+
+void QgsAttributeAction::doAction( int index, QgsFeature &feat,
+                                   const QMap<QString, QVariant> *substitutionMap )
+{
+  if ( index < 0 || index >= size() )
+    return;
+
+  const QgsAction &action = at( index );
+  if ( !action.runable() )
+    return;
+
+  // search for expressions while expanding actions
+  QString expandedAction = expandAction( action.action(), feat, substitutionMap );
+  if ( expandedAction.isEmpty() )
+    return;
+
+  QgsAction newAction( action.type(), action.name(), expandedAction, action.capture() );
+  runAction( newAction );
+}
+
+void QgsAttributeAction::runAction( const QgsAction &action, void ( *executePython )( const QString & ) )
+{
   if ( action.type() == QgsAction::GenericPython )
   {
     if ( executePython )
     {
       // deprecated
-      executePython( expandedAction );
+      executePython( action.action() );
     }
     else if ( smPythonExecute )
     {
       // deprecated
-      smPythonExecute( expandedAction );
+      smPythonExecute( action.action() );
     }
     else
     {
-      QgsPythonRunner::run( expandedAction );
+      // TODO: capture output from QgsPythonRunner
+      QgsPythonRunner::run( action.action() );
     }
   }
   else
   {
-    QgsRunProcess::create( expandedAction, action.capture() );
+    // The QgsRunProcess instance created by this static function
+    // deletes itself when no longer needed.
+    QgsRunProcess::create( action.action(), action.capture() );
   }
 }
 
@@ -89,7 +134,7 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
 {
   // This function currently replaces all %% characters in the action
   // with the value from values[clickedOnValue].second, and then
-  // searches for all strings that go %attribite_name, where
+  // searches for all strings that go %attribute_name, where
   // attribute_name is found in values[x].first, and replaces any that
   // it finds by values[s].second.
 
@@ -133,6 +178,63 @@ QString QgsAttributeAction::expandAction( QString action, const QgsAttributeMap 
 
   return expanded_action;
 }
+
+QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, const QMap<QString, QVariant> *substitutionMap )
+{
+  // This function currently replaces each expression between [% and %]
+  // in the action with the result of its evaluation on the feature
+  // passed as argument.
+
+  // Additional substitutions can be passed through the substitutionMap
+  // parameter
+
+  QString expr_action;
+
+  int index = 0;
+  while ( index < action.size() )
+  {
+    QRegExp rx = QRegExp( "\\[%([^\\]]+)%\\]" );
+
+    int pos = rx.indexIn( action, index );
+    if ( pos < 0 )
+      break;
+
+    int start = index;
+    index = pos + rx.matchedLength();
+
+    QString to_replace = rx.cap(1).trimmed();
+    QgsDebugMsg( "Found expression:" + to_replace );
+
+    if ( substitutionMap && substitutionMap->contains( to_replace ) )
+    {
+      expr_action += action.mid( start, pos - start ) + substitutionMap->value( to_replace ).toString();
+      continue;
+    }
+
+    QgsExpression* exp = new QgsExpression( to_replace );
+    if ( exp->hasParserError() )
+    {
+      QgsDebugMsg( "Expression parser error:" + exp->parserErrorString() );
+      expr_action += action.mid( start, index - start );
+      continue;
+    }
+
+    QVariant result = exp->evaluate( &feat, mLayer->pendingFields() );
+    if ( exp->hasEvalError() )
+    {
+      QgsDebugMsg( "Expression parser eval error:" + exp->evalErrorString() );
+      expr_action += action.mid( start, index - start );
+      continue;
+    }
+
+    QgsDebugMsg( "Expression result is: " + result.toString() );
+    expr_action += action.mid( start, pos - start ) + result.toString();
+  }
+
+  expr_action += action.mid( index );
+  return expr_action;
+}
+
 
 bool QgsAttributeAction::writeXML( QDomNode& layer_node, QDomDocument& doc ) const
 {
