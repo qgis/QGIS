@@ -19,6 +19,7 @@ import os
 from sextante.outputs.OutputVector import OutputVector
 from sextante.saga.SagaUtils import SagaUtils
 import time
+from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 
 
 
@@ -44,7 +45,9 @@ class SagaAlgorithm(GeoAlgorithm):
             readLine = True;
             #line = lines.readline()
             if line.startswith("library name"):
-                self.group = line.split("\t")[1]
+                self.undecoratedGroup = line.split("\t")[1]
+                self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
+
             if line.startswith("module name"):
                 self.name = line.split("\t")[1]
             if line.startswith("-"):
@@ -213,7 +216,7 @@ class SagaAlgorithm(GeoAlgorithm):
                             raise SagaExecutionException("Unsupported file format")
 
         #2: set parameters and outputs
-        command = self.group + " \"" + self.name + "\""
+        command = self.undecoratedGroup  + " \"" + self.name + "\""
         for param in self.parameters.values:
             if isinstance(param, ParameterRaster):
                 if param.value == None:

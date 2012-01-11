@@ -49,10 +49,10 @@ class GeoAlgorithm:
 
     def __str__(self):
         s = "ALGORITHM: " + self.name + "\n"
-        s+=self._descriptionfile + "\n"
-        for param in self.parameters.values():
+        #s+=self._descriptionFile + "\n"
+        for param in self.parameters:
             s+=(str(param) + "\n")
-        for out in self.outputs.values():
+        for out in self.outputs:
             s+=(str(out) + "\n")
         s+=("\n")
         return s
