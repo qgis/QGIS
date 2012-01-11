@@ -3291,14 +3291,11 @@ void QgisApp::doFeatureAction()
 
 void QgisApp::updateDefaultFeatureAction( QAction *action )
 {
-  foreach( QAction *a, mFeatureActionMenu->actions() )
-  {
-    a->setChecked( a == action );
-  }
-
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !vlayer )
     return;
+
+  mFeatureActionMenu->setActiveAction( action );
 
   int index = mFeatureActionMenu->actions().indexOf( action );
   vlayer->actions()->setDefaultAction( index );
@@ -3318,10 +3315,9 @@ void QgisApp::refreshFeatureActions()
   for ( int i = 0; i < actions->size(); i++ )
   {
     QAction *action = mFeatureActionMenu->addAction( actions->at( i ).name() );
-    action->setCheckable( true );
     if ( i == actions->defaultAction() )
     {
-      action->setChecked( true );
+      mFeatureActionMenu->setActiveAction( action );
     }
   }
 }
@@ -5809,6 +5805,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
     QgsVectorDataProvider* dprovider = vlayer->dataProvider();
     bool layerHasSelection = vlayer->selectedFeatureCount() != 0;
+    bool layerHasActions = vlayer->actions()->size() > 0;
 
     mActionLocalHistogramStretch->setEnabled( false );
     mActionFullHistogramStretch->setEnabled( false );
@@ -5824,7 +5821,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionLayerSaveAs->setEnabled( true );
     mActionLayerSelectionSaveAs->setEnabled( true );
     mActionCopyFeatures->setEnabled( layerHasSelection );
-    mActionFeatureAction->setEnabled( vlayer->actions()->size() > 0 );
+    mActionFeatureAction->setEnabled( layerHasActions );
 
     if ( !vlayer->isEditable() && mMapCanvas->mapTool() && mMapCanvas->mapTool()->isEditTool() )
     {
@@ -6665,7 +6662,11 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
       vlp = new QgsVectorLayerProperties( vlayer );
       connect( vlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
-    vlp->exec();
+
+    if ( vlp->exec() )
+    {
+      activateDeactivateLayerRelatedActions( ml );
+    }
     delete vlp; // delete since dialog cannot be reused without updating code
   }
   else if ( ml->type() == QgsMapLayer::PluginLayer )
