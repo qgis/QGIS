@@ -23,8 +23,8 @@
 
 class QProgressDialog;
 
-/**Base class for raster analysis methods that work with a 3x3 cell filter and calculate the value of each cell based on \
-the cell value and the eight neighbour cells. Common examples are slope and aspect calculation in DEMs. Subclasses only implement \
+/**Base class for raster analysis methods that work with a 3x3 cell filter and calculate the value of each cell based on
+the cell value and the eight neighbour cells. Common examples are slope and aspect calculation in DEMs. Subclasses only implement
 the method that calculates the new value from the nine values. Everything else (reading file, writing file) is done by this subclass*/
 
 class ANALYSIS_EXPORT QgsNineCellFilter
@@ -47,14 +47,15 @@ class ANALYSIS_EXPORT QgsNineCellFilter
     void setZFactor( double factor ) { mZFactor = factor; }
 
     double inputNodataValue() const { return mInputNodataValue; }
-    void setInputNodataValue( double value ){ mInputNodataValue = value; }
+    void setInputNodataValue( double value ) { mInputNodataValue = value; }
     double outputNodataValue() const { return mOutputNodataValue; }
-    void setOutputNodataValue( double value ){ mOutputNodataValue = value; }
+    void setOutputNodataValue( double value ) { mOutputNodataValue = value; }
 
-    /**Calculates output value from nine input values. The input values and the output value can be equal to the \
+    /**Calculates output value from nine input values. The input values and the output value can be equal to the
       nodata value if not present or outside of the border. Must be implemented by subclasses*/
-    virtual float processNineCellWindow( float* x11, float* x21, float* x31, \
-                                         float* x12, float* x22, float* x32, float* x13, float* x23, float* x33 ) = 0;
+    virtual float processNineCellWindow( float* x11, float* x21, float* x31,
+                                         float* x12, float* x22, float* x32,
+                                         float* x13, float* x23, float* x33 ) = 0;
 
   private:
     //default constructor forbidden. We need input file, output file and format obligatory
