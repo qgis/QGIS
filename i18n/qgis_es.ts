@@ -4252,11 +4252,11 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     </message>
     <message>
         <source>Embed layers and groups...</source>
-        <translation type="unfinished"></translation>
+        <translation>Empotrar capas y grupos...</translation>
     </message>
     <message>
         <source>Embed layers and groups from other project files</source>
-        <translation type="unfinished"></translation>
+        <translation>Empotrar capas y grupos de otros archivos de proyecto</translation>
     </message>
     <message>
         <source>&amp;Copyright Label</source>
@@ -4289,6 +4289,14 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
     <message>
         <source>Add WFS Layer</source>
         <translation>Añadir capa WFS</translation>
+    </message>
+    <message>
+        <source>Feature Action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run feature action</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6570,67 +6578,67 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Loaded %1 (Path: %2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cargado %1 (Ruta: %2)</translation>
     </message>
     <message>
         <source>Unable to find the class factory for %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede encontrar la factoría de clases para %1.</translation>
     </message>
     <message>
         <source>Plugin %1 did not return a valid type and cannot be loaded</source>
-        <translation type="unfinished"></translation>
+        <translation>El complemento %1 no devolvió un tipo válido y no se puede cargar</translation>
     </message>
     <message>
         <source>Can&apos;t open database: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede abrir la base de datos: %1</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1&apos; to double</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede convertir &apos;%1&apos; a doble</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1&apos; to int</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede convertir &apos;%1&apos; a entero</translation>
     </message>
     <message>
         <source>Cannot convert &apos;%1&apos; to boolean</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede convertir &apos;%1&apos; a booleano</translation>
     </message>
     <message>
         <source>Invalid regular expression &apos;%1&apos;: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Expresión regular no válida &apos;%1&apos;: %2</translation>
     </message>
     <message>
         <source>Index is out of range</source>
-        <translation type="unfinished"></translation>
+        <translation>El índice está fuera de intervalo</translation>
     </message>
     <message>
         <source>Math</source>
-        <translation type="unfinished"></translation>
+        <translation>Matemáticas</translation>
     </message>
     <message>
         <source>Conversions</source>
-        <translation type="unfinished"></translation>
+        <translation>Conversiones</translation>
     </message>
     <message>
         <source>String</source>
-        <translation type="unfinished"></translation>
+        <translation>Cadena</translation>
     </message>
     <message>
         <source>Geometry</source>
-        <translation type="unfinished">Geometría</translation>
+        <translation>Geometría</translation>
     </message>
     <message>
         <source>Record</source>
-        <translation type="unfinished"></translation>
+        <translation>Registro</translation>
     </message>
     <message>
         <source>No root node! Parsing failed?</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Ningún nodo raíz! ¿Fallo al procesar?</translation>
     </message>
     <message>
         <source>(no root)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ninguna raíz)</translation>
     </message>
     <message>
         <source>Unary minus only for numeric values.</source>
@@ -6638,11 +6646,11 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>[unsupported type;%1; value:%2]</source>
-        <translation type="unfinished"></translation>
+        <translation>[tipo no admitido; %1; valor: %2]</translation>
     </message>
     <message>
         <source>Column &apos;%1&apos;&apos; not found</source>
-        <translation type="unfinished"></translation>
+        <translation>No se encontró la columna &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Unable to instantiate the data provider plugin %1</source>
@@ -6650,47 +6658,47 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Failed to load %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>No se pudo cargar %1: %2</translation>
     </message>
     <message>
         <source>Expression error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Error de expresión: %1</translation>
     </message>
     <message>
         <source>Unknown error %1: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Error desconocido %1: %2</translation>
     </message>
     <message>
         <source>Geometry is 0</source>
-        <translation type="unfinished"></translation>
+        <translation>La geometría es 0</translation>
     </message>
     <message>
         <source>Index %1 out of range [0;%2[</source>
-        <translation type="unfinished"></translation>
+        <translation>El índice %1 está fuera de intervalo [0;%2]</translation>
     </message>
     <message>
         <source>Operator doesn&apos;t match the argument types.</source>
-        <translation type="unfinished"></translation>
+        <translation>El operador no coincide con los tipos de argumentos.</translation>
     </message>
     <message>
         <source>Error in power function</source>
-        <translation type="unfinished"></translation>
+        <translation>Error en función de potencia</translation>
     </message>
     <message>
         <source>Value &apos;%1&apos; is not numeric</source>
-        <translation type="unfinished"></translation>
+        <translation>El valor &apos;%1&apos; no es numérico</translation>
     </message>
     <message>
         <source>Unable to load %1 provider</source>
-        <translation type="unfinished"></translation>
+        <translation>No se puede cargar el proveedor %1</translation>
     </message>
     <message>
         <source>Provider %1 has no createEmptyLayer method</source>
-        <translation type="unfinished"></translation>
+        <translation>El proveedor %1 no tiene método createEmptyLayer</translation>
     </message>
     <message>
         <source>Loading of layer failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Falló la carga de la capa</translation>
     </message>
     <message>
         <source>Creation error for features from #%1 to #%2</source>
@@ -9725,11 +9733,11 @@ p, li { white-space: pre-wrap; }
     <name>QgsAddAttrDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Invalid field name. This field name is reserved and cannot be used.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nombre de campo no válido. Este nombre de campo está reservado y no se puede usar.</translation>
     </message>
 </context>
 <context>
@@ -9845,13 +9853,23 @@ Default Theme Path:	%6
 SVG Search Paths:	%7
 User DB Path:	%8
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Estado de la aplicación:
+Prefijo:			%1
+Ruta de complementos:		%2
+Ruta de datos de paquetes:	%3
+Nombre del tema activo:		%4
+Ruta del tema activo:		%5
+Ruta del tema predeterminado:	%6
+Rutas de búsqueda de SVG:	%7
+Ruta de BD de usuario:		%8
+</translation>
     </message>
     <message>
         <source>
 		</source>
         <comment>match indentation of application state</comment>
-        <translation type="unfinished"></translation>
+        <translation>
+			</translation>
     </message>
 </context>
 <context>
@@ -9869,6 +9887,10 @@ User DB Path:	%8
         <source>To create an attribute action, you must provide both a name and the action to perform.</source>
         <translation>Para crear una acción de atributos, debe proporcionar un nombre y la acción a desarrollar.</translation>
     </message>
+    <message>
+        <source>Insert expression</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeActionDialogBase</name>
@@ -9878,7 +9900,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>Remove</source>
-        <translation>Eliminar</translation>
+        <translation type="obsolete">Eliminar</translation>
     </message>
     <message>
         <source>Move the selected action down</source>
@@ -9898,7 +9920,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</source>
-        <translation>Esta lista contiene todas las acciones que han sido definidas para la capa actual. Añada acciones introduciendo los detalles en los controles inferiores y presionando el botón Insertar acción. Las acciones se pueden editar pulsando dos veces sobre ellas.</translation>
+        <translation type="obsolete">Esta lista contiene todas las acciones que han sido definidas para la capa actual. Añada acciones introduciendo los detalles en los controles inferiores y presionando el botón Insertar acción. Las acciones se pueden editar pulsando dos veces sobre ellas.</translation>
     </message>
     <message>
         <source>Enter the action here. This can be any program, script or command that is available on your system. When the action is invoked any set of characters that start with a % and then have the name of a field will be replaced by the value of that field. The special characters %% will be replaced by the value of the field that was selected. Double quote marks group text into single arguments to the program, script or command. Double quotes will be ignored if prefixed with a backslash</source>
@@ -9910,7 +9932,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>Inserts the selected field into the action, prepended with a %</source>
-        <translation>Inserta el campo seleccionado en la acción, precedido con un %</translation>
+        <translation type="obsolete">Inserta el campo seleccionado en la acción, precedido con un %</translation>
     </message>
     <message>
         <source>Insert field</source>
@@ -9922,7 +9944,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>Update action</source>
-        <translation>Actualizar acción</translation>
+        <translation type="obsolete">Actualizar acción</translation>
     </message>
     <message>
         <source>Inserts the action into the list above</source>
@@ -9930,7 +9952,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>Insert action</source>
-        <translation>Insertar acción</translation>
+        <translation type="obsolete">Insertar acción</translation>
     </message>
     <message>
         <source>Captures any output from the action</source>
@@ -10020,6 +10042,34 @@ User DB Path:	%8
         <source>Unix</source>
         <translation>Unix</translation>
     </message>
+    <message>
+        <source>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Add to action list button. Actions can be edited here by double clicking on the item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inserts an expression into the action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert expression...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Inserts the selected field into the action</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add to action list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update selected action</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsAttributeDialog</name>
@@ -10068,7 +10118,7 @@ User DB Path:	%8
     </message>
     <message>
         <source>(no selection)</source>
-        <translation type="unfinished"></translation>
+        <translation>(ninguna selección)</translation>
     </message>
 </context>
 <context>
@@ -10164,7 +10214,7 @@ User DB Path:	%8
     <name>QgsAttributeTableAction</name>
     <message>
         <source>Attributes changed</source>
-        <translation type="unfinished">Atributos cambiados</translation>
+        <translation>Atributos cambiados</translation>
     </message>
 </context>
 <context>
@@ -10481,6 +10531,10 @@ User DB Path:	%8
     <message>
         <source>Attributes changed</source>
         <translation type="obsolete">Atributos cambiados</translation>
+    </message>
+    <message>
+        <source>feature id</source>
+        <translation type="unfinished">ID del objeto espacial</translation>
     </message>
 </context>
 <context>
@@ -10896,7 +10950,7 @@ El error fue: %2</translation>
     <name>QgsBrowserModel</name>
     <message>
         <source>Home</source>
-        <translation type="unfinished"></translation>
+        <translation>Inicio</translation>
     </message>
 </context>
 <context>
@@ -11569,7 +11623,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Item id changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Cambiada la id del elemento</translation>
     </message>
 </context>
 <context>
@@ -11608,7 +11662,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Item ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID del elemento</translation>
     </message>
 </context>
 <context>
@@ -11897,7 +11951,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Map</source>
-        <translation type="unfinished">Mapa</translation>
+        <translation>Mapa</translation>
     </message>
 </context>
 <context>
@@ -12409,19 +12463,19 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Left</source>
-        <translation type="unfinished">Izquierda</translation>
+        <translation>Izquierda</translation>
     </message>
     <message>
         <source>Middle</source>
-        <translation type="unfinished">Medio</translation>
+        <translation>Medio</translation>
     </message>
     <message>
         <source>Right</source>
-        <translation type="unfinished">Derecha</translation>
+        <translation>Derecha</translation>
     </message>
     <message>
         <source>Scalebar alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineación de la barra de escala</translation>
     </message>
 </context>
 <context>
@@ -12492,7 +12546,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Alineación</translation>
     </message>
 </context>
 <context>
@@ -13096,7 +13150,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Selection tolerance (mm) </source>
-        <translation type="unfinished"></translation>
+        <translation>Tolerancia de selección (mm) </translation>
     </message>
 </context>
 <context>
@@ -14273,7 +14327,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Decimal point</source>
-        <translation type="unfinished"></translation>
+        <translation>Coma decimal</translation>
     </message>
 </context>
 <context>
@@ -14305,7 +14359,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Category label</source>
-        <translation type="unfinished"></translation>
+        <translation>Etiqueta de categoría</translation>
     </message>
 </context>
 <context>
@@ -14354,43 +14408,43 @@ p, li { white-space: pre-wrap; }
     <name>QgsDirectoryParamWidget</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
+        <translation>Nombre</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation type="unfinished">Tamaño</translation>
+        <translation>Tamaño</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation type="unfinished"></translation>
+        <translation>Fecha</translation>
     </message>
     <message>
         <source>Permissions</source>
-        <translation type="unfinished"></translation>
+        <translation>Permisos</translation>
     </message>
     <message>
         <source>Owner</source>
-        <translation type="unfinished">Propietario</translation>
+        <translation>Propietario</translation>
     </message>
     <message>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Grupo</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished">Tipo</translation>
+        <translation>Tipo</translation>
     </message>
     <message>
         <source>folder</source>
-        <translation type="unfinished"></translation>
+        <translation>carpeta</translation>
     </message>
     <message>
         <source>file</source>
-        <translation type="unfinished"></translation>
+        <translation>archivo</translation>
     </message>
     <message>
         <source>link</source>
-        <translation type="unfinished"></translation>
+        <translation>enlace</translation>
     </message>
 </context>
 <context>
@@ -14633,7 +14687,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Este archivo de ayuda no está disponible en su idioma %1. Si quiere traducirlo, por favor contacte con el equipo de desarrollo de QGIS.</translation>
     </message>
     <message>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
@@ -15779,11 +15833,11 @@ Por favor vuelva a seleccionar un archivo válido.</translation>
     </message>
     <message>
         <source>&amp;GPS Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Herramientas &amp;GPS</translation>
     </message>
     <message>
         <source>&amp;GPS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;GPS</translation>
     </message>
 </context>
 <context>
@@ -16878,7 +16932,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Renderer creation has failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>La creación del renderizador ha fallado.</translation>
     </message>
 </context>
 <context>
@@ -17391,7 +17445,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Undo last vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Deshacer último vértice</translation>
     </message>
 </context>
 <context>
@@ -18014,7 +18068,7 @@ en la línea %2 columna %3</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Cannot parse version_min %1</source>
@@ -18587,7 +18641,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Plugins</source>
-        <translation type="unfinished">Complementos</translation>
+        <translation>Complementos</translation>
     </message>
 </context>
 <context>
@@ -18846,7 +18900,7 @@ o cambiar los siguientes valores</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia</translation>
     </message>
     <message>
         <source>Cannot rename the lock file %1</source>
@@ -18976,10 +19030,9 @@ en la línea %2 columna %3</translation>
     <message numerus="yes">
         <source>There are still %n unhandled layer(s), that will be lost if you closed now.</source>
         <comment>unhandled layers</comment>
-        <translation type="unfinished">
-            <numerusform>Todavía hay %n capas no manejadas, que se perderán si cierra ahora.
-        </numerusform>
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Todavía hay una capa no manejada, que se perderá si cierra ahora.</numerusform>
+            <numerusform>Todavía hay %n capas no manejadas, que se perderán si cierra ahora.</numerusform>
         </translation>
     </message>
 </context>
@@ -19052,7 +19105,7 @@ en la línea %2 columna %3</translation>
     </message>
     <message>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Este archivo de ayuda no está disponible en su idioma %1. Si quiere traducirlo, por favor contacte con el equipo de desarrollo de QGIS.</translation>
     </message>
 </context>
 <context>
@@ -20816,6 +20869,29 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.
     </message>
 </context>
 <context>
+    <name>QgsMapToolFeatureAction</name>
+    <message>
+        <source>No active vector layer</source>
+        <translation type="unfinished">Ninguna capa vectorial activa</translation>
+    </message>
+    <message>
+        <source>To run an action, you must choose a vector layer by clicking on its name in the legend</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No actions available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The active vector layer has no defined actions</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No features at this position found.</source>
+        <translation type="unfinished">No se han encontrado objetos espaciales en esta posición.</translation>
+    </message>
+</context>
+<context>
     <name>QgsMapToolIdentify</name>
     <message>
         <source>(clicked coordinate)</source>
@@ -21444,6 +21520,14 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <source>Level</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>No messages.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 message(s) logged.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsMessageViewer</name>
@@ -21791,7 +21875,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Find SRID</source>
-        <translation type="obsolete">Buscar SRID</translation>
+        <translation type="unfinished">Buscar SRID</translation>
     </message>
     <message>
         <source>Add an integer id field as the primary key for the new layer</source>
@@ -21835,7 +21919,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Specify CRS</source>
-        <translation type="unfinished">Especificar SRC</translation>
+        <translation type="obsolete">Especificar SRC</translation>
     </message>
     <message>
         <source>Remove attribute</source>
@@ -23269,6 +23353,17 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsPGSchemaItem</name>
+    <message>
+        <source>%1 as %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>as geometryless table</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsPasteTransformations</name>
     <message>
         <source>&amp;Add New Transfer</source>
@@ -23859,35 +23954,15 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>Point</source>
-        <translation type="unfinished">Punto</translation>
-    </message>
-    <message>
-        <source>Multipoint</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Punto</translation>
     </message>
     <message>
         <source>Line</source>
-        <translation type="unfinished">Línea</translation>
-    </message>
-    <message>
-        <source>Multiline</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Línea</translation>
     </message>
     <message>
         <source>Polygon</source>
-        <translation type="unfinished">Polígono</translation>
-    </message>
-    <message>
-        <source>Multipolygon</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No Geometry</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Polígono</translation>
     </message>
 </context>
 <context>
@@ -24914,6 +24989,42 @@ Resultado: %3 (%4)</translation>
     </message>
     <message>
         <source>bad connection, not retrying.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Point</source>
+        <translation type="unfinished">Punto</translation>
+    </message>
+    <message>
+        <source>Line</source>
+        <translation type="unfinished">Línea</translation>
+    </message>
+    <message>
+        <source>Polygon</source>
+        <translation type="unfinished">Polígono</translation>
+    </message>
+    <message>
+        <source>No Geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipoint</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multiline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Multipolygon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unknown Geometry</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
