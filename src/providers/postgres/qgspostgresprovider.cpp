@@ -1816,7 +1816,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       foreach( int idx, mPrimaryKeyAttrs )
       {
         insert += delim + quotedIdentifier( field( idx ).name() );
-        values += delim + QString( "$%1" ).arg( offset++ );
+        values += delim + QString( "$%1" ).arg( defaultValues.size() + offset );
         delim = ",";
         fieldId << idx;
         defaultValues << defaultValue( idx ).toString();
