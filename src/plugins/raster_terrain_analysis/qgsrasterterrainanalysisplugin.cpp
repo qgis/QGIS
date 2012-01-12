@@ -38,6 +38,7 @@ static const QString name_ = QObject::tr( "Raster Terrain Analysis plugin" );
 static const QString description_ = QObject::tr( "A plugin for raster based terrain analysis" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QString icon_ = ":/raster/raster_terrain_icon.png";
+static const QString category_ = QObject::tr( "Raster" );
 
 QgsRasterTerrainAnalysisPlugin::QgsRasterTerrainAnalysisPlugin( QgisInterface* iface ): mIface( iface ), mTerrainAnalysisMenu( 0 )
 {
@@ -234,6 +235,11 @@ QGISEXTERN int type()
 QGISEXTERN void unload( QgisPlugin* pluginPointer )
 {
   delete pluginPointer;
+}
+
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 
