@@ -1,10 +1,10 @@
-#ifndef QGSRASTERTERRAINANALYSISDIALOG_H
-#define QGSRASTERTERRAINANALYSISDIALOG_H
+#ifndef QGSRELIEFDIALOG_H
+#define QGSRELIEFDIALOG_H
 
-#include "ui_qgsrasterterrainanalysisdialogbase.h"
+#include "ui_qgsreliefdialogbase.h"
 #include "qgsrelief.h"
 
-class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerrainAnalysisDialogBase
+class QgsReliefDialog: public QDialog, private Ui::QgsReliefDialogBase
 {
     Q_OBJECT
   public:
@@ -16,8 +16,8 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
       ReliefInput
     };
 
-    QgsRasterTerrainAnalysisDialog( DisplayMode mode = NoParameter, QWidget * parent = 0, Qt::WindowFlags f = 0 );
-    ~QgsRasterTerrainAnalysisDialog();
+    QgsReliefDialog( DisplayMode mode = NoParameter, QWidget * parent = 0, Qt::WindowFlags f = 0 );
+    ~QgsReliefDialog();
 
     QList< QgsRelief::ReliefColor > reliefColors() const;
     QString inputFile() const;
@@ -33,19 +33,13 @@ class QgsRasterTerrainAnalysisDialog: public QDialog, private Ui::QgsRasterTerra
     void on_mOutputLayerLineEdit_textChanged( const QString& text );
     void on_mAutomaticColorButton_clicked();
     void on_mOutputLayerToolButton_clicked();
-    void on_mAddClassButton_clicked();
     void on_mRemoveClassButton_clicked();
-    void on_mUpPushButton_clicked();
-    void on_mDownPushButton_clicked();
     void on_mReliefClassTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
     void on_mExportToCsvButton_clicked();
-    void on_mExportColorsButton_clicked();
-    void on_mImportColorsButton_clicked();
-    void on_mButtonBox_accepted();
 
   private:
     /**Stores relation between driver name and extension*/
     QMap<QString, QString> mDriverExtensionMap;
 };
 
-#endif //QGSRASTERTERRAINANALYSISDIALOG_H
+#endif // QGSRELIEFDIALOG_H

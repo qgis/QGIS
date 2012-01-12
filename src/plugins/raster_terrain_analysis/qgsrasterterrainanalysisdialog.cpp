@@ -1,49 +1,52 @@
-/***************************************************************************
-                          qgsrasterterrainanalysisdialog.cpp  -  description
-                             -------------------------------
-    begin                : August 8th, 2009
-    copyright            : (C) 2009 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
-
 #include "qgsrasterterrainanalysisdialog.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsrasterlayer.h"
+#include <QColorDialog>
+#include <QDir>
+#include <QFileDialog>
+#include <QFileInfo>
+#include <QInputDialog>
+#include <QMessageBox>
+#include <QSettings>
+#include <QTextStream>
 #include "cpl_string.h"
 #include "gdal.h"
-#include <QFileDialog>
-#include <QSettings>
 
-QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( QgisInterface* iface, QWidget* parent ): QDialog( parent ), mIface( iface )
+QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode, QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
 
-  //insert available methods
-  mAnalysisComboBox->addItem( tr( "Slope" ) );
-  mAnalysisComboBox->addItem( tr( "Aspect" ) );
-  mAnalysisComboBox->addItem( tr( "Ruggedness index" ) );
-  mAnalysisComboBox->addItem( tr( "Total curvature" ) );
+  if ( mode == HillshadeInput )
+  {
+    mReliefColorsGroupBox->setVisible( false );
+    mLightAzimuthAngleSpinBox->setValue( 300 );
+    mLightVerticalAngleSpinBox->setValue( 40 );
+  }
+  else if ( mode == ReliefInput )
+  {
+    mIlluminationGroupBox->setVisible( false );
+  }
+  else //no parameters
+  {
+    mReliefColorsGroupBox->setVisible( false );
+    mIlluminationGroupBox->setVisible( false );
+  }
+
+  mZFactorLineEdit->setText( "1.0" );
+  mZFactorLineEdit->setValidator( new QDoubleValidator( this ) );
 
   //insert available raster layers
   //enter available layers into the combo box
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
 
+  //insert available input layers
   for ( ; layer_it != mapLayers.end(); ++layer_it )
   {
     QgsRasterLayer* rl = qobject_cast<QgsRasterLayer *>( layer_it.value() );
     if ( rl )
     {
-      mInputLayerComboBox->addItem( rl->name(), QVariant( rl->id() ) );
+      mElevationLayerComboBox->addItem( rl->name(), QVariant( rl->id() ) );
     }
   }
 
@@ -98,29 +101,48 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( QgisInterface* i
     mOutputFormatComboBox->setCurrentIndex( lastDriverIndex );
   }
 
-  QPushButton*  okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  if ( okButton )
-  {
-    okButton->setEnabled( false );
-  }
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
 }
 
 QgsRasterTerrainAnalysisDialog::~QgsRasterTerrainAnalysisDialog()
 {
-
 }
 
-QString QgsRasterTerrainAnalysisDialog::selectedInputLayerId() const
+QList< QgsRelief::ReliefColor > QgsRasterTerrainAnalysisDialog::reliefColors() const
 {
-  int index = mInputLayerComboBox->currentIndex();
-  if ( index == -1 )
+  QList< QgsRelief::ReliefColor > reliefColorList;
+
+  for ( int i = 0; i < mReliefClassTreeWidget->topLevelItemCount(); ++i )
+  {
+    QTreeWidgetItem* reliefItem = mReliefClassTreeWidget->topLevelItem( i );
+    if ( reliefItem )
+    {
+      QgsRelief::ReliefColor rc( reliefItem->background( 2 ).color(), reliefItem->text( 0 ).toDouble(), reliefItem->text( 1 ).toDouble() );
+      reliefColorList.push_back( rc );
+    }
+  }
+
+  return reliefColorList;
+}
+
+QString QgsRasterTerrainAnalysisDialog::inputFile() const
+{
+  QgsMapLayer* inputLayer = QgsMapLayerRegistry::instance()->mapLayer( mElevationLayerComboBox->itemData( mElevationLayerComboBox->currentIndex() ).toString() );
+  if ( !inputLayer )
   {
     return "";
   }
-  return mInputLayerComboBox->itemData( index ).toString();
+
+  QString inputFilePath = inputLayer->source();
+  return inputFilePath;
 }
 
-QString QgsRasterTerrainAnalysisDialog::selectedDriverKey() const
+QString QgsRasterTerrainAnalysisDialog::outputFile() const
+{
+  return mOutputLayerLineEdit->text();
+}
+
+QString QgsRasterTerrainAnalysisDialog::outputFormat() const
 {
   int index = mOutputFormatComboBox->currentIndex();
   if ( index == -1 )
@@ -130,39 +152,130 @@ QString QgsRasterTerrainAnalysisDialog::selectedDriverKey() const
   return mOutputFormatComboBox->itemData( index ).toString();
 }
 
-QString QgsRasterTerrainAnalysisDialog::selectedOuputFilePath() const
+bool QgsRasterTerrainAnalysisDialog::addResultToProject() const
 {
-  QString outputFileName = mOutputLayerLineEdit->text();
-  QFileInfo fileInfo( outputFileName );
-  QString suffix = fileInfo.suffix();
-  if ( !suffix.isEmpty() )
-  {
-    return outputFileName;
-  }
-
-  //add the file format extension if the user did not specify it
-  int index = mOutputFormatComboBox->currentIndex();
-  if ( index == -1 )
-  {
-    return outputFileName;
-  }
-
-  QString driverShortName = mOutputFormatComboBox->itemData( index ).toString();
-  QMap<QString, QString>::const_iterator it = mDriverExtensionMap.find( driverShortName );
-  if ( it == mDriverExtensionMap.constEnd() )
-  {
-    return outputFileName;
-  }
-
-  return ( outputFileName + "." + it.value() );
+  return mAddResultToProjectCheckBox->isChecked();
 }
 
-bool QgsRasterTerrainAnalysisDialog::addLayerToProject() const
+double QgsRasterTerrainAnalysisDialog::zFactor() const
 {
-  return mAddResultToProjectCheckBox->checkState() == Qt::Checked;
+  return mZFactorLineEdit->text().toDouble();
 }
 
-void QgsRasterTerrainAnalysisDialog::on_mOutputLayerPushButton_clicked()
+void QgsRasterTerrainAnalysisDialog::on_mOutputLayerLineEdit_textChanged( const QString& text )
+{
+  bool enabled = false;
+
+  QFileInfo fi( text );
+  if ( fi.absoluteDir().exists() &&  mElevationLayerComboBox->count() > 0 )
+  {
+    enabled = true;
+  }
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mAutomaticColorButton_clicked()
+{
+  QgsRelief relief( inputFile(), outputFile(), outputFormat() );
+  QList< QgsRelief::ReliefColor > reliefColorList = relief.calculateOptimizedReliefClasses();
+  QList< QgsRelief::ReliefColor >::iterator it = reliefColorList.begin();
+
+  mReliefClassTreeWidget->clear();
+  for ( ; it != reliefColorList.end(); ++it )
+  {
+    QTreeWidgetItem* item = new QTreeWidgetItem();
+    item->setText( 0, QString::number( it->minElevation ) );
+    item->setText( 1, QString::number( it->maxElevation ) );
+    item->setBackground( 2, QBrush( it->color ) );
+    mReliefClassTreeWidget->addTopLevelItem( item );
+  }
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mExportToCsvButton_clicked()
+{
+  QString file = QFileDialog::getSaveFileName( 0, tr( "Export Frequency distribution as csv" ) );
+  if ( file.isEmpty() )
+  {
+    return;
+  }
+
+  QgsRelief relief( inputFile(), outputFile(), outputFormat() );
+  relief.exportFrequencyDistributionToCsv( file );
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mExportColorsButton_clicked()
+{
+  qWarning( "Export colors clicked" );
+  QString file = QFileDialog::getSaveFileName( 0, tr( "Export Colors and elevations as xml" ) );
+  if ( file.isEmpty() )
+  {
+    return;
+  }
+
+  QDomDocument doc;
+  QDomElement reliefColorsElem = doc.createElement( "ReliefColors" );
+  doc.appendChild( reliefColorsElem );
+
+  QList< QgsRelief::ReliefColor > rColors = reliefColors();
+  QList< QgsRelief::ReliefColor >::const_iterator rColorsIt = rColors.constBegin();
+  for ( ; rColorsIt != rColors.constEnd(); ++rColorsIt )
+  {
+    QDomElement classElem = doc.createElement( "ReliefColor" );
+    classElem.setAttribute( "MinElevation", rColorsIt->minElevation );
+    classElem.setAttribute( "MaxElevation", rColorsIt->maxElevation );
+    classElem.setAttribute( "red", QString::number( rColorsIt->color.red() ) );
+    classElem.setAttribute( "green", QString::number( rColorsIt->color.green() ) );
+    classElem.setAttribute( "blue", QString::number( rColorsIt->color.blue() ) );
+    reliefColorsElem.appendChild( classElem );
+  }
+
+  QFile outputFile( file );
+  if ( !outputFile.open( QIODevice::WriteOnly ) )
+  {
+    return;
+  }
+  QTextStream outStream( &outputFile );
+  doc.save( outStream, 2 );
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mImportColorsButton_clicked()
+{
+  QString file = QFileDialog::getOpenFileName( 0, tr( "Import Colors and elevations from xml" ) );
+  if ( file.isEmpty() )
+  {
+    return;
+  }
+
+  QFile inputFile( file );
+  if ( !inputFile.open( QIODevice::ReadOnly ) )
+  {
+    QMessageBox::critical( 0, tr( "Error opening file" ), tr( "The relief color file could not be opened" ) );
+    return;
+  }
+
+  QDomDocument doc;
+  if ( !doc.setContent( &inputFile, false ) )
+  {
+    QMessageBox::critical( 0, tr( "Error parsing xml" ), tr( "The xml file could not be loaded" ) );
+    return;
+  }
+
+  mReliefClassTreeWidget->clear();
+
+  QDomNodeList reliefColorList = doc.elementsByTagName( "ReliefColor" );
+  for ( int i = 0; i < reliefColorList.size(); ++i )
+  {
+    QDomElement reliefColorElem = reliefColorList.at( i ).toElement();
+    QTreeWidgetItem* newItem = new QTreeWidgetItem();
+    newItem->setText( 0, reliefColorElem.attribute( "MinElevation" ) );
+    newItem->setText( 1, reliefColorElem.attribute( "MaxElevation" ) );
+    newItem->setBackground( 2, QBrush( QColor( reliefColorElem.attribute( "red" ).toInt(), reliefColorElem.attribute( "green" ).toInt(),
+                                       reliefColorElem.attribute( "blue" ).toInt() ) ) );
+    mReliefClassTreeWidget->addTopLevelItem( newItem );
+  }
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mOutputLayerToolButton_clicked()
 {
   QSettings s;
   QString lastDir = s.value( "/RasterTerrainAnalysis/lastOutputDir" ).toString();
@@ -173,9 +286,103 @@ void QgsRasterTerrainAnalysisDialog::on_mOutputLayerPushButton_clicked()
   }
 }
 
-QString QgsRasterTerrainAnalysisDialog::selectedAnalysisMethod() const
+double QgsRasterTerrainAnalysisDialog::lightAzimuth() const
 {
-  return mAnalysisComboBox->currentText();
+  return mLightAzimuthAngleSpinBox->value();
+}
+
+double QgsRasterTerrainAnalysisDialog::lightAngle() const
+{
+  return mLightVerticalAngleSpinBox->value();
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mAddClassButton_clicked()
+{
+  //add class which can be edited by the user later
+  QTreeWidgetItem* newItem = new QTreeWidgetItem();
+  newItem->setText( 0, "0.00" );
+  newItem->setText( 1, "0.00" );
+  newItem->setBackground( 2, QBrush( QColor( 127, 127, 127 ) ) );
+  mReliefClassTreeWidget->addTopLevelItem( newItem );
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mRemoveClassButton_clicked()
+{
+  QList<QTreeWidgetItem*> selectedItems = mReliefClassTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    delete *itemIt;
+  }
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mUpPushButton_clicked()
+{
+  QList<QTreeWidgetItem*> selectedItems = mReliefClassTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int currentIndex = mReliefClassTreeWidget->indexOfTopLevelItem( *itemIt );
+    if ( currentIndex <  mReliefClassTreeWidget->topLevelItemCount() - 1 )
+    {
+      mReliefClassTreeWidget->takeTopLevelItem( currentIndex );
+      mReliefClassTreeWidget->insertTopLevelItem( currentIndex + 1, *itemIt );
+      mReliefClassTreeWidget->setCurrentItem( *itemIt );
+    }
+  }
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mDownPushButton_clicked()
+{
+  QList<QTreeWidgetItem*> selectedItems = mReliefClassTreeWidget->selectedItems();
+  QList<QTreeWidgetItem*>::iterator itemIt = selectedItems.begin();
+  for ( ; itemIt != selectedItems.end(); ++itemIt )
+  {
+    int currentIndex = mReliefClassTreeWidget->indexOfTopLevelItem( *itemIt );
+    if ( currentIndex > 0 )
+    {
+      mReliefClassTreeWidget->takeTopLevelItem( currentIndex );
+      mReliefClassTreeWidget->insertTopLevelItem( currentIndex - 1, *itemIt );
+      mReliefClassTreeWidget->setCurrentItem( *itemIt );
+    }
+  }
+}
+
+void QgsRasterTerrainAnalysisDialog::on_mReliefClassTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  if ( !item )
+  {
+    return;
+  }
+
+  if ( column == 0 )
+  {
+    bool ok;
+    double d = QInputDialog::getDouble( 0, tr( "Enter lower elevation class bound" ), tr( "Elevation" ), item->text( 0 ).toDouble(), -2147483647,
+                                        2147483647, 2, &ok );
+    if ( ok )
+    {
+      item->setText( 0, QString::number( d ) );
+    }
+  }
+  else if ( column == 1 )
+  {
+    bool ok;
+    double d = QInputDialog::getDouble( 0, tr( "Enter upper elevation class bound" ), tr( "Elevation" ), item->text( 1 ).toDouble(), -2147483647,
+                                        2147483647, 2, &ok );
+    if ( ok )
+    {
+      item->setText( 1, QString::number( d ) );
+    }
+  }
+  else if ( column == 2 )
+  {
+    QColor c = QColorDialog::getColor( item->background( 2 ).color(), 0, tr( "Select color for relief class" ) );
+    if ( c.isValid() )
+    {
+      item->setBackground( 2, QBrush( c ) );
+    }
+  }
 }
 
 void QgsRasterTerrainAnalysisDialog::on_mButtonBox_accepted()
@@ -186,24 +393,8 @@ void QgsRasterTerrainAnalysisDialog::on_mButtonBox_accepted()
 
   //save last output directory
   QFileInfo outputFileInfo( mOutputLayerLineEdit->text() );
-  s.setValue( "/RasterTerrainAnalysis/lastOutputDir", QVariant( outputFileInfo.absolutePath() ) );
-}
-
-void QgsRasterTerrainAnalysisDialog::on_mOutputLayerLineEdit_textChanged( const QString& text )
-{
-  QPushButton*  okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  if ( !okButton )
+  if ( outputFileInfo.exists() )
   {
-    return;
-  }
-
-  QString outputPath = QFileInfo( text ).absolutePath();
-  if ( mInputLayerComboBox->count() > 0 && QFileInfo( outputPath ).isWritable() )
-  {
-    okButton->setEnabled( true );
-  }
-  else
-  {
-    okButton->setEnabled( false );
+    s.setValue( "/RasterTerrainAnalysis/lastOutputDir", QVariant( outputFileInfo.absolutePath() ) );
   }
 }

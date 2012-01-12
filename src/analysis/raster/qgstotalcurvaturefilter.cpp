@@ -17,8 +17,8 @@
 
 #include "qgstotalcurvaturefilter.h"
 
-QgsTotalCurvatureFilter::QgsTotalCurvatureFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : QgsNineCellFilter( inputFile, outputFile, outputFormat )
+QgsTotalCurvatureFilter::QgsTotalCurvatureFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat ): \
+    QgsNineCellFilter( inputFile, outputFile, outputFormat )
 {
 
 }
@@ -28,12 +28,12 @@ QgsTotalCurvatureFilter::~QgsTotalCurvatureFilter()
 
 }
 
-float QgsTotalCurvatureFilter::processNineCellWindow( float* x11, float* x21, float* x31, float* x12,
+float QgsTotalCurvatureFilter::processNineCellWindow( float* x11, float* x21, float* x31, float* x12, \
     float* x22, float* x32, float* x13, float* x23, float* x33 )
 {
   //return nodata if one value is the nodata value
-  if ( *x11 == mInputNodataValue || *x21 == mInputNodataValue || *x31 == mInputNodataValue || *x12 == mInputNodataValue
-       || *x22 == mInputNodataValue || *x32 == mInputNodataValue || *x13 == mInputNodataValue || *x23 == mInputNodataValue
+  if ( *x11 == mInputNodataValue || *x21 == mInputNodataValue || *x31 == mInputNodataValue || *x12 == mInputNodataValue \
+       || *x22 == mInputNodataValue || *x32 == mInputNodataValue || *x13 == mInputNodataValue || *x23 == mInputNodataValue \
        || *x33 == mInputNodataValue )
   {
     return mOutputNodataValue;
