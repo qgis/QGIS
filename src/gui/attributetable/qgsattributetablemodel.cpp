@@ -210,15 +210,15 @@ void QgsAttributeTableModel::loadAttributes()
     attributes << it.key();
   }
 
-  if ( mFieldCount < attributes.size() )
+  if ( columnCount() < attributes.size() )
   {
     ins = true;
-    beginInsertColumns( QModelIndex(), mFieldCount, attributes.size() - 1 );
+    beginInsertColumns( QModelIndex(), columnCount(), attributes.size() - 1 );
   }
-  else if ( attributes.size() < mFieldCount )
+  else if ( attributes.size() < columnCount() )
   {
     rm = true;
-    beginRemoveColumns( QModelIndex(), attributes.size(), mFieldCount - 1 );
+    beginRemoveColumns( QModelIndex(), attributes.size(), columnCount() - 1 );
   }
 
   mFieldCount = attributes.size();
@@ -259,6 +259,7 @@ void QgsAttributeTableModel::loadLayer()
       if ( cancel )
         break;
     }
+    emit finished();
     endInsertRows();
   }
   else
@@ -282,6 +283,7 @@ void QgsAttributeTableModel::loadLayer()
       if ( cancel )
         break;
     }
+    emit finished();
   }
 
   mFieldCount = mAttributes.size();
@@ -352,7 +354,7 @@ int QgsAttributeTableModel::rowCount( const QModelIndex &parent ) const
 int QgsAttributeTableModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return mFieldCount;
+  return qMax( 1, mFieldCount );  // if there are zero columns all model indices will be considered invalid
 }
 
 QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -363,7 +365,7 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
     {
       return QVariant( section );
     }
-    else
+    else if ( section < mFieldCount )
     {
       QString attributeName = mLayer->attributeAlias( mAttributes[section] );
       if ( attributeName.isEmpty() )
@@ -372,6 +374,10 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
         attributeName = field.name();
       }
       return QVariant( attributeName );
+    }
+    else
+    {
+      return tr( "feature id" );
     }
   }
   else
@@ -382,6 +388,9 @@ QVariant QgsAttributeTableModel::headerData( int section, Qt::Orientation orient
 
 void QgsAttributeTableModel::sort( int column, Qt::SortOrder order )
 {
+  if ( column >= mFieldCount )
+    return;
+
   emit layoutAboutToBeChanged();
 // QgsDebugMsg("SORTing");
 
@@ -437,6 +446,11 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !index.isValid() || ( role != Qt::TextAlignmentRole && role != Qt::DisplayRole && role != Qt::EditRole ) )
     return QVariant();
 
+  QgsFeatureId rowId = rowToId( index.row() );
+
+  if ( index.column() >= mFieldCount )
+    return role == Qt::DisplayRole ? rowId : QVariant();
+
   int fieldId = mAttributes[ index.column()];
 
   QVariant::Type fldType = mLayer->pendingFields()[ fieldId ].type();
@@ -451,7 +465,6 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   }
 
   // if we don't have the row in current cache, load it from layer first
-  QgsFeatureId rowId = rowToId( index.row() );
   if ( mFeat.id() != rowId )
   {
     if ( !featureAtId( rowId ) )
@@ -487,7 +500,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
 
 bool QgsAttributeTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
 {
-  if ( !index.isValid() || role != Qt::EditRole || !mLayer->isEditable() )
+  if ( !index.isValid() || index.column() >= mFieldCount || role != Qt::EditRole || !mLayer->isEditable() )
     return false;
 
   QgsFeatureId fid = rowToId( index.row() );
@@ -515,6 +528,9 @@ Qt::ItemFlags QgsAttributeTableModel::flags( const QModelIndex &index ) const
 {
   if ( !index.isValid() )
     return Qt::ItemIsEnabled;
+
+  if ( index.column() >= mFieldCount )
+    return Qt::NoItemFlags;
 
   Qt::ItemFlags flags = QAbstractItemModel::flags( index );
 
