@@ -74,7 +74,7 @@ typedef SInt32 SRefCon;
 #include "qgsrectangle.h"
 #include "qgslogger.h"
 
-#if defined(linux)
+#if defined(linux) && ! defined(ANDROID)
 #include <execinfo.h>
 #endif
 
@@ -174,7 +174,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
            || 0 == strncmp( msg, "QPainter::", 10 ) )
       {
 #if 0
-#ifdef linux
+#if defined(linux) && ! defined(ANDROID)
         fprintf( stderr, "Stacktrace (run through c++filt):\n" );
         void *buffer[256];
         int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
@@ -196,7 +196,7 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtFatalMsg:
     {
       fprintf( stderr, "Fatal: %s\n", msg );
-#ifdef linux
+#if defined(linux) && ! defined(ANDROID)
       fprintf( stderr, "Stacktrace (run through c++filt):\n" );
       void *buffer[256];
       int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
