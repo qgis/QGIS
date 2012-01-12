@@ -392,9 +392,5 @@ void QgsRasterTerrainAnalysisDialog::on_mButtonBox_accepted()
   s.setValue( "/RasterTerrainAnalysis/lastOutputFormat", QVariant( mOutputFormatComboBox->currentText() ) );
 
   //save last output directory
-  QFileInfo outputFileInfo( mOutputLayerLineEdit->text() );
-  if ( outputFileInfo.exists() )
-  {
-    s.setValue( "/RasterTerrainAnalysis/lastOutputDir", QVariant( outputFileInfo.absolutePath() ) );
-  }
+  s.setValue( "/RasterTerrainAnalysis/lastOutputDir", QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() );
 }
