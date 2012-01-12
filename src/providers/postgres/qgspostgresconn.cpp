@@ -409,13 +409,13 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( nColumns > 0 )
     {
       // TODO: handle this for the topogeometry case
-      sql += " AND NOT EXISTS (SELECT * FROM geometry_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
+      sql += " AND (pg_namespace.nspname,pg_class.relname) NOT IN (SELECT f_table_schema,f_table_name FROM geometry_columns)";
 
       if ( nGTables > 1 )
       {
         // TODO: handle this for the topogeometry case
         // TODO: handle this for the geometry case ?
-        sql += " AND NOT EXISTS (SELECT * FROM geography_columns WHERE pg_namespace.nspname=f_table_schema AND pg_class.relname=f_table_name)";
+        sql += " AND (pg_namespace.nspname,pg_class.relname) NOT IN (SELECT f_table_schema,f_table_name FROM geography_columns)";
       }
     }
     else
@@ -461,7 +461,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         layerProperty.geometryColName = column;
         layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
         layerProperty.sql = "";
-        layerProperty.isGeography = false;	// TODO might be geography after all
+        layerProperty.isGeography = false; // TODO might be geography after all
 
         mLayersSupported << layerProperty;
         nColumns++;
