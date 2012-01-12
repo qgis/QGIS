@@ -63,7 +63,7 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
 #ifndef _MSC_VER
       m = QString( "%1: %2: (%3) %4" ).arg( file + sPrefixLength ).arg( line ).arg( function ).arg( msg );
 #else
-      m = QString( "%1(%2) : (%3) %4" ).arg( file + sPrefixLength ).arg( line ).arg( function ).arg( msg );
+      m = QString( "%1(%2) : (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( msg );
 #endif
     }
     if ( logFile().isEmpty() )
