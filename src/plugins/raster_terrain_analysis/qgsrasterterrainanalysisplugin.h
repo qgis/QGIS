@@ -23,6 +23,7 @@
 
 class QgsInterface;
 class QAction;
+class QMenu;
 
 /**A plugin for raster based terrain analysis (e.g. slope, aspect, ruggedness)*/
 class QgsRasterTerrainAnalysisPlugin: public QObject, public QgisPlugin
@@ -38,12 +39,15 @@ class QgsRasterTerrainAnalysisPlugin: public QObject, public QgisPlugin
     void unload();
 
   private slots:
-    /**Select input file, output file, format and analysis method*/
-    void run();
+    void hillshade();
+    void relief();
+    void slope();
+    void aspect();
+    void ruggedness();
 
   private:
     QgisInterface* mIface;
-    QAction* mAction;
+    QMenu* mTerrainAnalysisMenu;
 };
 
 #endif // QGSRASTERTERRAINANALYSISPLUGIN_H

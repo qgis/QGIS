@@ -21,21 +21,26 @@
 #include "qgsmaplayer.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsaspectfilter.h"
+#include "qgshillshadefilter.h"
 #include "qgsslopefilter.h"
 #include "qgsruggednessfilter.h"
 #include "qgstotalcurvaturefilter.h"
+#include "qgsrelief.h"
 #include "qgsrasterterrainanalysisdialog.h"
 #include <QAction>
 #include <QFileInfo>
+#include <QMainWindow>
+#include <QMenu>
+#include <QMenuBar>
 #include <QProgressDialog>
 
 static const QString name_ = QObject::tr( "Raster Terrain Analysis plugin" );
 static const QString description_ = QObject::tr( "A plugin for raster based terrain analysis" );
-static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QString icon_ = ":/raster/raster_terrain_icon.png";
+static const QString category_ = QObject::tr( "Raster" );
 
-QgsRasterTerrainAnalysisPlugin::QgsRasterTerrainAnalysisPlugin( QgisInterface* iface ): mIface( iface ), mAction( 0 )
+QgsRasterTerrainAnalysisPlugin::QgsRasterTerrainAnalysisPlugin( QgisInterface* iface ): mIface( iface ), mTerrainAnalysisMenu( 0 )
 {
 
 }
@@ -50,10 +55,45 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
   //create Action
   if ( mIface )
   {
-    mAction = new QAction( QIcon( ":/raster/raster_terrain_icon.png" ), tr( "&Raster based terrain analysis" ), 0 );
-    QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
-    mIface->addRasterToolBarIcon( mAction );
-    mIface->addPluginToRasterMenu( tr( "&Raster based terrain analysis" ), mAction );
+    //find raster menu
+    QString rasterText = QCoreApplication::translate( "QgisApp", "&Raster" );
+    QMainWindow* mainWindow = qobject_cast<QMainWindow*>( mIface->mainWindow() );
+    if ( !mainWindow )
+    {
+      return;
+    }
+
+    QMenuBar* menuBar = mainWindow->menuBar();
+    if ( !menuBar )
+    {
+      return;
+    }
+
+    QMenu* rasterMenu = 0;
+    QList<QAction *> menuBarActions = menuBar->actions();
+    QList<QAction *>::iterator menuActionIt =  menuBarActions.begin();
+    for ( ; menuActionIt != menuBarActions.end(); ++menuActionIt )
+    {
+      if (( *menuActionIt )->menu() && ( *menuActionIt )->menu()->title() == rasterText )
+      {
+        rasterMenu = ( *menuActionIt )->menu();
+        rasterMenu->addSeparator();
+        break;
+      }
+    }
+
+    if ( !rasterMenu )
+    {
+      return;
+    }
+
+    mTerrainAnalysisMenu = new QMenu( tr( "Terrain analysis" ) );
+    mTerrainAnalysisMenu->addAction( tr( "Slope" ), this, SLOT( slope() ) );
+    mTerrainAnalysisMenu->addAction( tr( "Aspect" ), this, SLOT( aspect() ) );
+    mTerrainAnalysisMenu->addAction( tr( "Hillshade" ), this, SLOT( hillshade() ) );
+    mTerrainAnalysisMenu->addAction( tr( "Relief" ), this, SLOT( relief() ) );
+    mTerrainAnalysisMenu->addAction( tr( "Ruggedness index" ), this, SLOT( ruggedness() ) );
+    rasterMenu->addMenu( mTerrainAnalysisMenu );
   }
 }
 
@@ -61,58 +101,102 @@ void QgsRasterTerrainAnalysisPlugin::unload()
 {
   if ( mIface )
   {
-    mIface->removePluginRasterMenu( tr( "&Raster based terrain analysis" ), mAction );
-    mIface ->removeRasterToolBarIcon( mAction );
-    delete mAction;
+    delete mTerrainAnalysisMenu;
   }
 }
 
-void QgsRasterTerrainAnalysisPlugin::run()
+void QgsRasterTerrainAnalysisPlugin::hillshade()
 {
-  QgsRasterTerrainAnalysisDialog d( mIface );
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::HillshadeInput );
+  d.setWindowTitle( tr( "Hillshade" ) );
   if ( d.exec() == QDialog::Accepted )
   {
-    //get input layer from id
-    QString inputLayerId = d.selectedInputLayerId();
-    QgsMapLayer* inputLayer = QgsMapLayerRegistry::instance()->mapLayer( inputLayerId );
-    if ( !inputLayer )
+    QString outputFile = d.outputFile();
+    QgsHillshadeFilter hillshade( d.inputFile(), outputFile, d.outputFormat(), d.lightAzimuth(), d.lightAngle() );
+    hillshade.setZFactor( d.zFactor() );
+    QProgressDialog p( tr( "Calculating hillshade..." ), tr( "Abort" ), 0, 0 );
+    p.setWindowModality( Qt::WindowModal );
+    hillshade.processRaster( &p );
+    if ( d.addResultToProject() )
     {
-      return;
+      mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }
-    QString inputFilePath = inputLayer->source();
+  }
+}
 
-    QString analysisMethod = d.selectedAnalysisMethod();
-    QString selectedFormat = d.selectedDriverKey();
-    QString outputFile = d.selectedOuputFilePath();
+void QgsRasterTerrainAnalysisPlugin::relief()
+{
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::ReliefInput );
+  d.setWindowTitle( tr( "Relief" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QString outputFile = d.outputFile();
+    QgsRelief relief( d.inputFile(), outputFile, d.outputFormat() );
+    relief.setReliefColors( d.reliefColors() );
+    relief.setZFactor( d.zFactor() );
+    QProgressDialog p( tr( "Calculating relief..." ), tr( "Abort" ), 0, 0 );
+    p.setWindowModality( Qt::WindowModal );
+    relief.processRaster( &p );
+    if ( d.addResultToProject( ) )
+    {
+      mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
+    }
+  }
+}
 
-    QgsNineCellFilter* filter = 0;
-    if ( d.selectedAnalysisMethod() == tr( "Slope" ) )
+void QgsRasterTerrainAnalysisPlugin::slope()
+{
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter );
+  d.setWindowTitle( tr( "Slope" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QString outputFile = d.outputFile();
+    QgsSlopeFilter slope( d.inputFile(), outputFile, d.outputFormat() );
+    slope.setZFactor( d.zFactor() );
+    QProgressDialog p( tr( "Calculating slope..." ), tr( "Abort" ), 0, 0 );
+    p.setWindowModality( Qt::WindowModal );
+    slope.processRaster( &p );
+    if ( d.addResultToProject( ) )
     {
-      filter = new QgsSlopeFilter( inputFilePath, outputFile, selectedFormat );
+      mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }
-    else if ( d.selectedAnalysisMethod() == tr( "Aspect" ) )
-    {
-      filter = new QgsAspectFilter( inputFilePath, outputFile, selectedFormat );
-    }
-    else if ( d.selectedAnalysisMethod() == tr( "Ruggedness index" ) )
-    {
-      filter = new QgsRuggednessFilter( inputFilePath, outputFile, selectedFormat );
-    }
-    else if ( d.selectedAnalysisMethod() == tr( "Total curvature" ) )
-    {
-      filter = new QgsTotalCurvatureFilter( inputFilePath, outputFile, selectedFormat );
-    }
+  }
+}
 
-    if ( filter )
+void QgsRasterTerrainAnalysisPlugin::aspect()
+{
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter );
+  d.setWindowTitle( tr( "Aspect" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QString outputFile = d.outputFile();
+    QgsAspectFilter aspect( d.inputFile(), outputFile, d.outputFormat() );
+    aspect.setZFactor( d.zFactor() );
+    QProgressDialog p( tr( "Calculating aspect..." ), tr( "Abort" ), 0, 0 );
+    p.setWindowModality( Qt::WindowModal );
+    aspect.processRaster( &p );
+    if ( d.addResultToProject( ) )
     {
-      QProgressDialog p( tr( "Calculating " ) + d.selectedAnalysisMethod() + "...", tr( "Abort..." ), 0, 0 );
-      p.setWindowModality( Qt::WindowModal );
-      filter->processRaster( &p );
-      delete filter;
-      if ( d.addLayerToProject() )
-      {
-        mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
-      }
+      mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
+    }
+  }
+}
+
+void QgsRasterTerrainAnalysisPlugin::ruggedness()
+{
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter );
+  d.setWindowTitle( tr( "Ruggedness" ) );
+  if ( d.exec() == QDialog::Accepted )
+  {
+    QString outputFile = d.outputFile();
+    QgsRuggednessFilter ruggedness( d.inputFile(), outputFile, d.outputFormat() );
+    ruggedness.setZFactor( d.zFactor() );
+    QProgressDialog p( tr( "Calculating ruggedness..." ), tr( "Abort" ), 0, 0 );
+    p.setWindowModality( Qt::WindowModal );
+    ruggedness.processRaster( &p );
+    if ( d.addResultToProject( ) )
+    {
+      mIface->addRasterLayer( outputFile, QFileInfo( outputFile ).baseName() );
     }
   }
 }
@@ -133,11 +217,6 @@ QGISEXTERN QString description()
   return description_;
 }
 
-QGISEXTERN QString category()
-{
-  return category_;
-}
-
 QGISEXTERN QString version()
 {
   return version_;
@@ -156,6 +235,11 @@ QGISEXTERN int type()
 QGISEXTERN void unload( QgisPlugin* pluginPointer )
 {
   delete pluginPointer;
+}
+
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 
