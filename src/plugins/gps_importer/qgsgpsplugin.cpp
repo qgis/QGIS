@@ -78,7 +78,6 @@ QgsGPSPlugin::~QgsGPSPlugin()
     delete iter2->second;
 }
 
-
 /*
  * Initialize the GUI interface for the plugin
  */
@@ -154,13 +153,14 @@ void QgsGPSPlugin::run()
   myPluginGui->show();
 }
 
-
 void QgsGPSPlugin::createGPX()
 {
+  QSettings settings;
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
                                   tr( "Save new GPX file as..." ),
-                                  ".",
+                                  dir,
                                   tr( "GPS eXchange file (*.gpx)" ) );
   if ( !fileName.isEmpty() )
   {
@@ -178,6 +178,8 @@ void QgsGPSPlugin::createGPX()
                                 "directory." ) );
       return;
     }
+    settings.setValue( "/Plugin-GPS/gpxdirectory", fileInfo.absolutePath() );
+
     ofs << "<gpx></gpx>" << std::endl;
 
     emit drawVectorLayer( fileName + "?type=track",
@@ -188,7 +190,6 @@ void QgsGPSPlugin::createGPX()
                           fileInfo.baseName() + ", waypoints", "gpx" );
   }
 }
-
 
 void QgsGPSPlugin::drawVectorLayer( QString thePathNameQString,
                                     QString theBaseNameQString,
@@ -212,7 +213,6 @@ void QgsGPSPlugin::unload()
 void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadRoutes,
                                 bool loadTracks )
 {
-
   //check if input file is readable
   QFileInfo fileInfo( fileName );
   if ( !fileInfo.isReadable() )
@@ -222,10 +222,6 @@ void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadR
                               "Please reselect a valid file." ) );
     return;
   }
-
-  // remember the directory
-  QSettings settings;
-  settings.setValue( "/Plugin-GPS/gpxdirectory", fileInfo.path() );
 
   // add the requested layers
   if ( loadTracks )
@@ -241,13 +237,11 @@ void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadR
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::importGPSFile( QString inputFileName, QgsBabelFormat* importer,
                                   bool importWaypoints, bool importRoutes,
                                   bool importTracks, QString outputFileName,
                                   QString layerName )
 {
-
   // what features does the user want to import?
   QString typeArg;
   if ( importWaypoints )
@@ -310,15 +304,12 @@ void QgsGPSPlugin::importGPSFile( QString inputFileName, QgsBabelFormat* importe
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::convertGPSFile( QString inputFileName,
                                    int convertType,
                                    QString outputFileName,
                                    QString layerName )
 {
-
   // what features does the user want to import?
-
   QStringList convertStrings;
 
   switch ( convertType )
@@ -397,7 +388,6 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
                                     bool downloadTracks, QString outputFileName,
                                     QString layerName )
 {
-
   // what does the user want to download?
   QString typeArg, features;
   if ( downloadWaypoints )
@@ -427,7 +417,6 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
                           .arg( features ) );
     return;
   }
-
 
   QgsDebugMsg( QString( "Download command: " ) + babelArgs.join( "|" ) );
 
@@ -479,11 +468,9 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, QString device,
                                 QString port )
 {
-
   const QString& source( gpxLayer->dataProvider()->dataSourceUri() );
 
   // what kind of data does the user want to upload?
@@ -560,10 +547,8 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, QString device,
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::setupBabel()
 {
-
   // where is gpsbabel?
   QSettings settings;
   mBabelPath = settings.value( "/Plugin-GPS/gpsbabelpath", "" ).toString();
