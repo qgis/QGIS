@@ -235,5 +235,3 @@ QGISEXTERN void unload( QgisPlugin* pluginPointer )
 {
   delete pluginPointer;
 }
-
-
