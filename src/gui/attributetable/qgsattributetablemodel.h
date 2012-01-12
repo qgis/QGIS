@@ -147,6 +147,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void modelChanged();
 
     void progress( int i, bool &cancel );
+    void finished();
 
   public slots:
     void extentsChanged();
