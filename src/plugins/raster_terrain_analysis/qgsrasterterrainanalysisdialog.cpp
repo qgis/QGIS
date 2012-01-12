@@ -139,7 +139,29 @@ QString QgsRasterTerrainAnalysisDialog::inputFile() const
 
 QString QgsRasterTerrainAnalysisDialog::outputFile() const
 {
-  return mOutputLayerLineEdit->text();
+  QString outputFileName = mOutputLayerLineEdit->text();
+  QFileInfo fileInfo( outputFileName );
+  QString suffix = fileInfo.suffix();
+  if ( !suffix.isEmpty() )
+  {
+    return outputFileName;
+  }
+
+  //add the file format extension if the user did not specify it
+  int index = mOutputFormatComboBox->currentIndex();
+  if ( index == -1 )
+  {
+    return outputFileName;
+  }
+
+  QString driverShortName = mOutputFormatComboBox->itemData( index ).toString();
+  QMap<QString, QString>::const_iterator it = mDriverExtensionMap.find( driverShortName );
+  if ( it == mDriverExtensionMap.constEnd() )
+  {
+    return outputFileName;
+  }
+
+  return ( outputFileName + "." + it.value() );
 }
 
 QString QgsRasterTerrainAnalysisDialog::outputFormat() const
