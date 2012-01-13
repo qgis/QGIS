@@ -55,6 +55,9 @@ class QgsAttributeActionDialog: public QWidget, private Ui::QgsAttributeActionDi
     void update();
     void itemSelectionChanged();
 
+  private slots:
+    void updateButtons();
+
   private:
 
     void insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture );
