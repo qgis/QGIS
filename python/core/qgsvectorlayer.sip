@@ -675,6 +675,7 @@ signals:
   void layerDeleted();
 
   void attributeValueChanged(qint64 fid, int idx, const QVariant &);
+  void geometryChanged(qint64 fid, QgsGeometry & );
 
   /** Signals emitted after committing changes
     \note added in v1.6 */

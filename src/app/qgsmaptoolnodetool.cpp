@@ -133,26 +133,16 @@ QgsRubberBand* QgsMapToolNodeTool::createRubberBandMarker( QgsPoint center, QgsV
   return marker;
 }
 
-QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas ): QgsMapToolVertexEdit( canvas )
+QgsMapToolNodeTool::QgsMapToolNodeTool( QgsMapCanvas* canvas )
+    : QgsMapToolVertexEdit( canvas )
+    , mSelectedFeature( 0 )
+    , mMoving( true )
+    , mClicked( false )
+    , mCtrl( false )
+    , mSelectAnother( false )
+    , mRubberBand( 0 )
+    , mIsPoint( false )
 {
-  mSelectionFeature = NULL;
-  mQRubberBand = NULL;
-  mSelectAnother = false;
-  mCtrl = false;
-  mMoving = true;
-  mClicked = false;
-  mChangingGeometry = false;
-  mIsPoint = false;
-  // signal handling change of layer structure
-  connect( canvas, SIGNAL( layersChanged() ), this, SLOT( layersChanged() ) );
-  // signal when destination srs changed to repaint coordinates
-  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( coordinatesChanged() ) );
-  // signal changing of coordinate renderer changed to repaint markers
-  connect( canvas->mapRenderer(), SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( coordinatesChanged() ) );
-  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( coordinatesChanged() ) );
-  // signal changing of current layer
-  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ),
-           this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
 }
 
 QgsMapToolNodeTool::~QgsMapToolNodeTool()
@@ -160,65 +150,13 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
   removeRubberBands();
 }
 
-void QgsMapToolNodeTool::layersChanged()
-{
-  // deselection of feature when layer has changed
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( mSelectionFeature != NULL && mSelectionFeature->vlayer() != vlayer )
-  {
-    delete mSelectionFeature;
-    mSelectionFeature = NULL;
-  }
-}
-
-void QgsMapToolNodeTool::currentLayerChanged( QgsMapLayer* layer )
-{
-  // deselection of feature when current layer has changed
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( mSelectionFeature != NULL && mSelectionFeature->vlayer() != vlayer )
-  {
-    delete mSelectionFeature;
-    mSelectionFeature = NULL;
-  }
-}
-
-
-void QgsMapToolNodeTool::featureDeleted( QgsFeatureId featureId )
-{
-  // check if deleted feature is the one selected
-  if ( mSelectionFeature != NULL && featureId == mSelectionFeature->featureId() )
-  {
-    // if it's delete selection and disconnect signals since tool is not used anymore
-    delete mSelectionFeature;
-    mSelectionFeature = NULL;
-    disconnect( mCanvas->currentLayer(), SIGNAL( featureDeleted( QgsFeatureId ) ) );
-    disconnect( mCanvas->currentLayer(), SIGNAL( layerModified( bool ) ) );
-  }
-}
-
-void QgsMapToolNodeTool::layerModified( bool onlyGeometry )
-{
-  Q_UNUSED( onlyGeometry );
-  // handling modification of
-  QgsFeature feat;
-  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  if ( mSelectionFeature && !mChangingGeometry && vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) )
-  {
-    if ( !feat.geometry()->isGeosEqual( *mSelectionFeature->feature()->geometry() ) )
-    {
-      mSelectionFeature->updateFromFeature();
-      // throw error
-    }
-  }
-}
-
 void QgsMapToolNodeTool::createMovingRubberBands()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
 
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
-  QList<VertexEntry*> &vertexMap = mSelectionFeature->vertexMap();
-  QgsGeometry* geometry = mSelectionFeature->feature()->geometry();
+  QList<VertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+  QgsGeometry* geometry = mSelectedFeature->geometry();
   int beforeVertex, afterVertex;
   int lastRubberBand = 0;
   int vertex;
@@ -284,7 +222,7 @@ void QgsMapToolNodeTool::createMovingRubberBands()
 void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, const QList<VertexEntry*> &vertexMap, int vertex )
 {
   QMultiMap<double, QgsSnappingResult> currentResultList;
-  QgsGeometry* geometry = mSelectionFeature->feature()->geometry();
+  QgsGeometry *geometry = mSelectedFeature->geometry();
 
   // snap from current vertex
   currentResultList.clear();
@@ -294,7 +232,7 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
   for ( ; resultIt != currentResultList.end(); ++resultIt )
   {
     // move all other
-    if ( mSelectionFeature->featureId() != resultIt.value().snappedAtGeometry )
+    if ( mSelectedFeature->featureId() != resultIt.value().snappedAtGeometry )
     {
       if ( mTopologyMovingVertexes.contains( resultIt.value().snappedAtGeometry ) )
       {
@@ -387,194 +325,134 @@ void QgsMapToolNodeTool::createTopologyRubberBands( QgsVectorLayer* vlayer, cons
   }
 }
 
-void QgsMapToolNodeTool::coordinatesChanged()
-{
-  // need to update vertex markers since coordinate systems have changed
-  if ( mSelectionFeature != NULL )
-  {
-    mSelectionFeature->updateVertexMarkersPosition();
-  }
-}
-
 void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
 {
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
-  QgsVectorLayer* vlayer = 0;
-  if ( currentLayer )
-  {
-    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-  }
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( !mSelectedFeature || !vlayer || !mClicked )
+    return;
 
-  if ( mSelectionFeature == NULL )
+  if ( !vlayer )
+    return;
+
+  mSelectAnother = false;
+  if ( mMoving )
   {
-    return; // check that we are able to move something
-  }
-  if ( mClicked )
-  {
-    mSelectAnother = false;
-    if ( mMoving )
+    // create rubberband if none exists
+    if ( mRubberBands.empty() )
     {
-      // create rubberband if none exists
-      if ( mRubberBands.empty() )
+      if ( mIsPoint )
       {
-        if ( mIsPoint )
-        {
-          QList<VertexEntry*> &vertexMap = mSelectionFeature->vertexMap();
-          for ( int i = 0; i < vertexMap.size(); i++ )
-          {
-            if ( vertexMap[i]->isSelected() )
-            {
-              QgsRubberBand* rb = createRubberBandMarker( vertexMap[i]->point(), vlayer );
-              mRubberBands.append( rb );
-            }
-          }
-        }
-        createMovingRubberBands();
-        QList<QgsSnappingResult> snapResults;
-        QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
-        mPosMapCoordBackup = posMapCoord;
-      }
-      else
-      {
-        // move rubberband
-        QList<QgsSnappingResult> snapResults;
-        QgsPoint firstCoords = mCanvas->getCoordinateTransform()->toMapPoint( mLastCoordinates->x(), mLastCoordinates->y() );
-        QList<QgsPoint> excludePoints;
-        excludePoints.append( mClosestVertex );
-        mSnapper.snapToBackgroundLayers( e->pos(), snapResults, excludePoints );
-        // get correct coordinates to move
-        QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
-        if ( snapResults.size() > 0 )
-        {
-          firstCoords = toMapCoordinates( vlayer, mClosestVertex );
-        }
-
-        // special handling of points
-        if ( mIsPoint )
-        {
-          double offsetX = posMapCoord.x() - firstCoords.x();
-          double offsetY = posMapCoord.y() - firstCoords.y();
-          for ( int i = 0; i < mRubberBands.size(); i++ )
-          {
-            mRubberBands[i]->setTranslationOffset( offsetX, offsetY );
-          }
-          return;
-        }
-
-        // move points
-        QList<VertexEntry*> &vertexMap = mSelectionFeature->vertexMap();
+        QList<VertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
         for ( int i = 0; i < vertexMap.size(); i++ )
         {
-
           if ( vertexMap[i]->isSelected() )
           {
-            QgsPoint mapCoords = toMapCoordinates( vlayer, vertexMap[i]->point() );
-            double x = mapCoords.x() + posMapCoord.x() - firstCoords.x();
-            double y = mapCoords.y() + posMapCoord.y() - firstCoords.y();
-
-            mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( vertexMap[i]->index(), QgsPoint( x, y ) );
-            if ( vertexMap[i]->index() == 0 )
-            {
-              mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( 0, QgsPoint( x, y ) );
-            }
+            QgsRubberBand* rb = createRubberBandMarker( vertexMap[i]->point(), vlayer );
+            mRubberBands.append( rb );
           }
         }
-
-        // topological editing
-        double offsetX = posMapCoord.x() - mPosMapCoordBackup.x();
-        double offsetY = posMapCoord.y() - mPosMapCoordBackup.y();
-        for ( int i = 0; i < mTopologyRubberBand.size(); i++ )
-        {
-          for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices() - 1; pointIndex++ )
-          {
-            if ( mTopologyRubberBandVertexes[i]->contains( pointIndex ) )
-            {
-              const QgsPoint* point = mTopologyRubberBand[i]->getPoint( 0, pointIndex );
-              if ( point == 0 )
-              {
-                break;
-              }
-              mTopologyRubberBand[i]->movePoint( pointIndex, QgsPoint( point->x() + offsetX, point->y() + offsetY ) );
-              if ( pointIndex == 0 )
-              {
-                mTopologyRubberBand[i]->movePoint( pointIndex , QgsPoint( point->x() + offsetX, point->y() + offsetY ) );
-              }
-            }
-          }
-        }
-        mPosMapCoordBackup = posMapCoord;
       }
+      createMovingRubberBands();
+      QList<QgsSnappingResult> snapResults;
+      QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
+      mPosMapCoordBackup = posMapCoord;
     }
     else
     {
-      if ( !mSelectionRectangle )
+      // move rubberband
+      QList<QgsSnappingResult> snapResults;
+      QgsPoint firstCoords = mCanvas->getCoordinateTransform()->toMapPoint( mLastCoordinates->x(), mLastCoordinates->y() );
+      QList<QgsPoint> excludePoints;
+      excludePoints.append( mClosestVertex );
+      mSnapper.snapToBackgroundLayers( e->pos(), snapResults, excludePoints );
+      // get correct coordinates to move
+      QgsPoint posMapCoord = snapPointFromResults( snapResults, e->pos() );
+      if ( snapResults.size() > 0 )
       {
-        mSelectionRectangle = true;
-        mQRubberBand = new QRubberBand( QRubberBand::Rectangle, mCanvas );
-        mRect = new QRect();
-        mRect->setTopLeft( QPoint( mLastCoordinates->x(), mLastCoordinates->y() ) );
+        firstCoords = toMapCoordinates( vlayer, mClosestVertex );
       }
-      mRect->setBottomRight( e->pos() );
-      QRect normalizedRect = mRect->normalized();
-      mQRubberBand->setGeometry( normalizedRect );
-      mQRubberBand->show();
+
+      // special handling of points
+      if ( mIsPoint )
+      {
+        double offsetX = posMapCoord.x() - firstCoords.x();
+        double offsetY = posMapCoord.y() - firstCoords.y();
+        for ( int i = 0; i < mRubberBands.size(); i++ )
+        {
+          mRubberBands[i]->setTranslationOffset( offsetX, offsetY );
+        }
+        return;
+      }
+
+      // move points
+      QList<VertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
+      for ( int i = 0; i < vertexMap.size(); i++ )
+      {
+
+        if ( vertexMap[i]->isSelected() )
+        {
+          QgsPoint mapCoords = toMapCoordinates( vlayer, vertexMap[i]->point() );
+          double x = mapCoords.x() + posMapCoord.x() - firstCoords.x();
+          double y = mapCoords.y() + posMapCoord.y() - firstCoords.y();
+
+          mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( vertexMap[i]->index(), QgsPoint( x, y ) );
+          if ( vertexMap[i]->index() == 0 )
+          {
+            mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( 0, QgsPoint( x, y ) );
+          }
+        }
+      }
+
+      // topological editing
+      double offsetX = posMapCoord.x() - mPosMapCoordBackup.x();
+      double offsetY = posMapCoord.y() - mPosMapCoordBackup.y();
+      for ( int i = 0; i < mTopologyRubberBand.size(); i++ )
+      {
+        for ( int pointIndex = 0; pointIndex < mTopologyRubberBand[i]->numberOfVertices() - 1; pointIndex++ )
+        {
+          if ( mTopologyRubberBandVertexes[i]->contains( pointIndex ) )
+          {
+            const QgsPoint* point = mTopologyRubberBand[i]->getPoint( 0, pointIndex );
+            if ( point == 0 )
+            {
+              break;
+            }
+            mTopologyRubberBand[i]->movePoint( pointIndex, QgsPoint( point->x() + offsetX, point->y() + offsetY ) );
+            if ( pointIndex == 0 )
+            {
+              mTopologyRubberBand[i]->movePoint( pointIndex , QgsPoint( point->x() + offsetX, point->y() + offsetY ) );
+            }
+          }
+        }
+      }
+      mPosMapCoordBackup = posMapCoord;
     }
   }
-
-}
-
-void QgsMapToolNodeTool::connectSignals( QgsVectorLayer* vlayer )
-{
-  connect( vlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
-  connect( vlayer, SIGNAL( layerModified( bool ) ), this, SLOT( layerModified( bool ) ) );
-}
-
-bool QgsMapToolNodeTool::checkCorrectnessOfFeature( QgsVectorLayer *vlayer )
-{
-  QgsFeature feat;
-  if ( !vlayer->featureAtId( mSelectionFeature->featureId(), feat, true, false ) )
+  else
   {
-    qDebug( "feature doesn't exist any more" );
-    QMessageBox::warning( NULL,
-                          tr( "Node tool" ),
-                          tr( "Feature was deleted on background." ),
-                          QMessageBox::Ok ,
-                          QMessageBox::Ok );
-    delete mSelectionFeature;
-    mSelectionFeature = NULL;
-    return false;
-  }
-  try
-  {
-    if ( !feat.geometry()->isGeosEqual( *mSelectionFeature->feature()->geometry() ) )
+    if ( !mSelectionRectangle )
     {
-      // update markers when geometries are not valid
-      mSelectionFeature->updateFromFeature();
+      mSelectionRectangle = true;
+      mRubberBand = new QRubberBand( QRubberBand::Rectangle, mCanvas );
+      mRect = new QRect();
+      mRect->setTopLeft( QPoint( mLastCoordinates->x(), mLastCoordinates->y() ) );
     }
+    mRect->setBottomRight( e->pos() );
+    QRect normalizedRect = mRect->normalized();
+    mRubberBand->setGeometry( normalizedRect );
+    mRubberBand->show();
   }
-  catch ( ... )
-  {
-    // for cases when geos throws an exception for example for invalid polygon
-    return true;
-  }
-  return true;
 }
-
-
-
 
 void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
 {
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
-  QgsVectorLayer* vlayer = 0;
-  if ( currentLayer )
-  {
-    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-  }
+  QgsDebugMsg( "Entering." );
+  QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+
   mClicked = true;
   mLastCoordinates = new QgsPoint( e->pos().x(), e->pos().y() );
   QList<QgsSnappingResult> snapResults;
-  if ( mSelectionFeature == NULL )
+  if ( !mSelectedFeature )
   {
     mSelectAnother = false;
     mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertexAndSegment, -1 );
@@ -584,29 +462,21 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
       displaySnapToleranceWarning();
       return;
     }
-    mSelectionFeature = new SelectionFeature();
-    mSelectionFeature->setSelectedFeature( snapResults[0].snappedAtGeometry, vlayer, NULL, mCanvas );
-    mIsPoint = vlayer->dataProvider()->geometryType() == QGis::WKBPoint
-               || vlayer->dataProvider()->geometryType() == QGis::WKBMultiPoint;
-    connectSignals( vlayer );
+
+    mSelectedFeature = new SelectedFeature( snapResults[0].snappedAtGeometry, vlayer, mCanvas );
+    connect( mSelectedFeature, SIGNAL( destroyed() ), this, SLOT( selectedFeatureDestroyed() ) );
+    mIsPoint = vlayer->geometryType() == QGis::Point;
   }
   else
   {
-    // check if feature is not modified from background and still exists
-    // Note this code should never be reached signals should handle this error
-    if ( !checkCorrectnessOfFeature( vlayer ) )
-      return;
-
     // some feature already selected
     QgsPoint mapCoordPoint = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
     double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapRenderer() );
+
     // get geometry and find if snapping is near it
-    QgsFeature f;
-    vlayer->featureAtId( mSelectionFeature->featureId(), f, true, false );
-    QgsGeometry* g = f.geometry();
     int atVertex, beforeVertex, afterVertex;
     double dist;
-    g->closestVertex( toLayerCoordinates( vlayer, mapCoordPoint ), atVertex, beforeVertex, afterVertex, dist );
+    mSelectedFeature->geometry()->closestVertex( toLayerCoordinates( vlayer, mapCoordPoint ), atVertex, beforeVertex, afterVertex, dist );
     dist = sqrt( dist );
 
     mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex, tol );
@@ -631,7 +501,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
         QgsSnappingResult snapResult;
         for ( ; it != snapResults.end(); ++it )
         {
-          if ( it->snappedAtGeometry == mSelectionFeature->featureId() )
+          if ( it->snappedAtGeometry == mSelectedFeature->featureId() )
           {
             snapResult = *it;
             mAnother = 0;
@@ -643,22 +513,19 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
         {
           mMoving = true;
           QgsPoint point = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
-          mClosestVertex = getClosestVertex( toLayerCoordinates( vlayer, point ) );
-          if ( !mSelectionFeature->isSelected( snapResult.beforeVertexNr ) ||
-               !mSelectionFeature->isSelected( snapResult.afterVertexNr ) )
+          mClosestVertex = closestVertex( toLayerCoordinates( vlayer, point ) );
+          if ( !mSelectedFeature->isSelected( snapResult.beforeVertexNr ) ||
+               !mSelectedFeature->isSelected( snapResult.afterVertexNr ) )
           {
-            mSelectionFeature->deselectAllVertexes();
-            mSelectionFeature->selectVertex( snapResult.afterVertexNr );
-            mSelectionFeature->selectVertex( snapResult.beforeVertexNr );
+            mSelectedFeature->deselectAllVertexes();
+            mSelectedFeature->selectVertex( snapResult.afterVertexNr );
+            mSelectedFeature->selectVertex( snapResult.beforeVertexNr );
           }
         }
       }
-      else
+      else if ( !mCtrl )
       {
-        if ( !mCtrl )
-        {
-          mSelectionFeature->deselectAllVertexes();
-        }
+        mSelectedFeature->deselectAllVertexes();
       }
     }
     else
@@ -666,20 +533,17 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
       // some vertex selected
       mMoving = true;
       QgsPoint point = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
-      mClosestVertex = getClosestVertex( toLayerCoordinates( vlayer, point ) );
+      mClosestVertex = closestVertex( toLayerCoordinates( vlayer, point ) );
       if ( mMoving )
       {
         if ( mCtrl )
         {
-          mSelectionFeature->invertVertexSelection( atVertex );
+          mSelectedFeature->invertVertexSelection( atVertex );
         }
-        else
+        else if ( !mSelectedFeature->isSelected( atVertex ) )
         {
-          if ( !( mSelectionFeature->isSelected( atVertex ) ) )
-          {
-            mSelectionFeature->deselectAllVertexes();
-            mSelectionFeature->selectVertex( atVertex );
-          }
+          mSelectedFeature->deselectAllVertexes();
+          mSelectedFeature->selectVertex( atVertex );
         }
       }
       else
@@ -690,23 +554,26 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
       }
     }
   }
+  QgsDebugMsg( "Leaving." );
+}
 
+void QgsMapToolNodeTool::selectedFeatureDestroyed()
+{
+  QgsDebugMsg( "Entered." );
+  mSelectedFeature = 0;
 }
 
 void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
 {
-  if ( mSelectionFeature == NULL )
+  if ( !mSelectedFeature )
   {
     // no feature is selected
     return;
   }
+
   removeRubberBands();
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
-  QgsVectorLayer* vlayer = 0;
-  if ( currentLayer )
-  {
-    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-  }
+
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
 
   mClicked = false;
   mSelectionRectangle = false;
@@ -714,20 +581,19 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
   // QgsPoint coords = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
   // QgsPoint firstCoords = toMapCoordinates( *mLastCoordinates );
   QgsPoint firstCoords = mCanvas->getCoordinateTransform()->toMapPoint( mLastCoordinates->x(), mLastCoordinates->y() );
-  if ( mQRubberBand != NULL )
+  if ( mRubberBand )
   {
-    mQRubberBand->close();
-    delete mQRubberBand;
-    mQRubberBand = NULL;
+    mRubberBand->close();
+    delete mRubberBand;
+    mRubberBand = 0;
   }
   if ( mLastCoordinates->x() == e->pos().x() && mLastCoordinates->y() == e->pos().y() )
   {
     if ( mSelectAnother )
     {
       // select another feature (this should deselect current one ;-) )
-      mSelectionFeature->setSelectedFeature( mAnother, vlayer, NULL, mCanvas );
-      mIsPoint = vlayer->dataProvider()->geometryType() == QGis::WKBPoint ||
-                 vlayer->dataProvider()->geometryType() == QGis::WKBMultiPoint;
+      mSelectedFeature->setSelectedFeature( mAnother, vlayer, mCanvas );
+      mIsPoint = vlayer->geometryType() == QGis::Point;
       mSelectAnother = false;
     }
   }
@@ -785,18 +651,18 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       QgsPoint layerFirstCoords = toLayerCoordinates( vlayer, firstCoords );
       double changeX = layerCoords.x() - layerFirstCoords.x();
       double changeY = layerCoords.y() - layerFirstCoords.y();
-      mChangingGeometry = true;
-      mSelectionFeature->moveSelectedVertexes( changeX, changeY );
+      mSelectedFeature->beginGeometryChange();
+      mSelectedFeature->moveSelectedVertexes( changeX, changeY );
       mCanvas->refresh();
-      mChangingGeometry = false;
+      mSelectedFeature->endGeometryChange();
       // movingVertexes
     }
     else // selecting vertexes by rubberband
     {
-      QList<VertexEntry*> &vertexMap = mSelectionFeature->vertexMap();
+      QList<VertexEntry*> &vertexMap = mSelectedFeature->vertexMap();
       if ( !mCtrl )
       {
-        mSelectionFeature->deselectAllVertexes();
+        mSelectedFeature->deselectAllVertexes();
       }
       for ( int i = 0; i < vertexMap.size(); i++ )
       {
@@ -804,7 +670,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
              && vertexMap[i]->point().x() > topX    && vertexMap[i]->point().y() < rightY )
         {
           // inverting selection is enough because all were deselected if ctrl is not pressed
-          mSelectionFeature->invertVertexSelection( i, false );
+          mSelectedFeature->invertVertexSelection( i, false );
         }
       }
     }
@@ -815,23 +681,21 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
 
   mRecentSnappingResults.clear();
   mExcludePoint.clear();
-
 }
 
 void QgsMapToolNodeTool::deactivate()
 {
   removeRubberBands();
-  delete mSelectionFeature;
-  mSelectionFeature = NULL;
 
-  disconnect( mCanvas->currentLayer(), SIGNAL( featureDeleted( QgsFeatureId ) ) );
-  disconnect( mCanvas->currentLayer(), SIGNAL( layerModified( bool ) ) );
+  delete mSelectedFeature;
+  mSelectedFeature = 0;
 
-  mQRubberBand = NULL;
+  mRubberBand = 0;
   mSelectAnother = false;
   mCtrl = false;
   mMoving = true;
   mClicked = false;
+
   QgsMapTool::deactivate();
 }
 
@@ -854,83 +718,72 @@ void QgsMapToolNodeTool::removeRubberBands()
   mTopologyRubberBandVertexes.clear();
 
   // remove all data from selected feature (no change to rubberbands itself)
-  if ( mSelectionFeature != NULL )
-    mSelectionFeature->cleanRubberBandsData();
+  if ( mSelectedFeature )
+    mSelectedFeature->cleanRubberBandsData();
 }
 
 
 void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 {
-  QgsMapLayer* currentLayer = mCanvas->currentLayer();
-  QgsVectorLayer* vlayer = 0;
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( !vlayer )
+    return;
+
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
-  if ( currentLayer )
-  {
-    vlayer = qobject_cast<QgsVectorLayer *>( currentLayer );
-  }
 
   QList<QgsSnappingResult> snapResults;
   mMoving = false;
   double tol = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapRenderer() );
   mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment, tol );
-  if ( snapResults.size() < 1 )
+  if ( snapResults.size() < 1 ||
+       snapResults.first().snappedAtGeometry != mSelectedFeature->featureId() ||
+       snapResults.first().snappedVertexNr != -1 )
+    return;
+
+  // some segment selected
+  QgsPoint coords = snapResults.first().snappedVertex;
+  QgsPoint layerCoords = toLayerCoordinates( vlayer, coords );
+  if ( topologicalEditing )
   {
-    // nowhere to put vertex
+    // snap from adding position to this vertex when topological editing is enabled
+    currentResultList.clear();
+    vlayer->snapWithContext( layerCoords, ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToSegment );
   }
-  else
+
+  vlayer->beginEditCommand( tr( "Inserted vertex" ) );
+  mSelectedFeature->beginGeometryChange();
+
+  // add vertex
+  vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectedFeature->featureId(), snapResults.first().afterVertexNr );
+
+  if ( topologicalEditing )
   {
-    // some segment selected
-    if ( snapResults.first().snappedAtGeometry == mSelectionFeature->featureId() )
+    QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
+
+    for ( ; resultIt != currentResultList.end(); ++resultIt )
     {
-      if ( snapResults.first().snappedVertexNr == -1 )
-      {
-        QgsPoint coords = snapResults.first().snappedVertex;
-        QgsPoint layerCoords = toLayerCoordinates( vlayer, coords );
-        if ( topologicalEditing )
-        {
-          // snap from adding position to this vertex when topological editing is enabled
-          currentResultList.clear();
-          vlayer->snapWithContext( layerCoords, ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToSegment );
-        }
-
-        vlayer->beginEditCommand( tr( "Inserted vertex" ) );
-        mChangingGeometry = true;
-
-        // add vertex
-        vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectionFeature->featureId(), snapResults.first().afterVertexNr );
-
-        if ( topologicalEditing )
-        {
-          QMultiMap<double, QgsSnappingResult>::iterator resultIt =  currentResultList.begin();
-
-          for ( ; resultIt != currentResultList.end(); ++resultIt )
-          {
-            // create vertexes on same position when topological editing is enabled
-            if ( mSelectionFeature->featureId() !=  resultIt.value().snappedAtGeometry )
-              vlayer->insertVertex( layerCoords.x(), layerCoords.y(), resultIt.value().snappedAtGeometry, resultIt.value().afterVertexNr );
-          }
-        }
-
-        vlayer->endEditCommand();
-
-        // make sure that new node gets its vertex marker
-        mCanvas->refresh();
-
-        mSelectionFeature->updateFromFeature();
-        mChangingGeometry = false;
-      }
+      // create vertexes on same position when topological editing is enabled
+      if ( mSelectedFeature->featureId() !=  resultIt.value().snappedAtGeometry )
+        vlayer->insertVertex( layerCoords.x(), layerCoords.y(), resultIt.value().snappedAtGeometry, resultIt.value().afterVertexNr );
     }
   }
+
+  vlayer->endEditCommand();
+
+  // make sure that new node gets its vertex marker
+  mCanvas->refresh();
+
+  mSelectedFeature->endGeometryChange();
 }
 
-QgsPoint QgsMapToolNodeTool::getClosestVertex( QgsPoint point )
+QgsPoint QgsMapToolNodeTool::closestVertex( QgsPoint point )
 {
   int at;
   int before;
   int after;
   double dist;
-  return mSelectionFeature->feature()->geometry()->closestVertex( point, at, before, after, dist );
+  return mSelectedFeature->geometry()->closestVertex( point, at, before, after, dist );
 }
 
 void QgsMapToolNodeTool::keyPressEvent( QKeyEvent* e )
@@ -948,28 +801,36 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
     mCtrl = false;
     return;
   }
-  if ( mSelectionFeature && e->key() == Qt::Key_Delete )
+
+  if ( mSelectedFeature && e->key() == Qt::Key_Delete )
   {
-    mChangingGeometry = true;
-    mSelectionFeature->deleteSelectedVertexes();
+    mSelectedFeature->beginGeometryChange();
+    mSelectedFeature->deleteSelectedVertexes();
     mCanvas->refresh();
-    mChangingGeometry = false;
+    mSelectedFeature->endGeometryChange();
   }
 }
 
 
 // selection object
 
-SelectionFeature::SelectionFeature()
+SelectedFeature::SelectedFeature( QgsFeatureId featureId,
+                                  QgsVectorLayer *vlayer,
+                                  QgsMapCanvas *canvas )
+    : mFeatureId( featureId )
+    , mGeometry( 0 )
+    , mChangingGeometry( false )
+    , mRubberBand( 0 )
+    , mValidator( 0 )
 {
-  mFeature = new QgsFeature();
-  mFeatureId = 0;
-  mFeatureSelected = false;
-  mValidator = 0;
+  QgsDebugMsg( "Entering." );
+  setSelectedFeature( featureId, vlayer, canvas );
 }
 
-SelectionFeature::~SelectionFeature()
+SelectedFeature::~SelectedFeature()
 {
+  QgsDebugMsg( "Entering." );
+
   deleteVertexMap();
 
   while ( !mGeomErrorMarkers.isEmpty() )
@@ -979,22 +840,39 @@ SelectionFeature::~SelectionFeature()
 
   if ( mValidator )
   {
+    mValidator->stop();
+    mValidator->wait();
     mValidator->deleteLater();
     mValidator = 0;
   }
 }
 
-void SelectionFeature::updateFeature()
+void SelectedFeature::currentLayerChanged( QgsMapLayer *layer )
 {
-  if ( mFeatureSelected )
+  QgsDebugMsg( "Entering. " );
+  if ( layer == mVlayer )
+    deleteLater();
+}
+
+void SelectedFeature::updateGeometry( QgsGeometry *geom )
+{
+  QgsDebugMsg( "Entering. " );
+
+  delete mGeometry;
+
+  if ( !geom )
   {
-    delete mFeature;
-    mFeature = new QgsFeature();
-    mVlayer->featureAtId( mFeatureId, *mFeature );
+    QgsFeature f;
+    mVlayer->featureAtId( mFeatureId, f );
+    mGeometry = new QgsGeometry( *f.geometry() );
+  }
+  else
+  {
+    mGeometry = new QgsGeometry( *geom );
   }
 }
 
-void SelectionFeature::cleanRubberBandsData()
+void SelectedFeature::cleanRubberBandsData()
 {
   for ( int i = 0; i < mVertexMap.size(); i++ )
   {
@@ -1002,56 +880,97 @@ void SelectionFeature::cleanRubberBandsData()
   }
 }
 
-void SelectionFeature::setSelectedFeature( QgsFeatureId featureId,
-    QgsVectorLayer* vlayer,
-    QgsRubberBand* rubberBand,
-    QgsMapCanvas* canvas,
-    QgsFeature* feature )
+void SelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas )
 {
-  if ( mFeatureSelected )
-  {
-    deleteVertexMap();
-  }
-  mFeatureSelected = true;
   mFeatureId = featureId;
   mVlayer = vlayer;
   mCanvas = canvas;
-  mRubberBand = rubberBand;
-  if ( feature == NULL )
-  {
-    vlayer->featureAtId( featureId, *mFeature );
-  }
-  else
-  {
-    mFeature = feature;
-  }
 
-  createVertexMap();
+  delete mRubberBand;
+  mRubberBand = 0;
+  delete mGeometry;
+  mGeometry = 0;
 
-  validateGeometry();
+  // signal changing of current layer
+  connect( QgisApp::instance()->legend(), SIGNAL( currentLayerChanged( QgsMapLayer* ) ), this, SLOT( currentLayerChanged( QgsMapLayer* ) ) );
+
+  // feature was deleted
+  connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
+
+  // geometry was changed
+  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+
+  // projection or extents changed
+  connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
+  connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
+
+  replaceVertexMap();
 }
 
-void SelectionFeature::validateGeometry( QgsGeometry *g )
+void SelectedFeature::beginGeometryChange()
+{
+  Q_ASSERT( !mChangingGeometry );
+  mChangingGeometry = true;
+
+  // geometry was changed
+  disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+}
+
+void SelectedFeature::endGeometryChange()
+{
+  Q_ASSERT( mChangingGeometry );
+  mChangingGeometry = false;
+
+  // geometry was changed
+  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
+}
+
+void SelectedFeature::canvasLayersChanged()
+{
+  currentLayerChanged( mCanvas->currentLayer() );
+}
+
+void SelectedFeature::featureDeleted( QgsFeatureId fid )
+{
+  if ( fid == mFeatureId )
+    deleteLater();
+}
+
+void SelectedFeature::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
+{
+  QgsDebugMsg( "Entering." );
+  if ( !mVlayer || fid != mFeatureId )
+    return;
+
+  updateGeometry( &geom );
+  replaceVertexMap();
+}
+
+void SelectedFeature::validateGeometry( QgsGeometry *g )
 {
   QSettings settings;
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
     return;
 
   if ( !g )
-    g = mFeature->geometry();
+    g = mGeometry;
 
   mTip.clear();
+
+  if ( mValidator )
+  {
+    mValidator->stop();
+    mValidator->wait();
+    mValidator->deleteLater();
+    mValidator = 0;
+  }
 
   mGeomErrors.clear();
   while ( !mGeomErrorMarkers.isEmpty() )
   {
-    delete mGeomErrorMarkers.takeFirst();
-  }
-
-  if ( mValidator )
-  {
-    mValidator->deleteLater();
-    mValidator = 0;
+    QgsVertexMarker *vm = mGeomErrorMarkers.takeFirst();
+    QgsDebugMsg( "deleting " + vm->toolTip() );
+    delete vm;
   }
 
   mValidator = new QgsGeometryValidator( g );
@@ -1063,7 +982,7 @@ void SelectionFeature::validateGeometry( QgsGeometry *g )
   sb->showMessage( tr( "Validation started." ) );
 }
 
-void SelectionFeature::addError( QgsGeometry::Error e )
+void SelectedFeature::addError( QgsGeometry::Error e )
 {
   mGeomErrors << e;
   if ( !mTip.isEmpty() )
@@ -1087,13 +1006,13 @@ void SelectionFeature::addError( QgsGeometry::Error e )
   sb->setToolTip( mTip );
 }
 
-void SelectionFeature::validationFinished()
+void SelectedFeature::validationFinished()
 {
   QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( tr( "Validation finished." ) );
+  sb->showMessage( tr( "Validation finished (%n error(s) gefunden).", "number of geometry errors", mGeomErrorMarkers.size() ) );
 }
 
-void SelectionFeature::deleteSelectedVertexes()
+void SelectedFeature::deleteSelectedVertexes()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
@@ -1136,34 +1055,18 @@ void SelectionFeature::deleteSelectedVertexes()
       }
     }
   }
-  QgsFeature f;
-  mVlayer->featureAtId( mFeatureId, f, true, false );
 
-  bool wasValid = false; // mGeomErrors.isEmpty();
-  bool isValid = f.geometry()->isGeosValid();
-  if ( wasValid && !isValid )
-  {
-    QMessageBox::warning( NULL,
-                          tr( "Node tool" ),
-                          tr( "Result geometry is invalid. Reverting last changes." ),
-                          QMessageBox::Ok ,
-                          QMessageBox::Ok );
-  }
-
-  if ( count != 0 && ( !wasValid || isValid ) )
+  if ( count > 0 )
   {
     mVlayer->endEditCommand();
-    validateGeometry( f.geometry() );
   }
   else
   {
-    mVlayer->destroyEditCommand(); // no changes... or invalid changes
+    mVlayer->destroyEditCommand();
   }
-
-  updateFromFeature();
 }
 
-void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
+void SelectedFeature::moveSelectedVertexes( double changeX, double changeY )
 {
   mVlayer->beginEditCommand( QObject::tr( "Moved vertices" ) );
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
@@ -1209,39 +1112,26 @@ void SelectionFeature::moveSelectedVertexes( double changeX, double changeY )
       }
     }
   }
-  QgsFeature f;
-  mVlayer->featureAtId( mFeatureId, f, true, false );
-  bool wasValid = false; // mGeomErrors.isEmpty();
-  bool isValid = f.geometry()->isGeosValid();
-  if ( wasValid && !isValid )
-  {
-    QMessageBox::warning( NULL,
-                          tr( "Node tool" ),
-                          tr( "Result geometry is invalid. Reverting last changes." ),
-                          QMessageBox::Ok ,
-                          QMessageBox::Ok );
-    // redo last operations
-    mVlayer->destroyEditCommand();
-    updateFromFeature();
-  }
-  else
-  {
-    mVlayer->endEditCommand();
-    validateGeometry( f.geometry() );
-  }
-  updateFeature();
+
+  mVlayer->endEditCommand();
 }
 
-void SelectionFeature::updateFromFeature()
+void SelectedFeature::replaceVertexMap()
 {
   // delete old map
   deleteVertexMap();
 
+  delete mGeometry;
+  mGeometry = 0;
+
   // create new map
   createVertexMap();
+
+  // validate the geometry
+  validateGeometry();
 }
 
-void SelectionFeature::deleteVertexMap()
+void SelectedFeature::deleteVertexMap()
 {
   foreach( VertexEntry *entry, mVertexMap )
   {
@@ -1251,20 +1141,21 @@ void SelectionFeature::deleteVertexMap()
   mVertexMap.clear();
 }
 
-bool SelectionFeature::isSelected( int vertexNr )
+bool SelectedFeature::isSelected( int vertexNr )
 {
   return mVertexMap[vertexNr]->isSelected();
 }
 
-QgsFeature *SelectionFeature::feature()
+QgsGeometry *SelectedFeature::geometry()
 {
-  return mFeature;
+  Q_ASSERT( mGeometry );
+  return mGeometry;
 }
 
-void SelectionFeature::createVertexMapPolygon()
+void SelectedFeature::createVertexMapPolygon()
 {
   int y = 0;
-  QgsPolygon polygon = mFeature->geometry()->asPolygon();
+  QgsPolygon polygon = mGeometry->asPolygon();
   if ( !polygon.empty() )
   {
     // polygon
@@ -1283,7 +1174,7 @@ void SelectionFeature::createVertexMapPolygon()
   }
   else // multipolygon
   {
-    QgsMultiPolygon multiPolygon = mFeature->geometry()->asMultiPolygon();
+    QgsMultiPolygon multiPolygon = mGeometry->asMultiPolygon();
     for ( int i2 = 0; i2 < multiPolygon.size(); i2++ )
     {
       // iterating through polygons
@@ -1305,12 +1196,14 @@ void SelectionFeature::createVertexMapPolygon()
   }
 }
 
-void SelectionFeature::createVertexMapLine()
+void SelectedFeature::createVertexMapLine()
 {
-  if ( mFeature->geometry()->isMultipart() )
+  Q_ASSERT( mGeometry );
+
+  if ( mGeometry->isMultipart() )
   {
     int y = 0;
-    QgsMultiPolyline mLine = mFeature->geometry()->asMultiPolyline();
+    QgsMultiPolyline mLine = mGeometry->asMultiPolyline();
     for ( int i2 = 0; i2 < mLine.size(); i2++ )
     {
       // iterating through polylines
@@ -1325,7 +1218,7 @@ void SelectionFeature::createVertexMapLine()
   }
   else
   {
-    QgsPolyline poly = mFeature->geometry()->asPolyline();
+    QgsPolyline poly = mGeometry->asPolyline();
     int i;
     for ( i = 0; i < poly.size(); i++ )
     {
@@ -1334,12 +1227,14 @@ void SelectionFeature::createVertexMapLine()
   }
 }
 
-void SelectionFeature::createVertexMapPoint()
+void SelectedFeature::createVertexMapPoint()
 {
-  if ( mFeature->geometry()->isMultipart() )
+  Q_ASSERT( mGeometry );
+
+  if ( mGeometry->isMultipart() )
   {
     // multipoint
-    QgsMultiPoint poly = mFeature->geometry()->asMultiPoint();
+    QgsMultiPoint poly = mGeometry->asMultiPoint();
     int i;
     for ( i = 0; i < poly.size(); i++ )
     {
@@ -1349,29 +1244,44 @@ void SelectionFeature::createVertexMapPoint()
   else
   {
     // single point
-    mVertexMap.insert( 1, new VertexEntry( mCanvas, mVlayer, mFeature->geometry()->asPoint(), 1, tr( "single point" ) ) );
+    mVertexMap.insert( 1, new VertexEntry( mCanvas, mVlayer, mGeometry->asPoint(), 1, tr( "single point" ) ) );
   }
 }
 
-void SelectionFeature::createVertexMap()
+void SelectedFeature::createVertexMap()
 {
-  mVlayer->featureAtId( mFeatureId, *mFeature );
+  QgsDebugMsg( "Entering." );
+
+  if ( !mGeometry )
+  {
+    QgsDebugMsg( "Loading feature" );
+    updateGeometry( 0 );
+  }
+
+  Q_ASSERT( mGeometry );
+
   // createvertexmap for correct geometry type
-  if ( mFeature->geometry()->type() == QGis::Polygon )
+  switch ( mGeometry->type() )
   {
-    createVertexMapPolygon();
-  }
-  else if ( mFeature->geometry()->type() == QGis::Line )
-  {
-    createVertexMapLine();
-  }
-  else if ( mFeature->geometry()->type() == QGis::Point )
-  {
-    createVertexMapPoint();
+    case QGis::Polygon:
+      createVertexMapPolygon();
+      break;
+
+    case QGis::Line:
+      createVertexMapLine();
+      break;
+
+    case QGis::Point:
+      createVertexMapPoint();
+      break;
+
+    case QGis::UnknownGeometry:
+    case QGis::NoGeometry:
+      break;
   }
 }
 
-void SelectionFeature::selectVertex( int vertexNr )
+void SelectedFeature::selectVertex( int vertexNr )
 {
   VertexEntry *entry = mVertexMap[vertexNr];
   entry->setSelected();
@@ -1386,7 +1296,7 @@ void SelectionFeature::selectVertex( int vertexNr )
   }
 }
 
-void SelectionFeature::deselectVertex( int vertexNr )
+void SelectedFeature::deselectVertex( int vertexNr )
 {
   VertexEntry *entry = mVertexMap[vertexNr];
   entry->setSelected( false );
@@ -1401,7 +1311,7 @@ void SelectionFeature::deselectVertex( int vertexNr )
   }
 }
 
-void SelectionFeature::deselectAllVertexes()
+void SelectedFeature::deselectAllVertexes()
 {
   for ( int i = 0; i < mVertexMap.size(); i++ )
   {
@@ -1410,7 +1320,7 @@ void SelectionFeature::deselectAllVertexes()
   }
 }
 
-void SelectionFeature::invertVertexSelection( int vertexNr, bool invert )
+void SelectedFeature::invertVertexSelection( int vertexNr, bool invert )
 {
   VertexEntry *entry = mVertexMap[vertexNr];
 
@@ -1427,7 +1337,7 @@ void SelectionFeature::invertVertexSelection( int vertexNr, bool invert )
   }
 }
 
-void SelectionFeature::updateVertexMarkersPosition()
+void SelectedFeature::updateVertexMarkersPosition()
 {
   // function for on-line updating vertex markers without refresh of canvas
   for ( int i = 0; i < mVertexMap.size(); i++ )
@@ -1438,17 +1348,17 @@ void SelectionFeature::updateVertexMarkersPosition()
   }
 }
 
-QgsFeatureId SelectionFeature::featureId()
+QgsFeatureId SelectedFeature::featureId()
 {
   return mFeatureId;
 }
 
-QList<VertexEntry*> &SelectionFeature::vertexMap()
+QList<VertexEntry*> &SelectedFeature::vertexMap()
 {
   return mVertexMap;
 }
 
-QgsVectorLayer* SelectionFeature::vlayer()
+QgsVectorLayer* SelectedFeature::vlayer()
 {
   return mVlayer;
 }
