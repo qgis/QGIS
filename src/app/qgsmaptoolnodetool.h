@@ -75,15 +75,15 @@ typedef QSet<int> Vertexes;
 const static double ZERO_TOLERANCE = 0.000000001;
 
 /**
- * Class that supports feature which is selected/
+ * Class that keeps the selected feature
  */
-class SelectionFeature: public QObject
+class SelectedFeature: public QObject
 {
     Q_OBJECT
 
   public:
-    SelectionFeature();
-    ~SelectionFeature();
+    SelectedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
+    ~SelectedFeature();
 
     /**
      * Setting selected feature
@@ -91,9 +91,9 @@ class SelectionFeature: public QObject
      * @param vlayer vector layer in which feature is selected
      * @param rubberBand rubber band which displays feature
      * @param canvas mapCanvas on which we are working
-     * @param feature feature with which we work this parameter is not mandatory if it's not filled feature will be loaded
+     * @param geometry geometry of the selected feature
      */
-    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsRubberBand* rubberBand, QgsMapCanvas* canvas, QgsFeature* feature = NULL );
+    void setSelectedFeature( QgsFeatureId featureId, QgsVectorLayer* vlayer, QgsMapCanvas* canvas );
 
     /**
      * Function to select vertex with number
@@ -132,12 +132,6 @@ class SelectionFeature: public QObject
     void invertVertexSelection( int vertexNr, bool invert = true );
 
     /**
-     * Updates vertex markers position accoording to changed feature geometry
-     * @param canvas map canvas we are working with
-     */
-    void updateVertexMarkersPosition();
-
-    /**
      * Tells if vertex is selected
      * @param vertexNr number of vertex for which we are getting info
      * @return true if vertex is selected, false otherwise
@@ -157,15 +151,9 @@ class SelectionFeature: public QObject
     QList<VertexEntry*> &vertexMap();
 
     /**
-     * Getting currently edited feature
-     * @return selected feature
-     */
-    QgsFeature* feature();
-
-    /**
      * Updates whole selection object from the selected object
      */
-    void updateFromFeature();
+    void replaceVertexMap();
 
     /**
      * Clears data about vertexes if they are in rubber band for moving etc.
@@ -173,14 +161,54 @@ class SelectionFeature: public QObject
     void cleanRubberBandsData();
 
     /**
-     * Getter for getting vector layer which selection is working
+     * Get the layer of the selected feature
      * @return used vector layer
      */
     QgsVectorLayer *vlayer();
 
+    /**
+     * Getter for the current geometry
+     */
+    QgsGeometry *geometry();
+
+    void beginGeometryChange();
+    void endGeometryChange();
+
   public slots:
+    /*
+     * geometry validation found a problem
+     */
     void addError( QgsGeometry::Error );
+
+    /*
+     * geometry validation finished
+     */
     void validationFinished();
+
+    /**
+     * Updates vertex markers position accoording to changed feature geometry
+     */
+    void updateVertexMarkersPosition();
+
+    /*
+     * a feature was removed from the layer - might be the selected
+     */
+    void featureDeleted( QgsFeatureId );
+
+    /*
+     * the geometry of a feature from the layer was changed - might be the selected
+     */
+    void geometryChanged( QgsFeatureId, QgsGeometry & );
+
+    /*
+     * the current layer changed - destroy
+     */
+    void currentLayerChanged( QgsMapLayer *layer );
+
+    /*
+     * the current layer changed - destroy
+     */
+    void canvasLayersChanged();
 
   private:
     /**
@@ -209,18 +237,20 @@ class SelectionFeature: public QObject
     void createVertexMapPoint();
 
     /**
-     * Updates stored feature to actual one loaded from layer
+     * Updates stored geometry to actual one loaded from layer
+     * (or already available geometry)
      */
-    void updateFeature();
+    void updateGeometry( QgsGeometry *geom );
 
     /**
      * Validates the geometry
      */
-    void validateGeometry( QgsGeometry *g = NULL );
+    void validateGeometry( QgsGeometry *g = 0 );
 
-    QgsFeature* mFeature;
     QgsFeatureId mFeatureId;
+    QgsGeometry *mGeometry;
     bool mFeatureSelected;
+    bool mChangingGeometry;
     QgsVectorLayer* mVlayer;
     QgsRubberBand* mRubberBand;
     QList<VertexEntry*> mVertexMap;
@@ -258,46 +288,12 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     /**
      * Returns closest vertex to given point from selected feature
      */
-    QgsPoint getClosestVertex( QgsPoint point );
+    QgsPoint closestVertex( QgsPoint point );
 
   public slots:
-    /**
-     * Slot to count with layer change
-     * @param layer layer to which selection changed
-     */
-    void currentLayerChanged( QgsMapLayer* layer );
-
-  protected slots:
-    /**
-     * Processing incoming signal of deleted feature (for deletion of selected feature)
-     * @param featureId id of deleted feature
-     */
-    void featureDeleted( QgsFeatureId featureId );
-
-    /**
-     * Processing incoming signal of deleted feature (for deletion of selected feature)
-     * @param featureId id of deleted feature
-     */
-    void layerModified( bool onlyGeometry );
-
-    /**
-     * Processing when layers are changed problem when layer is closed
-     */
-    void layersChanged();
-
-    /**
-     * Changed coordinates to markers need to be redrawn to correct position
-     */
-    void coordinatesChanged();
+    void selectedFeatureDestroyed();
 
   private:
-
-    /**
-     * Connects signal which are required for correct work with bakground changes
-     * @param vlayer vector layer which is emiting these signals
-     */
-    void connectSignals( QgsVectorLayer* vlayer );
-
     /**
      * Deletes the rubber band pointers and clears mRubberBands
      */
@@ -348,7 +344,7 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QMap<QgsFeatureId, Vertexes*> mTopologyRubberBandVertexes;
 
     /** object containing selected feature and it's vertexes */
-    SelectionFeature* mSelectionFeature;
+    SelectedFeature *mSelectedFeature;
 
     /** flag if selection rectangle is active */
     bool mSelectionRectangle;
@@ -378,13 +374,10 @@ class QgsMapToolNodeTool: public QgsMapToolVertexEdit
     QgsPoint mPosMapCoordBackup;
 
     /** active rubberband for selecting vertexes */
-    QRubberBand* mQRubberBand;
+    QRubberBand *mRubberBand;
 
     /** rectangle defining area for selecting vertexes */
     QRect* mRect;
-
-    /** flag that tells that tool is currently updating feature to do not act on change signal */
-    bool mChangingGeometry;
 
     /** flag to tell if edition points */
     bool mIsPoint;
