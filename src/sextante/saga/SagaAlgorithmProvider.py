@@ -19,7 +19,7 @@ class SagaAlgorithmProvider(AlgorithmProvider):
                     if alg.name.strip() != "":
                         self._algs.append(alg)
                 except Exception:
-                    pass
+                    print (descriptionFile)
 
     def getName(self):
         return "SAGA"

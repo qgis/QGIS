@@ -30,14 +30,20 @@ class Sextante:
         return None
 
     @staticmethod
-    def asStr():
+    def algList():
         s=""
-        for alg in Sextante.algs.values():
-            s+=(str(alg) + "\n")
-        s+=str(len(Sextante.algs)) + " algorithms"
-        return s
+        for provider in Sextante.algs.values():
+            for alg in provider.values():
+                s+=(alg.name + " --->" + alg.commandLineName() + "\n")
+        print s
 
-
+    @staticmethod
+    def algHelp(name):
+        alg = Sextante.getAlgorithm(name)
+        if alg != None:
+            print(str(alg))
+        else:
+            print "Algorithm not found"
 
 
 

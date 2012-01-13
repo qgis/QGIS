@@ -1,7 +1,6 @@
 from sextante.parameters.Parameter import Parameter
 
 class ParameterDataObject(Parameter):
-
     pass
 #===============================================================================
 #    @property

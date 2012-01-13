@@ -8,6 +8,8 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.parameters.ParameterSelection import ParameterSelection
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.gui.MultipleInputPanel import MultipleInputPanel
+from sextante.parameters.ParameterFixedTable import ParameterFixedTable
+from sextante.gui.FixedTablePanel import FixedTablePanel
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -18,16 +20,17 @@ class ParametersDialog(QtGui.QDialog):
     def __init__(self, alg):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
-        self.alg = alg
+        self.alg = None
         self.ui = Ui_ParametersDialog()
-        self.ui.setupUi(self)
+        self.ui.setupUi(self, alg)
 
 class Ui_ParametersDialog(object):
 
     SAVE_TO_TEMP_FILE = "[Save to temporary file]"
+    NOT_SELECTED = "[Not selected]"
 
-    def setupUi(self, dialog):
-        self.alg = dialog.alg
+    def setupUi(self, dialog, alg):
+        self.alg = alg
         self.dialog = dialog
         self.valueItems = {}
         dialog.setObjectName(_fromUtf8("Parameters"))
@@ -54,18 +57,22 @@ class Ui_ParametersDialog(object):
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
 
-    def getItemFromParameter(self, param):
+    def getWidgetFromParameter(self, param):
 
         if isinstance(param, ParameterRaster):
             item = QtGui.QComboBox()
             layers = QGisLayers.getRasterLayers()
+            if (param.optional):
+                item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
-                item.addItem(layer.name())
+                item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterVector):
             item = QtGui.QComboBox()
             layers = QGisLayers.getVectorLayers()
+            if (param.optional):
+                item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
-                item.addItem(layer.name())
+                item.addItem(layer.name(), layer)
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem("Yes")
@@ -73,12 +80,17 @@ class Ui_ParametersDialog(object):
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()
             item.addItems(param.options)
+        elif isinstance(param, ParameterFixedTable):
+            item = FixedTablePanel(param)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = QGisLayers.getVectorLayers()
             else:
                 options = QGisLayers.getRasterLayers()
-            item = MultipleInputPanel(options)
+            opts = []
+            for opt in options:
+                opts.append(opt.name())
+            item = MultipleInputPanel(opts)
         else:
             item = QtGui.QLineEdit()
 
@@ -97,7 +109,7 @@ class Ui_ParametersDialog(object):
             item = QtGui.QTableWidgetItem(param.description)
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
-            item = self.getItemFromParameter(param)
+            item = self.getWidgetFromParameter(param)
             self.valueItems[param.name] = item
             self.tableWidget.setCellWidget(i,1, item)
             self.tableWidget.setRowHeight(i,22)
@@ -114,13 +126,52 @@ class Ui_ParametersDialog(object):
             self.tableWidget.setRowHeight(i,22)
             i+=1
 
-
     def setParamValues(self):
-        return False
+        params = self.alg.parameters
+        outputs = self.alg.outputs
 
+        for param in params:
+            if not self.setParamValue(param, self.valueItems[param.name]):
+                return False
+
+        for output in outputs:
+            filename = str(self.valueItems[output.name].text())
+            if filename.strip == "" or filename == self.SAVE_TO_TEMP_FILE:
+                output.channel = None
+            else:
+                output.channel = filename
+
+        return True
+
+    def setParamValue(self, param, widget):
+
+        if isinstance(param, ParameterRaster):
+            param.value = widget.itemData(widget.currentIndex())
+        elif isinstance(param, ParameterVector):
+            param.value = widget.itemData(widget.currentIndex())
+        elif isinstance(param, ParameterBoolean):
+            param.value = widget.currentIndex() == 0
+        elif isinstance(param, ParameterSelection):
+            param.value = widget.currentIndex()
+        elif isinstance(param, ParameterMultipleInput):
+            if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
+                options = QGisLayers.getVectorLayers()
+            else:
+                options = QGisLayers.getRasterLayers()
+            value = []
+            if len(widget.selectedoptions) == 0 and not param.optional:
+                return False
+            for index in widget.selectedoptions:
+                value.append(options[index])
+            param.value = value
+        else:
+            param.value = widget.text()
+
+        return True
 
     def accept(self):
         if self.setParamValues():
+            self.dialog.alg = self.alg
             self.dialog.close()
         else:
             QMessageBox.warning(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")

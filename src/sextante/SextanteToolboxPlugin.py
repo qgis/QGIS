@@ -24,7 +24,8 @@ class SextanteToolboxPlugin:
         Sextante.initialize()
 
     def initGui(self):
-
+        self.toolbox = SextanteToolbox(self.iface)
+        self.toolbox.setVisible(False)
         self.toolboxAction = QAction(QIcon(":/plugins/sextante/toolbox.png"), \
             "SEXTANTE Toolbox", self.iface.mainWindow())
         QObject.connect(self.toolboxAction, SIGNAL("triggered()"), self.openToolbox)
@@ -42,8 +43,9 @@ class SextanteToolboxPlugin:
 
     def openToolbox(self):
 
-        dlg = SextanteToolbox()
-        dlg.exec_()
+        #dlg = SextanteToolbox(self.iface)
+        self.toolbox.setVisible(True)
+        #dlg.exec_()
 
     def openModeler(self):
         pass

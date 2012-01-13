@@ -32,6 +32,7 @@ class SagaAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
         self.providerName = "saga:"
+        self.ok = False
 
     def defineCharacteristics(self):
         pass
@@ -59,10 +60,11 @@ class SagaAlgorithm(GeoAlgorithm):
                     paramDescription = line[line.index("\t") + 1:].strip()
                 if SagaBlackList.isBlackListed(self.name, self.group):
                     raise UnwrappableSagaAlgorithmException()
-                line = lines.readline()
-                if "Data object" in line or "File" in line:
+                line = lines.readline().lower()
+                if "data object" in line or "file" in line:
                     raise UnwrappableSagaAlgorithmException()
-                if "Table" in line:
+                if "table" in line:
+                    #print(line)
                     if "input" in line:
                         param = ParameterTable()
                         param.name = paramName
@@ -70,8 +72,9 @@ class SagaAlgorithm(GeoAlgorithm):
                         param.optional = not ("optional" in line)
                         lastParentParameterName = paramName;
                         self.putParameter(param)
-                    elif "Static" in line:
-                        line = lines.readline()
+                    elif "static" in line:
+                        print (self.name)
+                        #line = lines.readline()
                         line = lines.readline().strip("\n").strip()
                         numCols = int(line.split(" ")[0])
                         colNames = [];
@@ -85,6 +88,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         param.numRows = 3
                         param.fixedNumOfRows = False
                         self.putParameter(param)
+                        self.ok = True
                     elif "field" in line:
                         if lastParentParameterName == None:
                             raise UnwrappableSagaAlgorithmException();
@@ -97,7 +101,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         output = OutputTable()
                         output.name = paramName
                         output.description = paramDescription
-                if "Grid" in line:
+                elif "grid" in line:
                     if "input" in line:
                         if "list" in line:
                             param = ParameterMultipleInput()
@@ -117,7 +121,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         output.name = paramName
                         output.description = paramDescription
                         self.putOutput(output)
-                elif "Shapes" in line:
+                elif "shapes" in line:
                     if "input" in line:
                         if "list" in line:
                             param = ParameterMultipleInput()
@@ -139,22 +143,22 @@ class SagaAlgorithm(GeoAlgorithm):
                         output.name = paramName
                         output.description = paramDescription
                         self.putOutput(output)
-                elif "Floating" in line or "Integer" in line:
+                elif "floating" in line or "integer" in line:
                     param = ParameterNumber()
                     param.name = paramName
                     param.description = paramDescription
                     self.putParameter(param)
-                elif "Boolean" in line:
+                elif "boolean" in line:
                     param = ParameterBoolean()
                     param.name = paramName
                     param.description = paramDescription
                     self.putParameter(param)
-                elif "Text" in line:
+                elif "text" in line:
                     param = ParameterString()
                     param.name = paramName
                     param.description = paramDescription
                     self.putParameter(param)
-                elif "Choice" in line:
+                elif "choice" in line:
                     line = lines.readline()
                     line = lines.readline().strip("\n").strip()
                     options = list()

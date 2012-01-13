@@ -8,22 +8,29 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 
-class MultipleInputDialog(QtGui.QDialog):
-    def __init__(self, options, selectedoptions):
-        self.options = options
-        self.selectedoptions = selectedoptions
+class FixedTableDialog(QtGui.QDialog):
+    def __init__(self, param, table):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
-        self.ui = Ui_MultipleInputDialog()
+        self.param = param
+        if table != None:
+            self.table = table
+        else:
+            self.table = []
+            for i in range(param.numRows):
+                self.table.append(list())
+                for j in range(len(param.cols)):
+                    self.table[i].append("0")
+        self.ui = Ui_FixedTableDialog()
         self.ui.setupUi(self)
-        self.selectedoptions = None
+        self.table = None
 
-class Ui_MultipleInputDialog(object):
+class Ui_FixedTableDialog(object):
     def setupUi(self, dialog):
         self.dialog = dialog
         dialog.setObjectName(_fromUtf8("Dialog"))
-        dialog.resize(381, 320)
-        dialog.setWindowTitle("Multiple selection")
+        dialog.resize(400, 350)
+        dialog.setWindowTitle("Fixed Table")
         self.buttonBox = QtGui.QDialogButtonBox(dialog)
         self.buttonBox.setGeometry(QtCore.QRect(290, 10, 81, 61))
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
@@ -32,28 +39,26 @@ class Ui_MultipleInputDialog(object):
         self.table = QtGui.QTableWidget(dialog)
         self.table.setGeometry(QtCore.QRect(10, 10, 270, 300))
         self.table.setObjectName(_fromUtf8("table"))
-        self.table.setColumnCount(1)
-        self.table.setColumnWidth(0,270)
+        self.table.setColumnCount(len(self.dialog.param.cols))
+        for i in range(len(self.dialog.param.cols)):
+            self.table.setColumnWidth(i,380 / len(self.dialog.param.cols))
+            self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(self.dialog.param.cols[i]))
+        self.table.setRowCount(self.dialog.param.numRows)
         self.table.verticalHeader().setVisible(False)
-        self.table.horizontalHeader().setVisible(False)
-        self.selectAllButton = QtGui.QPushButton(dialog)
-        self.selectAllButton.setGeometry(QtCore.QRect(290, 290, 81, 23))
-        self.selectAllButton.setObjectName(_fromUtf8("selectAllButton"))
-        self.selectAllButton.setText("(de)Select all")
+        self.addRow = QtGui.QPushButton(dialog)
+        self.addRow.setGeometry(QtCore.QRect(290, 290, 81, 23))
+        self.addRow.setObjectName(_fromUtf8("addRow"))
+        self.addRow.setText("Add row")
         self.setTableContent()
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
-        QtCore.QObject.connect(self.selectAllButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.selectAll)
+        QtCore.QObject.connect(self.addRow, QtCore.SIGNAL(_fromUtf8("clicked()")), self.addRow)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
     def setTableContent(self):
-        self.table.setRowCount(len(self.dialog.options))
-        for i in range(len(self.dialog.options)):
-            item = QtGui.QCheckBox()
-            item.setText(self.dialog.options[i])
-            if i in self.dialog.selectedoptions:
-                item.setChecked(True)
-            self.table.setCellWidget(i,0, item)
+        for i in range(len(self.dialog.table)):
+            for j in range(len(self.dialog.table)):
+                self.table.setItem(i,j,QtGui.QTableWidgetItem(self.dialog.table[i][j]))
 
     def accept(self):
         self.dialog.selectedoptions = []
@@ -67,13 +72,5 @@ class Ui_MultipleInputDialog(object):
         self.dialog.selectedoptions = None
         self.dialog.close()
 
-    def selectAll(self):
-        checked = False
-        for i in range(len(self.dialog.options)):
-            widget = self.table.cellWidget(i, 0)
-            if not widget.isChecked():
-                checked = True
-                break
-        for i in range(len(self.dialog.options)):
-            widget = self.table.cellWidget(i, 0)
-            widget.setChecked(checked)
+    def addRow(self):
+        self.table.addRow()

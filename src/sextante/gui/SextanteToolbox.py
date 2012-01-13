@@ -14,10 +14,11 @@ except AttributeError:
     _fromUtf8 = lambda s: s
 
 
-class SextanteToolbox(QtGui.QDialog):
-    def __init__(self):
+class SextanteToolbox(QtGui.QDockWidget):
+    def __init__(self, iface):
         QtGui.QDialog.__init__(self)
-        self.setModal(True)
+        self.iface=iface
+        #      self.setModal(True)
         self.ui = Ui_SextanteToolbox()
         self.ui.setupUi(self)
 
@@ -25,26 +26,47 @@ class Ui_SextanteToolbox(object):
 
     def setupUi(self, SextanteToolbox):
         self.toolbox = SextanteToolbox
+        SextanteToolbox.setFloating(False)
         SextanteToolbox.setObjectName(_fromUtf8("SextanteToolbox"))
-        SextanteToolbox.resize(400, 300)
+        SextanteToolbox.resize(400, 500)
         SextanteToolbox.setWindowTitle("SEXTANTE Toolbox")
-        self.verticalLayoutWidget = QtGui.QWidget(SextanteToolbox)
-        self.verticalLayoutWidget.setGeometry(QtCore.QRect(10, 9, 381, 281))
-        self.verticalLayoutWidget.setObjectName(_fromUtf8("verticalLayoutWidget"))
-        self.verticalLayout = QtGui.QVBoxLayout(self.verticalLayoutWidget)
+        self.contents = QtGui.QWidget()
+        self.contents.setObjectName(_fromUtf8("contents"))
+        self.verticalLayout = QtGui.QVBoxLayout(self.contents)
+        self.verticalLayout.setSpacing(2)
         self.verticalLayout.setMargin(0)
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
-        self.algorithmTree = QtGui.QTreeWidget(self.verticalLayoutWidget)
-        self.algorithmTree.setObjectName(_fromUtf8("algorithmTree"))
-        self.algorithmTree.setHeaderHidden(True)
-        self.verticalLayout.addWidget(self.algorithmTree)
-        self.searchBox = QtGui.QLineEdit(self.verticalLayoutWidget)
+        self.searchBox = QtGui.QLineEdit(self.contents)
         self.searchBox.setObjectName(_fromUtf8("searchBox"))
         self.searchBox.textChanged.connect(self.fillTree)
         self.verticalLayout.addWidget(self.searchBox)
-        self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
+
+        self.algorithmTree = QtGui.QTreeWidget(self.contents)
+        self.algorithmTree.setHeaderHidden(True)
+        self.algorithmTree.setObjectName(_fromUtf8("algorithmTree"))
+        self.algorithmTree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.fillTree()
+        self.toolbox.connect(self.algorithmTree,SIGNAL('customContextMenuRequested(QPoint)'),
+                     self.showPopupMenu)
+        self.verticalLayout.addWidget(self.algorithmTree)
+        self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
+        self.toolbox.setWidget(self.contents)
+        self.toolbox.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
         QtCore.QMetaObject.connectSlotsByName(SextanteToolbox)
+
+    def showPopupMenu(self,point):
+        treeidx=self.algorithmTree.indexAt(point)
+        popupmenu = QMenu()
+        executeAction = QtGui.QAction("Execute", self.algorithmTree)
+        executeAction.triggered.connect(self.executeAlgorithm)
+        popupmenu.addAction(executeAction)
+        executeBatchAction = QtGui.QAction("Execute as batch process", self.algorithmTree)
+        executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
+        popupmenu.addAction(executeBatchAction)
+        popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
+
+    def executeAlgorithmAsBatchProcess(self):
+        pass
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
@@ -54,9 +76,8 @@ class Ui_SextanteToolbox(object):
             dlg = ParametersDialog(alg)
             dlg.exec_()
             if dlg.alg != None:
-                QMessageBox.critical(None, "test", str(alg))
-
-
+                QMessageBox.critical(None, "hola", str(dlg.alg))
+                dlg.alg.processAlgorithm()
 
     def fillTree(self):
         self.algorithmTree.clear()
@@ -74,8 +95,8 @@ class Ui_SextanteToolbox(object):
                         groupItem = QtGui.QTreeWidgetItem()
                         groupItem.setText(0,alg.group)
                         groups[alg.group] = groupItem
-                        algItem = TreeAlgorithmItem(alg, layersCount)
-                        groupItem.addChild(algItem)
+                    algItem = TreeAlgorithmItem(alg, layersCount)
+                    groupItem.addChild(algItem)
             providerItem = QtGui.QTreeWidgetItem()
             providerItem.setText(0,providerName)
             for groupItem in groups.values():
