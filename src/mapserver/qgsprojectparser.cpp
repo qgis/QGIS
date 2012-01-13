@@ -1074,6 +1074,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     {
       QgsComposerMap* map = new QgsComposerMap( composition );
       map->readXML( currentElem, *mXMLDoc );
+      map->setPreviewMode( QgsComposerMap::Rectangle );
       composition->addItem( map );
       mapList.push_back( map );
     }
