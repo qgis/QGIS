@@ -2802,7 +2802,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   if ( primaryKey.isEmpty() )
   {
     int index = 0;
-    QString pk = primaryKey = "pk";
+    QString pk = primaryKey = "id";
     for ( QgsFieldMap::const_iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
     {
       if ( fldIt.value().name() == pk )
