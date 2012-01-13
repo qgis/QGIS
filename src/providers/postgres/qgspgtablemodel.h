@@ -58,9 +58,7 @@ class QgsPgTableModel : public QStandardItemModel
       dbtmColumns
     };
 
-    static QIcon iconForType( QGis::WkbType type );
-    static QString displayStringForType( QGis::WkbType type );
-    static QGis::WkbType qgisTypeFromDbType( QString dbType );
+    static QIcon iconForGeomType( QGis::GeometryType type );
 
   private:
     /**Number of tables in the model*/

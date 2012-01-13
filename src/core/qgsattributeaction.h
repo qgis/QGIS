@@ -107,23 +107,63 @@ class  CORE_EXPORT QgsAttributeAction
     // dialog box.
     void addAction( QgsAction::ActionType type, QString name, QString action, bool capture = false );
 
-    //! Does the action using the given values. defaultValueIndex is an
-    // index into values which indicates which value in the values vector
-    // is to be used if the action has a default placeholder.
-    // @note parameter executePython deprecated (and missing in python binding)
+    /*! Does the action using the given values. defaultValueIndex is an
+     *  index into values which indicates which value in the values vector
+     *  is to be used if the action has a default placeholder.
+     *  @note parameter executePython deprecated (and missing in python binding)
+     *  @deprecated
+     */
+    Q_DECL_DEPRECATED void doAction( int index,
+                                     const QgsAttributeMap &attributes,
+                                     int defaultValueIndex = 0,
+                                     void ( *executePython )( const QString & ) = 0 );
+
+    /*! Does the given values. defaultValueIndex is the index of the
+     *  field to be used if the action has a $currfield placeholder.
+     *  @note added in 1.9
+     */
     void doAction( int index,
-                   const QgsAttributeMap &attributes,
-                   int defaultValueIndex = 0,
-                   void ( *executePython )( const QString & ) = 0 );
+                   QgsFeature &feat,
+                   int defaultValueIndex = 0 );
+
+    /*! Does the action using the expression builder to expand it
+     *  and getting values from the passed feature attribute map.
+     *  substitutionMap is used to pass custom substitutions, to replace
+     *  each key in the map with the associated value
+     *  @note added in 1.9
+     */
+    void doAction( int index,
+                   QgsFeature &feat,
+                   const QMap<QString, QVariant> *substitutionMap = 0 );
 
     //! Removes all actions
     void clearActions() { mActions.clear(); }
 
-    //! Expands the given action, replacing all %'s with the value as
-    // given.
+    //! Return the layer
+    QgsVectorLayer *layer() { return mLayer; }
+
+    /*! Expands the given action, replacing all %'s with the value as
+     *  given.
+     *  @deprecated
+     */
+    Q_DECL_DEPRECATED QString expandAction( QString action,
+                                            const QgsAttributeMap &attributes,
+                                            uint defaultValueIndex );
+
+    /*! Expands the given action using the expression builder
+     *  This function currently replaces each expression between [% and %]
+     *  placeholders in the action with the result of its evaluation on
+     *  the feature passed as argument.
+     *
+     *  Additional substitutions can be passed through the substitutionMap
+     *  parameter
+     *
+     *  @note added in 1.9
+     */
     QString expandAction( QString action,
-                          const QgsAttributeMap &attributes,
-                          uint defaultValueIndex );
+                          QgsFeature &feat,
+                          const QMap<QString, QVariant> *substitutionMap = 0 );
+
 
     //! Writes the actions out in XML format
     bool writeXML( QDomNode& layer_node, QDomDocument& doc ) const;
@@ -138,10 +178,19 @@ class  CORE_EXPORT QgsAttributeAction
     //! @deprecated Initialize QgsPythonRunner instead
     static void setPythonExecute( void ( * )( const QString & ) );
 
+    //! Whether the action is the default action
+    int defaultAction() const { return mDefaultAction < 0 || mDefaultAction >= size() ? 0 : mDefaultAction; }
+    void setDefaultAction( int actionNumber ) { mDefaultAction = actionNumber ; }
+
   private:
     QList<QgsAction> mActions;
     QgsVectorLayer *mLayer;
     static void ( *smPythonExecute )( const QString & );
+
+    void runAction( const QgsAction &action,
+                   void ( *executePython )( const QString & ) = 0 );
+
+    int mDefaultAction;
 };
 
 #endif

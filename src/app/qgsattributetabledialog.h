@@ -63,6 +63,7 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
     void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
     void progress( int i, bool &cancel );
+    void finished();
 
   private slots:
     /**

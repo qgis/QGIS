@@ -69,8 +69,8 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mModel = qobject_cast<QgsAttributeTableModel * >( dynamic_cast<QgsAttributeTableFilterModel *>( mView->model() )->sourceModel() );
 
   connect( mModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
+  connect( mModel, SIGNAL( finished() ), this, SLOT( finished() ) );
   mModel->loadLayer();
-  delete mProgress;
 
   mQuery = query;
   mColumnBox = columnBox;
@@ -852,6 +852,12 @@ void QgsAttributeTableDialog::progress( int i, bool &cancel )
   }
 
   cancel = mProgress->wasCanceled();
+}
+
+void QgsAttributeTableDialog::finished()
+{
+  delete mProgress;
+  mProgress = 0;
 }
 
 void QgsAttributeTableAction::execute()

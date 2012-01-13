@@ -138,7 +138,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void executeAction( int action, const QModelIndex &idx ) const;
 
     /** return feature attributes at given index */
-    QgsFeature feature( QModelIndex &idx );
+    QgsFeature feature( const QModelIndex &idx ) const;
 
   signals:
     /**
@@ -147,6 +147,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void modelChanged();
 
     void progress( int i, bool &cancel );
+    void finished();
 
   public slots:
     void extentsChanged();

@@ -1,4 +1,3 @@
-
 FILE (GLOB IMAGES *.png)
 
 INSTALL (FILES ${IMAGES}

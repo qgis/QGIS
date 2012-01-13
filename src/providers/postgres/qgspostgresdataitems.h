@@ -42,6 +42,9 @@ class QgsPGConnectionItem : public QgsDataCollectionItem
 
     QgsPostgresConn *connection() const { return mConn; }
 
+  signals:
+    void addGeometryColumn( QgsPostgresLayerProperty );
+
   public slots:
     void editConnection();
     void deleteConnection();

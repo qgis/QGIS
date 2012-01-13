@@ -36,7 +36,7 @@ QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVecto
 
 void QgsFeatureAction::execute()
 {
-  mLayer->actions()->doAction( mAction, mFeature.attributeMap(), mIdx );
+  mLayer->actions()->doAction( mAction, mFeature, mIdx );
 }
 
 QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )

@@ -3711,7 +3711,7 @@ bool QgsVectorLayer::commitChanges()
       src = dst;
     }
 
-    // remap features of added attributes
+    // remap attributes of added features
     for ( QgsFeatureList::iterator fit = mAddedFeatures.begin(); fit != mAddedFeatures.end(); fit++ )
     {
       const QgsAttributeMap &src = fit->attributeMap();
@@ -3781,13 +3781,32 @@ bool QgsVectorLayer::commitChanges()
         }
       }
 
-      if (( cap & QgsVectorDataProvider::AddFeatures ) && mDataProvider->addFeatures( mAddedFeatures ) )
+      if ( cap & QgsVectorDataProvider::AddFeatures )
       {
-        mCommitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
+        QList<QgsFeatureId> ids;
+        foreach( const QgsFeature &f, mAddedFeatures )
+        {
+          ids << f.id();
+        }
 
-        emit committedFeaturesAdded( id(), mAddedFeatures );
+        if ( mDataProvider->addFeatures( mAddedFeatures ) )
+        {
+          mCommitErrors << tr( "SUCCESS: %n feature(s) added.", "added features count", mAddedFeatures.size() );
 
-        mAddedFeatures.clear();
+          emit committedFeaturesAdded( id(), mAddedFeatures );
+
+          // notify everyone that the features with temporary ids were updated with permanent ids
+          for ( int i = 0; i < mAddedFeatures.size(); i++ )
+          {
+            if ( mAddedFeatures[i].id() != ids[i] )
+            {
+              emit featureDeleted( ids[i] );
+              emit featureAdded( mAddedFeatures[i].id() );
+            }
+          }
+
+          mAddedFeatures.clear();
+        }
       }
       else
       {

@@ -51,17 +51,14 @@ QWidget *QgsPgSourceSelectDelegate::createEditor( QWidget *parent, const QStyleO
   if ( index.column() == QgsPgTableModel::dbtmType && index.data( Qt::UserRole + 1 ).toBool() )
   {
     QComboBox *cb = new QComboBox( parent );
-    foreach( QGis::WkbType type,
-             QList<QGis::WkbType>()
-             << QGis::WKBPoint
-             << QGis::WKBLineString
-             << QGis::WKBPolygon
-             << QGis::WKBMultiPoint
-             << QGis::WKBMultiLineString
-             << QGis::WKBMultiPolygon
-             << QGis::WKBNoGeometry )
+    foreach( QGis::GeometryType type,
+             QList<QGis::GeometryType>()
+             << QGis::Point
+             << QGis::Line
+             << QGis::Polygon
+             << QGis::NoGeometry )
     {
-      cb->addItem( QgsPgTableModel::iconForType( type ), QgsPgTableModel::displayStringForType( type ).toUpper(), type );
+      cb->addItem( QgsPgTableModel::iconForGeomType( type ), QgsPostgresConn::displayStringForGeomType( type ), type );
     }
     cb->setCurrentIndex( cb->findData( index.data( Qt::UserRole + 2 ).toInt() ) );
     return cb;
@@ -90,10 +87,10 @@ void QgsPgSourceSelectDelegate::setModelData( QWidget *editor, QAbstractItemMode
   {
     if ( index.column() == QgsPgTableModel::dbtmType )
     {
-      QGis::WkbType type = ( QGis::WkbType ) cb->itemData( cb->currentIndex() ).toInt();
+      QGis::GeometryType type = ( QGis::GeometryType ) cb->itemData( cb->currentIndex() ).toInt();
 
-      model->setData( index, QgsPgTableModel::iconForType( type ), Qt::DecorationRole );
-      model->setData( index, type != QGis::WKBUnknown ? QgsPgTableModel::displayStringForType( type ) : tr( "Select..." ) );
+      model->setData( index, QgsPgTableModel::iconForGeomType( type ), Qt::DecorationRole );
+      model->setData( index, type != QGis::UnknownGeometry ? QgsPostgresConn::displayStringForGeomType( type ) : tr( "Select..." ) );
       model->setData( index, type, Qt::UserRole + 2 );
     }
     else if ( index.column() == QgsPgTableModel::dbtmPkCol )
@@ -412,8 +409,8 @@ void QgsPgSourceSelect::populateConnectionList()
 
 QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
 {
-  QGis::WkbType geomType = ( QGis::WkbType ) mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( geomType == QGis::WKBUnknown )
+  QGis::GeometryType geomType = ( QGis::GeometryType ) mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( geomType == QGis::UnknownGeometry )
     // no geometry type selected
     return QString::null;
 
@@ -433,7 +430,7 @@ QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
   QString sql = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmSql ) )->text();
 
   QgsDataSourceURI uri( m_connInfo );
-  uri.setDataSource( schemaName, tableName, geomType != QGis::WKBNoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
+  uri.setDataSource( schemaName, tableName, geomType != QGis::NoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
   uri.setUseEstimatedMetadata( mUseEstimatedMetadata );
   uri.setGeometryType( geomType );
   uri.setSrid( srid );
@@ -531,18 +528,9 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
         mTableModel.addTableEntry( layer );
       }
 
-      // Start the thread that gets the geometry type for relations that
-      // may take a long time to return
       if ( mColumnTypeThread )
       {
-        connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
-                 this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
-        connect( mColumnTypeThread, SIGNAL( finished() ),
-                 this, SLOT( columnThreadFinished() ) );
-
         btnConnect->setText( tr( "Stop" ) );
-
-        // Do it in a thread.
         mColumnTypeThread->start();
       }
     }
@@ -634,10 +622,19 @@ void QgsPgSourceSelect::addSearchGeometryColumn( QgsPostgresLayerProperty layerP
     QgsPostgresConn *conn = QgsPostgresConn::connectDb( m_connInfo, true /* readonly */ );
     if ( conn )
     {
+
       mColumnTypeThread = new QgsGeomColumnTypeThread( conn, mUseEstimatedMetadata );
+
+      connect( mColumnTypeThread, SIGNAL( setLayerType( QgsPostgresLayerProperty ) ),
+               this, SLOT( setLayerType( QgsPostgresLayerProperty ) ) );
+      connect( this, SIGNAL( addGeometryColumn( QgsPostgresLayerProperty ) ),
+               mColumnTypeThread, SLOT( addGeometryColumn( QgsPostgresLayerProperty ) ) );
+      connect( mColumnTypeThread, SIGNAL( finished() ),
+               this, SLOT( columnThreadFinished() ) );
     }
   }
-  mColumnTypeThread->addGeometryColumn( layerProperty );
+
+  emit addGeometryColumn( layerProperty );
 }
 
 QString QgsPgSourceSelect::fullDescription( QString schema, QString table,
