@@ -45,7 +45,7 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>410</width>
+        <width>430</width>
         <height>574</height>
        </rect>
       </property>
@@ -421,7 +421,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>
@@ -449,22 +449,6 @@
  </tabstops>
  <resources/>
  <connections>
-  <connection>
-   <sender>buttonBox</sender>
-   <signal>accepted()</signal>
-   <receiver>QgsNewSpatialiteLayerDialogBase</receiver>
-   <slot>accept()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>364</x>
-     <y>585</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>387</x>
-     <y>304</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>

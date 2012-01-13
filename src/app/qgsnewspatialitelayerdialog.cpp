@@ -66,12 +66,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   }
   settings.endGroup();
 
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  buttonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-
-  buttonBox->button( QDialogButtonBox::Ok )->setDefault( true );
+  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
+  mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
   QgsCoordinateReferenceSystem srs;
@@ -81,6 +77,12 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   leSRID->setText( srs.authid() + " - " + srs.description() );
 
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );
+
+  connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
+  connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+
+  mAddAttributeButton->setEnabled( false );
+  mRemoveAttributeButton->setEnabled( false );
 }
 
 QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
@@ -154,8 +156,7 @@ void QgsNewSpatialiteLayerDialog::on_leLayerName_textChanged( QString text )
 {
   Q_UNUSED( text );
   bool created  = leLayerName->text().length() > 0 && mAttributeView->topLevelItemCount() > 0 && createDb();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( created );
-  buttonBox->button( QDialogButtonBox::Apply )->setEnabled( created );
+  mOkButton->setEnabled( created );
 }
 
 void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
@@ -169,8 +170,7 @@ void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
     if ( mAttributeView->topLevelItemCount() > 0  && leLayerName->text().length() > 0 )
     {
       bool created = createDb();
-      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( created );
-      buttonBox->button( QDialogButtonBox::Apply )->setEnabled( created );
+      mOkButton->setEnabled( created );
     }
     mNameEdit->clear();
   }
@@ -181,8 +181,7 @@ void QgsNewSpatialiteLayerDialog::on_mRemoveAttributeButton_clicked()
   delete mAttributeView->currentItem();
   if ( mAttributeView->topLevelItemCount() == 0 )
   {
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-    buttonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
+    mOkButton->setEnabled( false );
   }
 }
 
@@ -249,6 +248,16 @@ void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
     leSRID->setText( srs.authid() + " - " + srs.description() );
   }
   delete mySelector;
+}
+
+void QgsNewSpatialiteLayerDialog::nameChanged( QString name )
+{
+  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+}
+
+void QgsNewSpatialiteLayerDialog::selectionChanged()
+{
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
 }
 
 bool QgsNewSpatialiteLayerDialog::createDb()

@@ -44,12 +44,12 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     void on_pbnFindSRID_clicked();
     void on_leLayerName_textChanged( QString text );
     void on_toolButtonNewDatabase_clicked();
+    void nameChanged( QString );
+    void selectionChanged();
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();
-
-    bool apply();
 
   private:
     /**Returns the selected geometry type*/
@@ -58,9 +58,12 @@ class QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteL
     /** Create a new database */
     bool createDb();
 
+    bool apply();
+
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
+    QPushButton *mOkButton;
     int mCrsId;
 };
 
