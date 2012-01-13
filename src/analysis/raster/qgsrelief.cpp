@@ -652,7 +652,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   //debug, print out all the classbreaks
   for ( int i = 0; i < classBreaks.size(); ++i )
   {
-    qWarning( QString::number( classBreaks[i] ).toLocal8Bit().data() );
+    qWarning( "%d", classBreaks[i] );
   }
 
   //set colors according to optimised class breaks
