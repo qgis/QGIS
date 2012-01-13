@@ -405,8 +405,6 @@ QString QgsVectorFileWriter::errorMessage()
 
 bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 {
-  QgsAttributeMap::const_iterator it;
-
   // create the feature
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
