@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri )
@@ -157,7 +158,9 @@ void QgsVectorDataProvider::setEncoding( const QString& e )
   }
   else
   {
-    QgsDebugMsg( "error finding QTextCodec for " + e );
+    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    mEncoding = QTextCodec::codecForName( "System" );
+    Q_ASSERT( mEncoding );
   }
 }
 
@@ -457,6 +460,12 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
 {
   if ( smEncodings.isEmpty() )
   {
+    foreach( QString codec, QTextCodec::availableCodecs() )
+    {
+      smEncodings << codec;
+    }
+    qSort( smEncodings );
+#if 0
     smEncodings << "BIG5";
     smEncodings << "BIG5-HKSCS";
     smEncodings << "EUCJP";
@@ -502,6 +511,7 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
     smEncodings << "Apple Roman";
     smEncodings << "TIS-620";
     smEncodings << "System";
+#endif
   }
 
   return smEncodings;
