@@ -40,12 +40,12 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 
 
 QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
-                                            const QString &providerKey,
-                                            const QgsFieldMap& fields,
-                                            QGis::WkbType geometryType,
-                                            const QgsCoordinateReferenceSystem* crs,
-                                            bool overwrite,
-                                            const QMap<QString, QVariant> *options )
+    const QString &providerKey,
+    const QgsFieldMap& fields,
+    QGis::WkbType geometryType,
+    const QgsCoordinateReferenceSystem* crs,
+    bool overwrite,
+    const QMap<QString, QVariant> *options )
     : mErrorCount( 0 )
 {
   mProvider = NULL;

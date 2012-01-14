@@ -18,8 +18,10 @@
 #include "qgshillshadefilter.h"
 
 QgsHillshadeFilter::QgsHillshadeFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat, double lightAzimuth,
-                                       double lightAngle): \
-  QgsDerivativeFilter( inputFile, outputFile, outputFormat ), mLightAzimuth( lightAzimuth ), mLightAngle( lightAngle )
+                                        double lightAngle )
+    : QgsDerivativeFilter( inputFile, outputFile, outputFormat )
+    , mLightAzimuth( lightAzimuth )
+    , mLightAngle( lightAngle )
 {
 }
 
@@ -27,8 +29,9 @@ QgsHillshadeFilter::~QgsHillshadeFilter()
 {
 }
 
-float QgsHillshadeFilter::processNineCellWindow( float* x11, float* x21, float* x31, \
-                            float* x12, float* x22, float* x32, float* x13, float* x23, float* x33 )
+float QgsHillshadeFilter::processNineCellWindow( float* x11, float* x21, float* x31,
+    float* x12, float* x22, float* x32,
+    float* x13, float* x23, float* x33 )
 {
   float derX = calcFirstDerX( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
   float derY = calcFirstDerY( x11, x21, x31, x12, x22, x32, x13, x23, x33 );
@@ -42,7 +45,7 @@ float QgsHillshadeFilter::processNineCellWindow( float* x11, float* x21, float* 
   float slope_rad = atan( sqrt( derX * derX + derY * derY ) );
   float azimuth_rad = mLightAzimuth * M_PI / 180.0;
   float aspect_rad = 0;
-  if( derX == 0 && derY == 0 ) //aspect undefined, take a neutral value. Better solutions?
+  if ( derX == 0 && derY == 0 ) //aspect undefined, take a neutral value. Better solutions?
   {
     aspect_rad = azimuth_rad / 2.0;
   }
@@ -50,5 +53,5 @@ float QgsHillshadeFilter::processNineCellWindow( float* x11, float* x21, float* 
   {
     aspect_rad = M_PI + atan2( derX, derY );
   }
-  return qMax( 0.0, 255.0 * ( ( cos( zenith_rad ) * cos( slope_rad ) ) + ( sin( zenith_rad ) * sin( slope_rad ) * cos( azimuth_rad - aspect_rad ) ) ) );
+  return qMax( 0.0, 255.0 * (( cos( zenith_rad ) * cos( slope_rad ) ) + ( sin( zenith_rad ) * sin( slope_rad ) * cos( azimuth_rad - aspect_rad ) ) ) );
 }

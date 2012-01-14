@@ -55,7 +55,7 @@ QgsMapToolCapture::~QgsMapToolCapture()
 
   stopCapturing();
 
-  if( mValidator )
+  if ( mValidator )
   {
     mValidator->deleteLater();
     mValidator = 0;
@@ -283,7 +283,7 @@ void QgsMapToolCapture::validateGeometry()
   if ( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() == 0 )
     return;
 
-  if( mValidator )
+  if ( mValidator )
   {
     mValidator->deleteLater();
     mValidator = 0;
@@ -311,7 +311,7 @@ void QgsMapToolCapture::validateGeometry()
     case CapturePolygon:
       if ( mCaptureList.size() < 3 )
         return;
-      g = QgsGeometry::fromPolygon( QgsPolygon() << ( QgsPolyline () << mCaptureList.toVector() << mCaptureList[0] ) );
+      g = QgsGeometry::fromPolygon( QgsPolygon() << ( QgsPolyline() << mCaptureList.toVector() << mCaptureList[0] ) );
       break;
   }
 

@@ -188,7 +188,7 @@ class  CORE_EXPORT QgsAttributeAction
     static void ( *smPythonExecute )( const QString & );
 
     void runAction( const QgsAction &action,
-                   void ( *executePython )( const QString & ) = 0 );
+                    void ( *executePython )( const QString & ) = 0 );
 
     int mDefaultAction;
 };

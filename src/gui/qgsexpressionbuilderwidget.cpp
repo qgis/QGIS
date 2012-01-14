@@ -43,9 +43,9 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
-  foreach (QPushButton* button, this->mOperatorsGroupBox->findChildren<QPushButton *>())
+  foreach( QPushButton* button, this->mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
-      connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
+    connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
 
   // TODO Can we move this stuff to QgsExpression, like the functions?
@@ -155,7 +155,7 @@ void QgsExpressionBuilderWidget::loadFieldNames()
 void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
 {
   if ( fields.isEmpty() )
-      return;
+    return;
 
   QStringList fieldNames;
   foreach( QgsField field, fields )

@@ -202,7 +202,7 @@ QString QgsAttributeAction::expandAction( QString action, QgsFeature &feat, cons
     int start = index;
     index = pos + rx.matchedLength();
 
-    QString to_replace = rx.cap(1).trimmed();
+    QString to_replace = rx.cap( 1 ).trimmed();
     QgsDebugMsg( "Found expression:" + to_replace );
 
     if ( substitutionMap && substitutionMap->contains( to_replace ) )
