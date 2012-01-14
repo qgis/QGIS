@@ -276,6 +276,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     /** loads fields from input file to member attributeFields */
     void loadFields();
 
+    /** Check if a table/view has any triggers.  Triggers can be used on views to make them editable.*/
+    bool hasTriggers();
+
     /** convert a QgsField to work with SL */
     static bool convertField( QgsField &field );
 
