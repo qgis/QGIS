@@ -30390,7 +30390,7 @@ L´errore era:
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="81"/>
         <source>Avoid Int.</source>
-        <translation>Evita inters.</translation>
+        <translation type="unfinished">Evita intersezioni</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssnappingdialogbase.ui" line="84"/>

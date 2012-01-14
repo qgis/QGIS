@@ -37,11 +37,11 @@ class CORE_EXPORT QgsMessageLog
     static void logMessage( QString message, QString tag = QString::null, int level = 0 );
 
     //! set log message
-    static void setLogger( void (*logger)( QString message, QString tag, int level ) );
+    static void setLogger( void ( *logger )( QString message, QString tag, int level ) );
 
   private:
     //! function
-    static void (*gmLogger)( QString message, QString tag, int level );
+    static void ( *gmLogger )( QString message, QString tag, int level );
 };
 
 

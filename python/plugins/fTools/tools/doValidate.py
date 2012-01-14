@@ -211,7 +211,7 @@ class validateThread( QThread ):
     self.running = True
     output = self.check_geometry( self.vlayer )
     self.emit( SIGNAL( "runFinished(PyQt_PyObject)" ), output )
-    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 0 )
+    self.emit( SIGNAL( "runStatus(PyQt_PyObject)" ), 100 )
 
   def stop(self):
     self.running = False

@@ -20,7 +20,6 @@
 
 #include "ui_qgswfssourceselectbase.h"
 #include "qgscontexthelp.h"
-#include "qgsrectangle.h"
 
 class QgsGenericProjectionSelector;
 class QgsWFSConnection;
@@ -47,7 +46,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     std::map<QString, std::list<QString> > mAvailableCRS;
     QAbstractButton* btnAdd;
     QgsWFSConnection* mConn;
-    QgsRectangle mExtent;
+    QString mUri;            // data source URI
 
     void populateConnectionList();
 
@@ -74,8 +73,6 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
-  protected:
-    void showEvent( QShowEvent* event );
 };
 
 #endif

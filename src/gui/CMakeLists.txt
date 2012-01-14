@@ -69,12 +69,14 @@ qgsprojectbadlayerguihandler.cpp
 qgsprojectionselector.cpp
 qgsquickprint.cpp
 qgsrubberband.cpp
+qgsscalecombobox.cpp
 qgstextannotationitem.cpp
 qgsvertexmarker.cpp
 qgsludialog.cpp
 qgssearchquerybuilder.cpp
 qgsexpressionbuilderwidget.cpp
 qgsexpressionbuilderdialog.cpp
+qgsexpressionhighlighter.cpp
 qgsquerybuilder.cpp
 )
 
@@ -134,7 +136,9 @@ qgsludialog.h
 qgsprojectbadlayerguihandler.h
 qgslonglongvalidator.h
 qgssearchquerybuilder.h
+qgsscalecombobox.h
 qgsexpressionbuilderwidget.h
+qgsexpressionhighlighter.h
 qgsquerybuilder.h
 )
 
@@ -165,11 +169,13 @@ qgsprojectionselector.h
 qgsrubberband.h
 qgsvertexmarker.h
 qgsmaptip.h
+qgsscalecombobox.h
 qgssearchquerybuilder.h
 qgsattributeeditor.h
 qgsfieldvalidator.h
 qgsexpressionbuilderwidget.h
 qgsexpressionbuilderdialog.h
+qgsexpressionhighlighter.h
 
 attributetable/qgsattributetablemodel.h
 attributetable/qgsattributetablememorymodel.h

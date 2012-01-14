@@ -405,8 +405,6 @@ QString QgsVectorFileWriter::errorMessage()
 
 bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
 {
-  QgsAttributeMap::const_iterator it;
-
   // create the feature
   OGRFeatureH poFeature = OGR_F_Create( OGR_L_GetLayerDefn( mLayer ) );
 
@@ -455,6 +453,8 @@ bool QgsVectorFileWriter::addFeature( QgsFeature& feature )
       case QVariant::LongLong:
       case QVariant::String:
         OGR_F_SetFieldString( poFeature, ogrField, mCodec->fromUnicode( attrValue.toString() ).data() );
+        break;
+      case QVariant::Invalid:
         break;
       default:
         mErrorMessage = QObject::tr( "Invalid variant type for field %1[%2]: received %3 with type %4" )

@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgisinterface.h"
 #include "qgswfssourceselect.h"
 #include "qgswfsconnection.h"
 #include "qgswfsprovider.h"
@@ -25,6 +24,7 @@
 #include "qgscontexthelp.h"
 #include "qgsproject.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h" //for current view extent
 #include "qgsmanageconnectionsdialog.h"
@@ -42,16 +42,16 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
 {
   setupUi( this );
 
-  btnAdd = buttonBox->button( QDialogButtonBox::Ok );
+  btnAdd = buttonBox->button( QDialogButtonBox::Apply );
   btnAdd->setEnabled( false );
 
   if ( embeddedMode )
   {
-    buttonBox->button( QDialogButtonBox::Ok )->hide();
-    buttonBox->button( QDialogButtonBox::Cancel )->hide();
+    buttonBox->button( QDialogButtonBox::Apply )->hide();
+    buttonBox->button( QDialogButtonBox::Close )->hide();
   }
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( addLayer() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( addLayer() ) );
   connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
   connect( btnNew, SIGNAL( clicked() ), this, SLOT( addEntryToServerList() ) );
   connect( btnEdit, SIGNAL( clicked() ), this, SLOT( modifyEntryOfServerList() ) );
@@ -178,6 +178,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     newItem->setText( 0, featureType.title );
     newItem->setText( 1, featureType.name );
     newItem->setText( 2, featureType.abstract );
+    newItem->setCheckState( 3, Qt::Checked );
     treeWidget->addTopLevelItem( newItem );
 
     // insert the available CRS into mAvailableCRS
@@ -260,27 +261,61 @@ void QgsWFSSourceSelect::addLayer()
     return;
   }
 
-  QgsRectangle bBox;
-  QgsRectangle currentRectangle;
-  if ( mBboxCheckBox->isChecked() )
-  {
-    currentRectangle = mExtent;
-  }
-
-
   QList<QTreeWidgetItem*> selectedItems = treeWidget->selectedItems();
   QList<QTreeWidgetItem*>::const_iterator sIt = selectedItems.constBegin();
-  for ( ; sIt != selectedItems.constEnd(); ++sIt )
+  QgsWFSConnection conn( cmbConnections->currentText() );
+  QString pCrsString( labelCoordRefSys->text() );
+  QgsCoordinateReferenceSystem pCrs( pCrsString );
+  //prepare canvas extent info for layers with "cache features" option not set
+  QgsRectangle extent;
+  QVariant extentVariant = property( "MapExtent" );
+  if ( extentVariant.isValid() )
   {
-    QString typeName = ( *sIt )->text( 1 );
-    QString crs = labelCoordRefSys->text();
-    QString filter = ( *sIt )->text( 3 );
-
-    //add a wfs layer to the map
-    QgsWFSConnection conn( cmbConnections->currentText() );
-    QString uri = conn.uriGetFeature( typeName, crs, filter, currentRectangle );
-    emit addWfsLayer( uri, typeName );
+    QString crs;
+    QgsCoordinateTransform xform;
+    QString extentString = extentVariant.toString();
+    QStringList minMaxSplit = extentString.split( ":" );
+    if ( minMaxSplit.size() > 1 )
+    {
+      QStringList xyMinSplit = minMaxSplit[0].split( "," );
+      QStringList xyMaxSplit = minMaxSplit[1].split( "," );
+      if ( xyMinSplit.size() > 1 && xyMaxSplit.size() > 1 )
+      {
+        extent.set( xyMinSplit[0].toDouble(), xyMinSplit[1].toDouble(),
+                    xyMaxSplit[0].toDouble(), xyMaxSplit[1].toDouble() );
+      }
+    }
+    //does canvas have "on the fly" reprojection set?
+    QVariant crsVariant = property( "MapCRS" );
+    if ( crsVariant.isValid() )
+    { //transform between provider CRS set in source select dialog and canvas CRS
+      QgsCoordinateReferenceSystem cCrs( crsVariant.toString() );
+      if ( pCrs.isValid() && cCrs.isValid() )
+      {
+        QgsCoordinateTransform xform( pCrs, cCrs );
+        extent = xform.transformBoundingBox( extent, QgsCoordinateTransform::ReverseTransform );
+        QgsDebugMsg( QString( "canvas transform: Canvas CRS=%1, Provider CRS=%2, BBOX=%3" )
+                     .arg( cCrs.authid(), pCrs.authid(), extent.asWktCoordinates() ) );
+      }
+    }
   }
+  //create layers that user selected from this WFS source
+  for ( ; sIt != selectedItems.constEnd(); ++sIt )
+  { //add a wfs layer to the map
+    QString typeName = ( *sIt )->text( 1 );  //WFS repository's name for layer
+    QString filter = ( *sIt )->text( 4 );    //optional filter specified by user
+    //is "cache features" checked?
+    if (( *sIt )->checkState( 3 ) == Qt::Checked )
+    { //yes: entire WFS layer will be retrieved and cached
+      mUri = conn.uriGetFeature( typeName, pCrsString, filter );
+    }
+    else
+    { //no: include BBOX of current canvas extent in URI
+      mUri = conn.uriGetFeature( typeName, pCrsString, filter, extent );
+    }
+    emit addWfsLayer( mUri, typeName );
+  }
+  accept();
 }
 
 void QgsWFSSourceSelect::changeCRS()
@@ -362,20 +397,20 @@ void QgsWFSSourceSelect::on_btnLoad_clicked()
 
 void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
 {
-  if ( item && column == 3 )
+  if ( item && column == 4 )
   {
     //get available fields for wfs layer
-    QgsWFSProvider p( "" );
+    QgsWFSProvider p( "" );  //bypasses most provider instantiation logic
     QgsWFSConnection conn( cmbConnections->currentText() );
     QString uri = conn.uriDescribeFeatureType( item->text( 1 ) );
 
     QgsFieldMap fields;
     QString geometryAttribute;
-    if ( p.describeFeatureType( uri, geometryAttribute, fields ) != 0 )
+    QGis::WkbType geomType;
+    if ( p.describeFeatureType( uri, geometryAttribute, fields, geomType ) != 0 )
     {
       return;
     }
-
 
     //show expression builder
     QgsExpressionBuilderDialog d( 0, item->text( 3 ) );
@@ -387,37 +422,11 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
       return;
     }
 
-    QgsFieldMap::const_iterator fieldIt = fields.constBegin();
-    for ( ; fieldIt != fields.constEnd(); ++fieldIt )
-    {
-      w->registerItem( tr( "Fields" ), fieldIt->name(), " " + fieldIt->name() + " ", "", QgsExpressionItem::Field );
-    }
+    w->loadFieldNames( fields );
 
     if ( d.exec() == QDialog::Accepted )
     {
-      item->setText( 3, w->getExpressionString() );
+      item->setText( 4, w->getExpressionString() );
     }
   }
-}
-
-void QgsWFSSourceSelect::showEvent( QShowEvent* event )
-{
-  Q_UNUSED( event );
-  QVariant extentVariant = property( "MapExtent" );
-  if ( extentVariant.isValid() )
-  {
-    QString extentString = extentVariant.toString();
-    QStringList minMaxSplit = extentString.split( ":" );
-    if ( minMaxSplit.size() > 1 )
-    {
-      QStringList xyMinSplit = minMaxSplit[0].split( "," );
-      QStringList xyMaxSplit = minMaxSplit[1].split( "," );
-      if ( xyMinSplit.size() > 1 && xyMaxSplit.size() > 1 )
-      {
-        mExtent.set( xyMinSplit[0].toDouble(), xyMinSplit[1].toDouble(), xyMaxSplit[0].toDouble(), xyMaxSplit[1].toDouble() );
-        return;
-      }
-    }
-  }
-  mBboxCheckBox->hide();
 }

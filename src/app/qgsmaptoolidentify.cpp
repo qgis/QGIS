@@ -334,7 +334,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
     //if WMS layer does not cover the view origin,
     //we need to map the view pixel coordinates
     //to WMS layer pixel coordinates
-    QgsRectangle viewExtent = mCanvas->extent();
+    QgsRectangle viewExtent = toLayerCoordinates( layer, mCanvas->extent() );
     QgsRectangle layerExtent = layer->extent();
     double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
     if ( mapUnitsPerPixel > 0 && viewExtent.intersects( layerExtent ) )

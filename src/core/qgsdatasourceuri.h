@@ -19,7 +19,7 @@
 #ifndef QGSDATASOURCEURI_H
 #define QGSDATASOURCEURI_H
 
-#include <QString>
+#include "qgis.h"
 
 /** \ingroup core
  * Class for storing the component parts of a PostgreSQL/RDBMS datasource URI.
@@ -117,6 +117,13 @@ class CORE_EXPORT QgsDataSourceURI
     QString keyColumn() const;
     void setKeyColumn( QString column );
 
+    // added in 1.9
+    QGis::GeometryType geometryType() const;
+    void setGeometryType( QGis::GeometryType type );
+
+    QString srid() const;
+    void setSrid( QString srid );
+
   private:
     void skipBlanks( const QString &uri, int &i );
     QString getValue( const QString &uri, int &i );
@@ -148,10 +155,14 @@ class CORE_EXPORT QgsDataSourceURI
     enum SSLmode mSSLmode;
     //! key column
     QString mKeyColumn;
-    //Use estimated metadata flag
+    //! Use estimated metadata flag
     bool mUseEstimatedMetadata;
-    //Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
+    //! Disable SelectAtId capability (eg. to trigger the attribute table memory model for expensive views)
     bool mSelectAtIdDisabled;
+    //! geometry type (or QGis::WKBUnknown if not specified)
+    QGis::GeometryType mGeometryType;
+    //! SRID or a null string if not specified
+    QString mSrid;
 };
 
 #endif //QGSDATASOURCEURI_H

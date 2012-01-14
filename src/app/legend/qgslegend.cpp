@@ -169,9 +169,17 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   QgsLegendGroup *group;
 
   if ( parentGroup )
+  {
     group = new QgsLegendGroup( parentGroup, name );
+  }
   else
+  {
     group = new QgsLegendGroup( this, name );
+    if ( currentItem() )
+    {
+      moveItem( group, currentItem() );
+    }
+  }
 
   QModelIndex groupIndex = indexFromItem( group );
   setExpanded( groupIndex, expand );
@@ -256,10 +264,10 @@ void QgsLegend::removeLayer( QString layerId )
 
       if ( ll && ll->layer() && ll->layer()->id() == layerId )
       {
-        if( !ll->isVisible() )
-	{
+        if ( !ll->isVisible() )
+        {
           invLayerRemoved = true;
-	}
+        }
         removeItem( ll );
         delete ll;
         break;
@@ -269,7 +277,7 @@ void QgsLegend::removeLayer( QString layerId )
   updateMapCanvasLayerSet();
   adjustIconSize();
 
-  if( invLayerRemoved )
+  if ( invLayerRemoved )
     emit invisibleLayerRemoved();
 }
 
@@ -808,14 +816,34 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   blockSignals( false );
 
   QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
-  QSettings settings;
-  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  if ( !lg && currentItem() )
   {
-    lg->insertChild( 0, llayer );
+    lg = dynamic_cast<QgsLegendGroup *>( currentItem()->parent() );
+  }
+
+  int index;
+  if ( lg )
+  {
+    index = lg->indexOfChild( currentItem() );
   }
   else
   {
-    insertTopLevelItem( 0, llayer );
+    index = indexOfTopLevelItem( currentItem() );
+  }
+
+  if ( index < 0 )
+  {
+    index = 0;
+  }
+
+  QSettings settings;
+  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  {
+    lg->insertChild( index, llayer );
+  }
+  else
+  {
+    insertTopLevelItem( index, llayer );
     setCurrentItem( llayer );
   }
 
@@ -1003,11 +1031,20 @@ void QgsLegend::legendGroupRemove()
     return;
   }
 
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   if ( lg )
   {
     removeGroup( lg );
   }
+
+  // Turn on rendering (if it was on previously)
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 }
 
 void QgsLegend::legendGroupSetCRS()

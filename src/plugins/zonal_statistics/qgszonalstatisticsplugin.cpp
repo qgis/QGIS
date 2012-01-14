@@ -25,6 +25,7 @@
 
 static const QString name_ = QObject::tr( "Zonal statistics plugin" );
 static const QString description_ = QObject::tr( "A plugin to calculate count, sum, mean of rasters for each polygon of a vector layer" );
+static const QString category_ = QObject::tr( "Raster" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 
 QgsZonalStatisticsPlugin::QgsZonalStatisticsPlugin( QgisInterface* iface ): mIface( iface ), mAction( 0 )
@@ -39,15 +40,17 @@ QgsZonalStatisticsPlugin::~QgsZonalStatisticsPlugin()
 
 void QgsZonalStatisticsPlugin::initGui()
 {
-  mAction = new QAction( tr( "&Zonal statistics..." ), 0 );
+  mAction = new QAction( tr( "&Zonal statistics" ), 0 );
   QObject::connect( mAction, SIGNAL( triggered() ), this, SLOT( run() ) );
-  mIface->addToolBarIcon( mAction );
-  mIface->addPluginToMenu( tr( "&Zonal statistics..." ), mAction );
+  mIface->addRasterToolBarIcon( mAction );
+  mIface->addPluginToRasterMenu( tr( "&Zonal statistics" ), mAction );
 }
 
 void QgsZonalStatisticsPlugin::unload()
 {
-
+  mIface->removeRasterToolBarIcon( mAction );
+  mIface->removePluginRasterMenu( tr( "&Zonal statistics" ), mAction );
+  delete mAction;
 }
 
 void QgsZonalStatisticsPlugin::run()
@@ -85,6 +88,11 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 QGISEXTERN QString version()

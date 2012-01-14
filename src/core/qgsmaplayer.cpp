@@ -255,6 +255,20 @@ bool QgsMapLayer::readXML( const QDomNode& layer_node )
   mne = mnl.toElement();
   setLayerName( mne.text() );
 
+  //title
+  QDomElement titleElem = layer_node.firstChildElement( "title" );
+  if ( !titleElem.isNull() )
+  {
+    mTitle = titleElem.text();
+  }
+
+  //abstract
+  QDomElement abstractElem = layer_node.firstChildElement( "abstract" );
+  if ( !abstractElem.isNull() )
+  {
+    mAbstract = abstractElem.text();
+  }
+
   //read transparency level
   QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
   if ( ! transparencyNode.isNull() )
@@ -340,7 +354,19 @@ bool QgsMapLayer::writeXML( QDomNode & layer_node, QDomDocument & document )
   QDomText layerNameText = document.createTextNode( name() );
   layerName.appendChild( layerNameText );
 
+  // layer title
+  QDomElement layerTitle = document.createElement( "title" ) ;
+  QDomText layerTitleText = document.createTextNode( title() );
+  layerTitle.appendChild( layerTitleText );
+
+  // layer abstract
+  QDomElement layerAbstract = document.createElement( "abstract" );
+  QDomText layerAbstractText = document.createTextNode( abstract() );
+  layerAbstract.appendChild( layerAbstractText );
+
   maplayer.appendChild( layerName );
+  maplayer.appendChild( layerTitle );
+  maplayer.appendChild( layerAbstract );
 
   // timestamp if supported
   if ( timestamp() > QDateTime() )

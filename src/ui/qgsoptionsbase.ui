@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_12">
@@ -388,7 +388,7 @@
               <item>
                <widget class="QCheckBox" name="cbxAddNewLayersToCurrentGroup">
                 <property name="text">
-                 <string>Add new layers to selected group</string>
+                 <string>Add new layers to selected or current group</string>
                 </property>
                </widget>
               </item>
@@ -521,7 +521,7 @@
       <attribute name="title">
        <string>GDAL</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout">
+      <layout class="QGridLayout" name="gridLayout_27">
        <item row="0" column="0">
         <widget class="QGroupBox" name="groupBox_13">
          <property name="title">
@@ -635,8 +635,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -809,8 +809,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1095,8 +1095,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1170,8 +1170,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>773</width>
-            <height>735</height>
+            <width>781</width>
+            <height>741</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1436,20 +1436,10 @@
            <item row="3" column="0">
             <widget class="QGroupBox" name="mEnterAttributeValuesGroupBox">
              <property name="title">
-              <string>Enter attribute values</string>
+              <string>Other settings</string>
              </property>
-             <layout class="QHBoxLayout">
-              <item>
-               <widget class="QCheckBox" name="chkReuseLastValues">
-                <property name="text">
-                 <string>Reuse last entered attribute values</string>
-                </property>
-                <property name="tristate">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item>
+             <layout class="QGridLayout" name="gridLayout_26">
+              <item row="0" column="0" colspan="2">
                <widget class="QCheckBox" name="chkDisableAttributeValuesDlg">
                 <property name="text">
                  <string>Suppress attributes pop-up windows after each created feature</string>
@@ -1459,10 +1449,30 @@
                 </property>
                </widget>
               </item>
+              <item row="1" column="0" colspan="2">
+               <widget class="QCheckBox" name="chkReuseLastValues">
+                <property name="text">
+                 <string>Reuse last entered attribute values</string>
+                </property>
+                <property name="tristate">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="mValidateGeometries"/>
+              </item>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_19">
+                <property name="text">
+                 <string>Validate geometries</string>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="5" column="0">
             <spacer>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1506,8 +1516,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1680,8 +1690,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1777,8 +1787,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>799</width>
-            <height>761</height>
+            <width>803</width>
+            <height>763</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -2067,7 +2077,6 @@
   <tabstop>mMarkerStyleComboBox</tabstop>
   <tabstop>mMarkerSizeSpinBox</tabstop>
   <tabstop>chkReuseLastValues</tabstop>
-  <tabstop>chkDisableAttributeValuesDlg</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>pbnSelectOtfProjection</tabstop>
   <tabstop>leProjectGlobalCrs</tabstop>

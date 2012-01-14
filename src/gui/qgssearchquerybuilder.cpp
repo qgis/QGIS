@@ -442,7 +442,7 @@ void QgsSearchQueryBuilder::loadQuery()
   QString newQueryText = query;
 
 #if 0
-  // TODO: QgsExpression does not support overwriting of existing expressions
+  // TODO: implement with visitor pattern in QgsExpression
 
   QStringList attributes = searchTree->referencedColumns();
   QMap< QString, QString> attributesToReplace;

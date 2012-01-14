@@ -159,7 +159,6 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
   return rep;
 }
 
-
 QString QgsPoint::wellKnownText() const
 {
   return QString( "POINT(%1 %2)" ).arg( QString::number( m_x, 'f', 18 ) ).arg( QString::number( m_y, 'f', 18 ) );

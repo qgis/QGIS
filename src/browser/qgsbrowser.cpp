@@ -31,7 +31,8 @@
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsnewvectorlayerdialog.h"
-
+#include "qgsattributetablemodel.h"
+#include "qgsattributetablefiltermodel.h"
 
 QgsBrowser::QgsBrowser( QWidget *parent, Qt::WFlags flags )
     : QMainWindow( parent, flags )
@@ -114,7 +115,8 @@ void QgsBrowser::itemClicked( const QModelIndex& index )
   mDirtyAttributes = true;
 
   // clear the previous stuff
-  attributeTable->setLayer( NULL );
+  attributeTable->setCanvasAndLayer( 0, 0 );
+
   QList<QgsMapCanvasLayer> nolayers;
   mapCanvas->setLayerSet( nolayers );
   metaTextBrowser->clear();
@@ -478,12 +480,13 @@ void QgsBrowser::updateCurrentTab()
     {
       QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer*>( mLayer );
       QApplication::setOverrideCursor( Qt::WaitCursor );
-      attributeTable->setLayer( vlayer );
+      attributeTable->setCanvasAndLayer( mapCanvas, vlayer );
+      qobject_cast<QgsAttributeTableModel * >( dynamic_cast<QgsAttributeTableFilterModel *>( attributeTable->model() )->sourceModel() )->loadLayer();
       QApplication::restoreOverrideCursor();
     }
     else
     {
-      attributeTable->setLayer( NULL );
+      attributeTable->setCanvasAndLayer( 0, 0 );
     }
     mDirtyAttributes = false;
   }

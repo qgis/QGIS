@@ -83,7 +83,7 @@ http://www.kyngchaos.com/wiki/software/frameworks
 Once downloaded, open and install the frameworks.
 
 William provides an additional installer package for Postgresql (for PostGIS
-support).  Qgis just needs the libpq client library, so unless you want to
+support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
 package.  It's available here:
 
@@ -97,7 +97,7 @@ http://www.kyngchaos.com/wiki/software/grass
 
 There are some additional dependencies that, at the time of writing, are not
 provided as frameworks or installers so we will need to build these from source.
-If you are wanting to build Qgis as a 64-bit application, you will need to 
+If you are wanting to build QGIS as a 64-bit application, you will need to 
 provide the appropriate build commands to produce 64-bit support in dependencies.
 Likewise, for 32-bit support on Snow Leopard, you will need to override the
 default system architecture, which is 64-bit, according to instructions for
@@ -274,7 +274,7 @@ http://pyqwt.sourceforge.net/
 
 Double-click the tarball to unpack it.  The following assumes PyQwt v5.2.0
 (comes with Qwt 5.2.1).  Normal compilation does both Qwt and PyQwt at the same
-time, but Qwt is statically linked into PyQwt, and Qgis can't use it.  So, we
+time, but Qwt is statically linked into PyQwt, and QGIS can't use it.  So, we
 need to split the build.
 
 Now, cd into the qwt-5.2 subdir in a Terminal.  Type these commands to build
@@ -399,7 +399,7 @@ This will automatically find and use the previously installed frameworks, and
 the GRASS application if installed.
 
 Or, to use a Unix-style build of GRASS, use the following cmake invocation
-(minimum GRASS version as stated in the Qgis requirements, substitute the GRASS
+(minimum GRASS version as stated in the QGIS requirements, substitute the GRASS
 path and version as required):
 
 ```
@@ -434,7 +434,7 @@ cmake -D CMAKE_INSTALL_PREFIX=~/Applications -D \
 ..
 ```
 
-The Qgis Mapserver feature requires fastcgi support.  This is included in
+The QGIS Mapserver feature requires fastcgi support.  This is included in
 Leopard and Snow Leopard, but was dropped at Lion.  To build the Mapserver
 component on Leopard and Snow, add the followling line before the last line in
 the above configuration:
@@ -447,9 +447,9 @@ On Lion you are on your own to figure out how to install libfcgi and add fcgi
 support to the system Apache.  Not recommended for the average user.
 
 __Bundling note:__ Older Qt versions may have problems with some Qt plugins and
-Qgis.  The way to handle this is to bundle Qt inside the Qgis application.  You
-can do this now or wait to see if there are immediate crashes when running Qgis.
-It's also a good idea to bundle Qt if you need to copy Qgis to other Macs (where
+QGIS.  The way to handle this is to bundle Qt inside the QGIS application.  You
+can do this now or wait to see if there are immediate crashes when running QGIS.
+It's also a good idea to bundle Qt if you need to copy QGIS to other Macs (where
 you would have to install Xcode just so Qt would install!).
 
 To bundle Qt, add the following line before the last line (the ".." line) in

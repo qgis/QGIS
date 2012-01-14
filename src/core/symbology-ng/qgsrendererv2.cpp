@@ -54,11 +54,11 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
   double x, y;
-  #ifdef ANDROID
-    qreal z;
-  #else
-    double z;
-  #endif //ANDROID
+#ifdef ANDROID
+  qreal z;
+#else
+  double z;
+#endif //ANDROID
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
@@ -120,11 +120,11 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
-  #ifdef ANDROID
-    qreal z = 0; // dummy variable for coordiante transform
-  #else
-    double z = 0; // dummy variable for coordiante transform
-  #endif
+#ifdef ANDROID
+  qreal z = 0; // dummy variable for coordiante transform
+#else
+  double z = 0; // dummy variable for coordiante transform
+#endif
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10; double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );

@@ -239,9 +239,23 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       layerElem.appendChild( nameElem );
 
       QDomElement titleElem = doc.createElement( "Title" );
-      QDomText titleText = doc.createTextNode( currentLayer->name() );
+      QString titleName = currentLayer->title();
+      if ( titleName.isEmpty() )
+      {
+        titleName = currentLayer->name();
+      }
+      QDomText titleText = doc.createTextNode( titleName );
       titleElem.appendChild( titleText );
       layerElem.appendChild( titleElem );
+
+      QString abstract = currentLayer->abstract();
+      if ( !abstract.isEmpty() )
+      {
+        QDomElement abstractElem = doc.createElement( "Abstract" );
+        QDomText abstractText = doc.createTextNode( abstract );
+        abstractElem.appendChild( abstractText );
+        layerElem.appendChild( abstractElem );
+      }
 
       //CRS
       QStringList crsList = createCRSListForLayer( currentLayer );
@@ -1060,6 +1074,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     {
       QgsComposerMap* map = new QgsComposerMap( composition );
       map->readXML( currentElem, *mXMLDoc );
+      map->setPreviewMode( QgsComposerMap::Rectangle );
       composition->addItem( map );
       mapList.push_back( map );
     }

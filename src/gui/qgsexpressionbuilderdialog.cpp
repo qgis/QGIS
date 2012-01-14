@@ -42,6 +42,11 @@ void QgsExpressionBuilderDialog::setExpressionText( QString text )
   builder->setExpressionString( text );
 }
 
+QString QgsExpressionBuilderDialog::getExpressionText()
+{
+  return builder->getExpressionString();
+}
+
 void QgsExpressionBuilderDialog::closeEvent( QCloseEvent *event )
 {
   QDialog::closeEvent( event );

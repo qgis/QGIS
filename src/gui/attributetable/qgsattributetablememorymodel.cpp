@@ -27,8 +27,8 @@
 // In-Memory model //
 /////////////////////
 
-QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer )
-    : QgsAttributeTableModel( theLayer )
+QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer )
+    : QgsAttributeTableModel( theCanvas, theLayer )
 {
   QgsDebugMsg( "entered." );
 }
@@ -49,7 +49,7 @@ void QgsAttributeTableMemoryModel::loadLayer()
 
   mLayer->select( mLayer->pendingAllAttributesList(), rect, false );
 
-  if( behaviour != 1 )
+  if ( behaviour != 1 )
     mFeatureMap.reserve( mLayer->pendingFeatureCount() + 50 );
   else
     mFeatureMap.reserve( mLayer->selectedFeatureCount() );
@@ -59,7 +59,7 @@ void QgsAttributeTableMemoryModel::loadLayer()
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )
   {
-    if( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
+    if ( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
       continue;
 
     mIdRowMap.insert( f.id(), n );

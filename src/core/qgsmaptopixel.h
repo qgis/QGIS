@@ -76,7 +76,7 @@ class CORE_EXPORT QgsMapToPixel
 #ifdef ANDROID
     void transformInPlace( float& x, float& y ) const;
     void transformInPlace( std::vector<float>& x,
-                          std::vector<float>& y ) const;
+                           std::vector<float>& y ) const;
 #endif
 
     QgsPoint toMapCoordinates( int x, int y ) const;

@@ -68,6 +68,7 @@ public:
     Calendar,      /* calendar widget @added in 1.5 */
     DialRange,     /* dial range @added in 1.5 */
     ValueRelation, /* value map from an table @added in 1.8 */
+    UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
   };
    
   struct RangeData {
@@ -674,6 +675,7 @@ signals:
   void layerDeleted();
 
   void attributeValueChanged(qint64 fid, int idx, const QVariant &);
+  void geometryChanged(qint64 fid, QgsGeometry & );
 
   /** Signals emitted after committing changes
     \note added in v1.6 */

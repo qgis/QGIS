@@ -44,6 +44,8 @@
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>
+#include <geos_c.h>
+
 /**
  * \class QgsOptions - Set user options and preferences
  * Constructor
@@ -65,6 +67,11 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   cmbSize->addItem( "16" );
   cmbSize->addItem( "24" );
   cmbSize->addItem( "32" );
+#ifdef ANDROID
+  int defaultCmbSize = 32;
+#else
+  int defaultCmbSize = 24;
+#endif
 
   QStringList styles = QStyleFactory::keys();
   foreach( QString style, styles )
@@ -279,7 +286,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
-  cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", 24 ).toString() ) );
+  cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", defaultCmbSize ).toString() ) );
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
@@ -392,6 +399,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   mMarkerStyleComboBox->addItem( tr( "Cross" ) );
   mMarkerStyleComboBox->addItem( tr( "None" ) );
 
+  mValidateGeometries->clear();
+  mValidateGeometries->addItem( tr( "Off" ) );
+  mValidateGeometries->addItem( tr( "QGIS" ) );
+#if defined(GEOS_VERSION_MAJOR) && defined(GEOS_VERSION_MINOR) && \
+    ( (GEOS_VERSION_MAJOR==3 && GEOS_VERSION_MINOR>=3) || GEOS_VERSION_MAJOR>3)
+  mValidateGeometries->addItem( tr( "GEOS" ) );
+#endif
+
   QString markerStyle = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
   if ( markerStyle == "SemiTransparentCircle" )
   {
@@ -409,6 +424,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   chkReuseLastValues->setChecked( settings.value( "/qgis/digitizing/reuseLastValues", false ).toBool() );
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
+  mValidateGeometries->setCurrentIndex( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() );
 
 #ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
   groupBox_5->setEnabled( false );
@@ -757,6 +773,7 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/qgis/digitizing/reuseLastValues", chkReuseLastValues->isChecked() );
   settings.setValue( "/qgis/digitizing/disable_enter_attribute_values_dialog", chkDisableAttributeValuesDlg->isChecked() );
+  settings.setValue( "/qgis/digitizing/validate_geometries", mValidateGeometries->currentIndex() );
 
   //
   // Locale settings

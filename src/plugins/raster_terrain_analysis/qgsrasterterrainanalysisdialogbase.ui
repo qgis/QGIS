@@ -6,93 +6,62 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>355</width>
-    <height>176</height>
+    <width>492</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Raster based terrain analysis</string>
+   <string>Dialog</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QGridLayout" name="gridLayout_3">
    <item row="0" column="0">
-    <widget class="QLabel" name="mAnalysisLabel">
+    <widget class="QLabel" name="mElevationLayerLabel">
      <property name="text">
-      <string>Analysis</string>
-     </property>
-     <property name="buddy">
-      <cstring>mAnalysisComboBox</cstring>
+      <string>Elevation layer</string>
      </property>
     </widget>
    </item>
    <item row="0" column="1" colspan="2">
-    <widget class="QComboBox" name="mAnalysisComboBox">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-    </widget>
+    <widget class="QComboBox" name="mElevationLayerComboBox"/>
    </item>
    <item row="1" column="0">
-    <widget class="QLabel" name="mInputLayerLabel">
-     <property name="text">
-      <string>Input layer</string>
-     </property>
-     <property name="buddy">
-      <cstring>mInputLayerComboBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QComboBox" name="mInputLayerComboBox"/>
-   </item>
-   <item row="2" column="0">
     <widget class="QLabel" name="mOutputLayerLabel">
      <property name="text">
       <string>Output layer</string>
      </property>
-     <property name="buddy">
-      <cstring>mOutputLayerPushButton</cstring>
-     </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="1" column="1">
     <widget class="QLineEdit" name="mOutputLayerLineEdit"/>
    </item>
-   <item row="2" column="2">
-    <widget class="QPushButton" name="mOutputLayerPushButton">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="minimumSize">
-      <size>
-       <width>20</width>
-       <height>0</height>
-      </size>
-     </property>
+   <item row="1" column="2">
+    <widget class="QToolButton" name="mOutputLayerToolButton">
      <property name="text">
       <string>...</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="2" column="0">
     <widget class="QLabel" name="mOutputFormatLabel">
      <property name="text">
       <string>Output format</string>
      </property>
-     <property name="buddy">
-      <cstring>mOutputFormatComboBox</cstring>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QComboBox" name="mOutputFormatComboBox"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mZFactorLabel">
+     <property name="text">
+      <string>Z factor</string>
      </property>
     </widget>
    </item>
    <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="mOutputFormatComboBox"/>
+    <widget class="QLineEdit" name="mZFactorLineEdit"/>
    </item>
-   <item row="4" column="0" colspan="3">
+   <item row="4" column="0">
     <widget class="QCheckBox" name="mAddResultToProjectCheckBox">
      <property name="text">
       <string>Add result to project</string>
@@ -100,6 +69,146 @@
     </widget>
    </item>
    <item row="5" column="0" colspan="3">
+    <widget class="QGroupBox" name="mIlluminationGroupBox">
+     <property name="title">
+      <string>Illumination</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mLightAzimuthLabel">
+        <property name="text">
+         <string>Azimuth (horizontal angle)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="mLightAzimuthAngleSpinBox">
+        <property name="maximum">
+         <double>360.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>300.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mLightVerticalAngleLabel">
+        <property name="text">
+         <string>Vertical angle</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="mLightVerticalAngleSpinBox">
+        <property name="maximum">
+         <double>90.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>40.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="6" column="0" colspan="3">
+    <widget class="QGroupBox" name="mReliefColorsGroupBox">
+     <property name="title">
+      <string>Relief colors</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0" colspan="2">
+       <widget class="QPushButton" name="mAutomaticColorButton">
+        <property name="text">
+         <string>Create automatically</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="mExportToCsvButton">
+        <property name="text">
+         <string>Export distribution...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>268</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="mUpPushButton">
+        <property name="text">
+         <string>Up</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QPushButton" name="mDownPushButton">
+        <property name="text">
+         <string>Down</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QPushButton" name="mAddClassButton">
+        <property name="text">
+         <string>+</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="7">
+       <widget class="QPushButton" name="mRemoveClassButton">
+        <property name="text">
+         <string>-</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="8">
+       <widget class="QTreeWidget" name="mReliefClassTreeWidget">
+        <column>
+         <property name="text">
+          <string>Lower bound</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Upper bound</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Color</string>
+         </property>
+        </column>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QPushButton" name="mExportColorsButton">
+        <property name="text">
+         <string>Export colors...</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="QPushButton" name="mImportColorsButton">
+        <property name="text">
+         <string>Import colors...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="7" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -111,15 +220,6 @@
    </item>
   </layout>
  </widget>
- <tabstops>
-  <tabstop>mAnalysisComboBox</tabstop>
-  <tabstop>mInputLayerComboBox</tabstop>
-  <tabstop>mOutputLayerLineEdit</tabstop>
-  <tabstop>mOutputLayerPushButton</tabstop>
-  <tabstop>mOutputFormatComboBox</tabstop>
-  <tabstop>mAddResultToProjectCheckBox</tabstop>
-  <tabstop>mButtonBox</tabstop>
- </tabstops>
  <resources/>
  <connections>
   <connection>

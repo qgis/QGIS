@@ -20,12 +20,14 @@
 
 #include "qgsnewspatialitelayerdialog.h"
 
-#include "qgsspatialitesridsdialog.h"
+#include "qgis.h"
 #include "qgsapplication.h"
 #include "qgsproviderregistry.h"
 #include "qgisapp.h" // <- for theme icons
 #include <qgsvectorlayer.h>
 #include <qgsmaplayerregistry.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgsgenericprojectionselector.h"
 
 #include "qgslogger.h"
 
@@ -64,16 +66,23 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   }
   settings.endGroup();
 
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-  buttonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
-
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
-
-  buttonBox->button( QDialogButtonBox::Ok )->setDefault( true );
+  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
+  mOkButton->setEnabled( false );
 
   // Set the SRID box to a default of WGS84
-  leSRID->setText( "4326" );
+  QgsCoordinateReferenceSystem srs;
+  srs.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
+  srs.validate();
+  mCrsId = srs.srsid();
+  leSRID->setText( srs.authid() + " - " + srs.description() );
+
   pbnFindSRID->setEnabled( mDatabaseComboBox->count() );
+
+  connect( mNameEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged( QString ) ) );
+  connect( mAttributeView, SIGNAL( itemSelectionChanged() ), this, SLOT( selectionChanged() ) );
+
+  mAddAttributeButton->setEnabled( false );
+  mRemoveAttributeButton->setEnabled( false );
 }
 
 QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
@@ -101,6 +110,11 @@ void QgsNewSpatialiteLayerDialog::on_toolButtonNewDatabase_clicked()
 
   if ( fileName.isEmpty() )
     return;
+
+  if ( !fileName.toLower().endsWith( ".sqlite" ) && !fileName.toLower().endsWith( ".db" ) )
+  {
+    fileName += ".sqlite";
+  }
 
   mDatabaseComboBox->insertItem( 0, fileName );
   mDatabaseComboBox->setCurrentIndex( 0 );
@@ -142,8 +156,7 @@ void QgsNewSpatialiteLayerDialog::on_leLayerName_textChanged( QString text )
 {
   Q_UNUSED( text );
   bool created  = leLayerName->text().length() > 0 && mAttributeView->topLevelItemCount() > 0 && createDb();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( created );
-  buttonBox->button( QDialogButtonBox::Apply )->setEnabled( created );
+  mOkButton->setEnabled( created );
 }
 
 void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
@@ -157,8 +170,7 @@ void QgsNewSpatialiteLayerDialog::on_mAddAttributeButton_clicked()
     if ( mAttributeView->topLevelItemCount() > 0  && leLayerName->text().length() > 0 )
     {
       bool created = createDb();
-      buttonBox->button( QDialogButtonBox::Ok )->setEnabled( created );
-      buttonBox->button( QDialogButtonBox::Apply )->setEnabled( created );
+      mOkButton->setEnabled( created );
     }
     mNameEdit->clear();
   }
@@ -169,24 +181,83 @@ void QgsNewSpatialiteLayerDialog::on_mRemoveAttributeButton_clicked()
   delete mAttributeView->currentItem();
   if ( mAttributeView->topLevelItemCount() == 0 )
   {
-    buttonBox->button( QDialogButtonBox::Ok )->setEnabled( false );
-    buttonBox->button( QDialogButtonBox::Apply )->setEnabled( false );
+    mOkButton->setEnabled( false );
   }
 }
 
 void QgsNewSpatialiteLayerDialog::on_pbnFindSRID_clicked()
 {
-  // set the SRID from a list returned from the selected Spatialite database
-  QgsSpatialiteSridsDialog *sridDlg = new QgsSpatialiteSridsDialog( this );
-  if ( sridDlg->load( mDatabaseComboBox->currentText() ) )
+  // first get list of supported SRID from the selected Spatialite database
+  // to build filter for projection selector
+  sqlite3 *db = 0;
+  bool status = true;
+  if ( !db )
   {
-    if ( sridDlg->exec() )
+    int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, NULL );
+    if ( rc != SQLITE_OK )
     {
-      // set the srid field to the selection
-      leSRID->setText( sridDlg->selectedSrid() );
-      sridDlg->accept();
+      QMessageBox::warning( this, tr( "SpatiaLite Database" ), tr( "Unable to open the database" ) );
+      return;
     }
   }
+
+  // load up the srid table
+  const char *pzTail;
+  sqlite3_stmt *ppStmt;
+  QString sql = "select auth_srid, auth_name, ref_sys_name from spatial_ref_sys order by srid asc";
+
+  QSet<QString> myCRSs;
+
+  int rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
+  // XXX Need to free memory from the error msg if one is set
+  if ( rc == SQLITE_OK )
+  {
+    // get the first row of the result set
+    while ( sqlite3_step( ppStmt ) == SQLITE_ROW )
+    {
+      myCRSs.insert( QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 1 ) ) +
+                     ":" + QString::fromUtf8(( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
+    }
+  }
+  else
+  {
+    // XXX query failed -- warn the user some how
+    QMessageBox::warning( 0, tr( "Error" ),  tr( "Failed to load SRIDS: %1" ).arg( sqlite3_errmsg( db ) ) );
+    status = false;
+  }
+  // close the statement
+  sqlite3_finalize( ppStmt );
+  sqlite3_close( db );
+
+  if ( !status )
+  {
+    return;
+  }
+
+  // prepare projection selector
+  QgsGenericProjectionSelector *mySelector = new QgsGenericProjectionSelector( this );
+  mySelector->setMessage();
+  mySelector->setOgcWmsCrsFilter( myCRSs );
+
+  if ( mySelector->exec() )
+  {
+    QgsCoordinateReferenceSystem srs;
+    srs.createFromOgcWmsCrs( mySelector->selectedAuthId() );
+    bool ok;
+    mCrsId = srs.authid().split( ':' ).at( 1 ).toInt( &ok );
+    leSRID->setText( srs.authid() + " - " + srs.description() );
+  }
+  delete mySelector;
+}
+
+void QgsNewSpatialiteLayerDialog::nameChanged( QString name )
+{
+  mAddAttributeButton->setDisabled( name.isEmpty() || mAttributeView->findItems( name, Qt::MatchExactly ).size() > 0 );
+}
+
+void QgsNewSpatialiteLayerDialog::selectionChanged()
+{
+  mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().size() == 0 );
 }
 
 bool QgsNewSpatialiteLayerDialog::createDb()
@@ -293,7 +364,7 @@ bool QgsNewSpatialiteLayerDialog::apply()
   QString sqlAddGeom = QString( "select AddGeometryColumn(%1,%2,%3,%4,2)" )
                        .arg( quotedValue( leLayerName->text() ) )
                        .arg( quotedValue( leGeometryColumn->text() ) )
-                       .arg( leSRID->text().toInt() )
+                       .arg( mCrsId )
                        .arg( quotedValue( selectedType() ) );
   QgsDebugMsg( sqlAddGeom ); // OK
 

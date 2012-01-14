@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>246</width>
-    <height>45</height>
+    <height>56</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -119,6 +119,13 @@
      </property>
      <property name="wordWrap">
       <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QLabel" name="lblCategory">
+     <property name="text">
+      <string>Category label</string>
      </property>
     </widget>
    </item>

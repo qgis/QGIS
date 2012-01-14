@@ -178,6 +178,13 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
     mOverlayDialogs.push_back( d );
   }
 
+  //layer title and abstract
+  if ( layer )
+  {
+    mLayerTitleLineEdit->setText( layer->title() );
+    mLayerAbstractTextEdit->setPlainText( layer->abstract() );
+  }
+
   tabWidget->setCurrentIndex( 0 );
 
   QSettings settings;
@@ -303,6 +310,7 @@ void QgsVectorLayerProperties::attributeTypeDialog( )
     case QgsVectorLayer::Immutable:
     case QgsVectorLayer::Hidden:
     case QgsVectorLayer::Calendar:
+    case QgsVectorLayer::UuidGenerator:
       break;
   }
 
@@ -576,6 +584,7 @@ void QgsVectorLayerProperties::setupEditTypes()
   editTypeMap.insert( QgsVectorLayer::TextEdit, tr( "Text edit" ) );
   editTypeMap.insert( QgsVectorLayer::Calendar, tr( "Calendar" ) );
   editTypeMap.insert( QgsVectorLayer::ValueRelation, tr( "Value relation" ) );
+  editTypeMap.insert( QgsVectorLayer::UuidGenerator, tr( "UUID generator" ) );
 }
 
 QString QgsVectorLayerProperties::editTypeButtonText( QgsVectorLayer::EditType type )
@@ -683,6 +692,7 @@ void QgsVectorLayerProperties::apply()
       case QgsVectorLayer::Hidden:
       case QgsVectorLayer::TextEdit:
       case QgsVectorLayer::Calendar:
+      case QgsVectorLayer::UuidGenerator:
         break;
     }
   }
@@ -814,6 +824,10 @@ void QgsVectorLayerProperties::apply()
   {
     ( *it )->apply();
   }
+
+  //layer title and abstract
+  layer->setTitle( mLayerTitleLineEdit->text() );
+  layer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
   // update symbology
   emit refreshLegend( layer->id(), false );

@@ -171,11 +171,18 @@ void QgsPluginManager::getPythonPluginDescriptions()
     // get information from the plugin
     QString pluginName  = mPythonUtils->getPluginMetadata( packageName, "name" );
     QString description = mPythonUtils->getPluginMetadata( packageName, "description" );
+    QString category    = mPythonUtils->getPluginMetadata( packageName, "category" );
     QString version     = mPythonUtils->getPluginMetadata( packageName, "version" );
     QString iconName    = mPythonUtils->getPluginMetadata( packageName, "icon" );
 
     if ( pluginName == "__error__" || description == "__error__" || version == "__error__" )
       continue;
+
+    // if there is no category in Python plugin assume default 'Plugins' category
+    if ( category == "__error__" )
+    {
+      category = tr( "Plugins" );
+    }
 
     bool isCompatible = QgsPluginRegistry::instance()->isPythonPluginCompatible( packageName );
     QString compatibleString; // empty by default
@@ -196,6 +203,7 @@ void QgsPluginManager::getPythonPluginDescriptions()
     myData.setTitle( pluginName + " (" + version + ")" + compatibleString );
     myData.setEnabled( isCompatible );
     myData.setDetail( description );
+    myData.setCategory( tr( "Installed in %1 menu/toolbar" ).arg( category ) );
     //myData.setIcon(pixmap); //todo use a python logo here
     myData.setCheckable( true );
     myData.setRenderAsWidget( false );
@@ -308,6 +316,7 @@ void QgsPluginManager::getPluginDescriptions()
     // resolve the metadata from plugin
     name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
     description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
+    category_t *pCat = ( category_t * ) cast_to_fptr( myLib->resolve( "category" ) );
     version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
     icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
 
@@ -327,6 +336,14 @@ void QgsPluginManager::getPluginDescriptions()
     else
     {
       QgsDebugMsg( "Plugin description not returned when queried" );
+    }
+    if ( pCat )
+    {
+      QgsDebugMsg( "Plugin category: " + pCat() );
+    }
+    else
+    {
+      QgsDebugMsg( "Plugin category not returned when queried" );
     }
     if ( pVersion )
     {
@@ -350,6 +367,8 @@ void QgsPluginManager::getPluginDescriptions()
 
     QString pluginName = pName();
     QString pluginDesc = pDesc();
+    // if no category defined - use default value
+    QString pluginCat = ( pCat ? pCat() : tr( "Plugins" ) );
     QString pluginVersion = pVersion();
     QString pluginIconFileName = ( pIcon ? pIcon() : QString() );
     QString baseName = QFileInfo( lib ).baseName();
@@ -363,6 +382,7 @@ void QgsPluginManager::getPluginDescriptions()
     QgsDetailedItemData myData;
     myData.setTitle( pluginName );
     myData.setDetail( pluginDesc );
+    myData.setCategory( tr( "Installed in %1 menu/toolbar" ).arg( pluginCat ) );
     myData.setRenderAsWidget( false );
     myData.setCheckable( true );
     myData.setChecked( false ); //start unchecked - we will check it later if needed

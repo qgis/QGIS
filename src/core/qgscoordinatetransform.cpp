@@ -392,20 +392,20 @@ void QgsCoordinateTransform::transformInPlace( std::vector<float>& x,
     std::vector<double> xd( x.size() );
     std::vector<double> yd( y.size() );
     std::vector<double> zd( z.size() );
-    for( int i = 0; i < vectorSize; ++i )
+    for ( int i = 0; i < vectorSize; ++i )
     {
-        xd[i] = x[i];
-        yd[i] = y[i];
-        zd[i] = z[i];
+      xd[i] = x[i];
+      yd[i] = y[i];
+      zd[i] = z[i];
     }
     transformCoords( x.size(), &xd[0], &yd[0], &zd[0], direction );
 
     //copy back
-    for( int i = 0; i < vectorSize; ++i )
+    for ( int i = 0; i < vectorSize; ++i )
     {
-        x[i] = xd[i];
-        y[i] = yd[i];
-        z[i] = zd[i];
+      x[i] = xd[i];
+      y[i] = yd[i];
+      z[i] = zd[i];
     }
   }
   catch ( QgsCsException &cse )
@@ -562,17 +562,21 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
     {
       if ( direction == ForwardTransform )
       {
-        points += QString( "(%1, %2)\n" ).arg( x[i] ).arg( y[i] );
+        points += QString( "(%1, %2)\n" ).arg( x[i], 0, 'f' ).arg( y[i], 0, 'f' );
       }
       else
       {
-        points += QString( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG ).arg( y[i] * RAD_TO_DEG );
+        points += QString( "(%1, %2)\n" ).arg( x[i] * RAD_TO_DEG, 0, 'f' ).arg( y[i] * RAD_TO_DEG, 0, 'f' );
       }
     }
 
-    QString msg = tr( "%1 of\n%2\nfailed with error: %3\n" )
+    QString msg = tr( "%1 of\n"
+                      "%2"
+                      "PROJ.4: %3 +to %4\n"
+                      "Error: %5" )
                   .arg( dir )
                   .arg( points )
+                  .arg( mSourceCRS.toProj4() ).arg( mDestCRS.toProj4() )
                   .arg( QString::fromUtf8( pj_strerrno( projResult ) ) );
 
     QgsDebugMsg( "Projection failed emitting invalid transform signal: " + msg );

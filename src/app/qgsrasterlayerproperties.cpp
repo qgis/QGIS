@@ -98,7 +98,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   leMinimumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
   leMaximumScale->setText( QString::number( lyr->maximumScale(), 'f' ) );
   leMaximumScale->setValidator( new QDoubleValidator( 0, std::numeric_limits<float>::max(), 1000, this ) );
-  leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<float>::max(), std::numeric_limits<float>::max(), 1000, this ) );
+  leNoDataValue->setValidator( new QDoubleValidator( -std::numeric_limits<double>::max(), std::numeric_limits<double>::max(), 1000, this ) );
 
   leRedMin->setValidator( new QDoubleValidator( this ) );
   leRedMax->setValidator( new QDoubleValidator( this ) );
@@ -320,10 +320,14 @@ void QgsRasterLayerProperties::populateColorMapTable( const QList<QgsColorRampSh
 }
 void QgsRasterLayerProperties::populateTransparencyTable()
 {
-  //Clear existsing color transparency list
+  QgsDebugMsg( "entering." );
+
+  //Clear existing color transparency list
   //NOTE: May want to just tableTransparency->clearContents() and fill back in after checking to be sure list and table are the same size
   QString myNumberFormatter;
-  if ( rbtnThreeBand->isChecked() && QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
+  if ( tabPageSymbology &&
+       rbtnThreeBand->isChecked() &&
+       QgsRasterLayer::PalettedColor != mRasterLayer->drawingStyle() &&
        QgsRasterLayer::PalettedMultiBandColor != mRasterLayer->drawingStyle() )
   {
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
@@ -356,7 +360,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   }
   else
   {
-    //Clear existing single band or pallet values gransparency list
+    //Clear existing single band or palette values transparency list
     for ( int myTableRunner = tableTransparency->rowCount() - 1; myTableRunner >= 0; myTableRunner-- )
     {
       tableTransparency->removeRow( myTableRunner );
@@ -382,7 +386,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
     for ( int myListRunner = 0; myListRunner < myTransparentSingleValuePixelList.count(); myListRunner++ )
     {
       tableTransparency->insertRow( myListRunner );
-      QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
+      QTableWidgetItem* myGrayItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%g", myTransparentSingleValuePixelList[myListRunner].pixelValue ) );
       QTableWidgetItem* myPercentTransparentItem = new QTableWidgetItem( myNumberFormatter.sprintf( "%.2f", myTransparentSingleValuePixelList[myListRunner].percentTransparent ) );
 
       tableTransparency->setItem( myListRunner, 0, myGrayItem );
@@ -394,7 +398,7 @@ void QgsRasterLayerProperties::populateTransparencyTable()
   tableTransparency->resizeRowsToContents();
 }
 
-/** Set the message indicating if any min max values are estimates */
+// Set the message indicating if any min max values are estimates
 void QgsRasterLayerProperties::setMinimumMaximumEstimateWarning()
 {
   bool myEstimatedValues = false;
@@ -761,6 +765,7 @@ void QgsRasterLayerProperties::sync()
   }
 
   QgsDebugMsg( "populate transparency tab" );
+
   /*
    * Transparent Pixel Tab
    */
@@ -782,7 +787,7 @@ void QgsRasterLayerProperties::sync()
   //add current NoDataValue to NoDataValue line edit
   if ( mRasterLayer->isNoDataValueValid() )
   {
-    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+    leNoDataValue->insert( QString::number( mRasterLayer->noDataValue(), 'g' ) );
   }
   else
   {
@@ -860,6 +865,9 @@ void QgsRasterLayerProperties::sync()
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
   txtbMetadata->setHtml( mRasterLayer->metadata() );
 
+  mLayerTitleLineEdit->setText( mRasterLayer->title() );
+  mLayerAbstractTextEdit->setPlainText( mRasterLayer->abstract() );
+
 } // QgsRasterLayerProperties::sync()
 
 void QgsRasterLayerProperties::syncColormapTab()
@@ -875,35 +883,45 @@ void QgsRasterLayerProperties::syncColormapTab()
     return;
   }
 
-  if ( QgsRasterLayer::ColorRampShader != mRasterLayer->colorShadingAlgorithm() )
+  QgsDebugMsg( QString( "colorShadingAlgorithm = %1" ).arg( mRasterLayer->colorShadingAlgorithmAsString() ) );
+  if ( QgsRasterLayer::ColorRampShader == mRasterLayer->colorShadingAlgorithm() )
   {
-    return;
-  }
+    QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->rasterShader()->rasterShaderFunction();
+    if ( myRasterShaderFunction )
+    {
+      //restore the colormap tab if layer has custom symbology
+      populateColorMapTable( myRasterShaderFunction->colorRampItemList() );
 
-  QgsColorRampShader* myRasterShaderFunction = ( QgsColorRampShader* )mRasterLayer->rasterShader()->rasterShaderFunction();
-  if ( !myRasterShaderFunction )
-  {
-    return;
-  }
-  //restore the colormap tab if layer has custom symbology
-  populateColorMapTable( myRasterShaderFunction->colorRampItemList() );
+      sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
 
-  sboxNumberOfEntries->setValue( mColormapTreeWidget->topLevelItemCount() );
-
-  //restor state of 'color interpolation' combo box
-  if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->colorRampType() )
-  {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
-  }
-  else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->colorRampType() )
-  {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
+      //restor state of 'color interpolation' combo box
+      if ( QgsColorRampShader::INTERPOLATED == myRasterShaderFunction->colorRampType() )
+      {
+        cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
+      }
+      else if ( QgsColorRampShader::DISCRETE == myRasterShaderFunction->colorRampType() )
+      {
+        cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Discrete" ) ) );
+      }
+      else
+      {
+        cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+      }
+    }
   }
   else
   {
-    cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Exact" ) ) );
+    //load default color table if any so that user can return to it if previously switched to different shader, PseudoColorShader or FreakOutShader for example
+    // It would be better however to restore possibly previously modified color table
+    QgsDebugMsg( "use default color table" );
+    QList<QgsColorRampShader::ColorRampItem> myColorRampList;
+    if ( mRasterLayer->readColorTable( 1, &myColorRampList ) )
+    {
+      populateColorMapTable( myColorRampList );
+      // INTERPOLATED is used as default for Palette raster type
+      cboxColorInterpolation->setCurrentIndex( cboxColorInterpolation->findText( tr( "Linear" ) ) );
+    }
   }
-
 }
 
 bool QgsRasterLayerProperties::validUserDefinedMinMax()
@@ -1441,6 +1459,9 @@ void QgsRasterLayerProperties::apply()
   QPixmap myQPixmap = QPixmap( pixmapThumbnail->width(), pixmapThumbnail->height() );
   mRasterLayer->thumbnailAsPixmap( &myQPixmap );
   pixmapThumbnail->setPixmap( myQPixmap );
+
+  mRasterLayer->setTitle( mLayerTitleLineEdit->text() );
+  mRasterLayer->setAbstract( mLayerAbstractTextEdit->toPlainText() );
 
   // update symbology
   emit refreshLegend( mRasterLayer->id(), false );
@@ -3061,7 +3082,7 @@ void QgsRasterLayerProperties::on_btnResetNull_clicked( )
   mRasterLayer->resetNoDataValue();
   if ( mRasterLayer->isNoDataValueValid() )
   {
-    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'f' ) );
+    leNoDataValue->setText( QString::number( mRasterLayer->noDataValue(), 'g' ) );
   }
   else
   {

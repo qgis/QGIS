@@ -77,6 +77,16 @@ public:
      */
     const QString & name() const;
 
+    /**@note added in version 1.9*/
+    void setTitle( const QString& title );
+    /**@note added in version 1.9*/
+    const QString& title() const;
+
+    /**@note added in version 1.9*/
+    void setAbstract( const QString& abstract );
+    /**@note added in version 1.9*/
+    const QString& abstract() const;
+
     /**Synchronises with changes in the datasource
       @note added in version 1.6*/
     virtual void reload();

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>695</width>
-    <height>449</height>
+    <height>476</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -20,16 +20,13 @@
    <string>Attribute Actions</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <property name="margin">
-    <number>0</number>
-   </property>
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
       <string>Action list</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0" colspan="5">
+      <item row="0" column="0" colspan="4">
        <widget class="QTableWidget" name="attributeActionTable">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
@@ -38,7 +35,7 @@
          </sizepolicy>
         </property>
         <property name="whatsThis">
-         <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Insert action button. Actions can be edited here by double clicking on the item.</string>
+         <string>This list contains all actions that have been defined for the current layer. Add actions by entering the details in the controls below and then pressing the Add to action list button. Actions can be edited here by double clicking on the item.</string>
         </property>
         <property name="selectionMode">
          <enum>QAbstractItemView::SingleSelection</enum>
@@ -71,27 +68,17 @@
         </column>
        </widget>
       </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="removeButton">
+        <property name="toolTip">
+         <string>Remove the selected action</string>
+        </property>
+        <property name="text">
+         <string>Remove action</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
-       <widget class="QPushButton" name="insertButton">
-        <property name="toolTip">
-         <string>Inserts the action into the list above</string>
-        </property>
-        <property name="text">
-         <string>Insert action</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="updateButton">
-        <property name="toolTip">
-         <string>Update the selected action</string>
-        </property>
-        <property name="text">
-         <string>Update action</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
        <widget class="QPushButton" name="moveUpButton">
         <property name="toolTip">
          <string>Move the selected action up</string>
@@ -101,23 +88,13 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
+      <item row="1" column="1">
        <widget class="QPushButton" name="moveDownButton">
         <property name="toolTip">
          <string>Move the selected action down</string>
         </property>
         <property name="text">
          <string>Move down</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QPushButton" name="removeButton">
-        <property name="toolTip">
-         <string>Remove the selected action</string>
-        </property>
-        <property name="text">
-         <string>Remove</string>
         </property>
        </widget>
       </item>
@@ -130,6 +107,84 @@
       <string>Action properties</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Type</string>
+        </property>
+        <property name="buddy">
+         <cstring>actionType</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QComboBox" name="actionType">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <item>
+           <property name="text">
+            <string>Generic</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Python</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Mac</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Windows</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>Unix</string>
+           </property>
+          </item>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_3">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>37</width>
+            <height>24</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="captureCB">
+          <property name="toolTip">
+           <string>Captures any output from the action</string>
+          </property>
+          <property name="whatsThis">
+           <string>Captures the standard output or error generated by the action and displays it in a dialog box</string>
+          </property>
+          <property name="text">
+           <string>Capture output</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="textLabel1">
         <property name="whatsThis">
@@ -196,21 +251,40 @@
         </item>
        </layout>
       </item>
-      <item row="3" column="0">
-       <widget class="QCheckBox" name="captureCB">
-        <property name="toolTip">
-         <string>Captures any output from the action</string>
-        </property>
-        <property name="whatsThis">
-         <string>Captures the standard output or error generated by the action and displays it in a dialog box</string>
-        </property>
-        <property name="text">
-         <string>Capture output</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QPushButton" name="insertExpressionButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Inserts an expression into the action</string>
+          </property>
+          <property name="text">
+           <string>Insert expression...</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
         <item>
          <widget class="QComboBox" name="fieldComboBox">
           <property name="toolTip">
@@ -220,8 +294,14 @@
         </item>
         <item>
          <widget class="QPushButton" name="insertFieldButton">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="toolTip">
-           <string>Inserts the selected field into the action, prepended with a %</string>
+           <string>Inserts the selected field into the action</string>
           </property>
           <property name="text">
            <string>Insert field</string>
@@ -230,37 +310,48 @@
         </item>
        </layout>
       </item>
-      <item row="0" column="1">
-       <widget class="QComboBox" name="actionType">
+      <item row="4" column="0" colspan="2">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <item>
-         <property name="text">
-          <string>Generic</string>
-         </property>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Expanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
-         <property name="text">
-          <string>Python</string>
-         </property>
+         <widget class="QPushButton" name="insertButton">
+          <property name="toolTip">
+           <string>Inserts the action into the list above</string>
+          </property>
+          <property name="text">
+           <string>Add to action list</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <property name="text">
-          <string>Mac</string>
-         </property>
+         <widget class="QPushButton" name="updateButton">
+          <property name="toolTip">
+           <string>Update the selected action</string>
+          </property>
+          <property name="text">
+           <string>Update selected action</string>
+          </property>
+         </widget>
         </item>
-        <item>
-         <property name="text">
-          <string>Windows</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>Unix</string>
-         </property>
-        </item>
-       </widget>
+       </layout>
       </item>
       <item row="0" column="0">
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_1">
         <property name="text">
          <string>Type</string>
         </property>
@@ -277,10 +368,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <tabstops>
   <tabstop>attributeActionTable</tabstop>
-  <tabstop>insertButton</tabstop>
-  <tabstop>updateButton</tabstop>
-  <tabstop>moveUpButton</tabstop>
-  <tabstop>moveDownButton</tabstop>
   <tabstop>removeButton</tabstop>
   <tabstop>actionType</tabstop>
   <tabstop>actionName</tabstop>

@@ -20,7 +20,8 @@
 #include <QDialog>
 #include <QModelIndex>
 #include <QItemSelectionModel>
-#include <QMutex>
+
+#include <time.h>
 
 #include "ui_qgsattributetabledialog.h"
 #include "qgscontexthelp.h"
@@ -33,6 +34,7 @@ class QLineEdit;
 class QComboBox;
 class QMenu;
 class QDockWidget;
+class QProgressDialog;
 
 class QgsAttributeTableModel;
 class QgsAttributeTableFilterModel;
@@ -58,9 +60,10 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void editingToggled();
 
-    void updateExtent();
-
     void viewWillShowContextMenu( QMenu* menu, QModelIndex atIndex );
+
+    void progress( int i, bool &cancel );
+    void finished();
 
   private slots:
     /**
@@ -208,21 +211,22 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
 
     QLineEdit *mQuery;
     QComboBox *mColumnBox;
-    QComboBox *mShowBox;
 
     QMenu* mMenuActions;
     QAction* mActionToggleEditing;
 
     QgsAttributeTableModel *mModel;
     QgsAttributeTableFilterModel *mFilterModel;
+    QDockWidget *mDock;
     QgsVectorLayer *mLayer;
+    QProgressDialog *mProgress;
+    QTime mStarted;
+    bool mWorkaround;
     QgsFeatureIds mSelectedFeatures;
     int mIndexPressed;
 
     QItemSelectionModel* mSelectionModel;
     int mLastClickedHeaderIndex;
-
-    QDockWidget *mDock;
 };
 
 

@@ -126,14 +126,13 @@ class CORE_EXPORT QgsPalLayerSettings
     bool plusSign;
     bool labelPerPart; // whether to label every feature's part or only the biggest one
     bool mergeLines;
-    bool multiLineLabels; //draw labels on multiple lines if they contain '\n'
     double minFeatureSize; // minimum feature size to be labelled (in mm)
     // Adds '<' or '>' to the label string pointing to the direction of the line / polygon ring
     // Works only if Placement == Line
     bool addDirectionSymbol;
     bool fontSizeInMapUnits; //true if font size is in map units (otherwise in points)
     bool distInMapUnits; //true if distance is in map units (otherwise in mm)
-
+    QString wrapChar;
     // called from register feature hook
     void calculateLabelSize( const QFontMetricsF* fm, QString text, double& labelX, double& labelY );
 

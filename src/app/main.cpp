@@ -21,7 +21,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
-#include <QMessageBox>
 #include <QPixmap>
 #include <QLocale>
 #include <QSettings>
@@ -35,6 +34,7 @@
 
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
+#include "qgsmessagelog.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -73,6 +73,10 @@ typedef SInt32 SRefCon;
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
+
+#if defined(linux) && ! defined(ANDROID)
+#include <execinfo.h>
+#endif
 
 // (if Windows/Mac, use icon from resource)
 #if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
@@ -164,20 +168,44 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtWarningMsg:
       fprintf( stderr, "Warning: %s\n", msg );
 
+#ifdef QGISDEBUG
+      if ( 0 == strncmp( msg, "Object::", 8 )
+           || 0 == strncmp( msg, "QWidget::", 9 )
+           || 0 == strncmp( msg, "QPainter::", 10 ) )
+      {
+#if 0
+#if defined(linux) && ! defined(ANDROID)
+        fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+        void *buffer[256];
+        int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+        backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+#endif
+#endif
+        QgsMessageLog::logMessage( msg, "Qt" );
+      }
+#endif
+
       // TODO: Verify this code in action.
       if ( 0 == strncmp( msg, "libpng error:", 13 ) )
       {
         // Let the user know
-        QMessageBox::warning( 0, "libpng Error", msg );
+        QgsMessageLog::logMessage( msg, "libpng" );
       }
 
       break;
     case QtFatalMsg:
+    {
       fprintf( stderr, "Fatal: %s\n", msg );
+#if defined(linux) && ! defined(ANDROID)
+      fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+      void *buffer[256];
+      int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+      backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+#endif
       abort();                    // deliberately core dump
+    }
   }
 }
-
 
 int main( int argc, char *argv[] )
 {

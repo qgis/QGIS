@@ -391,7 +391,7 @@ void QgsGPSInformationWidget::connectGps()
 
   if ( mRadUserPath->isChecked() )
   {
-    port = mCboDevices->itemData( mCboDevices->currentIndex() ).toString();
+    port = mCboDevices->currentText();
 
     if ( port.isEmpty() )
     {
@@ -931,7 +931,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
 
     f->setGeometryAndOwnership( &wkb[0], size );
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, this );
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
     {
       if ( mCbxAutoCommit->isChecked() )
@@ -1060,7 +1060,7 @@ void QgsGPSInformationWidget::on_mBtnCloseFeature_clicked( )
       return; //unknown wkbtype
     } // layerWKBType == QGis::WKBPolygon
 
-    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, this );
+    QgsFeatureAction action( tr( "Feature added" ), *f, vlayer, -1, -1, this );
     if ( action.addFeature() )
     {
       if ( mCbxAutoCommit->isChecked() )

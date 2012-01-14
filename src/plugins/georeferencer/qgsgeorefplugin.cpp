@@ -62,6 +62,7 @@
 
 static const QString sName = QObject::tr( "Georeferencer GDAL" );
 static const QString sDescription = QObject::tr( "Georeferencing rasters using GDAL" );
+static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 3.1.9" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/icons/mGeorefRun.png";
@@ -79,7 +80,7 @@ static const QString sPluginIcon = ":/icons/mGeorefRun.png";
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface ),
     mPluginGui( NULL )
 {
@@ -108,9 +109,9 @@ void QgsGeorefPlugin::initGui()
   connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 
   // Add to the toolbar & menu
-  mQGisIface->addToolBarIcon( mActionRunGeoref );
-  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mActionRunGeoref );
-  mQGisIface->addPluginToMenu( tr( "&Georeferencer" ), mActionAbout );
+  mQGisIface->addRasterToolBarIcon( mActionRunGeoref );
+  mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
+  mQGisIface->addPluginToRasterMenu( tr( "&Georeferencer" ), mActionAbout );
 }
 
 // Slot called when the buffer menu item is triggered
@@ -126,9 +127,9 @@ void QgsGeorefPlugin::run()
 void QgsGeorefPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mActionAbout );
-  mQGisIface->removePluginMenu( tr( "&Georeferencer" ), mActionRunGeoref );
-  mQGisIface->removeToolBarIcon( mActionRunGeoref );
+  mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionAbout );
+  mQGisIface->removePluginRasterMenu( tr( "&Georeferencer" ), mActionRunGeoref );
+  mQGisIface->removeRasterToolBarIcon( mActionRunGeoref );
 
   delete mActionRunGeoref;
   delete mActionAbout;
@@ -225,6 +226,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>552</width>
+    <width>592</width>
     <height>439</height>
    </rect>
   </property>
@@ -112,8 +112,14 @@
       <bool>true</bool>
      </property>
      <property name="columnCount">
-      <number>4</number>
+      <number>5</number>
      </property>
+     <attribute name="headerMinimumSectionSize">
+      <number>27</number>
+     </attribute>
+     <attribute name="headerMinimumSectionSize">
+      <number>27</number>
+     </attribute>
      <column>
       <property name="text">
        <string>Title</string>
@@ -127,6 +133,15 @@
      <column>
       <property name="text">
        <string>Abstract</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Cache
+Features</string>
+      </property>
+      <property name="textAlignment">
+       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
       </property>
      </column>
      <column>
@@ -185,19 +200,12 @@
     </widget>
    </item>
    <item row="3" column="0">
-    <widget class="QCheckBox" name="mBboxCheckBox">
-     <property name="text">
-      <string>Only request features overlapping the current view extent</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Close|QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>

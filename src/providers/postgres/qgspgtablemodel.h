@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsdbtablemodel.h  -  description
+                         qgspgtablemodel.h  -  description
                          -------------------
     begin                : Dec 2007
     copyright            : (C) 2007 by Marco Hugentobler
@@ -16,28 +16,31 @@
  ***************************************************************************/
 
 #include <QStandardItemModel>
-class QIcon;
+
 #include "qgis.h"
+#include "qgspostgresconn.h"
+
+class QIcon;
 
 /**A model that holds the tables of a database in a hierarchy where the
 schemas are the root elements that contain the individual tables as children.
 The tables have the following columns: Type, Schema, Tablename, Geometry Column, Sql*/
-class CORE_EXPORT QgsDbTableModel : public QStandardItemModel
+class QgsPgTableModel : public QStandardItemModel
 {
     Q_OBJECT
   public:
-    QgsDbTableModel();
-    ~QgsDbTableModel();
+    QgsPgTableModel();
+    ~QgsPgTableModel();
 
     /**Adds entry for one database table to the model*/
-    void addTableEntry( QString type, QString schemaName, QString tableName, QString geometryColName, const QStringList &pkCols, QString Sql );
+    void addTableEntry( QgsPostgresLayerProperty property );
 
     /**Sets an sql statement that belongs to a cell specified by a model index*/
     void setSql( const QModelIndex& index, const QString& sql );
 
     /**Sets one or more geometry types to a row. In case of several types, additional rows are inserted.
        This is for tables where the type is dectected later by thread*/
-    void setGeometryTypesForTable( const QString& schema, const QString& table, const QString& attribute, const QString& type );
+    void setGeometryTypesForTable( QgsPostgresLayerProperty layerProperty );
 
     /**Returns the number of tables in the model*/
     int tableCount() const { return mTableCount; }
@@ -48,20 +51,17 @@ class CORE_EXPORT QgsDbTableModel : public QStandardItemModel
       dbtmTable,
       dbtmType,
       dbtmGeomCol,
+      dbtmSrid,
       dbtmPkCol,
       dbtmSelectAtId,
       dbtmSql,
       dbtmColumns
     };
 
+    static QIcon iconForGeomType( QGis::GeometryType type );
+
   private:
     /**Number of tables in the model*/
     int mTableCount;
-
-    QIcon iconForType( QGis::WkbType type ) const;
-    QString displayStringForType( QGis::WkbType type ) const;
-
-    /**Returns qgis wkbtype from database typename*/
-    QGis::WkbType qgisTypeFromDbType( const QString& dbType ) const;
 };
 

@@ -72,10 +72,12 @@ class QgisPlugin
 
     QgisPlugin( QString const & name = "",
                 QString const & description = "",
+                QString const & category = "",
                 QString const & version = "",
                 PLUGINTYPE const & type = MAPLAYER )
         : mName( name ),
         mDescription( description ),
+        mCategory( category ),
         mVersion( version ),
         mType( type )
     {}
@@ -118,6 +120,18 @@ class QgisPlugin
       return mDescription;
     }
 
+    //! Plugin category
+    QString const & category() const
+    {
+      return mCategory;
+    }
+
+    //! Plugin category
+    QString       & category()
+    {
+      return mCategory;
+    }
+
     //! Plugin type, either UI or map layer
     QgisPlugin::PLUGINTYPE const & type() const
     {
@@ -145,6 +159,9 @@ class QgisPlugin
     /// description
     QString mDescription;
 
+    /// category
+    QString mCategory;
+
     /// version
     QString mVersion;
 
@@ -171,6 +188,9 @@ typedef QString name_t();
 
 //! Typedef for getting the description without instantiating the plugin
 typedef QString description_t();
+
+//! Typedef for getting the category without instantiating the plugin
+typedef QString category_t();
 
 //! Typedef for getting the plugin type without instantiating the plugin
 typedef int type_t();

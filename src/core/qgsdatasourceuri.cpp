@@ -27,6 +27,7 @@ QgsDataSourceURI::QgsDataSourceURI()
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
+    , mGeometryType( QGis::UnknownGeometry )
 {
   // do nothing
 }
@@ -36,6 +37,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
     , mKeyColumn( "" )
     , mUseEstimatedMetadata( false )
     , mSelectAtIdDisabled( false )
+    , mGeometryType( QGis::UnknownGeometry )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -122,6 +124,30 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
       else if ( pname == "estimatedmetadata" )
       {
         mUseEstimatedMetadata = pval == "true";
+      }
+      else if ( pname == "srid" )
+      {
+        mSrid = pval;
+      }
+      else if ( pname == "type" )
+      {
+        QString geomTypeUpper = pval.toUpper();
+        if ( geomTypeUpper == "POINT" )
+        {
+          mGeometryType = QGis::Point;
+        }
+        else if ( geomTypeUpper == "LINESTRING" )
+        {
+          mGeometryType = QGis::Line;
+        }
+        else if ( geomTypeUpper == "POLYGON" )
+        {
+          mGeometryType = QGis::Polygon;
+        }
+        else
+        {
+          mGeometryType = QGis::UnknownGeometry;
+        }
       }
       else if ( pname == "selectatid" )
       {
@@ -483,6 +509,16 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " estimatedmetadata=true" );
   }
 
+  if ( !mSrid.isEmpty() )
+  {
+    theUri += QString( " srid=%1" ).arg( mSrid );
+  }
+
+  if ( mGeometryType != QGis::UnknownGeometry && mGeometryType != QGis::NoGeometry )
+  {
+    theUri += QString( " type=%1" ).arg( QGis::qgisVectorGeometryType[mGeometryType] );
+  }
+
   if ( mSelectAtIdDisabled )
   {
     theUri += QString( " selectatid=false" );
@@ -551,4 +587,24 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
 void QgsDataSourceURI::setDatabase( const QString &database )
 {
   mDatabase = database;
+}
+
+QGis::GeometryType QgsDataSourceURI::geometryType() const
+{
+  return mGeometryType;
+}
+
+void QgsDataSourceURI::setGeometryType( QGis::GeometryType geometryType )
+{
+  mGeometryType = geometryType;
+}
+
+QString QgsDataSourceURI::srid() const
+{
+  return mSrid;
+}
+
+void QgsDataSourceURI::setSrid( QString srid )
+{
+  mSrid = srid;
 }

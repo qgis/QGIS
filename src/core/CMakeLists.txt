@@ -54,7 +54,6 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdbtablemodel.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
@@ -62,6 +61,7 @@ SET(QGIS_CORE_SRCS
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp
+  qgsgeometryvalidator.cpp
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
@@ -234,7 +234,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
-  qgsdbtablemodel.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h
@@ -249,6 +248,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h

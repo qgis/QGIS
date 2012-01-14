@@ -24,6 +24,7 @@
 #include <qgslonglongvalidator.h>
 #include <qgsfieldvalidator.h>
 #include <qgsmaplayerregistry.h>
+#include <qgslogger.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -39,6 +40,8 @@
 #include <QCalendarWidget>
 #include <QDialogButtonBox>
 #include <QSettings>
+#include <QDir>
+#include <QUuid>
 
 void QgsAttributeEditor::selectFileName()
 {
@@ -58,7 +61,8 @@ void QgsAttributeEditor::selectFileName()
   if ( fileName.isNull() )
     return;
 
-  le->setText( fileName );
+  //le->setText( fileName );
+  le->setText( QDir::toNativeSeparators( fileName ) );
 }
 
 void QgsAttributeEditor::selectDate()
@@ -266,7 +270,6 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
     }
     break;
 
-
     case QgsVectorLayer::DialRange:
     case QgsVectorLayer::SliderRange:
     case QgsVectorLayer::EditRange:
@@ -363,6 +366,7 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
 
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::TextEdit:
+    case QgsVectorLayer::UuidGenerator:
     case QgsVectorLayer::UniqueValuesEditable:
     case QgsVectorLayer::Immutable:
     {
@@ -400,6 +404,11 @@ QWidget *QgsAttributeEditor::createAttributeEditor( QWidget *parent, QWidget *ed
           QCompleter *c = new QCompleter( svalues );
           c->setCompletionMode( QCompleter::PopupCompletion );
           le->setCompleter( c );
+        }
+
+        if ( editType == QgsVectorLayer::UuidGenerator )
+        {
+          le->setReadOnly( true );
         }
 
         le->setValidator( new QgsFieldValidator( le, field ) );
@@ -733,6 +742,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::LineEdit:
     case QgsVectorLayer::UniqueValuesEditable:
     case QgsVectorLayer::Immutable:
+    case QgsVectorLayer::UuidGenerator:
     default:
     {
       QLineEdit *le = qobject_cast<QLineEdit *>( editor );
@@ -743,12 +753,18 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
 
       QString text;
       if ( value.isNull() )
+      {
         if ( myFieldType == QVariant::Int || myFieldType == QVariant::Double || myFieldType == QVariant::LongLong )
           text = "";
+        else if ( editType == QgsVectorLayer::UuidGenerator )
+          text = QUuid::createUuid().toString();
         else
           text = nullValue;
+      }
       else
+      {
         text = value.toString();
+      }
 
       if ( le )
         le->setText( text );
@@ -763,7 +779,7 @@ bool QgsAttributeEditor::setValue( QWidget *editor, QgsVectorLayer *vl, int idx,
     case QgsVectorLayer::Calendar:
     {
       QLineEdit* le = qobject_cast<QLineEdit*>( editor );
-      if( !le )
+      if ( !le )
       {
         le = editor->findChild<QLineEdit *>();
       }

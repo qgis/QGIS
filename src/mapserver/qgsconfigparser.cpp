@@ -363,6 +363,8 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
 
   //insert the CRS elements after the title element to be in accordance with the WMS 1.3 specification
   QDomElement titleElement = layerElement.firstChildElement( "Title" );
+  QDomElement abstractElement = layerElement.firstChildElement( "Abstract" );
+  QDomElement CRSPrecedingElement = abstractElement.isNull() ? titleElement : abstractElement; //last element before the CRS elements
 
   //In case the number of advertised CRS is constrained
   QStringList constrainedCrsList = supportedOutputCrsList();
@@ -370,37 +372,25 @@ void QgsConfigParser::appendCRSElementsToLayer( QDomElement& layerElement, QDomD
   {
     for ( int i = constrainedCrsList.size() - 1; i >= 0; --i )
     {
-      appendCRSElementToLayer( layerElement, titleElement, constrainedCrsList.at( i ), doc );
-#if 0
-      QDomElement crsElement = doc.createElement( "CRS" );
-      QDomText crsText = doc.createTextNode( constrainedCrsList.at( i ) );
-      crsElement.appendChild( crsText );
-      layerElement.insertAfter( crsElement, titleElement );
-#endif
+      appendCRSElementToLayer( layerElement, CRSPrecedingElement, constrainedCrsList.at( i ), doc );
     }
   }
   else //no crs constraint
   {
     foreach( QString crs, crsList )
     {
-      appendCRSElementToLayer( layerElement, titleElement, crs, doc );
-#if 0
-      QDomElement crsElement = doc.createElement( "CRS" );
-      QDomText crsText = doc.createTextNode( *crsIt );
-      crsElement.appendChild( crsText );
-      layerElement.insertAfter( crsElement, titleElement );
-#endif
+      appendCRSElementToLayer( layerElement, CRSPrecedingElement, crs, doc );
     }
   }
 }
 
-void QgsConfigParser::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& titleElement, const QString& crsText, QDomDocument& doc ) const
+void QgsConfigParser::appendCRSElementToLayer( QDomElement& layerElement, const QDomElement& precedingElement, const QString& crsText, QDomDocument& doc ) const
 {
   QString version = doc.documentElement().attribute( "version" );
   QDomElement crsElement = doc.createElement( version == "1.1.1" ? "SRS" : "CRS" );
   QDomText crsTextNode = doc.createTextNode( crsText );
   crsElement.appendChild( crsTextNode );
-  layerElement.insertAfter( crsElement, titleElement );
+  layerElement.insertAfter( crsElement, precedingElement );
 }
 
 QgsComposition* QgsConfigParser::createPrintComposition( const QString& composerTemplate, QgsMapRenderer* mapRenderer, const QMap< QString, QString >& parameterMap ) const

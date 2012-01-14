@@ -49,6 +49,7 @@
 
 static const QString name_ = QObject::tr( "GPS Tools" );
 static const QString description_ = QObject::tr( "Tools for loading and importing GPS data" );
+static const QString category_ = QObject::tr( "Vector" );
 static const QString version_ = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE type_ = QgisPlugin::UI;
 static const QString icon_ = ":/gps_importer.png";
@@ -61,7 +62,7 @@ static const QString icon_ = ":/gps_importer.png";
  * @param _qI Pointer to the QGIS interface object
  */
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface * theQgisInterFace ):
-    QgisPlugin( name_, description_, version_, type_ ),
+    QgisPlugin( name_, description_, category_, version_, type_ ),
     mQGisInterface( theQgisInterFace )
 {
   setupBabel();
@@ -78,14 +79,13 @@ QgsGPSPlugin::~QgsGPSPlugin()
     delete iter2->second;
 }
 
-
 /*
  * Initialize the GUI interface for the plugin
  */
 void QgsGPSPlugin::initGui()
 {
   // add an action to the toolbar
-  mQActionPointer = new QAction( QIcon(), tr( "&Gps Tools" ), this );
+  mQActionPointer = new QAction( QIcon(), tr( "&GPS Tools" ), this );
   mCreateGPXAction = new QAction( QIcon(), tr( "&Create new GPX layer" ), this );
   setCurrentTheme( "" );
 
@@ -94,9 +94,10 @@ void QgsGPSPlugin::initGui()
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
 
-  mQGisInterface->layerToolBar()->addAction( mQActionPointer );
-  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->addPluginToMenu( tr( "&Gps" ), mCreateGPXAction );
+  mQGisInterface->layerToolBar()->addAction( mCreateGPXAction );
+  mQGisInterface->insertAddLayerAction( mCreateGPXAction );
+  mQGisInterface->addPluginToVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
   connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
@@ -154,16 +155,21 @@ void QgsGPSPlugin::run()
   myPluginGui->show();
 }
 
-
 void QgsGPSPlugin::createGPX()
 {
+  QSettings settings;
+  QString dir = settings.value( "/Plugin-GPS/gpxdirectory", "." ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
                                   tr( "Save new GPX file as..." ),
-                                  ".",
+                                  dir,
                                   tr( "GPS eXchange file (*.gpx)" ) );
   if ( !fileName.isEmpty() )
   {
+    if ( !fileName.toLower().endsWith( ".gpx" ) )
+    {
+      fileName += ".gpx";
+    }
     QFileInfo fileInfo( fileName );
     std::ofstream ofs( fileName.toUtf8() );
     if ( !ofs )
@@ -174,6 +180,8 @@ void QgsGPSPlugin::createGPX()
                                 "directory." ) );
       return;
     }
+    settings.setValue( "/Plugin-GPS/gpxdirectory", fileInfo.absolutePath() );
+
     ofs << "<gpx></gpx>" << std::endl;
 
     emit drawVectorLayer( fileName + "?type=track",
@@ -184,7 +192,6 @@ void QgsGPSPlugin::createGPX()
                           fileInfo.baseName() + ", waypoints", "gpx" );
   }
 }
-
 
 void QgsGPSPlugin::drawVectorLayer( QString thePathNameQString,
                                     QString theBaseNameQString,
@@ -198,16 +205,16 @@ void QgsGPSPlugin::drawVectorLayer( QString thePathNameQString,
 void QgsGPSPlugin::unload()
 {
   // remove the GUI
-  mQGisInterface->removePluginMenu( tr( "&Gps" ), mQActionPointer );
-  mQGisInterface->removePluginMenu( tr( "&Gps" ), mCreateGPXAction );
-  mQGisInterface->removeToolBarIcon( mQActionPointer );
+  mQGisInterface->layerToolBar()->removeAction( mCreateGPXAction );
+  mQGisInterface->removeAddLayerAction( mCreateGPXAction );
+  mQGisInterface->removePluginVectorMenu( tr( "&GPS" ), mQActionPointer );
+  mQGisInterface->removeVectorToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
 void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadRoutes,
                                 bool loadTracks )
 {
-
   //check if input file is readable
   QFileInfo fileInfo( fileName );
   if ( !fileInfo.isReadable() )
@@ -217,10 +224,6 @@ void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadR
                               "Please reselect a valid file." ) );
     return;
   }
-
-  // remember the directory
-  QSettings settings;
-  settings.setValue( "/Plugin-GPS/gpxdirectory", fileInfo.path() );
 
   // add the requested layers
   if ( loadTracks )
@@ -236,13 +239,11 @@ void QgsGPSPlugin::loadGPXFile( QString fileName, bool loadWaypoints, bool loadR
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::importGPSFile( QString inputFileName, QgsBabelFormat* importer,
                                   bool importWaypoints, bool importRoutes,
                                   bool importTracks, QString outputFileName,
                                   QString layerName )
 {
-
   // what features does the user want to import?
   QString typeArg;
   if ( importWaypoints )
@@ -305,15 +306,12 @@ void QgsGPSPlugin::importGPSFile( QString inputFileName, QgsBabelFormat* importe
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::convertGPSFile( QString inputFileName,
                                    int convertType,
                                    QString outputFileName,
                                    QString layerName )
 {
-
   // what features does the user want to import?
-
   QStringList convertStrings;
 
   switch ( convertType )
@@ -392,7 +390,6 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
                                     bool downloadTracks, QString outputFileName,
                                     QString layerName )
 {
-
   // what does the user want to download?
   QString typeArg, features;
   if ( downloadWaypoints )
@@ -422,7 +419,6 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
                           .arg( features ) );
     return;
   }
-
 
   QgsDebugMsg( QString( "Download command: " ) + babelArgs.join( "|" ) );
 
@@ -474,11 +470,9 @@ void QgsGPSPlugin::downloadFromGPS( QString device, QString port,
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, QString device,
                                 QString port )
 {
-
   const QString& source( gpxLayer->dataProvider()->dataSourceUri() );
 
   // what kind of data does the user want to upload?
@@ -555,10 +549,8 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer* gpxLayer, QString device,
   emit closeGui();
 }
 
-
 void QgsGPSPlugin::setupBabel()
 {
-
   // where is gpsbabel?
   QSettings settings;
   mBabelPath = settings.value( "/Plugin-GPS/gpsbabelpath", "" ).toString();
@@ -716,6 +708,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return description_;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return category_;
 }
 
 // Return the type (either UI or MapLayer plugin)
