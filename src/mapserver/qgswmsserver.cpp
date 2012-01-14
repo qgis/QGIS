@@ -308,7 +308,7 @@ QImage* QgsWMSServer::getLegendGraphics()
   {
     return 0;
   }
-  double mmToPixelFactor = theImage->dotsPerMeterX() / 1000;
+  double mmToPixelFactor = theImage->dotsPerMeterX() / 1000.0;
   double maxTextWidth = 0;
   double maxSymbolWidth = 0;
   double currentY = 0;
