@@ -211,7 +211,6 @@
 #include "qgsmaptoolmeasureangle.h"
 #include "qgsmaptoolmovefeature.h"
 #include "qgsmaptoolmovevertex.h"
-#include "qgsmaptoolnodetool.h"
 #include "qgsmaptoolpan.h"
 #include "qgsmaptoolselect.h"
 #include "qgsmaptoolselectrectangle.h"
@@ -229,6 +228,8 @@
 #include "qgsmaptoolmovelabel.h"
 #include "qgsmaptoolrotatelabel.h"
 #include "qgsmaptoolchangelabelproperties.h"
+
+#include "nodetool/qgsmaptoolnodetool.h"
 
 //
 // Conditional Includes

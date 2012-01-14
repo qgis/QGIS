@@ -39,6 +39,7 @@ SET(QGIS_APP_SRCS
   qgslabelengineconfigdialog.cpp
   qgslabelinggui.cpp
   qgslabelpreview.cpp
+
   qgsmaptooladdfeature.cpp
   qgsmaptooladdvertex.cpp
   qgsmaptooladdpart.cpp
@@ -58,7 +59,6 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
   qgsmaptoolmovevertex.cpp
-  qgsmaptoolnodetool.cpp
   qgsmaptoolreshape.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
@@ -72,6 +72,11 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsplitfeatures.cpp
   qgsmaptooltextannotation.cpp
   qgsmaptoolvertexedit.cpp
+
+  nodetool/qgsmaptoolnodetool.cpp
+  nodetool/qgsselectedfeature.cpp
+  nodetool/qgsvertexentry.cpp
+
   qgsmeasuredialog.cpp
   qgsmeasuretool.cpp
   qgsmergeattributesdialog.cpp
@@ -181,6 +186,7 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelengineconfigdialog.h
   qgslabelinggui.h
   qgslabelpropertydialog.h
+
   qgsmaptooladdfeature.h
   qgsmaptoolcapture.h
   qgsmaptooladdpart.h
@@ -196,7 +202,6 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolmovefeature.h
   qgsmaptoolmovelabel.h
   qgsmaptoolmovevertex.h
-  qgsmaptoolnodetool.h
   qgsmaptoolreshape.h
   qgsmaptoolrotatelabel.h
   qgsmaptoolrotatepointsymbols.h
@@ -208,6 +213,10 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptoolsimplify.h
   qgsmaptoolsplitfeatures.h
   qgsmaptoolvertexedit.h
+
+  nodetool/qgsmaptoolnodetool.h
+  nodetool/qgsselectedfeature.h
+
   qgsmeasuredialog.h
   qgsmeasuretool.h
   qgsmergeattributesdialog.h
