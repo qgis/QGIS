@@ -2,7 +2,7 @@
                           qgsrelief.cpp  -  description
                           ---------------------------
     begin                : November 2011
-    copyright            : (C) 20011 by Marco Hugentobler
+    copyright            : (C) 2011 by Marco Hugentobler
     email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************/
 

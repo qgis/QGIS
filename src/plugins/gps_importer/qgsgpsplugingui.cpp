@@ -89,14 +89,15 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
   // what should we do?
   switch ( tabWidget->currentIndex() )
   {
-    // add a GPX layer?
     case 0:
+      // add a GPX layer?
       emit loadGPXFile( leGPXFile->text(), cbGPXWaypoints->isChecked(),
                         cbGPXRoutes->isChecked(), cbGPXTracks->isChecked() );
       break;
-    // or import other file?
+
     case 1:
     {
+      // or import other file?
       const QString& typeString( cmbIMPFeature->currentText() );
       emit importGPSFile( leIMPInput->text(),
                           mImporters.find( mImpFormat )->second,
@@ -107,9 +108,10 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
                           leIMPLayer->text() );
       break;
     }
-    // or download GPS data from a device?
+
     case 2:
     {
+      // or download GPS data from a device?
       int featureType = cmbDLFeatureType->currentIndex();
 
       QString fileName = leDLOutput->text();
@@ -124,17 +126,19 @@ void QgsGPSPluginGui::on_buttonBox_accepted()
                             fileName, leDLBasename->text() );
       break;
     }
-    // or upload GPS data to a device?
+
     case 3:
     {
+      // or upload GPS data to a device?
       emit uploadToGPS( mGPXLayers[cmbULLayer->currentIndex()],
                         cmbULDevice->currentText(),
                         cmbULPort->itemData( cmbULPort->currentIndex() ).toString() );
       break;
     }
-    // or convert between waypoints/tracks=
+
     case 4:
     {
+      // or convert between waypoints/tracks=
       int convertType = cmbCONVType->itemData( cmbCONVType->currentIndex() ).toInt();
 
       emit convertGPSFile( leCONVInput->text(),

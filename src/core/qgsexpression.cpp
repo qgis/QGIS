@@ -138,7 +138,7 @@ static double getDoubleValue( const QVariant& value, QgsExpression* parent )
 static int getIntValue( const QVariant& value, QgsExpression* parent )
 {
   bool ok;
-  qint64 x = value.toLongLong(&ok);
+  qint64 x = value.toLongLong( &ok );
   if ( ok && x >= std::numeric_limits<int>::min() && x <= std::numeric_limits<int>::max() )
   {
     return x;

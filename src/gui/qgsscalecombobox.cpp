@@ -57,7 +57,7 @@ void QgsScaleComboBox::showPopup()
     parts = itemText( i ).split( ':' );
     nextScale = parts.at( 1 ).toLong( &ok );
     delta = qAbs( currScale - nextScale );
-    if( delta < min )
+    if ( delta < min )
     {
       min = delta;
       idx = i;
