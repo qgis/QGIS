@@ -443,7 +443,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     return;
   }
   enabledCapabilities = QgsVectorDataProvider::SelectAtId | QgsVectorDataProvider::SelectGeometryAtId;
-  if ( mTableBased && !mReadOnly )
+  if (( mTableBased | mViewBased ) &&  !mReadOnly )
   {
     // enabling editing only for Tables [excluding Views and VirtualShapes]
     enabledCapabilities |= QgsVectorDataProvider::DeleteFeatures;
@@ -648,6 +648,23 @@ error:
     QgsDebugMsg( QString( "SQL error: %1" ).arg( QString::fromUtf8( errMsg ) ) );
     sqlite3_free( errMsg );
   }
+}
+
+bool QgsSpatiaLiteProvider::hasTriggers()
+{
+  int ret;
+  char **results;
+  int rows;
+  int columns;
+  char *errMsg = NULL;
+  QString sql;
+
+  sql = QString( "SELECT * FROM sqlite_master WHERE type='trigger' AND tbl_name=%1" )
+        .arg( quotedIdentifier( mTableName ) );
+
+  ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+  sqlite3_free_table( results );
+  return ( ret == SQLITE_OK && rows > 0 );
 }
 
 
@@ -4217,7 +4234,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
       else if ( type == "view" )
       {
         mViewBased = true;
-        mReadOnly = true;
+        mReadOnly = !hasTriggers();
       }
       count++;
     }
@@ -4321,7 +4338,7 @@ bool QgsSpatiaLiteProvider::checkLayerType()
     if ( ret == SQLITE_OK && rows == 1 )
     {
       mViewBased = true;
-      mReadOnly = true;
+      mReadOnly = !hasTriggers();
       count++;
     }
     if ( errMsg )
