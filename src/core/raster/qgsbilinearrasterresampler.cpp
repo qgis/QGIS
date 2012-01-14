@@ -29,5 +29,5 @@ QgsBilinearRasterResampler::~QgsBilinearRasterResampler()
 
 void QgsBilinearRasterResampler::resample( const QImage& srcImage, QImage& dstImage )
 {
-  dstImage = srcImage.scaled( dstImage.width(), dstImage.height(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation );
+  dstImage = srcImage.scaled( dstImage.width(), dstImage.height(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }

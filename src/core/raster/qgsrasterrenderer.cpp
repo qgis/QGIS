@@ -59,7 +59,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
       providerExtent = t.transformBoundingBox( providerExtent );
     }
     double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
-    oversampling = pixelRatio > 1.0 ? 1.0 : pixelRatio;
+    oversampling = ( pixelRatio > 4.0 ) ? 4.0 : pixelRatio;
   }
 
   //split raster into small portions if necessary
