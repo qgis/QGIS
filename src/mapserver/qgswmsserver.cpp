@@ -1638,14 +1638,12 @@ void QgsWMSServer::drawLegendSymbolV2( QgsComposerLegendItem* item, QPainter* p,
     symbolHeight = markerSymbol->size() * dpi / 25.4;
   }
 
-  double rasterScaleFactor = dpi / 2.0 / 25.4;
-
   if ( p )
   {
     p->save();
     p->translate( boxSpace, currentY + yDownShift );
-    p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-    symbol->drawPreviewIcon( p, QSize( symbolWidth * rasterScaleFactor, symbolHeight * rasterScaleFactor ) );
+    p->scale( 1.0, 1.0 );
+    symbol->drawPreviewIcon( p, QSize( symbolWidth, symbolHeight ) );
     p->restore();
   }
 }
