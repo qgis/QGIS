@@ -1398,9 +1398,12 @@ bool QgsPostgresProvider::determinePrimaryKey()
           {
             mPrimaryKeyType = pktTid;
           }
+          else
+          {
+            QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
+          }
         }
 
-        QgsMessageLog::logMessage( tr( "The table has no column suitable for use as a key. Quantum GIS requires a primary key, a PostgreSQL oid column or a ctid for tables." ), tr( "PostGIS" ) );
       }
       else if ( type == "v" ) // the relation is a view
       {

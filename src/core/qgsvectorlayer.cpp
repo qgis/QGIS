@@ -50,6 +50,7 @@
 #include "qgsgeometry.h"
 #include "qgslabel.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproviderregistry.h"
@@ -3865,7 +3866,8 @@ bool QgsVectorLayer::commitChanges()
 
   updateFieldMap();
   mDataProvider->updateExtents();
-  QgsDebugMsg( "result:\n  " + mCommitErrors.join( "\n  " ) );
+
+  QgsMessageLog::logMessage( tr( "Commit errors:\n%1" ).arg( mCommitErrors.join( "\n" ) ) );
 
   return success;
 }
