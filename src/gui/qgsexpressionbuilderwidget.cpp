@@ -41,6 +41,7 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setModel( mProxyModel );
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
+  connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState ) );
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
 
   foreach( QPushButton* button, this->mOperatorsGroupBox->findChildren<QPushButton *>() )
@@ -213,6 +214,11 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
   }
 }
 
+bool QgsExpressionBuilderWidget::isExpressionVaild()
+{
+  return mExpressionVaild;
+}
+
 QString QgsExpressionBuilderWidget::getExpressionString()
 {
   return txtExpressionString->toPlainText();
@@ -360,6 +366,11 @@ void QgsExpressionBuilderWidget::loadAllValues()
   mValueGroupBox->show();
   int fieldIndex = mLayer->fieldNameIndex( item->text() );
   fillFieldValues( fieldIndex, -1 );
+}
+
+void QgsExpressionBuilderWidget::setExpressionState( bool state )
+{
+  mExpressionVaild = state;
 }
 
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functionName )

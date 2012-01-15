@@ -140,6 +140,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
                        QString helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
 
+    bool isExpressionVaild();
 
   public slots:
     void on_expressionTree_clicked( const QModelIndex &index );
@@ -152,6 +153,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void showContextMenu( const QPoint & );
     void loadSampleValues();
     void loadAllValues();
+
+  private slots:
+    void setExpressionState( bool state );
 
   signals:
     /** Emited when the user changes the expression in the widget.
@@ -171,6 +175,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
+    bool mExpressionVaild;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H
