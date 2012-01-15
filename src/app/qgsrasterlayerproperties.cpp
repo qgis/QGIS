@@ -737,6 +737,7 @@ void QgsRasterLayerProperties::sync()
     cboRed->setCurrentIndex( cboRed->findText( mRasterLayer->redBandName() ) );
     cboGreen->setCurrentIndex( cboGreen->findText( mRasterLayer->greenBandName() ) );
     cboBlue->setCurrentIndex( cboBlue->findText( mRasterLayer->blueBandName() ) );
+    cboGray->setCurrentIndex( cboGray->findText( mRasterLayer->grayBandName() ) );
 
     //Display the current default contrast enhancement algorithm
     mDefaultContrastEnhancementAlgorithm = myQSettings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
