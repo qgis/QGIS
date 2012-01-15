@@ -64,9 +64,9 @@ bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
   else if ( mLayer->featureAtId( fid, mFeat, false, true ) )
   {
     QSettings settings;
-    int cacheSize = settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt();
+    int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
 
-    if ( mFeatureQueue.size() == cacheSize )
+    while ( mFeatureQueue.size() >= cacheSize )
     {
       mFeatureMap.remove( mFeatureQueue.dequeue() );
     }
