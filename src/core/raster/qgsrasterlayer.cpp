@@ -1797,7 +1797,7 @@ QString QgsRasterLayer::metadata()
   myMetadata += tr( "Layer Spatial Reference System: " );
   myMetadata += "</p>\n";
   myMetadata += "<p>";
-  myMetadata += mCRS->toProj4();
+  myMetadata += crs().toProj4();
   myMetadata += "</p>\n";
 
   myMetadata += "<p class=\"glossy\">";
@@ -2224,7 +2224,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
                                       QStringList const & layers,
                                       QStringList const & styles,
                                       QString const & format,
-                                      QString const & crs,
+                                      QString const & theCrs,
                                       bool loadDefaultStyleFlag )
 {
   Q_UNUSED( loadDefaultStyleFlag );
@@ -2251,13 +2251,15 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   }
 
 
-  QgsDebugMsg( "Instantiated the data provider plugin"
-               + QString( " with layer list of " ) + layers.join( ", " )
-               + " and style list of " + styles.join( ", " )
-               + " and format of " + format +  " and CRS of " + crs );
+  QgsDebugMsg( QString( "Instantiated the data provider plugin with layer list of %1 and style list of %2 and format of %3 and CRS of %4" )
+               .arg( layers.join( ", " ) )
+               .arg( styles.join( ", " ) )
+               .arg( format )
+               .arg( theCrs )
+             );
   if ( !mDataProvider->isValid() )
   {
-    if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !crs.isNull() )
+    if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !theCrs.isNull() )
     {
       QgsMessageLog::logMessage( tr( "Data provider is invalid (layers %1, styles %2, formats: %3)" )
                                  .arg( layers.join( ", " ) )
@@ -2270,7 +2272,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
 
   mDataProvider->addLayers( layers, styles );
   mDataProvider->setImageEncoding( format );
-  mDataProvider->setImageCrs( crs );
+  mDataProvider->setImageCrs( theCrs );
 
   setNoDataValue( mDataProvider->noDataValue() );
 
@@ -2299,21 +2301,16 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   // Setup source CRS
   if ( mProviderKey == "wms" )
   {
-    *mCRS = QgsCoordinateReferenceSystem();
-    mCRS->createFromOgcWmsCrs( crs );
+    QgsCoordinateReferenceSystem crs;
+    crs.createFromOgcWmsCrs( theCrs );
+    setCrs( crs );
   }
   else
   {
-    *mCRS = QgsCoordinateReferenceSystem( mDataProvider->crs() );
+    setCrs( QgsCoordinateReferenceSystem( mDataProvider->crs() ) );
   }
-  //get the project projection, defaulting to this layer's projection
-  //if none exists....
-  if ( !mCRS->isValid() )
-  {
-    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
-    mCRS->validate();
-  }
-  QString mySourceWkt = mCRS->toWkt();
+
+  QString mySourceWkt = crs().toWkt();
 
   QgsDebugMsg( "using wkt:\n" + mySourceWkt );
 

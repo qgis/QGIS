@@ -680,7 +680,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
-    mCachedTrForLayer = 0;
+    invalidateCachedLayerCrs();
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
     mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
@@ -1107,15 +1107,26 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
 
 QgsCoordinateTransform *QgsMapRenderer::tr( QgsMapLayer *layer )
 {
-  // mCachedTrForLayer is unset by setDestinationCrs(), but layer->crs may also be changed after CRS was cached -> check it - the question is, how efficient now the caching is, because crs == operator is not cheap
-  if ( mCachedTrForLayer != layer || layer->crs() != mCachedTr->sourceCrs() )
+  if ( mCachedTrForLayer != layer )
   {
+    invalidateCachedLayerCrs();
+
     delete mCachedTr;
     mCachedTr = new QgsCoordinateTransform( layer->crs(), *mDestCRS );
     mCachedTrForLayer = layer;
+
+    connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
   }
 
   return mCachedTr;
+}
+
+void QgsMapRenderer::invalidateCachedLayerCrs()
+{
+  if ( mCachedTrForLayer )
+    disconnect( mCachedTrForLayer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
+
+  mCachedTrForLayer = 0;
 }
 
 bool QgsMapRenderer::mDrawing = false;

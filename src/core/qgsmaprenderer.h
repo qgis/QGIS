@@ -251,6 +251,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
 
+    //! invalidate cached layer CRS
+    void invalidateCachedLayerCrs();
+
   protected:
 
     //! adjust extent to fit the pixmap size

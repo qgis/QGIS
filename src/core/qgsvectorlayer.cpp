@@ -21,16 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cfloat>
-#include <cstring>
-#include <climits>
-#include <cmath>
-#include <iosfwd>
 #include <limits>
-#include <memory>
-#include <set>
-#include <sstream>
-#include <utility>
 
 #include <QImage>
 #include <QPainter>
@@ -2588,11 +2579,11 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
 
   //work with a tolerance because coordinate projection may introduce some rounding
   double threshold =  0.0000001;
-  if ( mCRS && mCRS->mapUnits() == QGis::Meters )
+  if ( crs().mapUnits() == QGis::Meters )
   {
     threshold = 0.001;
   }
-  else if ( mCRS && mCRS->mapUnits() == QGis::Feet )
+  else if ( crs().mapUnits() == QGis::Feet )
   {
     threshold = 0.0001;
   }
@@ -4478,24 +4469,14 @@ void QgsVectorLayer::setCoordinateSystem()
   // for this layer
   //
 
-  // get CRS directly from provider
-  *mCRS = mDataProvider->crs();
-
-  //QgsCoordinateReferenceSystem provides a mechanism for FORCE a srs to be valid
-  //which is inolves falling back to system, project or user selected
-  //defaults if the srs is not properly intialised.
-  //we only nee to do that if the srs is not alreay valid
-  if ( !mCRS->isValid() )
+  if ( hasGeometryType() )
   {
-    if ( hasGeometryType() )
-    {
-      mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
-      mCRS->validate();
-    }
-    else
-    {
-      mCRS->createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-    }
+    // get CRS directly from provider
+    setCrs( mDataProvider->crs() );
+  }
+  else
+  {
+    setCrs( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ) );
   }
 }
 
