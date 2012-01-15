@@ -254,6 +254,9 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! invalidate cached layer CRS
     void invalidateCachedLayerCrs();
 
+    //! cached layer was destroyed
+    void cachedLayerDestroyed();
+
   protected:
 
     //! adjust extent to fit the pixmap size
