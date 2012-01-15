@@ -235,7 +235,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     lblPreview->setStyleSheet( "" );
     txtExpressionString->setToolTip( "" );
     lblPreview->setToolTip( "" );
-    // Return false for isVaild because a null expression is still invaild.
+    // Return false for isValid because a null expression is still invalid.
     emit expressionParsed( false );
     return;
   }
@@ -260,7 +260,7 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     }
     else
     {
-      // The feautre is invaild because we don't have one but that doesn't mean user can't
+      // The feature is invalid because we don't have one but that doesn't mean user can't
       // build a expression string.  They just get no preview.
       lblPreview->setText( "" );
     }
