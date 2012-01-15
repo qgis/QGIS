@@ -513,6 +513,13 @@ const QgsCoordinateReferenceSystem& QgsMapLayer::srs()
 void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal )
 {
   *mCRS = srs;
+
+  if ( !mCRS->isValid() )
+  {
+    mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
+    mCRS->validate();
+  }
+
   if ( emitSignal )
     emit layerCrsChanged();
 }
