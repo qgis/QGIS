@@ -680,6 +680,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
+    mCachedTrForLayer = 0;
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
     mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
@@ -754,6 +755,9 @@ bool QgsMapRenderer::splitLayersExtent( QgsMapLayer* layer, QgsRectangle& extent
 
 QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, QgsRectangle extent )
 {
+  QgsDebugMsg( QString( "sourceCrs = " + tr( theLayer )->sourceCrs().authid() ) );
+  QgsDebugMsg( QString( "destCRS = " + tr( theLayer )->destCRS().authid() ) );
+  QgsDebugMsg( QString( "extent = " + extent.toString() ) );
   if ( hasCrsTransformEnabled() )
   {
     try
@@ -770,6 +774,7 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
   {
     // leave extent unchanged
   }
+  QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
 
   return extent;
 }
@@ -1102,7 +1107,8 @@ void QgsMapRenderer::setLabelingEngine( QgsLabelingEngineInterface* iface )
 
 QgsCoordinateTransform *QgsMapRenderer::tr( QgsMapLayer *layer )
 {
-  if ( mCachedTrForLayer != layer )
+  // mCachedTrForLayer is unset by setDestinationCrs(), but layer->crs may also be changed after CRS was cached -> check it - the question is, how efficient now the caching is, because crs == operator is not cheap
+  if ( mCachedTrForLayer != layer || layer->crs() != mCachedTr->sourceCrs() )
   {
     delete mCachedTr;
     mCachedTr = new QgsCoordinateTransform( layer->crs(), *mDestCRS );
