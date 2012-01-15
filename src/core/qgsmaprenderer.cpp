@@ -1116,9 +1116,16 @@ QgsCoordinateTransform *QgsMapRenderer::tr( QgsMapLayer *layer )
     mCachedTrForLayer = layer;
 
     connect( layer, SIGNAL( layerCrsChanged() ), this, SLOT( invalidateCachedLayerCrs() ) );
+    connect( layer, SIGNAL( destroyed() ), this, SLOT( cachedLayerDestroyed() ) );
   }
 
   return mCachedTr;
+}
+
+void QgsMapRenderer::cachedLayerDestroyed()
+{
+  if ( mCachedTrForLayer == sender() )
+    mCachedTrForLayer = 0;
 }
 
 void QgsMapRenderer::invalidateCachedLayerCrs()
