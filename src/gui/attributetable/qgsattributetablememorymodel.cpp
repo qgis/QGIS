@@ -65,8 +65,14 @@ void QgsAttributeTableMemoryModel::loadLayer()
     mIdRowMap.insert( f.id(), n );
     mRowIdMap.insert( n, f.id() );
     mFeatureMap.insert( f.id(), f );
-    n++;
+
+    bool cancel = false;
+    emit progress( n++, cancel );
+    if ( cancel )
+      break;
   }
+
+  emit finished();
 
   mFieldCount = mAttributes.size();
 }

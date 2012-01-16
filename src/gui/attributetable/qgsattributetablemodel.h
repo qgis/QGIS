@@ -183,6 +183,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @parem inOperation guard insertion with beginInsertRows() / endInsertRows()
      */
     virtual void featureAdded( QgsFeatureId fid, bool inOperation = true );
+
     /**
      * Launched when layer has been deleted
      */

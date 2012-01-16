@@ -74,12 +74,22 @@ void QgsAttributeTableView::setCanvasAndLayer( QgsMapCanvas *canvas, QgsVectorLa
     mModel = new QgsAttributeTableMemoryModel( canvas, layer );
   }
 
-  mFilterModel = new QgsAttributeTableFilterModel( layer );
-  mFilterModel->setSourceModel( mModel );
-  setModel( mFilterModel );
+  connect( mModel, SIGNAL( finished() ), this, SLOT( setFilterModel() ) );
+
+  connect( mModel, SIGNAL( progress(int, bool&) ), this, SIGNAL( progress(int, bool&) ) );
+  connect( mModel, SIGNAL( finished() ), this, SIGNAL( finished() ) );
+  mModel->loadLayer();
 
   delete oldModel;
   delete filterModel;
+}
+
+void QgsAttributeTableView::setFilterModel()
+{
+  disconnect( mModel, SIGNAL( finished() ), this, SLOT( setFilterModel() ) );
+  mFilterModel = new QgsAttributeTableFilterModel( mModel->layer() );
+  mFilterModel->setSourceModel( mModel );
+  setModel( mFilterModel );
 }
 
 QgsAttributeTableView::~QgsAttributeTableView()

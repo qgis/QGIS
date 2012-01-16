@@ -63,14 +63,12 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   QSettings settings;
   restoreGeometry( settings.value( "/Windows/BetterAttributeTable/geometry" ).toByteArray() );
 
+  connect( mView, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
+  connect( mView, SIGNAL( finished() ), this, SLOT( finished() ) );
   mView->setCanvasAndLayer( QgisApp::instance()->mapCanvas(), mLayer );
 
   mFilterModel = ( QgsAttributeTableFilterModel * ) mView->model();
   mModel = qobject_cast<QgsAttributeTableModel * >( dynamic_cast<QgsAttributeTableFilterModel *>( mView->model() )->sourceModel() );
-
-  connect( mModel, SIGNAL( progress( int, bool & ) ), this, SLOT( progress( int, bool & ) ) );
-  connect( mModel, SIGNAL( finished() ), this, SLOT( finished() ) );
-  mModel->loadLayer();
 
   mQuery = query;
   mColumnBox = columnBox;
@@ -834,7 +832,7 @@ void QgsAttributeTableDialog::progress( int i, bool &cancel )
 
   mProgress->setValue( i );
 
-  if ( i > 0 && i % 1000 == 0 )
+  if ( i > 0 && i % 5000 == 0 )
   {
     mProgress->setLabelText( tr( "%1 features loaded." ).arg( i ) );
   }
