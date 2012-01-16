@@ -3800,10 +3800,15 @@ bool QgsVectorLayer::commitChanges()
 
           mAddedFeatures.clear();
         }
+        else
+        {
+          mCommitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
+          success = false;
+        }
       }
       else
       {
-        mCommitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
+        mCommitErrors << tr( "ERROR: %n feature(s) not added - provider doesn't support adding features.", "not added features count", mAddedFeatures.size() );
         success = false;
       }
     }
@@ -3854,6 +3859,17 @@ bool QgsVectorLayer::commitChanges()
     }
   }
 
+  if ( !success )
+  {
+    if ( mDataProvider->hasErrors() )
+    {
+      mCommitErrors << tr( "\n  Provider errors:" ) << mDataProvider->errors();
+      mDataProvider->clearErrors();
+    }
+
+    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
+  }
+
   deleteCachedGeometries();
 
   if ( success )
@@ -3866,8 +3882,6 @@ bool QgsVectorLayer::commitChanges()
 
   updateFieldMap();
   mDataProvider->updateExtents();
-
-  QgsMessageLog::logMessage( tr( "Commit errors:\n%1" ).arg( mCommitErrors.join( "\n" ) ) );
 
   return success;
 }

@@ -254,10 +254,10 @@ bool QgsPostgresProvider::declareCursor(
 
     if ( fetchGeometry )
     {
-      query += QString( "%1(%2(%3::geometry),'%4')" )
+      query += QString( "%1(%2(%3),'%4')" )
                .arg( mConnectionRO->majorVersion() < 2 ? "asbinary" : "st_asbinary" )
                .arg( mConnectionRO->majorVersion() < 2 ? "force_2d" : "st_force_2d" )
-               .arg( quotedIdentifier( mGeometryColumn ) )
+               .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
                .arg( endianString() );
       delim = ",";
     }
@@ -557,7 +557,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       {
         whereClause += QString( " AND %1(%2,%3)" )
                        .arg( mConnectionRO->majorVersion() < 2 ? "intersects" : "st_intersects" )
-                       .arg( quotedIdentifier( mGeometryColumn ) )
+                       .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
                        .arg( qBox );
       }
     }
@@ -566,7 +566,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
     {
       whereClause += QString( " AND %1(%2)=%3" )
                      .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
-                     .arg( quotedIdentifier( mGeometryColumn ) )
+                     .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
                      .arg( mRequestedSrid );
     }
 
@@ -625,6 +625,12 @@ bool QgsPostgresProvider::nextFeature( QgsFeature& feature )
       queryResult = mConnectionRO->PQgetResult();
       if ( !queryResult.result() )
         break;
+
+      if ( queryResult.PQresultStatus() != PGRES_TUPLES_OK )
+      {
+        QgsMessageLog::logMessage( tr( "Fetching from cursor %1 failed\nDatabase error: %2" ).arg( cursorName ).arg( mConnectionRO->PQerrorMessage() ), tr( "PostGIS" ) );
+        break;
+      }
 
       int rows = queryResult.PQntuples();
       if ( rows == 0 )
@@ -853,7 +859,7 @@ bool QgsPostgresProvider::featureAtId( QgsFeatureId featureId, QgsFeature& featu
   if ( !declareCursor( cursorName, fetchAttributes, fetchGeometry, whereClause( featureId ) ) )
     return false;
 
-  QgsPostgresResult queryResult = mConnectionRO->PQexec( QString( "fetch forward 1 from %1" ).arg( cursorName ) );
+  QgsPostgresResult queryResult = mConnectionRO->PQexec( QString( "FETCH FORWARD 1 FROM %1" ).arg( cursorName ) );
 
   int rows = queryResult.PQntuples();
   if ( rows == 0 )
@@ -1961,7 +1967,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
   }
   catch ( PGException &e )
   {
-    QgsMessageLog::logMessage( tr( "Error while adding features.\nError: %1" ).arg( e.errorMessage() ), tr( "PostGIS" ) );
+    pushError( tr( "PostGIS error while adding features: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     returnvalue = false;
@@ -2007,7 +2013,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
   }
   catch ( PGException &e )
   {
-    QgsMessageLog::logMessage( tr( "Error while deleting features.\nError: %1" ).arg( e.errorMessage() ), tr( "PostGIS" ) );
+    pushError( tr( "PostGIS error while deleting features: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
@@ -2070,7 +2076,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
   }
   catch ( PGException &e )
   {
-    QgsMessageLog::logMessage( tr( "Error while adding attributes. Error: %1" ).arg( e.errorMessage() ), tr( "PostGIS" ) );
+    pushError( tr( "PostGIS error while adding attributes: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
@@ -2117,7 +2123,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
   }
   catch ( PGException &e )
   {
-    QgsMessageLog::logMessage( tr( "Error while deleting attributes.\nError: %1" ).arg( e.errorMessage() ), tr( "PostGIS" ) );
+    pushError( tr( "PostGIS error while deleting attributes: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
@@ -2222,7 +2228,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
   }
   catch ( PGException &e )
   {
-    QgsMessageLog::logMessage( tr( "Error while changing attributes.\nError: %1" ).arg( e.errorMessage() ), tr( "PostGIS" ) );
+    pushError( tr( "PostGIS error while changing attributes: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     returnvalue = false;
   }
@@ -2305,7 +2311,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   }
   catch ( PGException &e )
   {
-    QgsMessageLog::logMessage( tr( "Error while changing geometry values.\nError: %1" ).arg( e.errorMessage() ), tr( "PostGIS" ) );
+    pushError( tr( "PostGIS error while changing geometry values: %1" ).arg( e.errorMessage() ) );
     mConnectionRW->PQexecNR( "ROLLBACK" );
     mConnectionRW->PQexecNR( "DEALLOCATE updatefeatures" );
     returnvalue = false;
@@ -2624,6 +2630,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     layerProperty.schemaName = mSchemaName;
     layerProperty.tableName = mTableName;
     layerProperty.geometryColName = mGeometryColumn;
+    layerProperty.isGeography = mIsGeography;
 
     QString delim = "";
 
@@ -2644,7 +2651,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       layerProperty.sql += QString( "%1%2(%3)=%4" )
                            .arg( delim )
                            .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
-                           .arg( quotedIdentifier( mGeometryColumn ) )
+                           .arg( quotedIdentifier( mGeometryColumn, mIsGeography ) )
                            .arg( mRequestedSrid );
       delim = " AND ";
     }

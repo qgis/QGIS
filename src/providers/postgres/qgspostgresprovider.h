@@ -488,7 +488,7 @@ class QgsPostgresProvider : public QgsVectorDataProvider
 
     void disconnectDb();
 
-    static QString quotedIdentifier( QString ident ) { return QgsPostgresConn::quotedIdentifier( ident ); }
+    static QString quotedIdentifier( QString ident, bool isGeography = false ) { return QgsPostgresConn::quotedIdentifier( ident, isGeography ); }
     static QString quotedValue( QVariant value ) { return QgsPostgresConn::quotedValue( value ); }
 
     static int sProviderIds;
