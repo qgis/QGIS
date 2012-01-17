@@ -162,6 +162,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setTheme( QString themeName = "default" );
 
     void setIconSizes( int size );
+    void setFontSize( int size );
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -1106,5 +1107,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     bool cmpByText( QAction* a, QAction* b );
 };
+
+#ifdef ANDROID
+#define QGIS_ICON_SIZE 32
+#define QGIS_FONT_SIZE 8
+#else
+#define QGIS_ICON_SIZE 24
+#define QGIS_FONT_SIZE 12
+#endif
 
 #endif
