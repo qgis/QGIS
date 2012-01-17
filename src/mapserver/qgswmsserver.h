@@ -35,6 +35,7 @@ class QgsRasterLayer;
 class QgsRectangle;
 class QgsVectorLayer;
 class QgsSymbol;
+class QColor;
 class QFile;
 class QFont;
 class QImage;
@@ -127,8 +128,8 @@ class QgsWMSServer
        @param maxSymbolWidth Includes boxSpace and iconLabelSpace. If p==0: maximum Symbol width is calculated, if p: maxSymbolWidth is input parameter
       */
     void drawLegendLayerItem( QgsComposerLayerItem* item, QPainter* p, double& maxTextWidth, double& maxSymbolWidth, double& currentY, const QFont& layerFont,
-                              const QFont& itemFont, double boxSpace, double layerSpace, double symbolSpace, double iconLabelSpace,
-                              double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
+                              const QColor& layerFontColor, const QFont& itemFont, const QColor&  itemFontColor, double boxSpace, double layerSpace,
+                              double symbolSpace, double iconLabelSpace, double symbolWidth, double symbolHeight, double fontOversamplingFactor, double dpi ) const;
     /**Draws a (old generation) symbol. Optionally, maxHeight is adapted (e.g. for large point markers) */
     void drawLegendSymbol( QgsComposerLegendItem* item, QPainter* p, double boxSpace, double currentY, double& symbolWidth, double& symbolHeight,
                            double layerOpacity, double dpi, double yDownShift ) const;
@@ -140,7 +141,7 @@ class QgsWMSServer
 
     /**Read legend parameter from the request or from the first print composer in the project*/
     void legendParameters( double mmToPixelFactor, double fontOversamplingFactor, double& boxSpace, double& layerSpace, double& symbolSpace, double& iconLabelSpace, double& symbolWidth, double& symbolHeight,
-                           QFont& layerFont, QFont& itemFont );
+                           QFont& layerFont, QFont& itemFont, QColor& layerFontColor, QColor& itemFontColor );
 
     QImage* printCompositionToImage( QgsComposition* c ) const;
 

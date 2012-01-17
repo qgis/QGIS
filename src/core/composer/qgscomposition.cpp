@@ -989,7 +989,6 @@ void QgsComposition::addComposerArrow( QgsComposerArrow* arrow )
   clearSelection();
   arrow->setSelected( true );
   emit selectedItemChanged( arrow );
-  //pushAddRemoveCommand( arrow, tr( "Arrow added" ) );
 }
 
 void QgsComposition::addComposerLabel( QgsComposerLabel* label )
@@ -999,7 +998,6 @@ void QgsComposition::addComposerLabel( QgsComposerLabel* label )
   clearSelection();
   label->setSelected( true );
   emit selectedItemChanged( label );
-  //pushAddRemoveCommand( label, tr( "Label added" ) );
 }
 
 void QgsComposition::addComposerMap( QgsComposerMap* map )
@@ -1012,7 +1010,6 @@ void QgsComposition::addComposerMap( QgsComposerMap* map )
   clearSelection();
   map->setSelected( true );
   emit selectedItemChanged( map );
-  //pushAddRemoveCommand( map, tr( "Map added" ) );
 }
 
 void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
@@ -1023,13 +1020,11 @@ void QgsComposition::addComposerScaleBar( QgsComposerScaleBar* scaleBar )
   {
     scaleBar->setComposerMap( mapItemList.at( 0 ) );
   }
-  scaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
   addItem( scaleBar );
   emit composerScaleBarAdded( scaleBar );
   clearSelection();
   scaleBar->setSelected( true );
   emit selectedItemChanged( scaleBar );
-  //pushAddRemoveCommand( scaleBar, tr( "Scale bar added" ) );
 }
 
 void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
@@ -1045,7 +1040,6 @@ void QgsComposition::addComposerLegend( QgsComposerLegend* legend )
   clearSelection();
   legend->setSelected( true );
   emit selectedItemChanged( legend );
-  //pushAddRemoveCommand( legend, tr( "Legend added" ) );
 }
 
 void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
@@ -1055,7 +1049,6 @@ void QgsComposition::addComposerPicture( QgsComposerPicture* picture )
   clearSelection();
   picture->setSelected( true );
   emit selectedItemChanged( picture );
-  //pushAddRemoveCommand( picture, tr( "Picture added" ) );
 }
 
 void QgsComposition::addComposerShape( QgsComposerShape* shape )
@@ -1065,7 +1058,6 @@ void QgsComposition::addComposerShape( QgsComposerShape* shape )
   clearSelection();
   shape->setSelected( true );
   emit selectedItemChanged( shape );
-  //pushAddRemoveCommand( shape, tr( "Shape added" ) );
 }
 
 void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
@@ -1075,7 +1067,6 @@ void QgsComposition::addComposerTable( QgsComposerAttributeTable* table )
   clearSelection();
   table->setSelected( true );
   emit selectedItemChanged( table );
-  //pushAddRemoveCommand( table, tr( "Table added" ) );
 }
 
 void QgsComposition::removeComposerItem( QgsComposerItem* item )
