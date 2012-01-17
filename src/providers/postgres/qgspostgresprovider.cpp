@@ -2704,7 +2704,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     QgsDebugMsg( "Requested SRID is " + mRequestedSrid );
     QgsDebugMsg( "Detected type is " + QString::number( mDetectedGeomType ) );
     QgsDebugMsg( "Requested type is " + QString::number( mRequestedGeomType ) );
-    QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[mDetectedGeomType] ) );
+    QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[ geometryType() ] ) );
     QgsDebugMsg( "Geometry is geography " + mIsGeography );
   }
   else
