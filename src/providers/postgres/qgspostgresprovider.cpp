@@ -2660,7 +2660,7 @@ bool QgsPostgresProvider::getGeometryDetails()
       srid = QString::number( layerProperty.srid );
     }
 
-    if ( type.isEmpty() && !type.contains( "," ) )
+    if ( !type.isEmpty() && !type.contains( "," ) )
     {
       type = layerProperty.type;
     }
