@@ -979,12 +979,12 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
   return 0;
 }
 
-bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &theSrs )
+bool QgsCoordinateReferenceSystem::operator==( const QgsCoordinateReferenceSystem &theSrs ) const
 {
   return mIsValidFlag && theSrs.mIsValidFlag && toWkt() == theSrs.toWkt();
 }
 
-bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs )
+bool QgsCoordinateReferenceSystem::operator!=( const QgsCoordinateReferenceSystem &theSrs ) const
 {
   return  !( *this == theSrs );
 }

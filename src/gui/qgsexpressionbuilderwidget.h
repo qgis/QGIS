@@ -157,9 +157,9 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /** Emited when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
-      * @param isVaild Is true if the expression the user has typed is vaild.
+      * @param isValid Is true if the expression the user has typed is valid.
       */
-    void expressionParsed( bool isVaild );
+    void expressionParsed( bool isValid );
 
   private:
     void fillFieldValues( int fieldIndex, int countLimit );

@@ -336,10 +336,12 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   // ? Does binary on Win need .exe extension ?
   // Return code 255 (-1) was correct in GRASS < 6.1.0
+  // Return code 1 is the value (correct?) .py modules actually returns (see #4667)
   if ( !process.waitForStarted()
        || !process.waitForReadyRead()
        || !process.waitForFinished()
-       || ( process.exitCode() != 0 && process.exitCode() != 255 ) )
+       || ( process.exitCode() != 0 && process.exitCode() != 255 &&
+            ( !cmd.endsWith( ".py" ) || process.exitCode() != 1 ) ) )
   {
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QMessageBox::warning( 0, tr( "Warning" ),

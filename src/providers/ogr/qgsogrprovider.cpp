@@ -358,7 +358,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
 
     if ( !ogrLayer )
     {
-      pushError( QString( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+      pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
       ogrLayer = prevLayer;
       mSubsetString = prevSubsetString;
       return false;
@@ -962,9 +962,9 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     unsigned char* wkb = f.geometry()->asWkb();
     OGRGeometryH geom = NULL;
 
-    if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() )
-         != OGRERR_NONE )
+    if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
     {
+      pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
       return false;
     }
 
@@ -1021,7 +1021,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   if ( OGR_L_CreateFeature( ogrLayer, feature ) != OGRERR_NONE )
   {
-    QgsMessageLog::logMessage( tr( "Writing of the feature %1 failed" ).arg( f.id() ), tr( "OGR" ) );
+    pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
   }
   else
@@ -1078,7 +1078,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         type = OFTString;
         break;
       default:
-        QgsMessageLog::logMessage( tr( "type %1 for field %2 not found" ).arg( iter->typeName() ).arg( iter->name() ), tr( "OGR" ) );
+        pushError( tr( "type %1 for field %2 not found" ).arg( iter->typeName() ).arg( iter->name() ) );
         returnvalue = false;
         continue;
     }
@@ -1089,7 +1089,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, true ) != OGRERR_NONE )
     {
-      QgsMessageLog::logMessage( tr( "writing of field %1 failed" ).arg( iter->name() ), tr( "OGR" ) );
+      pushError( tr( "OGR error creating field %1: %2" ).arg( iter->name() ).arg( CPLGetLastErrorMsg() ) );
       returnvalue = false;
     }
     OGR_Fld_Destroy( fielddefn );
@@ -1109,7 +1109,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   {
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
-      QgsMessageLog::logMessage( tr( "Failed to delete attribute %1" ).arg( attr ), tr( "OGR" ) );
+      pushError( tr( "OGR error deleting field %1: %2" ).arg( attr ).arg( CPLGetLastErrorMsg() ) );
       res = false;
     }
   }
@@ -1117,7 +1117,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   return res;
 #else
   Q_UNUSED( attributes );
-  QgsDebugMsg( "Deleting fields is supported only from GDAL >= 1.9.0" );
+  pushError( tr( "Deleting fields is not supported prior to GDAL 1.9.0" ) );
   return false;
 #endif
 }
@@ -1138,7 +1138,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
     if ( FID_TO_NUMBER( fid ) > std::numeric_limits<long>::max() )
     {
-      QgsMessageLog::logMessage( tr( "Feature id %1 too large for OGR" ).arg( fid ), tr( "OGR" ) );
+      pushError( tr( "OGR error on feature %1: id too large" ).arg( fid ) );
       continue;
     }
 
@@ -1146,7 +1146,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
     if ( !of )
     {
-      QgsMessageLog::logMessage( tr( "Feature %1 for attribute update not found." ).arg( fid ), tr( "OGR" ) );
+      pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
 
@@ -1159,7 +1159,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
       OGRFieldDefnH fd = OGR_F_GetFieldDefnRef( of, f );
       if ( !fd )
       {
-        QgsMessageLog::logMessage( tr( "Field %1 of feature %2 doesn't exist." ).arg( f ).arg( fid ), tr( "OGR" ) );
+        pushError( tr( "Field %1 of feature %2 doesn't exist." ).arg( f ).arg( fid ) );
         continue;
       }
 
@@ -1184,16 +1184,15 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
             OGR_F_SetFieldString( of, f, mEncoding->fromUnicode( it2->toString() ).constData() );
             break;
           default:
-            QgsMessageLog::logMessage( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ), tr( "OGR" ) );
+            pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
             break;
         }
       }
     }
 
-    OGRErr res;
-    if (( res = OGR_L_SetFeature( ogrLayer, of ) ) != OGRERR_NONE )
+    if ( OGR_L_SetFeature( ogrLayer, of ) != OGRERR_NONE )
     {
-      QgsMessageLog::logMessage( tr( "Update of Feature %1 failed: %2" ).arg( fid ).arg( res ), tr( "OGR" ) );
+      pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
   }
 
@@ -1203,7 +1202,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
 bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
-  OGRErr res;
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
 
@@ -1213,14 +1211,14 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   {
     if ( FID_TO_NUMBER( it.key() ) > std::numeric_limits<long>::max() )
     {
-      QgsMessageLog::logMessage( tr( "Feature id %1 too large for OGR" ).arg( it.key() ), tr( "OGR" ) );
+      pushError( tr( "OGR error on feature %1: id too large" ).arg( it.key() ) );
       continue;
     }
 
     theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
     if ( !theOGRFeature )
     {
-      QgsMessageLog::logMessage( tr( "Feature %1 not found for geometry update." ).arg( it.key() ), tr( "OGR" ) );
+      pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
 
@@ -1230,7 +1228,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                               &theNewGeometry,
                               it->wkbSize() ) != OGRERR_NONE )
     {
-      QgsMessageLog::logMessage( tr( "Creation of new geometry for feature %1 failed." ).arg( it.key() ), tr( "OGR" ) );
+      pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
@@ -1238,23 +1236,23 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     if ( !theNewGeometry )
     {
-      QgsMessageLog::logMessage( tr( "Newly created geometry for feature %1 is null." ).arg( it.key() ), tr( "OGR" ) );
+      pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
       continue;
     }
 
     //set the new geometry
-    if (( res = OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) ) != OGRERR_NONE )
+    if ( OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) != OGRERR_NONE )
     {
-      QgsMessageLog::logMessage( tr( "Geometry update for feature %1 failed: %2" ).arg( it.key() ).arg( res ), tr( "OGR" ) );
+      pushError( tr( "OGR error setting geometry of feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
     }
 
 
-    if (( res = OGR_L_SetFeature( ogrLayer, theOGRFeature ) ) != OGRERR_NONE )
+    if ( OGR_L_SetFeature( ogrLayer, theOGRFeature ) != OGRERR_NONE )
     {
-      QgsMessageLog::logMessage( tr( "Update of feature %1 failed: %2" ).arg( it.key() ).arg( res ), tr( "OGR" ) );
+      pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
@@ -1336,11 +1334,17 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 {
   if ( FID_TO_NUMBER( id ) > std::numeric_limits<long>::max() )
   {
-    QgsMessageLog::logMessage( tr( "id %1 too large for OGR" ).arg( id ), tr( "OGR" ) );
+    pushError( tr( "OGR error on feature %1: id too large" ).arg( id ) );
     return false;
   }
 
-  return OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) == OGRERR_NONE;
+  if ( OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error deleting feature %1: %2" ).arg( id ).arg( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+
+  return true;
 }
 
 int QgsOgrProvider::capabilities() const

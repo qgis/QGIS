@@ -38,6 +38,7 @@ class QgsDelimitedTextPluginGui : public QDialog, private Ui::QgsDelimitedTextPl
     void updateFieldLists();
     void getOpenFileName();
     QString selectedChars();
+    void saveState();
 
     QgisInterface * qI;
     QAbstractButton *pbnOK;

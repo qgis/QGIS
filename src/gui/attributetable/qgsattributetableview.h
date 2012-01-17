@@ -53,6 +53,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
   signals:
     void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
+    void finished();
+    void progress( int i, bool &cancel );
+
   private:
     QgsMapCanvas *mCanvas;
     QgsAttributeTableModel* mModel;

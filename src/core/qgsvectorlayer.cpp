@@ -21,16 +21,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <cfloat>
-#include <cstring>
-#include <climits>
-#include <cmath>
-#include <iosfwd>
 #include <limits>
-#include <memory>
-#include <set>
-#include <sstream>
-#include <utility>
 
 #include <QImage>
 #include <QPainter>
@@ -59,6 +50,7 @@
 #include "qgsgeometry.h"
 #include "qgslabel.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmaptopixel.h"
 #include "qgspoint.h"
 #include "qgsproviderregistry.h"
@@ -956,7 +948,7 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
   if ( mUsingRendererV2 )
   {
-    if ( mRendererV2 == NULL )
+    if ( !mRendererV2 )
       return false;
 
     QgsDebugMsg( "rendering v2:\n" + mRendererV2->dump() );
@@ -2588,11 +2580,11 @@ int QgsVectorLayer::addTopologicalPoints( const QgsPoint& p )
 
   //work with a tolerance because coordinate projection may introduce some rounding
   double threshold =  0.0000001;
-  if ( mCRS && mCRS->mapUnits() == QGis::Meters )
+  if ( crs().mapUnits() == QGis::Meters )
   {
     threshold = 0.001;
   }
-  else if ( mCRS && mCRS->mapUnits() == QGis::Feet )
+  else if ( crs().mapUnits() == QGis::Feet )
   {
     threshold = 0.0001;
   }
@@ -2912,7 +2904,7 @@ bool QgsVectorLayer::readSymbology( const QDomNode& node, QString& errorMessage 
       setUsingRendererV2( true );
 
       QgsFeatureRendererV2* r = QgsFeatureRendererV2::load( rendererElement );
-      if ( r == NULL )
+      if ( !r )
         return false;
 
       setRendererV2( r );
@@ -3405,6 +3397,7 @@ bool QgsVectorLayer::changeGeometry( QgsFeatureId fid, QgsGeometry* geom )
   editGeometryChange( fid, *geom );
   mCachedGeometries[fid] = *geom;
   setModified( true, true );
+
   return true;
 }
 
@@ -3807,10 +3800,15 @@ bool QgsVectorLayer::commitChanges()
 
           mAddedFeatures.clear();
         }
+        else
+        {
+          mCommitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
+          success = false;
+        }
       }
       else
       {
-        mCommitErrors << tr( "ERROR: %n feature(s) not added.", "not added features count", mAddedFeatures.size() );
+        mCommitErrors << tr( "ERROR: %n feature(s) not added - provider doesn't support adding features.", "not added features count", mAddedFeatures.size() );
         success = false;
       }
     }
@@ -3861,6 +3859,17 @@ bool QgsVectorLayer::commitChanges()
     }
   }
 
+  if ( !success )
+  {
+    if ( mDataProvider->hasErrors() )
+    {
+      mCommitErrors << tr( "\n  Provider errors:" ) << mDataProvider->errors();
+      mDataProvider->clearErrors();
+    }
+
+    QgsMessageLog::logMessage( tr( "Commit errors:\n  %1" ).arg( mCommitErrors.join( "\n  " ) ) );
+  }
+
   deleteCachedGeometries();
 
   if ( success )
@@ -3873,7 +3882,6 @@ bool QgsVectorLayer::commitChanges()
 
   updateFieldMap();
   mDataProvider->updateExtents();
-  QgsDebugMsg( "result:\n  " + mCommitErrors.join( "\n  " ) );
 
   return success;
 }
@@ -4477,24 +4485,14 @@ void QgsVectorLayer::setCoordinateSystem()
   // for this layer
   //
 
-  // get CRS directly from provider
-  *mCRS = mDataProvider->crs();
-
-  //QgsCoordinateReferenceSystem provides a mechanism for FORCE a srs to be valid
-  //which is inolves falling back to system, project or user selected
-  //defaults if the srs is not properly intialised.
-  //we only nee to do that if the srs is not alreay valid
-  if ( !mCRS->isValid() )
+  if ( hasGeometryType() )
   {
-    if ( hasGeometryType() )
-    {
-      mCRS->setValidationHint( tr( "Specify CRS for layer %1" ).arg( name() ) );
-      mCRS->validate();
-    }
-    else
-    {
-      mCRS->createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-    }
+    // get CRS directly from provider
+    setCrs( mDataProvider->crs() );
+  }
+  else
+  {
+    setCrs( QgsCoordinateReferenceSystem( GEO_EPSG_CRS_AUTHID ) );
   }
 }
 
@@ -4701,17 +4699,18 @@ void QgsVectorLayer::setUsingRendererV2( bool usingRendererV2 )
 
 void QgsVectorLayer::editGeometryChange( QgsFeatureId featureId, QgsGeometry& geometry )
 {
-  if ( mActiveCommand != NULL )
+  if ( mActiveCommand )
   {
     mActiveCommand->storeGeometryChange( featureId, mChangedGeometries[ featureId ], geometry );
   }
   mChangedGeometries[ featureId ] = geometry;
+  emit geometryChanged( featureId, geometry );
 }
 
 
 void QgsVectorLayer::editFeatureAdd( QgsFeature& feature )
 {
-  if ( mActiveCommand != NULL )
+  if ( mActiveCommand )
   {
     mActiveCommand->storeFeatureAdd( feature );
   }
@@ -4720,7 +4719,7 @@ void QgsVectorLayer::editFeatureAdd( QgsFeature& feature )
 
 void QgsVectorLayer::editFeatureDelete( QgsFeatureId featureId )
 {
-  if ( mActiveCommand != NULL )
+  if ( mActiveCommand )
   {
     mActiveCommand->storeFeatureDelete( featureId );
   }
@@ -4783,7 +4782,7 @@ void QgsVectorLayer::editAttributeChange( QgsFeatureId featureId, int field, QVa
 
 void QgsVectorLayer::beginEditCommand( QString text )
 {
-  if ( mActiveCommand == NULL )
+  if ( !mActiveCommand )
   {
     mActiveCommand = new QgsUndoCommand( this, text );
   }
@@ -4791,21 +4790,21 @@ void QgsVectorLayer::beginEditCommand( QString text )
 
 void QgsVectorLayer::endEditCommand()
 {
-  if ( mActiveCommand != NULL )
+  if ( mActiveCommand )
   {
     undoStack()->push( mActiveCommand );
-    mActiveCommand = NULL;
+    mActiveCommand = 0;
   }
 
 }
 
 void QgsVectorLayer::destroyEditCommand()
 {
-  if ( mActiveCommand != NULL )
+  if ( mActiveCommand )
   {
     undoEditCommand( mActiveCommand );
     delete mActiveCommand;
-    mActiveCommand = NULL;
+    mActiveCommand = 0;
   }
 
 }
@@ -4824,13 +4823,20 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
   QMap<QgsFeatureId, QgsUndoCommand::GeometryChangeEntry>::iterator it = geometryChange.begin();
   for ( ; it != geometryChange.end(); ++it )
   {
-    if ( it.value().target == NULL )
+    if ( !it.value().target )
     {
       mChangedGeometries.remove( it.key() );
+
+      QgsFeature f;
+      if ( featureAtId( it.key(), f, true, false ) && f.geometry() )
+      {
+        emit geometryChanged( it.key(), *f.geometry() );
+      }
     }
     else
     {
-      mChangedGeometries[it.key()] = *( it.value().target );
+      mChangedGeometries[it.key()] = *it.value().target;
+      emit geometryChanged( it.key(), *it.value().target );
     }
   }
 
@@ -4948,13 +4954,20 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
   QMap<QgsFeatureId, QgsUndoCommand::GeometryChangeEntry>::iterator it = geometryChange.begin();
   for ( ; it != geometryChange.end(); ++it )
   {
-    if ( it.value().original == NULL )
+    if ( !it.value().original )
     {
       mChangedGeometries.remove( it.key() );
+
+      QgsFeature f;
+      if ( featureAtId( it.key(), f, true, false ) && f.geometry() )
+      {
+        emit geometryChanged( it.key(), *f.geometry() );
+      }
     }
     else
     {
       mChangedGeometries[it.key()] = *( it.value().original );
+      emit geometryChanged( it.key(), *it.value().original );
     }
   }
 

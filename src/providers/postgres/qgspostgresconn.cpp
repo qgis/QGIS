@@ -333,7 +333,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                            " AND pg_namespace.oid=pg_class.relnamespace"
                            " AND has_schema_privilege(pg_namespace.nspname,'usage')"
                            " AND has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
-                           " ORDER BY f_table_schema,f_table_name,%2" ).arg( gtableName ).arg( columnName );
+                         ).arg( gtableName ).arg( columnName );
+
+    if ( searchPublicOnly )
+      sql += " AND f_table_schema='public'";
+
+    sql += QString( " ORDER BY f_table_schema,f_table_name,%1" ).arg( columnName );
 
     QgsDebugMsg( "getting table info: " + sql );
     result = PQexec( sql, i == 0 );
@@ -662,10 +667,13 @@ QString QgsPostgresConn::postgisVersion()
   return mPostgisVersionInfo;
 }
 
-QString QgsPostgresConn::quotedIdentifier( QString ident )
+QString QgsPostgresConn::quotedIdentifier( QString ident, bool isGeography )
 {
   ident.replace( '"', "\"\"" );
-  return ident.prepend( "\"" ).append( "\"" );
+  ident = ident.prepend( "\"" ).append( "\"" );
+  if ( isGeography )
+    ident += "::geometry";
+  return ident;
 }
 
 QString QgsPostgresConn::quotedValue( QVariant value )
@@ -694,22 +702,31 @@ PGresult *QgsPostgresConn::PQexec( QString query, bool logError )
   QgsDebugMsgLevel( QString( "Executing SQL: %1" ).arg( query ), 3 );
   PGresult *res = ::PQexec( mConn, query.toUtf8() );
 
-  if ( logError )
+  if ( res )
   {
-    if ( res )
+    int errorStatus = PQresultStatus( res );
+    if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
     {
-      int errorStatus = PQresultStatus( res );
-      if ( errorStatus != PGRES_COMMAND_OK && errorStatus != PGRES_TUPLES_OK )
+      if ( logError )
       {
         QgsMessageLog::logMessage( tr( "Errornous query: %1 returned %2 [%3]" )
                                    .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
                                    tr( "PostGIS" ) );
       }
+      else
+      {
+        QgsDebugMsg( QString( "Not logged errornous query: %1 returned %2 [%3]" )
+                     .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
+      }
     }
-    else
-    {
-      QgsMessageLog::logMessage( tr( "Query failed: %1\nError: %2" ).arg( query ), tr( "PostGIS" ) );
-    }
+  }
+  else if ( logError )
+  {
+    QgsMessageLog::logMessage( tr( "Query failed: %1\nError: no result buffer" ).arg( query ) );
+  }
+  else
+  {
+    QgsDebugMsg( tr( "Not logged query failed: %1\nError: no result buffer" ).arg( query ) );
   }
 
   return res;
@@ -742,7 +759,7 @@ bool QgsPostgresConn::closeCursor( QString cursorName )
 
 bool QgsPostgresConn::PQexecNR( QString query, bool retry )
 {
-  QgsPostgresResult res = ::PQexec( mConn, query.toUtf8() );
+  QgsPostgresResult res = PQexec( query, false );
 
   ExecStatusType errorStatus = res.PQresultStatus();
   if ( errorStatus == PGRES_COMMAND_OK )
@@ -849,6 +866,7 @@ QString QgsPostgresConn::PQerrorMessage()
 
 int QgsPostgresConn::PQsendQuery( QString query )
 {
+  Q_ASSERT( mConn );
   return ::PQsendQuery( mConn, query.toUtf8() );
 }
 
@@ -1027,7 +1045,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
                   .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::Line, layerProperty.isGeography ) )
                   .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::Polygon, layerProperty.isGeography ) )
                   .arg( majorVersion() < 2 ? "srid" : "st_srid" )
-                  .arg( quotedIdentifier( layerProperty.geometryColName ) )
+                  .arg( quotedIdentifier( layerProperty.geometryColName, layerProperty.isGeography ) )
                   .arg( table );
 
   QgsDebugMsg( "Retrieving geometry types: " + query );
@@ -1119,9 +1137,7 @@ QString QgsPostgresConn::postgisWkbTypeName( QGis::WkbType wkbType )
 
 QString QgsPostgresConn::postgisTypeFilter( QString geomCol, QGis::GeometryType geomType, bool isGeography )
 {
-  geomCol = quotedIdentifier( geomCol );
-  if ( isGeography )
-    geomCol += "::geometry";
+  geomCol = quotedIdentifier( geomCol, isGeography );
 
   switch ( geomType )
   {

@@ -2407,6 +2407,7 @@ double QgsGeometry::closestSegmentWithContext(
   QgsPoint& minDistPoint,
   int& beforeVertex )
 {
+  QgsDebugMsg( "Entering." );
   QgsPoint distPoint;
 
   QGis::WkbType wkbType;
@@ -2622,8 +2623,8 @@ double QgsGeometry::closestSegmentWithContext(
   } // switch (wkbType)
 
 
-  QgsDebugMsg( "Exiting with nearest point " + point.toString() +
-               ", dist: " + QString::number( sqrDist ) + "." );
+  QgsDebugMsg( QString( "Exiting with nearest point %1, dist %2." )
+               .arg( point.toString() ).arg( sqrDist ) );
 
   return sqrDist;
 }

@@ -2,7 +2,7 @@
                           qgsrelief.cpp  -  description
                           ---------------------------
     begin                : November 2011
-    copyright            : (C) 20011 by Marco Hugentobler
+    copyright            : (C) 2011 by Marco Hugentobler
     email                : marco dot hugentobler at sourcepole dot ch
  ***************************************************************************/
 
@@ -652,7 +652,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   //debug, print out all the classbreaks
   for ( int i = 0; i < classBreaks.size(); ++i )
   {
-    qWarning( QString::number( classBreaks[i] ).toLocal8Bit().data() );
+    qWarning( "%d", classBreaks[i] );
   }
 
   //set colors according to optimised class breaks

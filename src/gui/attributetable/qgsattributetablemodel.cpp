@@ -64,9 +64,9 @@ bool QgsAttributeTableModel::featureAtId( QgsFeatureId fid ) const
   else if ( mLayer->featureAtId( fid, mFeat, false, true ) )
   {
     QSettings settings;
-    int cacheSize = settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt();
+    int cacheSize = qMax( 1, settings.value( "/qgis/attributeTableRowCache", "10000" ).toInt() );
 
-    if ( mFeatureQueue.size() == cacheSize )
+    while ( mFeatureQueue.size() >= cacheSize )
     {
       mFeatureMap.remove( mFeatureQueue.dequeue() );
     }
@@ -247,6 +247,9 @@ void QgsAttributeTableModel::loadLayer()
   int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
   int i = 0;
 
+  QTime t;
+  t.start();
+
   if ( behaviour == 1 )
   {
     beginInsertRows( QModelIndex(), 0, mLayer->selectedFeatureCount() - 1 );
@@ -254,10 +257,17 @@ void QgsAttributeTableModel::loadLayer()
     {
       featureAdded( fid, false );
 
-      bool cancel = false;
-      emit progress( i++, cancel );
-      if ( cancel )
-        break;
+      i++;
+
+      if ( t.elapsed() > 5000 )
+      {
+        bool cancel = false;
+        emit progress( i, cancel );
+        if ( cancel )
+          break;
+
+        t.restart();
+      }
     }
     emit finished();
     endInsertRows();
@@ -278,10 +288,15 @@ void QgsAttributeTableModel::loadLayer()
     {
       featureAdded( f.id() );
 
-      bool cancel = false;
-      emit progress( i, cancel );
-      if ( cancel )
-        break;
+      if ( t.elapsed() > 5000 )
+      {
+        bool cancel = false;
+        emit progress( i, cancel );
+        if ( cancel )
+          break;
+
+        t.restart();
+      }
     }
     emit finished();
   }

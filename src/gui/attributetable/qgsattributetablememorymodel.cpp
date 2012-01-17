@@ -54,7 +54,10 @@ void QgsAttributeTableMemoryModel::loadLayer()
   else
     mFeatureMap.reserve( mLayer->selectedFeatureCount() );
 
-  int n = 0;
+  int i = 0;
+
+  QTime t;
+  t.start();
 
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )
@@ -62,11 +65,24 @@ void QgsAttributeTableMemoryModel::loadLayer()
     if ( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
       continue;
 
-    mIdRowMap.insert( f.id(), n );
-    mRowIdMap.insert( n, f.id() );
+    mIdRowMap.insert( f.id(), i );
+    mRowIdMap.insert( i, f.id() );
     mFeatureMap.insert( f.id(), f );
-    n++;
+
+    i++;
+
+    if ( t.elapsed() > 5000 )
+    {
+      bool cancel = false;
+      emit progress( i, cancel );
+      if ( cancel )
+        break;
+
+      t.restart();
+    }
   }
+
+  emit finished();
 
   mFieldCount = mAttributes.size();
 }

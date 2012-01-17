@@ -55,6 +55,8 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInt
 {
   setupUi( this );
 
+  restoreState();
+
   mCurrentFeatureIndex = 0;
   mInterface = interface;
   mDataProvider = 0;
@@ -454,6 +456,8 @@ void eVisGenericEventBrowserGui::accept( )
   {
     myQSettings.setValue( "/eVis/applypathrulestodocs", chkboxApplyPathRulesToDocs->isChecked( ) );
   }
+
+  saveState();
 
   myQSettings.remove( "/eVis/filetypeassociations" );
   myQSettings.beginWriteArray( "/eVis/filetypeassociations" );
@@ -1178,4 +1182,15 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter* thePainter )
   }
 }
 
+void eVisGenericEventBrowserGui::saveState()
+{
+  QSettings settings;
+  settings.setValue( "/eVis/browser-geometry", saveGeometry() );
+}
+
+void eVisGenericEventBrowserGui::restoreState()
+{
+  QSettings settings;
+  restoreGeometry( settings.value( "/eVis/browser-geometry" ).toByteArray() );
+}
 
