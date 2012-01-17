@@ -1118,7 +1118,12 @@ void QgisApp::createMenus()
 void QgisApp::createToolBars()
 {
   QSettings settings;
-  int size = settings.value( "/IconSize", 24 ).toInt();
+#ifdef ANDROID
+  int defaultIconSize = 32;
+#else
+  int defaultIconSize = 24;
+#endif
+  int size = settings.value( "/IconSize", defaultIconSize ).toInt();
   setIconSize( QSize( size, size ) );
   // QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
