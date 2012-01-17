@@ -1949,7 +1949,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
-        params << paramValue( attributevec[ fieldId[i] ].toString(), defaultValues[i] );
+        params << paramValue( attributevec.value( fieldId[i], defaultValues[i] ).toString(), defaultValues[i] );
 
       QgsPostgresResult result = mConnectionRW->PQexecPrepared( "addfeatures", params );
       if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
