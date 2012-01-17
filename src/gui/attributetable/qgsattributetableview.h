@@ -50,9 +50,6 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
 
     void contextMenuEvent( QContextMenuEvent* );
 
-  public slots:
-    void setFilterModel();
-
   signals:
     void willShowContextMenu( QMenu* menu, QModelIndex atIndex );
 
