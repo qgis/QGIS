@@ -35,12 +35,11 @@ class ANALYSIS_EXPORT QgsGraphAnalyzer
      * solve shortest path problem using dijkstra algorithm
      * @param source The source graph
      * @param startVertexIdx index of start vertex
-     * @param criterionNum index of edge property as optimization criterion
-     * @param destPointCost array of vertex indexes. Function calculating shortest path costs for vertices with these indexes
-     * @param cost array of cost paths
-     * @param treeResult return shortest path tree
+     * @param criterionNum index of arc property as optimization criterion
+     * @param treeResult array represents the shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reacheble and resultTree[ vertexIndex ] == -1 others.
+     * @param resultCost array of cost paths
      */
-    static void shortestpath( const QgsGraph* source, int startVertexIdx, int criterionNum, const QVector<int>& destPointCost, QVector<double>& cost, QgsGraph* treeResult );
+    static void dijkstra( const QgsGraph* source, int startVertexIdx, int criterionNum, QVector<int>* resultTree = NULL, QVector<double>* resultCost = NULL );
 
     /**
      * return shortest path tree with root-node in startVertexIdx
