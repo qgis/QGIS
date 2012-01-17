@@ -333,7 +333,12 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                            " AND pg_namespace.oid=pg_class.relnamespace"
                            " AND has_schema_privilege(pg_namespace.nspname,'usage')"
                            " AND has_table_privilege('\"'||pg_namespace.nspname||'\".\"'||pg_class.relname||'\"','select')" // user has select privilege
-                           " ORDER BY f_table_schema,f_table_name,%2" ).arg( gtableName ).arg( columnName );
+                         ).arg( gtableName ).arg( columnName );
+
+    if ( searchPublicOnly )
+      sql += " AND f_table_schema='public'";
+
+    sql += QString( " ORDER BY f_table_schema,f_table_name,%1" ).arg( columnName );
 
     QgsDebugMsg( "getting table info: " + sql );
     result = PQexec( sql, i == 0 );
