@@ -831,13 +831,9 @@ void QgsAttributeTableDialog::progress( int i, bool &cancel )
   }
 
   mProgress->setValue( i );
+  mProgress->setLabelText( tr( "%1 features loaded." ).arg( i ) );
 
-  if ( i > 0 && i % 5000 == 0 )
-  {
-    mProgress->setLabelText( tr( "%1 features loaded." ).arg( i ) );
-  }
-
-  if ( !mProgress->isVisible() && mStarted.elapsed() > mProgress->minimumDuration()*5 / 4 )
+  if ( !mProgress->isVisible() && mStarted.elapsed() > mProgress->minimumDuration()* 5 / 4 )
   {
     // for some reason this is sometimes necessary
     mProgress->show();
