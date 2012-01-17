@@ -16,6 +16,9 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode
 {
   setupUi( this );
 
+  QSettings s;
+  restoreGeometry( s.value( "/RasterTerrainAnalysis/geometry" ).toByteArray() );
+
   if ( mode == HillshadeInput )
   {
     mReliefColorsGroupBox->setVisible( false );
@@ -31,8 +34,9 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode
     mReliefColorsGroupBox->setVisible( false );
     mIlluminationGroupBox->setVisible( false );
   }
+  adjustSize();
 
-  mZFactorLineEdit->setText( "1.0" );
+  mZFactorLineEdit->setText( s.value( "/RasterTerrainAnalysis/zfactor", "1.0" ).toString() );
   mZFactorLineEdit->setValidator( new QDoubleValidator( this ) );
 
   //insert available raster layers
@@ -93,7 +97,6 @@ QgsRasterTerrainAnalysisDialog::QgsRasterTerrainAnalysisDialog( DisplayMode mode
   }
 
   //and set last used driver in combo box
-  QSettings s;
   QString lastUsedDriver = s.value( "/RasterTerrainAnalysis/lastOutputFormat", "GeoTIFF" ).toString();
   int lastDriverIndex = mOutputFormatComboBox->findText( lastUsedDriver );
   if ( lastDriverIndex != -1 )
@@ -409,10 +412,16 @@ void QgsRasterTerrainAnalysisDialog::on_mReliefClassTreeWidget_itemDoubleClicked
 
 void QgsRasterTerrainAnalysisDialog::on_mButtonBox_accepted()
 {
-  //save last output format
+  // save last output format
   QSettings s;
   s.setValue( "/RasterTerrainAnalysis/lastOutputFormat", QVariant( mOutputFormatComboBox->currentText() ) );
 
-  //save last output directory
+  // save last output directory
   s.setValue( "/RasterTerrainAnalysis/lastOutputDir", QFileInfo( mOutputLayerLineEdit->text() ).absolutePath() );
+
+  // save z-factor
+  s.setValue( "/RasterTerrainAnalysis/zfactor", mZFactorLineEdit->text() );
+
+  // save geometry and position
+  s.setValue( "/RasterTerrainAnalysis/geometry", saveGeometry() );
 }

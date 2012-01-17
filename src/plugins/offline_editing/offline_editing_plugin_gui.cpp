@@ -28,20 +28,16 @@
 #include <QMessageBox>
 #include <QSettings>
 
-#define SETTINGS_OFFLINE_DATA_PATH "Plugin-OfflineEditing/offline_data_path"
-
 QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/, Qt::WFlags fl /*= 0*/ )
     : QDialog( parent, fl )
 {
   setupUi( this );
 
-  QDir dir;
-  QSettings settings;
-  mOfflineDataPath = settings.value( SETTINGS_OFFLINE_DATA_PATH, dir.absolutePath() ).toString();
+  restoreState();
   mOfflineDbFile = "offline.sqlite";
   ui_offlineDataPath->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
+  updateLayerList( checkboxShowEditableLayers->isChecked() );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
@@ -103,6 +99,10 @@ void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
 
   if ( !fileName.isEmpty() )
   {
+    if ( !fileName.toLower().endsWith( ".sqlite" ) )
+    {
+      fileName += ".sqlite";
+    }
     mOfflineDbFile = QFileInfo( fileName ).fileName();
     mOfflineDataPath = QFileInfo( fileName ).absolutePath();
     ui_offlineDataPath->setText( fileName );
@@ -112,7 +112,7 @@ void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
 void QgsOfflineEditingPluginGui::on_checkboxShowEditableLayers_stateChanged( int state )
 {
   Q_UNUSED( state );
-  updateLayerList( checkboxShowEditableLayers->checkState() == Qt::Checked );
+  updateLayerList( checkboxShowEditableLayers->isChecked() );
 }
 
 void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
@@ -138,14 +138,14 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
     mSelectedLayerIds.append(( *it )->data( Qt::UserRole ).toString() );
   }
 
-  QSettings settings;
-  settings.setValue( SETTINGS_OFFLINE_DATA_PATH, mOfflineDataPath );
+  saveState();
 
   accept();
 }
 
 void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 {
+  saveState();
   reject();
 }
 
@@ -153,4 +153,20 @@ void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run( context_id );
+}
+
+void QgsOfflineEditingPluginGui::saveState()
+{
+  QSettings settings;
+  settings.setValue( "Plugin-OfflineEditing/geometry", saveGeometry() );
+  settings.setValue( "Plugin-OfflineEditing/offline_data_path", mOfflineDataPath );
+  settings.setValue( "Plugin-OfflineEditing/onlyEditableLayers", checkboxShowEditableLayers->isChecked() );
+}
+
+void QgsOfflineEditingPluginGui::restoreState()
+{
+  QSettings settings;
+  mOfflineDataPath = settings.value( "Plugin-OfflineEditing/offline_data_path", QDir().absolutePath() ).toString();
+  restoreGeometry( settings.value( "Plugin-OfflineEditing/geometry" ).toByteArray() );
+  checkboxShowEditableLayers->setChecked( settings.value( "Plugin-OfflineEditing/onlyEditableLayers", true ).toBool() );
 }

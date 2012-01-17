@@ -34,8 +34,8 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     ~QgsInterpolationDialog();
 
   private slots:
-
     void on_buttonBox_accepted();
+    void on_buttonBox_rejected();
     void on_mInputLayerComboBox_currentIndexChanged( const QString& text );
     void on_mOutputFileButton_clicked();
     void on_mOutputFileLineEdit_textChanged();
@@ -54,8 +54,6 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     void on_mXMaxLineEdit_textEdited( const QString& text );
     void on_mYMinLineEdit_textEdited( const QString& text );
     void on_mYMaxLineEdit_textEdited( const QString& text );
-
-
 
   private:
     QgisInterface* mIface;
@@ -80,6 +78,8 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     void setNewCellsizeYOnNRowschange();
     void setNColsOnCellsizeXChange();
     void setNRowsOnCellsizeYChange();
+
+    void saveState();
 };
 
 #endif
