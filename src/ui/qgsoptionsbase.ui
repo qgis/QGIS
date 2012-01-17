@@ -70,7 +70,7 @@
             <height>763</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_12">
+          <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox_11">
              <property name="title">
@@ -276,10 +276,68 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="cmbSize">
+                 <widget class="QComboBox" name="cmbIconSize">
                   <property name="duplicatesEnabled">
                    <bool>false</bool>
                   </property>
+                  <item>
+                   <property name="text">
+                    <string>16</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>24</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>32</string>
+                   </property>
+                  </item>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_11">
+                <item>
+                 <widget class="QLabel" name="label_20">
+                  <property name="text">
+                   <string>Menu size</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="horizontalSpacer_9">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QComboBox" name="cmbFontSize">
+                  <item>
+                   <property name="text">
+                    <string>8</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>12</string>
+                   </property>
+                  </item>
+                  <item>
+                   <property name="text">
+                    <string>16</string>
+                   </property>
+                  </item>
                  </widget>
                 </item>
                </layout>
@@ -2027,7 +2085,8 @@
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbTheme</tabstop>
-  <tabstop>cmbSize</tabstop>
+  <tabstop>cmbIconSize</tabstop>
+  <tabstop>cmbFontSize</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>capitaliseCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>

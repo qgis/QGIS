@@ -20,6 +20,7 @@
 
 #include "ui_qgsoptionsbase.h"
 #include "qgisgui.h"
+#include "qgisapp.h"
 #include "qgscontexthelp.h"
 
 #include <qgscoordinatereferencesystem.h>
@@ -59,6 +60,9 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
     void themeChanged( const QString & );
 
     void iconSizeChanged( const QString &iconSize );
+
+    void fontSizeChanged( const QString &fontSize );
+
     /**
      * Return the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns

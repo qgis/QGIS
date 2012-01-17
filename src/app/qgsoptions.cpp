@@ -58,20 +58,15 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbTheme, SIGNAL( highlighted( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
   connect( cmbTheme, SIGNAL( textChanged( const QString& ) ), this, SLOT( themeChanged( const QString& ) ) );
 
-  connect( cmbSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-  connect( cmbSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
-  connect( cmbSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbIconSize, SIGNAL( activated( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+  connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
+
+  connect( cmbFontSize, SIGNAL( activated( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
+  connect( cmbFontSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
+  connect( cmbFontSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
-
-  cmbSize->addItem( "16" );
-  cmbSize->addItem( "24" );
-  cmbSize->addItem( "32" );
-#ifdef ANDROID
-  int defaultCmbSize = 32;
-#else
-  int defaultCmbSize = 24;
-#endif
 
   QStringList styles = QStyleFactory::keys();
   foreach( QString style, styles )
@@ -286,7 +281,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
-  cmbSize->setCurrentIndex( cmbSize->findText( settings.value( "/IconSize", defaultCmbSize ).toString() ) );
+  cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
+  cmbFontSize->setCurrentIndex( cmbFontSize->findText( settings.value( "/menuSize", QGIS_FONT_SIZE ).toString() ) );
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
@@ -518,15 +514,17 @@ void QgsOptions::on_mLineColorToolButton_clicked()
 void QgsOptions::themeChanged( const QString &newThemeName )
 {
   // Slot to change the theme as user scrolls through the choices
-  QString newt = newThemeName;
-  QgisApp::instance()->setTheme( newt );
+  QgisApp::instance()->setTheme( newThemeName );
 }
 
 void QgsOptions::iconSizeChanged( const QString &iconSize )
 {
-  int icon = iconSize.toInt();
-  QgisApp::instance()->setIconSizes( icon );
+  QgisApp::instance()->setIconSizes( iconSize.toInt() );
+}
 
+void QgsOptions::fontSizeChanged( const QString &menuSize )
+{
+  QgisApp::instance()->setFontSize( menuSize.toInt() );
 }
 
 QString QgsOptions::theme()
@@ -652,7 +650,8 @@ void QgsOptions::saveOptions()
     settings.setValue( "/Themes", cmbTheme->currentText() );
   }
 
-  settings.setValue( "/IconSize", cmbSize->currentText() );
+  settings.setValue( "/IconSize", cmbIconSize->currentText() );
+  settings.setValue( "/fontSize", cmbFontSize->currentText() );
 
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no

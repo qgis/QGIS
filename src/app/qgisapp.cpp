@@ -265,8 +265,6 @@ class QTreeWidgetItem;
 const int BEFORE_RECENT_PATHS = 123;
 const int AFTER_RECENT_PATHS = 321;
 
-
-
 /** set the application title bar text
 
   If the current project title is null
@@ -426,6 +424,9 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   mSplash->showMessage( tr( "Setting up the GUI" ), Qt::AlignHCenter | Qt::AlignBottom );
   qApp->processEvents();
 
+  QSettings settings;
+  setFontSize( settings.value( "/fontSize", QGIS_FONT_SIZE ).toInt() );
+
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
@@ -542,7 +543,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   }
 
   // Also restore plugins from user specified plugin directories - added for 1.7
-  QSettings settings;
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
@@ -1022,8 +1022,14 @@ void QgisApp::createActionGroups()
   mMapToolGroup->addAction( mActionChangeLabelProperties );
 }
 
+void QgisApp::setFontSize( int fontSize )
+{
+  setStyleSheet( QString( "font-size: %1pt;" ).arg( fontSize ) );
+}
+
 void QgisApp::createMenus()
 {
+
   /*
    * The User Interface Guidelines for each platform specify different locations
    * for the following items.
@@ -1119,7 +1125,7 @@ void QgisApp::createMenus()
 void QgisApp::createToolBars()
 {
   QSettings settings;
-  int size = settings.value( "/IconSize", 24 ).toInt();
+  int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
   setIconSize( QSize( size, size ) );
   // QSize myIconSize ( 32,32 ); //large icons
   // Note: we need to set each object name to ensure that
