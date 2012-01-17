@@ -36,6 +36,9 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Interpolation/geometry" ).toByteArray() );
+
   //enter available layers into the combo box
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
   QMap<QString, QgsMapLayer*>::iterator layer_it = mapLayers.begin();
@@ -56,13 +59,13 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
   //only inverse distance weighting available for now
   mInterpolationMethodComboBox->insertItem( 0, tr( "Triangular interpolation (TIN)" ) );
   mInterpolationMethodComboBox->insertItem( 1, tr( "Inverse Distance Weighting (IDW)" ) );
+  mInterpolationMethodComboBox->setCurrentIndex( settings.value( "/Interpolation/lastMethod", 0 ).toInt() );
 
   enableOrDisableOkButton();
 }
 
 QgsInterpolationDialog::~QgsInterpolationDialog()
 {
-
 }
 
 void QgsInterpolationDialog::enableOrDisableOkButton()
@@ -89,6 +92,8 @@ void QgsInterpolationDialog::enableOrDisableOkButton()
 
 void QgsInterpolationDialog::on_buttonBox_accepted()
 {
+  saveState();
+
   if ( !mInterpolatorDialog )
   {
     return;
@@ -202,6 +207,12 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
   delete theInterpolator;
 }
 
+void QgsInterpolationDialog::on_buttonBox_rejected()
+{
+  saveState();
+  reject();
+}
+
 void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const QString& text )
 {
   Q_UNUSED( text );
@@ -293,7 +304,6 @@ void QgsInterpolationDialog::on_mRemovePushButton_clicked()
   delete currentItem;
   enableOrDisableOkButton();
 }
-
 
 void QgsInterpolationDialog::on_mOutputFileButton_clicked()
 {
@@ -583,4 +593,11 @@ QgsRectangle QgsInterpolationDialog::currentBoundingBox()
   }
 
   return QgsRectangle( xMin, yMin, xMax, yMax );
+}
+
+void QgsInterpolationDialog::saveState()
+{
+  QSettings settings;
+  settings.setValue( "/Interpolation/geometry", saveGeometry() );
+  settings.setValue( "/Interpolation/lastMethod", mInterpolationMethodComboBox->currentIndex() );
 }

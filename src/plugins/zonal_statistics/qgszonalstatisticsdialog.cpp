@@ -21,9 +21,12 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 
+#include <QSettings>
+
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog(), mIface( iface )
 {
   setupUi( this );
+  restoreState();
   insertAvailableLayers();
   mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
 }
@@ -31,11 +34,11 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDia
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( 0 ), mIface( 0 )
 {
   setupUi( this );
+  restoreState();
 }
 
 QgsZonalStatisticsDialog::~QgsZonalStatisticsDialog()
 {
-
 }
 
 void QgsZonalStatisticsDialog::insertAvailableLayers()
@@ -129,4 +132,28 @@ bool QgsZonalStatisticsDialog::prefixIsValid( const QString& prefix ) const
     }
   }
   return true;
+}
+
+void QgsZonalStatisticsDialog::on_buttonBox_accepted()
+{
+  saveState();
+  accept();
+}
+
+void QgsZonalStatisticsDialog::on_buttonBox_rejected()
+{
+  saveState();
+  reject();
+}
+
+void QgsZonalStatisticsDialog::saveState()
+{
+  QSettings settings;
+  settings.setValue( "Plugin-ZonalStatistics/geometry", saveGeometry() );
+}
+
+void QgsZonalStatisticsDialog::restoreState()
+{
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
 }

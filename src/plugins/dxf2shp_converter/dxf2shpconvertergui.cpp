@@ -32,6 +32,7 @@ dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WFlags fl ):
     QDialog( parent, fl )
 {
   setupUi( this );
+  restoreState();
 }
 
 dxf2shpConverterGui::~dxf2shpConverterGui()
@@ -40,6 +41,8 @@ dxf2shpConverterGui::~dxf2shpConverterGui()
 
 void dxf2shpConverterGui::on_buttonBox_accepted()
 {
+  saveState();
+
   QString inf = name->text();
   QString outd = dirout->text();
 
@@ -117,6 +120,7 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
 
 void dxf2shpConverterGui::on_buttonBox_rejected()
 {
+  saveState();
   reject();
 }
 
@@ -137,7 +141,6 @@ void dxf2shpConverterGui::on_buttonBox_helpRequested()
   QMessageBox::information( this, "Help", s );
 }
 
-
 void dxf2shpConverterGui::on_btnBrowseForFile_clicked()
 {
   getInputFileName();
@@ -148,25 +151,48 @@ void dxf2shpConverterGui::on_btnBrowseOutputDir_clicked()
   getOutputDir();
 }
 
-
 void dxf2shpConverterGui::getInputFileName()
 {
   QSettings settings;
-
   QString s = QFileDialog::getOpenFileName( this,
               tr( "Choose a DXF file to open" ),
               settings.value( "/Plugin-DXF/text_path", "./" ).toString(),
               tr( "DXF files (*.dxf)" ) );
 
-  name->setText( s );
+  if ( !s.isEmpty() )
+  {
+    name->setText( s );
+    settings.setValue( "/Plugin-DXF/text_path", QFileInfo( s ).absolutePath() );
+  }
 }
 
 void dxf2shpConverterGui::getOutputDir()
 {
+  QSettings settings;
   QString s = QFileDialog::getSaveFileName( this,
               tr( "Choose a file name to save to" ),
-              "output.shp",
+              settings.value( "/UI/lastShapefileDir", "./" ).toString(),
               tr( "Shapefile (*.shp)" ) );
 
-  dirout->setText( s );
+  if ( !s.isEmpty() )
+  {
+    if ( !s.toLower().endsWith( ".shp" ) )
+    {
+      s += ".shp";
+    }
+    dirout->setText( s );
+    settings.setValue( "/UI/lastShapefileDir", QFileInfo( s ).absolutePath() );
+  }
+}
+
+void dxf2shpConverterGui::saveState()
+{
+  QSettings settings;
+  settings.setValue( "/Plugin-DXF/geometry", saveGeometry() );
+}
+
+void dxf2shpConverterGui::restoreState()
+{
+  QSettings settings;
+  restoreGeometry( settings.value( "/Plugin-DXF/geometry" ).toByteArray() );
 }
