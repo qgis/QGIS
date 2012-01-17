@@ -20,7 +20,7 @@
 
 #include "qgsgpsconnection.h"
 #include <QtLocation/QGeoPositionInfoSource>
-QTM_USE_NAMESPACE
+using namespace QtMobility;
 
 class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
 {
@@ -34,13 +34,13 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     void parseData( );
 
   private slots:
-    void positionUpdated( const QtMobility::QGeoPositionInfo & );
     void connected();
     void error();
 
   private:
     QString mDevice;
     QGeoPositionInfoSource *source;
+
 };
 
 #endif // QGSQTLOCATIONCONNECTION_H

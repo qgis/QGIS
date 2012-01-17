@@ -20,20 +20,25 @@
 
 #include <QLocalSocket>
 
-QTM_USE_NAMESPACE
-
-
 QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLocalSocket() )
 {
-  qDebug("constr");
-//    source = QGeoPositionInfoSource::createDefaultSource(this);
-//    if (source) {
-//        source->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);  //QGeoPositionInfoSource::AllPositioningMethods
-//        //source->setUpdateInterval(500); // this is the line that gives trouble, so I just don't use it
-//   }
-//    source->startUpdates();
-//    QObject::connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)),
-//             this, SLOT(parseData(QGeoPositionInfo)));
+  qDebug("constructor");
+  source = QGeoPositionInfoSource::createDefaultSource(this);
+  if (source)
+  {
+    source->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);  //QGeoPositionInfoSource::AllPositioningMethods
+    //source->setUpdateInterval(500); // this is the line that gives trouble, so I just don't use it
+    source->startUpdates();
+    QObject::connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)),
+             this, SLOT(parseData()));
+ }
+ else
+ {
+   qDebug("No Source");
+ }
+// char buffer [50];
+// sprintf(buffer, "Update int:%d",source->updateInterval());
+// qDebug(buffer);
 }
 
 QgsQtLocationConnection::~QgsQtLocationConnection()
@@ -52,29 +57,24 @@ void QgsQtLocationConnection::error(  )
 {
 }
 
-void QgsQtLocationConnection::positionUpdated(const QtMobility::QGeoPositionInfo &info)
-{
-  QgsDebugMsg( "Position Updated!" );
-//  static int counts=0;
-
-//  if (info.isValid())
-//  {
-//        counts++;
-//        qDebug() << info;
-
-//        double t;
-
-//        t = info.coordinate().latitude();
-//        t = info.coordinate().altitude();
-//        t = info.coordinate().longitude();
-//        t = info.GroundSpeed;
-//        t = info.HorizontalAccuracy;
-//        t = info.attribute(QGeoPositionInfo::HorizontalAccuracy);
-
-//   }
-}
-
 void QgsQtLocationConnection::parseData()
 {
   QgsDebugMsg( "parsing!" );
+  QGeoPositionInfo info = source->lastKnownPosition();
+  if (info.isValid())
+  {
+    QgsDebugMsg( "Valid QGeoPositionInfo!" );
+ //        counts++;
+ //        qDebug() << info;
+
+ //        double t;
+
+ //        t = info.coordinate().latitude();
+ //        t = info.coordinate().altitude();
+ //        t = info.coordinate().longitude();
+ //        t = info.GroundSpeed;
+ //        t = info.HorizontalAccuracy;
+ //        t = info.attribute(QGeoPositionInfo::HorizontalAccuracy);
+
+  }
 }
