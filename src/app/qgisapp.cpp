@@ -1023,9 +1023,7 @@ void QgisApp::createActionGroups()
 
 void QgisApp::setFontSize( int fontSize )
 {
-  QFont theFont = font();
-  theFont.setPointSize( fontSize );
-  setFont( theFont );
+  setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
 }
 
 void QgisApp::createMenus()
