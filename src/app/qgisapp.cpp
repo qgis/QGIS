@@ -4389,7 +4389,16 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     activateDeactivateLayerRelatedActions( layer );
   }
 
-  vlayer->triggerRepaint();
+  QSettings settings;
+  QString markerType = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
+  bool markSelectedOnly = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+
+  // repaint only if the there will be/were markers
+  if (( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
+      ( markerType == "Cross" || markerType == "SemiTransparentCircle" ) )
+  {
+    vlayer->triggerRepaint();
+  }
 
   return res;
 }
