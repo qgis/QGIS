@@ -34,6 +34,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/,
   setupUi( this );
 
   restoreState();
+
   mOfflineDbFile = "offline.sqlite";
   ui_offlineDataPath->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
@@ -42,6 +43,10 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent /*= 0*/,
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
 {
+  QSettings settings;
+  settings.setValue( "Plugin-OfflineEditing/geometry", saveGeometry() );
+  settings.setValue( "Plugin-OfflineEditing/offline_data_path", mOfflineDataPath );
+  settings.setValue( "Plugin-OfflineEditing/onlyEditableLayers", checkboxShowEditableLayers->isChecked() );
 }
 
 QString QgsOfflineEditingPluginGui::offlineDataPath()
@@ -138,14 +143,11 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
     mSelectedLayerIds.append(( *it )->data( Qt::UserRole ).toString() );
   }
 
-  saveState();
-
   accept();
 }
 
 void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 {
-  saveState();
   reject();
 }
 
@@ -153,14 +155,6 @@ void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
 void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
 {
   QgsContextHelp::run( context_id );
-}
-
-void QgsOfflineEditingPluginGui::saveState()
-{
-  QSettings settings;
-  settings.setValue( "Plugin-OfflineEditing/geometry", saveGeometry() );
-  settings.setValue( "Plugin-OfflineEditing/offline_data_path", mOfflineDataPath );
-  settings.setValue( "Plugin-OfflineEditing/onlyEditableLayers", checkboxShowEditableLayers->isChecked() );
 }
 
 void QgsOfflineEditingPluginGui::restoreState()

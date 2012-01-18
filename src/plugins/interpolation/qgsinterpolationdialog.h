@@ -35,7 +35,6 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
 
   private slots:
     void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
     void on_mInputLayerComboBox_currentIndexChanged( const QString& text );
     void on_mOutputFileButton_clicked();
     void on_mOutputFileLineEdit_textChanged();
@@ -78,8 +77,6 @@ class QgsInterpolationDialog: public QDialog, private Ui::QgsInterpolationDialog
     void setNewCellsizeYOnNRowschange();
     void setNColsOnCellsizeXChange();
     void setNRowsOnCellsizeYChange();
-
-    void saveState();
 };
 
 #endif

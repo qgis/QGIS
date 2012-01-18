@@ -91,6 +91,8 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
 
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-DelimitedText/geometry", saveGeometry() );
 }
 
 void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
@@ -144,8 +146,6 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     emit drawVectorLayer( QString::fromAscii( url.toEncoded() ), txtLayerName->text(), "delimitedtext" );
 
     // store the settings
-    saveState();
-
     QSettings settings;
     QString key = "/Plugin-DelimitedText";
     settings.setValue( key + "/geometry", saveGeometry() );
@@ -172,7 +172,6 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
 
 void QgsDelimitedTextPluginGui::on_buttonBox_rejected()
 {
-  saveState();
   reject();
 }
 
@@ -503,10 +502,4 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream &stream )
     buffer.append( c );
   }
   return buffer;
-}
-
-void QgsDelimitedTextPluginGui::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/Plugin-DelimitedText/geometry", saveGeometry() );
 }

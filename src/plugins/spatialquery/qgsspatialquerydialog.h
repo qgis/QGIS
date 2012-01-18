@@ -135,7 +135,6 @@ class QgsSpatialQueryDialog : public QDialog, private Ui::QgsSpatialQueryDialogB
     void zoomFeature( QgsVectorLayer *lyr, QgsFeatureId fid );
     //! Show rubber from feature
     void showRubberFeature( QgsVectorLayer *lyr, QgsFeatureId id );
-    void saveState();
 
     //! Pointer to Interface QGIS
     QgisInterface* mIface;

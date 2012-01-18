@@ -55,7 +55,8 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgisInt
 {
   setupUi( this );
 
-  restoreState();
+  QSettings settings;
+  restoreGeometry( settings.value( "/eVis/browser-geometry" ).toByteArray() );
 
   mCurrentFeatureIndex = 0;
   mInterface = interface;
@@ -112,6 +113,9 @@ eVisGenericEventBrowserGui::eVisGenericEventBrowserGui( QWidget* parent, QgsMapC
  */
 eVisGenericEventBrowserGui::~eVisGenericEventBrowserGui( )
 {
+  QSettings settings;
+  settings.setValue( "/eVis/browser-geometry", saveGeometry() );
+
   //Clean up, disconnect the highlighting routine and refesh the canvase to clear highlighting symbol
   if ( 0 != mCanvas )
   {
@@ -456,8 +460,6 @@ void eVisGenericEventBrowserGui::accept( )
   {
     myQSettings.setValue( "/eVis/applypathrulestodocs", chkboxApplyPathRulesToDocs->isChecked( ) );
   }
-
-  saveState();
 
   myQSettings.remove( "/eVis/filetypeassociations" );
   myQSettings.beginWriteArray( "/eVis/filetypeassociations" );
@@ -1181,16 +1183,3 @@ void eVisGenericEventBrowserGui::renderSymbol( QPainter* thePainter )
     }
   }
 }
-
-void eVisGenericEventBrowserGui::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/eVis/browser-geometry", saveGeometry() );
-}
-
-void eVisGenericEventBrowserGui::restoreState()
-{
-  QSettings settings;
-  restoreGeometry( settings.value( "/eVis/browser-geometry" ).toByteArray() );
-}
-

@@ -26,7 +26,10 @@
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog(), mIface( iface )
 {
   setupUi( this );
-  restoreState();
+
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
+
   insertAvailableLayers();
   mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
 }
@@ -34,11 +37,15 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDia
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( 0 ), mIface( 0 )
 {
   setupUi( this );
-  restoreState();
+
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
 }
 
 QgsZonalStatisticsDialog::~QgsZonalStatisticsDialog()
 {
+  QSettings settings;
+  settings.setValue( "Plugin-ZonalStatistics/geometry", saveGeometry() );
 }
 
 void QgsZonalStatisticsDialog::insertAvailableLayers()
@@ -132,28 +139,4 @@ bool QgsZonalStatisticsDialog::prefixIsValid( const QString& prefix ) const
     }
   }
   return true;
-}
-
-void QgsZonalStatisticsDialog::on_buttonBox_accepted()
-{
-  saveState();
-  accept();
-}
-
-void QgsZonalStatisticsDialog::on_buttonBox_rejected()
-{
-  saveState();
-  reject();
-}
-
-void QgsZonalStatisticsDialog::saveState()
-{
-  QSettings settings;
-  settings.setValue( "Plugin-ZonalStatistics/geometry", saveGeometry() );
-}
-
-void QgsZonalStatisticsDialog::restoreState()
-{
-  QSettings settings;
-  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
 }

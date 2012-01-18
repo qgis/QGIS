@@ -37,8 +37,6 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
 {
   setupUi( this );
 
-  restoreState();
-
   /*
    *  Load the list of connection from the registry
    */
@@ -51,6 +49,9 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
 
   QSettings settings;
   QString selected = settings.value( "/Oracle/connections/selected" ).toString();
+
+  restoreGeometry( settings.value( "/Oracle/geometry" ).toByteArray() );
+
   cmbConnections->setCurrentIndex( cmbConnections->findText( selected ) );
   if ( selected == cmbConnections->currentText() )
   {
@@ -60,6 +61,9 @@ QgsOracleSelectGeoraster::QgsOracleSelectGeoraster( QWidget* parent,
 
 QgsOracleSelectGeoraster::~QgsOracleSelectGeoraster()
 {
+  QSettings settings;
+  settings.setValue( "/Oracle/geometry", saveGeometry() );
+  settings.setValue( "/Oracle/connections/selected", cmbConnections->currentText() );
 }
 
 void QgsOracleSelectGeoraster::populateConnectionList()
@@ -327,29 +331,4 @@ void QgsOracleSelectGeoraster::setConnectionListPosition()
     else
       cmbConnections->setCurrentIndex( cmbConnections->count() - 1 );
   }
-}
-
-void QgsOracleSelectGeoraster::on_buttonBox_accepted()
-{
-  saveState();
-  accept();
-}
-
-void QgsOracleSelectGeoraster::on_buttonBox_rejected()
-{
-  saveState();
-  reject();
-}
-
-void QgsOracleSelectGeoraster::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/Oracle/geometry", saveGeometry() );
-  settings.setValue( "/Oracle/connections/selected", cmbConnections->currentText() );
-}
-
-void QgsOracleSelectGeoraster::restoreState()
-{
-  QSettings settings;
-  restoreGeometry( settings.value( "/Oracle/geometry" ).toByteArray() );
 }

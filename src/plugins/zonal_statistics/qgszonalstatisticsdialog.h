@@ -35,10 +35,6 @@ class QgsZonalStatisticsDialog: public QDialog, private Ui::QgsZonalStatisticsDi
     QgsVectorLayer* polygonLayer() const;
     QString attributePrefix() const;
 
-private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-
   private:
     QgsZonalStatisticsDialog();
     /**Fills the available raster and polygon layers into the combo boxes*/
@@ -47,9 +43,6 @@ private slots:
     QString proposeAttributePrefix() const;
     /**Check if a prefix can be used for the count, sum and mean attribute*/
     bool prefixIsValid( const QString& prefix ) const;
-
-    void saveState();
-    void restoreState();
 
     QgisInterface* mIface;
 };

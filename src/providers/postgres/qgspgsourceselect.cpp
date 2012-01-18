@@ -535,7 +535,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
       }
     }
 
-    if ( cmbConnections->count() > 0 )
+    if ( cmbConnections->count() > 0 && !mColumnTypeThread )
       mAddButton->setEnabled( true );
 
     mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
@@ -572,6 +572,9 @@ void QgsPgSourceSelect::columnThreadFinished()
   mColumnTypeThread = 0;
   btnConnect->setText( tr( "Connect" ) );
   QApplication::restoreOverrideCursor();
+
+  if ( cmbConnections->count() > 0 )
+    mAddButton->setEnabled( true );
 }
 
 QStringList QgsPgSourceSelect::selectedTables()

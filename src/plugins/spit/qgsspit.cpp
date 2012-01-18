@@ -84,6 +84,10 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 
 QgsSpit::~QgsSpit()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-Spit/geometry", saveGeometry() );
+  settings.setValue( "/Plugin-Spit/lastDatabase", cmbConnections->currentText() );
+
   if ( conn )
     PQfinish( conn );
 }
@@ -499,8 +503,6 @@ void QgsSpit::dbConnect()
 
 void QgsSpit::import()
 {
-  saveState();
-
   QList<QTableWidgetItem*> selected = tblShapefiles->selectedItems();
   for ( int i = 0; i < selected.count(); ++i )
     selected[i]->setSelected( false );
@@ -836,24 +838,11 @@ void QgsSpit::import()
   }
 }
 
-void QgsSpit::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/Plugin-Spit/geometry", saveGeometry() );
-  settings.setValue( "/Plugin-Spit/lastDatabase", cmbConnections->currentText() );
-}
-
 void QgsSpit::restoreState()
 {
   QSettings settings;
   restoreGeometry( settings.value( "/Plugin-Spit/geometry" ).toByteArray() );
   cmbConnections->setCurrentIndex( cmbConnections->findText( settings.value( "/Plugin-Spit/lastDatabase" ).toString() ) );
-}
-
-void QgsSpit::on_buttonBox_rejected()
-{
-  saveState();
-  reject();
 }
 
 QWidget *ShapefileTableDelegate::createEditor( QWidget *parent,

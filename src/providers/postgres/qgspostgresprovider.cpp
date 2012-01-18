@@ -1478,7 +1478,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           continue;
         }
 
-        if ( isInt && ( mAttributeFields[j].type() == QVariant::Int || mAttributeFields[j].type() == QVariant::LongLong ) )
+        if ( isInt && mAttributeFields[j].type() != QVariant::Int && mAttributeFields[j].type() != QVariant::LongLong )
           isInt = false;
 
         mPrimaryKeyAttrs << j;
@@ -1774,7 +1774,7 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
     QgsPostgresResult result = mConnectionRW->PQexec( QString( "SELECT %1" ).arg( defaultValue ) );
-    if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
       throw PGException( result );
 
     return result.PQgetvalue( 0, 0 );
@@ -1936,8 +1936,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     if ( stmt.PQresultStatus() == PGRES_FATAL_ERROR )
       throw PGException( stmt );
 
-    QList<int> newIds;
-
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
     {
       const QgsAttributeMap &attributevec = features->attributeMap();
@@ -1949,16 +1947,62 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
-        params << paramValue( attributevec.value( fieldId[i], defaultValues[i] ).toString(), defaultValues[i] );
+      {
+        QgsAttributeMap::const_iterator attr = attributevec.find( fieldId[i] );
+
+        QString v;
+        if ( attr == attributevec.end() )
+        {
+          v = paramValue( defaultValues[i], defaultValues[i] );
+          features->addAttribute( fieldId[i], v );
+        }
+        else
+        {
+          v = paramValue( attr.value().toString(), defaultValues[i] );
+
+          if ( v != attr.value().toString() )
+            features->changeAttribute( fieldId[i], v );
+        }
+
+        params << v;
+      }
 
       QgsPostgresResult result = mConnectionRW->PQexecPrepared( "addfeatures", params );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
+
+      if ( mPrimaryKeyType == pktOid )
+      {
+        features->setFeatureId( result.PQoidValue() );
+        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+      }
     }
 
-    if ( flist.size() == newIds.size() )
-      for ( int i = 0; i < flist.size(); i++ )
-        flist[i].setFeatureId( newIds[i] );
+    // update feature ids
+    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    {
+      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+      {
+        const QgsAttributeMap &attributevec = features->attributeMap();
+
+        if ( mPrimaryKeyType == pktInt )
+        {
+          features->setFeatureId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
+        }
+        else
+        {
+          QList<QVariant> primaryKeyVals;
+
+          foreach( int idx, mPrimaryKeyAttrs )
+          {
+            primaryKeyVals << attributevec[ mPrimaryKeyAttrs[idx] ];
+          }
+
+          features->setFeatureId( lookupFid( QVariant( primaryKeyVals ) ) );
+        }
+        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+      }
+    }
 
     mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     mConnectionRW->PQexecNR( "COMMIT" );
@@ -2704,7 +2748,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     QgsDebugMsg( "Requested SRID is " + mRequestedSrid );
     QgsDebugMsg( "Detected type is " + QString::number( mDetectedGeomType ) );
     QgsDebugMsg( "Requested type is " + QString::number( mRequestedGeomType ) );
-    QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[ geometryType() ] ) );
+    QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[ geometryType()] ) );
     QgsDebugMsg( "Geometry is geography " + mIsGeography );
   }
   else
