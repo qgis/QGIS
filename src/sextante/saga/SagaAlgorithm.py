@@ -75,7 +75,7 @@ class SagaAlgorithm(GeoAlgorithm):
                         param = ParameterTable()
                         param.name = paramName
                         param.description = paramDescription
-                        param.optional = not ("optional" in line)
+                        param.optional = ("optional" in line)
                         lastParentParameterName = paramName;
                         self.putParameter(param)
                     elif "static" in line:
@@ -113,14 +113,14 @@ class SagaAlgorithm(GeoAlgorithm):
                             param = ParameterMultipleInput()
                             param.name = paramName
                             param.description = paramDescription
-                            param.optional = not ("optional" in line)
+                            param.optional = ("optional" in line)
                             param.datatype=ParameterMultipleInput.TYPE_RASTER
                             self.putParameter(param)
                         else:
                             param = ParameterRaster()
                             param.name = paramName
                             param.description = paramDescription
-                            param.optional = not ("optional" in line)
+                            param.optional = ("optional" in line)
                             self.putParameter(param)
                     else:
                         output = OutputRaster()
@@ -133,14 +133,14 @@ class SagaAlgorithm(GeoAlgorithm):
                             param = ParameterMultipleInput()
                             param.name = paramName
                             param.description = paramDescription
-                            param.optional = not ("optional" in line)
+                            param.optional = ("optional" in line)
                             param.datatype=ParameterMultipleInput.TYPE_VECTOR_ANY
                             self.putParameter(param)
                         else:
                             param = ParameterVector()
                             param.name = paramName
                             param.description = paramDescription
-                            param.optional = not ("optional" in line)
+                            param.optional = ("optional" in line)
                             param.shapetype = ParameterVector.VECTOR_TYPE_ANY
                             lastParentParameterName = paramName;
                             self.putParameter(param)

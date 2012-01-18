@@ -13,6 +13,7 @@ from sextante.gui.FixedTablePanel import FixedTablePanel
 from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.parameters.ParameterTableField import ParameterTableField
+from sextante.parameters.ParameterTable import ParameterTable
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -36,7 +37,7 @@ class Ui_ParametersDialog(object):
         self.alg = alg
         self.dialog = dialog
         self.valueItems = {}
-        self.depentItems = {}
+        self.dependentItems = {}
         dialog.setObjectName(_fromUtf8("Parameters"))
         dialog.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox(dialog)
@@ -77,13 +78,25 @@ class Ui_ParametersDialog(object):
                 item.addItem(self.NOT_SELECTED, None)
             for layer in layers:
                 item.addItem(layer.name(), layer)
+            item.currentIndexChanged.connect(self.updateDependentFields)
+            item.name = param.name
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem("Yes")
             item.addItem("No")
         elif isinstance(param, ParameterTableField):
             item = QtGui.QComboBox()
-            item = self.getFields(QGisLayers.getVectorLayers()[0])
+            if param.parent in self.dependentItems:
+                list = self.dependentItems[param.parent]
+            else:
+                list = []
+                self.dependentItems[param.parent] = list
+            list.append(param.name)
+            layers = QGisLayers.getVectorLayers()
+            if len(layers)>0:
+                fields = self.getFields(layers[0])
+                for i in fields:
+                    item.addItem(fields[i].name())
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()
             item.addItems(param.options)
@@ -108,7 +121,23 @@ class Ui_ParametersDialog(object):
 
         return item
 
+    def updateDependentFields(self):
+        sender = self.dialog.sender()
+        if not isinstance(sender, QComboBox):
+            return
+        layer = sender.itemData(sender.currentIndex()).toPyObject()
+        children = self.dependentItems[sender.name]
+        for child in children:
+            widget = self.valueItems[child]
+            widget.clear()
+            fields = self.getFields(layer)
+            for i in fields:
+                widget.addItem(fields[i].name())
+
+
     def getFields(self, layer):
+        return layer.dataProvider().fields()
+
 
 
     def setTableContent(self):
@@ -160,9 +189,11 @@ class Ui_ParametersDialog(object):
     def setParamValue(self, param, widget):
 
         if isinstance(param, ParameterRaster):
-            param.value = widget.itemData(widget.currentIndex())
+            param.value = widget.itemData(widget.currentIndex()).toPyObject()
         elif isinstance(param, ParameterVector):
-            param.value = widget.itemData(widget.currentIndex())
+            param.value = widget.itemData(widget.currentIndex()).toPyObject()
+        elif isinstance(param, ParameterTable):
+            param.value = widget.itemData(widget.currentIndex()).toPyObject()
         elif isinstance(param, ParameterBoolean):
             param.value = widget.currentIndex() == 0
         elif isinstance(param, ParameterSelection):

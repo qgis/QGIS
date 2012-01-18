@@ -128,13 +128,14 @@ class Ui_SextanteToolbox(object):
             providerItem.setText(0,providerName)
 
             for groupItem in groups.values():
-                groupItem.sortChildren(0, Qt.AscendingOrder)
+                #groupItem.sortChildren(0, Qt.AscendingOrder)
                 providerItem.addChild(groupItem)
             self.algorithmTree.addTopLevelItem(providerItem)
             providerItem.setExpanded(True)
             for groupItem in groups.values():
                 if text != "":
                     groupItem.setExpanded(True)
+            self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
