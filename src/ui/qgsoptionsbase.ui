@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>779</width>
+            <height>791</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -322,22 +322,10 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QComboBox" name="cmbFontSize">
-                  <item>
-                   <property name="text">
-                    <string>8</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>12</string>
-                   </property>
-                  </item>
-                  <item>
-                   <property name="text">
-                    <string>16</string>
-                   </property>
-                  </item>
+                 <widget class="QSpinBox" name="spinFontSize">
+                  <property name="minimum">
+                   <number>4</number>
+                  </property>
                  </widget>
                 </item>
                </layout>
@@ -696,8 +684,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>604</width>
+            <height>494</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -870,8 +858,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>483</width>
+            <height>478</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1156,8 +1144,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>257</width>
+            <height>93</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1231,8 +1219,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>781</width>
-            <height>741</height>
+            <width>569</width>
+            <height>510</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1577,8 +1565,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>412</width>
+            <height>411</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1751,8 +1739,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>523</width>
+            <height>560</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1848,8 +1836,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>803</width>
-            <height>763</height>
+            <width>321</width>
+            <height>541</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">
@@ -2086,7 +2074,6 @@
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cmbTheme</tabstop>
   <tabstop>cmbIconSize</tabstop>
-  <tabstop>cmbFontSize</tabstop>
   <tabstop>cmbLegendDoubleClickAction</tabstop>
   <tabstop>capitaliseCheckBox</tabstop>
   <tabstop>cbxLegendClassifiers</tabstop>
