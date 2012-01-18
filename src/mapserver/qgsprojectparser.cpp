@@ -1397,6 +1397,21 @@ QHash<QString, QString> QgsProjectParser::featureInfoLayerAliasMap() const
   return aliasMap;
 }
 
+QString QgsProjectParser::featureInfoDocumentName( const QString& defaultValue ) const
+{
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return defaultValue;
+  }
+  QDomElement featureInfoDocumentNameElem = propertiesElem.firstChildElement( "WMSFeatureInfoDocumentName" );
+  if ( featureInfoDocumentNameElem.isNull() )
+  {
+    return defaultValue;
+  }
+  return featureInfoDocumentNameElem.text();
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )

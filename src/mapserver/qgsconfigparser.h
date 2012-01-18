@@ -116,6 +116,8 @@ class QgsConfigParser
     /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
     virtual QHash<QString, QString> featureInfoLayerAliasMap() const { return QHash<QString, QString>(); }
 
+    virtual QString featureInfoDocumentName( const QString& defaultValue ) const { return defaultValue; }
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;
