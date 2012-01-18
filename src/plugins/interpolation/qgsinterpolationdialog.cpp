@@ -66,6 +66,9 @@ QgsInterpolationDialog::QgsInterpolationDialog( QWidget* parent, QgisInterface* 
 
 QgsInterpolationDialog::~QgsInterpolationDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Interpolation/geometry", saveGeometry() );
+  settings.setValue( "/Interpolation/lastMethod", mInterpolationMethodComboBox->currentIndex() );
 }
 
 void QgsInterpolationDialog::enableOrDisableOkButton()
@@ -92,8 +95,6 @@ void QgsInterpolationDialog::enableOrDisableOkButton()
 
 void QgsInterpolationDialog::on_buttonBox_accepted()
 {
-  saveState();
-
   if ( !mInterpolatorDialog )
   {
     return;
@@ -205,12 +206,6 @@ void QgsInterpolationDialog::on_buttonBox_accepted()
   }
 
   delete theInterpolator;
-}
-
-void QgsInterpolationDialog::on_buttonBox_rejected()
-{
-  saveState();
-  reject();
 }
 
 void QgsInterpolationDialog::on_mInputLayerComboBox_currentIndexChanged( const QString& text )
@@ -593,11 +588,4 @@ QgsRectangle QgsInterpolationDialog::currentBoundingBox()
   }
 
   return QgsRectangle( xMin, yMin, xMax, yMax );
-}
-
-void QgsInterpolationDialog::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/Interpolation/geometry", saveGeometry() );
-  settings.setValue( "/Interpolation/lastMethod", mInterpolationMethodComboBox->currentIndex() );
 }

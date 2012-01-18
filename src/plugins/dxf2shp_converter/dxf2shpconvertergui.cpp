@@ -37,12 +37,12 @@ dxf2shpConverterGui::dxf2shpConverterGui( QWidget *parent, Qt::WFlags fl ):
 
 dxf2shpConverterGui::~dxf2shpConverterGui()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-DXF/geometry", saveGeometry() );
 }
 
 void dxf2shpConverterGui::on_buttonBox_accepted()
 {
-  saveState();
-
   QString inf = name->text();
   QString outd = dirout->text();
 
@@ -120,7 +120,6 @@ void dxf2shpConverterGui::on_buttonBox_accepted()
 
 void dxf2shpConverterGui::on_buttonBox_rejected()
 {
-  saveState();
   reject();
 }
 
@@ -183,12 +182,6 @@ void dxf2shpConverterGui::getOutputDir()
     dirout->setText( s );
     settings.setValue( "/UI/lastShapefileDir", QFileInfo( s ).absolutePath() );
   }
-}
-
-void dxf2shpConverterGui::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/Plugin-DXF/geometry", saveGeometry() );
 }
 
 void dxf2shpConverterGui::restoreState()

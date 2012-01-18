@@ -68,9 +68,6 @@ class eVisDatabaseConnectionGui : public QDialog, private Ui::eVisDatabaseConnec
     /** \brief Pointer to a QMap which will hold the definition of preexisting query that can be loaded from an xml file */
     QMap<int, eVisQueryDefinition>* mQueryDefinitionMap;
 
-    void saveState();
-    void restoreState();
-
   private slots:
     /** \brief Slot called after the user selects the x, y fields in the field selection gui component */
     void drawNewVectorLayer( QString, QString, QString );
