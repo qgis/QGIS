@@ -156,7 +156,6 @@
       <bool>false</bool>
      </property>
      <zorder>mButtonBox</zorder>
-     <zorder>mButtonBox</zorder>
     </widget>
    </item>
    <item row="3" column="0" colspan="2">

@@ -41,10 +41,12 @@ QgsExpressionBuilderWidget::QgsExpressionBuilderWidget( QWidget *parent )
   expressionTree->setModel( mProxyModel );
 
   expressionTree->setContextMenuPolicy( Qt::CustomContextMenu );
-  connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState ) );
+  connect( this, SIGNAL( expressionParsed( bool ) ), this, SLOT( setExpressionState( bool ) ) );
   connect( expressionTree, SIGNAL( customContextMenuRequested( const QPoint & ) ), this, SLOT( showContextMenu( const QPoint & ) ) );
+  connect( expressionTree->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ),
+           this, SLOT( currentChanged( const QModelIndex &, const QModelIndex & ) ) );
 
-  foreach( QPushButton* button, this->mOperatorsGroupBox->findChildren<QPushButton *>() )
+  foreach( QPushButton* button, mOperatorsGroupBox->findChildren<QPushButton *>() )
   {
     connect( button, SIGNAL( pressed() ), this, SLOT( operatorButtonClicked() ) );
   }
@@ -99,7 +101,7 @@ void QgsExpressionBuilderWidget::setLayer( QgsVectorLayer *layer )
   mLayer = layer;
 }
 
-void QgsExpressionBuilderWidget::on_expressionTree_clicked( const QModelIndex &index )
+void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const QModelIndex & )
 {
   // Get the item
   QModelIndex idx = mProxyModel->mapToSource( index );
@@ -214,9 +216,9 @@ void QgsExpressionBuilderWidget::registerItem( QString group,
   }
 }
 
-bool QgsExpressionBuilderWidget::isExpressionVaild()
+bool QgsExpressionBuilderWidget::isExpressionValid()
 {
-  return mExpressionVaild;
+  return mExpressionValid;
 }
 
 QString QgsExpressionBuilderWidget::getExpressionString()
@@ -370,7 +372,7 @@ void QgsExpressionBuilderWidget::loadAllValues()
 
 void QgsExpressionBuilderWidget::setExpressionState( bool state )
 {
-  mExpressionVaild = state;
+  mExpressionValid = state;
 }
 
 QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functionName )

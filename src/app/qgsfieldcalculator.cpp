@@ -269,12 +269,7 @@ void QgsFieldCalculator::populateFields()
 
 void QgsFieldCalculator::setOkButtonState()
 {
-  bool okEnabled = true;
-  if (( mOutputFieldNameLineEdit->text().isEmpty()
-        && !mUpdateExistingGroupBox->isChecked()
-        || !builder->isExpressionVaild() ) )
-  {
-    okEnabled = false;
-  }
+  bool okEnabled = ( !mOutputFieldNameLineEdit->text().isEmpty() || mUpdateExistingGroupBox->isChecked() ) && builder->isExpressionValid();
+
   mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( okEnabled );
 }

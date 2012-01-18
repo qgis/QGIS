@@ -140,10 +140,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
                        QString helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
 
-    bool isExpressionVaild();
+    bool isExpressionValid();
 
   public slots:
-    void on_expressionTree_clicked( const QModelIndex &index );
+    void currentChanged( const QModelIndex &index, const QModelIndex & );
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
@@ -175,7 +175,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
     QgsExpressionHighlighter* highlighter;
-    bool mExpressionVaild;
+    bool mExpressionValid;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

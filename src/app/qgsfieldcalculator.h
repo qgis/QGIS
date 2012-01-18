@@ -59,7 +59,7 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     /**idx of changed attribute*/
     int mAttributeId;
 
-    bool mExpressionVaild;
+    bool mExpressionValid;
 };
 
 #endif // QGSFIELDCALCULATOR_H
