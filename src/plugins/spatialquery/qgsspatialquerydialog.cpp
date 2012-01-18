@@ -49,6 +49,9 @@ QgsSpatialQueryDialog::QgsSpatialQueryDialog( QWidget* parent, QgisInterface* if
 
 QgsSpatialQueryDialog::~QgsSpatialQueryDialog()
 {
+  QSettings settings;
+  settings.setValue( "SpatialQuery/geometry", saveGeometry() );
+
   disconnectAll();
   delete mRubberSelectId;
   mMapIdVectorLayers.clear();
@@ -378,7 +381,6 @@ void QgsSpatialQueryDialog::disconnectAll()
 
 void QgsSpatialQueryDialog::reject()
 {
-  saveState();
   disconnectAll();
 
   mRubberSelectId->reset();
@@ -729,7 +731,6 @@ void QgsSpatialQueryDialog::showRubberFeature( QgsVectorLayer* lyr, QgsFeatureId
 
 void QgsSpatialQueryDialog::apply()
 {
-  saveState();
   if ( ! mLayerReference )
   {
     QMessageBox::warning( 0, tr( "Missing reference layer" ), tr( "Select reference layer!" ), QMessageBox::Ok );
@@ -1079,10 +1080,4 @@ void QgsSpatialQueryDialog::signal_layerReference_selectionFeaturesChanged()
 void QgsSpatialQueryDialog::MsgDEBUG( QString sMSg )
 {
   QMessageBox::warning( 0, tr( "DEBUG" ), sMSg, QMessageBox::Ok );
-}
-
-void QgsSpatialQueryDialog::saveState()
-{
-  QSettings settings;
-  settings.setValue( "SpatialQuery/geometry", saveGeometry() );
 }

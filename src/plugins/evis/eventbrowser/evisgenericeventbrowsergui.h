@@ -152,9 +152,6 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     /** \brief Sets the base path to the path of the data source */
     void setBasePathToDataSource( );
 
-    void saveState();
-    void restoreState();
-
   private slots:
     void launchExternalApplication( QTreeWidgetItem *, int );
     void on_buttonboxOptions_clicked( QAbstractButton* );
