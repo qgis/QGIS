@@ -164,9 +164,9 @@ int QgsRelief::processRaster( QProgressDialog* p )
   float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
   float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  char* resultRedLine = ( char * ) CPLMalloc( sizeof( char ) * xSize );
-  char* resultGreenLine = ( char * ) CPLMalloc( sizeof( char ) * xSize );
-  char* resultBlueLine = ( char * ) CPLMalloc( sizeof( char ) * xSize );
+  unsigned char* resultRedLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char* resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char* resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
 
   if ( p )
   {
@@ -278,7 +278,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
 }
 
 bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
-                                       char* red, char* green, char* blue )
+                                       unsigned char* red, unsigned char* green, unsigned char* blue )
 {
   //1. component: colour and hillshade from 300 degrees
   int r = 0;
@@ -363,9 +363,9 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
     b = b3 * 0.1 + b * 0.9;
   }
 
-  *red = ( char )r;
-  *green = ( char )g;
-  *blue = ( char )b;
+  *red = ( unsigned char )r;
+  *green = ( unsigned char )g;
+  *blue = ( unsigned char )b;
   return true;
 }
 
