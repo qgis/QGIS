@@ -34,6 +34,10 @@ QList< QPair<QString, QString> > QgsGPSDetector::availablePorts()
 {
   QList< QPair<QString, QString> > devs;
 
+  // try local QtLocation first
+#ifdef HAVE_QT_MOBILITY_LOCATION
+  devs << QPair<QString, QString>( "internalGPS", tr( "internal GPS" ) );
+#endif
   // try local gpsd first
   devs << QPair<QString, QString>( "localhost:2947:", tr( "local gpsd" ) );
 

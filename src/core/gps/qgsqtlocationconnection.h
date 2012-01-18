@@ -33,10 +33,6 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     /**Parse available data source content*/
     void parseData( );
 
-  private slots:
-    void connected();
-    void error();
-
   private:
     QString mDevice;
     QGeoPositionInfoSource *source;

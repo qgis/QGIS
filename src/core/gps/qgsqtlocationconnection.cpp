@@ -19,6 +19,7 @@
 #include "qgslogger.h"
 
 #include <QLocalSocket>
+#include <QTimer>
 
 QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLocalSocket() )
 {
@@ -31,19 +32,13 @@ QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLoca
     source->startUpdates();
     QObject::connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)),
              this, SLOT(parseData()));
-    QgsGPSInformation info;
-    info.latitude = 40;
-    info.longitude = 10;
-    mStatus = QgsGPSConnection::GPSDataReceived;
-    emit stateChanged( info );
  }
  else
  {
-   qDebug("No Source");
+   qDebug("No QtLocation Source");
  }
-// char buffer [50];
-// sprintf(buffer, "Update int:%d",source->updateInterval());
-// qDebug(buffer);
+  //HACK
+  QTimer::singleShot( 500, this, SLOT( parseData() ) );
 }
 
 QgsQtLocationConnection::~QgsQtLocationConnection()
@@ -53,33 +48,37 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
 }
 
 
-void QgsQtLocationConnection::connected()
-{
-  QgsDebugMsg( "connected!" );
-}
-
-void QgsQtLocationConnection::error(  )
-{
-}
-
 void QgsQtLocationConnection::parseData()
 {
   QgsDebugMsg( "parsing!" );
-  QGeoPositionInfo info = source->lastKnownPosition();
-  if (info.isValid())
-  {
-    QgsDebugMsg( "Valid QGeoPositionInfo!" );
- //        counts++;
- //        qDebug() << info;
+  mStatus = GPSDataReceived;
 
- //        double t;
+  if (source){
+    QGeoPositionInfo info = source->lastKnownPosition();
+    if (info.isValid())
+    {
+      QgsDebugMsg( "Valid QGeoPositionInfo!" );
+   //        t = info.HorizontalAccuracy;
+   //        t = info.attribute(QGeoPositionInfo::HorizontalAccuracy);
 
- //        t = info.coordinate().latitude();
- //        t = info.coordinate().altitude();
- //        t = info.coordinate().longitude();
- //        t = info.GroundSpeed;
- //        t = info.HorizontalAccuracy;
- //        t = info.attribute(QGeoPositionInfo::HorizontalAccuracy);
-
+      mLastGPSInformation.latitude = info.coordinate().latitude();
+      mLastGPSInformation.longitude = info.coordinate().longitude() ;
+      mLastGPSInformation.elevation = info.coordinate().altitude();
+      mLastGPSInformation.speed = info.GroundSpeed * 3.6; // m/s to km/h
+      mLastGPSInformation.direction = info.Direction;
+      QList<QgsSatelliteInfo> satellitesInView;
+      mLastGPSInformation.pdop;
+      mLastGPSInformation.hdop;
+      mLastGPSInformation.vdop;
+      mLastGPSInformation.utcDateTime;
+      mLastGPSInformation.fixMode;
+      mLastGPSInformation.fixType;
+      mLastGPSInformation.quality;      // from GPGGA
+      mLastGPSInformation.satellitesUsed; // from GPGGA
+      mLastGPSInformation.status;     // from GPRMC A,V
+      QList<int>satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
+      mLastGPSInformation.satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+    }
   }
+  emit stateChanged( mLastGPSInformation );
 }
