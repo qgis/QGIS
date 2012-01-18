@@ -810,6 +810,9 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QMap< QString, QMap< int, QString > > aliasInfo = mConfigParser->layerAliasInfo();
   QMap< QString, QSet<QString> > hiddenAttributes = mConfigParser->hiddenAttributes();
 
+  //layers can have assigned a different name for GetCapabilities
+  QHash<QString, QString> layerAliasMap = mConfigParser->featureInfoLayerAliasMap();
+
   QList<QgsMapLayer*> layerList;
   QgsMapLayer* currentLayer = 0;
   QStringList::const_iterator layerIt;
@@ -838,7 +841,15 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
       }
 
       QDomElement layerElement = result.createElement( "Layer" );
-      layerElement.setAttribute( "name", currentLayer->name() );
+      QString layerName = currentLayer->name();
+
+      //check if the layer is given a different name for GetFeatureInfo output
+      QHash<QString, QString>::const_iterator layerAliasIt = layerAliasMap.find( layerName );
+      if ( layerAliasIt != layerAliasMap.constEnd() )
+      {
+        layerName = layerAliasIt.value();
+      }
+      layerElement.setAttribute( "name", layerName );
       getFeatureInfoElement.appendChild( layerElement );
 
       //switch depending on vector or raster

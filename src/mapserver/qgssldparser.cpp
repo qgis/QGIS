@@ -1564,6 +1564,15 @@ bool QgsSLDParser::featureInfoWithWktGeometry() const
   return false;
 }
 
+QHash<QString, QString> QgsSLDParser::featureInfoLayerAliasMap() const
+{
+  if ( mFallbackParser )
+  {
+    return mFallbackParser->featureInfoLayerAliasMap();
+  }
+  return QHash<QString, QString>();
+}
+
 #ifdef DIAGRAMSERVER
 int QgsSLDParser::overlaysFromUserStyle( const QDomElement& userStyleElement, QgsVectorLayer* vec ) const
 {

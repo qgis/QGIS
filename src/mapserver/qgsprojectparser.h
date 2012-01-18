@@ -101,6 +101,9 @@ class QgsProjectParser: public QgsConfigParser
     /**Reads service metadata from projectfile or falls back to parent class method if not there*/
     void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    /**Returns map with layer aliases for GetFeatureInfo (or 0 pointer if not supported). Key: layer name, Value: layer alias*/
+    virtual QHash<QString, QString> featureInfoLayerAliasMap() const;
+
   private:
 
     //forbidden

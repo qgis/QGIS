@@ -1353,6 +1353,50 @@ void QgsProjectParser::serviceCapabilities( QDomElement& parentElement, QDomDocu
   parentElement.appendChild( serviceElem );
 }
 
+QHash<QString, QString> QgsProjectParser::featureInfoLayerAliasMap() const
+{
+  QHash<QString, QString> aliasMap;
+  QDomElement propertiesElem = mXMLDoc->documentElement().firstChildElement( "properties" );
+  if ( propertiesElem.isNull() )
+  {
+    return aliasMap;
+  }
+
+  //WMSFeatureInfoAliasLayers
+  QStringList aliasLayerStringList;
+  QDomElement featureInfoAliasLayersElem = propertiesElem.firstChildElement( "WMSFeatureInfoAliasLayers" );
+  if ( featureInfoAliasLayersElem.isNull() )
+  {
+    return aliasMap;
+  }
+  QDomNodeList aliasLayerValueList = featureInfoAliasLayersElem.elementsByTagName( "value" );
+  for ( int i = 0; i < aliasLayerValueList.size(); ++i )
+  {
+    aliasLayerStringList << aliasLayerValueList.at( i ).toElement().text();
+  }
+
+  //WMSFeatureInfoLayerAliases
+  QStringList layerAliasStringList;
+  QDomElement featureInfoLayerAliasesElem = propertiesElem.firstChildElement( "WMSFeatureInfoLayerAliases" );
+  if ( featureInfoLayerAliasesElem.isNull() )
+  {
+    return aliasMap;
+  }
+  QDomNodeList layerAliasesValueList = featureInfoLayerAliasesElem.elementsByTagName( "value" );
+  for ( int i = 0; i < layerAliasesValueList.size(); ++i )
+  {
+    layerAliasStringList << layerAliasesValueList.at( i ).toElement().text();
+  }
+
+  int nMapEntries = qMin( aliasLayerStringList.size(), layerAliasStringList.size() );
+  for ( int i = 0; i < nMapEntries; ++i )
+  {
+    aliasMap.insert( aliasLayerStringList.at( i ), layerAliasStringList.at( i ) );
+  }
+
+  return aliasMap;
+}
+
 QString QgsProjectParser::convertToAbsolutePath( const QString& file ) const
 {
   if ( !file.startsWith( "./" ) && !file.startsWith( "../" ) )
