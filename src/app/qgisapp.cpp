@@ -807,6 +807,7 @@ void QgisApp::createActions()
   // View Menu Items
 
   connect( mActionPan, SIGNAL( triggered() ), this, SLOT( pan() ) );
+  connect( mActionPanToSelected, SIGNAL( triggered() ), this, SLOT( panToSelected() ) );
   connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
   connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
   connect( mActionSelect, SIGNAL( triggered() ), this, SLOT( select() ) );
@@ -3254,6 +3255,11 @@ void QgisApp::zoomOut()
 void QgisApp::zoomToSelected()
 {
   mMapCanvas->zoomToSelected();
+}
+
+void QgisApp::panToSelected()
+{
+  mMapCanvas->panToSelected();
 }
 
 void QgisApp::pan()

@@ -17,7 +17,7 @@
      <x>0</x>
      <y>0</y>
      <width>1052</width>
-     <height>25</height>
+     <height>28</height>
     </rect>
    </property>
    <widget class="QMenu" name="mEditMenu">
@@ -107,6 +107,7 @@
      <addaction name="mActionDecorationScaleBar"/>
     </widget>
     <addaction name="mActionPan"/>
+    <addaction name="mActionPanToSelected"/>
     <addaction name="mActionZoomIn"/>
     <addaction name="mActionZoomOut"/>
     <addaction name="separator"/>
@@ -307,6 +308,7 @@
     <bool>false</bool>
    </attribute>
    <addaction name="mActionPan"/>
+   <addaction name="mActionPanToSelected"/>
    <addaction name="mActionZoomIn"/>
    <addaction name="mActionZoomOut"/>
    <addaction name="mActionZoomActualSize"/>
@@ -1555,6 +1557,18 @@
    </property>
    <property name="toolTip">
     <string>Run feature action</string>
+   </property>
+  </action>
+  <action name="mActionPanToSelected">
+   <property name="icon">
+    <iconset resource="../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionPanToSelected.png</normaloff>:/images/themes/default/mActionPanToSelected.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pan Map to Selection</string>
+   </property>
+   <property name="toolTip">
+    <string>Pan Map to Selection</string>
    </property>
   </action>
  </widget>

@@ -111,6 +111,7 @@
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOptions.png</file>
         <file>themes/default/mActionPan.png</file>
+        <file>themes/default/mActionPanToSelected.png</file>
         <file>themes/default/mAction.png</file>
         <file>themes/default/mActionProjectProperties.png</file>
         <file>themes/default/mActionPropertyItem.png</file>
@@ -295,6 +296,7 @@
         <file>themes/gis/mActionNodeTool.png</file>
         <file>themes/gis/mActionOpenTable.png</file>
         <file>themes/gis/mActionPan.png</file>
+        <file>themes/gis/mActionPanToSelected.png</file>
         <file>themes/gis/mActionRaiseItems.png</file>
         <file>themes/gis/mActionRedo.png</file>
         <file>themes/gis/mActionRemoveLayer.png</file>

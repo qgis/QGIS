@@ -239,6 +239,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
 
     QAction *actionPan() { return mActionPan; }
+    QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
     QAction *actionSelect() { return mActionSelect; }
@@ -369,6 +370,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToNext();
     //! Zoom to selected features
     void zoomToSelected();
+    //! Pan map to selected features
+    //! @note added in 2.0
+    void panToSelected();
 
     //! open the properties dialog for the currently selected layer
     void layerProperties();

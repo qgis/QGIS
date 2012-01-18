@@ -113,7 +113,6 @@ QgsRasterLayer* QgisAppInterface::addRasterLayer( const QString& url, const QStr
   return qgis->addRasterLayer( url, baseName, providerKey, layers, styles, format, crs );
 }
 
-
 bool QgisAppInterface::addProject( QString theProjectName )
 {
   return qgis->addProject( theProjectName );
@@ -336,6 +335,7 @@ QAction *QgisAppInterface::actionEditSeparator2() { return 0; }
 
 //! View menu actions
 QAction *QgisAppInterface::actionPan() { return qgis->actionPan(); }
+QAction *QgisAppInterface::actionPanToSelected() { return qgis->actionPanToSelected(); }
 QAction *QgisAppInterface::actionZoomIn() { return qgis->actionZoomIn(); }
 QAction *QgisAppInterface::actionZoomOut() { return qgis->actionZoomOut(); }
 QAction *QgisAppInterface::actionSelect() { return qgis->actionSelect(); }

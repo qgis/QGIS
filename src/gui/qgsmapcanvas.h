@@ -156,6 +156,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
       Added in version 1.2: optionally specify different than current layer */
     void zoomToSelected( QgsVectorLayer* layer = NULL );
 
+    /** Pan to the selected features of current (vector) layer keeping same extent.
+      @note added in 2.0 */
+    void panToSelected( QgsVectorLayer* layer = NULL );
+
     /** \brief Sets the map tool currently being used on the canvas */
     void setMapTool( QgsMapTool* mapTool );
 
