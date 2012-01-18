@@ -20,24 +20,42 @@
 
 class QgsMessageLogConsole;
 
-void ( *QgsMessageLog::gmLogger )( QString message, QString tag, int level ) = 0;
+QgsMessageLog *QgsMessageLog::sInstance = 0;
 
-void QgsMessageLog::setLogger( void ( *f )( QString message, QString tag, int level ) )
+QgsMessageLog::QgsMessageLog()
+    : QObject()
 {
-  gmLogger = f;
+  sInstance = this;
+}
+
+QgsMessageLog *QgsMessageLog::instance()
+{
+  if ( !sInstance )
+    sInstance = new QgsMessageLog();
+
+  return sInstance;
 }
 
 void QgsMessageLog::logMessage( QString message, QString tag, int level )
 {
   QgsDebugMsg( QString( "%1 %2[%3] %4" ).arg( QDateTime::currentDateTime().toString( Qt::ISODate ) ).arg( tag ).arg( level ).arg( message ) );
 
-  if ( !gmLogger )
-    QgsMessageLogConsole::logger( message, tag, level );
-  else
-    gmLogger( message, tag, level );
+  QgsMessageLog::instance()->emitMessage( message, tag, level );
 }
 
-void QgsMessageLogConsole::logger( QString message, QString tag, int level )
+void QgsMessageLog::emitMessage( QString message, QString tag, int level )
+{
+  emit messageReceived( message, tag, level );
+}
+
+QgsMessageLogConsole::QgsMessageLogConsole()
+    : QObject( QgsMessageLog::instance() )
+{
+  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, int ) ),
+           this, SLOT( logMessage( QString, QString, tag ) ) );
+}
+
+void QgsMessageLogConsole::logMessage( QString message, QString tag, int level )
 {
   std::cout << tag.toLocal8Bit().data() << "[" << level << "]: " << message.toLocal8Bit().data() << std::endl;
 }

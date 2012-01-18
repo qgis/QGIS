@@ -30,18 +30,25 @@
 
  * \note added in 1.9
 */
-class CORE_EXPORT QgsMessageLog
+class CORE_EXPORT QgsMessageLog : public QObject
 {
+    Q_OBJECT;
+
   public:
+    static QgsMessageLog *instance();
+
     //! add a message to the instance (and create it if necessary)
     static void logMessage( QString message, QString tag = QString::null, int level = 0 );
 
-    //! set log message
-    static void setLogger( void ( *logger )( QString message, QString tag, int level ) );
+  signals:
+    void messageReceived( QString message, QString tag, int level );
 
   private:
-    //! function
-    static void ( *gmLogger )( QString message, QString tag, int level );
+    QgsMessageLog();
+
+    void emitMessage( QString message, QString tag, int level );
+
+    static QgsMessageLog *sInstance;
 };
 
 
@@ -51,10 +58,15 @@ class CORE_EXPORT QgsMessageLog
 This class outputs log messages to the standard output. Therefore it might
 be the right choice for apps without GUI.
 */
-class CORE_EXPORT QgsMessageLogConsole
+class CORE_EXPORT QgsMessageLogConsole : public QObject
 {
+    Q_OBJECT;
+
   public:
-    static void logger( QString message, QString tag = QString::null, int level = 0 );
+    QgsMessageLogConsole();
+
+  public slots:
+    void logMessage( QString message, QString tag, int level );
 };
 
 #endif
