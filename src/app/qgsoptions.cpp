@@ -62,9 +62,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   connect( cmbIconSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
   connect( cmbIconSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( iconSizeChanged( const QString& ) ) );
 
-  connect( cmbFontSize, SIGNAL( activated( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
-  connect( cmbFontSize, SIGNAL( highlighted( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
-  connect( cmbFontSize, SIGNAL( textChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
+  connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
 
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
@@ -282,7 +280,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   // set the theme combo
   cmbTheme->setCurrentIndex( cmbTheme->findText( settings.value( "/Themes", "default" ).toString() ) );
   cmbIconSize->setCurrentIndex( cmbIconSize->findText( settings.value( "/IconSize", QGIS_ICON_SIZE ).toString() ) );
-  cmbFontSize->setCurrentIndex( cmbFontSize->findText( settings.value( "/menuSize", QGIS_FONT_SIZE ).toString() ) );
+  spinFontSize->setValue( settings.value( "/fontPointSize", QgisApp::instance()->font().pointSize() ).toInt() );
   QString name = QApplication::style()->objectName();
   cmbStyle->setCurrentIndex( cmbStyle->findText( name, Qt::MatchFixedString ) );
   //set the state of the checkboxes
@@ -522,9 +520,9 @@ void QgsOptions::iconSizeChanged( const QString &iconSize )
   QgisApp::instance()->setIconSizes( iconSize.toInt() );
 }
 
-void QgsOptions::fontSizeChanged( const QString &menuSize )
+void QgsOptions::fontSizeChanged( const QString &fontSize )
 {
-  QgisApp::instance()->setFontSize( menuSize.toInt() );
+  QgisApp::instance()->setFontSize( fontSize.toInt() );
 }
 
 QString QgsOptions::theme()
@@ -651,7 +649,7 @@ void QgsOptions::saveOptions()
   }
 
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
-  settings.setValue( "/fontSize", cmbFontSize->currentText() );
+  settings.setValue( "/fontPointSize", spinFontSize->value() );
 
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no
