@@ -31,6 +31,11 @@ QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLoca
     source->startUpdates();
     QObject::connect(source, SIGNAL(positionUpdated(QGeoPositionInfo)),
              this, SLOT(parseData()));
+    QgsGPSInformation info;
+    info.latitude = 40;
+    info.longitude = 10;
+    mStatus = QgsGPSConnection::GPSDataReceived;
+    emit stateChanged( info );
  }
  else
  {
