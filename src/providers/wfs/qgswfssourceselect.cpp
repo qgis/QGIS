@@ -62,12 +62,19 @@ QgsWFSSourceSelect::QgsWFSSourceSelect( QWidget* parent, Qt::WFlags fl, bool emb
   populateConnectionList();
   mProjectionSelector = new QgsGenericProjectionSelector( this );
   mProjectionSelector->setMessage();
+
+  QSettings settings;
+  QgsDebugMsg( "restoring geometry" );
+  restoreGeometry( settings.value( "/Windows/WFSSourceSelect/geometry" ).toByteArray() );
 }
 
 QgsWFSSourceSelect::~QgsWFSSourceSelect()
 {
-  delete mProjectionSelector;
+  QSettings settings;
+  QgsDebugMsg( "saving geometry" );
+  settings.setValue( "/Windows/WFSSourceSelect/geometry", saveGeometry() );
 
+  delete mProjectionSelector;
   delete mConn;
 }
 
@@ -178,6 +185,7 @@ void QgsWFSSourceSelect::capabilitiesReplyFinished()
     newItem->setText( 0, featureType.title );
     newItem->setText( 1, featureType.name );
     newItem->setText( 2, featureType.abstract );
+    newItem->setToolTip( 2, "<font color=black>" + featureType.abstract  + "</font>" );
     newItem->setCheckState( 3, Qt::Checked );
     treeWidget->addTopLevelItem( newItem );
 
