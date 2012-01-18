@@ -89,7 +89,7 @@ class ANALYSIS_EXPORT QgsRelief
     QList< ReliefColor > mReliefColors;
 
     bool processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
-                                char* red, char* green, char* blue );
+                                unsigned char* red, unsigned char* green, unsigned char* blue );
 
     /**Opens the input file and returns the dataset handle and the number of pixels in x-/y- direction*/
     GDALDatasetH openInputFile( int& nCellsX, int& nCellsY );
