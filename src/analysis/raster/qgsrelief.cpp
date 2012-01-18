@@ -164,9 +164,9 @@ int QgsRelief::processRaster( QProgressDialog* p )
   float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
   float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  int* resultRedLine = ( int * ) CPLMalloc( sizeof( int ) * xSize );
-  int* resultGreenLine = ( int * ) CPLMalloc( sizeof( int ) * xSize );
-  int* resultBlueLine = ( int * ) CPLMalloc( sizeof( int ) * xSize );
+  char* resultRedLine = ( char * ) CPLMalloc( sizeof( char ) * xSize );
+  char* resultGreenLine = ( char * ) CPLMalloc( sizeof( char ) * xSize );
+  char* resultBlueLine = ( char * ) CPLMalloc( sizeof( char ) * xSize );
 
   if ( p )
   {
@@ -247,9 +247,9 @@ int QgsRelief::processRaster( QProgressDialog* p )
       }
     }
 
-    GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Int32, 0, 0 );
-    GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Int32, 0, 0 );
-    GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Int32, 0, 0 );
+    GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Byte, 0, 0 );
+    GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Byte, 0, 0 );
+    GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Byte, 0, 0 );
   }
 
   if ( p )
@@ -278,7 +278,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
 }
 
 bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
-                                       int* red, int* green, int* blue )
+                                       char* red, char* green, char* blue )
 {
   //1. component: colour and hillshade from 300 degrees
   int r = 0;
@@ -363,9 +363,9 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
     b = b3 * 0.1 + b * 0.9;
   }
 
-  *red = r;
-  *green = g;
-  *blue = b;
+  *red = ( char )r;
+  *green = ( char )g;
+  *blue = ( char )b;
   return true;
 }
 
@@ -444,7 +444,7 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "PACKBITS" );
 
   //create three band raster (reg, green, blue)
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toLocal8Bit().data(), xSize, ySize, 3, GDT_Int32, papszOptions );
+  GDALDatasetH outputDataset = GDALCreate( outputDriver, mOutputFile.toLocal8Bit().data(), xSize, ySize, 3, GDT_Byte, papszOptions );
   if ( outputDataset == NULL )
   {
     return outputDataset;
