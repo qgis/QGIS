@@ -10,6 +10,9 @@ from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.gui.MultipleInputPanel import MultipleInputPanel
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.gui.FixedTablePanel import FixedTablePanel
+from sextante.parameters.ParameterNumber import ParameterNumber
+from sextante.parameters.ParameterRange import ParameterRange
+from sextante.parameters.ParameterTableField import ParameterTableField
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -33,6 +36,7 @@ class Ui_ParametersDialog(object):
         self.alg = alg
         self.dialog = dialog
         self.valueItems = {}
+        self.depentItems = {}
         dialog.setObjectName(_fromUtf8("Parameters"))
         dialog.resize(650, 450)
         self.buttonBox = QtGui.QDialogButtonBox(dialog)
@@ -77,6 +81,9 @@ class Ui_ParametersDialog(object):
             item = QtGui.QComboBox()
             item.addItem("Yes")
             item.addItem("No")
+        elif isinstance(param, ParameterTableField):
+            item = QtGui.QComboBox()
+            item = self.getFields(QGisLayers.getVectorLayers()[0])
         elif isinstance(param, ParameterSelection):
             item = QtGui.QComboBox()
             item.addItems(param.options)
@@ -93,8 +100,15 @@ class Ui_ParametersDialog(object):
             item = MultipleInputPanel(opts)
         else:
             item = QtGui.QLineEdit()
+            if isinstance(param, ParameterNumber):
+                item.setText("0")
+            elif isinstance(param, ParameterRange):
+                item.setText("0,1")
+
 
         return item
+
+    def getFields(self, layer):
 
 
     def setTableContent(self):
@@ -153,6 +167,8 @@ class Ui_ParametersDialog(object):
             param.value = widget.currentIndex() == 0
         elif isinstance(param, ParameterSelection):
             param.value = widget.currentIndex()
+        elif isinstance(param, ParameterFixedTable):
+            param.value = widget.table
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = QGisLayers.getVectorLayers()
@@ -164,6 +180,17 @@ class Ui_ParametersDialog(object):
             for index in widget.selectedoptions:
                 value.append(options[index])
             param.value = value
+        elif isinstance(param, ParameterRange):
+            text = widget.text()
+            tokens = text.split(",")
+            if len(tokens)!= 2:
+                return False
+            try:
+                n1 = float(tokens[0])
+                n2 = float(tokens[1])
+            except:
+                return False
+
         else:
             param.value = widget.text()
 

@@ -1,9 +1,12 @@
 from sextante.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
+from sextante.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
 
 class Sextante:
 
-    providers = [SagaAlgorithmProvider()]
+    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider()]
     algs = {}
+    actions = {}
+    contextMenuActions = []
 
 
     def __init__(self):
@@ -12,6 +15,8 @@ class Sextante:
     @staticmethod
     def initialize():
         Sextante.loadAlgorithms()
+        Sextante.loadActions()
+        Sextante.loadContextMenuActions()
 
     @staticmethod
     def loadAlgorithms():
@@ -19,8 +24,26 @@ class Sextante:
             providerAlgs = provider.algs
             algs = {}
             for alg in providerAlgs:
+                alg.icon = provider.icon
                 algs[alg.commandLineName()] = alg
             Sextante.algs[provider.getName()] = algs
+
+    @staticmethod
+    def loadActions():
+        for provider in Sextante.providers:
+            providerActions = provider.actions
+            actions = list()
+            for action in providerActions:
+                action.icon = provider.icon
+                actions.append(action)
+            Sextante.actions[provider.getName()] = actions
+
+    @staticmethod
+    def loadContextMenuActions():
+        for provider in Sextante.providers:
+            providerActions = provider.contextMenuActions
+            for action in providerActions:
+                Sextante.contextMenuActions.append(action)
 
     @staticmethod
     def getAlgorithm(name):

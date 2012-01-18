@@ -5,6 +5,7 @@ from sextante.parameters.ParameterTable import ParameterTable
 from sextante.parameters.ParameterFixedTable import ParameterFixedTable
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.outputs.OutputTable import OutputTable
+from sextante.outputs.OutputDataObject import OutputDataObject
 from sextante.parameters.ParameterMultipleInput import ParameterMultipleInput
 from sextante.parameters.ParameterRaster import ParameterRaster
 from sextante.outputs.OutputRaster import OutputRaster
@@ -20,6 +21,7 @@ from sextante.outputs.OutputVector import OutputVector
 from sextante.saga.SagaUtils import SagaUtils
 import time
 from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
+from sextante.parameters.ParameterRange import ParameterRange
 
 
 
@@ -32,7 +34,6 @@ class SagaAlgorithm(GeoAlgorithm):
         self.defineCharacteristicsFromFile()
         self.numExportedLayers = 0
         self.providerName = "saga:"
-        self.ok = False
 
     def defineCharacteristics(self):
         pass
@@ -62,7 +63,12 @@ class SagaAlgorithm(GeoAlgorithm):
                     raise UnwrappableSagaAlgorithmException()
                 line = lines.readline().lower()
                 if "data object" in line or "file" in line:
-                    raise UnwrappableSagaAlgorithmException()
+                    if "output" in line:
+                        output = OutputDataObject()
+                        output.name = paramName
+                        output.description = paramDescription
+                    else:
+                        raise UnwrappableSagaAlgorithmException()
                 if "table" in line:
                     #print(line)
                     if "input" in line:
@@ -155,6 +161,11 @@ class SagaAlgorithm(GeoAlgorithm):
                     self.putParameter(param)
                 elif "text" in line:
                     param = ParameterString()
+                    param.name = paramName
+                    param.description = paramDescription
+                    self.putParameter(param)
+                elif "range" in line:
+                    param = ParameterRange()
                     param.name = paramName
                     param.description = paramDescription
                     self.putParameter(param)

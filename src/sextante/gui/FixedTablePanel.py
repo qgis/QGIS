@@ -12,6 +12,10 @@ class FixedTablePanel(QtGui.QWidget):
         super(FixedTablePanel, self).__init__(parent)
         self.param = param
         self.table = []
+        for i in range(param.numRows):
+            self.table.append(list())
+            for j in range(len(param.cols)):
+                self.table[i].append("0")
         self.setObjectName(_fromUtf8("MSPanel"))
         self.contents = QtGui.QWidget(self)
         self.contents.setObjectName(_fromUtf8("contents"))

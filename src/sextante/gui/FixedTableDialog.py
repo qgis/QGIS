@@ -13,14 +13,7 @@ class FixedTableDialog(QtGui.QDialog):
         QtGui.QDialog.__init__(self)
         self.setModal(True)
         self.param = param
-        if table != None:
-            self.table = table
-        else:
-            self.table = []
-            for i in range(param.numRows):
-                self.table.append(list())
-                for j in range(len(param.cols)):
-                    self.table[i].append("0")
+        self.table = table
         self.ui = Ui_FixedTableDialog()
         self.ui.setupUi(self)
         self.table = None
@@ -29,48 +22,53 @@ class Ui_FixedTableDialog(object):
     def setupUi(self, dialog):
         self.dialog = dialog
         dialog.setObjectName(_fromUtf8("Dialog"))
-        dialog.resize(400, 350)
+        dialog.resize(600, 350)
         dialog.setWindowTitle("Fixed Table")
         self.buttonBox = QtGui.QDialogButtonBox(dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(290, 10, 81, 61))
+        self.buttonBox.setGeometry(QtCore.QRect(490, 10, 81, 61))
         self.buttonBox.setOrientation(QtCore.Qt.Vertical)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
         self.table = QtGui.QTableWidget(dialog)
-        self.table.setGeometry(QtCore.QRect(10, 10, 270, 300))
+        self.table.setGeometry(QtCore.QRect(10, 10, 470, 300))
         self.table.setObjectName(_fromUtf8("table"))
         self.table.setColumnCount(len(self.dialog.param.cols))
         for i in range(len(self.dialog.param.cols)):
             self.table.setColumnWidth(i,380 / len(self.dialog.param.cols))
             self.table.setHorizontalHeaderItem(i, QtGui.QTableWidgetItem(self.dialog.param.cols[i]))
-        self.table.setRowCount(self.dialog.param.numRows)
+        self.table.setRowCount(len(self.dialog.table))
+        for i in range(len(self.dialog.table)):
+            self.table.setRowHeight(i,22)
         self.table.verticalHeader().setVisible(False)
-        self.addRow = QtGui.QPushButton(dialog)
-        self.addRow.setGeometry(QtCore.QRect(290, 290, 81, 23))
-        self.addRow.setObjectName(_fromUtf8("addRow"))
-        self.addRow.setText("Add row")
+        self.addRowButton = QtGui.QPushButton(dialog)
+        self.addRowButton.setGeometry(QtCore.QRect(490, 290, 81, 23))
+        self.addRowButton.setObjectName(_fromUtf8("addRowButton"))
+        self.addRowButton.setText("Add row")
         self.setTableContent()
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
-        QtCore.QObject.connect(self.addRow, QtCore.SIGNAL(_fromUtf8("clicked()")), self.addRow)
+        QObject.connect(self.addRowButton, QtCore.SIGNAL(_fromUtf8("clicked()")), self.addRow)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
     def setTableContent(self):
         for i in range(len(self.dialog.table)):
-            for j in range(len(self.dialog.table)):
+            for j in range(len(self.dialog.table[0])):
                 self.table.setItem(i,j,QtGui.QTableWidgetItem(self.dialog.table[i][j]))
 
     def accept(self):
-        self.dialog.selectedoptions = []
-        for i in range(len(self.dialog.options)):
-            widget = self.table.cellWidget(i, 0)
-            if widget.isChecked():
-                self.dialog.selectedoptions.append(i)
+        self.dialog.table = []
+        for i in range(self.table.rowCount()):
+            self.dialog.table.append(list())
+            for j in range(self.table.columnCount()):
+                self.dialog.table[i].append(str(self.table.item(i,j).text()))
         self.dialog.close()
 
     def reject(self):
-        self.dialog.selectedoptions = None
+        self.dialog.table = None
         self.dialog.close()
 
     def addRow(self):
-        self.table.addRow()
+        self.table.setRowCount(self.table.rowCount()+1)
+        self.table.setRowHeight(self.table.rowCount()-1, 22)
+        for i in range(self.table.columnCount()):
+            self.table.setItem(self.table.rowCount()-1,i,QtGui.QTableWidgetItem("0"))

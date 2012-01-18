@@ -16,8 +16,7 @@ class SagaUtils:
 
     @staticmethod
     def sagaPath():
-        return "c:\\saga"
-        #return os.path.abspath(".." + os.sep + "soft"  + os.sep + "saga")
+        return SextanteUtils.softwareFolder() + os.sep + "saga"
 
     @staticmethod
     def sagaDescriptionPath():

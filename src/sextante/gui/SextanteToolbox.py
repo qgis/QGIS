@@ -56,14 +56,25 @@ class Ui_SextanteToolbox(object):
 
     def showPopupMenu(self,point):
         treeidx=self.algorithmTree.indexAt(point)
-        popupmenu = QMenu()
-        executeAction = QtGui.QAction("Execute", self.algorithmTree)
-        executeAction.triggered.connect(self.executeAlgorithm)
-        popupmenu.addAction(executeAction)
-        executeBatchAction = QtGui.QAction("Execute as batch process", self.algorithmTree)
-        executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
-        popupmenu.addAction(executeBatchAction)
-        popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
+        item = self.algorithmTree.itemAt(point)
+        if isinstance(item, TreeAlgorithmItem):
+            alg = item.alg
+            popupmenu = QMenu()
+            executeAction = QtGui.QAction("Execute", self.algorithmTree)
+            executeAction.triggered.connect(self.executeAlgorithm)
+            popupmenu.addAction(executeAction)
+            executeBatchAction = QtGui.QAction("Execute as batch process", self.algorithmTree)
+            executeBatchAction.triggered.connect(self.executeAlgorithmAsBatchProcess)
+            popupmenu.addAction(executeBatchAction)
+            actions = Sextante.contextMenuActions
+            for action in actions:
+                if action.isEnabled(alg):
+                    contextMenuAction = QtGui.QAction(action.name, self.algorithmTree)
+                    contextMenuAction.triggered.connect(action.execute)
+                    popupmenu.addAction(contextMenuAction)
+
+            popupmenu.exec_(self.algorithmTree.mapToGlobal(point))
+
 
     def executeAlgorithmAsBatchProcess(self):
         pass
@@ -71,22 +82,25 @@ class Ui_SextanteToolbox(object):
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
         if isinstance(item, TreeAlgorithmItem):
-            alg = Sextante.getAlgorithm(item.getAlg().commandLineName())
+            alg = Sextante.getAlgorithm(item.alg.commandLineName())
             alg = copy.deepcopy(alg)
             dlg = ParametersDialog(alg)
             dlg.exec_()
             if dlg.alg != None:
                 QMessageBox.critical(None, "hola", str(dlg.alg))
                 dlg.alg.processAlgorithm()
+        if isinstance(item, TreeActionItem):
+            action = item.action
+            action.execute()
 
     def fillTree(self):
         self.algorithmTree.clear()
         text = str(self.searchBox.text())
-        layersCount = QGisLayers.getLayersCount()
         for providerName in Sextante.algs.keys():
             groups = {}
             provider = Sextante.algs[providerName]
             algs = provider.values()
+            #add algorithms
             for alg in algs:
                 if text =="" or text.lower() in alg.name.lower():
                     if alg.group in groups:
@@ -95,11 +109,26 @@ class Ui_SextanteToolbox(object):
                         groupItem = QtGui.QTreeWidgetItem()
                         groupItem.setText(0,alg.group)
                         groups[alg.group] = groupItem
-                    algItem = TreeAlgorithmItem(alg, layersCount)
+                    algItem = TreeAlgorithmItem(alg)
                     groupItem.addChild(algItem)
+            #add actions
+            actions = Sextante.actions[providerName]
+            for action in actions:
+                if text =="" or text.lower() in action.name.lower():
+                    if action.group in groups:
+                        groupItem = groups[action.group]
+                    else:
+                        groupItem = QtGui.QTreeWidgetItem()
+                        groupItem.setText(0,action.group)
+                        groups[action.group] = groupItem
+                    algItem = TreeActionItem(action)
+                    groupItem.addChild(algItem)
+
             providerItem = QtGui.QTreeWidgetItem()
             providerItem.setText(0,providerName)
+
             for groupItem in groups.values():
+                groupItem.sortChildren(0, Qt.AscendingOrder)
                 providerItem.addChild(groupItem)
             self.algorithmTree.addTopLevelItem(providerItem)
             providerItem.setExpanded(True)
@@ -110,12 +139,18 @@ class Ui_SextanteToolbox(object):
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):
 
-    def __init__(self, alg, layersCount):
+    def __init__(self, alg):
         QTreeWidgetItem.__init__(self)
         self.alg = alg
-        self.setText(0,alg.name)
-        if not alg.canBeExecuted(layersCount):
-            self.setForeground(0, QtGui.QBrush(QtGui.QColor(150,150,150)))
+        self.setText(0, alg.name)
+        self.setIcon(0, alg.icon)
 
-    def getAlg(self):
-        return self.alg
+
+class TreeActionItem(QtGui.QTreeWidgetItem):
+
+    def __init__(self, action):
+        QTreeWidgetItem.__init__(self)
+        self.action = action
+        self.setText(0, action.name)
+        self.setIcon(0, action.icon)
+

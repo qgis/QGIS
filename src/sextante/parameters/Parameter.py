@@ -27,5 +27,5 @@ class Parameter:
 #===============================================================================
 
     def __str__(self):
-        return self.name + " <" + self.__module__.split(".")[-1] + "> " + str(self.value)
+        return self.name + " <" + self.__module__.split(".")[-1] + "> "
 

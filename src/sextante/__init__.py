@@ -1,4 +1,4 @@
-from sextante.SextanteToolboxPlugin import SextanteToolboxPlugin
+from sextante.SextantePlugin import SextantePlugin
 
 def name():
     return "SEXTANTE"
@@ -12,4 +12,4 @@ def qgisMinimumVersion():
     return "1.0"
 def classFactory(iface):
     # load SextantePlugin class from file SextantePlugin
-    return SextanteToolboxPlugin(iface)
+    return SextantePlugin(iface)

@@ -6,11 +6,11 @@
 # This file should be included when you package your plugin.
 
 [general]
-name=SEXTANTE Toolbox
-description=SEXTANTE Toolbox for QGIS
+name=SEXTANTE
+description=SEXTANTE for QGIS
 version=0.1
 qgisMinimumVersion=1.0
-class_name=SextanteToolbox
+class_name=SextantePlugin
 website=www.sextantegis.com
 [author]
 name=Victor Olaya

@@ -8,10 +8,14 @@ class SextanteUtils:
 
         return userfolder
 
+    @staticmethod
+    def softwareFolder():
+        path = os.path.join(os.path.dirname(__file__),"..","soft")
+        return path
 
     @staticmethod
     def isWindows():
-        return True
+        return os.path =="nt"
 
 
     @staticmethod
@@ -19,6 +23,9 @@ class SextanteUtils:
         pass
 
 
+    @staticmethod
+    def addToLog(msg):
+        pass
 
 
 
