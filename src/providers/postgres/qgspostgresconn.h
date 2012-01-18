@@ -69,6 +69,7 @@ class QgsPostgresResult
     int PQftable( int col );
     int PQftype( int col );
     int PQftablecol( int col );
+    Oid PQoidValue();
 
     PGresult *result() const { return mRes; }
 

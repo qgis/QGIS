@@ -117,6 +117,12 @@ int QgsPostgresResult::PQftype( int col )
   return ::PQftype( mRes, col );
 }
 
+Oid QgsPostgresResult::PQoidValue()
+{
+  Q_ASSERT( mRes );
+  return ::PQoidValue( mRes );
+}
+
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRO;
 QMap<QString, QgsPostgresConn *> QgsPostgresConn::sConnectionsRW;
 const int QgsPostgresConn::sGeomTypeSelectLimit = 100;
