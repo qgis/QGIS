@@ -242,6 +242,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmessageoutput.h
+  qgsmessagelog.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h

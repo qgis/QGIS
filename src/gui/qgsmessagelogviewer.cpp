@@ -27,8 +27,6 @@
 #include <QToolTip>
 #include <QDockWidget>
 
-static QgsMessageLogViewer *gmInstance = 0;
-
 static QIcon icon( QString icon )
 {
   // try active theme
@@ -47,8 +45,9 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
     , mCount( 0 )
 {
   setupUi( this );
-  gmInstance = this;
-  QgsMessageLog::setLogger( logger );
+
+  connect( QgsMessageLog::instance(), SIGNAL( messageReceived( QString, QString, int ) ),
+           this, SLOT( logMessage( QString, QString, int ) ) );
 
   if ( statusBar )
   {
@@ -68,7 +67,6 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
 
 QgsMessageLogViewer::~QgsMessageLogViewer()
 {
-  QgsMessageLog::setLogger( 0 );
 }
 
 void QgsMessageLogViewer::hideEvent( QHideEvent * )
@@ -98,14 +96,6 @@ void QgsMessageLogViewer::buttonToggled( bool checked )
     w->show();
   else
     w->hide();
-}
-
-void QgsMessageLogViewer::logger( QString message, QString tag, int level )
-{
-  if ( !gmInstance )
-    return;
-
-  gmInstance->logMessage( message, tag, level );
 }
 
 void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
