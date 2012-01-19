@@ -1131,6 +1131,10 @@ void QgisApp::createToolBars()
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
   // work properly
+#ifdef ANDROID
+  int fontPointSize = settings.value( "/fontPointSize", QGIS_ANDROID_DEFAULT_FONT_SIZE ).toInt();
+  setFontSize( fontPointSize );
+#endif
 
   QList<QToolBar*> toolbarMenuToolBars;
   toolbarMenuToolBars << mFileToolBar
