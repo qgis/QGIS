@@ -2942,28 +2942,6 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   Q_UNUSED( errorMessage );
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
 
-#if 0
-  //resampler
-  QDomElement resamplerElem = mnl.firstChildElement( "resampler" );
-  if ( !resamplerElem.isNull() )
-  {
-    delete mResampler;
-    QString rText = resamplerElem.text();
-    if ( rText == "bilinear" )
-    {
-      mResampler = new QgsBilinearRasterResampler();
-    }
-    else if ( rText == "cubic" )
-    {
-      mResampler = new QgsCubicRasterResampler();
-    }
-    else //nearest neighbour
-    {
-      mResampler = 0;
-    }
-  }
-#endif //0
-
   QDomNode snode = mnl.namedItem( "mDrawingStyle" );
   QDomElement myElement = snode.toElement();
   setDrawingStyle( myElement.text() );
@@ -3151,6 +3129,35 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
     }
     myColorRampShader->setColorRampItemList( myColorRampItemList );
   }
+
+  //resampler
+  QDomElement zoomedInResamplerElem = mnl.firstChildElement( "zoomedInResampler" );
+  if ( mRenderer && !zoomedInResamplerElem.isNull() )
+  {
+    QgsRasterResampler* zoomedInResampler = 0;
+    QString zoomedInResamplerType = zoomedInResamplerElem.text();
+    if ( zoomedInResamplerType == "bilinear" )
+    {
+      zoomedInResampler = new QgsBilinearRasterResampler();
+    }
+    else if ( zoomedInResamplerType == "cubic" )
+    {
+      zoomedInResampler = new QgsCubicRasterResampler();
+    }
+    mRenderer->setZoomedInResampler( zoomedInResampler );
+  }
+  QDomElement zoomedOutResamplerElem = mnl.firstChildElement( "zoomedOutResampler" );
+  if ( mRenderer && !zoomedOutResamplerElem.isNull() )
+  {
+    QgsRasterResampler* zoomedOutResampler = 0;
+    QString zoomedOutResamplerType = zoomedOutResamplerElem.text();
+    if ( zoomedOutResamplerType == "bilinear" )
+    {
+      zoomedOutResampler = new QgsBilinearRasterResampler();
+    }
+    mRenderer->setZoomedOutResampler( zoomedOutResampler );
+  }
+
   return true;
 } //readSymbology
 
