@@ -31,6 +31,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
   setupUi( this );
 
   QSettings settings;
+  restoreGeometry( settings.value( "/Windows/VectorLayerSaveAs/geometry" ).toByteArray() );
   QMap<QString, QString> map = QgsVectorFileWriter::ogrDriverList();
   mFormatComboBox->blockSignals( true );
   for ( QMap< QString, QString>::const_iterator it = map.constBegin(); it != map.constEnd(); ++it )
@@ -64,6 +65,8 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
 
 QgsVectorLayerSaveAsDialog::~QgsVectorLayerSaveAsDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/VectorLayerSaveAs/geometry", saveGeometry() );
 }
 
 void QgsVectorLayerSaveAsDialog::accept()

@@ -15,6 +15,7 @@
 
 #include "qgsogrsublayersdialog.h"
 
+#include <QSettings>
 #include <QTableWidgetItem>
 
 
@@ -22,12 +23,18 @@ QgsOGRSublayersDialog::QgsOGRSublayersDialog( QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/OGRSubLayers/geometry" ).toByteArray() );
+
   QStringList labels = QStringList() << tr( "Layer ID" ) << tr( "Layer name" ) << tr( "Nb of features" ) << tr( "Geometry type" );
   layersTable->setHeaderLabels( labels );
 }
 
 QgsOGRSublayersDialog::~QgsOGRSublayersDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/OGRSubLayers/geometry", saveGeometry() );
 }
 
 QStringList QgsOGRSublayersDialog::getSelection()
