@@ -38,17 +38,16 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
 
 void QgsQtLocationConnection::parseData()
 {
-  QgsDebugMsg( "parsing!" );
-  QgsDebugMsg( "Valid QGeoPositionInfo!" );
+  QgsDebugMsg( "Valid QGeoPositionInfo, parsing" );
   mStatus = GPSDataReceived;
 
   if (locationDataSource){
     QGeoPositionInfo info = locationDataSource->lastKnownPosition();
+    QgsDebugMsg(info.coordinate().toString());
     if (info.isValid())
     {
 
-   //        t = info.HorizontalAccuracy;
-   //        t = info.attribute(QGeoPositionInfo::HorizontalAccuracy);
+   // info.HorizontalAccuracy;
 
       mLastGPSInformation.latitude = info.coordinate().latitude();
       mLastGPSInformation.longitude = info.coordinate().longitude() ;
@@ -56,14 +55,13 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.speed = info.GroundSpeed * 3.6; // m/s to km/h
       mLastGPSInformation.direction = info.Direction;
       mLastGPSInformation.utcDateTime = info.timestamp();
-      mLastGPSInformation.pdop;
-      mLastGPSInformation.hdop;
-      mLastGPSInformation.vdop;
-      mLastGPSInformation.fixMode;
-      mLastGPSInformation.fixType;
-      mLastGPSInformation.quality;      // from GPGGA
-      mLastGPSInformation.status;     // from GPRMC A,V
-      QList<int>satPrn; // list of SVs in use; needed for QgsSatelliteInfo.inUse and other uses
+      mLastGPSInformation.pdop;     //< Dilution of precision
+      mLastGPSInformation.hdop;     //< Horizontal dilution of precision
+      mLastGPSInformation.vdop;     //< Vertical dilution of precision
+      mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
+      mLastGPSInformation.fixType;  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+      mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+      mLastGPSInformation.status;   //< Status (A = active or V = void)
       mLastGPSInformation.satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
     }
   }
@@ -82,8 +80,7 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
     QgsSatelliteInfo satelliteInfo;
     satelliteInfo.azimuth = currentSatellite.Azimuth;
     satelliteInfo.elevation = currentSatellite.Elevation;
-    //satelliteInfo.id = currentSatellite.id;
-    //satelliteInfo.inUse = currentSatellite.in_use; //TODO in satellitesInUseUpdated
+    satelliteInfo.id = currentSatellite.prnNumber();
     satelliteInfo.signal = currentSatellite.signalStrength();
     mLastGPSInformation.satellitesInView.append( satelliteInfo );
   }
@@ -95,6 +92,25 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
         const QList<QGeoSatelliteInfo>& satellites) {
   // The number of satellites in use is updated
   mLastGPSInformation.satellitesUsed = QString::number(satellites.count()).toInt();
+
+  mLastGPSInformation.satPrn.clear();
+  for (int i = 0; i < satellites.size(); ++i)
+  {
+    QGeoSatelliteInfo currentSatellite = satellites.at(i);
+    //add pnr to mLastGPSInformation.satPrn
+    mLastGPSInformation.satPrn.append(currentSatellite.prnNumber());
+
+    //set QgsSatelliteInfo.inuse to true for the satellites in use
+    for (int i = 0; i < mLastGPSInformation.satellitesInView.size(); ++i)
+    {
+      QgsSatelliteInfo satInView = mLastGPSInformation.satellitesInView.at(i);
+      if ( satInView.id == currentSatellite.prnNumber() )
+      {
+        satInView.inUse = true;
+        break;
+      }
+    }
+  }
   QgsDebugMsg("satellitesInUseUpdated");
   emit stateChanged( mLastGPSInformation );
 }
