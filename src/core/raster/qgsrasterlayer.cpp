@@ -43,6 +43,10 @@ email                : tim at linfiniti.com
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgssinglebandgrayrenderer.h"
 
+//resamplers
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+
 #include <cstdio>
 #include <cmath>
 #include <limits>
@@ -3277,14 +3281,31 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
 
-#if 0
   // resampler
-  QString resamplerName = mResampler ? mResampler->type() : "nearest neighbour";
-  QDomElement resamplerElem = document.createElement( "resampler" );
-  QDomText resamplerText = document.createTextNode( resamplerName );
-  resamplerElem.appendChild( resamplerText );
-  rasterPropertiesElement.appendChild( resamplerElem );
-#endif //0
+  if ( mRenderer )
+  {
+    QString zoomedInResamplerString = "nearest";
+    const QgsRasterResampler* zoomedInResampler = mRenderer->zoomedInResampler();
+    if ( zoomedInResampler )
+    {
+      zoomedInResamplerString = zoomedInResampler->type();
+    }
+    QDomElement zoomedInResamplerElem = document.createElement( "zoomedInResampler" );
+    QDomText zoomedInResamplerText = document.createTextNode( zoomedInResamplerString );
+    zoomedInResamplerElem.appendChild( zoomedInResamplerText );
+    rasterPropertiesElement.appendChild( zoomedInResamplerElem );
+
+    QString zoomedOutResamplerString = "nearest";
+    const QgsRasterResampler* zoomedOutResampler = mRenderer->zoomedOutResampler();
+    if ( zoomedOutResampler )
+    {
+      zoomedOutResamplerString = zoomedOutResampler->type();
+    }
+    QDomElement zoomedOutResamplerElem = document.createElement( "zoomedOutResampler" );
+    QDomText zoomedOutResamplerText = document.createTextNode( zoomedOutResamplerString );
+    zoomedOutResamplerElem.appendChild( zoomedOutResamplerText );
+    rasterPropertiesElement.appendChild( zoomedOutResamplerElem );
+  }
 
   QStringList sl = subLayers();
   QStringList sls = mDataProvider->subLayerStyles();
