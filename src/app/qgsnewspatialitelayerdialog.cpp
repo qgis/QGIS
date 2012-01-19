@@ -44,6 +44,10 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
     : QDialog( parent, fl )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/NewSpatiaLiteLayer/geometry" ).toByteArray() );
+
   mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
   mTypeBox->addItem( tr( "Text data" ), "text" );
@@ -52,7 +56,6 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   mPointRadioButton->setChecked( true );
   // Populate the database list from the stored connections
-  QSettings settings;
   settings.beginGroup( "/SpatiaLite/connections" );
   QStringList keys = settings.childGroups();
   QStringList::Iterator it = keys.begin();
@@ -87,6 +90,8 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
 QgsNewSpatialiteLayerDialog::~QgsNewSpatialiteLayerDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/NewSpatiaLiteLayer/geometry", saveGeometry() );
 }
 
 void QgsNewSpatialiteLayerDialog::on_mTypeBox_currentIndexChanged( int index )

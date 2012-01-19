@@ -10,11 +10,17 @@
 QgsEmbedLayerDialog::QgsEmbedLayerDialog( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/EmbedLayer/geometry" ).toByteArray() );
+
   QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 }
 
 QgsEmbedLayerDialog::~QgsEmbedLayerDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/EmbedLayer/geometry", saveGeometry() );
 }
 
 QList< QPair < QString, QString > > QgsEmbedLayerDialog::embeddedGroups() const

@@ -538,7 +538,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       {
         qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
                .arg( rect.asWktCoordinates() )
-               .arg( mDetectedSrid );
+               .arg( mRequestedSrid );
       }
       else
       {
@@ -547,7 +547,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
                .arg( rect.yMinimum() )
                .arg( rect.xMaximum() )
                .arg( rect.yMaximum() )
-               .arg( mDetectedSrid );
+               .arg( mRequestedSrid );
       }
 
       whereClause = QString( "%1 && %2" )
@@ -562,7 +562,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       }
     }
 
-    if ( !mRequestedSrid.isEmpty() && mRequestedSrid != mDetectedSrid )
+    if ( mRequestedSrid != mDetectedSrid )
     {
       whereClause += QString( " AND %1(%2)=%3" )
                      .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
@@ -731,10 +731,13 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
 {
   switch ( mPrimaryKeyType )
   {
-    case pktTid:
     case pktOid:
     case pktInt:
-      params << quotedValue( QString::number( featureId ) );
+      params << QString::number( featureId );
+      break;
+
+    case pktTid:
+      params << QString( "'(%1,%2)'" ).arg( FID_TO_NUMBER( featureId ) >> 16 ).arg( FID_TO_NUMBER( featureId ) & 0xffff );
       break;
 
     case pktFidMap:
@@ -1816,7 +1819,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
                 .arg( mConnectionRO->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
                 .arg( offset++ )
                 .arg( mConnectionRW->useWkbHex() ? "" : "::bytea" )
-                .arg( mDetectedSrid );
+                .arg( mRequestedSrid );
       delim = ",";
     }
 
@@ -1953,15 +1956,19 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
         QString v;
         if ( attr == attributevec.end() )
         {
+          const QgsField &fld = field( fieldId[i] );
           v = paramValue( defaultValues[i], defaultValues[i] );
-          features->addAttribute( fieldId[i], v );
+          features->addAttribute( fieldId[i], convertValue( fld.type(), v ) );
         }
         else
         {
           v = paramValue( attr.value().toString(), defaultValues[i] );
 
           if ( v != attr.value().toString() )
-            features->changeAttribute( fieldId[i], v );
+          {
+            const QgsField &fld = field( fieldId[i] );
+            features->changeAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          }
         }
 
         params << v;
@@ -1995,7 +2002,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
           foreach( int idx, mPrimaryKeyAttrs )
           {
-            primaryKeyVals << attributevec[ mPrimaryKeyAttrs[idx] ];
+            primaryKeyVals << attributevec[ idx ];
           }
 
           features->setFeatureId( lookupFid( QVariant( primaryKeyVals ) ) );
@@ -2318,7 +2325,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                      .arg( quotedIdentifier( mGeometryColumn ) )
                      .arg( mConnectionRW->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
                      .arg( mConnectionRW->useWkbHex() ? "" : "::bytea" )
-                     .arg( mDetectedSrid )
+                     .arg( mRequestedSrid )
                      .arg( pkParamWhereClause( 2 ) );
 
     QgsDebugMsg( "updating: " + update );
@@ -2717,6 +2724,11 @@ bool QgsPostgresProvider::getGeometryDetails()
   {
     mDetectedGeomType = QgsPostgresConn::geomTypeFromPostgis( type );
     mDetectedSrid = srid;
+
+    if ( mRequestedSrid.isEmpty() )
+    {
+      mRequestedSrid = srid;
+    }
 
     mValid = mDetectedGeomType != QGis::UnknownGeometry || mRequestedGeomType != QGis::UnknownGeometry;
 

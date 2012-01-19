@@ -18,11 +18,15 @@
 #include "qgscontexthelp.h"
 
 #include <QColorDialog>
+#include <QSettings>
 
 QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent )
     : QDialog( parent ), mDeco( deco )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
 
   // set the map units in the spin box
   switch ( units )
@@ -59,6 +63,8 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/DecorationScaleBar/geometry", saveGeometry() );
 }
 
 void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
