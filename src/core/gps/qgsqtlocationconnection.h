@@ -19,8 +19,12 @@
 #define QGSQTLOCATIONCONNECTION_H
 
 #include "qgsgpsconnection.h"
+#include <QtCore/QPointer>
 #include <QtLocation/QGeoPositionInfoSource>
-using namespace QtMobility;
+#include <QtLocation/QGeoSatelliteInfo>
+#include <QtLocation/QGeoSatelliteInfoSource>
+
+QTM_USE_NAMESPACE
 
 class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
 {
@@ -33,9 +37,18 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     /**Parse available data source content*/
     void parseData( );
 
+    /**Called when the number of satellites in view is updated.*/
+    void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );
+
+    /**Called when the number of satellites in use is updated.*/
+    void satellitesInUseUpdated( const QList<QGeoSatelliteInfo>& satellites );
+
   private:
+    void startGPS();
+    void startSatelliteMonitor();
     QString mDevice;
-    QGeoPositionInfoSource *source;
+    QPointer<QGeoPositionInfoSource> locationDataSource;
+    QPointer<QGeoSatelliteInfoSource> satelliteInfoSource;
 
 };
 

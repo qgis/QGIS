@@ -156,7 +156,6 @@ void QgsGPSDetector::advance()
     else if( mPortList[ mPortIndex ].first.contains( "internalGPS" ) )
     {
 #ifdef HAVE_QT_MOBILITY_LOCATION
-      qDebug("Creating QtLocation GPS connection");
       mConn = new QgsQtLocationConnection();
 #else
       qWarning("QT_MOBILITY_LOCATION not found and mPortList matches internalGPS, this should never happen");
