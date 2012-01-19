@@ -45,7 +45,6 @@ class SagaAlgorithm(GeoAlgorithm):
         while line != "":
             line = line.strip("\n").strip()
             readLine = True;
-            #line = lines.readline()
             if line.startswith("library name"):
                 self.undecoratedGroup = line.split("\t")[1]
                 self.group = SagaGroupNameDecorator.getDecoratedName(self.undecoratedGroup)
@@ -59,7 +58,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 except Exception: #boolean params have a different syntax
                     paramName = line[1:line.index("\t")]
                     paramDescription = line[line.index("\t") + 1:].strip()
-                if SagaBlackList.isBlackListed(self.name, self.group):
+                if SagaBlackList.isBlackListed(self.name, self.undecoratedGroup):
                     raise UnwrappableSagaAlgorithmException()
                 line = lines.readline().lower()
                 if "data object" in line or "file" in line:
@@ -189,7 +188,7 @@ class SagaAlgorithm(GeoAlgorithm):
                 line = lines.readline()
         lines.close()
 
-    def proccessAlgorithm(self):
+    def processAlgorithm(self):
 
         commands = list()
         self.exportedLayers = {}
@@ -202,7 +201,7 @@ class SagaAlgorithm(GeoAlgorithm):
 
       #1: Export rasters to sgrd. only ASC and TIF are supported.
       #   Vector layers must be in shapefile format and tables in dbf format. We check that.
-        for param in self.parameters.values:
+        for param in self.parameters:
             if isinstance(param, ParameterRaster):
                 if param.value == None:
                     continue;
@@ -271,11 +270,10 @@ class SagaAlgorithm(GeoAlgorithm):
         for out in self.outputs.values:
             if isinstance(out, OutputRaster):
                 filename = out.value
-                if not filename.endswith(".sgrd"):
-                    filename += ".sgrd"
+                if not filename.endswith(".asc") or filename.endswith(".tif"):
+                    filename += ".tif"
                     out.value = filename
-                #A LO MEJOR NO HACE FALTA ESTO!!!!!!!!
-                #filename = SextanteUtils.tempfolder + os.sep + os.path.dirname(filename) + ".sgrd"
+                filename = SextanteUtils.tempFolder + os.sep + os.path.basename(filename) + ".sgrd"
                 command+=(" -" + out.name + " " + filename);
             if isinstance(out, OutputVector):
                 filename = out.value
@@ -292,38 +290,20 @@ class SagaAlgorithm(GeoAlgorithm):
 
         commands.append(command)
 
-      #-------------------------------------- //3:Export resulting raster layers
-      #----- for (int i = 0; i < m_OutputObjects.getOutputObjectsCount(); i++) {
-         #--------------------- final Output out = m_OutputObjects.getOutput(i);
-         #------------------------------ if (out instanceof OutputRasterLayer) {
-            #--- final IOutputChannel channel = getOutputChannel(out.getName());
-            #-------------------- if (!(channel instanceof FileOutputChannel)) {
-               #-------------------- if (channel instanceof NullOutputChannel) {
-                  #--------------------------------------------------- continue;
-               #-------------------------------------------------------------- }
-               #--------------------------------------------------------- else {
-                  #-------------- throw new UnsupportedOutputChannelException();
-               #-------------------------------------------------------------- }
-            #----------------------------------------------------------------- }
-            #-------- final FileOutputChannel foc = (FileOutputChannel) channel;
-            #----------------------------- String sFilename = foc.getFilename();
-            #--- if (!sFilename.endsWith("asc") && !sFilename.endsWith("tif")) {
-               #-------------------------------- sFilename = sFilename + ".tif";
-            #----------------------------------------------------------------- }
-            # final String sFilename2 = SextanteGUI.getOutputFactory().getTempFolder() + File.separator
-                                      # + new File(sFilename).getName() + ".sgrd";
-            #---------------------------------- if (sFilename.endsWith("asc")) {
-               # commands.add("io_grid 0 -GRID " + sFilename2 + " -FORMAT 1 -FILE " + sFilename);
-            #----------------------------------------------------------------- }
-            #------------------------------------------------------------ else {
-               # commands.add("io_gdal 1 -GRIDS " + sFilename2 + " -FORMAT 1 -FILE " + sFilename);
-            #----------------------------------------------------------------- }
-         #-------------------------------------------------------------------- }
-      #----------------------------------------------------------------------- }
-
+      #3:Export resulting raster layers
+        for out in self.outputs.values:
+            if isinstance(out, OutputRaster):
+                filename = out.value
+                filename2 = SextanteUtils.tempFolder + os.sep + os.path.basename(filename) + ".sgrd"
+            if filename.endsWith("asc"):
+                commands.append("io_grid 0 -GRID " + filename2 + " -FORMAT 1 -FILE " + filename);
+            else:
+                 commands.append("io_gdal 1 -GRIDS " + filename2 + " -FORMAT 1 -FILE " + filename);
 
       #4 Run SAGA
-
+        from PyQt4.QtCore import *
+        from PyQt4.QtGui import *
+        QMessageBox.critical(None, "hola", str(commands))
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
       #SagaUtils.executeSaga(this);
 

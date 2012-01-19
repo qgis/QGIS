@@ -1,4 +1,8 @@
 import os
+import time
+from sextante.outputs.OutputTable import OutputTable
+from sextante.outputs.OutputVector import OutputVector
+from sextante.outputs.OutputRaster import OutputRaster
 class SextanteUtils:
 
     @staticmethod
@@ -17,10 +21,27 @@ class SextanteUtils:
     def isWindows():
         return os.path =="nt"
 
+    @staticmethod
+    def tempFolder():
+        tempfolder = os.getenv('HOME') + os.sep + "sextante" + os.sep + "tempdata"
+        mkdir(tempfolder)
+
+        return tempfolder
 
     @staticmethod
     def setTempOutput(out):
-        pass
+        seconds = str(time.time())
+        if isinstance(out, OutputRaster):
+            ext = ".tif"
+        elif isinstance(out, OutputVector):
+            ext = ".shp"
+        elif isinstance(out, OutputTable):
+            ext = ".dbf"
+        else:
+            ext =""
+
+        filename = SextanteUtils.tempFolder() + os.sep + seconds + os.sep + ext
+        out.channel = filename
 
 
     @staticmethod

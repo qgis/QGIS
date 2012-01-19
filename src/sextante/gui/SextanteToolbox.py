@@ -55,7 +55,6 @@ class Ui_SextanteToolbox(object):
         QtCore.QMetaObject.connectSlotsByName(SextanteToolbox)
 
     def showPopupMenu(self,point):
-        treeidx=self.algorithmTree.indexAt(point)
         item = self.algorithmTree.itemAt(point)
         if isinstance(item, TreeAlgorithmItem):
             alg = item.alg

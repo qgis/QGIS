@@ -3,10 +3,15 @@ class SagaBlackList:
     @staticmethod
     def isBlackListed(name, group):
 
-        if "lectures_introduction" == group:
+        group = group.lower()
+
+        if "lectures" == group:
             return True
 
-        if "pointcloud_viewer" == group:
+        if "io_" == group:
+            return True
+
+        if "pointcloud" in group:
             return True
 
         if group.startswith("docs"):
