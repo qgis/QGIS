@@ -35,6 +35,9 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/NewVectorLayer/geometry" ).toByteArray() );
+
   // TODO: do it without QgisApp
   //mAddAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionNewAttribute.png" ) );
   //mRemoveAttributeButton->setIcon( QgisApp::getThemeIcon( "/mActionDeleteAttribute.png" ) );
@@ -77,6 +80,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WFlags fl
 
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/NewVectorLayer/geometry", saveGeometry() );
 }
 
 void QgsNewVectorLayerDialog::on_mTypeBox_currentIndexChanged( int index )

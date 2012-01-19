@@ -19,13 +19,16 @@
 #include <QColorDialog>
 #include <QColor>
 #include <QFont>
-
-
+#include <QSettings>
 
 QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyright& deco, QWidget* parent )
     : QDialog( parent ), mDeco( deco )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/DecorationCopyright/geometry" ).toByteArray() );
+
   //programmatically hide orientation selection for now
   cboOrientation->hide();
   textLabel15->hide();
@@ -47,6 +50,8 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
 
 QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/DecorationCopyright/geometry", saveGeometry() );
 }
 
 void QgsDecorationCopyrightDialog::on_buttonBox_accepted()

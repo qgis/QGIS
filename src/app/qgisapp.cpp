@@ -2086,13 +2086,6 @@ void QgisApp::about()
   abt->activateWindow();
 }
 
-
-
-
-
-
-
-
 /**
   This method prompts the user for a list of vector file names  with a dialog.
   */
