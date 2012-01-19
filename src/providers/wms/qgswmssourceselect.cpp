@@ -259,6 +259,7 @@ QgsNumericSortTreeWidgetItem *QgsWMSSourceSelect::createItem(
   item->setText( 1, names[0].simplified() );
   item->setText( 2, names[1].simplified() );
   item->setText( 3, names[2].simplified() );
+  item->setToolTip( 3, "<font color=black>" + names[2].simplified()  + "</font>" );
 
   items[ id ] = item;
 

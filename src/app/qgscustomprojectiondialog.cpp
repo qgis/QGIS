@@ -28,6 +28,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QLocale>
+#include <QSettings>
 
 //stdc++ includes
 #include <fstream>
@@ -44,6 +45,9 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
     : QDialog( parent, fl )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/CustomProjection/geometry" ).toByteArray() );
 
   pbnFirst->setIcon( QgisApp::getThemeIcon( "mIconFirst.png" ) );
   pbnPrevious->setIcon( QgisApp::getThemeIcon( "mIconPrevious.png" ) );
@@ -87,7 +91,8 @@ QgsCustomProjectionDialog::QgsCustomProjectionDialog( QWidget *parent, Qt::WFlag
 
 QgsCustomProjectionDialog::~QgsCustomProjectionDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "/Windows/CustomProjection/geometry", saveGeometry() );
 }
 
 void QgsCustomProjectionDialog::on_pbnDelete_clicked()

@@ -425,7 +425,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
 
   QSettings settings;
-  setFontSize( settings.value( "/fontSize", QGIS_FONT_SIZE ).toInt() );
+  setFontSize( settings.value( "/fontPointSize", font().pointSize() ).toInt() );
 
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
@@ -1024,7 +1024,7 @@ void QgisApp::createActionGroups()
 
 void QgisApp::setFontSize( int fontSize )
 {
-  setStyleSheet( QString( "font-size: %1pt;" ).arg( fontSize ) );
+  setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
 }
 
 void QgisApp::createMenus()
@@ -2095,13 +2095,6 @@ void QgisApp::about()
   abt->raise();
   abt->activateWindow();
 }
-
-
-
-
-
-
-
 
 /**
   This method prompts the user for a list of vector file names  with a dialog.
@@ -4387,7 +4380,16 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     activateDeactivateLayerRelatedActions( layer );
   }
 
-  vlayer->triggerRepaint();
+  QSettings settings;
+  QString markerType = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
+  bool markSelectedOnly = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+
+  // repaint only if the there will be/were markers
+  if (( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
+      ( markerType == "Cross" || markerType == "SemiTransparentCircle" ) )
+  {
+    vlayer->triggerRepaint();
+  }
 
   return res;
 }

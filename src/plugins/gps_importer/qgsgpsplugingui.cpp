@@ -80,12 +80,13 @@ QgsGPSPluginGui::QgsGPSPluginGui( const BabelMap& importers,
 
 QgsGPSPluginGui::~QgsGPSPluginGui()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-GPS/geometry", saveGeometry() );
+  settings.setValue( "/Plugin-GPS/lastTab", tabWidget->currentIndex() );
 }
 
 void QgsGPSPluginGui::on_buttonBox_accepted()
 {
-  saveState();
-
   // what should we do?
   switch ( tabWidget->currentIndex() )
   {
@@ -243,7 +244,6 @@ void QgsGPSPluginGui::enableRelevantControls()
 
 void QgsGPSPluginGui::on_buttonBox_rejected()
 {
-  saveState();
   reject();
 }
 
@@ -442,13 +442,6 @@ void QgsGPSPluginGui::openDeviceEditor()
 void QgsGPSPluginGui::devicesUpdated()
 {
   populateIMPBabelFormats();
-}
-
-void QgsGPSPluginGui::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/Plugin-GPS/geometry", saveGeometry() );
-  settings.setValue( "/Plugin-GPS/lastTab", tabWidget->currentIndex() );
 }
 
 void QgsGPSPluginGui::restoreState()

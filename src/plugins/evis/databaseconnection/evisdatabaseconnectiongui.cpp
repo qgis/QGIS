@@ -51,7 +51,8 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
 {
   setupUi( this );
 
-  restoreState();
+  QSettings settings;
+  restoreGeometry( settings.value( "/eVis/db-geometry" ).toByteArray() );
 
   mTempOutputFileList = theTemoraryFileList;
 
@@ -88,8 +89,9 @@ eVisDatabaseConnectionGui::eVisDatabaseConnectionGui( QList<QTemporaryFile*>* th
 */
 eVisDatabaseConnectionGui::~eVisDatabaseConnectionGui( )
 {
+  QSettings settings;
+  settings.setValue( "/eVis/db-geometry", saveGeometry() );
 }
-
 
 /*
  *
@@ -126,8 +128,6 @@ void eVisDatabaseConnectionGui::drawNewVectorLayer( QString layerName, QString x
 */
 void eVisDatabaseConnectionGui::on_buttonBox_accepted( )
 {
-  saveState();
-
   //Deallocate memory, basically a predescructor
   if ( 0 != mDatabaseConnection )
   {
@@ -537,16 +537,4 @@ void eVisDatabaseConnectionGui::on_pbtnRunQuery_clicked( )
       teditConsole->append( tr( "Error: A database connection is not currently established" ) );
     }
   }
-}
-
-void eVisDatabaseConnectionGui::saveState()
-{
-  QSettings settings;
-  settings.setValue( "/eVis/db-geometry", saveGeometry() );
-}
-
-void eVisDatabaseConnectionGui::restoreState()
-{
-  QSettings settings;
-  restoreGeometry( settings.value( "/eVis/db-geometry" ).toByteArray() );
 }

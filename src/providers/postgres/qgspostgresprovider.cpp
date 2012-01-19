@@ -538,7 +538,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       {
         qBox = QString( "setsrid('BOX3D(%1)'::box3d,%2)" )
                .arg( rect.asWktCoordinates() )
-               .arg( mDetectedSrid );
+               .arg( mRequestedSrid );
       }
       else
       {
@@ -547,7 +547,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
                .arg( rect.yMinimum() )
                .arg( rect.xMaximum() )
                .arg( rect.yMaximum() )
-               .arg( mDetectedSrid );
+               .arg( mRequestedSrid );
       }
 
       whereClause = QString( "%1 && %2" )
@@ -562,7 +562,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       }
     }
 
-    if ( !mRequestedSrid.isEmpty() && mRequestedSrid != mDetectedSrid )
+    if ( mRequestedSrid != mDetectedSrid )
     {
       whereClause += QString( " AND %1(%2)=%3" )
                      .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
@@ -731,10 +731,13 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
 {
   switch ( mPrimaryKeyType )
   {
-    case pktTid:
     case pktOid:
     case pktInt:
-      params << quotedValue( QString::number( featureId ) );
+      params << QString::number( featureId );
+      break;
+
+    case pktTid:
+      params << QString( "'(%1,%2)'" ).arg( FID_TO_NUMBER( featureId ) >> 16 ).arg( FID_TO_NUMBER( featureId ) & 0xffff );
       break;
 
     case pktFidMap:
@@ -1478,7 +1481,7 @@ bool QgsPostgresProvider::determinePrimaryKey()
           continue;
         }
 
-        if ( isInt && ( mAttributeFields[j].type() == QVariant::Int || mAttributeFields[j].type() == QVariant::LongLong ) )
+        if ( isInt && mAttributeFields[j].type() != QVariant::Int && mAttributeFields[j].type() != QVariant::LongLong )
           isInt = false;
 
         mPrimaryKeyAttrs << j;
@@ -1774,7 +1777,7 @@ QString QgsPostgresProvider::paramValue( QString fieldValue, const QString &defa
   if ( fieldValue == defaultValue && !defaultValue.isNull() )
   {
     QgsPostgresResult result = mConnectionRW->PQexec( QString( "SELECT %1" ).arg( defaultValue ) );
-    if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
       throw PGException( result );
 
     return result.PQgetvalue( 0, 0 );
@@ -1816,7 +1819,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
                 .arg( mConnectionRO->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
                 .arg( offset++ )
                 .arg( mConnectionRW->useWkbHex() ? "" : "::bytea" )
-                .arg( mDetectedSrid );
+                .arg( mRequestedSrid );
       delim = ",";
     }
 
@@ -1936,8 +1939,6 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
     if ( stmt.PQresultStatus() == PGRES_FATAL_ERROR )
       throw PGException( stmt );
 
-    QList<int> newIds;
-
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
     {
       const QgsAttributeMap &attributevec = features->attributeMap();
@@ -1949,16 +1950,66 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
       }
 
       for ( int i = 0; i < fieldId.size(); i++ )
-        params << paramValue( attributevec.value( fieldId[i], defaultValues[i] ).toString(), defaultValues[i] );
+      {
+        QgsAttributeMap::const_iterator attr = attributevec.find( fieldId[i] );
+
+        QString v;
+        if ( attr == attributevec.end() )
+        {
+          const QgsField &fld = field( fieldId[i] );
+          v = paramValue( defaultValues[i], defaultValues[i] );
+          features->addAttribute( fieldId[i], convertValue( fld.type(), v ) );
+        }
+        else
+        {
+          v = paramValue( attr.value().toString(), defaultValues[i] );
+
+          if ( v != attr.value().toString() )
+          {
+            const QgsField &fld = field( fieldId[i] );
+            features->changeAttribute( fieldId[i], convertValue( fld.type(), v ) );
+          }
+        }
+
+        params << v;
+      }
 
       QgsPostgresResult result = mConnectionRW->PQexecPrepared( "addfeatures", params );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
+
+      if ( mPrimaryKeyType == pktOid )
+      {
+        features->setFeatureId( result.PQoidValue() );
+        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+      }
     }
 
-    if ( flist.size() == newIds.size() )
-      for ( int i = 0; i < flist.size(); i++ )
-        flist[i].setFeatureId( newIds[i] );
+    // update feature ids
+    if ( mPrimaryKeyType == pktInt || mPrimaryKeyType == pktFidMap )
+    {
+      for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
+      {
+        const QgsAttributeMap &attributevec = features->attributeMap();
+
+        if ( mPrimaryKeyType == pktInt )
+        {
+          features->setFeatureId( STRING_TO_FID( attributevec[ mPrimaryKeyAttrs[0] ] ) );
+        }
+        else
+        {
+          QList<QVariant> primaryKeyVals;
+
+          foreach( int idx, mPrimaryKeyAttrs )
+          {
+            primaryKeyVals << attributevec[ idx ];
+          }
+
+          features->setFeatureId( lookupFid( QVariant( primaryKeyVals ) ) );
+        }
+        QgsDebugMsgLevel( QString( "new fid=%1" ).arg( features->id() ), 4 );
+      }
+    }
 
     mConnectionRW->PQexecNR( "DEALLOCATE addfeatures" );
     mConnectionRW->PQexecNR( "COMMIT" );
@@ -2274,7 +2325,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                      .arg( quotedIdentifier( mGeometryColumn ) )
                      .arg( mConnectionRW->majorVersion() < 2 ? "geomfromwkb" : "st_geomfromwkb" )
                      .arg( mConnectionRW->useWkbHex() ? "" : "::bytea" )
-                     .arg( mDetectedSrid )
+                     .arg( mRequestedSrid )
                      .arg( pkParamWhereClause( 2 ) );
 
     QgsDebugMsg( "updating: " + update );
@@ -2674,6 +2725,11 @@ bool QgsPostgresProvider::getGeometryDetails()
     mDetectedGeomType = QgsPostgresConn::geomTypeFromPostgis( type );
     mDetectedSrid = srid;
 
+    if ( mRequestedSrid.isEmpty() )
+    {
+      mRequestedSrid = srid;
+    }
+
     mValid = mDetectedGeomType != QGis::UnknownGeometry || mRequestedGeomType != QGis::UnknownGeometry;
 
     if ( !mValid )
@@ -2704,7 +2760,7 @@ bool QgsPostgresProvider::getGeometryDetails()
     QgsDebugMsg( "Requested SRID is " + mRequestedSrid );
     QgsDebugMsg( "Detected type is " + QString::number( mDetectedGeomType ) );
     QgsDebugMsg( "Requested type is " + QString::number( mRequestedGeomType ) );
-    QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[ geometryType() ] ) );
+    QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[ geometryType()] ) );
     QgsDebugMsg( "Geometry is geography " + mIsGeography );
   }
   else

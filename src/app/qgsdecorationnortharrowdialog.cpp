@@ -18,13 +18,16 @@
 #include "qgscontexthelp.h"
 
 #include <QPainter>
+#include <QSettings>
 #include <cmath>
-
 
 QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow& deco, QWidget* parent )
     : QDialog( parent ), mDeco( deco )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/DecorationNorthArrow/geometry" ).toByteArray() );
 
   // rotation
   rotatePixmap( mDeco.mRotationInt );
@@ -46,6 +49,8 @@ QgsDecorationNorthArrowDialog::QgsDecorationNorthArrowDialog( QgsDecorationNorth
 
 QgsDecorationNorthArrowDialog::~QgsDecorationNorthArrowDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/DecorationNorthArrow/geometry", saveGeometry() );
 }
 
 void QgsDecorationNorthArrowDialog::on_buttonBox_helpRequested()
