@@ -597,19 +597,36 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
   {
     case PalettedColor:
     {
-      //create color array for renderer
+      //todo: go through list and take maximum value (it could be that entries don't start at 0 or indices are not contiguous
       int grayBand = bandNumber( grayBandName() );
-      QList<QgsColorRampShader::ColorRampItem> itemList = mRasterStatsList[ grayBand - 1].colorTable;
-      QColor* colorArray = new QColor[itemList.size()];
-      QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = itemList.constBegin();
-      for ( ; colorIt != itemList.constEnd(); ++colorIt )
+      QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( rasterShader()->rasterShaderFunction() );
+      if ( colorRampShader )
       {
-        colorArray[( int )colorIt->value] =  colorIt->color;
+        QList<QgsColorRampShader::ColorRampItem> colorEntries = colorRampShader->colorRampItemList();
+        QColor* colorArray = new QColor[ colorEntries.size()];
+        QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = colorEntries.constBegin();
+        for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
+        {
+          colorArray[( int )( colorIt->value )] = colorIt->color;
+        }
+
+        renderer = new QgsPalettedRasterRenderer( mDataProvider,
+            grayBand,
+            colorArray,
+            colorEntries.size() );
       }
-      renderer = new QgsPalettedRasterRenderer( mDataProvider,
-          grayBand,
-          colorArray,
-          itemList.size() );
+      else //try to get it from the color table
+      {
+        QList<QgsColorRampShader::ColorRampItem> itemList = mRasterStatsList[ grayBand - 1].colorTable;
+        QColor* colorArray = new QColor[itemList.size()];
+        QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = itemList.constBegin();
+        for ( ; colorIt != itemList.constEnd(); ++colorIt )
+        {
+          colorArray[( int )colorIt->value] =  colorIt->color;
+        }
+        renderer = new QgsPalettedRasterRenderer( mDataProvider,
+            grayBand, colorArray, itemList.size() );
+      }
       break;
     }
     case MultiBandSingleBandGray:
