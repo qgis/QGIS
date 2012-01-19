@@ -27,6 +27,7 @@
 #include "qgscubicrasterresampler.h"
 #include "qgscoordinatetransform.h"
 #include "qgsrasterlayerproperties.h"
+#include "qgsrasterrenderer.h"
 #include "qgsgenericprojectionselector.h"
 #include "qgsproject.h"
 #include "qgsrasterbandstats.h"
@@ -288,20 +289,45 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   tableTransparency->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
 
   //resampling
-  const QgsRasterResampler* resampler = mRasterLayer->resampler();
-  if ( !resampler )
+  const QgsRasterRenderer* renderer = mRasterLayer->renderer();
+  mZoomedInResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
+  mZoomedInResamplingComboBox->insertItem( 1, tr( "Bilinear" ) );
+  mZoomedInResamplingComboBox->insertItem( 2, tr( "Cubic" ) );
+  mZoomedOutResamplingComboBox->insertItem( 0, tr( "Nearest neighbour" ) );
+  mZoomedOutResamplingComboBox->insertItem( 1, tr( "Average" ) );
+  //set combo boxes to current resampling types
+  if ( renderer )
   {
-    mNearestNeighbourRadioButton->setChecked( true );
-  }
-  else if ( resampler->type() == "bilinear" )
-  {
-    mBilinearRadioButton->setChecked( true );
-  }
-  else if ( resampler->type() == "cubic" )
-  {
-    mCubicRadioButton->setChecked( true );
-  }
+    const QgsRasterResampler* zoomedInResampler = renderer->zoomedInResampler();
+    if ( zoomedInResampler )
+    {
+      if ( zoomedInResampler->type() == "bilinear" )
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 1 );
+      }
+      else if ( zoomedInResampler->type() == "cubic" )
+      {
+        mZoomedInResamplingComboBox->setCurrentIndex( 2 );
+      }
+    }
+    else
+    {
+      mZoomedInResamplingComboBox->setCurrentIndex( 0 );
+    }
 
+    const QgsRasterResampler* zoomedOutResampler = renderer->zoomedOutResampler();
+    if ( zoomedOutResampler )
+    {
+      if ( zoomedOutResampler->type() == "bilinear" ) //bilinear resampler does averaging when zooming out
+      {
+        mZoomedOutResamplingComboBox->setCurrentIndex( 1 );
+      }
+    }
+    else
+    {
+      mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
+    }
+  }
 } // QgsRasterLayerProperties ctor
 
 
@@ -1370,20 +1396,6 @@ void QgsRasterLayerProperties::apply()
   pixmapLegend->setScaledContents( true );
   pixmapLegend->repaint();
 
-  //resampling
-  if ( mNearestNeighbourRadioButton->isChecked() )
-  {
-    mRasterLayer->setResampler( 0 );
-  }
-  else if ( mBilinearRadioButton->isChecked() )
-  {
-    mRasterLayer->setResampler( new QgsBilinearRasterResampler() );
-  }
-  else if ( mCubicRadioButton->isChecked() )
-  {
-    mRasterLayer->setResampler( new QgsCubicRasterResampler() );
-  }
-
   //set the appropriate render style
   if ( rbtnSingleBand->isChecked() )
   {
@@ -1477,6 +1489,36 @@ void QgsRasterLayerProperties::apply()
   }
   //set render style finished
 
+
+  //resampling
+  QgsRasterRenderer* rasterRenderer = mRasterLayer->renderer();
+  QgsRasterResampler* zoomedInResampler = 0;
+  QString zoomedInResamplingMethod = mZoomedInResamplingComboBox->currentText();
+  if ( zoomedInResamplingMethod == tr( "Bilinear" ) )
+  {
+    zoomedInResampler = new QgsBilinearRasterResampler();
+  }
+  else if ( zoomedInResamplingMethod == tr( "Cubic" ) )
+  {
+    zoomedInResampler = new QgsCubicRasterResampler();
+  }
+
+  if ( rasterRenderer )
+  {
+    rasterRenderer->setZoomedInResampler( zoomedInResampler );
+  }
+
+  QgsRasterResampler* zoomedOutResampler = 0;
+  QString zoomedOutResamplingMethod = mZoomedOutResamplingComboBox->currentText();
+  if ( zoomedOutResamplingMethod == tr( "Average" ) )
+  {
+    zoomedOutResampler = new QgsBilinearRasterResampler();
+  }
+
+  if ( rasterRenderer )
+  {
+    rasterRenderer->setZoomedOutResampler( zoomedOutResampler );
+  }
 
 
   //get the thumbnail for the layer

@@ -20,8 +20,8 @@
 #include <QImage>
 #include <QSet>
 
-QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ), mContrastEnhancement( 0 )
+QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand ):
+    QgsRasterRenderer( provider ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ), mContrastEnhancement( 0 )
 {
 }
 

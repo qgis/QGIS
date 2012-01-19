@@ -38,8 +38,6 @@ email                : tim at linfiniti.com
 
 //renderers
 #include "qgspalettedrasterrenderer.h"
-#include "qgsbilinearrasterresampler.h"
-#include "qgscubicrasterresampler.h"
 #include "qgsmultibandcolorrenderer.h"
 #include "qgssinglebandcolordatarenderer.h"
 #include "qgssinglebandpseudocolorrenderer.h"
@@ -103,7 +101,6 @@ QgsRasterLayer::QgsRasterLayer(
     , mWidth( std::numeric_limits<int>::max() )
     , mHeight( std::numeric_limits<int>::max() )
     , mInvertColor( false )
-    , mResampler( 0 )
     , mRenderer( 0 )
 {
   QgsDebugMsg( "Entered" );
@@ -153,7 +150,6 @@ QgsRasterLayer::QgsRasterLayer( int dummy,
     , mStyles( styles )
     , mFormat( format )
     , mCrs( crs )
-    , mResampler( 0 )
     , mRenderer( 0 )
 {
   Q_UNUSED( dummy );
@@ -192,7 +188,6 @@ QgsRasterLayer::~QgsRasterLayer()
   mValid = false;
   delete mRasterShader;
   delete mDataProvider;
-  delete mResampler;
   delete mRenderer;
 }
 
@@ -610,15 +605,14 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
       renderer = new QgsPalettedRasterRenderer( mDataProvider,
           grayBand,
           colorArray,
-          itemList.size(),
-          mResampler );
+          itemList.size() );
       break;
     }
     case MultiBandSingleBandGray:
     case SingleBandGray:
     {
       int grayBand = bandNumber( mGrayBandName );
-      renderer = new QgsSingleBandGrayRenderer( mDataProvider, grayBand, mResampler );
+      renderer = new QgsSingleBandGrayRenderer( mDataProvider, grayBand );
       if ( QgsContrastEnhancement::NoEnhancement != contrastEnhancementAlgorithm() && !mUserDefinedGrayMinimumMaximum && mStandardDeviations > 0 )
       {
         mGrayMinimumMaximumEstimated = false;
@@ -656,7 +650,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
       mRasterShader->setMinimumValue( myMinimumValue );
       mRasterShader->setMaximumValue( myMaximumValue );
 
-      renderer = new QgsSingleBandPseudoColorRenderer( mDataProvider, bandNo, mRasterShader, mResampler );
+      renderer = new QgsSingleBandPseudoColorRenderer( mDataProvider, bandNo, mRasterShader );
       break;
     }
     case MultiBandColor:
@@ -664,12 +658,12 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
       int red = bandNumber( mRedBandName );
       int green = bandNumber( mGreenBandName );
       int blue = bandNumber( mBlueBandName );
-      renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue, mResampler );
+      renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue );
       break;
     }
     case SingleBandColorDataStyle:
     {
-      renderer = new QgsSingleBandColorDataRenderer( mDataProvider, bandNumber( mGrayBandName ), mResampler );
+      renderer = new QgsSingleBandColorDataRenderer( mDataProvider, bandNumber( mGrayBandName ) );
       break;
     }
     default:
@@ -2802,12 +2796,6 @@ void QgsRasterLayer::setTransparentBandName( QString const & theBandName )
   mTransparencyBandName = validateBandName( theBandName );
 }
 
-void QgsRasterLayer::setResampler( QgsRasterResampler* resampler )
-{
-  delete mResampler;
-  mResampler = resampler;
-}
-
 void QgsRasterLayer::setRenderer( QgsRasterRenderer* renderer )
 {
   delete mRenderer;
@@ -2950,6 +2938,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   Q_UNUSED( errorMessage );
   QDomNode mnl = layer_node.namedItem( "rasterproperties" );
 
+#if 0
   //resampler
   QDomElement resamplerElem = mnl.firstChildElement( "resampler" );
   if ( !resamplerElem.isNull() )
@@ -2969,6 +2958,7 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
       mResampler = 0;
     }
   }
+#endif //0
 
   QDomNode snode = mnl.namedItem( "mDrawingStyle" );
   QDomElement myElement = snode.toElement();
@@ -3287,12 +3277,14 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   QDomElement rasterPropertiesElement = document.createElement( "rasterproperties" );
   layer_node.appendChild( rasterPropertiesElement );
 
+#if 0
   // resampler
   QString resamplerName = mResampler ? mResampler->type() : "nearest neighbour";
   QDomElement resamplerElem = document.createElement( "resampler" );
   QDomText resamplerText = document.createTextNode( resamplerName );
   resamplerElem.appendChild( resamplerText );
   rasterPropertiesElement.appendChild( resamplerElem );
+#endif //0
 
   QStringList sl = subLayers();
   QStringList sls = mDataProvider->subLayerStyles();

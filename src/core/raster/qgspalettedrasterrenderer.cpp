@@ -22,8 +22,8 @@
 #include <QImage>
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber,
-    QColor* colorArray, int nColors, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
+    QColor* colorArray, int nColors ):
+    QgsRasterRenderer( provider ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
 {
 }
 

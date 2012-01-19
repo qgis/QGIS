@@ -20,8 +20,8 @@
 #include "qgsrastertransparency.h"
 #include <QImage>
 
-QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
+QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand ):
+    QgsRasterRenderer( provider ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
 {
 }
 

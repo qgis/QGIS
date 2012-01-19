@@ -26,7 +26,7 @@ class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
-    QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand, QgsRasterResampler* resampler = 0 );
+    QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand );
     ~QgsMultiBandColorRenderer();
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>591</height>
+    <height>598</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -756,26 +756,25 @@
           <string>Resampling</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
-          <item row="0" column="0">
-           <widget class="QRadioButton" name="mNearestNeighbourRadioButton">
-            <property name="text">
-             <string>Nearest neighbour</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
-           <widget class="QRadioButton" name="mBilinearRadioButton">
+           <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="mZoomedInResamplingLabel">
             <property name="text">
-             <string>Bilinear</string>
+             <string>Zoomed in</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QRadioButton" name="mCubicRadioButton">
+           <widget class="QLabel" name="mZoomedOutResamplingLabel">
             <property name="text">
-             <string>Cubic</string>
+             <string>Zoomed out</string>
             </property>
            </widget>
+          </item>
+          <item row="3" column="0">
+           <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
           </item>
          </layout>
         </widget>
@@ -1832,6 +1831,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;

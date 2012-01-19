@@ -21,8 +21,8 @@
 #include "qgsrasterviewport.h"
 #include <QImage>
 
-QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mShader( shader ), mBand( band )
+QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader ):
+    QgsRasterRenderer( provider ), mShader( shader ), mBand( band )
 {
 }
 

@@ -23,7 +23,7 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler ): mProvider( provider ), mResampler( resampler ),
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider ): mProvider( provider ), mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ),
     mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false )
 {
 }
@@ -36,6 +36,21 @@ QgsRasterRenderer::~QgsRasterRenderer()
   {
     CPLFree( partIt.value().data );
   }
+
+  delete mZoomedInResampler;
+  delete mZoomedOutResampler;
+}
+
+void QgsRasterRenderer::setZoomedInResampler( QgsRasterResampler* r )
+{
+  delete mZoomedInResampler;
+  mZoomedInResampler = r;
+}
+
+void QgsRasterRenderer::setZoomedOutResampler( QgsRasterResampler* r )
+{
+  delete mZoomedOutResampler;
+  mZoomedOutResampler = r;
 }
 
 void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY )
@@ -50,7 +65,8 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
 
   //calculate oversampling factor
   double oversampling = 1.0; //approximate global oversampling factor
-  if ( mResampler )
+
+  if ( mZoomedInResampler || mZoomedOutResampler )
   {
     QgsRectangle providerExtent = mProvider->extent();
     if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
@@ -60,6 +76,12 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
     }
     double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
     oversampling = ( pixelRatio > 4.0 ) ? 4.0 : pixelRatio;
+  }
+
+  //set oversampling back to 1.0 if no resampler for zoomed in / zoomed out (nearest neighbour)
+  if (( oversampling < 1.0 && !mZoomedInResampler ) || ( oversampling > 1.0 && !mZoomedOutResampler ) )
+  {
+    oversampling = 1.0;
   }
 
   //split raster into small portions if necessary
@@ -178,13 +200,21 @@ void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, con
 
   //top left position in device coords
   QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
-  tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
 
-  //draw image
-  if ( mResampler && !( doubleNear( oversamplingX, 1.0 ) && doubleNear( oversamplingY, 1.0 ) ) ) //resampling with factor 1.0 not useful
+  //resample and draw image
+  if (( mZoomedInResampler || mZoomedOutResampler ) && !doubleNear( oversamplingX, 1.0 ) && !doubleNear( oversamplingY, 1.0 ) )
   {
     QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
-    mResampler->resample( img, dstImg );
+    if ( mZoomedInResampler && oversamplingX < 1.0 )
+    {
+      mZoomedInResampler->resample( img, dstImg );
+    }
+    else if ( mZoomedOutResampler && oversamplingX > 1.0 )
+    {
+      mZoomedOutResampler->resample( img, dstImg );
+    }
+
+    tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
     p->drawImage( tlPoint, dstImg );
   }
   else //use original image

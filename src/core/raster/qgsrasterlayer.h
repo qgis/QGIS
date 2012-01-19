@@ -51,7 +51,6 @@ class QgsRectangle;
 class QgsRasterBandStats;
 class QgsRasterPyramid;
 class QgsRasterRenderer;
-class QgsRasterResampler;
 class QImage;
 class QPixmap;
 class QSlider;
@@ -393,14 +392,10 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     /** \brief Mutator for mUserDefinedRGBMinimumMaximum */
     void setUserDefinedRGBMinimumMaximum( bool theBool ) { mUserDefinedRGBMinimumMaximum = theBool; }
 
-    /** Set raster resampler. Uses nearest neighbour resampling per default. Takes ownership of the resampler object*/
-    void setResampler( QgsRasterResampler* resampler );
-    QgsRasterResampler* resampler() { return mResampler; }
-    const QgsRasterResampler* resampler() const { return mResampler; }
-
     /**Set raster renderer. Takes ownership of the renderer object*/
     void setRenderer( QgsRasterRenderer* renderer );
     const QgsRasterRenderer* renderer() const { return mRenderer; }
+    QgsRasterRenderer* renderer() { return mRenderer; }
 
     /** \brief Accessor to find out how many standard deviations are being plotted */
     double standardDeviations() const { return mStandardDeviations; }
@@ -940,7 +935,6 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     QString mFormat;
     QString mCrs;
 
-    QgsRasterResampler* mResampler;
     QgsRasterRenderer* mRenderer;
 };
 

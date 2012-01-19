@@ -25,7 +25,7 @@ class QgsContrastEnhancement;
 class QgsSingleBandGrayRenderer: public QgsRasterRenderer
 {
   public:
-    QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand, QgsRasterResampler* resampler = 0 );
+    QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand );
     ~QgsSingleBandGrayRenderer();
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );

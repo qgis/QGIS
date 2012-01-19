@@ -41,7 +41,7 @@ class QgsRasterRenderer
       void* data;
     };
 
-    QgsRasterRenderer( QgsRasterDataProvider* provider, QgsRasterResampler* resampler = 0 );
+    QgsRasterRenderer( QgsRasterDataProvider* provider );
     virtual ~QgsRasterRenderer();
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
@@ -59,6 +59,14 @@ class QgsRasterRenderer
     void setInvertColor( bool invert ) { mInvertColor = invert; }
     bool invertColor() const { return mInvertColor; }
 
+    /**Set resampler for zoomed in scales. Takes ownership of the object*/
+    void setZoomedInResampler( QgsRasterResampler* r );
+    const QgsRasterResampler* zoomedInResampler() const { return mZoomedInResampler; }
+
+    /**Set resampler for zoomed out scales. Takes ownership of the object*/
+    void setZoomedOutResampler( QgsRasterResampler* r );
+    const QgsRasterResampler* zoomedOutResampler() const { return mZoomedOutResampler; }
+
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
@@ -70,7 +78,10 @@ class QgsRasterRenderer
 
 
     QgsRasterDataProvider* mProvider;
-    QgsRasterResampler* mResampler;
+    /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
+    QgsRasterResampler* mZoomedInResampler;
+    /**Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/
+    QgsRasterResampler* mZoomedOutResampler;
     QMap<int, RasterPartInfo> mRasterPartInfos;
 
     /**Global alpha value (0-1)*/

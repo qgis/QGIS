@@ -23,7 +23,7 @@
 class QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {
   public:
-    QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band, QgsRasterResampler* resampler = 0 );
+    QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
     ~QgsSingleBandColorDataRenderer();
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );

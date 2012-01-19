@@ -19,8 +19,8 @@
 #include "qgsrasterviewport.h"
 #include <QImage>
 
-QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band, QgsRasterResampler* resampler ):
-    QgsRasterRenderer( provider, resampler ), mBand( band )
+QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band ):
+    QgsRasterRenderer( provider ), mBand( band )
 {
 
 }
@@ -52,7 +52,7 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
     for ( int i = 0; i < nRows; ++i )
     {
       scanLine = img.scanLine( i );
-      if( !hasTransparency )
+      if ( !hasTransparency )
       {
         memcpy( scanLine, &((( uint* )rasterData )[currentRasterPos] ), nCols * 4 );
         currentRasterPos += nCols;
@@ -61,7 +61,7 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
       {
         for ( int j = 0; j < nCols; ++j )
         {
-          QRgb c( ( (uint*)(rasterData) )[currentRasterPos] );
+          QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
           scanLine[i] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), 255 );
           ++currentRasterPos;
         }

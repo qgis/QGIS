@@ -25,7 +25,7 @@ class QgsRasterShader;
 class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
-    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader, QgsRasterResampler* resampler = 0 );
+    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
