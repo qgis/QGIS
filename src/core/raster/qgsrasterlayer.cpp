@@ -597,14 +597,26 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
   {
     case PalettedColor:
     {
-      //todo: go through list and take maximum value (it could be that entries don't start at 0 or indices are not contiguous
       int grayBand = bandNumber( grayBandName() );
       QgsColorRampShader* colorRampShader = dynamic_cast<QgsColorRampShader*>( rasterShader()->rasterShaderFunction() );
       if ( colorRampShader )
       {
         QList<QgsColorRampShader::ColorRampItem> colorEntries = colorRampShader->colorRampItemList();
-        QColor* colorArray = new QColor[ colorEntries.size()];
+
+        //go through list and take maximum value (it could be that entries don't start at 0 or indices are not contiguous)
+        int colorArraySize = 0;
         QList<QgsColorRampShader::ColorRampItem>::const_iterator colorIt = colorEntries.constBegin();
+        for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
+        {
+          if ( colorIt->value > colorArraySize )
+          {
+            colorArraySize = ( int )( colorIt->value );
+          }
+        }
+
+        colorArraySize += 1; //usually starts at 0
+        QColor* colorArray = new QColor[ colorArraySize ];
+        colorIt = colorEntries.constBegin();
         for ( ; colorIt != colorEntries.constEnd(); ++colorIt )
         {
           colorArray[( int )( colorIt->value )] = colorIt->color;
@@ -613,7 +625,7 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
         renderer = new QgsPalettedRasterRenderer( mDataProvider,
             grayBand,
             colorArray,
-            colorEntries.size() );
+            colorArraySize );
       }
       else //try to get it from the color table
       {
