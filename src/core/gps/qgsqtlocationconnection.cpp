@@ -38,16 +38,15 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
 
 void QgsQtLocationConnection::parseData()
 {
-  QgsDebugMsg( "Valid QGeoPositionInfo, parsing" );
-  mStatus = GPSDataReceived;
-
   if (locationDataSource){
+    mStatus = GPSDataReceived;
     QGeoPositionInfo info = locationDataSource->lastKnownPosition();
-    QgsDebugMsg(info.coordinate().toString());
+    QgsDebugMsg( "Parsing locationDataSource" );
+    QgsDebugMsg( "Coord: " + info.coordinate().toString() + "Time: " + info.timestamp().toString() );
     if (info.isValid())
     {
-
-   // info.HorizontalAccuracy;
+      QgsDebugMsg( "Valid QGeoPositionInfo, parsing" );
+      // info.HorizontalAccuracy;
 
       mLastGPSInformation.latitude = info.coordinate().latitude();
       mLastGPSInformation.longitude = info.coordinate().longitude() ;
@@ -63,10 +62,10 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
       mLastGPSInformation.status;   //< Status (A = active or V = void)
       mLastGPSInformation.satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+      emit stateChanged( mLastGPSInformation );
+      QgsDebugMsg("positionUpdated");
     }
   }
-  QgsDebugMsg("positionUpdated");
-  emit stateChanged( mLastGPSInformation );
 }
 
 void QgsQtLocationConnection::satellitesInViewUpdated(

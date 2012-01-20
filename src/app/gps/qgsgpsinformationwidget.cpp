@@ -507,6 +507,9 @@ void QgsGPSInformationWidget::disconnectGps()
 
 void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& info )
 {
+  QString lon;
+  lon = lon.setNum( info.longitude );
+  QgsDebugMsg( "Updating QgsGPSInformationWidget" + lon );
 #if QWT_VERSION<0x060000
   QwtArray<double> myXData;//qwtarray is just a wrapped qvector
   QwtArray<double> mySignalData;//qwtarray is just a wrapped qvector
