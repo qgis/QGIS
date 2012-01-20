@@ -148,6 +148,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     */
     virtual QgsRectangle extent();
 
+    /** Update the extent for this data layer
+    */
+    virtual void updateExtents();
+
     /**  * Get the name of the primary key for the layer
     */
     QString getPrimaryKey();

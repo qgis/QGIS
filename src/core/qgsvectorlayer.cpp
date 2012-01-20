@@ -1461,6 +1461,8 @@ void QgsVectorLayer::updateExtents()
 
   if ( mDeletedFeatureIds.isEmpty() && mChangedGeometries.isEmpty() )
   {
+    mDataProvider->updateExtents();
+
     // get the extent of the layer from the provider
     // but only when there are some features already
     if ( mDataProvider->featureCount() != 0 )

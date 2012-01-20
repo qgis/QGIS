@@ -1255,6 +1255,12 @@ void QgsVectorLayerProperties::updateSymbologyPage()
   }
 }
 
+void QgsVectorLayerProperties::on_pbnUpdateExtents_clicked()
+{
+  layer->updateExtents();
+  mMetadataFilled = false;
+}
+
 void QgsVectorLayerProperties::on_tabWidget_currentChanged( int index )
 {
   if ( index != 4 || mMetadataFilled )
