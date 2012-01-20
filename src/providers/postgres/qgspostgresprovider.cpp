@@ -442,7 +442,7 @@ bool QgsPostgresProvider::getFeature( QgsPostgresResult &queryResult, int row, b
       col++;
     }
 
-    QgsFeatureId fid;
+    QgsFeatureId fid = 0;
 
     switch ( mPrimaryKeyType )
     {
@@ -2580,6 +2580,11 @@ QgsRectangle QgsPostgresProvider::extent()
   return mLayerExtent;
 }
 
+void QgsPostgresProvider::updateExtents()
+{
+  mLayerExtent.setMinimal();
+}
+
 bool QgsPostgresProvider::getGeometryDetails()
 {
   if ( mGeometryColumn.isNull() )
@@ -2663,7 +2668,7 @@ bool QgsPostgresProvider::getGeometryDetails()
           .arg( quotedValue( schemaName ) );
 
     QgsDebugMsg( "Getting geography column: " + sql );
-    result = mConnectionRO->PQexec( sql );
+    result = mConnectionRO->PQexec( sql, false );
     QgsDebugMsg( "Geography column query returned " + QString::number( result.PQntuples() ) );
 
     if ( result.PQntuples() == 1 )

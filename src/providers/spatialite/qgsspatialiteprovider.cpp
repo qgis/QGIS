@@ -3301,6 +3301,10 @@ QgsRectangle QgsSpatiaLiteProvider::extent()
   return layerExtent;
 }
 
+void QgsSpatiaLiteProvider::updateExtents()
+{
+  getTableSummary();
+}
 
 size_t QgsSpatiaLiteProvider::layerCount() const
 {
