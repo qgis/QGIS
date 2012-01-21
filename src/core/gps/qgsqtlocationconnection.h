@@ -34,8 +34,10 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     ~QgsQtLocationConnection();
 
   protected slots:
-    /**Parse available data source content*/
+    /**Needed to make QtLocation detected*/
     void parseData( );
+    /**Parse available data source content*/
+    void positionUpdated(const QGeoPositionInfo &info);
 
     /**Called when the number of satellites in view is updated.*/
     void satellitesInViewUpdated( const QList<QGeoSatelliteInfo>& satellites );

@@ -36,13 +36,22 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
   QgsDebugMsg( "entered." );
 }
 
+/*Needed to make connection detectable (half HACK)*/
 void QgsQtLocationConnection::parseData()
 {
   if (locationDataSource){
     mStatus = GPSDataReceived;
-    QGeoPositionInfo info = locationDataSource->lastKnownPosition();
+    emit stateChanged( mLastGPSInformation );
+  }
+}
 
-    QgsDebugMsg( "\nParsing locationDataSource" );
+void QgsQtLocationConnection::positionUpdated(const QtMobility::QGeoPositionInfo &info)
+{
+  if (locationDataSource){
+    mStatus = GPSDataReceived;
+    //QGeoPositionInfo info = locationDataSource->lastKnownPosition();
+
+    QgsDebugMsg( "Parsing locationDataSource" );
 
     qDebug() << info;
 
@@ -64,7 +73,7 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.fixType = info.coordinate().type();  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
       mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
       mLastGPSInformation.status;   //< Status (A = active or V = void)
-      mLastGPSInformation.satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+      mLastGPSInformation.satInfoComplete = true;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
       emit stateChanged( mLastGPSInformation );
       QgsDebugMsg("positionUpdated");
     }
@@ -134,7 +143,7 @@ void QgsQtLocationConnection::startGPS()
         QObject::connect(locationDataSource,
                          SIGNAL(positionUpdated(QGeoPositionInfo)),
                          this,
-                         SLOT(parseData()));
+                         SLOT(positionUpdated(QGeoPositionInfo)));
         // Start listening for position updates
         locationDataSource->startUpdates();
       }
