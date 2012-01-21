@@ -430,8 +430,10 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     static QgsFeatureRendererV2* create( QDomElement& element ) /Factory/;
 
-    //! Constructor. Takes ownership of the defult symbol.
-    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol /Transfer/ = NULL );
+    //! Constructs the renderer from given tree of rules
+    QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root /Transfer/ );
+    //! Constructor for convenience. Creates a root rule and adds a default rule with symbol
+    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol /Transfer/ );
 
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
@@ -456,18 +458,6 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
 
     /////
 
-    //! return the total number of rules
-    int ruleCount();
-    //! get reference to rule at index (valid indexes: 0...count-1)
-    QgsRuleBasedRendererV2::Rule* ruleAt( int index );
-    //! add rule to the end of the list of rules
-    void addRule( QgsRuleBasedRendererV2::Rule* rule );
-    //! insert rule to a specific position of the list of rules
-    void insertRule( int index, QgsRuleBasedRendererV2::Rule* rule );
-    //! modify the rule at a specific position of the list of rules
-    void updateRuleAt( int index, QgsRuleBasedRendererV2::Rule* rule );
-    //! remove the rule at the specified index
-    void removeRuleAt( int index );
 
     //////
 

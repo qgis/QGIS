@@ -29,7 +29,7 @@
 
 
 QgsRuleBasedRendererV2::Rule::Rule( QgsSymbolV2* symbol, int scaleMinDenom, int scaleMaxDenom, QString filterExp, QString label, QString description )
-    : mSymbol( symbol ),
+    : mParent( NULL ), mSymbol( symbol ),
     mScaleMinDenom( scaleMinDenom ), mScaleMaxDenom( scaleMaxDenom ),
     mFilterExp( filterExp ), mLabel( label ), mDescription( description ),
     mFilter( NULL )
@@ -41,6 +41,8 @@ QgsRuleBasedRendererV2::Rule::~Rule()
 {
   delete mSymbol;
   delete mFilter;
+  qDeleteAll( mChildren );
+  // do NOT delete parent
 }
 
 void QgsRuleBasedRendererV2::Rule::initFilter()
@@ -145,9 +147,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::clone() const
   Rule* newrule = new Rule( sym, mScaleMinDenom, mScaleMaxDenom, mFilterExp, mLabel, mDescription );
   // clone children
   foreach( Rule* rule, mChildren )
-  {
-    newrule->mChildren.append( rule->clone() );
-  }
+  newrule->appendChild( rule->clone() );
   return newrule;
 }
 
@@ -320,7 +320,7 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   {
     Rule* childRule = create( childRuleElem, symbolMap );
     if ( childRule )
-      rule->mChildren.append( childRule );
+      rule->appendChild( childRule );
     else
       QgsDebugMsg( "failed to init a child rule!" );
     childRuleElem = childRuleElem.nextSiblingElement( "rule" );
@@ -332,16 +332,16 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
 
 /////////////////////
 
+QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root )
+    : QgsFeatureRendererV2( "RuleRenderer" ), mRootRule( root )
+{
+}
+
 QgsRuleBasedRendererV2::QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol )
     : QgsFeatureRendererV2( "RuleRenderer" )
 {
-  mRootRule = new Rule( NULL );
-
-  if ( defaultSymbol )
-  {
-    // add the default rule
-    mRootRule->children().append( new Rule( defaultSymbol ) );
-  }
+  mRootRule = new Rule( NULL ); // root has no symbol, no filter etc - just a container
+  mRootRule->appendChild( new Rule( defaultSymbol ) );
 }
 
 QgsRuleBasedRendererV2::~QgsRuleBasedRendererV2()
@@ -454,9 +454,7 @@ QList<QString> QgsRuleBasedRendererV2::usedAttributes()
 
 QgsFeatureRendererV2* QgsRuleBasedRendererV2::clone()
 {
-  QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2();
-  delete r->mRootRule;
-  r->mRootRule = mRootRule->clone();
+  QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( mRootRule->clone() );
 
   r->setUsingSymbolLevels( usingSymbolLevels() );
   setUsingSymbolLevels( usingSymbolLevels() );
@@ -477,8 +475,8 @@ QDomElement QgsRuleBasedRendererV2::save( QDomDocument& doc )
 
   QgsSymbolV2Map symbols;
 
-  QDomElement rulesElem = doc.createElement( "rules" );
-  rulesElem.appendChild( mRootRule->save( doc, symbols ) );
+  QDomElement rulesElem = mRootRule->save( doc, symbols );
+  rulesElem.setTagName( "rules" ); // instead of just "rule"
   rendererElem.appendChild( rulesElem );
 
   QDomElement symbolsElem = QgsSymbolLayerV2Utils::saveSymbols( symbols, "symbols", doc );
@@ -518,14 +516,11 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
 
   QDomElement rulesElem = element.firstChildElement( "rules" );
 
-  QDomElement rootRuleElem = rulesElem.firstChildElement( "rule" );
-  Rule* root = Rule::create( rootRuleElem, symbolMap );
+  Rule* root = Rule::create( rulesElem, symbolMap );
   if ( root == NULL )
     return NULL;
 
-  QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2();
-  delete r->mRootRule;
-  r->mRootRule = root;
+  QgsRuleBasedRendererV2* r = new QgsRuleBasedRendererV2( root );
 
   // delete symbols if there are any more
   QgsSymbolLayerV2Utils::clearSymbolMap( symbolMap );
@@ -534,48 +529,10 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
 }
 
 
-int QgsRuleBasedRendererV2::ruleCount()
-{
-  return mRootRule->children().count();
-}
-
-QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::ruleAt( int index )
-{
-  return mRootRule->children()[index];
-}
-
-void QgsRuleBasedRendererV2::addRule( QgsRuleBasedRendererV2::Rule* rule )
-{
-  mRootRule->children().append( rule );
-}
-
-void QgsRuleBasedRendererV2::insertRule( int index, QgsRuleBasedRendererV2::Rule* rule )
-{
-  mRootRule->children().insert( index, rule );
-}
-
-void QgsRuleBasedRendererV2::updateRuleAt( int index, QgsRuleBasedRendererV2::Rule* rule )
-{
-  RuleList& rules = mRootRule->children();
-  delete rules[index]; // delete previous
-  rules[index] = rule;
-}
-
-void QgsRuleBasedRendererV2::removeRuleAt( int index )
-{
-  delete mRootRule->children().takeAt( index );
-}
-
-void QgsRuleBasedRendererV2::swapRules( int index1,  int index2 )
-{
-  mRootRule->children().swap( index1, index2 );
-}
-
-
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
 
-QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r )
+void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r )
 {
   RuleList rules;
   foreach( const QgsRendererCategoryV2& cat, r->categories() )
@@ -588,14 +545,12 @@ QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::refineRuleCategories( Q
       filter = newfilter;
     else
       filter = QString( "(%1) AND (%2)" ).arg( filter ).arg( newfilter );
-    rules.append( new Rule( cat.symbol()->clone(), initialRule->scaleMinDenom(), initialRule->scaleMaxDenom(), filter, label, description ) );
+    initialRule->appendChild( new Rule( cat.symbol()->clone(), initialRule->scaleMinDenom(), initialRule->scaleMaxDenom(), filter, label, description ) );
   }
-  return rules;
 }
 
-QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r )
+void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* initialRule, QgsGraduatedSymbolRendererV2* r )
 {
-  RuleList rules;
   foreach( const QgsRendererRangeV2& rng, r->ranges() )
   {
     QString newfilter = QString( "%1 >= '%2' AND %1 <= '%3'" ).arg( r->classAttribute() ).arg( rng.lowerValue() ).arg( rng.upperValue() );
@@ -606,15 +561,13 @@ QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::refineRuleRanges( QgsRu
       filter = newfilter;
     else
       filter = QString( "(%1) AND (%2)" ).arg( filter ).arg( newfilter );
-    rules.append( new Rule( rng.symbol()->clone(), initialRule->scaleMinDenom(), initialRule->scaleMaxDenom(), filter, label, description ) );
+    initialRule->appendChild( new Rule( rng.symbol()->clone(), initialRule->scaleMinDenom(), initialRule->scaleMaxDenom(), filter, label, description ) );
   }
-  return rules;
 }
 
-QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales )
+void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* initialRule, QList<int> scales )
 {
   qSort( scales ); // make sure the scales are in ascending order
-  RuleList rules;
   int oldScale = initialRule->scaleMinDenom();
   int maxDenom = initialRule->scaleMaxDenom();
   QString filter = initialRule->filterExpression();
@@ -627,12 +580,11 @@ QgsRuleBasedRendererV2::RuleList QgsRuleBasedRendererV2::refineRuleScales( QgsRu
       continue; // jump over the first scales out of the interval
     if ( maxDenom != 0 && maxDenom  <= scale )
       break; // ignore the latter scales out of the interval
-    rules.append( new Rule( symbol->clone(), oldScale, scale, filter, label, description ) );
+    initialRule->appendChild( new Rule( symbol->clone(), oldScale, scale, filter, label, description ) );
     oldScale = scale;
   }
   // last rule
-  rules.append( new Rule( symbol->clone(), oldScale, maxDenom, filter, label, description ) );
-  return rules;
+  initialRule->appendChild( new Rule( symbol->clone(), oldScale, maxDenom, filter, label, description ) );
 }
 
 QString QgsRuleBasedRendererV2::dump()
