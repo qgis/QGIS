@@ -133,7 +133,72 @@ void QgsHttpRequestHandler::sendGetFeatureInfoResponse( const QDomDocument& info
 
   if ( infoFormat == "text/xml" )
   {
-    ba = infoDoc.toByteArray();
+    //ba = infoDoc.toByteArray();
+    //Modifications for SIA2045
+    QDomDocument outFeatureInfoDoc;
+    QDomElement infoDocElement = infoDoc.documentElement();
+    QDomElement outInfoDocElement = outFeatureInfoDoc.importNode( infoDocElement, false ).toElement();
+    outFeatureInfoDoc.appendChild( outInfoDocElement );
+
+    QString currentAttributeName;
+    QString currentAttributeValue;
+    QDomElement currentAttributeElem;
+    QString currentLayerName;
+    QDomElement currentLayerElem;
+    QDomNodeList layerNodeList = infoDocElement.elementsByTagName( "Layer" );
+    for ( int i = 0; i < layerNodeList.size(); ++i )
+    {
+      currentLayerElem = layerNodeList.at( i ).toElement();
+      currentLayerName = currentLayerElem.attribute( "name" );
+      QDomElement currentFeatureElem;
+
+      QDomNodeList featureList = currentLayerElem.elementsByTagName( "Feature" );
+      if ( featureList.size() < 1 )
+      {
+        //raster?
+        QDomNodeList attributeList = currentLayerElem.elementsByTagName( "Attribute" );
+        QDomElement rasterLayerElem;
+        if ( attributeList.size() > 0 )
+        {
+          rasterLayerElem = outFeatureInfoDoc.createElement( currentLayerName );
+        }
+        for ( int j = 0; j < attributeList.size(); ++j )
+        {
+          currentAttributeElem = attributeList.at( j ).toElement();
+          currentAttributeName = currentAttributeElem.attribute( "name" );
+          currentAttributeValue = currentAttributeElem.attribute( "value" );
+          QDomElement outAttributeElem = outFeatureInfoDoc.createElement( currentAttributeName );
+          QDomText outAttributeText = outFeatureInfoDoc.createTextNode( currentAttributeValue );
+          outAttributeElem.appendChild( outAttributeText );
+          rasterLayerElem.appendChild( outAttributeElem );
+        }
+        if ( attributeList.size() > 0 )
+        {
+          outInfoDocElement.appendChild( rasterLayerElem );
+        }
+      }
+      else //vector
+      {
+        for ( int j = 0; j < featureList.size(); ++j )
+        {
+          QDomElement outFeatureElem = outFeatureInfoDoc.createElement( currentLayerName );
+          currentFeatureElem = featureList.at( j ).toElement();
+          QDomNodeList attributeList = currentFeatureElem.elementsByTagName( "Attribute" );
+          for ( int k = 0; k < attributeList.size(); ++k )
+          {
+            currentAttributeElem = attributeList.at( k ).toElement();
+            currentAttributeName = currentAttributeElem.attribute( "name" );
+            currentAttributeValue = currentAttributeElem.attribute( "value" );
+            QDomElement outAttributeElem = outFeatureInfoDoc.createElement( currentAttributeName );
+            QDomText outAttributeText = outFeatureInfoDoc.createTextNode( currentAttributeValue );
+            outAttributeElem.appendChild( outAttributeText );
+            outFeatureElem.appendChild( outAttributeElem );
+          }
+          outInfoDocElement.appendChild( outFeatureElem );
+        }
+      }
+    }
+    ba = outFeatureInfoDoc.toByteArray();
   }
   else if ( infoFormat == "text/plain" || infoFormat == "text/html" )
   {

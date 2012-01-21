@@ -803,7 +803,17 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, QString version )
   QStringList layerIds = layerSet( layersList, stylesList, mMapRenderer->destinationCrs() );
   QMap<QString, QString> originalLayerFilters = applyRequestedLayerFilters( layersList );
 
-  QDomElement getFeatureInfoElement = result.createElement( mConfigParser->featureInfoDocumentName( "GetFeatureInfoResponse" ) );
+  QString featureInfoElemName = mConfigParser->featureInfoDocumentElement( "GetFeatureInfoResponse" );
+  QString featureInfoElemNS = mConfigParser->featureInfoDocumentElementNS();
+  QDomElement getFeatureInfoElement;
+  if ( featureInfoElemNS.isEmpty() )
+  {
+    getFeatureInfoElement = result.createElement( featureInfoElemName );
+  }
+  else
+  {
+    getFeatureInfoElement = result.createElementNS( featureInfoElemNS, featureInfoElemName );
+  }
   result.appendChild( getFeatureInfoElement );
 
   QStringList nonIdentifiableLayers = mConfigParser->identifyDisabledLayers();
