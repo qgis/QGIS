@@ -1106,6 +1106,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void projectChanged( const QDomDocument & );
 
     bool cmpByText( QAction* a, QAction* b );
+
+    QString mOldScale;
 };
 
 #ifdef ANDROID
