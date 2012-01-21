@@ -1079,6 +1079,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! project changed
     void projectChanged( const QDomDocument & );
+
+    QString mOldScale;
 };
 
 #endif
