@@ -136,7 +136,7 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri )
         {
           mGeometryType = QGis::Point;
         }
-        else if ( geomTypeUpper == "LINESTRING" )
+        else if ( geomTypeUpper == "LINE" )
         {
           mGeometryType = QGis::Line;
         }

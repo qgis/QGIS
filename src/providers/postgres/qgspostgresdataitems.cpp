@@ -86,15 +86,21 @@ void QgsPGConnectionItem::setLayerType( QgsPostgresLayerProperty layerProperty )
     return;
   }
 
-  foreach( QString type, layerProperty.type.split( ",", QString::SkipEmptyParts ) )
+  QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );
+  QStringList sridList = layerProperty.srid.split( ",", QString::SkipEmptyParts );
+  Q_ASSERT( typeList.size() == sridList.size() );
+
+  for ( int i = 0 ; i < typeList.size(); i++ )
   {
-    QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( type );
+    QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( typeList[i] );
     if ( geomType == QGis::UnknownGeometry )
     {
-      QgsDebugMsg( QString( "unsupported geometry type:%1" ).arg( type ) );
+      QgsDebugMsg( QString( "unsupported geometry type:%1" ).arg( typeList[i] ) );
       continue;
     }
 
+    layerProperty.type = typeList[i];
+    layerProperty.srid = sridList[i];
     schemaItem->addLayer( layerProperty );
   }
 }
@@ -171,7 +177,7 @@ QString QgsPGLayerItem::createUri()
 
   QgsDataSourceURI uri( connItem->connection()->connInfo() );
   uri.setDataSource( mLayerProperty.schemaName, mLayerProperty.tableName, mLayerProperty.geometryColName, mLayerProperty.sql, pkColName );
-  uri.setSrid( QString::number( mLayerProperty.srid ) );
+  uri.setSrid( mLayerProperty.srid );
   uri.setGeometryType( QgsPostgresConn::geomTypeFromPostgis( mLayerProperty.type ) );
   QgsDebugMsg( QString( "layer uri: %1" ).arg( uri.uri() ) );
   return uri.uri();
@@ -197,7 +203,7 @@ QgsPGSchemaItem::~QgsPGSchemaItem()
 void QgsPGSchemaItem::addLayer( QgsPostgresLayerProperty layerProperty )
 {
   QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( layerProperty.type );
-  QString tip = tr( "%1 as %2" ).arg( layerProperty.geometryColName ).arg( QgsPostgresConn::displayStringForGeomType( geomType ) );
+  QString tip = tr( "%1 as %2 in %3" ).arg( layerProperty.geometryColName ).arg( QgsPostgresConn::displayStringForGeomType( geomType ) ).arg( layerProperty.srid );
 
   QgsLayerItem::LayerType layerType;
   switch ( geomType )

@@ -330,7 +330,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
                            "f_table_schema,"
                            "%2,"
                            "upper(type),"
-                           "coalesce(srid,-1),"
+                           "srid,"
                            "pg_class.relkind"
                            " FROM "
                            "%1,pg_class,pg_namespace"
@@ -377,7 +377,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         layerProperty.tableName = tableName;
         layerProperty.geometryColName = column;
         layerProperty.pkCols = relkind == "v" ? pkCandidates( schemaName, tableName ) : QStringList();
-        layerProperty.srid = srid.toInt();
+        layerProperty.srid = srid;
         layerProperty.sql = "";
         layerProperty.isGeography = i == 1;
 
@@ -464,7 +464,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         QString column  = result.PQgetvalue( i, 2 ); // attname
         QString relkind = result.PQgetvalue( i, 3 ); // relation kind
 
-        QgsDebugMsg( QString( "%1.%2.%3: %4 %5" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
+        QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
 
         layerProperty.type = QString::null;
         layerProperty.schemaName = schema;
@@ -505,7 +505,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
     {
-      QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1\n" )
+      QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1" )
                                  .arg( result.PQresultErrorMessage() ),
                                  tr( "PostGIS" ) );
       if ( nColumns == 0 )
@@ -526,7 +526,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         layerProperty.tableName = table;
         layerProperty.geometryColName = QString::null;
         layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
-        layerProperty.srid = -1;
+        layerProperty.srid = "";
         layerProperty.sql = "";
         layerProperty.isGeography = false;
 
@@ -544,11 +544,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   return nColumns > 0;
 }
 
-bool QgsPostgresConn::supportedLayers(
-  QVector<QgsPostgresLayerProperty> &layers,
-  bool searchGeometryColumnsOnly,
-  bool searchPublicOnly,
-  bool allowGeometrylessTables )
+bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
 {
   // Get the list of supported tables
   if ( !getTableInfo( searchGeometryColumnsOnly, searchPublicOnly, allowGeometrylessTables ) )
@@ -1045,7 +1041,7 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
                            " WHEN %2 THEN 'LINESTRING'"
                            " WHEN %3 THEN 'POLYGON'"
                            " END,"
-                           " coalesce(%4(%5),-1)"
+                           " %4(%5)"
                            " FROM %6" )
                   .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::Point, layerProperty.isGeography ) )
                   .arg( postgisTypeFilter( layerProperty.geometryColName, QGis::Line, layerProperty.isGeography ) )
@@ -1059,20 +1055,25 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
   QgsPostgresResult gresult = PQexec( query );
 
   QString type;
-  int srid = -1;
+  QString srid;
   if ( gresult.PQresultStatus() == PGRES_TUPLES_OK )
   {
     QStringList types;
+    QStringList srids;
 
     for ( int i = 0; i < gresult.PQntuples(); i++ )
     {
       QString type = gresult.PQgetvalue( i, 0 );
-      if ( !type.isEmpty() )
-        types << type;
-      srid = gresult.PQgetvalue( i, 1 ).toInt();
+      QString srid = gresult.PQgetvalue( i, 1 );
+      if ( type.isEmpty() )
+        continue;
+
+      types << type;
+      srids << srid;
     }
 
     type = types.join( "," );
+    srid = srids.join( "," );
   }
 
   QgsDebugMsg( QString( "type:%1 srid:%2" ).arg( type ).arg( srid ) );

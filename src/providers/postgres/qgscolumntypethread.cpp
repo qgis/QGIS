@@ -53,6 +53,7 @@ void QgsGeomColumnTypeThread::run()
     else
     {
       layerProperty.type = "";
+      layerProperty.srid = "";
     }
 
     // Now tell the layer list dialog box...
