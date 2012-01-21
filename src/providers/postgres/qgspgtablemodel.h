@@ -58,6 +58,9 @@ class QgsPgTableModel : public QStandardItemModel
       dbtmColumns
     };
 
+    bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
+
     static QIcon iconForGeomType( QGis::GeometryType type );
 
   private:
