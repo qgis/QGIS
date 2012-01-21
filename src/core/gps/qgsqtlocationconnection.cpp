@@ -41,8 +41,11 @@ void QgsQtLocationConnection::parseData()
   if (locationDataSource){
     mStatus = GPSDataReceived;
     QGeoPositionInfo info = locationDataSource->lastKnownPosition();
-    QgsDebugMsg( "Parsing locationDataSource" );
-    QgsDebugMsg( "Coord: " + info.coordinate().toString() + "Time: " + info.timestamp().toString() );
+
+    QgsDebugMsg( "\nParsing locationDataSource" );
+
+    qDebug() << info;
+
     if (info.isValid())
     {
       QgsDebugMsg( "Valid QGeoPositionInfo, parsing" );
@@ -58,7 +61,7 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.hdop;     //< Horizontal dilution of precision
       mLastGPSInformation.vdop;     //< Vertical dilution of precision
       mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
-      mLastGPSInformation.fixType;  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+      mLastGPSInformation.fixType = info.coordinate().type();  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
       mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
       mLastGPSInformation.status;   //< Status (A = active or V = void)
       mLastGPSInformation.satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
@@ -124,7 +127,7 @@ void QgsQtLocationConnection::startGPS()
       if (locationDataSource)
       {
         locationDataSource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);  //QGeoPositionInfoSource::AllPositioningMethods
-        //locationDataSource->setUpdateInterval(500); // this is the line that gives trouble, so I just don't use it
+        locationDataSource->setUpdateInterval(2000); // this is the line that gives trouble, so I just don't use it
 
         // Whenever the location data source signals that the current
         // position is updated, the positionUpdated function is called.
