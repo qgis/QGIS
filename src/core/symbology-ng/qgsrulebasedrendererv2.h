@@ -119,11 +119,22 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         static Rule* create( QDomElement& ruleElem, QgsSymbolV2Map& symbolMap );
 
         RuleList& children() { return mChildren; }
+        Rule* parent() { return mParent; }
+
+        //! add child rule, take ownership, sets this as parent
+        void appendChild( Rule* rule ) { mChildren.append( rule ); rule->mParent = this; }
+        //! add child rule, take ownership, sets this as parent
+        void insertChild( int i, Rule* rule ) { mChildren.insert( i, rule ); rule->mParent = this; }
+        //! delete child rule
+        void removeChild( Rule* rule ) { mChildren.removeAll( rule ); delete rule; }
+        //! take child rule out, set parent as null
+        void takeChild( Rule* rule ) { mChildren.removeAll( rule ); rule->mParent = NULL; }
 
       protected:
 
         void initFilter();
 
+        Rule* mParent; // parent rule (NULL only for root rule)
         QgsSymbolV2* mSymbol;
         int mScaleMinDenom, mScaleMaxDenom;
         QString mFilterExp, mLabel, mDescription;
@@ -141,8 +152,10 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     static QgsFeatureRendererV2* create( QDomElement& element );
 
-    //! Constructor. Adds default rule if the symbol is not null (and takes ownership of it)
-    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol = NULL );
+    //! Constructs the renderer from given tree of rules (takes ownership)
+    QgsRuleBasedRendererV2( QgsRuleBasedRendererV2::Rule* root );
+    //! Constructor for convenience. Creates a root rule and adds a default rule with symbol (takes ownership)
+    QgsRuleBasedRendererV2( QgsSymbolV2* defaultSymbol );
 
     ~QgsRuleBasedRendererV2();
 
@@ -178,31 +191,14 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     Rule* rootRule() { return mRootRule; }
 
-
-    //! return the total number of rules
-    int ruleCount();
-    //! get reference to rule at index (valid indexes: 0...count-1)
-    Rule* ruleAt( int index );
-    //! add rule to the end of the list of rules. takes ownership
-    void addRule( Rule* rule );
-    //! insert rule to a specific position of the list of rules. takes ownership
-    void insertRule( int index, Rule* rule );
-    //! modify the rule at a specific position of the list of rules. takes ownership
-    void updateRuleAt( int index, Rule* rule );
-    //! remove the rule at the specified index
-    void removeRuleAt( int index );
-    //! swap the two rules specified by the indices
-    void swapRules( int index1,  int index2 );
-
-
     //////
 
     //! take a rule and create a list of new rules based on the categories from categorized symbol renderer
-    static RuleList refineRuleCategories( Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
+    static void refineRuleCategories( Rule* initialRule, QgsCategorizedSymbolRendererV2* r );
     //! take a rule and create a list of new rules based on the ranges from graduated symbol renderer
-    static RuleList refineRuleRanges( Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
+    static void refineRuleRanges( Rule* initialRule, QgsGraduatedSymbolRendererV2* r );
     //! take a rule and create a list of new rules with intervals of scales given by the passed scale denominators
-    static RuleList refineRuleScales( Rule* initialRule, QList<int> scales );
+    static void refineRuleScales( Rule* initialRule, QList<int> scales );
 
   protected:
     //! the root node with hierarchical list of rules
