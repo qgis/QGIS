@@ -63,8 +63,8 @@ void QgsQtLocationConnection::positionUpdated(const QtMobility::QGeoPositionInfo
       mLastGPSInformation.latitude = info.coordinate().latitude();
       mLastGPSInformation.longitude = info.coordinate().longitude() ;
       mLastGPSInformation.elevation = info.coordinate().altitude();
-      mLastGPSInformation.speed = info.GroundSpeed * 3.6; // m/s to km/h
-      mLastGPSInformation.direction = info.Direction;
+      mLastGPSInformation.speed = info.attribute(QGeoPositionInfo::GroundSpeed) * 3.6; // m/s to km/h
+      mLastGPSInformation.direction = info.attribute(QGeoPositionInfo::Direction);
       mLastGPSInformation.utcDateTime = info.timestamp();
       mLastGPSInformation.pdop;     //< Dilution of precision
       mLastGPSInformation.hdop;     //< Horizontal dilution of precision
