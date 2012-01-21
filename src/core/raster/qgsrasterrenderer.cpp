@@ -86,14 +86,14 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
 
   //split raster into small portions if necessary
   RasterPartInfo pInfo;
-  pInfo.nCols = viewPort->drawableAreaXDim * oversampling;
-  pInfo.nRows = viewPort->drawableAreaYDim * oversampling;
+  pInfo.nCols = viewPort->drawableAreaXDim;
+  pInfo.nRows = viewPort->drawableAreaYDim;
 
   //effective oversampling factors are different to global one because of rounding
-  oversamplingX = ( double )pInfo.nCols / viewPort->drawableAreaXDim;
-  oversamplingY = ( double )pInfo.nRows / viewPort->drawableAreaYDim;
+  oversamplingX = (( double )pInfo.nCols * oversampling ) / viewPort->drawableAreaXDim;
+  oversamplingY = (( double )pInfo.nRows * oversampling ) / viewPort->drawableAreaYDim;
 
-  int totalMemoryUsage = pInfo.nCols * pInfo.nRows * mProvider->dataTypeSize( bandNumber );
+  int totalMemoryUsage = pInfo.nCols * oversamplingX * pInfo.nRows * oversamplingY * mProvider->dataTypeSize( bandNumber );
   int parts = totalMemoryUsage / 100000000 + 1;
   int nPartsPerDimension = sqrt( parts );
   pInfo.nColsPerPart = pInfo.nCols / nPartsPerDimension;
@@ -104,7 +104,8 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   mRasterPartInfos.insert( bandNumber, pInfo );
 }
 
-bool QgsRasterRenderer::readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort, int& nCols, int& nRows, void** rasterData, int& topLeftCol, int& topLeftRow )
+bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX, double oversamplingY, QgsRasterViewPort* viewPort,
+    int& nCols, int& nRows, int& nColsRaster, int& nRowsRaster, void** rasterData, int& topLeftCol, int& topLeftRow )
 {
   if ( !viewPort )
   {
@@ -134,7 +135,6 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, QgsRasterViewPort* v
   nCols = qMin( pInfo.nColsPerPart, pInfo.nCols - pInfo.currentCol );
   nRows = qMin( pInfo.nRowsPerPart, pInfo.nRows - pInfo.currentRow );
   int typeSize = mProvider->dataTypeSize( bandNumber ) / 8;
-  pInfo.data = VSIMalloc( typeSize * nCols *  nRows );
 
   //get subrectangle
   QgsRectangle viewPortExtent = viewPort->mDrawnExtent;
@@ -144,7 +144,10 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, QgsRasterViewPort* v
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / ( double )pInfo.nRows * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
-  mProvider->readBlock( bandNumber, blockRect, nCols, nRows, viewPort->mSrcCRS, viewPort->mDestCRS, pInfo.data );
+  nColsRaster = nCols * oversamplingX;
+  nRowsRaster = nRows * oversamplingY;
+  pInfo.data = VSIMalloc( typeSize * nColsRaster *  nRowsRaster );
+  mProvider->readBlock( bandNumber, blockRect, nColsRaster, nRowsRaster, viewPort->mSrcCRS, viewPort->mDestCRS, pInfo.data );
   *rasterData = pInfo.data;
   topLeftCol = pInfo.currentCol;
   topLeftRow = pInfo.currentRow;
@@ -199,12 +202,12 @@ void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, con
   }
 
   //top left position in device coords
-  QPointF tlPoint = QPointF( viewPort->topLeftPoint.x(), viewPort->topLeftPoint.y() );
+  QPoint tlPoint = QPoint( viewPort->topLeftPoint.x() + topLeftCol, viewPort->topLeftPoint.y() + topLeftRow );
 
   //resample and draw image
   if (( mZoomedInResampler || mZoomedOutResampler ) && !doubleNear( oversamplingX, 1.0 ) && !doubleNear( oversamplingY, 1.0 ) )
   {
-    QImage dstImg( nCols / oversamplingX + 1.0, nRows / oversamplingY + 1.0, QImage::Format_ARGB32_Premultiplied );
+    QImage dstImg( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
     if ( mZoomedInResampler && oversamplingX < 1.0 )
     {
       mZoomedInResampler->resample( img, dstImg );
@@ -214,7 +217,6 @@ void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, con
       mZoomedOutResampler->resample( img, dstImg );
     }
 
-    tlPoint += QPointF( topLeftCol / oversamplingX, topLeftRow / oversamplingY );
     p->drawImage( tlPoint, dstImg );
   }
   else //use original image

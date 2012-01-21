@@ -43,8 +43,13 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
   }
 
+  //number of cols/rows in output pixels
   int nCols = 0;
   int nRows = 0;
+  //number of raster cols/rows with oversampling
+  int nRasterCols = 0;
+  int nRasterRows = 0;
+  //shift to top left point for the raster part
   int topLeftCol = 0;
   int topLeftRow = 0;
   QgsRasterDataProvider::DataType rasterType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGrayBand );
@@ -60,11 +65,13 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   QRgb myDefaultColor = qRgba( 0, 0, 0, 0 );
 
 
-  while ( readNextRasterPart( mGrayBand, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
+  while ( readNextRasterPart( mGrayBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
+                              &rasterData, topLeftCol, topLeftRow ) )
   {
     if ( mAlphaBand > 0 && mGrayBand != mAlphaBand )
     {
-      readNextRasterPart( mAlphaBand, viewPort, nCols, nRows, &alphaData, topLeftCol, topLeftRow );
+      readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
+                          &alphaData, topLeftCol, topLeftRow );
     }
     else if ( mAlphaBand > 0 )
     {
@@ -73,14 +80,14 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
 
     //create image
-    QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
     int currentRasterPos = 0;
 
-    for ( int i = 0; i < nRows; ++i )
+    for ( int i = 0; i < nRasterRows; ++i )
     {
       imageScanLine = ( QRgb* )( img.scanLine( i ) );
-      for ( int j = 0; j < nCols; ++j )
+      for ( int j = 0; j < nRasterCols; ++j )
       {
         grayVal = readValue( rasterData, rasterType, currentRasterPos );
 
@@ -131,5 +138,4 @@ void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   {
     stopRasterRead( mAlphaBand );
   }
-
 }

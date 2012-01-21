@@ -29,7 +29,7 @@ class QgsRasterViewPort;
 class QgsRasterRenderer
 {
   public:
-
+    //Stores information about reading of a raster band. Columns and rows are in unsampled coordinates
     struct RasterPartInfo
     {
       int currentCol;
@@ -38,7 +38,7 @@ class QgsRasterRenderer
       int nRows;
       int nColsPerPart;
       int nRowsPerPart;
-      void* data;
+      void* data; //data (can be in oversampled/undersampled resolution)
     };
 
     QgsRasterRenderer( QgsRasterDataProvider* provider );
@@ -70,8 +70,22 @@ class QgsRasterRenderer
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
+    /**Start reading of raster band. Raster data can then be retrieved by calling readNextRasterPart until it returns false.
+      @param bandNumer number of raster band to read
+      @param viewPort describes raster position on screen
+      @param oversamplingX out: oversampling rate in x-direction
+      @param oversamplingY out: oversampling rate in y-direction*/
     void startRasterRead( int bandNumber, QgsRasterViewPort* viewPort, const QgsMapToPixel* mapToPixel, double& oversamplingX, double& oversamplingY );
-    bool readNextRasterPart( int bandNumber, QgsRasterViewPort* viewPort, int& nCols, int& nRows, void** rasterData, int& topLeftCol, int& topLeftRow );
+    /**Fetches next part of raster data
+       @param nCols number of columns on output device
+       @param nRows number of rows on output device
+       @param nColsRaster number of raster columns (different to nCols if oversamplingX != 1.0)
+       @param nRowsRaster number of raster rows (different to nRows if oversamplingY != 0)*/
+    bool readNextRasterPart( int bandNumber, double oversamplingX, double oversamplingY, QgsRasterViewPort* viewPort, int& nCols, int& nRows,
+                             int& nColsRaster, int& nRowsRaster, void** rasterData, int& topLeftCol, int& topLeftRow );
+    /**Draws raster part
+      @param topLeftCol Left position relative to left border of viewport
+      @param topLeftRow Top position relative to top border of viewport*/
     void drawImage( QPainter* p, QgsRasterViewPort* viewPort, const QImage& img, int topLeftCol, int topLeftRow,
                     int nCols, int nRows, double oversamplingX, double oversamplingY ) const;
     void stopRasterRead( int bandNumber );

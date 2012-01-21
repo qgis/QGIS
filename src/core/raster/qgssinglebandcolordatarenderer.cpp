@@ -39,27 +39,36 @@ void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewP
   double oversamplingX, oversamplingY;
   startRasterRead( mBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
 
-  int topLeftCol, topLeftRow, nCols, nRows, currentRasterPos;
+  //number of cols/rows in output pixels
+  int nCols = 0;
+  int nRows = 0;
+  //number of raster cols/rows with oversampling
+  int nRasterCols = 0;
+  int nRasterRows = 0;
+  //shift to top left point for the raster part
+  int topLeftCol = 0;
+  int topLeftRow = 0;
+  int currentRasterPos;
   void* rasterData;
 
   bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
 
-  while ( readNextRasterPart( mBand, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
+  while ( readNextRasterPart( mBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows, &rasterData, topLeftCol, topLeftRow ) )
   {
     currentRasterPos = 0;
-    QImage img( nCols, nRows, QImage::Format_ARGB32 );
+    QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32 );
     uchar* scanLine = 0;
-    for ( int i = 0; i < nRows; ++i )
+    for ( int i = 0; i < nRasterRows; ++i )
     {
       scanLine = img.scanLine( i );
       if ( !hasTransparency )
       {
         memcpy( scanLine, &((( uint* )rasterData )[currentRasterPos] ), nCols * 4 );
-        currentRasterPos += nCols;
+        currentRasterPos += nRasterCols;
       }
       else
       {
-        for ( int j = 0; j < nCols; ++j )
+        for ( int j = 0; j < nRasterCols; ++j )
         {
           QRgb c((( uint* )( rasterData ) )[currentRasterPos] );
           scanLine[i] = qRgba( qRed( c ), qGreen( c ), qBlue( c ), 255 );

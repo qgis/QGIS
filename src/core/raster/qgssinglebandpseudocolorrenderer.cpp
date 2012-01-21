@@ -50,8 +50,13 @@ void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* vie
     startRasterRead( mAlphaBand, viewPort, theQgsMapToPixel, oversamplingX, oversamplingY );
   }
 
+  //number of cols/rows in output pixels
   int nCols = 0;
   int nRows = 0;
+  //number of raster cols/rows with oversampling
+  int nRasterCols = 0;
+  int nRasterRows = 0;
+  //shift to top left point for the raster part
   int topLeftCol = 0;
   int topLeftRow = 0;
   void* rasterData;
@@ -64,11 +69,13 @@ void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* vie
   //rendering is faster without considering user-defined transparency
   bool hasTransparency = usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS );
 
-  while ( readNextRasterPart( mBand, viewPort, nCols, nRows, &rasterData, topLeftCol, topLeftRow ) )
+  while ( readNextRasterPart( mBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
+                              &rasterData, topLeftCol, topLeftRow ) )
   {
     if ( mAlphaBand > 0 && mAlphaBand != mBand )
     {
-      readNextRasterPart( mAlphaBand, viewPort, nCols, nRows, &transparencyData, topLeftCol, topLeftRow );
+      readNextRasterPart( mAlphaBand, oversamplingX, oversamplingY, viewPort, nCols, nRows, nRasterCols, nRasterRows,
+                          &transparencyData, topLeftCol, topLeftRow );
     }
     else if ( mAlphaBand == mBand )
     {
@@ -76,15 +83,15 @@ void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* vie
     }
 
     //create image
-    QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
     double val = 0;
 
     int currentRasterPos = 0;
-    for ( int i = 0; i < nRows; ++i )
+    for ( int i = 0; i < nRasterRows; ++i )
     {
       imageScanLine = ( QRgb* )( img.scanLine( i ) );
-      for ( int j = 0; j < nCols; ++j )
+      for ( int j = 0; j < nRasterCols; ++j )
       {
         val = readValue( rasterData, rasterType, currentRasterPos );
         if ( !mShader->shade( val, &red, &green, &blue ) )

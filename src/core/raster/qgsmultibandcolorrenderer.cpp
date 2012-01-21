@@ -66,7 +66,15 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   void* greenData = 0;
   void* blueData = 0;
   void* alphaData = 0;
-  int nCols, nRows, topLeftCol, topLeftRow;
+  //number of cols/rows in output pixels
+  int nCols = 0;
+  int nRows = 0;
+  //number of raster cols/rows with oversampling
+  int nRasterCols = 0;
+  int nRasterRows = 0;
+  //shift to top left point for the raster part
+  int topLeftCol = 0;
+  int topLeftRow = 0;
 
   bool readSuccess = true;
   while ( true )
@@ -74,7 +82,8 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     QSet<int>::const_iterator bandIt = bands.constBegin();
     for ( ; bandIt != bands.constEnd(); ++bandIt )
     {
-      readSuccess = readSuccess && readNextRasterPart( *bandIt, viewPort, nCols, nRows, &bandData[*bandIt], topLeftCol, topLeftRow );
+      readSuccess = readSuccess && readNextRasterPart( *bandIt, oversamplingX, oversamplingY, viewPort, nCols, nRows,
+                    nRasterCols, nRasterRows, &bandData[*bandIt], topLeftCol, topLeftRow );
     }
 
     if ( !readSuccess )
@@ -90,16 +99,16 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       alphaData = bandData[mAlphaBand];
     }
 
-    QImage img( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
     int currentRasterPos = 0;
     int redVal, greenVal, blueVal;
     double currentOpacity = mOpacity; //opacity (between 0 and 1)
 
-    for ( int i = 0; i < nRows; ++i )
+    for ( int i = 0; i < nRasterRows; ++i )
     {
       imageScanLine = ( QRgb* )( img.scanLine( i ) );
-      for ( int j = 0; j < nCols; ++j )
+      for ( int j = 0; j < nRasterCols; ++j )
       {
         redVal = readValue( redData, redType, currentRasterPos );
         greenVal = readValue( greenData, greenType, currentRasterPos );
