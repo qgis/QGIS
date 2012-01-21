@@ -1310,6 +1310,9 @@ void QgisApp::createStatusBar()
   mScaleEdit = new QgsScaleComboBox( statusBar() );
   mScaleEdit->setObjectName( "mScaleEdit" );
   mScaleEdit->setFont( myFont );
+  // seems setFont() change font only for popup not for line edit,
+  // so we need to set font for it separately
+  mScaleEdit->lineEdit()->setFont( myFont );
   mScaleEdit->setMinimumWidth( 10 );
   mScaleEdit->setMaximumWidth( 100 );
   mScaleEdit->setMaximumHeight( 20 );
