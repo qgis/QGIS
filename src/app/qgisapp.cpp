@@ -4444,6 +4444,8 @@ void QgisApp::showScale( double theScale )
   else
     mScaleEdit->setEditText( tr( "Invalid scale" ) );
 
+  mOldScale = mScaleEdit->currentText();
+
   if ( mScaleEdit->width() > mScaleEdit->minimumWidth() )
   {
     mScaleEdit->setMinimumWidth( mScaleEdit->width() );
@@ -4452,6 +4454,11 @@ void QgisApp::showScale( double theScale )
 
 void QgisApp::userScale()
 {
+  if ( mOldScale == mScaleEdit->currentText() )
+  {
+    return;
+  }
+
   QStringList parts = mScaleEdit->currentText().split( ':' );
   if ( parts.size() == 2 )
   {
