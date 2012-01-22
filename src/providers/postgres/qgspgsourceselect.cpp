@@ -412,74 +412,30 @@ void QgsPgSourceSelect::populateConnectionList()
   cmbConnections->setDisabled( cmbConnections->count() == 0 );
 }
 
-QString QgsPgSourceSelect::layerURI( const QModelIndex &index )
-{
-  QGis::GeometryType geomType = ( QGis::GeometryType ) mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
-  if ( geomType == QGis::UnknownGeometry )
-    // no geometry type selected
-    return QString::null;
-
-  QStandardItem *pkItem = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmPkCol ) );
-  QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
-
-  if ( pkItem->data( Qt::UserRole + 1 ).toStringList().size() > 0 && pkColumnName.isEmpty() )
-    // no primary key for view selected
-    return QString::null;
-
-  QString schemaName = index.sibling( index.row(), QgsPgTableModel::dbtmSchema ).data( Qt::DisplayRole ).toString();
-  QString tableName = index.sibling( index.row(), QgsPgTableModel::dbtmTable ).data( Qt::DisplayRole ).toString();
-  QString geomColumnName = index.sibling( index.row(), QgsPgTableModel::dbtmGeomCol ).data( Qt::DisplayRole ).toString();
-
-  QString srid = index.sibling( index.row(), QgsPgTableModel::dbtmSrid ).data( Qt::DisplayRole ).toString();
-  bool ok;
-  srid.toInt( &ok );
-  if ( !ok )
-    return QString::null;
-
-  bool selectAtId = mTableModel.itemFromIndex( index.sibling( index.row(), QgsPgTableModel::dbtmSelectAtId ) )->checkState() == Qt::Checked;
-  QString sql = index.sibling( index.row(), QgsPgTableModel::dbtmSql ).data( Qt::DisplayRole ).toString();
-
-  QgsDataSourceURI uri( m_connInfo );
-  uri.setDataSource( schemaName, tableName, geomType != QGis::NoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
-  uri.setUseEstimatedMetadata( mUseEstimatedMetadata );
-  uri.setGeometryType( geomType );
-  uri.setSrid( srid );
-  uri.disableSelectAtId( !selectAtId );
-
-  return uri.uri();
-}
-
 // Slot for performing action when the Add button is clicked
 void QgsPgSourceSelect::addTables()
 {
-  m_selectedTables.clear();
+  mSelectedTables.clear();
 
-  QItemSelection selection = mTablesTreeView->selectionModel()->selection();
-  QModelIndexList selectedIndices = selection.indexes();
-  QModelIndexList::const_iterator selected_it = selectedIndices.constBegin();
-  for ( ; selected_it != selectedIndices.constEnd(); ++selected_it )
+  foreach( QModelIndex idx, mTablesTreeView->selectionModel()->selection().indexes() )
   {
-    if ( !selected_it->parent().isValid() || selected_it->column() > 0 )
-    {
-      //top level items only contain the schema names
+    if ( idx.column() != QgsPgTableModel::dbtmTable )
       continue;
-    }
 
-    QModelIndex index = mProxyModel.mapToSource( *selected_it );
-    QString uri = layerURI( index );
+    QString uri = mTableModel.layerURI( mProxyModel.mapToSource( idx ), mConnInfo, mUseEstimatedMetadata );
     if ( uri.isNull() )
       continue;
 
-    m_selectedTables << uri;
+    mSelectedTables << uri;
   }
 
-  if ( m_selectedTables.empty() )
+  if ( mSelectedTables.empty() )
   {
     QMessageBox::information( this, tr( "Select Table" ), tr( "You must select a table in order to add a layer." ) );
   }
   else
   {
-    emit addDatabaseLayers( m_selectedTables, "postgres" );
+    emit addDatabaseLayers( mSelectedTables, "postgres" );
     accept();
   }
 }
@@ -502,7 +458,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
   QgsDebugMsg( "Connection info: " + uri.connectionInfo() );
 
-  m_connInfo = uri.connectionInfo();
+  mConnInfo = uri.connectionInfo();
   mUseEstimatedMetadata = uri.useEstimatedMetadata();
 
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( uri.connectionInfo(), true );
@@ -596,12 +552,12 @@ void QgsPgSourceSelect::columnThreadFinished()
 
 QStringList QgsPgSourceSelect::selectedTables()
 {
-  return m_selectedTables;
+  return mSelectedTables;
 }
 
 QString QgsPgSourceSelect::connectionInfo()
 {
-  return m_connInfo;
+  return mConnInfo;
 }
 
 void QgsPgSourceSelect::setSql( const QModelIndex &index )
@@ -615,7 +571,7 @@ void QgsPgSourceSelect::setSql( const QModelIndex &index )
   QModelIndex idx = mProxyModel.mapToSource( index );
   QString tableName = mTableModel.itemFromIndex( idx.sibling( idx.row(), QgsPgTableModel::dbtmTable ) )->text();
 
-  QgsVectorLayer *vlayer = new QgsVectorLayer( layerURI( idx ), tableName, "postgres" );
+  QgsVectorLayer *vlayer = new QgsVectorLayer( mTableModel.layerURI( idx, mConnInfo, mUseEstimatedMetadata ), tableName, "postgres" );
 
   if ( !vlayer->isValid() )
   {
@@ -639,7 +595,7 @@ void QgsPgSourceSelect::addSearchGeometryColumn( QgsPostgresLayerProperty layerP
   // store the column details and do the query in a thread
   if ( !mColumnTypeThread )
   {
-    QgsPostgresConn *conn = QgsPostgresConn::connectDb( m_connInfo, true /* readonly */ );
+    QgsPostgresConn *conn = QgsPostgresConn::connectDb( mConnInfo, true /* readonly */ );
     if ( conn )
     {
 
