@@ -60,6 +60,7 @@ class QgsPgTableModel : public QStandardItemModel
 
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
+    QString layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata );
 
     static QIcon iconForGeomType( QGis::GeometryType type );
 

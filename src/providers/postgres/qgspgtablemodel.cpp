@@ -314,3 +314,43 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
   return true;
 }
+
+QString QgsPgTableModel::layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata )
+{
+  if ( !index.isValid() )
+    return QString::null;
+
+  QGis::GeometryType geomType = ( QGis::GeometryType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( geomType == QGis::UnknownGeometry )
+    // no geometry type selected
+    return QString::null;
+
+  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
+
+  if ( pkItem->data( Qt::UserRole + 1 ).toStringList().size() > 0 && pkColumnName.isEmpty() )
+    // no primary key for view selected
+    return QString::null;
+
+  QString schemaName = index.sibling( index.row(), dbtmSchema ).data( Qt::DisplayRole ).toString();
+  QString tableName = index.sibling( index.row(), dbtmTable ).data( Qt::DisplayRole ).toString();
+  QString geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
+
+  QString srid = index.sibling( index.row(), dbtmSrid ).data( Qt::DisplayRole ).toString();
+  bool ok;
+  srid.toInt( &ok );
+  if ( !ok )
+    return QString::null;
+
+  bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
+  QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
+
+  QgsDataSourceURI uri( connInfo );
+  uri.setDataSource( schemaName, tableName, geomType != QGis::NoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
+  uri.setUseEstimatedMetadata( useEstimatedMetadata );
+  uri.setGeometryType( geomType );
+  uri.setSrid( srid );
+  uri.disableSelectAtId( !selectAtId );
+
+  return uri.uri();
+}

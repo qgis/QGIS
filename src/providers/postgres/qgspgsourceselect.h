@@ -139,8 +139,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QStringList mColumnLabels;
     // Our thread for doing long running queries
     QgsGeomColumnTypeThread* mColumnTypeThread;
-    QString m_connInfo;
-    QStringList m_selectedTables;
+    QString mConnInfo;
+    QStringList mSelectedTables;
     bool mUseEstimatedMetadata;
     // Storage for the range of layer type icons
     QMap<QString, QPair<QString, QIcon> > mLayerIcons;
@@ -149,7 +149,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     QgsPgTableModel mTableModel;
     QgsDbFilterProxyModel mProxyModel;
 
-    QString layerURI( const QModelIndex &index );
     QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
     void updateSelectableState( const QModelIndex &index );
