@@ -43,7 +43,7 @@ struct QgsPostgresLayerProperty
   QString     tableName;
   QString     geometryColName;
   QStringList pkCols;
-  int         srid;
+  QString     srid;
   bool        isGeography;
   QString     sql;
 };
