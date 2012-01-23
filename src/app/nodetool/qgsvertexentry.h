@@ -28,7 +28,7 @@ class QgsVertexEntry
     int mEquals;
     bool mInRubberBand;
     int mRubberBandNr;
-    int mIndex;
+    int mRubberBandIndex;
     int mOriginalIndex;
     int mPenWidth;
     QString mToolTip;
@@ -58,7 +58,7 @@ class QgsVertexEntry
     void setSelected( bool selected = true );
     void setInRubberBand( bool inRubberBand = true ) { mInRubberBand = inRubberBand; }
     int rubberBandNr() const { return mRubberBandNr; }
-    int index() { return mIndex; }
+    int rubberBandIndex() { return mRubberBandIndex; }
 
     void setRubberBandValues( bool inRubberBand, int rubberBandNr, int indexInRubberBand );
     void update();
