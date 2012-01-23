@@ -27,7 +27,7 @@ QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLoca
   startGPS();
   startSatelliteMonitor();
   //HACK
-  QTimer::singleShot( 500, this, SLOT( parseData() ) );
+  QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
 }
 
 QgsQtLocationConnection::~QgsQtLocationConnection()
@@ -36,8 +36,8 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
   QgsDebugMsg( "entered." );
 }
 
-/*Needed to make connection detectable (half HACK)*/
-void QgsQtLocationConnection::parseData()
+//Needed to make connection detectable (half HACK)
+void QgsQtLocationConnection::broadcastConnectionAvailable()
 {
   if (locationDataSource){
     mStatus = GPSDataReceived;
@@ -45,37 +45,41 @@ void QgsQtLocationConnection::parseData()
   }
 }
 
-void QgsQtLocationConnection::positionUpdated(const QtMobility::QGeoPositionInfo &info)
+//TODO: Temporarely needed to workaround https://sourceforge.net/p/necessitas/tickets/147/
+void QgsQtLocationConnection::positionUpdated(const QGeoPositionInfo &info)
+{
+  mInfo = info;
+  parseData();
+}
+
+void QgsQtLocationConnection::parseData()
 {
   if (locationDataSource){
     mStatus = GPSDataReceived;
-    //QGeoPositionInfo info = locationDataSource->lastKnownPosition();
-
-    QgsDebugMsg( "Parsing locationDataSource" );
-
-    qDebug() << info;
-
-    if (info.isValid())
+    //const QGeoPositionInfo &info = locationDataSource->lastKnownPosition();
+    qDebug() << mInfo;
+    if (mInfo.isValid())
     {
-      QgsDebugMsg( "Valid QGeoPositionInfo, parsing" );
-      // info.HorizontalAccuracy;
+      // mInfo.HorizontalAccuracy;
+      mLastGPSInformation.latitude = mInfo.coordinate().latitude();
+      mLastGPSInformation.longitude = mInfo.coordinate().longitude() ;
+      mLastGPSInformation.elevation = mInfo.coordinate().altitude();
+      mLastGPSInformation.speed = mInfo.attribute(QGeoPositionInfo::GroundSpeed) * 3.6; // m/s to km/h
+      mLastGPSInformation.direction = mInfo.attribute(QGeoPositionInfo::Direction);
+      mLastGPSInformation.utcDateTime = mInfo.timestamp();
+      mLastGPSInformation.fixType = mInfo.coordinate().type();  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
 
-      mLastGPSInformation.latitude = info.coordinate().latitude();
-      mLastGPSInformation.longitude = info.coordinate().longitude() ;
-      mLastGPSInformation.elevation = info.coordinate().altitude();
-      mLastGPSInformation.speed = info.attribute(QGeoPositionInfo::GroundSpeed) * 3.6; // m/s to km/h
-      mLastGPSInformation.direction = info.attribute(QGeoPositionInfo::Direction);
-      mLastGPSInformation.utcDateTime = info.timestamp();
+      //TODO implement these
       mLastGPSInformation.pdop;     //< Dilution of precision
-      mLastGPSInformation.hdop;     //< Horizontal dilution of precision
-      mLastGPSInformation.vdop;     //< Vertical dilution of precision
-      mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
-      mLastGPSInformation.fixType = info.coordinate().type();  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
-      mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
-      mLastGPSInformation.status;   //< Status (A = active or V = void)
+      mLastGPSInformation.hdop = mInfo.attribute(QGeoPositionInfo::HorizontalAccuracy);     //< Horizontal dilution of precision
+      mLastGPSInformation.vdop = mInfo.attribute(QGeoPositionInfo::VerticalAccuracy);     //< Vertical dilution of precision
+      mLastGPSInformation.fixMode = 'A';  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
+      mLastGPSInformation.quality = 1;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+      mLastGPSInformation.status = 'A';   //< Status (A = active or V = void)
       mLastGPSInformation.satInfoComplete = true;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+
       emit stateChanged( mLastGPSInformation );
-      QgsDebugMsg("positionUpdated");
+      QgsDebugMsg("Valid QGeoPositionInfo, positionUpdated");
     }
   }
 }
@@ -89,8 +93,8 @@ void QgsQtLocationConnection::satellitesInViewUpdated(
   {
     QGeoSatelliteInfo currentSatellite = satellites.at(i);
     QgsSatelliteInfo satelliteInfo;
-    satelliteInfo.azimuth = currentSatellite.Azimuth;
-    satelliteInfo.elevation = currentSatellite.Elevation;
+    satelliteInfo.azimuth = currentSatellite.attribute( QGeoSatelliteInfo::Azimuth );
+    satelliteInfo.elevation = currentSatellite.attribute( QGeoSatelliteInfo::Elevation );
     satelliteInfo.id = currentSatellite.prnNumber();
     satelliteInfo.signal = currentSatellite.signalStrength();
     mLastGPSInformation.satellitesInView.append( satelliteInfo );
@@ -162,11 +166,14 @@ void QgsQtLocationConnection::startGPS()
 
 void QgsQtLocationConnection::startSatelliteMonitor()
 {
+  QgsDebugMsg( "startSatelliteMonitor" );
   if (!satelliteInfoSource)
   {
+    QgsDebugMsg( "startSatelliteMonitor 1" );
     satelliteInfoSource = QGeoSatelliteInfoSource::createDefaultSource(this);
     if (satelliteInfoSource)
     {
+      QgsDebugMsg( "startSatelliteMonitor 2" );
       // Whenever the satellite info source signals that the number of
       // satellites in use is updated, the satellitesInUseUpdated function
       // is called
@@ -192,12 +199,14 @@ void QgsQtLocationConnection::startSatelliteMonitor()
     }
     else
     {
+      QgsDebugMsg( "startSatelliteMonitor 3" );
       // Not able to obtain the Satellite data source
       QgsDebugMsg("No QtLocation Satellite Source");
     }
   }
   else
   {
+    QgsDebugMsg( "startSatelliteMonitor 4" );
     // Start listening for position updates
     satelliteInfoSource->startUpdates();
   }
