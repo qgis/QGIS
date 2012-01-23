@@ -106,6 +106,12 @@ QgsSymbolV2List QgsRuleBasedRendererV2::Rule::symbols()
   return lst;
 }
 
+void QgsRuleBasedRendererV2::Rule::setSymbol( QgsSymbolV2* sym )
+{
+  delete mSymbol;
+  mSymbol = sym;
+}
+
 QgsLegendSymbolList QgsRuleBasedRendererV2::Rule::legendSymbolItems()
 {
   QgsLegendSymbolList lst;
@@ -534,18 +540,11 @@ QgsFeatureRendererV2* QgsRuleBasedRendererV2::create( QDomElement& element )
 
 void QgsRuleBasedRendererV2::refineRuleCategories( QgsRuleBasedRendererV2::Rule* initialRule, QgsCategorizedSymbolRendererV2* r )
 {
-  RuleList rules;
   foreach( const QgsRendererCategoryV2& cat, r->categories() )
   {
-    QString newfilter = QString( "%1 = '%2'" ).arg( r->classAttribute() ).arg( cat.value().toString() );
-    QString filter = initialRule->filterExpression();
-    QString label = initialRule->label();
-    QString description = initialRule->description();
-    if ( filter.isEmpty() )
-      filter = newfilter;
-    else
-      filter = QString( "(%1) AND (%2)" ).arg( filter ).arg( newfilter );
-    initialRule->appendChild( new Rule( cat.symbol()->clone(), initialRule->scaleMinDenom(), initialRule->scaleMaxDenom(), filter, label, description ) );
+    QString filter = QString( "%1 = '%2'" ).arg( r->classAttribute() ).arg( cat.value().toString() );
+    QString label = filter;
+    initialRule->appendChild( new Rule( cat.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
 
@@ -553,15 +552,9 @@ void QgsRuleBasedRendererV2::refineRuleRanges( QgsRuleBasedRendererV2::Rule* ini
 {
   foreach( const QgsRendererRangeV2& rng, r->ranges() )
   {
-    QString newfilter = QString( "%1 >= '%2' AND %1 <= '%3'" ).arg( r->classAttribute() ).arg( rng.lowerValue() ).arg( rng.upperValue() );
-    QString filter = initialRule->filterExpression();
-    QString label = initialRule->label();
-    QString description = initialRule->description();
-    if ( filter.isEmpty() )
-      filter = newfilter;
-    else
-      filter = QString( "(%1) AND (%2)" ).arg( filter ).arg( newfilter );
-    initialRule->appendChild( new Rule( rng.symbol()->clone(), initialRule->scaleMinDenom(), initialRule->scaleMaxDenom(), filter, label, description ) );
+    QString filter = QString( "%1 >= '%2' AND %1 <= '%3'" ).arg( r->classAttribute() ).arg( rng.lowerValue() ).arg( rng.upperValue() );
+    QString label = filter;
+    initialRule->appendChild( new Rule( rng.symbol()->clone(), 0, 0, filter, label ) );
   }
 }
 
@@ -570,9 +563,6 @@ void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* ini
   qSort( scales ); // make sure the scales are in ascending order
   int oldScale = initialRule->scaleMinDenom();
   int maxDenom = initialRule->scaleMaxDenom();
-  QString filter = initialRule->filterExpression();
-  QString label = initialRule->label();
-  QString description = initialRule->description();
   QgsSymbolV2* symbol = initialRule->symbol();
   foreach( int scale, scales )
   {
@@ -580,11 +570,11 @@ void QgsRuleBasedRendererV2::refineRuleScales( QgsRuleBasedRendererV2::Rule* ini
       continue; // jump over the first scales out of the interval
     if ( maxDenom != 0 && maxDenom  <= scale )
       break; // ignore the latter scales out of the interval
-    initialRule->appendChild( new Rule( symbol->clone(), oldScale, scale, filter, label, description ) );
+    initialRule->appendChild( new Rule( symbol->clone(), oldScale, scale, QString(), QString( "%1 - %2" ).arg( oldScale ).arg( scale ) ) );
     oldScale = scale;
   }
   // last rule
-  initialRule->appendChild( new Rule( symbol->clone(), oldScale, maxDenom, filter, label, description ) );
+  initialRule->appendChild( new Rule( symbol->clone(), oldScale, maxDenom, QString(), QString( "%1 - %2" ).arg( oldScale ).arg( maxDenom ) ) );
 }
 
 QString QgsRuleBasedRendererV2::dump()

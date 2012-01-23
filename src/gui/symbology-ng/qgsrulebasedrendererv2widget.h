@@ -48,13 +48,27 @@ class QgsRuleBasedRendererV2Model : public QAbstractItemModel
     //! provide parent model index
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
+    // editing support
     virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
+
+    // drag'n'drop support
+    Qt::DropActions supportedDropActions() const;
+    QStringList mimeTypes() const;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
     // new methods
 
+    QgsRuleBasedRendererV2::Rule* ruleForIndex( const QModelIndex& index ) const;
+
     void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRendererV2::Rule* newrule );
-    void updateRule( const QModelIndex& index );
+    void updateRule( const QModelIndex& parent, int row );
     void removeRule( const QModelIndex& index );
+
+    void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
+    void finishedAddingRules(); // call endInsertRows
 
   protected:
     QgsRuleBasedRendererV2* mR;
@@ -84,8 +98,6 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
     void editRule();
     void editRule( const QModelIndex& index );
     void removeRule();
-    void moveUp();
-    void moveDown();
 
     void refineRuleScales();
     void refineRuleCategories();
@@ -96,9 +108,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
   protected:
 
     void refineRule( int type );
-    void refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule* initialRule );
-    void refineRuleRangesGui( QgsRuleBasedRendererV2::Rule* initialRule );
-    void refineRuleScalesGui( QgsRuleBasedRendererV2::Rule* initialRule );
+    void refineRuleCategoriesGui( const QModelIndex& index );
+    void refineRuleRangesGui( const QModelIndex& index );
+    void refineRuleScalesGui( const QModelIndex& index );
 
     QgsRuleBasedRendererV2::Rule* currentRule();
 
@@ -123,18 +135,22 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
 
   public:
     QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style );
+    ~QgsRendererRulePropsDialog();
 
-    void updateRuleFromGui();
     QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
 
   public slots:
     void testFilter();
     void buildExpression();
+    void accept();
 
   protected:
     QgsRuleBasedRendererV2::Rule* mRule; // borrowed
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
+
+    QgsSymbolV2SelectorDialog* mSymbolSelector;
+    QgsSymbolV2* mSymbol; // a clone of original symbol
 };
 
 
