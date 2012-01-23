@@ -559,7 +559,7 @@ void QgsPostgresProvider::select( QgsAttributeList fetchAttributes, QgsRectangle
       }
     }
 
-    if ( mRequestedSrid != mDetectedSrid )
+    if ( !mRequestedSrid.isEmpty() && mRequestedSrid != mDetectedSrid )
     {
       whereClause += QString( " AND %1(%2)=%3" )
                      .arg( mConnectionRO->majorVersion() < 2 ? "srid" : "st_srid" )
