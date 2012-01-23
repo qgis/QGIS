@@ -17,6 +17,7 @@
 
 #include "qgsrasterrenderer.h"
 #include "qgsrasterresampler.h"
+#include "qgsrasterprojector.h"
 #include "qgsrastertransparency.h"
 #include "qgsrasterviewport.h"
 #include "qgsmaptopixel.h"
@@ -101,6 +102,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
   pInfo.currentCol = 0;
   pInfo.currentRow = 0;
   pInfo.data = 0;
+  pInfo.prj = 0;
   mRasterPartInfos.insert( bandNumber, pInfo );
 }
 
@@ -124,6 +126,8 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX
   //remove last data block
   CPLFree( pInfo.data );
   pInfo.data = 0;
+  delete pInfo.prj;
+  pInfo.prj = 0;
 
   //already at end
   if ( pInfo.currentCol == pInfo.nCols && pInfo.currentRow == pInfo.nRows )
@@ -144,10 +148,25 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX
   double ymax = viewPortExtent.yMaximum() - pInfo.currentRow / ( double )pInfo.nRows * viewPortExtent.height();
   QgsRectangle blockRect( xmin, ymin, xmax, ymax );
 
-  nColsRaster = nCols * oversamplingX;
-  nRowsRaster = nRows * oversamplingY;
+  if ( viewPort->mSrcCRS.isValid() && viewPort->mDestCRS.isValid() && viewPort->mSrcCRS != viewPort->mDestCRS )
+  {
+    pInfo.prj = new QgsRasterProjector( viewPort->mSrcCRS,
+                                        viewPort->mDestCRS, blockRect, nRows, nCols, 0, 0, mProvider->extent() );
+    blockRect = pInfo.prj->srcExtent();
+  }
+
+  if ( pInfo.prj )
+  {
+    nColsRaster = pInfo.prj->srcCols() * oversamplingX;
+    nRowsRaster = pInfo.prj->srcRows() * oversamplingY;
+  }
+  else
+  {
+    nColsRaster = nCols * oversamplingX;
+    nRowsRaster = nRows * oversamplingY;
+  }
   pInfo.data = VSIMalloc( typeSize * nColsRaster *  nRowsRaster );
-  mProvider->readBlock( bandNumber, blockRect, nColsRaster, nRowsRaster, viewPort->mSrcCRS, viewPort->mDestCRS, pInfo.data );
+  mProvider->readBlock( bandNumber, blockRect, nColsRaster, nRowsRaster, pInfo.data );
   *rasterData = pInfo.data;
   topLeftCol = pInfo.currentCol;
   topLeftRow = pInfo.currentRow;
@@ -178,6 +197,7 @@ void QgsRasterRenderer::removePartInfo( int bandNumber )
   {
     RasterPartInfo& pInfo = partIt.value();
     CPLFree( pInfo.data );
+    delete pInfo.prj;
     mRasterPartInfos.remove( bandNumber );
   }
 }
@@ -201,13 +221,29 @@ void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, con
     return;
   }
 
+  //get QgsRasterProjector
+  QgsRasterProjector* prj;
+  QMap<int, RasterPartInfo>::const_iterator partInfoIt = mRasterPartInfos.constBegin();
+  if ( partInfoIt != mRasterPartInfos.constEnd() )
+  {
+    prj = partInfoIt->prj;
+  }
+
   //top left position in device coords
   QPoint tlPoint = QPoint( viewPort->topLeftPoint.x() + topLeftCol, viewPort->topLeftPoint.y() + topLeftRow );
 
   //resample and draw image
   if (( mZoomedInResampler || mZoomedOutResampler ) && !doubleNear( oversamplingX, 1.0 ) && !doubleNear( oversamplingY, 1.0 ) )
   {
-    QImage dstImg( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    QImage dstImg;
+    if ( prj )
+    {
+      dstImg = QImage( prj->srcCols(), prj->srcRows(), QImage::Format_ARGB32_Premultiplied );
+    }
+    else
+    {
+      dstImg = QImage( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+    }
     if ( mZoomedInResampler && oversamplingX < 1.0 )
     {
       mZoomedInResampler->resample( img, dstImg );
@@ -217,10 +253,43 @@ void QgsRasterRenderer::drawImage( QPainter* p, QgsRasterViewPort* viewPort, con
       mZoomedOutResampler->resample( img, dstImg );
     }
 
-    p->drawImage( tlPoint, dstImg );
+    if ( prj )
+    {
+      QImage projectedImg( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+      projectImage( dstImg, projectedImg, prj );
+      p->drawImage( tlPoint, projectedImg );
+    }
+    else
+    {
+      p->drawImage( tlPoint, dstImg );
+    }
   }
   else //use original image
   {
-    p->drawImage( tlPoint, img );
+    if ( prj )
+    {
+      QImage projectedImg( nCols, nRows, QImage::Format_ARGB32_Premultiplied );
+      projectImage( img, projectedImg, prj );
+      p->drawImage( tlPoint, projectedImg );
+    }
+    else
+    {
+      p->drawImage( tlPoint, img );
+    }
+  }
+}
+
+void QgsRasterRenderer::projectImage( const QImage& srcImg, QImage& dstImage, QgsRasterProjector* prj ) const
+{
+  int nRows = dstImage.height();
+  int nCols = dstImage.width();
+  int srcRow, srcCol;
+  for ( int i = 0; i < nRows; ++i )
+  {
+    for ( int j = 0; j < nCols; ++j )
+    {
+      prj->srcRowCol( i, j, &srcRow, &srcCol );
+      dstImage.setPixel( j, i, srcImg.pixel( srcCol, srcRow ) );
+    }
   }
 }

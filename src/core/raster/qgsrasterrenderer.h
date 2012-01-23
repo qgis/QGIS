@@ -23,6 +23,7 @@
 class QPainter;
 class QgsMapToPixel;
 class QgsRasterResampler;
+class QgsRasterProjector;
 class QgsRasterTransparency;
 class QgsRasterViewPort;
 
@@ -39,6 +40,7 @@ class QgsRasterRenderer
       int nColsPerPart;
       int nRowsPerPart;
       void* data; //data (can be in oversampled/undersampled resolution)
+      QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
     };
 
     QgsRasterRenderer( QgsRasterDataProvider* provider );
@@ -111,6 +113,7 @@ class QgsRasterRenderer
   private:
     /**Remove part into and release memory*/
     void removePartInfo( int bandNumer );
+    void projectImage( const QImage& srcImg, QImage& dstImage, QgsRasterProjector* prj ) const;
 };
 
 inline double QgsRasterRenderer::readValue( void *data, QgsRasterDataProvider::DataType type, int index )
