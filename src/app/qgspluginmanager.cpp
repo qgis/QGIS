@@ -56,6 +56,7 @@
 const int PLUGIN_DATA_ROLE = Qt::UserRole;
 const int PLUGIN_LIBRARY_ROLE = Qt::UserRole + 1;
 const int PLUGIN_BASE_NAME_ROLE = Qt::UserRole + 2;
+const int PLUGIN_DIRECTORY_ROLE = Qt::UserRole + 3;
 
 QgsPluginManager::QgsPluginManager( QgsPythonUtils* pythonUtils, QWidget * parent, Qt::WFlags fl )
     : QDialog( parent, fl )
@@ -243,160 +244,173 @@ void QgsPluginManager::getPluginDescriptions()
   sharedLibExtension = "*.so*";
 #endif
 
-// check all libs in the current plugin directory and get name and descriptions
-  QDir pluginDir( lblPluginDir->text(), sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
-
-  if ( pluginDir.count() == 0 )
+  // check all libs in the current ans user plugins directories, and get name and descriptions
+  QSettings settings;
+  QStringList myPathList( lblPluginDir->text() );
+  QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
+  if ( !myPaths.isEmpty() )
   {
-    QMessageBox::information( this, tr( "No Plugins" ), tr( "No QGIS plugins found in %1" ).arg( lblPluginDir->text() ) );
-    return;
+    myPathList.append( myPaths.split( "|" ) );
   }
 
-  QgsDebugMsg( "PLUGIN MANAGER:" );
-  for ( uint i = 0; i < pluginDir.count(); i++ )
+  for ( int j = 0; j < myPathList.size(); ++j )
   {
-    QString lib = QString( "%1/%2" ).arg( lblPluginDir->text() ).arg( pluginDir[i] );
+    QString myPluginDir = myPathList.at( j );
+    QDir pluginDir( myPluginDir, sharedLibExtension, QDir::Name | QDir::IgnoreCase, QDir::Files | QDir::NoSymLinks );
+
+    if ( pluginDir.count() == 0 )
+    {
+      QMessageBox::information( this, tr( "No Plugins" ), tr( "No QGIS plugins found in %1" ).arg( myPluginDir ) );
+      return;
+    }
+
+    QgsDebugMsg( "PLUGIN MANAGER:" );
+    for ( uint i = 0; i < pluginDir.count(); i++ )
+    {
+      QString lib = QString( "%1/%2" ).arg( myPluginDir ).arg( pluginDir[i] );
 
 #ifdef TESTLIB
-    // This doesn't work on WIN32 and causes problems with plugins
-    // on OS X (the code doesn't cause a problem but including dlfcn.h
-    // renders plugins unloadable)
+      // This doesn't work on WIN32 and causes problems with plugins
+      // on OS X (the code doesn't cause a problem but including dlfcn.h
+      // renders plugins unloadable)
 #if !defined(WIN32) && !defined(Q_OS_MACX)
-    // test code to help debug loading problems
-    // This doesn't work on WIN32 and causes problems with plugins
-    // on OS X (the code doesn't cause a problem but including dlfcn.h
-    // renders plugins unloadable)
+      // test code to help debug loading problems
+      // This doesn't work on WIN32 and causes problems with plugins
+      // on OS X (the code doesn't cause a problem but including dlfcn.h
+      // renders plugins unloadable)
 
-//          void *handle = dlopen((const char *) lib, RTLD_LAZY);
-    void *handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
-    if ( !handle )
-    {
-      QgsDebugMsg( "Error in dlopen: " );
-      QgsDebugMsg( dlerror() );
-    }
-    else
-    {
-      QgsDebugMsg( "dlopen suceeded for " + lib );
-      dlclose( handle );
-    }
+      //void *handle = dlopen((const char *) lib, RTLD_LAZY);
+      void *handle = dlopen( lib.toLocal8Bit().data(), RTLD_LAZY | RTLD_GLOBAL );
+      if ( !handle )
+      {
+        QgsDebugMsg( "Error in dlopen: " );
+        QgsDebugMsg( dlerror() );
+      }
+      else
+      {
+        QgsDebugMsg( "dlopen suceeded for " + lib );
+        dlclose( handle );
+      }
 #endif //#ifndef WIN32 && Q_OS_MACX
 #endif //#ifdef TESTLIB
 
-    QgsDebugMsg( "Examining: " + lib );
-    QLibrary *myLib = new QLibrary( lib );
-    bool loaded = myLib->load();
-    if ( !loaded )
-    {
-      QgsDebugMsg( QString( "Failed to load: %1 (%2)" ).arg( myLib->fileName() ).arg( myLib->errorString() ) );
-      delete myLib;
-      continue;
-    }
-
-    QgsDebugMsg( "Loaded library: " + myLib->fileName() );
-
-    // Don't bother with libraries that are providers
-    //if(!myLib->resolve("isProvider"))
-
-    //MH: Replaced to allow for plugins that are linked to providers
-    //type is only used in non-provider plugins
-    if ( !myLib->resolve( "type" ) )
-    {
-      delete myLib;
-      continue;
-    }
-
-    // resolve the metadata from plugin
-    name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
-    description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
-    version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
-    icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
-
-    // show the values (or lack of) for each function
-    if ( pName )
-    {
-      QgsDebugMsg( "Plugin name: " + pName() );
-    }
-    else
-    {
-      QgsDebugMsg( "Plugin name not returned when queried" );
-    }
-    if ( pDesc )
-    {
-      QgsDebugMsg( "Plugin description: " + pDesc() );
-    }
-    else
-    {
-      QgsDebugMsg( "Plugin description not returned when queried" );
-    }
-    if ( pVersion )
-    {
-      QgsDebugMsg( "Plugin version: " + pVersion() );
-    }
-    else
-    {
-      QgsDebugMsg( "Plugin version not returned when queried" );
-    }
-    if ( pIcon )
-    {
-      QgsDebugMsg( "Plugin icon: " + pIcon() );
-    }
-
-    if ( !pName || !pDesc || !pVersion )
-    {
-      QgsDebugMsg( "Failed to get name, description, or type for " + myLib->fileName() );
-      delete myLib;
-      continue;
-    }
-
-    QString pluginName = pName();
-    QString pluginDesc = pDesc();
-    QString pluginVersion = pVersion();
-    QString pluginIconFileName = ( pIcon ? pIcon() : QString() );
-    QString baseName = QFileInfo( lib ).baseName();
-
-    QString myLibraryName = pluginDir[i];
-    // filtering will be done on the display role so give it name and desription
-    // user wont see this text since we are using a custome delegate
-    QStandardItem * mypDetailItem = new QStandardItem( pluginName + " - " + pluginDesc );
-    mypDetailItem->setData( myLibraryName, PLUGIN_LIBRARY_ROLE );
-    mypDetailItem->setData( baseName, PLUGIN_BASE_NAME_ROLE ); //for matching in registry later
-    QgsDetailedItemData myData;
-    myData.setTitle( pluginName );
-    myData.setDetail( pluginDesc );
-    myData.setRenderAsWidget( false );
-    myData.setCheckable( true );
-    myData.setChecked( false ); //start unchecked - we will check it later if needed
-    if ( pluginIconFileName.isEmpty() )
-      myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
-    else
-      myData.setIcon( QPixmap( pluginIconFileName ) );
-
-    QgsDebugMsg( "Getting an instance of the QgsPluginRegistry" );
-
-    // check to see if the plugin is loaded and set the checkbox accordingly
-    QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
-
-    // get the library using the plugin description
-    if ( !pRegistry->isLoaded( baseName ) )
-    {
-      QgsDebugMsg( "Couldn't find plugin in the registry" );
-    }
-    else
-    {
-      QgsDebugMsg( "Found plugin in the registry" );
-      // TODO: this check shouldn't be necessary, plugin base names must be unique
-      if ( pRegistry->library( baseName ) == myLib->fileName() )
+      QgsDebugMsg( "Examining: " + lib );
+      QLibrary *myLib = new QLibrary( lib );
+      bool loaded = myLib->load();
+      if ( !loaded )
       {
-        // set the checkbox
-        myData.setChecked( true );
+        QgsDebugMsg( QString( "Failed to load: %1 (%2)" ).arg( myLib->fileName() ).arg( myLib->errorString() ) );
+        delete myLib;
+        continue;
       }
-    }
-    QVariant myVariant = qVariantFromValue( myData );
-    mypDetailItem->setData( myVariant, PLUGIN_DATA_ROLE );
-    // Add items to model
-    mModelPlugins->appendRow( mypDetailItem );
 
-    delete myLib;
+      QgsDebugMsg( "Loaded library: " + myLib->fileName() );
+
+      // Don't bother with libraries that are providers
+      //if(!myLib->resolve("isProvider"))
+
+      //MH: Replaced to allow for plugins that are linked to providers
+      //type is only used in non-provider plugins
+      if ( !myLib->resolve( "type" ) )
+      {
+        delete myLib;
+        continue;
+      }
+
+      // resolve the metadata from plugin
+      name_t *pName = ( name_t * ) cast_to_fptr( myLib->resolve( "name" ) );
+      description_t *pDesc = ( description_t * ) cast_to_fptr( myLib->resolve( "description" ) );
+      version_t *pVersion = ( version_t * ) cast_to_fptr( myLib->resolve( "version" ) );
+      icon_t* pIcon = ( icon_t * ) cast_to_fptr( myLib->resolve( "icon" ) );
+
+      // show the values (or lack of) for each function
+      if ( pName )
+      {
+        QgsDebugMsg( "Plugin name: " + pName() );
+      }
+      else
+      {
+        QgsDebugMsg( "Plugin name not returned when queried" );
+      }
+      if ( pDesc )
+      {
+        QgsDebugMsg( "Plugin description: " + pDesc() );
+      }
+      else
+      {
+        QgsDebugMsg( "Plugin description not returned when queried" );
+      }
+      if ( pVersion )
+      {
+        QgsDebugMsg( "Plugin version: " + pVersion() );
+      }
+      else
+      {
+        QgsDebugMsg( "Plugin version not returned when queried" );
+      }
+      if ( pIcon )
+      {
+        QgsDebugMsg( "Plugin icon: " + pIcon() );
+      }
+
+      if ( !pName || !pDesc || !pVersion )
+      {
+        QgsDebugMsg( "Failed to get name, description, or type for " + myLib->fileName() );
+        delete myLib;
+        continue;
+      }
+
+      QString pluginName = pName();
+      QString pluginDesc = pDesc();
+      QString pluginVersion = pVersion();
+      QString pluginIconFileName = ( pIcon ? pIcon() : QString() );
+      QString baseName = QFileInfo( lib ).baseName();
+
+      QString myLibraryName = pluginDir[i];
+      // filtering will be done on the display role so give it name and desription
+      // user wont see this text since we are using a custome delegate
+      QStandardItem * mypDetailItem = new QStandardItem( pluginName + " - " + pluginDesc );
+      mypDetailItem->setData( myLibraryName, PLUGIN_LIBRARY_ROLE );
+      mypDetailItem->setData( myPluginDir, PLUGIN_DIRECTORY_ROLE );
+      mypDetailItem->setData( baseName, PLUGIN_BASE_NAME_ROLE ); //for matching in registry later
+      QgsDetailedItemData myData;
+      myData.setTitle( pluginName );
+      myData.setDetail( pluginDesc );
+      myData.setRenderAsWidget( false );
+      myData.setCheckable( true );
+      myData.setChecked( false ); //start unchecked - we will check it later if needed
+      if ( pluginIconFileName.isEmpty() )
+        myData.setIcon( QPixmap( QgsApplication::defaultThemePath() + "/plugin.png" ) );
+      else
+        myData.setIcon( QPixmap( pluginIconFileName ) );
+
+      QgsDebugMsg( "Getting an instance of the QgsPluginRegistry" );
+
+      // check to see if the plugin is loaded and set the checkbox accordingly
+      QgsPluginRegistry *pRegistry = QgsPluginRegistry::instance();
+
+      // get the library using the plugin description
+      if ( !pRegistry->isLoaded( baseName ) )
+      {
+        QgsDebugMsg( "Couldn't find plugin in the registry" );
+      }
+      else
+      {
+        QgsDebugMsg( "Found plugin in the registry" );
+        // TODO: this check shouldn't be necessary, plugin base names must be unique
+        if ( pRegistry->library( baseName ) == myLib->fileName() )
+        {
+          // set the checkbox
+          myData.setChecked( true );
+        }
+      }
+      QVariant myVariant = qVariantFromValue( myData );
+      mypDetailItem->setData( myVariant, PLUGIN_DATA_ROLE );
+      // Add items to model
+      mModelPlugins->appendRow( mypDetailItem );
+
+      delete myLib;
+    }
   }
 }
 
@@ -480,7 +494,9 @@ std::vector < QgsPluginItem > QgsPluginManager::getSelectedPlugins()
       }
       else // C++ plugin
       {
-        library = lblPluginDir->text() + QDir::separator() + library;
+        QString dir = mModelPlugins->item( row, 0 )->data( PLUGIN_DIRECTORY_ROLE ).toString();
+        //library = lblPluginDir->text() + QDir::separator() + library;
+        library = dir + QDir::separator() + library;
       }
       // Ctor params for plugin item:
       //QgsPluginItem(QString name=0,
