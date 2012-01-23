@@ -93,6 +93,8 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         QString filterExpression() const { return mFilterExp; }
         QString description() const { return mDescription; }
 
+        //! set a new symbol (or NULL). Deletes old symbol.
+        void setSymbol( QgsSymbolV2* sym );
         void setLabel( QString label ) { mLabel = label; }
         void setScaleMinDenom( int scaleMinDenom ) { mScaleMinDenom = scaleMinDenom; }
         void setScaleMaxDenom( int scaleMaxDenom ) { mScaleMaxDenom = scaleMaxDenom; }
