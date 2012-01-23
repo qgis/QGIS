@@ -21,7 +21,7 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <item row="0" column="0">
+   <item row="1" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
       <number>0</number>
@@ -330,8 +330,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>736</width>
-            <height>542</height>
+            <width>446</width>
+            <height>481</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -1207,7 +1207,7 @@
      </widget>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="pbnLoadDefaultStyle">
@@ -1239,7 +1239,7 @@
      </item>
     </layout>
    </item>
-   <item row="2" column="0">
+   <item row="0" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -1268,7 +1268,6 @@
   <tabstop>leMaximumScale</tabstop>
   <tabstop>txtSubsetSQL</tabstop>
   <tabstop>pbnQueryBuilder</tabstop>
-  <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>
