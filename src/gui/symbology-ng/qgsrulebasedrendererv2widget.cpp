@@ -326,9 +326,11 @@ void QgsRuleBasedRendererV2Widget::refreshSymbolView()
 
 void QgsRuleBasedRendererV2Widget::setRenderingOrder()
 {
-  QgsSymbolV2List symbols = mRenderer->symbols();
+  QgsLegendSymbolList lst = mRenderer->legendSymbolItems();
 
-  QgsSymbolLevelsV2Dialog dlg( symbols, true, this );
+  QgsSymbolLevelsV2Dialog dlg( lst, true, this );
+  dlg.setForceOrderingEnabled( true );
+
   dlg.exec();
 }
 

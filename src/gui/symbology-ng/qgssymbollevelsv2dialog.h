@@ -14,8 +14,12 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     Q_OBJECT
   public:
     QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent = NULL );
+    QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool usingSymbolLevels, QWidget* parent = NULL );
 
     bool usingLevels() const;
+
+    // used by rule-based renderer (to hide checkbox to enable/disable ordering)
+    void setForceOrderingEnabled( bool enabled );
 
   public slots:
     void updateUi();
@@ -30,6 +34,9 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
     //! maximal number of layers from all symbols
     int mMaxLayers;
     QgsSymbolV2List mSymbols;
+    QgsLegendSymbolList mList;
+    //! whether symbol layers always should be used (default false)
+    bool mForceOrderingEnabled;
 };
 
 #endif // QGSSYMBOLLEVELSV2DIALOG_H

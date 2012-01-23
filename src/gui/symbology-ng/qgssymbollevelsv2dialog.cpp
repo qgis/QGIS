@@ -48,8 +48,8 @@ class SpinBoxDelegate : public QItemDelegate
 
 ////////////////
 
-QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent )
-    : QDialog( parent ), mSymbols( symbols )
+QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool usingSymbolLevels, QWidget* parent )
+    : QDialog( parent ), mList( list ), mForceOrderingEnabled( false )
 {
   setupUi( this );
 
@@ -60,14 +60,15 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool 
   connect( chkEnable, SIGNAL( clicked() ), this, SLOT( updateUi() ) );
 
   int maxLayers = 0;
-  tableLevels->setRowCount( symbols.count() );
-  for ( int i = 0; i < symbols.count(); i++ )
+  tableLevels->setRowCount( list.count() );
+  for ( int i = 0; i < list.count(); i++ )
   {
-    QgsSymbolV2* sym = symbols[i];
+    QgsSymbolV2* sym = list[i].second;
+    QString label = list[i].first;
 
     // set icons for the rows
     QIcon icon = QgsSymbolLayerV2Utils::symbolPreviewIcon( sym, QSize( 16, 16 ) );
-    tableLevels->setVerticalHeaderItem( i, new QTableWidgetItem( icon, QString() ) );
+    tableLevels->setVerticalHeaderItem( i, new QTableWidgetItem( icon, label ) );
 
     // find out max. number of layers per symbol
     int layers = sym->symbolLayerCount();
@@ -96,9 +97,9 @@ QgsSymbolLevelsV2Dialog::QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool 
 
 void QgsSymbolLevelsV2Dialog::populateTable()
 {
-  for ( int row = 0; row < mSymbols.count(); row++ )
+  for ( int row = 0; row < mList.count(); row++ )
   {
-    QgsSymbolV2* sym = mSymbols[row];
+    QgsSymbolV2* sym = mList[row].second;
     for ( int layer = 0; layer < mMaxLayers; layer++ )
     {
       QTableWidgetItem* item;
@@ -109,7 +110,9 @@ void QgsSymbolLevelsV2Dialog::populateTable()
       }
       else
       {
-        item = new QTableWidgetItem( QString::number( sym->symbolLayer( layer )->renderingPass() ) );
+        QgsSymbolLayerV2* sl = sym->symbolLayer( layer );
+        QIcon icon = QgsSymbolLayerV2Utils::symbolLayerPreviewIcon( sl, QgsSymbolV2::MM, QSize( 16, 16 ) );
+        item = new QTableWidgetItem( icon, QString::number( sl->renderingPass() ) );
       }
       tableLevels->setItem( row, layer, item );
     }
@@ -148,4 +151,16 @@ void QgsSymbolLevelsV2Dialog::renderingPassChanged( int row, int column )
   if ( column < 0 || column >= sym->symbolLayerCount() )
     return;
   sym->symbolLayer( column )->setRenderingPass( tableLevels->item( row, column )->text().toInt() );
+}
+
+void QgsSymbolLevelsV2Dialog::setForceOrderingEnabled( bool enabled )
+{
+  mForceOrderingEnabled = enabled;
+  if ( enabled )
+  {
+    chkEnable->setChecked( true );
+    chkEnable->hide();
+  }
+  else
+    chkEnable->show();
 }

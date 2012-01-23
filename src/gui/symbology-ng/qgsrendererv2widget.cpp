@@ -141,7 +141,7 @@ void QgsRendererV2Widget::changeSymbolSize()
 
 void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
 {
-  QgsSymbolV2List symbols = r->symbols();
+  QgsLegendSymbolList symbols = r->legendSymbolItems();
 
   QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
 
