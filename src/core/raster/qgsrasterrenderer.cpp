@@ -152,6 +152,15 @@ bool QgsRasterRenderer::readNextRasterPart( int bandNumber, double oversamplingX
   {
     pInfo.prj = new QgsRasterProjector( viewPort->mSrcCRS,
                                         viewPort->mDestCRS, blockRect, nRows, nCols, 0, 0, mProvider->extent() );
+
+    // If we zoom out too much, projector srcRows / srcCols maybe 0, which can cause problems in providers
+    if ( pInfo.prj->srcRows() <= 0 || pInfo.prj->srcCols() <= 0 )
+    {
+      delete pInfo.prj;
+      pInfo.prj = 0;
+      return false;
+    }
+
     blockRect = pInfo.prj->srcExtent();
   }
 
