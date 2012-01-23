@@ -869,6 +869,14 @@ QgsRectangle QgsOgrProvider::extent()
   return mExtentRect;
 }
 
+void QgsOgrProvider::updateExtents()
+{
+  if( extent_ )
+  {
+    free( extent_ );
+    extent_ = 0;
+  }
+}
 
 size_t QgsOgrProvider::layerCount() const
 {

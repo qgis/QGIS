@@ -154,6 +154,10 @@ class QgsPostgresProvider : public QgsVectorDataProvider
     */
     virtual QgsRectangle extent();
 
+    /** Update the extent
+    */
+    virtual void updateExtents();
+
     /** Determine the fields making up the primary key
     */
     bool determinePrimaryKey();

@@ -76,21 +76,18 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   QList<QStandardItem*> childItemList;
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-  schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  schemaNameItem->setFlags( Qt::ItemIsEnabled );
 
-  QStandardItem *typeItem = new QStandardItem( iconForGeomType( geomType ), geomType == QGis::UnknownGeometry ? tr( "Waiting..." ) : QgsPostgresConn::displayStringForGeomType( geomType ) );
+  QStandardItem *typeItem = new QStandardItem( iconForGeomType( geomType ),
+      geomType == QGis::UnknownGeometry
+      ? tr( "Detecting..." )
+      : QgsPostgresConn::displayStringForGeomType( geomType ) );
   typeItem->setData( geomType == QGis::UnknownGeometry, Qt::UserRole + 1 );
   typeItem->setData( geomType, Qt::UserRole + 2 );
-  typeItem->setFlags(( geomType != QGis::UnknownGeometry ? Qt::ItemIsEnabled : Qt::NoItemFlags ) | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
   QStandardItem *tableItem = new QStandardItem( layerProperty.tableName );
-  tableItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-
   QStandardItem *geomItem = new QStandardItem( layerProperty.geometryColName );
-  geomItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
-
-  QStandardItem *sridItem = new QStandardItem( QString::number( layerProperty.srid ) );
-  sridItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+  QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
 
   QString pkText, pkCol = "";
   switch ( layerProperty.pkCols.size() )
@@ -101,17 +98,18 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   }
 
   QStandardItem *pkItem = new QStandardItem( pkText );
+  if ( pkText == tr( "Select..." ) )
+    pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
+
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
-  pkItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
   QStandardItem *selItem = new QStandardItem( "" );
-  selItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsUserCheckable );
+  selItem->setFlags( selItem->flags() | Qt::ItemIsUserCheckable );
   selItem->setCheckState( Qt::Checked );
   selItem->setToolTip( tr( "Disable 'Fast Access to Features at ID' capability to force keeping the attribute table in memory (e.g. in case of expensive views)." ) );
 
   QStandardItem* sqlItem = new QStandardItem( layerProperty.sql );
-  sqlItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
 
   childItemList << schemaNameItem;
   childItemList << tableItem;
@@ -121,6 +119,14 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   childItemList << pkItem;
   childItemList << selItem;
   childItemList << sqlItem;
+
+  if ( geomType == QGis::UnknownGeometry || layerProperty.srid.isEmpty() )
+  {
+    foreach( QStandardItem *item, childItemList )
+    {
+      item->setFlags( item->flags() & ~( Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
+    }
+  }
 
   schemaItem->appendRow( childItemList );
 
@@ -164,6 +170,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
     {
       continue;
     }
+
     QModelIndex currentTableIndex = currentChildIndex.sibling( i, dbtmTable );
     if ( !currentTableIndex.isValid() )
     {
@@ -176,8 +183,7 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
       continue;
     }
 
-    if ( itemFromIndex( currentTableIndex )->text() == tableName &&
-         itemFromIndex( currentGeomIndex )->text() == geomName )
+    if ( itemFromIndex( currentTableIndex )->text() == tableName && itemFromIndex( currentGeomIndex )->text() == geomName )
     {
       QModelIndex sqlIndex = currentChildIndex.sibling( i, dbtmSql );
       if ( sqlIndex.isValid() )
@@ -192,6 +198,8 @@ void QgsPgTableModel::setSql( const QModelIndex &index, const QString &sql )
 void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerProperty )
 {
   QStringList typeList = layerProperty.type.split( ",", QString::SkipEmptyParts );
+  QStringList sridList = layerProperty.srid.split( ",", QString::SkipEmptyParts );
+  Q_ASSERT( typeList.size() == sridList.size() );
 
   //find schema item and table item
   QStandardItem* schemaItem;
@@ -213,53 +221,54 @@ void QgsPgTableModel::setGeometryTypesForTable( QgsPostgresLayerProperty layerPr
       continue;
     }
 
-    QModelIndex currentTypeIndex = currentChildIndex.sibling( i, dbtmType );
-    QModelIndex currentTableIndex = currentChildIndex.sibling( i, dbtmTable );
-    QModelIndex currentGeomColumnIndex = currentChildIndex.sibling( i, dbtmGeomCol );
-    QModelIndex currentPkColumnIndex = currentChildIndex.sibling( i, dbtmPkCol );
-    QModelIndex currentSridIndex = currentChildIndex.sibling( i, dbtmSrid );
+    QList<QStandardItem *> row;
 
-    if ( !currentTypeIndex.isValid()
-         || !currentTableIndex.isValid()
-         || !currentGeomColumnIndex.isValid()
-         || !currentPkColumnIndex.isValid()
-         || !currentSridIndex.isValid()
-       )
+    for ( int j = 0; j < dbtmColumns; j++ )
     {
-      continue;
+      row << itemFromIndex( currentChildIndex.sibling( i, j ) );
     }
 
-    QString tableText = itemFromIndex( currentTableIndex )->text();
-    QString geomColText = itemFromIndex( currentGeomColumnIndex )->text();
-    QStandardItem *typeItem = itemFromIndex( currentTypeIndex );
-    QStandardItem *sridItem = itemFromIndex( currentSridIndex );
-
-    if ( tableText == layerProperty.tableName && geomColText == layerProperty.geometryColName )
+    if ( row[ dbtmTable ]->text() == layerProperty.tableName && row[ dbtmGeomCol ]->text() == layerProperty.geometryColName )
     {
-      sridItem->setText( QString::number( layerProperty.srid ) );
+      row[ dbtmSrid ]->setText( layerProperty.srid );
 
       if ( typeList.isEmpty() )
       {
-        typeItem->setText( tr( "Select..." ) );
+        row[ dbtmType ]->setText( tr( "Select..." ) );
+        row[ dbtmType ]->setFlags( row[ dbtmType ]->flags() | Qt::ItemIsEditable );
+
+        row[ dbtmSrid ]->setText( tr( "Enter..." ) );
+        row[ dbtmSrid ]->setFlags( row[ dbtmSrid ]->flags() | Qt::ItemIsEditable );
+
+        foreach( QStandardItem *item, row )
+        {
+          item->setFlags( item->flags() | Qt::ItemIsEnabled );
+        }
       }
       else
       {
         // update existing row
         QGis::GeometryType geomType = QgsPostgresConn::geomTypeFromPostgis( typeList.at( 0 ) );
 
-        typeItem->setIcon( iconForGeomType( geomType ) );
-        typeItem->setText( QgsPostgresConn::displayStringForGeomType( geomType ) );
-        typeItem->setData( false, Qt::UserRole + 1 );
-        typeItem->setData( geomType, Qt::UserRole + 2 );
+        row[ dbtmType ]->setIcon( iconForGeomType( geomType ) );
+        row[ dbtmType ]->setText( QgsPostgresConn::displayStringForGeomType( geomType ) );
+        row[ dbtmType ]->setData( false, Qt::UserRole + 1 );
+        row[ dbtmType ]->setData( geomType, Qt::UserRole + 2 );
+
+        row[ dbtmSrid ]->setText( sridList.at( 0 ) );
+
+        foreach( QStandardItem *item, row )
+        {
+          item->setFlags( item->flags() | Qt::ItemIsSelectable | Qt::ItemIsEnabled );
+        }
 
         for ( int j = 1; j < typeList.size(); j++ )
         {
           layerProperty.type = typeList[j];
+          layerProperty.srid = sridList[j];
           addTableEntry( layerProperty );
         }
       }
-
-      typeItem->setFlags( typeItem->flags() | Qt::ItemIsEnabled );
     }
   }
 }
@@ -279,4 +288,69 @@ QIcon QgsPgTableModel::iconForGeomType( QGis::GeometryType type )
     default:
       return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
   }
+}
+
+bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )
+{
+  if ( !QStandardItemModel::setData( idx, value, role ) )
+    return false;
+
+  if ( idx.column() == dbtmType || idx.column() == dbtmSrid )
+  {
+    bool ok;
+    idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
+
+    ok &= idx.sibling( idx.row(), dbtmType ).data( Qt::UserRole + 2 ).toInt() != QGis::UnknownGeometry;
+
+    for ( int i = 0; i < dbtmColumns; i++ )
+    {
+      QStandardItem *item = itemFromIndex( idx.sibling( idx.row(), i ) );
+      if ( ok )
+        item->setFlags( item->flags() | Qt::ItemIsSelectable );
+      else
+        item->setFlags( item->flags() & ~Qt::ItemIsSelectable );
+    }
+  }
+
+  return true;
+}
+
+QString QgsPgTableModel::layerURI( const QModelIndex &index, QString connInfo, bool useEstimatedMetadata )
+{
+  if ( !index.isValid() )
+    return QString::null;
+
+  QGis::GeometryType geomType = ( QGis::GeometryType ) itemFromIndex( index.sibling( index.row(), dbtmType ) )->data( Qt::UserRole + 2 ).toInt();
+  if ( geomType == QGis::UnknownGeometry )
+    // no geometry type selected
+    return QString::null;
+
+  QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), dbtmPkCol ) );
+  QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
+
+  if ( pkItem->data( Qt::UserRole + 1 ).toStringList().size() > 0 && pkColumnName.isEmpty() )
+    // no primary key for view selected
+    return QString::null;
+
+  QString schemaName = index.sibling( index.row(), dbtmSchema ).data( Qt::DisplayRole ).toString();
+  QString tableName = index.sibling( index.row(), dbtmTable ).data( Qt::DisplayRole ).toString();
+  QString geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
+
+  QString srid = index.sibling( index.row(), dbtmSrid ).data( Qt::DisplayRole ).toString();
+  bool ok;
+  srid.toInt( &ok );
+  if ( !ok )
+    return QString::null;
+
+  bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
+  QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
+
+  QgsDataSourceURI uri( connInfo );
+  uri.setDataSource( schemaName, tableName, geomType != QGis::NoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
+  uri.setUseEstimatedMetadata( useEstimatedMetadata );
+  uri.setGeometryType( geomType );
+  uri.setSrid( srid );
+  uri.disableSelectAtId( !selectAtId );
+
+  return uri.uri();
 }

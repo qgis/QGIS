@@ -94,6 +94,15 @@ void QgsPgNewConnection::accept()
   QString baseKey = "/PostgreSQL/connections/";
   settings.setValue( baseKey + "selected", txtName->text() );
 
+  if ( chkStorePassword->isChecked() &&
+       QMessageBox::question( this,
+                              tr( "Saving passwords" ),
+                              tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return;
+  }
+
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
       ( settings.contains( baseKey + txtName->text() + "/service" ) ||
