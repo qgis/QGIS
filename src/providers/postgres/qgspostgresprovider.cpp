@@ -1933,7 +1933,7 @@ bool QgsPostgresProvider::addFeatures( QgsFeatureList &flist )
 
     QgsDebugMsg( QString( "prepare addfeatures: %1" ).arg( insert ) );
     QgsPostgresResult stmt = mConnectionRW->PQprepare( "addfeatures", insert, fieldId.size() + offset - 1, NULL );
-    if ( stmt.PQresultStatus() == PGRES_FATAL_ERROR )
+    if ( stmt.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( stmt );
 
     for ( QgsFeatureList::iterator features = flist.begin(); features != flist.end(); features++ )
@@ -2047,7 +2047,7 @@ bool QgsPostgresProvider::deleteFeatures( const QgsFeatureIds & id )
 
       //send DELETE statement and do error handling
       QgsPostgresResult result = mConnectionRW->PQexec( sql );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
       QVariant v = mFidToKey[ *it ];
@@ -2105,7 +2105,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
 
       //send sql statement and do error handling
       QgsPostgresResult result = mConnectionRW->PQexec( sql );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
       if ( !iter->comment().isEmpty() )
@@ -2115,7 +2115,7 @@ bool QgsPostgresProvider::addAttributes( const QList<QgsField> &attributes )
               .arg( quotedIdentifier( iter->name() ) )
               .arg( quotedValue( iter->comment() ) );
         result = mConnectionRW->PQexec( sql );
-        if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+        if ( result.PQresultStatus() != PGRES_COMMAND_OK )
           throw PGException( result );
       }
     }
@@ -2160,7 +2160,7 @@ bool QgsPostgresProvider::deleteAttributes( const QgsAttributeIds& ids )
 
       //send sql statement and do error handling
       QgsPostgresResult result = mConnectionRW->PQexec( sql );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
       //delete the attribute from mAttributeFields
@@ -2246,7 +2246,7 @@ bool QgsPostgresProvider::changeAttributeValues( const QgsChangedAttributesMap &
       sql += QString( " WHERE %1" ).arg( whereClause( fid ) );
 
       QgsPostgresResult result = mConnectionRW->PQexec( sql );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
 
       // update feature id map if key was changed
@@ -2328,7 +2328,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
     QgsDebugMsg( "updating: " + update );
 
     QgsPostgresResult result = mConnectionRW->PQprepare( "updatefeatures", update, 2, NULL );
-    if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( result );
 
     for ( QgsGeometryMap::iterator iter  = geometry_map.begin();
@@ -2350,7 +2350,7 @@ bool QgsPostgresProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
       appendPkParams( iter.key(), params );
 
       result = mConnectionRW->PQexecPrepared( "updatefeatures", params );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_COMMAND_OK )
         throw PGException( result );
     } // for each feature
 
@@ -2398,7 +2398,7 @@ bool QgsPostgresProvider::setSubsetString( QString theSQL, bool updateFeatureCou
   sql += " LIMIT 0";
 
   QgsPostgresResult res = mConnectionRO->PQexec( sql );
-  if ( res.PQresultStatus() != PGRES_COMMAND_OK && res.PQresultStatus() != PGRES_TUPLES_OK )
+  if ( res.PQresultStatus() != PGRES_TUPLES_OK )
   {
     pushError( res.PQresultErrorMessage() );
     mSqlWhereClause = prevWhere;
@@ -2936,7 +2936,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
                   .arg( quotedValue( schemaName ) );
 
     QgsPostgresResult result = conn->PQexec( sql );
-    if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+    if ( result.PQresultStatus() != PGRES_TUPLES_OK )
       throw PGException( result );
 
     bool exists = result.PQntuples() > 0;
@@ -2952,7 +2952,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
                     .arg( quotedValue( tableName ) );
 
       result = conn->PQexec( sql );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
     }
 
@@ -2962,7 +2962,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
           .arg( primaryKeyType );
 
     result = conn->PQexec( sql );
-    if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+    if ( result.PQresultStatus() != PGRES_COMMAND_OK )
       throw PGException( result );
 
     // get geometry type, dim and srid
@@ -2983,7 +2983,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
             .arg( dim );
 
       result = conn->PQexec( sql );
-      if ( result.PQresultStatus() == PGRES_FATAL_ERROR )
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
         throw PGException( result );
     }
     else
