@@ -86,9 +86,9 @@ void QgsVertexEntry::setSelected( bool selected )
 
 void QgsVertexEntry::setRubberBandValues( bool inRubberBand, int rubberBandNr, int indexInRubberBand )
 {
-  mIndex        = indexInRubberBand;
-  mInRubberBand = inRubberBand;
-  mRubberBandNr = rubberBandNr;
+  mRubberBandIndex = indexInRubberBand;
+  mInRubberBand    = inRubberBand;
+  mRubberBandNr    = rubberBandNr;
 }
 
 void QgsVertexEntry::update()

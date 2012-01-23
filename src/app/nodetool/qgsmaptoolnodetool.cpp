@@ -289,8 +289,8 @@ void QgsMapToolNodeTool::canvasMoveEvent( QMouseEvent * e )
           double x = mapCoords.x() + posMapCoord.x() - firstCoords.x();
           double y = mapCoords.y() + posMapCoord.y() - firstCoords.y();
 
-          mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( vertexMap[i]->index(), QgsPoint( x, y ) );
-          if ( vertexMap[i]->index() == 0 )
+          mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( vertexMap[i]->rubberBandIndex(), QgsPoint( x, y ) );
+          if ( vertexMap[i]->rubberBandIndex() == 0 )
           {
             mRubberBands[vertexMap[i]->rubberBandNr()]->movePoint( 0, QgsPoint( x, y ) );
           }
@@ -374,18 +374,12 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
     dist = sqrt( dist );
 
     mSnapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToVertex, tol );
-    // if (snapResults.size() < 1)
     if ( dist > tol )
     {
       // for points only selecting another feature
       // no vertexes found (selecting or inverting selection) if move
       // or select another feature if clicked there
-      QgsSnapper::SnappingType snapType = QgsSnapper::SnapToSegment;
-      if ( mIsPoint )
-      {
-        snapType = QgsSnapper::SnapToVertex;
-      }
-      mSnapper.snapToCurrentLayer( e->pos(), snapResults, snapType, tol );
+      mSnapper.snapToCurrentLayer( e->pos(), snapResults, mIsPoint ? QgsSnapper::SnapToVertex : QgsSnapper::SnapToSegment, tol );
       if ( snapResults.size() > 0 )
       {
         // need to check all if there is a point in my selected feature
@@ -646,7 +640,6 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
   }
 
   vlayer->beginEditCommand( tr( "Inserted vertex" ) );
-  mSelectedFeature->beginGeometryChange();
 
   // add vertex
   vlayer->insertVertex( layerCoords.x(), layerCoords.y(), mSelectedFeature->featureId(), snapResults.first().afterVertexNr );
@@ -667,8 +660,6 @@ void QgsMapToolNodeTool::canvasDoubleClickEvent( QMouseEvent * e )
 
   // make sure that new node gets its vertex marker
   mCanvas->refresh();
-
-  mSelectedFeature->endGeometryChange();
 }
 
 QgsPoint QgsMapToolNodeTool::closestVertex( QgsPoint point )
