@@ -159,7 +159,11 @@ void QgsVectorDataProvider::setEncoding( const QString& e )
   else
   {
     QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+#ifdef ANDROID
+    mEncoding = QTextCodec::codecForName( "UTF-8" );
+#else
     mEncoding = QTextCodec::codecForName( "System" );
+#endif
     Q_ASSERT( mEncoding );
   }
 }
