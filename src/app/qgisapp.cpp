@@ -4381,7 +4381,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   if ( !vlayer->isEditable() && !vlayer->isReadOnly() )
   {
-    if ( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities == 0 )
+    if ( !(vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
       QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
       return false;
