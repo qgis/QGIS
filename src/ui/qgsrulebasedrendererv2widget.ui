@@ -19,6 +19,9 @@
      <property name="acceptDrops">
       <bool>true</bool>
      </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+     </property>
      <property name="dragEnabled">
       <bool>true</bool>
      </property>
@@ -27,6 +30,9 @@
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
+     </property>
+     <property name="allColumnsShowFocus">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

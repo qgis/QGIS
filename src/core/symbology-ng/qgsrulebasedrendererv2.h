@@ -77,7 +77,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
               QString label = QString(), QString description = QString() );
         //Rule( const Rule& other );
         ~Rule();
-        QString dump() const;
+        QString dump( int offset = 0 ) const;
         QSet<QString> usedAttributes();
         QgsSymbolV2List symbols();
         QgsLegendSymbolList legendSymbolItems();
@@ -129,8 +129,12 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         void insertChild( int i, Rule* rule ) { mChildren.insert( i, rule ); rule->mParent = this; }
         //! delete child rule
         void removeChild( Rule* rule ) { mChildren.removeAll( rule ); delete rule; }
+        //! delete child rule
+        void removeChildAt( int i ) { Rule* rule = mChildren[i]; mChildren.removeAt( i ); delete rule; }
         //! take child rule out, set parent as null
         void takeChild( Rule* rule ) { mChildren.removeAll( rule ); rule->mParent = NULL; }
+        //! take child rule out, set parent as null
+        Rule* takeChildAt( int i ) { Rule* rule = mChildren.takeAt( i ); rule->mParent = NULL; return rule; }
 
       protected:
 

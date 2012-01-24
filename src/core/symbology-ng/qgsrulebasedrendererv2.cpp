@@ -58,17 +58,19 @@ void QgsRuleBasedRendererV2::Rule::initFilter()
   }
 }
 
-QString QgsRuleBasedRendererV2::Rule::dump() const
+QString QgsRuleBasedRendererV2::Rule::dump( int offset ) const
 {
+  QString off;
+  off.fill( QChar( ' ' ), offset );
   QString symbolDump = ( mSymbol ? mSymbol->dump() : QString( "[]" ) );
-  QString msg = QString( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5\n" )
+  QString msg = off + QString( "RULE %1 - scale [%2,%3] - filter %4 - symbol %5\n" )
                 .arg( mLabel ).arg( mScaleMinDenom ).arg( mScaleMaxDenom )
                 .arg( mFilterExp ).arg( symbolDump );
 
   QStringList lst;
   foreach( Rule* rule, mChildren )
   {
-    lst.append( "- " + rule->dump() );
+    lst.append( rule->dump( offset + 2 ) );
   }
   msg += lst.join( "\n" );
   return msg;
