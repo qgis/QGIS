@@ -776,6 +776,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif //Q_WS_MAC
   }
 
+  stopRendererV2( rendererContext, NULL );
+
 #ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
 #endif
@@ -977,7 +979,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    if ( mRendererV2->usingSymbolLevels() )
+    if ( ( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+         && mRendererV2->usingSymbolLevels() )
       drawRendererV2Levels( rendererContext, labeling );
     else
       drawRendererV2( rendererContext, labeling );

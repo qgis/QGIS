@@ -194,6 +194,11 @@ void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext&
   if ( symbol == NULL )
     return;
 
+  renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+}
+
+void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbolV2* symbol, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+{
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
   QgsGeometry* geom = feature.geometry();
@@ -356,7 +361,6 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
-    r->setUsingFirstRule( element.attribute( "firstrule", "0" ).toInt() );
   }
   return r;
 }
