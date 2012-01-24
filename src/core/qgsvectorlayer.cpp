@@ -3935,44 +3935,13 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
 
 QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
-  if ( !mDataProvider )
-  {
-    return QgsFeatureList();
-  }
-
   QgsFeatureList features;
 
-  QgsAttributeList allAttrs = mDataProvider->attributeIndexes();
-  mFetchAttributes = pendingAllAttributesList();
-
-  for ( QgsFeatureIds::iterator it = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it )
+  foreach( QgsFeatureId fid, mSelectedFeatureIds )
   {
-    QgsFeature feat;
-
-    bool selectionIsAddedFeature = false;
-
-    // Check this selected item against the uncommitted added features
-    for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
-    {
-      if ( *it == iter->id() )
-      {
-        feat = QgsFeature( *iter );
-        selectionIsAddedFeature = true;
-        break;
-      }
-    }
-
-    // if the geometry is not newly added, get it from provider
-    if ( !selectionIsAddedFeature )
-    {
-      mDataProvider->featureAtId( *it, feat, true, allAttrs );
-    }
-
-    updateFeatureAttributes( feat );
-    updateFeatureGeometry( feat );
-
-    features << feat;
-  } // for each selected
+    features.push_back( QgsFeature() );
+    featureAtId( fid, features.back(), true, true );
+  }
 
   return features;
 }
