@@ -13,7 +13,6 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
 {
     Q_OBJECT
   public:
-    QgsSymbolLevelsV2Dialog( QgsSymbolV2List symbols, bool usingSymbolLevels, QWidget* parent = NULL );
     QgsSymbolLevelsV2Dialog( QgsLegendSymbolList list, bool usingSymbolLevels, QWidget* parent = NULL );
 
     bool usingLevels() const;
@@ -33,7 +32,6 @@ class GUI_EXPORT QgsSymbolLevelsV2Dialog : public QDialog, private Ui::QgsSymbol
   protected:
     //! maximal number of layers from all symbols
     int mMaxLayers;
-    QgsSymbolV2List mSymbols;
     QgsLegendSymbolList mList;
     //! whether symbol layers always should be used (default false)
     bool mForceOrderingEnabled;
