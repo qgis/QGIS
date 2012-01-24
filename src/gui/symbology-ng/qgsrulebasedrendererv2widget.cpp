@@ -59,6 +59,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   setupUi( this );
 
   treeRules->setRenderer( mRenderer );
+  treeRules->setSelectionMode(QAbstractItemView::SingleSelection);
   mRefineMenu = new QMenu( btnRefineRule );
   mRefineMenu->addAction( tr( "Add scales" ), this, SLOT( refineRuleScales() ) );
   mRefineMenu->addAction( tr( "Add categories" ), this, SLOT( refineRuleCategories() ) );
@@ -202,15 +203,20 @@ void QgsRuleBasedRendererV2Widget::increasePriority()
   {
     if ( rule_index > 0 ) // do not increase priority of first rule
     {
+      // we need the string width of the index (which is a string) for finding it back
+      int indexWidth = item->data(4, Qt::EditRole).toString().length();
       mRenderer->swapRules( rule_index, rule_index - 1 );
       treeRules->populateRules();
-      // TODO: find out where the moved rule goes and reselect it (at least for non-grouped display)
-      // maybe based on the following functions :
-      //  findItems(QString(rule_index - 1), Qt::MatchExactly, 4).first.index)
-      //  setCurrentItem, setSelected, scrollToItem
+      QList<QTreeWidgetItem *> items = treeRules->findItems(
+            QString("%1").arg(rule_index, indexWidth), Qt::MatchExactly, 4 );
+      if (items.length()==1)
+      {
+        treeRules->setCurrentItem(items.first());
+      }
     }
-  }
 
+  }
+  treeRules->sortByColumn(4, Qt::AscendingOrder);  // busy with priority: more clear if we order by prio now
 }
 
 
@@ -227,10 +233,19 @@ void QgsRuleBasedRendererV2Widget::decreasePriority()
   {
     if ( rule_index + 1 < mRenderer->ruleCount() ) // do not increase priority of last rule
     {
+      // we need the string width of the index (which is a string) for finding it back
+      int indexWidth = item->data(4, Qt::EditRole).toString().length();
       mRenderer->swapRules( rule_index, rule_index + 1 );
       treeRules->populateRules();
+      QList<QTreeWidgetItem *> items = treeRules->findItems(
+            QString("%1").arg(rule_index+2, indexWidth), Qt::MatchExactly, 4 );
+      if (items.length()==1)
+      {
+        treeRules->setCurrentItem(items.first());
+      }
     }
   }
+  treeRules->sortByColumn(4, Qt::AscendingOrder);  // busy with priority: more clear if we order by prio now
 }
 
 
