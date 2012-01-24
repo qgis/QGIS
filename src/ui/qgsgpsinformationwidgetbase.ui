@@ -247,7 +247,7 @@ gray = no data
    <item row="4" column="0">
     <widget class="QStackedWidget" name="mStackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="stackedWidgetPage1">
       <layout class="QGridLayout" name="gridLayout_11">
@@ -264,8 +264,8 @@ gray = no data
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>146</width>
-            <height>446</height>
+            <width>193</width>
+            <height>504</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_2">
@@ -506,7 +506,7 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="12" column="1">
+             <item row="14" column="1">
               <spacer name="verticalSpacer_3">
                <property name="orientation">
                 <enum>Qt::Vertical</enum>
@@ -522,7 +522,7 @@ gray = no data
                </property>
               </spacer>
              </item>
-             <item row="13" column="1">
+             <item row="15" column="1">
               <widget class="QLineEdit" name="mTxtFixMode">
                <property name="toolTip">
                 <string>GPS receiver configuration 2D/3D mode: Automatic or Manual</string>
@@ -532,14 +532,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="13" column="0">
+             <item row="15" column="0">
               <widget class="QLabel" name="mLblFixMode">
                <property name="text">
                 <string>Mode</string>
                </property>
               </widget>
              </item>
-             <item row="14" column="1">
+             <item row="16" column="1">
               <widget class="QLineEdit" name="mTxtFixType">
                <property name="toolTip">
                 <string>position fix dimensions: 2D, 3D or No fix</string>
@@ -549,14 +549,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="14" column="0">
+             <item row="16" column="0">
               <widget class="QLabel" name="mLblFixType">
                <property name="text">
                 <string>Dimensions</string>
                </property>
               </widget>
              </item>
-             <item row="15" column="1">
+             <item row="17" column="1">
               <widget class="QLineEdit" name="mTxtQuality">
                <property name="toolTip">
                 <string>quality of the position fix: Differential, Non-differential or No position</string>
@@ -566,14 +566,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="15" column="0">
+             <item row="17" column="0">
               <widget class="QLabel" name="mLblQuality">
                <property name="text">
                 <string>Quality</string>
                </property>
               </widget>
              </item>
-             <item row="16" column="1">
+             <item row="18" column="1">
               <widget class="QLineEdit" name="mTxtStatus">
                <property name="toolTip">
                 <string>position fix status: Valid or Invalid</string>
@@ -583,14 +583,14 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="16" column="0">
+             <item row="18" column="0">
               <widget class="QLabel" name="mLblStatus">
                <property name="text">
                 <string>Status</string>
                </property>
               </widget>
              </item>
-             <item row="17" column="1">
+             <item row="19" column="1">
               <widget class="QLineEdit" name="mTxtSatellitesUsed">
                <property name="toolTip">
                 <string>number of satellites used in the position fix</string>
@@ -600,10 +600,30 @@ gray = no data
                </property>
               </widget>
              </item>
-             <item row="17" column="0">
+             <item row="19" column="0">
               <widget class="QLabel" name="mLblSatellitesUsed">
                <property name="text">
                 <string>Satellites</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="1">
+              <widget class="QLineEdit" name="mTxtHacc"/>
+             </item>
+             <item row="13" column="1">
+              <widget class="QLineEdit" name="mTxtVacc"/>
+             </item>
+             <item row="12" column="0">
+              <widget class="QLabel" name="mLblHacc">
+               <property name="text">
+                <string>H accurancy</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="0">
+              <widget class="QLabel" name="mLblVacc">
+               <property name="text">
+                <string>V accurancy</string>
                </property>
               </widget>
              </item>
@@ -633,7 +653,7 @@ gray = no data
          <widget class="QWidget" name="scrollAreaWidgetContents">
           <property name="geometry">
            <rect>
-            <x>-94</x>
+            <x>0</x>
             <y>0</y>
             <width>287</width>
             <height>638</height>

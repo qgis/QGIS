@@ -68,11 +68,16 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.direction = mInfo.attribute(QGeoPositionInfo::Direction);
       mLastGPSInformation.utcDateTime = mInfo.timestamp();
       mLastGPSInformation.fixType = mInfo.coordinate().type();  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+      mLastGPSInformation.hacc = mInfo.attribute(QGeoPositionInfo::HorizontalAccuracy);     //< Horizontal dilution of precision
+      mLastGPSInformation.vacc = mInfo.attribute(QGeoPositionInfo::VerticalAccuracy);     //< Vertical dilution of precision
 
-      //TODO implement these
+      //TODO implement dop maybe by getting a
+      //http://developer.android.com/reference/android/location/GpsStatus.NmeaListener.html
+      //into QtLocation and subclass QgsNMEAConnection directly?
       mLastGPSInformation.pdop;     //< Dilution of precision
-      mLastGPSInformation.hdop = mInfo.attribute(QGeoPositionInfo::HorizontalAccuracy);     //< Horizontal dilution of precision
-      mLastGPSInformation.vdop = mInfo.attribute(QGeoPositionInfo::VerticalAccuracy);     //< Vertical dilution of precision
+      mLastGPSInformation.hdop;     //< Horizontal dilution of precision
+      mLastGPSInformation.vdop;     //< Vertical dilution of precision
+
       mLastGPSInformation.fixMode = 'A';  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
       mLastGPSInformation.quality = 1;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
       mLastGPSInformation.status = 'A';   //< Status (A = active or V = void)
@@ -140,8 +145,7 @@ void QgsQtLocationConnection::startGPS()
       if (locationDataSource)
       {
         locationDataSource->setPreferredPositioningMethods(QGeoPositionInfoSource::SatellitePositioningMethods);  //QGeoPositionInfoSource::AllPositioningMethods
-        locationDataSource->setUpdateInterval(2000); // this is the line that gives trouble, so I just don't use it
-
+        // locationDataSource->setUpdateInterval(2000);
         // Whenever the location data source signals that the current
         // position is updated, the positionUpdated function is called.
         QObject::connect(locationDataSource,

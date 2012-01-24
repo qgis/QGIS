@@ -699,6 +699,8 @@ void QgsGPSInformationWidget::displayGPSInformation( const QgsGPSInformation& in
     mTxtHdop->setText( QString::number( info.hdop, 'f', 1 ) );
     mTxtVdop->setText( QString::number( info.vdop, 'f', 1 ) );
     mTxtPdop->setText( QString::number( info.pdop, 'f', 1 ) );
+    mTxtHacc->setText( QString::number( info.hacc, 'f', 1 ) + "m" );
+    mTxtVacc->setText( QString::number( info.vacc, 'f', 1 ) + "m" );
     mTxtFixMode->setText( info.fixMode == 'A' ? tr( "Automatic" ) : info.fixMode == 'M' ? tr( "Manual" ) : "" ); // A=automatic 2d/3d, M=manual; allowing for anything else
     mTxtFixType->setText( info.fixType == 3 ? tr( "3D" ) : info.fixType == 2 ? tr( "2D" ) : info.fixType == 1 ? tr( "No fix" ) : QString::number( info.fixType ) ); // 1=no fix, 2=2D, 3=3D; allowing for anything else
     mTxtQuality->setText( info.quality == 2 ? tr( "Differential" ) : info.quality == 1 ? tr( "Non-differential" ) : info.quality == 0 ? tr( "No position" ) : info.quality > 2 ? QString::number( info.quality ) : "" ); // allowing for anything else
@@ -811,7 +813,7 @@ void QgsGPSInformationWidget::on_mBtnAddVertex_clicked( )
 
 void QgsGPSInformationWidget::addVertex( )
 {
-
+  QgsDebugMsg("Adding Vertex");
   if ( !mpRubberBand )
   {
     createRubberBand( );
