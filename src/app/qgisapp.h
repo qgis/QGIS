@@ -1116,8 +1116,10 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
 #ifdef ANDROID
 #define QGIS_ICON_SIZE 32
+#define QGIS_DEFAULT_FONTSIZE 8
 #else
 #define QGIS_ICON_SIZE 24
+#define QGIS_DEFAULT_FONTSIZE qApp->font().pointSize()
 #endif
 
 #endif
