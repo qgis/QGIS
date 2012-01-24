@@ -30,6 +30,8 @@
 #include <QVBoxLayout>
 #include <QMessageBox>
 
+//#include "modeltest.h"
+
 QgsRendererV2Widget* QgsRuleBasedRendererV2Widget::create( QgsVectorLayer* layer, QgsStyleV2* style, QgsFeatureRendererV2* renderer )
 {
   return new QgsRuleBasedRendererV2Widget( layer, style, renderer );
@@ -59,6 +61,7 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   setupUi( this );
 
   mModel = new QgsRuleBasedRendererV2Model( mRenderer );
+  //new ModelTest( mModel, this ); // for model validity checking
   viewRules->setModel( mModel );
 
   mRefineMenu = new QMenu( btnRefineRule );
@@ -152,8 +155,10 @@ void QgsRuleBasedRendererV2Widget::editRule( const QModelIndex& index )
 void QgsRuleBasedRendererV2Widget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
+  QgsDebugMsg( QString("REMOVE RULES!!! ranges: %1").arg( sel.count()) );
   foreach( QItemSelectionRange range, sel )
   {
+    QgsDebugMsg( QString( "RANGE: r %1 - %2").arg(range.top()).arg(range.bottom()) );
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
@@ -471,9 +476,12 @@ Qt::ItemFlags QgsRuleBasedRendererV2Model::flags( const QModelIndex &index ) con
   if ( !index.isValid() )
     return Qt::ItemIsDropEnabled;
 
+  // allow drop only at first column
+  Qt::ItemFlag drop = (index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags);
+
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
          Qt::ItemIsEditable |
-         Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+         Qt::ItemIsDragEnabled | drop;
 }
 
 QVariant QgsRuleBasedRendererV2Model::data( const QModelIndex &index, int role ) const
@@ -545,16 +553,13 @@ int QgsRuleBasedRendererV2Model::columnCount( const QModelIndex & ) const
 
 QModelIndex QgsRuleBasedRendererV2Model::index( int row, int column, const QModelIndex &parent ) const
 {
-  if ( !hasIndex( row, column, parent ) )
-    return QModelIndex();
-
-  QgsRuleBasedRendererV2::Rule* parentRule = ruleForIndex( parent );
-
-  QgsRuleBasedRendererV2::Rule* childRule = parentRule->children()[row];
-  if ( childRule )
+  if ( hasIndex( row, column, parent ) )
+  {
+    QgsRuleBasedRendererV2::Rule* parentRule = ruleForIndex( parent );
+    QgsRuleBasedRendererV2::Rule* childRule = parentRule->children()[row];
     return createIndex( row, column, childRule );
-  else
-    return QModelIndex();
+  }
+  return QModelIndex();
 }
 
 QModelIndex QgsRuleBasedRendererV2Model::parent( const QModelIndex &index ) const
@@ -568,7 +573,8 @@ QModelIndex QgsRuleBasedRendererV2Model::parent( const QModelIndex &index ) cons
   if ( parentRule == mR->rootRule() )
     return QModelIndex();
 
-  int row = parentRule->children().indexOf( childRule );
+  // this is right: we need to know row number of our parent (in our grandparent)
+  int row = parentRule->parent()->children().indexOf( parentRule );
 
   return createIndex( row, 0, parentRule );
 }
@@ -654,7 +660,7 @@ bool QgsRuleBasedRendererV2Model::dropMimeData( const QMimeData *data,
   if ( !data->hasFormat( "application/vnd.text.list" ) )
     return false;
 
-  if ( column > 0 )
+  if ( parent.column() > 0 )
     return false;
 
   QByteArray encodedData = data->data( "application/vnd.text.list" );
@@ -708,15 +714,21 @@ bool QgsRuleBasedRendererV2Model::removeRows( int row, int count, const QModelIn
 
   QgsDebugMsg( QString( "Called: row %1 count %2 parent ~~%3~~" ).arg( row ).arg( count ).arg( parentRule->dump() ) );
 
-  emit beginRemoveRows( parent, row, row + count - 1 );
+  beginRemoveRows( parent, row, row + count - 1 );
 
   for ( int i = 0; i < count; i++ )
   {
-    QgsRuleBasedRendererV2::Rule* r = parentRule->children()[row];
-    parentRule->removeChild( r );
+    if ( row < parentRule->children().count() )
+    {
+      //QgsRuleBasedRendererV2::Rule* r = parentRule->children()[row];
+      parentRule->removeChildAt( row );
+      //parentRule->takeChildAt( row );
+    }
+    else
+      QgsDebugMsg( "trying to remove invalid index - this should not happen!" );
   }
 
-  emit endRemoveRows();
+  endRemoveRows();
 
   return true;
 }
