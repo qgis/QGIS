@@ -370,6 +370,9 @@ void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
     bool selected,
     bool drawVertexMarker )
 {
+  Q_UNUSED( layer );
+  Q_UNUSED( selected );
+  Q_UNUSED( drawVertexMarker );
 
   // TODO: selected features, vertex markers
 
