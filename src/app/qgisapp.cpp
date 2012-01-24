@@ -425,7 +425,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
 
   QSettings settings;
-  setFontSize( settings.value( "/fontPointSize", font().pointSize() ).toInt() );
+  setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
 
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
