@@ -37,7 +37,7 @@ class OsmAddRelationDlg(QDialog, Ui_OsmAddRelationDlg):
         @param relationToEdit if relation is given, this dialog is for editing of existing relation, not for creation a new one
         """
 
-        QDialog.__init__(self,None)
+        QDialog.__init__(self, plugin.iface.mainWindow())
         self.setupUi(self)
         self.dockWidget=plugin.dockWidget
         self.plugin=plugin

@@ -9,8 +9,8 @@ import GdalTools_utils as Utils
 
 class GdalToolsBaseBatchWidget(BasePluginWidget):
 
-  def __init__(self, iface, commandName, helpFileBaseName = None):
-      BasePluginWidget.__init__(self, iface, commandName, helpFileBaseName)
+  def __init__(self, iface, commandName):
+      BasePluginWidget.__init__(self, iface, commandName)
 
   def getBatchArguments(self, inFile, outFile = None):
       arguments = QStringList()

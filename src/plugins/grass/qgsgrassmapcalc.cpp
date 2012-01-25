@@ -40,7 +40,7 @@ QgsGrassMapcalc::QgsGrassMapcalc(
   QgsGrassTools *tools, QgsGrassModule *module,
   QgisInterface *iface,
   QWidget * parent, Qt::WFlags f )
-    : QMainWindow( 0, Qt::Dialog )
+    : QMainWindow( iface->mainWindow(), Qt::Dialog )
     , QgsGrassMapcalcBase( )
     , QgsGrassModuleOptions( tools, module, iface )
     , mTool( -1 )
@@ -1255,7 +1255,7 @@ void QgsGrassMapcalc::load()
 {
   QgsDebugMsg( "entered." );
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::MAPCALC );
+  QgsGrassSelect *sel = new QgsGrassSelect( this, QgsGrassSelect::MAPCALC );
   if ( sel->exec() == QDialog::Rejected )
     return;
 

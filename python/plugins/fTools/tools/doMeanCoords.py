@@ -37,7 +37,7 @@ from ui_frmMeanCoords import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface, function):
-        QDialog.__init__(self)
+        QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
         self.function = function
         self.setupUi(self)

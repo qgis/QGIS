@@ -3062,7 +3062,7 @@ void QgisApp::newPrintComposer()
 
 void QgisApp::showComposerManager()
 {
-  QgsComposerManager m;
+  QgsComposerManager m( this );
   m.exec();
 }
 
@@ -5149,7 +5149,7 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 void QgisApp::embedLayers()
 {
   //dialog to select groups/layers from other project files
-  QgsEmbedLayerDialog d;
+  QgsEmbedLayerDialog d( this );
   if ( d.exec() == QDialog::Accepted )
   {
     mMapCanvas->freeze( true );
