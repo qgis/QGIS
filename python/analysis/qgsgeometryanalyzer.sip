@@ -46,6 +46,17 @@ class QgsGeometryAnalyzer
                    bool onlySelectedFeatures = false,
                      int uniqueIdField = -1 );
 
+    /**Creates an event layer (multipoint or multiline). Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
+      @param lineLayer layer with the line geometry
+      @param eventLayer layer with features and location field
+      @param lineField join index in line layer
+      @param eventField join index in event layer
+      @param locationField1 attribute index of location field in event layer
+      @param locationField2 attribute index of location end field (or -1 for point layer)
+    */
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
+                     const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
+
   private:
 
     QList<double> simpleMeasure( QgsGeometry* geometry );
