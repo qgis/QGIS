@@ -504,9 +504,6 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
       }
     }
 
-    if ( cmbConnections->count() > 0 && !mColumnTypeThread )
-      mAddButton->setEnabled( true );
-
     //if we have only one schema item, expand it by default
     int numTopLevelItems = mTableModel.invisibleRootItem()->rowCount();
     if ( numTopLevelItems < 2 || mTableModel.tableCount() < 20 )
@@ -522,9 +519,7 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
 
     if ( !mColumnTypeThread )
     {
-      QApplication::restoreOverrideCursor();
-      mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
-      mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
+      finishList();
     }
   }
   else
@@ -536,18 +531,30 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   }
 }
 
-void QgsPgSourceSelect::columnThreadFinished()
+void QgsPgSourceSelect::finishList()
 {
-  delete mColumnTypeThread;
-  mColumnTypeThread = 0;
-  btnConnect->setText( tr( "Connect" ) );
   QApplication::restoreOverrideCursor();
 
   if ( cmbConnections->count() > 0 )
     mAddButton->setEnabled( true );
 
+#if 0
+  for ( int i = 0; i < QgsPgTableModel::dbtmColumns; i++ )
+    mTablesTreeView->resizeColumnToContents( i );
+#endif
+
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmTable, Qt::AscendingOrder );
   mTablesTreeView->sortByColumn( QgsPgTableModel::dbtmSchema, Qt::AscendingOrder );
+
+}
+
+void QgsPgSourceSelect::columnThreadFinished()
+{
+  delete mColumnTypeThread;
+  mColumnTypeThread = 0;
+  btnConnect->setText( tr( "Connect" ) );
+
+  finishList();
 }
 
 QStringList QgsPgSourceSelect::selectedTables()
