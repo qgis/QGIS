@@ -7,10 +7,13 @@ SET (util_SRCS ../core/qgsrenderchecker.cpp)
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}/../../../src/ui
   ${CMAKE_CURRENT_SOURCE_DIR}/../core #for render checker class
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/gui/symbology-ng
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
   ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
+  ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/symbology-ng
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
@@ -73,4 +76,23 @@ ENDIF (APPLE)
 #ENDIF (APPLE)
 
 
+# a simple app for testing GUI of renderers
 
+SET(rendererv2gui_SRCS testrendererv2gui.cpp)
+SET(rendererv2gui_HDRS testrendererv2gui.h)
+
+QT4_WRAP_CPP(rendererv2gui_MOC_SRCS ${rendererv2gui_HDRS})
+
+ADD_EXECUTABLE(qgis_rendererv2gui ${rendererv2gui_SRCS} ${rendererv2gui_MOC_SRCS})
+
+TARGET_LINK_LIBRARIES(qgis_rendererv2gui
+  qgis_core
+  qgis_gui
+  ${QT_QTCORE_LIBRARY}
+  ${QT_QTNETWORK_LIBRARY}
+  ${QT_QTSVG_LIBRARY}
+  ${QT_QTXML_LIBRARY}
+  ${QT_QTWEBKIT_LIBRARY}
+  ${QT_QTMAIN_LIBRARY}
+  #${QT_QTTEST_LIBRARY}
+)

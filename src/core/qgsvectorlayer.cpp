@@ -776,6 +776,8 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
 #endif //Q_WS_MAC
   }
 
+  stopRendererV2( rendererContext, NULL );
+
 #ifndef Q_WS_MAC
   QgsDebugMsg( QString( "Total features processed %1" ).arg( featureCount ) );
 #endif
@@ -977,7 +979,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    if ( mRendererV2->usingSymbolLevels() )
+    if ( ( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+         && mRendererV2->usingSymbolLevels() )
       drawRendererV2Levels( rendererContext, labeling );
     else
       drawRendererV2( rendererContext, labeling );
@@ -3971,44 +3974,13 @@ const QgsFeatureIds& QgsVectorLayer::selectedFeaturesIds() const
 
 QgsFeatureList QgsVectorLayer::selectedFeatures()
 {
-  if ( !mDataProvider )
-  {
-    return QgsFeatureList();
-  }
-
   QgsFeatureList features;
 
-  QgsAttributeList allAttrs = mDataProvider->attributeIndexes();
-  mFetchAttributes = pendingAllAttributesList();
-
-  for ( QgsFeatureIds::iterator it = mSelectedFeatureIds.begin(); it != mSelectedFeatureIds.end(); ++it )
+  foreach( QgsFeatureId fid, mSelectedFeatureIds )
   {
-    QgsFeature feat;
-
-    bool selectionIsAddedFeature = false;
-
-    // Check this selected item against the uncommitted added features
-    for ( QgsFeatureList::iterator iter = mAddedFeatures.begin(); iter != mAddedFeatures.end(); ++iter )
-    {
-      if ( *it == iter->id() )
-      {
-        feat = QgsFeature( *iter );
-        selectionIsAddedFeature = true;
-        break;
-      }
-    }
-
-    // if the geometry is not newly added, get it from provider
-    if ( !selectionIsAddedFeature )
-    {
-      mDataProvider->featureAtId( *it, feat, true, allAttrs );
-    }
-
-    updateFeatureAttributes( feat );
-    updateFeatureGeometry( feat );
-
-    features << feat;
-  } // for each selected
+    features.push_back( QgsFeature() );
+    featureAtId( fid, features.back(), true, true );
+  }
 
   return features;
 }

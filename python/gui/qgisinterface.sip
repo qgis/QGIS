@@ -289,6 +289,7 @@ class QgisInterface : QObject
 
     //! View menu actions
     virtual QAction *actionPan() = 0;
+    virtual QAction *actionPanToSelected() = 0;
     virtual QAction *actionZoomIn() = 0;
     virtual QAction *actionZoomOut() = 0;
     virtual QAction *actionSelect() = 0;

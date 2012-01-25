@@ -230,6 +230,32 @@
       </widget>
      </item>
      <item>
+      <widget class="QToolButton" name="mPanMapToSelectedRowsButton">
+       <property name="toolTip">
+        <string>Zoom map to the selected rows (Ctrl+J)</string>
+       </property>
+       <property name="whatsThis">
+        <string/>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>../../images/themes/default/mActionPanToSelected.png</normaloff>../../images/themes/default/mActionPanToSelected.png</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+       <property name="shortcut">
+        <string>Ctrl+J</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="mToggleEditingButton">
        <property name="toolTip">
         <string>Toggle editing mode (Ctrl+E)</string>

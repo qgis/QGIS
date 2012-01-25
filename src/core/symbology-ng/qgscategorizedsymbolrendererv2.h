@@ -60,6 +60,10 @@ class CORE_EXPORT QgsCategorizedSymbolRendererV2 : public QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone();
 
+    //! returns bitwise OR-ed capabilities of the renderer
+    //! \note added in 2.0
+    virtual int capabilities() { return SymbolLevels; }
+
     virtual QgsSymbolV2List symbols();
 
     const QgsCategoryList& categories() { return mCategories; }

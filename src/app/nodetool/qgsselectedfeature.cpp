@@ -374,13 +374,12 @@ void QgsSelectedFeature::createVertexMapPolygon()
     for ( int i2 = 0; i2 < polygon.size(); i2++ )
     {
       const QgsPolyline& poly = polygon[i2];
-      int i;
-      for ( i = 0; i < poly.size(); i++ )
+      for ( int i = 0; i < poly.size(); i++ )
       {
         mVertexMap.insert( y + i, new QgsVertexEntry( mCanvas, mVlayer, poly[i], i, tr( "ring %1, vertex %2" ).arg( i2 ).arg( i ) ) );
       }
-      mVertexMap[y + i - 1 ]->setEqual( y );
-      mVertexMap[y]->setEqual( y + i - 1 );
+      mVertexMap[y + poly.size() - 1 ]->setEqual( y );
+      mVertexMap[y]->setEqual( y + poly.size() - 1 );
       y += poly.size();
     }
   }
@@ -395,13 +394,12 @@ void QgsSelectedFeature::createVertexMapPolygon()
       {
         // iterating through polygon rings
         const QgsPolyline& poly = poly2[i3];
-        int i;
-        for ( i = 0; i < poly.size(); i++ )
+        for ( int i = 0; i < poly.size(); i++ )
         {
           mVertexMap.insert( y + i, new QgsVertexEntry( mCanvas, mVlayer, poly[i], y + i - 1, tr( "polygon %1, ring %2, vertex %3" ).arg( i2 ).arg( i3 ).arg( i ) ) );
         }
-        mVertexMap[y + i - 1]->setEqual( y );
-        mVertexMap[y]->setEqual( y + i - 1 );
+        mVertexMap[y + poly.size() - 1]->setEqual( y );
+        mVertexMap[y]->setEqual( y + poly.size() - 1 );
         y += poly.size();
       }
     }
@@ -420,8 +418,7 @@ void QgsSelectedFeature::createVertexMapLine()
     {
       // iterating through polylines
       QgsPolyline poly = mLine[i2];
-      int i;
-      for ( i = 0; i < poly.size(); i++ )
+      for ( int i = 0; i < poly.size(); i++ )
       {
         mVertexMap.insert( y + i, new QgsVertexEntry( mCanvas, mVlayer, poly[i], i, tr( "polyline %1, vertex %2" ).arg( i2 ).arg( i ) ) );
       }
@@ -431,8 +428,7 @@ void QgsSelectedFeature::createVertexMapLine()
   else
   {
     QgsPolyline poly = mGeometry->asPolyline();
-    int i;
-    for ( i = 0; i < poly.size(); i++ )
+    for ( int i = 0; i < poly.size(); i++ )
     {
       mVertexMap.insert( i, new QgsVertexEntry( mCanvas, mVlayer, poly[i], i, tr( "vertex %1" ).arg( i ) ) );
     }
@@ -447,10 +443,9 @@ void QgsSelectedFeature::createVertexMapPoint()
   {
     // multipoint
     QgsMultiPoint poly = mGeometry->asMultiPoint();
-    int i;
-    for ( i = 0; i < poly.size(); i++ )
+    for ( int i = 0; i < poly.size(); i++ )
     {
-      mVertexMap.insert( i,  new QgsVertexEntry( mCanvas, mVlayer, poly[i], 1, tr( "point %1" ).arg( i ) ) );
+      mVertexMap.insert( i, new QgsVertexEntry( mCanvas, mVlayer, poly[i], 1, tr( "point %1" ).arg( i ) ) );
     }
   }
   else

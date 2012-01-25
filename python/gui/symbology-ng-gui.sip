@@ -42,8 +42,6 @@ public slots:
     void apply();
     void onOK();
 
-    void showSymbolLevels();
-
 protected:
 
     //! Reimplements dialog keyPress event so we can ignore it

@@ -720,6 +720,34 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
   refresh();
 } // zoomToSelected
 
+void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
+{
+  if ( mDrawing )
+  {
+    return;
+  }
+
+  if ( layer == NULL )
+  {
+    // use current layer by default
+    layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+  }
+
+  if ( layer == NULL )
+  {
+    return;
+  }
+
+  if ( layer->selectedFeatureCount() == 0 )
+  {
+    return;
+  }
+
+  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  setExtent( QgsRectangle( rect.center(), rect.center() ) );
+  refresh();
+} // panToSelected
+
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
 {
 

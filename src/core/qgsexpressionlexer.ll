@@ -29,7 +29,7 @@
 #include "qgsexpression.h"
 #include "qgsexpressionparser.hpp"
 #include <QRegExp>
-
+#include <QLocale>
 
 // if not defined, searches for isatty()
 // which doesn't in MSVC compiler
@@ -85,6 +85,8 @@ static QString stripColumnRef(QString text)
   return text;
 }
 
+// C locale for correct parsing of numbers even if the system locale is different
+static QLocale cLocale("C");
 
 %}
 
@@ -150,8 +152,8 @@ string      "'"{str_char}*"'"
 
 ","   { return COMMA; }
 
-{num_float}  { exp_lval.numberFloat  = atof(yytext); return NUMBER_FLOAT; }
-{num_int}  { exp_lval.numberInt  = atoi(yytext); return NUMBER_INT; }
+{num_float}  { exp_lval.numberFloat  = cLocale.toDouble( QString::fromAscii(yytext) ); return NUMBER_FLOAT; }
+{num_int}  { exp_lval.numberInt  = cLocale.toInt( QString::fromAscii(yytext), 0, 10); return NUMBER_INT; }
 
 {string}  { TEXT_FILTER(stripText); return STRING; }
 

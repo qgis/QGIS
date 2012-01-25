@@ -425,7 +425,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   qApp->processEvents();
 
   QSettings settings;
-  setFontSize( settings.value( "/fontPointSize", font().pointSize() ).toInt() );
+  setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
 
   // "theMapCanvas" used to find this canonical instance later
   mMapCanvas = new QgsMapCanvas( this, "theMapCanvas" );
@@ -808,6 +808,7 @@ void QgisApp::createActions()
   // View Menu Items
 
   connect( mActionPan, SIGNAL( triggered() ), this, SLOT( pan() ) );
+  connect( mActionPanToSelected, SIGNAL( triggered() ), this, SLOT( panToSelected() ) );
   connect( mActionZoomIn, SIGNAL( triggered() ), this, SLOT( zoomIn() ) );
   connect( mActionZoomOut, SIGNAL( triggered() ), this, SLOT( zoomOut() ) );
   connect( mActionSelect, SIGNAL( triggered() ), this, SLOT( select() ) );
@@ -1131,12 +1132,6 @@ void QgisApp::createToolBars()
   // Note: we need to set each object name to ensure that
   // qmainwindow::saveState and qmainwindow::restoreState
   // work properly
-
-  //set a small default font for android
-#ifdef ANDROID
-  int fontPointSize = settings.value( "/fontPointSize", QGIS_ANDROID_DEFAULT_FONT_SIZE ).toInt();
-  setFontSize( fontPointSize );
-#endif
 
   QList<QToolBar*> toolbarMenuToolBars;
   toolbarMenuToolBars << mFileToolBar
@@ -3272,6 +3267,11 @@ void QgisApp::zoomToSelected()
   mMapCanvas->zoomToSelected();
 }
 
+void QgisApp::panToSelected()
+{
+  mMapCanvas->panToSelected();
+}
+
 void QgisApp::pan()
 {
   mMapCanvas->setMapTool( mMapTools.mPan );
@@ -4329,11 +4329,23 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   if ( !vlayer->isEditable() && !vlayer->isReadOnly() )
   {
-    vlayer->startEditing();
-    if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+    if ( !(vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
       QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
-      res = false;
+      return false;
+    }
+
+    vlayer->startEditing();
+
+    QSettings settings;
+    QString markerType = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
+    bool markSelectedOnly = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
+
+    // redraw only if markers will be drawn
+    if( ( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
+        ( markerType == "Cross" || markerType == "SemiTransparentCircle" ) )
+    {
+      vlayer->triggerRepaint();
     }
   }
   else if ( vlayer->isModified() )
@@ -4364,6 +4376,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
           // and try the commit again later
           res = false;
         }
+
+        vlayer->triggerRepaint();
         break;
 
       case QMessageBox::Discard:
@@ -4372,6 +4386,8 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
           QMessageBox::information( 0, tr( "Error" ), tr( "Problems during roll back" ) );
           res = false;
         }
+
+        vlayer->triggerRepaint();
         break;
 
       default:
@@ -4382,22 +4398,12 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
   {
     vlayer->rollBack();
     res = true;
+    vlayer->triggerRepaint();
   }
 
   if ( layer == activeLayer() )
   {
     activateDeactivateLayerRelatedActions( layer );
-  }
-
-  QSettings settings;
-  QString markerType = settings.value( "/qgis/digitizing/marker_style", "Cross" ).toString();
-  bool markSelectedOnly = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
-
-  // repaint only if the there will be/were markers
-  if (( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
-      ( markerType == "Cross" || markerType == "SemiTransparentCircle" ) )
-  {
-    vlayer->triggerRepaint();
   }
 
   return res;

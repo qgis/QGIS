@@ -261,6 +261,7 @@ class QgisAppInterface : public QgisInterface
 
     //! View menu actions
     virtual QAction *actionPan();
+    virtual QAction *actionPanToSelected();
     virtual QAction *actionZoomIn();
     virtual QAction *actionZoomOut();
     virtual QAction *actionSelect();
