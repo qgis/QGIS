@@ -137,6 +137,10 @@ class QgsAttributeTableDialog : public QDialog, private Ui::QgsAttributeTableDia
      */
     void on_mZoomMapToSelectedRowsButton_clicked();
     /**
+     * Pans to selected features
+     */
+    void on_mPanMapToSelectedRowsButton_clicked();
+    /**
      * Moves selected lines to the top
      */
     void on_mSelectedToTopButton_clicked();
