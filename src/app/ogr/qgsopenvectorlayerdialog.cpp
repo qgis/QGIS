@@ -46,7 +46,7 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   cmbEncodings->addItems( QgsVectorDataProvider::availableEncodings() );
 
   QSettings settings;
-  QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
+  QString enc = settings.value( "/UI/encoding", "System" ).toString();
 
   restoreGeometry( settings.value( "/Windows/OpenVectorLayer/geometry" ).toByteArray() );
 

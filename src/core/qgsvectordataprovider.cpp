@@ -31,7 +31,7 @@ QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     , mFetchFeaturesWithoutGeom( true )
 {
   QSettings settings;
-  setEncoding( settings.value( "/UI/encoding", QString( "System" ) ).toString() );
+  setEncoding( settings.value( "/UI/encoding", "System" ).toString() );
 }
 
 
@@ -151,7 +151,7 @@ int QgsVectorDataProvider::capabilities() const
 
 void QgsVectorDataProvider::setEncoding( const QString& e )
 {
-  QTextCodec* ncodec = QTextCodec::codecForName( e.toLocal8Bit().data() );
+  QTextCodec* ncodec = QTextCodec::codecForName( e.toLocal8Bit().constData() );
   if ( ncodec )
   {
     mEncoding = ncodec;
@@ -160,6 +160,10 @@ void QgsVectorDataProvider::setEncoding( const QString& e )
   {
     QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
     mEncoding = QTextCodec::codecForName( "System" );
+
+    if ( !mEncoding )
+      mEncoding = QTextCodec::codecForLocale();
+
     Q_ASSERT( mEncoding );
   }
 }
