@@ -37,12 +37,12 @@
 #include <QMetaObject>
 
 #ifdef Q_OS_MACX
-QgsCustomizationDialog::QgsCustomizationDialog()
-    : QMainWindow( NULL, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent )
+    : QMainWindow( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
     , mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
 #else
-QgsCustomizationDialog::QgsCustomizationDialog()
-    : QMainWindow( NULL )
+QgsCustomizationDialog::QgsCustomizationDialog( QWidget *parent )
+    : QMainWindow( parent )
     , mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
 #endif
 {
@@ -597,11 +597,11 @@ QgsCustomization *QgsCustomization::instance()
   return pinstance;
 }
 
-QgsCustomization::QgsCustomization( ) :
-    pDialog( 0 ),
-    mEnabled( true ),
-    mStatusPath( "/Customization/status" ),
-    mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
+QgsCustomization::QgsCustomization()
+    : pDialog( 0 )
+    , mEnabled( true )
+    , mStatusPath( "/Customization/status" )
+    , mSettings( "QuantumGIS", "QGISCUSTOMIZATION" )
 {
   QgsDebugMsg( "Entered" );
 }
@@ -756,12 +756,12 @@ void QgsCustomization::updateMenu( QMenu* menu, QSettings& settings )
   settings.endGroup();
 }
 
-void QgsCustomization::openDialog()
+void QgsCustomization::openDialog( QWidget *parent )
 {
   QgsDebugMsg( "Entered" );
   if ( !pDialog )
   {
-    pDialog = new QgsCustomizationDialog();
+    pDialog = new QgsCustomizationDialog( parent );
   }
 
   // I am trying too enable switching widget status by clicking in main app, so I need non modal
