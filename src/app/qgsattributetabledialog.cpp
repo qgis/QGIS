@@ -92,6 +92,7 @@ QgsAttributeTableDialog::QgsAttributeTableDialog( QgsVectorLayer *theLayer, QWid
   mSelectedToTopButton->setIcon( QgisApp::getThemeIcon( "/mActionSelectedToTop.png" ) );
   mCopySelectedRowsButton->setIcon( QgisApp::getThemeIcon( "/mActionCopySelected.png" ) );
   mZoomMapToSelectedRowsButton->setIcon( QgisApp::getThemeIcon( "/mActionZoomToSelected.png" ) );
+  mPanMapToSelectedRowsButton->setIcon( QgisApp::getThemeIcon( "/mActionPanToSelected.png" ) );
   mInvertSelectionButton->setIcon( QgisApp::getThemeIcon( "/mActionInvertSelection.png" ) );
   mToggleEditingButton->setIcon( QgisApp::getThemeIcon( "/mActionToggleEditing.png" ) );
   mSaveEditsButton->setIcon( QgisApp::getThemeIcon( "/mActionSaveEdits.png" ) );
@@ -228,6 +229,11 @@ void QgsAttributeTableDialog::on_mCopySelectedRowsButton_clicked()
 void QgsAttributeTableDialog::on_mZoomMapToSelectedRowsButton_clicked()
 {
   QgisApp::instance()->mapCanvas()->zoomToSelected( mLayer );
+}
+
+void QgsAttributeTableDialog::on_mPanMapToSelectedRowsButton_clicked()
+{
+  QgisApp::instance()->mapCanvas()->panToSelected( mLayer );
 }
 
 void QgsAttributeTableDialog::on_mInvertSelectionButton_clicked()
