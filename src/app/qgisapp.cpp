@@ -2034,7 +2034,7 @@ void QgisApp::restoreWindowState()
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
 {
-  QgsSponsors * sponsors = new QgsSponsors();
+  QgsSponsors * sponsors = new QgsSponsors( this );
   sponsors->show();
   sponsors->raise();
   sponsors->activateWindow();
@@ -2046,7 +2046,7 @@ void QgisApp::about()
   if ( !abt )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    abt = new QgsAbout();
+    abt = new QgsAbout( this );
     QString versionString = "<html><body><div align='center'><table width='100%'>";
 
     versionString += "<tr>";
@@ -6986,7 +6986,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
     else
     {
-      rlp = new QgsRasterLayerProperties( ml, mMapCanvas );
+      rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
 
@@ -7004,7 +7004,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
     else
     {
-      vlp = new QgsVectorLayerProperties( vlayer );
+      vlp = new QgsVectorLayerProperties( vlayer, this );
       connect( vlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
 

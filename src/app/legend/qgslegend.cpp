@@ -601,7 +601,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     return;
   }
 
-  QMenu theMenu;
+  QMenu theMenu( tr( "Legend context" ), this );
 
   QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( item );
   if ( li )
