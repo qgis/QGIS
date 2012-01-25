@@ -908,3 +908,103 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
     }
   }
 }
+
+bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
+                                      const QString& outputFormat, int locationField1, int locationField2, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
+{
+  if ( !lineLayer || !eventLayer || !lineLayer->isValid() || !eventLayer->isValid() )
+  {
+    return false;
+  }
+
+  //create line field / id map for line layer
+  QHash< QString, QgsFeatureId > lineLayerIdMap;
+  lineLayer->select( QgsAttributeList() << lineField,
+                     QgsRectangle(), false, false );
+  QgsFeature fet;
+  while ( lineLayer->nextFeature( fet ) )
+  {
+    lineLayerIdMap.insert( fet.attributeMap()[lineField].toString(), fet.id() );
+  }
+
+  //create output datasource or attributes in memory provider
+  QgsVectorFileWriter* fileWriter = 0;
+  if ( !memoryProvider )
+  {
+    fileWriter = new QgsVectorFileWriter( outputLayer,
+                                          eventLayer->dataProvider()->encoding(),
+                                          eventLayer->pendingFields(),
+                                          locationField2 == -1 ? QGis::WKBMultiPoint25D : QGis::WKBMultiLineString25D,
+                                          &( lineLayer->crs() ),
+                                          outputFormat );
+  }
+  else
+  {
+    memoryProvider->addAttributes( eventLayer->pendingFields().values() );
+  }
+
+  //iterate over eventLayer and write new features to output file or layer
+  eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), true, false );
+  QgsGeometry* lrsGeom = 0;
+  QgsFeature lineFeature;
+  QgsGeometry* lineGeom = 0;
+  double measure1, measure2;
+
+  while ( eventLayer->nextFeature( fet ) )
+  {
+    //get corresponding line feature
+    QHash< QString, QgsFeatureId >::const_iterator layerIdIt = lineLayerIdMap.find( fet.attributeMap()[eventField].toString() );
+    if ( layerIdIt == lineLayerIdMap.constEnd() )
+    {
+      continue;
+    }
+    if ( !lineLayer->featureAtId( *layerIdIt, lineFeature, true, false ) )
+    {
+      continue;
+    }
+
+    measure1 = fet.attributeMap()[locationField1].toDouble();
+    if ( locationField2 == -1 )
+    {
+      lrsGeom = locateAlongMeasure( measure1, lineFeature.geometry() );
+    }
+    else
+    {
+      measure2 = fet.attributeMap()[locationField2].toDouble();
+      lrsGeom = locateBetweenMeasures( measure1, measure2, lineFeature.geometry() );
+    }
+
+    if ( lrsGeom )
+    {
+      fet.setGeometry( lrsGeom );
+      if ( memoryProvider )
+      {
+        memoryProvider->addFeatures( QgsFeatureList() << fet );
+      }
+      else
+      {
+        fileWriter->addFeature( fet );
+      }
+    }
+  }
+
+  return true;
+}
+
+QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, const QgsGeometry* lineGeom )
+{
+  //only for testing
+  QgsGeometry* geom = new QgsGeometry();
+  *geom = *lineGeom;
+  geom->convertToMultiType();
+  return geom;
+}
+
+QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry* lineGeom )
+{
+  //only for testing
+  QgsGeometry* geom = new QgsGeometry();
+  *geom = *lineGeom;
+  geom->convertToMultiType();
+  return geom;
+}
