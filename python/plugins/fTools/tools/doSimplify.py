@@ -40,7 +40,7 @@ from ui_frmSimplify import Ui_Dialog
 
 class Dialog( QDialog, Ui_Dialog ):
   def __init__( self, iface, function ):
-    QDialog.__init__( self )
+    QDialog.__init__( self, iface.mainWindow() )
     self.setupUi( self )
     self.iface = iface
     self.myFunction = function

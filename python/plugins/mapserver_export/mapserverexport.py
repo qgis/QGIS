@@ -73,7 +73,7 @@ class MapServerExport:
   # run method that performs all the real work
   def run(self): 
     # create and show the MapServerExport dialog 
-    self.dlg = MapServerExportDialog()
+    self.dlg = MapServerExportDialog(self.iface.mainWindow())
     # attach events to inputs and buttons
     QObject.connect(self.dlg.ui.btnChooseFile, SIGNAL("clicked()"), self.setMapFile)
     QObject.connect(self.dlg.ui.txtMapFilePath, SIGNAL("textChanged(QString)"), self.mapfileChanged)

@@ -29,7 +29,7 @@ extern "C"
 }
 
 
-QgsGrassSelect::QgsGrassSelect( int type ): QgsGrassSelectBase()
+QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type ): QDialog( parent ), QgsGrassSelectBase()
 {
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
