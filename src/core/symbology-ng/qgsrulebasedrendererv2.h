@@ -17,6 +17,7 @@
 #define QGSRULEBASEDRENDERERV2_H
 
 #include "qgsfield.h"
+#include "qgsfeature.h"
 
 #include "qgsrendererv2.h"
 
@@ -36,12 +37,22 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     // TODO: use QVarLengthArray instead of QList
 
+    enum FeatureFlags { FeatIsSelected = 1, FeatDrawMarkers = 2 };
+
+    // feature for rendering: QgsFeature and some flags
+    struct FeatureToRender
+    {
+      FeatureToRender( QgsFeature& _f, int _flags ) : feat( _f ), flags( _flags ) {}
+      QgsFeature feat;
+      int flags; // selected and/or draw markers
+    };
+
     // rendering job: a feature to be rendered with a particular symbol
     // (both f, symbol are _not_ owned by this class)
     struct RenderJob
     {
-      RenderJob( QgsFeature* _f, QgsSymbolV2* _s ) : f( _f ), symbol( _s ) {}
-      QgsFeature* f;
+      RenderJob( FeatureToRender& _ftr, QgsSymbolV2* _s ) : ftr( _ftr ), symbol( _s ) {}
+      FeatureToRender& ftr;
       QgsSymbolV2* symbol;
     };
 
@@ -114,7 +125,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
         void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
-        void renderFeature( QgsFeature* featPtr, QgsRenderContext& context, RenderQueue& renderQueue );
+        void renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
 
         void stopRender( QgsRenderContext& context );
 
@@ -212,7 +223,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
 
     // temporary
     RenderQueue mRenderQueue;
-    QList<QgsFeature*> mCurrentFeatures;
+    QList<FeatureToRender> mCurrentFeatures;
 };
 
 #endif // QGSRULEBASEDRENDERERV2_H
