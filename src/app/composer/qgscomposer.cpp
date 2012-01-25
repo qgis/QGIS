@@ -69,16 +69,12 @@
 #include <QPaintEngine>
 
 
-QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow(), mTitle( title ), mUndoView( 0 )
+QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow( qgis ), mTitle( title ), mUndoView( 0 )
 {
   setupUi( this );
   setWindowTitle( mTitle );
   setupTheme();
   QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-
-  QSettings settings;
-  int size = settings.value( "/IconSize", 24 ).toInt();
-  setIconSize( QSize( size, size ) );
 
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
