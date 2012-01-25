@@ -79,11 +79,15 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   // support for context menu (now handled generically)
   connect( viewRules, SIGNAL( customContextMenuRequested( const QPoint& ) ),  this, SLOT( contextMenuViewCategories( const QPoint& ) ) );
 
+  connect( viewRules->selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( currentRuleChanged( QModelIndex, QModelIndex ) ) );
+
   connect( btnAddRule, SIGNAL( clicked() ), this, SLOT( addRule() ) );
   connect( btnEditRule, SIGNAL( clicked() ), this, SLOT( editRule() ) );
   connect( btnRemoveRule, SIGNAL( clicked() ), this, SLOT( removeRule() ) );
 
   connect( btnRenderingOrder, SIGNAL( clicked() ), this, SLOT( setRenderingOrder() ) );
+
+  currentRuleChanged();
 }
 
 QgsRuleBasedRendererV2Widget::~QgsRuleBasedRendererV2Widget()
@@ -155,13 +159,21 @@ void QgsRuleBasedRendererV2Widget::editRule( const QModelIndex& index )
 void QgsRuleBasedRendererV2Widget::removeRule()
 {
   QItemSelection sel = viewRules->selectionModel()->selection();
-  QgsDebugMsg( QString("REMOVE RULES!!! ranges: %1").arg( sel.count()) );
+  QgsDebugMsg( QString( "REMOVE RULES!!! ranges: %1" ).arg( sel.count() ) );
   foreach( QItemSelectionRange range, sel )
   {
-    QgsDebugMsg( QString( "RANGE: r %1 - %2").arg(range.top()).arg(range.bottom()) );
+    QgsDebugMsg( QString( "RANGE: r %1 - %2" ).arg( range.top() ).arg( range.bottom() ) );
     if ( range.isValid() )
       mModel->removeRows( range.top(), range.bottom() - range.top() + 1, range.parent() );
   }
+  // make sure that the selection is gone
+  viewRules->selectionModel()->clear();
+}
+
+void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& current, const QModelIndex& previous )
+{
+  Q_UNUSED( previous );
+  btnRefineRule->setEnabled( current.isValid() );
 }
 
 
@@ -189,8 +201,8 @@ void QgsRuleBasedRendererV2Widget::refineRule( int type )
 
   // TODO: set initial rule's symbol to NULL (?)
 
-  // update model
-  //mModel->updateRule( index.parent(), index.row() );
+  // show the newly added rules
+  viewRules->expand( index );
 }
 
 void QgsRuleBasedRendererV2Widget::refineRuleCategories()
@@ -477,7 +489,7 @@ Qt::ItemFlags QgsRuleBasedRendererV2Model::flags( const QModelIndex &index ) con
     return Qt::ItemIsDropEnabled;
 
   // allow drop only at first column
-  Qt::ItemFlag drop = (index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags);
+  Qt::ItemFlag drop = ( index.column() == 0 ? Qt::ItemIsDropEnabled : Qt::NoItemFlags );
 
   return Qt::ItemIsEnabled | Qt::ItemIsSelectable |
          Qt::ItemIsEditable |
