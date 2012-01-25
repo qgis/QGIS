@@ -76,7 +76,7 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   QList<QStandardItem*> childItemList;
 
   QStandardItem *schemaNameItem = new QStandardItem( layerProperty.schemaName );
-  schemaNameItem->setFlags( Qt::ItemIsEnabled );
+  schemaNameItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
 
   QStandardItem *typeItem = new QStandardItem( iconForGeomType( geomType ),
       geomType == QGis::UnknownGeometry
@@ -121,13 +121,18 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   childItemList << selItem;
   childItemList << sqlItem;
 
-  if ( geomType == QGis::UnknownGeometry ||
-       ( geomType != QGis::NoGeometry && layerProperty.srid.isEmpty() ) ||
-       pkText == tr( "Select..." ) )
+  bool detailsFromThread = geomType == QGis::UnknownGeometry ||
+                           ( geomType != QGis::NoGeometry && layerProperty.srid.isEmpty() );
+
+  if ( detailsFromThread || pkText == tr( "Select..." ) )
   {
+    Qt::ItemFlags flags = Qt::ItemIsSelectable;
+    if ( detailsFromThread )
+      flags |= Qt::ItemIsEnabled;
+
     foreach( QStandardItem *item, childItemList )
     {
-      item->setFlags( item->flags() & ~( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
+      item->setFlags( item->flags() & ~flags );
     }
   }
 
@@ -348,19 +353,25 @@ QString QgsPgTableModel::layerURI( const QModelIndex &index, QString connInfo, b
 
   QString schemaName = index.sibling( index.row(), dbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), dbtmTable ).data( Qt::DisplayRole ).toString();
-  QString geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
 
-  QString srid = index.sibling( index.row(), dbtmSrid ).data( Qt::DisplayRole ).toString();
-  bool ok;
-  srid.toInt( &ok );
-  if ( !ok )
-    return QString::null;
+  QString geomColumnName;
+  QString srid;
+  if ( geomType != QGis::NoGeometry )
+  {
+    geomColumnName = index.sibling( index.row(), dbtmGeomCol ).data( Qt::DisplayRole ).toString();
+
+    srid = index.sibling( index.row(), dbtmSrid ).data( Qt::DisplayRole ).toString();
+    bool ok;
+    srid.toInt( &ok );
+    if ( !ok )
+      return QString::null;
+  }
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), dbtmSelectAtId ) )->checkState() == Qt::Checked;
   QString sql = index.sibling( index.row(), dbtmSql ).data( Qt::DisplayRole ).toString();
 
   QgsDataSourceURI uri( connInfo );
-  uri.setDataSource( schemaName, tableName, geomType != QGis::NoGeometry ? geomColumnName : QString::null, sql, pkColumnName );
+  uri.setDataSource( schemaName, tableName, geomColumnName, sql, pkColumnName );
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
   uri.setGeometryType( geomType );
   uri.setSrid( srid );
