@@ -260,9 +260,9 @@ void QgsRuleBasedRendererV2::Rule::setNormZLevels( const QMap<int, int>& zLevels
 }
 
 
-void QgsRuleBasedRendererV2::Rule::renderFeature( QgsFeature* featPtr, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue )
+void QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue )
 {
-  if ( isFilterOK( *featPtr ) )
+  if ( isFilterOK( featToRender.feat ) )
   {
     // create job for this feature and this symbol, add to list of jobs
     if ( mSymbol )
@@ -271,7 +271,7 @@ void QgsRuleBasedRendererV2::Rule::renderFeature( QgsFeature* featPtr, QgsRender
       foreach( int normZLevel, mSymbolNormZLevels )
       {
         //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
-        renderQueue[normZLevel].jobs.append( new RenderJob( featPtr, mSymbol ) );
+        renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
       }
     }
 
@@ -279,7 +279,7 @@ void QgsRuleBasedRendererV2::Rule::renderFeature( QgsFeature* featPtr, QgsRender
     for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
     {
       Rule* rule = *it;
-      rule->renderFeature( featPtr, context, renderQueue );
+      rule->renderFeature( featToRender, context, renderQueue );
     }
   }
 }
@@ -371,20 +371,12 @@ void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
     bool drawVertexMarker )
 {
   Q_UNUSED( layer );
-  Q_UNUSED( selected );
-  Q_UNUSED( drawVertexMarker );
 
-  // TODO: selected features, vertex markers
-
-  QgsFeature* featPtr = NULL;
-  if ( !featPtr )
-  {
-    featPtr = new QgsFeature( feature );
-    mCurrentFeatures.append( featPtr );
-  }
+  int flags = ( selected ? FeatIsSelected : 0 ) | ( drawVertexMarker ? FeatDrawMarkers : 0 );
+  mCurrentFeatures.append( FeatureToRender( feature, flags ) );
 
   // check each active rule
-  mRootRule->renderFeature( featPtr, context, mRenderQueue );
+  mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue );
 }
 
 
@@ -415,10 +407,6 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
   // do the actual rendering
   //
 
-  // TODO: selected, markers
-  bool selected = false;
-  bool drawVertexMarker = false;
-
   // go through all levels
   foreach( const RenderLevel& level, mRenderQueue )
   {
@@ -437,17 +425,14 @@ void QgsRuleBasedRendererV2::stopRender( QgsRenderContext& context )
         // but there are multiple transforms going on!
         if ( s->symbolLayer( i )->renderingPass() == level.zIndex )
         {
-          renderFeatureWithSymbol( *job->f, job->symbol, context, i, selected, drawVertexMarker );
+          int flags = job->ftr.flags;
+          renderFeatureWithSymbol( job->ftr.feat, job->symbol, context, i, flags & FeatIsSelected, flags & FeatDrawMarkers );
         }
       }
     }
   }
 
   // clean current features
-  foreach( QgsFeature* f, mCurrentFeatures )
-  {
-    delete f;
-  }
   mCurrentFeatures.clear();
 
   // clean render queue

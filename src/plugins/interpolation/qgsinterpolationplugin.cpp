@@ -61,7 +61,7 @@ void QgsInterpolationPlugin::unload()
 
 void QgsInterpolationPlugin::showInterpolationDialog()
 {
-  QgsInterpolationDialog dialog( 0, mIface );
+  QgsInterpolationDialog dialog( mIface->mainWindow(), mIface );
   dialog.exec();
 }
 

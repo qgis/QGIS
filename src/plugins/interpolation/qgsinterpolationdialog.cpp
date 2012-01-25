@@ -358,11 +358,11 @@ void QgsInterpolationDialog::on_mInterpolationMethodComboBox_currentIndexChanged
   delete mInterpolatorDialog;
   if ( text == tr( "Inverse Distance Weighting (IDW)" ) )
   {
-    mInterpolatorDialog = new QgsIDWInterpolatorDialog( 0, mIface );
+    mInterpolatorDialog = new QgsIDWInterpolatorDialog( this, mIface );
   }
   else if ( text == tr( "Triangular interpolation (TIN)" ) )
   {
-    mInterpolatorDialog = new QgsTINInterpolatorDialog( 0, mIface );
+    mInterpolatorDialog = new QgsTINInterpolatorDialog( this, mIface );
   }
 }
 

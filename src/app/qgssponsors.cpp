@@ -21,11 +21,11 @@
 #include <QTextStream>
 
 #ifdef Q_OS_MACX
-QgsSponsors::QgsSponsors()
-    : QDialog( NULL, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
+QgsSponsors::QgsSponsors( QWidget *parent )
+    : QDialog( parent, Qt::WindowSystemMenuHint )  // Modeless dialog with close button only
 #else
-QgsSponsors::QgsSponsors()
-    : QDialog( NULL )  // Normal dialog in non Mac-OS
+QgsSponsors::QgsSponsors( QWidget *parent )
+    : QDialog( parent )  // Normal dialog in non Mac-OS
 #endif
 {
   setupUi( this );

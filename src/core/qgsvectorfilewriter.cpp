@@ -187,17 +187,19 @@ QgsVectorFileWriter::QgsVectorFileWriter(
   QgsDebugMsg( "Created data source" );
 
   // use appropriate codec
-  mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().data() );
+  mCodec = QTextCodec::codecForName( fileEncoding.toLocal8Bit().constData() );
   if ( !mCodec )
   {
-    QSettings settings;
-    QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
     QgsDebugMsg( "error finding QTextCodec for " + fileEncoding );
-    mCodec = QTextCodec::codecForName( enc.toLocal8Bit().data() );
+
+    QSettings settings;
+    QString enc = settings.value( "/UI/encoding", "System" ).toString();
+    mCodec = QTextCodec::codecForName( enc.toLocal8Bit().constData() );
     if ( !mCodec )
     {
       QgsDebugMsg( "error finding QTextCodec for " + enc );
       mCodec = QTextCodec::codecForLocale();
+      Q_ASSERT( mCodec );
     }
   }
 

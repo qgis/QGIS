@@ -1052,9 +1052,9 @@ void QgisApp::createMenus()
    */
 
   // Panel and Toolbar Submenus
-  mPanelMenu = new QMenu( tr( "Panels" ) );
+  mPanelMenu = new QMenu( tr( "Panels" ), this );
   mPanelMenu->setObjectName( "mPanelMenu" );
-  mToolbarMenu = new QMenu( tr( "Toolbars" ) );
+  mToolbarMenu = new QMenu( tr( "Toolbars" ), this );
   mToolbarMenu->setObjectName( "mToolbarMenu" );
 
   // Get platform for menu layout customization (Gnome, Kde, Mac, Win)
@@ -1109,13 +1109,13 @@ void QgisApp::createMenus()
 
   // Database Menu
   // don't add it yet, wait for a plugin
-  mDatabaseMenu = new QMenu( tr( "&Database" ) );
+  mDatabaseMenu = new QMenu( tr( "&Database" ), this );
   // Vector Menu
   // don't add it yet, wait for a plugin
-  mVectorMenu = new QMenu( tr( "Vect&or" ) );
+  mVectorMenu = new QMenu( tr( "Vect&or" ), this );
   // Web Menu
   // don't add it yet, wait for a plugin
-  mWebMenu = new QMenu( tr( "&Web" ) );
+  mWebMenu = new QMenu( tr( "&Web" ), this );
 
   // Help menu
   // add What's this button to it
@@ -2034,7 +2034,7 @@ void QgisApp::restoreWindowState()
 ///////////// END OF GUI SETUP ROUTINES ///////////////
 void QgisApp::sponsors()
 {
-  QgsSponsors * sponsors = new QgsSponsors();
+  QgsSponsors * sponsors = new QgsSponsors( this );
   sponsors->show();
   sponsors->raise();
   sponsors->activateWindow();
@@ -2046,7 +2046,7 @@ void QgisApp::about()
   if ( !abt )
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
-    abt = new QgsAbout();
+    abt = new QgsAbout( this );
     QString versionString = "<html><body><div align='center'><table width='100%'>";
 
     versionString += "<tr>";
@@ -2665,7 +2665,7 @@ void QgisApp::newSpatialiteLayer()
 
 void QgisApp::showRasterCalculator()
 {
-  QgsRasterCalcDialog d;
+  QgsRasterCalcDialog d( this );
   if ( d.exec() == QDialog::Accepted )
   {
     //invoke analysis library
@@ -4329,7 +4329,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
 
   if ( !vlayer->isEditable() && !vlayer->isReadOnly() )
   {
-    if ( !(vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
+    if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::EditingCapabilities ) )
     {
       QMessageBox::information( 0, tr( "Start editing failed" ), tr( "Provider cannot be opened for editing" ) );
       return false;
@@ -4342,7 +4342,7 @@ bool QgisApp::toggleEditing( QgsMapLayer *layer, bool allowCancel )
     bool markSelectedOnly = settings.value( "/qgis/digitizing/marker_only_for_selected", false ).toBool();
 
     // redraw only if markers will be drawn
-    if( ( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
+    if (( !markSelectedOnly || vlayer->selectedFeatureCount() > 0 ) &&
         ( markerType == "Cross" || markerType == "SemiTransparentCircle" ) )
     {
       vlayer->triggerRepaint();
@@ -4857,7 +4857,7 @@ void QgisApp::configureShortcuts()
 
 void QgisApp::customize()
 {
-  QgsCustomization::instance()->openDialog();
+  QgsCustomization::instance()->openDialog( this );
 }
 
 
@@ -6986,7 +6986,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
     else
     {
-      rlp = new QgsRasterLayerProperties( ml, mMapCanvas );
+      rlp = new QgsRasterLayerProperties( ml, mMapCanvas, this );
       connect( rlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
 
@@ -7004,7 +7004,7 @@ void QgisApp::showLayerProperties( QgsMapLayer *ml )
     }
     else
     {
-      vlp = new QgsVectorLayerProperties( vlayer );
+      vlp = new QgsVectorLayerProperties( vlayer, this );
       connect( vlp, SIGNAL( refreshLegend( QString, bool ) ), mMapLegend, SLOT( refreshLayerSymbology( QString, bool ) ) );
     }
 

@@ -49,7 +49,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
-  QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
+  QString enc = settings.value( "/UI/encoding", "System" ).toString();
   int idx = mEncodingComboBox->findText( enc );
   if ( idx < 0 )
   {
