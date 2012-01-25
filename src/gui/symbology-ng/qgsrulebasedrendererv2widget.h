@@ -23,38 +23,57 @@ class QMenu;
 
 ///////
 
-#include <QTreeWidget>
+#include <QAbstractItemModel>
 
-class GUI_EXPORT QgsRendererRulesTreeWidget : public QTreeWidget
+/*
+Tree model for the rules:
+
+(invalid)  == root node
+ +--- top level rule
+ +--- top level rule
+*/
+class QgsRuleBasedRendererV2Model : public QAbstractItemModel
 {
-    Q_OBJECT
-
   public:
-    QgsRendererRulesTreeWidget( QWidget* parent = 0 );
+    QgsRuleBasedRendererV2Model( QgsRuleBasedRendererV2* r );
 
-    void setRenderer( QgsRuleBasedRendererV2* r );
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+    virtual QVariant headerData( int section, Qt::Orientation orientation,
+                                 int role = Qt::DisplayRole ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual int columnCount( const QModelIndex & = QModelIndex() ) const;
+    //! provide model index for parent's child item
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+    //! provide parent model index
+    virtual QModelIndex parent( const QModelIndex &index ) const;
 
-    enum Grouping { NoGrouping, GroupingByScale, GroupingByFilter };
+    // editing support
+    virtual bool setData( const QModelIndex & index, const QVariant & value, int role = Qt::EditRole );
 
-    void setGrouping( Grouping g );
+    // drag'n'drop support
+    Qt::DropActions supportedDropActions() const;
+    QStringList mimeTypes() const;
+    QMimeData *mimeData( const QModelIndexList &indexes ) const;
+    bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
-    void populateRules();
+    bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+
+    // new methods
+
+    QgsRuleBasedRendererV2::Rule* ruleForIndex( const QModelIndex& index ) const;
+
+    void insertRule( const QModelIndex& parent, int before, QgsRuleBasedRendererV2::Rule* newrule );
+    void updateRule( const QModelIndex& parent, int row );
+    void removeRule( const QModelIndex& index );
+
+    void willAddRules( const QModelIndex& parent, int count ); // call beginInsertRows
+    void finishedAddingRules(); // call endInsertRows
 
   protected:
-    void populateRulesNoGrouping();
-    void populateRulesGroupByScale();
-    void populateRulesGroupByFilter();
-
-    QString formatScaleRange( int minDenom, int maxDenom );
-
-    QString formatScale( int denom, int size = 0 );
-
     QgsRuleBasedRendererV2* mR;
-    Grouping mGrouping;
-
-    int mLongestMinDenom;
-    int mLongestMaxDenom;
 };
+
 
 ///////
 
@@ -77,36 +96,31 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
 
     void addRule();
     void editRule();
+    void editRule( const QModelIndex& index );
     void removeRule();
-    void increasePriority();
-    void decreasePriority();
-
-    void setGrouping();
 
     void refineRuleScales();
     void refineRuleCategories();
     void refineRuleRanges();
 
-    void usingFirstRuleChanged( );
-    void symbolLevelsEnabledChanged();
-    void forceNoSymbolLevels();
-    void forceUsingFirstRule();
+    void setRenderingOrder();
 
-  signals:
-
-    void forceChkUsingFirstRule();
+    void currentRuleChanged( const QModelIndex& current = QModelIndex(), const QModelIndex& previous = QModelIndex() );
 
   protected:
 
     void refineRule( int type );
-    QList<QgsRuleBasedRendererV2::Rule> refineRuleCategoriesGui( QgsRuleBasedRendererV2::Rule& initialRule );
-    QList<QgsRuleBasedRendererV2::Rule> refineRuleRangesGui( QgsRuleBasedRendererV2::Rule& initialRule );
-    QList<QgsRuleBasedRendererV2::Rule> refineRuleScalesGui( QgsRuleBasedRendererV2::Rule& initialRule );
+    void refineRuleCategoriesGui( const QModelIndex& index );
+    void refineRuleRangesGui( const QModelIndex& index );
+    void refineRuleScalesGui( const QModelIndex& index );
+
+    QgsRuleBasedRendererV2::Rule* currentRule();
 
     QList<QgsSymbolV2*> selectedSymbols();
     void refreshSymbolView();
 
     QgsRuleBasedRendererV2* mRenderer;
+    QgsRuleBasedRendererV2Model* mModel;
 
     QMenu* mRefineMenu;
 };
@@ -122,19 +136,23 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog, private Ui::QgsRen
     Q_OBJECT
 
   public:
-    QgsRendererRulePropsDialog( const QgsRuleBasedRendererV2::Rule& rule, QgsVectorLayer* layer, QgsStyleV2* style );
+    QgsRendererRulePropsDialog( QgsRuleBasedRendererV2::Rule* rule, QgsVectorLayer* layer, QgsStyleV2* style );
+    ~QgsRendererRulePropsDialog();
 
-    void updateRuleFromGui();
-    const QgsRuleBasedRendererV2::Rule& rule() { return mRule; }
+    QgsRuleBasedRendererV2::Rule* rule() { return mRule; }
 
   public slots:
     void testFilter();
     void buildExpression();
+    void accept();
 
   protected:
-    QgsRuleBasedRendererV2::Rule mRule;
+    QgsRuleBasedRendererV2::Rule* mRule; // borrowed
     QgsVectorLayer* mLayer;
     QgsStyleV2* mStyle;
+
+    QgsSymbolV2SelectorDialog* mSymbolSelector;
+    QgsSymbolV2* mSymbol; // a clone of original symbol
 };
 
 

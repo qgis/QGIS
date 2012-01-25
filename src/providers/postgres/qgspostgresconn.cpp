@@ -57,14 +57,12 @@ QgsPostgresResult &QgsPostgresResult::operator=( const QgsPostgresResult & src )
 
 ExecStatusType QgsPostgresResult::PQresultStatus()
 {
-  Q_ASSERT( mRes );
-  return ::PQresultStatus( mRes );
+  return mRes ? ::PQresultStatus( mRes ) : PGRES_FATAL_ERROR;
 }
 
 QString QgsPostgresResult::PQresultErrorMessage()
 {
-  Q_ASSERT( mRes );
-  return QString::fromUtf8( ::PQresultErrorMessage( mRes ) );
+  return mRes ? QString::fromUtf8( ::PQresultErrorMessage( mRes ) ) : QObject::tr( "no result buffer" );
 }
 
 int QgsPostgresResult::PQntuples()

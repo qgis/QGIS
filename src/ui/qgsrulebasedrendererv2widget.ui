@@ -10,71 +10,34 @@
     <height>401</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Form</string>
-  </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QgsRendererRulesTreeWidget" name="treeRules">
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QTreeView" name="viewRules">
      <property name="contextMenuPolicy">
       <enum>Qt::CustomContextMenu</enum>
      </property>
-     <property name="styleSheet">
-      <string notr="true"/>
+     <property name="acceptDrops">
+      <bool>true</bool>
+     </property>
+     <property name="editTriggers">
+      <set>QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+     <property name="dragDropMode">
+      <enum>QAbstractItemView::InternalMove</enum>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
-     <property name="rootIsDecorated">
-      <bool>false</bool>
-     </property>
-     <property name="sortingEnabled">
+     <property name="allColumnsShowFocus">
       <bool>true</bool>
      </property>
-     <property name="headerHidden">
-      <bool>false</bool>
-     </property>
-     <column>
-      <property name="text">
-       <string>Label</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Rule</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Min. scale</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Max. scale</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>Priority</string>
-      </property>
-      <property name="toolTip">
-       <string>Priority when symbol levels are enabled (only first matching rule will be applied)</string>
-      </property>
-      <property name="textAlignment">
-       <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-      </property>
-     </column>
     </widget>
    </item>
-   <item row="0" column="1">
-    <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QPushButton" name="btnAddRule">
        <property name="text">
@@ -104,128 +67,29 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="btnIncreasePriority">
-       <property name="text">
-        <string>Increase priority</string>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
-      </widget>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnDecreasePriority">
+      <widget class="QPushButton" name="btnRenderingOrder">
        <property name="text">
-        <string>Decrease priority</string>
+        <string>Rendering order...</string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="3" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="minimumSize">
-      <size>
-       <width>0</width>
-       <height>35</height>
-      </size>
-     </property>
-     <property name="baseSize">
-      <size>
-       <width>0</width>
-       <height>0</height>
-      </size>
-     </property>
-     <property name="title">
-      <string/>
-     </property>
-     <widget class="QCheckBox" name="chkEnableSymbolLevels">
-      <property name="geometry">
-       <rect>
-        <x>113</x>
-        <y>10</y>
-        <width>231</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Enable symbol levels</string>
-      </property>
-     </widget>
-     <widget class="QCheckBox" name="chkUsingFirstRule">
-      <property name="geometry">
-       <rect>
-        <x>360</x>
-        <y>10</y>
-        <width>271</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Use only first matched rule</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_2">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>84</width>
-        <height>24</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>Behavior</string>
-      </property>
-     </widget>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QGroupBox" name="groupBox">
-     <property name="title">
-      <string notr="true"/>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Rule grouping</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radNoGrouping">
-        <property name="text">
-         <string comment="No grouping for displaying rules">None</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radGroupFilter">
-        <property name="text">
-         <string comment="Group rules by filter">By filter</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="radGroupScale">
-        <property name="text">
-         <string comment="Group rules by scale">By scale</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>QgsRendererRulesTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>qgsrulebasedrendererv2widget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

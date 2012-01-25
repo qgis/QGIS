@@ -151,7 +151,8 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     QPushButton *mBuildQueryButton;
     QPushButton *mAddButton;
-    void updateSelectableState( const QModelIndex &index );
+
+    void finishList();
 };
 
 #endif // QGSPGSOURCESELECT_H

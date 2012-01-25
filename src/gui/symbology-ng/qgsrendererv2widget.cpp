@@ -5,6 +5,8 @@
 #include <QInputDialog>
 #include <QMenu>
 
+#include "qgssymbollevelsv2dialog.h"
+
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
     : QWidget(), mLayer( layer ), mStyle( style )
@@ -137,6 +139,17 @@ void QgsRendererV2Widget::changeSymbolSize()
   }
 }
 
+void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
+{
+  QgsLegendSymbolList symbols = r->legendSymbolItems();
+
+  QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
+
+  if ( dlg.exec() )
+  {
+    r->setUsingSymbolLevels( dlg.usingLevels() );
+  }
+}
 
 
 ////////////
