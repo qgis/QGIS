@@ -78,10 +78,10 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.hdop;     //< Horizontal dilution of precision
       mLastGPSInformation.vdop;     //< Vertical dilution of precision
 
-      mLastGPSInformation.fixMode = 'A';  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
-      mLastGPSInformation.quality = 1;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
-      mLastGPSInformation.status = 'A';   //< Status (A = active or V = void)
-      mLastGPSInformation.satInfoComplete = true;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
+      mLastGPSInformation.fixMode;  //< Mode (M = Manual, forced to operate in 2D or 3D; A = Automatic, 3D/2D)
+      mLastGPSInformation.quality;  //< GPS quality indicator (0 = Invalid; 1 = Fix; 2 = Differential, 3 = Sensitive)
+      mLastGPSInformation.status;   //< Status (A = active or V = void)
+      mLastGPSInformation.satInfoComplete;  // based on GPGSV sentences - to be used to determine when to graph signal and satellite position
 
       emit stateChanged( mLastGPSInformation );
       QgsDebugMsg("Valid QGeoPositionInfo, positionUpdated");
