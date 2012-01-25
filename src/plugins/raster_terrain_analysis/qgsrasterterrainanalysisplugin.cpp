@@ -86,7 +86,7 @@ void QgsRasterTerrainAnalysisPlugin::initGui()
       return;
     }
 
-    mTerrainAnalysisMenu = new QMenu( tr( "Terrain analysis" ) );
+    mTerrainAnalysisMenu = new QMenu( tr( "Terrain analysis" ), rasterMenu );
     mTerrainAnalysisMenu->addAction( tr( "Slope" ), this, SLOT( slope() ) );
     mTerrainAnalysisMenu->addAction( tr( "Aspect" ), this, SLOT( aspect() ) );
     mTerrainAnalysisMenu->addAction( tr( "Hillshade" ), this, SLOT( hillshade() ) );
@@ -106,7 +106,7 @@ void QgsRasterTerrainAnalysisPlugin::unload()
 
 void QgsRasterTerrainAnalysisPlugin::hillshade()
 {
-  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::HillshadeInput );
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::HillshadeInput, mIface->mainWindow() );
   d.setWindowTitle( tr( "Hillshade" ) );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -125,7 +125,7 @@ void QgsRasterTerrainAnalysisPlugin::hillshade()
 
 void QgsRasterTerrainAnalysisPlugin::relief()
 {
-  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::ReliefInput );
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::ReliefInput, mIface->mainWindow() );
   d.setWindowTitle( tr( "Relief" ) );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -145,7 +145,7 @@ void QgsRasterTerrainAnalysisPlugin::relief()
 
 void QgsRasterTerrainAnalysisPlugin::slope()
 {
-  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter );
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter, mIface->mainWindow() );
   d.setWindowTitle( tr( "Slope" ) );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -164,7 +164,7 @@ void QgsRasterTerrainAnalysisPlugin::slope()
 
 void QgsRasterTerrainAnalysisPlugin::aspect()
 {
-  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter );
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter, mIface->mainWindow() );
   d.setWindowTitle( tr( "Aspect" ) );
   if ( d.exec() == QDialog::Accepted )
   {
@@ -183,7 +183,7 @@ void QgsRasterTerrainAnalysisPlugin::aspect()
 
 void QgsRasterTerrainAnalysisPlugin::ruggedness()
 {
-  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter );
+  QgsRasterTerrainAnalysisDialog d( QgsRasterTerrainAnalysisDialog::NoParameter, mIface->mainWindow() );
   d.setWindowTitle( tr( "Ruggedness" ) );
   if ( d.exec() == QDialog::Accepted )
   {
