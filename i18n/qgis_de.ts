@@ -2028,7 +2028,7 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation type="obsolete">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder 
+        <translation type="unfinished">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder 
 Semilokons (Windows) getrennten Pfaden zu sowohl den Programme 
 als auch den Pythonskripten.
 
@@ -2038,13 +2038,13 @@ MacOS-Benutzer brauchen normalerweise etwas wie
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation type="obsolete">Liste von durch Doppelpunkte (Linux und MacOS) oder 
+        <translation type="unfinished">Liste von durch Doppelpunkte (Linux und MacOS) oder 
 Semikolons (Windows) getrennte Pfade zu den Pythonmodulen.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation type="obsolete">Nützlich um die GDAL-Dokumentation statt der Onlinehilfe 
+        <translation type="unfinished">Nützlich um die GDAL-Dokumentation statt der Onlinehilfe 
 zu öffnen, wenn der Hilfeknopf des Werkzeugs angeklickt wird.</translation>
     </message>
     <message>
