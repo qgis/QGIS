@@ -6497,12 +6497,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <location filename="../src/app/qgisapp.cpp" line="6242"/>
         <source>Invalid Data Source</source>
-        <translation type="unfinished">Sumber Data Invalid</translation>
+        <translation>Sumber Data Invalid</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3341"/>
         <source>Please select a vector layer first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan pilih satu leyer vector.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3479"/>
