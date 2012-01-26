@@ -66,7 +66,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
   return r;
 }
 
-void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( drawVertexMarker );
   //point position in screen coords
@@ -75,7 +75,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( geomType != QGis::WKBPoint && geomType != QGis::WKBPoint25D )
   {
     //can only render point type
-    return;
+    return false;
   }
   QPointF pt;
   _getPoint( pt, context, geom->asWkb() );
@@ -125,7 +125,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
 
   if ( symbolList.isEmpty() && labelAttributeList.isEmpty() )
   {
-    return; //display all point symbols for one posi
+    return true; //display all point symbols for one posi
   }
 
 
@@ -176,6 +176,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   drawSymbols( feature, context, symbolList, symbolPositions, selected );
   //and also the labels
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
+  return true;
 }
 
 void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r )

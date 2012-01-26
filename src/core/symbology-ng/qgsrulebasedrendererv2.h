@@ -125,7 +125,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
         //! assign normalized z-levels [0..N-1] for this rule's symbol for quick access during rendering
         void setNormZLevels( const QMap<int, int>& zLevelsToNormLevels );
 
-        void renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
+        bool renderFeature( FeatureToRender& featToRender, QgsRenderContext& context, RenderQueue& renderQueue );
 
         void stopRender( QgsRenderContext& context );
 
@@ -179,7 +179,7 @@ class CORE_EXPORT QgsRuleBasedRendererV2 : public QgsFeatureRendererV2
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
 

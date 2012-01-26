@@ -260,28 +260,32 @@ void QgsRuleBasedRendererV2::Rule::setNormZLevels( const QMap<int, int>& zLevels
 }
 
 
-void QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue )
+bool QgsRuleBasedRendererV2::Rule::renderFeature( QgsRuleBasedRendererV2::FeatureToRender& featToRender, QgsRenderContext& context, QgsRuleBasedRendererV2::RenderQueue& renderQueue )
 {
-  if ( isFilterOK( featToRender.feat ) )
-  {
-    // create job for this feature and this symbol, add to list of jobs
-    if ( mSymbol )
-    {
-      // add job to the queue: each symbol's zLevel must be added
-      foreach( int normZLevel, mSymbolNormZLevels )
-      {
-        //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
-        renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
-      }
-    }
+  if ( !isFilterOK( featToRender.feat ) )
+    return false;
 
-    // process children
-    for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  bool rendered = false;
+
+  // create job for this feature and this symbol, add to list of jobs
+  if ( mSymbol )
+  {
+    // add job to the queue: each symbol's zLevel must be added
+    foreach( int normZLevel, mSymbolNormZLevels )
     {
-      Rule* rule = *it;
-      rule->renderFeature( featToRender, context, renderQueue );
+      //QgsDebugMsg(QString("add job at level %1").arg(normZLevel));
+      renderQueue[normZLevel].jobs.append( new RenderJob( featToRender, mSymbol ) );
     }
+    rendered = true;
   }
+
+  // process children
+  for ( QList<Rule*>::iterator it = mActiveChildren.begin(); it != mActiveChildren.end(); ++it )
+  {
+    Rule* rule = *it;
+    rendered |= rule->renderFeature( featToRender, context, renderQueue );
+  }
+  return rendered;
 }
 
 
@@ -364,7 +368,7 @@ QgsSymbolV2* QgsRuleBasedRendererV2::symbolForFeature( QgsFeature& )
   return 0;
 }
 
-void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
+bool QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
     QgsRenderContext& context,
     int layer,
     bool selected,
@@ -376,7 +380,7 @@ void QgsRuleBasedRendererV2::renderFeature( QgsFeature& feature,
   mCurrentFeatures.append( FeatureToRender( feature, flags ) );
 
   // check each active rule
-  mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue );
+  return mRootRule->renderFeature( mCurrentFeatures.last(), context, mRenderQueue );
 }
 
 
