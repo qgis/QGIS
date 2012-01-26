@@ -3997,7 +3997,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="68"/>
         <source>Password</source>
-        <translation type="unfinished">Password</translation>
+        <translation>Sandi</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="35"/>
@@ -4007,7 +4007,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="85"/>
         <source>Save Password</source>
-        <translation type="unfinished">Simpan Password</translation>
+        <translation>Simpan Sandi</translation>
     </message>
 </context>
 <context>
@@ -6549,7 +6549,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="4821"/>
         <location filename="../src/app/qgisapp.cpp" line="4849"/>
         <source>QGIS Version Information</source>
-        <translation type="unfinished">Informasi Versi QGIS</translation>
+        <translation>Informasi Versi QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4821"/>
@@ -6559,54 +6559,54 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4835"/>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished">Permintaan koneksi ditolak - mungkin server lagi mati</translation>
+        <translation type="unfinished">Permintaan koneksi ditolak - Mungkin saat ini server lagi mati</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4838"/>
         <source>QGIS server was not found</source>
-        <translation type="unfinished">Server QGIS tidak ditemukan</translation>
+        <translation>Server QGIS tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2352"/>
         <location filename="../src/app/qgisapp.cpp" line="2424"/>
         <source>Invalid Layer</source>
-        <translation type="unfinished">Lapisan tidak valid</translation>
+        <translation>Lapisan tidak benar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2352"/>
         <location filename="../src/app/qgisapp.cpp" line="2424"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished">%1 adalah lapisan tidak valid dan tidak dapat dimuat.</translation>
+        <translation>%1 adalah lapisan yang tidak benar dan tidak bisa dimuat.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3517"/>
         <source>Problem deleting features</source>
-        <translation type="unfinished">Masalah saat menghapus fitur-fitur</translation>
+        <translation>Masalah saat menghapus beberapa fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3518"/>
         <source>A problem occured during deletion of features</source>
-        <translation type="unfinished">Sebuah masalah muncul saat menghapus fitur-fitur</translation>
+        <translation>Sebuah masalah muncul saat menghapus beberapa fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3488"/>
         <source>No Vector Layer Selected</source>
-        <translation type="unfinished">Tidak ada Lapisan Vektor yang Dipilih</translation>
+        <translation>Tidak ada Lapisan Vektor yang Dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3489"/>
         <source>Deleting features only works on vector layers</source>
-        <translation type="unfinished">Penghapusan fitur-fitur hanya berfungsi pada lapisan vektor</translation>
+        <translation>Penghapusan fitur-fitur hanya berfungsi pada lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3480"/>
         <source>To delete features, you must select a vector layer in the legend</source>
-        <translation type="unfinished">Untuk menghapus fitur-fitur, Anda harus memilih lapisan vektor dari legenda</translation>
+        <translation>Untuk menghapus fitur, Anda harus memilih lapisan vektor pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1676"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
-        <translation>Legenda Peta yang menampilkan semua lapisan-lapisan sudah ada pada kanvas peta. Klik pada kotak-cek untuk menghidupkan atau mematikan sebuah lapisan. Klik-ganda lapisan pada legenda untuk mengubah tampilannya dan mengubah properti lain.</translation>
+        <translation type="unfinished">Legenda Peta melampilkan semua lapisan-lapisan yang ada pada kanvas. Klik pada pada kotak untuk mengaktifkan atau menonaktifkan lapisan. Klik dua kali pada lapisan di legenda untuk menyesuaikan tampilan dan mengatur properti lainnya.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1606"/>
@@ -6616,7 +6616,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="414"/>
         <source>Map canvas. This is where raster and vector layers are displayed when added to the map</source>
-        <translation type="unfinished">Kanvas peta. Padanya lapisan raster maupun vektor diperlihatkan sebelum ditambahkan pada peta</translation>
+        <translation>Kanvas peta. Disini lapisan vektor maupun raster ditampilkan ketika ditambahkan pada peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1165"/>
@@ -6653,7 +6653,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1258"/>
         <source>Toggle map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Beralih menggambarkan peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2726"/>
@@ -6663,37 +6663,37 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="406"/>
         <source>Reading settings</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Membaca pengaturan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="409"/>
         <source>Setting up the GUI</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mengatur GUI</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="401"/>
         <source>Checking database</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Memeriksa Database</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="487"/>
         <source>Restoring loaded plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mengembalikan plugin-plugin yang di muat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="506"/>
         <source>Initializing file filters</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Memulai memnyaring arsip-arsip</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="534"/>
         <source>Restoring window state</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Memulihkan kondisi jendela</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="538"/>
         <source>QGIS Ready!</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Siap Digunakan</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
@@ -6762,7 +6762,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6538"/>
         <source>New Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>Penunjuk Halaman Baru</translation>
     </message>
     <message>
         <source>Capture Point</source>
@@ -6803,17 +6803,17 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1288"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Siap</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="476"/>
         <source>Checking provider plugins</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Memeriksa penyedia plugin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="480"/>
         <source>Starting Python</source>
-        <translation type="unfinished"></translation>
+        <translation>Memulai Python</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3495"/>
@@ -6830,7 +6830,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="3788"/>
         <location filename="../src/app/qgisapp.cpp" line="3847"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lapisan tidak dapat diedit</translation>
+        <translation>Lapisan tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1223"/>
@@ -6840,147 +6840,148 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1239"/>
         <source>Current map scale (formatted as x:y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala peta saat ini (dengan format x:y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5503"/>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Koordinat peta pada lokasi penunjuk mouse</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="273"/>
         <source>Quantum GIS </source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1717"/>
         <location filename="../src/app/qgisapp.cpp" line="1759"/>
         <source>Private qgis.db</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pribadi qgis.db</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1717"/>
         <source>Could not open qgis.db</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka qgis.dg</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1759"/>
         <source>Migration of private qgis.db failed.
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pemindahan pribadi qgis.db gagal
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2611"/>
         <source>Save As</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Simpan sebagai</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2701"/>
         <source>Calculating...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghitung...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2701"/>
         <source>Abort...</source>
-        <translation type="unfinished"></translation>
+        <translation>Batalkan...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2751"/>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membaca proyek QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2792"/>
         <source>Unable to open project</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka proyek</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3503"/>
         <source>The current layer is not editable. Choose &apos;Start editing&apos; in the digitizing toolbar.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan ini tidak dapat diedit. Pilih &apos;Memulai mengedit&apos; pada panel mendigitasi.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4443"/>
         <source>Invalid scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala tidak tepat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4841"/>
         <source>Network error while communicating with server</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan pada jaringan ketika berkomunikasi dengan server</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4844"/>
         <source>Unknown network socket error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan socket jaringan yang tidak diketahui</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4908"/>
         <location filename="../src/app/qgisapp.cpp" line="4917"/>
         <source>To perform a full histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk merentangkan histogram penuh, anda harus memilih lapisan raster.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4940"/>
         <location filename="../src/app/qgisapp.cpp" line="4983"/>
         <source>To perform a local histogram stretch, you need to have a grayscale or multiband (multiband single layer, singleband grayscale or multiband color)  raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk melakukan peregangan histogram lokal, anda harus memiliki raster dengan skala abu-abu atau multi-band (multi band satu lapisan, band-tunggal skala abu-abu atau multi-band warna) yang terpilih.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4955"/>
         <location filename="../src/app/qgisapp.cpp" line="4964"/>
         <source>To perform a local histogram stretch, you need to have a raster layer selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk melakukan peregangan histogram lokal, anda perlu untuk memilih lapisan raster.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4916"/>
         <location filename="../src/app/qgisapp.cpp" line="4963"/>
         <source>No Raster Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lapisan raster yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4939"/>
         <location filename="../src/app/qgisapp.cpp" line="4982"/>
         <source>No Valid Raster Layer Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lapisan raster yang benar yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5096"/>
         <location filename="../src/app/qgisapp.cpp" line="5138"/>
         <location filename="../src/app/qgisapp.cpp" line="6323"/>
         <source>Layer is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan tidak benar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5139"/>
         <location filename="../src/app/qgisapp.cpp" line="6324"/>
         <source>The layer is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan ini bukan lapisan yang benar dan tidak dapat ditambahkan pada peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5184"/>
         <source>Save?</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5185"/>
         <source>Do you want to save the current project?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda ingin menyimpan proyek ini?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6162"/>
         <source>Open a GDAL Supported Raster Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuka sumber data raster yang didukung oleh GDAL</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6422"/>
         <source>Unsupported Data Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber data tidak didukung</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6539"/>
         <source>Enter a name for the new bookmark:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Masukkan nama untuk penunjuk halaman baru:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="920"/>
@@ -6989,122 +6990,125 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="4370"/>
         <location filename="../src/app/qgisapp.cpp" line="6556"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ada kesalahan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6556"/>
         <source>Unable to create the bookmark. Your user database may be missing or corrupted</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa untuk membuat penunjuk halaman. Database anda hilang atau rusak</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1224"/>
         <source>Current map scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala peta saat ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6571"/>
         <source>Project file is older</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip proyek anda lebih tua</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6588"/>
         <source>&lt;tt&gt;Settings:Options:General&lt;/tt&gt;</source>
         <comment>Menu path to setting options</comment>
-        <translation type="unfinished"></translation>
+        <translation>&lt;tt&gt;Pengaturan:Pilihan:Umum&lt;/tt&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6589"/>
         <source>Warn me when opening a project file saved with an older version of QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Beritahu saya ketika membuka sebuak arsip proyek yang disimpan dalam versi yang lebih tua dari QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1615"/>
         <source>Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Gambaran</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1917"/>
         <source>You are using QGIS version %1 built against code revision %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda menggunakan QGIS versi %1 yang dibangun pada perbaikan code %2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1941"/>
         <source>
 This binary was compiled against Qt %1,and is currently running against Qt %2</source>
-        <translation type="unfinished"></translation>
+        <translation>
+biner telah disusun pada Qt %1,dan saat ini berjalan pada Qt %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1248"/>
         <source>Stop map rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Berhenti menggambar peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="387"/>
         <source>Multiple Instances of QgisApp</source>
-        <translation type="unfinished"></translation>
+        <translation>Beberapa contoh dari QgisApp</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="388"/>
         <source>Multiple instances of Quantum GIS application object detected.
 Please contact the developers.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Beberapa contoh objek dari aplikasi Guantum GIS terdeteksi.
+Silahkan menghubungi pengembangnya.
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3341"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Pelabelan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="829"/>
         <source>Minimize</source>
-        <translation type="unfinished"></translation>
+        <translation>Memperkecil</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="830"/>
         <source>Ctrl+M</source>
         <comment>Minimize Window</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="831"/>
         <source>Minimizes the active window to the dock</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mengecilkan halaman yang aktif de dalam galangan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="834"/>
         <source>Zoom</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="835"/>
         <source>Toggles between a predefined size and the window size set by the user</source>
-        <translation type="unfinished"></translation>
+        <translation>Beralih antara ukuran standar dan ukuran jendela yang di tentukan oleh pengguna</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="838"/>
         <source>Bring All to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Bawa semuanya ke depan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>Bring forward all open windows</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Teruskan semua jendela yang terbuka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="920"/>
         <source>Failed to open Python console:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gagal membukan Python:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="992"/>
         <source>Panels</source>
-        <translation type="unfinished"></translation>
+        <translation>Panel-Panel</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="993"/>
         <source>Toolbars</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Panel alat-alat</translation>
     </message>
     <message>
         <source>New</source>
@@ -7113,12 +7117,12 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>&amp;Window</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jendela</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1059"/>
         <source>&amp;Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1179"/>
@@ -7129,22 +7133,22 @@ Please contact the developers.
         <location filename="../src/app/qgisapp.cpp" line="1192"/>
         <location filename="../src/app/qgisapp.cpp" line="5505"/>
         <source>Coordinate:</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1193"/>
         <source>Current map coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat peta saat ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1207"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tampilkan koordinat peta pada posisi saat ini. Tampilan terus menerus diperbarui sesuai dengan pergerakan mouse. Juga memungkinkan untuk mengedit bagian tengah canvas sesuai dengan koordinat yang diberikan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1211"/>
         <source>Current map coordinate (formatted as x,y)</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat peta saat ini (dengan format x,y)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1279"/>
@@ -7154,169 +7158,173 @@ Please contact the developers.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1283"/>
         <source>CRS status - Click to open coordinate reference system dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Status CRS - Klik untuk membukan dialog referensi sistem koordinat </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5435"/>
         <source>Current CRS: %1 (OTFR enabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS saat ini: %1 (OTFR diaktifkan)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5442"/>
         <source>Current CRS: %1 (OTFR disabled)</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS saat ini: %1 (OTFR dinonaktifkan)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6823"/>
         <source>
 
 Always ignore these errors?</source>
-        <translation type="unfinished"></translation>
+        <translation>
+
+Selalu abaikan kesalahan ini?</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="6827"/>
         <source>%n SSL errors occured</source>
         <comment>number of errors</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n Terjadi kesalahan SSL</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1938"/>
         <source>
 This copy of QGIS writes debugging output.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Salinan QGIS ini menulis hasil debugging.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2173"/>
         <source>%1 doesn&apos;t have any layers</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 tidak memiliki lapisan apapun</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2218"/>
         <source>Select raster layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan raster untuk ditambahkan...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2223"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1921"/>
         <source>
 GDAL/OGR Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+GDAL/OGR versi: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1924"/>
         <source>
 PostgreSQL Client Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Klien PostgreSQL versi: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1926"/>
         <source>
 No PostgreSQL support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak mendukung PostgreSQL.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1930"/>
         <source>
 SpatiaLite Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>
+Versi SpatiaLite: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1932"/>
         <source>
 No SpatiaLite support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak mendukung SpatiaLite.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1935"/>
         <source>
 QWT Version: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Versi QWT: %1.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="1949"/>
         <source>What&apos;s new in Version 1.7.0 &apos;Wrocław&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apa yang baru pada versi 1.7.0 &apos;Wroclaw&apos;?</translation>
     </message>
     <message utf8="true">
         <location filename="../src/app/qgisapp.cpp" line="1951"/>
         <source>This release is named after the town of Wrocław in Poland. The Department of Climatology and Atmosphere Protection, University of Wrocław kindly hosted our last developer meeting in November 2010. Please note that this is a release in our &apos;cutting edge&apos; release series. As such it contains new features and extends the programmatic interface over QGIS 1.0.x and QGIS 1.6.0. As with any software, there may be bugs and issues that we were not able to fix in time for the release. We therefore recommend that you test this version before rolling it out en-masse to your users.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rilis ini dinamai sebuah kota Wroclaw di Polandia. Departemen Klimatologi dan Perlindungan Atmosfer, Universitas Wroclaw menjadi tuan rumah dalam pertemuan pada bulan November 2010. Mohon diperhatikan ini merupakan sebuah seri rilis kami yang &quot;cangging&quot;. Seperti terdapatnya fitur-fitur baru dan memperpanjang program antar muka mulai lebih dari QGIS 1.0.x dan 1.6.0. Seperti software lainnya, mungkin masih terdapat kesalahan-kesalahan dan isu-isu yang mana kami belum bisa untuk memperbaikinya pada saat merilisnya. Oleh karena itu kami merekomendasikan kepada anda untuk menguji terlebih dahulu versi ini sebelum menggunakannya.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1954"/>
         <source>This release includes over 277 bug fixes and many new features and enhancements. Once again it is impossible to document everything here that has changed so we will just provide a bullet list of key new features here.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pada rilis ini termasuk lebih dari 277 perbaikan kesalahan dan banyak fitur baru serta peningkatannya. Sekali lagi tidak mungkin untuk mendokumentasikan semua perubahan disini jadi kami hanya menyediakan daftar kunci fitur-fitur baru tersebut disini.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1957"/>
         <source>Symbology labels and diagrams</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbologi label dan diagram</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1959"/>
         <source>New symbology now used by default!</source>
-        <translation type="unfinished"></translation>
+        <translation>Simbologi baru sekarang digunakan sebagai standar!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1960"/>
         <source>Diagram system that uses the same smart placement system as labeling-ng</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem diagram menggunakan sistem penempatan yang sama pintarnya dengan labeling</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Export and import of styles (symbology-ng).</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Eksport dan import gaya (simbologi-ng).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1962"/>
         <source>Labels for rules in rule-based renderers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Penggambaran label berdasarkan aturan di dalam aturan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1963"/>
         <source>Ability to set label distance in map units.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan untuk mengatur jarak label dalam satuan peta.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1964"/>
         <source>Rotation for svg fills.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Perputaran untuk mengisi svg.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Font marker can have an X,Y offset.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Penanda huruf bisa memiliki ofset X,Y.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1966"/>
         <source>Allow the line symbol layers to be used for outline of polygon (fill) symbols.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan lapisan simbol garis untuk digunakan sebagai garis tepi dari simbol poligon.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1967"/>
         <source>Option to put marker on the central point of a line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi untuk menempatkan penanda pada bagian tengah dari sebuah garis.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1968"/>
         <source>Option to put marker only on first/last vertex of a line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi untuk menempatkan penanda hanya pada verteks awal atau verteks akhir dari sebual garis.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1969"/>
         <source>Added &quot;centroid fill&quot; symbol layer which draws a marker on polygon&apos;s centroid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkan lapisan simbol &quot;pengisian sentroid&quot;yang menggambar sebuah penanda pada sentroid sebuah poligon.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1970"/>
         <source>Allow the marker line symbol layer to draw markers on each vertex.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan penanda lapisan simbol garis untuk menggambar penanda pada setiap verteks.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1971"/>
@@ -7326,57 +7334,57 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1973"/>
         <source>New Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Peralatan baru</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1975"/>
         <source>Added GUI for gdaldem.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penambahan GUI untuk gdaldem.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1976"/>
         <source>Added &apos;Lines to polygons&apos; tool to vector menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkan alat &apos;garis ke poligon&apos; ke dalan menu vector.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1977"/>
         <source>Added field calculator with functions like $x, $y and $perimeter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkan kalkulator bidang dengan fungsi seperti $x,$y dan $garis keliling.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1978"/>
         <source>Added voronoi polygon tool to Vector menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkan alat voronoi poligon ke menu vector.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1980"/>
         <source>User interface updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbaruan antarmuka pengguna</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1982"/>
         <source>Allow managing missing layers in a list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan untuk mengelola lapisan yang hilang di dalam daftar.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1983"/>
         <source>Zoom to group of layers.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Memperbesar ke grup lapisan tertentu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1984"/>
         <source>&apos;Tip of the day&apos; on startup. You can en/disable tips in the options panel.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;Saran hari ini&apos; pada saat program dijalankan. Anda dapat mengaktifkan/menonaktifkan saran pada panel pilihan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1985"/>
         <source>Better organisation of menus, separate database menu added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyusunan menu yang lebih baik, pemisasahan menu basisdata telah ditambahkan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1986"/>
         <source>Add ability to show number of features in legend classes. Accessible via right-click legend menu.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penambahan kemampuan untuk menampilkan jumlah fitur pada legenda kelas.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1988"/>
@@ -7421,7 +7429,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2000"/>
         <source>Added AND and OR operator for raster calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan operator fungsi AND dan OR untuk raster kalkulator</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2001"/>
@@ -7894,15 +7902,13 @@ Errors: %2
         <location filename="../src/app/qgisapp.cpp" line="3509"/>
         <source>Delete %n feature(s)?</source>
         <comment>number of features to delete</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Hapus fitur?</numerusform>
         </translation>
     </message>
     <message>
         <source>&amp;Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Raster</translation>
     </message>
 </context>
 <context>
@@ -8176,7 +8182,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="59"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="139"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="64"/>
