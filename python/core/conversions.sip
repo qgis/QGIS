@@ -14,7 +14,7 @@ which are not wrapped by PyQt:
 - QMap<double, TYPE>
 - QMultiMap<double, TYPE2>
 - QMap<qint64, QgsGeometry>
-- QMap<qint64, QgsOverlayObject*>*
+- QMap<qint64, QgsOverlayObject*>
 */
 
 %Feature QSETINT_CONVERSION
@@ -681,9 +681,6 @@ template<TYPE>
     Py_ssize_t i = 0;
     while (PyDict_Next(sipPy, &i, &kobj, &tobj))
     {
-      if (!PyDict_Check(tobj))
-        return 0;
-
       if (!sipCanConvertToInstance(tobj, sipClass_QgsGeometry, SIP_NOT_NONE))
         return 0;
     }
