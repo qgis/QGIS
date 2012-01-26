@@ -4298,6 +4298,10 @@ Error de geoprocesamiento GEOS: uno o más objetos espaciales de entrada tiene u
         <source>Run feature action</source>
         <translation>Ejecutar acción del objeto espacial</translation>
     </message>
+    <message>
+        <source>Pan Map to Selection</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OgrConverterGuiBase</name>
@@ -6844,7 +6848,7 @@ Probablemente está viendo este mensaje porque no tiene establecida la variable 
     </message>
     <message>
         <source>Unable to activate FOREIGN_KEY constraints</source>
-        <translation>No se pudieron activar las restricciones de FOREIGN-KEY</translation>
+        <translation type="obsolete">No se pudieron activar las restricciones de FOREIGN-KEY</translation>
     </message>
     <message>
         <source>Unable to delete table %1:
@@ -6888,6 +6892,18 @@ Error(%2): %3</translation>
     </message>
     <message>
         <source>Only %1 of %2 features written.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>infinite</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>no result buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unable to activate FOREIGN_KEY constraints [%1]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -11090,6 +11106,10 @@ Should the existing classes be deleted before classification?</source>
         <translation>El campo de clasificación se cambió de &apos;%1&apos; a &apos;%2&apos;.
 ¿Deben borrarse las clases existentes antes de la clasificación?</translation>
     </message>
+    <message>
+        <source>Symbol levels...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsColorRampComboBox</name>
@@ -13287,11 +13307,11 @@ Should the existing classes be deleted before classification?</source>
     <name>QgsCoordinateTransform</name>
     <message>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation>El sistema de referencia espacial (SRC) no es válido. </translation>
+        <translation type="obsolete">El sistema de referencia espacial (SRC) no es válido. </translation>
     </message>
     <message>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation>El sistema de referencia espacial de destino (SRC) no es válido. </translation>
+        <translation type="obsolete">El sistema de referencia espacial de destino (SRC) no es válido. </translation>
     </message>
     <message>
         <source>inverse transform</source>
@@ -13313,12 +13333,28 @@ falló con error: %3
     </message>
     <message>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation>Las coordenadas no se puede reproyectar. El SRC es:%1</translation>
+        <translation type="obsolete">Las coordenadas no se puede reproyectar. El SRC es:%1</translation>
     </message>
     <message>
         <source>%1 of
 %2PROJ.4: %3 +to %4
 Error: %5</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reprojected extent is empty. Original extent: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">SRC</translation>
+    </message>
+    <message>
+        <source>The source spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The destination spatial reference system (CRS) is not valid. The coordinates can not be reprojected. The CRS is: %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -14786,7 +14822,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Syntax error</source>
-        <translation>Error de sintáxis</translation>
+        <translation type="obsolete">Error de sintáxis</translation>
     </message>
     <message>
         <source>Provider error</source>
@@ -14831,7 +14867,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>New field</source>
-        <translation>Campo nuevo</translation>
+        <translation type="obsolete">Campo nuevo</translation>
     </message>
     <message>
         <source>Output field name</source>
@@ -14851,11 +14887,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Fields</source>
-        <translation>Campos</translation>
+        <translation type="obsolete">Campos</translation>
     </message>
     <message>
         <source>Values</source>
-        <translation>Valores</translation>
+        <translation type="obsolete">Valores</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -14863,11 +14899,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>All</source>
-        <translation>Todos</translation>
+        <translation type="obsolete">Todos</translation>
     </message>
     <message>
         <source>Operators</source>
-        <translation>Operadores</translation>
+        <translation type="obsolete">Operadores</translation>
     </message>
     <message>
         <source>Width of complete output. For example 123,456 means 6 as field width.</source>
@@ -14879,91 +14915,95 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>+</source>
-        <translation>+</translation>
+        <translation type="obsolete">+</translation>
     </message>
     <message>
         <source>*</source>
-        <translation>*</translation>
+        <translation type="obsolete">*</translation>
     </message>
     <message>
         <source>sqrt</source>
-        <translation>raíz cuadrada</translation>
+        <translation type="obsolete">raíz cuadrada</translation>
     </message>
     <message>
         <source>sin</source>
-        <translation>sen</translation>
+        <translation type="obsolete">sen</translation>
     </message>
     <message>
         <source>tan</source>
-        <translation>tan</translation>
+        <translation type="obsolete">tan</translation>
     </message>
     <message>
         <source>acos</source>
-        <translation>arcos</translation>
+        <translation type="obsolete">arcos</translation>
     </message>
     <message>
         <source>(</source>
-        <translation>(</translation>
+        <translation type="obsolete">(</translation>
     </message>
     <message>
         <source>-</source>
-        <translation>-</translation>
+        <translation type="obsolete">-</translation>
     </message>
     <message>
         <source>/</source>
-        <translation>/</translation>
+        <translation type="obsolete">/</translation>
     </message>
     <message>
         <source>^</source>
-        <translation>^</translation>
+        <translation type="obsolete">^</translation>
     </message>
     <message>
         <source>cos</source>
-        <translation>cos</translation>
+        <translation type="obsolete">cos</translation>
     </message>
     <message>
         <source>asin</source>
-        <translation>arcsen</translation>
+        <translation type="obsolete">arcsen</translation>
     </message>
     <message>
         <source>atan</source>
-        <translation>arctan</translation>
+        <translation type="obsolete">arctan</translation>
     </message>
     <message>
         <source>)</source>
-        <translation>)</translation>
+        <translation type="obsolete">)</translation>
     </message>
     <message>
         <source>to real</source>
-        <translation>a real</translation>
+        <translation type="obsolete">a real</translation>
     </message>
     <message>
         <source>to int</source>
-        <translation>a ent</translation>
+        <translation type="obsolete">a ent</translation>
     </message>
     <message>
         <source>to string</source>
-        <translation>a cadena</translation>
+        <translation type="obsolete">a cadena</translation>
     </message>
     <message>
         <source>length</source>
-        <translation>longitud</translation>
+        <translation type="obsolete">longitud</translation>
     </message>
     <message>
         <source>area</source>
-        <translation>área</translation>
+        <translation type="obsolete">área</translation>
     </message>
     <message>
         <source>rownum</source>
-        <translation>numfila</translation>
+        <translation type="obsolete">numfila</translation>
     </message>
     <message>
         <source>||</source>
-        <translation>||</translation>
+        <translation type="obsolete">||</translation>
     </message>
     <message>
         <source>Field calculator expression</source>
-        <translation>Expresión de la calculadora de campos</translation>
+        <translation type="obsolete">Expresión de la calculadora de campos</translation>
+    </message>
+    <message>
+        <source>Create a new field</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -16936,6 +16976,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Renderer creation has failed.</source>
         <translation>La creación del renderizador ha fallado.</translation>
+    </message>
+    <message>
+        <source>Symbol levels...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -20206,6 +20250,10 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
         <source>&amp;Update drawing order</source>
         <translation>Act&amp;ualizar orden de dibujado</translation>
     </message>
+    <message>
+        <source>Legend context</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsLegendLayer</name>
@@ -20550,6 +20598,17 @@ Puede haber un problema en su conexión a la red o en el servidoor WMS.</numerus
     <message>
         <source>ERROR: Failed to created default style file as %1. Check file permissions and retry.</source>
         <translation>ERROR: no se pudo crear el archivo de estilo predeterminado %1. Compruebe los permisos del archivo y vuelva a intentarlo.</translation>
+    </message>
+</context>
+<context>
+    <name>QgsMapRenderer</name>
+    <message>
+        <source>Transform error caught: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>CRS</source>
+        <translation type="unfinished">SRC</translation>
     </message>
 </context>
 <context>
@@ -21657,7 +21716,7 @@ Información de error ampliada:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+        <translation type="obsolete">&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
@@ -21690,6 +21749,10 @@ p, li { white-space: pre-wrap; }
     <message>
         <source>Name of the new connection</source>
         <translation>Nombre de la nueva conexión</translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
     </message>
 </context>
 <context>
@@ -22386,23 +22449,7 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Writing of the feature %1 failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>type %1 for field %2 not found</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>writing of field %1 failed</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Failed to delete attribute %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature id %1 too large for OGR</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -22418,35 +22465,59 @@ p, li { white-space: pre-wrap; }
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Update of Feature %1 failed: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Feature %1 not found for geometry update.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Creation of new geometry for feature %1 failed.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Newly created geometry for feature %1 is null.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Geometry update for feature %1 failed: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Update of feature %1 failed: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>id %1 too large for OGR</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Shapefiles without attribute are considered read-only.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR[%1] error %2: %3</source>
+        <translation type="unfinished">Error %2 de OGR [%1]: %3</translation>
+    </message>
+    <message>
+        <source>OGR error creating wkb for feature %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error creating feature %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error creating field %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error deleting field %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Deleting fields is not supported prior to GDAL 1.9.0</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error on feature %1: id too large</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error setting feature %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error changing geometry: feature %1 not found</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error creating geometry for feature %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error in feature %1: geometry is null</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error setting geometry of feature %1: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OGR error deleting feature %1: %2</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -23285,6 +23356,22 @@ p, li { white-space: pre-wrap; }
         <source>Validate geometries</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>16</source>
+        <translation type="unfinished">16</translation>
+    </message>
+    <message>
+        <source>24</source>
+        <translation type="unfinished">24</translation>
+    </message>
+    <message>
+        <source>32</source>
+        <translation type="unfinished">32</translation>
+    </message>
+    <message>
+        <source>Menu size</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsOraclePlugin</name>
@@ -23358,11 +23445,15 @@ p, li { white-space: pre-wrap; }
     <name>QgsPGSchemaItem</name>
     <message>
         <source>%1 as %2</source>
-        <translation>%1 como %2</translation>
+        <translation type="obsolete">%1 como %2</translation>
     </message>
     <message>
         <source>as geometryless table</source>
         <translation>como tabla sin geometría</translation>
+    </message>
+    <message>
+        <source>%1 as %2 in %3</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23564,6 +23655,15 @@ Información de error ampliada:
         <translation>La conexión ha fallado - Comprobar la configuración y probar de nuevo.
 
 </translation>
+    </message>
+    <message>
+        <source>Saving passwords</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.
+</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -23946,7 +24046,7 @@ lleve la geometría PostGIS.</translation>
     </message>
     <message>
         <source>Waiting...</source>
-        <translation>Esperando...</translation>
+        <translation type="obsolete">Esperando...</translation>
     </message>
     <message>
         <source>Select...</source>
@@ -23967,6 +24067,14 @@ lleve la geometría PostGIS.</translation>
     <message>
         <source>Polygon</source>
         <translation type="obsolete">Polígono</translation>
+    </message>
+    <message>
+        <source>Detecting...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter...</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -24932,13 +25040,6 @@ error:%3
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Database connection was successful, but the accessible tables could not be determined.
-The error message from the database was:
-%1
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -24956,11 +25057,6 @@ The error message from the database was:
     </message>
     <message>
         <source>Errornous query: %1 returned %2 [%3]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Query failed: %1
-Error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -25029,6 +25125,22 @@ Resultado: %3 (%4)</translation>
     </message>
     <message>
         <source>Unknown Geometry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Database connection was successful, but the accessible tables could not be determined.
+The error message from the database was:
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Query failed: %1
+Error: no result buffer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not logged query failed: %1
+Error: no result buffer</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -25211,7 +25323,7 @@ La vista que ha seleccionado tiene las siguientes columnas, ninguna de las cuale
     </message>
     <message>
         <source>Column %1 in %2 has a geometry type of %3, which Quantum GIS does not currently support.</source>
-        <translation>La columna %1 en %2 tiene un tipo de geometría %3, lo que Quantum GIS no admite actualmente.</translation>
+        <translation type="obsolete">La columna %1 en %2 tiene un tipo de geometría %3, lo que Quantum GIS no admite actualmente.</translation>
     </message>
     <message>
         <source>Quantum GIS was unable to determine the type and srid of column %1 in %2. The database communication log was:
@@ -25364,10 +25476,6 @@ lleve la geometría PostGIS.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Failed to get geometry details for PostGIS column %1.%2.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>PostGIS</source>
         <translation type="unfinished"></translation>
     </message>
@@ -25385,44 +25493,43 @@ Database error: %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Error while adding features.
-Error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while deleting features.
-Error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while adding attributes. Error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while deleting attributes.
-Error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while changing attributes.
-Error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Error while changing geometry values.
-Error: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>result of extents query invalid: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Unable to get feature type or srid for %1 of %2</source>
+        <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Editing and adding disabled for 2D+ layer (%1; %2)</source>
+        <source>PostGIS error while adding features: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS error while deleting features: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS error while adding attributes: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS error while deleting attributes: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS error while changing attributes: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>PostGIS error while changing geometry values: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Geometry type and srid for empty column %1 of %2 undefined.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Feature type or srid for %1 of %2 could not be determined or was not requested.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -26441,7 +26548,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Specify CRS for layer %1</source>
-        <translation>Especificar SRC para la capa %1</translation>
+        <translation type="obsolete">Especificar SRC para la capa %1</translation>
     </message>
     <message>
         <source>Average Magphase</source>
@@ -27686,7 +27793,7 @@ p, li { white-space: pre-wrap; }
     <name>QgsRendererRulesTreeWidget</name>
     <message>
         <source>(no filter)</source>
-        <translation>(sin filtro)</translation>
+        <translation type="obsolete">(sin filtro)</translation>
     </message>
     <message>
         <source>, scale </source>
@@ -27694,11 +27801,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>scale </source>
-        <translation>escala </translation>
+        <translation type="obsolete">escala </translation>
     </message>
     <message>
         <source>any scale</source>
-        <translation>cualquier escala</translation>
+        <translation type="obsolete">cualquier escala</translation>
     </message>
 </context>
 <context>
@@ -27739,7 +27846,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Symbol levels</source>
-        <translation>Niveles de símbolos</translation>
+        <translation type="obsolete">Niveles de símbolos</translation>
     </message>
     <message>
         <source>This renderer doesn&apos;t implement a graphical interface.</source>
@@ -27814,10 +27921,33 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsRuleBasedRendererV2Model</name>
+    <message>
+        <source>(no filter)</source>
+        <translation type="unfinished">(sin filtro)</translation>
+    </message>
+    <message>
+        <source>Label</source>
+        <translation type="unfinished">Etiqueta</translation>
+    </message>
+    <message>
+        <source>Rule</source>
+        <translation type="unfinished">Regla</translation>
+    </message>
+    <message>
+        <source>Min. scale</source>
+        <translation type="unfinished">Escala mínima</translation>
+    </message>
+    <message>
+        <source>Max.scale</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QgsRuleBasedRendererV2Widget</name>
     <message>
         <source>Form</source>
-        <translation>Formulario</translation>
+        <translation type="obsolete">Formulario</translation>
     </message>
     <message>
         <source>Rules</source>
@@ -27825,19 +27955,19 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Label</source>
-        <translation>Etiqueta</translation>
+        <translation type="obsolete">Etiqueta</translation>
     </message>
     <message>
         <source>Rule</source>
-        <translation>Regla</translation>
+        <translation type="obsolete">Regla</translation>
     </message>
     <message>
         <source>Min. scale</source>
-        <translation>Escala mínima</translation>
+        <translation type="obsolete">Escala mínima</translation>
     </message>
     <message>
         <source>Max. scale</source>
-        <translation>Escala máxima</translation>
+        <translation type="obsolete">Escala máxima</translation>
     </message>
     <message>
         <source>Add</source>
@@ -27857,7 +27987,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Rule grouping</source>
-        <translation>Agrupación de reglas</translation>
+        <translation type="obsolete">Agrupación de reglas</translation>
     </message>
     <message>
         <source>No grouping</source>
@@ -27885,11 +28015,11 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Edit rule</source>
-        <translation>Editar regla</translation>
+        <translation type="obsolete">Editar regla</translation>
     </message>
     <message>
         <source>Groups of rules cannot be edited.</source>
-        <translation>Los grupos de reglas no se pueden editar.</translation>
+        <translation type="obsolete">Los grupos de reglas no se pueden editar.</translation>
     </message>
     <message>
         <source>Refine a rule to categories</source>
@@ -27917,45 +28047,23 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <source>Priority</source>
-        <translation type="unfinished">Prioridad</translation>
-    </message>
-    <message>
-        <source>Priority when symbol levels are enabled (only first matching rule will be applied)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Increase priority</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Decrease priority</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Prioridad</translation>
     </message>
     <message>
         <source>Enable symbol levels</source>
-        <translation type="unfinished">Activar niveles de símbolos</translation>
-    </message>
-    <message>
-        <source>Use only first matched rule</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Behavior</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">Activar niveles de símbolos</translation>
     </message>
     <message>
         <source>None</source>
         <comment>No grouping for displaying rules</comment>
-        <translation type="unfinished">Nada</translation>
+        <translation type="obsolete">Nada</translation>
     </message>
     <message>
-        <source>By filter</source>
-        <comment>Group rules by filter</comment>
+        <source>Rendering order...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>By scale</source>
-        <comment>Group rules by scale</comment>
+        <source>Parent rule must have a symbol for this operation.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -28412,6 +28520,45 @@ p, li { white-space: pre-wrap; }
     </message>
 </context>
 <context>
+    <name>QgsSelectedFeature</name>
+    <message>
+        <source>Validation started.</source>
+        <translation type="unfinished">Comenzó la validación.</translation>
+    </message>
+    <message numerus="yes">
+        <source>Validation finished (%n error(s) gefunden).</source>
+        <comment>number of geometry errors</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>ring %1, vertex %2</source>
+        <translation type="unfinished">anillo %1, vértice %2</translation>
+    </message>
+    <message>
+        <source>polygon %1, ring %2, vertex %3</source>
+        <translation type="unfinished">polígono %1, anillo %2, vértice %3</translation>
+    </message>
+    <message>
+        <source>polyline %1, vertex %2</source>
+        <translation type="unfinished">polilínea %1, vértice %2</translation>
+    </message>
+    <message>
+        <source>vertex %1</source>
+        <translation type="unfinished">vértice %1</translation>
+    </message>
+    <message>
+        <source>point %1</source>
+        <translation type="unfinished">punto %1</translation>
+    </message>
+    <message>
+        <source>single point</source>
+        <translation type="unfinished">punto único</translation>
+    </message>
+</context>
+<context>
     <name>QgsShapeFile</name>
     <message>
         <source>The database gave an error while executing this SQL:</source>
@@ -28538,6 +28685,10 @@ El error fue:
         <source>- no field -</source>
         <translation type="obsolete">- ningún campo -</translation>
     </message>
+    <message>
+        <source>Symbol levels...</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsSnappingDialog</name>
@@ -28625,6 +28776,23 @@ El error fue:
     <message>
         <source>Whole number (integer)</source>
         <translation>Número entero (entero)</translation>
+    </message>
+    <message>
+        <source>SQLite error: %2
+SQL: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SpatiaLite</source>
+        <translation type="unfinished">SpatiaLite</translation>
+    </message>
+    <message>
+        <source>unknown cause</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SQLite error getting feature: %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -30706,6 +30874,10 @@ Should the existing classes be deleted before classification?</source>
         <source>Change Geometries</source>
         <translation>Cambiar geometrías</translation>
     </message>
+    <message>
+        <source>Codec %1 not found. Falling back to system locale</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QgsVectorFieldSymbolLayerWidget</name>
@@ -30928,7 +31100,7 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>Specify CRS for layer %1</source>
-        <translation>Especificar SRC para la capa %1</translation>
+        <translation type="obsolete">Especificar SRC para la capa %1</translation>
     </message>
     <message>
         <source>Unknown renderer</source>
@@ -31016,6 +31188,24 @@ Should the existing classes be deleted before classification?</source>
     </message>
     <message>
         <source>unknown extent</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <source>ERROR: %n feature(s) not added - provider doesn&apos;t support adding features.</source>
+        <comment>not added features count</comment>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <source>
+  Provider errors:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Commit errors:
+  %1</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -31695,6 +31885,10 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <source>Abstract</source>
         <translation type="unfinished">Resumen</translation>
+    </message>
+    <message>
+        <source>Update Extents</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -33711,39 +33905,31 @@ Descripción: %3</translation>
     <name>SelectedFeature</name>
     <message>
         <source>Validation started.</source>
-        <translation type="unfinished">Comenzó la validación.</translation>
-    </message>
-    <message numerus="yes">
-        <source>Validation finished (%n error(s) gefunden).</source>
-        <comment>number of geometry errors</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-            <numerusform></numerusform>
-        </translation>
+        <translation type="obsolete">Comenzó la validación.</translation>
     </message>
     <message>
         <source>ring %1, vertex %2</source>
-        <translation type="unfinished">anillo %1, vértice %2</translation>
+        <translation type="obsolete">anillo %1, vértice %2</translation>
     </message>
     <message>
         <source>polygon %1, ring %2, vertex %3</source>
-        <translation type="unfinished">polígono %1, anillo %2, vértice %3</translation>
+        <translation type="obsolete">polígono %1, anillo %2, vértice %3</translation>
     </message>
     <message>
         <source>polyline %1, vertex %2</source>
-        <translation type="unfinished">polilínea %1, vértice %2</translation>
+        <translation type="obsolete">polilínea %1, vértice %2</translation>
     </message>
     <message>
         <source>vertex %1</source>
-        <translation type="unfinished">vértice %1</translation>
+        <translation type="obsolete">vértice %1</translation>
     </message>
     <message>
         <source>point %1</source>
-        <translation type="unfinished">punto %1</translation>
+        <translation type="obsolete">punto %1</translation>
     </message>
     <message>
         <source>single point</source>
-        <translation type="unfinished">punto único</translation>
+        <translation type="obsolete">punto único</translation>
     </message>
 </context>
 <context>
@@ -34451,7 +34637,7 @@ Descripción: %3</translation>
     </message>
     <message>
         <source>Input Dxf file</source>
-        <translation>Archivo dxf de entrada</translation>
+        <translation type="obsolete">Archivo dxf de entrada</translation>
     </message>
     <message>
         <source>...</source>
@@ -34532,6 +34718,10 @@ Para ayuda enviar un correo a scala@itc.cnr.it
     <message>
         <source>Choose a DXF file to open</source>
         <translation>Seleccione un archivo DXF para abrir</translation>
+    </message>
+    <message>
+        <source>Input DXF file</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
