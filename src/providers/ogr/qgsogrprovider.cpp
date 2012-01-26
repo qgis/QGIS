@@ -354,7 +354,7 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
                   .arg( quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) ) )
                   .arg( mSubsetString );
     QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, NULL );
+    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
 
     if ( !ogrLayer )
     {
@@ -1273,7 +1273,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .qix file is there
@@ -1285,9 +1285,9 @@ bool QgsOgrProvider::createAttributeIndex( int field )
 {
   QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
   QString dropSql = QString( "DROP INDEX ON %1" ).arg( quotedIdentifier( layerName ) );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( dropSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
   QString createSql = QString( "CREATE INDEX ON %1 USING %2" ).arg( quotedIdentifier( layerName ) ).arg( fields()[field].name() );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( dropSql ), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( createSql ), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( createSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .idm file is there
@@ -1317,7 +1317,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, NULL );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
 
   recalculateFeatureCount();
 
@@ -2132,7 +2132,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
   sql += QString( " ORDER BY %1 ASC" ).arg( fld.name() );  // quoting of fieldname produces a syntax error
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
   if ( l == 0 )
     return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
 
@@ -2169,7 +2169,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
     sql += QString( " WHERE %1" ).arg( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
 
   if ( l == 0 )
     return QgsVectorDataProvider::minimumValue( index );
@@ -2209,7 +2209,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
     sql += QString( " WHERE %1" ).arg( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
   if ( l == 0 )
     return QgsVectorDataProvider::maximumValue( index );
 
