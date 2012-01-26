@@ -69,12 +69,21 @@
 #include <QPaintEngine>
 
 
-QgsComposer::QgsComposer( QgisApp *qgis, const QString& title ): QMainWindow( qgis ), mTitle( title ), mUndoView( 0 )
+QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
+    : QMainWindow()
+    , mTitle( title )
+    , mUndoView( 0 )
 {
   setupUi( this );
   setWindowTitle( mTitle );
   setupTheme();
-  QObject::connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
+
+  QSettings settings;
+  int size = settings.value( "/IconSize", QGIS_ICON_SIZE ).toInt();
+  setIconSize( QSize( size, size ) );
+
+  setFontSize( settings.value( "/fontPointSize", QGIS_DEFAULT_FONTSIZE ).toInt() );
 
   QToolButton* orderingToolButton = new QToolButton( this );
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
@@ -305,6 +314,11 @@ void QgsComposer::setIconSizes( int size )
   {
     toolbar->setIconSize( QSize( size, size ) );
   }
+}
+
+void QgsComposer::setFontSize( int fontSize )
+{
+  setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
 }
 
 void QgsComposer::connectSlots()

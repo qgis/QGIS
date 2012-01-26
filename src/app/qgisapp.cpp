@@ -1025,6 +1025,11 @@ void QgisApp::createActionGroups()
 void QgisApp::setFontSize( int fontSize )
 {
   setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
+
+  foreach( QgsComposer *c, mPrintComposers )
+  {
+    c->setFontSize( fontSize );
+  }
 }
 
 void QgisApp::createMenus()
@@ -1393,10 +1398,9 @@ void QgisApp::setIconSizes( int size )
     toolbar->setIconSize( QSize( size, size ) );
   }
 
-  QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
-  for ( ; composerIt != mPrintComposers.end(); ++composerIt )
+  foreach( QgsComposer *c, mPrintComposers )
   {
-    ( *composerIt )->setIconSizes( size );
+    c->setIconSizes( size );
   }
 }
 
