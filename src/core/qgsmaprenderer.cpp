@@ -18,6 +18,7 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmaprenderer.h"
 #include "qgsscalecalculator.h"
 #include "qgsmaptopixel.h"
@@ -766,14 +767,10 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Transform error caught: " ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
     }
   }
-  else
-  {
-    // leave extent unchanged
-  }
+
   QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
 
   return extent;

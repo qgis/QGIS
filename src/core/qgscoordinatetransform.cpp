@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgscoordinatetransform.h"
-#include "qgsmessageoutput.h"
+#include "qgsmessagelog.h"
 #include "qgslogger.h"
 
 //qt includes
@@ -496,6 +496,11 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
 
   QgsDebugMsg( "Projected extent: " + QString(( bb_rect.toString() ).toLocal8Bit().data() ) );
 
+  if ( bb_rect.isEmpty() )
+  {
+    QgsMessageLog::logMessage( tr( "Reprojected extent is empty. Original extent: %1" ).arg( rect.toString() ), tr( "CRS" ) );
+  }
+
   return bb_rect;
 }
 
@@ -504,17 +509,15 @@ void QgsCoordinateTransform::transformCoords( const int& numPoints, double *x, d
   // Refuse to transform the points if the srs's are invalid
   if ( !mSourceCRS.isValid() )
   {
-    QgsLogger::critical( tr( "The source spatial reference system (CRS) is not valid. " )
-                         + tr( "The coordinates can not be reprojected."
-                               " The CRS is: %1" )
-                         .arg( mSourceCRS.toProj4() ) );
+    QgsMessageLog::logMessage( tr( "The source spatial reference system (CRS) is not valid. "
+                                   "The coordinates can not be reprojected. The CRS is: %1" )
+                               .arg( mSourceCRS.toProj4() ), tr( "CRS" ) );
     return;
   }
   if ( !mDestCRS.isValid() )
   {
-    QgsLogger::critical( tr( "The destination spatial reference system (CRS) is not valid. " )
-                         + tr( "The coordinates can not be reprojected."
-                               " The CRS is: %1" ).arg( mDestCRS.toProj4() ) );
+    QgsMessageLog::logMessage( tr( "The destination spatial reference system (CRS) is not valid. "
+                                   "The coordinates can not be reprojected. The CRS is: %1" ).arg( mDestCRS.toProj4() ), tr( "CRS" ) );
     return;
   }
 
