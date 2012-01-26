@@ -6485,7 +6485,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1677"/>
         <source>Layers</source>
-        <translation type="unfinished">Lapisan-lapisan</translation>
+        <translation>Lapisan-lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1948"/>
@@ -6497,51 +6497,51 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="2181"/>
         <location filename="../src/app/qgisapp.cpp" line="6242"/>
         <source>Invalid Data Source</source>
-        <translation>Sumber Data Invalid</translation>
+        <translation>Sumber Data Tidak Benar</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3341"/>
         <source>Please select a vector layer first.</source>
-        <translation>Silahkan pilih satu leyer vector.</translation>
+        <translation>Siahkan pilih satu lapisan layer terlebih dahulu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3479"/>
         <location filename="../src/app/qgisapp.cpp" line="4907"/>
         <location filename="../src/app/qgisapp.cpp" line="4954"/>
         <source>No Layer Selected</source>
-        <translation type="unfinished">Tidak ada Lapisan Dipilih</translation>
+        <translation>Tidak ada Lapisan Dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3796"/>
         <location filename="../src/app/qgisapp.cpp" line="3862"/>
         <location filename="../src/app/qgisapp.cpp" line="3901"/>
         <source>Not enough features selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur yang dipilih tidak cukup</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3884"/>
         <source>Union operation canceled</source>
-        <translation type="unfinished"></translation>
+        <translation>Operasi union dibatalkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4785"/>
         <source>There is a new version of QGIS available</source>
-        <translation type="unfinished">Versi baru QGIS telah tersedia</translation>
+        <translation>Versi baru dari QGIS telah tersedia</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4791"/>
         <source>You are running a development version of QGIS</source>
-        <translation type="unfinished">Anda sedang menjalankan versi pengembangan QGIS</translation>
+        <translation>Anda sedang menjalankan versi pengembangan QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4795"/>
         <source>You are running the current version of QGIS</source>
-        <translation type="unfinished">Anda sedang menjalankan versi aktual QGIS</translation>
+        <translation>Anda sedang menjalankan versi aktual QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4800"/>
         <source>Would you like more information?</source>
-        <translation type="unfinished">Perlu informasi tambahankah Anda?</translation>
+        <translation>Apakah anda memerlukan informasi tambahan?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4803"/>
