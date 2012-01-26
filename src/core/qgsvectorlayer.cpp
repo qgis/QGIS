@@ -744,7 +744,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       bool drawMarker = ( mEditable && ( !vertexMarkerOnlyForSelection || sel ) );
 
       // render feature
-      mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
+      bool rendered = mRendererV2->renderFeature( fet, rendererContext, -1, sel, drawMarker );
 
       if ( mEditable )
       {
@@ -753,7 +753,7 @@ void QgsVectorLayer::drawRendererV2( QgsRenderContext& rendererContext, bool lab
       }
 
       // labeling - register feature
-      if ( mRendererV2->symbolForFeature( fet ) != NULL && rendererContext.labelingEngine() )
+      if ( rendered && rendererContext.labelingEngine() )
       {
         if ( labeling )
         {

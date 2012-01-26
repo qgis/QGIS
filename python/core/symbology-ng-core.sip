@@ -81,7 +81,7 @@ public:
 
   virtual QgsSymbolV2List symbols()=0;
 
-  virtual void renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+  virtual bool renderFeature(QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
   bool usingSymbolLevels() const;
   void setUsingSymbolLevels(bool usingSymbolLevels);
@@ -438,7 +438,7 @@ class QgsRuleBasedRendererV2 : QgsFeatureRendererV2
     //! return symbol for current feature. Should not be used individually: there could be more symbols for a feature
     virtual QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 
-    virtual void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual void startRender( QgsRenderContext& context, const QgsVectorLayer *vlayer );
 
