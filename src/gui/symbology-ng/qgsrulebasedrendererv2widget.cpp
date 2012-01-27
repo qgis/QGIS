@@ -64,11 +64,12 @@ QgsRuleBasedRendererV2Widget::QgsRuleBasedRendererV2Widget( QgsVectorLayer* laye
   //new ModelTest( mModel, this ); // for model validity checking
   viewRules->setModel( mModel );
 
-  mRefineMenu = new QMenu( btnRefineRule );
-  mRefineMenu->addAction( tr( "Add scales" ), this, SLOT( refineRuleScales() ) );
-  mRefineMenu->addAction( tr( "Add categories" ), this, SLOT( refineRuleCategories() ) );
-  mRefineMenu->addAction( tr( "Add ranges" ), this, SLOT( refineRuleRanges() ) );
+  mRefineMenu = new QMenu( "Refine current rule", btnRefineRule );
+  mRefineMenu->addAction( tr( "Add scales to rule" ), this, SLOT( refineRuleScales() ) );
+  mRefineMenu->addAction( tr( "Add categories to rule" ), this, SLOT( refineRuleCategories() ) );
+  mRefineMenu->addAction( tr( "Add ranges to rule" ), this, SLOT( refineRuleRanges() ) );
   btnRefineRule->setMenu( mRefineMenu );
+  contextMenu->addMenu( mRefineMenu );
 
   btnAddRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyAdd.png" ) ) );
   btnEditRule->setIcon( QIcon( QgsApplication::iconPath( "symbologyEdit.png" ) ) );
@@ -187,21 +188,23 @@ void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& curren
 
 void QgsRuleBasedRendererV2Widget::refineRule( int type )
 {
-  QModelIndex index = viewRules->selectionModel()->currentIndex();
-  if ( !index.isValid() )
+  QModelIndexList indexlist = viewRules->selectionModel()->selectedRows();
+
+  if ( indexlist.isEmpty() )
     return;
 
 
   if ( type == 0 ) // categories
-    refineRuleCategoriesGui( index );
+    refineRuleCategoriesGui( indexlist );
   else if ( type == 1 ) // ranges
-    refineRuleRangesGui( index );
+    refineRuleRangesGui( indexlist );
   else // scales
-    refineRuleScalesGui( index );
+    refineRuleScalesGui( indexlist );
 
   // TODO: set initial rule's symbol to NULL (?)
 
   // show the newly added rules
+  foreach( QModelIndex index, indexlist )
   viewRules->expand( index );
 }
 
@@ -220,10 +223,8 @@ void QgsRuleBasedRendererV2Widget::refineRuleScales()
   refineRule( 2 );
 }
 
-void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndex& index )
+void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndexList& indexList )
 {
-  QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
-
   QDialog dlg;
   dlg.setWindowTitle( tr( "Refine a rule to categories" ) );
   QVBoxLayout* l = new QVBoxLayout();
@@ -240,15 +241,19 @@ void QgsRuleBasedRendererV2Widget::refineRuleCategoriesGui( const QModelIndex& i
 
   // create new rules
   QgsCategorizedSymbolRendererV2* r = static_cast<QgsCategorizedSymbolRendererV2*>( w->renderer() );
-  mModel->willAddRules( index, r->categories().count() );
-  QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
+  foreach( QModelIndex index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, r->categories().count() );
+    QgsRuleBasedRendererV2::refineRuleCategories( initialRule, r );
+  }
   mModel->finishedAddingRules();
 }
 
 
-void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndex& index )
+void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndexList& indexList )
 {
-  QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+
 
   QDialog dlg;
   dlg.setWindowTitle( tr( "Refine a rule to ranges" ) );
@@ -266,20 +271,27 @@ void QgsRuleBasedRendererV2Widget::refineRuleRangesGui( const QModelIndex& index
 
   // create new rules
   QgsGraduatedSymbolRendererV2* r = static_cast<QgsGraduatedSymbolRendererV2*>( w->renderer() );
-  mModel->willAddRules( index, r->ranges().count() );
-  QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
+  foreach( QModelIndex index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, r->ranges().count() );
+    QgsRuleBasedRendererV2::refineRuleRanges( initialRule, r );
+  }
   mModel->finishedAddingRules();
 }
 
-void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndex& index )
+void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndexList& indexList )
 {
-  QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
-
-
-  if ( initialRule->symbol() == NULL )
+  foreach( QModelIndex index, indexList )
   {
-    QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule must have a symbol for this operation." ) );
-    return;
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+
+    // If any of the rules don't have a symbol let the user know and exit.
+    if ( initialRule->symbol() == NULL )
+    {
+      QMessageBox::warning( this, tr( "Scale refinement" ), tr( "Parent rule %1 must have a symbol for this operation." ).arg( initialRule->label() ) );
+      return;
+    }
   }
 
   QString txt = QInputDialog::getText( this,
@@ -299,8 +311,12 @@ void QgsRuleBasedRendererV2Widget::refineRuleScalesGui( const QModelIndex& index
       QMessageBox::information( this, tr( "Error" ), QString( tr( "\"%1\" is not valid scale denominator, ignoring it." ) ).arg( item ) );
   }
 
-  mModel->willAddRules( index, scales.count() + 1 );
-  QgsRuleBasedRendererV2::refineRuleScales( initialRule, scales );
+  foreach( QModelIndex index, indexList )
+  {
+    QgsRuleBasedRendererV2::Rule* initialRule = mModel->ruleForIndex( index );
+    mModel->willAddRules( index, scales.count() + 1 );
+    QgsRuleBasedRendererV2::refineRuleScales( initialRule, scales );
+  }
   mModel->finishedAddingRules();
 }
 
