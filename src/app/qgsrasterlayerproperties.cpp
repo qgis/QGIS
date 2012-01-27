@@ -2950,131 +2950,61 @@ void QgsRasterLayerProperties::on_pbnSaveDefaultStyle_clicked()
 
 void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
 {
-  QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QSettings settings;
+  QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
 
-  //create a file dialog
-  std::auto_ptr < QFileDialog > myFileDialog
-  (
-    new QFileDialog(
-      this,
-      QFileDialog::tr( "Load layer properties from style file (.qml)" ),
-      myLastUsedDir,
-      tr( "QGIS Layer Style File (*.qml)" )
-    )
-  );
-  myFileDialog->setFileMode( QFileDialog::AnyFile );
-  myFileDialog->setAcceptMode( QFileDialog::AcceptOpen );
+  QString fileName = QFileDialog::getOpenFileName(
+                       this,
+                       tr( "Load layer properties from style file (.qml)" ),
+                       lastUsedDir,
+                       tr( "QGIS Layer Style File (*.qml)" ) );
+  if ( fileName.isEmpty() )
+    return;
 
-  //prompt the user for a file name
-  QString myFileName;
-  if ( myFileDialog->exec() == QDialog::Accepted )
+  // ensure the user never omits the extension from the file name
+  if ( !fileName.endsWith( ".qml", Qt::CaseInsensitive ) )
+    fileName += ".qml";
+
+  bool defaultLoadedFlag = false;
+  QString message = mRasterLayer->loadNamedStyle( fileName, defaultLoadedFlag );
+  if ( defaultLoadedFlag )
   {
-    QStringList myFiles = myFileDialog->selectedFiles();
-    if ( !myFiles.isEmpty() )
-    {
-      myFileName = myFiles[0];
-    }
+    sync();
+  }
+  else
+  {
+    QMessageBox::information( this, tr( "Saved Style" ), message );
   }
 
-  if ( !myFileName.isEmpty() )
-  {
-    if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
-    {
-      //ensure the user never omitted the extension from the file name
-      if ( !myFileName.toUpper().endsWith( ".QML" ) )
-      {
-        myFileName += ".qml";
-      }
-      bool defaultLoadedFlag = false;
-      QString myMessage = mRasterLayer->loadNamedStyle( myFileName, defaultLoadedFlag );
-      //reset if the default style was loaded ok only
-      if ( defaultLoadedFlag )
-      {
-        sync();
-      }
-      else
-      {
-        //let the user know something went wrong...
-        QMessageBox::information( this,
-                                  tr( "Saved Style" ),
-                                  myMessage
-                                );
-      }
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
-
-    }
-    myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
-  }
+  settings.setValue( "style/lastStyleDir", QFileInfo( fileName ).absolutePath() );
 }
 
 
 void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
 {
+  QSettings settings;
+  QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
 
-  QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedDir = myQSettings.value( "style/lastStyleDir", "." ).toString();
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file (.qml)" ), lastUsedDir );
+  if ( outputFileName.isEmpty() )
+    return;
 
-  //create a file dialog
-  std::auto_ptr < QFileDialog > myFileDialog
-  (
-    new QFileDialog(
-      this,
-      QFileDialog::tr( "Save layer properties as style file (.qml)" ),
-      myLastUsedDir,
-      tr( "QGIS Layer Style File (*.qml)" )
-    )
-  );
-  myFileDialog->setFileMode( QFileDialog::AnyFile );
-  myFileDialog->setAcceptMode( QFileDialog::AcceptSave );
+  // ensure the user never omits the extension from the file name
+  if ( !outputFileName.endsWith( ".qml", Qt::CaseInsensitive ) )
+    outputFileName += ".qml";
 
-  //prompt the user for a file name
-  QString myOutputFileName;
-  if ( myFileDialog->exec() == QDialog::Accepted )
+  bool defaultLoadedFlag = false;
+  QString message = mRasterLayer->saveNamedStyle( outputFileName, defaultLoadedFlag );
+  if ( defaultLoadedFlag )
   {
-    QStringList myFiles = myFileDialog->selectedFiles();
-    if ( !myFiles.isEmpty() )
-    {
-      myOutputFileName = myFiles[0];
-    }
+    sync();
+  }
+  else
+  {
+    QMessageBox::information( this, tr( "Saved Style" ), message );
   }
 
-  if ( !myOutputFileName.isEmpty() )
-  {
-    if ( myFileDialog->selectedFilter() == tr( "QGIS Layer Style File (*.qml)" ) )
-    {
-      //ensure the user never omitted the extension from the file name
-      if ( !myOutputFileName.toUpper().endsWith( ".QML" ) )
-      {
-        myOutputFileName += ".qml";
-      }
-      bool defaultLoadedFlag = false;
-      QString myMessage = mRasterLayer->saveNamedStyle( myOutputFileName, defaultLoadedFlag );
-      //reset if the default style was loaded ok only
-      if ( defaultLoadedFlag )
-      {
-        //don't show the message if all went well...
-        sync();
-      }
-      else
-      {
-        //if something went wrong let the user know why
-        QMessageBox::information( this,
-                                  tr( "Saved Style" ),
-                                  myMessage
-                                );
-      }
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "QGIS" ), tr( "Unknown style format: %1" ).arg( myFileDialog->selectedFilter() ) );
-
-    }
-    myQSettings.setValue( "style/lastStyleDir", myFileDialog->directory().absolutePath() );
-  }
+  settings.setValue( "style/lastStyleDir", QFileInfo( outputFileName ).absolutePath() );
 }
 
 void QgsRasterLayerProperties::on_btnResetNull_clicked( )
