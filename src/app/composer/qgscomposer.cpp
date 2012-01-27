@@ -534,37 +534,27 @@ class QgsPaintEngineHack : public QPaintEngine
 void QgsComposer::on_mActionExportAsPDF_triggered()
 {
   QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
-  QFileInfo file( myLastUsedFile );
-  QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a file name to save the map as" ),
-      file.path(), tr( "PDF Format" ) + " (*.pdf *PDF)" );
-  myQFileDialog->selectFile( file.fileName() );
-  myQFileDialog->setFileMode( QFileDialog::AnyFile );
-  myQFileDialog->setConfirmOverwrite( true );
-  myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
+  QString lastUsedFile = myQSettings.value( "/UI/lastSaveAsPdfFile", "qgis.pdf" ).toString();
+  QFileInfo file( lastUsedFile );
 
-  int result = myQFileDialog->exec();
-  raise();
-  if ( result != QDialog::Accepted )
+  QString outputFileName = QFileDialog::getSaveFileName(
+                             this,
+                             tr( "Choose a file name to save the map as" ),
+                             file.path(),
+                             tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  if ( outputFileName.isEmpty() )
     return;
 
-  QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
-  if ( myOutputFileNameQString == "" )
+  if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
   {
-    return;
+    outputFileName += ".pdf";
   }
 
-  if ( !myOutputFileNameQString.endsWith( ".pdf", Qt::CaseInsensitive ) )
-  {
-    myOutputFileNameQString.append( ".pdf" );
-  }
-
-  myQSettings.setValue( "/UI/lastSaveAsPdfFile", myOutputFileNameQString );
+  myQSettings.setValue( "/UI/lastSaveAsPdfFile", outputFileName );
 
   QPrinter printer;
-
   printer.setOutputFormat( QPrinter::PdfFormat );
-  printer.setOutputFileName( myOutputFileNameQString );
+  printer.setOutputFileName( outputFileName );
   printer.setPaperSize( QSizeF( mComposition->paperWidth(), mComposition->paperHeight() ), QPrinter::Millimeter );
 
   QPaintEngine *engine = printer.paintEngine();
@@ -697,93 +687,12 @@ void QgsComposer::on_mActionExportAsImage_triggered()
       return;
   }
 
-  // Get file and format (stolen from qgisapp.cpp but modified significantely)
+  QPair<QString, QString> fileNExt = QgisGui::getSaveAsImageName( this, tr( "Choose a file name to save the map image as" ) );
 
-  //create a map to hold the QImageIO names and the filter names
-  //the QImageIO name must be passed to the mapcanvas saveas image function
-  typedef QMap<QString, QString> FilterMap;
-  FilterMap myFilterMap;
+  QgsDebugMsg( QString( "Selected filter: %1" ).arg( fileNExt.first ) );
+  QgsDebugMsg( QString( "Image type: %1" ).arg( fileNExt.second ) );
 
-  //find out the last used filter
-  QSettings myQSettings;  // where we keep last used filter in persistent state
-  QString myLastUsedFormat = myQSettings.value( "/UI/lastSaveAsImageFormat", "png" ).toString();
-  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsImageFile", "qgis.png" ).toString();
-  QFileInfo file( myLastUsedFile );
-
-  // get a list of supported output image types
-  int myCounterInt = 0;
-  QString myFilters;
-  QString myLastUsedFilter;
-  for ( ; myCounterInt < QImageWriter::supportedImageFormats().count(); myCounterInt++ )
-  {
-    QString myFormat = QString( QImageWriter::supportedImageFormats().at( myCounterInt ) );
-    QString myFilter = tr( "%1 format (*.%2 *.%3)" )
-                       .arg( myFormat ).arg( myFormat.toLower() ).arg( myFormat.toUpper() );
-
-    if ( myCounterInt > 0 )
-      myFilters += ";;";
-    myFilters += myFilter;
-    myFilterMap[myFilter] = myFormat;
-    if ( myFormat == myLastUsedFormat )
-    {
-      myLastUsedFilter = myFilter;
-    }
-  }
-#ifdef QGISDEBUG
-  QgsDebugMsg( "Available Filters Map: " );
-  FilterMap::Iterator myIterator;
-  for ( myIterator = myFilterMap.begin(); myIterator != myFilterMap.end(); ++myIterator )
-  {
-    QgsDebugMsg( QString( "%1  :  %2" ).arg( myIterator.key() ).arg( myIterator.value() ) );
-  }
-#endif
-
-  //create a file dialog using the the filter list generated above
-  std::auto_ptr < QFileDialog > myQFileDialog(
-    new QFileDialog(
-      this,
-      tr( "Choose a file name to save the map image as" ),
-      file.path(),
-      myFilters
-    )
-  );
-
-  myQFileDialog->setFileMode( QFileDialog::AnyFile );
-  myQFileDialog->setConfirmOverwrite( true );
-
-  // set the filter to the last one used
-  myQFileDialog->selectFilter( myLastUsedFilter );
-
-  // set the 'Open' button to something that makes more sense
-  myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-
-  //prompt the user for a file name
-  QString myOutputFileNameQString;
-
-  int result = myQFileDialog->exec();
-  //raise();
-
-  if ( result != QDialog::Accepted )
-  {
-    return;
-  }
-
-  myOutputFileNameQString = myQFileDialog->selectedFiles().last();
-  QgsDebugMsg( myOutputFileNameQString );
-  QString myFilterString = myQFileDialog->selectedFilter();
-  QgsDebugMsg( QString( "Selected filter: %1" ).arg( myFilterString ) );
-  QgsDebugMsg( QString( "Image type: %1" ).arg( myFilterMap[myFilterString] ) );
-
-  // Add the file type suffix to the fileName if required
-  if ( !myOutputFileNameQString.endsWith( myFilterMap[myFilterString] ) )
-  {
-    myOutputFileNameQString += "." + myFilterMap[myFilterString];
-  }
-
-  myQSettings.setValue( "/UI/lastSaveAsImageFormat", myFilterMap[myFilterString] );
-  myQSettings.setValue( "/UI/lastSaveAsImageFile", myOutputFileNameQString );
-
-  if ( myOutputFileNameQString == "" )
+  if ( fileNExt.first.isEmpty() )
     return;
 
   QImage image( QSize( width, height ), QImage::Format_ARGB32 );
@@ -809,7 +718,7 @@ void QgsComposer::on_mActionExportAsImage_triggered()
   p.end();
   mComposition->setPlotStyle( QgsComposition::Preview );
   mView->setPaintingEnabled( true );
-  image.save( myOutputFileNameQString, myFilterMap[myFilterString].toLocal8Bit().data() );
+  image.save( fileNExt.first, fileNExt.second.toLocal8Bit().constData() );
 }
 
 
@@ -820,10 +729,10 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     showWMSPrintingWarning();
   }
 
-  QString myQSettingsLabel = "/UI/displaySVGWarning";
-  QSettings myQSettings;
+  QString settingsLabel = "/UI/displaySVGWarning";
+  QSettings settings;
 
-  bool displaySVGWarning = myQSettings.value( myQSettingsLabel, true ).toBool();
+  bool displaySVGWarning = settings.value( settingsLabel, true ).toBool();
 
   if ( displaySVGWarning )
   {
@@ -832,7 +741,7 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
     m->setCheckBoxText( tr( "Don't show this message again" ) );
     m->setCheckBoxState( Qt::Unchecked );
     m->setCheckBoxVisible( true );
-    m->setCheckBoxQSettingsLabel( myQSettingsLabel );
+    m->setCheckBoxQSettingsLabel( settingsLabel );
     m->setMessageAsHtml( tr( "<p>The SVG export function in Qgis has several "
                              "problems due to bugs and deficiencies in the " )
                          + tr( "Qt4 svg code. In particular, there are problems "
@@ -845,39 +754,31 @@ void QgsComposer::on_mActionExportAsSVG_triggered()
                                "</p>" ) );
     m->exec();
   }
-  QString myLastUsedFile = myQSettings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
-  QFileInfo file( myLastUsedFile );
-  QFileDialog *myQFileDialog = new QFileDialog( this, tr( "Choose a file name to save the map as" ),
-      file.path(), tr( "SVG Format" ) + " (*.svg *SVG)" );
-  myQFileDialog->selectFile( file.fileName() );
-  myQFileDialog->setFileMode( QFileDialog::AnyFile );
-  myQFileDialog->setConfirmOverwrite( true );
-  myQFileDialog->setAcceptMode( QFileDialog::AcceptSave );
 
-  int result = myQFileDialog->exec();
-  raise();
-  if ( result != QDialog::Accepted )
+  QString lastUsedFile = settings.value( "/UI/lastSaveAsSvgFile", "qgis.svg" ).toString();
+  QFileInfo file( lastUsedFile );
+
+  QString outputFileName = QFileDialog::getSaveFileName(
+                             this,
+                             tr( "Choose a file name to save the map as" ),
+                             file.path(),
+                             tr( "SVG Format" ) + " (*.svg *.SVG)" );
+  if ( outputFileName.isEmpty() )
     return;
 
-  QString myOutputFileNameQString = myQFileDialog->selectedFiles().first();
-  if ( myOutputFileNameQString == "" )
+  if ( !outputFileName.endsWith( ".svg", Qt::CaseInsensitive ) )
   {
-    return;
+    outputFileName += ".svg";
   }
 
-  if ( !myOutputFileNameQString.endsWith( ".svg", Qt::CaseInsensitive ) )
-  {
-    myOutputFileNameQString.append( ".svg" );
-  }
-
-  myQSettings.setValue( "/UI/lastSaveAsSvgFile", myOutputFileNameQString );
+  settings.setValue( "/UI/lastSaveAsSvgFile", outputFileName );
   mComposition->setPlotStyle( QgsComposition::Print );
 
   QSvgGenerator generator;
 #if QT_VERSION >= 0x040500
   generator.setTitle( QgsProject::instance()->title() );
 #endif
-  generator.setFileName( myOutputFileNameQString );
+  generator.setFileName( outputFileName );
   //width in pixel
   int width = ( int )( mComposition->paperWidth() * mComposition->printResolution() / 25.4 );
   //height in pixel
@@ -976,11 +877,13 @@ void QgsComposer::on_mActionSaveAsTemplate_triggered()
   //show file dialog
   QSettings settings;
   QString lastSaveDir = settings.value( "UI/lastComposerTemplateDir", "" ).toString();
-  QString saveFileName = QFileDialog::getSaveFileName( 0, tr( "save template" ), lastSaveDir, "*.qpt" );
+  QString saveFileName = QFileDialog::getSaveFileName(
+                           this,
+                           tr( "Save template" ),
+                           lastSaveDir,
+                           tr( "Composer templates" ) + " (*.qpt *.QPT)" );
   if ( saveFileName.isEmpty() )
-  {
     return;
-  }
 
   QFileInfo saveFileInfo( saveFileName );
   //check if suffix has been added
