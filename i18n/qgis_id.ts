@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/gui/symbology-ng/characterwidget.cpp" line="111"/>
         <source>&lt;p&gt;Character: &lt;span style=&quot;font-size: 24pt; font-family: %1%2&lt;/span&gt;&lt;p&gt;Value: 0x%3&quot;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Karakter: &lt;span.style=&quot;font-size: 24pt; font-family: %1%2&lt;/span.&lt;p&gt;Value: 0x%3&quot;&gt;</translation>
     </message>
 </context>
 <context>
@@ -88,7 +88,7 @@
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="321"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="61"/>
         <source>Browse</source>
-        <translation type="unfinished">Navigasi</translation>
+        <translation>Navigasi</translation>
     </message>
     <message>
         <source>Help</source>
@@ -96,39 +96,39 @@
     </message>
     <message>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutup</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="16"/>
         <source>Extract Nodes</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekstrak Node</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="27"/>
         <source>Input line or polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Input lapisan vektor garis atau poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="41"/>
         <source>Tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Toleransi</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="86"/>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="55"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="35"/>
         <source>Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>ID field yang unik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeometry.ui" line="110"/>
         <source>Output point shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran titik shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="20"/>
         <source>Geoprocessing</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoprocessing</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="28"/>
@@ -136,32 +136,32 @@
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="25"/>
         <location filename="../python/plugins/fTools/tools/frmVectorSplit.ui" line="25"/>
         <source>Input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="60"/>
         <source>Intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan perpotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="94"/>
         <source>Buffer distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak penyangga</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="134"/>
         <source>Buffer distance field</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak penyangga field</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="141"/>
         <source>Dissolve field</source>
-        <translation type="unfinished"></translation>
+        <translation>Dissolve filed</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="189"/>
         <source>Dissolve buffer results</source>
-        <translation type="unfinished"></translation>
+        <translation>Hasil dissolve penyangga</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="213"/>
@@ -169,38 +169,38 @@
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="78"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="305"/>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="262"/>
         <source>Segments to approximate</source>
-        <translation type="unfinished"></translation>
+        <translation>Perkiraan segmen</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="16"/>
         <source>Locate Line Intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan Garis Perpotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="27"/>
         <source>Input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan lapisan garis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="41"/>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="41"/>
         <source>Input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan ID field yang unik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="55"/>
         <source>Intersect line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan garis yang berpotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="69"/>
         <source>Intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>ID field unik yang berpotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmIntersectLines.ui" line="96"/>
@@ -211,273 +211,275 @@
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="161"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="61"/>
         <source>Output Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran shapefile</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="28"/>
         <source>Target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan vektor target</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="42"/>
         <source>Join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan vektor yang digabungkan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="188"/>
         <source>Output table</source>
-        <translation type="unfinished"></translation>
+        <translation>Hasil/keluaran tabel</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="194"/>
         <source>Only keep matching records</source>
-        <translation type="unfinished"></translation>
+        <translation>Hanya menyimpan catatan yang sesuai</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="204"/>
         <source>Keep all records (including non-matching target records)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan semua catatan (termasuk catatan target yang tidak sesuai)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="16"/>
         <source>Generate Centroids</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat Sentroid</translation>
     </message>
     <message>
         <source>creating new selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Membeuat pemilihan baru</translation>
     </message>
     <message>
         <source>adding to current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkannya ke pemilihan saat ini</translation>
     </message>
     <message>
         <source>removing from current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghilangkan dari pemilihan saat ini</translation>
     </message>
     <message>
         <source>Select by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih berdasarkan lokasi</translation>
     </message>
     <message>
         <source>Select features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih fitur dalam:</translation>
     </message>
     <message>
         <source>that intersect features in:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur yang berpotongan pada:</translation>
     </message>
     <message>
         <source>Modify current selection by:</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifikasi pemilihan saat ini berdasarkan:</translation>
     </message>
     <message>
         <source>Use selected features only</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan fitur yang dipilih saja</translation>
     </message>
     <message>
         <source>Please specify input layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan lapisan input</translation>
     </message>
     <message>
         <source>Please specify select layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan lapisan yang dipilih</translation>
     </message>
     <message>
         <source>Incorrect field names</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama field tidak benar</translation>
     </message>
     <message>
         <source>No output will be created.
 Following field names are longer than 10 characters:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada hasil/keluaran yang akan di buat.
+Nama filednya lebih dari 10 karakter
+%1</translation>
     </message>
     <message>
         <source>Error deleting shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan menghapus shafile</translation>
     </message>
     <message>
         <source>Can&apos;t delete existing shapefile
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menghapus shapefile yang ada</translation>
     </message>
     <message>
         <source>Sum line lengths</source>
-        <translation type="unfinished"></translation>
+        <translation>Total panjang garis</translation>
     </message>
     <message>
         <source>Sum Line Lengths In Polyons</source>
-        <translation type="unfinished"></translation>
+        <translation>Total panjang garis dalam poligon</translation>
     </message>
     <message>
         <source>Select directory with shapefiles to merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori dengan shafiles yang akan digabungkan</translation>
     </message>
     <message>
         <source>No shapefiles found</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile tidak ditemukan</translation>
     </message>
     <message>
         <source>There are no shapefiles in this directory. Please select another one.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada shapefile yang ditemukan dalam direktori ini. Silahkan untuk memilih direktori lainnay.</translation>
     </message>
     <message>
         <source>Delete error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan dalam menghapus</translation>
     </message>
     <message>
         <source>Can&apos;t delete file %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menghapus arsip %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <source>Merging</source>
-        <translation type="unfinished"></translation>
+        <translation>Menggabungkan</translation>
     </message>
     <message>
         <source>Please specify input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menentukan masukan lapisan vektor poligon</translation>
     </message>
     <message>
         <source>Please specify input line vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menentukan masukan lapisan vektor garis</translation>
     </message>
     <message>
         <source>Please specify output length field</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menentukan panjang field dari keluaran/output</translation>
     </message>
     <message>
         <source>length field</source>
-        <translation type="unfinished"></translation>
+        <translation>Panjang field</translation>
     </message>
     <message>
         <source>Random selection within subsets</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemilihan acak dalam subset</translation>
     </message>
     <message>
         <source>Select files to merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip untuk digabungkan</translation>
     </message>
     <message>
         <source>Input files</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan arsip</translation>
     </message>
     <message>
         <source>No output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada arsip keluaran</translation>
     </message>
     <message>
         <source>Please specify output file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan arsip keluaran.</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan input lapisan vektor</translation>
     </message>
     <message>
         <source>Please specify an input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan input field</translation>
     </message>
     <message>
         <source>Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik acak</translation>
     </message>
     <message>
         <source>unstratified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat dipilah-pilah</translation>
     </message>
     <message>
         <source>stratified</source>
-        <translation type="unfinished"></translation>
+        <translation>Dapat dipilah-pilah</translation>
     </message>
     <message>
         <source>density</source>
-        <translation type="unfinished"></translation>
+        <translation>Kerapatan</translation>
     </message>
     <message>
         <source>field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field</translation>
     </message>
     <message>
         <source>Unknown layer type...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipe lapisan tidak diketahui...</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="41"/>
         <source>Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>Bobot field</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="69"/>
         <source>Number of standard deviations</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah standar diviasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMeanCoords.ui" line="76"/>
         <source>Std. Dev.</source>
-        <translation type="unfinished"></translation>
+        <translation>Std. Dev.</translation>
     </message>
     <message>
         <source>Regular points</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik reguler</translation>
     </message>
     <message>
         <source>Please properly specify extent coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan dengan benar luasan koordinat</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="16"/>
         <source>Create Distance Matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat Jarak Matriks</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="27"/>
         <source>Input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan lapisan titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="55"/>
         <source>Target point layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan titik target</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="69"/>
         <source>Target unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Target ID field unik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="81"/>
         <source>Output matrix type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipe matriks keluaran</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="87"/>
         <source>Linear (N*k x 3) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Linier (N*k x 3) jarak matriks</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="97"/>
         <source>Standard (N x T) distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Standar (N x T) jarak matriks</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="104"/>
         <source>Summary distance matrix (mean, std. dev., min, max)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ringkasan jarak matriks (rata-rata, standar deviasi, minimum, maksimum)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="111"/>
         <source>Use only the nearest (k) target points</source>
-        <translation type="unfinished"></translation>
+        <translation>Hanya gunakan titik target terdekat (k)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointDistance.ui" line="149"/>
         <source>Output distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak matriks keluaran</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmGeoprocessing.ui" line="49"/>
@@ -485,269 +487,280 @@ Following field names are longer than 10 characters:
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="40"/>
         <location filename="../python/plugins/fTools/tools/frmVisual.ui" line="42"/>
         <source>Use only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Hanya gunakan fitur yang dipilih</translation>
     </message>
     <message>
         <source>Line intersections</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis yang berpotongan</translation>
     </message>
     <message>
         <source>Please specify input line layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan masukan lapisan garis</translation>
     </message>
     <message>
         <source>Please specify output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan shapefile keluaran</translation>
     </message>
     <message>
         <source>Please specify line intersect layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan lapisan garis yang berpotongan</translation>
     </message>
     <message>
         <source>Please specify input unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan masukan ID field yang unik</translation>
     </message>
     <message>
         <source>Please specify intersect unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan ID field yang unik yang berpotongan</translation>
     </message>
     <message>
         <source>Created output point shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat keluaran shapefile titik
+%1
+
+Apakah anda ingin menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Export to new projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport proyeksi baru</translation>
     </message>
     <message>
         <source>No input layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lapisan input yang ditentukan</translation>
     </message>
     <message>
         <source>Define current projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan proyeksi saat ini</translation>
     </message>
     <message>
         <source>Please specify spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan sistem referensi spasial</translation>
     </message>
     <message>
         <source>No Valid CRS selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada CRS yang benar yang dipilih</translation>
     </message>
     <message>
         <source>Output spatial reference system is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem referensi spasial keluaran tidak benar</translation>
     </message>
     <message>
         <source>Please specify target vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menetukan lapisan vektor target</translation>
     </message>
     <message>
         <source>Please specify join vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menentukan lapisan vektor yang digabungkan</translation>
     </message>
     <message>
         <source>Created output shapefile:
 %1
 
 Would you like to add the new layer to the TOC?</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat shapefile keluaran:
+%1
+
+Apakah anda ingin untuk menambahkan lapisan baru ke TOC?</translation>
     </message>
     <message>
         <source>Mean coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat rata-rata</translation>
     </message>
     <message>
         <source>Standard distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak standar</translation>
     </message>
     <message>
         <source>(Optional) Weight field</source>
-        <translation type="unfinished"></translation>
+        <translation>(Opsional) Bobot field</translation>
     </message>
     <message>
         <source>(Optional) Unique ID field</source>
-        <translation type="unfinished"></translation>
+        <translation>(Opsional) ID field unik</translation>
     </message>
     <message>
         <source>Coordinate statistics</source>
-        <translation type="unfinished"></translation>
+        <translation>Statistik koordinat</translation>
     </message>
     <message>
         <source>No input vector layer specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak input lapisan vektor yang ditentukan</translation>
     </message>
     <message>
         <source>Join attributes by location</source>
-        <translation type="unfinished"></translation>
+        <translation>Menggabungkan attribut berdasarkan lokasi</translation>
     </message>
     <message>
         <source>Please specify at least one summary statistic</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan paling tidak satu ringkasan statistik</translation>
     </message>
     <message>
         <source>CRS warning!</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan CRS!</translation>
     </message>
     <message>
         <source>Warning: Input layers have non-matching CRS.
 This may cause unexpected results.</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan: Lapisan input tidak memiliki CRS yang cocok
+Hai ini mungkin mengakibatkan hasil yang tidak diinginkan.</translation>
     </message>
     <message>
         <source>Summary field</source>
-        <translation type="unfinished"></translation>
+        <translation>Ringkasan field</translation>
     </message>
     <message>
         <source>Vector grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid vektor</translation>
     </message>
     <message>
         <source>Please specify valid extent coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan luasan koordinat yang tepat</translation>
     </message>
     <message>
         <source>Invalid extent coordinates entered</source>
-        <translation type="unfinished"></translation>
+        <translation>Luasan koordinat yang dimasukan tidak benar</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="17"/>
         <source>Generate Vector Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat Grid Vektor</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="16"/>
         <source>Count Points In Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitung jumlah poin dalam poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="27"/>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="90"/>
         <source>Input polygon vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukkan lapisan vektor poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="41"/>
         <source>Input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan lapisan vektor titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="55"/>
         <source>Output count field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran menghitung nama field</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmPointsInPolygon.ui" line="62"/>
         <source>PNTCNT</source>
-        <translation type="unfinished"></translation>
+        <translation>PntCnt</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="17"/>
         <source>Generate Random Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat titik secara acak</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="32"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="32"/>
         <source>Input Boundary Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukkan lapisan batas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="42"/>
         <source>Sample Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran sampel</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="55"/>
         <source>Unstratified Sampling Design (Entire layer)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desain sampel yang tidak dipilah-pilah (Semua lapisan)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="64"/>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="105"/>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="149"/>
         <source>Use this number of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan jumlah titik ini</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="96"/>
         <source>Stratified Sampling Design (Individual polygons)</source>
-        <translation type="unfinished"></translation>
+        <translation>Desain sampel yang dipilah-pilah (poligon tertentu)</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="129"/>
         <source>Use this density of points</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan kerapatan titik ini</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandPoints.ui" line="162"/>
         <source>Use value from input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan nilai dari field input</translation>
     </message>
     <message>
         <source>No input shapefile specified</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada input shapefile yang ditentukan</translation>
     </message>
     <message>
         <source>Cannot define projection for PostGIS data...yet!</source>
-        <translation type="unfinished"></translation>
+        <translation>Belum dapat menentukan proyeksi data untuk PostGis!</translation>
     </message>
     <message>
         <source>Identical output spatial reference system chosen
 
 Are you sure you want to proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran sistem referensi koordinat yang dipilih sama
+
+Apakah anda yakin akan melanjutkan?</translation>
     </message>
     <message>
         <source>Defined Projection For:
 %1.shp</source>
-        <translation type="unfinished"></translation>
+        <translation>Menentukan Proyeksi Untuk:
+%1.shp</translation>
     </message>
     <message>
         <source>Please select the projection system that defines the current layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan pilih sistem proyeksi yang ditentukan pada lapisan ini.</translation>
     </message>
     <message>
         <source>Layer CRS information will be updated to the selected CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi lapisan CRS akan diperbarui sesuai dengan CRS yang dipilih.</translation>
     </message>
     <message>
         <source>Split vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Membagi lapisan vektor</translation>
     </message>
     <message>
         <source>Created output shapefiles in folder:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat keluaran shapefile dalam folder:
+%1</translation>
     </message>
     <message>
         <source>Random selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemilihan secara acak</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRandom.ui" line="14"/>
         <source>Random Selection Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat untuk pemilihan secara acak</translation>
     </message>
     <message>
         <source>Count Points in Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitung Titik dalam Poligon</translation>
     </message>
     <message>
         <source>Count Points In Polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitung Titik dalam Poligon</translation>
     </message>
     <message>
         <source>Please specify input point vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menentukan input lapisan vektor berupa titik</translation>
     </message>
     <message>
         <source>Please specify output count field</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Silahkan menentukan keluaran filed yang dihitung</translation>
     </message>
     <message>
         <source>point count field</source>
@@ -850,71 +863,71 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="74"/>
         <source>Choose</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="83"/>
         <source>Import spatial reference system from existing layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor sistem referensi spasial dari lapisan yang sudah ada</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmReProject.ui" line="100"/>
         <source>Import spatial reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor sistem referensi spasial</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="17"/>
         <source>Generate Regular Points</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat Titik Reguler</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="26"/>
         <source>Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Luas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="45"/>
         <source>Input Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Input koordinat</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="52"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="66"/>
         <source>X Min</source>
-        <translation type="unfinished"></translation>
+        <translation>X Min</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="66"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="93"/>
         <source>Y Min</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="80"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="120"/>
         <source>X Max</source>
-        <translation type="unfinished"></translation>
+        <translation>X Max</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="94"/>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="147"/>
         <source>Y Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Max</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="111"/>
         <source>Grid Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak Grid</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="119"/>
         <source>Use this point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan jarak titik ini</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="171"/>
         <source>Apply random offset to point spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Berlakukan ofset secara acak untuk jarak titiknya</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmRegPoints.ui" line="191"/>
@@ -924,12 +937,12 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="17"/>
         <source>Spatial Join</source>
-        <translation type="unfinished"></translation>
+        <translation>Penggabungan Spasial</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="54"/>
         <source>Attribute Summary</source>
-        <translation type="unfinished"></translation>
+        <translation>Ringkasan Attribut</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="60"/>
@@ -944,7 +957,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="93"/>
         <source>Mean</source>
-        <translation type="unfinished">Rata-rata</translation>
+        <translation>Rata-rata</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSpatialJoin.ui" line="106"/>
@@ -989,7 +1002,7 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="34"/>
         <source>LENGTH</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Panjang</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSumLines.ui" line="127"/>
@@ -1094,27 +1107,27 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="37"/>
         <source>Polygon</source>
-        <translation type="unfinished">Poligon</translation>
+        <translation>Poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="42"/>
         <source>Line</source>
-        <translation type="unfinished">Garis</translation>
+        <translation>Garis</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="47"/>
         <source>Point</source>
-        <translation type="unfinished">Titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="57"/>
         <source>Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Input Direktori</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmMergeShapes.ui" line="99"/>
         <source>Add result to map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tambahkan hasil ke kanvas peta</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="17"/>
@@ -1134,12 +1147,12 @@ were reduced to %2 vertices after simplification</source>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="76"/>
         <source>Save to new file</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan ke file baru</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmSimplify.ui" line="105"/>
         <source>Add result to canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan hasil ke kanvas</translation>
     </message>
 </context>
 <context>
@@ -3104,17 +3117,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="25"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="54"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Arsip</translation>
+        <translation>&amp;Arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="58"/>
         <source>&amp;Open Recent Projects</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka Proyek yang belakangan dibuka</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="63"/>
@@ -3124,17 +3137,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="82"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;Tampak</translation>
+        <translation>&amp;Tampilan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="86"/>
         <source>Select</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="97"/>
         <source>Measure</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Ukur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="127"/>
@@ -3144,197 +3157,197 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="131"/>
         <source>New</source>
-        <translation type="unfinished">Baru</translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="165"/>
         <source>&amp;Settings</source>
-        <translation type="unfinished">&amp;Tentuan</translation>
+        <translation>&amp;Pengaturan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="176"/>
         <source>&amp;Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Plugins</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="184"/>
         <source>&amp;Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="190"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Bantuan</translation>
+        <translation>&amp;Bantuan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="213"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="230"/>
         <source>Manage Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyusun Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="248"/>
         <source>Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="270"/>
         <source>Advanced Digitizing</source>
-        <translation type="unfinished"></translation>
+        <translation>Digitasi Lanjutan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="293"/>
         <source>Map Navigation</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigasi Peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="314"/>
         <source>Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Attribute</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="331"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugins</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="342"/>
         <source>Help</source>
-        <translation type="unfinished">Bantuan</translation>
+        <translation>Bantuan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="354"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="367"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="386"/>
         <source>&amp;New Project</source>
-        <translation type="unfinished">Proyek &amp;Baru</translation>
+        <translation>&amp;Proyek Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="389"/>
         <source>Ctrl+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="398"/>
         <source>&amp;Open Project...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Buka Proyek...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="401"/>
         <source>Ctrl+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="410"/>
         <source>&amp;Save Project</source>
-        <translation type="unfinished">&amp;Simpan Proyek</translation>
+        <translation>&amp;Simpan Proyek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="413"/>
         <source>Ctrl+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="422"/>
         <source>Save Project &amp;As...</source>
-        <translation type="unfinished">S&amp;impan Proyek sbg...</translation>
+        <translation>Simpan Proyek Sebagai...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="425"/>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="434"/>
         <source>Save as Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai Gambar...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="443"/>
         <source>&amp;New Print Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Print Composer Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="446"/>
         <source>Ctrl+P</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="455"/>
         <source>Composer manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan Composer...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="464"/>
         <source>Exit</source>
-        <translation type="unfinished">Keluar</translation>
+        <translation>Keluar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="467"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="479"/>
         <source>&amp;Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Undo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="482"/>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="491"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Redo</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="494"/>
         <source>Ctrl+Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Z</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="503"/>
         <source>Cut Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Potong Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="506"/>
         <source>Ctrl+X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="515"/>
         <source>Copy Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Salin Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="518"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="527"/>
         <source>Paste Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempel Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="530"/>
         <source>Ctrl+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="542"/>
@@ -3344,7 +3357,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="545"/>
         <source>Ctrl+.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="557"/>
@@ -3354,7 +3367,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="560"/>
         <source>Ctrl+/</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="572"/>
@@ -3364,42 +3377,42 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="575"/>
         <source>Ctrl+?</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="587"/>
         <source>Move Feature(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="599"/>
         <source>Reshape Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Penajaman Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Split Features</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bagi Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="620"/>
         <source>Delete Selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="632"/>
         <source>Add Ring</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tambahkan Lingkaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="644"/>
         <source>Add Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Bagian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="656"/>
         <source>Simplify Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyederhanaan Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="668"/>
@@ -3414,12 +3427,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="689"/>
         <source>Merge selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Gabungkan fitur yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="698"/>
         <source>Merge attributes of selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Gabungkan atribut dari fitur yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="710"/>
@@ -3429,7 +3442,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="722"/>
         <source>Rotate Point Symbols</source>
-        <translation type="unfinished"></translation>
+        <translation>Putar Simbol Titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="727"/>
@@ -3444,27 +3457,27 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="751"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="754"/>
         <source>Ctrl++</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl++</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="766"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Perkecil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="769"/>
         <source>Ctrl+-</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="781"/>
         <source>Select single feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih fitur tunggal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="793"/>
@@ -6554,12 +6567,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4821"/>
         <source>Unable to get current version information from server</source>
-        <translation type="unfinished">Gagal memperoleh informasi versi aktual dari server</translation>
+        <translation>Gagal memperoleh informasi versi aktual dari server</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4835"/>
         <source>Connection refused - server may be down</source>
-        <translation type="unfinished">Permintaan koneksi ditolak - Mungkin saat ini server lagi mati</translation>
+        <translation>Permintaan koneksi ditolak - Mungkin saat ini server sedang mati</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4838"/>
@@ -6606,7 +6619,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1676"/>
         <source>Map legend that displays all the layers currently on the map canvas. Click on the check box to turn a layer on or off. Double click on a layer in the legend to customize its appearance and set other properties.</source>
-        <translation type="unfinished">Legenda Peta melampilkan semua lapisan-lapisan yang ada pada kanvas. Klik pada pada kotak untuk mengaktifkan atau menonaktifkan lapisan. Klik dua kali pada lapisan di legenda untuk menyesuaikan tampilan dan mengatur properti lainnya.</translation>
+        <translation>Legenda Peta melampilkan semua lapisan-lapisan yang ada pada kanvas. Klik pada pada kotak untuk mengaktifkan atau menonaktifkan lapisan. Klik dua kali pada lapisan di legenda untuk menyesuaikan tampilan dan mengatur properti lainnya.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1606"/>
@@ -6643,57 +6656,57 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="2867"/>
         <location filename="../src/app/qgisapp.cpp" line="2929"/>
         <source>QGis files (*.qgs)</source>
-        <translation type="unfinished">Arsip-arsip QGIS (*.qgs)</translation>
+        <translation>Arsip-arsip QGIS (*.qgs)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2866"/>
         <source>Choose a QGIS project file</source>
-        <translation type="unfinished">Memilih arsip proyek QGIS</translation>
+        <translation>Memilih arsip proyek QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1258"/>
         <source>Toggle map rendering</source>
-        <translation type="unfinished">Beralih menggambarkan peta</translation>
+        <translation>Toggle untuk menggambarkan peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2726"/>
         <source>Choose a QGIS project file to open</source>
-        <translation type="unfinished">Pilih arsip proyek QGIS untuk dibuka</translation>
+        <translation>Pilih arsip proyek QGIS untuk dibuka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="406"/>
         <source>Reading settings</source>
-        <translation type="unfinished">Membaca pengaturan</translation>
+        <translation>Pengaturan pembacaan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="409"/>
         <source>Setting up the GUI</source>
-        <translation type="unfinished">Mengatur GUI</translation>
+        <translation>Mengatur GUI</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="401"/>
         <source>Checking database</source>
-        <translation type="unfinished">Memeriksa Database</translation>
+        <translation>Memeriksa Basisdata</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="487"/>
         <source>Restoring loaded plugins</source>
-        <translation type="unfinished">Mengembalikan plugin-plugin yang di muat</translation>
+        <translation>Mengembalikan plugin-plugin yang di muat</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="506"/>
         <source>Initializing file filters</source>
-        <translation type="unfinished">Memulai memnyaring arsip-arsip</translation>
+        <translation>Memulai menyaring arsip-arsip</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="534"/>
         <source>Restoring window state</source>
-        <translation type="unfinished">Memulihkan kondisi jendela</translation>
+        <translation>Memulihkan kondisi jendela</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="538"/>
         <source>QGIS Ready!</source>
-        <translation>QGIS Siap Digunakan</translation>
+        <translation>QGIS Siap Digunakan!</translation>
     </message>
     <message>
         <source>&amp;New Project</source>
@@ -6808,7 +6821,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="476"/>
         <source>Checking provider plugins</source>
-        <translation type="unfinished">Memeriksa penyedia plugin</translation>
+        <translation>Memeriksa penyedia plugin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="480"/>
@@ -6818,12 +6831,12 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3495"/>
         <source>Provider does not support deletion</source>
-        <translation type="unfinished">Penyedia tidak mendukung penghapusan</translation>
+        <translation>Penyedia tidak mendukung penghapusan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3496"/>
         <source>Data provider does not support deleting features</source>
-        <translation type="unfinished">Penyedia data tidak mendukung penghapusan fitur-fitur</translation>
+        <translation>Penyedia data tidak mendukung penghapusan fitur-fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3502"/>
@@ -6835,7 +6848,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1223"/>
         <source>Scale </source>
-        <translation type="unfinished"></translation>
+        <translation>Skala</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1239"/>
@@ -6845,7 +6858,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5503"/>
         <source>Map coordinates at mouse cursor position</source>
-        <translation type="unfinished">Koordinat peta pada lokasi penunjuk mouse</translation>
+        <translation>Koordinat peta pada lokasi penunjuk mouse</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="273"/>
@@ -6856,7 +6869,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="1717"/>
         <location filename="../src/app/qgisapp.cpp" line="1759"/>
         <source>Private qgis.db</source>
-        <translation type="unfinished">Pribadi qgis.db</translation>
+        <translation>qgis.db pribadi</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1717"/>
@@ -6867,13 +6880,13 @@ You are seeing this message most likely because you have no DISPLAY environment 
         <location filename="../src/app/qgisapp.cpp" line="1759"/>
         <source>Migration of private qgis.db failed.
 %1</source>
-        <translation type="unfinished">Pemindahan pribadi qgis.db gagal
+        <translation>Pemindahan qgis,db pribadi gagal
 %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2611"/>
         <source>Save As</source>
-        <translation type="unfinished">Simpan sebagai</translation>
+        <translation>Simpan sebagai</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2701"/>
@@ -6981,7 +6994,7 @@ You are seeing this message most likely because you have no DISPLAY environment 
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6539"/>
         <source>Enter a name for the new bookmark:</source>
-        <translation type="unfinished">Masukkan nama untuk penunjuk halaman baru:</translation>
+        <translation>Masukkan nama untuk penunjuk halaman baru:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="920"/>
@@ -7073,7 +7086,7 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="831"/>
         <source>Minimizes the active window to the dock</source>
-        <translation type="unfinished">Mengecilkan halaman yang aktif de dalam galangan</translation>
+        <translation>Mengecilkan halaman yang aktif de dalam galangan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="834"/>
@@ -7093,12 +7106,12 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="839"/>
         <source>Bring forward all open windows</source>
-        <translation type="unfinished">Teruskan semua jendela yang terbuka</translation>
+        <translation>Teruskan semua jendela yang terbuka</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="920"/>
         <source>Failed to open Python console:</source>
-        <translation type="unfinished">Gagal membukan Python:</translation>
+        <translation>Gagal membuka Python:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="992"/>
@@ -7108,7 +7121,7 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="993"/>
         <source>Toolbars</source>
-        <translation type="unfinished">Panel alat-alat</translation>
+        <translation>Panel alat-alat</translation>
     </message>
     <message>
         <source>New</source>
@@ -7117,7 +7130,7 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1047"/>
         <source>&amp;Window</source>
-        <translation type="unfinished">Jendela</translation>
+        <translation>&amp;Jendela</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1059"/>
@@ -7127,7 +7140,7 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1179"/>
         <source>Toggle extents and mouse position display</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggle luasan tampilan dan tampilan posisi mouse</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1192"/>
@@ -7143,7 +7156,7 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1207"/>
         <source>Shows the map coordinates at the current cursor position. The display is continuously updated as the mouse is moved. It also allows editing to set the canvas center to a given position.</source>
-        <translation type="unfinished">Tampilkan koordinat peta pada posisi saat ini. Tampilan terus menerus diperbarui sesuai dengan pergerakan mouse. Juga memungkinkan untuk mengedit bagian tengah canvas sesuai dengan koordinat yang diberikan.</translation>
+        <translation>Menampilkan koordinat peta pada posisi cursor saat ini. Tampilan diperbarui secara terus-menerus sesuai dengan pergerakan mouse. Juga memungkinkan untuk mengedit posisi bagian tengah canvas sesuai dengan koordinat yang diberikan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1211"/>
@@ -7153,7 +7166,7 @@ Silahkan menghubungi pengembangnya.
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1279"/>
         <source>This icon shows whether on the fly coordinate reference system transformation is enabled or not. Click the icon to bring up the project properties dialog to alter this behaviour.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ikon ini memperlihatkan apakah transformasi sistem koordinat referensi diaktifkan atau tidak. Klik ikon ini untuk mengembalikan dialog properti proyek untuk merubah perilaku ini.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1283"/>
@@ -7191,7 +7204,7 @@ Selalu abaikan kesalahan ini?</translation>
         <location filename="../src/app/qgisapp.cpp" line="1938"/>
         <source>
 This copy of QGIS writes debugging output.</source>
-        <translation type="unfinished">Salinan QGIS ini menulis hasil debugging.</translation>
+        <translation>Salinan QGIS ini menulis hasil debugging.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2173"/>
@@ -7213,7 +7226,7 @@ This copy of QGIS writes debugging output.</source>
         <source>
 GDAL/OGR Version: %1.</source>
         <translation>
-GDAL/OGR versi: %1</translation>
+GDAL/OGR versi: %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1924"/>
@@ -7279,12 +7292,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1961"/>
         <source>Export and import of styles (symbology-ng).</source>
-        <translation type="unfinished">Eksport dan import gaya (simbologi-ng).</translation>
+        <translation>Mengeksport dan mengimport style (simbologi-ng).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1962"/>
         <source>Labels for rules in rule-based renderers.</source>
-        <translation type="unfinished">Penggambaran label berdasarkan aturan di dalam aturan.</translation>
+        <translation>Penggambaran label berdasarkan aturan di dalam aturan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1963"/>
@@ -7294,12 +7307,12 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1964"/>
         <source>Rotation for svg fills.</source>
-        <translation type="unfinished">Perputaran untuk mengisi svg.</translation>
+        <translation>Perputaran untuk mengisi svg.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1965"/>
         <source>Font marker can have an X,Y offset.</source>
-        <translation type="unfinished">Penanda huruf bisa memiliki ofset X,Y.</translation>
+        <translation>Penanda huruf bisa memiliki ofset X,Y.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1966"/>
@@ -7329,7 +7342,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1971"/>
         <source>Move/rotate/change label edit tools to interactively change data defined label properties.</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat mengedit label untuk memindahkan/memutar/merubah untuk perubahan data interaktif yang ditentukan pada properti label.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1973"/>
@@ -7369,7 +7382,7 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1983"/>
         <source>Zoom to group of layers.</source>
-        <translation type="unfinished">Memperbesar ke grup lapisan tertentu.</translation>
+        <translation>Perbesar ke grup lapisan tertentu.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1984"/>
@@ -7389,42 +7402,42 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1988"/>
         <source>General clean-ups and usability improvements.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembersihan umum dan peningkatan penggunaan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1990"/>
         <source>CRS Handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Menangani CRS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1992"/>
         <source>Show active crs in status bar.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menampilkan crs yang aktif pada panel status.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1993"/>
         <source>Assign layer CRS to project (in the legend context menu).</source>
-        <translation type="unfinished"></translation>
+        <translation>Menentukan lapisan CRS pada proyek (dalam menu legenda).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1994"/>
         <source>Select default CRS for new projects.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memilih CRS standar untuk proyek baru.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1995"/>
         <source>Allow setting CRS for multiple layers at once.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan pengaturan CRS sekali untuk beberapa lapisan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1996"/>
         <source>Default to last selection when prompting for CRS.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemilihan standar sampai akhir ketika diminta untuk CRS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="1998"/>
         <source>Rasters</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2000"/>
@@ -7434,429 +7447,430 @@ QWT Version: %1.</source>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2001"/>
         <source>On-the-fly reprojection of rasters added!</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster yang di proyeksikan kembali secara on the fly telah ditambahkan!</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2002"/>
         <source>Proper implementation of raster providers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Implementasi yang tepat dari penyedia raster.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2003"/>
         <source>Added raster toolbar with histogram stretch functions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penambahkan panel alat raster dengan fungsi peregangan histogram.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2005"/>
         <source>Providers and Data Handling</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyedia dan Penanganan Data</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2007"/>
         <source>New SQLAnywhere vector provider.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyedia vector SQLAnywhere baru.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2008"/>
         <source>Table join support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel mendukung panggabungan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2009"/>
         <source>Feature form updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Blangko.untuk memperbarui fitur-fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2011"/>
         <source>Make NULL value string representation configurable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pernyataan yang dapat di konfigurasi untuk membuat nilai string NULL.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2012"/>
         <source>Fix feature updates in feature form from attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbaikan pembaruan fitur dalam blanko fitur untuk tabel atribut.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2013"/>
         <source>Add support for NULL values in value maps (comboboxes).</source>
-        <translation type="unfinished"></translation>
+        <translation>Penambahan dukungan untuk nilai NULL dalam nilai peta (comboboxes).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2014"/>
         <source>Use layer names instead of ids in drop down list when loading value maps from layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menggunakanan nama lapisan bukan id dalam daftar drop down menu ketika memuat nilai peta dari lapisan tersebut.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2015"/>
         <source>Support feature form expression fields: line edits on the form which name prefix &quot;expr_&quot; are evaluated. Their value is interpreted as field calculator string and replaced with the calculated value.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendukung blangko pernyataan pada field sebuah fitur: mengedit garis pada blanko yang nama depannya &quot;expre_&quot; telah di evaluasi. Nilainya diinterpretasikan dalam string pada field kalkulator dan digantikan dengan nilai hasil perhitungan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2016"/>
         <source>Support searching for NULL in attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendukung pencarian untuk nulai NULL pada attribut tabel.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2017"/>
         <source>Attribute editing improvements</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbaikan pengeditan attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2019"/>
         <source>Improved interactive attribute editing in table (adding/deleting features, attribute update).</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbaikan pengeditan attribut secara interaktif dalam tabel (menambahkan/menghapus fitur, perbarui fitur).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2020"/>
         <source>Allow adding of geometryless features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengizinkan untuk menambahkan fitur tanpa geometri.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2021"/>
         <source>Fixed attribute undo/redo.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memperbaiki attribut undo/redo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2022"/>
         <source>Improved attribute handling.</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbaikan menanganan attribut.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2024"/>
         <source>Optionally re-use entered attribute values for next digitized feature.</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsional untuk menggunakan kembali nilai attribut yang dimasukkan untuk fitur yang didigitasi kedepannya.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2025"/>
         <source>Allow merging/assigning attribute values to a set of features.</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan untuk menggabung/menempatkan nilai attribut ke dalam satu kumpulan fitur.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2026"/>
         <source>Allow OGR &apos;save as&apos; without attributes (for eg. DGN/DXF).</source>
-        <translation type="unfinished"></translation>
+        <translation>Memungkinkan OGR untuk &apos;menyimpan sebagai&apos; tanpa attribut (sebagai contoh .DGN/DXF).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2028"/>
         <source>Api and Developer Centric</source>
-        <translation type="unfinished"></translation>
+        <translation>Api dan Pengembang Centric</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2030"/>
         <source>Refactored attribute dialog calls to QgsFeatureAttribute.</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat kembali dialog attribut dengan memanggil QgsFeaturAttibute.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2031"/>
         <source>Added QgsVectorLayer::featureAdded signal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkan Qgs VectorLayer::featureAdded signal.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2032"/>
         <source>Layer menu function added.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penambahan fungsi menu lapisan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2033"/>
         <source>Added option to load c++ plugins from user  specified directories. Requires application restart to activate.</source>
-        <translation type="unfinished"></translation>
+        <translation>Penambahan pilihan untuk memuat plugin c++ dari direktori khusus yang ditentukan oleh pengguna. Harus di restrart untuk mengaktifkan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2036"/>
         <source>Completely new geometry checking tool for fTools. Significantly faster, more relevant error messages, and now supports zooming to errors. See the new QgsGeometry.validateGeometry function</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat yang benar-benar baru untuk memeriksa geometri untuk ftools. Secara signifikan lebih cepat, pesan kesalahan yang lebih relevan, dan sekarang mendukung perbesaran pada kesalahan tersebut. Lihat fungsi QgsGeometry.validateGeometry yang baru</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2040"/>
         <source>QGIS Mapserver</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS Mapserver</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2042"/>
         <source>Ability to specify wms service capabilities in the properties section of the project file (instead of wms_metadata.xml file).</source>
-        <translation type="unfinished"></translation>
+        <translation>Kemampuan untuk menentukna layanan wms pada bagian properti dari arsip proyek (bukan dari arsip wms_metadata.xml).</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2044"/>
         <source>Support for wms printing with GetPrint-Request.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendukung untuk mencetak wms dengan permintaan GetPrint.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2046"/>
         <source>Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2048"/>
         <source>Support for icons of plugins in the plugin manager dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendukung ikon dari plugin dalam dialog pengaturan plugin.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2049"/>
         <source>Removed quickprint plugin - use easyprint plugin rather from plugin repo.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghapus plugin quickprint - menggunakan plugin easyprint bukan dari plugin repo.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2050"/>
         <source>Removed ogr converter plugin - use &apos;save as&apos; context menu rather.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghapus plugin untuk mengkonversi ogr - menggunakan &apos;simpan sebagai&apos; bukan menu konteks.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2052"/>
         <source>Printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Mencetak</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2054"/>
         <source>Undo/Redo support for the print composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendukung undo/redo untuk pembuatan print out</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2257"/>
         <source>Select vector layers to add...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan vektor untuk menambahkan...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2929"/>
         <source>Choose a file name to save the QGIS project file as</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih satu nama arsip untuk menyimpan sebagai arsip proyek QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3083"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih satu nama arsip untuk menyimpan sebagai gambar peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3446"/>
         <source>Saving done</source>
-        <translation type="unfinished"></translation>
+        <translation>Selesai menyimpan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3446"/>
         <source>Export to vector file has been completed</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengeksport arsip vektor telah selesai</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3451"/>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan menyimpan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3452"/>
         <source>Export to vector file failed.
 Error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengekspor to arsip vektor gagal.
+Kesalahan: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3514"/>
         <source>Features deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur dihapus</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3559"/>
         <source>Merging features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menggabungkan fitur...</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3559"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Batalkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3612"/>
         <location filename="../src/app/qgisapp.cpp" line="3645"/>
         <source>Composer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyusun %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3775"/>
         <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>No active layer</source>
-        <translation type="unfinished">Tidak ada lapisan aktif</translation>
+        <translation>Tidak ada lapisan yang aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3775"/>
         <location filename="../src/app/qgisapp.cpp" line="3836"/>
         <source>No active layer found. Please select a layer in the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lapisan yang aktif yang ditemukan. Silahkan untuk memilih lapisan pada daftar lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3782"/>
         <location filename="../src/app/qgisapp.cpp" line="3842"/>
         <source>Active layer is not vector</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan yang aktif bukan vector</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3782"/>
         <location filename="../src/app/qgisapp.cpp" line="3842"/>
         <source>The merge features tool only works on vector layers. Please select a vector layer from the layer list</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat untuk menggabung fitur hanya berfungsi pada lapisan vektor. Silahkan untuk memilih lapisan vektor dari daftar lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3788"/>
         <location filename="../src/app/qgisapp.cpp" line="3847"/>
         <source>Merging features can only be done for layers in editing mode. To use the merge tool, go to  Layer-&gt;Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Penggabungan fitur hanya dapat dilakukan pada lapisan dalam modus edit. Untuk menggunakan alat penggabung, silahkan ke Lapisan-&gt;Toggle Edit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3796"/>
         <location filename="../src/app/qgisapp.cpp" line="3862"/>
         <location filename="../src/app/qgisapp.cpp" line="3901"/>
         <source>The merge tool requires at least two selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Alat penggabung membutuhkan paling tidak 2 fitur yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3810"/>
         <source>Merged feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Menggabung attribut fitir</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3874"/>
         <location filename="../src/app/qgisapp.cpp" line="3916"/>
         <source>Merge failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Penggabungan gagal</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3874"/>
         <location filename="../src/app/qgisapp.cpp" line="3916"/>
         <source>An error occured during the merge operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan muncul selama proses penggabungan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3884"/>
         <location filename="../src/app/qgisapp.cpp" line="3925"/>
         <source>The union operation would result in a geometry type that is not compatible with the current layer and therefore is canceled</source>
-        <translation type="unfinished"></translation>
+        <translation>Proses union mungkin akan menghasilkan tipe geometri yang tidak kompatibel dengan lapisan saat ini dan oleh karena itu dibatalkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3931"/>
         <source>Merged features</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur tergabungkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4128"/>
         <source>Features cut</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur terpotong</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4176"/>
         <source>Features pasted</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur ditempel</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4333"/>
         <source>Start editing failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Memulai mengedit gagal</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4333"/>
         <source>Provider cannot be opened for editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyedia tidak dapat dibuka untuk diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4344"/>
         <source>Stop editing</source>
-        <translation type="unfinished">Hentikan editing</translation>
+        <translation>Berhenti mengedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4345"/>
         <source>Do you want to save the changes to layer %1?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda ingin menyimpan perubahan pada lapisan %1?</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4370"/>
         <source>Problems during roll back</source>
-        <translation type="unfinished"></translation>
+        <translation>Masalah ketika mengembalikan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4605"/>
         <source>GPS Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi GPS</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4627"/>
         <source>Tile scale</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala waktu</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5097"/>
         <source>The layer %1 is not a valid layer and can not be added to the map</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan %1 merupakan lapisan yang tidak cocok dan tidak dapat di tambahkan dalam peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5495"/>
         <source>Map coordinates for the current view extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat peta pada luasan tampilan saat ini</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5551"/>
         <source>Extents:</source>
-        <translation type="unfinished"></translation>
+        <translation>Luasan:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="5624"/>
         <source>Maptips require an active layer</source>
-        <translation type="unfinished"></translation>
+        <translation>SaranPeta: membutuhkan lapisan yang aktif</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="5708"/>
         <source>%n feature(s) selected on layer %1.</source>
         <comment>number of selected features</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n fiitur yang dipilih pada lapisan %1.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6752"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Perhatian</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6752"/>
         <source>This layer doesn&apos;t have a properties dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan ini tidak memiliki dialog properti.</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6783"/>
         <source>Authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation>Membutuhkan pembuktian keabsahan</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6799"/>
         <source>Proxy authentication required</source>
-        <translation type="unfinished"></translation>
+        <translation>Membutuhkan pembuktian keabsahan proxy</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6810"/>
         <source>SSL errors occured accessing URL %1:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan SSl muncul ketika mengakses URL %1:</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="460"/>
         <source>Quantum GIS - %1 (&apos;%2&apos;)</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS - %1 (&apos;%2&apos;)</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2180"/>
         <source>%1 is not a valid or recognized data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 tidak cocok atau sumber data tidak dikenali</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2898"/>
         <location filename="../src/app/qgisapp.cpp" line="2949"/>
         <source>Saved project to: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan proyek ke: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="2910"/>
         <location filename="../src/app/qgisapp.cpp" line="2956"/>
         <source>Unable to save project %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa untuk menyimpan proyek %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3088"/>
         <source>Saved map image to %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gambar peta tersimpan di %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4275"/>
@@ -7865,38 +7879,41 @@ Error: %1</source>
 
 Errors: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa melakukan perubahan pada lapisan %1
+
+Kesalahan:%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4809"/>
         <source>QGIS - Changes in SVN since last release</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS - Perubahan dalam SVN sejak rilis terakhir</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="4849"/>
         <source>Unable to communicate with QGIS Version server
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat berkomunikasi dengan server versi QGIS 
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6241"/>
         <source>%1 is not a valid or recognized raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 sumber data raster tidak sesuai atau dikenali </translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6417"/>
         <source>%1 is not a supported raster data source</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 sumber data raster tidak didukung</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="6572"/>
         <source>&lt;p&gt;This project file was saved by an older version of QGIS. When saving this project file, QGIS will update it to the latest version, possibly rendering it useless for older versions of QGIS.&lt;p&gt;Even though QGIS developers try to maintain backwards compatibility, some of the information from the old project file might be lost. To improve the quality of QGIS, we appreciate if you file a bug report at %3. Be sure to include the old project file, and state the version of QGIS you used to discover the error.&lt;p&gt;To remove this warning when opening an older project file, uncheck the box &apos;%5&apos; in the %4 menu.&lt;p&gt;Version of the project file: %1&lt;br&gt;Current version of QGIS: %2</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt; Arsip proyek ini disimpan oleh QGIS versi yang lebih lama. Ketika menyimpan arsip proyek ini, QGIS akan memperbaruinya ke versi terakhir, kemungkinan penggambaran objek (rendering) tidak akan berfungsi pada QGIS versi yang lebih lama. &lt;p&gt; Meskipun demikian pengembang QGIS mencoba untuk memelihara kompatibilitas dengan versi sebelumnya, beberapa informasi dari arsip proyek lama mungkin akan hilang. Untuk meningkatkan kualitas QGIS, kami akan sangat mengapresiasi jika anda mengarsipkan laporan kesalahan pada %3. Pastikan untuk mengikutsertakan arsip proyek lama, dan menyatakan versi dari QGIS yang anda gunakan untuk menemukan kesalahan tersebut. &lt;p&gt; Untuk menghilangkan peringatan ini ketika membuka arsip proyek yang lebih lama, silahkan untuk tidak mencentang kotak &apos;%5&apos; dalam menu %4. &lt;p&gt;Versi arsip proyek:%1 &lt;p&gt;Versi QGIS saat ini:%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgisapp.cpp" line="3509"/>
         <source>Delete features</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus fitur</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgisapp.cpp" line="3509"/>
@@ -7929,7 +7946,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgsabout.ui" line="234"/>
         <source>Donors</source>
-        <translation type="unfinished"></translation>
+        <translation>Donatur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="34"/>
@@ -7949,7 +7966,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgsabout.ui" line="210"/>
         <source>Contributors</source>
-        <translation type="unfinished">Para Kontributor</translation>
+        <translation>Kontribusi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="137"/>
@@ -7964,7 +7981,7 @@ Errors: %2
     <message>
         <location filename="../src/ui/qgsabout.ui" line="193"/>
         <source>Developers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengembang</translation>
     </message>
     <message>
         <source>Name</source>
@@ -8044,33 +8061,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="14"/>
         <source>Add column</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah Kolom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="23"/>
         <source>N&amp;ame</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="36"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="49"/>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="62"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="72"/>
         <source>Width</source>
-        <translation type="unfinished">Lebar</translation>
+        <translation>Lebar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsaddattrdialogbase.ui" line="85"/>
         <source>Precision</source>
-        <translation type="unfinished">Presisi</translation>
+        <translation>Ketelitian</translation>
     </message>
 </context>
 <context>
@@ -11337,7 +11354,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="130"/>
         <source>Quantum GIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgscomposerview.cpp" line="208"/>
@@ -17898,22 +17915,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="94"/>
         <source>Identify Results</source>
-        <translation type="unfinished">Identifikasi Hasil-hasil</translation>
+        <translation>Identifikasi Hasil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="100"/>
         <source>Feature</source>
-        <translation type="unfinished">Fitur</translation>
+        <translation>Fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="101"/>
         <source>Value</source>
-        <translation type="unfinished">Nilai</translation>
+        <translation>Nilai</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="221"/>
         <source>(Actions)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">(Aksi)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="227"/>
@@ -17932,12 +17949,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="437"/>
         <source>Zoom to feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="438"/>
         <source>Copy attribute value</source>
-        <translation type="unfinished"></translation>
+        <translation>Salin nilai attribut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="439"/>
@@ -28492,7 +28509,7 @@ Do you want to overwrite the [%2] relation?</source>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="69"/>
         <source>Connect</source>
-        <translation type="unfinished">Koneksikan</translation>
+        <translation>Hubungkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitbase.ui" line="95"/>
@@ -33017,35 +33034,35 @@ Description: %3</source>
     <name>VisualDialog</name>
     <message>
         <source>Error!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan!</translation>
     </message>
     <message>
         <source>Please specify input vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan input lapisan vektor</translation>
     </message>
     <message>
         <source>Please specify input field</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan input field</translation>
     </message>
     <message>
         <source>List unique values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Daftar nilai unik</translation>
     </message>
     <message>
         <source>Unique values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Nilai unik</translation>
     </message>
     <message>
         <source>Total unique values</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Total nilai unik</translation>
     </message>
     <message>
         <source>Basics statistics</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Statistik dasar</translation>
     </message>
     <message>
         <source>Statistics output</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Output statistik</translation>
     </message>
     <message>
         <source>Nearest neighbour analysis</source>
@@ -33057,15 +33074,15 @@ Description: %3</source>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <source>Parameter</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter</translation>
     </message>
     <message>
         <source>Value</source>
-        <translation type="unfinished">Nilai</translation>
+        <translation>Nilai</translation>
     </message>
 </context>
 <context>
