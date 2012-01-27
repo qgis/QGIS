@@ -155,14 +155,12 @@ QgsGrassNewMapset::~QgsGrassNewMapset()
 void QgsGrassNewMapset::browseDatabase()
 {
   // TODO: unfortunately QFileDialog does not support 'new' directory
-  QFileDialog *fd = new QFileDialog( this, NULL, mDatabaseLineEdit->text() );
-  fd->setFileMode( QFileDialog::DirectoryOnly );
+  QString selectedDir = QFileDialog::getExistingDirectory( this, NULL, mDatabaseLineEdit->text() );
+  if ( selectedDir.isEmpty() )
+    return;
 
-  if ( fd->exec() == QDialog::Accepted )
-  {
-    mDatabaseLineEdit->setText( fd->selectedFiles().first() );
-    databaseChanged();
-  }
+  mDatabaseLineEdit->setText( selectedDir );
+  databaseChanged();
 }
 
 void QgsGrassNewMapset::databaseChanged()
