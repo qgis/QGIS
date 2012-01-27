@@ -126,8 +126,16 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     void convexFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
     /**Helper function to dissolve feature(s)*/
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
-    QgsGeometry* locateAlongMeasure( double measure, const QgsGeometry* lineGeom );
-    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, const QgsGeometry* lineGeom );
 
+    //helper functions for event layer
+
+    /**Returns multilinestring*/
+    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
+    /**Returns multipoint*/
+    QgsGeometry* locateAlongMeasure( double measure, QgsGeometry* lineGeom );
+    unsigned char* locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
+    unsigned char* locateAlongWkbString( unsigned char* ptr, QgsMultiPoint& result, double measure );
+    static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );
+    static void locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool& pt1Ok, QgsPoint& pt1, bool& pt2Ok, QgsPoint& pt2 );
 };
 #endif //QGSVECTORANALYZER
