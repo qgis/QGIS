@@ -26,20 +26,30 @@ class QgsContrastEnhancement;
 class QgsMultiBandColorRenderer: public QgsRasterRenderer
 {
   public:
-    QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand );
+    QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand,
+                               QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
+                               QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
 
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 
-    const QgsContrastEnhancement* contrastEnhancement() const { return mContrastEnhancement; }
-    void setContrastEnhancement( QgsContrastEnhancement* ce ) { mContrastEnhancement = ce; }
+    const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
+    void setRedContrastEnhancement( QgsContrastEnhancement* ce ) { mRedContrastEnhancement = ce; }
+
+    const QgsContrastEnhancement* greenContrastEnhancement() const { return mGreenContrastEnhancement; }
+    void setGreenContrastEnhancement( QgsContrastEnhancement* ce ) { mGreenContrastEnhancement = ce; }
+
+    const QgsContrastEnhancement* blueContrastEnhancement() const { return mBlueContrastEnhancement; }
+    void setBlueContrastEnhancement( QgsContrastEnhancement* ce ) { mBlueContrastEnhancement = ce; }
 
   private:
     int mRedBand;
     int mGreenBand;
     int mBlueBand;
 
-    QgsContrastEnhancement* mContrastEnhancement;
+    QgsContrastEnhancement* mRedContrastEnhancement;
+    QgsContrastEnhancement* mGreenContrastEnhancement;
+    QgsContrastEnhancement* mBlueContrastEnhancement;
 };
 
 #endif // QGSMULTIBANDCOLORRENDERER_H

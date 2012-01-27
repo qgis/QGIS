@@ -16,12 +16,17 @@
  ***************************************************************************/
 
 #include "qgsmultibandcolorrenderer.h"
+#include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
 #include <QImage>
 #include <QSet>
 
-QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand ):
-    QgsRasterRenderer( provider ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ), mContrastEnhancement( 0 )
+QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand,
+    QgsContrastEnhancement* redEnhancement,
+    QgsContrastEnhancement* greenEnhancement,
+    QgsContrastEnhancement* blueEnhancement ):
+    QgsRasterRenderer( provider ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ),
+    mRedContrastEnhancement( redEnhancement ), mGreenContrastEnhancement( greenEnhancement ), mBlueContrastEnhancement( blueEnhancement )
 {
 }
 
@@ -36,9 +41,21 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     return;
   }
 
-  QgsRasterDataProvider::DataType redType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mRedBand );
-  QgsRasterDataProvider::DataType greenType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGreenBand );
-  QgsRasterDataProvider::DataType blueType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBlueBand );
+  QgsRasterDataProvider::DataType redType;
+  if ( mRedBand > 0 )
+  {
+    redType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mRedBand );
+  }
+  QgsRasterDataProvider::DataType greenType;
+  if ( mGreenBand > 0 )
+  {
+    greenType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mGreenBand );
+  }
+  QgsRasterDataProvider::DataType blueType;
+  if ( mBlueBand > 0 )
+  {
+    blueType = ( QgsRasterDataProvider::DataType )mProvider->dataType( mBlueBand );
+  }
   QgsRasterDataProvider::DataType transparencyType = QgsRasterDataProvider::UnknownDataType;
   if ( mAlphaBand > 0 )
   {
@@ -47,7 +64,23 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
 
   double oversamplingX, oversamplingY;
   QSet<int> bands;
-  bands << mRedBand << mGreenBand << mBlueBand;
+  if ( mRedBand > 0 )
+  {
+    bands << mRedBand;
+  }
+  if ( mGreenBand > 0 )
+  {
+    bands << mGreenBand;
+  }
+  if ( mBlueBand > 0 )
+  {
+    bands << mBlueBand;
+  }
+  if ( bands.size() < 1 )
+  {
+    return; //no need to draw anything if no band is set
+  }
+
   if ( mAlphaBand > 0 )
   {
     bands << mAlphaBand;
@@ -91,9 +124,18 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       break;
     }
 
-    redData = bandData[mRedBand];
-    greenData = bandData[mGreenBand];
-    blueData = bandData[mBlueBand];
+    if ( mRedBand > 0 )
+    {
+      redData = bandData[mRedBand];
+    }
+    if ( mGreenBand > 0 )
+    {
+      greenData = bandData[mGreenBand];
+    }
+    if ( mBlueBand > 0 )
+    {
+      blueData = bandData[mBlueBand];
+    }
     if ( mAlphaBand > 0 )
     {
       alphaData = bandData[mAlphaBand];
@@ -102,7 +144,10 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
     QImage img( nRasterCols, nRasterRows, QImage::Format_ARGB32_Premultiplied );
     QRgb* imageScanLine = 0;
     int currentRasterPos = 0;
-    int redVal, greenVal, blueVal;
+    int redVal = 0;
+    int greenVal = 0;
+    int blueVal = 0;
+    QRgb defaultColor = qRgba( 255, 255, 255, 0 );
     double currentOpacity = mOpacity; //opacity (between 0 and 1)
 
     for ( int i = 0; i < nRasterRows; ++i )
@@ -110,9 +155,42 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       imageScanLine = ( QRgb* )( img.scanLine( i ) );
       for ( int j = 0; j < nRasterCols; ++j )
       {
-        redVal = readValue( redData, redType, currentRasterPos );
-        greenVal = readValue( greenData, greenType, currentRasterPos );
-        blueVal = readValue( blueData, blueType, currentRasterPos );
+        if ( mRedBand )
+        {
+          redVal = readValue( redData, redType, currentRasterPos );
+        }
+        if ( mGreenBand )
+        {
+          greenVal = readValue( greenData, greenType, currentRasterPos );
+        }
+        if ( mBlueBand )
+        {
+          blueVal = readValue( blueData, blueType, currentRasterPos );
+        }
+
+        //apply default color if red, green or blue not in displayable range
+        if (( mRedContrastEnhancement && !mRedContrastEnhancement->isValueInDisplayableRange( redVal ) )
+            || ( mGreenContrastEnhancement && !mGreenContrastEnhancement->isValueInDisplayableRange( redVal ) )
+            || ( mBlueContrastEnhancement && !mBlueContrastEnhancement->isValueInDisplayableRange( redVal ) ) )
+        {
+          imageScanLine[j] = defaultColor;
+          ++currentRasterPos;
+          continue;
+        }
+
+        //stretch color values
+        if ( mRedContrastEnhancement )
+        {
+          redVal = mRedContrastEnhancement->enhanceContrast( redVal );
+        }
+        if ( mGreenContrastEnhancement )
+        {
+          greenVal = mGreenContrastEnhancement->enhanceContrast( greenVal );
+        }
+        if ( mBlueContrastEnhancement )
+        {
+          blueVal = mBlueContrastEnhancement->enhanceContrast( blueVal );
+        }
 
         if ( mInvertColor )
         {

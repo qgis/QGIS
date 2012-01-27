@@ -688,10 +688,29 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
     }
     case MultiBandColor:
     {
-      int red = bandNumber( mRedBandName );
-      int green = bandNumber( mGreenBandName );
-      int blue = bandNumber( mBlueBandName );
-      renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue );
+      int red = -1;
+      QgsContrastEnhancement* redEnhancement = 0;
+      if ( mRedBandName != TRSTRING_NOT_SET )
+      {
+        red = bandNumber( mRedBandName );
+        redEnhancement = contrastEnhancement( red );
+      }
+      int green = -1;
+      QgsContrastEnhancement* greenEnhancement = 0;
+      if ( mGreenBandName != TRSTRING_NOT_SET )
+      {
+        green = bandNumber( mGreenBandName );
+        greenEnhancement = contrastEnhancement( green );
+      }
+      int blue = -1;
+      QgsContrastEnhancement* blueEnhancement = 0;
+      if ( mBlueBandName != TRSTRING_NOT_SET )
+      {
+        blue = bandNumber( mBlueBandName );
+        blueEnhancement = contrastEnhancement( blue );
+      }
+      renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue,
+          redEnhancement, greenEnhancement, blueEnhancement );
       break;
     }
     case SingleBandColorDataStyle:
