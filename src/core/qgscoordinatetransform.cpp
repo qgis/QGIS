@@ -494,11 +494,11 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle re
       bb_rect.combineExtentWith( x[i], y[i] );
   }
 
-  QgsDebugMsg( "Projected extent: " + QString(( bb_rect.toString() ).toLocal8Bit().data() ) );
+  QgsDebugMsg( "Projected extent: " + bb_rect.toString() );
 
   if ( bb_rect.isEmpty() )
   {
-    QgsMessageLog::logMessage( tr( "Reprojected extent is empty. Original extent: %1" ).arg( rect.toString() ), tr( "CRS" ) );
+    QgsDebugMsg( "Original extent: " + rect.toString() );
   }
 
   return bb_rect;

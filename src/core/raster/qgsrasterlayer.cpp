@@ -656,7 +656,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     catch ( QgsCsException &cs )
     {
       QgsMessageLog::logMessage( tr( "Could not reproject view extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
-      myProjectedViewExtent = rendererContext.extent();
+      myProjectedViewExtent.setMinimal();
     }
 
     try
@@ -666,7 +666,7 @@ bool QgsRasterLayer::draw( QgsRenderContext& rendererContext )
     catch ( QgsCsException &cs )
     {
       QgsMessageLog::logMessage( tr( "Could not reproject layer extent: %1" ).arg( cs.what() ), tr( "Raster" ) );
-      myProjectedLayerExtent = mLayerExtent;
+      myProjectedViewExtent.setMinimal();
     }
   }
   else

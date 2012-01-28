@@ -666,6 +666,7 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
     mDistArea->setProjectionsEnabled( enabled );
     updateFullExtent();
+    mLastExtent.setMinimal();
     emit hasCrsTransformEnabled( enabled );
   }
 }
@@ -681,11 +682,24 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
+    QgsRectangle rect;
+    if ( hasCrsTransformEnabled() && !mExtent.isEmpty() )
+    {
+      QgsCoordinateTransform transform( *mDestCRS, crs );
+      rect = transform.transformBoundingBox( mExtent );
+    }
+
     invalidateCachedLayerCrs();
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
     mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
     updateFullExtent();
+
+    if ( !rect.isEmpty() )
+    {
+      setExtent( rect );
+    }
+
     emit destinationSrsChanged();
   }
 }
