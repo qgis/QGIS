@@ -6,6 +6,7 @@
 %Import QtNetwork/QtNetworkmod.sip
 
 %Include conversions.sip
+%Include qgsexception.sip
 
 // TODO: more files to wrap
 
