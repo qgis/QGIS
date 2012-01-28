@@ -327,6 +327,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     {
       mZoomedOutResamplingComboBox->setCurrentIndex( 0 );
     }
+    mMaximumOversamplingSpinBox->setValue( renderer->maxOversampling() );
   }
 } // QgsRasterLayerProperties ctor
 
@@ -1518,6 +1519,11 @@ void QgsRasterLayerProperties::apply()
   if ( rasterRenderer )
   {
     rasterRenderer->setZoomedOutResampler( zoomedOutResampler );
+  }
+
+  if ( rasterRenderer )
+  {
+    rasterRenderer->setMaxOversampling( mMaximumOversamplingSpinBox->value() );
   }
 
 

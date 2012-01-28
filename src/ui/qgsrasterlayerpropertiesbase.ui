@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>691</width>
-    <height>598</height>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -775,6 +775,16 @@
           </item>
           <item row="3" column="0">
            <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
+          </item>
+          <item row="5" column="0">
+           <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="mMaximumOversamplingLabel">
+            <property name="text">
+             <string>Maximum oversampling</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -1831,6 +1841,7 @@ p, li { white-space: pre-wrap; }
 &lt;table border=&quot;0&quot; style=&quot;-qt-table-type: root; margin-top:4px; margin-bottom:4px; margin-left:4px; margin-right:4px;&quot;&gt;
 &lt;tr&gt;
 &lt;td style=&quot;border: none;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;

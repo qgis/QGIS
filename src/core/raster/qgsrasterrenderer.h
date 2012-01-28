@@ -69,6 +69,9 @@ class QgsRasterRenderer
     void setZoomedOutResampler( QgsRasterResampler* r );
     const QgsRasterResampler* zoomedOutResampler() const { return mZoomedOutResampler; }
 
+    void setMaxOversampling( double os ) { mMaxOversampling = os; }
+    double maxOversampling() const { return mMaxOversampling; }
+
   protected:
     inline double readValue( void *data, QgsRasterDataProvider::DataType type, int index );
 
@@ -109,6 +112,9 @@ class QgsRasterRenderer
     int mAlphaBand;
 
     bool mInvertColor;
+
+    /**Maximum boundary for oversampling (to avoid too much data traffic). Default: 2.0*/
+    double mMaxOversampling;
 
   private:
     /**Remove part into and release memory*/

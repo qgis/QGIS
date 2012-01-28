@@ -3188,6 +3188,22 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   }
 
   //resampler
+
+  //max oversampling
+  if ( mRenderer )
+  {
+    QDomElement maxOversamplingElem = mnl.firstChildElement( "MaxOversampling" );
+    if ( !maxOversamplingElem.isNull() )
+    {
+      bool conversion;
+      double maxOversampling = maxOversamplingElem.text().toDouble( &conversion );
+      if ( conversion )
+      {
+        mRenderer->setMaxOversampling( maxOversampling );
+      }
+    }
+  }
+
   QDomElement zoomedInResamplerElem = mnl.firstChildElement( "zoomedInResampler" );
   if ( mRenderer && !zoomedInResamplerElem.isNull() )
   {
@@ -3348,6 +3364,12 @@ bool QgsRasterLayer::writeSymbology( QDomNode & layer_node, QDomDocument & docum
   // resampler
   if ( mRenderer )
   {
+    //Max oversampling
+    QDomElement maxOversamplingElem = document.createElement( "MaxOversampling" );
+    QDomText maxOversamplingText = document.createTextNode( QString::number( mRenderer->maxOversampling() ) );
+    maxOversamplingElem.appendChild( maxOversamplingText );
+    rasterPropertiesElement.appendChild( maxOversamplingElem );
+
     QString zoomedInResamplerString = "nearest";
     const QgsRasterResampler* zoomedInResampler = mRenderer->zoomedInResampler();
     if ( zoomedInResampler )

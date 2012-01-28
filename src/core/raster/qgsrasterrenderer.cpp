@@ -25,7 +25,7 @@
 #include <QPainter>
 
 QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider ): mProvider( provider ), mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ),
-    mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false )
+    mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
 {
 }
 
@@ -76,7 +76,7 @@ void QgsRasterRenderer::startRasterRead( int bandNumber, QgsRasterViewPort* view
       providerExtent = t.transformBoundingBox( providerExtent );
     }
     double pixelRatio = mapToPixel->mapUnitsPerPixel() / ( providerExtent.width() / mProvider->xSize() );
-    oversampling = ( pixelRatio > 4.0 ) ? 4.0 : pixelRatio;
+    oversampling = ( pixelRatio > mMaxOversampling ) ? mMaxOversampling : pixelRatio;
   }
 
   //set oversampling back to 1.0 if no resampler for zoomed in / zoomed out (nearest neighbour)
