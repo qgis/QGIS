@@ -768,16 +768,17 @@ Apakah anda yakin akan melanjutkan?</translation>
     </message>
     <message>
         <source>Simplify results</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyederhanakan hasil</translation>
     </message>
     <message>
         <source>There were %1 vertices in original dataset which
 were reduced to %2 vertices after simplification</source>
-        <translation type="unfinished"></translation>
+        <translation>Terdapat %1 vertek dalam dataset
+yang mana telah dikurangi menjadi %2 vertek setelah penyederhanaan</translation>
     </message>
     <message>
         <source>Distance matrix</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak matriks</translation>
     </message>
     <message>
         <source>Create Point Distance Matrix</source>
@@ -785,11 +786,11 @@ were reduced to %2 vertices after simplification</source>
     </message>
     <message>
         <source>Please specify input point layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Silahkan menentukan input lapisan titik</translation>
     </message>
     <message>
         <source>Please specify output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menentukan arsip keluaran</translation>
     </message>
     <message>
         <source>Please specify target point layer</source>
@@ -3132,7 +3133,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="63"/>
         <source>Print Composers</source>
-        <translation type="unfinished"></translation>
+        <translation>Print Komposer</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="82"/>
@@ -3147,12 +3148,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="97"/>
         <source>Measure</source>
-        <translation type="unfinished">Ukur</translation>
+        <translation>Ukur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="127"/>
         <source>&amp;Layer</source>
-        <translation type="unfinished">&amp;Lapisan</translation>
+        <translation>&amp;Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="131"/>
@@ -3352,7 +3353,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="542"/>
         <source>Capture Point</source>
-        <translation type="unfinished">Tangkap Titik</translation>
+        <translation>Tangkap Titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="545"/>
@@ -3362,7 +3363,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="557"/>
         <source>Capture Line</source>
-        <translation type="unfinished">Tangkap Garis</translation>
+        <translation>Tangkap Garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="560"/>
@@ -3372,7 +3373,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="572"/>
         <source>Capture Polygon</source>
-        <translation type="unfinished">Tangkap Poligon</translation>
+        <translation>Tangkap Poligon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="575"/>
@@ -3387,12 +3388,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="599"/>
         <source>Reshape Features</source>
-        <translation type="unfinished">Penajaman Fitur</translation>
+        <translation>Penajaman Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="611"/>
         <source>Split Features</source>
-        <translation type="unfinished">Bagi Fitur</translation>
+        <translation>Bagi Fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="620"/>
@@ -3402,7 +3403,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="632"/>
         <source>Add Ring</source>
-        <translation type="unfinished">Tambahkan Lingkaran</translation>
+        <translation>Tambahkan Lingkaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="644"/>
@@ -3417,12 +3418,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="668"/>
         <source>Delete Ring</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus Lingkaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="680"/>
         <source>Delete Part</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus bagian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="689"/>
@@ -3437,7 +3438,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="710"/>
         <source>Node Tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Peralatan Node</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="722"/>
@@ -3447,12 +3448,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="727"/>
         <source>Snapping Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi penguncian...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="739"/>
         <source>Pan Map</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan/Geser Peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="751"/>
@@ -3482,302 +3483,302 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="793"/>
         <source>Select features by rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih fitur dengan persegi panjang</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="805"/>
         <source>Select features by polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih fitur dengan poligon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="817"/>
         <source>Select features by freehand</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih fitur dengan membuat dengan tangan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="829"/>
         <source>Select features by radius</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih fitur dengan radius</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="838"/>
         <source>Deselect features from all layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan pemilihan fitur dari semua lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="850"/>
         <source>Identify Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikasi fitur</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="853"/>
         <source>Ctrl+Shift+I</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+I</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="865"/>
         <source>Measure Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukur garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="868"/>
         <source>Ctrl+Shift+M</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+M</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="880"/>
         <source>Measure Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukur luas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="883"/>
         <source>Ctrl+Shift+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="895"/>
         <source>Measure Angle</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukur sudut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="904"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar semua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="907"/>
         <source>Ctrl+Shift+F</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+ShiftF</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="916"/>
         <source>Zoom to Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="925"/>
         <source>Zoom to Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar pada pemilihan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="928"/>
         <source>Ctrl+J</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+J</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="937"/>
         <source>Zoom Last</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke posisi terakhir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="946"/>
         <source>Zoom Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke posisi selanjutnya</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="955"/>
         <source>Zoom Actual Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke ukuran yang sebenarnya</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="958"/>
         <source>Zoom to Native Pixel Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke resolusi aslinya</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="970"/>
         <source>Map Tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Tips peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="973"/>
         <source>Show information about a feature when the mouse is hovered over it</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan informasi mengenai fitur ketika penunjuk mouse melayang di atasnya</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="982"/>
         <source>New Bookmark...</source>
-        <translation type="unfinished"></translation>
+        <translation>Penunjuk halaman baru...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="985"/>
         <source>Ctrl+B</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="994"/>
         <source>Show Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan penunjuk halaman</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="997"/>
         <source>Ctrl+Shift+B</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+B</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1006"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Segarkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1009"/>
         <source>Ctrl+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+R</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1021"/>
         <source>Text Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Annotasi Teks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1033"/>
         <source>Form annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko Annotasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1045"/>
         <source>Move Annotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan Annotasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1054"/>
         <source>Labeling</source>
-        <translation type="unfinished"></translation>
+        <translation>Pelabelan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1063"/>
         <source>New Shapefile Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan shafile baru...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1066"/>
         <source>Ctrl+Shift+N</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+N</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1075"/>
         <source>New SpatiaLite Layer ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan SpatiaLite Baru...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1078"/>
         <source>Ctrl+Shift+A</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+A</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1083"/>
         <source>Raster calculator ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulator raster...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1092"/>
         <source>Add Vector Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Lapisan Vektor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1095"/>
         <source>Ctrl+Shift+V</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+V</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1104"/>
         <source>Add Raster Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Lapisan Raster...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1107"/>
         <source>Ctrl+Shift+R</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+R</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1116"/>
         <source>Add PostGIS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Lapisan PostGIS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1119"/>
         <source>Ctrl+Shift+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+D</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1128"/>
         <source>Add SpatiaLite Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Lapisan SpatiaLite...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1131"/>
         <source>Ctrl+Shift+L</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1140"/>
         <source>Add WMS Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Lapisan WMS...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1143"/>
         <source>Ctrl+Shift+W</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+W</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1152"/>
         <source>Open Attribute Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka atribut tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1164"/>
         <source>Toggle editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggle untuk mengedit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1167"/>
         <source>Toggles the editing state of the current layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggle posisi pengeditan dari lapisan saat ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1176"/>
         <source>Save edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan hasil edit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1179"/>
         <source>Save edits to current layer, but continue editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan hasil edit ke lapisan ini, tapi lanjutkan mengedit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1184"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1189"/>
         <source>Save Selection as vector file...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan Pemilihan sebagai arsip vektor...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1198"/>
         <source>Remove Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1201"/>
         <source>Ctrl+D</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+D</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1206"/>
         <source>Set CRS of Layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur lapisan CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1209"/>
         <source>Ctrl+Shift+C</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+C</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1214"/>
         <source>Set project CRS from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur proyek CRS dari lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1219"/>
@@ -3787,187 +3788,187 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1224"/>
         <source>Live GPS tracking</source>
-        <translation type="unfinished"></translation>
+        <translation>Pelacakan GPS secara langsung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1229"/>
         <source>Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1234"/>
         <source>Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>Kueri...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1243"/>
         <source>Add to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan ke pratinjau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1246"/>
         <source>Ctrl+Shift+O</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+O</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1255"/>
         <source>Add All to Overview</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan semua ke pratinjau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1264"/>
         <source>Remove All From Overview</source>
-        <translation type="unfinished">Hapus Semua Dari Previsualisasi</translation>
+        <translation>Hapus Semua dari pratinjau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1273"/>
         <source>Show All Layers</source>
-        <translation type="unfinished">Perlihatkan Semua Lapisan-lapisan</translation>
+        <translation>Tampilkan semua lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1276"/>
         <source>Ctrl+Shift+U</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1285"/>
         <source>Hide All Layers</source>
-        <translation type="unfinished">Sembunyikan Semua Lapisan-lapisan</translation>
+        <translation>Sembunyikan Semua Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1288"/>
         <source>Ctrl+Shift+H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1297"/>
         <source>Manage Plugins...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengatur Plugin...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1302"/>
         <source>Toggle Full Screen Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Toggle Modus Layar Penuh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1305"/>
         <source>Ctrl+F</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+F</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1314"/>
         <source>Project Properties...</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti Proyek...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1317"/>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1326"/>
         <source>Options...</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1338"/>
         <source>Custom CRS...</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS sesuai dengan permintaan...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1347"/>
         <source>Configure shortcuts...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengkonfigurasi jalan pintas...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1356"/>
         <source>Local Histogram Stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Regangkan Histigram Lokal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1359"/>
         <source>Stretch histogram of active raster to view extents</source>
-        <translation type="unfinished"></translation>
+        <translation>Regangkan histogram dari raster yang aktif untuk menampilkan luasannya</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1368"/>
         <source>Help Contents</source>
-        <translation type="unfinished"></translation>
+        <translation>Bantuan Konten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1371"/>
         <source>F1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1376"/>
         <source>API documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentasi API</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1385"/>
         <source>QGIS Home Page</source>
-        <translation type="unfinished">Halaman Web QGIS</translation>
+        <translation>Halaman Web QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1388"/>
         <source>Ctrl+H</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1397"/>
         <source>Check QGIS Version</source>
-        <translation type="unfinished"></translation>
+        <translation>Periksa Versi QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1400"/>
         <source>Check if your QGIS version is up to date (requires internet access)</source>
-        <translation type="unfinished"></translation>
+        <translation>Periksa jika versi QGIS anda terbatu (membutuhkan akses internet)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1409"/>
         <source>About</source>
-        <translation type="unfinished">Tentang</translation>
+        <translation>Tentang</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1421"/>
         <source>QGIS Sponsors</source>
-        <translation type="unfinished"></translation>
+        <translation>Sponsor QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1433"/>
         <source>Move Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan Label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1445"/>
         <source>Rotate Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Putar Label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1457"/>
         <source>Change Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Ubah Label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1462"/>
         <source>Style manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan style...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1467"/>
         <source>Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsul Python</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1476"/>
         <source>Full histogram stretch</source>
-        <translation type="unfinished"></translation>
+        <translation>Peregangan histogram penuh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1479"/>
         <source>Stretch histogram to full dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Regangkan histogram ke seluruh dataset</translation>
     </message>
 </context>
 <context>
@@ -9283,165 +9284,165 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="646"/>
         <source>Big image</source>
-        <translation type="unfinished"></translation>
+        <translation>Gambar besar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="234"/>
         <source>Map 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Peta 1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="747"/>
         <source>Image too big</source>
-        <translation type="unfinished"></translation>
+        <translation>Gambar terlalu besar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="748"/>
         <source>Creation of image with %1x%2 pixels failed.  Export aborted.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembuatan gambar dengan %1x%2 piksel gagal. Ekspor dibatalkan.</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="785"/>
         <source>SVG warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="786"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1561"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak perlu perlihatkan pesan ini lagi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="805"/>
         <source>SVG Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format SVG</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="135"/>
         <source>QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="140"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="154"/>
         <source>View</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilan</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="161"/>
         <source>Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Layout</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="505"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format PDF</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="598"/>
         <source>Image too large</source>
-        <translation type="unfinished"></translation>
+        <translation>Gambar terlalu besar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="599"/>
         <source>Creation of image with %1x%2 pixels failed.  Retry without &apos;Print As Raster&apos;?</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembuatan gambar dengan %1x%2 piksel gagal. Coba kembali tanpa &apos;Print sebagai Raster&apos;?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="647"/>
         <source>To create image %1x%2 requires about %3 MB of memory. Proceed?</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk membuat gambar %1x%2 membutuhkan memori sekitar %3 MB. Lanjutkan?</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="700"/>
         <source>Choose a file name to save the map image as</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih nama arsip untuk menyimpan gambar peta sebagai</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="504"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="804"/>
         <source>Choose a file name to save the map as</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih satu nama arsip untuk menyimpan peta sebagai</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1217"/>
         <source>Composer</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyusun</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1559"/>
         <source>Project contains WMS layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyek berisikan lapisan WMS</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="1560"/>
         <source>Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed</source>
-        <translation type="unfinished"></translation>
+        <translation>Beberapa server WMS (seperti UMN mapserver) memiliki batas parameter LEBAR dan TINGGI. Mencetak lapisan dari server seperti itu mungkin melebihi batas. Jika seperti itu, lapisan WMS tidak akan di cetak</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="790"/>
         <source>&lt;p&gt;The SVG export function in Qgis has several problems due to bugs and deficiencies in the </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt; Fungsi ekspor SVG dalam Qgis memiliki beberapa masalah karena kesalahan dan kekurangan</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="238"/>
         <source>Command history</source>
-        <translation type="unfinished"></translation>
+        <translation>Riwayat perintah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="676"/>
         <source>%1 format (*.%2 *.%3)</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 format (*.%2 *.%3)</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="792"/>
         <source>Qt4 svg code. In particular, there are problems with layers not being clipped to the map bounding box.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Kode svg Qt4. Dalam kondisi tertentu, terdapat masalah dengan lapisan yang tidak di potong (di klip) terhadap kotak batas luasan peta.&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="795"/>
         <source>If you require a vector-based output file from Qgis it is suggested that you try printing to PostScript if the SVG output is not satisfactory.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika anda membutuhkan outpt arsip berdasarkan vektor Qgis menyarankan agar anda mencoba mencetaknya ke PostScript jika output SVG kurang memuaskan.&lt;p&gt;</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="931"/>
         <source>save template</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan template</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="957"/>
         <source>Save error</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan kesalahan</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="957"/>
         <source>Error, could not save file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan, tidak bisa menyimpan arsip</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="965"/>
         <source>Load template</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat template</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <location filename="../src/app/composer/qgscomposer.cpp" line="987"/>
         <source>Read error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan membaca</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="978"/>
         <source>Error, could not read file</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan, tidak dapat membaca arsip</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposer.cpp" line="987"/>
         <source>Content of template file is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Isi dari arsip template tidak benar</translation>
     </message>
 </context>
 <context>
@@ -9570,328 +9571,328 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="67"/>
         <source>General</source>
-        <translation type="unfinished">Umum</translation>
+        <translation>Umum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="108"/>
         <source>Composition</source>
-        <translation type="unfinished"></translation>
+        <translation>Komposisi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="116"/>
         <source>Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="189"/>
         <source>&amp;Print...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Cetak...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="228"/>
         <source>Add new map</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan peta baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="240"/>
         <source>Add new label</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan label baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="252"/>
         <source>Add new vect legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan legenda vektor baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="264"/>
         <source>Select/Move item</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih/pindahkan item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="303"/>
         <source>Add new scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan skala bar baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="315"/>
         <source>Refresh view</source>
-        <translation type="unfinished"></translation>
+        <translation>Segarkan tampilan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="17"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>JendelaUtama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="207"/>
         <source>Zoom In</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="216"/>
         <source>Zoom Out</source>
-        <translation type="unfinished"></translation>
+        <translation>Perkecil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="324"/>
         <source>Add Image</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Gambar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="198"/>
         <source>Zoom Full</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar semua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="225"/>
         <source>Add Map</source>
-        <translation type="unfinished"></translation>
+        <translation>tambahkan peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="237"/>
         <source>Add Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="249"/>
         <source>Add Vector Legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan legenda vektor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="261"/>
         <source>Move Item</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan Item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="273"/>
         <source>Export as Image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor sebagai gambar...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="282"/>
         <source>Export as PDF...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor sebagai PDF...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="291"/>
         <source>Export as SVG...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor sebagai SVG...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="300"/>
         <source>Add Scalebar</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Skala bar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="312"/>
         <source>Refresh</source>
-        <translation type="unfinished"></translation>
+        <translation>Segarkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="329"/>
         <source>Move Content</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan konten</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="332"/>
         <source>Move item content</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan konten item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="337"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelompokan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="340"/>
         <source>Group items</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelompokan item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="345"/>
         <source>Ungroup</source>
-        <translation type="unfinished"></translation>
+        <translation>Pisahkan kelompok</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="348"/>
         <source>Ungroup items</source>
-        <translation type="unfinished"></translation>
+        <translation>Pisahkan item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="353"/>
         <source>Raise</source>
-        <translation type="unfinished"></translation>
+        <translation>Naikkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="356"/>
         <source>Raise selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Naikkan item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="361"/>
         <source>Lower</source>
-        <translation type="unfinished">Inferior</translation>
+        <translation>Turunkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="364"/>
         <source>Lower selected items</source>
-        <translation type="unfinished"></translation>
+        <translation>Turunkan item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="369"/>
         <source>Bring to Front</source>
-        <translation type="unfinished"></translation>
+        <translation>Bawa ke depan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="372"/>
         <source>Move selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan item ke atas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="377"/>
         <source>Send to Back</source>
-        <translation type="unfinished"></translation>
+        <translation>Kirim ke belakang</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="380"/>
         <source>Move selected items to bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan item yang dipilih ke dasar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="385"/>
         <source>Load From template</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat Dari Template</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="390"/>
         <source>Save as template</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan Sebagai Template</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="395"/>
         <source>Align left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar kiri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="398"/>
         <source>Align selected items left</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar kiri item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="403"/>
         <source>Align center</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar tengah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="406"/>
         <source>Align center horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar tengah horisontal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="411"/>
         <source>Align right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar kanan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="414"/>
         <source>Align selected items right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar kanan item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="419"/>
         <source>Align top</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar atas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="422"/>
         <source>Align selected items to top</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar atas item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="427"/>
         <location filename="../src/ui/qgscomposerbase.ui" line="430"/>
         <source>Align center vertical</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar tengah vertikal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="435"/>
         <source>Align bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar bawah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="438"/>
         <source>Align selected items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar bawah item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="443"/>
         <source>&amp;Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Keluar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="446"/>
         <source>Quit</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="449"/>
         <source>Ctrl+Q</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Q</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="457"/>
         <source>Add Basic Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Shape Dasar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="465"/>
         <source>Add arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah panah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="473"/>
         <source>Add table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="476"/>
         <source>Adds attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah atribut tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="481"/>
         <source>Page Setup</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan Halaman</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="491"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Undo (Kembali ke langkah sebelumnya)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="494"/>
         <source>Revert last change</source>
-        <translation type="unfinished"></translation>
+        <translation>Kembalikan perubahan terakhir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="497"/>
         <source>Ctrl+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Z</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="506"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Redo (Maju ke langkah setelahnya)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="509"/>
         <source>Restore last change</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Kembalikan perubahan sebelumnya</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerbase.ui" line="512"/>
         <source>Ctrl+Shift+Z</source>
-        <translation type="unfinished"></translation>
+        <translation>Ctrl+Shift+Z</translation>
     </message>
 </context>
 <context>
@@ -9899,7 +9900,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/composer/qgscomposeritem.cpp" line="374"/>
         <source>Change item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Ganti posisi item</translation>
     </message>
 </context>
 <context>
@@ -18276,7 +18277,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabeldialog.cpp" line="227"/>
         <source>Auto</source>
-        <translation type="unfinished"></translation>
+        <translation>Auto</translation>
     </message>
 </context>
 <context>
@@ -18365,203 +18366,203 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="54"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="513"/>
         <source>Placement</source>
-        <translation type="unfinished">Penempatan</translation>
+        <translation>Penempatan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="311"/>
         <source>Field containing label</source>
-        <translation type="unfinished"></translation>
+        <translation>Field yang berisikan label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="331"/>
         <source>Default label</source>
-        <translation type="unfinished"></translation>
+        <translation>Label standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="703"/>
         <source>Data defined buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Data nilai penyangga label yang ditentukan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="763"/>
         <source>Data defined position</source>
-        <translation type="unfinished"></translation>
+        <translation>Data posisi label yang ditentukan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="215"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="445"/>
         <source>Color</source>
-        <translation type="unfinished">Warna</translation>
+        <translation>Warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="364"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="532"/>
         <source>Angle (deg)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sudut (derajat)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="188"/>
         <source>Buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran penyangga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="813"/>
         <source>X Offset (pts)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">X ofset (pts)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="832"/>
         <source>Y Offset (pts)</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Y ofset (pts)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="305"/>
         <source>Basic label options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi label dasar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="176"/>
         <source>Buffer labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyangga label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="462"/>
         <source>Label only selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat label hanya untuk fitur yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="501"/>
         <source>Data defined placement</source>
-        <translation type="unfinished"></translation>
+        <translation>Data penentuan penempatan label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="548"/>
         <source>Data defined properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Data properti yang ditentukan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="560"/>
         <source>&amp;Font family</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Famili huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="579"/>
         <source>&amp;Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tebal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="598"/>
         <source>&amp;Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Miring</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="617"/>
         <source>&amp;Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Garis bawah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="636"/>
         <source>&amp;Size</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ukuran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="655"/>
         <source>Size units</source>
-        <translation type="unfinished"></translation>
+        <translation>Satuan ukuran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="690"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Coret</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="775"/>
         <source>X Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="794"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
         <source>Multiline labels?</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Label dengan beberapa garis?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="351"/>
         <source>Font size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="132"/>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan proses rendering berdasarkan skala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="30"/>
         <source>Label Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="144"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="154"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="202"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="289"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="413"/>
         <source>In points</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalam titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="207"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="294"/>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="418"/>
         <source>In map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalam satuan peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="240"/>
         <source>Transparency </source>
-        <translation type="unfinished"></translation>
+        <translation>Transparan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="256"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="262"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="275"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset Y</translation>
     </message>
     <message utf8="true">
         <location filename="../src/ui/qgslabeldialogbase.ui" line="399"/>
         <source>°</source>
-        <translation type="unfinished"></translation>
+        <translation>°</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="477"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanjutan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="674"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Warna</translation>
     </message>
 </context>
 <context>
@@ -18570,17 +18571,17 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="255"/>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="257"/>
         <source>Label font</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf label</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="271"/>
         <source>Font color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna huruf</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelpropertydialog.cpp" line="285"/>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna penyangga</translation>
     </message>
 </context>
 <context>
@@ -18588,64 +18589,64 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="14"/>
         <source>Label properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="22"/>
         <source>Text</source>
-        <translation type="unfinished"></translation>
+        <translation>Teks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="34"/>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="58"/>
         <source>Font</source>
-        <translation type="unfinished">Huruf</translation>
+        <translation>Huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="42"/>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="89"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="81"/>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyangga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="121"/>
         <source>Position</source>
-        <translation type="unfinished">Posisi</translation>
+        <translation>Posisi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="127"/>
         <source>Label distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="137"/>
         <source>X Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="154"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="171"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar horisontal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="181"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar vertikal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelpropertydialogbase.ui" line="191"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Perputaran</translation>
     </message>
 </context>
 <context>
@@ -18653,12 +18654,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="427"/>
         <source>pt</source>
-        <translation type="unfinished"></translation>
+        <translation>pt</translation>
     </message>
     <message>
         <location filename="../src/app/qgslabelinggui.cpp" line="430"/>
         <source>map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Satuan peta</translation>
     </message>
 </context>
 <context>
@@ -18666,349 +18667,349 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="14"/>
         <source>Layer labeling settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan pelabelan lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="117"/>
         <source>Label settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="26"/>
         <source>Label this layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat label pada lapisan ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="46"/>
         <source>Field with labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Field dengan label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="333"/>
         <source>Minimum </source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="346"/>
         <source>Maximum </source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="383"/>
         <source>Advanced</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanjutan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="446"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="452"/>
         <source>Label every part of multi-part features</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat label untuk setiap bagian dari fitur dengan yang memiliki banyak bagian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="459"/>
         <source>Merge connected lines to avoid duplicate labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Gabungkan garis yang terhubung untuk menghindari label ganda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="466"/>
         <source>Multiline labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Label multiline</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="473"/>
         <source>Add direction symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan simbol arah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="503"/>
         <source>Features don&apos;t act as obstacles for labels</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitur tidak bertindak sebagai hambatan untuk label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="538"/>
         <source>Placement</source>
-        <translation type="unfinished">Penempatan</translation>
+        <translation>Penempatan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="563"/>
         <source>around point</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekitar titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="573"/>
         <source>over point</source>
-        <translation type="unfinished"></translation>
+        <translation>Di atas titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="584"/>
         <source>parallel</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="594"/>
         <source>curved</source>
-        <translation type="unfinished"></translation>
+        <translation>Melengkung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="601"/>
         <source>horizontal</source>
-        <translation type="unfinished"></translation>
+        <translation>Datar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="612"/>
         <source>over centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>Di atas sentroid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="622"/>
         <source>around centroid</source>
-        <translation type="unfinished"></translation>
+        <translation>Sekitar sentroid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="629"/>
         <source>horizontal (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>datar (lambat)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="636"/>
         <source>free (slow)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bebas (lambat)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="643"/>
         <source>using perimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan batas pinggir (perimeter)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="668"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="784"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1031"/>
         <source>Label distance</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="688"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1021"/>
         <source>Rotation</source>
-        <translation type="unfinished"></translation>
+        <translation>Perputaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="705"/>
         <source>degrees</source>
-        <translation type="unfinished"></translation>
+        <translation>derajat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="730"/>
         <source>above line</source>
-        <translation type="unfinished"></translation>
+        <translation>di atas garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="740"/>
         <source>on line</source>
-        <translation type="unfinished"></translation>
+        <translation>pada garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="747"/>
         <source>below line</source>
-        <translation type="unfinished"></translation>
+        <translation>di bawah garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="756"/>
         <source>Orientation</source>
-        <translation type="unfinished">Orientasi</translation>
+        <translation>Orientasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="763"/>
         <source>map</source>
-        <translation type="unfinished"></translation>
+        <translation>peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="773"/>
         <source>line</source>
-        <translation type="unfinished"></translation>
+        <translation>garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="123"/>
         <source>Text style</source>
-        <translation type="unfinished"></translation>
+        <translation>style teks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="135"/>
         <source>Font</source>
-        <translation type="unfinished">Huruf</translation>
+        <translation>Huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="151"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>LabelTeks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="161"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="301"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="174"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="285"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="880"/>
         <source>Color</source>
-        <translation type="unfinished">Warna</translation>
+        <translation>Warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="253"/>
         <source>Buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyangga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="203"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="262"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="870"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="278"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="489"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="69"/>
         <source>Sample</source>
-        <translation type="unfinished">Contoh</translation>
+        <translation>Contoh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="91"/>
         <source>Lorem Ipsum</source>
-        <translation type="unfinished"></translation>
+        <translation>Ringkasan lipsum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="221"/>
         <source>In points</source>
-        <translation type="unfinished"></translation>
+        <translation>Pada titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="226"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="718"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="810"/>
         <source>In map units</source>
-        <translation type="unfinished"></translation>
+        <translation>Pada satuan peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="404"/>
         <source>Priority</source>
-        <translation type="unfinished"></translation>
+        <translation>Prioritas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="410"/>
         <source>Low</source>
-        <translation type="unfinished"></translation>
+        <translation>Rendah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="436"/>
         <source>High</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinggi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="324"/>
         <source>Scale-based visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Visibilitas berdasarkan skala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="482"/>
         <source>Suppress labeling of features smaller than</source>
-        <translation type="unfinished"></translation>
+        <translation>Sembunyikan label untuk fitur yang lebih kecil dari</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="526"/>
         <source>Engine settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan mesin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="713"/>
         <location filename="../src/ui/qgslabelingguibase.ui" line="805"/>
         <source>In mm</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalam mm</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="837"/>
         <source>Data defined settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan data yang ditentukan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="864"/>
         <source>Font properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="890"/>
         <source>Bold</source>
-        <translation type="unfinished"></translation>
+        <translation>Tebal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="900"/>
         <source>Italic</source>
-        <translation type="unfinished"></translation>
+        <translation>Miring</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="910"/>
         <source>Underline</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis bawah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="930"/>
         <source>Font family</source>
-        <translation type="unfinished"></translation>
+        <translation>Famili huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="972"/>
         <source>Position</source>
-        <translation type="unfinished">Posisi</translation>
+        <translation>Posisi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="978"/>
         <source>X Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="988"/>
         <source>Y Coordinate</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="998"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar horisontal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="1008"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar vertikal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="920"/>
         <source>Strikeout</source>
-        <translation type="unfinished"></translation>
+        <translation>Coret</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="943"/>
         <source>Buffer properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti penyangga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="949"/>
         <source>Buffer size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran penyangga</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="959"/>
         <source>Buffer color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna penyangga</translation>
     </message>
 </context>
 <context>
@@ -19016,42 +19017,42 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="163"/>
         <source>group</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelompok</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="574"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Buang</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="565"/>
         <source>&amp;Make to toplevel item</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Buat item menjadi level atas</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="571"/>
         <source>Zoom to group</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar ke kelompok</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="577"/>
         <source>&amp;Set group CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Atur kelompok CRS</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="582"/>
         <source>Re&amp;name</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah &amp;nama</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="586"/>
         <source>&amp;Add group</source>
-        <translation type="unfinished"></translation>
+        <translation>T&amp;ambahkan kelompok</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="587"/>
         <source>&amp;Expand all</source>
-        <translation type="unfinished"></translation>
+        <translation>K&amp;embangkan semuanya</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="588"/>
@@ -19064,79 +19065,79 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="416"/>
         <source>&amp;Zoom to layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Perbesar ke luasan lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="419"/>
         <source>&amp;Zoom to best scale (100%)</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Perbesar ke skala terbaik (100%)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="424"/>
         <source>&amp;Stretch using current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Rentangkan dengan menggunakan luasan saat ini</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="429"/>
         <source>&amp;Show in overview</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Tampilkan dalam pratinjau (overview)</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="436"/>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Buang</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="439"/>
         <source>&amp;Set layer CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Atur lapisan CRS</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="442"/>
         <source>Set &amp;project CRS from layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur &amp;proyek CRS dari lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="451"/>
         <source>&amp;Open attribute table</source>
-        <translation type="unfinished">&amp;Buka tabel atribut</translation>
+        <translation>&amp;Buka tabel atribut</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="466"/>
         <source>Save as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="469"/>
         <source>Save selection as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan yang dipilih sebagai...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="476"/>
         <source>&amp;Query...</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kueri...</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="479"/>
         <source>Show feature count</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan jumlah fitur</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="489"/>
         <source>&amp;Properties</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Properti</translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="598"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="660"/>
         <source>Updating feature count for layer </source>
-        <translation type="unfinished"></translation>
+        <translation>Memperbarui jumlah fitur untuk lapisan </translation>
     </message>
     <message>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="598"/>
         <location filename="../src/app/legend/qgslegendlayer.cpp" line="660"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Batalkan</translation>
     </message>
 </context>
 <context>
@@ -19144,7 +19145,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/core/composer/qgslegendmodel.h" line="60"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelompok</translation>
     </message>
 </context>
 <context>
@@ -19153,14 +19154,14 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="28"/>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="73"/>
         <source>Millimeter</source>
-        <translation type="unfinished"></translation>
+        <translation>Milimeter</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="29"/>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="77"/>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialog.cpp" line="98"/>
         <source>Map units</source>
-        <translation type="unfinished">Unit-unit peta</translation>
+        <translation>Satuan peta</translation>
     </message>
 </context>
 <context>
@@ -19168,27 +19169,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="23"/>
         <source>Scale linearly between 0 and the following attribute value / diagram size:</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala linier antara 0 dan nilai atribut berikut / ukuran diagram:</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="35"/>
         <source>Find maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Cari nilai maksimum</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="45"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgslinearlyscalingdialogbase.ui" line="59"/>
         <source>Size unit</source>
-        <translation type="unfinished"></translation>
+        <translation>Satuan ukuran</translation>
     </message>
 </context>
 <context>
@@ -19330,13 +19331,15 @@ This may be a problem in your network connection or at the WMS server.</source>
         <source>Could not draw %1 because:
 %2</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menggambar %1 karena:
+%2</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsmapcanvas.cpp" line="1428"/>
         <source>Could not draw %1 because:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menggambar %1 karena:
+%2</translation>
     </message>
 </context>
 <context>
@@ -19344,7 +19347,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialog.cpp" line="32"/>
         <source>From map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Dari kanvas peta</translation>
     </message>
 </context>
 <context>
@@ -19352,27 +19355,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="14"/>
         <source>Enter map coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan koordinat peta</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="23"/>
         <source>Enter X and Y coordinates (DMS (dd mm ss.ss), DD (dd.dd) or projected coordinates (mmmm.mm)) which correspond with the selected point on the image. Alternatively, click the button with icon of a pencil and then click a corresponding point on map canvas of QGIS to fill in coordinates of that point.</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukkan koordina X dan Y (DMD(dd mm dd.dd), DD (dd.dd) atau koordinat yang diproyeksikan (mmmm.mm)) yang mana sesuai dengan titik yang dipilih pada gambar. Kalau tidak, klik tombol dengan ikon pensil dan kemudian klik titik yang sesuai pada kanvas pada QGIS untuk mengisi koordinat pada titik tersebut.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="35"/>
         <source>X:</source>
-        <translation type="unfinished"></translation>
+        <translation>X:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="49"/>
         <source>Y:</source>
-        <translation type="unfinished"></translation>
+        <translation>Y:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsmapcoordsdialogbase.ui" line="61"/>
         <source>Snap to background layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunci (snap)ke lapisan dasar (background)</translation>
     </message>
 </context>
 <context>
@@ -21412,51 +21415,51 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="71"/>
         <source>Choose a name of the raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih nama raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="83"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="124"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="84"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="125"/>
         <source>The selected file is not a valid raster file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip yang dipilih bukan arsip raster yang benar.</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="117"/>
         <source>Choose a name for the modified raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih nama dari raster yang dimodifikasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialog.cpp" line="150"/>
         <source>-modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished"></translation>
+        <translation>-telah dimodifikasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="14"/>
         <source>Open raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka arsop raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="25"/>
         <source>Raster file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip raster:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="44"/>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="76"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsopenrasterdialogbase.ui" line="64"/>
         <source>Save raster as:</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan raster sebagai:</translation>
     </message>
 </context>
 <context>
@@ -21464,22 +21467,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="104"/>
         <source>Open an OGR Supported Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka lapisan Vektor yang didukung OGR</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="120"/>
         <source>Open Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka Direktori</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="173"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin akan menghapus koneksi %1 dan semua pengaturan yang berhubungan dengannya?</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="175"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi Penghapusan</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="302"/>
@@ -21487,37 +21490,37 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="354"/>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="366"/>
         <source>Add vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="303"/>
         <source>No database selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada basisdata yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="319"/>
         <source>Password for </source>
-        <translation type="unfinished">Password untuk</translation>
+        <translation>Sandi untuk</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="320"/>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Silahkan memasukkan password Anda:</translation>
+        <translation>Silahkan masukkan sandi anda:</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="343"/>
         <source>No protocol URI entered.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada protokol URL yang dimasukkan.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="355"/>
         <source>No layers selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lapisan yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsopenvectorlayerdialog.cpp" line="367"/>
         <source>No directory selected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada direktori yang dipilih.</translation>
     </message>
 </context>
 <context>
@@ -21525,86 +21528,86 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="29"/>
         <source>Add vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Menambahkan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="46"/>
         <source>Source type</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis sumber</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="52"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="59"/>
         <source>Directory</source>
-        <translation type="unfinished">Direktori</translation>
+        <translation>Direktori</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="66"/>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="215"/>
         <source>Database</source>
-        <translation type="unfinished">Basisdata</translation>
+        <translation>Basisdata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="73"/>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="106"/>
         <source>Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Protokol</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="80"/>
         <source>Encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengkodean</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="112"/>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="156"/>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="221"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="122"/>
         <source>URI</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="150"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="166"/>
         <source>Dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Dataset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="186"/>
         <source>Browse</source>
-        <translation type="unfinished">Navigasi</translation>
+        <translation>Navigasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="244"/>
         <source>Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="250"/>
         <source>New</source>
-        <translation type="unfinished">Baru</translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="257"/>
         <source>Edit</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsopenvectorlayerdialogbase.ui" line="264"/>
         <source>Delete</source>
-        <translation type="unfinished">Hapus</translation>
+        <translation>Hapus</translation>
     </message>
 </context>
 <context>
@@ -21745,7 +21748,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1769"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="569"/>
@@ -25929,27 +25932,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1865"/>
         <source>Histogram</source>
-        <translation type="unfinished"></translation>
+        <translation>Histogram</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="673"/>
         <source>Max</source>
-        <translation type="unfinished"></translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="635"/>
         <source>Min</source>
-        <translation type="unfinished"></translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="990"/>
         <source> 00%</source>
-        <translation type="unfinished"></translation>
+        <translation>.00%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="54"/>
         <source>Render as</source>
-        <translation type="unfinished"></translation>
+        <translation>Render sebagai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="233"/>
@@ -25965,7 +25968,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1379"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1393"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1225"/>
@@ -25980,59 +25983,59 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1270"/>
         <source>Classify</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengkelasan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1408"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1413"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1418"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="60"/>
         <source>Single band gray</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita tunggal abu-abu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="45"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="80"/>
         <source>Three band color</source>
-        <translation type="unfinished"></translation>
+        <translation>Tiga pita warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="132"/>
         <source>RGB mode band selection and scaling</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus pemilihan dan penskalaan pita RGB </translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="138"/>
         <source>Red band</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita merah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="167"/>
         <source>Green band</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita hijau</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="196"/>
         <source>Blue band</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita biru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="227"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="230"/>
         <source>Save current RGB composition as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan komposisi RGB saat ini sebagai standar. Pengaturan ini akan menjadi terus-menerus pada setiap sesi QGIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="253"/>
@@ -26043,251 +26046,251 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="266"/>
         <source>Red min</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai merah minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="317"/>
         <source>Red max</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai Merah Maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="355"/>
         <source>Green min</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai hijau minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="393"/>
         <source>Green max</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai hijau maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="431"/>
         <source>Blue min</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai biru minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="469"/>
         <source>Blue max</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai biru maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="535"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="538"/>
         <source>Save current standard deviation value as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan nilai standar deviasi saat ini sebagai standar. Pengaturan ini akan menjadi terus-menerus pada setiap sesi GQIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="564"/>
         <source>Single band properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Properti pita tunggal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="576"/>
         <source>Gray band</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita abu-abu</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="599"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1280"/>
         <source>Color map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Susunan warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="106"/>
         <source>Invert color map</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Membalikan susunan warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="501"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="705"/>
         <source>Use standard deviation</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan standar deviasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="759"/>
         <source>Load min / max values from band</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat nilai min /max dari pita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="777"/>
         <source>Estimate (faster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Estimasi (lebih cepat)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="797"/>
         <source>Actual (slower)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sebenarnya (Lebih lambat)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="817"/>
         <source>Current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Luasan saat ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="824"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="847"/>
         <source>Contrast enhancement</source>
-        <translation type="unfinished"></translation>
+        <translation>Peningkatan kontras</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="868"/>
         <source>Current</source>
-        <translation type="unfinished"></translation>
+        <translation>Saat ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="891"/>
         <source>Save current contrast enhancement algorithm as default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan algoritma peningkatan kontras saat ini sebagai standar. Pengaturan ini akan menjadi terus-menerus pada setiap sesi GQIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="894"/>
         <source>Saves current contrast enhancement algorithm as a default. This setting will be persistent between QGIS sessions.</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan algoritma peningkatan kontras saat ini sebagai standar. Pengaturan ini akan menjadi terus-menerus pada setiap sesi GQIS.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="908"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="915"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>LabelTeks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1881"/>
         <source>Save as image...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai gambar...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="930"/>
         <source>Transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="745"/>
         <source>Note</source>
-        <translation type="unfinished"></translation>
+        <translation>Catatan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="939"/>
         <source>Global transparency</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparansi umum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1194"/>
         <source>No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai tidak ada data</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1020"/>
         <source>Custom transparency options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi transparansi berdasarkan permintaan (kustom)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1026"/>
         <source>Transparency band</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparansi pita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1052"/>
         <source>Transparent pixel list</source>
-        <translation type="unfinished"></translation>
+        <translation>Daftar transparansi piksel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1089"/>
         <source>Add values manually</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan nilai secara manual</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1106"/>
         <source>Add Values from display</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan nilai dari tampilan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1120"/>
         <source>Remove selected row</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus/hilangkan baris yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1134"/>
         <source>Default values</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1161"/>
         <source>Import from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor dari arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1175"/>
         <source>Export to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor menjadi arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1203"/>
         <source>Reset to file defined null</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset menjadi arsip yang didefinisikan NULL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1240"/>
         <source>Number of entries</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah entri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1286"/>
         <source>Color interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolasi warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1260"/>
         <source>Classification mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus pengkelasan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1510"/>
         <source>Scale dependent visibility</source>
-        <translation type="unfinished"></translation>
+        <translation>Tergantung skala visibilitas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1525"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1535"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1453"/>
         <source>Layer source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1443"/>
         <source>Display name</source>
-        <translation type="unfinished">Perlihatkan nama</translation>
+        <translation>Menampilkan warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1560"/>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1563"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1566"/>
         <source>Specify...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1758"/>
         <source>Pyramid resolutions</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Resolusi piramid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1771"/>
@@ -26315,107 +26318,107 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1822"/>
         <source>Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Metode resampel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1853"/>
         <source>Build pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bangun piramid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1896"/>
         <source>Restore Default Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Kembalikan style standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1903"/>
         <source>Save As Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1910"/>
         <source>Load Style ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat style...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1917"/>
         <source>Save Style ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan style...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="244"/>
         <source>Default R:1 G:2 B:3</source>
-        <translation type="unfinished"></translation>
+        <translation>Standar R:1 G:2 B:3</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1309"/>
         <source>Add entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan entri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1323"/>
         <source>Sort</source>
-        <translation type="unfinished"></translation>
+        <translation>Sortir</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1346"/>
         <source>Load color map from band</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Muat susunan warna dari pita</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1376"/>
         <source>Load color map from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat susunan warna dari arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1390"/>
         <source>Export color map to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor susunan warna ke arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1234"/>
         <source>Generate new color map</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat susunan warna baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1475"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1488"/>
         <source>Rows</source>
-        <translation type="unfinished">Baris</translation>
+        <translation>Baris</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1501"/>
         <source>No Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada data</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1551"/>
         <source>Coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem koordinat referensi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1639"/>
         <source>Legend</source>
-        <translation type="unfinished">Légende</translation>
+        <translation>Legenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1676"/>
         <source>Palette</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Palet</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1751"/>
         <source>Notes</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Catatan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1815"/>
         <source>Build pyramids internally if possible</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Buat piramid pada bagian dalam jika memungkinkan</translation>
     </message>
 </context>
 <context>
