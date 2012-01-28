@@ -57,6 +57,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     void setupTheme();
 
     void setIconSizes( int size );
+    void setFontSize( int size );
 
     //! Open and show, set defaults if first time
     void open();

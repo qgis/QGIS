@@ -292,7 +292,7 @@ void QgsGrassPlugin::addVector()
 // QgsDebugMsg("entered.");
   QString uri;
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::VECTOR );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::VECTOR );
   if ( sel->exec() )
   {
     uri = sel->gisdbase + "/" + sel->location + "/" + sel->mapset + "/" + sel->map + "/" + sel->layer;
@@ -387,7 +387,7 @@ void QgsGrassPlugin::addRaster()
 // QgsDebugMsg("entered.");
   QString uri;
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::RASTER );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::RASTER );
   if ( sel->exec() )
   {
     QString element;
@@ -520,7 +520,7 @@ void QgsGrassPlugin::newVector()
   bool ok;
   QString name;
 
-  QgsGrassElementDialog dialog;
+  QgsGrassElementDialog dialog( qGisInterface->mainWindow() );
   name = dialog.getItem( "vector", tr( "New vector name" ),
                          tr( "New vector name" ), "", "", &ok );
 
@@ -710,7 +710,7 @@ void QgsGrassPlugin::openMapset()
 
   QString element;
 
-  QgsGrassSelect *sel = new QgsGrassSelect( QgsGrassSelect::MAPSET );
+  QgsGrassSelect *sel = new QgsGrassSelect( qGisInterface->mainWindow(), QgsGrassSelect::MAPSET );
 
   if ( !sel->exec() )
     return;

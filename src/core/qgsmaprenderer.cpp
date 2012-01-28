@@ -18,6 +18,7 @@
 
 #include "qgscoordinatetransform.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgsmaprenderer.h"
 #include "qgsscalecalculator.h"
 #include "qgsmaptopixel.h"
@@ -665,6 +666,7 @@ void QgsMapRenderer::setProjectionsEnabled( bool enabled )
     QgsDebugMsg( "Adjusting DistArea projection on/off" );
     mDistArea->setProjectionsEnabled( enabled );
     updateFullExtent();
+    mLastExtent.setMinimal();
     emit hasCrsTransformEnabled( enabled );
   }
 }
@@ -680,11 +682,24 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   QgsDebugMsg( "* DestCRS.srsid() = " + QString::number( crs.srsid() ) );
   if ( *mDestCRS != crs )
   {
+    QgsRectangle rect;
+    if ( hasCrsTransformEnabled() && !mExtent.isEmpty() )
+    {
+      QgsCoordinateTransform transform( *mDestCRS, crs );
+      rect = transform.transformBoundingBox( mExtent );
+    }
+
     invalidateCachedLayerCrs();
     QgsDebugMsg( "Setting DistArea CRS to " + QString::number( crs.srsid() ) );
     mDistArea->setSourceCrs( crs.srsid() );
     *mDestCRS = crs;
     updateFullExtent();
+
+    if ( !rect.isEmpty() )
+    {
+      setExtent( rect );
+    }
+
     emit destinationSrsChanged();
   }
 }
@@ -766,14 +781,10 @@ QgsRectangle QgsMapRenderer::layerExtentToOutputExtent( QgsMapLayer* theLayer, Q
     }
     catch ( QgsCsException &cse )
     {
-      Q_UNUSED( cse );
-      QgsDebugMsg( QString( "Transform error caught: " ).arg( cse.what() ) );
+      QgsMessageLog::logMessage( tr( "Transform error caught: %1" ).arg( cse.what() ), tr( "CRS" ) );
     }
   }
-  else
-  {
-    // leave extent unchanged
-  }
+
   QgsDebugMsg( QString( "proj extent = " + extent.toString() ) );
 
   return extent;

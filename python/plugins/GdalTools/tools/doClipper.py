@@ -16,7 +16,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       self.canvas = self.iface.mapCanvas()
 
       self.setupUi(self)
-      BasePluginWidget.__init__(self, self.iface, "gdal_translate", self.iface.mainWindow())
+      BasePluginWidget.__init__(self, self.iface, "gdal_translate")
 
       self.outSelector.setType( self.outSelector.FILE )
       self.extentSelector.setCanvas(self.canvas)

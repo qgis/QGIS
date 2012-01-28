@@ -312,6 +312,7 @@ bool QgsPostgresProvider::declareCursor(
   }
   catch ( PGFieldNotFound )
   {
+    rewind();
     return false;
   }
 

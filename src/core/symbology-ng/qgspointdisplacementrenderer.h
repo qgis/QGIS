@@ -37,7 +37,7 @@ class CORE_EXPORT QgsPointDisplacementRenderer: public QgsFeatureRendererV2
     QgsFeatureRendererV2* clone();
 
     /**Reimplemented from QgsFeatureRendererV2*/
-    void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     QgsSymbolV2* symbolForFeature( QgsFeature& feature );
 

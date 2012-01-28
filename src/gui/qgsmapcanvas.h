@@ -395,6 +395,9 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     /// Handle pattern for implementation object
     std::auto_ptr<CanvasProperties> mCanvasProperties;
 
+  private slots:
+    void crsTransformEnabled( bool );
+
   private:
     /// this class is non-copyable
     /**

@@ -101,7 +101,6 @@
 #include "qgsapplication.h"
 #include "qgsattributeaction.h"
 #include "qgsattributetabledialog.h"
-#include "qgsbookmarkitem.h"
 #include "qgsbookmarks.h"
 #include "qgsbrowserdockwidget.h"
 #include "qgsclipboard.h"
@@ -1026,6 +1025,11 @@ void QgisApp::createActionGroups()
 void QgisApp::setFontSize( int fontSize )
 {
   setStyleSheet( QString( "font-size: %1pt; " ).arg( fontSize ) );
+
+  foreach( QgsComposer *c, mPrintComposers )
+  {
+    c->setFontSize( fontSize );
+  }
 }
 
 void QgisApp::createMenus()
@@ -1403,10 +1407,9 @@ void QgisApp::setIconSizes( int size )
     toolbar->setIconSize( QSize( size, size ) );
   }
 
-  QSet<QgsComposer*>::iterator composerIt = mPrintComposers.begin();
-  for ( ; composerIt != mPrintComposers.end(); ++composerIt )
+  foreach( QgsComposer *c, mPrintComposers )
   {
-    ( *composerIt )->setIconSizes( size );
+    c->setIconSizes( size );
   }
 }
 
@@ -2697,7 +2700,7 @@ void QgisApp::fileOpen()
     // Retrieve last used project dir from persistent settings
     QSettings settings;
     QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
-    QString fullPath = QFileDialog::getOpenFileName( this, tr( "Choose a QGIS project file to open" ), lastUsedDir, tr( "QGis files (*.qgs)" ) );
+    QString fullPath = QFileDialog::getOpenFileName( this, tr( "Choose a QGIS project file to open" ), lastUsedDir, tr( "QGis files (*.qgs *.QGS)" ) );
     if ( fullPath.isNull() )
     {
       return;
@@ -2836,31 +2839,20 @@ bool QgisApp::fileSave()
     QSettings settings;
     QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
 
-    std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-        tr( "Choose a QGIS project file" ),
-        lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
+    QString path = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Choose a QGIS project file" ),
+                     lastUsedDir + "/" + QgsProject::instance()->title(),
+                     tr( "QGis files (*.qgs *.QGS)" ) );
+    if ( path.isEmpty() )
+      return true;
 
-    saveFileDialog->setFileMode( QFileDialog::AnyFile );
-    saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-    saveFileDialog->setConfirmOverwrite( true );
-    saveFileDialog->selectFile( QgsProject::instance()->title() );
-
-    if ( saveFileDialog->exec() == QDialog::Accepted )
-    {
-      fullPath.setFile( saveFileDialog->selectedFiles().first() );
-    }
-    else
-    {
-      // if they didn't select anything, just return
-      // delete saveFileDialog; auto_ptr auto destroys
-      return false;
-    }
+    QFileInfo fullPath( path );
 
     // make sure we have the .qgs extension in the file name
-    if ( "qgs" != fullPath.suffix() )
+    if ( "qgs" != fullPath.suffix().toLower() )
     {
-      QString newFilePath = fullPath.filePath() + ".qgs";
-      fullPath.setFile( newFilePath );
+      fullPath.setFile( fullPath.filePath() + ".qgs" );
     }
 
 
@@ -2900,33 +2892,18 @@ void QgisApp::fileSaveAs()
   QSettings settings;
   QString lastUsedDir = settings.value( "/UI/lastProjectDir", "." ).toString();
 
-  std::auto_ptr<QFileDialog> saveFileDialog( new QFileDialog( this,
-      tr( "Choose a file name to save the QGIS project file as" ),
-      lastUsedDir, tr( "QGis files (*.qgs)" ) ) );
-  saveFileDialog->setFileMode( QFileDialog::AnyFile );
-  saveFileDialog->setAcceptMode( QFileDialog::AcceptSave );
-  saveFileDialog->setConfirmOverwrite( true );
-  saveFileDialog->selectFile( QgsProject::instance()->title() );
-
-  QFileInfo fullPath;
-  if ( saveFileDialog->exec() == QDialog::Accepted )
-  {
-    //saveFilePath = saveFileDialog->selectedFiles().first();
-    fullPath.setFile( saveFileDialog->selectedFiles().first() );
-  }
-  else
-  {
+  QString path = QFileDialog::getSaveFileName( this, tr( "Choose a file name to save the QGIS project file as" ), lastUsedDir + "/" + QgsProject::instance()->title(), tr( "QGis files (*.qgs *.QGS)" ) );
+  if ( path.isEmpty() )
     return;
-  }
 
-  QString myPath = fullPath.path();
-  settings.setValue( "/UI/lastProjectDir", myPath );
+  QFileInfo fullPath( path );
+
+  settings.setValue( "/UI/lastProjectDir", fullPath.path() );
 
   // make sure the .qgs extension is included in the path name. if not, add it...
-  if ( "qgs" != fullPath.suffix() )
+  if ( "qgs" != fullPath.suffix().toLower() )
   {
-    myPath = fullPath.filePath() + ".qgs";
-    fullPath.setFile( myPath );
+    fullPath.setFile( fullPath.filePath() + ".qgs" );
   }
 
   QgsProject::instance()->setFileName( fullPath.filePath() );
@@ -3062,7 +3039,7 @@ void QgisApp::newPrintComposer()
 
 void QgisApp::showComposerManager()
 {
-  QgsComposerManager m;
+  QgsComposerManager m( this );
   m.exec();
 }
 
@@ -5149,7 +5126,7 @@ void QgisApp::addMapLayer( QgsMapLayer *theMapLayer )
 void QgisApp::embedLayers()
 {
   //dialog to select groups/layers from other project files
-  QgsEmbedLayerDialog d;
+  QgsEmbedLayerDialog d( this );
   if ( d.exec() == QDialog::Accepted )
   {
     mMapCanvas->freeze( true );
@@ -6773,48 +6750,15 @@ void QgisApp::customProjection()
   myDialog->setAttribute( Qt::WA_DeleteOnClose );
   myDialog->show();
 }
-void QgisApp::showBookmarks()
-{
-  // Create or show the single instance of the Bookmarks modeless dialog.
-  // Closing a QWidget only hides it so it can be shown again later.
-  static QgsBookmarks *bookmarks = NULL;
-  if ( bookmarks == NULL )
-  {
-    bookmarks = new QgsBookmarks( this, Qt::WindowMinMaxButtonsHint );
-  }
-  bookmarks->show();
-  bookmarks->raise();
-  bookmarks->setWindowState( bookmarks->windowState() & ~Qt::WindowMinimized );
-  bookmarks->activateWindow();
-}
 
 void QgisApp::newBookmark()
 {
-  // Get the name for the bookmark. Everything else we fetch from
-  // the mapcanvas
+  QgsBookmarks::newBookmark();
+}
 
-  bool ok;
-  QString bookmarkName = QInputDialog::getText( this, tr( "New Bookmark" ),
-                         tr( "Enter a name for the new bookmark:" ), QLineEdit::Normal,
-                         QString::null, &ok );
-  if ( ok && !bookmarkName.isEmpty() )
-  {
-    if ( createDB() )
-    {
-      // create the bookmark
-      QgsBookmarkItem *bmi = new QgsBookmarkItem( bookmarkName,
-          QgsProject::instance()->title(), mMapCanvas->extent(), -1,
-          QgsApplication::qgisUserDbFilePath() );
-      bmi->store();
-      delete bmi;
-      // emit a signal to indicate that the bookmark was added
-      emit bookmarkAdded();
-    }
-    else
-    {
-      QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark. Your user database may be missing or corrupted" ) );
-    }
-  }
+void QgisApp::showBookmarks()
+{
+  QgsBookmarks::showBookmarks();
 }
 
 // Slot that gets called when the project file was saved with an older

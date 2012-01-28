@@ -67,11 +67,11 @@ class MarkerErrorGeometry():
 
 class ValidateDialog( QDialog, Ui_Dialog ):
   def __init__(self, iface):
-    QDialog.__init__(self)
+    QDialog.__init__(self, iface.mainWindow())
     self.iface = iface
     self.setupUi(self)
-    self.setModal(False) # we want to be able to interact with the featuresmc.extent().width()
-    self.setWindowFlags( Qt.SubWindow )
+#   self.setModal(False) # we want to be able to interact with the featuresmc.extent().width()
+#   self.setWindowFlags( Qt.SubWindow )
     # adjust user interface
     self.setWindowTitle( self.tr( "Check geometry validity" ) )
     self.cmbField.setVisible( False )

@@ -110,9 +110,9 @@ class GUI_EXPORT QgsRuleBasedRendererV2Widget : public QgsRendererV2Widget, priv
   protected:
 
     void refineRule( int type );
-    void refineRuleCategoriesGui( const QModelIndex& index );
-    void refineRuleRangesGui( const QModelIndex& index );
-    void refineRuleScalesGui( const QModelIndex& index );
+    void refineRuleCategoriesGui( const QModelIndexList& index );
+    void refineRuleRangesGui( const QModelIndexList& index );
+    void refineRuleScalesGui( const QModelIndexList& index );
 
     QgsRuleBasedRendererV2::Rule* currentRule();
 

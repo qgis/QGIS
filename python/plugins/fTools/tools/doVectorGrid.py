@@ -36,7 +36,7 @@ from ui_frmVectorGrid import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface):
-        QDialog.__init__(self)
+        QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
         self.setupUi(self)
         QObject.connect(self.toolOut, SIGNAL("clicked()"), self.outFile)

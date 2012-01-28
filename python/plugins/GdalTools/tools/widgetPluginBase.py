@@ -9,10 +9,10 @@ import GdalTools_utils as Utils
 
 class GdalToolsBasePluginWidget:
 
-  def __init__(self, iface, commandName, parent = None):
+  def __init__(self, iface, commandName):
       self.iface = iface
       self.initialized = False
-      self.base = BaseDialog(parent, iface, self, self.windowTitle(), commandName)
+      self.base = BaseDialog( iface.mainWindow(), iface, self, self.windowTitle(), commandName)
 
       self.connect(self.base, SIGNAL("processError(QProcess::ProcessError)"), self.onError)
       self.connect(self.base, SIGNAL("processFinished(int, QProcess::ExitStatus)"), self.onFinished)

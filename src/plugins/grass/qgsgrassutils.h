@@ -58,7 +58,7 @@ class QgsGrassElementDialog: public QObject
 
   public:
     //! Constructor
-    QgsGrassElementDialog();
+    QgsGrassElementDialog( QWidget *parent );
 
     //! Destructor
     ~QgsGrassElementDialog();
@@ -83,6 +83,7 @@ class QgsGrassElementDialog: public QObject
     QLabel *mErrorLabel;
     QPushButton *mOkButton;
     QPushButton *mCancelButton;
+    QWidget *mParent;
 };
 
 #endif // QGSGRASSUTILS_H

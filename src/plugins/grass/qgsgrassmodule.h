@@ -52,7 +52,7 @@ class QgsGrassModule: public QDialog, private  Ui::QgsGrassModuleBase
   public:
     //! Constructor
     QgsGrassModule( QgsGrassTools *tools, QString moduleName, QgisInterface *iface,
-                    QString path, QWidget * parent = 0, Qt::WFlags f = 0 );
+                    QString path, QWidget *parent, Qt::WFlags f = 0 );
 
     //! Destructor
     ~QgsGrassModule();
