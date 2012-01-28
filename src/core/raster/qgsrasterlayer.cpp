@@ -693,21 +693,30 @@ void QgsRasterLayer::setRendererForDrawingStyle( const DrawingStyle &  theDrawin
       if ( mRedBandName != TRSTRING_NOT_SET )
       {
         red = bandNumber( mRedBandName );
-        redEnhancement = contrastEnhancement( red );
+        if ( contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+        {
+          redEnhancement = contrastEnhancement( red );
+        }
       }
       int green = -1;
       QgsContrastEnhancement* greenEnhancement = 0;
       if ( mGreenBandName != TRSTRING_NOT_SET )
       {
         green = bandNumber( mGreenBandName );
-        greenEnhancement = contrastEnhancement( green );
+        if ( contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+        {
+          greenEnhancement = contrastEnhancement( green );
+        }
       }
       int blue = -1;
       QgsContrastEnhancement* blueEnhancement = 0;
       if ( mBlueBandName != TRSTRING_NOT_SET )
       {
         blue = bandNumber( mBlueBandName );
-        blueEnhancement = contrastEnhancement( blue );
+        if ( contrastEnhancementAlgorithm() != QgsContrastEnhancement::NoEnhancement )
+        {
+          blueEnhancement = contrastEnhancement( blue );
+        }
       }
       renderer = new QgsMultiBandColorRenderer( mDataProvider, red, green, blue,
           redEnhancement, greenEnhancement, blueEnhancement );

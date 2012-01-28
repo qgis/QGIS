@@ -177,6 +177,6 @@ bool QgsRasterTransparency::isEmpty( double nodataValue ) const
              ( mTransparentSingleValuePixelList.size() == 1 && doubleNear( mTransparentSingleValuePixelList.at( 0 ).pixelValue, nodataValue ) ) )
            &&
            ( mTransparentThreeValuePixelList.isEmpty() ||
-             ( mTransparentThreeValuePixelList.size() == 1 && doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
+             ( mTransparentThreeValuePixelList.size() < 4 && doubleNear( mTransparentThreeValuePixelList.at( 0 ).red, nodataValue ) &&
                doubleNear( mTransparentThreeValuePixelList.at( 0 ).green, nodataValue ) && doubleNear( mTransparentThreeValuePixelList.at( 0 ).blue, nodataValue ) ) ) );
 }

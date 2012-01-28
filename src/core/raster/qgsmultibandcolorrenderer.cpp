@@ -18,6 +18,7 @@
 #include "qgsmultibandcolorrenderer.h"
 #include "qgscontrastenhancement.h"
 #include "qgsrastertransparency.h"
+#include "qgsrasterviewport.h"
 #include <QImage>
 #include <QSet>
 
@@ -40,6 +41,13 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
   {
     return;
   }
+
+  //In some (common) cases, we can simplify the drawing loop considerably and save render time
+  bool fastDraw = (
+                    !usesTransparency( viewPort->mSrcCRS, viewPort->mDestCRS )
+                    && mRedBand > 0 && mGreenBand > 0 && mBlueBand > 0
+                    && mAlphaBand < 1 && !mRedContrastEnhancement && !mGreenContrastEnhancement && !mBlueContrastEnhancement
+                    && !mInvertColor );
 
   QgsRasterDataProvider::DataType redType;
   if ( mRedBand > 0 )
@@ -155,15 +163,26 @@ void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, 
       imageScanLine = ( QRgb* )( img.scanLine( i ) );
       for ( int j = 0; j < nRasterCols; ++j )
       {
-        if ( mRedBand )
+
+        if ( fastDraw ) //fast rendering if no transparency, stretching, color inversion, etc.
+        {
+          redVal = readValue( redData, redType, currentRasterPos );
+          greenVal = readValue( greenData, greenType, currentRasterPos );
+          blueVal = readValue( blueData, blueType, currentRasterPos );
+          imageScanLine[j] = qRgba( redVal, greenVal, blueVal, 255 );
+          ++currentRasterPos;
+          continue;
+        }
+
+        if ( mRedBand > 0 )
         {
           redVal = readValue( redData, redType, currentRasterPos );
         }
-        if ( mGreenBand )
+        if ( mGreenBand > 0 )
         {
           greenVal = readValue( greenData, greenType, currentRasterPos );
         }
-        if ( mBlueBand )
+        if ( mBlueBand > 0 )
         {
           blueVal = readValue( blueData, blueType, currentRasterPos );
         }
