@@ -123,8 +123,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   moveCanvasContents( true );
 
-  //connect(mMapRenderer, SIGNAL(updateMap()), this, SLOT(updateMap()));
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
+  connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
+
+  crsTransformEnabled( hasCrsTransformEnabled() );
 
   // project handling
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
@@ -1491,7 +1493,6 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
   {
     QgsDebugMsg( "Couldn't read mapcanvas information from project" );
   }
-
 }
 
 void QgsMapCanvas::writeProject( QDomDocument & doc )
@@ -1509,8 +1510,6 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
   qgisNode.appendChild( mapcanvasNode );
   mMapRenderer->writeXML( mapcanvasNode, doc );
-
-
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )
@@ -1540,4 +1539,16 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent * e )
   // But we do not want that and by ignoring the drag enter we let the
   // parent (e.g. QgisApp) to handle drops of map layers etc.
   e->ignore();
+}
+
+void QgsMapCanvas::crsTransformEnabled( bool enabled )
+{
+  if ( enabled )
+  {
+    QgsDebugMsg( "refreshing after reprojection was enabled" );
+    refresh();
+    connect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
+  }
+  else
+    disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
 }
