@@ -18,12 +18,17 @@
 #define QGSBOOKMARKS_H
 #include "ui_qgsbookmarksbase.h"
 #include <QDialog>
+#include <QSqlDatabase>
+#include <QSqlTableModel>
+#include <QTreeWidgetItem>
 #include "qgscontexthelp.h"
 
 class QString;
 class QWidget;
-class QTreeWidgetItem;
-struct sqlite3;
+
+const QString CRSDB = "CRSDB";
+
+
 class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
 {
     Q_OBJECT
@@ -34,12 +39,11 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
     void restorePosition();
   private slots:
     void saveWindowLocation();
-    void on_btnUpdate_clicked();
     void on_btnDelete_clicked();
     void on_btnZoomTo_clicked();
-    void on_lstBookmarks_itemDoubleClicked( QTreeWidgetItem * );
+    //void on_lstBookmarks_clicked( const QModelIndex & );
+    void on_lstBookmarks_doubleClicked( const QModelIndex & );
     void refreshBookmarks();
-
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
   private:
@@ -47,7 +51,9 @@ class QgsBookmarks : public QDialog, private Ui::QgsBookmarksBase
     void initialise();
     int connectDb();
     void zoomToBookmark();
-    sqlite3 *db;
+    QSqlDatabase db;
 };
+
+
 #endif // QGSBOOKMARKS_H
 
