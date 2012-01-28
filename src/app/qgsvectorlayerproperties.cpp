@@ -215,7 +215,7 @@ void QgsVectorLayerProperties::loadRows()
   tblAttributes->horizontalHeader()->setResizeMode( 1, QHeaderView::Stretch );
   tblAttributes->horizontalHeader()->setResizeMode( 7, QHeaderView::Stretch );
   tblAttributes->setSelectionBehavior( QAbstractItemView::SelectRows );
-  tblAttributes->setSelectionMode( QAbstractItemView::SingleSelection );
+  tblAttributes->setSelectionMode( QAbstractItemView::ExtendedSelection );
   tblAttributes->verticalHeader()->hide();
 
   int row = 0;
