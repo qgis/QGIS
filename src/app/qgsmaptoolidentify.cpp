@@ -324,7 +324,17 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
 
   QMap< QString, QString > attributes, derivedAttributes;
   QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
-  idPoint = toLayerCoordinates( layer, idPoint );
+  try
+  {
+    idPoint = toLayerCoordinates( layer, idPoint );
+  }
+  catch( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    QgsDebugMsg( QString( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
+    return false;
+  }
+
   QString type;
 
   if ( layer->providerType() == "wms" )
