@@ -1165,7 +1165,7 @@ void QgsGPSInformationWidget::on_mBtnLogFile_clicked()
   QSettings settings;
   QString settingPath( "/gps/lastLogFileDir" );
   QString lastUsedDir = settings.value( settingPath, "." ).toString();
-  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files (*.nmea)" ) );
+  QString saveFilePath = QFileDialog::getSaveFileName( this, tr( "Save GPS log file as" ), lastUsedDir, tr( "NMEA files" ) + " (*.nmea)" );
   if ( saveFilePath.isNull() ) //canceled
   {
     return;

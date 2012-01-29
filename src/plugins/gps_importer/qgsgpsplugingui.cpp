@@ -163,7 +163,7 @@ void QgsGPSPluginGui::on_pbnDLOutput_clicked()
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
                                   dir,
-                                  tr( "GPS eXchange format (*.gpx)" ) );
+                                  tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
     if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
@@ -256,7 +256,7 @@ void QgsGPSPluginGui::on_pbnGPXSelectFile_clicked()
                                 this,
                                 tr( "Select GPX file" ),
                                 dir,
-                                tr( "GPS eXchange format (*.gpx)" ) );
+                                tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
     leGPXFile->setText( myFileNameQString );
@@ -313,7 +313,7 @@ void QgsGPSPluginGui::on_pbnIMPOutput_clicked()
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
                                   dir,
-                                  tr( "GPS eXchange format (*.gpx)" ) );
+                                  tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
     if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )
@@ -420,7 +420,7 @@ void QgsGPSPluginGui::on_pbnCONVOutput_clicked()
     QFileDialog::getSaveFileName( this,
                                   tr( "Choose a file name to save under" ),
                                   dir,
-                                  tr( "GPS eXchange format (*.gpx)" ) );
+                                  tr( "GPS eXchange format" ) + " (*.gpx)" );
   if ( !myFileNameQString.isEmpty() )
   {
     if ( !myFileNameQString.toLower().endsWith( ".gpx" ) )

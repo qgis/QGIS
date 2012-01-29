@@ -292,7 +292,7 @@ void QgsSingleSymbolDialog::selectTextureImage()
   QString fileName = QFileDialog::getOpenFileName( this,
                      tr( "Open File" ),
                      mTexturePath,
-                     tr( "Images (*.png *.xpm *.jpg)" ) ); //should we allow other types of images?
+                     tr( "Images" ) + " (*.png *.xpm *.jpg)" ); //should we allow other types of images?
 
   if ( !fileName.isNull() )
   { //only process the string if the user clicked OK

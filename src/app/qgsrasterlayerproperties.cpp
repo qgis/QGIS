@@ -1827,7 +1827,7 @@ void QgsRasterLayerProperties::on_pbnExportTransparentPixelValues_clicked()
 {
   QSettings myQSettings;
   QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
-  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile (*.txt)" ) );
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
     if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
@@ -2035,7 +2035,7 @@ void QgsRasterLayerProperties::on_pbnImportTransparentPixelValues_clicked()
   QString myBadLines;
   QSettings myQSettings;
   QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile (*.txt)" ) );
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
   {
@@ -2510,7 +2510,7 @@ void QgsRasterLayerProperties::on_pbtnExportColorMapToFile_clicked()
 {
   QSettings myQSettings;
   QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
-  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile (*.txt)" ) );
+  QString myFileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   if ( !myFileName.isEmpty() )
   {
     if ( !myFileName.endsWith( ".txt", Qt::CaseInsensitive ) )
@@ -2592,7 +2592,7 @@ void QgsRasterLayerProperties::on_pbtnLoadColorMapFromFile_clicked()
   QString myBadLines;
   QSettings myQSettings;
   QString myLastDir = myQSettings.value( "lastRasterFileFilterDir", "" ).toString();
-  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile (*.txt)" ) );
+  QString myFileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), myLastDir, tr( "Textfile" ) + " (*.txt)" );
   QFile myInputFile( myFileName );
   if ( myInputFile.open( QFile::ReadOnly ) )
   {
@@ -2955,9 +2955,9 @@ void QgsRasterLayerProperties::on_pbnLoadStyle_clicked()
 
   QString fileName = QFileDialog::getOpenFileName(
                        this,
-                       tr( "Load layer properties from style file (.qml)" ),
+                       tr( "Load layer properties from style file" ),
                        lastUsedDir,
-                       tr( "QGIS Layer Style File (*.qml)" ) );
+                       tr( "QGIS Layer Style File" ) + " (*.qml)" );
   if ( fileName.isEmpty() )
     return;
 
@@ -2985,7 +2985,11 @@ void QgsRasterLayerProperties::on_pbnSaveStyleAs_clicked()
   QSettings settings;
   QString lastUsedDir = settings.value( "style/lastStyleDir", "." ).toString();
 
-  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save layer properties as style file (.qml)" ), lastUsedDir );
+  QString outputFileName = QFileDialog::getSaveFileName(
+                             this,
+                             tr( "Save layer properties as style file" ),
+                             lastUsedDir,
+                             tr( "QGIS Layer Style File" ) + " (*.qml)" );
   if ( outputFileName.isEmpty() )
     return;
 

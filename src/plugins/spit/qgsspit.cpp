@@ -165,7 +165,7 @@ void QgsSpit::addFile()
   QgsEncodingFileDialog dlg( this,
                              tr( "Add Shapefiles" ),
                              settings.value( "/Plugin-Spit/last_directory" ).toString(),
-                             tr( "Shapefiles (*.shp);;All files (*)" ),
+                             tr( "Shapefiles" ) + " (*.shp);;" + tr( "All files" ) + " (*)",
                              settings.value( "/Plugin-Spit/last_encoding" ).toString() );
   dlg.setFileMode( QFileDialog::ExistingFiles );
 
