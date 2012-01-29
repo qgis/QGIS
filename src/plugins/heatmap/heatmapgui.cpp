@@ -9,10 +9,24 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  ***************************************************************************/
+// qgis includes
+#include "qgis.h"
 #include "heatmapgui.h"
 #include "qgscontexthelp.h"
+#include "qgsmaplayer.h"
+#include "qgsmaplayerregistry.h"
+#include "qgsvectorlayer.h"
+
+// GDAL includes
+#include "gdal_priv.h"
+#include "cpl_string.h"
+#include "cpl_conv.h"
 
 //qt includes
+#include <QComboBox>
+#include <QFileDialog>
+#include <QSettings>
+#include <QMessageBox>
 
 //standard includes
 
@@ -21,79 +35,142 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
 {
   setupUi( this );
 
-  // Below is an example of how to make the translators job
-  // much easier. Please follow this general guideline for LARGE
-  // pieces of text. One-liners can be added in the .ui file
+  // Adding point layers to the mInputVectorCombo
+  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
 
-  // Note: Format does not relate to translation.
-  QString format( "<html><body><h3>%1</h3>%2<h3>%3</h3>%4<p><a href=http://svn.qgis.org/api_doc/html>"
-                  "http://svn.qgis.org/api_doc/html</a><p>"
-                  "%5<p>%6<p>%7<p>%8<p><h3>%9</h3>"
-                  "<h4>CMakeLists.txt</h4>%11"
-                  "<h4>heatmap.h, heatmap.cpp</h4>%12"
-                  "<h4>heatmapgui.ui</h4>%13"
-                  "<h4>heatmapgui.cpp, heatmapgui.h</h4>%14"
-                  "<h4>heatmap.qrc</h4>%15"
-                  "<h4>heatmap.png</h4>%16"
-                  "<h4>README</h4>%17"
-                  "<h3>%18</h3>%19<ul>%20</ul>%21<p>%22"
-                  "<p><b>The QGIS Team<br>2007</b>"
-                  "</body></html>" );
+  while( layers.hasNext() )
+  {
+    layers.next();
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
+    if( vl->geometryType() == QGis::Point )
+    {
+      mInputVectorCombo->addItem( vl->name(), QVariant( vl->id() ) );
+    }
+  }
 
-  // Note: Table does not translate
-  QString table( "<table><tr><td>QGisInterface<td><a href=http://svn.qgis.org/api_doc/html/classQgisInterface.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgisInterface.htm</a>"
-                 "<tr><td>QgsMapCanvas<td><a href=http://svn.qgis.org/api_doc/html/classQgsMapCanvas.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgsMapCanvas.html</a>"
-                 "<tr><td>QgsMapTool<td><a href=http://svn.qgis.org/api_doc/html/classQgsMapTool.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgsMapTool.html</a>"
-                 "<tr><td>QgsPlugin<td><a href=http://svn.qgis.org/api_doc/html/classQgisPlugin.html>"
-                 "http://svn.qgis.org/api_doc/html/classQgisPlugin.html</a></table>" );
+  // Adding GDAL drivers with CREATE to the mFormatCombo
+  GDALAllRegister();
+  int nDrivers = GDALGetDriverCount();
+  for( int i = 0; i < nDrivers; i +=1 )
+  {
+    GDALDriver* nthDriver = GetGDALDriverManager()->GetDriver( i );
+    char** driverMetadata = nthDriver->GetMetadata();
+    if( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+    {
+      // Add LongName text, shortname variant; GetDescription actually gets the shortname
+      mFormatCombo->addItem( nthDriver->GetMetadataItem( GDAL_DMD_LONGNAME ), QVariant( nthDriver->GetDescription() ) );
+      // Add the drivers and their extensions to a map for filename correction
+      mExtensionMap.insert( nthDriver->GetDescription(), nthDriver->GetMetadataItem( GDAL_DMD_EXTENSION ) );
+    }
+  }
 
-  // Note: Translatable strings below
-  QString text = format
-                 .arg( tr( "Welcome to your automatically generated plugin!" ) )
-                 .arg( tr( "This is just a starting point. You now need to modify the code to make it do something useful....read on for a more information to get yourself started." ) )
-                 .arg( tr( "Documentation:" ) )
-                 .arg( tr( "You really need to read the QGIS API Documentation now at:" ) )
-                 .arg( tr( "In particular look at the following classes:" ) )
-                 .arg( table )
-                 .arg( "QGisInterface is an abstract base class (ABC) that specifies what publicly available features of QGIS are exposed to third party code and plugins. An instance of the QgisInterface is passed to the plugin when it loads. Please consult the QGIS development team if there is functionality required in the QGisInterface that is not available." )
-                 .arg( tr( "QgsPlugin is an ABC that defines required behaviour your plugin must provide. See below for more details." ) )
-                 .arg( tr( "What are all the files in my generated plugin directory for?" ) )
-                 .arg( tr( "This is the generated CMake file that builds the plugin. You should add you application specific dependencies and source files to this file." ) )
-                 .arg( tr( "This is the class that provides the 'glue' between your custom application logic and the QGIS application. You will see that a number of methods are already implemented for you - including some examples of how to add a raster or vector layer to the main application map canvas. This class is a concrete instance of the QgisPlugin interface which defines required behaviour for a plugin. In particular, a plugin has a number of static methods and members so that the QgsPluginManager and plugin loader logic can identify each plugin, create an appropriate menu entry for it etc. Note there is nothing stopping you creating multiple toolbar icons and menu entries for a single plugin. By default though a single menu entry and toolbar button is created and its pre-configured to call the run() method in this class when selected. This default implementation provided for you by the plugin builder is well documented, so please refer to the code for further advice." ) )
-                 .arg( tr( "This is a Qt designer 'ui' file. It defines the look of the default plugin dialog without implementing any application logic. You can modify this form to suite your needs or completely remove it if your plugin does not need to display a user form (e.g. for custom MapTools)." ) )
-                 .arg( tr( "This is the concrete class where application logic for the above mentioned dialog should go. The world is your oyster here really...." ) )
-                 .arg( tr( "This is the Qt4 resources file for your plugin. The Makefile generated for your plugin is all set up to compile the resource file so all you need to do is add your additional icons etc using the simple xml file format. Note the namespace used for all your resources e.g. (':/Homann/'). It is important to use this prefix for all your resources. We suggest you include any other images and run time data in this resurce file too." ) )
-                 .arg( tr( "This is the icon that will be used for your plugin menu entry and toolbar icon. Simply replace this icon with your own icon to make your plugin disctinctive from the rest." ) )
-                 .arg( tr( "This file contains the documentation you are reading now!" ) )
-                 .arg( tr( "Getting developer help:" ) )
-                 .arg( tr( "For Questions and Comments regarding the plugin builder template and creating your features in QGIS using the plugin interface please contact us via:" ) )
-                 .arg( tr( "<li> the QGIS developers mailing list, or </li><li> IRC (#qgis on freenode.net)</li>" ) )
-                 .arg( tr( "QGIS is distributed under the Gnu Public License. If you create a useful plugin please consider contributing it back to the community." ) )
-                 .arg( tr( "Have fun and thank you for choosing QGIS." ) );
-
-  textBrowser->setHtml( text );
+  //finally set right the ok button
+  enableOrDisableOkButton();
 }
 
 HeatmapGui::~HeatmapGui()
 {
 }
 
-void HeatmapGui::on_buttonBox_accepted()
+void HeatmapGui::on_mButtonBox_accepted()
 {
-  //close the dialog
+  // Variables to be emitted with the createRaster signal
+  QgsVectorLayer* inputLayer;
+  int bufferDistance;
+  float decayRatio;
+  QString outputFileName;
+  QString outputFormat;
+
+  QString dummyText;
+
+  // The input vector layer
+  int myLayerId = mInputVectorCombo->itemData( mInputVectorCombo->currentIndex() ).toInt();
+
+  QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+  QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
+  
+  while( layers.hasNext() )
+  {
+    layers.next();
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
+    dummyText = vl->id();
+    if( dummyText.toInt() == myLayerId )
+    {
+      inputLayer = vl;
+    }
+  }
+
+  // The buffer distance
+  dummyText = mBufferLineEdit->text();
+  bufferDistance = dummyText.toInt();
+  // The decay ratio
+  dummyText = mDecayLineEdit->text();
+  decayRatio = dummyText.toFloat();
+
+  // The output filename
+  outputFileName = mOutputRasterLineEdit->text();
+  QFileInfo myFileInfo( outputFileName );
+  if( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
+  {
+    QMessageBox::information( 0, tr("Output filename is invalid!"), tr("Kindly enter a valid output file path and name.") );
+  }
+  QString suffix = myFileInfo.suffix();
+  if( suffix.isEmpty() )
+  {
+    outputFormat = mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
+    QMap<QString, QString>::const_iterator it = mExtensionMap.find( outputFormat );
+    if( it != mExtensionMap.end() && it.key() == outputFormat )
+    {
+      outputFileName.append(".");
+      outputFileName.append( it.value() );
+    }
+  }
+
+  // emit
+  emit createRaster( inputLayer, bufferDistance, decayRatio, outputFileName, outputFormat );
+  //and finally
   accept();
 }
 
-void HeatmapGui::on_buttonBox_rejected()
+void HeatmapGui::on_mButtonBox_rejected()
 {
   reject();
 }
 
-void HeatmapGui::on_buttonBox_helpRequested()
+void HeatmapGui::on_mButtonBox_helpRequested()
 {
-  QgsContextHelp::run( context_id );
+  QgsContextHelp::run( metaObject()->className() );
 }
 
+void HeatmapGui::on_mBrowseButton_clicked()
+{
+  QSettings s;
+  QString lastDir = s.value( "/Heatmap/lastOutputDir", "" ).toString();
+
+  QString outputFilename = QFileDialog::getSaveFileName( 0, tr( "Save Heatmap as: "), lastDir );
+  if( !outputFilename.isEmpty() )
+  {
+    mOutputRasterLineEdit->setText( outputFilename );
+    QFileInfo outputFileInfo( outputFilename );
+    QDir outputDir = outputFileInfo.absoluteDir();
+    if( outputDir.exists() )
+    {
+      s.setValue( "/Heatmap/lastOutputDir", outputFileInfo.absolutePath() );
+    }
+  }
+
+  enableOrDisableOkButton();
+}
+
+void HeatmapGui::enableOrDisableOkButton()
+{
+  bool enabled = true;
+  QString filename = mOutputRasterLineEdit->text();
+  QFileInfo theFileInfo( filename );
+  if( filename.isEmpty() || !theFileInfo.dir().exists() )
+  {
+    enabled = false;
+  }
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}

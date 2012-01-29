@@ -2,9 +2,9 @@
   heatmap.cpp
   Creates a Heatmap raster for the input point vector
   -------------------
-         begin                : [PluginDate]
-         copyright            : [(C) Your Name and Date]
-         email                : [Your Email]
+         begin                : January 2012
+         copyright            : [(C) Arunmozhi]
+         email                : [aruntheguy at gmail dot com]
 
  ***************************************************************************
  *                                                                         *
@@ -72,12 +72,12 @@ void Heatmap::initGui()
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/heatmap/heatmap.png" ), tr( "Heatmap" ), this );
   // Set the what's this text
-  mQActionPointer->setWhatsThis( tr( "Replace this with a short description of what the plugin does" ) );
+  mQActionPointer->setWhatsThis( tr( "Creats a heatmap raster for the input point vector." ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   mQGisIface->addToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToMenu( tr( "&Heatmap" ), mQActionPointer );
+  mQGisIface->addPluginToRasterMenu( tr( "&Heatmap" ), mQActionPointer );
 
 }
 //method defined in interface

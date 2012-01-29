@@ -1,76 +1,221 @@
-<ui version="4.0" >
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>HeatmapGuiBase</class>
- <widget class="QDialog" name="HeatmapGuiBase" >
-  <property name="geometry" >
+ <widget class="QDialog" name="HeatmapGuiBase">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>584</width>
-    <height>435</height>
+    <width>400</width>
+    <height>260</height>
    </rect>
   </property>
-  <property name="windowTitle" >
-   <string>QGIS Plugin Template</string>
+  <property name="windowTitle">
+   <string>Heatmap Plugin</string>
   </property>
-  <property name="windowIcon" >
-   <iconset/>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
   </property>
-  <layout class="QGridLayout" >
-   <property name="margin" >
-    <number>9</number>
+  <widget class="QLabel" name="mInputLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>20</y>
+     <width>110</width>
+     <height>21</height>
+    </rect>
    </property>
-   <property name="spacing" >
-    <number>6</number>
+   <property name="text">
+    <string>Input Point Vector</string>
    </property>
-   <item row="0" column="0" >
-    <widget class="QLabel" name="txtHeading" >
-     <property name="sizePolicy" >
-      <sizepolicy>
-       <hsizetype>5</hsizetype>
-       <vsizetype>1</vsizetype>
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="font" >
-      <font>
-       <family>Sans Serif</family>
-       <pointsize>24</pointsize>
-       <weight>75</weight>
-       <italic>false</italic>
-       <bold>true</bold>
-       <underline>false</underline>
-       <strikeout>false</strikeout>
-      </font>
-     </property>
-     <property name="text" >
-      <string>Plugin Template</string>
-     </property>
-     <property name="alignment" >
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" >
-    <widget class="QTextBrowser" name="textBrowser" >
-     <property name="openExternalLinks" >
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" >
-    <widget class="QDialogButtonBox" name="buttonBox" >
-     <property name="orientation" >
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons" >
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::NoButton|QDialogButtonBox::Ok|QDialogButtonBox::SaveAll</set>
-     </property>
-    </widget>
-   </item>
-  </layout>
+  </widget>
+  <widget class="QComboBox" name="mInputVectorCombo">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>20</y>
+     <width>260</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="mOutputLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>65</y>
+     <width>110</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Output Raster</string>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="mOutputRasterLineEdit">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>60</y>
+     <width>230</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="mBrowseButton">
+   <property name="geometry">
+    <rect>
+     <x>355</x>
+     <y>60</y>
+     <width>30</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::ClickFocus</enum>
+   </property>
+   <property name="text">
+    <string>...</string>
+   </property>
+   <property name="autoDefault">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="mButtonBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>225</y>
+     <width>375</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QGroupBox" name="mPointAttributeBox">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>140</y>
+     <width>370</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Heatmap Point Attributes</string>
+   </property>
+   <widget class="QLabel" name="mBufferLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>27</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Buffer Radius</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="mDecayLabel">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>56</y>
+      <width>101</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Decay Ratio</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="mBufferLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>20</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>10</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="mDecayLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>110</x>
+      <y>50</y>
+      <width>113</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>0.5</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="mFormatLabel">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>105</y>
+     <width>110</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Output Format</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="mFormatCombo">
+   <property name="geometry">
+    <rect>
+     <x>125</x>
+     <y>100</y>
+     <width>260</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
- <layoutdefault spacing="6" margin="11" />
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>HeatmapGuiBase</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>195</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>79</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>mButtonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>HeatmapGuiBase</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>195</x>
+     <y>123</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>79</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

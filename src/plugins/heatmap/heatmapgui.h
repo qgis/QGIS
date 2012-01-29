@@ -15,6 +15,7 @@
 #include <QDialog>
 #include <ui_heatmapguibase.h>
 
+#include "qgsvectorlayer.h"
 /**
 @author Tim Sutton
 */
@@ -26,12 +27,26 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
     ~HeatmapGui();
 
   private:
-    static const int context_id = 0;
+    QMap<QString, QString> mExtensionMap;
+    void enableOrDisableOkButton();
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void on_mButtonBox_accepted();
+    void on_mButtonBox_rejected();
+    void on_mButtonBox_helpRequested();
+    void on_mBrowseButton_clicked(); // Function to open the file dialog
+
+  signals:
+    /*
+     * Signal: createRaster
+     * Params: 
+     *         QgsVectorLayer* -> Input point layer
+     *         int             -> Buffer distance
+     *         float           -> Decay ratio
+     *         QString         -> Output filename
+     *         QString         -> Output Format Short Name
+     */
+    void createRaster( QgsVectorLayer*, int, float, QString, QString );
 
 };
 
