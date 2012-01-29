@@ -175,7 +175,6 @@ void QgsGrassPlugin::initGui()
 
   // Add the toolbar to the main window
   toolBarPointer = qGisInterface->addToolBar( tr( "GRASS" ) );
-  toolBarPointer->setIconSize( QSize( 24, 24 ) );
   toolBarPointer->setObjectName( "GRASS" );
 
   // Add to the toolbar
