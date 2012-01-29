@@ -16,8 +16,8 @@
 #include "qgslogger.h"
 #include <QDebug>
 
-QgsCompassPluginGui::QgsCompassPluginGui( const QString &title , QWidget * parent, Qt::WFlags fl )
-    : QDockWidget( title, parent, fl )
+QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WFlags fl )
+    : QDockWidget( parent, fl )
 {
   setupUi( this );
   mTimer = new QTimer(this);

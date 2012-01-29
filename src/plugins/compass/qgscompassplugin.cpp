@@ -53,6 +53,13 @@ QgsCompassPlugin::QgsCompassPlugin( QgisInterface * theQgisInterFace )
   pluginVersionQString = pluginVersion;
   pluginDescriptionQString = description_;
   pluginCategoryQString = category_;
+  //myQgsCompassPluginGui = new QgsCompassPluginGui( tr("Compass"), qGisInterface->mainWindow() );
+  mDock = new QDockWidget("Compass", qGisInterface->mainWindow() );
+  myQgsCompassPluginGui =  new QgsCompassPluginGui( mDock );
+  mDock->setWidget( myQgsCompassPluginGui );
+  mDock->setAttribute( Qt::WA_DeleteOnClose );
+  mDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+  qGisInterface->addDockWidget( Qt::LeftDockWidgetArea, mDock );
 }
 
 QgsCompassPlugin::~QgsCompassPlugin()
@@ -115,20 +122,15 @@ void QgsCompassPlugin::initGui()
 // Slot called when the buffer menu item is activated
 void QgsCompassPlugin::run()
 {
-  QgsCompassPluginGui *myQgsCompassPluginGui =
-      new QgsCompassPluginGui( tr("Compass"), qGisInterface->mainWindow() );
-  myQgsCompassPluginGui->setAttribute( Qt::WA_DeleteOnClose );
-  myQgsCompassPluginGui->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-  qGisInterface->addDockWidget( Qt::LeftDockWidgetArea, myQgsCompassPluginGui );
-  myQgsCompassPluginGui->show();
+    mDock->show();
 }
 
 // Unload the plugin by cleaning up the GUI
 void QgsCompassPlugin::unload()
 {
   // remove the GUI
-  qGisInterface->layerToolBar()->removeAction( myQActionPointer );
-  qGisInterface->removeAddLayerAction( myQActionPointer );
+  qGisInterface->pluginToolBar()->removeAction( myQActionPointer );
+  qGisInterface->removePluginMenu( "Internal Compass", myQActionPointer );
   delete myQActionPointer;
 }
 

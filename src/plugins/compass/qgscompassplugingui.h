@@ -31,7 +31,7 @@ class QgsCompassPluginGui : public QDockWidget, private Ui::QgsCompassPluginGuiB
     Q_OBJECT
 
   public:
-    QgsCompassPluginGui(const QString& title, QWidget* parent = 0, Qt::WFlags fl = 0 );
+    QgsCompassPluginGui( QWidget* parent = 0, Qt::WFlags fl = 0 );
     ~QgsCompassPluginGui();
 
   private:

@@ -20,6 +20,8 @@
 #define PLUGIN
 #include "../qgisplugin.h"
 #include "ui_qgscompasspluginguibase.h"
+//the gui subclass
+#include "qgscompassplugingui.h"
 
 class QgisInterface;
 
@@ -87,6 +89,9 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     QgisInterface *qGisInterface;
     //! Pointer to the QAction object used in the menu and toolbar
     QAction *myQActionPointer;
+
+    QDockWidget *mDock;
+    QgsCompassPluginGui *myQgsCompassPluginGui;
 };
 
 #endif
