@@ -37,7 +37,7 @@ Functions:
 static const QString pluginVersion = QObject::tr( "Version 0.1" );
 static const QString description_ = QObject::tr( "Shows a QtSensors compass reading" );
 static const QString category_ = QObject::tr( "Plugins" );
-static const QString icon_ = ":/compass.png";
+static const QString icon_ = ":/compass.svn";
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer to the main app
@@ -49,17 +49,11 @@ QgsCompassPlugin::QgsCompassPlugin( QgisInterface * theQgisInterFace )
     : qGisInterface( theQgisInterFace )
 {
   /** Initialize the plugin and set the required attributes */
-  pluginNameQString = tr( "Compass" );
+  pluginNameQString = tr( "Internal compass" );
   pluginVersionQString = pluginVersion;
   pluginDescriptionQString = description_;
   pluginCategoryQString = category_;
-  //myQgsCompassPluginGui = new QgsCompassPluginGui( tr("Compass"), qGisInterface->mainWindow() );
-  mDock = new QDockWidget("Compass", qGisInterface->mainWindow() );
-  myQgsCompassPluginGui =  new QgsCompassPluginGui( mDock );
-  mDock->setWidget( myQgsCompassPluginGui );
-  mDock->setAttribute( Qt::WA_DeleteOnClose );
-  mDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
-  qGisInterface->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+  mDock = NULL;
 }
 
 QgsCompassPlugin::~QgsCompassPlugin()
@@ -106,6 +100,14 @@ void QgsCompassPlugin::help()
  */
 void QgsCompassPlugin::initGui()
 {
+  if (! mDock )
+  {
+    mDock = new QDockWidget("Compass", qGisInterface->mainWindow() );
+    myQgsCompassPluginGui =  new QgsCompassPluginGui( mDock );
+    mDock->setWidget( myQgsCompassPluginGui );
+    mDock->setFeatures(QDockWidget::DockWidgetClosable | QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable);
+    qGisInterface->addDockWidget( Qt::LeftDockWidgetArea, mDock );
+  }
   // Create the action for tool
   myQActionPointer = new QAction( QIcon(), tr( "Show compass" ), this );
   setCurrentTheme( "" );
@@ -114,7 +116,7 @@ void QgsCompassPlugin::initGui()
   connect( myQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
   qGisInterface->pluginToolBar()->addAction( myQActionPointer );
-  qGisInterface->addPluginToMenu("Internal Compass", myQActionPointer );
+  qGisInterface->addPluginToMenu(pluginNameQString, myQActionPointer );
   // this is called when the icon theme is changed
   connect( qGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
 }
@@ -122,7 +124,7 @@ void QgsCompassPlugin::initGui()
 // Slot called when the buffer menu item is activated
 void QgsCompassPlugin::run()
 {
-    mDock->show();
+  mDock->show();
 }
 
 // Unload the plugin by cleaning up the GUI
@@ -130,7 +132,7 @@ void QgsCompassPlugin::unload()
 {
   // remove the GUI
   qGisInterface->pluginToolBar()->removeAction( myQActionPointer );
-  qGisInterface->removePluginMenu( "Internal Compass", myQActionPointer );
+  qGisInterface->removePluginMenu( pluginNameQString, myQActionPointer );
   delete myQActionPointer;
 }
 
@@ -140,7 +142,7 @@ void QgsCompassPlugin::setCurrentTheme( QString theThemeName )
   Q_UNUSED( theThemeName );
   QString myCurThemePath = QgsApplication::activeThemePath() + "/plugins/compass.png";
   QString myDefThemePath = QgsApplication::defaultThemePath() + "/plugins/compass.png";
-  QString myQrcPath = ":/compass.png";
+  QString myQrcPath = ":/compass.svg";
   if ( QFile::exists( myCurThemePath ) )
   {
     myQActionPointer->setIcon( QIcon( myCurThemePath ) );
@@ -174,7 +176,7 @@ QGISEXTERN QgisPlugin * classFactory( QgisInterface * theQgisInterfacePointer )
 // the class may not yet be insantiated when this method is called.
 QGISEXTERN QString name()
 {
-  return QString( QObject::tr( "Add internal compass reading" ) );
+  return QString( QObject::tr( "Internal compass" ) );
 }
 
 // Return the description

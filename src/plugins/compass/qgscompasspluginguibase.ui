@@ -6,33 +6,47 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>246</width>
-    <height>78</height>
+    <width>263</width>
+    <height>80</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Internal Compass</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="mCompassLabel">
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="mCompassLabel">
+       <property name="text">
+        <string>Azimut</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="mAzimutDisplay"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="mCalibrationLabel">
+       <property name="text">
+        <string>Calibration</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="mCalibrationDisplay"/>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="pixmapLabel">
      <property name="text">
-      <string>Azimut</string>
+      <string/>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignHCenter|Qt::AlignTop</set>
      </property>
     </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mAzimutDisplay"/>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mCalibrationLabel">
-     <property name="text">
-      <string>Calibration</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLineEdit" name="mCalibrationDisplay"/>
    </item>
   </layout>
  </widget>

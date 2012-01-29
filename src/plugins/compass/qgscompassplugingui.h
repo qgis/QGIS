@@ -26,7 +26,7 @@ class QgisInterface;
 /**
  * \class QgsCompassPluginGui
  */
-class QgsCompassPluginGui : public QDockWidget, private Ui::QgsCompassPluginGuiBase
+class QgsCompassPluginGui : public QWidget, private Ui::QgsCompassPluginGuiBase
 {
     Q_OBJECT
 
@@ -42,6 +42,7 @@ class QgsCompassPluginGui : public QDockWidget, private Ui::QgsCompassPluginGuiB
   private slots:
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
     void updateReading();
+    void rotatePixmap( int theRotationInt );
 
 };
 
