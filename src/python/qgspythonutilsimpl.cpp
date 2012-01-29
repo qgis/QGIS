@@ -60,8 +60,8 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
 
 #ifdef Q_OS_WIN
   runString( "oldhome=None" );
-  runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']" );
-  runString( "os.environ['HOME']=os.environ['USERPROFILE']" );
+  runString( "if os.environ.has_key('HOME'): oldhome=os.environ['HOME']\n" );
+  runString( "os.environ['HOME']=os.environ['USERPROFILE']\n" );
 #endif
 
   // construct a list of plugin paths
@@ -120,7 +120,7 @@ void QgsPythonUtilsImpl::initPython( QgisInterface* interface )
   runString( "qgis.utils.plugin_paths = [" + pluginpaths.join( "," ) + "]" );
 
 #ifdef Q_OS_WIN
-  runString( "if oldhome: os.environ['HOME']=oldhome" );
+  runString( "if oldhome: os.environ['HOME']=oldhome\n" );
 #endif
 
   // initialize 'iface' object
