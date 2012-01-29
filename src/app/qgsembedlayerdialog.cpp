@@ -62,7 +62,10 @@ void QgsEmbedLayerDialog::on_mBrowseFileToolButton_clicked()
   mProjectFileLineEdit->blockSignals( true );
 
   QSettings s;
-  QString projectFile = QFileDialog::getOpenFileName( 0, tr( "Select project file" ), s.value( "/qgis/last_embedded_project_path" ).toString() , tr( "QGIS project files (*.qgs *.QGS)" ) );
+  QString projectFile = QFileDialog::getOpenFileName( this,
+                        tr( "Select project file" ),
+                        s.value( "/qgis/last_embedded_project_path" ).toString() ,
+                        tr( "QGis files" ) + " (*.qgs *.QGS)" );
   if ( !projectFile.isEmpty() )
   {
     mProjectFileLineEdit->setText( projectFile );

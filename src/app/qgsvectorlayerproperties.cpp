@@ -1048,7 +1048,7 @@ void QgsVectorLayerProperties::on_pbnSelectEditForm_clicked()
 {
   QSettings myQSettings;
   QString lastUsedDir = myQSettings.value( "style/lastUIDir", "." ).toString();
-  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file (*.ui)" ) );
+  QString uifilename = QFileDialog::getOpenFileName( this, tr( "Select edit form" ), lastUsedDir, tr( "UI file" )  + " (*.ui)" );
 
   if ( uifilename.isNull() )
     return;
