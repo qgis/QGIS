@@ -19057,7 +19057,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/legend/qgslegend.cpp" line="588"/>
         <source>&amp;Collapse all</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Kecilkan semua</translation>
     </message>
 </context>
 <context>
@@ -19197,47 +19197,47 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="85"/>
         <source>Save connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="86"/>
         <source>XML files (*.xml *.XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>XML files (*.xml *.XML)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="38"/>
         <source>Select all</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih semua</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="42"/>
         <source>Clear selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Clear selection</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="48"/>
         <source>Select connections to import</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih koneksi untuk di impor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="49"/>
         <source>Import</source>
-        <translation type="unfinished">Impor</translation>
+        <translation>Impor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="54"/>
         <source>Export</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="72"/>
         <source>Export/import error</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor/impor kesalahan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="73"/>
         <source>You should select at least one connection from list.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus memilih paling tidak satu koneksi dari daftar.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmanageconnectionsdialog.cpp" line="117"/>
