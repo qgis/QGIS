@@ -111,6 +111,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
+    //locate without the need to give wkb. Only for debugging
+    QgsGeometry* testLocateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom, QList<double>& zValues );
+    QgsGeometry* testLocateAlongMeasures( double measure, QgsGeometry* lineGeom, QList<double>& zValues );
+
   private:
 
     QList<double> simpleMeasure( QgsGeometry* geometry );

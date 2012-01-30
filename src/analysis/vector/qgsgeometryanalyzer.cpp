@@ -1103,10 +1103,18 @@ unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( unsigned char* ptr, 
         {
           currentLine.append( pt1 );
         }
-        currentLine.append( pt2 );
+
+        if ( pt1 != pt2 ) //avoid duplicated entry if measure value equals m-value of vertex
+        {
+          currentLine.append( pt2 );
+        }
+
         if ( secondPointClipped || i == *nPoints - 1 ) //close current segment
         {
-          result.append( currentLine );
+          if ( currentLine.size() > 1 )
+          {
+            result.append( currentLine );
+          }
           currentLine.clear();
         }
       }
@@ -1158,12 +1166,20 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
   bool reversed = m1 > m2;
   double tmp;
 
-  //reverse m1, m2 if necessary
+  //reverse m1, m2 if necessary (and consequently also x1,x2 / y1, y2)
   if ( reversed )
   {
     tmp = m1;
     m1 = m2;
     m2 = tmp;
+
+    tmp = x1;
+    x1 = x2;
+    x2 = tmp;
+
+    tmp = y1;
+    y1 = y2;
+    y2 = tmp;
   }
 
   //reverse range1, range2 if necessary
@@ -1183,9 +1199,18 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
   //segment completely inside of range
   if ( m2 <= range2 && m1 >= range1 )
   {
-    pt1.setX( x1 ); pt1.setY( y1 );
-    pt2.setX( x2 ); pt2.setY( y2 );
+    if ( reversed )
+    {
+      pt1.setX( x2 ); pt1.setY( y2 );
+      pt2.setX( x1 ); pt2.setY( y1 );
+    }
+    else
+    {
+      pt1.setX( x1 ); pt1.setY( y1 );
+      pt2.setX( x2 ); pt2.setY( y2 );
+    }
     secondPointClipped = false;
+    return true;
   }
 
   //m1 inside and m2 not
@@ -1293,4 +1318,59 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   pt1.setX( x1 + dist * ( x2 - x1 ) );
   pt1.setY( y1 + dist * ( y2 - y1 ) );
   pt1Ok = true;
+}
+
+QgsGeometry* QgsGeometryAnalyzer::testLocateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom, QList<double>& zValues )
+{
+  //assume single line
+  QgsPolyline line = lineGeom->asPolyline();
+
+  QgsMultiPolyline output;
+  QgsPolyline currentLine;
+
+  double x, y, z, prevx, prevy, prevz;
+
+  QgsPoint pt1, pt2;
+  bool measureInSegment; //true if measure is contained in the segment
+  bool secondPointClipped; //true if second point is != segment endpoint
+
+  for ( int i = 0; i < line.size(); ++i )
+  {
+    x = line.at( i ).x();
+    y = line.at( i ).y();
+    z = zValues.at( i );
+
+    if ( i > 0 )
+    {
+      measureInSegment = clipSegmentByRange( prevx, prevy, prevz, x, y, z, fromMeasure, toMeasure, pt1, pt2, secondPointClipped );
+      if ( measureInSegment )
+      {
+        if ( currentLine.size() < 1 ) //no points collected yet, so the first point needs to be added to the line
+        {
+          currentLine.append( pt1 );
+        }
+
+        if ( pt1 != pt2 ) //avoid duplicated entry if measure value equals m-value of vertex
+        {
+          currentLine.append( pt2 );
+        }
+
+        if ( secondPointClipped || i == line.size() - 1 ) //close current segment
+        {
+          if ( currentLine.size() > 1 )
+          {
+            output.append( currentLine );
+          }
+          currentLine.clear();
+        }
+      }
+    }
+    prevx = x; prevy = y; prevz = z;
+  }
+  return QgsGeometry::fromMultiPolyline( output );
+}
+
+QgsGeometry* QgsGeometryAnalyzer::testLocateAlongMeasures( double measure, QgsGeometry* lineGeom, QList<double>& zValues )
+{
+  return 0;
 }
