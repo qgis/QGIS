@@ -6912,13 +6912,13 @@ Nur %1 von %2 Objekten geschrieben.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="964"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1732"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1731"/>
         <source>AutoCAD DXF</source>
         <translation>AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="971"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1727"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1726"/>
         <source>Geoconcept</source>
         <translation>Geoconcept</translation>
     </message>
@@ -7018,11 +7018,6 @@ Nur %1 von %2 Objekten geschrieben.</translation>
         <location filename="../src/plugins/spatialquery/qgsspatialqueryplugin.cpp" line="49"/>
         <source>A plugin that makes spatial queries on vector layers</source>
         <translation>Eine Erweiterung die räumliche Abfragen von Vektorlayern ermöglicht</translation>
-    </message>
-    <message>
-        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="232"/>
-        <source>SQLite DB (*.sqlite *.db);;All files (*)</source>
-        <translation>SQLite DB (*.sqlite *.db);;Alle Dateien (*)</translation>
     </message>
     <message>
         <location filename="../src/app/main.cpp" line="466"/>
@@ -7171,10 +7166,10 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
     <message>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="63"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1553"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1908"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1972"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2042"/>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2060"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1907"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1971"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2041"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2059"/>
         <source>OGR</source>
         <translation>OGR</translation>
     </message>
@@ -7255,47 +7250,47 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <translation>PostgreSQL</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1707"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1706"/>
         <source>UK. NTF2</source>
         <translation>UK. NTF2</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1711"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1710"/>
         <source>U.S. Census TIGER/Line</source>
         <translation>U.S. Census TIGER/Line</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1715"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1714"/>
         <source>VRT - Virtual Datasource</source>
         <translation>VRT - Virtuelle Datenquellen</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1721"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1720"/>
         <source>X-Plane/Flightgear</source>
         <translation>X-Plane/Flightgear</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1746"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1745"/>
         <source>All files</source>
         <translation>Alle Dateien</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1908"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1907"/>
         <source>Duplicate field (10 significant characters): %1</source>
         <translation>Doppeltes Feld (10 signifikante Zeichen): %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1972"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1971"/>
         <source>Unknown vector type of %1</source>
         <translation>Unbekannter Vektortyp %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2042"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2041"/>
         <source>creation of field %1 failed</source>
         <translation>Erzeugung des Feld %1 gescheitert</translation>
     </message>
     <message>
-        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2060"/>
+        <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="2059"/>
         <source>Couldn&apos;t create file %1.qpj</source>
         <translation>Konnte Datei %1.qpj nicht erzeugen</translation>
     </message>
@@ -16780,7 +16775,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="63"/>
-        <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="377"/>
+        <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="379"/>
         <source>All files</source>
         <translation>Alle Dateien</translation>
     </message>
@@ -16805,12 +16800,12 @@ p, li { white-space: pre-wrap; }
         <translation>Wollen Sie die Datenquelle trotzdem hinzufügen?</translation>
     </message>
     <message>
-        <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="376"/>
+        <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="378"/>
         <source>Model files</source>
         <translation>Modell-Dateien</translation>
     </message>
     <message>
-        <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="379"/>
+        <location filename="../src/plugins/globe/globe_plugin_dialog.cpp" line="376"/>
         <source>Open 3D model file</source>
         <translation>3D-Modelldatei öffnen</translation>
     </message>
@@ -22892,8 +22887,8 @@ Ausführliche Fehlerinformation:
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="114"/>
-        <source>SpatiaLite (*.sqlite *.db )</source>
-        <translation>SpatiaLite DB (*.sqlite);;Alle Dateien (*.*)</translation>
+        <source>SpatiaLite</source>
+        <translation>SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewspatialitelayerdialog.cpp" line="204"/>
@@ -26329,14 +26324,15 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="550"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="594"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="608"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="714"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="772"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="778"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="788"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="794"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="799"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="708"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="731"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="789"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="795"/>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="805"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="810"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="811"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="816"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="822"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="827"/>
         <source>PostGIS</source>
         <translation>PostGIS</translation>
     </message>
@@ -26406,61 +26402,66 @@ Fehler:%3
         <translation>Unverständliche PostGIS-Version &apos;%1&apos;</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="712"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="706"/>
+        <source>Connection error: %1 returned %2 [%3]</source>
+        <translation>Verbindungsfehler: %1 ergab %2 [%3]</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="729"/>
         <source>Errornous query: %1 returned %2 [%3]</source>
         <translation>Fehlerhafte Abfrage: %1 ergab %2 [%3]</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1213"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1234"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1230"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1251"/>
         <source>Point</source>
         <translation>Punkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1215"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1242"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1232"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1259"/>
         <source>Line</source>
         <translation>Linie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1217"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1250"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1234"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1267"/>
         <source>Polygon</source>
         <translation>Polygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1219"/>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1257"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1236"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1274"/>
         <source>No Geometry</source>
         <translation>Ohne Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1221"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1238"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1238"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1255"/>
         <source>Multipoint</source>
         <translation>Multipunkt</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1246"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1263"/>
         <source>Multiline</source>
         <translation>Multilinie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1254"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1271"/>
         <source>Multipolygon</source>
         <translation>Multipolygon</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1260"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1277"/>
         <source>Unknown Geometry</source>
         <translation>Unbekannte Geometrie</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="768"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="785"/>
         <source>Query: %1 returned %2 [%3]</source>
         <translation>Abfrage: %1 ergab %2 [%3]</translation>
     </message>
@@ -26474,21 +26475,21 @@ Die Fehlermeldung der Datenbank war:
 %1</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="725"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="742"/>
         <source>Query failed: %1
 Error: no result buffer</source>
         <translation>Abfrage gescheitert: %1
 Fehler: kein Ergebnispuffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="729"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="746"/>
         <source>Not logged query failed: %1
 Error: no result buffer</source>
         <translation>Nicht protokollierte Abfrage gescheitert: %1
 Fehler: Kein Ergebnispuffer</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="776"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="793"/>
         <source>%1 cursor states lost.
 SQL: %2
 Result: %3 (%4)</source>
@@ -26497,27 +26498,27 @@ SQL: %2
 Ergebnis: %3 (%4)</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="788"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="805"/>
         <source>resetting bad connection.</source>
         <translation>Schlechte Verbindung wird zurückgesetzt.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="794"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="811"/>
         <source>retry after reset succeeded.</source>
         <translation>Erneuter Versuch nach Rücksetzung erfolgreich.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="799"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="816"/>
         <source>retry after reset failed again.</source>
         <translation>Erneuter Versuch nach Rücksetzung schlug wieder fehl.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="805"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="822"/>
         <source>connection still bad after reset.</source>
         <translation>Verbindung nach Rücksetzung immer noch schlecht.</translation>
     </message>
     <message>
-        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="810"/>
+        <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="827"/>
         <source>bad connection, not retrying.</source>
         <translation>Schlechte Verbindung, keine neuen Versuche.</translation>
     </message>
@@ -27543,17 +27544,17 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterCalcDialog</name>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="221"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="202"/>
         <source>Enter result file</source>
         <translation>Ergebnisdatei angeben</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="262"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="243"/>
         <source>Expression valid</source>
         <translation>Ausdruck gültig</translation>
     </message>
     <message>
-        <location filename="../src/app/qgsrastercalcdialog.cpp" line="271"/>
+        <location filename="../src/app/qgsrastercalcdialog.cpp" line="252"/>
         <source>Expression invalid</source>
         <translation>Ausdruck ungültig</translation>
     </message>
@@ -29052,63 +29053,63 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRasterTerrainAnalysisDialog</name>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="221"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="201"/>
         <source>Export Frequency distribution as csv</source>
         <translation>Häufigkeitsverteilung als CSV speichern</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="234"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="214"/>
         <source>Export Colors and elevations as xml</source>
         <translation>Farben und Höhen als XML exportieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="268"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="248"/>
         <source>Import Colors and elevations from xml</source>
         <translation>Farben und Höhen aus XML importieren</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="277"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="257"/>
         <source>Error opening file</source>
         <translation>Dateiöffnungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="277"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="257"/>
         <source>The relief color file could not be opened</source>
         <translation>Relieffarbdatei konnte nicht geöffnet werden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="284"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="264"/>
         <source>Error parsing xml</source>
         <translation>XML-Parsingfehler</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="284"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="264"/>
         <source>The xml file could not be loaded</source>
         <translation>Die XML-Datei konnte nicht geladen werden</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="307"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="287"/>
         <source>Enter result file</source>
         <translation>Ergebnisdatei angeben</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="386"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="366"/>
         <source>Enter lower elevation class bound</source>
         <translation>Niedere Höhenklassengrenze eingeben</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="386"/>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="396"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="366"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="376"/>
         <source>Elevation</source>
         <translation>Geländehöhe</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="396"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="376"/>
         <source>Enter upper elevation class bound</source>
         <translation>Obere Höhenklassengrenze eingeben</translation>
     </message>
     <message>
-        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="405"/>
+        <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisdialog.cpp" line="385"/>
         <source>Select color for relief class</source>
         <translation>Farben für Reliefklasse wählen</translation>
     </message>
@@ -29316,7 +29317,7 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/ui/qgsrendererrulepropsdialogbase.ui" line="32"/>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="460"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="459"/>
         <source>Filter</source>
         <translation>Filter</translation>
     </message>
@@ -29362,24 +29363,24 @@ p, li { white-space: pre-wrap; }
         <translation>Symbol</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="431"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="430"/>
         <source>Error</source>
         <translation>Fehler</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="431"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="430"/>
         <source>Filter expression parsing error:
 </source>
         <translation>Filterausdrucksfehler:
 </translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="439"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="438"/>
         <source>Evaluation error</source>
         <translation>Auswertungsfehler</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="460"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="459"/>
         <source>Filter returned %n feature(s)</source>
         <comment>number of filtered features</comment>
         <translation>
@@ -29521,27 +29522,27 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>QgsRuleBasedRendererV2Model</name>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="527"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="526"/>
         <source>(no filter)</source>
         <translation>(kein Filter)</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="560"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="559"/>
         <source>Label</source>
         <translation>Beschriftung</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="560"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="559"/>
         <source>Rule</source>
         <translation>Regel</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="560"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="559"/>
         <source>Min. scale</source>
         <translation>Min. Maßstab</translation>
     </message>
     <message>
-        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="560"/>
+        <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="559"/>
         <source>Max.scale</source>
         <translation>Max. Maßstab</translation>
     </message>
@@ -29607,7 +29608,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="292"/>
         <source>Parent rule %1 must have a symbol for this operation.</source>
-        <translation>Für diese Operation muß die Elterregel %1 ein Symbol haben</translation>
+        <translation>Für diese Operation muß die Elterregel %1 ein Symbol haben.</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsrulebasedrendererv2widget.cpp" line="299"/>
@@ -29731,7 +29732,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="45"/>
         <source>Layer deleted successfully.</source>
-        <translation>Layer erfolgreich gelöscht</translation>
+        <translation>Layer erfolgreich gelöscht.</translation>
     </message>
 </context>
 <context>
@@ -29753,8 +29754,8 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="296"/>
-        <source>SpatiaLite (*.sqlite *.db )</source>
-        <translation>SpatiaLite DB (*.sqlite *.db )</translation>
+        <source>SpatiaLite</source>
+        <translation>SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitedataitems.cpp" line="303"/>
@@ -30414,6 +30415,16 @@ SQL: %1</translation>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="180"/>
         <source>Sql</source>
         <translation>SQL</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="232"/>
+        <source>SpatiaLite DB</source>
+        <translation>SpatiaLite DB</translation>
+    </message>
+    <message>
+        <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="232"/>
+        <source>All files</source>
+        <translation>Alle Dateien</translation>
     </message>
     <message>
         <location filename="../src/providers/spatialite/qgsspatialitesourceselect.cpp" line="392"/>
