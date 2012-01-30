@@ -124,10 +124,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
-    QString getExpressionString();
+    QString expressionText();
 
     /** Sets the expression string for the widget */
-    void setExpressionString( const QString expressionString );
+    void setExpressionText( const QString& expression );
 
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
