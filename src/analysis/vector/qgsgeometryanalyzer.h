@@ -111,9 +111,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
-    //locate without the need to give wkb. Only for debugging
-    QgsGeometry* testLocateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom, QList<double>& zValues );
-    QgsGeometry* testLocateAlongMeasures( double measure, QgsGeometry* lineGeom, QList<double>& zValues );
+    /**Returns multilinestring*/
+    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
+    /**Returns multipoint*/
+    QgsGeometry* locateAlongMeasure( double measure, QgsGeometry* lineGeom );
 
   private:
 
@@ -133,10 +134,6 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
 
     //helper functions for event layer
 
-    /**Returns multilinestring*/
-    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
-    /**Returns multipoint*/
-    QgsGeometry* locateAlongMeasure( double measure, QgsGeometry* lineGeom );
     unsigned char* locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
     unsigned char* locateAlongWkbString( unsigned char* ptr, QgsMultiPoint& result, double measure );
     static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );
