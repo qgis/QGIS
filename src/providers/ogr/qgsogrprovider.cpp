@@ -2229,10 +2229,19 @@ QVariant QgsOgrProvider::maximumValue( int index )
 
 QString QgsOgrProvider::quotedIdentifier( QString field )
 {
-  field.replace( '\\', "\\\\" );
-  field.replace( '"', "\\\"" );
-  field.replace( "'", "\\'" );
-  return field.prepend( "\"" ).append( "\"" );
+  if ( ogrDriverName == "MySQL" )
+  {
+    field.replace( '\\', "\\\\" );
+    field.replace( "`", "``" );
+    return field.prepend( "`" ).append( "`" );
+  }
+  else
+  {
+    field.replace( '\\', "\\\\" );
+    field.replace( '"', "\\\"" );
+    field.replace( "'", "\\'" );
+    return field.prepend( "\"" ).append( "\"" );
+  }
 }
 
 bool QgsOgrProvider::syncToDisc()
