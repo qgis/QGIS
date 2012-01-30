@@ -372,13 +372,12 @@ QgsVectorLayer* QgsGlobePluginDialog::modelLayer()
 void QgsGlobePluginDialog::on_modelBrowse_clicked()
 {
   //see http://www.openscenegraph.org/projects/osg/wiki/Support/UserGuides/Plugins
-  const char* filter =
-    tr( "Model files" ) + " (*.3dc *.asc *.3ds *.ac *.bsp *.dae *.dw *.dxf *.fbx *.gem *.geo *.iv *.wrl *.ive *.logo *.lwo *.lw *.geo *.lws *.md2 *.obj *.ogr *.flt *.osg *.shp *.stl *.sta *.wrl *.x);;"
-    + tr( "All files" ) + " (*.*)";
   QString path = QFileDialog::getOpenFileName( this,
                  tr( "Open 3D model file" ),
                  QDir::homePath(),
-                 tr( filter ) );
+                 tr( "Model files" ) + " (*.3dc *.asc *.3ds *.ac *.bsp *.dae *.dw *.dxf *.fbx *.gem *.geo *.iv *.wrl *.ive *.logo *.lwo *.lw *.geo *.lws *.md2 *.obj *.ogr *.flt *.osg *.shp *.stl *.sta *.wrl *.x);;"
+                 + tr( "All files" ) + " (*.*)"
+                                             );
 
   if ( ! path.isEmpty() )
   {
