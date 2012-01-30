@@ -1577,11 +1577,11 @@ Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Projections</source>
-        <translation type="unfinished"></translation>
+        <translation>Projections</translation>
     </message>
     <message>
         <source>Conversion</source>
-        <translation type="unfinished">Conversion</translation>
+        <translation>Conversion</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
@@ -1601,15 +1601,15 @@ Cette extension ne sera pas activée.</translation>
     </message>
     <message>
         <source>Extraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Extraction</translation>
     </message>
     <message>
         <source>Analysis</source>
-        <translation type="unfinished">Analyse</translation>
+        <translation>Analyse</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation type="unfinished"></translation>
+        <translation>Divers</translation>
     </message>
     <message>
         <source>Tile index</source>
@@ -1834,13 +1834,13 @@ Voulez-vous quand même la stopper ?</translation>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="66"/>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="79"/>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="82"/>
         <source>Reset</source>
-        <translation type="unfinished">Réinitialiser</translation>
+        <translation>Réinitialiser</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
@@ -2048,15 +2048,15 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Terminé</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished">Terminé.</translation>
+        <translation>Terminé.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="unfinished">%1 non créé.</translation>
+        <translation>%1 non créé.</translation>
     </message>
     <message>
         <source>Assign projection</source>
@@ -2152,7 +2152,7 @@ Désactivez l&apos;option &quot;Utiliser l&apos;étendue intersectée&quot; pour
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="22"/>
         <source>Path to the GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Chemin vers les exécutables binaires de GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="49"/>
@@ -3822,7 +3822,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/ui/qgisapp.ui" line="82"/>
         <source>&amp;View</source>
-        <translation>&amp;Vue</translation>
+        <translation>V&amp;ue</translation>
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="86"/>
@@ -4794,11 +4794,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished">Sauvegarder</translation>
+        <translation>Sauvegarder</translation>
     </message>
     <message>
         <source>Edit OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Éditer une relation OSM</translation>
     </message>
     <message>
         <source>for grouping boundaries and marking enclaves / exclaves</source>
@@ -5241,27 +5241,27 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Layer doesn&apos;t exist</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche n&apos;existe pas</translation>
     </message>
     <message>
         <source>The selected layer doesn&apos;t exist anymore!</source>
-        <translation type="unfinished"></translation>
+        <translation>La couche sélectionnée n&apos;existe plus !</translation>
     </message>
     <message>
         <source>Importing features...</source>
-        <translation type="unfinished"></translation>
+        <translation>Importation d&apos;entités...</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="unfinished">Annuler</translation>
+        <translation>Annuler</translation>
     </message>
     <message>
         <source>Import</source>
-        <translation type="unfinished">Importer</translation>
+        <translation>Importer</translation>
     </message>
     <message>
         <source>Import has been completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>L&apos;importation est terminée.</translation>
     </message>
 </context>
 <context>
@@ -5298,11 +5298,11 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Choose an Open Street Map file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionner un fichier Open Street Map</translation>
     </message>
     <message>
         <source>OSM Files (*.osm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers OSM (*.osm)</translation>
     </message>
     <message>
         <source>OSM Load</source>
@@ -5318,7 +5318,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <source>Layers of OSM file &quot;%1&quot; are loaded already.</source>
@@ -5365,7 +5365,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished">Enregistrer OSM vers un fichier</translation>
+        <translation>Enregistrer OSM vers un fichier</translation>
     </message>
     <message>
         <source>Save OpenStreetMap to file</source>
@@ -5373,7 +5373,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Download OSM data</source>
-        <translation type="unfinished">Télécharger des données OSM</translation>
+        <translation>Télécharger des données OSM</translation>
     </message>
     <message>
         <source>Download OpenStreetMap data</source>
@@ -5381,7 +5381,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     </message>
     <message>
         <source>Upload OSM data</source>
-        <translation type="unfinished">Envoyer des données OSM</translation>
+        <translation>Envoyer des données OSM</translation>
     </message>
     <message>
         <source>Upload OpenStreetMap data</source>
@@ -5414,7 +5414,7 @@ Please change this situation first, because OSM Plugin doesn&apos;t know what to
     </message>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished">Envoi OSM</translation>
+        <translation>Envoi OSM</translation>
     </message>
     <message>
         <source>No OSM data are loaded/downloaded or no OSM layer is selected in Layers panel. 
@@ -23439,17 +23439,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="198"/>
         <source>Unable to open the database</source>
-        <translation type="unfinished">Impossible d&apos;ouvrir la base</translation>
+        <translation>Impossible d&apos;ouvrir la base</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Error</source>
-        <translation type="unfinished">Erreur</translation>
+        <translation>Erreur</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="224"/>
         <source>Failed to load SRIDS: %1</source>
-        <translation type="unfinished">Impossible de charger les identifiants SRIDS : %1</translation>
+        <translation>Impossible de charger les identifiants SRIDS : %1</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="288"/>
@@ -23629,7 +23629,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="385"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;attribut</translation>
     </message>
     <message>
         <source>EPSG SRID</source>
@@ -23689,7 +23689,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="219"/>
         <source>Specify CRS</source>
-        <translation type="unfinished">Spécifier le SCR</translation>
+        <translation>Spécifier le SCR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="311"/>
@@ -23789,7 +23789,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="227"/>
         <source>Remove attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer l&apos;attribut</translation>
     </message>
     <message>
         <source>Remove selected attribute</source>
@@ -34194,7 +34194,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="569"/>
         <source>Encoding</source>
-        <translation type="unfinished">Codage</translation>
+        <translation>Codage</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="639"/>
@@ -34694,7 +34694,7 @@ Les classes existantes doivent-elles être effacées avant la classification ?</
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="182"/>
         <source>Only request features overlapping the current view extent</source>
-        <translation>Demander uniquement les entités dépassant l&apos;étendue de la vue actuelle</translation>
+        <translation>Demander uniquement les entités présentes dans la vue actuelle</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="14"/>
