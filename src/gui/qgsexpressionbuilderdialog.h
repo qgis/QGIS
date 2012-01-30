@@ -30,9 +30,9 @@ class GUI_EXPORT QgsExpressionBuilderDialog : public QDialog, private Ui::QgsExp
     /** The builder widget that is used by the dialog */
     QgsExpressionBuilderWidget* expressionBuilder();
 
-    void setExpressionText( QString text );
+    void setExpressionText( const QString& text );
 
-    QString getExpressionText();
+    QString expressionText();
 
   protected:
     /**

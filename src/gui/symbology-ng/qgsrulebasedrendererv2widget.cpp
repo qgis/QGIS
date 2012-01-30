@@ -182,7 +182,7 @@ void QgsRuleBasedRendererV2Widget::currentRuleChanged( const QModelIndex& curren
 #include "qgscategorizedsymbolrendererv2widget.h"
 #include "qgsgraduatedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2widget.h"
-#include "qgssearchquerybuilder.h"
+#include "qgsexpressionbuilderdialog.h"
 #include <QDialogButtonBox>
 #include <QInputDialog>
 
@@ -416,11 +416,10 @@ QgsRendererRulePropsDialog::~QgsRendererRulePropsDialog()
 
 void QgsRendererRulePropsDialog::buildExpression()
 {
-  QgsSearchQueryBuilder dlg( mLayer, this );
-  dlg.setSearchString( editFilter->text() );
+  QgsExpressionBuilderDialog dlg( mLayer, editFilter->text(), this );
 
   if ( dlg.exec() )
-    editFilter->setText( dlg.searchString() );
+    editFilter->setText( dlg.expressionText() );
 }
 
 void QgsRendererRulePropsDialog::testFilter()

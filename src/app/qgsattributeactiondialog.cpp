@@ -173,7 +173,7 @@ void QgsAttributeActionDialog::insertExpression()
   dlg.setWindowTitle( tr( "Insert expression" ) );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QString expression =  dlg.expressionBuilder()->getExpressionString();
+    QString expression =  dlg.expressionBuilder()->expressionText();
     //Only add the expression if the user has entered some text.
     if ( !expression.isEmpty() )
     {

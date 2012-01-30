@@ -503,7 +503,7 @@ void QgsLabelingGui::showExpressionDialog()
   dlg.setWindowTitle( tr( "Expression based label" ) );
   if ( dlg.exec() == QDialog::Accepted )
   {
-    QString expression =  dlg.getExpressionText();
+    QString expression =  dlg.expressionText();
     //Only add the expression if the user has entered some text.
     if ( !expression.isEmpty() )
     {

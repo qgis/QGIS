@@ -64,7 +64,7 @@ QgsFieldCalculator::~QgsFieldCalculator()
 void QgsFieldCalculator::accept()
 {
 
-  QString calcString = builder->getExpressionString();
+  QString calcString = builder->expressionText();
   QgsExpression exp( calcString );
 
   if ( !mVectorLayer || !mVectorLayer->isEditable() )
