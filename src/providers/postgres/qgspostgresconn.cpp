@@ -699,6 +699,23 @@ QString QgsPostgresConn::quotedValue( QVariant value )
 
 PGresult *QgsPostgresConn::PQexec( QString query, bool logError )
 {
+  if ( PQstatus() != CONNECTION_OK )
+  {
+    if ( logError )
+    {
+      QgsMessageLog::logMessage( tr( "Connection error: %1 returned %2 [%3]" )
+                                 .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ),
+                                 tr( "PostGIS" ) );
+    }
+    else
+    {
+      QgsDebugMsg( QString( "Connection error: %1 returned %2 [%3]" )
+                   .arg( query ).arg( PQstatus() ).arg( PQerrorMessage() ) );
+    }
+
+    return 0;
+  }
+
   QgsDebugMsgLevel( QString( "Executing SQL: %1" ).arg( query ), 3 );
   PGresult *res = ::PQexec( mConn, query.toUtf8() );
 
