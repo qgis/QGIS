@@ -1698,9 +1698,8 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SQLite" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ),
-                                            "*.sqlite" );
-        myExtensions << "sqlite";
+        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ), "*.sqlite *.db" );
+        myExtensions << "sqlite" << "db";
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
       {

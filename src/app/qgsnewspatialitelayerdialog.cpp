@@ -111,7 +111,7 @@ void QgsNewSpatialiteLayerDialog::on_toolButtonNewDatabase_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ),
                      ".",
-                     tr( "SpatiaLite (*.sqlite *.db )" ) );
+                     tr( "SpatiaLite" ) + " (*.sqlite *.db)" );
 
   if ( fileName.isEmpty() )
     return;
