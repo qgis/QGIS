@@ -947,7 +947,6 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), true, false );
   QgsGeometry* lrsGeom = 0;
   QgsFeature lineFeature;
-  QgsGeometry* lineGeom = 0;
   double measure1, measure2;
 
   while ( eventLayer->nextFeature( fet ) )
@@ -1002,7 +1001,6 @@ QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, dou
 
   //need to go with WKB and z coordinate until QgsGeometry supports M values
   unsigned char* lineWkb = lineGeom->asWkb();
-  int wkbSize = lineGeom->wkbSize();
 
   unsigned char* ptr = lineWkb + 1;
   QGis::WkbType wkbType;
@@ -1318,59 +1316,4 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   pt1.setX( x1 + dist * ( x2 - x1 ) );
   pt1.setY( y1 + dist * ( y2 - y1 ) );
   pt1Ok = true;
-}
-
-QgsGeometry* QgsGeometryAnalyzer::testLocateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom, QList<double>& zValues )
-{
-  //assume single line
-  QgsPolyline line = lineGeom->asPolyline();
-
-  QgsMultiPolyline output;
-  QgsPolyline currentLine;
-
-  double x, y, z, prevx, prevy, prevz;
-
-  QgsPoint pt1, pt2;
-  bool measureInSegment; //true if measure is contained in the segment
-  bool secondPointClipped; //true if second point is != segment endpoint
-
-  for ( int i = 0; i < line.size(); ++i )
-  {
-    x = line.at( i ).x();
-    y = line.at( i ).y();
-    z = zValues.at( i );
-
-    if ( i > 0 )
-    {
-      measureInSegment = clipSegmentByRange( prevx, prevy, prevz, x, y, z, fromMeasure, toMeasure, pt1, pt2, secondPointClipped );
-      if ( measureInSegment )
-      {
-        if ( currentLine.size() < 1 ) //no points collected yet, so the first point needs to be added to the line
-        {
-          currentLine.append( pt1 );
-        }
-
-        if ( pt1 != pt2 ) //avoid duplicated entry if measure value equals m-value of vertex
-        {
-          currentLine.append( pt2 );
-        }
-
-        if ( secondPointClipped || i == line.size() - 1 ) //close current segment
-        {
-          if ( currentLine.size() > 1 )
-          {
-            output.append( currentLine );
-          }
-          currentLine.clear();
-        }
-      }
-    }
-    prevx = x; prevy = y; prevz = z;
-  }
-  return QgsGeometry::fromMultiPolyline( output );
-}
-
-QgsGeometry* QgsGeometryAnalyzer::testLocateAlongMeasures( double measure, QgsGeometry* lineGeom, QList<double>& zValues )
-{
-  return 0;
 }
