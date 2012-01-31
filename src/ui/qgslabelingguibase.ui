@@ -336,7 +336,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>10000000</number>
+             <number>999999999</number>
             </property>
            </widget>
           </item>
@@ -349,7 +349,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>10000000</number>
+             <number>999999999</number>
             </property>
             <property name="value">
              <number>10000000</number>
@@ -393,8 +393,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>435</height>
+            <width>658</width>
+            <height>451</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -847,8 +847,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>643</width>
-            <height>532</height>
+            <width>658</width>
+            <height>567</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_11">
