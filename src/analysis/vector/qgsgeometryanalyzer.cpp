@@ -918,7 +918,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
 
   //create line field / id map for line layer
-  QHash< QString, QgsFeatureId > lineLayerIdMap;
+  QMultiHash< QString, QgsFeatureId > lineLayerIdMap; //1:n possible (e.g. several linear reference geometries for one feature in the event layer)
   lineLayer->select( QgsAttributeList() << lineField,
                      QgsRectangle(), false, false );
   QgsFeature fet;
@@ -951,6 +951,44 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
   while ( eventLayer->nextFeature( fet ) )
   {
+    measure1 = fet.attributeMap()[locationField1].toDouble();
+    if ( locationField2 != -1 )
+    {
+      measure2 = fet.attributeMap()[locationField2].toDouble();
+    }
+
+    QList<QgsFeatureId> featureIdList = lineLayerIdMap.values( fet.attributeMap()[eventField].toString() );
+    QList<QgsFeatureId>::const_iterator featureIdIt = featureIdList.constBegin();
+    for ( ; featureIdIt != featureIdList.constEnd(); ++featureIdIt )
+    {
+      if ( !lineLayer->featureAtId( *featureIdIt, lineFeature, true, false ) )
+      {
+        continue;
+      }
+
+      if ( locationField2 == -1 )
+      {
+        lrsGeom = locateAlongMeasure( measure1, lineFeature.geometry() );
+      }
+      else
+      {
+        lrsGeom = locateBetweenMeasures( measure1, measure2, lineFeature.geometry() );
+      }
+
+      if ( lrsGeom )
+      {
+        fet.setGeometry( lrsGeom );
+        if ( memoryProvider )
+        {
+          memoryProvider->addFeatures( QgsFeatureList() << fet );
+        }
+        else
+        {
+          fileWriter->addFeature( fet );
+        }
+      }
+    }
+#if 0
     //get corresponding line feature
     QHash< QString, QgsFeatureId >::const_iterator layerIdIt = lineLayerIdMap.find( fet.attributeMap()[eventField].toString() );
     if ( layerIdIt == lineLayerIdMap.constEnd() )
@@ -985,6 +1023,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
         fileWriter->addFeature( fet );
       }
     }
+#endif //0
   }
 
   return true;
@@ -1027,6 +1066,10 @@ QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, dou
     }
   }
 
+  if ( resultGeom.size() < 1 )
+  {
+    return 0;
+  }
   return QgsGeometry::fromMultiPolyline( resultGeom );
 }
 
@@ -1067,6 +1110,10 @@ QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, QgsGeometr
     }
   }
 
+  if ( resultGeom.size() < 1 )
+  {
+    return 0;
+  }
   return QgsGeometry::fromMultiPoint( resultGeom );
 }
 
