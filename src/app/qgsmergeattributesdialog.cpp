@@ -23,8 +23,10 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributeeditor.h"
+
 #include <limits>
 #include <QComboBox>
+#include <QSettings>
 
 QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent, Qt::WindowFlags f )
     : QDialog( parent, f )
@@ -46,15 +48,25 @@ QgsMergeAttributesDialog::QgsMergeAttributesDialog( const QgsFeatureList &featur
 
   mFromSelectedPushButton->setIcon( QgisApp::getThemeIcon( "mActionFromSelectedFeature.png" ) );
   mRemoveFeatureFromSelectionButton->setIcon( QgisApp::getThemeIcon( "mActionRemoveSelectedFeature.png" ) );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
 }
 
-QgsMergeAttributesDialog::QgsMergeAttributesDialog(): QDialog()
+QgsMergeAttributesDialog::QgsMergeAttributesDialog()
+    : QDialog()
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/MergeAttributes/geometry" ).toByteArray() );
 }
 
 QgsMergeAttributesDialog::~QgsMergeAttributesDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/MergeAttributes/geometry", saveGeometry() );
+
   delete mSelectionRubberBand;
 }
 

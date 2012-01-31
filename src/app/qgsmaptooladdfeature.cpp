@@ -409,14 +409,16 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         {
           //not a polygon type. Impossible to get there
         }
-        /*else if ( avoidIntersectionsReturn == 2 ) //MH120131: disable this error message until there is a better way to cope with the single type / multi type problem
+#if 0
+        else if ( avoidIntersectionsReturn == 2 ) //MH120131: disable this error message until there is a better way to cope with the single type / multi type problem
         {
           //bail out...
           QMessageBox::critical( 0, tr( "Error" ), tr( "The feature could not be added because removing the polygon intersections would change the geometry type" ) );
           delete f;
           stopCapturing();
           return;
-        }*/
+        }
+#endif
         else if ( avoidIntersectionsReturn == 3 )
         {
           QMessageBox::critical( 0, tr( "Error" ), tr( "An error was reported during intersection removal" ) );
