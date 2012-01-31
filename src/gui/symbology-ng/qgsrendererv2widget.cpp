@@ -61,13 +61,14 @@ void QgsRendererV2Widget::changeSymbolTransparency()
   }
 
   bool ok;
-  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency" ), 1 - symbolList.at( 0 )->alpha(), 0.0, 1.0, 1, &ok );
+  double oldTransparency = ( 1 - symbolList.at( 0 )->alpha() ) * 100; // convert to percents
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
     QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
     for ( ; symbolIt != symbolList.end(); ++symbolIt )
     {
-      ( *symbolIt )->setAlpha( 1 - transparency );
+      ( *symbolIt )->setAlpha( 1 - transparency / 100 );
     }
     refreshSymbolView();
   }
