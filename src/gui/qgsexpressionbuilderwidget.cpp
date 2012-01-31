@@ -221,14 +221,14 @@ bool QgsExpressionBuilderWidget::isExpressionValid()
   return mExpressionValid;
 }
 
-QString QgsExpressionBuilderWidget::getExpressionString()
+QString QgsExpressionBuilderWidget::expressionText()
 {
   return txtExpressionString->toPlainText();
 }
 
-void QgsExpressionBuilderWidget::setExpressionString( const QString expressionString )
+void QgsExpressionBuilderWidget::setExpressionText( const QString& expression )
 {
-  txtExpressionString->setPlainText( expressionString );
+  txtExpressionString->setPlainText( expression );
 }
 
 void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()

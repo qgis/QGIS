@@ -99,8 +99,8 @@ void QgsOfflineEditingPluginGui::on_butBrowse_clicked()
   QString fileName = QFileDialog::getSaveFileName( this,
                      tr( "Select target database for offline data" ),
                      QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ),
-                     tr( "SpatiaLite DB(*.sqlite);;All files(*.*)" )
-                                                 );
+                     tr( "SpatiaLite DB" ) + " (*.sqlite);;"
+                     + tr( "All files" ) + " (*.*)" );
 
   if ( !fileName.isEmpty() )
   {

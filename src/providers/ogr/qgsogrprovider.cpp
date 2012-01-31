@@ -1698,9 +1698,8 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SQLite" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ),
-                                            "*.sqlite" );
-        myExtensions << "sqlite";
+        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ), "*.sqlite *.db" );
+        myExtensions << "sqlite" << "db";
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
       {
@@ -2242,10 +2241,19 @@ QVariant QgsOgrProvider::maximumValue( int index )
 
 QString QgsOgrProvider::quotedIdentifier( QString field )
 {
-  field.replace( '\\', "\\\\" );
-  field.replace( '"', "\\\"" );
-  field.replace( "'", "\\'" );
-  return field.prepend( "\"" ).append( "\"" );
+  if ( ogrDriverName == "MySQL" )
+  {
+    field.replace( '\\', "\\\\" );
+    field.replace( "`", "``" );
+    return field.prepend( "`" ).append( "`" );
+  }
+  else
+  {
+    field.replace( '\\', "\\\\" );
+    field.replace( '"', "\\\"" );
+    field.replace( "'", "\\'" );
+    return field.prepend( "\"" ).append( "\"" );
+  }
 }
 
 bool QgsOgrProvider::syncToDisc()

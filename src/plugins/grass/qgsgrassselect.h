@@ -49,11 +49,7 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     int      selectedType;  // RASTER or GROUP
 
   public slots:
-    //! OK
-    void on_ok_clicked();
-
-    //! Cancel
-    void on_cancel_clicked();
+    void accept();
 
     //! Open dialog for Gisdbase
     void on_GisdbaseBrowse_clicked();
@@ -73,7 +69,6 @@ class QgsGrassSelect: public QDialog, private Ui::QgsGrassSelectBase
     //! Reset combobox of layers for current Gisdbase + Location + Map
     void on_emap_activated() { setLayers(); }
     void setLayers();
-
 
   private:
     int type; // map type (mapset element)

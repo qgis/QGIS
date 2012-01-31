@@ -434,7 +434,7 @@ void QgsWFSSourceSelect::on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item,
 
     if ( d.exec() == QDialog::Accepted )
     {
-      item->setText( 4, w->getExpressionString() );
+      item->setText( 4, w->expressionText() );
     }
   }
 }

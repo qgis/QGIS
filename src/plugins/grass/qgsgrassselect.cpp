@@ -34,8 +34,8 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type ): QDialog( parent ), 
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
   setupUi( this );
-  connect( buttonBox, SIGNAL( accepted() ), SLOT( on_ok_clicked() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( on_cancel_clicked() ) );
+  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
 
   if ( first )
   {
@@ -394,7 +394,7 @@ void QgsGrassSelect::on_GisdbaseBrowse_clicked()
   }
 }
 
-void QgsGrassSelect::on_ok_clicked()
+void QgsGrassSelect::accept()
 {
   gisdbase = egisdbase->text();
   lastGisdbase = QString( gisdbase );
@@ -455,9 +455,4 @@ void QgsGrassSelect::on_ok_clicked()
     lastMapcalc = map;
   }
   QDialog::accept();
-}
-
-void QgsGrassSelect::on_cancel_clicked()
-{
-  QDialog::reject();
 }
