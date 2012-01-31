@@ -50,6 +50,8 @@ void QgsExpressionHighlighter::addFields( QStringList fieldList )
   HighlightingRule rule;
   foreach( const QString field, fieldList )
   {
+    if ( field.isEmpty() ) // this really happened :)
+      continue;
     rule.pattern = QRegExp( "\\b" + field + "\\b" );
     rule.format = columnNameFormat;
     highlightingRules.append( rule );
@@ -65,6 +67,8 @@ void QgsExpressionHighlighter::highlightBlock( const QString &text )
     while ( index >= 0 )
     {
       int length = expression.matchedLength();
+      if ( length == 0 )
+        break; // avoid infinite loops
       setFormat( index, length, rule.format );
       index = expression.indexIn( text, index + length );
     }
