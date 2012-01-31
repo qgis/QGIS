@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/compass">
-        <file>compass.svg</file>
+    <qresource prefix="/">
+        <file>icons/mCompassRun.png</file>
     </qresource>
 </RCC>

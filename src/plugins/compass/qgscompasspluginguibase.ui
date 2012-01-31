@@ -13,38 +13,52 @@
   <property name="windowTitle">
    <string>Internal Compass</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="mCompassLabel">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <layout class="QFormLayout" name="formLayout">
+       <property name="fieldGrowthPolicy">
+        <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+       </property>
+       <item row="0" column="0">
+        <widget class="QLabel" name="mCompassLabel">
+         <property name="text">
+          <string>Azimut</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="mAzimutDisplay"/>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="mCalibrationLabel">
+         <property name="text">
+          <string>Calibration</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="mCalibrationDisplay"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QLabel" name="arrowPixmapLabel">
        <property name="text">
-        <string>Azimut</string>
+        <string/>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignHCenter|Qt::AlignTop</set>
        </property>
       </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="mAzimutDisplay"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="mCalibrationLabel">
-       <property name="text">
-        <string>Calibration</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="mCalibrationDisplay"/>
      </item>
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="pixmapLabel">
+    <widget class="QLabel" name="mWarningLabel">
      <property name="text">
       <string/>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignHCenter|Qt::AlignTop</set>
      </property>
     </widget>
    </item>

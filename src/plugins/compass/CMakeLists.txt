@@ -3,6 +3,7 @@
 # Files
 
 SET (COMPASS_SRCS
+     compass.cpp
      qgscompassplugin.cpp
      qgscompassplugingui.cpp
 )
@@ -10,6 +11,7 @@ SET (COMPASS_SRCS
 SET (COMPASS_UIS qgscompasspluginguibase.ui)
 
 SET (COMPASS_MOC_HDRS
+     compass.h
      qgscompassplugin.h
      qgscompassplugingui.h
 )

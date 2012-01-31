@@ -1,50 +1,71 @@
 /***************************************************************************
- *   Copyright (C) 2012 by Marco Bernasocchi                               *
- *   marco at bernawebdesign.ch                                            *
- *                                                                         *
- *   GUI for showing a QtSensors compass reading                           *
+                          qgscompassplugingui.cpp
+ Functions:
+                             -------------------
+    begin                : Jan 28, 2012
+    copyright            : (C) 2012 by Marco Bernasocchi
+    email                : marco@bernawebdesign.ch
+
+ ***************************************************************************/
+
+/***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
+ *                                                                         *
  ***************************************************************************/
-#include "qgscompassplugingui.h"
 
 #include "qgisinterface.h"
-#include "qgscontexthelp.h"
+//#include "qgscontexthelp.h"
 #include "qgslogger.h"
 #include <QPainter>
+
+#include "qgscompassplugingui.h"
+#include "compass.h"
 
 QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WFlags fl )
     : QWidget( parent, fl )
 {
   setupUi( this );
-  mTimer = new QTimer(this);
-  connect(mTimer, SIGNAL(timeout()), this, SLOT(updateReading()));
-  mTimer->start(1000);
-}
+  compass = new Compass();
+
+  if ( ! compass->isActive() )
+  {
+    this->mWarningLabel->setText( "<font color='red'>No compass detected</font>" );
+  }
+
+  QObject::connect(compass, SIGNAL(azimuthChanged(const QVariant&, const QVariant&)), this, SLOT(handleAzimuth(const QVariant&, const QVariant&)));
+ }
 
 QgsCompassPluginGui::~QgsCompassPluginGui()
 {
-  mTimer->stop();
 }
 
-void QgsCompassPluginGui::updateReading()
+void QgsCompassPluginGui::handleVisibilityChanged(bool visible)
 {
-  int azimut = mCompass.azimuth();
-  this->mAzimutDisplay->setText( QString::number( azimut ) );
-  this->mCalibrationDisplay->setText( QString::number( mCompass.calibrationLevel() ) );
-  rotatePixmap( qrand() );
-  //rotatePixmap( azimut );
+  if (visible)
+  {
+    compass->start();
+  }
+  else
+  {
+    compass->stop();
+  }
 }
 
-//Copied from QgsDecorationNorthArrowDialog
-void QgsCompassPluginGui::rotatePixmap( int theRotationInt )
+void QgsCompassPluginGui::handleAzimuth(const QVariant &azimuth, const QVariant &calibrationLevel)
+{
+  this->mAzimutDisplay->setText( QString("%1").arg( azimuth.toInt() ) + QString::fromUtf8("°") );
+  this->mCalibrationDisplay->setText( calibrationLevel.toString() );
+  rotatePixmap( this->arrowPixmapLabel, QString(":/images/north_arrows/default.png"), -azimuth.toInt() );
+}
+
+//Copied from QgsDecorationNorthArrowDialog adapted to be portable
+void QgsCompassPluginGui::rotatePixmap( QLabel * pixmapLabel, QString myFileNameQString, int theRotationInt )
 {
   QPixmap myQPixmap;
-  QString myFileNameQString = ":/images/north_arrows/default.png";
-// QgsDebugMsg(QString("Trying to load %1").arg(myFileNameQString));
   if ( myQPixmap.load( myFileNameQString ) )
   {
     QPixmap  myPainterPixmap( myQPixmap.height(), myQPixmap.width() );

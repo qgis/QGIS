@@ -20,7 +20,6 @@
 #define PLUGIN
 #include "../qgisplugin.h"
 #include "ui_qgscompasspluginguibase.h"
-//the gui subclass
 #include "qgscompassplugingui.h"
 
 class QgisInterface;
@@ -31,7 +30,8 @@ class QgisInterface;
 */
 class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompassPluginGuiBase
 {
-  Q_OBJECT public:
+  Q_OBJECT
+  public:
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
@@ -72,6 +72,8 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     void help();
     //! update the plugins theme when the app tells us its theme is changed
     void setCurrentTheme( QString theThemeName );
+    QIcon getThemeIcon( const QString &theThemeName );
+    void about();
   private:
 
 
@@ -86,12 +88,13 @@ class QgsCompassPlugin: public QObject, public QgisPlugin, private Ui::QgsCompas
     //! Plugin type as defined in Plugin::PLUGINTYPE
     int pluginType;
     //! Pointer to the QGIS interface object
-    QgisInterface *qGisInterface;
+    QgisInterface *mQGisIface;
     //! Pointer to the QAction object used in the menu and toolbar
-    QAction *myQActionPointer;
+    QAction *mActionRunCompass;
+    QAction *mActionAboutCompass;
 
     QDockWidget *mDock;
-    QgsCompassPluginGui *myQgsCompassPluginGui;
+    QgsCompassPluginGui *mQgsCompassPluginGui;
 };
 
 #endif
