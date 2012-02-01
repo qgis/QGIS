@@ -29,6 +29,8 @@ INCLUDE_DIRECTORIES(
 
     ../src/core
     ../src/core/composer
+    ../src/core/gps
+    ../src/core/gps/qextserialport
     ../src/core/raster
     ../src/core/renderer
     ../src/core/spatialindex
