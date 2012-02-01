@@ -59,7 +59,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       AddLabel,        // add label
       AddScalebar,     // add scalebar
       AddPicture,       // add raster/vector picture
-      AddShape, //add shape item (ellipse, rectangle, triangle)
+      AddRectangle,
+      AddEllipse,
+      AddTriangle,
       AddTable, //add attribute table
       MoveItemContent //move content of item (e.g. content of map)
     };
@@ -119,6 +121,9 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
     QPointF mRubberBandStartPos;
 
     bool mPaintingEnabled;
+
+    /** Draw a shape on the canvas */
+    void addShape( Tool currentTool );
 
     //void connectAddRemoveCommandSignals( QgsAddRemoveItemCommand* c );
 

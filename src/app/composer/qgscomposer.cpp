@@ -89,7 +89,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   orderingToolButton->setPopupMode( QToolButton::InstantPopup );
   orderingToolButton->setAutoRaise( true );
   orderingToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
-
   orderingToolButton->addAction( mActionRaiseItems );
   orderingToolButton->addAction( mActionLowerItems );
   orderingToolButton->addAction( mActionMoveItemsToTop );
@@ -111,6 +110,17 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   alignToolButton->setDefaultAction( mActionAlignLeft );
   toolBar->addWidget( alignToolButton );
 
+  QToolButton* shapeToolButton = new QToolButton( toolBar );
+  shapeToolButton->setCheckable( true );
+  shapeToolButton->setPopupMode( QToolButton::InstantPopup );
+  shapeToolButton->setAutoRaise( true );
+  shapeToolButton->setToolButtonStyle( Qt::ToolButtonIconOnly );
+  shapeToolButton->addAction( mActionAddRectangle );
+  shapeToolButton->addAction( mActionAddTriangle );
+  shapeToolButton->addAction( mActionAddEllipse );
+  shapeToolButton->setDefaultAction( mActionAddEllipse );
+  toolBar->insertWidget( mActionAddArrow, shapeToolButton );
+
   QActionGroup* toggleActionGroup = new QActionGroup( this );
   toggleActionGroup->addAction( mActionMoveItemContent );
   toggleActionGroup->addAction( mActionAddNewMap );
@@ -119,10 +129,13 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   toggleActionGroup->addAction( mActionAddNewScalebar );
   toggleActionGroup->addAction( mActionAddImage );
   toggleActionGroup->addAction( mActionSelectMoveItem );
-  toggleActionGroup->addAction( mActionAddBasicShape );
+  toggleActionGroup->addAction( mActionAddRectangle );
+  toggleActionGroup->addAction( mActionAddTriangle );
+  toggleActionGroup->addAction( mActionAddEllipse );
   toggleActionGroup->addAction( mActionAddArrow );
   toggleActionGroup->addAction( mActionAddTable );
   toggleActionGroup->setExclusive( true );
+
 
   mActionAddNewMap->setCheckable( true );
   mActionAddNewLabel->setCheckable( true );
@@ -131,7 +144,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mActionAddNewScalebar->setCheckable( true );
   mActionAddImage->setCheckable( true );
   mActionMoveItemContent->setCheckable( true );
-  mActionAddBasicShape->setCheckable( true );
   mActionAddArrow->setCheckable( true );
 
 #ifdef Q_WS_MAC
@@ -172,7 +184,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   layoutMenu->addAction( mActionAddImage );
   layoutMenu->addAction( mActionSelectMoveItem );
   layoutMenu->addAction( mActionMoveItemContent );
-  layoutMenu->addAction( mActionAddBasicShape );
+
   layoutMenu->addAction( mActionAddArrow );
   layoutMenu->addAction( mActionAddTable );
   layoutMenu->addSeparator();
@@ -201,7 +213,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   QgsDebugMsg( "entered." );
 
   setMouseTracking( true );
-  //mSplitter->setMouseTracking(true);
   mViewFrame->setMouseTracking( true );
 
   //create composer view
@@ -224,23 +235,40 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
 
-  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
-  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
-  compositionWidget->show();
+  setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North);
+  mGeneralDock = new QDockWidget(tr("Composition"),this);
+  mGeneralDock->setObjectName( "CompositionDock" );
+  mItemDock = new QDockWidget(tr("Item Properties"));
+  mItemDock->setObjectName( "ItemDock");
+  mUndoDock = new QDockWidget(tr("Command history"),this);
+  mUndoDock->setObjectName( "CommandDock" );
 
-  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
-  mCompositionOptionsLayout->setMargin( 0 );
-  mCompositionOptionsLayout->addWidget( compositionWidget );
+
+
+  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
+  connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+  mGeneralDock->setWidget( compositionWidget );
+
+  //undo widget
+  mUndoView = new QUndoView( mComposition->undoStack(), this );
+  mUndoDock->setWidget( mUndoView );
+
+  addDockWidget( Qt::RightDockWidgetArea, mItemDock );
+  addDockWidget( Qt::RightDockWidgetArea, mGeneralDock );
+  addDockWidget( Qt::RightDockWidgetArea, mUndoDock );
+
+  mItemDock->show();
+  mGeneralDock->show();
+  mUndoDock->hide();
+
+  tabifyDockWidget(mGeneralDock, mUndoDock);
+  tabifyDockWidget(mGeneralDock, mItemDock);
+
+  mGeneralDock->raise();
 
   QGridLayout *l = new QGridLayout( mViewFrame );
   l->setMargin( 0 );
   l->addWidget( mView, 0, 0 );
-
-  mCompositionNameComboBox->insertItem( 0, tr( "Map 1" ) );
-
-  //undo widget
-  mUndoView = new QUndoView( mComposition->undoStack(), this );
-  mOptionsTabWidget->addTab( mUndoView, tr( "Command history" ) );
 
   // Create size grip (needed by Mac OS X for QMainWindow if QStatusBar is not visible)
   mSizeGrip = new QSizeGrip( this );
@@ -286,7 +314,9 @@ void QgsComposer::setupTheme()
   mActionAddNewLabel->setIcon( QgisApp::getThemeIcon( "/mActionLabel.png" ) );
   mActionAddNewLegend->setIcon( QgisApp::getThemeIcon( "/mActionAddLegend.png" ) );
   mActionAddNewScalebar->setIcon( QgisApp::getThemeIcon( "/mActionScaleBar.png" ) );
-  mActionAddBasicShape->setIcon( QgisApp::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  mActionAddRectangle->setIcon( QgisApp::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  mActionAddTriangle->setIcon( QgisApp::getThemeIcon( "/mActionAddBasicShape.png" ) );
+  mActionAddEllipse->setIcon( QgisApp::getThemeIcon( "/mActionAddBasicShape.png" ) );
   mActionAddArrow->setIcon( QgisApp::getThemeIcon( "/mActionAddArrow.png" ) );
   mActionAddTable->setIcon( QgisApp::getThemeIcon( "/mActionOpenTable.png" ) );
   mActionSelectMoveItem->setIcon( QgisApp::getThemeIcon( "/mActionSelectPan.png" ) );
@@ -396,21 +426,13 @@ void QgsComposer::setTitle( const QString& title )
   }
 }
 
-void QgsComposer::showCompositionOptions( QWidget *w )
-{
-  QWidget* currentWidget = mItemStackedWidget->currentWidget();
-  mItemStackedWidget->removeWidget( currentWidget );
-  mItemStackedWidget->addWidget( w );
-}
-
 void QgsComposer::showItemOptions( QgsComposerItem* item )
 {
-  QWidget* currentWidget = mItemStackedWidget->currentWidget();
+  QWidget* currentWidget = mItemDock->widget();
 
   if ( !item )
   {
-    mItemStackedWidget->removeWidget( currentWidget );
-    mItemStackedWidget->setCurrentWidget( 0 );
+    mItemDock->setWidget( 0 );
     return;
   }
 
@@ -427,10 +449,7 @@ void QgsComposer::showItemOptions( QgsComposerItem* item )
     return;
   }
 
-  mItemStackedWidget->removeWidget( currentWidget );
-  mItemStackedWidget->addWidget( newWidget );
-  mItemStackedWidget->setCurrentWidget( newWidget );
-  //newWidget->show();
+  mItemDock->setWidget( newWidget );
 }
 
 QgsMapCanvas *QgsComposer::mapCanvas( void )
@@ -848,11 +867,27 @@ void QgsComposer::on_mActionAddImage_triggered()
   }
 }
 
-void QgsComposer::on_mActionAddBasicShape_triggered()
+void QgsComposer::on_mActionAddRectangle_triggered()
 {
   if ( mView )
   {
-    mView->setCurrentTool( QgsComposerView::AddShape );
+    mView->setCurrentTool( QgsComposerView::AddRectangle );
+  }
+}
+
+void QgsComposer::on_mActionAddTriangle_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::AddTriangle );
+  }
+}
+
+void QgsComposer::on_mActionAddEllipse_triggered()
+{
+  if ( mView )
+  {
+    mView->setCurrentTool( QgsComposerView::AddEllipse );
   }
 }
 
@@ -1064,6 +1099,12 @@ void QgsComposer::on_mActionRedo_triggered()
   }
 }
 
+void QgsComposer::closeEvent(QCloseEvent *e)
+{
+    Q_UNUSED( e );
+    saveWindowState();
+}
+
 void QgsComposer::moveEvent( QMoveEvent *e )
 {
   Q_UNUSED( e );
@@ -1108,24 +1149,18 @@ void QgsComposer::saveWindowState()
 {
   QSettings settings;
   settings.setValue( "/Composer/geometry", saveGeometry() );
-  //settings.setValue("/Composer/splitterState", mSplitter->saveState());
+  // store the toolbar/dock widget settings using Qt4 settings API
+  settings.setValue( "/ComposerUI/state", saveState() );
 }
 
 void QgsComposer::restoreWindowState()
 {
   QSettings settings;
+  if (! restoreState( settings.value( "/ComposerUI/state" ).toByteArray() ))
+  {
+    QgsDebugMsg("RESTORE STATE FAILED!!");
+  }
   restoreGeometry( settings.value( "/Composer/geometry" ).toByteArray() );
-  QVariant splitterState = settings.value( "/Composer/splitterState" );
-  if ( !splitterState.isNull() )
-  {
-    //mSplitter->restoreState(settings.value("/Composer/splitterState").toByteArray());
-  }
-  else
-  {
-    QList<int> defaultSize;
-    defaultSize << 300 << 100; // page display 300 pixels, details pane 100 pixels
-    //mSplitter->setSizes(defaultSize);
-  }
 }
 
 void  QgsComposer::writeXML( QDomDocument& doc )
@@ -1218,7 +1253,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
     delete( *it );
   }
   //delete composition widget
-  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mCompositionOptionsFrame->children().at( 0 ) );
+  QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
   delete oldCompositionWidget;
   delete mCompositionOptionsLayout;
   mCompositionOptionsLayout = 0;
@@ -1241,13 +1276,13 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   l->addWidget( mView, 0, 0 );
 
   //create compositionwidget
-  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
-  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
-  compositionWidget->show();
+//  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
+//  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+//  compositionWidget->show();
 
-  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
-  mCompositionOptionsLayout->setMargin( 0 );
-  mCompositionOptionsLayout->addWidget( compositionWidget );
+//  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
+//  mCompositionOptionsLayout->setMargin( 0 );
+//  mCompositionOptionsLayout->addWidget( compositionWidget );
 
   //read and restore all the items
   if ( mComposition )
