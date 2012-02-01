@@ -272,15 +272,15 @@ void QgsFieldCalculator::setOkButtonState()
   okButton->setToolTip("");
 
   bool emptyFieldName = mOutputFieldNameLineEdit->text().isEmpty();
-  bool expressionVaild = builder->isExpressionValid();
+  bool expressionValid = builder->isExpressionValid();
 
   if ( emptyFieldName )
       okButton->setToolTip( tr("Please enter a field name") );
 
-  if ( !expressionVaild )
-      okButton->setToolTip( okButton->toolTip() + tr("\n The expression is invaild see (more info) for details") );
+  if ( !expressionValid )
+      okButton->setToolTip( okButton->toolTip() + tr("\n The expression is invalid see (more info) for details") );
 
-  bool okEnabled = ( !emptyFieldName || mUpdateExistingGroupBox->isChecked() ) && expressionVaild;
+  bool okEnabled = ( !emptyFieldName || mUpdateExistingGroupBox->isChecked() ) && expressionValid;
 
   okButton->setEnabled( okEnabled );
 }
