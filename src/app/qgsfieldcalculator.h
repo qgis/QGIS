@@ -41,6 +41,10 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 
     void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
 
+  private slots:
+    /**Sets the ok button enabled / disabled*/
+    void setOkButtonState();
+
   private:
     //default constructor forbidden
     QgsFieldCalculator();
@@ -48,9 +52,6 @@ class QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
     void populateFields();
     /**Inserts the types supported by the provider into the combo box*/
     void populateOutputFieldTypes();
-
-    /**Sets the ok button enabled / disabled*/
-    void setOkButtonState();
 
     QgsVectorLayer* mVectorLayer;
     /**Key: field name, Value: field index*/

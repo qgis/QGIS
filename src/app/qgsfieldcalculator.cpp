@@ -36,8 +36,7 @@ QgsFieldCalculator::QgsFieldCalculator( QgsVectorLayer* vl )
   populateFields();
   populateOutputFieldTypes();
 
-  QPushButton* okbutton = mButtonBox->button( QDialogButtonBox::Ok );
-  connect( builder, SIGNAL( expressionParsed( bool ) ), okbutton, SLOT( setEnabled( bool ) ) );
+  connect( builder, SIGNAL( expressionParsed( bool ) ), this, SLOT( setOkButtonState() ) );
 
   //default values for field width and precision
   mOuputFieldWidthSpinBox->setValue( 10 );
@@ -269,7 +268,19 @@ void QgsFieldCalculator::populateFields()
 
 void QgsFieldCalculator::setOkButtonState()
 {
-  bool okEnabled = ( !mOutputFieldNameLineEdit->text().isEmpty() || mUpdateExistingGroupBox->isChecked() ) && builder->isExpressionValid();
+  QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
+  okButton->setToolTip("");
 
-  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( okEnabled );
+  bool emptyFieldName = mOutputFieldNameLineEdit->text().isEmpty();
+  bool expressionVaild = builder->isExpressionValid();
+
+  if ( emptyFieldName )
+      okButton->setToolTip( tr("Please enter a field name") );
+
+  if ( !expressionVaild )
+      okButton->setToolTip( okButton->toolTip() + tr("\n The expression is invaild see (more info) for details") );
+
+  bool okEnabled = ( !emptyFieldName || mUpdateExistingGroupBox->isChecked() ) && expressionVaild;
+
+  okButton->setEnabled( okEnabled );
 }
