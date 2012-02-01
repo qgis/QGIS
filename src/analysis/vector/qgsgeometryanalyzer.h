@@ -100,7 +100,8 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                    int uniqueIdField = -1, QProgressDialog* p = 0 );
 
-    /**Creates an event layer (multipoint or multiline). Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
+    /**Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
+        Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
       @param lineLayer layer with the line geometry
       @param eventLayer layer with features and location field
       @param lineField join index in line layer
@@ -111,9 +112,10 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
-    /**Returns multilinestring*/
+    /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
-    /**Returns multipoint*/
+    /**Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
+      Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
     QgsGeometry* locateAlongMeasure( double measure, QgsGeometry* lineGeom );
 
   private:
