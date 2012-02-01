@@ -128,7 +128,7 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     QString helpContents;
     QFile file( fullHelpPath );
 
-    QString missingError = tr("<h3>Opps! QGIS can't find help for this form.</h3>"
+    QString missingError = tr("<h3>Oops! QGIS can't find help for this form.</h3>"
                               "The help file for %1 was not found for your language<br>"
                               "If you would like to create it, contact the QGIS development team"
                               ).arg( contextId );
