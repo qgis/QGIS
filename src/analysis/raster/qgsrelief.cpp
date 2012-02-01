@@ -280,7 +280,7 @@ int QgsRelief::processRaster( QProgressDialog* p )
 bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
                                        unsigned char* red, unsigned char* green, unsigned char* blue )
 {
-  //1. component: colour and hillshade from 300 degrees
+  //1. component: color and hillshade from 300 degrees
   int r = 0;
   int g = 0;
   int b = 0;

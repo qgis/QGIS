@@ -141,7 +141,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.outSelector.setFilename( outputDir )
 
   def fillSourceSRSEdit(self):
-      dialog = SRSDialog( "Select the source SRS" )
+      dialog = SRSDialog( "Select the source SRS", self )
       if dialog.exec_():
         self.sourceSRSEdit.setText(dialog.getProjection())
 
@@ -156,7 +156,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.sourceSRSCheck.setChecked( not crs.isEmpty() )
 
   def fillTargetSRSEdit(self):
-      dialog = SRSDialog( "Select the target SRS" )
+      dialog = SRSDialog( "Select the target SRS", self )
       if dialog.exec_():
         self.targetSRSEdit.setText(dialog.getProjection())
 

@@ -344,7 +344,7 @@ static void customSrsValidation_( QgsCoordinateReferenceSystem* srs )
     }
 
     // why is this: it overrides the default cursor in the splitter in the dialog
-    // commenting it now till somebody tells us why it is neccesary :-)
+    // commenting it now till somebody tells us why it is necessary :-)
     //QApplication::setOverrideCursor( Qt::ArrowCursor );
 
     if ( mySelector->exec() )
@@ -2496,7 +2496,7 @@ void QgisApp::addWfsLayer()
   connect( wfss , SIGNAL( addWfsLayer( QString, QString ) ),
            this , SLOT( addWfsLayer( QString, QString ) ) );
 
-  //reenable wfs with extent setting: pass canvas info to source select
+  //re-enable wfs with extent setting: pass canvas info to source select
   wfss->setProperty( "MapExtent", mMapCanvas->extent().toString() );
   if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
   { //if "on the fly" reprojection is active, pass canvas CRS

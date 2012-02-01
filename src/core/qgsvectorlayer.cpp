@@ -979,8 +979,8 @@ bool QgsVectorLayer::draw( QgsRenderContext& rendererContext )
 
     select( attributes, rendererContext.extent() );
 
-    if ( ( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
-         && mRendererV2->usingSymbolLevels() )
+    if (( mRendererV2->capabilities() & QgsFeatureRendererV2::SymbolLevels )
+        && mRendererV2->usingSymbolLevels() )
       drawRendererV2Levels( rendererContext, labeling );
     else
       drawRendererV2( rendererContext, labeling );
@@ -3424,6 +3424,9 @@ bool QgsVectorLayer::changeAttributeValue( QgsFeatureId fid, int field, QVariant
 bool QgsVectorLayer::addAttribute( const QgsField &field )
 {
   if ( !isEditable() )
+    return false;
+
+  if ( field.name().isEmpty() )
     return false;
 
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )

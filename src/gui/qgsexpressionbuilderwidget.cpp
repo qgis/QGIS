@@ -111,22 +111,16 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
 
   // Loading field values are handled with a
   // right click so we just show the help.
-  if ( item->getItemType() == QgsExpressionItem::Field )
+  if ( item->getItemType() != QgsExpressionItem::Field )
   {
-    txtHelpText->setHtml( tr( "Double click to add field name to expression string. <br> "
-                              "Or right click to select loading value options then "
-                              "double click an item in the value list to add it to the expression string." ) );
-    txtHelpText->setToolTip( txtHelpText->toPlainText() );
+
+      mValueGroupBox->hide();
+      mValueListWidget->clear();
   }
-  else
-  {
-    // Show the help for the current item.
-    mValueGroupBox->hide();
-    mValueListWidget->clear();
-    QString help = loadFunctionHelp( item );
-    txtHelpText->setText( help );
-    txtHelpText->setToolTip( txtHelpText->toPlainText() );
-  }
+  // Show the help for the current item.
+  QString help = loadFunctionHelp( item );
+  txtHelpText->setText( help );
+  txtHelpText->setToolTip( txtHelpText->toPlainText() );
 }
 
 void QgsExpressionBuilderWidget::on_expressionTree_doubleClicked( const QModelIndex &index )
@@ -165,7 +159,7 @@ void QgsExpressionBuilderWidget::loadFieldNames( QgsFieldMap fields )
   {
     QString fieldName = field.name();
     fieldNames << fieldName;
-    registerItem( tr( "Fields" ), fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
+    registerItem( tr( "Fields and Values" ), fieldName, " \"" + fieldName + "\" ", "", QgsExpressionItem::Field );
   }
   highlighter->addFields( fieldNames );
 }
@@ -243,7 +237,6 @@ void QgsExpressionBuilderWidget::on_txtExpressionString_textChanged()
     lblPreview->setStyleSheet( "" );
     txtExpressionString->setToolTip( "" );
     lblPreview->setToolTip( "" );
-    // Return false for isValid because a null expression is still invalid.
     emit expressionParsed( false );
     return;
   }
@@ -404,11 +397,22 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
   {
     lang = "en_US";
   }
-  QString fullHelpPath = helpFilesPath + functionName->text() + "-" + lang;
+
+  QString name = functionName->text();
+
+  if ( functionName->getItemType() == QgsExpressionItem::Field )
+      name = "Field";
+
+  QString fullHelpPath = helpFilesPath + name + "-" + lang;
   // get the help content and title from the localized file
   QString helpContents;
   QFile file( fullHelpPath );
   // check to see if the localized version exists
+
+  QString missingError = tr("<h3>Oops! QGIS can't find help for this function.</h3>"
+                            "The help file for %1 was not found for your language<br>"
+                            "If you would like to create it, contact the QGIS development team"
+                            ).arg( name );
   if ( !file.exists() )
   {
     // change the file name to the en_US version (default)
@@ -419,14 +423,14 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
     // translate this for us message
     if ( !lang.contains( "en_" ) )
     {
-      helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team." ).arg( lang ) + "</i><hr />";
+      helpContents = missingError;
     }
 
   }
+
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
-                   .arg( fullHelpPath );
+    helpContents = missingError;
   }
   else
   {
@@ -438,6 +442,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
       helpContents += line;
     }
   }
+
   file.close();
 
   // Set the browser text to the help contents

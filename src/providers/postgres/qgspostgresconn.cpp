@@ -1042,11 +1042,17 @@ void QgsPostgresConn::retrieveLayerTypes( QgsPostgresLayerProperty &layerPropert
             .arg( layerProperty.sql.isEmpty() ? "" : QString( " AND (%1)" ).arg( layerProperty.sql ) )
             .arg( sGeomTypeSelectLimit );
   }
-  else
+  else if ( !layerProperty.schemaName.isEmpty() )
   {
     table = QString( "%1.%2%3" )
             .arg( quotedIdentifier( layerProperty.schemaName ) )
             .arg( quotedIdentifier( layerProperty.tableName ) )
+            .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) );
+  }
+  else
+  {
+    table = QString( "%1%2" )
+            .arg( layerProperty.tableName )
             .arg( layerProperty.sql.isEmpty() ? "" : QString( " WHERE %1" ).arg( layerProperty.sql ) );
   }
 

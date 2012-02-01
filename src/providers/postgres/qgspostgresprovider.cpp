@@ -55,7 +55,7 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
 {
   mProviderId = sProviderIds++;
 
-  QgsDebugMsg( "URI: " + uri );
+  QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );
 
   mUri = QgsDataSourceURI( uri );
 
@@ -94,12 +94,12 @@ QgsPostgresProvider::QgsPostgresProvider( QString const & uri )
   mUseEstimatedMetadata = mUri.useEstimatedMetadata();
   mSelectAtIdDisabled = mUri.selectAtIdDisabled();
 
-  QgsDebugMsg( "Connection info is " + mUri.connectionInfo() );
-  QgsDebugMsg( "Geometry column is: " + mGeometryColumn );
-  QgsDebugMsg( "Schema is: " + mSchemaName );
-  QgsDebugMsg( "Table name is: " + mTableName );
-  QgsDebugMsg( "Query is: " + mQuery );
-  QgsDebugMsg( "Where clause is: " + mSqlWhereClause );
+  QgsDebugMsg( QString( "Connection info is %1" ).arg( mUri.connectionInfo() ) );
+  QgsDebugMsg( QString( "Geometry column is: %1" ).arg( mGeometryColumn ) );
+  QgsDebugMsg( QString( "Schema is: %1" ).arg( mSchemaName ) );
+  QgsDebugMsg( QString( "Table name is: %1" ).arg( mTableName ) );
+  QgsDebugMsg( QString( "Query is: %1" ).arg( mQuery ) );
+  QgsDebugMsg( QString( "Where clause is: %1" ).arg( mSqlWhereClause ) );
 
   // no table/query passed, the provider could be used to get tables
   if ( mQuery.isEmpty() )
@@ -763,7 +763,7 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
         }
       }
 
-      QgsDebugMsg( "keys params: " + params.join( "; " ) );
+      QgsDebugMsg( QString( "keys params: %1" ).arg( params.join( "; " ) ) );
     }
     break;
 
@@ -975,7 +975,7 @@ bool QgsPostgresProvider::loadFields()
 {
   if ( !mIsQuery )
   {
-    QgsDebugMsg( "Loading fields for table " + mTableName );
+    QgsDebugMsg( QString( "Loading fields for table %1" ).arg( mTableName ) );
 
     // Get the relation oid for use in later queries
     QString sql = QString( "SELECT regclass(%1)::oid" ).arg( quotedValue( mQuery ) );
@@ -1133,7 +1133,7 @@ bool QgsPostgresProvider::loadFields()
       }
       else
       {
-        QgsLogger::warning( "Field " + fieldName + " ignored, because of unsupported type " + fieldTypeName );
+        QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type %2" ).arg( fieldName ).arg( fieldTypeName ), tr( "PostGIS" ) );
         continue;
       }
 
@@ -1152,7 +1152,7 @@ bool QgsPostgresProvider::loadFields()
     }
     else
     {
-      QgsLogger::warning( "Field " + fieldName + " ignored, because of unsupported type type " + fieldTType );
+      QgsMessageLog::logMessage( tr( "Field %1 ignored, because of unsupported type type %2" ).arg( fieldName ).arg( fieldTType ), tr( "PostGIS" ) );
       continue;
     }
 
@@ -1319,7 +1319,7 @@ bool QgsPostgresProvider::hasSufficientPermsAndCapabilities()
     while ( mQuery.contains( regex ) );
 
     // convert the custom query into a subquery
-    mQuery = QString( "%1 as %2" )
+    mQuery = QString( "%1 AS %2" )
              .arg( mQuery )
              .arg( quotedIdentifier( alias ) );
 
@@ -1417,34 +1417,17 @@ bool QgsPostgresProvider::determinePrimaryKey()
         QString primaryKey = mUri.keyColumn();
         int idx = fieldNameIndex( mUri.keyColumn() );
 
-        if ( idx >= 0 )
+        if ( idx >= 0 && ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) )
         {
-          // validate last used candidate
-          sql = QString( "SELECT pg_type.typname FROM pg_attribute,pg_type WHERE atttypid=pg_type.oid AND attname=%1 AND attrelid=%2::regclass" )
-                .arg( quotedValue( primaryKey ) )
-                .arg( quotedValue( mQuery ) );
-          QgsDebugMsg( "Retrieving primary key type for view: " + sql );
-          res = mConnectionRO->PQexec( sql );
-          QgsDebugMsg( QString( "Got %1 rows." ).arg( res.PQntuples() ) );
-
-          QString type;
-          if ( res.PQresultStatus() == PGRES_TUPLES_OK && res.PQntuples() == 1 )
-          {
-            type = res.PQgetvalue( 0, 0 );
-          }
-
-          // if mUseEstimatedMetadata is on assume that the already keyfield is still unique
-
-          if (( type.startsWith( "int" ) || type.startsWith( "serial" ) ) &&
-              ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) ) )
+          if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
           {
             mPrimaryKeyType = pktInt;
             mPrimaryKeyAttrs << idx;
           }
         }
-
-        if ( mPrimaryKeyType != pktInt )
+        else
         {
+          QgsMessageLog::logMessage( tr( "No key field for view given." ), tr( "PostGIS" ) );
           mPrimaryKeyType = pktUnknown;
         }
       }
@@ -1486,6 +1469,25 @@ bool QgsPostgresProvider::determinePrimaryKey()
       }
 
       mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
+    }
+  }
+  else
+  {
+    QString primaryKey = mUri.keyColumn();
+    int idx = fieldNameIndex( mUri.keyColumn() );
+
+    if ( idx >= 0 && ( mAttributeFields[idx].type() == QVariant::Int || mAttributeFields[idx].type() == QVariant::LongLong ) )
+    {
+      if ( mUseEstimatedMetadata || uniqueData( mQuery, primaryKey ) )
+      {
+        mPrimaryKeyType = pktInt;
+        mPrimaryKeyAttrs << idx;
+      }
+    }
+    else
+    {
+      QgsMessageLog::logMessage( tr( "No key field for query given." ), tr( "PostGIS" ) );
+      mPrimaryKeyType = pktUnknown;
     }
   }
 
@@ -2603,7 +2605,7 @@ bool QgsPostgresProvider::getGeometryDetails()
   {
     sql = QString( "SELECT %1 FROM %2 LIMIT 0" ).arg( quotedIdentifier( mGeometryColumn ) ).arg( mQuery );
 
-    QgsDebugMsg( "Getting geometry column: " + sql );
+    QgsDebugMsg( QString( "Getting geometry column: %1" ).arg( sql ) );
 
     QgsPostgresResult result = mConnectionRO->PQexec( sql );
     if ( PGRES_TUPLES_OK == result.PQresultStatus() )
@@ -2635,60 +2637,73 @@ bool QgsPostgresProvider::getGeometryDetails()
           }
         }
       }
+      else
+      {
+        schemaName = "";
+        tableName = mQuery;
+      }
+    }
+    else
+    {
+      mValid = false;
+      return false;
     }
   }
 
   QString detectedType;
   QString detectedSrid;
 
-  // check geometry columns
-  sql = QString( "SELECT upper(type),srid FROM geometry_columns WHERE f_table_name=%1 AND f_geometry_column=%2 AND f_table_schema=%3" )
-        .arg( quotedValue( tableName ) )
-        .arg( quotedValue( geomCol ) )
-        .arg( quotedValue( schemaName ) );
-
-  QgsDebugMsg( "Getting geometry column: " + sql );
-  result = mConnectionRO->PQexec( sql );
-  QgsDebugMsg( QString( "Geometry column query returned %1 rows" ).arg( result.PQntuples() ) );
-
-  if ( result.PQntuples() == 1 )
-  {
-    detectedType = result.PQgetvalue( 0, 0 );
-    detectedSrid = result.PQgetvalue( 0, 1 );
-  }
-
-  if ( !detectedType.isEmpty() )
+  if ( !schemaName.isEmpty() )
   {
     // check geometry columns
-    sql = QString( "SELECT upper(type),srid FROM geography_columns WHERE f_table_name=%1 AND f_geography_column=%2 AND f_table_schema=%3" )
+    sql = QString( "SELECT upper(type),srid FROM geometry_columns WHERE f_table_name=%1 AND f_geometry_column=%2 AND f_table_schema=%3" )
           .arg( quotedValue( tableName ) )
           .arg( quotedValue( geomCol ) )
           .arg( quotedValue( schemaName ) );
 
-    QgsDebugMsg( "Getting geography column: " + sql );
-    result = mConnectionRO->PQexec( sql, false );
-    QgsDebugMsg( "Geography column query returned " + QString::number( result.PQntuples() ) );
+    QgsDebugMsg( QString( "Getting geometry column: %1" ).arg( sql ) );
+    result = mConnectionRO->PQexec( sql );
+    QgsDebugMsg( QString( "Geometry column query returned %1 rows" ).arg( result.PQntuples() ) );
 
-    if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+    if ( result.PQntuples() == 1 )
     {
-      if ( result.PQntuples() == 1 )
-      {
-        detectedType = result.PQgetvalue( 0, 0 );
-        detectedSrid = result.PQgetvalue( 0, 1 );
-        mIsGeography = true;
-      }
+      detectedType = result.PQgetvalue( 0, 0 );
+      detectedSrid = result.PQgetvalue( 0, 1 );
     }
-    else
+
+    if ( !detectedType.isEmpty() )
     {
-      mConnectionRO->PQexecNR( "ROLLBACK" );
+      // check geometry columns
+      sql = QString( "SELECT upper(type),srid FROM geography_columns WHERE f_table_name=%1 AND f_geography_column=%2 AND f_table_schema=%3" )
+            .arg( quotedValue( tableName ) )
+            .arg( quotedValue( geomCol ) )
+            .arg( quotedValue( schemaName ) );
+
+      QgsDebugMsg( QString( "Getting geography column: %1" ).arg( sql ) );
+      result = mConnectionRO->PQexec( sql, false );
+      QgsDebugMsg( QString( "Geography column query returned %1" ).arg( result.PQntuples() ) );
+
+      if ( result.PQresultStatus() == PGRES_TUPLES_OK )
+      {
+        if ( result.PQntuples() == 1 )
+        {
+          detectedType = result.PQgetvalue( 0, 0 );
+          detectedSrid = result.PQgetvalue( 0, 1 );
+          mIsGeography = true;
+        }
+      }
+      else
+      {
+        mConnectionRO->PQexecNR( "ROLLBACK" );
+      }
     }
   }
 
   if ( QgsPostgresConn::geomTypeFromPostgis( detectedType ) == QGis::UnknownGeometry )
   {
     QgsPostgresLayerProperty layerProperty;
-    layerProperty.schemaName = mSchemaName;
-    layerProperty.tableName = mTableName;
+    layerProperty.schemaName = schemaName;
+    layerProperty.tableName = tableName;
     layerProperty.geometryColName = mGeometryColumn;
     layerProperty.isGeography = mIsGeography;
 
@@ -2758,10 +2773,10 @@ bool QgsPostgresProvider::getGeometryDetails()
   mDetectedGeomType = QgsPostgresConn::geomTypeFromPostgis( detectedType );
   mDetectedSrid     = detectedSrid;
 
-  QgsDebugMsg( "Detected SRID is " + mDetectedSrid );
-  QgsDebugMsg( "Requested SRID is " + mRequestedSrid );
-  QgsDebugMsg( "Detected type is " + QString::number( mDetectedGeomType ) );
-  QgsDebugMsg( "Requested type is " + QString::number( mRequestedGeomType ) );
+  QgsDebugMsg( QString( "Detected SRID is %1" ).arg( mDetectedSrid ) );
+  QgsDebugMsg( QString( "Requested SRID is %1" ).arg( mRequestedSrid ) );
+  QgsDebugMsg( QString( "Detected type is %1" ).arg( mDetectedGeomType ) );
+  QgsDebugMsg( QString( "Requested type is %1" ).arg( mRequestedGeomType ) );
 
   mValid = ( mDetectedGeomType != QGis::UnknownGeometry || mRequestedGeomType != QGis::UnknownGeometry )
            && ( !mDetectedSrid.isEmpty() || !mRequestedSrid.isEmpty() );
@@ -2781,8 +2796,8 @@ bool QgsPostgresProvider::getGeometryDetails()
     mEnabledCapabilities &= ~( QgsVectorDataProvider::ChangeGeometries | QgsVectorDataProvider::AddFeatures );
   }
 
-  QgsDebugMsg( "Feature type name is " + QString( QGis::qgisFeatureTypes[ geometryType()] ) );
-  QgsDebugMsg( "Geometry is geography " + mIsGeography );
+  QgsDebugMsg( QString( "Feature type name is %1" ).arg( QGis::qgisFeatureTypes[ geometryType()] ) );
+  QgsDebugMsg( QString( "Geometry is geography %1" ).arg( mIsGeography ) );
 
   return mValid;
 }
@@ -2864,10 +2879,10 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   }
   schemaTableName += quotedIdentifier( tableName );
 
-  QgsDebugMsg( "Connection info is " + dsUri.connectionInfo() );
-  QgsDebugMsg( "Geometry column is: " + geometryColumn );
-  QgsDebugMsg( "Schema is: " + schemaName );
-  QgsDebugMsg( "Table name is: " + tableName );
+  QgsDebugMsg( QString( "Connection info is " ).arg( dsUri.connectionInfo() ) );
+  QgsDebugMsg( QString( "Geometry column is: " ).arg( geometryColumn ) );
+  QgsDebugMsg( QString( "Schema is: " ).arg( schemaName ) );
+  QgsDebugMsg( QString( "Table name is: %1" ).arg( tableName ) );
 
   // create the table
   QgsPostgresConn *conn = QgsPostgresConn::connectDb( dsUri.connectionInfo(), false );
@@ -2918,7 +2933,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
     primaryKeyType = "serial";
 #if 0
     // TODO: check the feature count to choose if create a serial8 pk field
-    if ( layer->featureCount() > 0xFFFFFF )
+    if ( layer->featureCount() > 0xffffffff )
     {
       primaryKeyType = "serial8";
     }
@@ -3007,7 +3022,7 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
   }
   conn->disconnect();
 
-  QgsDebugMsg( "layer " + schemaTableName  + " created." );
+  QgsDebugMsg( QString( "layer %1 created" ).arg( schemaTableName ) );
 
   // use the provider to edit the table
   dsUri.setDataSource( schemaName, tableName, geometryColumn, QString(), primaryKey );
@@ -3057,13 +3072,11 @@ QgsVectorLayerImport::ImportError QgsPostgresProvider::createEmptyLayer(
         return QgsVectorLayerImport::ErrAttributeTypeUnsupported;
       }
 
-      QgsDebugMsg( "creating field #" + QString::number( fldIt.key() ) +
-                   " -> #" + QString::number( offset ) +
-                   " name " + fld.name() +
-                   " type " + QString( QVariant::typeToName( fld.type() ) ) +
-                   " typename " + fld.typeName() +
-                   " width " + QString::number( fld.length() ) +
-                   " precision " + QString::number( fld.precision() ) );
+      QgsDebugMsg( QString( "creating field #%1 -> #%2 name %3 type %4 typename %5 width %6 precision %7" )
+                   .arg( fldIt.key() ).arg( offset )
+                   .arg( fld.name() ).arg( QVariant::typeToName( fld.type() ) ).arg( fld.typeName() )
+                   .arg( fld.length() ).arg( fld.precision() )
+                 );
 
       flist.append( fld );
       if ( oldToNewAttrIdxMap )

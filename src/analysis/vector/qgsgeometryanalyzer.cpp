@@ -908,3 +908,449 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
     }
   }
 }
+
+bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
+                                      const QString& outputFormat, int locationField1, int locationField2, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
+{
+  if ( !lineLayer || !eventLayer || !lineLayer->isValid() || !eventLayer->isValid() )
+  {
+    return false;
+  }
+
+  //create line field / id map for line layer
+  QMultiHash< QString, QgsFeatureId > lineLayerIdMap; //1:n possible (e.g. several linear reference geometries for one feature in the event layer)
+  lineLayer->select( QgsAttributeList() << lineField,
+                     QgsRectangle(), false, false );
+  QgsFeature fet;
+  while ( lineLayer->nextFeature( fet ) )
+  {
+    lineLayerIdMap.insert( fet.attributeMap()[lineField].toString(), fet.id() );
+  }
+
+  //create output datasource or attributes in memory provider
+  QgsVectorFileWriter* fileWriter = 0;
+  if ( !memoryProvider )
+  {
+    fileWriter = new QgsVectorFileWriter( outputLayer,
+                                          eventLayer->dataProvider()->encoding(),
+                                          eventLayer->pendingFields(),
+                                          locationField2 == -1 ? QGis::WKBMultiPoint25D : QGis::WKBMultiLineString25D,
+                                          &( lineLayer->crs() ),
+                                          outputFormat );
+  }
+  else
+  {
+    memoryProvider->addAttributes( eventLayer->pendingFields().values() );
+  }
+
+  //iterate over eventLayer and write new features to output file or layer
+  eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), true, false );
+  QgsGeometry* lrsGeom = 0;
+  QgsFeature lineFeature;
+  double measure1, measure2;
+
+  int nEventFeatures = eventLayer->pendingFeatureCount();
+  int featureCounter = 0;
+  if( p )
+  {
+    p->setWindowModality(Qt::WindowModal);
+    p->setMinimum( 0 );
+    p->setMaximum( nEventFeatures );
+    p->show();
+  }
+
+  while ( eventLayer->nextFeature( fet ) )
+  {
+    //update progress dialog
+    if( p )
+    {
+      if( p->wasCanceled() )
+      {
+        break;
+      }
+      p->setValue( featureCounter );
+      ++featureCounter;
+    }
+
+    measure1 = fet.attributeMap()[locationField1].toDouble();
+    if ( locationField2 != -1 )
+    {
+      measure2 = fet.attributeMap()[locationField2].toDouble();
+    }
+
+    QList<QgsFeatureId> featureIdList = lineLayerIdMap.values( fet.attributeMap()[eventField].toString() );
+    QList<QgsFeatureId>::const_iterator featureIdIt = featureIdList.constBegin();
+    for ( ; featureIdIt != featureIdList.constEnd(); ++featureIdIt )
+    {
+      if ( !lineLayer->featureAtId( *featureIdIt, lineFeature, true, false ) )
+      {
+        continue;
+      }
+
+      if ( locationField2 == -1 )
+      {
+        lrsGeom = locateAlongMeasure( measure1, lineFeature.geometry() );
+      }
+      else
+      {
+        lrsGeom = locateBetweenMeasures( measure1, measure2, lineFeature.geometry() );
+      }
+
+      if ( lrsGeom )
+      {
+        fet.setGeometry( lrsGeom );
+        if ( memoryProvider )
+        {
+          memoryProvider->addFeatures( QgsFeatureList() << fet );
+        }
+        else
+        {
+          fileWriter->addFeature( fet );
+        }
+      }
+    }
+  }
+
+  if( p )
+  {
+    p->setValue( nEventFeatures );
+  }
+
+  return true;
+}
+
+QgsGeometry* QgsGeometryAnalyzer::locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom )
+{
+  if ( !lineGeom )
+  {
+    return 0;
+  }
+
+  QgsMultiPolyline resultGeom;
+
+  //need to go with WKB and z coordinate until QgsGeometry supports M values
+  unsigned char* lineWkb = lineGeom->asWkb();
+
+  unsigned char* ptr = lineWkb + 1;
+  QGis::WkbType wkbType;
+  memcpy( &wkbType, ptr, sizeof( wkbType ) );
+  ptr += sizeof( wkbType );
+
+  if ( wkbType != QGis::WKBLineString25D && wkbType != QGis::WKBMultiLineString25D )
+  {
+    return 0;
+  }
+
+  if ( wkbType == QGis::WKBLineString25D )
+  {
+    locateBetweenWkbString( ptr, resultGeom, fromMeasure, toMeasure );
+  }
+  else if ( wkbType == QGis::WKBMultiLineString25D )
+  {
+    int* nLines = ( int* )ptr;
+    ptr += sizeof( int );
+    for ( int i = 0; i < *nLines; ++i )
+    {
+      ptr += ( 1 + sizeof( wkbType ) );
+      ptr = locateBetweenWkbString( ptr, resultGeom, fromMeasure, toMeasure );
+    }
+  }
+
+  if ( resultGeom.size() < 1 )
+  {
+    return 0;
+  }
+  return QgsGeometry::fromMultiPolyline( resultGeom );
+}
+
+QgsGeometry* QgsGeometryAnalyzer::locateAlongMeasure( double measure, QgsGeometry* lineGeom )
+{
+  if ( !lineGeom )
+  {
+    return 0;
+  }
+
+  QgsMultiPoint resultGeom;
+
+  //need to go with WKB and z coordinate until QgsGeometry supports M values
+  unsigned char* lineWkb = lineGeom->asWkb();
+
+  unsigned char* ptr = lineWkb + 1;
+  QGis::WkbType wkbType;
+  memcpy( &wkbType, ptr, sizeof( wkbType ) );
+  ptr += sizeof( wkbType );
+
+  if ( wkbType != QGis::WKBLineString25D && wkbType != QGis::WKBMultiLineString25D )
+  {
+    return 0;
+  }
+
+  if ( wkbType == QGis::WKBLineString25D )
+  {
+    locateAlongWkbString( ptr, resultGeom, measure );
+  }
+  else if ( wkbType == QGis::WKBMultiLineString25D )
+  {
+    int* nLines = ( int* )ptr;
+    ptr += sizeof( int );
+    for ( int i = 0; i < *nLines; ++i )
+    {
+      ptr += ( 1 + sizeof( wkbType ) );
+      ptr = locateAlongWkbString( ptr, resultGeom, measure );
+    }
+  }
+
+  if ( resultGeom.size() < 1 )
+  {
+    return 0;
+  }
+  return QgsGeometry::fromMultiPoint( resultGeom );
+}
+
+unsigned char* QgsGeometryAnalyzer::locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure )
+{
+  int* nPoints = ( int* ) ptr;
+  ptr += sizeof( int );
+  double prevx, prevy, prevz;
+  double *x, *y, *z;
+  QgsPolyline currentLine;
+
+  QgsPoint pt1, pt2;
+  bool measureInSegment; //true if measure is contained in the segment
+  bool secondPointClipped; //true if second point is != segment endpoint
+
+
+  for ( int i = 0; i < *nPoints; ++i )
+  {
+    x = ( double* )ptr;
+    ptr += sizeof( double );
+    y = ( double* )ptr;
+    ptr += sizeof( double );
+    z = ( double* ) ptr;
+    ptr += sizeof( double );
+
+    if ( i > 0 )
+    {
+      measureInSegment = clipSegmentByRange( prevx, prevy, prevz, *x, *y, *z, fromMeasure, toMeasure, pt1, pt2, secondPointClipped );
+      if ( measureInSegment )
+      {
+        if ( currentLine.size() < 1 ) //no points collected yet, so the first point needs to be added to the line
+        {
+          currentLine.append( pt1 );
+        }
+
+        if ( pt1 != pt2 ) //avoid duplicated entry if measure value equals m-value of vertex
+        {
+          currentLine.append( pt2 );
+        }
+
+        if ( secondPointClipped || i == *nPoints - 1 ) //close current segment
+        {
+          if ( currentLine.size() > 1 )
+          {
+            result.append( currentLine );
+          }
+          currentLine.clear();
+        }
+      }
+    }
+    prevx = *x; prevy = *y; prevz = *z;
+  }
+  return ptr;
+}
+
+unsigned char* QgsGeometryAnalyzer::locateAlongWkbString( unsigned char* ptr, QgsMultiPoint& result, double measure )
+{
+  int* nPoints = ( int* ) ptr;
+  ptr += sizeof( int );
+  double prevx, prevy, prevz;
+  double *x, *y, *z;
+
+  QgsPoint pt1, pt2;
+  bool pt1Ok, pt2Ok;
+
+  for ( int i = 0; i < *nPoints; ++i )
+  {
+    x = ( double* )ptr;
+    ptr += sizeof( double );
+    y = ( double* )ptr;
+    ptr += sizeof( double );
+    z = ( double* ) ptr;
+    ptr += sizeof( double );
+
+    if ( i > 0 )
+    {
+      locateAlongSegment( prevx, prevy, prevz, *x, *y, *z, measure, pt1Ok, pt1, pt2Ok, pt2 );
+      if ( pt1Ok )
+      {
+        result.append( pt1 );
+      }
+      if ( pt2Ok && ( i == ( *nPoints - 1 ) ) )
+      {
+        result.append( pt2 );
+      }
+    }
+    prevx = *x; prevy = *y; prevz = *z;
+  }
+  return ptr;
+}
+
+bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1,
+    QgsPoint& pt2, bool& secondPointClipped )
+{
+  bool reversed = m1 > m2;
+  double tmp;
+
+  //reverse m1, m2 if necessary (and consequently also x1,x2 / y1, y2)
+  if ( reversed )
+  {
+    tmp = m1;
+    m1 = m2;
+    m2 = tmp;
+
+    tmp = x1;
+    x1 = x2;
+    x2 = tmp;
+
+    tmp = y1;
+    y1 = y2;
+    y2 = tmp;
+  }
+
+  //reverse range1, range2 if necessary
+  if ( range1 > range2 )
+  {
+    tmp = range1;
+    range1 = range2;
+    range2 = tmp;
+  }
+
+  //segment completely outside of range
+  if ( m2 < range1 || m1 > range2 )
+  {
+    return false;
+  }
+
+  //segment completely inside of range
+  if ( m2 <= range2 && m1 >= range1 )
+  {
+    if ( reversed )
+    {
+      pt1.setX( x2 ); pt1.setY( y2 );
+      pt2.setX( x1 ); pt2.setY( y1 );
+    }
+    else
+    {
+      pt1.setX( x1 ); pt1.setY( y1 );
+      pt2.setX( x2 ); pt2.setY( y2 );
+    }
+    secondPointClipped = false;
+    return true;
+  }
+
+  //m1 inside and m2 not
+  if ( m1 >= range1 && m1 <= range2 )
+  {
+    pt1.setX( x1 ); pt1.setY( y1 );
+    double dist = ( range2 - m1 ) / ( m2 - m1 );
+    pt2.setX( x1 + ( x2 - x1 ) * dist );
+    pt2.setY( y1 + ( y2 - y1 ) * dist );
+    secondPointClipped = !reversed;
+  }
+
+  //m2 inside and m1 not
+  if ( m2 >= range1 && m2 <= range2 )
+  {
+    pt2.setX( x2 ); pt2.setY( y2 );
+    double dist = ( m2 - range1 ) / ( m2 - m1 );
+    pt1.setX( x2 - ( x2 - x1 ) * dist );
+    pt1.setY( y2 - ( y2 - y1 ) * dist );
+    secondPointClipped = reversed;
+  }
+
+  if ( reversed ) //switch p1 and p2
+  {
+    QgsPoint tmpPt = pt1;
+    pt1 = pt2;
+    pt2 = tmpPt;
+  }
+
+  return true;
+}
+
+void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool& pt1Ok, QgsPoint& pt1, bool& pt2Ok, QgsPoint& pt2 )
+{
+  bool reversed = false;
+  pt1Ok = false;
+  pt2Ok = false;
+
+  if ( m1 > m2 )
+  {
+    double tmp = m1;
+    m1 = m2;
+    m2 = tmp;
+    reversed = true;
+  }
+
+  //segment does not match
+  if ( measure < m1 || measure > m2 )
+  {
+    pt1Ok = false;
+    pt2Ok = false;
+    return;
+  }
+
+  //match with vertex1
+  if ( doubleNear( m1, measure ) )
+  {
+    if ( reversed )
+    {
+      pt2Ok = true;
+      pt2.setX( x2 ); pt2.setY( y2 );
+    }
+    else
+    {
+      pt1Ok = true;
+      pt1.setX( x1 ); pt1.setY( y1 );
+    }
+  }
+
+  //match with vertex2
+  if ( doubleNear( m2, measure ) )
+  {
+    if ( reversed )
+    {
+      pt1Ok = true;
+      pt1.setX( x1 ); pt1.setY( y1 );
+    }
+    else
+    {
+      pt2Ok = true;
+      pt2.setX( x2 ); pt2.setY( y2 );
+    }
+  }
+
+
+  if ( pt1Ok || pt2Ok )
+  {
+    return;
+  }
+
+  //match between the vertices
+  if ( doubleNear( m1, m2 ) )
+  {
+    pt1.setX( x1 );
+    pt1.setY( y1 );
+    pt1Ok = true;
+    return;
+  }
+  double dist = ( measure - m1 ) / ( m2 - m1 );
+  if ( reversed )
+  {
+    dist = 1 - dist;
+  }
+
+  pt1.setX( x1 + dist * ( x2 - x1 ) );
+  pt1.setY( y1 + dist * ( y2 - y1 ) );
+  pt1Ok = true;
+}
