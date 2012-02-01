@@ -3324,6 +3324,9 @@ bool QgsVectorLayer::addAttribute( const QgsField &field )
   if ( !isEditable() )
     return false;
 
+  if ( field.name().isEmpty() )
+    return false;
+
   for ( QgsFieldMap::const_iterator it = mUpdatedFields.begin(); it != mUpdatedFields.end(); it++ )
   {
     if ( it.value().name() == field.name() )
