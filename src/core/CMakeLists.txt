@@ -164,6 +164,7 @@ SET(QGIS_CORE_SRCS
   raster/qgsrastershader.cpp
   raster/qgsrastershaderfunction.cpp
 
+  raster/qgsrasterrendererregistry.cpp
   raster/qgsrasterrenderer.cpp
   raster/qgsbilinearrasterresampler.cpp
   raster/qgscubicrasterresampler.cpp
