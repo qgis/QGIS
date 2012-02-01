@@ -409,6 +409,11 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
   QString helpContents;
   QFile file( fullHelpPath );
   // check to see if the localized version exists
+
+  QString missingError = tr("<h3>Opps! QGIS can't find help for this function.</h3>"
+                            "The help file for %1 was not found for your language<br>"
+                            "If you would like to create it, contact the QGIS development team"
+                            ).arg( functionName->text() );
   if ( !file.exists() )
   {
     // change the file name to the en_US version (default)
@@ -419,14 +424,14 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
     // translate this for us message
     if ( !lang.contains( "en_" ) )
     {
-      helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS development team." ).arg( lang ) + "</i><hr />";
+      helpContents = missingError;
     }
 
   }
+
   if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
   {
-    helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
-                   .arg( fullHelpPath );
+    helpContents = missingError;
   }
   else
   {
@@ -438,6 +443,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
       helpContents += line;
     }
   }
+
   file.close();
 
   // Set the browser text to the help contents
