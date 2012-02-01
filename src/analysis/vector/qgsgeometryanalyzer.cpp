@@ -949,8 +949,29 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   QgsFeature lineFeature;
   double measure1, measure2;
 
+  int nEventFeatures = eventLayer->pendingFeatureCount();
+  int featureCounter = 0;
+  if( p )
+  {
+    p->setWindowModality(Qt::WindowModal);
+    p->setMinimum( 0 );
+    p->setMaximum( nEventFeatures );
+    p->show();
+  }
+
   while ( eventLayer->nextFeature( fet ) )
   {
+    //update progress dialog
+    if( p )
+    {
+      if( p->wasCanceled() )
+      {
+        break;
+      }
+      p->setValue( featureCounter );
+      ++featureCounter;
+    }
+
     measure1 = fet.attributeMap()[locationField1].toDouble();
     if ( locationField2 != -1 )
     {
@@ -988,42 +1009,11 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
         }
       }
     }
-#if 0
-    //get corresponding line feature
-    QHash< QString, QgsFeatureId >::const_iterator layerIdIt = lineLayerIdMap.find( fet.attributeMap()[eventField].toString() );
-    if ( layerIdIt == lineLayerIdMap.constEnd() )
-    {
-      continue;
-    }
-    if ( !lineLayer->featureAtId( *layerIdIt, lineFeature, true, false ) )
-    {
-      continue;
-    }
+  }
 
-    measure1 = fet.attributeMap()[locationField1].toDouble();
-    if ( locationField2 == -1 )
-    {
-      lrsGeom = locateAlongMeasure( measure1, lineFeature.geometry() );
-    }
-    else
-    {
-      measure2 = fet.attributeMap()[locationField2].toDouble();
-      lrsGeom = locateBetweenMeasures( measure1, measure2, lineFeature.geometry() );
-    }
-
-    if ( lrsGeom )
-    {
-      fet.setGeometry( lrsGeom );
-      if ( memoryProvider )
-      {
-        memoryProvider->addFeatures( QgsFeatureList() << fet );
-      }
-      else
-      {
-        fileWriter->addFeature( fet );
-      }
-    }
-#endif //0
+  if( p )
+  {
+    p->setValue( nEventFeatures );
   }
 
   return true;
