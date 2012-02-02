@@ -17,6 +17,7 @@
 #include "qgsgeometry.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaprenderer.h"
+#include "qgscoordinatetransform.h"
 #include "qgsvectorlayer.h"
 #include <QPainter>
 
@@ -30,6 +31,11 @@ QgsHighlight::QgsHighlight( QgsMapCanvas* mapCanvas, QgsGeometry *geom, QgsVecto
     , mLayer( layer )
 {
   mGeometry = geom ? new QgsGeometry( *geom ) : 0;
+  if ( mapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+  {
+    QgsCoordinateTransform transform( mLayer->crs(), mapCanvas->mapRenderer()->destinationCrs() );
+    mGeometry->transform( transform );
+  }
   updateRect();
   update();
   setColor( QColor( Qt::lightGray ) );
