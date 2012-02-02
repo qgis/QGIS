@@ -13,7 +13,7 @@ public:
 	/**Unregisters connection. The registry does no longer own the connection*/
 	void unregisterConnection(QgsGPSConnection* c);
 
-	QList<const QgsGPSConnection*> connectionList() const;
+	QList< QgsGPSConnection *> connectionList() const;
 
 protected:
 	QgsGPSConnectionRegistry();
