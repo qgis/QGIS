@@ -3462,6 +3462,10 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
 
     if ( error == QgsVectorFileWriter::NoError )
     {
+      if ( dialog->addToCanvas() )
+      {
+        addVectorLayers( QStringList( vectorFilename ), encoding, "file" );
+      }
       QMessageBox::information( 0, tr( "Saving done" ), tr( "Export to vector file has been completed" ) );
     }
     else

@@ -167,3 +167,8 @@ bool QgsVectorLayerSaveAsDialog::skipAttributeCreation() const
 {
   return mSkipAttributeCreation->isChecked();
 }
+
+bool QgsVectorLayerSaveAsDialog::addToCanvas() const
+{
+  return mAddToCanvas->isChecked();
+}
