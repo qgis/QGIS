@@ -143,6 +143,13 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0" colspan="2">
+       <widget class="QCheckBox" name="mAddToCanvas">
+        <property name="text">
+         <string>Add save file to map</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
