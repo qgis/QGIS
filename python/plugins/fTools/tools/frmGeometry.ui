@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>390</width>
-    <height>296</height>
+    <height>331</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -63,7 +63,14 @@
    <item row="5" column="0" colspan="2">
     <layout class="QVBoxLayout">
      <item>
-      <widget class="QLabel" name="label_2">
+      <widget class="QCheckBox" name="chkWriteShapefile">
+       <property name="text">
+        <string>Save to new shapefile</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="lblOutputShapefile">
        <property name="text">
         <string>Output point shapefile</string>
        </property>

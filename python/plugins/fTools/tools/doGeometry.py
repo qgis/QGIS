@@ -48,6 +48,9 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     QObject.connect( self.toolOut, SIGNAL( "clicked()" ), self.outFile )
     if self.myFunction == 1:
       QObject.connect( self.inShape, SIGNAL( "currentIndexChanged( QString )" ), self.update )
+    elif self.myFunction == 5:
+      QObject.connect( self.chkWriteShapefile, SIGNAL( "stateChanged( int )" ), self.updateGui )
+      self.updateGui()
     self.manageGui()
     self.success = False
     self.cancel_close = self.buttonBox_2.button( QDialogButtonBox.Close )
@@ -67,7 +70,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     if self.inShape.currentText() == "":
       QMessageBox.information( self, self.tr( "Geometry" ),
                                self.tr( "Please specify input vector layer" ) )
-    elif self.outShape.text() == "":
+    elif self.outShape.text() == "" and self.myFunction != 5:
       QMessageBox.information( self, self.tr( "Geometry" ),
                                self.tr( "Please specify output shapefile" ) )
     elif self.lineEdit.isVisible() and self.lineEdit.value() < 0.00:
@@ -80,7 +83,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       self.outShape.clear()
       self.geometry( self.inShape.currentText(), self.lineEdit.value(), self.cmbField.currentText() )
 
-  def outFile(self):
+  def outFile( self ):
     self.outShape.clear()
     (self.shapefileName, self.encoding) = ftools_utils.saveDialog( self )
     if self.shapefileName is None or self.encoding is None:
@@ -93,31 +96,33 @@ class GeometryDialog( QDialog, Ui_Dialog ):
 
     self.lblCalcType.setVisible( False )
     self.cmbCalcType.setVisible( False )
+
+    self.chkWriteShapefile.setVisible( False )
     if self.myFunction == 1: # Singleparts to multipart
       self.setWindowTitle( self.tr( "Singleparts to multipart" ) )
       self.lineEdit.setVisible( False )
       self.label.setVisible( False )
-      self.label_2.setText( self.tr( "Output shapefile" ) )
+      self.lblOutputShapefile.setText( self.tr( "Output shapefile" ) )
       self.cmbField.setVisible( True )
       self.lblField.setVisible( True )
     elif self.myFunction == 2: # Multipart to singleparts
       self.setWindowTitle( self.tr( "Multipart to singleparts" ) )
       self.lineEdit.setVisible( False )
       self.label.setVisible( False )
-      self.label_2.setText( self.tr( "Output shapefile" ) )
+      self.lblOutputShapefile.setText( self.tr( "Output shapefile" ) )
     elif self.myFunction == 3: # Extract nodes
       self.setWindowTitle( self.tr( "Extract nodes" ) )
       self.lineEdit.setVisible( False )
       self.label.setVisible( False )
     elif self.myFunction == 4: # Polygons to lines
       self.setWindowTitle( self.tr(  "Polygons to lines" ) )
-      self.label_2.setText( self.tr( "Output shapefile" ) )
+      self.lblOutputShapefile.setText( self.tr( "Output shapefile" ) )
       self.label_3.setText( self.tr( "Input polygon vector layer" ) )
       self.label.setVisible( False )
       self.lineEdit.setVisible( False )
     elif self.myFunction == 5: # Export/Add geometry columns
       self.setWindowTitle( self.tr(  "Export/Add geometry columns" ) )
-      self.label_2.setText( self.tr( "Output shapefile" ) )
+      self.lblOutputShapefile.setText( self.tr( "Output shapefile" ) )
       self.label_3.setText( self.tr( "Input vector layer" ) )
       self.label.setVisible( False )
       self.lineEdit.setVisible( False )
@@ -127,9 +132,13 @@ class GeometryDialog( QDialog, Ui_Dialog ):
       self.cmbCalcType.addItem( self.tr( "Layer CRS" ) )
       self.cmbCalcType.addItem( self.tr( "Project CRS" ) )
       self.cmbCalcType.addItem( self.tr( "Ellipsoid" ) )
+
+      self.chkWriteShapefile.setVisible( True )
+      self.chkWriteShapefile.setChecked( False )
+      self.lblOutputShapefile.setVisible( False )
     elif self.myFunction == 7: # Polygon centroids
       self.setWindowTitle( self.tr( "Polygon centroids" ) )
-      self.label_2.setText( self.tr( "Output point shapefile" ) )
+      self.lblOutputShapefile.setText( self.tr( "Output point shapefile" ) )
       self.label_3.setText( self.tr( "Input polygon vector layer" ) )
       self.label.setVisible( False )
       self.lineEdit.setVisible( False )
@@ -149,7 +158,7 @@ class GeometryDialog( QDialog, Ui_Dialog ):
         self.lineEdit.setValue( 0 )
       elif self.myFunction == 11: #Lines to polygons
         self.setWindowTitle( self.tr(  "Lines to polygons" ) )
-        self.label_2.setText( self.tr( "Output shapefile" ) )
+        self.lblOutputShapefile.setText( self.tr( "Output shapefile" ) )
         self.label_3.setText( self.tr( "Input line vector layer" ) )
         self.label.setVisible( False )
         self.lineEdit.setVisible( False )
@@ -158,9 +167,17 @@ class GeometryDialog( QDialog, Ui_Dialog ):
         self.label_3.setText( self.tr( "Input layer" ) )
         self.label.setVisible( False )
         self.lineEdit.setVisible( False )
-      self.label_2.setText( self.tr( "Output polygon shapefile" ) )
+      self.lblOutputShapefile.setText( self.tr( "Output polygon shapefile" ) )
     self.resize( 381, 100 )
     self.populateLayers()
+
+  def updateGui( self ):
+    if self.chkWriteShapefile.isChecked():
+      self.lineEdit.setEnabled( True )
+      self.toolOut.setEnabled( True )
+    else:
+      self.lineEdit.setEnabled( False )
+      self.toolOut.setEnabled( False )
 
   def populateLayers( self ):
     self.inShape.clear()
@@ -196,15 +213,23 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     else:
       vlayer = ftools_utils.getVectorLayerByName( myLayer )
     error = False
-    check = QFile( self.shapefileName )
-    if check.exists():
-      if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
-        QMessageBox.warning( self, self.tr( "Geometry"),
-                             self.tr( "Unable to delete existing shapefile." ) )
-        return
+
+    if ( self.myFunction == 5 and self.chkWriteShapefile.isChecked() ) or self.myFunction != 5:
+      check = QFile( self.shapefileName )
+      if check.exists():
+        if not QgsVectorFileWriter.deleteShapeFile( self.shapefileName ):
+          QMessageBox.warning( self, self.tr( "Geometry"),
+                               self.tr( "Unable to delete existing shapefile." ) )
+          return
+
+    if self.myFunction == 5 and not self.chkWriteShapefile.isChecked():
+      self.shapefileName = None
+      self.encoding = None
+
     self.buttonOk.setEnabled( False )
-    self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction, vlayer, myParam,
-                                      myField, self.shapefileName, self.encoding, self.cmbCalcType.currentIndex() )
+    self.testThread = geometryThread( self.iface.mainWindow(), self, self.myFunction,
+                                      vlayer, myParam, myField, self.shapefileName, self.encoding,
+                                      self.cmbCalcType.currentIndex(), self.chkWriteShapefile.isChecked() )
     QObject.connect( self.testThread, SIGNAL( "runFinished( PyQt_PyObject )" ), self.runFinishedFromThread )
     QObject.connect( self.testThread, SIGNAL( "runStatus( PyQt_PyObject )" ), self.runStatusFromThread )
     QObject.connect( self.testThread, SIGNAL( "runRange( PyQt_PyObject )" ), self.runRangeFromThread )
@@ -234,20 +259,24 @@ class GeometryDialog( QDialog, Ui_Dialog ):
                              self.tr( "Unable to delete incomplete shapefile." ) )
     else:
       if success == "valid_error":
-        extra = self.tr("One or more features in the output layer may have invalid "
-                      + "geometry, please check using the check validity tool\n")
+        extra = self.tr( "One or more features in the output layer may have invalid "
+                         + "geometry, please check using the check validity tool\n" )
         success = True
       self.cancel_close.setText( "Close" )
       QObject.disconnect( self.cancel_close, SIGNAL( "clicked()" ), self.cancelThread )
       if success:
-        addToTOC = QMessageBox.question( self, self.tr("Geometry"),
-                     self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
-                     QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
-        if addToTOC == QMessageBox.Yes:
-          if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
-            QMessageBox.warning( self, self.tr( "Geometry"),
-                                 self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ) )
-          self.populateLayers()
+        if ( self.myFunction == 5 and self.chkWriteShapefile.isChecked() ) or self.myFunction != 5:
+          addToTOC = QMessageBox.question( self, self.tr("Geometry"),
+                       self.tr( "Created output shapefile:\n%1\n%2\n\nWould you like to add the new layer to the TOC?" ).arg( unicode( self.shapefileName ) ).arg( extra ),
+                       QMessageBox.Yes, QMessageBox.No, QMessageBox.NoButton )
+          if addToTOC == QMessageBox.Yes:
+            if not ftools_utils.addShapeToCanvas( unicode( self.shapefileName ) ):
+              QMessageBox.warning( self, self.tr( "Geometry"),
+                                   self.tr( "Error loading output shapefile:\n%1" ).arg( unicode( self.shapefileName ) ) )
+            self.populateLayers()
+        else:
+          QMessageBox.information( self, self.tr( "Geometry" ),
+                                   self.tr( "Layer '%1' updated" ).arg( self.inShape.currentText() ) )
       else:
         QMessageBox.warning( self, self.tr( "Geometry" ), self.tr( "Error writing output shapefile." ) )
 
@@ -258,7 +287,8 @@ class GeometryDialog( QDialog, Ui_Dialog ):
     self.progressBar.setRange( range_vals[ 0 ], range_vals[ 1 ] )
 
 class geometryThread( QThread ):
-  def __init__( self, parentThread, parentObject, function, vlayer, myParam, myField, myName, myEncoding, myCalcType ):
+  def __init__( self, parentThread, parentObject, function, vlayer, myParam,
+                myField, myName, myEncoding, myCalcType, myNewShape ):
     QThread.__init__( self, parentThread )
     self.parent = parentObject
     self.running = False
@@ -269,6 +299,7 @@ class geometryThread( QThread ):
     self.myName = myName
     self.myEncoding = myEncoding
     self.myCalcType = myCalcType
+    self.writeShape = myNewShape
 
   def run( self ):
     self.running = True
@@ -477,52 +508,98 @@ class geometryThread( QThread ):
     return True
 
   def export_geometry_info( self ):
-    vprovider = self.vlayer.dataProvider()
-    allAttrs = vprovider.attributeIndexes()
-    vprovider.select( allAttrs )
-    ( fields, index1, index2 ) = self.checkGeometryFields( self.vlayer )
-    writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
-                                  vprovider.geometryType(), vprovider.crs() )
-    inFeat = QgsFeature()
-    outFeat = QgsFeature()
-    inGeom = QgsGeometry()
-    nFeat = vprovider.featureCount()
-    nElement = 0
+    if self.writeShape:
+      vprovider = self.vlayer.dataProvider()
+      allAttrs = vprovider.attributeIndexes()
+      vprovider.select( allAttrs )
+      ( fields, index1, index2 ) = self.checkGeometryFields( self.vlayer )
+      writer = QgsVectorFileWriter( self.myName, self.myEncoding, fields,
+                                    vprovider.geometryType(), vprovider.crs() )
+      inFeat = QgsFeature()
+      outFeat = QgsFeature()
+      inGeom = QgsGeometry()
+      nFeat = vprovider.featureCount()
+      nElement = 0
 
-    # calculate with:
-    # 0 - layer CRS
-    # 1 - project CRS
-    # 2 - ellipsoidal
-    ellips = None
-    crs = None
-    coordTransform = None
-    if self.myCalcType == 2:
-      settings = QSettings()
-      ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
-      crs = self.parent.iface.mapCanvas().mapRenderer().destinationCrs().srsid()
-    elif self.myCalcType == 1:
-      mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
-      layCRS = self.vlayer.crs()
-      coordTransform = QgsCoordinateTransform( layCRS, mapCRS )
+      # calculate with:
+      # 0 - layer CRS
+      # 1 - project CRS
+      # 2 - ellipsoidal
+      ellips = None
+      crs = None
+      coordTransform = None
+      if self.myCalcType == 2:
+        settings = QSettings()
+        ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
+        crs = self.parent.iface.mapCanvas().mapRenderer().destinationCrs().srsid()
+      elif self.myCalcType == 1:
+        mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
+        layCRS = self.vlayer.crs()
+        coordTransform = QgsCoordinateTransform( layCRS, mapCRS )
 
-    self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
-    self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
-    while vprovider.nextFeature(inFeat):
-      self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
-      nElement += 1
-      inGeom = inFeat.geometry()
+      self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
+      self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
+      while vprovider.nextFeature(inFeat):
+        self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
+        nElement += 1
+        inGeom = inFeat.geometry()
 
-      if self.myCalcType == 1:
-        inGeom.transform( coordTransform )
-      ( attr1, attr2 ) = self.simpleMeasure( inGeom, self.myCalcType, ellips, crs )
+        if self.myCalcType == 1:
+          inGeom.transform( coordTransform )
+        ( attr1, attr2 ) = self.simpleMeasure( inGeom, self.myCalcType, ellips, crs )
 
-      outFeat.setGeometry( inGeom )
-      atMap = inFeat.attributeMap()
-      outFeat.setAttributeMap( atMap )
-      outFeat.addAttribute( index1, QVariant( attr1 ) )
-      outFeat.addAttribute( index2, QVariant( attr2 ) )
-      writer.addFeature( outFeat )
-    del writer
+        outFeat.setGeometry( inGeom )
+        atMap = inFeat.attributeMap()
+        outFeat.setAttributeMap( atMap )
+        outFeat.addAttribute( index1, QVariant( attr1 ) )
+        outFeat.addAttribute( index2, QVariant( attr2 ) )
+        writer.addFeature( outFeat )
+      del writer
+      return True
+    else: # update existing file
+      newFields = []
+      vprovider = self.vlayer.dataProvider()
+      geomType = self.vlayer.geometryType()
+      ( index1, index2 ) = self.findOrCreateFields()
+
+      inFeat = QgsFeature()
+      inGeom = QgsGeometry()
+      nFeat = vprovider.featureCount()
+      nElement = 0
+
+      # calculate with:
+      # 0 - layer CRS
+      # 1 - project CRS
+      # 2 - ellipsoidal
+      ellips = None
+      crs = None
+      coordTransform = None
+      if self.myCalcType == 2:
+        settings = QSettings()
+        ellips = settings.value( "/qgis/measure/ellipsoid", "WGS84" ).toString()
+        crs = self.parent.iface.mapCanvas().mapRenderer().destinationCrs().srsid()
+      elif self.myCalcType == 1:
+        mapCRS = self.parent.iface.mapCanvas().mapRenderer().destinationCrs()
+        layCRS = self.vlayer.crs()
+        coordTransform = QgsCoordinateTransform( layCRS, mapCRS )
+
+      self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ), 0)
+      self.emit( SIGNAL( "runRange( PyQt_PyObject )" ), ( 0, nFeat ) )
+
+      while vprovider.nextFeature(inFeat):
+        self.emit( SIGNAL( "runStatus( PyQt_PyObject )" ),  nElement )
+        nElement += 1
+        inGeom = inFeat.geometry()
+
+        if self.myCalcType == 1:
+          inGeom.transform( coordTransform )
+        ( attr1, attr2 ) = self.simpleMeasure( inGeom, self.myCalcType, ellips, crs )
+
+        changeMap = {}
+        changeAttributeMap = { index1 : QVariant( attr1 ),
+                               index2 : QVariant( attr2 ) }
+        changeMap[ inFeat.id() ] = changeAttributeMap
+        vprovider.changeAttributeValues( changeMap )
     return True
 
   def polygon_centroids( self ):
@@ -854,21 +931,18 @@ class geometryThread( QThread ):
     for i in fieldList.keys():
       nameList.append( fieldList[ i ].name().toLower() )
     if geomType == QGis.Polygon:
-      plp = "Poly"
       ( found, index1 ) = self.checkForField( nameList, "AREA" )
-
       if not found:
         field = QgsField( "AREA", QVariant.Double, "double", 21, 6, self.tr( "Polygon area" ) )
         index1 = len( fieldList.keys() )
         fieldList[ index1 ] = field
-      ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
 
+      ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
       if not found:
         field = QgsField( "PERIMETER", QVariant.Double, "double", 21, 6, self.tr( "Polygon perimeter" ) )
         index2 = len( fieldList.keys() )
         fieldList[ index2 ] = field
     elif geomType == QGis.Line:
-      plp = "Line"
       ( found, index1 ) = self.checkForField( nameList, "LENGTH" )
       if not found:
         field = QgsField( "LENGTH", QVariant.Double, "double", 21, 6, self.tr( "Line length" ) )
@@ -876,18 +950,64 @@ class geometryThread( QThread ):
         fieldList[ index1 ] = field
       index2 = index1
     else:
-      plp = "Point"
       ( found, index1 ) = self.checkForField( nameList, "XCOORD" )
       if not found:
         field = QgsField( "XCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point x coordinate" ) )
         index1 = len( fieldList.keys() )
         fieldList[ index1 ] = field
+
       ( found, index2 ) = self.checkForField( nameList, "YCOORD" )
       if not found:
         field = QgsField( "YCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point y coordinate" ) )
         index2 = len( fieldList.keys() )
         fieldList[ index2 ] = field
     return ( fieldList, index1, index2 )
+
+  def findOrCreateFields( self ):
+    vprovider = self.vlayer.dataProvider()
+    fieldList = vprovider.fields()
+    geomType = self.vlayer.geometryType()
+    newFields = []
+    nameList = []
+
+    for i in fieldList.keys():
+      nameList.append( fieldList[ i ].name().toLower() )
+
+    if geomType == QGis.Polygon:
+      ( found, index1 ) = self.checkForField( nameList, "AREA" )
+      if not found:
+        field = QgsField( "AREA", QVariant.Double, "double", 21, 6, self.tr( "Polygon area" ) )
+        index1 = len( fieldList.keys() )
+        newFields.append( field )
+
+      ( found, index2 ) = self.checkForField( nameList, "PERIMETER" )
+      if not found:
+        field = QgsField( "PERIMETER", QVariant.Double, "double", 21, 6, self.tr( "Polygon perimeter" ) )
+        index2 = len( fieldList.keys() ) + 1
+        newFields.append( field )
+    elif geomType == QGis.Line:
+      ( found, index1 ) = self.checkForField( nameList, "LENGTH" )
+      if not found:
+        field = QgsField( "LENGTH", QVariant.Double, "double", 21, 6, self.tr( "Line length" ) )
+        index1 = len( fieldList.keys() )
+        newFields.append( field )
+      index2 = index1
+    else:
+      ( found, index1 ) = self.checkForField( nameList, "XCOORD" )
+      if not found:
+        field = QgsField( "XCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point x coordinate" ) )
+        index1 = len( fieldList.keys() )
+        newFields.append( field )
+
+      ( found, index2 ) = self.checkForField( nameList, "YCOORD" )
+      if not found:
+        field = QgsField( "YCOORD", QVariant.Double, "double", 21, 6, self.tr( "Point y coordinate" ) )
+        index2 = len( fieldList.keys() ) + 1
+        newFields.append( field )
+
+    vprovider.addAttributes( newFields )
+    self.vlayer.updateFieldMap()
+    return ( index1, index2 )
 
   def extractAsLine( self, geom ):
     multi_geom = QgsGeometry()
