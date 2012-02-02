@@ -1219,40 +1219,41 @@ yang mana telah dikurangi menjadi %2 vertek setelah penyederhanaan</translation>
     <name>GdalTools</name>
     <message>
         <source>The process failed to start. Either the invoked program is missing, or you may have insufficient permissions to invoke the program.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proses gagal untuk dimulai. baik karena permintaan program tidak ada, atau mungkin anda tidak memiliki cukup izin untuk meminta program tersebut.</translation>
     </message>
     <message>
         <source>The process crashed some time after starting successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proses gagal sesaat setelah berhasil dimulai.</translation>
     </message>
     <message>
         <source>An unknown error occurred.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan yang muncul tidak diketahui.</translation>
     </message>
     <message>
         <source>The selected file is not a supported OGR format</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip yang dipilih bukan merupakan format OGR yang didukung</translation>
     </message>
     <message>
         <source>Quantum GIS version detected: </source>
-        <translation type="unfinished"></translation>
+        <translation>Versi Quantuk GIS terdeteksi:</translation>
     </message>
     <message>
         <source>This version of Gdal Tools requires at least QGIS version 1.0.0
 Plugin will not be enabled.</source>
-        <translation type="unfinished"></translation>
+        <translation>Versi Peralatan Gdal ini membutuhkan paling tidak QGIS versi 1.0.0
+Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Builds a VRT from a list of datasets</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun VRT dari daftar dataset</translation>
     </message>
     <message>
         <source>Contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontur</translation>
     </message>
     <message>
         <source>Builds vector contour lines from a DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun vektor garis kontur dari DEM</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
@@ -1260,35 +1261,35 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat lapisan fitur poligon dari sebuah raster</translation>
     </message>
     <message>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Gabung</translation>
     </message>
     <message>
         <source>Build a quick mosaic from a set of images</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat mosaik cepat dari beberapa gambar</translation>
     </message>
     <message>
         <source>Sieve</source>
-        <translation type="unfinished"></translation>
+        <translation>Saring</translation>
     </message>
     <message>
         <source>Removes small raster polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus poligon raster yang kecil</translation>
     </message>
     <message>
         <source>Produces a raster proximity map</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat peta kedekatan raster</translation>
     </message>
     <message>
         <source>Near black</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendekati hitam</translation>
     </message>
     <message>
         <source>Convert nearly black/white borders to exact value</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi batas mendekati hitam/putih ke nilai yang tepat</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
@@ -1300,39 +1301,39 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi data raster antara beberapa format</translation>
     </message>
     <message>
         <source>Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi</translation>
     </message>
     <message>
         <source>Lists information about raster dataset</source>
-        <translation type="unfinished"></translation>
+        <translation>Daftar informasi tentang dataset raster</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Menetapkan proyeksi</translation>
     </message>
     <message>
         <source>Add projection info to the raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan informasi proyeksi ke raster</translation>
     </message>
     <message>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun Raster virtual (Katalog)</translation>
     </message>
     <message>
         <source>Rasterize (Vector to raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterkan (Vektor ke raster)</translation>
     </message>
     <message>
         <source>Polygonize (Raster to vector)</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligonkan (Raster ke poligon)</translation>
     </message>
     <message>
         <source>Proximity (Raster distance)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kedekatan (Jarak raster)</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
@@ -1340,39 +1341,39 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid (Interpolasi)</translation>
     </message>
     <message>
         <source>Translate (Convert format)</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjemahkan (konversi format)</translation>
     </message>
     <message>
         <source>Build overviews (Pyramids)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun pratinjau (Pyramid)</translation>
     </message>
     <message>
         <source>Builds or rebuilds overview images</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun atau bangun kembali pratinjau gambar</translation>
     </message>
     <message>
         <source>Clipper</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemotong</translation>
     </message>
     <message>
         <source>RGB to PCT</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB ke PCT</translation>
     </message>
     <message>
         <source>Convert a 24bit RGB image to 8bit paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi gambar RGB 24bit ke palet 8bit</translation>
     </message>
     <message>
         <source>PCT to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>PCT to RGB</translation>
     </message>
     <message>
         <source>Convert an 8bit paletted image to 24bit RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi palet gambar 8bit ke 24bit RGB</translation>
     </message>
     <message>
         <source>Tile index</source>
@@ -1380,39 +1381,39 @@ Plugin will not be enabled.</source>
     </message>
     <message>
         <source>Build a shapefile as a raster tileindex</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Bangun shapefile sebagai tile indeks raster</translation>
     </message>
     <message>
         <source>DEM (Terrain models)</source>
-        <translation type="unfinished"></translation>
+        <translation>DEM (Model daratan)</translation>
     </message>
     <message>
         <source>Tool to analyze and visualize DEMs</source>
-        <translation type="unfinished"></translation>
+        <translation>Peralatan untuk menganalisa dan menampilkan DEM</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan GdalTools</translation>
     </message>
     <message>
         <source>Various settings for Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Beberapa pengaturan untuk GdalTools</translation>
     </message>
     <message>
         <source>About GdalTools</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentang GdalTools</translation>
     </message>
     <message>
         <source>Displays information about Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan informasi tentang GdalTools</translation>
     </message>
     <message>
         <source>&amp;Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Direktori &amp;Input</translation>
     </message>
     <message>
         <source>&amp;Output directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Direktori &amp;Output</translation>
     </message>
 </context>
 <context>
@@ -1420,17 +1421,17 @@ Plugin will not be enabled.</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="14"/>
         <source>About Gdal Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>tentang GdalTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="27"/>
         <source>GDAL Tools</source>
-        <translation type="unfinished"></translation>
+        <translation>GdalTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="40"/>
         <source>Version x.x-xxxxxx</source>
-        <translation type="unfinished"></translation>
+        <translation>Versi x -xxxxxx</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="99"/>
@@ -1439,22 +1440,23 @@ Plugin will not be enabled.</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="115"/>
         <source>Web</source>
-        <translation type="unfinished"></translation>
+        <translation>Web</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogAbout.ui" line="122"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutup</translation>
     </message>
     <message>
         <source>
 (using GDAL v. %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>
+(Menggunakan GDAL v. %1)</translation>
     </message>
     <message>
         <source>GDAL Tools (AKA Raster Tools) is a plugin for QuantumGIS aiming at making life simpler for users of GDAL Utilities, providing a simplified graphical interface for most commonly used programs.
@@ -1477,66 +1479,86 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>GdalTools (AKA RasterTools) merupakan plugin untuk Quantuk GIS yang betujuan untuk membuat hidup lebih mudah bagi pengguna GDAL, menyediakan antarmuka yang sederhana untuk program yang umumnya digunakan.
+
+Plugin ini dikembangkan oleh Faunia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
+Ikon by Robert Szczepanek
+Terima kasih telah disponsori oleh Silvio Grosso.
+
+Dimohon untuk membantu kami dengan mencoba peralatan ini, laporkan masalah yang muncul, menyempurnakan kode, atau dengan menyediakan bantuan dana.
+
+PENGEMBANG:
+  Faunalia
+    Paolo Cavallini
+    Giuseppe Sucameli
+    Lorenzo Masini
+  GIS-lab
+    Maxim Dubinin
+    Alexander Bruy
+Ikon oleh Robert Szepanek
+
+HOMEPAGE:
+http://trac.faunalia.it/GdalTools-plugin</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseBatchWidget</name>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Selesai</translation>
     </message>
     <message>
         <source>Operation completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Operasi selesai.</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <source>The following files were not created: 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip berikut tidak dapat dibuat:
+%1</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBaseDialog</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <source>The command is still running. 
 Do you want terminate it anyway?</source>
-        <translation type="unfinished"></translation>
+        <translation>Perintah masih tetap jalan. Apakah anda tetap ingin mengakhirinya?</translation>
     </message>
     <message>
         <source>Invalid parameters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Parameter tidak tepat.</translation>
     </message>
 </context>
 <context>
     <name>GdalToolsBasePluginWidget</name>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <source>No output file created.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada arsip keluaran yang dibuat.</translation>
     </message>
     <message>
         <source>Finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Selesai</translation>
     </message>
     <message>
         <source>Processing completed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Proses selesai.</translation>
     </message>
     <message>
         <source>%1 not created.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 tidak dibuat.</translation>
     </message>
 </context>
 <context>
@@ -1544,64 +1566,64 @@ Do you want terminate it anyway?</source>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogBase.ui" line="27"/>
         <source>&amp;Load into canvas when finished</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat ke dalam kanvas ketika selesai</translation>
     </message>
     <message>
         <source>Select the input file for Proximity</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pilih arsip masukan untuk kedekatan</translation>
     </message>
     <message>
         <source>Select the raster file to save the results to</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip raster untuk menyimpan hasilnya ke</translation>
     </message>
     <message>
         <source>Select the input file for Near Black</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pilih arsip masukan untuk mendekati hitam</translation>
     </message>
     <message>
         <source>Select the input file for Grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip masukna untk GRID</translation>
     </message>
     <message>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <source>Warning: CRS information for all raster in subfolders will be rewritten. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan: Informasi CRS untuk semua raster dalam subfolder akan ditulis kembali. Apakah anda yakin?</translation>
     </message>
     <message>
         <source>Select the file to analyse</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih file untuk di analisis</translation>
     </message>
     <message>
         <source>Select the input directory with files to Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input dengan arsip untuk menetapkan proyeksi</translation>
     </message>
     <message>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Menetapkan proyeksi</translation>
     </message>
     <message>
         <source>This raster already found in map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster ini telah ada dalam kanvas peta</translation>
     </message>
     <message>
         <source>Select the files for VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip untuk VRT</translation>
     </message>
     <message>
         <source>Select where to save the VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih dimana untuk menyimpan VRT</translation>
     </message>
     <message>
         <source>VRT (*.vrt)</source>
-        <translation type="unfinished"></translation>
+        <translation>VRT (*.vrt)</translation>
     </message>
     <message>
         <source>Select the input file for Warp</source>
@@ -1755,39 +1777,39 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="20"/>
         <source>Select the extent by drag on canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan extent dengan menyeret kursor pada kanvas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="27"/>
         <source>or change the extent coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>atau koordinat extent</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="37"/>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="47"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="63"/>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="70"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="77"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="87"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/extentSelector.ui" line="97"/>
         <source>Re-Enable</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktifkan Kembali</translation>
     </message>
 </context>
 <context>
@@ -1795,7 +1817,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/inOutSelector.ui" line="46"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih...</translation>
     </message>
 </context>
 <context>
@@ -1803,22 +1825,22 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="51"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="56"/>
         <source>Value</source>
-        <translation type="unfinished">Nilai</translation>
+        <translation>Nilai</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="66"/>
         <source>Add</source>
-        <translation type="unfinished">Tambah</translation>
+        <translation>Tambah</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/optionsTable.ui" line="73"/>
         <source>Remove</source>
-        <translation type="unfinished">Buang</translation>
+        <translation>Buang</translation>
     </message>
 </context>
 <context>
@@ -1826,12 +1848,12 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="14"/>
         <source>Gdal Tools settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan GdalTools</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="20"/>
         <source>Path to the GDAL binaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur ke Arsip binari GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="32"/>
@@ -1840,35 +1862,35 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="115"/>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="146"/>
         <source>Browse</source>
-        <translation type="unfinished">Navigasi</translation>
+        <translation>Navigasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="41"/>
         <source>GDAL help path</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur bantuan GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="65"/>
         <source>GDAL data path</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur data GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="96"/>
         <source>GDAL driver path</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur driver GDAL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/dialogSettings.ui" line="127"/>
         <source>GDAL pymod path</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur pymod GDAL</translation>
     </message>
     <message>
         <source>Select directory with GDAL executables</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori dengan arsip eksekusi GDAL</translation>
     </message>
     <message>
         <source>Select directory with the GDAL documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori dengan dokumentasi GDAL</translation>
     </message>
 </context>
 <context>
@@ -1879,23 +1901,23 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="74"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="102"/>
         <source>Select...</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih...</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="38"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="28"/>
         <source>&amp;Input files</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip Masukan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="20"/>
         <source>Build Virtual Raster (Catalog)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun Raster virtual (Katalog)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="31"/>
         <source>Choose input directory instead of files</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input bukan arsip</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="55"/>
@@ -1910,113 +1932,113 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="45"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="45"/>
         <source>&amp;Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip Keluaran</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="65"/>
         <source>&amp;Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Resolusi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="82"/>
         <source>Highest</source>
-        <translation type="unfinished"></translation>
+        <translation>Tertinggi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="87"/>
         <source>Average</source>
-        <translation type="unfinished">Rata-rata</translation>
+        <translation>Rata-rata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="92"/>
         <source>Lowest</source>
-        <translation type="unfinished"></translation>
+        <translation>Terendah</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="100"/>
         <source>&amp;Source No Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sumber Tidak ada data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="114"/>
         <source>Se&amp;parate</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Pisahkan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="20"/>
         <source>Clipper</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemotong</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="38"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="48"/>
         <source>&amp;No data value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai tidak ada data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="70"/>
         <source>Clipping mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus pemotongan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="76"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="801"/>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="86"/>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="126"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="181"/>
         <source>Mask layer</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Lapisan masking</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="87"/>
         <source>Grab pseudocolor table from the first image</source>
-        <translation type="unfinished"></translation>
+        <translation>Ambil tabel pseudocolor dari gambar pertama</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="20"/>
         <source>Contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Kontur</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetClipper.ui" line="52"/>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="28"/>
         <source>&amp;Input file (raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip masukan (Raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="38"/>
         <source>&amp;Output directory for contour lines (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>Direktori keluaran untuk garis kontur (Shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="48"/>
         <source>I&amp;nterval between contour lines</source>
-        <translation type="unfinished"></translation>
+        <translation>I&amp;nterval antara garis kontur</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="73"/>
         <source>&amp;Attribute name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama &amp;atribut</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="85"/>
         <source>If not provided, no elevation attribute is attached.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika tidak disediakan, tidak ada atribut elevasi yang dilampirkan.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetContour.ui" line="99"/>
         <source>ELEV</source>
-        <translation type="unfinished"></translation>
+        <translation>ELEV</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="20"/>
         <source>Convert RGB image to paletted</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi gambar RGB ke palet</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="26"/>
@@ -2038,57 +2060,57 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="28"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="35"/>
         <source>&amp;Input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip masukan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="55"/>
         <source>Number of colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah warna</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="82"/>
         <source>Band to convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita untuk dikonversi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="38"/>
         <source>&amp;Z Field</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Z Field</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="58"/>
         <source>&amp;Algorithm</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Algoritma</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="66"/>
         <source>Inverse distance to a power</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jarak terbalik ke pangkat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="71"/>
         <source>Moving average</source>
-        <translation type="unfinished"></translation>
+        <translation>Rata-rata perpindahan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="76"/>
         <source>Nearest neighbor</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetangga terdekat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="81"/>
         <source>Data metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Data metrik</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="107"/>
         <source>Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Pangkat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="127"/>
         <source>Smoothing</source>
-        <translation type="unfinished"></translation>
+        <translation>Haluskan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="153"/>
@@ -2096,7 +2118,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="455"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="602"/>
         <source>Radius1</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius1</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="179"/>
@@ -2104,7 +2126,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="478"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="628"/>
         <source>Radius2</source>
-        <translation type="unfinished"></translation>
+        <translation>Radius2</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="248"/>
@@ -2112,38 +2134,38 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="504"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="654"/>
         <source>Angle</source>
-        <translation type="unfinished">Sudut</translation>
+        <translation>Sudut</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="761"/>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="94"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="217"/>
         <source>Width</source>
-        <translation type="unfinished">Lebar</translation>
+        <translation>Lebar</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="781"/>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="114"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="237"/>
         <source>Height</source>
-        <translation type="unfinished">Tinggi</translation>
+        <translation>Tinggi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="205"/>
         <source>Max points</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik maksimum</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="20"/>
         <source>Grid (Interpolation)</source>
-        <translation type="unfinished"></translation>
+        <translation>GRID (Interpolasi)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="225"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="392"/>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="703"/>
         <source>Min points</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik minimum</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="274"/>
@@ -2152,37 +2174,37 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="677"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="141"/>
         <source>No data</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="570"/>
         <source>Metrics</source>
-        <translation type="unfinished"></translation>
+        <translation>Metrik</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="584"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation>Minimum</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="589"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="594"/>
         <source>Range</source>
-        <translation type="unfinished">Rentang</translation>
+        <translation>Rentang</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="20"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="43"/>
         <source>Raster info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi raster</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
@@ -2197,93 +2219,93 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
         <source>Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Gabung</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="70"/>
         <source>Layer stack</source>
-        <translation type="unfinished"></translation>
+        <translation>Susun lapisan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="80"/>
         <source>Use intersected extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan perpotongan extent</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="20"/>
         <source>DEM (Terrain models)</source>
-        <translation type="unfinished"></translation>
+        <translation>DEM (Model daratan)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="28"/>
         <source>&amp;Input file (DEM raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip masukan (DEM Raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="48"/>
         <source>&amp;Band</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="62"/>
         <source>Compute &amp;edges</source>
-        <translation type="unfinished"></translation>
+        <translation>Hitung tepi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="69"/>
         <source>&amp;Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Modus</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="89"/>
         <source>Hillshade</source>
-        <translation type="unfinished"></translation>
+        <translation>Hillshade</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="94"/>
         <source>Slope</source>
-        <translation type="unfinished"></translation>
+        <translation>Lereng</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="99"/>
         <source>Aspect</source>
-        <translation type="unfinished"></translation>
+        <translation>Aspect</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="104"/>
         <source>Color relief</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna relif</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="109"/>
         <source>TRI (Terrain Ruggedness Index)</source>
-        <translation type="unfinished"></translation>
+        <translation>TRI (Indeks Kekasaran Daratan)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="114"/>
         <source>TPI (Topographic Position Index)</source>
-        <translation type="unfinished"></translation>
+        <translation>TPI (Indeks Posisi Topografi)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="119"/>
         <source>Roughness</source>
-        <translation type="unfinished"></translation>
+        <translation>Kekasaran</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="127"/>
         <source>Use Zevenbergen&amp;&amp;Thorne formula (instead of the Horn&apos;s one)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan rumus Zevenbergen&amp;&amp;Thorne (bukan formula Horn)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="149"/>
         <source>Z factor (vertical exaggeration)</source>
-        <translation type="unfinished"></translation>
+        <translation>Faktor Z (vertikal)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="172"/>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="252"/>
         <source>Scale (ratio of vert. units to horiz.)</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala (Perbandingan satuan vertikal dengan horizontal)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="195"/>
@@ -2303,7 +2325,7 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="292"/>
         <source>Return trigonometric angle (instead of azimuth)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kembalikan ke sudut trigonometri (bukan azimut)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="299"/>
@@ -8831,7 +8853,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="114"/>
         <location filename="../src/app/attributetable/qgsattributetableview.cpp" line="115"/>
         <source>Open form</source>
-        <translation>Bukan blanko</translation>
+        <translation>Buka blanko</translation>
     </message>
 </context>
 <context>
@@ -9937,12 +9959,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="55"/>
         <source>Frame color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna figura telah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="78"/>
         <source>Background color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna latar telah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="100"/>
@@ -9970,37 +9992,37 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="20"/>
         <source>Frame color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna figura...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="27"/>
         <source>Background color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna latar...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="34"/>
         <source>Opacity</source>
-        <translation type="unfinished"></translation>
+        <translation>Transparasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="57"/>
         <source>Outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar garis tepi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="73"/>
         <source>Position and size...</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran dan posisi...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposeritemwidgetbase.ui" line="80"/>
         <source>Show frame</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan figura</translation>
     </message>
 </context>
 <context>
@@ -10008,23 +10030,23 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="31"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi umum</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="44"/>
         <source>Label text changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Teks label telah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="64"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="94"/>
         <source>Label font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf label telah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="76"/>
         <source>Label margin changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas tepi label telah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="103"/>
@@ -10034,12 +10056,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="147"/>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="158"/>
         <source>Label alignment changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesejajaran label tekah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="169"/>
         <source>Label id changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Id label telah dirubah</translation>
     </message>
 </context>
 <context>
@@ -10047,72 +10069,72 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="20"/>
         <source>Label Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="38"/>
         <source>Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Label</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="57"/>
         <source>Font</source>
-        <translation type="unfinished">Huruf</translation>
+        <translation>Huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="64"/>
         <source>Font color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna huruf...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="71"/>
         <source>Margin (mm)</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas tepi (mm)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="84"/>
         <source>Horizontal Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar Horizontal:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="93"/>
         <source>Left</source>
-        <translation type="unfinished">Kiri</translation>
+        <translation>Kiri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="100"/>
         <source>Center</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="107"/>
         <source>Right</source>
-        <translation type="unfinished">Kanan</translation>
+        <translation>Kanan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="117"/>
         <source>Vertical Alignment:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar vertikal:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="123"/>
         <source>Top</source>
-        <translation type="unfinished"></translation>
+        <translation>Atas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="130"/>
         <source>Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="137"/>
         <source>Bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Bawah (dasar)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerlabelwidgetbase.ui" line="150"/>
         <source>Label id</source>
-        <translation type="unfinished"></translation>
+        <translation>Id label</translation>
     </message>
 </context>
 <context>
@@ -10120,7 +10142,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/core/composer/qgscomposerlegend.cpp" line="32"/>
         <source>Legend</source>
-        <translation type="unfinished">Légende</translation>
+        <translation>Legenda</translation>
     </message>
 </context>
 <context>
@@ -11989,38 +12011,38 @@ failed with error: %3
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="67"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">Kiri Bawah</translation>
+        <translation>Kiri Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="67"/>
         <source>Top Left</source>
-        <translation type="unfinished">Kiri Atas</translation>
+        <translation>Kiri Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="68"/>
         <source>Top Right</source>
-        <translation type="unfinished">Kanan Atas</translation>
+        <translation>Kanan Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="68"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">Kanan Bawah</translation>
+        <translation>Kanan Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="80"/>
         <source>&amp;Copyright Label</source>
-        <translation type="unfinished"></translation>
+        <translation>Label dengan hakcipta</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="82"/>
         <source>Creates a copyright label that is displayed on the map canvas.</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat label hak cipta yang ditampilkan pana kanvas peta.</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="95"/>
         <location filename="../src/plugins/copyright_label/plugin.cpp" line="210"/>
         <source>&amp;Decorations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dekorasi</translation>
     </message>
 </context>
 <context>
@@ -12028,12 +12050,12 @@ failed with error: %3
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="14"/>
         <source>Copyright Label Plugin</source>
-        <translation type="unfinished">Label Plugin Hak Cipta</translation>
+        <translation>Plugin label hak cipta</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="35"/>
         <source>&amp;Enter your copyright label here:</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan label hak cipta anda disini:</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="45"/>
@@ -12047,52 +12069,52 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="56"/>
         <source>&amp;Placement</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Penempatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="67"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">Kiri Bawah</translation>
+        <translation>Kiri Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="72"/>
         <source>Top Left</source>
-        <translation type="unfinished">Kiri Atas</translation>
+        <translation>Kiri Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="77"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">Kanan Bawah</translation>
+        <translation>Kanan Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="82"/>
         <source>Top Right</source>
-        <translation type="unfinished">Kanan Atas</translation>
+        <translation>Kanan Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="90"/>
         <source>&amp;Orientation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Orientasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="114"/>
         <source>&amp;Color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="101"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="106"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikal</translation>
+        <translation>Vertikal</translation>
     </message>
     <message>
         <location filename="../src/plugins/copyright_label/pluginguibase.ui" line="25"/>
         <source>Enable copyright label</source>
-        <translation type="unfinished"></translation>
+        <translation>Aktifkan label hak cipta</translation>
     </message>
 </context>
 <context>
@@ -12100,23 +12122,23 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="14"/>
         <source>Enter Credentials</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Maukan autorisasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="23"/>
         <source>Username</source>
-        <translation type="unfinished">Nama-pengguna</translation>
+        <translation>Nama-pengguna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="33"/>
         <source>Password</source>
-        <translation type="unfinished">Password</translation>
+        <translation>Sandi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="57"/>
         <location filename="../src/ui/qgscredentialdialog.ui" line="64"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Label teks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="71"/>
@@ -13027,47 +13049,47 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="14"/>
         <source>Field calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulator field</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="27"/>
         <source>Update existing field</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbarui field yang sudah ada</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="20"/>
         <source>Only update selected features</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbarui hanya fitur yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="37"/>
         <source>New field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="46"/>
         <source>Output field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama field keluaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="59"/>
         <source>Output field type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type field keluaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="72"/>
         <source>Output field width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar field keluaran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="352"/>
         <source>Fields</source>
-        <translation type="unfinished">Field-field</translation>
+        <translation>Field</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="362"/>
         <source>Values</source>
-        <translation type="unfinished">Nilai-nilai</translation>
+        <translation>Nilai</translation>
     </message>
     <message>
         <source>Sample</source>
@@ -13076,12 +13098,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="322"/>
         <source>All</source>
-        <translation type="unfinished">Semua</translation>
+        <translation>Semua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="115"/>
         <source>Operators</source>
-        <translation type="unfinished">Operator-operator</translation>
+        <translation>Operator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsfieldcalculatorbase.ui" line="82"/>
@@ -32597,65 +32619,65 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="48"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Coba</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="52"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="118"/>
         <source>Invalid Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Kueri tidak benar</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="118"/>
         <source>Setting the query failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan kueri gagal</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="175"/>
         <source>No Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada kueri</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="176"/>
         <source>You must create a query before you can test it</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus membuat kueri sebelum anda dapat mencobanya</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="181"/>
         <source>Query Result</source>
-        <translation type="unfinished">Hasil Query</translation>
+        <translation>Hasil Query</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="182"/>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Dimana pengembalian klausa %n baris.</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="187"/>
         <source>Query Failed</source>
-        <translation type="unfinished">Query gagal</translation>
+        <translation>Query gagal</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="188"/>
         <source>An error occurred when executing the query</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan muncul ketika melakukan kueri</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="206"/>
         <source>Error in Query</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan dalam kueri</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/saquerybuilder.cpp" line="206"/>
         <source>The subset string could not be set</source>
-        <translation type="unfinished"></translation>
+        <translation>Subset teks tidak dapat di atur</translation>
     </message>
 </context>
 <context>
@@ -32663,102 +32685,102 @@ Description: %2</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="62"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="67"/>
         <source>&amp;Build Query</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bangun Kueri</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="74"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="193"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>WildCard</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="75"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="197"/>
         <source>RegExp</source>
-        <translation type="unfinished"></translation>
+        <translation>RegExp</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="77"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="205"/>
         <source>All</source>
-        <translation type="unfinished">Semua</translation>
+        <translation>Semua</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="78"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="209"/>
         <source>Schema</source>
-        <translation type="unfinished">Skema</translation>
+        <translation>Skema</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="79"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="213"/>
         <source>Table</source>
-        <translation type="unfinished">Tabel</translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="80"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="217"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="81"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="221"/>
         <source>SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>SRID</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="82"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="225"/>
         <source>Line Interpretation</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpretasi Garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="83"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="229"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>geometri kolom</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="84"/>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="233"/>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="135"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin ingin menghapus koneksi %1 dan semua pengaturan yang berhubungan dengannya?</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="137"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi penghapusan</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="331"/>
         <source>Select Table</source>
-        <translation type="unfinished">Pilih Tabel</translation>
+        <translation>Pilih Tabel</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="331"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus memilih tabel untuk menambahkan lapisan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="357"/>
         <source>Failed to load interface</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal memuat antarmuka</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="414"/>
         <source>Connection failed</source>
-        <translation type="unfinished">Koneksi gagal</translation>
+        <translation>Koneksi gagal</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="415"/>
@@ -32766,27 +32788,29 @@ Description: %2</source>
 
 SQL Anywhere error code: %2
 Description: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi ke basisdata %1 gagal. Periksa pengaturan dan coba kembali.
+
+Kode kesalahan SQL Anywhere:%3</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="567"/>
         <source>No accessible tables found</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel yang dapat diakses tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="568"/>
         <source>Database connection was successful, but no tables containing geometry columns were %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi basisdata berhasil, tetapi tidak ada tabel yang berisikan kolom geometri %1.</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="571"/>
         <source>found</source>
-        <translation type="unfinished"></translation>
+        <translation>Ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselect.cpp" line="571"/>
         <source>found in your schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Ditemukan dalam skema anda</translation>
     </message>
 </context>
 <context>
@@ -32794,52 +32818,52 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="13"/>
         <source>Add SQL Anywhere layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan lapisan SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="30"/>
         <source>SQL Anywhere Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="42"/>
         <source>Delete</source>
-        <translation type="unfinished">Hapus</translation>
+        <translation>Hapus</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="49"/>
         <source>Edit</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="56"/>
         <source>New</source>
-        <translation type="unfinished">Baru</translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="63"/>
         <source>Connect</source>
-        <translation type="unfinished">Koneksikan</translation>
+        <translation>Hubungkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="83"/>
         <source>Search options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi pencarian</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="107"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Cari</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="120"/>
         <source>Search mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus pencarian</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sasourceselectbase.ui" line="140"/>
         <source>Search in columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Dari di kolom</translation>
     </message>
 </context>
 <context>
@@ -32847,52 +32871,52 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="14"/>
         <source>Select Oracle Spatial GeoRaster</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih Oracle Spatial GeoRaster</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="36"/>
         <source>Server Connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi server</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="81"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Hubungkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="54"/>
         <source>Edit</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="64"/>
         <source>Delete</source>
-        <translation type="unfinished">Hapus</translation>
+        <translation>Hapus</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="71"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="148"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemilihan</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="160"/>
         <source>Update</source>
-        <translation type="unfinished">Baharui</translation>
+        <translation>Perbarui</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="183"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Siap</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeorasterbase.ui" line="119"/>
         <source>Subdatasets</source>
-        <translation type="unfinished"></translation>
+        <translation>Bagian Dataset</translation>
     </message>
 </context>
 <context>
@@ -32900,45 +32924,46 @@ Description: %3</source>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1183"/>
         <source>ring %1, vertex %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingkaran %1, verteks %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1211"/>
         <source>polygon %1, ring %2, vertex %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligon %1, lingkaran %2, verteks %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1244"/>
         <source>polyline %1, vertex %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Poliline %1, verteks %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1265"/>
         <source>vertex %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Verteks %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1288"/>
         <source>point %1</source>
-        <translation type="unfinished"></translation>
+        <translation>titik %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1304"/>
         <source>single point</source>
-        <translation type="unfinished"></translation>
+        <translation>Satu titik</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1031"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1105"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Peralatan node</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1032"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1106"/>
         <source>Result geometry is invalid. Reverting last changes.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Hasil geometri tidak benar. Mengembalikan ke perubahan terakhir.
+</translation>
     </message>
 </context>
 <context>
@@ -32946,17 +32971,17 @@ Description: %3</source>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="14"/>
         <source>Simplify line tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Sederhanakan toleransi garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="20"/>
         <source>Set tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur toleransi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgssimplifytolerancedialog.ui" line="34"/>
         <source>OK</source>
-        <translation type="unfinished">OK</translation>
+        <translation>OK</translation>
     </message>
 </context>
 <context>
@@ -32964,22 +32989,22 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="81"/>
         <source>Add SQL Anywhere Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan lapisan SQL Anywhere...</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="82"/>
         <source>Store vector layers within a SQL Anywhere database</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan lapisan vektor dengan database SQL Anywhere</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="160"/>
         <source>Invalid Layer</source>
-        <translation type="unfinished">Lapisan tidak valid</translation>
+        <translation>Lapisan tidak benar</translation>
     </message>
     <message>
         <location filename="../src/plugins/sqlanywhere/sqlanywhere.cpp" line="160"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished">%1 adalah lapisan tidak valid dan tidak dapat dimuat.</translation>
+        <translation>%1 adalah lapisan tidak valid dan tidak dapat dimuat.</translation>
     </message>
 </context>
 <context>
@@ -32987,17 +33012,17 @@ Description: %3</source>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Undo/Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Undo/Redo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="162"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Undo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="163"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Redo</translation>
     </message>
 </context>
 <context>
@@ -33434,12 +33459,12 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="13"/>
         <source>QGIS Plugin Template</source>
-        <translation type="unfinished">Templet Plugin QGIS</translation>
+        <translation>Templet Plugin QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/plugin_template/pluginguibase.ui" line="47"/>
         <source>Plugin Template</source>
-        <translation type="unfinished">Templet Plugin</translation>
+        <translation>Templet Plugin</translation>
     </message>
 </context>
 <context>
@@ -33447,13 +33472,13 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="78"/>
         <source>Converts DXF files in Shapefile format</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi arsip DXF ke format shapefile</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="85"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconverter.cpp" line="117"/>
         <source>&amp;Dxf2Shp</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dxf2Shp</translation>
     </message>
 </context>
 <context>
@@ -33461,69 +33486,69 @@ Description: %3</source>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="121"/>
         <source>Polygon</source>
-        <translation type="unfinished">Poligon</translation>
+        <translation>Poligon</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="128"/>
         <source>Point</source>
-        <translation type="unfinished">Titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="26"/>
         <source>Dxf Importer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pegimpor Dxf</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="37"/>
         <source>Input and output</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan dan Keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="43"/>
         <source>Input Dxf file</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan arsip Dxf</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="56"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="76"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="63"/>
         <source>Output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="105"/>
         <source>Output file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis arsip keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="111"/>
         <source>Polyline</source>
-        <translation type="unfinished"></translation>
+        <translation>Polyline</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.ui" line="83"/>
         <source>Export text labels</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor label teks</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="48"/>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="54"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="48"/>
         <source>Please specify a file to convert.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan sebuah arsip yang akan di konversi.</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="54"/>
         <source>Please specify an output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan arsip keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="125"/>
@@ -33543,22 +33568,22 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="157"/>
         <source>Choose a DXF file to open</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip Dxf untuk dibuka</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="159"/>
         <source>DXF files (*.dxf)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip DXF (*.dxf)</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="167"/>
         <source>Choose a file name to save to</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih nama file yang akan di simpan ke</translation>
     </message>
     <message>
         <location filename="../src/plugins/dxf2shp_converter/dxf2shpconvertergui.cpp" line="169"/>
         <source>Shapefile (*.shp)</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile (*.shp)</translation>
     </message>
 </context>
 <context>
@@ -33566,7 +33591,7 @@ For support send a mail to scala@itc.cnr.it
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="105"/>
         <source>eVis Database Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi basisdata eVis</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/evis.cpp" line="106"/>
