@@ -951,9 +951,9 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
   int nEventFeatures = eventLayer->pendingFeatureCount();
   int featureCounter = 0;
-  if( p )
+  if ( p )
   {
-    p->setWindowModality(Qt::WindowModal);
+    p->setWindowModality( Qt::WindowModal );
     p->setMinimum( 0 );
     p->setMaximum( nEventFeatures );
     p->show();
@@ -962,9 +962,9 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   while ( eventLayer->nextFeature( fet ) )
   {
     //update progress dialog
-    if( p )
+    if ( p )
     {
-      if( p->wasCanceled() )
+      if ( p->wasCanceled() )
       {
         break;
       }
@@ -1011,7 +1011,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
     }
   }
 
-  if( p )
+  if ( p )
   {
     p->setValue( nEventFeatures );
   }
@@ -1266,6 +1266,18 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
     pt1.setX( x2 - ( x2 - x1 ) * dist );
     pt1.setY( y2 - ( y2 - y1 ) * dist );
     secondPointClipped = reversed;
+  }
+
+  //range1 and range 2 both inside the segment
+  if ( range1 >= m1 && range2 <= m2 )
+  {
+    double dist1 = ( range1 - m1 ) / ( m2 - m1 );
+    double dist2 = ( range2 - m1 ) / ( m2 - m1 );
+    pt1.setX( x1 + ( x2 - x1 ) * dist1 );
+    pt1.setY( y1 + ( y2 - y1 ) * dist1 );
+    pt2.setX( x1 + ( x2 - x1 ) * dist2 );
+    pt2.setY( y1 + ( y2 - y1 ) * dist2 );
+    secondPointClipped = true;
   }
 
   if ( reversed ) //switch p1 and p2
