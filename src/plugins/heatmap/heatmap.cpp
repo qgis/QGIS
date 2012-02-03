@@ -15,22 +15,26 @@
  *                                                                         *
  ***************************************************************************/
 
-//
-// QGIS Specific includes
-//
+// GDAL includes
+#include "gdal_priv.h"
+#include "cpl_string.h"
+#include "cpl_conv.h"
 
+// QGIS Specific includes
 #include <qgisinterface.h>
 #include <qgisgui.h>
 
 #include "heatmap.h"
 #include "heatmapgui.h"
 
-//
-// Qt4 Related Includes
-//
+#include "qgsgeometry.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
 
+// Qt4 Related Includes
 #include <QAction>
 #include <QToolBar>
+#include <QMessageBox>
 
 
 static const QString sName = QObject::tr( "Heatmap" );
@@ -39,12 +43,6 @@ static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/heatmap/heatmap.png";
-
-//////////////////////////////////////////////////////////////////////
-//
-// THE FOLLOWING METHODS ARE MANDATORY FOR ALL PLUGINS
-//
-//////////////////////////////////////////////////////////////////////
 
 /**
  * Constructor for the plugin. The plugin is passed a pointer
@@ -95,6 +93,10 @@ void Heatmap::run()
   HeatmapGui *myPluginGui = new HeatmapGui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
+  // Connect the createRaster signal to createRaster Slot
+  connect( myPluginGui, SIGNAL( createRaster( QgsVectorLayer*, int, float, QString, QString ) ),
+           this, SLOT( createRaster( QgsVectorLayer*, int, float, QString, QString ) ) );
+
   myPluginGui->show();
 }
 
@@ -107,6 +109,68 @@ void Heatmap::unload()
   delete mQActionPointer;
 }
 
+// The worker
+void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float theDecay, QString theOutputFilename, QString theOutputFormat )
+{
+  // TODO
+  // 1. Get ready the raster writer driver
+  //    -> Write out a empty raster file
+  // 2. read a point from the vector layer
+  // 3. create a square grid for the buffer value and compute the grid
+  // 4. Read the corresponding grid from the file
+  // 5. Merge the old grid and new grid
+  // 6. repeast 2 to 5 untill all points are over
+  // 7. Close all the datasets and load the raster to the window
+  
+  // generic variables
+  int xSize, ySize;
+  double xResolution, yResolution;
+
+  // Getting the rasterdataset in place
+  GDALAllRegister();
+
+  GDALDataset *heatmapDataset;
+  GDALDriver *poDriver;
+  
+  poDriver = GetGDALDriverManager()->GetDriverByName( theOutputFormat );
+  if( poDriver == NULL )
+  {
+    QMessageBox::information( 0, tr("Error in Driver!"), tr("Cannot open the driver for the format specified") );
+    return;
+  }
+
+  // bounding box info
+  QgsRectangle myBBox = theVectorLayer->extent();
+  xSize = 500;
+  xResolution = myBBox.width()/xSize;
+  yResolution = xResolution;
+  ySize = myBBox.height()/yResolution;
+
+  double geoTransform[6] = { myBBox.xMinimum(), xResolution, 0, myBBox.yMinimum(), 0, yResolution };
+
+  heatmapDataset = poDriver->Create( theOutputFilename, xSize, ySize, 1, GDT_Float32, NULL );
+
+  heatmapDataset->SetGeoTransform( geoTransform );
+
+  GDALRasterBand *poBand;
+  poBand = heatmapDataset->GetRasterBand(1);
+
+  //
+  //Write the heatmapDataset->RasterIO function here
+  //
+
+  //Finally close the dataset
+  GDALClose( (GDALDatasetH) heatmapDataset );
+
+  // Openning the vector features
+  QgsVectorDataProvider* myVectorProvider = theVectorLayer->dataProvider();
+  if( !myVectorProvider )
+  {
+    QMessageBox::information( 0, tr( "Error in Point Layer!"), tr("Couldnot identify the vector data provider.") );
+    return;
+  }
+
+}
 
 //////////////////////////////////////////////////////////////////////////
 //

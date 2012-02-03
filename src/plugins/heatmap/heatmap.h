@@ -40,6 +40,7 @@
 
 //QGIS includes
 #include "../qgisplugin.h"
+#include "qgsvectorlayer.h"
 
 //forward declarations
 class QAction;
@@ -49,19 +50,15 @@ class QgisInterface;
 
 /**
 * \class Plugin
-* \brief [name] plugin for QGIS
-* [description]
+* \brief heatmap plugin for QGIS
+* \description generates a heatmap raster for the input point vector
 */
 class Heatmap: public QObject, public QgisPlugin
 {
     Q_OBJECT
   public:
 
-    //////////////////////////////////////////////////////////////////////
-    //
     //                MANDATORY PLUGIN METHODS FOLLOW
-    //
-    //////////////////////////////////////////////////////////////////////
 
     /**
     * Constructor for a plugin. The QgisInterface pointer is passed by
@@ -81,25 +78,30 @@ class Heatmap: public QObject, public QgisPlugin
     void unload();
     //! show the help document
     void help();
+    //! the worker slot to create heatmap
+    /*
+     * Signal: createRaster
+     * Params: 
+     *         QgsVectorLayer* -> Input point layer
+     *         int             -> Buffer distance
+     *         float           -> Decay ratio
+     *         QString         -> Output filename
+     *         QString         -> Output Format Short Name
+     */
+    void createRaster( QgsVectorLayer*, int, float, QString, QString );
 
   private:
 
-    ////////////////////////////////////////////////////////////////////
-    //
     // MANDATORY PLUGIN PROPERTY DECLARATIONS  .....
-    //
-    ////////////////////////////////////////////////////////////////////
 
     int mPluginType;
     //! Pointer to the QGIS interface object
     QgisInterface *mQGisIface;
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
-    ////////////////////////////////////////////////////////////////////
-    //
+
     // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
-    //
-    ////////////////////////////////////////////////////////////////////
+    QList<rasterPoint> mRasterPoints;
 };
 
 #endif //Heatmap_H
