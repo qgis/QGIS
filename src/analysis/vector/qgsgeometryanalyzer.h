@@ -109,7 +109,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param locationField1 attribute index of location field in event layer
       @param locationField2 attribute index of location end field (or -1 for point layer)
     */
-    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
     /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/

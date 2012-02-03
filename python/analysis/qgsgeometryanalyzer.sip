@@ -54,8 +54,8 @@ class QgsGeometryAnalyzer
       @param locationField1 attribute index of location field in event layer
       @param locationField2 attribute index of location end field (or -1 for point layer)
     */
-    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
-                     const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds /Out/,
+                     const QString& outputLayer, const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
     /**Returns multilinestring*/
     QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
