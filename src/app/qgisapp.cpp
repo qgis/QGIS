@@ -3422,7 +3422,7 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
 
   QgsCoordinateReferenceSystem destCRS;
 
-  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( this );
+  QgsVectorLayerSaveAsDialog *dialog = new QgsVectorLayerSaveAsDialog( vlayer->crs().srsid(), this );
 
   if ( dialog->exec() == QDialog::Accepted )
   {
@@ -3438,21 +3438,18 @@ void QgisApp::saveAsVectorFileGeneral( bool saveOnlySelection )
       format = "SQLite";
     }
 
-    if ( dialog->crs() < 0 )
+    switch ( dialog->crs() )
     {
-      // Find out if we have projections enabled or not
-      if ( mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
-      {
+      case -2: // Project CRS
         destCRS = mMapCanvas->mapRenderer()->destinationCrs();
-      }
-      else
-      {
+        break;
+      case -1: // Layer CRS
         destCRS = vlayer->crs();
-      }
-    }
-    else
-    {
-      destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
+        break;
+
+      default: // Selected CRS
+        destCRS = QgsCoordinateReferenceSystem( dialog->crs(), QgsCoordinateReferenceSystem::InternalCrsId );
+        break;
     }
 
     // ok if the file existed it should be deleted now so we can continue...
