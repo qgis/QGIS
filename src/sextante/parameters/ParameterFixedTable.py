@@ -2,29 +2,12 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterFixedTable(Parameter):
 
-    pass
-#===============================================================================
-#    @property
-#    def cols(self):
-#        return self._cols
-#
-#    @cols.setter
-#    def cols(self, cols):
-#        self._cols = cols
-#
-#    @property
-#    def fixedNumOfRows(self):
-#        return self._fixedNumOfRows
-#
-#    @fixedNumOfRows.setter
-#    def fixedNumOfRows(self, fixedNumOfRows):
-#        self._fixedNumOfRows = fixedNumOfRows
-#
-#    @property
-#    def numRows(self):
-#        return self._numRows
-#
-#    @numRows.setter
-#    def numRows(self, numRows):
-#        self._numRows = numRows
-#===============================================================================
+
+    def setValue(self, obj):
+        tablestring = ""
+        table = obj
+        for i in range(len[table]):
+            for j in range(len(table[0])):
+                tablestring = tablestring + table[i][j] + ","
+        tablestring = tablestring[:-1]
+        self.value = tablestring

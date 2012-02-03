@@ -44,7 +44,6 @@ class SextantePlugin:
 
     def unload(self):
         self.toolbox.setVisible(False)
-        menuBar = self.iface.mainWindow().menuBar()
         self.menu.deleteLater()
 
     def openToolbox(self):

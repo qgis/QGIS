@@ -1,5 +1,9 @@
 from sextante.outputs.Output import Output
 from sextante.parameters.Parameter import Parameter
+from sextante.core.QGisLayers import QGisLayers
+from sextante.parameters.ParameterRaster import ParameterRaster
+from sextante.parameters.ParameterVector import ParameterVector
+
 
 class GeoAlgorithm:
 
@@ -10,15 +14,25 @@ class GeoAlgorithm:
         self.group = ""
         self.defineCharacteristics()
         self.providerName = ""
+        self.crs = None
 
-    def execute(self):
-        if self.checkParameters():
-            self.proccessAlgorithm()
+    def execute(self, progress):
+        self.setOutputCRSFromInputLayers()
+        self.processAlgorithm(progress)
 
+    def setOutputCRSFromInputLayers(self):
+        for param in self.parameters:
+            if isinstance(param, ParameterRaster):
+                layers = QGisLayers.getRasterLayers()
+            elif isinstance(param, ParameterVector):
+                layers = QGisLayers.getVectorLayers()
+            else:
+                continue
+            for layer in layers:
+                if layer.dataProvider().dataSourceUri() == param.value:
+                    self.crs = layer.crs()
+                    return
 
-    def checkParameters(self):
-        #TODO!!!!!!
-        return True
 
     def defineCharacteristics(self):
         pass
@@ -27,10 +41,12 @@ class GeoAlgorithm:
         pass
 
     def putOutput(self, output):
+        #TODO: check that name does not exist
         if isinstance(output, Output):
             self.outputs.append(output)
 
     def putParameter(self, param):
+        #TODO: check that name does not exist
         if isinstance(param, Parameter):
             self.parameters.append(param)
 
@@ -57,7 +73,22 @@ class GeoAlgorithm:
         s+=("\n")
         return s
 
+
     def commandLineName(self):
         return self.providerName + self.name.lower().replace(" ", "")
 
 
+    def getOuputsChannelsAsMap(self):
+        retmap = {}
+        for out in self.outputs:
+            retmap[out.name] = out.channel
+        return retmap
+
+    def getAsCommand(self):
+        s="Sextante.runalg(\"" + self.commandLineName() + "\","
+        for param in self.parameters:
+            s+=param.getValueAsCommandLineParameter() + ","
+        for out in self.outputs:
+            s+=out.getChannelAsCommandLineParameter() + ","
+        s= s[:-1] + ")"
+        return s

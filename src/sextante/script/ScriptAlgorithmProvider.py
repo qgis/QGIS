@@ -3,20 +3,34 @@ from sextante.script.EditScriptAction import EditScriptAction
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 import os.path
+from sextante.script.DeleteScriptAction import DeleteScriptAction
+from sextante.script.ScriptAlgorithm import ScriptAlgorithm
+from sextante.core.SextanteUtils import SextanteUtils
+from sextante.script.ScriptUtils import ScriptUtils
 
 class ScriptAlgorithmProvider:
 
     def __init__(self):
-        self.algs = []
         self.loadAlgorithms()
         self.actions = []
         self.actions.append(CreateNewScriptAction())
-        self.contextMenuActions = [EditScriptAction()]
+        self.contextMenuActions = [EditScriptAction(), DeleteScriptAction()]
         self.icon = QIcon(os.path.dirname(__file__) + "/script.png")
-
-    def loadAlgorithms(self):
-        pass
-        #TODO!!!!!!
 
     def getName(self):
         return "Scripts"
+
+    def loadAlgorithms(self):
+        self.algs = []
+        folder = ScriptUtils.scriptsFolder()
+        for descriptionFile in os.listdir(folder):
+            if descriptionFile.endswith("py"):
+                try:
+                    alg = ScriptAlgorithm(descriptionFile)
+                    if alg.name.strip() != "":
+                        self.algs.append(alg)
+                except Exception,e:
+                    SextanteUtils.addToLog(SextanteUtils.LOG_ERROR,e.msg)
+
+
+

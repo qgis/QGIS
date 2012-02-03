@@ -8,13 +8,13 @@ from PyQt4.QtGui import *
 class SagaAlgorithmProvider():
 
     def __init__(self):
-        self.algs = []
         self.loadAlgorithms()
         self.actions = []
         self.contextMenuActions = []
         self.icon = QIcon(os.path.dirname(__file__) + "/saga.png")
 
     def loadAlgorithms(self):
+        self.algs = []
         folder = SagaUtils.sagaDescriptionPath()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.startswith("alg"):
@@ -23,7 +23,8 @@ class SagaAlgorithmProvider():
                     if alg.name.strip() != "":
                         self.algs.append(alg)
                 except Exception:
-                    SextanteUtils.addToLog(descriptionFile)
+                    pass
+                    #SextanteUtils.addToLog(descriptionFile)
 
     def getName(self):
         return "SAGA"

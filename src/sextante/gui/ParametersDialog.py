@@ -80,6 +80,15 @@ class Ui_ParametersDialog(object):
                 item.addItem(layer.name(), layer)
             item.currentIndexChanged.connect(self.updateDependentFields)
             item.name = param.name
+        elif isinstance(param, ParameterTable):
+            item = QtGui.QComboBox()
+            layers = QGisLayers.getTables()
+            if (param.optional):
+                item.addItem(self.NOT_SELECTED, None)
+            for layer in layers:
+                item.addItem(layer.name(), layer)
+            item.currentIndexChanged.connect(self.updateDependentFields)
+            item.name = param.name
         elif isinstance(param, ParameterBoolean):
             item = QtGui.QComboBox()
             item.addItem("Yes")
@@ -87,11 +96,11 @@ class Ui_ParametersDialog(object):
         elif isinstance(param, ParameterTableField):
             item = QtGui.QComboBox()
             if param.parent in self.dependentItems:
-                list = self.dependentItems[param.parent]
+                items = self.dependentItems[param.parent]
             else:
-                list = []
-                self.dependentItems[param.parent] = list
-            list.append(param.name)
+                items = []
+                self.dependentItems[param.parent] = items
+            items.append(param.name)
             layers = QGisLayers.getVectorLayers()
             if len(layers)>0:
                 fields = self.getFields(layers[0])
@@ -159,7 +168,7 @@ class Ui_ParametersDialog(object):
             i+=1
 
         for output in outputs:
-            item = QtGui.QTableWidgetItem(output.description)
+            item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
             item = QtGui.QLineEdit()
@@ -189,41 +198,28 @@ class Ui_ParametersDialog(object):
     def setParamValue(self, param, widget):
 
         if isinstance(param, ParameterRaster):
-            param.value = widget.itemData(widget.currentIndex()).toPyObject()
+            param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterVector):
-            param.value = widget.itemData(widget.currentIndex()).toPyObject()
+            param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterTable):
-            param.value = widget.itemData(widget.currentIndex()).toPyObject()
+            param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterBoolean):
-            param.value = widget.currentIndex() == 0
+            param.setValue(widget.currentIndex() == 0)
         elif isinstance(param, ParameterSelection):
-            param.value = widget.currentIndex()
+            param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
-            param.value = widget.table
+            param.setValue(widget.table)
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = QGisLayers.getVectorLayers()
             else:
                 options = QGisLayers.getRasterLayers()
             value = []
-            if len(widget.selectedoptions) == 0 and not param.optional:
-                return False
             for index in widget.selectedoptions:
                 value.append(options[index])
-            param.value = value
-        elif isinstance(param, ParameterRange):
-            text = widget.text()
-            tokens = text.split(",")
-            if len(tokens)!= 2:
-                return False
-            try:
-                n1 = float(tokens[0])
-                n2 = float(tokens[1])
-            except:
-                return False
-
+            param.setValue(value)
         else:
-            param.value = widget.text()
+            return param.setValue(widget.text())
 
         return True
 

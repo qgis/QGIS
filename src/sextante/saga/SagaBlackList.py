@@ -5,10 +5,13 @@ class SagaBlackList:
 
         group = group.lower()
 
-        if "lectures" == group:
+        if "tin_tools" == group:
             return True
 
-        if "io_" == group:
+        if "lectures" in group:
+            return True
+
+        if "io_" in group:
             return True
 
         if "pointcloud" in group:

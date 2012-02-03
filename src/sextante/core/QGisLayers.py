@@ -1,4 +1,8 @@
 from qgis.core import *
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
+from PyQt4 import QtCore, QtGui
+from os import path
 
 class QGisLayers:
 
@@ -23,6 +27,16 @@ class QGisLayers:
                 layerNames.append(layer)
         return layerNames
 
+    @staticmethod
+    def getTables():
+        layers = QGisLayers.iface.legendInterface().layers()
+        tables = list()
+        for layer in layers:
+            if layer.type() == layer.VectorLayer :
+                uri = str(layer.dataProvider().dataSourceUri())
+                if (uri.endswith("shp")):
+                    tables.append(layer)
+        return tables
 
     @staticmethod
     def setInterface(iface):
@@ -30,19 +44,62 @@ class QGisLayers:
 
 
     @staticmethod
-    def getLayersCount():
-        count =  LayersCount()
-        return count
+    def loadList(layers):
+        for layer in layers:
+            QGisLayers.load(layer)
+
+    @staticmethod
+    def load(layer, name = None, crs = None):
+        prjSetting = None
+        settings = QSettings()
+        try:
+            if crs != None:
+                prjSetting = settings.value("/Projections/defaultBehaviour")
+                settings.setValue("/Projections/defaultBehaviour", QVariant(""))
+            if name == None:
+                name = path.split(layer)[1]
+            if layer.endswith("shp"):
+                qgslayer = QgsVectorLayer(layer, name, 'ogr')
+                if crs != None:
+                    qgslayer.setCrs(crs, False)
+                QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+            else:
+                qgslayer = QgsRasterLayer(layer, name)
+                if crs != None:
+                    qgslayer.setCrs(crs,False)
+                QgsMapLayerRegistry.instance().addMapLayer(qgslayer)
+        finally:
+            if prjSetting:
+                settings.setValue("/Projections/defaultBehaviour", prjSetting)
+
+
+    @staticmethod
+    def loadMap(layersmap, crs):
+        for name in layersmap.keys():
+            QGisLayers.load(layersmap[name], name, crs)
+
+
+    @staticmethod
+    def loadFromAlg(alg):
+        QGisLayers.loadMap(alg.getOuputsChannelsAsMap(), alg.crs)
+
+
+    @staticmethod
+    def getObjectFromUri(uri):
+        layers = QGisLayers.getRasterLayers()
+        for layer in layers:
+            if layer.dataProvider().dataSourceUri() == uri:
+                return layer
+        layers = QGisLayers.getVectorLayers()
+        for layer in layers:
+            if layer.dataProvider().dataSourceUri() == uri:
+                return layer
 
 
 
-class LayersCount:
 
-    def __init__(self):
-        self.raster = 0
-        self.vector_point=0
-        self.vector_line=0
-        self.vector_polygon=0
+
+
 
 
 
