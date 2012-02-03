@@ -4041,22 +4041,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="14"/>
         <source>Create Oracle Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat Koneksi Oracle</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="25"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="42"/>
         <source>Database instance</source>
-        <translation type="unfinished"></translation>
+        <translation>Contoh basisdata</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="55"/>
         <source>Username</source>
-        <translation type="unfinished">Nama-pengguna</translation>
+        <translation>Nama-pengguna</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="68"/>
@@ -4066,7 +4066,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="35"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Nama koneksi baru</translation>
+        <translation>Nama koneksi baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracleconnectbase.ui" line="85"/>
@@ -4157,22 +4157,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="211"/>
         <source>Starts process of selecting next relation member on map.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mulai proses pemilihan anggota relasi berikutnya pada peta.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="224"/>
         <source>Remove all selected members</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus semua anggota yang dipilih</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="227"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="230"/>
         <source>Removes all selected members.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghilangkan semua anggota yang dipilih.</translation>
     </message>
     <message>
         <source>OSM Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi OSM</translation>
     </message>
 </context>
 <context>
@@ -4185,7 +4185,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
         <source>Extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
@@ -4212,7 +4212,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
         <source>&lt;nothing&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
@@ -4223,108 +4223,108 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
         <source>Download to:</source>
-        <translation type="unfinished"></translation>
+        <translation>Unduh ke:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="219"/>
         <source>Open data automatically after download</source>
-        <translation type="unfinished"></translation>
+        <translation>Otomatis buka data setelah diunduh</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="247"/>
         <source>Replace current data (current layer will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gantikan data saat ini (Lapisan yang ada saat ini akan dihilangkan)</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="283"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan perender kustom</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="358"/>
         <source>Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Unduh</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="365"/>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <source>OSM Download</source>
-        <translation type="unfinished"></translation>
+        <translation>Unduh OSM</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menyimpan arsip %1:%2.</translation>
     </message>
     <message>
         <source>Waiting for OpenStreetMap server ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menunggu server OpenStreetMap...</translation>
     </message>
     <message>
         <source>Download process failed. OpenStreetMap server response: %1 - %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Proses pengunduhan gagal. Respon server OpenStreetMap: %1 - %2</translation>
     </message>
     <message>
         <source>OSM Download Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal download OSM</translation>
     </message>
     <message>
         <source>Download failed: %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengunduhan gagal:%1.</translation>
     </message>
     <message>
         <source>Getting data</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengambil data</translation>
     </message>
     <message>
         <source>The OpenStreetMap server you are downloading OSM data from (~ api.openstreetmap.org) has fixed limitations of how much data you can get. As written at &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; neither latitude nor longitude extent of downloaded region can be larger than 0.25 degrees. Note that Quantum GIS allows you to specify any extent you want, but OpenStreetMap server will reject all request that won&apos;t satisfy downloading limitations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Server OpenStreetMap dimana anda mengunduh data OSM (~ api.openstreetmap.org) memiliki pembatasan tetap berapa banyak data yang dapat anda peroleh. Seperti tertulis dalam &lt;http://wiki.openstreetmap.org/wiki/Getting_Data&gt; bukan extent lintang maupun bujur dari daerah yang diunduh bisa lebih besar dari 0,25 derajat. Perhatian Quantum GIS mengizinkan anda untuk menentukan extent secara bebas, tapi server OpenStreetmap akan menolak semua permintaan yang tidak sesuai dengan batas pengunduhan.</translation>
     </message>
     <message>
         <source>Both extents are too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kedua extent terlalu besar!</translation>
     </message>
     <message>
         <source>Latitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent lintang terlalu besar!</translation>
     </message>
     <message>
         <source>Longitude extent is too large!</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent bujur terlalu besar!</translation>
     </message>
     <message>
         <source>OK! Area is probably acceptable to server.</source>
-        <translation type="unfinished"></translation>
+        <translation>OK! Luasan wilayah mungkin akan disetujui oleh server.</translation>
     </message>
 </context>
 <context>
     <name>OsmFeatureDW</name>
     <message>
         <source>OSM Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin OSM</translation>
     </message>
     <message>
         <source>The &apos;Create OSM Relation&apos; dialog was closed automatically because current OSM database was changed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog &apos;Pembuatan Relasi OSM&apos; telah ditutup secara otomatis karena basisdata OSM saat ini telah berubah.</translation>
     </message>
     <message>
         <source>OSM Feature Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Galangan Widget Fitur OSM</translation>
     </message>
     <message>
         <source>Choose OSM feature first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pertama-tama pilih fitur OSM.</translation>
     </message>
     <message>
         <source>Choose relation for editing first.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pertama-tama pilih relasi yang akan diedit.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="37"/>
         <source>OSM Feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="75"/>
@@ -4343,149 +4343,149 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="609"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="625"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="168"/>
         <source>Create point</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="190"/>
         <source>Create line</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat garis</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="218"/>
         <source>Create polygon</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="246"/>
         <source>Create relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat relasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="265"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="268"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="271"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Undo</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="287"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="290"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="293"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Redo</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="309"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="312"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="315"/>
         <source>Show/Hide OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan/Sembunyikan riwayat pengeditan OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="345"/>
         <source>Feature:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="371"/>
         <source>TYPE, ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>TIPE, ID:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="378"/>
         <source>CREATED:</source>
-        <translation type="unfinished"></translation>
+        <translation>DIBUAT:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="385"/>
         <source>USER:</source>
-        <translation type="unfinished"></translation>
+        <translation>PENGGUNA:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="392"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="399"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="406"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>tidak diketahui</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="479"/>
         <source>Properties</source>
-        <translation type="unfinished">Properti</translation>
+        <translation>Properti</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="525"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="528"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="531"/>
         <source>Remove selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan tanda yang dipilih</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="552"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Relasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="584"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="587"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="590"/>
         <source>Add relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan relasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="600"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="603"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="606"/>
         <source>Edit relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit relasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="616"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="619"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="622"/>
         <source>Remove relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan relasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="652"/>
         <source>Relation tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan tanda:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="699"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="707"/>
         <source>Relation members:</source>
-        <translation type="unfinished"></translation>
+        <translation>Anggota relasi:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="100"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="103"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="106"/>
         <source>Identify feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikasi fitur</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="134"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="137"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="140"/>
         <source>Move feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Pindahkan fitur</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="419"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="422"/>
         <location filename="../python/plugins/osm/ui_files/OsmFeatureDW.ui" line="425"/>
         <source>Remove this feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan fitur ini</translation>
     </message>
 </context>
 <context>
@@ -4493,22 +4493,22 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="16"/>
         <source>Import data to OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor data ke OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="25"/>
         <source>In this dialog you can import a layer loaded in QGIS into active OSM data.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dalam dialog ini, anda dapat mengimpor lapisan yang dimuat di QGIS ke data OSM yang aktif.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="50"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmImportDlg.ui" line="69"/>
         <source>Import only current selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Impor yang dipilih saja</translation>
     </message>
 </context>
 <context>
@@ -4516,108 +4516,108 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="16"/>
         <source>Load OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="33"/>
         <source>OpenStreetMap file to load:</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip OpenStreetMap untuk dimuat:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="46"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="55"/>
         <source>Add columns for tags:</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan kolom untuk ditandai:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="78"/>
         <source>Use custom renderer</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan perender kustom</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmLoadDlg.ui" line="128"/>
         <source>Replace current data (current layers will be removed)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gantikan data saat ini (Lapisan yang ada saat ini akan dihilangkan)</translation>
     </message>
 </context>
 <context>
     <name>OsmSaveDlg</name>
     <message>
         <source>Save OSM to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan OSM ke arsip</translation>
     </message>
     <message>
         <source>Unable to save the file %1: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menyimpan arsip %1:%2.</translation>
     </message>
     <message>
         <source>Initializing...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menginisialisasi...</translation>
     </message>
     <message>
         <source>Saving nodes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyimpan node...</translation>
     </message>
     <message>
         <source>Saving lines...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyimpan garis...</translation>
     </message>
     <message>
         <source>Saving polygons...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyimpan poligon...</translation>
     </message>
     <message>
         <source>Saving relations...</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyimpan relasi...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="16"/>
         <source>Save OSM</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyimpan OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="33"/>
         <source>Where to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan dimana:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="52"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="61"/>
         <source>Features to save:</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur untuk disimpan:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="81"/>
         <source>Points</source>
-        <translation type="unfinished">Titik-titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="91"/>
         <source>Lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="101"/>
         <source>Polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligon</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="115"/>
         <source>Relations</source>
-        <translation type="unfinished"></translation>
+        <translation>Relasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmSaveDlg.ui" line="125"/>
         <source>Tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Tag (tanda)</translation>
     </message>
 </context>
 <context>
@@ -4625,111 +4625,111 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="16"/>
         <source>OSM Edit History</source>
-        <translation type="unfinished"></translation>
+        <translation>Riwayat pengeditan OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="25"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="28"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="31"/>
         <source>Clear all</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus semua</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="34"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="66"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="85"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="57"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="60"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="63"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Undo</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="76"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="79"/>
         <location filename="../python/plugins/osm/ui_files/OsmUndoRedoDW.ui" line="82"/>
         <source>Redo</source>
-        <translation type="unfinished"></translation>
+        <translation>Redo</translation>
     </message>
 </context>
 <context>
     <name>OsmUploadDlg</name>
     <message>
         <source>OSM Upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Upload OSM</translation>
     </message>
     <message>
         <source>Uploading data...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengupload data...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="22"/>
         <source>Upload OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Upload data OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="37"/>
         <source>Ready for upload</source>
-        <translation type="unfinished"></translation>
+        <translation>Siap untuk diupload</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="80"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="85"/>
         <source>2</source>
-        <translation type="unfinished"></translation>
+        <translation>2</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="90"/>
         <source>3</source>
-        <translation type="unfinished"></translation>
+        <translation>3</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="95"/>
         <source>4</source>
-        <translation type="unfinished"></translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="100"/>
         <source>5</source>
-        <translation type="unfinished"></translation>
+        <translation>5</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="108"/>
         <source>Comment on your changes:</source>
-        <translation type="unfinished"></translation>
+        <translation>Berikan komentar pada perubahan yang anda buat:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="134"/>
         <source>OSM account</source>
-        <translation type="unfinished"></translation>
+        <translation>Akun OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="142"/>
         <source>Username:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama pengguna:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="162"/>
         <source>Password:</source>
-        <translation type="unfinished"></translation>
+        <translation>Sandi:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="179"/>
         <source>Show password</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan kata sandi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmUploadDlg.ui" line="186"/>
         <source>Save password</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan kata sandi</translation>
     </message>
 </context>
 <context>
@@ -4779,14 +4779,17 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <name>PythonConsole</name>
     <message>
         <source>Python Console</source>
-        <translation type="unfinished"></translation>
+        <translation>Konsul Python</translation>
     </message>
     <message>
         <source>To access Quantum GIS environment from this console
 use qgis.utils.iface object (instance of QgisInterface class).
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk mengakses lingkungan Quantum GIS dari konsul ini
+gunakan objek qgis util iface (contoh QgisInterface class).
+
+</translation>
     </message>
 </context>
 <context>
@@ -4822,17 +4825,17 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="400"/>
         <source>Expected operator, got scalar value!</source>
-        <translation type="unfinished">Operator mengharapkan, punya nilai skalar!</translation>
+        <translation>Operator diharapkan memiliki nilai skalar!</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="455"/>
         <source>Unexpected state when evaluating operator!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kondisi yang tidak diharapkan ketika mengevaluasi operator!</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="472"/>
         <source>Could not retrieve value of list value</source>
-        <translation type="unfinished">Tidak dapat mendapatkan kembali nilai dari daftar nilai</translation>
+        <translation>Tidak dapat mendapatkan kembali nilai dari daftar nilai</translation>
     </message>
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="524"/>
@@ -4879,7 +4882,7 @@ use qgis.utils.iface object (instance of QgisInterface class).
     <message>
         <location filename="../src/plugins/georeferencer/qgsleastsquares.cpp" line="233"/>
         <source>Fitting a projective transform requires at least 4 corresponding points.</source>
-        <translation type="unfinished">Menyesuaikan trnsformasi proyektif membutuhkan pating kurang 4 titik yang sesuai.</translation>
+        <translation>Menyesuaikan transformasi proyektif membutuhkan paling kurang 4 titik yang sesuai.</translation>
     </message>
     <message>
         <location filename="../src/providers/gpx/qgsgpxprovider.cpp" line="56"/>
@@ -4890,12 +4893,12 @@ use qgis.utils.iface object (instance of QgisInterface class).
         <location filename="../src/core/qgsdistancearea.cpp" line="367"/>
         <location filename="../src/core/qgsdistancearea.cpp" line="392"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate line length.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rekam sistem koordinat pengecualian ketika mencoba untuk mentransformasi titik. Tidak bisa untuk menghitung panjang garis.</translation>
     </message>
     <message>
         <location filename="../src/core/qgsdistancearea.cpp" line="509"/>
         <source>Caught a coordinate system exception while trying to transform a point. Unable to calculate polygon area.</source>
-        <translation type="unfinished"></translation>
+        <translation>Rekam sistem koordinat pengecualian ketika mencoba untuk mentransformasi titik. Tidak bisa untuk menghitung luas poligon.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="159"/>
@@ -4958,12 +4961,12 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="45"/>
         <source>Loads and displays delimited text files containing x,y coordinates</source>
-        <translation type="unfinished">Muat dan tampilkan arsip teks delimited yang berisikan koordinat x,y</translation>
+        <translation>Muat dan tampilkan arsip teks delimited yang berisikan koordinat x,y</translation>
     </message>
     <message>
         <location filename="../src/plugins/delimited_text/qgsdelimitedtextplugin.cpp" line="190"/>
         <source>Add Delimited Text Layer</source>
-        <translation type="unfinished">Tambah lapisan teks delimited</translation>
+        <translation>Tambah lapisan teks dengan pembatasan (delimited)</translation>
     </message>
     <message>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="52"/>
@@ -4998,17 +5001,17 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="63"/>
         <source>ScaleBar</source>
-        <translation type="unfinished">Skala balok</translation>
+        <translation>Skala balok</translation>
     </message>
     <message>
         <location filename="../src/plugins/scale_bar/plugin.cpp" line="64"/>
         <source>Draws a scale bar</source>
-        <translation type="unfinished">Gambar skala balok</translation>
+        <translation>Gambar skala balok</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="36"/>
         <source>SPIT</source>
-        <translation type="unfinished"></translation>
+        <translation>BAGI</translation>
     </message>
     <message>
         <location filename="../src/plugins/spit/qgsspitplugin.cpp" line="37"/>
@@ -5121,7 +5124,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/core/qgssearchtreenode.cpp" line="503"/>
         <source>Regular expressions on numeric values don&apos;t make sense. Use comparison instead.</source>
-        <translation type="unfinished">Ekspresi biasa pada nilai numerik tidak masuk akal. Gunakan perbandingan.</translation>
+        <translation>Ekspresi biasa pada nilai numerik yang tidak masuk akal. Bukan menggunakan perbandingan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="126"/>
@@ -5131,7 +5134,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="135"/>
         <source>Cannot open raster header</source>
-        <translation type="unfinished">Tidak bisa membuka header raster</translation>
+        <translation>Tidak bisa membuka header raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="139"/>
@@ -5321,17 +5324,17 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="371"/>
         <source>Key column</source>
-        <translation type="unfinished">Kolom kunci</translation>
+        <translation>Kolom kunci</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="392"/>
         <source>&lt;b&gt;Region&lt;/b&gt;</source>
-        <translation type="unfinished">&lt;b&gt;Wilayah&lt;/b&gt;</translation>
+        <translation>&lt;b&gt;Wilayah&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="398"/>
         <source>Cannot open region header</source>
-        <translation type="unfinished">Tidak bisa membuka header wilayah</translation>
+        <translation>Tidak bisa membuka header wilayah</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodel.cpp" line="406"/>
@@ -5443,17 +5446,17 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="983"/>
         <source>Cannot read raster map region</source>
-        <translation type="unfinished">Tidak bisa membaca wilayah peta raster</translation>
+        <translation>Tidak bisa membaca wilayah peta raster</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1000"/>
         <source>Cannot read vector map region</source>
-        <translation type="unfinished">TIdak bisa membaca wilayah vektor peta</translation>
+        <translation>TIdak bisa membaca wilayah vektor peta</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1036"/>
         <source>Cannot read region</source>
-        <translation type="unfinished">TIdak bisa membaca wilayah</translation>
+        <translation>TIdak bisa membaca wilayah</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="77"/>
@@ -5481,7 +5484,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="100"/>
         <source>Couldn&apos;t load QGIS utils.</source>
-        <translation type="unfinished">Tidak bisa memuat QGIS utils.</translation>
+        <translation>Tidak bisa memuat QGIS utils.</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="179"/>
@@ -5496,7 +5499,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="181"/>
         <source>Python path:</source>
-        <translation type="unfinished">Jalur (path) Python:</translation>
+        <translation>Jalur (path) Python:</translation>
     </message>
     <message>
         <location filename="../src/python/qgspythonutilsimpl.cpp" line="168"/>
@@ -5622,7 +5625,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="451"/>
         <source>%1 is not a GRASS mapset.</source>
-        <translation type="unfinished">%1 bukan mapset GRASS.</translation>
+        <translation>%1 bukan mapset GRASS.</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="485"/>
@@ -5647,7 +5650,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="608"/>
         <source>Cannot remove mapset lock: %1</source>
-        <translation type="unfinished">Tidak bisa menghilangkan kunci mapset:%1</translation>
+        <translation>Tidak bisa menghilangkan kunci mapset:%1</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1056"/>
@@ -5683,7 +5686,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1222"/>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1247"/>
         <source>Cannot get raster extent</source>
-        <translation type="unfinished">Tidak bisa memperoleh luasan dari raster</translation>
+        <translation>Tidak bisa memperoleh extent dari raster</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrass.cpp" line="1277"/>
@@ -5703,7 +5706,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
         <source>Georeferencer GDAL</source>
-        <translation type="unfinished">Georeferencer GDAL</translation>
+        <translation>Georeferencer GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="66"/>
@@ -5758,7 +5761,7 @@ Apakah anda ingin menentukan jalur (GISBASE) ke instalasi GRASS anda?</translati
     <message>
         <location filename="../src/analysis/interpolation/qgstininterpolator.cpp" line="145"/>
         <source>Estimating normal derivatives...</source>
-        <translation type="unfinished">Mengestimasi turunan normal...</translation>
+        <translation>Mengestimasi derivatif normal...</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatereferencesystem.cpp" line="1209"/>
