@@ -1257,7 +1257,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Burns vector geometries into a raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulis geometri vektor ke raster</translation>
     </message>
     <message>
         <source>Produces a polygon feature layer from a raster</source>
@@ -1297,7 +1297,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat raster dari data yang tersebar</translation>
     </message>
     <message>
         <source>Converts raster data between different formats</source>
@@ -1337,7 +1337,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Warp (Reproject)</source>
-        <translation type="unfinished"></translation>
+        <translation>Warp (Preyeksikan kembali)</translation>
     </message>
     <message>
         <source>Grid (Interpolation)</source>
@@ -1479,9 +1479,9 @@ icons by Robert Szepanek
 
 HOMEPAGE:
 http://trac.faunalia.it/GdalTools-plugin</source>
-        <translation>GdalTools (AKA RasterTools) merupakan plugin untuk Quantuk GIS yang betujuan untuk membuat hidup lebih mudah bagi pengguna GDAL, menyediakan antarmuka yang sederhana untuk program yang umumnya digunakan.
+        <translation>GdalTools (AKA RasterTools) merupakan plugin untuk Quantum GIS yang betujuan untuk membuat hidup lebih mudah bagi pengguna GDAL, menyediakan antarmuka yang sederhana untuk program yang umumnya digunakan.
 
-Plugin ini dikembangkan oleh Faunia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
+Plugin ini dikembangkan oleh Faunalia (http://faunalia.it) with help from GIS-lab (http://gis-lab.info).
 Ikon by Robert Szczepanek
 Terima kasih telah disponsori oleh Silvio Grosso.
 
@@ -1639,137 +1639,139 @@ Do you want terminate it anyway?</source>
     </message>
     <message>
         <source>Select the output directory to save the results to</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori output untuk menyimpan hasilnya ke</translation>
     </message>
     <message>
         <source>Select the input file for Sieve</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pilih arsip input untuk penyaring</translation>
     </message>
     <message>
         <source>Select the files to Merge</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip untuk digabungkan</translation>
     </message>
     <message>
         <source>Select where to save the Merge output</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih dimana untuk menyimpan arsip keluaran</translation>
     </message>
     <message>
         <source>Select the input file for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip input untuk dikonversi</translation>
     </message>
     <message>
         <source>Select the input directory with files for convert</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input yang berisikan arsip untuk dikonversi</translation>
     </message>
     <message>
         <source>Select the file for DEM</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip DEM</translation>
     </message>
     <message>
         <source>Select the color configuration file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip konfigurasi warna</translation>
     </message>
     <message>
         <source>Select the input file for Polygonize</source>
-        <translation type="unfinished"></translation>
+        <translation>pilih input untuk dipoligonkan</translation>
     </message>
     <message>
         <source>Select where to save the Polygonize output</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lokasi untuk menyimpan output arsip yang dipoligonkan</translation>
     </message>
     <message>
         <source>Select the input file for Contour</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip input untuk dibuatkan kontur</translation>
     </message>
     <message>
         <source>Select where to save the Contour output</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lokasi untuk menyimpan kontur output</translation>
     </message>
     <message>
         <source>Select the input file for Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip input untuk diterjemahkan</translation>
     </message>
     <message>
         <source>Select the input directory with files to Translate</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input yang berisikan arsip untuk diterjemahkan</translation>
     </message>
     <message>
         <source>Translate - srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjemahkan - srcwin</translation>
     </message>
     <message>
         <source>Image coordinates (pixels) must be integer numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>koordinat gambar (piksel) harus dalam bilangan bulat.</translation>
     </message>
     <message>
         <source>Translate - prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjemahkan - prjwin</translation>
     </message>
     <message>
         <source>Image coordinates (geographic) must be numbers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat gambar (geografis) harus dalam bilangan.</translation>
     </message>
     <message>
         <source>Output size required</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran output diiperlukan</translation>
     </message>
     <message>
         <source>The output file doesn&apos;t exist. You must set up the output size to create it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip keluaran belum ada. Anda harus menentukan ukuran keluaran untuk membuatnya.</translation>
     </message>
     <message>
         <source>Convert paletted image to RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi gambar palet ke RGB</translation>
     </message>
     <message>
         <source>Select the input file for Rasterize</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih arsip input untuk dirasterkan</translation>
     </message>
     <message>
         <source>Copy</source>
-        <translation type="unfinished"></translation>
+        <translation>Salin</translation>
     </message>
     <message>
         <source>Copy all</source>
-        <translation type="unfinished"></translation>
+        <translation>Salin semua</translation>
     </message>
     <message>
         <source>Select the input directory with files for VRT</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input yang berisikan arsip untuk VRT</translation>
     </message>
     <message>
         <source>Select the input directory with raster files</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input yang berisikan arsip raster</translation>
     </message>
     <message>
         <source>Select where to save the TileIndex output</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lokasi dimana untuk menyimpan output TileIndeks</translation>
     </message>
     <message>
         <source>Error retrieving the extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal mendapatkan eksten kembali</translation>
     </message>
     <message>
         <source>GDAL was unable to retrieve the extent from any file. 
 The &quot;Use intersected extent&quot; option will be unchecked.</source>
-        <translation type="unfinished"></translation>
+        <translation>GDAL tidak dapat mendapatkan embali extent dari arsip manapun. 
+opsi &apos;Gunakan interseksi extent&apos; tidak akan dicentang.</translation>
     </message>
     <message>
         <source>Empty extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent kosong</translation>
     </message>
     <message>
         <source>The computed extent is empty. 
 Disable the &quot;Use intersected extent&quot; option to have a nonempty output.</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent yang telah dihitung kosong. 
+Nonaktifkan opsi &apos;Gunakan interseksi extent&apos; untuk mendapatkan extent yang tidak kosong.</translation>
     </message>
     <message>
         <source>Select the input file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih input arsip</translation>
     </message>
     <message>
         <source>Select the input directory with files</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori input yang berisikan arsip</translation>
     </message>
 </context>
 <context>
@@ -2310,17 +2312,17 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="195"/>
         <source>Azimuth of the light</source>
-        <translation type="unfinished"></translation>
+        <translation>Azimut cahaya</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="218"/>
         <source>Altitude of the light</source>
-        <translation type="unfinished"></translation>
+        <translation>Ketinggian cahaya</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="245"/>
         <source>Slope expressed as percent (instead of as degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelerengan dinyatakan dalam persen (bukan dalam derajat)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="292"/>
@@ -2330,315 +2332,320 @@ Disable the &quot;Use intersected extent&quot; option to have a nonempty output.
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="299"/>
         <source>Return 0 for flat (instead of -9999)</source>
-        <translation type="unfinished"></translation>
+        <translation>Berikan nilai 0 untuk daerah datar (bukan -9999)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="323"/>
         <source>Color configuration file</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurasi warna arsip</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="330"/>
         <source>Matching mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus penyesuaian</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="342"/>
         <source>Exact color (otherwise &quot;0,0,0,0&quot; RGBA)</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna yang tepat (jika tidak &quot;0,0,0,0&quot; RGBA)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="355"/>
         <source>Nearest color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna terdekat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="365"/>
         <source>Add alpha channel</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah pita alpha</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetDEM.ui" line="395"/>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="94"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="255"/>
         <source>&amp;Creation Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi Pembuatan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="20"/>
         <source>Near Black</source>
-        <translation type="unfinished"></translation>
+        <translation>Mendekati hitam</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="48"/>
         <source>How &amp;far from black (or white)</source>
-        <translation type="unfinished"></translation>
+        <translation>Seberapa jauh dari hitam (atau putih)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetNearBlack.ui" line="70"/>
         <source>Search for nearly &amp;white (255) pixels instead of black ones</source>
-        <translation type="unfinished"></translation>
+        <translation>Mencari nilai piksel yang mendekati putih (255) bukan hitam</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="20"/>
         <source>Build overviews (Pyramids)</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun pratinjau (Pyramid)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="45"/>
         <source>Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metode resample</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="53"/>
         <source>nearest</source>
-        <translation type="unfinished"></translation>
+        <translation>Terdekat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="58"/>
         <source>average</source>
-        <translation type="unfinished"></translation>
+        <translation>Rata-rata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="63"/>
         <source>gauss</source>
-        <translation type="unfinished"></translation>
+        <translation>gauss</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="68"/>
         <source>average_mp</source>
-        <translation type="unfinished"></translation>
+        <translation>mp_rata-rata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="73"/>
         <source>average_magphase</source>
-        <translation type="unfinished"></translation>
+        <translation>madphase_rata-rata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="78"/>
         <source>mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="86"/>
         <source>Levels (space delimited)</source>
-        <translation type="unfinished"></translation>
+        <translation>Level (dibatasi spasi)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="101"/>
         <source>Remove all overviews.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan semua pratinjau.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="104"/>
         <source>Clean</source>
-        <translation type="unfinished"></translation>
+        <translation>Bersihkan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="111"/>
         <source>In order to generate external overview (for GeoTIFF especially).</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk membuat pratinjau eksternal (khususnya untuk GeoTIFF).</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="114"/>
         <source>Open in read-only mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka dalam modus hanya dapat dibaca (read only)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="121"/>
         <source>Create external overviews in TIFF format, compressed using JPEG.</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat pratinjau eksternal dalam format TIFF, kompres denga menggunakan JPEG.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="124"/>
         <source>Overviews in TIFF format with JPEG compression</source>
-        <translation type="unfinished"></translation>
+        <translation>Pratinjau dalam format TIFF dengan kompresi JPEG</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="158"/>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="178"/>
         <source>For JPEG compressed external overviews, 
 the JPEG quality can be set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk pratinjau eksternal dengan kompresi JPEG, 
+kualitas JPEG dapat ditentukan.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="162"/>
         <source>JPEG Quality (1-100)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kualitas JPEG (1-100)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="192"/>
         <source>Alternate overview format using Erdas Imagine format, 
 placing the overviews in an associated .aux file 
 suitable for direct use with Imagine,ArcGIS, GDAL.</source>
-        <translation type="unfinished"></translation>
+        <translation>Format pratinjau alternatif dengan menggunakan format Erdas Imagine, 
+Tempatkan pratinjau dalam arsip .aux 
+Cocok untuk penggunaan langsung dengan Imagine, ArcGIS, GDAL.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetOverview.ui" line="197"/>
         <source>Use Imagine format (.aux file)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan format Imagine (arsip .aux)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="20"/>
         <source>Polygonize (Raster to vector)</source>
-        <translation type="unfinished"></translation>
+        <translation>Poligonkan (Raster ke vektor)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="38"/>
         <source>&amp;Output file for polygons (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip keluaran untuk poligon (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="48"/>
         <source>&amp;Field name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama &amp;field</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetPolygonize.ui" line="55"/>
         <source>DN</source>
-        <translation type="unfinished"></translation>
+        <translation>DN</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="20"/>
         <source>Assign projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetapkan proyeksi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="33"/>
         <source>WARNING: current projection definition will be cleared</source>
-        <translation type="unfinished"></translation>
+        <translation>PERINGATAN: proyeksi yang telah ditentukan saan ini akan dihapus</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="59"/>
         <source>Desired SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS yang dikehendaki</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="66"/>
         <source>Output will be:
 - new GeoTiff if input file is not GeoTiff
 - overwritten if input is GeoTiff</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran akan menjadi:
+- GeoTiff baru jika arsip input bukan GeoTiff
+- Timpa jika input dalam GeoTiff</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetBuildVRT.ui" line="48"/>
         <location filename="../python/plugins/GdalTools/tools/widgetProjection.ui" line="52"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="32"/>
         <source>Recurse subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan dalam subdirektori</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="20"/>
         <source>Proximity (Raster distance)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kedekatan (Jarak raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="48"/>
         <source>&amp;Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="55"/>
         <source>&amp;Dist units</source>
-        <translation type="unfinished"></translation>
+        <translation>Satuan jarak</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="66"/>
         <source>GEO</source>
-        <translation type="unfinished"></translation>
+        <translation>GEO</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="71"/>
         <source>PIXEL</source>
-        <translation type="unfinished"></translation>
+        <translation>PIKSEL</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="79"/>
         <source>&amp;Max dist</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak maks</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="93"/>
         <source>&amp;No data</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="107"/>
         <source>&amp;Fixed buf val</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai buffer tetap</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetProximity.ui" line="121"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="154"/>
         <source>0</source>
-        <translation type="unfinished"></translation>
+        <translation>0</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="20"/>
         <source>Rasterize (Vector to raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Rasterkan (Vektor ke raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="28"/>
         <source>&amp;Input file (shapefile)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip masukan (shapefile)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="38"/>
         <source>&amp;Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field atribut</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="58"/>
         <source>&amp;Output file for rasterized vectors (raster)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip keluaran untuk vektor yang dirasterkan (raster)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetRasterize.ui" line="76"/>
         <source>New size (required if output file doens&apos;t exist)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran baru (dibutuhkan jika arsip keluaran tidak ada)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="20"/>
         <source>Sieve</source>
-        <translation type="unfinished"></translation>
+        <translation>Saring</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="48"/>
         <source>&amp;Threshold</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai ambang batas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="62"/>
         <source>&amp;Pixel connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Hubungan &amp;piksel</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="70"/>
         <source>4</source>
-        <translation type="unfinished"></translation>
+        <translation>4</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetSieve.ui" line="75"/>
         <source>8</source>
-        <translation type="unfinished"></translation>
+        <translation>8</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="106"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="122"/>
         <source>Percentage to resize image. This will change pixel size/image resolution accordingly: 25% will create an image with pixels 4x larger.</source>
-        <translation type="unfinished"></translation>
+        <translation>Persentase untuk mengubah ukuran gambar. Ini akan merubah ukuran piksel/resolusi gambar maka; 25% akan membuat gambar dengan ukuran piksel 4x lebih besar.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="125"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="138"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="234"/>
         <source>Assign a specified nodata value to output bands.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetapkan nilai tidak ada data pada pita keluaran.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="148"/>
@@ -2646,146 +2653,148 @@ suitable for direct use with Imagine,ArcGIS, GDAL.</source>
         <source>To expose a dataset with 1 band with a color table as a dataset with 3 (RGB) or 4 (RGBA) bands. 
 Useful for output drivers such as JPEG, JPEG2000, MrSID, ECW that don&apos;t support color indexed datasets. 
 The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a color table that only contains gray levels to a gray indexed dataset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk membuka dataset 1 pita dengan tabel warna seperti dataset dengan 3 (RGB) atau 4 (RGBA) pita. 
+Beguna untuk driver keluaran seperti JPEG, JPEG2000, MrSID, ECW yang tidak mendukung pengindekan warna dataset. 
+Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset dengan tabel warna yang hanya berisikan level abu-abu ke indeks dataset abu-abu.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="35"/>
         <source>&amp;Input Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan Masukan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="20"/>
         <source>Translate (Convert format)</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjemahkan (konversi format)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="72"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="83"/>
         <source>&amp;Target SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS %target</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="109"/>
         <source>Outsize</source>
-        <translation type="unfinished"></translation>
+        <translation>Diluar ukuran</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="153"/>
         <source>Expand</source>
-        <translation type="unfinished"></translation>
+        <translation>Perluas</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="166"/>
         <source>Gray</source>
-        <translation type="unfinished">Abu-abu</translation>
+        <translation>Abu-abu</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="171"/>
         <source>RGB</source>
-        <translation type="unfinished"></translation>
+        <translation>RGB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="176"/>
         <source>RGBA</source>
-        <translation type="unfinished"></translation>
+        <translation>RGBA</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="184"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="194"/>
         <source>Selects a subwindow from the source image for copying based on pixel/line location. (Enter Xoff Yoff Xsize Ysize)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih subwindow dari sumber gambar sebagai dasar menyalin pada lokasi piksel atau garis. (masukan Xoff Yoff Xsize Ysize)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="187"/>
         <source>Srcwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Srcwin</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="204"/>
         <source>Prjwin</source>
-        <translation type="unfinished"></translation>
+        <translation>Prjwin</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="201"/>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="211"/>
         <source>Selects a subwindow from the source image for copying (like -srcwin) but with the corners given in georeferenced coordinates. (Enter ulx uly lrx lry)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih subwindow dari sumber gambar untuk menyalin (seperti -srcwin) tetapi dengan sudut yang diberikan dalam georeferensi koordinat. (Masukkan ulx uly lrx lry)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="218"/>
         <source>Copy all subdatasets of this file to individual output files. Use with formats like HDF or OGDI that have subdatasets.</source>
-        <translation type="unfinished"></translation>
+        <translation>Salin semua subdataset dari arsip ini ke keluaran masing-masing arsip. Gunakan dengan format seperti HDF atau OGDI yang memiliki subdataset.</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="221"/>
         <source>Sds</source>
-        <translation type="unfinished"></translation>
+        <translation>Sds</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="55"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format keluaran</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="119"/>
         <source>Near</source>
-        <translation type="unfinished"></translation>
+        <translation>Dekat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="124"/>
         <source>Bilinear</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilinier</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="129"/>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubik</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="134"/>
         <source>Cubic spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Spline kubik</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="139"/>
         <source>Lanczos</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanczos</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="147"/>
         <source>No data values</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai tidak ada data</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="168"/>
         <source>MB</source>
-        <translation type="unfinished"></translation>
+        <translation>MB</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="55"/>
         <source>&amp;Source SRS</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sumber SRS</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="20"/>
         <source>Warp (Reproject)</source>
-        <translation type="unfinished"></translation>
+        <translation>Warp (Proyeksikan kembali)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="111"/>
         <source>&amp;Resampling method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metode &amp;resampel</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="161"/>
         <source>&amp;Memory used for caching</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">&amp;Memori yang digunakan untuk caching</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="743"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="199"/>
         <source>Resize</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah ukuran</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="260"/>
@@ -2795,37 +2804,37 @@ The &apos;gray&apos; value (from GDAL 1.7.0) enables to expand a dataset with a 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="14"/>
         <source>Raster tile index</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Indeks raster tile</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="22"/>
         <source>Input directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Direktori masukan</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="39"/>
         <source>Output shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile keluaran</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="49"/>
         <source>Tile index field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field indeks tile</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="59"/>
         <source>location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="74"/>
         <source>Write absolute path</source>
-        <translation type="unfinished"></translation>
+        <translation>Tulis jalur absolut</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="81"/>
         <source>Skip files with different projection ref</source>
-        <translation type="unfinished"></translation>
+        <translation>Lewatkan arsip dengan referensi proyeksi berbeda</translation>
     </message>
 </context>
 <context>
@@ -4070,12 +4079,12 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="13"/>
         <source>Create OSM relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat relasi OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="30"/>
         <source>Relation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis relasi:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="87"/>
@@ -4084,65 +4093,65 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="214"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="233"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="115"/>
         <source>Properties</source>
-        <translation type="unfinished">Properti</translation>
+        <translation>Properti</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="185"/>
         <source>Members</source>
-        <translation type="unfinished"></translation>
+        <translation>Anggota</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="305"/>
         <source>Create</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="321"/>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="78"/>
         <source>Show type description</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan deskripsi</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="81"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="84"/>
         <source>Shows brief description of selected relation type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan deskripsi singkat dari tipe relasi yang dipilih.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="135"/>
         <source>Generate tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat tanda</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="138"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="141"/>
         <source>Fills tag table with tags that are typical for relation of specified type.</source>
-        <translation type="unfinished"></translation>
+        <translation>Isi tabel tanda dengan tanda umum untuk jenis relasi khusus.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="151"/>
         <source>Remove all selected tags</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan semua tanda yang dipilih</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="154"/>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="157"/>
         <source>Removes all selected tags.</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghilangkan semua tanda yang dipilih.</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="205"/>
         <source>Select member on map</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih anggota di peta</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmAddRelationDlg.ui" line="208"/>
@@ -4171,7 +4180,7 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="19"/>
         <source>Download OSM data</source>
-        <translation type="unfinished"></translation>
+        <translation>Unduh data OSM</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="40"/>
@@ -4181,25 +4190,24 @@ GEOS geoprocessing error: One or more input features have invalid geometry.</sou
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="48"/>
         <source>Latitude:</source>
-        <translation type="unfinished">Bujur:</translation>
+        <translation>Bujur:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="55"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="96"/>
         <source>   From</source>
-        <translation type="unfinished"></translation>
+        <translation>...Dari</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="72"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="113"/>
         <source>To</source>
-        <translation type="unfinished"></translation>
+        <translation>Sampai</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="89"/>
         <source>Longitude:</source>
-        <translation type="unfinished">
-Lintang:</translation>
+        <translation>Lintang:</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="166"/>
@@ -4210,7 +4218,7 @@ Lintang:</translation>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="182"/>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="210"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../python/plugins/osm/ui_files/OsmDownloadDlg.ui" line="196"/>
@@ -6047,13 +6055,13 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="895"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1406"/>
         <source>INTERLIS 1</source>
-        <translation type="unfinished"></translation>
+        <translation>INTERLIS 1</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="902"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1410"/>
         <source>INTERLIS 2</source>
-        <translation type="unfinished"></translation>
+        <translation>INTERLIS 2</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="916"/>
@@ -6065,31 +6073,31 @@ Only %1 of %2 features written.</source>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="923"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1426"/>
         <source>Microstation DGN</source>
-        <translation type="unfinished"></translation>
+        <translation>DGN microstation</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="930"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1450"/>
         <source>S-57 Base file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip dasar S-57</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="944"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1460"/>
         <source>SQLite</source>
-        <translation type="unfinished"></translation>
+        <translation>SQLite</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="951"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1487"/>
         <source>AutoCAD DXF</source>
-        <translation type="unfinished"></translation>
+        <translation>AutoCAD DXF</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorfilewriter.cpp" line="958"/>
         <location filename="../src/providers/ogr/qgsogrprovider.cpp" line="1483"/>
         <source>Geoconcept</source>
-        <translation type="unfinished"></translation>
+        <translation>Geoconcept</translation>
     </message>
     <message>
         <location filename="../src/providers/grass/qgsgrassrasterprovider.cpp" line="60"/>
@@ -8052,7 +8060,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsabout.ui" line="112"/>
         <source>http://www.gnu.org/licenses</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="147"/>
@@ -8254,7 +8262,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="64"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="162"/>
         <source>Action</source>
-        <translation type="unfinished">Aksi</translation>
+        <translation>Aksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="41"/>
@@ -8345,12 +8353,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="208"/>
         <source>Capture output</source>
-        <translation type="unfinished">Tangkap output</translation>
+        <translation>Tangkap output</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="202"/>
         <source>Captures any output from the action</source>
-        <translation type="unfinished">Tangkap output apa saja dari aksi</translation>
+        <translation>Tangkap output apa saja dari aksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="205"/>
@@ -8365,18 +8373,18 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="29"/>
         <source>Action list</source>
-        <translation type="unfinished">Daftar Aksi</translation>
+        <translation>Daftar Aksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="54"/>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="265"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="130"/>
         <source>Action properties</source>
-        <translation type="unfinished">Properti Aksi</translation>
+        <translation>Properti Aksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="159"/>
@@ -8387,7 +8395,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="184"/>
         <source>Browse for action</source>
-        <translation type="unfinished">Navigasi untuk tindakan</translation>
+        <translation>Navigasi untuk tindakan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="187"/>
@@ -8432,7 +8440,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsattributeactiondialogbase.ui" line="190"/>
         <source>Clicking the button will let you select an application to use as the action</source>
-        <translation type="unfinished">Klik tombol tersebut akan memungkinkan anda untuk memilih aplikasi untuk digunakan sebagai tindakan</translation>
+        <translation>Klik tombol tersebut akan memungkinkan anda untuk memilih aplikasi untuk digunakan sebagai tindakan</translation>
     </message>
 </context>
 <context>
