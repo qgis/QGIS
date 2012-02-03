@@ -19,14 +19,15 @@
 #include "qgsgenericprojectionselector.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
+#include "qgscoordinatereferencesystem.h"
 
 #include <QSettings>
 #include <QFileDialog>
 #include <QTextCodec>
 
-QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFlags fl )
+QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent, Qt::WFlags fl )
     : QDialog( parent, fl )
-    , mCRS( -1 )
+    , mCRS( srsid )
 {
   setupUi( this );
 
@@ -57,9 +58,13 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QWidget* parent, Qt::WFl
     idx = 0;
   }
 
-  mEncodingComboBox->setCurrentIndex( idx );
+  mCRSSelection->clear();
+  mCRSSelection->addItems( QStringList() << tr( "Layer CRS" ) << tr( "Project CRS" ) << tr( "Selected CRS" ) );
 
-  leCRS->setText( tr( "Original CRS" ) );
+  QgsCoordinateReferenceSystem srs( srsid, QgsCoordinateReferenceSystem::InternalCrsId );
+  leCRS->setText( srs.description() );
+
+  mEncodingComboBox->setCurrentIndex( idx );
   on_mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );
 }
 
@@ -76,6 +81,11 @@ void QgsVectorLayerSaveAsDialog::accept()
   settings.setValue( "/UI/lastVectorFormat", format() );
   settings.setValue( "/UI/encoding", encoding() );
   QDialog::accept();
+}
+
+void QgsVectorLayerSaveAsDialog::on_mCRSSelection_currentIndexChanged( int idx )
+{
+  leCRS->setEnabled( idx == 2 );
 }
 
 void QgsVectorLayerSaveAsDialog::on_mFormatComboBox_currentIndexChanged( int idx )
@@ -128,6 +138,7 @@ void QgsVectorLayerSaveAsDialog::on_browseCRS_clicked()
     QgsCoordinateReferenceSystem srs( mySelector->selectedCrsId(), QgsCoordinateReferenceSystem::InternalCrsId );
     mCRS = srs.srsid();
     leCRS->setText( srs.description() );
+    mCRSSelection->setCurrentIndex( 2 );
   }
 
   delete mySelector;
@@ -150,7 +161,18 @@ QString QgsVectorLayerSaveAsDialog::format() const
 
 long QgsVectorLayerSaveAsDialog::crs() const
 {
-  return mCRS;
+  if ( mCRSSelection->currentIndex() == 0 )
+  {
+    return -1; // Layer CRS
+  }
+  else if ( mCRSSelection->currentIndex() == 1 )
+  {
+    return -2; // Project CRS
+  }
+  else
+  {
+    return mCRS;
+  }
 }
 
 QStringList QgsVectorLayerSaveAsDialog::datasourceOptions() const
