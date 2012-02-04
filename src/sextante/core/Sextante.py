@@ -7,10 +7,12 @@ import copy
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.SextanteUtils import SextanteUtils
+from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
 
 class Sextante:
 
-    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider()]
+    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),MMQGISAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []
@@ -24,6 +26,13 @@ class Sextante:
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()
+
+
+    @staticmethod
+    def updateProviders():
+        for provider in Sextante.providers:
+            provider.loadAlgorithms()
+
 
     @staticmethod
     def loadAlgorithms():
@@ -80,6 +89,7 @@ class Sextante:
         else:
             print "Algorithm not found"
 
+
     @staticmethod
     def runalg(name, *args):
         alg = Sextante.getAlgorithm(name)
@@ -105,6 +115,8 @@ class Sextante:
                 return
             i = i +1
 
+        SextanteUtils.addToLog(SextanteUtils.LOG_ALGORITHM, alg.getAsCommand())
+
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
             AlgorithmExecutor.runalg(alg, SilentProgress())
@@ -121,5 +133,43 @@ class Sextante:
     @staticmethod
     def getObject(string):
         QGisLayers.getObjectFromUri(string)
+
+
+    @staticmethod
+    def runandload(name, *args):
+        #a quick fix to call algorithms from the history dialog
+        alg = Sextante.getAlgorithm(name)
+        if alg == None:
+            #in theory, this could not happen. Maybe we should show a message box?
+            QMessageBox.critical(None,"Error", "Error: Algorithm not found\n")
+            return
+        if len(args) != len(alg.parameters) + len(alg.outputs):
+            QMessageBox.critical(None,"Error", "Error: Wrong number of parameters")
+            Sextante.alghelp(name)
+            return
+
+        alg = copy.deepcopy(alg)
+        i = 0
+        for param in alg.parameters:
+            if not param.setValue(args[i]):
+                QMessageBox.critical(None, "Error", "Error: Wrong parameter value: " + args[i])
+                return
+            i = i +1
+
+        for output in alg.outputs:
+            if not output.setChannel(args[i]):
+                QMessageBox.critical(None, "Error", "Error: Wrong output channel: " + args[i])
+                return
+            i = i +1
+
+        try:
+            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+            AlgorithmExecutor.runalg(alg, SilentProgress())
+            QApplication.restoreOverrideCursor()
+            QGisLayers.loadFromAlg(alg)
+        except GeoAlgorithmExecutionException, e:
+            QMessageBox.critical(None, "Error",  e.msg)
+
+
 
 

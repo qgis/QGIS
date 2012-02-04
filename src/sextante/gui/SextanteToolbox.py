@@ -7,6 +7,7 @@ import copy
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
 from sextante.gui.ProgressDialog import ProgressDialog
+from sextante.core.SextanteUtils import SextanteUtils
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -25,6 +26,7 @@ class SextanteToolbox(QtGui.QDockWidget):
 class Ui_SextanteToolbox(object):
 
     def updateTree(self):
+        Sextante.updateProviders()
         Sextante.loadAlgorithms()
         self.fillTree()
 
@@ -92,6 +94,7 @@ class Ui_SextanteToolbox(object):
             dlg.exec_()
             if dlg.alg != None:
                 QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+                SextanteUtils.addToLog(SextanteUtils.LOG_ALGORITHM, alg.getAsCommand())
                 AlgorithmExecutor.runalg(alg, SilentProgress())
                 QGisLayers.loadFromAlg(alg)
                 QApplication.restoreOverrideCursor()

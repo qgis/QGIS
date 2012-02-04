@@ -4,7 +4,7 @@ from sextante.gui.ContextAction import ContextAction
 class DeleteScriptAction(ContextAction):
 
     def __init__(self):
-        self.name="Edit script"
+        self.name="Delete script"
 
     def isEnabled(self):
         return isinstance(self.alg, ScriptAlgorithm)

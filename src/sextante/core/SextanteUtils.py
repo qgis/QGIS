@@ -4,6 +4,7 @@ from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputRaster import OutputRaster
 import datetime
+
 class SextanteUtils:
 
     NUM_EXPORTED = 1
@@ -87,27 +88,27 @@ class SextanteUtils:
             tokens = line.split("|")
             text=""
             for i in range(2, len(tokens)):
-                text+=tokens[i] + "\n"
+                text+=tokens[i] + "|"
             if line.startswith(SextanteUtils.LOG_ERROR):
-                errors.append(LogElement(tokens[1], text))
+                errors.append(LogEntry(tokens[1], text))
             elif line.startswith(SextanteUtils.LOG_ALGORITHM):
-                algorithms.append(LogElement(tokens[1], text))
+                algorithms.append(LogEntry(tokens[1], tokens[2]))
             elif line.startswith(SextanteUtils.LOG_WARNING):
-                warnings.append(LogElement(tokens[1], text))
+                warnings.append(LogEntry(tokens[1], text))
             elif line.startswith(SextanteUtils.LOG_INFO):
-                info.append(LogElement(tokens[1], text))
+                info.append(LogEntry(tokens[1], text))
+            line = lines.readline()
         lines.close()
         entries[SextanteUtils.LOG_ERROR] = errors
         entries[SextanteUtils.LOG_ALGORITHM] = algorithms
+        entries[SextanteUtils.LOG_INFO] = info
+        entries[SextanteUtils.LOG_WARNING] = warnings
         return entries
 
-class LogElement():
-
+class LogEntry():
     def __init__(self, date, text):
         self.date = date
         self.text = text
-
-
 
 def mkdir(newdir):
     if os.path.isdir(newdir):

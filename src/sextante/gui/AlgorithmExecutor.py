@@ -7,7 +7,6 @@ class AlgorithmExecutor:
 
     @staticmethod
     def runalg(alg, progress):
-        SextanteUtils.addToLog(SextanteUtils.LOG_ALGORITHM, alg.getAsCommand())
         alg.execute(progress)
         #=======================================================================
         # th = RunAlgorithmThread(alg, progress)

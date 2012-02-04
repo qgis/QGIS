@@ -15,14 +15,23 @@ class ScriptAlgorithmProvider:
         self.actions = []
         self.actions.append(CreateNewScriptAction())
         self.contextMenuActions = [EditScriptAction(), DeleteScriptAction()]
-        self.icon = QIcon(os.path.dirname(__file__) + "/script.png")
+        self.icon = self.getIcon()
+
+    #This 3 methods should be subclasses to create a custom group of scripts
+    #==========================================================================
+    def getIcon(self):
+        return QIcon(os.path.dirname(__file__) + "/script.png")
+
+    def scriptsFolder(self):
+        return ScriptUtils.scriptsFolder()
 
     def getName(self):
         return "Scripts"
+    #==========================================================================
 
     def loadAlgorithms(self):
         self.algs = []
-        folder = ScriptUtils.scriptsFolder()
+        folder = self.scriptsFolder()
         for descriptionFile in os.listdir(folder):
             if descriptionFile.endswith("py"):
                 try:

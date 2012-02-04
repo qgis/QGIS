@@ -53,6 +53,7 @@ class SagaUtils:
 
         proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
         loglines=[]
+        loglines.append("SAGA Execution log message")
         while 1:
             line = proc.readline()
             if not line:

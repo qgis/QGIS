@@ -8,6 +8,7 @@ import inspect
 from sextante.core.Sextante import Sextante
 from sextante.gui.SextanteToolbox import SextanteToolbox
 from sextante.core.QGisLayers import QGisLayers
+from sextante.gui.HistoryDialog import HistoryDialog
 
 cmd_folder = os.path.split(inspect.getfile( inspect.currentframe() ))[0]
 if cmd_folder not in sys.path:
@@ -39,6 +40,12 @@ class SextantePlugin:
         QObject.connect(self.modelerAction, SIGNAL("triggered()"), self.openModeler)
         self.menu.addAction(self.modelerAction)
 
+        icon = QIcon(os.path.dirname(__file__) + "/history.gif")
+        self.historyAction = QAction(icon, \
+            "&SEXTANTE History and log", self.iface.mainWindow())
+        QObject.connect(self.historyAction, SIGNAL("triggered()"), self.openHistory)
+        self.menu.addAction(self.historyAction)
+
         menuBar = self.iface.mainWindow().menuBar()
         menuBar.insertMenu(menuBar.actions()[-1], self.menu)
 
@@ -51,3 +58,8 @@ class SextantePlugin:
 
     def openModeler(self):
         pass
+
+    def openHistory(self):
+        dlg = HistoryDialog()
+        dlg.exec_()
+

@@ -32,10 +32,10 @@ class ScriptAlgorithm(GeoAlgorithm):
         lines = open(fullpath)
         line = lines.readline()
         while line != "":
-            if line.startswith("#"):
+            if line.startswith("##"):
                 self.processParameterLine(line.strip("\n"))
-            else:
-                self.script += line
+
+            self.script += line
             line = lines.readline()
         lines.close()
 
