@@ -43,7 +43,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   {
     layers.next();
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
-    if( vl->geometryType() == QGis::Point )
+    if( ( vl ) && ( vl->geometryType() == QGis::Point ) )
     {
       mInputVectorCombo->addItem( vl->name(), QVariant( vl->id() ) );
     }
@@ -94,10 +94,13 @@ void HeatmapGui::on_mButtonBox_accepted()
   {
     layers.next();
     QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
-    dummyText = vl->id();
-    if( dummyText.toInt() == myLayerId )
+    if ( vl )
     {
+      dummyText = vl->id();
+      if( dummyText.toInt() == myLayerId )
+      {
       inputLayer = vl;
+      }
     }
   }
 
@@ -116,14 +119,20 @@ void HeatmapGui::on_mButtonBox_accepted()
     QMessageBox::information( 0, tr("Output filename is invalid!"), tr("Kindly enter a valid output file path and name.") );
   }
   QString suffix = myFileInfo.suffix();
+  // append the file format if the suffix is empty
   if( suffix.isEmpty() )
   {
     outputFormat = mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
     QMap<QString, QString>::const_iterator it = mExtensionMap.find( outputFormat );
     if( it != mExtensionMap.end() && it.key() == outputFormat )
     {
-      outputFileName.append(".");
-      outputFileName.append( it.value() );
+      // making sure that there is really a extension value available
+      // Some drivers donot seem to have any extension at all
+      if( it.value() != NULL || it.value() != "" )
+      {
+        outputFileName.append(".");
+        outputFileName.append( it.value() );
+      }
     }
   }
 

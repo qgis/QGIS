@@ -35,6 +35,9 @@
 #include <QAction>
 #include <QToolBar>
 #include <QMessageBox>
+#include <QFileInfo>
+
+#define NO_DATA -9999
 
 
 static const QString sName = QObject::tr( "Heatmap" );
@@ -112,64 +115,149 @@ void Heatmap::unload()
 // The worker
 void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float theDecay, QString theOutputFilename, QString theOutputFormat )
 {
-  // TODO
-  // 1. Get ready the raster writer driver
-  //    -> Write out a empty raster file
-  // 2. read a point from the vector layer
-  // 3. create a square grid for the buffer value and compute the grid
-  // 4. Read the corresponding grid from the file
-  // 5. Merge the old grid and new grid
-  // 6. repeast 2 to 5 untill all points are over
-  // 7. Close all the datasets and load the raster to the window
-  
   // generic variables
   int xSize, ySize;
   double xResolution, yResolution;
+  double rasterX, rasterY;
 
   // Getting the rasterdataset in place
   GDALAllRegister();
 
-  GDALDataset *heatmapDataset;
-  GDALDriver *poDriver;
+  GDALDataset *emptyDataset;
+  GDALDriver *myDriver;
   
-  poDriver = GetGDALDriverManager()->GetDriverByName( theOutputFormat );
-  if( poDriver == NULL )
+  myDriver = GetGDALDriverManager()->GetDriverByName( theOutputFormat.toUtf8() );
+  if( myDriver == NULL )
   {
-    QMessageBox::information( 0, tr("Error in Driver!"), tr("Cannot open the driver for the format specified") );
+    QMessageBox::information( 0, tr("Error in GDAL Driver!"), tr("Cannot open the driver for the format specified") );
     return;
   }
 
   // bounding box info
   QgsRectangle myBBox = theVectorLayer->extent();
+  // fixing  a base width of 500 px/cells
   xSize = 500;
   xResolution = myBBox.width()/xSize;
   yResolution = xResolution;
   ySize = myBBox.height()/yResolution;
+  // add extra extend to cover the corner points' heat region
+  xSize = xSize + ( theBuffer * 2 ) + 10 ;
+  ySize = ySize + ( theBuffer * 2 ) + 10 ;
+  // Define the new lat,lon for the buffered raster area
+  rasterX = myBBox.xMinimum() - ( theBuffer + 5 ) * xResolution;
+  rasterY = myBBox.yMinimum() - ( theBuffer + 5 ) * yResolution;
 
-  double geoTransform[6] = { myBBox.xMinimum(), xResolution, 0, myBBox.yMinimum(), 0, yResolution };
+  double geoTransform[6] = { rasterX, xResolution, 0, rasterY, 0, yResolution };
 
-  heatmapDataset = poDriver->Create( theOutputFilename, xSize, ySize, 1, GDT_Float32, NULL );
+  emptyDataset = myDriver->Create( theOutputFilename.toUtf8(), xSize, ySize, 1, GDT_Float32, NULL );
 
-  heatmapDataset->SetGeoTransform( geoTransform );
+  emptyDataset->SetGeoTransform( geoTransform );
 
   GDALRasterBand *poBand;
-  poBand = heatmapDataset->GetRasterBand(1);
+  poBand = emptyDataset->GetRasterBand(1);
+  poBand->SetNoDataValue( NO_DATA );
 
-  //
-  //Write the heatmapDataset->RasterIO function here
-  //
+  float* line = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  std::fill_n( line, xSize, NO_DATA );
+  // Write the empty raster
+  for ( int i = 0; i < ySize ; i += 1 )
+  {
+    poBand->RasterIO( GF_Write, 0, 0, xSize, 1, line, xSize, 1, GDT_Float32, 0, 0 );
+  }
 
-  //Finally close the dataset
-  GDALClose( (GDALDatasetH) heatmapDataset );
+  CPLFree( line );
+  //close the dataset
+  GDALClose( (GDALDatasetH) emptyDataset );
 
-  // Openning the vector features
+  // open the raster in GA_Update mode
+  GDALDataset *heatmapDS;
+  heatmapDS = ( GDALDataset * ) GDALOpen( theOutputFilename.toUtf8(), GA_Update );
+  if( !heatmapDS )
+  {
+    QMessageBox::information( 0, tr("Error in Updating Raster!"), tr("Couldnot open the created raster for updation. The Heatmap was not generated.") );
+    return;
+  }
+  poBand = heatmapDS->GetRasterBand( 1 );
+  // Get the data buffer ready
+  int blockSize = 2 * theBuffer + 1; // block SIDE would have been more appropriate
+  // Open the vector features
   QgsVectorDataProvider* myVectorProvider = theVectorLayer->dataProvider();
   if( !myVectorProvider )
   {
     QMessageBox::information( 0, tr( "Error in Point Layer!"), tr("Couldnot identify the vector data provider.") );
     return;
   }
+  QgsAttributeList dummyList;
+  myVectorProvider->select( dummyList );
 
+  QgsFeature myFeature;
+
+  while( myVectorProvider->nextFeature( myFeature ) )
+  {
+    QgsGeometry* myPointGeometry;
+    myPointGeometry = myFeature.geometry();
+    // convert the geometry to point
+    QgsPoint myPoint;
+    myPoint = myPointGeometry->asPoint();
+    // avoiding any empty points or out of extent points
+    if( ( myPoint.x() < rasterX ) || ( myPoint.y() < rasterY ) )
+    {
+      continue;
+    }
+    // calculate the pixel position 
+    unsigned int xPosition, yPosition;
+    xPosition = (( myPoint.x() - rasterX )/ xResolution ) - theBuffer;
+    yPosition = (( myPoint.y() - rasterY )/ yResolution ) - theBuffer;
+
+    // get the data
+    float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
+    poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+
+    for( int xp = 0; xp <= theBuffer; xp += 1 )
+    {
+      for( int yp = 0; yp <= theBuffer; yp += 1 )
+      {
+        float distance = sqrt( pow( xp, 2 ) + pow( yp, 2 ) );
+        float pixelValue = 1 - ( (1-theDecay) * distance / theBuffer );
+
+        // clearing anamolies along the axes
+        if( xp == 0 && yp == 0 )
+        {
+          pixelValue /= 4;
+        }
+        else if( xp == 0 || yp == 0 )
+        {
+          pixelValue /= 2;
+        }
+
+        if( distance <= theBuffer )
+        {
+          int pos[4];
+          pos[0] = ( theBuffer + xp ) * blockSize + ( theBuffer + yp );
+          pos[1] = ( theBuffer + xp ) * blockSize + ( theBuffer - yp );
+          pos[2] = ( theBuffer - xp ) * blockSize + ( theBuffer + yp );
+          pos[3] = ( theBuffer - xp ) * blockSize + ( theBuffer - yp );
+          for( int p = 0; p < 4; p += 1 )
+          {
+            if( dataBuffer[ pos[p] ] == NO_DATA )
+            {
+              dataBuffer[ pos[p] ] = 0;
+            }
+            dataBuffer[ pos[p] ] += pixelValue;
+          }
+        }
+      }
+    }
+
+    poBand->RasterIO( GF_Write, xPosition, yPosition, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
+    CPLFree( dataBuffer );
+  }
+
+  //Finally close the dataset
+  GDALClose( (GDALDatasetH) heatmapDS );
+
+  // Open the file in QGIS window
+  mQGisIface->addRasterLayer( theOutputFilename, QFileInfo( theOutputFilename ).baseName() );
 }
 
 //////////////////////////////////////////////////////////////////////////

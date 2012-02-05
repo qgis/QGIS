@@ -100,8 +100,6 @@ class Heatmap: public QObject, public QgisPlugin
     //!pointer to the qaction for this plugin
     QAction * mQActionPointer;
 
-    // ADD YOUR OWN PROPERTY DECLARATIONS AFTER THIS POINT.....
-    QList<rasterPoint> mRasterPoints;
 };
 
 #endif //Heatmap_H
