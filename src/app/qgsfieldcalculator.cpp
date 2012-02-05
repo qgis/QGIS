@@ -269,16 +269,16 @@ void QgsFieldCalculator::populateFields()
 void QgsFieldCalculator::setOkButtonState()
 {
   QPushButton* okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  okButton->setToolTip("");
+  okButton->setToolTip( "" );
 
   bool emptyFieldName = mOutputFieldNameLineEdit->text().isEmpty();
   bool expressionValid = builder->isExpressionValid();
 
   if ( emptyFieldName )
-      okButton->setToolTip( tr("Please enter a field name") );
+    okButton->setToolTip( tr( "Please enter a field name" ) );
 
   if ( !expressionValid )
-      okButton->setToolTip( okButton->toolTip() + tr("\n The expression is invalid see (more info) for details") );
+    okButton->setToolTip( okButton->toolTip() + tr( "\n The expression is invalid see (more info) for details" ) );
 
   bool okEnabled = ( !emptyFieldName || mUpdateExistingGroupBox->isChecked() ) && expressionValid;
 

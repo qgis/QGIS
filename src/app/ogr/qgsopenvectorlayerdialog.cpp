@@ -320,10 +320,10 @@ void QgsOpenVectorLayerDialog::accept()
         makeConnection = true;
       else
         pass = QInputDialog::getText( this,
-                                    tr( "Password for " ) + user,
-                                    tr( "Please enter your password:" ),
-                                    QLineEdit::Password, QString::null,
-                                    &makeConnection );
+                                      tr( "Password for " ) + user,
+                                      tr( "Please enter your password:" ),
+                                      QLineEdit::Password, QString::null,
+                                      &makeConnection );
     }
 
     if ( makeConnection || !pass.isEmpty() )

@@ -104,10 +104,10 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
         uri += QString( ";pwd=%1" ).arg( password );
     }
     else
-        uri += ";trusted_connection=yes";
+      uri += ";trusted_connection=yes";
 
     if ( !database.isEmpty() )
-        uri += QString( ";database=%1" ).arg( database );
+      uri += QString( ";database=%1" ).arg( database );
   }
   else if ( connectionType == "Oracle Spatial" )
   {
