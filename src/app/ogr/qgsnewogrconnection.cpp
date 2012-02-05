@@ -16,7 +16,6 @@
  ***************************************************************************/
 #include <QSettings>
 #include <QMessageBox>
-#include <QInputDialog>
 
 #include "qgsnewogrconnection.h"
 #include "qgscontexthelp.h"
