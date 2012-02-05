@@ -33,14 +33,14 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>298</width>
-        <height>545</height>
+        <width>325</width>
+        <height>508</height>
        </rect>
       </property>
       <attribute name="label">
        <string>Scale bar</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QFormLayout" name="formLayout">
        <item row="0" column="0">
         <widget class="QLabel" name="mSegmentSizeLabel">
          <property name="text">
@@ -54,7 +54,7 @@
          </property>
         </widget>
        </item>
-       <item row="1" column="0">
+       <item row="0" column="1">
         <widget class="QDoubleSpinBox" name="mSegmentSizeSpinBox">
          <property name="decimals">
           <number>4</number>
@@ -64,7 +64,7 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
+       <item row="1" column="0">
         <widget class="QLabel" name="mMapUnitsPerBarUnitLabel">
          <property name="text">
           <string>Map units per bar unit</string>
@@ -77,28 +77,32 @@
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="1" column="1">
         <widget class="QDoubleSpinBox" name="mMapUnitsPerBarUnitSpinBox">
          <property name="maximum">
           <double>9999999999999.000000000000000</double>
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
-        <widget class="QSpinBox" name="mNumberOfSegmentsSpinBox">
-         <property name="suffix">
-          <string> Right segments</string>
-         </property>
-        </widget>
+       <item row="2" column="0" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout">
+         <item>
+          <widget class="QSpinBox" name="mSegmentsLeftSpinBox">
+           <property name="suffix">
+            <string> Left segments</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="mNumberOfSegmentsSpinBox">
+           <property name="suffix">
+            <string> Right segments</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
-       <item row="5" column="0">
-        <widget class="QSpinBox" name="mSegmentsLeftSpinBox">
-         <property name="suffix">
-          <string> Left segments</string>
-         </property>
-        </widget>
-       </item>
-       <item row="6" column="0">
+       <item row="3" column="0">
         <widget class="QLabel" name="mStyleLabel">
          <property name="text">
           <string>Style</string>
@@ -108,10 +112,10 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
+       <item row="3" column="1">
         <widget class="QComboBox" name="mStyleComboBox"/>
        </item>
-       <item row="8" column="0">
+       <item row="4" column="0">
         <widget class="QLabel" name="mMapLabel">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -130,7 +134,7 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="0">
+       <item row="4" column="1">
         <widget class="QComboBox" name="mMapComboBox">
          <property name="enabled">
           <bool>true</bool>
@@ -143,7 +147,53 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="0">
+       <item row="5" column="0">
+        <widget class="QLabel" name="mAlignmentLabel">
+         <property name="text">
+          <string>Alignment</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QComboBox" name="mAlignmentComboBox"/>
+       </item>
+       <item row="10" column="0">
+        <widget class="QLabel" name="mUnitLabelLabel">
+         <property name="text">
+          <string>Unit label</string>
+         </property>
+         <property name="wordWrap">
+          <bool>true</bool>
+         </property>
+         <property name="buddy">
+          <cstring>mUnitLabelLineEdit</cstring>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QLineEdit" name="mUnitLabelLineEdit"/>
+       </item>
+       <item row="11" column="0" colspan="2">
+        <widget class="QPushButton" name="mFontButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Font...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0" colspan="2">
+        <widget class="QPushButton" name="mColorPushButton">
+         <property name="text">
+          <string>Color...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0" colspan="2">
         <widget class="QSpinBox" name="mHeightSpinBox">
          <property name="suffix">
           <string> mm</string>
@@ -153,7 +203,7 @@
          </property>
         </widget>
        </item>
-       <item row="13" column="0">
+       <item row="7" column="0" colspan="2">
         <widget class="QDoubleSpinBox" name="mLineWidthSpinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -178,7 +228,7 @@
          </property>
         </widget>
        </item>
-       <item row="14" column="0">
+       <item row="8" column="0" colspan="2">
         <widget class="QDoubleSpinBox" name="mLabelBarSpaceSpinBox">
          <property name="prefix">
           <string>Label space </string>
@@ -188,7 +238,7 @@
          </property>
         </widget>
        </item>
-       <item row="15" column="0">
+       <item row="9" column="0" colspan="2">
         <widget class="QDoubleSpinBox" name="mBoxSizeSpinBox">
          <property name="prefix">
           <string>Box space </string>
@@ -198,43 +248,7 @@
          </property>
         </widget>
        </item>
-       <item row="16" column="0">
-        <widget class="QLabel" name="mUnitLabelLabel">
-         <property name="text">
-          <string>Unit label</string>
-         </property>
-         <property name="wordWrap">
-          <bool>true</bool>
-         </property>
-         <property name="buddy">
-          <cstring>mUnitLabelLineEdit</cstring>
-         </property>
-        </widget>
-       </item>
-       <item row="17" column="0">
-        <widget class="QLineEdit" name="mUnitLabelLineEdit"/>
-       </item>
-       <item row="18" column="0">
-        <widget class="QPushButton" name="mFontButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Font...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="19" column="0">
-        <widget class="QPushButton" name="mColorPushButton">
-         <property name="text">
-          <string>Color...</string>
-         </property>
-        </widget>
-       </item>
-       <item row="20" column="0">
+       <item row="13" column="0" colspan="2">
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -246,16 +260,6 @@
           </size>
          </property>
         </spacer>
-       </item>
-       <item row="11" column="0">
-        <widget class="QComboBox" name="mAlignmentComboBox"/>
-       </item>
-       <item row="10" column="0">
-        <widget class="QLabel" name="mAlignmentLabel">
-         <property name="text">
-          <string>Alignment</string>
-         </property>
-        </widget>
        </item>
       </layout>
      </widget>

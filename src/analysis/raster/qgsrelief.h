@@ -110,8 +110,11 @@ class ANALYSIS_EXPORT QgsRelief
     int frequencyClassForElevation( double elevation, double minElevation, double elevationClassRange );
     /**Do one iteration of class break optimisation (algorithm from Garcia and Rodriguez)*/
     void optimiseClassBreaks( QList<int>& breaks, double* frequencies );
-    /**Calculates coefficients a (slope) and b (y value for x=0)
-      @param input data points ( elevation class / frequency )*/
+    /**Calculates coefficients a and b
+      @param input data points ( elevation class / frequency )
+      @param a slope
+      @param b y value for x=0
+     */
     bool calculateRegression( const QList< QPair < int, double > >& input, double& a, double& b );
 };
 

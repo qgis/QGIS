@@ -3908,40 +3908,21 @@ bool QgsVectorLayer::rollBack()
 
   if ( isModified() )
   {
-    while ( mAddedAttributeIds.size() > 0 )
+    while ( undoStack()->canUndo() )
     {
-      int idx = *mAddedAttributeIds.begin();
-      mAddedAttributeIds.remove( idx );
-      mUpdatedFields.remove( idx );
-      emit attributeDeleted( idx );
+      undoStack()->undo();
     }
 
-    while ( mDeletedAttributeIds.size() > 0 )
-    {
-      int idx = *mDeletedAttributeIds.begin();
-      mDeletedAttributeIds.remove( idx );
-      emit attributeAdded( idx );
-    }
-
-    // roll back changed attribute values
-    mChangedAttributeValues.clear();
-
-    // roll back changed geometries
-    mChangedGeometries.clear();
-
-    // Roll back added features
-    // Delete the features themselves before deleting the references to them.
-    mAddedFeatures.clear();
-
-    // Roll back deleted features
-    mDeletedFeatureIds.clear();
+    Q_ASSERT( mAddedAttributeIds.isEmpty() );
+    Q_ASSERT( mDeletedAttributeIds.isEmpty() );
+    Q_ASSERT( mChangedAttributeValues.isEmpty() );
+    Q_ASSERT( mChangedGeometries.isEmpty() );
+    Q_ASSERT( mAddedFeatures.isEmpty() );
 
     updateFieldMap();
   }
 
   deleteCachedGeometries();
-
-  undoStack()->clear();
 
   mEditable = false;
   emit editingStopped();
@@ -4848,13 +4829,12 @@ void QgsVectorLayer::redoEditCommand( QgsUndoCommand* cmd )
         if ( attrChIt.value().target.isNull() )
         {
           mChangedAttributeValues[fid].remove( attrChIt.key() );
+          if ( mChangedAttributeValues[fid].isEmpty() )
+            mChangedAttributeValues.remove( fid );
         }
         else
         {
           mChangedAttributeValues[fid][attrChIt.key()] = attrChIt.value().target;
-          QgsFeature f;
-          featureAtId( fid, f, false, true );
-          f.changeAttribute( attrChIt.key(), attrChIt.value().target );
         }
       }
       else
@@ -4985,6 +4965,8 @@ void QgsVectorLayer::undoEditCommand( QgsUndoCommand* cmd )
         if ( attrChIt.value().isFirstChange )
         {
           mChangedAttributeValues[fid].remove( attrChIt.key() );
+          if ( mChangedAttributeValues[fid].isEmpty() )
+            mChangedAttributeValues.remove( fid );
         }
         else
         {

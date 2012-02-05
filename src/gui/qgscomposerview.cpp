@@ -123,7 +123,9 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
 
     //create rubber band for map and ellipse items
     case AddMap:
-    case AddShape:
+    case AddRectangle:
+    case AddTriangle:
+    case AddEllipse:
     {
       QTransform t;
       mRubberBandItem = new QGraphicsRectItem( 0, 0, 0, 0 );
@@ -204,6 +206,35 @@ void QgsComposerView::mousePressEvent( QMouseEvent* e )
   }
 }
 
+void QgsComposerView::addShape( Tool currentTool )
+{
+  QgsComposerShape::Shape shape = QgsComposerShape::Ellipse;
+
+  if ( currentTool == AddRectangle )
+    shape = QgsComposerShape::Rectangle;
+  else if ( currentTool == AddTriangle )
+    shape = QgsComposerShape::Triangle;
+
+  if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
+  {
+    scene()->removeItem( mRubberBandItem );
+    delete mRubberBandItem;
+    mRubberBandItem = 0;
+    return;
+  }
+  if ( composition() )
+  {
+    QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
+    composerShape->setShapeType( shape );
+    composition()->addComposerShape( composerShape );
+    scene()->removeItem( mRubberBandItem );
+    delete mRubberBandItem;
+    mRubberBandItem = 0;
+    emit actionFinished();
+    composition()->pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
+  }
+}
+
 void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
 {
   if ( !composition() )
@@ -257,24 +288,10 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent* e )
       }
       break;
 
-    case AddShape:
-      if ( !mRubberBandItem || mRubberBandItem->rect().width() < 0.1 || mRubberBandItem->rect().width() < 0.1 )
-      {
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
-        mRubberBandItem = 0;
-        return;
-      }
-      if ( composition() )
-      {
-        QgsComposerShape* composerShape = new QgsComposerShape( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height(), composition() );
-        composition()->addComposerShape( composerShape );
-        scene()->removeItem( mRubberBandItem );
-        delete mRubberBandItem;
-        mRubberBandItem = 0;
-        emit actionFinished();
-        composition()->pushAddRemoveCommand( composerShape, tr( "Shape added" ) );
-      }
+    case AddRectangle:
+    case AddTriangle:
+    case AddEllipse:
+      addShape( mCurrentTool );
       break;
 
     case AddMap:
@@ -339,7 +356,9 @@ void QgsComposerView::mouseMoveEvent( QMouseEvent* e )
       }
 
       case AddMap:
-      case AddShape:
+      case AddRectangle:
+      case AddTriangle:
+      case AddEllipse:
         //adjust rubber band item
       {
         double x = 0;

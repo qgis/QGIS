@@ -106,10 +106,15 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
       @param eventLayer layer with features and location field
       @param lineField join index in line layer
       @param eventField join index in event layer
+      @param outputLayer name of output file (can be empty if a memory layer is used)
+      @param outputFormat name of output format (can be empty if a memory provider is used to store the results)
+      @param unlocatedFeatureIds out: ids of event features where linear referencing was not successful
       @param locationField1 attribute index of location field in event layer
       @param locationField2 attribute index of location end field (or -1 for point layer)
+      @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
+      @param p progress dialog or 0 if no progress dialog should be shown
     */
-    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
                      const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
 
     /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/

@@ -909,7 +909,7 @@ void QgsGeometryAnalyzer::bufferFeature( QgsFeature& f, int nProcessedFeatures, 
   }
 }
 
-bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, const QString& outputLayer,
+bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
                                       const QString& outputFormat, int locationField1, int locationField2, QgsVectorDataProvider* memoryProvider, QProgressDialog* p )
 {
   if ( !lineLayer || !eventLayer || !lineLayer->isValid() || !eventLayer->isValid() )
@@ -929,12 +929,13 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
   //create output datasource or attributes in memory provider
   QgsVectorFileWriter* fileWriter = 0;
+  QgsFeatureList memoryProviderFeatures;
   if ( !memoryProvider )
   {
     fileWriter = new QgsVectorFileWriter( outputLayer,
                                           eventLayer->dataProvider()->encoding(),
                                           eventLayer->pendingFields(),
-                                          locationField2 == -1 ? QGis::WKBMultiPoint25D : QGis::WKBMultiLineString25D,
+                                          locationField2 == -1 ? QGis::WKBMultiPoint : QGis::WKBMultiLineString,
                                           &( lineLayer->crs() ),
                                           outputFormat );
   }
@@ -951,9 +952,10 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
   int nEventFeatures = eventLayer->pendingFeatureCount();
   int featureCounter = 0;
-  if( p )
+  int nOutputFeatures = 0; //number of output features for the current event feature
+  if ( p )
   {
-    p->setWindowModality(Qt::WindowModal);
+    p->setWindowModality( Qt::WindowModal );
     p->setMinimum( 0 );
     p->setMaximum( nEventFeatures );
     p->show();
@@ -961,10 +963,12 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
   while ( eventLayer->nextFeature( fet ) )
   {
+    nOutputFeatures = 0;
+
     //update progress dialog
-    if( p )
+    if ( p )
     {
-      if( p->wasCanceled() )
+      if ( p->wasCanceled() )
       {
         break;
       }
@@ -998,24 +1002,34 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
 
       if ( lrsGeom )
       {
+        ++nOutputFeatures;
         fet.setGeometry( lrsGeom );
         if ( memoryProvider )
         {
-          memoryProvider->addFeatures( QgsFeatureList() << fet );
+          memoryProviderFeatures << fet;
         }
-        else
+        else if ( fileWriter )
         {
           fileWriter->addFeature( fet );
         }
       }
     }
+    if ( nOutputFeatures < 1 )
+    {
+      unlocatedFeatureIds.push_back( fet.id() );
+    }
   }
 
-  if( p )
+  if ( p )
   {
     p->setValue( nEventFeatures );
   }
 
+  if ( memoryProvider )
+  {
+    memoryProvider->addFeatures( memoryProviderFeatures );
+  }
+  delete fileWriter;
   return true;
 }
 
@@ -1268,6 +1282,18 @@ bool QgsGeometryAnalyzer::clipSegmentByRange( double x1, double y1, double m1, d
     secondPointClipped = reversed;
   }
 
+  //range1 and range 2 both inside the segment
+  if ( range1 >= m1 && range2 <= m2 )
+  {
+    double dist1 = ( range1 - m1 ) / ( m2 - m1 );
+    double dist2 = ( range2 - m1 ) / ( m2 - m1 );
+    pt1.setX( x1 + ( x2 - x1 ) * dist1 );
+    pt1.setY( y1 + ( y2 - y1 ) * dist1 );
+    pt2.setX( x1 + ( x2 - x1 ) * dist2 );
+    pt2.setY( y1 + ( y2 - y1 ) * dist2 );
+    secondPointClipped = true;
+  }
+
   if ( reversed ) //switch p1 and p2
   {
     QgsPoint tmpPt = pt1;
@@ -1283,6 +1309,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   bool reversed = false;
   pt1Ok = false;
   pt2Ok = false;
+  double tolerance = 0.000001; //work with a small tolerance to catch e.g. locations at endpoints
 
   if ( m1 > m2 )
   {
@@ -1293,7 +1320,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   }
 
   //segment does not match
-  if ( measure < m1 || measure > m2 )
+  if (( m1 - measure ) > tolerance || ( measure - m2 ) > tolerance )
   {
     pt1Ok = false;
     pt2Ok = false;
@@ -1301,7 +1328,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   }
 
   //match with vertex1
-  if ( doubleNear( m1, measure ) )
+  if ( doubleNear( m1, measure, tolerance ) )
   {
     if ( reversed )
     {
@@ -1316,7 +1343,7 @@ void QgsGeometryAnalyzer::locateAlongSegment( double x1, double y1, double m1, d
   }
 
   //match with vertex2
-  if ( doubleNear( m2, measure ) )
+  if ( doubleNear( m2, measure, tolerance ) )
   {
     if ( reversed )
     {

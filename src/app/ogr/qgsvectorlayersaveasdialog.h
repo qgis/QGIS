@@ -30,7 +30,7 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     Q_OBJECT
 
   public:
-    QgsVectorLayerSaveAsDialog( QWidget* parent = 0,  Qt::WFlags fl = 0 );
+    QgsVectorLayerSaveAsDialog( long srsid, QWidget* parent = 0,  Qt::WFlags fl = 0 );
     ~QgsVectorLayerSaveAsDialog();
 
     QString format() const;
@@ -40,9 +40,11 @@ class QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVectorLayerSav
     QStringList layerOptions() const;
     long crs() const;
     bool skipAttributeCreation() const;
+    bool addToCanvas() const;
 
   private slots:
     void on_mFormatComboBox_currentIndexChanged( int idx );
+    void on_mCRSSelection_currentIndexChanged( int idx );
     void on_browseFilename_clicked();
     void on_browseCRS_clicked();
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }

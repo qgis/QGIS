@@ -316,11 +316,14 @@ void QgsOpenVectorLayerDialog::accept()
     bool makeConnection = false;
     if ( pass.isEmpty() )
     {
-      pass = QInputDialog::getText( this,
-                                    tr( "Password for " ) + user,
-                                    tr( "Please enter your password:" ),
-                                    QLineEdit::Password, QString::null,
-                                    &makeConnection );
+      if ( cmbDatabaseTypes->currentText() == "MSSQL" )
+        makeConnection = true;
+      else
+        pass = QInputDialog::getText( this,
+                                      tr( "Password for " ) + user,
+                                      tr( "Please enter your password:" ),
+                                      QLineEdit::Password, QString::null,
+                                      &makeConnection );
     }
 
     if ( makeConnection || !pass.isEmpty() )
