@@ -13,7 +13,40 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
+  <layout class="QFormLayout" name="formLayout">
+   <item row="3" column="0">
+    <widget class="QLabel" name="mOpacityLabel">
+     <property name="text">
+      <string>Opacity</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="buddy">
+      <cstring>mOpacitySlider</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="mOutlineWidthLabel">
+     <property name="text">
+      <string>Outline width</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+     <property name="buddy">
+      <cstring>mOutlineWidthSpinBox</cstring>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QLabel" name="mIdLabel">
+     <property name="text">
+      <string>Item ID</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0" colspan="2">
     <widget class="QPushButton" name="mFrameColorButton">
      <property name="text">
@@ -28,20 +61,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="mOpacityLabel">
-     <property name="text">
-      <string>Opacity</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="buddy">
-      <cstring>mOpacitySlider</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0" colspan="2">
+   <item row="3" column="1">
     <widget class="QSlider" name="mOpacitySlider">
      <property name="maximum">
       <number>255</number>
@@ -51,47 +71,20 @@
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QLabel" name="mOutlineWidthLabel">
-     <property name="text">
-      <string>Outline width</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-     <property name="buddy">
-      <cstring>mOutlineWidthSpinBox</cstring>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
+   <item row="5" column="1">
     <widget class="QDoubleSpinBox" name="mOutlineWidthSpinBox"/>
    </item>
-   <item row="6" column="0" colspan="2">
+   <item row="7" column="0" colspan="2">
     <widget class="QPushButton" name="mPositionButton">
      <property name="text">
       <string>Position and size...</string>
      </property>
     </widget>
    </item>
-   <item row="8" column="0" colspan="2">
-    <widget class="QCheckBox" name="mFrameCheckBox">
-     <property name="text">
-      <string>Show frame</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QLabel" name="mIdLabel">
-     <property name="text">
-      <string>Item ID</string>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="0" colspan="2">
+   <item row="9" column="1">
     <widget class="QLineEdit" name="mItemIdLineEdit"/>
    </item>
-   <item row="12" column="0" colspan="2">
+   <item row="11" column="0" colspan="2">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -103,6 +96,13 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="8" column="0" colspan="2">
+    <widget class="QCheckBox" name="mFrameCheckBox">
+     <property name="text">
+      <string>Show frame</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

@@ -41,7 +41,7 @@ class QgsHttpRequestHandler: public QgsRequestHandler
       @return mime string (or the entered string if not found)*/
     QString formatToMimeType( const QString& format ) const;
 
-    void requestStringToParameterMap( const QString& request, std::map<QString, QString>& parameters );
+    void requestStringToParameterMap( const QString& request, QMap<QString, QString>& parameters );
     /**Read CONTENT_LENGTH characters from stdin*/
     QString readPostBody() const;
 };

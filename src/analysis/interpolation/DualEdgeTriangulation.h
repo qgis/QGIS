@@ -23,12 +23,10 @@
 #include <QList>
 #include "MathUtils.h"
 #include "TriangleInterpolator.h"
-//#include <qapp.h>
 #include <QColor>
 #include <QFile>
 #include <QTextStream>
 #include <QMessageBox>
-#include <iostream>
 #include <cfloat>
 #include <QBuffer>
 #include <QStringList>

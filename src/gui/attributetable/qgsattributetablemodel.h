@@ -21,10 +21,13 @@
 #include <QModelIndex>
 #include <QObject>
 #include <QHash>
+#include <QQueue>
 
 #include "qgsfeature.h" // QgsAttributeMap
 #include "qgsvectorlayer.h" // QgsAttributeList
 #include "qgsattributetableidcolumnpair.h"
+
+class QgsMapCanvas;
 
 class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
 {
@@ -36,19 +39,17 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param theLayer layer pointer
      * @param parent parent pointer
      */
-    QgsAttributeTableModel( QgsVectorLayer *theLayer, QObject *parent = 0 );
-
+    QgsAttributeTableModel( QgsMapCanvas *canvas, QgsVectorLayer *theLayer, QObject *parent = 0 );
     /**
      * Returns the number of rows
      * @param parent parent index
      */
-    int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
     /**
      * Returns the number of columns
      * @param parent parent index
      */
     int columnCount( const QModelIndex &parent = QModelIndex() ) const;
-
     /**
      * Returns header data
      * @param section required section
@@ -137,24 +138,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void executeAction( int action, const QModelIndex &idx ) const;
 
     /** return feature attributes at given index */
-    QgsFeature feature( QModelIndex &idx );
-
-    /** In case the table's behaviour is to show only features from current extent,
-      this is a method how to let the model know what extent to use without having
-      to explicitly ask any canvas */
-    static void setCurrentExtent( const QgsRectangle& extent ) { mCurrentExtent = extent; }
+    QgsFeature feature( const QModelIndex &idx ) const;
 
   signals:
     /**
      * Model has been changed
      */
     void modelChanged();
-    /**
-     * Sets new number of rows
-     * @param oldNum old row number
-     * @param newNum new row number
-     */
-    void setNumRows( int oldNum, int newNum );
+
+    void progress( int i, bool &cancel );
+    void finished();
+
+  public slots:
+    void extentsChanged();
 
   private slots:
     /**
@@ -167,6 +163,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @param idx attribute index
      */
     virtual void attributeDeleted( int idx );
+
   protected slots:
     /**
      * Launched when attribute value has been changed
@@ -186,16 +183,19 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
      * @parem inOperation guard insertion with beginInsertRows() / endInsertRows()
      */
     virtual void featureAdded( QgsFeatureId fid, bool inOperation = true );
+
     /**
      * Launched when layer has been deleted
      */
     virtual void layerDeleted();
 
   protected:
+    QgsMapCanvas *mCanvas;
     QgsVectorLayer *mLayer;
     int mFieldCount;
 
     mutable QgsFeature mFeat;
+    mutable QHash<QgsFeatureId, QgsFeature> mFeatureMap;
 
     QgsAttributeList mAttributes;
     QMap< int, const QMap<QString, QVariant> * > mValueMaps;
@@ -205,7 +205,7 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     QHash<int, QgsFeatureId> mRowIdMap;
 
     //! useful when showing only features from a particular extent
-    static QgsRectangle mCurrentExtent;
+    QgsRectangle mCurrentExtent;
 
     /**
      * Initializes id <-> row maps
@@ -213,14 +213,18 @@ class GUI_EXPORT QgsAttributeTableModel: public QAbstractTableModel
     void initIdMaps();
 
     /**
+      * Gets mFieldCount, mAttributes and mValueMaps
+      */
+    virtual void loadAttributes();
+
+  public:
+    /**
      * Loads the layer into the model
      */
     virtual void loadLayer();
 
-    /**
-      * Gets mFieldCount, mAttributes and mValueMaps
-      */
-    virtual void loadAttributes();
+  private:
+    mutable QQueue<QgsFeatureId> mFeatureQueue;
 
     /**
      * load feature fid into mFeat

@@ -27,27 +27,75 @@
 // In-Memory model //
 /////////////////////
 
+QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer )
+    : QgsAttributeTableModel( theCanvas, theLayer )
+{
+  QgsDebugMsg( "entered." );
+}
+
 void QgsAttributeTableMemoryModel::loadLayer()
 {
-  QgsAttributeTableModel::loadLayer();
-  mLayer->select( mLayer->pendingAllAttributesList(), QgsRectangle(), false );
+  QgsDebugMsg( "entered." );
 
-  mFeatureMap.reserve( mLayer->pendingFeatureCount() + 50 );
+  QSettings settings;
+  int behaviour = settings.value( "/qgis/attributeTableBehaviour", 0 ).toInt();
+
+  QgsRectangle rect;
+  if ( behaviour == 2 )
+  {
+    // current canvas only
+    rect = mCurrentExtent;
+  }
+
+  mLayer->select( mLayer->pendingAllAttributesList(), rect, false );
+
+  if ( behaviour != 1 )
+    mFeatureMap.reserve( mLayer->pendingFeatureCount() + 50 );
+  else
+    mFeatureMap.reserve( mLayer->selectedFeatureCount() );
+
+  int i = 0;
+
+  QTime t;
+  t.start();
 
   QgsFeature f;
   while ( mLayer->nextFeature( f ) )
+  {
+    if ( behaviour == 1 && !mLayer->selectedFeaturesIds().contains( f.id() ) )
+      continue;
+
+    mIdRowMap.insert( f.id(), i );
+    mRowIdMap.insert( i, f.id() );
     mFeatureMap.insert( f.id(), f );
+
+    i++;
+
+    if ( t.elapsed() > 5000 )
+    {
+      bool cancel = false;
+      emit progress( i, cancel );
+      if ( cancel )
+        break;
+
+      t.restart();
+    }
+  }
+
+  emit finished();
+
+  mFieldCount = mAttributes.size();
 }
 
-QgsAttributeTableMemoryModel::QgsAttributeTableMemoryModel
-( QgsVectorLayer *theLayer )
-    : QgsAttributeTableModel( theLayer )
+int QgsAttributeTableMemoryModel::rowCount( const QModelIndex &parent ) const
 {
-  loadLayer();
+  Q_UNUSED( parent );
+  return mFeatureMap.size();
 }
 
-bool QgsAttributeTableMemoryModel::featureAtId( QgsFeatureId fid )
+bool QgsAttributeTableMemoryModel::featureAtId( QgsFeatureId fid ) const
 {
+  QgsDebugMsg( QString( "entered featureAtId: %1." ).arg( fid ) );
   if ( mFeatureMap.contains( fid ) )
   {
     mFeat = mFeatureMap[ fid ];
@@ -70,17 +118,14 @@ void QgsAttributeTableMemoryModel::featureDeleted( QgsFeatureId fid )
 void QgsAttributeTableMemoryModel::featureAdded( QgsFeatureId fid )
 {
   QgsDebugMsg( "entered." );
-  QgsFeature f;
-  mLayer->featureAtId( fid, f, false, true );
-  mFeatureMap.insert( fid, f );
-  QgsAttributeTableModel::featureAdded( fid );
+  Q_UNUSED( fid );
+  loadLayer();
 }
 
 void QgsAttributeTableMemoryModel::layerDeleted()
 {
   QgsDebugMsg( "entered." );
-  mFeatureMap.clear();
-  QgsAttributeTableModel::layerDeleted();
+  loadLayer();
 }
 
 void QgsAttributeTableMemoryModel::attributeValueChanged( QgsFeatureId fid, int idx, const QVariant &value )

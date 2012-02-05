@@ -4,17 +4,21 @@
 
 SET(PG_SRCS
   qgspostgresprovider.cpp
-  qgspostgresconnection.cpp
+  qgspostgresconn.cpp
   qgspostgresdataitems.cpp
   qgspgsourceselect.cpp
   qgspgnewconnection.cpp
+  qgspgtablemodel.cpp
+  qgscolumntypethread.cpp
 )
 SET(PG_MOC_HDRS
   qgspostgresprovider.h
-  qgspostgresconnection.h
+  qgspostgresconn.h
   qgspostgresdataitems.h
   qgspgsourceselect.h
   qgspgnewconnection.h
+  qgspgtablemodel.h
+  qgscolumntypethread.h
 )
 
 

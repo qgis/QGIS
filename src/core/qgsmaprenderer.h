@@ -120,7 +120,8 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     ~QgsMapRenderer();
 
     //! starts rendering
-    void render( QPainter* painter );
+    //! @ param forceWidthScale Force a specific scale factor for line widths and marker sizes. Automatically calculated from output device DPI if 0
+    void render( QPainter* painter, double* forceWidthScale = 0 );
 
     //! sets extent and checks whether suitable (returns false if not)
     bool setExtent( const QgsRectangle& extent );
@@ -250,6 +251,12 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     //! called by signal from layer current being drawn
     void onDrawingProgress( int current, int total );
 
+    //! invalidate cached layer CRS
+    void invalidateCachedLayerCrs();
+
+    //! cached layer was destroyed
+    void cachedLayerDestroyed();
+
   protected:
 
     //! adjust extent to fit the pixmap size
@@ -266,8 +273,6 @@ class CORE_EXPORT QgsMapRenderer : public QObject
     /**Creates an overlay object position manager subclass according to the current settings
     @note this method was added in version 1.1*/
     QgsOverlayObjectPositionManager* overlayManagerFromSettings();
-
-  protected:
 
     //! indicates drawing in progress
     static bool mDrawing;
@@ -322,6 +327,11 @@ class CORE_EXPORT QgsMapRenderer : public QObject
 
     //! Locks rendering loop for concurrent draws
     QMutex mRenderMutex;
+
+  private:
+    QgsCoordinateTransform *tr( QgsMapLayer *layer );
+    QgsCoordinateTransform *mCachedTr;
+    QgsMapLayer *mCachedTrForLayer;
 };
 
 #endif

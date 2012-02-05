@@ -111,6 +111,7 @@
         <file>themes/default/mActionOpenTable.png</file>
         <file>themes/default/mActionOptions.png</file>
         <file>themes/default/mActionPan.png</file>
+        <file>themes/default/mActionPanToSelected.png</file>
         <file>themes/default/mAction.png</file>
         <file>themes/default/mActionProjectProperties.png</file>
         <file>themes/default/mActionPropertyItem.png</file>
@@ -182,6 +183,7 @@
         <file>themes/default/mIconWaitingForLayerType.png</file>
         <file>themes/default/mIconWms.png</file>
         <file>themes/default/mIconWmsLayer.png</file>
+        <file>themes/default/mIconWarn.png</file>
         <file>themes/default/mMapserverExport.png</file>
         <file>themes/default/plugin.png</file>
         <file>themes/default/propertyicons/action.png</file>
@@ -203,6 +205,7 @@
         <file>themes/default/propertyicons/rendering.png</file>
         <file>themes/default/propertyicons/symbology.png</file>
         <file>themes/default/propertyicons/transparency.png</file>
+        <file>themes/default/propertyicons/gdal.png</file>
         <file>themes/default/qgis.xpm</file>
         <file>themes/default/rendererCategorizedSymbol.png</file>
         <file>themes/default/rendererGraduatedSymbol.png</file>
@@ -293,6 +296,7 @@
         <file>themes/gis/mActionNodeTool.png</file>
         <file>themes/gis/mActionOpenTable.png</file>
         <file>themes/gis/mActionPan.png</file>
+        <file>themes/gis/mActionPanToSelected.png</file>
         <file>themes/gis/mActionRaiseItems.png</file>
         <file>themes/gis/mActionRedo.png</file>
         <file>themes/gis/mActionRemoveLayer.png</file>

@@ -129,9 +129,9 @@ QString QgsPoint::toString() const
 
 QString QgsPoint::toString( int thePrecision ) const
 {
-  QString rep = QString::number( m_x, 'f', thePrecision ) + QString( "," ) +
-                QString::number( m_y, 'f', thePrecision );
-  return rep;
+  QString x = qIsFinite( m_x ) ? QString::number( m_x, 'f', thePrecision ) : QObject::tr( "infinite" );
+  QString y = qIsFinite( m_y ) ? QString::number( m_y, 'f', thePrecision ) : QObject::tr( "infinite" );
+  return QString( "%1,%2" ).arg( x ).arg( y );
 }
 
 QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
@@ -158,7 +158,6 @@ QString QgsPoint::toDegreesMinutesSeconds( int thePrecision ) const
                 myYHemisphere;
   return rep;
 }
-
 
 QString QgsPoint::wellKnownText() const
 {

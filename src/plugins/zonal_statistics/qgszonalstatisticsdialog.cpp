@@ -20,10 +20,17 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgisinterface.h"
 
-QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog(), mIface( iface )
+#include <QSettings>
+
+QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDialog( iface->mainWindow() ), mIface( iface )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
+
   insertAvailableLayers();
   mColumnPrefixLineEdit->setText( proposeAttributePrefix() );
 }
@@ -31,11 +38,15 @@ QgsZonalStatisticsDialog::QgsZonalStatisticsDialog( QgisInterface* iface ): QDia
 QgsZonalStatisticsDialog::QgsZonalStatisticsDialog(): QDialog( 0 ), mIface( 0 )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "Plugin-ZonalStatistics/geometry" ).toByteArray() );
 }
 
 QgsZonalStatisticsDialog::~QgsZonalStatisticsDialog()
 {
-
+  QSettings settings;
+  settings.setValue( "Plugin-ZonalStatistics/geometry", saveGeometry() );
 }
 
 void QgsZonalStatisticsDialog::insertAvailableLayers()

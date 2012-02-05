@@ -336,10 +336,12 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   // ? Does binary on Win need .exe extension ?
   // Return code 255 (-1) was correct in GRASS < 6.1.0
+  // Return code 1 is the value (correct?) .py modules actually returns (see #4667)
   if ( !process.waitForStarted()
        || !process.waitForReadyRead()
        || !process.waitForFinished()
-       || ( process.exitCode() != 0 && process.exitCode() != 255 ) )
+       || ( process.exitCode() != 0 && process.exitCode() != 255 &&
+            ( !cmd.endsWith( ".py" ) || process.exitCode() != 1 ) ) )
   {
     QgsDebugMsg( "process.exitCode() = " + QString::number( process.exitCode() ) );
     QMessageBox::warning( 0, tr( "Warning" ),
@@ -3407,46 +3409,39 @@ QStringList QgsGrassModuleFile::options()
 
 void QgsGrassModuleFile::browse()
 {
-  // TODO: unfortunately QFileDialog does not support 'new' directory
-  QFileDialog *fd = new QFileDialog( this, NULL, mLineEdit->text() );
+  static QString lastDir = QDir::currentPath();
 
-  static QDir currentDir = QDir::current();
-  fd->setDirectory( currentDir );
-
-  switch ( mType )
+  if ( mType == Multiple )
   {
-    case New:
-      fd->setFileMode( QFileDialog::AnyFile );
-      fd->setAcceptMode( QFileDialog::AcceptSave );
-      break;
-    case Multiple:
-      fd->setFileMode( QFileDialog::ExistingFiles );
-      fd->setAcceptMode( QFileDialog::AcceptOpen );
-      break;
-    case Directory:
-      fd->setFileMode( QFileDialog::Directory );
-      fd->setAcceptMode( QFileDialog::AcceptOpen );
-      break;
-    default:
-      fd->setFileMode( QFileDialog::ExistingFile );
-      fd->setAcceptMode( QFileDialog::AcceptOpen );
+    QString path = mLineEdit->text().split( "," ).first();
+    if ( path.isEmpty() )
+      path = lastDir;
+    else
+      path = QFileInfo( path ).absolutePath();
+
+    QStringList files = QFileDialog::getOpenFileNames( this, 0, path );
+    if ( files.isEmpty() )
+      return;
+
+    lastDir = QFileInfo( files[0] ).absolutePath();
+
+    mLineEdit->setText( files.join( "," ) );
   }
-
-  if ( mFilters.size() > 0 )
+  else
   {
-    fd->setFilters( mFilters );
-  }
-  fd->setDefaultSuffix( mSuffix );
+    QString selectedFile = mLineEdit->text();
+    if ( selectedFile.isEmpty() )
+      selectedFile = lastDir;
 
-  if ( fd->exec() == QDialog::Accepted )
-  {
-    QString selectedFile = fd->selectedFiles().last();
-    QFileInfo fi = QFileInfo( selectedFile );
-    currentDir = fi.absoluteDir();
-    if ( mType == Multiple )
-    {
-      selectedFile = fd->selectedFiles().join( "," );
-    }
+    if ( mType == New )
+      selectedFile = QFileDialog::getSaveFileName( this, 0, selectedFile );
+    else if ( mType == Directory )
+      selectedFile = QFileDialog::getExistingDirectory( this, 0, selectedFile );
+    else
+      selectedFile = QFileDialog::getOpenFileName( this, 0, selectedFile );
+
+    lastDir = QFileInfo( selectedFile ).absolutePath();
+
     mLineEdit->setText( selectedFile );
   }
 }

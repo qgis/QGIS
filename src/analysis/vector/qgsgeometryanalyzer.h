@@ -100,6 +100,29 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     bool dissolve( QgsVectorLayer* layer, const QString& shapefileName, bool onlySelectedFeatures = false,
                    int uniqueIdField = -1, QProgressDialog* p = 0 );
 
+    /**Creates an event layer (multipoint or multiline) by locating features from a (non-spatial) event table along the features of a line layer.
+        Note that currently (until QgsGeometry supports m-values) the z-coordinate of the line layer is used for linear referencing
+      @param lineLayer layer with the line geometry
+      @param eventLayer layer with features and location field
+      @param lineField join index in line layer
+      @param eventField join index in event layer
+      @param outputLayer name of output file (can be empty if a memory layer is used)
+      @param outputFormat name of output format (can be empty if a memory provider is used to store the results)
+      @param unlocatedFeatureIds out: ids of event features where linear referencing was not successful
+      @param locationField1 attribute index of location field in event layer
+      @param locationField2 attribute index of location end field (or -1 for point layer)
+      @param memoryProvider memory provider to write output to (can be 0 if output is written to a file)
+      @param p progress dialog or 0 if no progress dialog should be shown
+    */
+    bool eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer* eventLayer, int lineField, int eventField, QList<int>& unlocatedFeatureIds, const QString& outputLayer,
+                     const QString& outputFormat, int locationField1, int locationField2 = -1, QgsVectorDataProvider* memoryProvider = 0, QProgressDialog* p = 0 );
+
+    /**Returns linear reference geometry as a multiline (or 0 if no match). Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
+    QgsGeometry* locateBetweenMeasures( double fromMeasure, double toMeasure, QgsGeometry* lineGeom );
+    /**Returns linear reference geometry. Unlike the PostGIS function, this method always returns multipoint or 0 if no match (not geometry collection).
+      Currently, the z-coordinates are considered to be the measures (no support for m-values in QGIS)*/
+    QgsGeometry* locateAlongMeasure( double measure, QgsGeometry* lineGeom );
+
   private:
 
     QList<double> simpleMeasure( QgsGeometry* geometry );
@@ -116,5 +139,11 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
     /**Helper function to dissolve feature(s)*/
     void dissolveFeature( QgsFeature& f, int nProcessedFeatures, QgsGeometry** dissolveGeometry );
 
+    //helper functions for event layer
+
+    unsigned char* locateBetweenWkbString( unsigned char* ptr, QgsMultiPolyline& result, double fromMeasure, double toMeasure );
+    unsigned char* locateAlongWkbString( unsigned char* ptr, QgsMultiPoint& result, double measure );
+    static bool clipSegmentByRange( double x1, double y1, double m1, double x2, double y2, double m2, double range1, double range2, QgsPoint& pt1, QgsPoint& pt2, bool& secondPointClipped );
+    static void locateAlongSegment( double x1, double y1, double m1, double x2, double y2, double m2, double measure, bool& pt1Ok, QgsPoint& pt1, bool& pt2Ok, QgsPoint& pt2 );
 };
 #endif //QGSVECTORANALYZER

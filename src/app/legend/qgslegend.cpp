@@ -129,7 +129,7 @@ void QgsLegend::showItem( QString msg, QTreeWidgetItem *item )
   else
     type = "item";
 
-  QgsDebugMsg( QString( "%1: %2 %3 row:%4" ).arg( msg ).arg( type ).arg( item->text( 0 ) ).arg( indexFromItem( item ).row() ) );
+  QgsDebugMsgLevel( QString( "%1: %2 %3 row:%4" ).arg( msg ).arg( type ).arg( item->text( 0 ) ).arg( indexFromItem( item ).row() ), 3 );
 }
 #else
 #define showItem(msg, item)
@@ -169,9 +169,17 @@ int QgsLegend::addGroup( QString name, bool expand, QTreeWidgetItem* parent )
   QgsLegendGroup *group;
 
   if ( parentGroup )
+  {
     group = new QgsLegendGroup( parentGroup, name );
+  }
   else
+  {
     group = new QgsLegendGroup( this, name );
+    if ( currentItem() )
+    {
+      moveItem( group, currentItem() );
+    }
+  }
 
   QModelIndex groupIndex = indexFromItem( group );
   setExpanded( groupIndex, expand );
@@ -191,6 +199,8 @@ int QgsLegend::addGroup( QString name, bool expand, int groupIndex )
 
 void QgsLegend::removeAll()
 {
+  QgsDebugMsg( "Entering." );
+
   clear();
   mEmbeddedGroups.clear();
   mPixmapWidthValues.clear();
@@ -240,7 +250,9 @@ void QgsLegend::removeGroup( int groupIndex )
 
 void QgsLegend::removeLayer( QString layerId )
 {
-  QgsDebugMsg( "called." );
+  QgsDebugMsg( "Entering." );
+
+  bool invLayerRemoved = false;
 
   for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
   {
@@ -252,15 +264,21 @@ void QgsLegend::removeLayer( QString layerId )
 
       if ( ll && ll->layer() && ll->layer()->id() == layerId )
       {
+        if ( !ll->isVisible() )
+        {
+          invLayerRemoved = true;
+        }
         removeItem( ll );
         delete ll;
         break;
       }
     }
   }
-
   updateMapCanvasLayerSet();
   adjustIconSize();
+
+  if ( invLayerRemoved )
+    emit invisibleLayerRemoved();
 }
 
 void QgsLegend::mousePressEvent( QMouseEvent * e )
@@ -563,7 +581,6 @@ void QgsLegend::mouseDoubleClickEvent( QMouseEvent *e )
   Q_UNUSED( e );
 
   QSettings settings;
-
   switch ( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() )
   {
     case 0:
@@ -584,7 +601,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     return;
   }
 
-  QMenu theMenu;
+  QMenu theMenu( tr( "Legend context" ), this );
 
   QgsLegendItem* li = dynamic_cast<QgsLegendItem *>( item );
   if ( li )
@@ -619,6 +636,10 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
   theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add group" ), this, SLOT( addGroupToCurrentItem() ) );
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand all" ), this, SLOT( expandAll() ) );
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse all" ), this, SLOT( collapseAll() ) );
+
+  QAction *updateDrawingOrderAction = theMenu.addAction( QgisApp::getThemeIcon( "/mUpdateDrawingOrder.png" ), tr( "&Update drawing order" ), this, SLOT( toggleDrawingOrderUpdate() ) );
+  updateDrawingOrderAction->setCheckable( true );
+  updateDrawingOrderAction->setChecked( mUpdateDrawingOrder );
 
   theMenu.exec( position );
 }
@@ -775,6 +796,7 @@ int QgsLegend::getItemPos( QTreeWidgetItem* item )
 
 void QgsLegend::addLayer( QgsMapLayer * layer )
 {
+  QgsDebugMsg( "Entering." );
   if ( !mMapCanvas || mMapCanvas->isDrawing() )
   {
     return;
@@ -794,14 +816,34 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   blockSignals( false );
 
   QgsLegendGroup *lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
-  QSettings settings;
-  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  if ( !lg && currentItem() )
   {
-    lg->insertChild( 0, llayer );
+    lg = dynamic_cast<QgsLegendGroup *>( currentItem()->parent() );
+  }
+
+  int index;
+  if ( lg )
+  {
+    index = lg->indexOfChild( currentItem() );
   }
   else
   {
-    insertTopLevelItem( 0, llayer );
+    index = indexOfTopLevelItem( currentItem() );
+  }
+
+  if ( index < 0 )
+  {
+    index = 0;
+  }
+
+  QSettings settings;
+  if ( lg && settings.value( "/qgis/addNewLayersToCurrentGroup", false ).toBool() )
+  {
+    lg->insertChild( index, llayer );
+  }
+  else
+  {
+    insertTopLevelItem( index, llayer );
     setCurrentItem( llayer );
   }
 
@@ -814,6 +856,7 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   // first layer?
   if ( layers().count() == 1 )
   {
+    mMapCanvas->mapRenderer()->setDestinationCrs( layer->crs() );
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
   }
@@ -879,20 +922,96 @@ QList<QgsMapLayer *> QgsLegend::selectedLayers()
   return layers;
 }
 
+QList<QgsLegendLayer *> QgsLegend::legendLayers()
+{
+  if ( mUpdateDrawingOrder )
+  {
+    QList< QgsLegendLayer * > items;
+    QTreeWidgetItemIterator it( this );
+    while ( *it )
+    {
+      QgsLegendLayer *llayer = dynamic_cast<QgsLegendLayer *>( *it );
+      if ( llayer )
+        items.append( llayer );
+
+      ++it;
+    }
+
+    return items;
+  }
+  else
+  {
+    int n = 0;
+    QMap< int, QgsLegendLayer * > items;
+    QTreeWidgetItemIterator it( this );
+    while ( *it )
+    {
+      QgsLegendLayer *llayer = dynamic_cast<QgsLegendLayer *>( *it );
+      if ( llayer )
+      {
+        QgsDebugMsgLevel( QString( "n=%1 o=%2 name=%3" ).arg( n ).arg( llayer->drawingOrder() ).arg( llayer->layer()->name() ), 3 );
+        items.insertMulti( llayer->drawingOrder(), llayer );
+        n++;
+      }
+
+      ++it;
+    }
+
+    QList< QgsLegendLayer * > ls;
+
+    foreach( int o, items.uniqueKeys() )
+    {
+      QgsDebugMsgLevel( QString( "o=%1" ).arg( o ), 3 );
+      QList< QgsLegendLayer *> values = items.values( o );
+      for ( int i = values.size() - 1; i >= 0; i-- )
+      {
+        QgsDebugMsgLevel( QString( " layer=%1" ).arg( values[i]->layer()->name() ), 3 );
+        ls << values[i];
+      }
+    }
+
+    return ls;
+  }
+}
+
 QList<QgsMapLayer *> QgsLegend::layers()
 {
-  QList< QgsMapLayer * > items;
-  QTreeWidgetItemIterator it( this );
-  while ( *it )
-  {
-    QgsLegendLayer *llayer = dynamic_cast<QgsLegendLayer *>( *it );
-    if ( llayer )
-      items.append( llayer->layer() );
+  QList<QgsMapLayer *> ls;
 
-    ++it;
+  foreach( QgsLegendLayer *l, legendLayers() )
+  {
+    ls << l->layer();
   }
 
-  return items;
+  return ls;
+}
+
+QList<QgsMapCanvasLayer> QgsLegend::canvasLayers()
+{
+  QList<QgsMapCanvasLayer> ls;
+
+  foreach( QgsLegendLayer *l, legendLayers() )
+  {
+    ls << l->canvasLayer();
+  }
+
+  return ls;
+}
+
+void QgsLegend::setDrawingOrder( QList<QgsMapLayer *> layers )
+{
+  QgsDebugMsg( "Entering." );
+
+  for ( int i = 0; i < layers.size(); i++ )
+  {
+    QgsLegendLayer *ll = findLegendLayer( layers[i] );
+    if ( !ll )
+      continue;
+    QgsDebugMsgLevel( QString( "setting order=%1 name=%2." ).arg( i ).arg( layers[i]->name() ), 3 );
+    ll->setDrawingOrder( i );
+  }
+
+  updateMapCanvasLayerSet();
 }
 
 bool QgsLegend::setCurrentLayer( QgsMapLayer *layer )
@@ -913,11 +1032,20 @@ void QgsLegend::legendGroupRemove()
     return;
   }
 
+  // Turn off rendering to improve speed.
+  bool renderFlagState = mMapCanvas->renderFlag();
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( false );
+
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   if ( lg )
   {
     removeGroup( lg );
   }
+
+  // Turn on rendering (if it was on previously)
+  if ( renderFlagState )
+    mMapCanvas->setRenderFlag( true );
 }
 
 void QgsLegend::legendGroupSetCRS()
@@ -1151,6 +1279,7 @@ bool QgsLegend::writeXML( QList<QTreeWidgetItem *> items, QDomNode &node, QDomDo
       // to keep it compatible with older projects
       QgsLegendLayer *ll = dynamic_cast<QgsLegendLayer *>( item );
       QgsMapLayer* layer = ll->layer();
+      legendlayernode.setAttribute( "drawingOrder", ll->drawingOrder() );
       legendlayernode.setAttribute( "showFeatureCount", ll->showFeatureCount() );
 
       QDomElement layerfilegroupnode = document.createElement( "filegroup" );
@@ -1319,6 +1448,9 @@ bool QgsLegend::readXML( QDomNode& legendnode )
 {
   clear(); //remove all items first
   mEmbeddedGroups.clear();
+  mUpdateDrawingOrder = legendnode.toElement().attribute( "updateDrawingOrder", "true" ) == "true";
+  emit updateDrawingOrderChecked( mUpdateDrawingOrder );
+  emit updateDrawingOrderUnchecked( !mUpdateDrawingOrder );
   return readXML( 0, legendnode );
 }
 
@@ -1340,6 +1472,7 @@ QgsLegendLayer* QgsLegend::readLayerFromXML( QDomElement& childelem, bool& isOpe
 
   // create the item
   QgsLegendLayer* ll = new QgsLegendLayer( theMapLayer );
+  ll->setDrawingOrder( childelem.attribute( "drawingOrder", "-1" ).toInt() );
   ll->setShowFeatureCount( childelem.attribute( "showFeatureCount", "0" ).toInt(), false );
 
   // load layer's visibility and 'show in overview' flag
@@ -1624,14 +1757,14 @@ void QgsLegend::insertItem( QTreeWidgetItem* move, QTreeWidgetItem* into )
 
 void QgsLegend::moveItem( QTreeWidgetItem* move, QTreeWidgetItem* after )
 {
-  QgsDebugMsg( QString( "Moving layer : %1 (%2)" ).arg( move->text( 0 ) ).arg( move->type() ) );
+  QgsDebugMsgLevel( QString( "Moving layer : %1 (%2)" ).arg( move->text( 0 ) ).arg( move->type() ), 3 );
   if ( after )
   {
-    QgsDebugMsg( QString( "after layer  : %1 (%2)" ).arg( after->text( 0 ) ).arg( after->type() ) );
+    QgsDebugMsgLevel( QString( "after layer  : %1 (%2)" ).arg( after->text( 0 ) ).arg( after->type() ), 3 );
   }
   else
   {
-    QgsDebugMsg( "as toplevel item" );
+    QgsDebugMsgLevel( "as toplevel item", 3 );
   }
 
   static_cast<QgsLegendItem*>( move )->storeAppearanceSettings();//store settings in the moved item and its childern
@@ -1678,21 +1811,8 @@ void QgsLegend::removeItem( QTreeWidgetItem* item )
 
 void QgsLegend::updateMapCanvasLayerSet()
 {
-  QList<QgsMapCanvasLayer> layers;
-
-  // create list of the layers
-  for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
-  {
-    QgsLegendItem *li = dynamic_cast<QgsLegendItem *>( theItem );
-    QgsLegendLayer *ll = qobject_cast<QgsLegendLayer *>( li );
-    if ( ll )
-    {
-      QgsMapCanvasLayer& lyr = ll->canvasLayer();
-      layers.append( lyr );
-    }
-  }
-
-  // set layers in canvas
+  QgsDebugMsg( "Entering." );
+  QList<QgsMapCanvasLayer> layers = canvasLayers();
   mMapCanvas->setLayerSet( layers );
 }
 
@@ -2114,10 +2234,10 @@ void QgsLegend::writeProject( QDomDocument & doc )
   QDomNode qgisNode = nl.item( 0 );  // there should only be one, so zeroth element ok
 
   QDomElement mapcanvasNode = doc.createElement( "legend" );
+  mapcanvasNode.setAttribute( "updateDrawingOrder", mUpdateDrawingOrder ? "true" : "false" );
   qgisNode.appendChild( mapcanvasNode );
   writeXML( mapcanvasNode, doc );
 }
-
 
 bool QgsLegend::checkLayerOrderUpdate()
 {
@@ -2146,7 +2266,6 @@ void QgsLegend::updateLineWidget()
 {
   mInsertionLine->repaint();
 }
-
 
 QTreeWidgetItem * QgsLegend::lastVisibleItem()
 {
@@ -2271,4 +2390,29 @@ bool QgsLegend::groupEmbedded( QTreeWidgetItem* item ) const
   }
 
   return mEmbeddedGroups.contains( gItem->text( 0 ) );
+}
+
+void QgsLegend::setUpdateDrawingOrder( bool updateDrawingOrder )
+{
+  if ( mUpdateDrawingOrder == updateDrawingOrder )
+    return;
+
+  mUpdateDrawingOrder = updateDrawingOrder;
+
+  QgsProject::instance()->dirty( true );
+
+  updateMapCanvasLayerSet();
+
+  emit updateDrawingOrderChecked( mUpdateDrawingOrder );
+  emit updateDrawingOrderUnchecked( !mUpdateDrawingOrder );
+}
+
+bool QgsLegend::updateDrawingOrder()
+{
+  return mUpdateDrawingOrder;
+}
+
+void QgsLegend::toggleDrawingOrderUpdate()
+{
+  setUpdateDrawingOrder( !mUpdateDrawingOrder );
 }

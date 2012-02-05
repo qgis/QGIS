@@ -42,7 +42,9 @@ class QgsVectorDataProvider : QgsDataProvider
         ChangeGeometries =             256,
         SelectGeometryAtId =           512,
         RandomSelectGeometryAtId =     1024,
-        SequentialSelectGeometryAtId = 2048
+        SequentialSelectGeometryAtId = 2048,
+        CreateAttributeIndex =         4096,
+        SetEncoding =                  8192,
       };
 
       /** bitmask of all provider's editing capabilities */
@@ -259,6 +261,9 @@ class QgsVectorDataProvider : QgsDataProvider
        * Returns the index of a field name or -1 if the field does not exist
        */
       int fieldNameIndex(const QString& fieldName) const;
+
+      /**Return a map where the key is the name of the field and the value is its index*/
+      QMap<QString, int> fieldNameMap() const;
       
       /**
        * Return list of indexes to fetch all attributes in nextFeature()

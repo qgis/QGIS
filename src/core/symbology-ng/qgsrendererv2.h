@@ -73,20 +73,24 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     virtual QgsFeatureRendererV2* clone() = 0;
 
-    virtual void renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+    virtual bool renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     //! for debugging
     virtual QString dump();
+
+    enum Capabilities {
+      SymbolLevels = 1     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+    };
+
+    //! returns bitwise OR-ed capabilities of the renderer
+    //! \note added in 2.0
+    virtual int capabilities() { return 0; }
 
     //! for symbol levels
     virtual QgsSymbolV2List symbols() = 0;
 
     bool usingSymbolLevels() const { return mUsingSymbolLevels; }
     void setUsingSymbolLevels( bool usingSymbolLevels ) { mUsingSymbolLevels = usingSymbolLevels; }
-
-    bool usingFirstRule() const { return mUsingFirstRule; }
-    void setUsingFirstRule( bool usingFirstRule ) { mUsingFirstRule = usingFirstRule; }
-
 
     //! create a renderer from XML element
     static QgsFeatureRendererV2* load( QDomElement& symbologyElem );
@@ -107,6 +111,13 @@ class CORE_EXPORT QgsFeatureRendererV2
   protected:
     QgsFeatureRendererV2( QString type );
 
+    void renderFeatureWithSymbol( QgsFeature& feature,
+                                  QgsSymbolV2* symbol,
+                                  QgsRenderContext& context,
+                                  int layer,
+                                  bool selected,
+                                  bool drawVertexMarker );
+
     //! render editing vertex marker at specified point
     void renderVertexMarker( QPointF& pt, QgsRenderContext& context );
     //! render editing vertex marker for a polyline
@@ -121,7 +132,6 @@ class CORE_EXPORT QgsFeatureRendererV2
     QString mType;
 
     bool mUsingSymbolLevels;
-    bool mUsingFirstRule;
 
     /** The current type of editing marker */
     int mCurrentVertexMarkerType;

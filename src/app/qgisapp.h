@@ -24,7 +24,6 @@ class QCursor;
 class QFileInfo;
 class QKeyEvent;
 class QLabel;
-class QLineEdit;
 class QMenu;
 class QPixmap;
 class QProgressBar;
@@ -46,6 +45,7 @@ class QgsGeometry;
 class QgsFeature;
 
 class QgsLegend;
+class QgsLayerOrder;
 class QgsMapCanvas;
 class QgsMapLayer;
 class QgsMapTip;
@@ -74,6 +74,8 @@ class QgsDecorationNorthArrow;
 class QgsDecorationScaleBar;
 
 class QgsMessageLogViewer;
+
+class QgsScaleComboBox;
 
 #include <QMainWindow>
 #include <QToolBar>
@@ -160,6 +162,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void setTheme( QString themeName = "default" );
 
     void setIconSizes( int size );
+    void setFontSize( int size );
 
     //! Setup the toolbar popup menus for a given theme
     void setupToolbarPopups( QString themeName );
@@ -206,6 +209,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     /**Deletes a composer and removes entry from Set*/
     void deleteComposer( QgsComposer* c );
 
+    /** overloaded function used to sort menu entries alphabetically */
+    QMenu* createPopupMenu();
+
 
     //! Actions to be inserted in menus and toolbars
     QAction *actionNewProject() { return mActionNewProject; }
@@ -233,6 +239,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSnappingOptions() { return mActionSnappingOptions; }
 
     QAction *actionPan() { return mActionPan; }
+    QAction *actionPanToSelected() { return mActionPanToSelected; }
     QAction *actionZoomIn() { return mActionZoomIn; }
     QAction *actionZoomOut() { return mActionZoomOut; }
     QAction *actionSelect() { return mActionSelect; }
@@ -241,6 +248,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QAction *actionSelectFreehand() { return mActionSelectFreehand; }
     QAction *actionSelectRadius() { return mActionSelectRadius; }
     QAction *actionIdentify() { return mActionIdentify; }
+    QAction *actionFeatureAction() { return mActionFeatureAction; }
     QAction *actionMeasure() { return mActionMeasure; }
     QAction *actionMeasureArea() { return mActionMeasureArea; }
     QAction *actionZoomFullExtent() { return mActionZoomFullExtent; }
@@ -312,6 +320,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QMenu *pluginMenu() { return mPluginMenu; }
     QMenu *databaseMenu() { return mDatabaseMenu; }
     QMenu *rasterMenu() { return mRasterMenu; }
+    QMenu *vectorMenu() { return mVectorMenu; }
+    QMenu *webMenu() { return mWebMenu; }
 #ifdef Q_WS_MAC
     QMenu *firstRightStandardMenu() { return mWindowMenu; }
     QMenu *windowMenu() { return mWindowMenu; }
@@ -337,6 +347,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QToolBar *pluginToolBar() { return mPluginToolBar; }
     QToolBar *helpToolBar() { return mHelpToolBar; }
     QToolBar *rasterToolBar() { return mRasterToolBar; }
+    QToolBar *vectorToolBar() { return mVectorToolBar; }
+    QToolBar *databaseToolBar() { return mDatabaseToolBar; }
+    QToolBar *webToolBar() { return mWebToolBar; }
 
     //! show layer properties
     void showLayerProperties( QgsMapLayer *ml );
@@ -362,6 +375,9 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void zoomToNext();
     //! Zoom to selected features
     void zoomToSelected();
+    //! Pan map to selected features
+    //! @note added in 2.0
+    void panToSelected();
 
     //! open the properties dialog for the currently selected layer
     void layerProperties();
@@ -527,6 +543,24 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void addPluginToDatabaseMenu( QString name, QAction* action );
     //! Remove the action to the submenu with the given name under the Database menu
     void removePluginDatabaseMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Raster menu (ie the user visible text on the menu item)
+    QMenu* getRasterMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Raster menu
+    void addPluginToRasterMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Raster menu
+    void removePluginRasterMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Vector menu (ie the user visible text on the menu item)
+    QMenu* getVectorMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Vector menu
+    void addPluginToVectorMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Vector menu
+    void removePluginVectorMenu( QString name, QAction* action );
+    //! Find the QMenu with the given name within the Web menu (ie the user visible text on the menu item)
+    QMenu* getWebMenu( QString menuName );
+    //! Add the action to the submenu with the given name under the Web menu
+    void addPluginToWebMenu( QString name, QAction* action );
+    //! Remove the action to the submenu with the given name under the Web menu
+    void removePluginWebMenu( QString name, QAction* action );
     //! Add "add layer" action to layer menu
     void insertAddLayerAction( QAction* action );
     //! Remove "add layer" action to layer menu
@@ -535,6 +569,22 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     int addPluginToolBarIcon( QAction * qAction );
     //! Remove an icon from the plugin toolbar
     void removePluginToolBarIcon( QAction *qAction );
+    //! Add an icon to the Raster toolbar
+    int addRasterToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Raster toolbar
+    void removeRasterToolBarIcon( QAction *qAction );
+    //! Add an icon to the Vector toolbar
+    int addVectorToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Vector toolbar
+    void removeVectorToolBarIcon( QAction *qAction );
+    //! Add an icon to the Database toolbar
+    int addDatabaseToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Database toolbar
+    void removeDatabaseToolBarIcon( QAction *qAction );
+    //! Add an icon to the Web toolbar
+    int addWebToolBarIcon( QAction * qAction );
+    //! Remove an icon from the Web toolbar
+    void removeWebToolBarIcon( QAction *qAction );
     //! Save window state
     void saveWindowState();
     //! Restore the window and toolbar state
@@ -713,6 +763,13 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Measure angle
     void measureAngle();
 
+    //! Run the default feature action on the current layer
+    void doFeatureAction();
+    //! Set the default feature action for the current layer
+    void updateDefaultFeatureAction( QAction *action );
+    //! Refresh the list of feature actions of the current layer
+    void refreshFeatureActions();
+
     //annotations
     void addFormAnnotation();
     void addTextAnnotation();
@@ -798,9 +855,6 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
       signal for when this happens.
       */
     void newProject();
-
-    //! emitted when a new bookmark is added
-    void bookmarkAdded();
 
     /** Signal emitted when the current theme is changed so plugins
      * can change there tool button icons.
@@ -892,6 +946,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     QAction* mActionPluginSeparator1;
     QAction* mActionPluginSeparator2;
+    QAction* mActionRasterSeparator;
 
     // action groups ----------------------------------
     QActionGroup *mMapToolGroup;
@@ -906,6 +961,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     // docks ------------------------------------------
     QDockWidget *mLegendDock;
+    QDockWidget *mLayerOrderDock;
     QDockWidget *mOverviewDock;
     QDockWidget *mpTileScaleDock;
     QDockWidget *mpGpsDock;
@@ -923,6 +979,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool* mZoomOut;
         QgsMapTool* mPan;
         QgsMapTool* mIdentify;
+        QgsMapTool* mFeatureAction;
         QgsMapTool* mMeasureDist;
         QgsMapTool* mMeasureArea;
         QgsMapTool* mMeasureAngle;
@@ -958,7 +1015,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     //! Widget that will live on the statusbar to display "scale 1:"
     QLabel * mScaleLabel;
     //! Widget that will live on the statusbar to display scale value
-    QLineEdit * mScaleEdit;
+    QgsScaleComboBox * mScaleEdit;
     //! The validator for the mScaleEdit
     QValidator * mScaleEditValidator;
     //! Widget that will live on the statusbar to display "Coordinate / Extent"
@@ -979,10 +1036,16 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QLabel * mOnTheFlyProjectionStatusLabel;
     //! Widget in status bar used to show status of on the fly projection
     QToolButton * mOnTheFlyProjectionStatusButton;
+    //! Menu that contains the list of actions of the selected vector layer
+    QMenu *mFeatureActionMenu;
     //! Popup menu
     QMenu * mPopupMenu;
     //! Top level database menu
     QMenu *mDatabaseMenu;
+    //! Top level vector menu
+    QMenu *mVectorMenu;
+    //! Top level web menu
+    QMenu *mWebMenu;
     //! Popup menu for the map overview tools
     QMenu *toolPopupOverviews;
     //! Popup menu for the display tools
@@ -991,6 +1054,8 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     QgsMapCanvas *mMapCanvas;
     //! Table of contents (legend) for the map
     QgsLegend *mMapLegend;
+    //! Table of contents (legend) to order layers of the map
+    QgsLayerOrder *mMapLayerOrder;
     //! Cursor for the overview map
     QCursor *mOverviewMapCursor;
     //! scale factor
@@ -1084,6 +1149,18 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! project changed
     void projectChanged( const QDomDocument & );
+
+    bool cmpByText( QAction* a, QAction* b );
+
+    QString mOldScale;
 };
+
+#ifdef ANDROID
+#define QGIS_ICON_SIZE 32
+#define QGIS_DEFAULT_FONTSIZE 8
+#else
+#define QGIS_ICON_SIZE 24
+#define QGIS_DEFAULT_FONTSIZE qApp->font().pointSize()
+#endif
 
 #endif

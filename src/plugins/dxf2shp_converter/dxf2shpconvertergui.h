@@ -34,6 +34,8 @@ class dxf2shpConverterGui: public QDialog, private Ui::dxf2shpConverterGui
     void getOutputFileName();
     void getOutputDir();
 
+    void restoreState();
+
   private slots:
     void on_buttonBox_accepted();
     void on_buttonBox_rejected();

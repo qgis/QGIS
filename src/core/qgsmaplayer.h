@@ -87,6 +87,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QString const & name() const;
 
+    void setTitle( const QString& title ) { mTitle = title; }
+    const QString& title() const { return mTitle; }
+
+    void setAbstract( const QString& abstract ) { mAbstract = abstract; }
+    const QString& abstract() const { return mAbstract; }
+
     /**Synchronises with changes in the datasource
         @note added in version 1.6*/
     virtual void reload() {}
@@ -228,7 +234,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Sets layer's spatial reference system
     @note emitSignal added in 1.4 */
     void setCrs( const QgsCoordinateReferenceSystem& srs, bool emitSignal = true );
-
 
     /** A convenience function to capitalise the layer name */
     static QString capitaliseLayerName( const QString name );
@@ -412,10 +417,15 @@ class CORE_EXPORT QgsMapLayer : public QObject
     /** Name of the layer - used for display */
     QString mLayerName;
 
-    /** layer's Spatial reference system */
-    QgsCoordinateReferenceSystem* mCRS;
+    QString mTitle;
+
+    /**Description of the layer*/
+    QString mAbstract;
 
   private:
+    /** layer's spatial reference system.
+        private to make sure setCrs must be used and layerCrsChanged() is emitted */
+    QgsCoordinateReferenceSystem* mCRS;
 
     /** private copy constructor - QgsMapLayer not copyable */
     QgsMapLayer( QgsMapLayer const & );

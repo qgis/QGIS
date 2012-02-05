@@ -20,20 +20,27 @@ qgsgraduatedsymbolrendererv2.cpp - Graduated Symbol Renderer Version 2
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgsvectordataprovider.h"
 
 #include <QDomDocument>
 #include <QDomElement>
 #include <QSettings> // for legend
 #include <limits> // for jenks classification
 #include <cmath> // for pretty classification
+#include <ctime>
 
 QgsRendererRangeV2::QgsRendererRangeV2( double lowerValue, double upperValue, QgsSymbolV2* symbol, QString label )
-    : mLowerValue( lowerValue ), mUpperValue( upperValue ), mSymbol( symbol ), mLabel( label )
+    : mLowerValue( lowerValue )
+    , mUpperValue( upperValue )
+    , mSymbol( symbol )
+    , mLabel( label )
 {
 }
 
 QgsRendererRangeV2::QgsRendererRangeV2( const QgsRendererRangeV2& range )
-    : mLowerValue( range.mLowerValue ), mUpperValue( range.mUpperValue ), mLabel( range.mLabel )
+    : mLowerValue( range.mLowerValue )
+    , mUpperValue( range.mUpperValue )
+    , mLabel( range.mLabel )
 {
   mSymbol = range.mSymbol->clone();
 }
@@ -92,7 +99,6 @@ QString QgsRendererRangeV2::dump()
 }
 
 ///////////
-
 
 QgsGraduatedSymbolRendererV2::QgsGraduatedSymbolRendererV2( QString attrName, QgsRangeList ranges )
     : QgsFeatureRendererV2( "graduatedSymbol" ),
@@ -560,7 +566,6 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
                                        double minimum, double maximum,
                                        int maximumSize = 1000 )
 {
-
   // Jenks Optimal (Natural Breaks) algorithm
   // Based on the Jenks algorithm from the 'classInt' package available for
   // the R statistical prgramming language, and from Python code from here:
@@ -571,131 +576,121 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   // Returns class breaks such that classes are internally homogeneous while
   // assuring heterogeneity among classes.
 
-  QList<double> breaks;
   if ( classes <= 1 )
   {
-    breaks.append( maximum );
-    return breaks;
+    return QList<double>() << maximum;
   }
 
-  int n = values.count();
-  if ( classes >= n )
+  if ( classes >= values.size() )
   {
     return values;
   }
 
-  QList<double> sample;
+  QVector<double> sample;
 
   // if we have lots of values, we need to take a random sample
-  if ( n > maximumSize )
+  if ( values.size() > maximumSize )
   {
     // for now, sample at least maximumSize values or a 10% sample, whichever
     // is larger. This will produce a more representative sample for very large
     // layers, but could end up being computationally intensive...
-    n = qMax( maximumSize, ( int )(( double ) n * 0.10 ) );
-    QgsDebugMsg( QString( "natural breaks (jenks) sample size: %1" ).arg( n ) );
-    sample.append( minimum );
-    sample.append( maximum );
-    for ( int i = 0; i < n - 2; i++ )
+
+    qsrand( time( 0 ) );
+
+    sample.resize( qMax( maximumSize, values.size() / 10 ) );
+
+    QgsDebugMsg( QString( "natural breaks (jenks) sample size: %1" ).arg( sample.size() ) );
+    QgsDebugMsg( QString( "values:%1" ).arg( values.size() ) );
+
+    sample[ 0 ] = minimum;
+    sample[ 1 ] = maximum;;
+    for ( int i = 2; i < sample.size(); i++ )
     {
       // pick a random integer from 0 to n
-      int c = ( int )(( double ) rand() / (( double ) RAND_MAX + 1 ) * n - 1 );
-      sample.append( values[i+c] );
+      double r = qrand();
+      int j = floor( r / RAND_MAX * ( values.size() - 1 ) );
+      sample[ i ] = values[ j ];
     }
   }
   else
   {
-    sample = values;
+    sample = values.toVector();
   }
-  // sort the values
+
+  int n = sample.size();
+
+  // sort the sample values
   qSort( sample );
 
-  QList< QList<double> > matrixOne;
-  QList< QList<double> > matrixTwo;
+  QVector< QVector<int> > matrixOne( n + 1 );
+  QVector< QVector<double> > matrixTwo( n + 1 );
 
-  double v, s1, s2, w, i3, i4, val;
-
-  for ( int i = 0; i < n + 1; i++ )
+  for ( int i = 0; i <= n; i++ )
   {
-    QList<double > tempOne;
-    QList<double > tempTwo;
-    for ( int j = 0; j < classes + 1; j++ )
-    {
-      tempOne.append( 0.0 );
-      tempTwo.append( 0.0 );
-    }
-    matrixOne.append( tempOne );
-    matrixTwo.append( tempTwo );
+    matrixOne[i].resize( classes + 1 );
+    matrixTwo[i].resize( classes + 1 );
   }
 
-  for ( int i = 1; i < classes + 1; i++ )
+  for ( int i = 1; i <= classes; i++ )
   {
-    matrixOne[1][i] = 1.0;
-    matrixTwo[1][i] = 0.0;
-    for ( int j = 2; j < n + 1; j++ )
+    matrixOne[0][i] = 1;
+    matrixOne[1][i] = 1;
+    matrixTwo[0][i] = 0.0;
+    for ( int j = 2; j <= n; j++ )
     {
-      matrixTwo[j][i] = std::numeric_limits<qreal>::max();
+      matrixTwo[j][i] = std::numeric_limits<double>::max();
     }
   }
 
-  v = 0.0;
-  for ( int l = 2; l < n + 1; l++ )
+  for ( int l = 2; l <= n; l++ )
   {
-    s1 = 0.0;
-    s2 = 0.0;
-    w = 0.0;
-    for ( int m = 1; m < l + 1; m++ )
-    {
-      i3 = l - m + 1;
+    double s1 = 0.0;
+    double s2 = 0.0;
+    int w = 0;
 
-      val = sample[ i3 - 1 ];
+    double v = 0.0;
+
+    for ( int m = 1; m <= l; m++ )
+    {
+      int i3 = l - m + 1;
+
+      double val = sample[ i3 - 1 ];
 
       s2 += val * val;
       s1 += val;
+      w++;
 
-      w += 1.0;
-      v = s2 - ( s1 * s1 ) / w;
-      i4 = i3 - 1;
-
-      if ( i4 != 0.0 )
+      v = s2 - ( s1 * s1 ) / ( double ) w;
+      int i4 = i3 - 1;
+      if ( i4 != 0 )
       {
-        for ( int j = 2; j < classes + 1; j++ )
+        for ( int j = 2; j <= classes; j++ )
         {
           if ( matrixTwo[l][j] >= v + matrixTwo[i4][j - 1] )
           {
-            matrixOne[l][j] = i3;
+            matrixOne[l][j] = i4;
             matrixTwo[l][j] = v + matrixTwo[i4][j - 1];
           }
         }
       }
     }
-    matrixOne[l][1] = 1.0;
+    matrixOne[l][1] = 1;
     matrixTwo[l][1] = v;
   }
 
-  for ( int i = 0; i < classes; i++ )
+  QVector<double> breaks( classes );
+  breaks[classes-1] = sample[n-1];
+
+  for ( int j = classes, k = n; j >= 2; j-- )
   {
-    breaks.append( 0.0 );
+    int id = matrixOne[k][j] - 1;
+    breaks[j - 2] = sample[id];
+    k = matrixOne[k][j] - 1;
   }
 
-  breaks[classes - 1] = sample[sample.size() - 1];
-//  breaks[0] = values[0];
-
-  int k = n;
-  int count = classes;
-  while ( count >= 2 )
-  {
-    int id = matrixOne[k][count] - 2;
-    breaks[count - 2] = sample[id];
-    k = matrixOne[k][count] - 1;
-    count -= 1;
-  }
-
-  return breaks;
+  return breaks.toList();
 } //_calcJenksBreaks
 
-#include "qgsvectordataprovider.h"
-#include "qgsvectorcolorrampv2.h"
 
 QgsGraduatedSymbolRendererV2* QgsGraduatedSymbolRendererV2::createRenderer(
   QgsVectorLayer* vlayer,

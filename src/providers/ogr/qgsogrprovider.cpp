@@ -17,6 +17,7 @@ email                : sherman at mrcc.com
 
 #include "qgsogrprovider.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 #define CPL_SUPRESS_CPLUSPLUS
 #include <gdal.h>         // to collect version information
@@ -58,7 +59,8 @@ class QgsCPLErrorHandler
 {
     static void CPL_STDCALL showError( CPLErr errClass, int errNo, const char *msg )
     {
-      QgsLogger::warning( QString( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ) );
+      if ( errNo != OGRERR_NONE )
+        QgsMessageLog::logMessage( QObject::tr( "OGR[%1] error %2: %3" ).arg( errClass ).arg( errNo ).arg( msg ), QObject::tr( "OGR" ) );
     }
 
   public:
@@ -189,13 +191,14 @@ QgsVectorLayerImport::ImportError QgsOgrProvider::createEmptyLayer(
 
 
 QgsOgrProvider::QgsOgrProvider( QString const & uri )
-    : QgsVectorDataProvider( uri ),
-    ogrDataSource( 0 ),
-    extent_( 0 ),
-    ogrLayer( 0 ),
-    ogrOrigLayer( 0 ),
-    ogrDriver( 0 ),
-    featuresCounted( -1 )
+    : QgsVectorDataProvider( uri )
+    , ogrDataSource( 0 )
+    , extent_( 0 )
+    , ogrLayer( 0 )
+    , ogrOrigLayer( 0 )
+    , ogrDriver( 0 )
+    , valid( false )
+    , featuresCounted( -1 )
 {
   QgsCPLErrorHandler handler;
 
@@ -272,13 +275,12 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     //TODO is in read-only mode, otherwise edit ops will fail
     //TODO: capabilities() should now reflect this; need to test.
   }
+
   if ( ogrDataSource )
   {
 
     QgsDebugMsg( "Data source is valid" );
     QgsDebugMsg( "OGR Driver was " + QString( OGR_Dr_GetName( ogrDriver ) ) );
-
-    valid = true;
 
     ogrDriverName = OGR_Dr_GetName( ogrDriver );
 
@@ -294,20 +296,14 @@ QgsOgrProvider::QgsOgrProvider( QString const & uri )
     }
 
     ogrLayer = ogrOrigLayer;
-    if (ogrLayer != NULL )
+    if ( ogrLayer )
     {
-      setSubsetString( mSubsetString );
-    }
-    else
-    {
-      valid = false;
+      valid = setSubsetString( mSubsetString );
     }
   }
   else
   {
-    QgsLogger::critical( "Data source is invalid" );
-    QgsLogger::critical( QString::fromUtf8( CPLGetLastErrorMsg() ) );
-    valid = false;
+    QgsMessageLog::logMessage( tr( "Data source is invalid (%1)" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ), tr( "OGR" ) );
   }
 
   // FIXME: sync with app/qgsnewvectorlayerdialog.cpp
@@ -355,14 +351,14 @@ bool QgsOgrProvider::setSubsetString( QString theSQL, bool updateFeatureCount )
   if ( !mSubsetString.isEmpty() )
   {
     QString sql = QString( "SELECT * FROM %1 WHERE %2" )
-                  .arg( quotedIdentifier( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) )
+                  .arg( quotedIdentifier( FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) ) ) ) )
                   .arg( mSubsetString );
     QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, NULL );
+    ogrLayer = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
 
     if ( !ogrLayer )
     {
-      pushError( QString( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
+      pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
       ogrLayer = prevLayer;
       mSubsetString = prevSubsetString;
       return false;
@@ -426,10 +422,11 @@ QString QgsOgrProvider::subsetString()
 QStringList QgsOgrProvider::subLayers() const
 {
   QStringList theList = QStringList();
-  if ( ! valid )
+  if ( !valid )
   {
     return theList;
   }
+
   for ( unsigned int i = 0; i < layerCount() ; i++ )
   {
     QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( OGR_DS_GetLayer( ogrDataSource, i ) ) ) );
@@ -463,7 +460,19 @@ QStringList QgsOgrProvider::subLayers() const
 
 void QgsOgrProvider::setEncoding( const QString& e )
 {
+#if defined(OLCStringsAsUTF8)
+  if ( !OGR_L_TestCapability( ogrLayer, OLCStringsAsUTF8 ) )
+  {
+    QgsVectorDataProvider::setEncoding( e );
+  }
+  else
+  {
+    QgsVectorDataProvider::setEncoding( "UTF-8" );
+  }
+#else
   QgsVectorDataProvider::setEncoding( e );
+#endif
+
   loadFields();
 }
 
@@ -525,8 +534,18 @@ void QgsOgrProvider::loadFields()
 
       mAttributeFields.insert(
         i, QgsField(
-          mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ), varType,
+          //TODO: fix this hack
+#ifdef ANDROID
+          OGR_Fld_GetNameRef( fldDef ),
+#else
+          mEncoding->toUnicode( OGR_Fld_GetNameRef( fldDef ) ),
+#endif
+          varType,
+#ifdef ANDROID
+          OGR_GetFieldTypeName( ogrType ),
+#else
           mEncoding->toUnicode( OGR_GetFieldTypeName( ogrType ) ),
+#endif
           OGR_Fld_GetWidth( fldDef ),
           OGR_Fld_GetPrecision( fldDef ) ) );
     }
@@ -630,7 +649,7 @@ bool QgsOgrProvider::nextFeature( QgsFeature& feature )
 
   if ( !valid )
   {
-    QgsLogger::warning( "Read attempt on an invalid shapefile data source" );
+    QgsMessageLog::logMessage( tr( "Read attempt on an invalid OGR data source" ), tr( "OGR" ) );
     return false;
   }
 
@@ -850,6 +869,14 @@ QgsRectangle QgsOgrProvider::extent()
   return mExtentRect;
 }
 
+void QgsOgrProvider::updateExtents()
+{
+  if ( extent_ )
+  {
+    free( extent_ );
+    extent_ = 0;
+  }
+}
 
 size_t QgsOgrProvider::layerCount() const
 {
@@ -943,9 +970,9 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
     unsigned char* wkb = f.geometry()->asWkb();
     OGRGeometryH geom = NULL;
 
-    if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() )
-         != OGRERR_NONE )
+    if ( OGR_G_CreateFromWkb( wkb, NULL, &geom, f.geometry()->wkbSize() ) != OGRERR_NONE )
     {
+      pushError( tr( "OGR error creating wkb for feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
       return false;
     }
 
@@ -994,7 +1021,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
           break;
 
         default:
-          QgsLogger::warning( "QgsOgrProvider::addFeature, no type found" );
+          QgsMessageLog::logMessage( tr( "type %1 for attribute %2 not found" ).arg( type ).arg( targetAttributeId ), tr( "OGR" ) );
           break;
       }
     }
@@ -1002,7 +1029,7 @@ bool QgsOgrProvider::addFeature( QgsFeature& f )
 
   if ( OGR_L_CreateFeature( ogrLayer, feature ) != OGRERR_NONE )
   {
-    QgsLogger::warning( "Writing of the feature failed" );
+    pushError( tr( "OGR error creating feature %1: %2" ).arg( f.id() ).arg( CPLGetLastErrorMsg() ) );
     returnValue = false;
   }
   else
@@ -1059,7 +1086,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
         type = OFTString;
         break;
       default:
-        QgsLogger::warning( QString( "QgsOgrProvider::addAttributes, type %1 not found" ).arg( iter->typeName() ) );
+        pushError( tr( "type %1 for field %2 not found" ).arg( iter->typeName() ).arg( iter->name() ) );
         returnvalue = false;
         continue;
     }
@@ -1070,7 +1097,7 @@ bool QgsOgrProvider::addAttributes( const QList<QgsField> &attributes )
 
     if ( OGR_L_CreateField( ogrLayer, fielddefn, true ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider.cpp: writing of field failed" );
+      pushError( tr( "OGR error creating field %1: %2" ).arg( iter->name() ).arg( CPLGetLastErrorMsg() ) );
       returnvalue = false;
     }
     OGR_Fld_Destroy( fielddefn );
@@ -1090,7 +1117,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   {
     if ( OGR_L_DeleteField( ogrLayer, attr ) != OGRERR_NONE )
     {
-      QgsDebugMsg( "Failed to delete attribute " + QString::number( attr ) );
+      pushError( tr( "OGR error deleting field %1: %2" ).arg( attr ).arg( CPLGetLastErrorMsg() ) );
       res = false;
     }
   }
@@ -1098,7 +1125,7 @@ bool QgsOgrProvider::deleteAttributes( const QgsAttributeIds &attributes )
   return res;
 #else
   Q_UNUSED( attributes );
-  QgsDebugMsg( "Deleting fields is supported only from GDAL >= 1.9.0" );
+  pushError( tr( "Deleting fields is not supported prior to GDAL 1.9.0" ) );
   return false;
 #endif
 }
@@ -1119,7 +1146,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
     if ( FID_TO_NUMBER( fid ) > std::numeric_limits<long>::max() )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, feature id too large for OGR" );
+      pushError( tr( "OGR error on feature %1: id too large" ).arg( fid ) );
       continue;
     }
 
@@ -1127,7 +1154,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
     if ( !of )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, Cannot read feature, cannot change attributes" );
+      pushError( tr( "Feature %1 for attribute update not found." ).arg( fid ) );
       continue;
     }
 
@@ -1140,7 +1167,7 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
       OGRFieldDefnH fd = OGR_F_GetFieldDefnRef( of, f );
       if ( !fd )
       {
-        QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, Field " + QString::number( f ) + " doesn't exist" );
+        pushError( tr( "Field %1 of feature %2 doesn't exist." ).arg( f ).arg( fid ) );
         continue;
       }
 
@@ -1165,16 +1192,15 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
             OGR_F_SetFieldString( of, f, mEncoding->fromUnicode( it2->toString() ).constData() );
             break;
           default:
-            QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, Unknown field type, cannot change attribute" );
+            pushError( tr( "Type %1 of attribute %2 of feature %3 unknown." ).arg( type ).arg( fid ).arg( f ) );
             break;
         }
       }
     }
 
-    OGRErr res;
-    if (( res = OGR_L_SetFeature( ogrLayer, of ) ) != OGRERR_NONE )
+    if ( OGR_L_SetFeature( ogrLayer, of ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeAttributeValues, setting the feature failed: " + QString::number( res ) );
+      pushError( tr( "OGR error setting feature %1: %2" ).arg( fid ).arg( CPLGetLastErrorMsg() ) );
     }
   }
 
@@ -1184,7 +1210,6 @@ bool QgsOgrProvider::changeAttributeValues( const QgsChangedAttributesMap & attr
 
 bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 {
-  OGRErr res;
   OGRFeatureH theOGRFeature = 0;
   OGRGeometryH theNewGeometry = 0;
 
@@ -1194,14 +1219,14 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
   {
     if ( FID_TO_NUMBER( it.key() ) > std::numeric_limits<long>::max() )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, fid too large for OGR" );
+      pushError( tr( "OGR error on feature %1: id too large" ).arg( it.key() ) );
       continue;
     }
 
     theOGRFeature = OGR_L_GetFeature( ogrLayer, static_cast<long>( FID_TO_NUMBER( it.key() ) ) );
     if ( !theOGRFeature )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, cannot find feature" );
+      pushError( tr( "OGR error changing geometry: feature %1 not found" ).arg( it.key() ) );
       continue;
     }
 
@@ -1211,7 +1236,7 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
                               &theNewGeometry,
                               it->wkbSize() ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, error while creating new OGRGeometry" );
+      pushError( tr( "OGR error creating geometry for feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
@@ -1219,23 +1244,23 @@ bool QgsOgrProvider::changeGeometryValues( QgsGeometryMap & geometry_map )
 
     if ( !theNewGeometry )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, new geometry is NULL" );
+      pushError( tr( "OGR error in feature %1: geometry is null" ).arg( it.key() ) );
       continue;
     }
 
     //set the new geometry
-    if (( res = OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) ) != OGRERR_NONE )
+    if ( OGR_F_SetGeometryDirectly( theOGRFeature, theNewGeometry ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, error while replacing geometry: " + QString::number( res ) );
+      pushError( tr( "OGR error setting geometry of feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
     }
 
 
-    if (( res = OGR_L_SetFeature( ogrLayer, theOGRFeature ) ) != OGRERR_NONE )
+    if ( OGR_L_SetFeature( ogrLayer, theOGRFeature ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "QgsOgrProvider::changeGeometryValues, error while setting feature: " + QString::number( res ) );
+      pushError( tr( "OGR error setting feature %1: %2" ).arg( it.key() ).arg( CPLGetLastErrorMsg() ) );
       OGR_G_DestroyGeometry( theNewGeometry );
       theNewGeometry = 0;
       continue;
@@ -1254,7 +1279,7 @@ bool QgsOgrProvider::createSpatialIndex()
 
   QString sql = QString( "CREATE SPATIAL INDEX ON %1" ).arg( quotedIdentifier( layerName ) );  // quote the layer name so spaces are handled
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "" );
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .qix file is there
@@ -1266,9 +1291,9 @@ bool QgsOgrProvider::createAttributeIndex( int field )
 {
   QString layerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrOrigLayer ) );
   QString dropSql = QString( "DROP INDEX ON %1" ).arg( quotedIdentifier( layerName ) );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( dropSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
   QString createSql = QString( "CREATE INDEX ON %1 USING %2" ).arg( quotedIdentifier( layerName ) ).arg( fields()[field].name() );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( dropSql ), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( createSql ), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( createSql ).constData(), OGR_L_GetSpatialFilter( ogrOrigLayer ), "SQL" );
 
   QFileInfo fi( mFilePath );     // to get the base name
   //find out, if the .idm file is there
@@ -1298,7 +1323,7 @@ bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds & id )
 
   QString sql = QString( "REPACK %1" ).arg( layerName );   // don't quote the layer name as it works with spaces in the name and won't work if the name is quoted
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, NULL );
+  OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, NULL );
 
   recalculateFeatureCount();
 
@@ -1317,11 +1342,17 @@ bool QgsOgrProvider::deleteFeature( QgsFeatureId id )
 {
   if ( FID_TO_NUMBER( id ) > std::numeric_limits<long>::max() )
   {
-    QgsDebugMsg( "id too large for OGR" );
+    pushError( tr( "OGR error on feature %1: id too large" ).arg( id ) );
     return false;
   }
 
-  return OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) == OGRERR_NONE;
+  if ( OGR_L_DeleteFeature( ogrLayer, FID_TO_NUMBER( id ) ) != OGRERR_NONE )
+  {
+    pushError( tr( "OGR error deleting feature %1: %2" ).arg( id ).arg( CPLGetLastErrorMsg() ) );
+    return false;
+  }
+
+  return true;
 }
 
 int QgsOgrProvider::capabilities() const
@@ -1425,7 +1456,7 @@ int QgsOgrProvider::capabilities() const
 
       if ( mAttributeFields.size() == 0 )
       {
-        QgsDebugMsg( "OGR doesn't handle shapefile without attributes well, ie. missing DBFs" );
+        QgsMessageLog::logMessage( tr( "Shapefiles without attribute are considered read-only." ), tr( "OGR" ) );
         ability &= ~( AddFeatures | DeleteFeatures | ChangeAttributeValues | AddAttributes | DeleteAttributes );
       }
 
@@ -1519,7 +1550,7 @@ QString createFilters( QString type )
 
       if ( !driver )
       {
-        QgsLogger::warning( "unable to get driver " + QString::number( i ) );
+        QgsMessageLog::logMessage( QObject::tr( "Unable to get driver %1" ).arg( i ), QObject::tr( "OGR" ) );
         continue;
       }
 
@@ -1671,9 +1702,8 @@ QString createFilters( QString type )
       }
       else if ( driverName.startsWith( "SQLite" ) )
       {
-        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ),
-                                            "*.sqlite" );
-        myExtensions << "sqlite";
+        myFileFilters += createFileFilter_( QObject::tr( "SQLite" ), "*.sqlite *.db" );
+        myExtensions << "sqlite" << "db";
       }
       else if ( driverName.startsWith( "UK .NTF" ) )
       {
@@ -1709,7 +1739,7 @@ QString createFilters( QString type )
       {
         // NOP, we don't know anything about the current driver
         // with regards to a proper file filter string
-        QgsDebugMsg( "fileVectorFilters, unknown driver: " + driverName );
+        QgsDebugMsg( QString( "Unknown driver %1 for file filters." ).arg( driverName ) );
       }
 
     }                           // each loaded GDAL driver
@@ -1878,7 +1908,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       QString name = fldIt->first.left( 10 );
       if ( fieldNames.contains( name ) )
       {
-        QgsDebugMsg( QString( "duplicate field (10 significant characters): %1" ).arg( name ) );
+        QgsMessageLog::logMessage( QObject::tr( "Duplicate field (10 significant characters): %1" ).arg( name ), QObject::tr( "OGR" ) );
         return false;
       }
       fieldNames << name;
@@ -1942,7 +1972,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
       break;
     default:
     {
-      QgsDebugMsg( QString( "Unknown vector type of: %1" ).arg(( int )( vectortype ) ) );
+      QgsMessageLog::logMessage( QObject::tr( "Unknown vector type of %1" ).arg(( int )( vectortype ) ), QObject::tr( "OGR" ) );
       return false;
       break;
     }
@@ -2012,7 +2042,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
     if ( OGR_L_CreateField( layer, field, true ) != OGRERR_NONE )
     {
-      QgsLogger::warning( "creation of field failed" );
+      QgsMessageLog::logMessage( QObject::tr( "creation of field %1 failed" ).arg( it->first ), QObject::tr( "OGR" ) );
     }
   }
 
@@ -2030,7 +2060,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
     }
     else
     {
-      QgsDebugMsg( "Couldn't open file " + layerName + ".qpj" );
+      QgsMessageLog::logMessage( QObject::tr( "Couldn't create file %1.qpj" ).arg( layerName ), QObject::tr( "OGR" ) );
     }
   }
 
@@ -2046,7 +2076,7 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
 
 QgsCoordinateReferenceSystem QgsOgrProvider::crs()
 {
-  QgsDebugMsg( "entering." );
+  QgsDebugMsg( "Entering." );
 
   QgsCoordinateReferenceSystem srs;
 
@@ -2103,7 +2133,7 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     return; //not a provider field
   }
 
-  QString theLayerName = OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) );
+  QString theLayerName = FROM8( OGR_FD_GetName( OGR_L_GetLayerDefn( ogrLayer ) ) );
 
   QString sql = QString( "SELECT DISTINCT %1 FROM %2" )
                 .arg( quotedIdentifier( fld.name() ) )
@@ -2114,17 +2144,17 @@ void QgsOgrProvider::uniqueValues( int index, QList<QVariant> &uniqueValues, int
     sql += QString( " WHERE %1" ).arg( mSubsetString );
   }
 
-  sql += QString( " ORDER BY %1" ).arg( quotedIdentifier( fld.name() ) );
+  sql += QString( " ORDER BY %1 ASC" ).arg( fld.name() );  // quoting of fieldname produces a syntax error
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( sql ) );
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
   if ( l == 0 )
     return QgsVectorDataProvider::uniqueValues( index, uniqueValues, limit );
 
   OGRFeatureH f;
   while ( 0 != ( f = OGR_L_GetNextFeature( l ) ) )
   {
-    uniqueValues << convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+    uniqueValues << ( OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() ) );
     OGR_F_Destroy( f );
 
     if ( limit >= 0 && uniqueValues.size() >= limit )
@@ -2154,7 +2184,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
     sql += QString( " WHERE %1" ).arg( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
 
   if ( l == 0 )
     return QgsVectorDataProvider::minimumValue( index );
@@ -2166,7 +2196,7 @@ QVariant QgsOgrProvider::minimumValue( int index )
     return QVariant();
   }
 
-  QVariant value = convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -2194,7 +2224,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
     sql += QString( " WHERE %1" ).arg( mSubsetString );
   }
 
-  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, TO8( sql ), NULL, "SQL" );
+  OGRLayerH l = OGR_DS_ExecuteSQL( ogrDataSource, mEncoding->fromUnicode( sql ).constData(), NULL, "SQL" );
   if ( l == 0 )
     return QgsVectorDataProvider::maximumValue( index );
 
@@ -2205,7 +2235,7 @@ QVariant QgsOgrProvider::maximumValue( int index )
     return QVariant();
   }
 
-  QVariant value = convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) );
+  QVariant value = OGR_F_IsFieldSet( f, 0 ) ? convertValue( fld.type(), mEncoding->toUnicode( OGR_F_GetFieldAsString( f, 0 ) ) ) : QVariant( fld.type() );
   OGR_F_Destroy( f );
 
   OGR_DS_ReleaseResultSet( ogrDataSource, l );
@@ -2215,10 +2245,19 @@ QVariant QgsOgrProvider::maximumValue( int index )
 
 QString QgsOgrProvider::quotedIdentifier( QString field )
 {
-  field.replace( '\\', "\\\\" );
-  field.replace( '"', "\\\"" );
-  field.replace( "'", "\\'" );
-  return field.prepend( "\"" ).append( "\"" );
+  if ( ogrDriverName == "MySQL" )
+  {
+    field.replace( '\\', "\\\\" );
+    field.replace( "`", "``" );
+    return field.prepend( "`" ).append( "`" );
+  }
+  else
+  {
+    field.replace( '\\', "\\\\" );
+    field.replace( '"', "\\\"" );
+    field.replace( "'", "\\'" );
+    return field.prepend( "\"" ).append( "\"" );
+  }
 }
 
 bool QgsOgrProvider::syncToDisc()

@@ -5,14 +5,15 @@
 #include <QUrl>
 #include <stdlib.h>
 
-QgsGetRequestHandler::QgsGetRequestHandler(): QgsHttpRequestHandler()
+QgsGetRequestHandler::QgsGetRequestHandler()
+    : QgsHttpRequestHandler()
 {
 }
 
-std::map<QString, QString> QgsGetRequestHandler::parseInput()
+QMap<QString, QString> QgsGetRequestHandler::parseInput()
 {
   QString queryString;
-  std::map<QString, QString> parameters;
+  QMap<QString, QString> parameters;
 
   const char* qs = getenv( "QUERY_STRING" );
   if ( qs )

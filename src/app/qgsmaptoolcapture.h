@@ -22,13 +22,13 @@
 #include "qgsgeometry.h"
 #include "qgslegend.h"
 
-class QgsGeometry;
+#include <QPoint>
+#include <QList>
+
 class QgsRubberBand;
 class QgsVertexMarker;
 class QgsMapLayer;
-
-#include <QPoint>
-#include <QList>
+class QgsGeometryValidator;
 
 class QgsMapToolCapture : public QgsMapToolEdit
 {
@@ -69,6 +69,8 @@ class QgsMapToolCapture : public QgsMapToolEdit
 
   public slots:
     void currentLayerChanged( QgsMapLayer *layer );
+    void addError( QgsGeometry::Error );
+    void validationFinished();
 
   protected:
     int nextPoint( const QPoint &p, QgsPoint &layerPoint, QgsPoint &mapPoint );
@@ -105,6 +107,8 @@ class QgsMapToolCapture : public QgsMapToolEdit
     QList<QgsPoint> mCaptureList;
 
     void validateGeometry();
+    QString mTip;
+    QgsGeometryValidator *mValidator;
     QList< QgsGeometry::Error > mGeomErrors;
     QList< QgsVertexMarker * > mGeomErrorMarkers;
 

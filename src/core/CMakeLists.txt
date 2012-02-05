@@ -54,7 +54,6 @@ SET(QGIS_CORE_SRCS
   qgsdatasourceuri.cpp
   qgsdataitem.cpp
   qgsdbfilterproxymodel.cpp
-  qgsdbtablemodel.cpp
   qgsdiagram.cpp
   qgsdiagramrendererv2.cpp
   qgsdistancearea.cpp
@@ -62,6 +61,7 @@ SET(QGIS_CORE_SRCS
   qgsfeature.cpp
   qgsfield.cpp
   qgsgeometry.cpp
+  qgsgeometryvalidator.cpp
   qgshttptransaction.cpp
   qgslabel.cpp
   qgslabelattributes.cpp
@@ -192,9 +192,9 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 IF (WITH_INTERNAL_SPATIALITE)
-  IF (WIN32 OR APPLE)
+  IF (WIN32 OR APPLE OR ANDROID)
     INCLUDE_DIRECTORIES(${ICONV_INCLUDE_DIR})
-  ENDIF (WIN32 OR APPLE)
+  ENDIF (WIN32 OR APPLE OR ANDROID)
   IF (WIN32)
     ADD_DEFINITIONS(-DDLL_EXPORT)
   ENDIF (WIN32)
@@ -234,13 +234,13 @@ SET(QGIS_CORE_MOC_HDRS
   qgscontexthelp.h
   qgscoordinatetransform.h
   qgsdataitem.h
-  qgsdbtablemodel.h
   qgsdataprovider.h
   qgshttptransaction.h
   qgsmaplayer.h
   qgsmaplayerregistry.h
   qgsmaprenderer.h
   qgsmessageoutput.h
+  qgsmessagelog.h
   qgscredentials.h
   qgspluginlayer.h
   qgsproject.h
@@ -249,6 +249,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsrasterdataprovider.h
   qgsnetworkaccessmanager.h
   qgsvectordataprovider.h
+  qgsgeometryvalidator.h
 
   composer/qgsaddremoveitemcommand.h
   composer/qgscomposerlegend.h
@@ -464,8 +465,6 @@ ENDIF (WITH_INTERNAL_SPATIALINDEX)
 ADD_LIBRARY(qgis_core SHARED ${QGIS_CORE_SRCS} ${QGIS_CORE_MOC_SRCS} ${INDEX_SRC} ${QGIS_CORE_HDRS} ${QGIS_CORE_MOC_HDRS})
 
 SET_TARGET_PROPERTIES(qgis_core PROPERTIES
-  VERSION ${COMPLETE_VERSION}
-  SOVERSION ${COMPLETE_VERSION}
   PUBLIC_HEADER "${QGIS_CORE_HDRS};${QGIS_CORE_MOC_HDRS}"
   CLEAN_DIRECT_OUTPUT 1
   FRAMEWORK 1
@@ -473,6 +472,14 @@ SET_TARGET_PROPERTIES(qgis_core PROPERTIES
   MACOSX_FRAMEWORK_INFO_PLIST "${CMAKE_SOURCE_DIR}/mac/framework.info.plist.in"
   MACOSX_FRAMEWORK_SHORT_VERSION_STRING ${COMPLETE_VERSION}
   MACOSX_FRAMEWORK_IDENTIFIER org.qgis.qgis_core)
+
+#generate unversioned libs for android
+IF (NOT ANDROID)
+  SET_TARGET_PROPERTIES(qgis_core PROPERTIES
+    VERSION ${COMPLETE_VERSION}
+    SOVERSION ${COMPLETE_VERSION}
+    )
+ENDIF (NOT ANDROID)
 
 # make sure to create qgsversion.h before compiling
 ADD_DEPENDENCIES(qgis_core version)
@@ -504,9 +511,12 @@ IF (WITH_INTERNAL_SPATIALITE)
   IF (WIN32 OR APPLE)
     TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY})
   ENDIF (WIN32 OR APPLE)
-  IF (UNIX)
+  IF (ANDROID)
+    TARGET_LINK_LIBRARIES(qgis_core ${ICONV_LIBRARY} ${CHARSET_LIBRARY})
+  ENDIF (ANDROID)
+  IF (UNIX AND NOT ANDROID)
     TARGET_LINK_LIBRARIES(qgis_core pthread ${CMAKE_DL_LIBS})
-  ENDIF (UNIX)
+  ENDIF (UNIX AND NOT ANDROID)
 ELSE (WITH_INTERNAL_SPATIALITE)
   TARGET_LINK_LIBRARIES(qgis_core ${SQLITE3_LIBRARY})
 ENDIF (WITH_INTERNAL_SPATIALITE)

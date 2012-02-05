@@ -65,7 +65,7 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
   return fi.exists();
 }
 
-QgsGrassElementDialog::QgsGrassElementDialog() : QObject()
+QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent ) : QObject(), mParent( parent )
 {
 }
 
@@ -80,7 +80,7 @@ QString QgsGrassElementDialog::getItem( QString element,
     *ok = false;
   mElement = element;
   mSource = source;
-  mDialog = new QDialog();
+  mDialog = new QDialog( mParent );
   mDialog->setWindowTitle( title );
   QVBoxLayout *layout = new QVBoxLayout( mDialog );
   QHBoxLayout *buttonLayout = new QHBoxLayout( );

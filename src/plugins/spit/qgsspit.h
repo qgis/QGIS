@@ -94,6 +94,8 @@ class QgsSpit : public QDialog, private Ui::QgsSpitBase
 
   private:
 
+    void restoreState();
+
     // Enum of table columns indexes
     enum ShpTableColumns
     {

@@ -562,7 +562,7 @@ void QgsGeorefPluginGui::loadGCPsDialog()
 {
   QString selectedFile = mRasterFileName.isEmpty() ? "" : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getOpenFileName( this, tr( "Load GCP points" ),
-                       selectedFile, "GCP file (*.points)" );
+                       selectedFile, tr( "GCP file" ) + " (*.points)" );
   if ( mGCPpointsFileName.isEmpty() )
     return;
 
@@ -580,7 +580,7 @@ void QgsGeorefPluginGui::saveGCPsDialog()
   QString selectedFile = mRasterFileName.isEmpty() ? "" : mRasterFileName + ".points";
   mGCPpointsFileName = QFileDialog::getSaveFileName( this, tr( "Save GCP points" ),
                        selectedFile,
-                       "GCP file (*.points)" );
+                       tr( "GCP file" ) + " (*.points)" );
 
   if ( mGCPpointsFileName.isEmpty() )
     return;

@@ -23,6 +23,8 @@
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectordataprovider.h"
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
 
 class QgsRectangle;
 class QgsSpatialIndex;
@@ -140,6 +142,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
       synchronize with changes in the data source*/
     virtual void reloadData();
 
+    /**Collects information about the field types. Is called internally from QgsWFSProvider ctor. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
+    int describeFeatureType( const QString& uri, QString& geometryAttribute,
+                             QgsFieldMap& fields, QGis::WkbType& geomType );
+
   signals:
     void dataReadProgressMessage( QString message );
 
@@ -188,10 +194,14 @@ class QgsWFSProvider: public QgsVectorDataProvider
     QString mWfsNamespace;
     /**Server capabilities for this layer (generated from capabilities document)*/
     int mCapabilities;
-
-
-    /**Collects information about the field types. Is called internally from QgsWFSProvider::getFeature. The method delegates the work to request specific ones and gives back the name of the geometry attribute and the thematic attributes with their types*/
-    int describeFeatureType( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
+    /**GetRenderedOnly: layer asociated with this provider*/
+    QgsVectorLayer *mLayer;
+    /**GetRenderedOnly: fetch only features within canvas extent to be rendered*/
+    bool mGetRenderedOnly;
+    /**GetRenderedOnly initializaiton flat*/
+    bool mInitGro;
+    /**if GetRenderedOnly, extent specified in WFS getFeatures; else empty (no constraint)*/
+    QgsRectangle mGetExtent;
 
     //encoding specific methods of getFeature
     int getFeatureGET( const QString& uri, const QString& geometryAttribute );
@@ -199,13 +209,13 @@ class QgsWFSProvider: public QgsVectorDataProvider
     int getFeatureSOAP( const QString& uri, const QString& geometryAttribute );
     int getFeatureFILE( const QString& uri, const QString& geometryAttribute );
     //encoding specific methods of describeFeatureType
-    int describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
+    int describeFeatureTypeGET( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
     int describeFeatureTypePOST( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
     int describeFeatureTypeSOAP( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
-    int describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields );
+    int describeFeatureTypeFile( const QString& uri, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
 
     /**Reads the name of the geometry attribute, the thematic attributes and their types from a dom document. Returns 0 in case of success*/
-    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields );
+    int readAttributesFromSchema( QDomDocument& schemaDoc, QString& geometryAttribute, QgsFieldMap& fields, QGis::WkbType& geomType );
     /**This method tries to guess the geometry attribute and the other attribute names from the .gml file if no schema is present. Returns 0 in case of success*/
     int guessAttributesFromFile( const QString& uri, QString& geometryAttribute, std::list<QString>& thematicAttributes ) const;
 
@@ -285,6 +295,10 @@ class QgsWFSProvider: public QgsVectorDataProvider
     void appendSupportedOperations( const QDomElement& operationsElem, int& capabilities ) const;
     /**Shows a message box with the exception string (or does nothing if the xml document is not an exception)*/
     void handleException( const QDomDocument& serverResponse ) const;
+    /**Initializes "Cache Features" inactive processing*/
+    bool initGetRenderedOnly( QgsRectangle );
+    /**Converts DescribeFeatureType schema geometry property type to WKBType*/
+    QGis::WkbType geomTypeFromPropertyType( QString attName, QString propType );
 
     void deleteData();
 };

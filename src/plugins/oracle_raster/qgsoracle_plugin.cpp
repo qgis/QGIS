@@ -18,6 +18,7 @@
 
 static const QString sName = QObject::tr( "Oracle Spatial GeoRaster" );
 static const QString sDescription = QObject::tr( "Access Oracle Spatial GeoRaster" );
+static const QString sCategory = QObject::tr( "Layers" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/oracleplugin/oracleplugin.png";
@@ -34,7 +35,7 @@ static const QString sPluginIcon = ":/oracleplugin/oracleplugin.png";
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 QgsOraclePlugin::QgsOraclePlugin( QgisInterface * theQgisInterface ) :
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
 }
@@ -58,7 +59,7 @@ void QgsOraclePlugin::initGui()
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->layerToolBar()->addAction( mQActionPointer );
   mQGisIface->insertAddLayerAction( mQActionPointer );
 
 }
@@ -87,7 +88,7 @@ void QgsOraclePlugin::run()
 void QgsOraclePlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->layerToolBar()->removeAction( mQActionPointer );
   mQGisIface->removeAddLayerAction( mQActionPointer );
   delete mQActionPointer;
 }
@@ -128,6 +129,13 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the description
+
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

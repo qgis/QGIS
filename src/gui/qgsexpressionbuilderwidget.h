@@ -19,6 +19,7 @@
 #include <QWidget>
 #include "ui_qgsexpressionbuilder.h"
 #include "qgsvectorlayer.h"
+#include "qgsexpressionhighlighter.h"
 
 #include "QStandardItemModel"
 #include "QStandardItem"
@@ -119,12 +120,14 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
       */
     void loadFieldNames();
 
+    void loadFieldNames( QgsFieldMap fields );
+
     /** Gets the expression string that has been set in the expression area.
       * @returns The expression as a string. */
-    QString getExpressionString();
+    QString expressionText();
 
     /** Sets the expression string for the widget */
-    void setExpressionString( const QString expressionString );
+    void setExpressionText( const QString& expression );
 
     /** Registers a node item for the expression builder.
       * @param group The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
@@ -137,8 +140,10 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
                        QString helpText = "",
                        QgsExpressionItem::ItemType type = QgsExpressionItem::ExpressionNode );
 
+    bool isExpressionValid();
+
   public slots:
-    void on_expressionTree_clicked( const QModelIndex &index );
+    void currentChanged( const QModelIndex &index, const QModelIndex & );
     void on_expressionTree_doubleClicked( const QModelIndex &index );
     void on_txtExpressionString_textChanged();
     void on_txtSearchEdit_textChanged();
@@ -149,22 +154,28 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void loadSampleValues();
     void loadAllValues();
 
+  private slots:
+    void setExpressionState( bool state );
+
   signals:
     /** Emited when the user changes the expression in the widget.
       * Users of this widget should connect to this signal to decide if to let the user
       * continue.
-      * @param isVaild Is true if the expression the user has typed is vaild.
+      * @param isValid Is true if the expression the user has typed is valid.
       */
-    void expressionParsed( bool isVaild );
+    void expressionParsed( bool isValid );
 
   private:
     void fillFieldValues( int fieldIndex, int countLimit );
+    QString loadFunctionHelp( QgsExpressionItem* functionName );
 
     QgsVectorLayer *mLayer;
     QStandardItemModel *mModel;
     QgsExpressionItemSearchProxy *mProxyModel;
     QMap<QString, QgsExpressionItem*> mExpressionGroups;
     QgsFeature mFeature;
+    QgsExpressionHighlighter* highlighter;
+    bool mExpressionValid;
 };
 
 #endif // QGSEXPRESSIONBUILDER_H

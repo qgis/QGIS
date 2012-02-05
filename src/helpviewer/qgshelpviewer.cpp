@@ -127,6 +127,12 @@ void QgsHelpViewer::loadContext( const QString &contextId )
     // get the help content and title from the localized file
     QString helpContents;
     QFile file( fullHelpPath );
+
+    QString missingError = tr("<h3>Oops! QGIS can't find help for this form.</h3>"
+                              "The help file for %1 was not found for your language<br>"
+                              "If you would like to create it, contact the QGIS development team"
+                              ).arg( contextId );
+
     // check to see if the localized version exists
     if ( !file.exists() )
     {
@@ -137,13 +143,12 @@ void QgsHelpViewer::loadContext( const QString &contextId )
       // translate this for us message
       if ( !lang.contains( "en_" ) )
       {
-        helpContents = "<i>" + tr( "This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team." ).arg( lang ) + "</i><hr />";
+        helpContents = missingError;
       }
     }
     if ( !file.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
-      helpContents = tr( "This help file does not exist for your language:<p><b>%1</b><p>If you would like to create it, contact the QGIS development team" )
-                     .arg( fullHelpPath );
+      helpContents = missingError;
     }
     else
     {

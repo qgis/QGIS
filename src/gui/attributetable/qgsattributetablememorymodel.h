@@ -30,14 +30,20 @@
 
 class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
     /**
      * Constructor
      * @param theLayer layer pointer
      */
-    QgsAttributeTableMemoryModel( QgsVectorLayer *theLayer );
+    QgsAttributeTableMemoryModel( QgsMapCanvas *theCanvas, QgsVectorLayer *theLayer );
+
+    /**
+     * Returns the number of rows
+     * @param parent parent index
+     */
+    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
 
     /**
      * Remove rows
@@ -75,14 +81,12 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
      * @param fid feature id
      * @return feature exists
      */
-    virtual bool featureAtId( QgsFeatureId fid );
+    virtual bool featureAtId( QgsFeatureId fid ) const;
 
     /**
      * Loads the layer into the model
      */
     virtual void loadLayer();
-
-    QHash<QgsFeatureId, QgsFeature> mFeatureMap;
 };
 
 #endif //QGSATTRIBUTETABLEMEMORYMODEL_H

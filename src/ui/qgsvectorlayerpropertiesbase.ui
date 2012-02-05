@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>777</width>
-    <height>650</height>
+    <width>762</width>
+    <height>672</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,49 +20,7 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <item>
-      <widget class="QPushButton" name="pbnLoadDefaultStyle">
-       <property name="text">
-        <string>Restore Default Style</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveDefaultStyle">
-       <property name="text">
-        <string>Save As Default</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnLoadStyle">
-       <property name="text">
-        <string>Load Style ...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pbnSaveStyleAs">
-       <property name="text">
-        <string>Save Style ...</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
+  <layout class="QGridLayout" name="gridLayout_8">
    <item row="0" column="0">
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
@@ -372,8 +330,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>761</width>
-            <height>539</height>
+            <width>736</width>
+            <height>542</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_3">
@@ -392,19 +350,6 @@
               </item>
               <item row="0" column="1">
                <widget class="QLineEdit" name="txtDisplayName"/>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="textLabel2">
-                <property name="toolTip">
-                 <string>Display field for the Identify Results dialog box</string>
-                </property>
-                <property name="whatsThis">
-                 <string>This sets the display field for the Identify Results dialog box</string>
-                </property>
-                <property name="text">
-                 <string>Display field</string>
-                </property>
-               </widget>
               </item>
               <item row="0" column="3">
                <widget class="QComboBox" name="displayFieldComboBox">
@@ -441,17 +386,14 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0" colspan="4">
+              <item row="4" column="0" colspan="3">
                <widget class="QLineEdit" name="leSpatialRefSys">
                 <property name="readOnly">
                  <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1" colspan="2">
-               <widget class="QLineEdit" name="leEditFormInit"/>
-              </item>
-              <item row="2" column="3">
+              <item row="4" column="3">
                <widget class="QPushButton" name="pbnChangeSpatialRefSys">
                 <property name="toolTip">
                  <string>Specify the coordinate reference system of the layer's geometry.</string>
@@ -463,6 +405,29 @@
                  <string>Specify CRS</string>
                 </property>
                </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="textLabel2">
+                <property name="toolTip">
+                 <string>Display field for the Identify Results dialog box</string>
+                </property>
+                <property name="whatsThis">
+                 <string>This sets the display field for the Identify Results dialog box</string>
+                </property>
+                <property name="text">
+                 <string>Display field</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="3">
+               <widget class="QPushButton" name="pbnUpdateExtents">
+                <property name="text">
+                 <string>Update Extents</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1" colspan="2">
+               <widget class="QLineEdit" name="leEditFormInit"/>
               </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_3">
@@ -563,6 +528,9 @@
               <string>Provider-specific options</string>
              </property>
              <layout class="QFormLayout" name="formLayout">
+              <property name="fieldGrowthPolicy">
+               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+              </property>
               <item row="0" column="0">
                <widget class="QLabel" name="label_2">
                 <property name="text">
@@ -590,8 +558,47 @@
       <attribute name="title">
        <string>Metadata</string>
       </attribute>
-      <layout class="QGridLayout" name="gridLayout_8">
+      <layout class="QGridLayout" name="gridLayout_15">
        <item row="0" column="0">
+        <widget class="QLabel" name="mLayerTitleLabel">
+         <property name="text">
+          <string>Title</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLineEdit" name="mLayerTitleLineEdit"/>
+       </item>
+       <item row="2" column="0">
+        <widget class="QLabel" name="mLayerAbstractLabel">
+         <property name="text">
+          <string>Abstract</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QTextEdit" name="mLayerAbstractTextEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>50</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>50</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>80</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
         <widget class="QTextEdit" name="teMetadata">
          <property name="lineWidth">
           <number>2</number>
@@ -828,6 +835,9 @@
             </item>
             <item>
              <widget class="QDoubleSpinBox" name="mPenWidthSpinBox">
+              <property name="decimals">
+               <number>5</number>
+              </property>
               <property name="maximum">
                <double>99999.990000000005239</double>
               </property>
@@ -866,19 +876,6 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="3">
-           <widget class="QPushButton" name="mDiagramFontButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <item>
@@ -913,8 +910,20 @@
             </item>
            </layout>
           </item>
+          <item row="1" column="3">
+           <widget class="QPushButton" name="mDiagramFontButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Font...</string>
+            </property>
+           </widget>
+          </item>
          </layout>
-         <zorder>mDiagramFontButton</zorder>
         </widget>
        </item>
        <item row="2" column="0" colspan="6">
@@ -1196,6 +1205,48 @@
        </item>
       </layout>
      </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pbnLoadDefaultStyle">
+       <property name="text">
+        <string>Restore Default Style</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveDefaultStyle">
+       <property name="text">
+        <string>Save As Default</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnLoadStyle">
+       <property name="text">
+        <string>Load Style ...</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pbnSaveStyleAs">
+       <property name="text">
+        <string>Save Style ...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="0">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
     </widget>
    </item>
   </layout>

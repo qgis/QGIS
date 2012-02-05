@@ -33,6 +33,7 @@ class GUI_EXPORT QgsDetailedItemData
     ~QgsDetailedItemData();
     void setTitle( const QString theTitle );
     void setDetail( const QString theDetail );
+    void setCategory( const QString theCategory );
     void setIcon( const QPixmap theIcon );
     void setCheckable( const bool theFlag );
     void setChecked( const bool theFlag );
@@ -47,6 +48,7 @@ class GUI_EXPORT QgsDetailedItemData
 
     QString title() const;
     QString detail() const;
+    QString category() const;
     QPixmap icon() const;
     bool isCheckable() const;
     bool isChecked() const;
@@ -56,6 +58,7 @@ class GUI_EXPORT QgsDetailedItemData
   private:
     QString mTitle;
     QString mDetail;
+    QString mCategory;
     QString mLibraryName;
     QPixmap mPixmap;
     bool mCheckableFlag;

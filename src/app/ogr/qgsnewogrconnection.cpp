@@ -14,8 +14,6 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <iostream>
-
 #include <QSettings>
 #include <QMessageBox>
 #include <QInputDialog>
@@ -40,6 +38,9 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
 {
   setupUi( this );
 
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/OGRDatabaseConnection/geometry" ).toByteArray() );
+
   //add database drivers
   QStringList dbDrivers = QgsProviderRegistry::instance()->databaseDrivers().split( ";" );
   for ( int i = 0; i < dbDrivers.count(); i++ )
@@ -53,7 +54,6 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
-    QSettings settings;
     QString key = "/" + connType + "/connections/" + connName;
     txtHost->setText( settings.value( key + "/host" ).toString() );
     txtDatabase->setText( settings.value( key + "/database" ).toString() );
@@ -74,6 +74,8 @@ QgsNewOgrConnection::QgsNewOgrConnection( QWidget *parent, const QString& connTy
 
 QgsNewOgrConnection::~QgsNewOgrConnection()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/OGRDatabaseConnection/geometry", saveGeometry() );
 }
 
 void QgsNewOgrConnection::testConnection()

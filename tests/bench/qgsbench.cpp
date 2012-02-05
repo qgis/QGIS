@@ -14,11 +14,15 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#include <QtGlobal>
+
 #include <cmath>
 #include <ctime>
 #include <iostream>
 #include <stdio.h>
+#ifndef Q_OS_WIN
 #include <sys/resource.h>
+#endif
 #include <time.h>
 #include <math.h>
 
@@ -34,6 +38,79 @@
 #include "qgslogger.h"
 #include "qgsmaplayerregistry.h"
 #include "qgsproject.h"
+
+#ifdef Q_OS_WIN
+// slightly adapted from http://anoncvs.postgresql.org/cvsweb.cgi/pgsql/src/port/getrusage.c?rev=1.18;content-type=text%2Fplain
+
+#include <winsock2.h>
+#include <errno.h>
+
+#define RUSAGE_SELF     0
+
+struct rusage
+{
+  struct timeval ru_utime;    /* user time used */
+  struct timeval ru_stime;    /* system time used */
+};
+
+/*-------------------------------------------------------------------------
+ *
+ * getrusage.c
+ *   get information about resource utilisation
+ *
+ * Portions Copyright (c) 1996-2010, PostgreSQL Global Development Group
+ * Portions Copyright (c) 1994, Regents of the University of California
+ *
+ *
+ * IDENTIFICATION
+ *   $PostgreSQL: pgsql/src/port/getrusage.c,v 1.18 2010-01-02 16:58:13 momjian Exp $
+ *
+ *-------------------------------------------------------------------------
+ */
+
+
+int getrusage( int who, struct rusage * rusage )
+{
+  FILETIME starttime;
+  FILETIME exittime;
+  FILETIME kerneltime;
+  FILETIME usertime;
+  ULARGE_INTEGER li;
+
+  if ( who != RUSAGE_SELF )
+  {
+    /* Only RUSAGE_SELF is supported in this implementation for now */
+    errno = EINVAL;
+    return -1;
+  }
+
+  if ( rusage == ( struct rusage * ) NULL )
+  {
+    errno = EFAULT;
+    return -1;
+  }
+  memset( rusage, 0, sizeof( struct rusage ) );
+  if ( GetProcessTimes( GetCurrentProcess(),
+                        &starttime, &exittime, &kerneltime, &usertime ) == 0 )
+  {
+    // _dosmaperr(GetLastError());
+    return -1;
+  }
+
+  /* Convert FILETIMEs (0.1 us) to struct timeval */
+  memcpy( &li, &kerneltime, sizeof( FILETIME ) );
+  li.QuadPart /= 10L;   /* Convert to microseconds */
+  rusage->ru_stime.tv_sec = li.QuadPart / 1000000L;
+  rusage->ru_stime.tv_usec = li.QuadPart % 1000000L;
+
+  memcpy( &li, &usertime, sizeof( FILETIME ) );
+  li.QuadPart /= 10L;   /* Convert to microseconds */
+  rusage->ru_utime.tv_sec = li.QuadPart / 1000000L;
+  rusage->ru_utime.tv_usec = li.QuadPart % 1000000L;
+
+  return 0;
+}
+#endif
 
 QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
     : QObject(), mWidth( theWidth ), mHeight( theHeight ), mIterations( theIterations ), mSetExtent( false )
@@ -133,9 +210,10 @@ void QgsBench::render()
   mLogMap.insert( "iterations", mTimes.size() );
 
   // Calc stats: user, sys, total
-  double avg[3], min[3], max[3];
+  double min[3], max[3];
   double stdev[3] = {0.};
   double maxdev[3] = {0.};
+  double avg[3] = {0.};
 
   for ( int t = 0; t < 3; t++ )
   {
@@ -260,4 +338,3 @@ void QgsBench::elapsed()
   t[2] = t[0] + t[1];
   mTimes.append( t );
 }
-

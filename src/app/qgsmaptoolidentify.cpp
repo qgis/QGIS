@@ -324,7 +324,17 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
 
   QMap< QString, QString > attributes, derivedAttributes;
   QgsPoint idPoint = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
-  idPoint = toLayerCoordinates( layer, idPoint );
+  try
+  {
+    idPoint = toLayerCoordinates( layer, idPoint );
+  }
+  catch( QgsCsException &cse )
+  {
+    Q_UNUSED( cse );
+    QgsDebugMsg( QString( "coordinate not reprojectable: %1" ).arg( cse.what() ) );
+    return false;
+  }
+
   QString type;
 
   if ( layer->providerType() == "wms" )
@@ -334,7 +344,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
     //if WMS layer does not cover the view origin,
     //we need to map the view pixel coordinates
     //to WMS layer pixel coordinates
-    QgsRectangle viewExtent = mCanvas->extent();
+    QgsRectangle viewExtent = toLayerCoordinates( layer, mCanvas->extent() );
     QgsRectangle layerExtent = layer->extent();
     double mapUnitsPerPixel = mCanvas->mapUnitsPerPixel();
     if ( mapUnitsPerPixel > 0 && viewExtent.intersects( layerExtent ) )

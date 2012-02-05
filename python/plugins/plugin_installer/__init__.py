@@ -20,6 +20,9 @@ def version():
 def description():
   return "Downloads and installs QGIS python plugins"
 
+def category():
+  return "Plugins"
+
 def qgisMinimumVersion():
   return "1.0"
 

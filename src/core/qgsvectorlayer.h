@@ -105,6 +105,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
       Calendar,      /* calendar widget @added in 1.5 */
       DialRange,     /* dial range @added in 1.5 */
       ValueRelation, /* value map from an table @added in 1.8 */
+      UuidGenerator, /* uuid generator - readonly and automatically intialized @added in 1.9 */
     };
 
     struct RangeData
@@ -730,6 +731,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer
     void layerDeleted();
 
     void attributeValueChanged( QgsFeatureId fid, int idx, const QVariant & );
+    void geometryChanged( QgsFeatureId fid, QgsGeometry &geom ); // added in 1.9
 
     /** Signals emitted after committing changes
       \note added in v1.6 */

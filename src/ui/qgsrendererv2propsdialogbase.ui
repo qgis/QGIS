@@ -33,13 +33,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="btnSymbolLevels">
-       <property name="text">
-        <string>Symbol levels</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="btnOldSymbology">
        <property name="text">
         <string>Old symbology</string>
@@ -86,7 +79,6 @@
  </widget>
  <tabstops>
   <tabstop>cboRenderers</tabstop>
-  <tabstop>btnSymbolLevels</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>

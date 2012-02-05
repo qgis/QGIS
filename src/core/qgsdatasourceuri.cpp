@@ -22,12 +22,22 @@
 #include <QStringList>
 #include <QRegExp>
 
-QgsDataSourceURI::QgsDataSourceURI() : mSSLmode( SSLprefer ), mKeyColumn( "" ), mUseEstimatedMetadata( false )
+QgsDataSourceURI::QgsDataSourceURI()
+    : mSSLmode( SSLprefer )
+    , mKeyColumn( "" )
+    , mUseEstimatedMetadata( false )
+    , mSelectAtIdDisabled( false )
+    , mGeometryType( QGis::UnknownGeometry )
 {
   // do nothing
 }
 
-QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyColumn( "" ), mUseEstimatedMetadata( false )
+QgsDataSourceURI::QgsDataSourceURI( QString uri )
+    : mSSLmode( SSLprefer )
+    , mKeyColumn( "" )
+    , mUseEstimatedMetadata( false )
+    , mSelectAtIdDisabled( false )
+    , mGeometryType( QGis::UnknownGeometry )
 {
   int i = 0;
   while ( i < uri.length() )
@@ -114,6 +124,34 @@ QgsDataSourceURI::QgsDataSourceURI( QString uri ) : mSSLmode( SSLprefer ), mKeyC
       else if ( pname == "estimatedmetadata" )
       {
         mUseEstimatedMetadata = pval == "true";
+      }
+      else if ( pname == "srid" )
+      {
+        mSrid = pval;
+      }
+      else if ( pname == "type" )
+      {
+        QString geomTypeUpper = pval.toUpper();
+        if ( geomTypeUpper == "POINT" )
+        {
+          mGeometryType = QGis::Point;
+        }
+        else if ( geomTypeUpper == "LINE" )
+        {
+          mGeometryType = QGis::Line;
+        }
+        else if ( geomTypeUpper == "POLYGON" )
+        {
+          mGeometryType = QGis::Polygon;
+        }
+        else
+        {
+          mGeometryType = QGis::UnknownGeometry;
+        }
+      }
+      else if ( pname == "selectatid" )
+      {
+        mSelectAtIdDisabled = pval == "false";
       }
       else if ( pname == "service" )
       {
@@ -309,6 +347,16 @@ bool QgsDataSourceURI::useEstimatedMetadata() const
   return mUseEstimatedMetadata;
 }
 
+void QgsDataSourceURI::disableSelectAtId( bool theFlag )
+{
+  mSelectAtIdDisabled = theFlag;
+}
+
+bool QgsDataSourceURI::selectAtIdDisabled() const
+{
+  return mSelectAtIdDisabled;
+}
+
 void QgsDataSourceURI::setSql( QString sql )
 {
   mSql = sql;
@@ -461,6 +509,21 @@ QString QgsDataSourceURI::uri() const
     theUri += QString( " estimatedmetadata=true" );
   }
 
+  if ( !mSrid.isEmpty() )
+  {
+    theUri += QString( " srid=%1" ).arg( mSrid );
+  }
+
+  if ( mGeometryType != QGis::UnknownGeometry && mGeometryType != QGis::NoGeometry )
+  {
+    theUri += QString( " type=%1" ).arg( QGis::qgisVectorGeometryType[mGeometryType] );
+  }
+
+  if ( mSelectAtIdDisabled )
+  {
+    theUri += QString( " selectatid=false" );
+  }
+
   theUri += QString( " table=%1%2 sql=%3" )
             .arg( quotedTablename() )
             .arg( mGeometryColumn.isNull() ? QString() : QString( " (%1)" ).arg( mGeometryColumn ) )
@@ -524,4 +587,24 @@ void QgsDataSourceURI::setDataSource( const QString &schema,
 void QgsDataSourceURI::setDatabase( const QString &database )
 {
   mDatabase = database;
+}
+
+QGis::GeometryType QgsDataSourceURI::geometryType() const
+{
+  return mGeometryType;
+}
+
+void QgsDataSourceURI::setGeometryType( QGis::GeometryType geometryType )
+{
+  mGeometryType = geometryType;
+}
+
+QString QgsDataSourceURI::srid() const
+{
+  return mSrid;
+}
+
+void QgsDataSourceURI::setSrid( QString srid )
+{
+  mSrid = srid;
 }

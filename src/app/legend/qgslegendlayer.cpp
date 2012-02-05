@@ -41,7 +41,6 @@
 #include "qgscategorizedsymbolrendererv2.h"
 #include "qgsgraduatedsymbolrendererv2.h"
 
-#include <iostream>
 #include <QAction>
 #include <QCoreApplication>
 #include <QIcon>
@@ -54,8 +53,10 @@
 
 
 QgsLegendLayer::QgsLegendLayer( QgsMapLayer* layer )
-    : QgsLegendItem( ),
-    mLyr( layer ), mShowFeatureCount( false )
+    : QgsLegendItem( )
+    , mLyr( layer )
+    , mDrawingOrder( -1 )
+    , mShowFeatureCount( false )
 {
   mType = LEGEND_LAYER;
 
@@ -377,13 +378,10 @@ QPixmap QgsLegendLayer::getOriginalPixmap()
       {
         case QGis::Point:
           return QgisApp::getThemePixmap( "/mIconPointLayer.png" );
-          break;
         case QGis::Line:
           return QgisApp::getThemePixmap( "/mIconLineLayer.png" );
-          break;
         case QGis::Polygon:
           return QgisApp::getThemePixmap( "/mIconPolygonLayer.png" );
-          break;
         case QGis::NoGeometry:
           return QgisApp::getThemePixmap( "/mIconTableLayer.png" );
         default:
@@ -710,4 +708,10 @@ void QgsLegendLayer::setShowFeatureCount( bool show, bool update )
       updateAfterLayerModification( false );
     }
   }
+}
+
+void QgsLegendLayer::setDrawingOrder( int order )
+{
+  QgsDebugMsg( QString( "order %1: %2=>%3" ).arg( mLyr.layer()->name() ).arg( mDrawingOrder ).arg( order ) );
+  mDrawingOrder = order;
 }

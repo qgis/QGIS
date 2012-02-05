@@ -5,29 +5,31 @@
 #include <QInputDialog>
 #include <QMenu>
 
+#include "qgssymbollevelsv2dialog.h"
+
 
 QgsRendererV2Widget::QgsRendererV2Widget( QgsVectorLayer* layer, QgsStyleV2* style )
     : QWidget(), mLayer( layer ), mStyle( style )
 {
+  contextMenu = new QMenu( "Renderer Options " );
+
+  contextMenu->addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
+  contextMenu->addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
+  contextMenu->addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
+
+  if ( mLayer && mLayer->geometryType() == QGis::Line )
+  {
+    contextMenu->addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
+  }
+  else if ( mLayer && mLayer->geometryType() == QGis::Point )
+  {
+    contextMenu->addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
+  }
 }
 
 void QgsRendererV2Widget::contextMenuViewCategories( const QPoint & )
 {
-  QMenu contextMenu;
-  contextMenu.addAction( tr( "Change color" ), this, SLOT( changeSymbolColor( ) ) );
-  contextMenu.addAction( tr( "Change transparency" ), this, SLOT( changeSymbolTransparency() ) );
-  contextMenu.addAction( tr( "Change output unit" ), this, SLOT( changeSymbolUnit() ) );
-
-  if ( mLayer && mLayer->geometryType() == QGis::Line )
-  {
-    contextMenu.addAction( tr( "Change width" ), this, SLOT( changeSymbolWidth() ) );
-  }
-  else if ( mLayer && mLayer->geometryType() == QGis::Point )
-  {
-    contextMenu.addAction( tr( "Change size" ), this, SLOT( changeSymbolSize() ) );
-  }
-
-  contextMenu.exec( QCursor::pos() );
+  contextMenu->exec( QCursor::pos() );
 }
 
 void QgsRendererV2Widget::changeSymbolColor()
@@ -59,13 +61,14 @@ void QgsRendererV2Widget::changeSymbolTransparency()
   }
 
   bool ok;
-  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency" ), 1 - symbolList.at( 0 )->alpha(), 0.0, 1.0, 1, &ok );
+  double oldTransparency = ( 1 - symbolList.at( 0 )->alpha() ) * 100; // convert to percents
+  double transparency = QInputDialog::getDouble( this, tr( "Transparency" ), tr( "Change symbol transparency [%]" ), oldTransparency, 0.0, 100.0, 0, &ok );
   if ( ok )
   {
     QList<QgsSymbolV2*>::iterator symbolIt = symbolList.begin();
     for ( ; symbolIt != symbolList.end(); ++symbolIt )
     {
-      ( *symbolIt )->setAlpha( 1 - transparency );
+      ( *symbolIt )->setAlpha( 1 - transparency / 100 );
     }
     refreshSymbolView();
   }
@@ -137,6 +140,17 @@ void QgsRendererV2Widget::changeSymbolSize()
   }
 }
 
+void QgsRendererV2Widget::showSymbolLevelsDialog( QgsFeatureRendererV2* r )
+{
+  QgsLegendSymbolList symbols = r->legendSymbolItems();
+
+  QgsSymbolLevelsV2Dialog dlg( symbols, r->usingSymbolLevels(), this );
+
+  if ( dlg.exec() )
+  {
+    r->setUsingSymbolLevels( dlg.usingLevels() );
+  }
+}
 
 
 ////////////

@@ -359,7 +359,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>10000000</number>
+             <number>999999999</number>
             </property>
            </widget>
           </item>
@@ -372,7 +372,7 @@
              <number>1</number>
             </property>
             <property name="maximum">
-             <number>10000000</number>
+             <number>999999999</number>
             </property>
             <property name="value">
              <number>10000000</number>
@@ -474,7 +474,7 @@
             <x>0</x>
             <y>0</y>
             <width>658</width>
-            <height>443</height>
+            <height>451</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -547,7 +547,7 @@
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="4" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
                  <widget class="QLabel" name="label_19">
@@ -565,7 +565,7 @@
                 </item>
                </layout>
               </item>
-              <item row="4" column="0">
+              <item row="5" column="0">
                <layout class="QHBoxLayout" name="horizontalLayout_20">
                 <item>
                  <widget class="QCheckBox" name="chkNoObstacle">
@@ -593,10 +593,34 @@
                 <item>
                  <widget class="QPushButton" name="btnEngineSettings">
                   <property name="enabled">
-                   <bool>false</bool>
+                   <bool>true</bool>
                   </property>
                   <property name="text">
                    <string>Engine settings</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="3" column="0">
+               <layout class="QHBoxLayout" name="horizontalLayout">
+                <property name="topMargin">
+                 <number>3</number>
+                </property>
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>Wrap label on character</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QLineEdit" name="wrapCharacterEdit">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
                   </property>
                  </widget>
                 </item>
@@ -911,7 +935,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>249</width>
+            <width>658</width>
             <height>567</height>
            </rect>
           </property>

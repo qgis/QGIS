@@ -19,19 +19,21 @@
  This script initializes the plugin, making it known to QGIS.
 """
 
-def name(): 
-  return "MapServer Export" 
+def name():
+  return "MapServer Export"
 def description():
   return "Export a saved QGIS project file to a MapServer map file"
-def version(): 
-  return "Version 0.4.3" 
-def qgisMinimumVersion(): 
+def category():
+  return "Web"
+def version():
+  return "Version 0.4.3"
+def qgisMinimumVersion():
   return "1.0"
 def icon():
   return "mapserver_export.png"
 def authorName():
   return "Gary E. Sherman"
-def classFactory(iface): 
+def classFactory(iface):
   # load MapServerExport class from file mapserverexport.py
-  from mapserverexport import MapServerExport 
-  return MapServerExport(iface) 
+  from mapserverexport import MapServerExport
+  return MapServerExport(iface)

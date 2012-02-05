@@ -17,7 +17,6 @@
 
 #include "qgspallabeling.h"
 
-#include <iostream>
 #include <list>
 
 #include <pal/pal.h>
@@ -158,6 +157,7 @@ QgsPalLayerSettings::QgsPalLayerSettings()
   addDirectionSymbol = false;
   fontSizeInMapUnits = false;
   distInMapUnits = false;
+  wrapChar = "";
 }
 
 QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
@@ -188,6 +188,7 @@ QgsPalLayerSettings::QgsPalLayerSettings( const QgsPalLayerSettings& s )
   addDirectionSymbol = s.addDirectionSymbol;
   fontSizeInMapUnits = s.fontSizeInMapUnits;
   distInMapUnits = s.distInMapUnits;
+  wrapChar = s.wrapChar;
 
   dataDefinedProperties = s.dataDefinedProperties;
   fontMetrics = NULL;
@@ -330,6 +331,7 @@ void QgsPalLayerSettings::readFromLayer( QgsVectorLayer* layer )
   minFeatureSize = layer->customProperty( "labeling/minFeatureSize" ).toDouble();
   fontSizeInMapUnits = layer->customProperty( "labeling/fontSizeInMapUnits" ).toBool();
   distInMapUnits = layer->customProperty( "labeling/distInMapUnits" ).toBool();
+  wrapChar = layer->customProperty( "labeling/wrapChar" ).toString();
   _readDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
@@ -368,6 +370,7 @@ void QgsPalLayerSettings::writeToLayer( QgsVectorLayer* layer )
   layer->setCustomProperty( "labeling/minFeatureSize", minFeatureSize );
   layer->setCustomProperty( "labeling/fontSizeInMapUnits", fontSizeInMapUnits );
   layer->setCustomProperty( "labeling/distInMapUnits", distInMapUnits );
+  layer->setCustomProperty( "labeling/wrapChar", wrapChar );
   _writeDataDefinedPropertyMap( layer, dataDefinedProperties );
 }
 
@@ -433,7 +436,12 @@ void QgsPalLayerSettings::calculateLabelSize( const QFontMetricsF* fm, QString t
   }
 
   double w, h;
-  QStringList multiLineSplit = text.split( "\n" );
+  QStringList multiLineSplit;
+  if ( !wrapChar.isEmpty() )
+    multiLineSplit = text.split( wrapChar );
+  else
+    multiLineSplit = text.split( "\n" );
+
   h = fm->height() * multiLineSplit.size() / rasterCompressFactor;
   w = 0;
   for ( int i = 0; i < multiLineSplit.size(); ++i )
@@ -1338,7 +1346,10 @@ void QgsPalLabeling::drawLabel( pal::LabelPosition* label, QPainter* painter, co
   //QgsDebugMsg( "drawLabel " + QString::number( drawBuffer ) + " " + txt );
 
   QStringList multiLineList;
-  multiLineList = txt.split( "\n" );
+  if ( !lyr.wrapChar.isEmpty() )
+    multiLineList = txt.split( lyr.wrapChar );
+  else
+    multiLineList = txt.split( "\n" );
 
   for ( int i = 0; i < multiLineList.size(); ++i )
   {

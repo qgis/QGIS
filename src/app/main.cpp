@@ -21,7 +21,6 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFont>
-#include <QMessageBox>
 #include <QPixmap>
 #include <QLocale>
 #include <QSettings>
@@ -35,6 +34,7 @@
 
 #include "qgscustomization.h"
 #include "qgspluginregistry.h"
+#include "qgsmessagelog.h"
 
 #include <cstdio>
 #include <stdio.h>
@@ -73,6 +73,10 @@ typedef SInt32 SRefCon;
 #include "qgsproject.h"
 #include "qgsrectangle.h"
 #include "qgslogger.h"
+
+#if defined(linux) && ! defined(ANDROID)
+#include <execinfo.h>
+#endif
 
 // (if Windows/Mac, use icon from resource)
 #if ! defined(Q_WS_WIN) && ! defined(Q_WS_MAC)
@@ -164,23 +168,48 @@ void myMessageOutput( QtMsgType type, const char *msg )
     case QtWarningMsg:
       fprintf( stderr, "Warning: %s\n", msg );
 
+#ifdef QGISDEBUG
+      if ( 0 == strncmp( msg, "Object::", 8 )
+           || 0 == strncmp( msg, "QWidget::", 9 )
+           || 0 == strncmp( msg, "QPainter::", 10 ) )
+      {
+#if 0
+#if defined(linux) && ! defined(ANDROID)
+        fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+        void *buffer[256];
+        int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+        backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+#endif
+#endif
+        QgsMessageLog::logMessage( msg, "Qt" );
+      }
+#endif
+
       // TODO: Verify this code in action.
       if ( 0 == strncmp( msg, "libpng error:", 13 ) )
       {
         // Let the user know
-        QMessageBox::warning( 0, "libpng Error", msg );
+        QgsMessageLog::logMessage( msg, "libpng" );
       }
 
       break;
     case QtFatalMsg:
+    {
       fprintf( stderr, "Fatal: %s\n", msg );
+#if defined(linux) && ! defined(ANDROID)
+      fprintf( stderr, "Stacktrace (run through c++filt):\n" );
+      void *buffer[256];
+      int nptrs = backtrace( buffer, sizeof( buffer ) / sizeof( *buffer ) );
+      backtrace_symbols_fd( buffer, nptrs, STDERR_FILENO );
+#endif
       abort();                    // deliberately core dump
+    }
   }
 }
 
-
 int main( int argc, char *argv[] )
 {
+  QgsDebugMsg( QString( "Starting qgis main" ) );
 #ifdef WIN32  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
@@ -189,7 +218,7 @@ int main( int argc, char *argv[] )
 #endif  // _MSC_VER
 #endif  // WIN32
 
-#ifndef _MSC_VER
+#if !defined(ANDROID) && !defined(_MSC_VER)
   // Set up the custom qWarning/qDebug custom handler
   qInstallMsgHandler( myMessageOutput );
 #endif
@@ -230,12 +259,74 @@ int main( int argc, char *argv[] )
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
 
-#ifndef WIN32
+#if defined(ANDROID)
+  QgsDebugMsg( QString( "Android: All params stripped" ) );// Param %1" ).arg( argv[0] ) );
+#elif defined(Q_WS_WIN)
+  for ( int i = 1; i < argc; i++ )
+  {
+    QString arg = argv[i];
+
+    if ( arg == "--help" || arg == "-?" )
+    {
+      usage( argv[0] );
+      return 2;
+    }
+    else if ( arg == "-nologo" || arg == "-n" )
+    {
+      myHideSplash = true;
+    }
+    else if ( arg == "--noplugins" || arg == "-P" )
+    {
+      myRestorePlugins = false;
+    }
+    else if ( arg == "--nocustomization" || arg == "-C" )
+    {
+      myCustomization = false;
+    }
+    else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
+    {
+      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+    }
+    else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
+    {
+      mySnapshotWidth = QString( argv[++i] ).toInt();
+    }
+    else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
+    {
+      mySnapshotHeight = QString( argv[++i] ).toInt();
+    }
+    else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
+    {
+      myTranslationCode = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
+    {
+      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+    }
+    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
+    {
+      myInitialExtent = argv[++i];
+    }
+    else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
+    {
+      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
+    }
+    else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
+    {
+      configpath = argv[++i];
+      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
+    }
+    else
+    {
+      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+    }
+  }
+#else
   if ( !bundleclicked( argc, argv ) )
   {
 
     ////////////////////////////////////////////////////////////////
-    // USe the GNU Getopts utility to parse cli arguments
+    // Use the GNU Getopts utility to parse cli arguments
     // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
     ///////////////////////////////////////////////////////////////
     int optionChar;
@@ -258,6 +349,7 @@ int main( int argc, char *argv[] )
         {"extent",   required_argument, 0, 'e'},
         {"optionspath", required_argument, 0, 'o'},
         {"configpath", required_argument, 0, 'c'},
+        {"android", required_argument, 0, 'a'},
         {0, 0, 0, 0}
       };
 
@@ -266,7 +358,7 @@ int main( int argc, char *argv[] )
 
       optionChar = getopt_long( argc, argv, "swhlpeoc",
                                 long_options, &option_index );
-
+      QgsDebugMsg( QString( "Qgis main Debug" ) + optionChar );
       /* Detect the end of the options. */
       if ( optionChar == -1 )
         break;
@@ -353,67 +445,8 @@ int main( int argc, char *argv[] )
       }
     }
   }
-#else
-  for ( int i = 1; i < argc; i++ )
-  {
-    QString arg = argv[i];
+#endif
 
-    if ( arg == "--help" || arg == "-?" )
-    {
-      usage( argv[0] );
-      return 2;
-    }
-    else if ( arg == "-nologo" || arg == "-n" )
-    {
-      myHideSplash = true;
-    }
-    else if ( arg == "--noplugins" || arg == "-P" )
-    {
-      myRestorePlugins = false;
-    }
-    else if ( arg == "--nocustomization" || arg == "-C" )
-    {
-      myCustomization = false;
-    }
-    else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
-    {
-      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
-    }
-    else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
-    {
-      mySnapshotWidth = QString( argv[++i] ).toInt();
-    }
-    else if ( i + 1 < argc && ( arg == "--height" || arg == "-h" ) )
-    {
-      mySnapshotHeight = QString( argv[++i] ).toInt();
-    }
-    else if ( i + 1 < argc && ( arg == "--lang" || arg == "-l" ) )
-    {
-      myTranslationCode = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
-    {
-      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
-    }
-    else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
-    {
-      myInitialExtent = argv[++i];
-    }
-    else if ( i + 1 < argc && ( arg == "--optionspath" || arg == "-o" ) )
-    {
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, argv[++i] );
-    }
-    else if ( i + 1 < argc && ( arg == "--configpath" || arg == "-c" ) )
-    {
-      configpath = argv[++i];
-      QSettings::setPath( QSettings::IniFormat, QSettings::UserScope, configpath );
-    }
-    else
-    {
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
-    }
-  }
-#endif //WIN32
 
   /////////////////////////////////////////////////////////////////////
   // Now we have the handlers for the different behaviours...
@@ -474,13 +507,17 @@ int main( int argc, char *argv[] )
   }
 #endif
 
-#ifdef Q_WS_WIN
-  //for windows lets use plastique style!
-  QApplication::setStyle( new QPlastiqueStyle );
-#endif
-
   QSettings mySettings;
 
+  // Set the application style.  If it's not set QT will use the platform style except on Windows
+  // as it looks really ugly so we use QPlastiqueStyle.
+  QString style = mySettings.value( "/qgis/style" ).toString();
+  if ( !style.isNull() )
+    QApplication::setStyle( style );
+#ifdef Q_WS_WIN
+  else
+    QApplication::setStyle( new QPlastiqueStyle );
+#endif
 
   /* Translation file for QGIS.
    */

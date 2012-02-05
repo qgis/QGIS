@@ -29,7 +29,7 @@ from ui_frmSpatialIndex import Ui_Dialog
 
 class Dialog( QDialog, Ui_Dialog ):
   def __init__( self, iface ):
-    QDialog.__init__( self )
+    QDialog.__init__( self, iface.mainWindow() )
     self.setupUi( self )
     self.iface = iface
 
@@ -108,7 +108,6 @@ class Dialog( QDialog, Ui_Dialog ):
     self.lstLayers.clear()
 
   def accept( self ):
-    QApplication.setOverrideCursor( Qt.WaitCursor )
     self.btnOk.setEnabled( False )
 
     self.workThread = SpatialIdxThread( self.layers, self.chkExternalFiles.isChecked() )
@@ -147,7 +146,6 @@ class Dialog( QDialog, Ui_Dialog ):
 
   def restoreGui( self ):
     self.progressBar.setValue( 0 )
-    QApplication.restoreOverrideCursor()
     QObject.connect( self.buttonBox, SIGNAL( "rejected()" ), self.reject )
     self.btnClose.setText( self.tr( "Close" ) )
     self.btnOk.setEnabled( True )

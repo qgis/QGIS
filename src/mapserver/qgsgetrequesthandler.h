@@ -22,5 +22,5 @@ class QgsGetRequestHandler: public QgsHttpRequestHandler
 {
   public:
     QgsGetRequestHandler();
-    std::map<QString, QString> parseInput();
+    QMap<QString, QString> parseInput();
 };

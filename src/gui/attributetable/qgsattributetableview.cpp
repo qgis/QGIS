@@ -23,11 +23,12 @@
 #include "qgsattributetablememorymodel.h"
 #include "qgsattributetabledelegate.h"
 #include "qgsattributetablefiltermodel.h"
-
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgslogger.h"
+#include "qgsmapcanvas.h"
 
-QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
+QgsAttributeTableView::QgsAttributeTableView( QWidget *parent )
     : QTableView( parent ), mModel( 0 ), mFilterModel( 0 ), mActionPopup( 0 )
 {
   QSettings settings;
@@ -43,15 +44,15 @@ QgsAttributeTableView::QgsAttributeTableView( QWidget* parent )
   setSortingEnabled( true );
 }
 
-void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
+void QgsAttributeTableView::setCanvasAndLayer( QgsMapCanvas *canvas, QgsVectorLayer *layer )
 {
-  if ( layer == NULL )
+  if ( !layer )
   {
-    setModel( NULL );
+    setModel( 0 );
     delete mModel;
-    mModel = NULL;
+    mModel = 0;
     delete mFilterModel;
-    mFilterModel = NULL;
+    mFilterModel = 0;
     return;
   }
 
@@ -63,11 +64,21 @@ void QgsAttributeTableView::setLayer( QgsVectorLayer* layer )
   // features in the current view. Otherwise we'll have to store
   // everything in the memory because using featureAtId() would be too slow
   if ( layer->dataProvider()->capabilities() & QgsVectorDataProvider::SelectAtId )
-    mModel = new QgsAttributeTableModel( layer );
+  {
+    QgsDebugMsg( "SelectAtId supported" );
+    mModel = new QgsAttributeTableModel( canvas, layer );
+  }
   else
-    mModel = new QgsAttributeTableMemoryModel( layer );
+  {
+    QgsDebugMsg( "SelectAtId NOT supported" );
+    mModel = new QgsAttributeTableMemoryModel( canvas, layer );
+  }
 
-  mFilterModel = new QgsAttributeTableFilterModel( layer );
+  connect( mModel, SIGNAL( progress( int, bool& ) ), this, SIGNAL( progress( int, bool& ) ) );
+  connect( mModel, SIGNAL( finished() ), this, SIGNAL( finished() ) );
+  mModel->loadLayer();
+
+  mFilterModel = new QgsAttributeTableFilterModel( mModel->layer() );
   mFilterModel->setSourceModel( mModel );
   setModel( mFilterModel );
 

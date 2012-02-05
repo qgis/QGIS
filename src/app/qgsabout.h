@@ -23,7 +23,7 @@ class QgsAbout : public QDialog, private Ui::QgsAbout
 {
     Q_OBJECT
   public:
-    QgsAbout();
+    QgsAbout( QWidget *parent );
     ~QgsAbout();
     void setVersion( QString v );
     static QString fileSystemSafe( QString string );

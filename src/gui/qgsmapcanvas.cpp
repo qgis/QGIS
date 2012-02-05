@@ -87,7 +87,9 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   //disable the update that leads to the resize crash
   if ( viewport() )
   {
+#ifndef ANDROID
     viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+#endif //ANDROID
   }
 
   mScene = new QGraphicsScene();
@@ -121,8 +123,10 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
 
   moveCanvasContents( true );
 
-  //connect(mMapRenderer, SIGNAL(updateMap()), this, SLOT(updateMap()));
   connect( mMapRenderer, SIGNAL( drawError( QgsMapLayer* ) ), this, SLOT( showError( QgsMapLayer* ) ) );
+  connect( mMapRenderer, SIGNAL( hasCrsTransformEnabled( bool ) ), this, SLOT( crsTransformEnabled( bool ) ) );
+
+  crsTransformEnabled( hasCrsTransformEnabled() );
 
   // project handling
   connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
@@ -236,6 +240,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
 {
   if ( mDrawing )
   {
+    QgsDebugMsg( "NOT updating layer set while drawing" );
     return;
   }
 
@@ -255,6 +260,7 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     {
       layerSet.push_back( lyr.layer()->id() );
     }
+
     if ( lyr.isInOverview() )
     {
       layerSetOverview.push_back( lyr.layer()->id() );
@@ -268,6 +274,8 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
   // update only if needed
   if ( layerSetChanged )
   {
+    QgsDebugMsg( "Layer changed to: " + layerSet.join( ", " ) );
+
     for ( i = 0; i < layerCount(); i++ )
     {
       // Add check if vector layer when disconnecting from selectionChanged slot
@@ -713,6 +721,34 @@ void QgsMapCanvas::zoomToSelected( QgsVectorLayer* layer )
   setExtent( rect );
   refresh();
 } // zoomToSelected
+
+void QgsMapCanvas::panToSelected( QgsVectorLayer* layer )
+{
+  if ( mDrawing )
+  {
+    return;
+  }
+
+  if ( layer == NULL )
+  {
+    // use current layer by default
+    layer = qobject_cast<QgsVectorLayer *>( mCurrentLayer );
+  }
+
+  if ( layer == NULL )
+  {
+    return;
+  }
+
+  if ( layer->selectedFeatureCount() == 0 )
+  {
+    return;
+  }
+
+  QgsRectangle rect = mMapRenderer->layerExtentToOutputExtent( layer, layer->boundingBoxOfSelected() );
+  setExtent( QgsRectangle( rect.center(), rect.center() ) );
+  refresh();
+} // panToSelected
 
 void QgsMapCanvas::keyPressEvent( QKeyEvent * e )
 {
@@ -1457,7 +1493,6 @@ void QgsMapCanvas::readProject( const QDomDocument & doc )
   {
     QgsDebugMsg( "Couldn't read mapcanvas information from project" );
   }
-
 }
 
 void QgsMapCanvas::writeProject( QDomDocument & doc )
@@ -1475,8 +1510,6 @@ void QgsMapCanvas::writeProject( QDomDocument & doc )
   QDomElement mapcanvasNode = doc.createElement( "mapcanvas" );
   qgisNode.appendChild( mapcanvasNode );
   mMapRenderer->writeXML( mapcanvasNode, doc );
-
-
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor )
@@ -1506,4 +1539,16 @@ void QgsMapCanvas::dragEnterEvent( QDragEnterEvent * e )
   // But we do not want that and by ignoring the drag enter we let the
   // parent (e.g. QgisApp) to handle drops of map layers etc.
   e->ignore();
+}
+
+void QgsMapCanvas::crsTransformEnabled( bool enabled )
+{
+  if ( enabled )
+  {
+    QgsDebugMsg( "refreshing after reprojection was enabled" );
+    refresh();
+    connect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
+  }
+  else
+    disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
 }

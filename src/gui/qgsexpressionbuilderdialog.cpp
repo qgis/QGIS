@@ -25,7 +25,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer* layer, Q
   connect( builder, SIGNAL( expressionParsed( bool ) ), okButuon, SLOT( setEnabled( bool ) ) );
 
   builder->setLayer( layer );
-  builder->setExpressionString( startText );
+  builder->setExpressionText( startText );
   builder->loadFieldNames();
 
   QSettings settings;
@@ -37,9 +37,14 @@ QgsExpressionBuilderWidget* QgsExpressionBuilderDialog::expressionBuilder()
   return builder;
 }
 
-void QgsExpressionBuilderDialog::setExpressionText( QString text )
+void QgsExpressionBuilderDialog::setExpressionText( const QString& text )
 {
-  builder->setExpressionString( text );
+  builder->setExpressionText( text );
+}
+
+QString QgsExpressionBuilderDialog::expressionText()
+{
+  return builder->expressionText();
 }
 
 void QgsExpressionBuilderDialog::closeEvent( QCloseEvent *event )

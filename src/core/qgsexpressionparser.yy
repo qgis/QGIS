@@ -62,6 +62,8 @@ QgsExpression::Node* gExpParserRootNode;
   QString* text;
   QgsExpression::BinaryOperator b_op;
   QgsExpression::UnaryOperator u_op;
+  QgsExpression::WhenThen* whenthen;
+  QgsExpression::WhenThenList* whenthenlist;
 }
 
 %start root
@@ -81,6 +83,9 @@ QgsExpression::Node* gExpParserRootNode;
 %token <numberInt> NUMBER_INT
 %token NULLVALUE
 
+// tokens for conditional expressions
+%token CASE WHEN THEN ELSE END
+
 %token <text> STRING COLUMN_REF FUNCTION SPECIAL_COL
 
 %token COMMA
@@ -93,6 +98,8 @@ QgsExpression::Node* gExpParserRootNode;
 
 %type <node> expression
 %type <nodelist> exp_list
+%type <whenthen> when_then_clause
+%type <whenthenlist> when_then_clauses
 
 // debugging
 %error-verbose
@@ -160,7 +167,7 @@ expression:
             exp_error("Function is not known");
             YYERROR;
           }
-          if (QgsExpression::BuiltinFunctions[fnIndex].mParams != $3->count())
+          if (QgsExpression::BuiltinFunctions()[fnIndex].mParams != $3->count())
           {
             exp_error("Function is called with wrong number of arguments");
             YYERROR;
@@ -174,6 +181,9 @@ expression:
 
     | PLUS expression %prec UMINUS { $$ = $2; }
     | MINUS expression %prec UMINUS { $$ = new QgsExpression::NodeUnaryOperator( QgsExpression::uoMinus, $2); }
+
+    | CASE when_then_clauses END      { $$ = new QgsExpression::NodeCondition($2); }
+    | CASE when_then_clauses ELSE expression END  { $$ = new QgsExpression::NodeCondition($2,$4); }
 
     // columns
     | COLUMN_REF                  { $$ = new QgsExpression::NodeColumnRef( *$1 ); delete $1; }
@@ -201,6 +211,15 @@ expression:
 exp_list:
       exp_list COMMA expression { $$ = $1; $1->append($3); }
     | expression              { $$ = new QgsExpression::NodeList(); $$->append($1); }
+    ;
+
+when_then_clauses:
+      when_then_clauses when_then_clause  { $$ = $1; $1->append($2); }
+    | when_then_clause                    { $$ = new QgsExpression::WhenThenList(); $$->append($1); }
+    ;
+
+when_then_clause:
+      WHEN expression THEN expression     { $$ = new QgsExpression::WhenThen($2,$4); }
     ;
 
 %%

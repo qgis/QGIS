@@ -59,9 +59,10 @@ QgsShapeFile::QgsShapeFile( QString name, QString encoding )
   geometries << "NULL" << "POINT" << "LINESTRING" << "POLYGON" << "MULTIPOINT"
   << "MULTILINESTRING" << "MULTIPOLYGON" << "GEOMETRYCOLLECTION";
 
-  codec = QTextCodec::codecForName( encoding.toLocal8Bit().data() );
+  codec = QTextCodec::codecForName( encoding.toLocal8Bit().constData() );
   if ( !codec )
     codec = QTextCodec::codecForLocale();
+  Q_ASSERT( codec );
 }
 
 QgsShapeFile::~QgsShapeFile()

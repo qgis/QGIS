@@ -20,23 +20,10 @@
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsvectorlayerimport.h"
 #include "qgsproviderregistry.h"
-
-#include <QFile>
-#include <QSettings>
-#include <QFileInfo>
-#include <QDir>
-#include <QTextCodec>
-#include <QTextStream>
-#include <QSet>
-#include <QMetaType>
-
-#include <cassert>
-#include <cstdlib> // size_t
-#include <limits> // std::numeric_limits
-
 
 #define FEATURE_BUFFER_SIZE 200
 
@@ -52,16 +39,17 @@ typedef QgsVectorLayerImport::ImportError createEmptyLayer_t(
 );
 
 
-QgsVectorLayerImport::QgsVectorLayerImport(
-  const QString &uri,
-  const QString &providerKey,
-  const QgsFieldMap& fields,
-  QGis::WkbType geometryType,
-  const QgsCoordinateReferenceSystem* crs,
-  bool overwrite,
-  const QMap<QString, QVariant> *options )
+QgsVectorLayerImport::QgsVectorLayerImport( const QString &uri,
+    const QString &providerKey,
+    const QgsFieldMap& fields,
+    QGis::WkbType geometryType,
+    const QgsCoordinateReferenceSystem* crs,
+    bool overwrite,
+    const QMap<QString, QVariant> *options )
+    : mErrorCount( 0 )
 {
   mProvider = NULL;
+
   QgsProviderRegistry * pReg = QgsProviderRegistry::instance();
 
   QLibrary *myLib = pReg->providerLibrary( providerKey );
@@ -102,6 +90,7 @@ QgsVectorLayerImport::QgsVectorLayerImport(
 
     if ( vectorProvider )
       delete vectorProvider;
+
     return;
   }
 
@@ -168,6 +157,7 @@ bool QgsVectorLayerImport::flushBuffer()
                     .arg( mFeatureBuffer.first().id() )
                     .arg( mFeatureBuffer.last().id() );
     mError = ErrFeatureWriteFailed;
+    mErrorCount += mFeatureBuffer.count();
 
     mFeatureBuffer.clear();
     QgsDebugMsg( mErrorMessage );
@@ -210,8 +200,18 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     outputCRS = &layer->crs();
   }
 
+  QgsFieldMap fields = skipAttributeCreation ? QgsFieldMap() : layer->pendingFields();
+  if ( layer->providerType() == "ogr" && layer->storageType() == "ESRI Shapefile" )
+  {
+    // convert field names to lowercase
+    for ( QgsFieldMap::iterator fldIt = fields.begin(); fldIt != fields.end(); ++fldIt )
+    {
+      fldIt.value().setName( fldIt.value().name().toLower() );
+    }
+  }
+
   QgsVectorLayerImport * writer =
-    new QgsVectorLayerImport( uri, providerKey, skipAttributeCreation ? QgsFieldMap() : layer->pendingFields(), layer->wkbType(), outputCRS, false, options );
+    new QgsVectorLayerImport( uri, providerKey, fields, layer->wkbType(), outputCRS, false, options );
 
   // check whether file creation was successful
   ImportError err = writer->hasError();
@@ -247,7 +247,12 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     shallTransform = false;
   }
 
-  int n = 0, errors = 0;
+  int n = 0;
+
+  if ( errorMessage )
+  {
+    *errorMessage = QObject::tr( "Feature write errors:" );
+  }
 
   // write all features
   while ( layer->nextFeature( fet ) )
@@ -271,9 +276,9 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
 
         QString msg = QObject::tr( "Failed to transform a point while drawing a feature of type '%1'. Writing stopped. (Exception: %2)" )
                       .arg( fet.typeName() ).arg( e.what() );
-        QgsLogger::warning( msg );
+        QgsMessageLog::logMessage( msg, QObject::tr( "Vector import" ) );
         if ( errorMessage )
-          *errorMessage = msg;
+          *errorMessage += "\n" + msg;
 
         return ErrProjection;
       }
@@ -286,19 +291,14 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     {
       if ( writer->hasError() && errorMessage )
       {
-        if ( errorMessage->isEmpty() )
-        {
-          *errorMessage = QObject::tr( "Feature write errors:" );
-        }
         *errorMessage += "\n" + writer->errorMessage();
       }
-      errors++;
 
-      if ( errors > 1000 )
+      if ( writer->errorCount() > 1000 )
       {
         if ( errorMessage )
         {
-          *errorMessage += QObject::tr( "Stopping after %1 errors" ).arg( errors );
+          *errorMessage += "\n" + QObject::tr( "Stopping after %1 errors" ).arg( writer->errorCount() );
         }
 
         n = -1;
@@ -308,6 +308,16 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     n++;
   }
 
+  // flush the buffer to be sure that all features are written
+  if ( !writer->flushBuffer() )
+  {
+    if ( writer->hasError() && errorMessage )
+    {
+      *errorMessage += "\n" + writer->errorMessage();
+    }
+  }
+  int errors = writer->errorCount();
+
   delete writer;
 
   if ( shallTransform )
@@ -315,9 +325,16 @@ QgsVectorLayerImport::importLayer( QgsVectorLayer* layer,
     delete ct;
   }
 
-  if ( errors > 0 && errorMessage && n > 0 )
+  if ( errorMessage )
   {
-    *errorMessage += QObject::tr( "\nOnly %1 of %2 features written." ).arg( n - errors ).arg( n );
+    if ( n > 0 && errors > 0 )
+    {
+      *errorMessage += "\n" + QObject::tr( "Only %1 of %2 features written." ).arg( n - errors ).arg( n );
+    }
+    else
+    {
+      errorMessage->clear();
+    }
   }
 
   return errors == 0 ? NoError : ErrFeatureWriteFailed;

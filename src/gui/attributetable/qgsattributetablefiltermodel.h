@@ -37,8 +37,6 @@ class QgsAttributeTableFilterModel: public QSortFilterProxyModel
      * @param order sorting order
      */
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
-    //QModelIndex mapToSource ( const QModelIndex & filterIndex ) const;
-    //QModelIndex mapFromSource ( const QModelIndex & sourceIndex ) const;
 
     QgsVectorLayer *layer() const { return mLayer; }
     QgsAttributeTableModel *tableModel() const { return reinterpret_cast<QgsAttributeTableModel*>( sourceModel() ); }

@@ -97,10 +97,9 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
 
   QMap<QString, QgsMapLayer *> layerMap;
 
-  QList<QDomElement>::const_iterator layerIt = mProjectLayerElements.constBegin();
-  for ( ; layerIt != mProjectLayerElements.constEnd(); ++layerIt )
+  foreach( const QDomElement &elem, mProjectLayerElements )
   {
-    QgsMapLayer *layer = createLayerFromElement( *layerIt );
+    QgsMapLayer *layer = createLayerFromElement( elem );
     if ( layer )
     {
       QgsDebugMsg( QString( "add layer %1 to map" ).arg( layer->id() ) );
@@ -111,7 +110,7 @@ void QgsProjectParser::layersAndStylesCapabilities( QDomElement& parentElement, 
     {
       QString buf;
       QTextStream s( &buf );
-      layerIt->save( s, 0 );
+      elem.save( s, 0 );
       QgsDebugMsg( QString( "layer %1 not found" ).arg( buf ) );
     }
 #endif
@@ -173,28 +172,26 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
         QgsDebugMsg( QString( "Project path: %1" ).arg( project ) );
         QString embeddedGroupName = currentChildElem.attribute( "name" );
         QgsProjectParser* p = dynamic_cast<QgsProjectParser*>( QgsConfigCache::instance()->searchConfiguration( project ) );
-        QList<QDomElement> embededGroupElements = p->mLegendGroupElements;
+        QList<QDomElement> embeddedGroupElements = p->mLegendGroupElements;
         if ( p )
         {
           QStringList pIdDisabled = p->identifyDisabledLayers();
 
           QDomElement embeddedGroupElem;
-          QList<QDomElement>::const_iterator pLegendIt = embededGroupElements.constBegin();
-          for ( ; pLegendIt != embededGroupElements.constEnd(); ++pLegendIt )
+          foreach( const QDomElement &elem, embeddedGroupElements )
           {
-            if ( pLegendIt->attribute( "name" ) == embeddedGroupName )
+            if ( elem.attribute( "name" ) == embeddedGroupName )
             {
-              embeddedGroupElem = *pLegendIt;
+              embeddedGroupElem = elem;
               break;
             }
           }
 
           QMap<QString, QgsMapLayer *> pLayerMap;
-          QList<QDomElement> embededProjectLayerElements = p->mProjectLayerElements;
-          QList<QDomElement>::const_iterator pLayerIt = embededProjectLayerElements.constBegin();
-          for ( ; pLayerIt != embededProjectLayerElements.constEnd(); ++pLayerIt )
+          QList<QDomElement> embeddedProjectLayerElements = p->mProjectLayerElements;
+          foreach( const QDomElement &elem, embeddedProjectLayerElements )
           {
-            pLayerMap.insert( layerId( *pLayerIt ), p->createLayerFromElement( *pLayerIt ) );
+            pLayerMap.insert( layerId( elem ), p->createLayerFromElement( elem ) );
           }
 
           p->addLayers( doc, layerElem, embeddedGroupElem, pLayerMap, pIdDisabled );
@@ -242,9 +239,23 @@ void QgsProjectParser::addLayers( QDomDocument &doc,
       layerElem.appendChild( nameElem );
 
       QDomElement titleElem = doc.createElement( "Title" );
-      QDomText titleText = doc.createTextNode( currentLayer->name() );
+      QString titleName = currentLayer->title();
+      if ( titleName.isEmpty() )
+      {
+        titleName = currentLayer->name();
+      }
+      QDomText titleText = doc.createTextNode( titleName );
       titleElem.appendChild( titleText );
       layerElem.appendChild( titleElem );
+
+      QString abstract = currentLayer->abstract();
+      if ( !abstract.isEmpty() )
+      {
+        QDomElement abstractElem = doc.createElement( "Abstract" );
+        QDomText abstractText = doc.createTextNode( abstract );
+        abstractElem.appendChild( abstractText );
+        layerElem.appendChild( abstractElem );
+      }
 
       //CRS
       QStringList crsList = createCRSListForLayer( currentLayer );
@@ -1063,6 +1074,7 @@ QgsComposition* QgsProjectParser::initComposition( const QString& composerTempla
     {
       QgsComposerMap* map = new QgsComposerMap( composition );
       map->readXML( currentElem, *mXMLDoc );
+      map->setPreviewMode( QgsComposerMap::Rectangle );
       composition->addItem( map );
       mapList.push_back( map );
     }

@@ -28,6 +28,7 @@ class QgsPluginItem
     QgsPluginItem( QString name = 0, QString fullPath = 0, QString type = 0, bool python = false );
     QString name();
     QString description();
+    QString category();
     QString fullPath();
     QString type();
     bool isPython();
@@ -35,6 +36,7 @@ class QgsPluginItem
   private:
     QString m_name;
     QString m_description;
+    QString m_category;
     QString m_fullPath;
     //! Plugin type (either ui or maplayer)
     QString m_type;

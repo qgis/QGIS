@@ -18,7 +18,6 @@
 #define POINT3D_H
 
 #include <cmath>
-#include <iostream>
 
 /**Point3D is a class to represent a three dimensional point*/
 class ANALYSIS_EXPORT Point3D

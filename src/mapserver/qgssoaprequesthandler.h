@@ -28,7 +28,7 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
   public:
     QgsSOAPRequestHandler();
     ~QgsSOAPRequestHandler();
-    std::map<QString, QString> parseInput();
+    QMap<QString, QString> parseInput();
     void sendGetMapResponse( const QString& service, QImage* img ) const;
     void sendGetCapabilitiesResponse( const QDomDocument& doc ) const;
     void sendGetFeatureInfoResponse( const QDomDocument& infoDoc, const QString& infoFormat ) const;
@@ -37,11 +37,11 @@ class QgsSOAPRequestHandler: public QgsHttpRequestHandler
     void sendGetPrintResponse( QByteArray* ba ) const;
   private:
     /**Parses the xml of a getMap request and fills the parameters into the map. Returns 0 in case of success*/
-    int parseGetMapElement( std::map<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
+    int parseGetMapElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
     /**Parses the xml of a feature info request and fills the parameters into the map. Returns 0 in case of success*/
-    int parseGetFeatureInfoElement( std::map<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
-    int parseBoundingBoxElement( std::map<QString, QString>& parameterMap, const QDomElement& boundingBoxElement ) const;
-    int parseOutputAttributesElement( std::map<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const;
+    int parseGetFeatureInfoElement( QMap<QString, QString>& parameterMap, const QDomElement& getMapElement ) const;
+    int parseBoundingBoxElement( QMap<QString, QString>& parameterMap, const QDomElement& boundingBoxElement ) const;
+    int parseOutputAttributesElement( QMap<QString, QString>& parameterMap, const QDomElement& outputAttributesElement ) const;
     int sendSOAPWithAttachments( QImage* img ) const;
     int sendUrlToFile( QImage* img ) const;
     /**Reads the file wms_metadata.xml and extract the OnlineResource href. Returns 0 in case of success.*/

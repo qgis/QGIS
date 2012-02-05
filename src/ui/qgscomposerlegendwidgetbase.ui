@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>371</width>
-    <height>476</height>
+    <width>405</width>
+    <height>490</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,6 +25,9 @@
    </property>
    <item row="0" column="0">
     <widget class="QScrollArea" name="scrollArea">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -33,43 +36,33 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>367</width>
-        <height>472</height>
+        <width>405</width>
+        <height>490</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_3">
        <item row="0" column="0">
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page">
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>349</width>
-            <height>398</height>
+            <y>-26</y>
+            <width>370</width>
+            <height>440</height>
            </rect>
           </property>
           <attribute name="label">
            <string>General</string>
           </attribute>
           <layout class="QGridLayout" name="gridLayout">
-           <item row="0" column="0">
-            <widget class="QLabel" name="mTitleLabel">
-             <property name="text">
-              <string>&amp;Title</string>
-             </property>
-             <property name="buddy">
-              <cstring>mTitleLineEdit</cstring>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
+           <item row="2" column="0">
             <widget class="QLineEdit" name="mTitleLineEdit"/>
            </item>
-           <item row="2" column="0">
+           <item row="3" column="0">
             <widget class="QPushButton" name="mTitleFontButton">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -82,28 +75,28 @@
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QPushButton" name="mGroupFontButton">
              <property name="text">
               <string>Group Font...</string>
              </property>
             </widget>
            </item>
-           <item row="4" column="0">
+           <item row="5" column="0">
             <widget class="QPushButton" name="mLayerFontButton">
              <property name="text">
               <string>Layer Font...</string>
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="6" column="0">
             <widget class="QPushButton" name="mItemFontButton">
              <property name="text">
               <string>Item Font...</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="0">
+           <item row="7" column="0">
             <widget class="QDoubleSpinBox" name="mSymbolWidthSpinBox">
              <property name="prefix">
               <string>Symbol width </string>
@@ -113,7 +106,7 @@
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
+           <item row="8" column="0">
             <widget class="QDoubleSpinBox" name="mSymbolHeightSpinBox">
              <property name="prefix">
               <string>Symbol height </string>
@@ -123,7 +116,7 @@
              </property>
             </widget>
            </item>
-           <item row="8" column="0">
+           <item row="9" column="0">
             <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox">
              <property name="prefix">
               <string>Layer space </string>
@@ -133,7 +126,7 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="0">
+           <item row="10" column="0">
             <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox">
              <property name="prefix">
               <string>Symbol space </string>
@@ -143,7 +136,7 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="0">
+           <item row="11" column="0">
             <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox">
              <property name="prefix">
               <string>Icon label space </string>
@@ -153,7 +146,7 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="0">
+           <item row="12" column="0">
             <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox">
              <property name="prefix">
               <string>Box space </string>
@@ -163,7 +156,7 @@
              </property>
             </widget>
            </item>
-           <item row="14" column="0">
+           <item row="15" column="0">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -176,13 +169,23 @@
              </property>
             </spacer>
            </item>
-           <item row="13" column="0">
+           <item row="14" column="0">
             <widget class="QComboBox" name="mMapComboBox"/>
            </item>
-           <item row="12" column="0">
+           <item row="13" column="0">
             <widget class="QLabel" name="mMapLabel">
              <property name="text">
               <string>Map</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="mTitleLabel">
+             <property name="text">
+              <string>&amp;Title</string>
+             </property>
+             <property name="buddy">
+              <cstring>mTitleLineEdit</cstring>
              </property>
             </widget>
            </item>
@@ -193,8 +196,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>349</width>
-            <height>398</height>
+            <width>387</width>
+            <height>414</height>
            </rect>
           </property>
           <attribute name="label">
@@ -217,7 +220,7 @@
              </property>
             </widget>
            </item>
-           <item row="1" column="0" colspan="8">
+           <item row="1" column="0" colspan="9">
             <widget class="QTreeView" name="mItemTreeView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -241,8 +244,20 @@
            </item>
            <item row="2" column="0">
             <widget class="QToolButton" name="mMoveDownToolButton">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
              <property name="text">
               <string/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -251,12 +266,24 @@
              <property name="text">
               <string/>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item row="2" column="2">
             <widget class="QToolButton" name="mAddToolButton">
              <property name="text">
               <string/>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -265,6 +292,12 @@
              <property name="text">
               <string/>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item row="2" column="4">
@@ -272,12 +305,24 @@
              <property name="text">
               <string/>
              </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
+             </property>
             </widget>
            </item>
            <item row="2" column="5">
             <widget class="QToolButton" name="mUpdatePushButton">
              <property name="text">
               <string>Update</string>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -287,6 +332,19 @@
               <string>All</string>
              </property>
             </widget>
+           </item>
+           <item row="2" column="8">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item row="2" column="7">
             <widget class="QToolButton" name="mAddGroupButton">

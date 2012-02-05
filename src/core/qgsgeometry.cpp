@@ -28,6 +28,8 @@ email                : morb at ozemail dot com dot au
 #include "qgsmaplayerregistry.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
+#include "qgsmessagelog.h"
+#include "qgsgeometryvalidator.h"
 
 #define DEFAULT_QUADRANT_SEGMENTS 8
 
@@ -181,19 +183,19 @@ static GEOSGeometry *cloneGeosGeom( const GEOSGeometry *geom )
 #endif
 
 QgsGeometry::QgsGeometry()
-    : mGeometry( 0 ),
-    mGeometrySize( 0 ),
-    mGeos( 0 ),
-    mDirtyWkb( false ),
-    mDirtyGeos( false )
+    : mGeometry( 0 )
+    , mGeometrySize( 0 )
+    , mGeos( 0 )
+    , mDirtyWkb( false )
+    , mDirtyGeos( false )
 {
 }
 
 QgsGeometry::QgsGeometry( QgsGeometry const & rhs )
-    : mGeometry( 0 ),
-    mGeometrySize( rhs.mGeometrySize ),
-    mDirtyWkb( rhs.mDirtyWkb ),
-    mDirtyGeos( rhs.mDirtyGeos )
+    : mGeometry( 0 )
+    , mGeometrySize( rhs.mGeometrySize )
+    , mDirtyWkb( rhs.mDirtyWkb )
+    , mDirtyGeos( rhs.mDirtyGeos )
 {
   if ( mGeometrySize && rhs.mGeometry )
   {
@@ -2405,6 +2407,7 @@ double QgsGeometry::closestSegmentWithContext(
   QgsPoint& minDistPoint,
   int& beforeVertex )
 {
+  QgsDebugMsg( "Entering." );
   QgsPoint distPoint;
 
   QGis::WkbType wkbType;
@@ -2620,8 +2623,8 @@ double QgsGeometry::closestSegmentWithContext(
   } // switch (wkbType)
 
 
-  QgsDebugMsg( "Exiting with nearest point " + point.toString() +
-               ", dist: " + QString::number( sqrDist ) + "." );
+  QgsDebugMsg( QString( "Exiting with nearest point %1, dist %2." )
+               .arg( point.toString() ).arg( sqrDist ) );
 
   return sqrDist;
 }
@@ -6399,296 +6402,11 @@ int QgsGeometry::avoidIntersections()
   return returnValue;
 }
 
-//
-// distance of point q from line through p in direction v
-// return >0  => q lies left of the line
-//        <0  => q lies right of the line
-//
-static double distLine2Point( QgsPoint p, QgsVector v, QgsPoint q )
-{
-  if ( v.length() == 0 )
-  {
-    throw QgsException( QObject::tr( "invalid line" ) );
-  }
-
-  return ( v.x()*( q.y() - p.y() ) - v.y()*( q.x() - p.x() ) ) / v.length();
-}
-
-static bool intersectLines( QgsPoint p, QgsVector v, QgsPoint q, QgsVector w, QgsPoint &s )
-{
-  double d = v.y() * w.x() - v.x() * w.y();
-
-  if ( d == 0 )
-    return false;
-
-  double dx = q.x() - p.x();
-  double dy = q.y() - p.y();
-  double k = ( dy * w.x() - dx * w.y() ) / d;
-
-  s = p + v * k;
-
-  return true;
-}
-
-bool pointInRing( const QgsPolyline &ring, const QgsPoint &p )
-{
-  bool inside = false;
-  int j = ring.size() - 1;
-
-  for ( int i = 0; i < ring.size(); i++ )
-  {
-    if ( ring[i].x() == p.x() && ring[i].y() == p.y() )
-      return true;
-
-    if (( ring[i].y() < p.y() && ring[j].y() >= p.y() ) ||
-        ( ring[j].y() < p.y() && ring[i].y() >= p.y() ) )
-    {
-      if ( ring[i].x() + ( p.y() - ring[i].y() ) / ( ring[j].y() - ring[i].y() )*( ring[j].x() - ring[i].x() ) <= p.x() )
-        inside = !inside;
-    }
-
-    j = i;
-  }
-
-  return inside;
-}
-
-static bool ringInRing( const QgsPolyline &inside, const QgsPolyline &outside )
-{
-  for ( int i = 0; i < inside.size(); i++ )
-  {
-    if ( !pointInRing( outside, inside[i] ) )
-      return false;
-  }
-
-  return true;
-}
-
-void QgsGeometry::checkRingIntersections( QList<Error> &errors,
-    int p0, int i0, const QgsPolyline &ring0,
-    int p1, int i1, const QgsPolyline &ring1 )
-{
-  for ( int i = 0; i < ring0.size() - 1; i++ )
-  {
-    QgsVector v = ring0[i+1] - ring0[i];
-
-    for ( int j = 0; j < ring1.size() - 1; j++ )
-    {
-      QgsVector w = ring1[j+1] - ring1[j];
-
-      QgsPoint s;
-      if ( intersectLines( ring0[i], v, ring1[j], w, s ) )
-      {
-        double d = -distLine2Point( ring0[i], v.perpVector(), s );
-
-        if ( d >= 0 && d <= v.length() )
-        {
-          d = -distLine2Point( ring1[j], w.perpVector(), s );
-          if ( d >= 0 && d <= w.length() )
-          {
-            QString msg = QObject::tr( "segment %1 of ring %2 of polygon %3 intersects segment %4 of ring %5 of polygon %6 at %7" )
-                          .arg( i0 ).arg( i ).arg( p0 )
-                          .arg( i1 ).arg( j ).arg( p1 )
-                          .arg( s.toString() );
-            QgsDebugMsg( msg );
-            errors << Error( msg, s );
-            if ( errors.size() > 100 )
-            {
-              QString msg = QObject::tr( "stopping validation after more than 100 errors" );
-              QgsDebugMsg( msg );
-              errors << Error( msg );
-              return;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-void QgsGeometry::validatePolyline( QList<Error> &errors, int i, QgsPolyline line, bool ring )
-{
-  if ( ring )
-  {
-    if ( line.size() < 3 )
-    {
-      QString msg = QObject::tr( "ring %1 with less than three points" ).arg( i );
-      QgsDebugMsg( msg );
-      errors << Error( msg );
-      return;
-    }
-
-    if ( line[0] != line[ line.size()-1 ] )
-    {
-      QString msg = QObject::tr( "ring %1 not closed" ).arg( i );
-      QgsDebugMsg( msg );
-      errors << Error( msg );
-      return;
-    }
-  }
-  else if ( line.size() < 2 )
-  {
-    QString msg = QObject::tr( "line %1 with less than two points" ).arg( i );
-    QgsDebugMsg( msg );
-    errors << Error( msg );
-    return;
-  }
-
-  int j = 0;
-  while ( j < line.size() - 1 )
-  {
-    int n = 0;
-    while ( j < line.size() - 1 && line[j] == line[j+1] )
-    {
-      line.remove( j );
-      n++;
-    }
-
-    if ( n > 0 )
-    {
-      QString msg = QObject::tr( "line %1 contains %n duplicate node(s) at %2", "number of duplicate nodes", n ).arg( i ).arg( j );
-      QgsDebugMsg( msg );
-      errors << Error( msg, line[j] );
-    }
-
-    j++;
-  }
-
-  for ( j = 0; j < line.size() - 3; j++ )
-  {
-    QgsVector v = line[j+1] - line[j];
-    double vl = v.length();
-
-    int n = ( j == 0 && ring ) ? line.size() - 2 : line.size() - 1;
-
-    for ( int k = j + 2; k < n; k++ )
-    {
-      QgsVector w = line[k+1] - line[k];
-
-      QgsPoint s;
-      if ( !intersectLines( line[j], v, line[k], w, s ) )
-        continue;
-
-      double d = -distLine2Point( line[j], v.perpVector(), s );
-      if ( d < 0 || d > vl )
-        continue;
-
-      d = -distLine2Point( line[k], w.perpVector(), s );
-      if ( d < 0 || d > w.length() )
-        continue;
-
-      QString msg = QObject::tr( "segments %1 and %2 of line %3 intersect at %4" ).arg( j ).arg( k ).arg( i ).arg( s.toString() );
-      QgsDebugMsg( msg );
-      errors << Error( msg, s );
-      if ( errors.size() > 100 )
-      {
-        QString msg = QObject::tr( "stopping validation after more than 100 errors" );
-        QgsDebugMsg( msg );
-        errors << Error( msg );
-        return;
-      }
-    }
-  }
-}
-
-void QgsGeometry::validatePolygon( QList<Error> &errors, int idx, const QgsPolygon &polygon )
-{
-  // check if holes are inside polygon
-  for ( int i = 1; i < polygon.size(); i++ )
-  {
-    if ( !ringInRing( polygon[i], polygon[0] ) )
-    {
-      QString msg = QObject::tr( "ring %1 of polygon %2 not in exterior ring" ).arg( i ).arg( idx );
-      QgsDebugMsg( msg );
-      errors << Error( msg );
-    }
-  }
-
-  // check holes for intersections
-  for ( int i = 1; i < polygon.size(); i++ )
-  {
-    for ( int j = i + 1; j < polygon.size(); j++ )
-    {
-      checkRingIntersections( errors, idx, i, polygon[i], idx, j, polygon[j] );
-    }
-  }
-
-  // check if rings are self-intersecting
-  for ( int i = 0; i < polygon.size(); i++ )
-  {
-    validatePolyline( errors, i, polygon[i], true );
-  }
-}
-
 void QgsGeometry::validateGeometry( QList<Error> &errors )
 {
-  errors.clear();
-
-  switch ( wkbType() )
-  {
-    case QGis::WKBPoint:
-    case QGis::WKBPoint25D:
-    case QGis::WKBMultiPoint:
-    case QGis::WKBMultiPoint25D:
-      break;
-
-    case QGis::WKBLineString:
-    case QGis::WKBLineString25D:
-      validatePolyline( errors, 0, asPolyline() );
-      break;
-
-    case QGis::WKBMultiLineString:
-    case QGis::WKBMultiLineString25D:
-    {
-      QgsMultiPolyline mp = asMultiPolyline();
-      for ( int i = 0; i < mp.size(); i++ )
-        validatePolyline( errors, i, mp[i] );
-    }
-    break;
-
-    case QGis::WKBPolygon:
-    case QGis::WKBPolygon25D:
-    {
-      validatePolygon( errors, 0, asPolygon() );
-    }
-    break;
-
-    case QGis::WKBMultiPolygon:
-    case QGis::WKBMultiPolygon25D:
-    {
-      QgsMultiPolygon mp = asMultiPolygon();
-      for ( int i = 0; i < mp.size(); i++ )
-      {
-        validatePolygon( errors, i, mp[i] );
-      }
-
-      for ( int i = 0; i < mp.size(); i++ )
-      {
-        for ( int j = i + 1;  j < mp.size(); j++ )
-        {
-          if ( ringInRing( mp[i][0], mp[j][0] ) )
-          {
-            errors << Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( i ).arg( j ) );
-          }
-          else if ( ringInRing( mp[j][0], mp[i][0] ) )
-          {
-            errors << Error( QObject::tr( "polygon %1 inside polygon %2" ).arg( j ).arg( i ) );
-          }
-          else
-          {
-            checkRingIntersections( errors, i, 0, mp[i][0], j, 0, mp[j][0] );
-          }
-        }
-      }
-    }
-    break;
-
-    case QGis::WKBNoGeometry:
-    case QGis::WKBUnknown:
-      QgsDebugMsg( QObject::tr( "Unknown geometry type" ) );
-      errors << Error( QObject::tr( "Unknown geometry type" ) );
-      break;
-  }
+  QgsGeometryValidator *gv = new QgsGeometryValidator( this, &errors );
+  gv->start();
+  delete gv;
 }
 
 bool QgsGeometry::isGeosValid()

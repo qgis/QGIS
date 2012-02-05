@@ -47,7 +47,7 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   v = new QVBoxLayout( frame );
   QLabel *l = new QLabel( tr( "Layer" ), frame );
   mcbLayers = new QComboBox( frame );
-  QHBoxLayout *h = new QHBoxLayout( this );
+  QHBoxLayout *h = new QHBoxLayout();
 
   h->addWidget( l );
   h->addWidget( mcbLayers );
@@ -106,14 +106,14 @@ RgLineVectorLayerSettingsWidget::RgLineVectorLayerSettingsWidget( RgLineVectorLa
   h->addWidget( mcbDirectionDefault );
   v->addLayout( h );
 
-  h = new QHBoxLayout( frame );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Cost" ), frame );
   h->addWidget( l );
   l = new QLabel( tr( "Line lengths" ), frame );
   h->addWidget( l );
   v->addLayout( h );
 
-  h = new QHBoxLayout( frame );
+  h = new QHBoxLayout();
   l = new QLabel( tr( "Speed" ), frame );
   msbSpeedDefault = new QSpinBox( frame );
   msbSpeedDefault->setMinimum( 1 );

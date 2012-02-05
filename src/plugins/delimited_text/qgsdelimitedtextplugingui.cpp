@@ -12,34 +12,38 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "qgsdelimitedtextplugingui.h"
-#include "qgscontexthelp.h"
 
 #include "qgisinterface.h"
+#include "qgscontexthelp.h"
+#include "qgslogger.h"
 
-#include <QFileDialog>
 #include <QFile>
-#include <QComboBox>
-#include <QSettings>
+#include <QFileDialog>
 #include <QFileInfo>
-#include <QRegExp>
 #include <QMessageBox>
+#include <QRegExp>
+#include <QSettings>
 #include <QTextStream>
 #include <QUrl>
-#include "qgslogger.h"
 
 QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidget * parent, Qt::WFlags fl )
     : QDialog( parent, fl ), qI( _qI )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Plugin-DelimitedText/geometry" ).toByteArray() );
+
   pbnOK = buttonBox->button( QDialogButtonBox::Ok );
 
   updateFieldsAndEnable();
 
   // at startup, fetch the last used delimiter and directory from
   // settings
-  QSettings settings;
   QString key = "/Plugin-DelimitedText";
   txtDelimiter->setText( settings.value( key + "/delimiter" ).toString() );
+
+  rowCounter->setValue( settings.value( key + "/startFrom", 0 ).toInt() );
 
   // and how to use the delimiter
   QString delimiterType = settings.value( key + "/delimiterType", "plain" ).toString();
@@ -60,7 +64,7 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
   cbxDelimSpace->setChecked( delimiterChars.contains( " " ) );
   cbxDelimTab->setChecked( delimiterChars.contains( "\\t" ) );
   cbxDelimColon->setChecked( delimiterChars.contains( ":" ) );
-  cbxDelimSemicolon->setChecked( delimiterChars.contains( ":" ) );
+  cbxDelimSemicolon->setChecked( delimiterChars.contains( ";" ) );
   cbxDelimComma->setChecked( delimiterChars.contains( "," ) );
 
   cmbXField->setDisabled( true );
@@ -87,8 +91,10 @@ QgsDelimitedTextPluginGui::QgsDelimitedTextPluginGui( QgisInterface * _qI, QWidg
 
 QgsDelimitedTextPluginGui::~QgsDelimitedTextPluginGui()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-DelimitedText/geometry", saveGeometry() );
 }
-/** Autoconnected slots **/
+
 void QgsDelimitedTextPluginGui::on_btnBrowseForFile_clicked()
 {
   getOpenFileName();
@@ -142,9 +148,11 @@ void QgsDelimitedTextPluginGui::on_buttonBox_accepted()
     // store the settings
     QSettings settings;
     QString key = "/Plugin-DelimitedText";
+    settings.setValue( key + "/geometry", saveGeometry() );
     settings.setValue( key + "/delimiter", txtDelimiter->text() );
     QFileInfo fi( txtFilePath->text() );
     settings.setValue( key + "/text_path", fi.path() );
+    settings.setValue( key + "/startFrom", rowCounter->value() );
 
     if ( delimiterSelection->isChecked() )
       settings.setValue( key + "/delimiterType", "selection" );
@@ -292,7 +300,6 @@ void QgsDelimitedTextPluginGui::updateFieldLists()
 
   QgsDebugMsg( QString( "Split line into %1 parts" ).arg( fieldList.size() ) );
 
-  //
   // We don't know anything about a text based field other
   // than its name. All fields are assumed to be text
   bool haveFields = false;
@@ -443,8 +450,9 @@ void QgsDelimitedTextPluginGui::getOpenFileName()
                 this,
                 tr( "Choose a delimited text file to open" ),
                 settings.value( "/Plugin-DelimitedText/text_path", "./" ).toString(),
-                "Text files (*.txt *.csv);; Well Known Text files (*.wkt);; All files (* *.*)" );
-
+                tr( "Text files" ) + " (*.txt *.csv);;"
+                + tr( "Well Known Text files" ) + " (*.wkt);;"
+                + tr( "All files" ) + " (* *.*)" );
   // set path
   txtFilePath->setText( s );
 }
@@ -457,14 +465,12 @@ void QgsDelimitedTextPluginGui::updateFieldsAndEnable()
 
 void QgsDelimitedTextPluginGui::enableAccept()
 {
-
   // If the geometry type field is enabled then there must be
   // a valid file, and it must be
   bool enabled = haveValidFileAndDelimiters();
 
   if ( enabled )
   {
-
     if ( geomTypeXY->isChecked() )
     {
       enabled = !( cmbXField->currentText().isEmpty()  || cmbYField->currentText().isEmpty() || cmbXField->currentText() == cmbYField->currentText() );
@@ -493,12 +499,9 @@ QString QgsDelimitedTextPluginGui::readLine( QTextStream &stream )
         // skip leading CR / LF
         continue;
       }
-
       break;
     }
-
     buffer.append( c );
   }
-
   return buffer;
 }

@@ -676,7 +676,10 @@ void QgsSvgMarkerSymbolLayerV2Widget::setOffset()
 void QgsSvgMarkerSymbolLayerV2Widget::on_mFileToolButton_clicked()
 {
   QSettings s;
-  QString file = QFileDialog::getOpenFileName( 0, tr( "Select SVG file" ), s.value( "/UI/lastSVGMarkerDir" ).toString(), "SVG files (*.svg)" );
+  QString file = QFileDialog::getOpenFileName( 0,
+                 tr( "Select SVG file" ),
+                 s.value( "/UI/lastSVGMarkerDir" ).toString(),
+                 tr( "SVG files" ) + " (*.svg)" );
   QFileInfo fi( file );
   if ( file.isEmpty() || !fi.exists() )
   {

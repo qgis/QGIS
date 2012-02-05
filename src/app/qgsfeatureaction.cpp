@@ -25,17 +25,18 @@
 #include <QPushButton>
 #include <QSettings>
 
-QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, int action, QObject *parent )
+QgsFeatureAction::QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *layer, int action, int defaultAttr, QObject *parent )
     : QAction( name, parent )
     , mLayer( layer )
     , mFeature( f )
     , mAction( action )
+    , mIdx( defaultAttr )
 {
 }
 
 void QgsFeatureAction::execute()
 {
-  mLayer->actions()->doAction( mAction, mFeature.attributeMap(), mIdx );
+  mLayer->actions()->doAction( mAction, mFeature, mIdx );
 }
 
 QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
@@ -58,7 +59,7 @@ QgsAttributeDialog *QgsFeatureAction::newDialog( bool cloneFeature )
       if ( !action.runable() )
         continue;
 
-      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, dialog->dialog() );
+      QgsFeatureAction *a = new QgsFeatureAction( action.name(), *f, mLayer, i, -1, dialog->dialog() );
       dialog->dialog()->addAction( a );
       connect( a, SIGNAL( triggered() ), a, SLOT( execute() ) );
 

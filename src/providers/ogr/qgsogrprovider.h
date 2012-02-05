@@ -156,6 +156,10 @@ class QgsOgrProvider : public QgsVectorDataProvider
      */
     virtual QgsRectangle extent();
 
+    /** Update the extents
+     */
+    virtual void updateExtents();
+
     /** Restart reading features from previous select operation */
     virtual void rewind();
 

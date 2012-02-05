@@ -23,6 +23,7 @@
 #include "qgsfeature.h"
 #include "qgsfield.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
 
 QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     : QgsDataProvider( uri )
@@ -30,7 +31,7 @@ QgsVectorDataProvider::QgsVectorDataProvider( QString uri )
     , mFetchFeaturesWithoutGeom( true )
 {
   QSettings settings;
-  setEncoding( settings.value( "/UI/encoding", QString( "System" ) ).toString() );
+  setEncoding( settings.value( "/UI/encoding", "System" ).toString() );
 }
 
 
@@ -150,14 +151,20 @@ int QgsVectorDataProvider::capabilities() const
 
 void QgsVectorDataProvider::setEncoding( const QString& e )
 {
-  QTextCodec* ncodec = QTextCodec::codecForName( e.toLocal8Bit().data() );
+  QTextCodec* ncodec = QTextCodec::codecForName( e.toLocal8Bit().constData() );
   if ( ncodec )
   {
     mEncoding = ncodec;
   }
   else
   {
-    QgsDebugMsg( "error finding QTextCodec for " + e );
+    QgsMessageLog::logMessage( tr( "Codec %1 not found. Falling back to system locale" ).arg( e ) );
+    mEncoding = QTextCodec::codecForName( "System" );
+
+    if ( !mEncoding )
+      mEncoding = QTextCodec::codecForLocale();
+
+    Q_ASSERT( mEncoding );
   }
 }
 
@@ -457,6 +464,12 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
 {
   if ( smEncodings.isEmpty() )
   {
+    foreach( QString codec, QTextCodec::availableCodecs() )
+    {
+      smEncodings << codec;
+    }
+    qSort( smEncodings );
+#if 0
     smEncodings << "BIG5";
     smEncodings << "BIG5-HKSCS";
     smEncodings << "EUCJP";
@@ -502,6 +515,7 @@ const QStringList &QgsVectorDataProvider::availableEncodings()
     smEncodings << "Apple Roman";
     smEncodings << "TIS-620";
     smEncodings << "System";
+#endif
   }
 
   return smEncodings;

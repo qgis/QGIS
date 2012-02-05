@@ -22,11 +22,12 @@ back to QgsVectorLayer.
 
 #include "qgsattributeactiondialog.h"
 #include "qgsattributeaction.h"
+#include "qgsexpressionbuilderdialog.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QMessageBox>
-
+#include <QSettings>
 
 QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
     const QgsFieldMap& fields,
@@ -43,6 +44,9 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
 
   connect( attributeActionTable, SIGNAL( itemSelectionChanged() ),
            this, SLOT( itemSelectionChanged() ) );
+  connect( actionName, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
+  connect( actionAction, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
+
   connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
   connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
   connect( removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
@@ -50,6 +54,7 @@ QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
   connect( insertButton, SIGNAL( clicked() ), this, SLOT( insert() ) );
   connect( updateButton, SIGNAL( clicked() ), this, SLOT( update() ) );
   connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
+  connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
 
   init();
   // Populate the combo box with the field names. Will the field names
@@ -70,6 +75,8 @@ void QgsAttributeActionDialog::init()
     const QgsAction action = ( *mActions )[i];
     insertRow( i, action.type(), action.name(), action.action(), action.capture() );
   }
+
+  updateButtons();
 }
 
 void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture )
@@ -85,6 +92,8 @@ void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, c
   item->setFlags( item->flags() & ~( Qt::ItemIsEditable | Qt::ItemIsUserCheckable ) );
   item->setCheckState( capture ? Qt::Checked : Qt::Unchecked );
   attributeActionTable->setItem( row, 3, item );
+
+  updateButtons();
 }
 
 void QgsAttributeActionDialog::moveUp()
@@ -95,7 +104,7 @@ void QgsAttributeActionDialog::moveUp()
   QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
-    row1 = attributeActionTable->row( selection.first() );
+    row1 = selection.first()->row();
   }
 
   if ( row1 > 0 )
@@ -116,7 +125,7 @@ void QgsAttributeActionDialog::moveDown()
   QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
-    row1 = attributeActionTable->row( selection.first() );
+    row1 = selection.first()->row();
   }
 
   if ( row1 < attributeActionTable->rowCount() - 1 )
@@ -143,14 +152,34 @@ void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 
 void QgsAttributeActionDialog::browse()
 {
-  // Popup a file browser and place the results into the actionName
-  // widget
-
+  // Popup a file browser and place the results into the action widget
   QString action = QFileDialog::getOpenFileName(
                      this, tr( "Select an action", "File dialog window title" ) );
 
   if ( !action.isNull() )
     actionAction->insert( action );
+}
+
+void QgsAttributeActionDialog::insertExpression()
+{
+  QString selText = actionAction->selectedText();
+
+  // edit the selected expression if there's one
+  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
+    selText = selText.mid( 2, selText.size() - 3 );
+
+  // display the expression builder
+  QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
+  dlg.setWindowTitle( tr( "Insert expression" ) );
+  if ( dlg.exec() == QDialog::Accepted )
+  {
+    QString expression =  dlg.expressionBuilder()->expressionText();
+    //Only add the expression if the user has entered some text.
+    if ( !expression.isEmpty() )
+    {
+      actionAction->insert( "[%" + expression + "%]" );
+    }
+  }
 }
 
 void QgsAttributeActionDialog::remove()
@@ -159,13 +188,15 @@ void QgsAttributeActionDialog::remove()
   if ( !selection.isEmpty() )
   {
     // Remove the selected row.
-    int row = attributeActionTable->row( selection.first() );
+    int row = selection.first()->row();
     attributeActionTable->removeRow( row );
 
     // And select the row below the one that was selected or the last one.
     if ( row >= attributeActionTable->rowCount() )
       row = attributeActionTable->rowCount() - 1;
     attributeActionTable->selectRow( row );
+
+    updateButtons();
   }
 }
 
@@ -227,20 +258,45 @@ void QgsAttributeActionDialog::update()
   QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
-    int i = attributeActionTable->row( selection.first() );
-    insert( i );
+    insert( selection.first()->row() );
   }
+}
+
+void QgsAttributeActionDialog::updateButtons()
+{
+  bool validNewAction = !actionName->text().isEmpty() && !actionAction->text().isEmpty();
+
+  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  bool hasSelection = !selection.isEmpty();
+
+  if ( hasSelection )
+  {
+    int row = selection.first()->row();
+    moveUpButton->setEnabled( row >= 1 );
+    moveDownButton->setEnabled( row >= 0 && row < attributeActionTable->rowCount() - 1 );
+  }
+  else
+  {
+    moveUpButton->setEnabled( false );
+    moveDownButton->setEnabled( false );
+  }
+
+  removeButton->setEnabled( hasSelection );
+
+  insertButton->setEnabled( validNewAction );
+  updateButton->setEnabled( hasSelection && validNewAction );
 }
 
 void QgsAttributeActionDialog::insertField()
 {
-  // Take the selected field, preprend a % and insert into the action
-  // field at the cursor position
+  // Convert the selected field to an expression and
+  // insert it into the action at the cursor position
 
   if ( !fieldComboBox->currentText().isNull() )
   {
-    QString field( "%" );
+    QString field = "[% \"";
     field += fieldComboBox->currentText();
+    field += "\" %]";
     actionAction->insert( field );
   }
 }
@@ -266,10 +322,14 @@ void QgsAttributeActionDialog::apply()
 void QgsAttributeActionDialog::itemSelectionChanged()
 {
   QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
-  if ( !selection.isEmpty() )
+  bool hasSelection = !selection.isEmpty();
+  if ( hasSelection )
   {
-    rowSelected( attributeActionTable->row( selection.first() ) );
+    int row = selection.first()->row();
+    rowSelected( row );
   }
+
+  updateButtons();
 }
 
 void QgsAttributeActionDialog::rowSelected( int row )
@@ -285,7 +345,7 @@ void QgsAttributeActionDialog::rowSelected( int row )
     actionType->setCurrentIndex( actionType->findText( attributeActionTable->item( row, 0 )->text() ) );
     actionName->setText( attributeActionTable->item( row, 1 )->text() );
     actionAction->setText( attributeActionTable->item( row, 2 )->text() );
-    captureCB->setChecked( item->checkState() == Qt::Checked );
+    captureCB->setChecked( attributeActionTable->item( row, 3 )->checkState() == Qt::Checked );
   }
 }
 

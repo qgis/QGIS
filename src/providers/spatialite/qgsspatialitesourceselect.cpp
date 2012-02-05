@@ -43,6 +43,10 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFla
     QDialog( parent, fl )
 {
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/SpatiaLiteSourceSelect/geometry" ).toByteArray() );
+
   setWindowTitle( tr( "Add SpatiaLite Table(s)" ) );
   connectionsGroupBox->setTitle( tr( "Databases" ) );
   btnEdit->hide();  // hide the edit button
@@ -101,6 +105,12 @@ QgsSpatiaLiteSourceSelect::QgsSpatiaLiteSourceSelect( QWidget * parent, Qt::WFla
   mSearchTableEdit->setVisible( false );
 
   cbxAllowGeometrylessTables->setDisabled( true );
+}
+
+QgsSpatiaLiteSourceSelect::~QgsSpatiaLiteSourceSelect()
+{
+  QSettings settings;
+  settings.setValue( "/Windows/SpatiaLiteSourceSelect/geometry", saveGeometry() );
 }
 
 // Slot for performing action when the Add button is clicked
@@ -219,7 +229,7 @@ bool QgsSpatiaLiteSourceSelect::newConnection( QWidget* parent )
 
   QString myFile = QFileDialog::getOpenFileName( parent,
                    tr( "Choose a SpatiaLite/SQLite DB to open" ),
-                   lastUsedDir, QObject::tr( "SQLite DB (*.sqlite *.db);;All files (*)" ) );
+                   lastUsedDir, tr( "SpatiaLite DB" ) + " (*.sqlite *.db);;" + tr( "All files" ) + " (*)" );
 
   if ( myFile.isEmpty() )
     return false;

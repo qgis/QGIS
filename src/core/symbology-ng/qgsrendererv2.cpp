@@ -53,8 +53,12 @@ unsigned char* QgsFeatureRendererV2::_getLineString( QPolygonF& pts, QgsRenderCo
   wkb += sizeof( unsigned int );
 
   bool hasZValue = ( wkbType == QGis::WKBLineString25D );
-  double x, y, z;
-
+  double x, y;
+#ifdef ANDROID
+  qreal z;
+#else
+  double z;
+#endif //ANDROID
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
 
@@ -116,8 +120,11 @@ unsigned char* QgsFeatureRendererV2::_getPolygon( QPolygonF& pts, QList<QPolygon
 
   const QgsCoordinateTransform* ct = context.coordinateTransform();
   const QgsMapToPixel& mtp = context.mapToPixel();
+#ifdef ANDROID
+  qreal z = 0; // dummy variable for coordiante transform
+#else
   double z = 0; // dummy variable for coordiante transform
-
+#endif
   const QgsRectangle& e = context.extent();
   double cw = e.width() / 10; double ch = e.height() / 10;
   QgsRectangle clipRect( e.xMinimum() - cw, e.yMinimum() - ch, e.xMaximum() + cw, e.yMaximum() + ch );
@@ -181,12 +188,18 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::defaultRenderer( QGis::GeometryType 
 }
 
 
-void QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsFeatureRendererV2::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   QgsSymbolV2* symbol = symbolForFeature( feature );
   if ( symbol == NULL )
-    return;
+    return false;
 
+  renderFeatureWithSymbol( feature, symbol, context, layer, selected, drawVertexMarker );
+  return true;
+}
+
+void QgsFeatureRendererV2::renderFeatureWithSymbol( QgsFeature& feature, QgsSymbolV2* symbol, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+{
   QgsSymbolV2::SymbolType symbolType = symbol->type();
 
   QgsGeometry* geom = feature.geometry();
@@ -349,7 +362,6 @@ QgsFeatureRendererV2* QgsFeatureRendererV2::load( QDomElement& element )
   if ( r )
   {
     r->setUsingSymbolLevels( element.attribute( "symbollevels", "0" ).toInt() );
-    r->setUsingFirstRule( element.attribute( "firstrule", "0" ).toInt() );
   }
   return r;
 }

@@ -18,7 +18,6 @@
 #include "qgspointdisplacementrenderer.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
-#include "qgsrendererv2registry.h"
 #include "qgsspatialindex.h"
 #include "qgssymbolv2.h"
 #include "qgssymbollayerv2utils.h"
@@ -67,7 +66,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::clone()
   return r;
 }
 
-void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
+bool QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRenderContext& context, int layer, bool selected, bool drawVertexMarker )
 {
   Q_UNUSED( drawVertexMarker );
   //point position in screen coords
@@ -76,7 +75,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   if ( geomType != QGis::WKBPoint && geomType != QGis::WKBPoint25D )
   {
     //can only render point type
-    return;
+    return false;
   }
   QPointF pt;
   _getPoint( pt, context, geom->asWkb() );
@@ -126,7 +125,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
 
   if ( symbolList.isEmpty() && labelAttributeList.isEmpty() )
   {
-    return; //display all point symbols for one posi
+    return true; //display all point symbols for one posi
   }
 
 
@@ -177,6 +176,7 @@ void QgsPointDisplacementRenderer::renderFeature( QgsFeature& feature, QgsRender
   drawSymbols( feature, context, symbolList, symbolPositions, selected );
   //and also the labels
   drawLabels( pt, symbolContext, labelPositions, labelAttributeList );
+  return true;
 }
 
 void QgsPointDisplacementRenderer::setEmbeddedRenderer( QgsFeatureRendererV2* r )
@@ -276,12 +276,7 @@ QgsFeatureRendererV2* QgsPointDisplacementRenderer::create( QDomElement& symbolo
   QDomElement embeddedRendererElem = symbologyElem.firstChildElement( "renderer-v2" );
   if ( !embeddedRendererElem.isNull() )
   {
-    QString rendererName = embeddedRendererElem.attribute( "type" );
-    QgsRendererV2AbstractMetadata* metaData = QgsRendererV2Registry::instance()->rendererMetadata( rendererName );
-    if ( metaData )
-    {
-      r->setEmbeddedRenderer( metaData->createRenderer( embeddedRendererElem ) );
-    }
+    r->setEmbeddedRenderer( QgsFeatureRendererV2::load( embeddedRendererElem ) );
   }
 
   //center symbol

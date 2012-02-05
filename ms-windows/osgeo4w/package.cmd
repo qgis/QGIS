@@ -1,5 +1,5 @@
 @echo off
-set GRASS_VERSION=6.4.2RC2
+set GRASS_VERSION=6.4.2RC3
 
 set BUILDDIR=%CD%\build
 REM set BUILDDIR=%TEMP%\qgis_unstable
@@ -96,9 +96,9 @@ cmake -G "Visual Studio 9 2008" ^
 	-D CMAKE_CONFIGURATION_TYPES=%BUILDCONF% ^
 	-D GEOS_LIBRARY=%OSGEO4W_ROOT%/lib/geos_c_i.lib ^
 	-D PYTHON_EXECUTABLE=%O4W_ROOT%/bin/python.exe ^
-	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python25/include ^
-	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python25/libs/python25.lib ^
-	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python25/sip.exe ^
+	-D PYTHON_INCLUDE_PATH=%O4W_ROOT%/apps/Python27/include ^
+	-D PYTHON_LIBRARY=%O4W_ROOT%/apps/Python27/libs/python27.lib ^
+	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python27/sip.exe ^
 	-D GRASS_PREFIX=%O4W_ROOT%/apps/grass/grass-%GRASS_VERSION% ^
 	-D QT_BINARY_DIR=%O4W_ROOT%/bin ^
 	-D QT_LIBRARY_DIR=%O4W_ROOT%/lib ^

@@ -17,10 +17,18 @@
 
 
 #include "qgslogger.h"
+
 #include <QtDebug>
 #include <QFile>
 
-int QgsLogger::mDebugLevel = -999; // undefined value
+#include "qgsconfig.h"
+
+#ifndef CMAKE_SOURCE_DIR
+#error CMAKE_SOURCE_DIR undefinied
+#endif // CMAKE_SOURCE_DIR
+
+int QgsLogger::sDebugLevel = -999; // undefined value
+int QgsLogger::sPrefixLength = -1;
 
 void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, const char* function, int line )
 {
@@ -36,29 +44,35 @@ void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, con
   int dlevel = debugLevel();
   if ( dlevel >= debuglevel && debuglevel > 0 )
   {
-    if ( file == NULL )
+    QString m;
+
+    if ( !file )
     {
-      qDebug( "%s", msg.toLocal8Bit().constData() );
-      logMessageToFile( msg );
+      m =  msg;
     }
-    else if ( function == NULL )
+    else if ( !function )
     {
-      qDebug( "%s: %s", file, msg.toLocal8Bit().constData() );
-      logMessageToFile( msg );
+      m = QString( "%1: %2" ).arg( file + sPrefixLength ).arg( msg );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s) %s", file, function, msg.toLocal8Bit().constData() );
-      logMessageToFile( msg );
+      m = QString( "%1: (%2) %3" ).arg( file + sPrefixLength ).arg( function ).arg( msg );
     }
     else
     {
 #ifndef _MSC_VER
-      qDebug( "%s: %d: (%s) %s", file, line, function, msg.toLocal8Bit().constData() );
+      m = QString( "%1: %2: (%3) %4" ).arg( file + sPrefixLength ).arg( line ).arg( function ).arg( msg );
 #else
-      qDebug( "%s(%d) : (%s) %s", file, line, function, msg.toLocal8Bit().constData() );
+      m = QString( "%1(%2) : (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( msg );
 #endif
-      logMessageToFile( msg );
+    }
+    if ( logFile().isEmpty() )
+    {
+      qDebug( "%s", m.toLocal8Bit().constData() );
+    }
+    else
+    {
+      logMessageToFile( m );
     }
   }
 }
@@ -77,29 +91,29 @@ void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* 
   int dlevel = debugLevel();
   if ( dlevel >= debuglevel && debuglevel > 0 )
   {
-    if ( file == NULL )
+    if ( !file )
     {
       qDebug( "%s: %d", var.toLocal8Bit().constData(), val );
       logMessageToFile( QString( "%s: %d" ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
-    else if ( function == NULL )
+    else if ( !function )
     {
-      qDebug( "%s: %s: %d", file, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %s: %d" ).arg( file ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      qDebug( "%s: %s: %d", file + sPrefixLength, var.toLocal8Bit().constData(), val );
+      logMessageToFile( QString( "%s: %s: %d" ).arg( file + sPrefixLength ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s): %s: %d", file, function, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: (%s): %s: %d" ).arg( file ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      qDebug( "%s: (%s): %s: %d", file + sPrefixLength, function, var.toLocal8Bit().constData(), val );
+      logMessageToFile( QString( "%s: (%s): %s: %d" ).arg( file + sPrefixLength ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
     else
     {
 #ifdef _MSC_VER
-      qDebug( "%s(%d): (%s), %s: %d", file, line, function, var.toLocal8Bit().constData(), val );
+      qDebug( "%s(%d): (%s), %s: %d", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
 #else
-      qDebug( "%s: %d: (%s), %s: %d", file, line, function, var.toLocal8Bit().constData(), val );
+      qDebug( "%s: %d: (%s), %s: %d", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
 #endif
-      logMessageToFile( QString( "%s: %d: (%s), %s: %d" ).arg( file ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      logMessageToFile( QString( "%s: %d: (%s), %s: %d" ).arg( file + sPrefixLength ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
   }
 }
@@ -118,54 +132,59 @@ void QgsLogger::debug( const QString& var, double val, int debuglevel, const cha
   int dlevel = debugLevel();
   if ( dlevel >= debuglevel && debuglevel > 0 )
   {
-    if ( file == NULL )
+    if ( !file )
     {
       qDebug( "%s: %f", var.toLocal8Bit().constData(), val );
       logMessageToFile( QString( "%s: %f" ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
-    else if ( function == NULL )
+    else if ( !function )
     {
-      qDebug( "%s: %s: %f", file, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %s: %f" ).arg( file ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      qDebug( "%s: %s: %f", file + sPrefixLength, var.toLocal8Bit().constData(), val );
+      logMessageToFile( QString( "%s: %s: %f" ).arg( file + sPrefixLength ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
     else if ( line == -1 )
     {
-      qDebug( "%s: (%s): %s: %f", file, function, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: (%s): %s: %f" ).arg( file ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      qDebug( "%s: (%s): %s: %f", file + sPrefixLength, function, var.toLocal8Bit().constData(), val );
+      logMessageToFile( QString( "%s: (%s): %s: %f" ).arg( file + sPrefixLength ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
     else
     {
 #ifdef _MSC_VER
-      qDebug( "%s(%d): (%s), %s: %f", file, line, function, var.toLocal8Bit().constData(), val );
+      qDebug( "%s(%d): (%s), %s: %f", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
 #else
-      qDebug( "%s: %d: (%s), %s: %f", file, line, function, var.toLocal8Bit().constData(), val );
+      qDebug( "%s: %d: (%s), %s: %f", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
 #endif
-      logMessageToFile( QString( "%s: %d: (%s), %s: %f" ).arg( file ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
+      logMessageToFile( QString( "%s: %d: (%s), %s: %f" ).arg( file  + sPrefixLength ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
     }
   }
 }
 
 void QgsLogger::warning( const QString& msg )
 {
-  qWarning( "%s", msg.toLocal8Bit().constData() );
   logMessageToFile( msg );
+  qWarning( "%s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::critical( const QString& msg )
 {
-  qCritical( "%s", msg.toLocal8Bit().constData() );
   logMessageToFile( msg );
+  qCritical( "%s", msg.toLocal8Bit().constData() );
 }
 
 void QgsLogger::fatal( const QString& msg )
 {
-  qFatal( "%s", msg.toLocal8Bit().constData() );
   logMessageToFile( msg );
+  qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
 int QgsLogger::debugLevel()
 {
-  if ( mDebugLevel == -999 )
+  if ( sPrefixLength == -1 )
+  {
+    sPrefixLength = strlen( CMAKE_SOURCE_DIR ) + 1;
+  }
+
+  if ( sDebugLevel == -999 )
   {
     // read the environment variable QGIS_DEBUG just once,
     // then reuse the value
@@ -174,24 +193,24 @@ int QgsLogger::debugLevel()
     if ( dlevel == NULL ) //environment variable not set
     {
 #ifdef QGISDEBUG
-      mDebugLevel = 1; //1 is default value in debug mode
+      sDebugLevel = 1; //1 is default value in debug mode
 #else
-      mDebugLevel = 0;
+      sDebugLevel = 0;
 #endif
     }
     else
     {
-      mDebugLevel = atoi( dlevel );
+      sDebugLevel = atoi( dlevel );
 #ifdef QGISDEBUG
-      if ( mDebugLevel == 0 )
+      if ( sDebugLevel == 0 )
       {
-        mDebugLevel = 1;
+        sDebugLevel = 1;
       }
 #endif
     }
   }
 
-  return mDebugLevel;
+  return sDebugLevel;
 }
 
 const QString QgsLogger::logFile()

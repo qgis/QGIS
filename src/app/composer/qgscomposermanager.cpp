@@ -23,12 +23,17 @@
 #include <QInputDialog>
 #include <QListWidgetItem>
 #include <QMessageBox>
+#include <QSettings>
 
 QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): QDialog( parent, f )
 {
   QPushButton *pb;
 
   setupUi( this );
+
+  QSettings settings;
+  restoreGeometry( settings.value( "/Windows/ComposerManager/geometry" ).toByteArray() );
+
   connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
 
   pb = new QPushButton( tr( "&Show" ) );
@@ -48,7 +53,8 @@ QgsComposerManager::QgsComposerManager( QWidget * parent, Qt::WindowFlags f ): Q
 
 QgsComposerManager::~QgsComposerManager()
 {
-
+  QSettings settings;
+  settings.setValue( "/Windows/ComposerManager/geometry", saveGeometry() );
 }
 
 void QgsComposerManager::initialize()

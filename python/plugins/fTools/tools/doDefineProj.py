@@ -38,7 +38,7 @@ from ui_frmReProject import Ui_Dialog
 
 class Dialog(QDialog, Ui_Dialog):
     def __init__(self, iface):
-        QDialog.__init__(self)
+        QDialog.__init__(self, iface.mainWindow())
         self.iface = iface
         self.setupUi(self)
         self.toolOut.setEnabled(False)
@@ -62,14 +62,14 @@ class Dialog(QDialog, Ui_Dialog):
     def updateProj1(self, layerName):
         self.inRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
-        crs = tempLayer.dataProvider().crs().toProj4()
-        self.inRef.insert(unicode(crs))
+        crs = tempLayer.dataProvider().crs()
+        self.inRef.insert(crs.authid() + " - " +  crs.description())
 
     def updateProj2(self, layerName):
         self.outRef.clear()
         tempLayer = ftools_utils.getVectorLayerByName(layerName)
-        crs = tempLayer.dataProvider().crs().toProj4()
-        self.outRef.insert(unicode(crs))
+        crs = tempLayer.dataProvider().crs()
+        self.outRef.insert(crs.authid() + " - " +  crs.description())
 
     def accept(self):
         self.buttonOk.setEnabled( False )
@@ -141,15 +141,16 @@ class Dialog(QDialog, Ui_Dialog):
         header = QString( "Define layer CRS:" )
         sentence1 = self.tr( "Please select the projection system that defines the current layer." )
         sentence2 = self.tr( "Layer CRS information will be updated to the selected CRS." )
-        self.projSelect = QgsGenericProjectionSelector(self, Qt.Widget)
-        self.projSelect.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
-        if self.projSelect.exec_():
-            projString = self.projSelect.selectedProj4String()
-            if projString == "":
+        projSelector = QgsGenericProjectionSelector(self)
+        projSelector.setMessage( format.arg( header ).arg( sentence1 ).arg( sentence2 ))
+        if projSelector.exec_():
+            crs = QgsCoordinateReferenceSystem()
+            crs.createFromOgcWmsCrs( projSelector.selectedAuthId() )
+            if projSelector.selectedAuthId().isEmpty():
                 QMessageBox.information(self, self.tr("Export to new projection"), self.tr("No Valid CRS selected"))
                 return
             else:
                 self.txtProjection.clear()
-                self.txtProjection.insert(projString)
+                self.txtProjection.insert(crs.authid() + " - " + crs.description())
         else:
             return

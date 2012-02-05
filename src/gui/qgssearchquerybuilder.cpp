@@ -403,7 +403,7 @@ void QgsSearchQueryBuilder::loadQuery()
   QSettings s;
   QString lastQueryFileDir = s.value( "/UI/lastQueryFileDir", "" ).toString();
 
-  QString queryFileName = QFileDialog::getOpenFileName( 0, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + "(*.qqf);;" + tr( "All files" ) + "(*)" );
+  QString queryFileName = QFileDialog::getOpenFileName( 0, tr( "Load query from file" ), lastQueryFileDir, tr( "Query files" ) + " (*.qqf);;" + tr( "All files" ) + " (*)" );
   if ( queryFileName.isNull() )
   {
     return;
@@ -442,7 +442,7 @@ void QgsSearchQueryBuilder::loadQuery()
   QString newQueryText = query;
 
 #if 0
-  // TODO: QgsExpression does not support overwriting of existing expressions
+  // TODO: implement with visitor pattern in QgsExpression
 
   QStringList attributes = searchTree->referencedColumns();
   QMap< QString, QString> attributesToReplace;

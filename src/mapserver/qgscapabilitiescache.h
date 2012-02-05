@@ -32,17 +32,17 @@ class QgsCapabilitiesCache: public QObject
     ~QgsCapabilitiesCache();
 
     /**Returns cached capabilities document (or 0 if document for configuration file not in cache)*/
-    const QDomDocument* searchCapabilitiesDocument( const QString& configFilePath ) const;
+    const QDomDocument* searchCapabilitiesDocument( QString configFilePath, QString version );
     /**Inserts new capabilities document (creates a copy of the document, does not take ownership)*/
-    void insertCapabilitiesDocument( const QString& configFilePath, const QDomDocument* doc );
+    void insertCapabilitiesDocument( QString configFilePath, QString version, const QDomDocument* doc );
 
   private:
-    QHash< QString, QDomDocument > mCachedCapabilities;
+    QHash< QString, QHash< QString, QDomDocument > > mCachedCapabilities;
     QFileSystemWatcher mFileSystemWatcher;
 
   private slots:
     /**Removes changed entry from this cache*/
-    void removeChangedEntry( const QString& path );
+    void removeChangedEntry( const QString &path );
 };
 
 #endif // QGSCAPABILITIESCACHE_H

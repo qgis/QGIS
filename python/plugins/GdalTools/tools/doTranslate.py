@@ -155,7 +155,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BaseBatchWidget):
       self.targetSRSEdit.setText( Utils.getRasterSRS( self, self.getInputFileName() ) )
 
   def fillTargetSRSEdit(self):
-      dialog = SRSDialog( "Select the target SRS" )
+      dialog = SRSDialog( "Select the target SRS", self )
       if dialog.exec_():
         self.targetSRSEdit.setText(dialog.getProjection())
 

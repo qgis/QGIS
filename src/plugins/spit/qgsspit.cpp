@@ -29,8 +29,6 @@
 #include <QTableWidgetItem>
 #include <QInputDialog>
 
-#include <iostream>
-
 #include "qgsencodingfiledialog.h"
 
 #include "qgspgutil.h"
@@ -55,6 +53,9 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
   tblShapefiles->horizontalHeader()->setStretchLastSection( true );
 
   populateConnectionList();
+
+  restoreState();
+
   defSrid = -1;
   defGeom = "the_geom";
   total_features = 0;
@@ -83,6 +84,10 @@ QgsSpit::QgsSpit( QWidget *parent, Qt::WFlags fl ) : QDialog( parent, fl )
 
 QgsSpit::~QgsSpit()
 {
+  QSettings settings;
+  settings.setValue( "/Plugin-Spit/geometry", saveGeometry() );
+  settings.setValue( "/Plugin-Spit/lastDatabase", cmbConnections->currentText() );
+
   if ( conn )
     PQfinish( conn );
 }
@@ -160,7 +165,7 @@ void QgsSpit::addFile()
   QgsEncodingFileDialog dlg( this,
                              tr( "Add Shapefiles" ),
                              settings.value( "/Plugin-Spit/last_directory" ).toString(),
-                             tr( "Shapefiles (*.shp);;All files (*)" ),
+                             tr( "Shapefiles" ) + " (*.shp);;" + tr( "All files" ) + " (*)",
                              settings.value( "/Plugin-Spit/last_encoding" ).toString() );
   dlg.setFileMode( QFileDialog::ExistingFiles );
 
@@ -831,6 +836,13 @@ void QgsSpit::import()
   {
     QMessageBox::warning( this, tr( "Import Shapefiles" ), tr( "You need to specify a Connection first" ) );
   }
+}
+
+void QgsSpit::restoreState()
+{
+  QSettings settings;
+  restoreGeometry( settings.value( "/Plugin-Spit/geometry" ).toByteArray() );
+  cmbConnections->setCurrentIndex( cmbConnections->findText( settings.value( "/Plugin-Spit/lastDatabase" ).toString() ) );
 }
 
 QWidget *ShapefileTableDelegate::createEditor( QWidget *parent,

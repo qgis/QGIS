@@ -46,7 +46,9 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
   cmbEncodings->addItems( QgsVectorDataProvider::availableEncodings() );
 
   QSettings settings;
-  QString enc = settings.value( "/UI/encoding", QString( "System" ) ).toString();
+  QString enc = settings.value( "/UI/encoding", "System" ).toString();
+
+  restoreGeometry( settings.value( "/Windows/OpenVectorLayer/geometry" ).toByteArray() );
 
   // The specified decoding is added if not existing alread, and then set current.
   // This should select it.
@@ -93,6 +95,8 @@ QgsOpenVectorLayerDialog::QgsOpenVectorLayerDialog( QWidget* parent, Qt::WFlags 
 
 QgsOpenVectorLayerDialog::~QgsOpenVectorLayerDialog()
 {
+  QSettings settings;
+  settings.setValue( "/Windows/OpenVectorLayer/geometry", saveGeometry() );
 }
 
 QStringList QgsOpenVectorLayerDialog::openFile()

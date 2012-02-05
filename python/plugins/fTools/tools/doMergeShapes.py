@@ -12,7 +12,7 @@ from ui_frmMergeShapes import Ui_Dialog
 
 class Dialog( QDialog, Ui_Dialog ):
   def __init__( self, iface ):
-    QDialog.__init__( self )
+    QDialog.__init__( self, iface.mainWindow() )
     self.setupUi( self )
     self.iface = iface
 
@@ -116,6 +116,9 @@ class Dialog( QDialog, Ui_Dialog ):
       baseDir = QFileInfo( files[ 0 ] ).absolutePath()
     else:
       baseDir = self.leInputDir.text()
+      # look for shapes with specified geometry type
+      self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
+      self.progressFiles.setRange( 0, self.inputFiles.count() )
 
     outFile = QFile( self.outFileName )
     if outFile.exists():
@@ -123,14 +126,9 @@ class Dialog( QDialog, Ui_Dialog ):
         QMessageBox.warning( self, self.tr( "Delete error" ), self.tr( "Can't delete file %1" ).arg( outFileName ) )
         return
 
-    # look for shapes with specified geometry type
-    self.inputFiles = ftools_utils.getShapesByGeometryType( baseDir, self.inputFiles, self.cmbGeometry.currentIndex() )
-    self.progressFiles.setRange( 0, self.inputFiles.count() )
-
     if self.inEncoding == None:
       self.inEncoding = "System"
 
-    QApplication.setOverrideCursor( QCursor( Qt.WaitCursor ) )
     self.btnOk.setEnabled( False )
 
     self.mergeThread = ShapeMergeThread( baseDir, self.inputFiles, self.inEncoding, self.outFileName, self.encoding )
@@ -192,7 +190,6 @@ class Dialog( QDialog, Ui_Dialog ):
     self.progressFeatures.setRange( 0, 100 )
     self.progressFeatures.setValue( 0 )
     self.progressFiles.setValue( 0 )
-    QApplication.restoreOverrideCursor()
     QObject.connect( self.buttonBox, SIGNAL( "rejected()" ), self.reject )
     self.btnClose.setText( self.tr( "Close" ) )
     self.btnOk.setEnabled( True )

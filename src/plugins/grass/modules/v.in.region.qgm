@@ -2,5 +2,6 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Create new vector with current region extent" module="v.in.region">
+        <option key="type"/>
 	<option key="output"/>
 </qgisgrassmodule>

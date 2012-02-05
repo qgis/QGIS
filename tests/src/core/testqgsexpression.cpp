@@ -66,6 +66,16 @@ class TestQgsExpression: public QObject
       QTest::newRow( "arithmetics" ) << "1+2*3" << true;
       QTest::newRow( "logic" ) << "be or not be" << true;
 
+      QTest::newRow( "conditions +1" ) << "case when x then y end" << true;
+      QTest::newRow( "conditions +2" ) << "case when x then y else z end" << true;
+      QTest::newRow( "conditions +3" ) << "case when x then y when a then b end" << true;
+      QTest::newRow( "conditions +4" ) << "case when x then y when a then b else z end" << true;
+
+      QTest::newRow( "conditions -1" ) << "case end" << false;
+      QTest::newRow( "conditions -2" ) << "when x then y" << false;
+      QTest::newRow( "conditions -3" ) << "case" << false;
+      QTest::newRow( "conditions -4" ) << "case when x y end" << false;
+      QTest::newRow( "conditions -5" ) << "case y end" << false;
     }
     void parsing()
     {
@@ -80,6 +90,25 @@ class TestQgsExpression: public QObject
         qDebug() << "Parsed string: " << exp.dump();
 
       QCOMPARE( !exp.hasParserError(), valid );
+    }
+
+    void parsing_with_locale()
+    {
+      // check that parsing of numbers works correctly even when using some other locale
+
+      char* old_locale = setlocale(LC_NUMERIC, NULL);
+      qDebug("Old locale: %s", old_locale);
+      setlocale(LC_NUMERIC, "de_DE.UTF8");
+      char* new_locale = setlocale(LC_NUMERIC, NULL);
+      qDebug("New locale: %s", new_locale);
+
+      QgsExpression exp( "1.23 + 4.56" );
+      QVERIFY( !exp.hasParserError() );
+
+      setlocale(LC_NUMERIC, "");
+
+      QVariant v = exp.evaluate();
+      QCOMPARE( v.toDouble(), 5.79 );
     }
 
     void evaluation_data()
@@ -235,6 +264,12 @@ class TestQgsExpression: public QObject
       QTest::newRow( "implicit text->int" ) << "'5'+2" << false << QVariant( 7 );
       QTest::newRow( "implicit text->double" ) << "'5.1'+2" << false << QVariant( 7.1 );
       QTest::newRow( "implicit text->bool" ) << "'0.1' or 0" << false << QVariant( 1 );
+
+      // conditions (without base expression, i.e. CASE WHEN ... THEN ... END)
+      QTest::newRow( "condition when" ) << "case when 2>1 then 'good' end" << false << QVariant( "good" );
+      QTest::newRow( "condition else" ) << "case when 1=0 then 'bad' else 678 end" << false << QVariant( 678 );
+      QTest::newRow( "condition null" ) << "case when length(123)=0 then 111 end" << false << QVariant();
+      QTest::newRow( "condition 2 when" ) << "case when 2>3 then 23 when 3>2 then 32 else 0 end" << false << QVariant( 32 );
     }
 
     void evaluation()
@@ -323,8 +358,8 @@ class TestQgsExpression: public QObject
     void referenced_columns()
     {
       QSet<QString> expectedCols;
-      expectedCols << "foo" << "bar";
-      QgsExpression exp( "length(Bar || FOO) = 4 or foo + sqrt(bar) > 0" );
+      expectedCols << "foo" << "bar" << "ppp" << "qqq" << "rrr";
+      QgsExpression exp( "length(Bar || FOO) = 4 or foo + sqrt(bar) > 0 or case when ppp then qqq else rrr end" );
       QCOMPARE( exp.hasParserError(), false );
       QStringList refCols = exp.referencedColumns();
       // make sure we have lower case
@@ -351,6 +386,10 @@ class TestQgsExpression: public QObject
       QTest::newRow( "$perimeter" ) << "$perimeter" << true;
       QTest::newRow( "toint($perimeter)" ) << "toint($perimeter)" << true;
       QTest::newRow( "toint(123)" ) << "toint(123)" << false;
+      QTest::newRow( "case 0" ) << "case when 1 then 0 end" << false;
+      QTest::newRow( "case 1" ) << "case when $area > 0 then 1 end" << true;
+      QTest::newRow( "case 2" ) << "case when 1 then $area end" << true;
+      QTest::newRow( "case 3" ) << "case when 1 then 0 else $area end" << true;
     }
 
     void needs_geometry()
@@ -359,6 +398,8 @@ class TestQgsExpression: public QObject
       QFETCH( bool, needsGeom );
 
       QgsExpression exp( string );
+      if ( exp.hasParserError() )
+        qDebug() << "parser error! " << exp.parserErrorString();
       QCOMPARE( exp.hasParserError(), false );
       QCOMPARE( exp.needsGeometry(), needsGeom );
     }

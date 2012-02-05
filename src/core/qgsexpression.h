@@ -18,11 +18,14 @@
 
 #include <QStringList>
 #include <QVariant>
+#include <QList>
+#include <QDomDocument>
 
 #include "qgsfield.h"
 
 class QgsDistanceArea;
 class QgsFeature;
+class QDomElement;
 
 /**
 Class for parsing and evaluation of expressions (formerly called "search strings").
@@ -122,7 +125,7 @@ class CORE_EXPORT QgsExpression
 
     //! Return calculator used for distance and area calculations
     //! (used by internal functions)
-    QgsDistanceArea* geomCalculator() { if ( mCalc == NULL ) initGeomCalculator(); return mCalc; }
+    QgsDistanceArea* geomCalculator() { if ( !mCalc ) initGeomCalculator(); return mCalc; }
 
     //
 
@@ -186,7 +189,8 @@ class CORE_EXPORT QgsExpression
       QString mHelpText;
     };
 
-    static FunctionDef BuiltinFunctions[];
+    static const QList<FunctionDef> &BuiltinFunctions();
+    static QList<FunctionDef> gmBuiltinFunctions;
 
     // tells whether the identifier is a name of existing function
     static bool isFunctionName( QString name );
@@ -204,7 +208,9 @@ class CORE_EXPORT QgsExpression
 
     //////
 
-    class Node
+    class Visitor; // visitor interface is defined below
+
+    class CORE_EXPORT Node
     {
       public:
         virtual ~Node() {}
@@ -220,9 +226,12 @@ class CORE_EXPORT QgsExpression
 
         virtual QStringList referencedColumns() const = 0;
         virtual bool needsGeometry() const = 0;
+
+        // support for visitor pattern
+        virtual void accept( Visitor& v ) = 0;
     };
 
-    class NodeList
+    class CORE_EXPORT NodeList
     {
       public:
         NodeList() {}
@@ -236,33 +245,44 @@ class CORE_EXPORT QgsExpression
         QList<Node*> mList;
     };
 
-    class NodeUnaryOperator : public Node
+    class CORE_EXPORT NodeUnaryOperator : public Node
     {
       public:
         NodeUnaryOperator( UnaryOperator op, Node* operand ) : mOp( op ), mOperand( operand ) {}
         ~NodeUnaryOperator() { delete mOperand; }
+
+        UnaryOperator op() { return mOp; }
+        Node* operand() { return mOperand; }
 
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return mOperand->referencedColumns(); }
         virtual bool needsGeometry() const { return mOperand->needsGeometry(); }
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
       protected:
         UnaryOperator mOp;
         Node* mOperand;
     };
 
-    class NodeBinaryOperator : public Node
+    class CORE_EXPORT NodeBinaryOperator : public Node
     {
       public:
         NodeBinaryOperator( BinaryOperator op, Node* opLeft, Node* opRight ) : mOp( op ), mOpLeft( opLeft ), mOpRight( opRight ) {}
         ~NodeBinaryOperator() { delete mOpLeft; delete mOpRight; }
+
+        BinaryOperator op() { return mOp; }
+        Node* opLeft() { return mOpLeft; }
+        Node* opRight() { return mOpRight; }
 
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return mOpLeft->referencedColumns() + mOpRight->referencedColumns(); }
         virtual bool needsGeometry() const { return mOpLeft->needsGeometry() || mOpRight->needsGeometry(); }
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
       protected:
         bool compare( double diff );
         int computeInt( int x, int y );
@@ -273,70 +293,138 @@ class CORE_EXPORT QgsExpression
         Node* mOpRight;
     };
 
-    class NodeInOperator : public Node
+    class CORE_EXPORT NodeInOperator : public Node
     {
       public:
         NodeInOperator( Node* node, NodeList* list, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
         ~NodeInOperator() { delete mNode; delete mList; }
+
+        Node* node() { return mNode; }
+        bool isNotIn() { return mNotIn; }
+        NodeList* list() { return mList; }
 
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { QStringList lst( mNode->referencedColumns() ); foreach( Node* n, mList->list() ) lst.append( n->referencedColumns() ); return lst; }
         virtual bool needsGeometry() const { bool needs = false; foreach( Node* n, mList->list() ) needs |= n->needsGeometry(); return needs; }
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
       protected:
         Node* mNode;
         NodeList* mList;
         bool mNotIn;
     };
 
-    class NodeFunction : public Node
+    class CORE_EXPORT NodeFunction : public Node
     {
       public:
         NodeFunction( int fnIndex, NodeList* args ): mFnIndex( fnIndex ), mArgs( args ) {}
         //NodeFunction( QString name, NodeList* args ) : mName(name), mArgs(args) {}
         ~NodeFunction() { delete mArgs; }
 
+        int fnIndex() { return mFnIndex; }
+        NodeList* args() { return mArgs; }
+
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { QStringList lst; if ( !mArgs ) return lst; foreach( Node* n, mArgs->list() ) lst.append( n->referencedColumns() ); return lst; }
-        virtual bool needsGeometry() const { bool needs = BuiltinFunctions[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual bool needsGeometry() const { bool needs = BuiltinFunctions()[mFnIndex].mUsesGeometry; if ( mArgs ) { foreach( Node* n, mArgs->list() ) needs |= n->needsGeometry(); } return needs; }
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
       protected:
         //QString mName;
         int mFnIndex;
         NodeList* mArgs;
     };
 
-    class NodeLiteral : public Node
+    class CORE_EXPORT NodeLiteral : public Node
     {
       public:
         NodeLiteral( QVariant value ) : mValue( value ) {}
+
+        QVariant value() { return mValue; }
 
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return QStringList(); }
         virtual bool needsGeometry() const { return false; }
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
       protected:
         QVariant mValue;
     };
 
-    class NodeColumnRef : public Node
+    class CORE_EXPORT NodeColumnRef : public Node
     {
       public:
         NodeColumnRef( QString name ) : mName( name ), mIndex( -1 ) {}
+
+        QString name() { return mName; }
 
         virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
         virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
         virtual QString dump() const;
         virtual QStringList referencedColumns() const { return QStringList( mName ); }
         virtual bool needsGeometry() const { return false; }
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
       protected:
         QString mName;
         int mIndex;
     };
 
+    class CORE_EXPORT WhenThen
+    {
+      public:
+        WhenThen( Node* whenExp, Node* thenExp ) : mWhenExp( whenExp ), mThenExp( thenExp ) {}
+        ~WhenThen() { delete mWhenExp; delete mThenExp; }
+
+        //protected:
+        Node* mWhenExp;
+        Node* mThenExp;
+    };
+    typedef QList<WhenThen*> WhenThenList;
+
+    class CORE_EXPORT NodeCondition : public Node
+    {
+      public:
+        NodeCondition( WhenThenList* conditions, Node* elseExp = NULL ) : mConditions( *conditions ), mElseExp( elseExp ) { delete conditions; }
+        ~NodeCondition() { delete mElseExp; foreach( WhenThen* cond, mConditions ) delete cond; }
+
+        virtual QVariant eval( QgsExpression* parent, QgsFeature* f );
+        virtual bool prepare( QgsExpression* parent, const QgsFieldMap& fields );
+        virtual QString dump() const;
+        virtual QStringList referencedColumns() const;
+        virtual bool needsGeometry() const;
+        virtual void accept( Visitor& v ) { v.visit( this ); }
+
+      protected:
+        WhenThenList mConditions;
+        Node* mElseExp;
+    };
+
+    //////
+
+    /** support for visitor pattern - algorithms dealing with the expressions
+        may be implemented without modifying the Node classes */
+    class CORE_EXPORT Visitor
+    {
+      public:
+        virtual ~Visitor() {}
+        virtual void visit( NodeUnaryOperator* n ) = 0;
+        virtual void visit( NodeBinaryOperator* n ) = 0;
+        virtual void visit( NodeInOperator* n ) = 0;
+        virtual void visit( NodeFunction* n ) = 0;
+        virtual void visit( NodeLiteral* n ) = 0;
+        virtual void visit( NodeColumnRef* n ) = 0;
+        virtual void visit( NodeCondition* n ) = 0;
+    };
+
+    /** entry function for the visitor pattern */
+    void acceptVisitor( Visitor& v );
 
   protected:
 

@@ -62,13 +62,14 @@ using namespace osgEarth::Util::Controls;
 
 static const QString sName = QObject::tr( "Globe" );
 static const QString sDescription = QObject::tr( "Overlay data on a 3D globe" );
+static const QString sCategory = QObject::tr( "Plugins" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
 
 //constructor
 GlobePlugin::GlobePlugin( QgisInterface* theQgisInterface )
-    : QgisPlugin( sName, sDescription, sPluginVersion, sPluginType )
+    : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
     , mQGisIface( theQgisInterface )
     , mQActionPointer( NULL )
     , mQActionSettingsPointer( NULL )
@@ -1069,6 +1070,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)

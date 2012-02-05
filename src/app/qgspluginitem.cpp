@@ -32,6 +32,11 @@ QString QgsPluginItem::description()
   return m_description;
 }
 
+QString QgsPluginItem::category()
+{
+  return m_category;
+}
+
 QString QgsPluginItem::fullPath()
 {
   return m_fullPath;

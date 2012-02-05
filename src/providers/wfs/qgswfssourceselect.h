@@ -46,6 +46,7 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     std::map<QString, std::list<QString> > mAvailableCRS;
     QAbstractButton* btnAdd;
     QgsWFSConnection* mConn;
+    QString mUri;            // data source URI
 
     void populateConnectionList();
 
@@ -68,8 +69,10 @@ class QgsWFSSourceSelect: public QDialog, private Ui::QgsWFSSourceSelectBase
     void capabilitiesReplyFinished();
     void on_btnSave_clicked();
     void on_btnLoad_clicked();
+    void on_treeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
 
     void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+
 };
 
 #endif

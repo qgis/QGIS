@@ -16,6 +16,9 @@ QgsMimeDataUtils::Uri::Uri( QgsLayerItem* layerItem )
     case QgsMapLayer::RasterLayer:
       layerType = "raster";
       break;
+    case QgsMapLayer::PluginLayer:
+      layerType = "plugin";
+      break;
   }
 
 }

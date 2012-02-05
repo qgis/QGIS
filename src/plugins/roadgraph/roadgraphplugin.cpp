@@ -58,6 +58,7 @@
 
 static const QString sName = QObject::tr( "Road graph plugin" );
 static const QString sDescription = QObject::tr( "It solves the shortest path problem." );
+static const QString sCategory = QObject::tr( "Vector" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 
@@ -73,7 +74,7 @@ static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
  * @param theQgisInterface - Pointer to the QGIS interface object
  */
 RoadGraphPlugin::RoadGraphPlugin( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
 
@@ -113,8 +114,8 @@ void RoadGraphPlugin::initGui()
   connect( mQSettingsAction, SIGNAL( triggered() ), this, SLOT( property() ) );
   connect( mInfoAction, SIGNAL( triggered() ), SLOT( about() ) );
 
-  mQGisIface->addPluginToMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->addPluginToMenu( tr( "Road graph" ), mInfoAction );
+  mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->addPluginToVectorMenu( tr( "Road graph" ), mInfoAction );
 
   connect( mQGisIface, SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
   connect( mQGisIface, SIGNAL( newProjectCreated() ), this, SLOT( newProject() ) );
@@ -129,8 +130,8 @@ void RoadGraphPlugin::initGui()
 void RoadGraphPlugin::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( tr( "Road graph" ), mQSettingsAction );
-  mQGisIface->removePluginMenu( tr( "Road graph" ), mInfoAction );
+  mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mQSettingsAction );
+  mQGisIface->removePluginVectorMenu( tr( "Road graph" ), mInfoAction );
 
   // disconnect
   disconnect( mQGisIface->mainWindow(), SIGNAL( projectRead() ), this, SLOT( projectRead() ) );
@@ -335,6 +336,12 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
+}
+
+// Return the category
+QGISEXTERN QString category()
+{
+  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
