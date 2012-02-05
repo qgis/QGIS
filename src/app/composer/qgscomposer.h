@@ -304,9 +304,6 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     bool mFirstTime;
 
     //! Layout
-    QGridLayout *mCompositionOptionsLayout;
-
-    //! Layout
     QGridLayout *mItemOptionsLayout;
 
     //! Size grip

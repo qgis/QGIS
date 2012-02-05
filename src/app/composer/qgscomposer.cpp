@@ -73,7 +73,6 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
     , mUndoView( 0 )
-    , mCompositionOptionsLayout( 0 )
 {
   setupUi( this );
   setWindowTitle( mTitle );
@@ -1256,8 +1255,6 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   //delete composition widget
   QgsCompositionWidget* oldCompositionWidget = qobject_cast<QgsCompositionWidget *>( mGeneralDock->widget() );
   delete oldCompositionWidget;
-  delete mCompositionOptionsLayout;
-  mCompositionOptionsLayout = 0;
 
   mView = new QgsComposerView( mViewFrame );
 
