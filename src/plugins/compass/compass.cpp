@@ -21,12 +21,13 @@
 
 Compass::Compass()
 {
-  mRateVal = 1;
-  if (mRateVal > 0)
-  {
-    qDebug() << "Compasssensor setdatarate " << endl;
-    mSensor.setDataRate(mRateVal);
-  }
+//  mRateVal = 0;
+//  if (mRateVal > 0)
+//  {
+//    qDebug() << "Compasssensor setdatarate " << endl;
+//    mSensor.setDataRate(mRateVal);
+//  }
+//  qDebug() << "Data rate 2: " << mSensor.dataRate();
   mSensor.addFilter(this);
   start();
 }
@@ -47,7 +48,7 @@ bool Compass::filter(QCompassReading *reading)
 //    qDebug() << str << endl;
 
     emit azimuthChanged(reading->azimuth(), reading->calibrationLevel());
-    return true;
+    return false;
 }
 
 bool Compass::isActive()
