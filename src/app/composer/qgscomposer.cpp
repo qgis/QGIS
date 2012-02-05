@@ -1276,13 +1276,9 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   l->addWidget( mView, 0, 0 );
 
   //create compositionwidget
-//  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mCompositionOptionsFrame, mComposition );
-//  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
-//  compositionWidget->show();
-
-//  mCompositionOptionsLayout = new QGridLayout( mCompositionOptionsFrame );
-//  mCompositionOptionsLayout->setMargin( 0 );
-//  mCompositionOptionsLayout->addWidget( compositionWidget );
+  QgsCompositionWidget* compositionWidget = new QgsCompositionWidget( mGeneralDock, mComposition );
+  QObject::connect( mComposition, SIGNAL( paperSizeChanged() ), compositionWidget, SLOT( displayCompositionWidthHeight() ) );
+  mGeneralDock->setWidget( compositionWidget );
 
   //read and restore all the items
   if ( mComposition )
