@@ -1,0 +1,27 @@
+<h1>Heatmap Plugin Help</h1>
+<p>Heatmap Plugin creates a heatmap raster for the input point vector layer. The heatmap is generated based on the number of points in a given location. The higher the number of points, the higher will be the corresponding pixel(s) value in the raster.</p>
+
+<h2>The Dialog Parameters</h2>
+
+<h3>Input Point Vector</h3>
+<p>The input is always a vector layer of point type. All the point vector layers that are currently loaded in the window are automatically populated in the input layer drop-down list. Click the Dropdown button and select your layer.</p>
+
+<h3>Output Ratser</h3>
+<p>The output raster location and filename can be set by clicking the <label>...</label> button next to the output raster textbox.<br/>
+<b>Note:</b>The file format extension need <b>not</b> be given. It is automatically added depending upon the output format you select.</p>
+
+<h3>Output Format</h3>
+<p>All the file creation supporting GDAL formats are available in the drop down list. Click and select the required output format for your file.<br/>
+<b>Note:</b> GeoTiff and ERDAS Imagine .img formats are recommended. Some formats makes the application crash. Kindly stick to the recommended formats until the crash issue is resolved or Use other formats if you know about its GDAL support completely.</p>
+
+<h3>Heatmap Point Attributes</h3>
+<h4>Buffer Radius</h4>
+<p>The buffer radius specifies the number of <b>pixels or cells</b> around a point where the heat(influence) of the point will be felt. Smaller values give you clear distinction between points and bigger values gives you nicely merged heatmap regions. This is the spatial parameter of the heat region of a point.<br/>
+<b>Note:</b> The value is always a whole number.</p>
+<h4>Decay Ratio</h4>
+<p>The decay ratio defines amount of heat(influence) that should reach the outermost pixel in the Buffer Radius. It is the direct measure of the outer most value.<br/>
+<b>Example:</b> If Buffer Ratio is set as 0 and Radius as 10, then the centre pixel of a point will have value and the pixel away by a distance of 10 units will have the value 0, a pixel which is 5 units away will have a value of 0.5 and so on. Here distance is measure not by pixel count rather using sqrt( xOffset^2 + yOffset^2 ), so you always get a circular heat region.</p>
+
+<h2>Further Details</h2>
+<p>Contact the author through aruntheguy at gmail dot com</p>
+
