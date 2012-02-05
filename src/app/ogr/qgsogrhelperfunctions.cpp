@@ -84,6 +84,31 @@ QString createDatabaseURI( QString connectionType, QString host, QString databas
         uri += QString( ",password=%1" ).arg( password );
     }
   }
+  else if ( connectionType == "MSSQL" )
+  {
+    uri = "MSSQL:";
+
+    if ( !host.isEmpty() )
+    {
+      uri += QString( ";server=%1" ).arg( host );
+
+      if ( !port.isEmpty() )
+        uri += QString( ",%1" ).arg( port );
+    }
+
+    if ( !user.isEmpty() )
+    {
+      uri += QString( ";uid=%1" ).arg( user );
+
+      if ( !password.isEmpty() )
+        uri += QString( ";pwd=%1" ).arg( password );
+    }
+    else
+        uri += ";trusted_connection=yes";
+
+    if ( !database.isEmpty() )
+        uri += QString( ";database=%1" ).arg( database );
+  }
   else if ( connectionType == "Oracle Spatial" )
   {
     uri = "OCI:" + user;
