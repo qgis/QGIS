@@ -73,6 +73,7 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
     : QMainWindow()
     , mTitle( title )
     , mUndoView( 0 )
+    , mCompositionOptionsLayout( 0 )
 {
   setupUi( this );
   setWindowTitle( mTitle );
