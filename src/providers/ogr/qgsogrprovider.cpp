@@ -1656,6 +1656,10 @@ QString createFilters( QString type )
       {
         myDatabaseDrivers += QObject::tr( "MySQL" ) + ",MySQL;";
       }
+      else if ( driverName.startsWith( "MSSQL" ) )
+      {
+        myDatabaseDrivers += QObject::tr( "MSSQL" ) + ",MSSQL;";
+      }
       else if ( driverName.startsWith( "OCI" ) )
       {
         myDatabaseDrivers += QObject::tr( "Oracle Spatial" ) + ",OCI;";
