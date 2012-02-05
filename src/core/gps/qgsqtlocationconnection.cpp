@@ -20,12 +20,17 @@
 
 #include <QLocalSocket>
 #include <QTimer>
+#include <QMetaType>
 
 QgsQtLocationConnection::QgsQtLocationConnection( ): QgsGPSConnection( new QLocalSocket() )
 {
+  //needed to fix https://sourceforge.net/p/necessitas/tickets/146/
+  qRegisterMetaType< QList<QGeoSatelliteInfo> >("QList<QGeoSatelliteInfo>");
+
   startGPS();
   startSatelliteMonitor();
-  //HACK
+
+  //HACK to signal the gpsinformationwidget that we have a QtLocationConnection
   QTimer::singleShot( 500, this, SLOT( broadcastConnectionAvailable() ) );
 }
 
@@ -36,6 +41,8 @@ QgsQtLocationConnection::~QgsQtLocationConnection()
 }
 
 //Needed to make connection detectable (half HACK)
+//this signals that the device has started the GPS sucessfully,
+//not that it has a fix yet.
 void QgsQtLocationConnection::broadcastConnectionAvailable()
 {
   if (locationDataSource){
@@ -66,7 +73,9 @@ void QgsQtLocationConnection::parseData()
       mLastGPSInformation.speed = mInfo.attribute(QGeoPositionInfo::GroundSpeed) * 3.6; // m/s to km/h
       mLastGPSInformation.direction = mInfo.attribute(QGeoPositionInfo::Direction);
       mLastGPSInformation.utcDateTime = mInfo.timestamp();
-      mLastGPSInformation.fixType = mInfo.coordinate().type();  //< Type, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+      mLastGPSInformation.fixType = mInfo.coordinate().type() + 1;
+      //< fixType, used for navigation (1 = Fix not available; 2 = 2D; 3 = 3D)
+      //< coordinate().type(),  returns 0 = Fix not available; 1 = 2D; 2 = 3D)
       mLastGPSInformation.hacc = mInfo.attribute(QGeoPositionInfo::HorizontalAccuracy);     //< Horizontal dilution of precision
       mLastGPSInformation.vacc = mInfo.attribute(QGeoPositionInfo::VerticalAccuracy);     //< Vertical dilution of precision
 
@@ -134,7 +143,6 @@ void QgsQtLocationConnection::satellitesInUseUpdated(
   emit stateChanged( mLastGPSInformation );
   QgsDebugMsg("satellitesInUseUpdated");
 }
-
 
 void QgsQtLocationConnection::startGPS()
 {
