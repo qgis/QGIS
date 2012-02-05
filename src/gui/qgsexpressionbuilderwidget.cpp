@@ -114,8 +114,8 @@ void QgsExpressionBuilderWidget::currentChanged( const QModelIndex &index, const
   if ( item->getItemType() != QgsExpressionItem::Field )
   {
 
-      mValueGroupBox->hide();
-      mValueListWidget->clear();
+    mValueGroupBox->hide();
+    mValueListWidget->clear();
   }
   // Show the help for the current item.
   QString help = loadFunctionHelp( item );
@@ -401,7 +401,7 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
   QString name = functionName->text();
 
   if ( functionName->getItemType() == QgsExpressionItem::Field )
-      name = "Field";
+    name = "Field";
 
   QString fullHelpPath = helpFilesPath + name + "-" + lang;
   // get the help content and title from the localized file
@@ -409,10 +409,10 @@ QString QgsExpressionBuilderWidget::loadFunctionHelp( QgsExpressionItem* functio
   QFile file( fullHelpPath );
   // check to see if the localized version exists
 
-  QString missingError = tr("<h3>Oops! QGIS can't find help for this function.</h3>"
-                            "The help file for %1 was not found for your language<br>"
-                            "If you would like to create it, contact the QGIS development team"
-                            ).arg( name );
+  QString missingError = tr( "<h3>Oops! QGIS can't find help for this function.</h3>"
+                             "The help file for %1 was not found for your language<br>"
+                             "If you would like to create it, contact the QGIS development team"
+                           ).arg( name );
   if ( !file.exists() )
   {
     // change the file name to the en_US version (default)

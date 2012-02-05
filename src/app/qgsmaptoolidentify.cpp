@@ -328,7 +328,7 @@ bool QgsMapToolIdentify::identifyRasterLayer( QgsRasterLayer *layer, int x, int 
   {
     idPoint = toLayerCoordinates( layer, idPoint );
   }
-  catch( QgsCsException &cse )
+  catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
     QgsDebugMsg( QString( "coordinate not reprojectable: %1" ).arg( cse.what() ) );

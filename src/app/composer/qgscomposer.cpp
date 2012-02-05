@@ -235,12 +235,12 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mComposition->setParent( mView );
   mView->setComposition( mComposition );
 
-  setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North);
-  mGeneralDock = new QDockWidget(tr("Composition"),this);
+  setTabPosition( Qt::AllDockWidgetAreas, QTabWidget::North );
+  mGeneralDock = new QDockWidget( tr( "Composition" ), this );
   mGeneralDock->setObjectName( "CompositionDock" );
-  mItemDock = new QDockWidget(tr("Item Properties"));
-  mItemDock->setObjectName( "ItemDock");
-  mUndoDock = new QDockWidget(tr("Command history"),this);
+  mItemDock = new QDockWidget( tr( "Item Properties" ) );
+  mItemDock->setObjectName( "ItemDock" );
+  mUndoDock = new QDockWidget( tr( "Command history" ), this );
   mUndoDock->setObjectName( "CommandDock" );
 
 
@@ -261,8 +261,8 @@ QgsComposer::QgsComposer( QgisApp *qgis, const QString& title )
   mGeneralDock->show();
   mUndoDock->hide();
 
-  tabifyDockWidget(mGeneralDock, mUndoDock);
-  tabifyDockWidget(mGeneralDock, mItemDock);
+  tabifyDockWidget( mGeneralDock, mUndoDock );
+  tabifyDockWidget( mGeneralDock, mItemDock );
 
   mGeneralDock->raise();
 
@@ -1099,10 +1099,10 @@ void QgsComposer::on_mActionRedo_triggered()
   }
 }
 
-void QgsComposer::closeEvent(QCloseEvent *e)
+void QgsComposer::closeEvent( QCloseEvent *e )
 {
-    Q_UNUSED( e );
-    saveWindowState();
+  Q_UNUSED( e );
+  saveWindowState();
 }
 
 void QgsComposer::moveEvent( QMoveEvent *e )
@@ -1156,9 +1156,9 @@ void QgsComposer::saveWindowState()
 void QgsComposer::restoreWindowState()
 {
   QSettings settings;
-  if (! restoreState( settings.value( "/ComposerUI/state" ).toByteArray() ))
+  if ( ! restoreState( settings.value( "/ComposerUI/state" ).toByteArray() ) )
   {
-    QgsDebugMsg("RESTORE STATE FAILED!!");
+    QgsDebugMsg( "RESTORE STATE FAILED!!" );
   }
   restoreGeometry( settings.value( "/Composer/geometry" ).toByteArray() );
 }

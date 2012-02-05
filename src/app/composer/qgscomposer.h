@@ -87,7 +87,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     //! Move event
     virtual void moveEvent( QMoveEvent * );
 
-    virtual void closeEvent(QCloseEvent * );
+    virtual void closeEvent( QCloseEvent * );
 
     //! Resize event
     virtual void resizeEvent( QResizeEvent * );
