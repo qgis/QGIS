@@ -191,6 +191,9 @@ IF (SPATIALITE_FOUND)
   SET (HAVE_SPATIALITE TRUE)
 ENDIF (SPATIALITE_FOUND)
 
+# following variable is used in qgsconfig.h
+SET (HAVE_MSSQL TRUE)
+
 #############################################################
 # search for Qt4
 SET(QT_MIN_VERSION 4.4.0)
