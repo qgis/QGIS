@@ -99,7 +99,7 @@ void HeatmapGui::on_mButtonBox_accepted()
       dummyText = vl->id();
       if( dummyText.toInt() == myLayerId )
       {
-      inputLayer = vl;
+        inputLayer = vl;
       }
     }
   }
@@ -118,11 +118,14 @@ void HeatmapGui::on_mButtonBox_accepted()
   {
     QMessageBox::information( 0, tr("Output filename is invalid!"), tr("Kindly enter a valid output file path and name.") );
   }
-  QString suffix = myFileInfo.suffix();
+
+  // The output format
+  outputFormat = mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
+
   // append the file format if the suffix is empty
+  QString suffix = myFileInfo.suffix();
   if( suffix.isEmpty() )
   {
-    outputFormat = mFormatCombo->itemData( mFormatCombo->currentIndex() ).toString();
     QMap<QString, QString>::const_iterator it = mExtensionMap.find( outputFormat );
     if( it != mExtensionMap.end() && it.key() == outputFormat )
     {
@@ -136,7 +139,6 @@ void HeatmapGui::on_mButtonBox_accepted()
     }
   }
 
-  // emit
   emit createRaster( inputLayer, bufferDistance, decayRatio, outputFileName, outputFormat );
   //and finally
   accept();
