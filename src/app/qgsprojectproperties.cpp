@@ -41,7 +41,8 @@
 
 
 QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *parent, Qt::WFlags fl )
-    : QDialog( parent, fl ), mMapCanvas( mapCanvas )
+    : QDialog( parent, fl )
+    , mMapCanvas( mapCanvas )
 {
   setupUi( this );
   connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
@@ -63,9 +64,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   cbxProjectionEnabled->setChecked( myProjectionEnabled );
   btnGrpMapUnits->setEnabled( !myProjectionEnabled );
 
-  long myCRSID = myRenderer->destinationCrs().srsid();
-  QgsDebugMsg( "Read project CRSID: " + QString::number( myCRSID ) );
-  projectionSelector->setSelectedCrsId( myCRSID );
+  mProjectSrsId = myRenderer->destinationCrs().srsid();
+  QgsDebugMsg( "Read project CRSID: " + QString::number( mProjectSrsId ) );
+  projectionSelector->setSelectedCrsId( mProjectSrsId );
 
   ///////////////////////////////////////////////////////////
   // Properties stored in QgsProject
@@ -111,6 +112,19 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas* mapCanvas, QWidget *pa
   QStringList noIdentifyLayerIdList = QgsProject::instance()->readListEntry( "Identify", "/disabledLayers" );
 
   const QMap<QString, QgsMapLayer*> &mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
+
+  if ( mMapCanvas->currentLayer() )
+  {
+    mLayerSrsId = mMapCanvas->currentLayer()->crs().srsid();
+  }
+  else if ( mapLayers.size() > 0 )
+  {
+    mLayerSrsId = mapLayers.begin().value()->crs().srsid();
+  }
+  else
+  {
+    mLayerSrsId = mProjectSrsId;
+  }
 
   twIdentifyLayers->setColumnCount( 3 );
   twIdentifyLayers->horizontalHeader()->setVisible( true );
@@ -454,6 +468,17 @@ void QgsProjectProperties::on_pbnCanvasColor_clicked()
 void QgsProjectProperties::on_cbxProjectionEnabled_stateChanged( int state )
 {
   btnGrpMapUnits->setEnabled( state == Qt::Unchecked );
+
+  if ( state != Qt::Checked )
+  {
+    mProjectSrsId = projectionSelector->selectedCrsId();
+    projectionSelector->setSelectedCrsId( mLayerSrsId );
+  }
+  else
+  {
+    mLayerSrsId = projectionSelector->selectedCrsId();
+    projectionSelector->setSelectedCrsId( mProjectSrsId );
+  }
 }
 
 void QgsProjectProperties::setMapUnitsToCurrentProjection()
@@ -541,7 +566,9 @@ void QgsProjectProperties::on_pbnWMSAddSRS_clicked()
 void QgsProjectProperties::on_pbnWMSRemoveSRS_clicked()
 {
   foreach( QListWidgetItem *item, mWMSList->selectedItems() )
-  delete item;
+  {
+    delete item;
+  }
 }
 
 void QgsProjectProperties::on_pbnWMSSetUsedSRS_clicked()

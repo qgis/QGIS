@@ -123,4 +123,7 @@ class QgsProjectProperties : public QDialog, private Ui::QgsProjectPropertiesBas
      * Function to restore dialog window state
      */
     void restoreState();
+
+    long mProjectSrsId;
+    long mLayerSrsId;
 };
