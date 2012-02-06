@@ -115,6 +115,13 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     void setPatternWidth( double width ) { mPatternWidth = width;}
     double patternWidth() const { return mPatternWidth; }
 
+    void setSvgFillColor( const QColor& c ) { mSvgFillColor = c; }
+    QColor svgFillColor() const { return mSvgFillColor; }
+    void setSvgOutlineColor( const QColor& c ) { mSvgOutlineColor = c; }
+    QColor svgOutlineColor() const { return mSvgOutlineColor; }
+    void setSvgOutlineWidth( double w ) { mSvgOutlineWidth = w; }
+    double svgOutlineWidth() const { return mSvgOutlineWidth; }
+
   protected:
     /**Width of the pattern (in QgsSymbolV2 output units)*/
     double mPatternWidth;
@@ -125,9 +132,16 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     /**SVG view box (to keep the aspect ratio */
     QRectF mSvgViewBox;
 
+    //param(fill), param(outline), param(outline-width) are going
+    //to be replaced in memory
+    QColor mSvgFillColor;
+    QColor mSvgOutlineColor;
+    double mSvgOutlineWidth;
+
   private:
     /**Helper function that gets the view box from the byte array*/
     void storeViewBox();
+    void setDefaultSvgParams(); //fills mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth with default values for mSvgFilePath
 };
 
 class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer

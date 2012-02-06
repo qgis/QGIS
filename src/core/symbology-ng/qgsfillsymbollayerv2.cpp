@@ -206,6 +206,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QString& svgFilePath, double
   setSvgFilePath( svgFilePath );
   mOutlineWidth = 0.3;
   mAngle = angle;
+  setDefaultSvgParams();
 }
 
 QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double width, double angle ): QgsImageFillSymbolLayer(), mPatternWidth( width ),
@@ -215,6 +216,7 @@ QgsSVGFillSymbolLayer::QgsSVGFillSymbolLayer( const QByteArray& svgData, double 
   mOutlineWidth = 0.3;
   mAngle = angle;
   setSubSymbol( new QgsLineSymbolV2() );
+  setDefaultSvgParams();
 }
 
 QgsSVGFillSymbolLayer::~QgsSVGFillSymbolLayer()
@@ -228,9 +230,11 @@ void QgsSVGFillSymbolLayer::setSvgFilePath( const QString& svgPath )
   if ( svgFile.open( QFile::ReadOnly ) )
   {
     mSvgData = svgFile.readAll();
+
     storeViewBox();
   }
   mSvgFilePath = svgPath;
+  setDefaultSvgParams();
 }
 
 QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties )
@@ -239,7 +243,6 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
   double width = 20;
   QString svgFilePath;
   double angle = 0.0;
-
 
   if ( properties.contains( "width" ) )
   {
@@ -256,9 +259,10 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
     angle = properties["angle"].toDouble();
   }
 
+  QgsSVGFillSymbolLayer* symbolLayer = 0;
   if ( !svgFilePath.isEmpty() )
   {
-    return new QgsSVGFillSymbolLayer( svgFilePath, width, angle );
+    symbolLayer = new QgsSVGFillSymbolLayer( svgFilePath, width, angle );
   }
   else
   {
@@ -266,9 +270,25 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::create( const QgsStringMap& properties 
     {
       data = QByteArray::fromHex( properties["data"].toLocal8Bit() );
     }
-
-    return new QgsSVGFillSymbolLayer( data, width, angle );
+    symbolLayer = new QgsSVGFillSymbolLayer( data, width, angle );
   }
+
+  //svg parameters
+  if ( properties.contains( "svgFillColor" ) )
+  {
+    symbolLayer->setSvgFillColor( QColor( properties["svgFillColor"] ) );
+  }
+  if ( properties.contains( "svgOutlineColor" ) )
+  {
+    symbolLayer->setSvgOutlineColor( QColor( properties["svgOutlineColor"] ) );
+  }
+  if ( properties.contains( "svgOutlineWidth" ) )
+  {
+    symbolLayer->setSvgOutlineWidth( properties["svgOutlineWidth"].toDouble() );
+  }
+
+
+  return symbolLayer;
 }
 
 QString QgsSVGFillSymbolLayer::layerType() const
@@ -283,11 +303,8 @@ void QgsSVGFillSymbolLayer::startRender( QgsSymbolV2RenderContext& context )
     return;
   }
 
-  QColor fillColor( Qt::black );
-  QColor outlineColor( Qt::black );
-  double outlineWidth = 1;
   int size = context.outputPixelSize( mPatternWidth );
-  const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, fillColor, outlineColor, outlineWidth,
+  const QImage& patternImage = QgsSvgCache::instance()->svgAsImage( mSvgFilePath, size, mSvgFillColor, mSvgOutlineColor, mSvgOutlineWidth,
                                context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
   QTransform brushTransform;
   brushTransform.scale( 1.0 / context.renderContext().rasterScaleFactor(), 1.0 / context.renderContext().rasterScaleFactor() );
@@ -331,6 +348,12 @@ QgsStringMap QgsSVGFillSymbolLayer::properties() const
 
   map.insert( "width", QString::number( mPatternWidth ) );
   map.insert( "angle", QString::number( mAngle ) );
+
+  //svg parameters
+  map.insert( "svgFillColor", mSvgFillColor.name() );
+  map.insert( "svgOutlineColor", mSvgOutlineColor.name() );
+  map.insert( "svgOutlineWidth", QString::number( mSvgOutlineWidth ) );
+
   return map;
 }
 
@@ -340,6 +363,10 @@ QgsSymbolLayerV2* QgsSVGFillSymbolLayer::clone() const
   if ( !mSvgFilePath.isEmpty() )
   {
     clonedLayer = new QgsSVGFillSymbolLayer( mSvgFilePath, mPatternWidth, mAngle );
+    QgsSVGFillSymbolLayer* sl = static_cast<QgsSVGFillSymbolLayer*>( clonedLayer );
+    sl->setSvgFillColor( mSvgFillColor );
+    sl->setSvgOutlineColor( mSvgOutlineColor );
+    sl->setSvgOutlineWidth( mSvgOutlineWidth );
   }
   else
   {
@@ -367,6 +394,38 @@ void QgsSVGFillSymbolLayer::storeViewBox()
 
   mSvgViewBox = QRectF();
   return;
+}
+
+void QgsSVGFillSymbolLayer::setDefaultSvgParams()
+{
+  //default values
+  mSvgFillColor = QColor( 0, 0, 0 );
+  mSvgOutlineColor = QColor( 0, 0, 0 );
+  mSvgOutlineWidth = 0.3;
+
+  if ( mSvgFilePath.isEmpty() )
+  {
+    return;
+  }
+
+  bool hasFillParam, hasOutlineParam, hasOutlineWidthParam;
+  QColor defaultFillColor, defaultOutlineColor;
+  double defaultOutlineWidth;
+  QgsSvgCache::instance()->containsParams( mSvgFilePath, hasFillParam, defaultFillColor, hasOutlineParam, defaultOutlineColor, hasOutlineWidthParam,
+      defaultOutlineWidth );
+
+  if ( hasFillParam )
+  {
+    mSvgFillColor = defaultFillColor;
+  }
+  if ( hasOutlineParam )
+  {
+    mSvgOutlineColor = defaultOutlineColor;
+  }
+  if ( hasOutlineWidthParam )
+  {
+    mSvgOutlineWidth = defaultOutlineWidth;
+  }
 }
 
 QgsLinePatternFillSymbolLayer::QgsLinePatternFillSymbolLayer(): QgsImageFillSymbolLayer()
