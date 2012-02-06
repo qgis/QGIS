@@ -48,7 +48,7 @@ bool Compass::filter(QCompassReading *reading)
 //    qDebug() << str << endl;
 
     emit azimuthChanged(reading->azimuth(), reading->calibrationLevel());
-    return false;
+    return false; // don't store the reading in the sensor
 }
 
 bool Compass::isActive()
