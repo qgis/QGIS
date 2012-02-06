@@ -683,7 +683,7 @@ void QgsMapRenderer::setDestinationCrs( const QgsCoordinateReferenceSystem& crs 
   if ( *mDestCRS != crs )
   {
     QgsRectangle rect;
-    if ( hasCrsTransformEnabled() && !mExtent.isEmpty() )
+    if ( !mExtent.isEmpty() )
     {
       QgsCoordinateTransform transform( *mDestCRS, crs );
       rect = transform.transformBoundingBox( mExtent );
