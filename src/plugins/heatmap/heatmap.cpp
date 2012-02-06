@@ -36,6 +36,7 @@
 #include <QToolBar>
 #include <QMessageBox>
 #include <QFileInfo>
+#include <QProgressDialog>
 
 #define NO_DATA -9999
 
@@ -189,11 +190,25 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
   }
   QgsAttributeList dummyList;
   myVectorProvider->select( dummyList );
+  
+  int totalFeatures = myVectorProvider->featureCount();
+  int counter = 0;
+
+  QProgressDialog p( "Creating Heatmap ... ", "Abort", 0, totalFeatures );
+  p.setWindowModality(Qt::WindowModal);
 
   QgsFeature myFeature;
 
   while( myVectorProvider->nextFeature( myFeature ) )
   {
+    counter += 1;
+    p.setValue( counter );
+    if( p.wasCanceled() )
+    {
+      QMessageBox::information( 0, tr("Heatmap Generation Aborted!"), tr("QGIS will now load the partially-computed raster.") );
+      break;
+    }
+
     QgsGeometry* myPointGeometry;
     myPointGeometry = myFeature.geometry();
     // convert the geometry to point

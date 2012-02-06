@@ -117,6 +117,7 @@ void HeatmapGui::on_mButtonBox_accepted()
   if( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
   {
     QMessageBox::information( 0, tr("Output filename is invalid!"), tr("Kindly enter a valid output file path and name.") );
+    return;
   }
 
   // The output format
@@ -179,7 +180,7 @@ void HeatmapGui::enableOrDisableOkButton()
   bool enabled = true;
   QString filename = mOutputRasterLineEdit->text();
   QFileInfo theFileInfo( filename );
-  if( filename.isEmpty() || !theFileInfo.dir().exists() )
+  if( filename.isEmpty() || !theFileInfo.dir().exists() || ( mInputVectorCombo->count() == 0 ) )
   {
     enabled = false;
   }
