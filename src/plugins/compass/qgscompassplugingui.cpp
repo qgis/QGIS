@@ -29,6 +29,11 @@ QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WFlags fl )
     : QWidget( parent, fl )
 {
   setupUi( this );
+
+  //TODO remove when https://sourceforge.net/p/necessitas/tickets/153/ is fixed
+  this->mCalibrationDisplay->hide();
+  this->mCalibrationLabel->hide();
+
   compass = new Compass();
 
   if ( ! compass->isActive() )
@@ -58,7 +63,8 @@ void QgsCompassPluginGui::handleVisibilityChanged(bool visible)
 void QgsCompassPluginGui::handleAzimuth(const QVariant &azimuth, const QVariant &calibrationLevel)
 {
   this->mAzimutDisplay->setText( QString("%1").arg( azimuth.toInt() ) + QString::fromUtf8("°") );
-  this->mCalibrationDisplay->setText( calibrationLevel.toString() );
+  //TODO uncomment when https://sourceforge.net/p/necessitas/tickets/153/ is fixed
+  //this->mCalibrationDisplay->setText( QString("%1").arg( calibrationLevel.toReal() * 100 ) + QString::fromUtf8("%") );
   rotatePixmap( this->arrowPixmapLabel, QString(":/images/north_arrows/default.png"), -azimuth.toInt() );
 }
 
