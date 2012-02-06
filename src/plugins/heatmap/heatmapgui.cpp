@@ -107,6 +107,11 @@ void HeatmapGui::on_mButtonBox_accepted()
   // The buffer distance
   dummyText = mBufferLineEdit->text();
   bufferDistance = dummyText.toInt();
+  if( bufferDistance == NULL )
+  {
+    QMessageBox::information( 0, tr("Invalid Buffer Value!"), tr("Buffer distance cannot be NULL, kindly enter a valid value.") );
+    return;
+  }
   // The decay ratio
   dummyText = mDecayLineEdit->text();
   decayRatio = dummyText.toFloat();
