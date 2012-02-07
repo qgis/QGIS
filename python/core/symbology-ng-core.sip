@@ -98,6 +98,13 @@ public:
   //! set type and size of editing vertex markers for subsequent rendering
   void setVertexMarkerAppearance( int type, int size );
 
+  //! return rotation field name (or empty string if not set or not supported by renderer)
+  //! @note added in 1.9
+  virtual QString rotationField() const;
+  //! sets rotation field of renderer (if supported by the renderer)
+  //! @note added in 1.9
+  virtual void setRotationField( QString fieldName );
+
 protected:
   QgsFeatureRendererV2(QString type);
 

@@ -47,7 +47,7 @@ QString ABISYM( QgsApplication::mLibraryPath );
 QString ABISYM( QgsApplication::mLibexecPath );
 QString ABISYM( QgsApplication::mThemeName );
 QStringList ABISYM( QgsApplication::mDefaultSvgPaths );
-QString ABISYM( QgsApplication::mConfigPath ) = QDir::homePath() + QString( "/.qgis/" );
+QString ABISYM( QgsApplication::mConfigPath );
 bool ABISYM( QgsApplication::mRunningFromBuildDir ) = false;
 QString ABISYM( QgsApplication::mBuildSourcePath );
 QString ABISYM( QgsApplication::mBuildOutputPath );
@@ -73,6 +73,10 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
 }
 void QgsApplication::init( QString customConfigPath )
 {
+  if( customConfigPath.isEmpty() )
+  {
+    customConfigPath = QDir::homePath() + QString( "/.qgis/" );
+  }
   qRegisterMetaType<QgsGeometry::Error>( "QgsGeometry::Error" );
 
   // check if QGIS is run from build directory (not the install directory)
