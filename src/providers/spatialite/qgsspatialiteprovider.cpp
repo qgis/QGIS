@@ -3346,7 +3346,11 @@ void QgsSpatiaLiteProvider::rewind()
 QgsCoordinateReferenceSystem QgsSpatiaLiteProvider::crs()
 {
   QgsCoordinateReferenceSystem srs;
-  srs.createFromProj4( mProj4text );
+  srs.createFromOgcWmsCrs( mAuthId );
+  if ( !srs.isValid() )
+  {
+    srs.createFromProj4( mProj4text );
+  }
   return srs;
 }
 
@@ -4773,7 +4777,7 @@ bool QgsSpatiaLiteProvider::getSridDetails()
   int columns;
   char *errMsg = NULL;
 
-  QString sql = QString( "SELECT proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( mSrid );
+  QString sql = QString( "SELECT auth_name||':'||auth_srid,proj4text FROM spatial_ref_sys WHERE srid=%1" ).arg( mSrid );
 
   ret = sqlite3_get_table( sqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
   if ( ret != SQLITE_OK )
@@ -4784,7 +4788,8 @@ bool QgsSpatiaLiteProvider::getSridDetails()
   {
     for ( i = 1; i <= rows; i++ )
     {
-      mProj4text = results[( i * columns ) + 0];
+      mAuthId    = results[( i * columns ) + 0];
+      mProj4text = results[( i * columns ) + 1];
     }
   }
   sqlite3_free_table( results );
