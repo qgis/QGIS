@@ -44,15 +44,15 @@
        <item row="0" column="0">
         <widget class="QToolBox" name="toolBox">
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="page">
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-26</y>
+            <y>0</y>
             <width>370</width>
-            <height>440</height>
+            <height>471</height>
            </rect>
           </property>
           <attribute name="label">
@@ -116,7 +116,7 @@
              </property>
             </widget>
            </item>
-           <item row="9" column="0">
+           <item row="10" column="0">
             <widget class="QDoubleSpinBox" name="mLayerSpaceSpinBox">
              <property name="prefix">
               <string>Layer space </string>
@@ -126,7 +126,7 @@
              </property>
             </widget>
            </item>
-           <item row="10" column="0">
+           <item row="12" column="0">
             <widget class="QDoubleSpinBox" name="mSymbolSpaceSpinBox">
              <property name="prefix">
               <string>Symbol space </string>
@@ -136,7 +136,7 @@
              </property>
             </widget>
            </item>
-           <item row="11" column="0">
+           <item row="13" column="0">
             <widget class="QDoubleSpinBox" name="mIconLabelSpaceSpinBox">
              <property name="prefix">
               <string>Icon label space </string>
@@ -146,7 +146,7 @@
              </property>
             </widget>
            </item>
-           <item row="12" column="0">
+           <item row="14" column="0">
             <widget class="QDoubleSpinBox" name="mBoxSpaceSpinBox">
              <property name="prefix">
               <string>Box space </string>
@@ -156,7 +156,7 @@
              </property>
             </widget>
            </item>
-           <item row="15" column="0">
+           <item row="17" column="0">
             <spacer name="verticalSpacer">
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -169,10 +169,10 @@
              </property>
             </spacer>
            </item>
-           <item row="14" column="0">
+           <item row="16" column="0">
             <widget class="QComboBox" name="mMapComboBox"/>
            </item>
-           <item row="13" column="0">
+           <item row="15" column="0">
             <widget class="QLabel" name="mMapLabel">
              <property name="text">
               <string>Map</string>
@@ -186,6 +186,16 @@
              </property>
              <property name="buddy">
               <cstring>mTitleLineEdit</cstring>
+             </property>
+            </widget>
+           </item>
+           <item row="9" column="0">
+            <widget class="QDoubleSpinBox" name="mGroupSpaceSpinBox">
+             <property name="prefix">
+              <string>Group Space </string>
+             </property>
+             <property name="suffix">
+              <string> mm</string>
              </property>
             </widget>
            </item>

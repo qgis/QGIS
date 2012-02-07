@@ -42,6 +42,7 @@ class QgsComposerLegendWidget: public QWidget, private Ui::QgsComposerLegendWidg
     void on_mTitleLineEdit_textChanged( const QString& text );
     void on_mSymbolWidthSpinBox_valueChanged( double d );
     void on_mSymbolHeightSpinBox_valueChanged( double d );
+    void on_mGroupSpaceSpinBox_valueChanged( double d );
     void on_mLayerSpaceSpinBox_valueChanged( double d );
     void on_mSymbolSpaceSpinBox_valueChanged( double d );
     void on_mIconLabelSpaceSpinBox_valueChanged( double d );

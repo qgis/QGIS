@@ -81,6 +81,7 @@ void QgsComposerLegendWidget::setGuiElements()
   mTitleLineEdit->setText( mLegend->title() );
   mSymbolWidthSpinBox->setValue( mLegend->symbolWidth() );
   mSymbolHeightSpinBox->setValue( mLegend->symbolHeight() );
+  mGroupSpaceSpinBox->setValue( mLegend->groupSpace() );
   mLayerSpaceSpinBox->setValue( mLegend->layerSpace() );
   mSymbolSpaceSpinBox->setValue( mLegend->symbolSpace() );
   mIconLabelSpaceSpinBox->setValue( mLegend->iconLabelSpace() );
@@ -134,6 +135,18 @@ void QgsComposerLegendWidget::on_mSymbolHeightSpinBox_valueChanged( double d )
   {
     mLegend->beginCommand( tr( "Legend symbol height" ), QgsComposerMergeCommand::LegendSymbolHeight );
     mLegend->setSymbolHeight( d );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
+}
+
+void QgsComposerLegendWidget::on_mGroupSpaceSpinBox_valueChanged( double d )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Legend group space" ), QgsComposerMergeCommand::LegendGroupSpace );
+    mLegend->setGroupSpace( d );
     mLegend->adjustBoxSize();
     mLegend->update();
     mLegend->endCommand();
@@ -641,6 +654,7 @@ void QgsComposerLegendWidget::blockAllSignals( bool b )
   mMapComboBox->blockSignals( b );
   mSymbolWidthSpinBox->blockSignals( b );
   mSymbolHeightSpinBox->blockSignals( b );
+  mGroupSpaceSpinBox->blockSignals( b );
   mLayerSpaceSpinBox->blockSignals( b );
   mSymbolSpaceSpinBox->blockSignals( b );
   mIconLabelSpaceSpinBox->blockSignals( b );

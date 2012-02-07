@@ -72,6 +72,9 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     double boxSpace() const {return mBoxSpace;}
     void setBoxSpace( double s ) {mBoxSpace = s;}
 
+    double groupSpace() const {return mGroupSpace;}
+    void setGroupSpace( double s ) {mGroupSpace = s;}
+
     double layerSpace() const {return mLayerSpace;}
     void setLayerSpace( double s ) {mLayerSpace = s;}
 
@@ -122,6 +125,8 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
     /**Space between item box and contents*/
     double mBoxSpace;
+    /**Vertical space between group entries*/
+    double mGroupSpace;
     /**Vertical space between layer entries*/
     double mLayerSpace;
     /**Vertical space between symbol entries*/
