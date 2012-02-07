@@ -32,6 +32,7 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     : QgsComposerItem( composition )
     , mTitle( tr( "Legend" ) )
     , mBoxSpace( 2 )
+    , mGroupSpace( 2 )
     , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
     , mIconLabelSpace( 2 ), mComposerMap( 0 )
@@ -165,7 +166,7 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
     return;
   }
 
-  currentYCoord += mLayerSpace;
+  currentYCoord += mGroupSpace;
   currentYCoord += fontAscentMillimeters( mGroupFont );
 
   p->setPen( QColor( 0, 0, 0 ) );
@@ -642,6 +643,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "layerFont", mLayerFont.toString() );
   composerLegendElem.setAttribute( "itemFont", mItemFont.toString() );
   composerLegendElem.setAttribute( "boxSpace", QString::number( mBoxSpace ) );
+  composerLegendElem.setAttribute( "groupSpace", QString::number( mGroupSpace ) );
   composerLegendElem.setAttribute( "layerSpace", QString::number( mLayerSpace ) );
   composerLegendElem.setAttribute( "symbolSpace", QString::number( mSymbolSpace ) );
   composerLegendElem.setAttribute( "iconLabelSpace", QString::number( mIconLabelSpace ) );
@@ -697,6 +699,7 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
 
   //spaces
   mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();
+  mGroupSpace = itemElem.attribute( "groupSpace", "3.0" ).toDouble();
   mLayerSpace = itemElem.attribute( "layerSpace", "3.0" ).toDouble();
   mSymbolSpace = itemElem.attribute( "symbolSpace", "2.0" ).toDouble();
   mIconLabelSpace = itemElem.attribute( "iconLabelSpace", "2.0" ).toDouble();
