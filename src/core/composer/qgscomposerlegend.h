@@ -90,6 +90,9 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     double symbolHeight() const {return mSymbolHeight;}
     void setSymbolHeight( double h ) {mSymbolHeight = h;}
 
+    void setWrapChar( const QString& t ) {mWrapChar = t;}
+    QString wrapChar() const {return mWrapChar;}
+
     void setComposerMap( const QgsComposerMap* map );
     const QgsComposerMap* composerMap() const { return mComposerMap; }
 
@@ -116,6 +119,7 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
   protected:
     QString mTitle;
+    QString mWrapChar;
 
     //different fonts for entries
     QFont mTitleFont;
@@ -137,6 +141,9 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
     double mSymbolWidth;
     /**Height of symbol icon*/
     double mSymbolHeight;
+
+    /** Spacing between lines when wrapped */
+    double mlineSpacing;
 
     QgsLegendModel mLegendModel;
 
@@ -171,6 +178,11 @@ class CORE_EXPORT QgsComposerLegend: public QgsComposerItem
 
     /**Helper function that lists ids of layers contained in map canvas*/
     QStringList layerIdList() const;
+
+  private:
+    /** Splits a string using the the wrap char taking into account handling empty
+      wrap char which means no wrapping */
+    QStringList splitStringForWrapping( QString stringToSplt );
 };
 
 #endif

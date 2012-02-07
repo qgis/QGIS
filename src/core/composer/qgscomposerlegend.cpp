@@ -35,7 +35,9 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
     , mGroupSpace( 2 )
     , mLayerSpace( 2 )
     , mSymbolSpace( 2 )
-    , mIconLabelSpace( 2 ), mComposerMap( 0 )
+    , mIconLabelSpace( 2 )
+    , mComposerMap( 0 )
+
 {
   //QStringList idList = layerIdList();
   //mLegendModel.setLayerSet( idList );
@@ -47,6 +49,8 @@ QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
 
   mSymbolWidth = 7;
   mSymbolHeight = 4;
+  mWrapChar = "";
+  mlineSpacing = 1.5;
   adjustBoxSize();
 
   connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
@@ -98,17 +102,22 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
   //font metrics
 
   //draw title
-  currentYCoordinate += fontAscentMillimeters( mTitleFont );
+  double currentItemMaxX = 0; //maximum x-coordinate for current item
   if ( painter )
   {
     painter->setPen( QColor( 0, 0, 0 ) );
-    drawText( painter, mBoxSpace, currentYCoordinate, mTitle, mTitleFont );
+    QStringList lines = splitStringForWrapping( mTitle );
+    for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
+    {
+      currentYCoordinate += fontAscentMillimeters( mTitleFont );
+      drawText( painter, mBoxSpace, currentYCoordinate, *titlePart, mTitleFont );
+      currentItemMaxX = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, *titlePart );
+      maxXCoord = qMax( maxXCoord, currentItemMaxX );
+      if ( titlePart != lines.end() )
+        currentYCoordinate += mlineSpacing;
+    }
   }
 
-
-  maxXCoord = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, mTitle );
-
-  double currentItemMaxX = 0; //maximum x-coordinate for current item
   for ( int i = 0; i < numLayerItems; ++i )
   {
     currentLayerItem = rootItem->child( i );
@@ -167,14 +176,20 @@ void QgsComposerLegend::drawGroupItem( QPainter* p, QgsComposerGroupItem* groupI
   }
 
   currentYCoord += mGroupSpace;
-  currentYCoord += fontAscentMillimeters( mGroupFont );
+  double currentMaxXCoord = 0;
 
   p->setPen( QColor( 0, 0, 0 ) );
-  drawText( p, mBoxSpace, currentYCoord, groupItem->text(), mGroupFont );
 
-  //maximum x-coordinate of current item
-  double currentMaxXCoord = 2 * mBoxSpace + textWidthMillimeters( mGroupFont, groupItem->text() );
-  maxXCoord = qMax( currentMaxXCoord, maxXCoord );
+  QStringList lines = splitStringForWrapping( groupItem->text() );
+  for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
+  {
+    currentYCoord += fontAscentMillimeters( mGroupFont );
+    drawText( p, mBoxSpace, currentYCoord, *groupPart, mGroupFont );
+    currentMaxXCoord = 2 * mBoxSpace + textWidthMillimeters( mGroupFont, *groupPart );
+    maxXCoord = qMax( currentMaxXCoord, maxXCoord );
+    if ( groupPart != lines.end() )
+      currentYCoord += mlineSpacing;
+  }
 
   //children can be other group items or layer items
   int numChildItems = groupItem->rowCount();
@@ -216,16 +231,22 @@ void QgsComposerLegend::drawLayerItem( QPainter* p, QgsComposerLayerItem* layerI
   if ( !layerItem->text().isEmpty() )
   {
     currentYCoord += mLayerSpace;
-    currentYCoord += fontAscentMillimeters( mLayerFont );
 
     //draw layer Item
     if ( p )
     {
       p->setPen( QColor( 0, 0, 0 ) );
-      drawText( p, mBoxSpace, currentYCoord, layerItem->text(), mLayerFont );
-    }
 
-    maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, layerItem->text() ) );
+      QStringList lines = splitStringForWrapping( layerItem->text() );
+      for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
+      {
+        currentYCoord += fontAscentMillimeters( mLayerFont );
+        drawText( p, mBoxSpace, currentYCoord, *layerItemPart , mLayerFont );
+        maxXCoord = qMax( maxXCoord, 2 * mBoxSpace + textWidthMillimeters( mLayerFont, *layerItemPart ) );
+        if ( layerItemPart != lines.end() )
+          currentYCoord += mlineSpacing ;
+      }
+    }
   }
   else //layer title omited
   {
@@ -282,6 +303,8 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
       continue;
     }
 
+    int lineCount = splitStringForWrapping( currentItem->text() ).count();
+
     QgsSymbol* symbol = 0;
     QgsComposerSymbolItem* symbolItem = dynamic_cast<QgsComposerSymbolItem*>( currentItem );
     if ( symbolItem )
@@ -333,7 +356,7 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
 
     childYCoords.push_back( currentYCoord );
     realItemHeights.push_back( realItemHeight );
-    currentYCoord += realItemHeight;
+    currentYCoord += lineCount > 0 ? ( realItemHeight + mlineSpacing ) * lineCount : realItemHeight;
     textAlignCoord = qMax( currentXCoord, textAlignCoord );
   }
 
@@ -343,8 +366,16 @@ void QgsComposerLegend::drawLayerChildItems( QPainter* p, QStandardItem* layerIt
     if ( p )
     {
       p->setPen( QColor( 0, 0, 0 ) );
-      drawText( p, textAlignCoord, childYCoords.at( i ) + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2, layerItem->child( i, 0 )->text(), mItemFont );
-      maxXCoord = qMax( maxXCoord, textAlignCoord + mBoxSpace + textWidthMillimeters( mItemFont,  layerItem->child( i, 0 )->text() ) );
+
+      QStringList lines = splitStringForWrapping( layerItem->child( i, 0 )->text() );
+      double textY = childYCoords.at( i ) + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2;
+      for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
+      {
+        drawText( p, textAlignCoord, textY , *itemPart , mItemFont );
+        maxXCoord = qMax( maxXCoord, textAlignCoord + mBoxSpace + textWidthMillimeters( mItemFont,  *itemPart ) );
+        if ( itemPart != lines.end() )
+          textY += mlineSpacing + textHeight + ( realItemHeights.at( i ) - textHeight ) / 2;
+      }
     }
   }
 }
@@ -649,6 +680,7 @@ bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
   composerLegendElem.setAttribute( "iconLabelSpace", QString::number( mIconLabelSpace ) );
   composerLegendElem.setAttribute( "symbolWidth", mSymbolWidth );
   composerLegendElem.setAttribute( "symbolHeight", mSymbolHeight );
+  composerLegendElem.setAttribute( "wrapChar", mWrapChar );
 
   if ( mComposerMap )
   {
@@ -706,6 +738,8 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   mSymbolWidth = itemElem.attribute( "symbolWidth", "7.0" ).toDouble();
   mSymbolHeight = itemElem.attribute( "symbolHeight", "14.0" ).toDouble();
 
+  mWrapChar = itemElem.attribute( "wrapChar" );
+
   //composer map
   if ( !itemElem.attribute( "map" ).isEmpty() )
   {
@@ -742,4 +776,15 @@ void QgsComposerLegend::invalidateCurrentMap()
 {
   disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
   mComposerMap = 0;
+}
+
+QStringList QgsComposerLegend::splitStringForWrapping( QString stringToSplt )
+{
+  QStringList list;
+  // If the string contains nothing then just return the string without spliting.
+  if ( mWrapChar.count() == 0 )
+    list << stringToSplt;
+  else
+    list = stringToSplt.split( mWrapChar );
+  return list;
 }

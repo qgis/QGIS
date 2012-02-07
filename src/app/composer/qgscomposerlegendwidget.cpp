@@ -55,6 +55,7 @@ QgsComposerLegendWidget::QgsComposerLegendWidget( QgsComposerLegend* legend ): m
   mItemTreeView->setAcceptDrops( true );
   mItemTreeView->setDropIndicatorShown( true );
   mItemTreeView->setDragDropMode( QAbstractItemView::InternalMove );
+  mWrapCharLineEdit->setText( legend->wrapChar() );
 
   setGuiElements();
   connect( mItemTreeView, SIGNAL( itemChanged() ), this, SLOT( setGuiElements() ) );
@@ -103,6 +104,18 @@ void QgsComposerLegendWidget::setGuiElements()
   }
 
   blockAllSignals( false );
+}
+
+void QgsComposerLegendWidget::on_mWrapCharLineEdit_textChanged( const QString &text )
+{
+  if ( mLegend )
+  {
+    mLegend->beginCommand( tr( "Item wrapping changed" ), QgsComposerMergeCommand::ComposerLegendText );
+    mLegend->setWrapChar( text );
+    mLegend->adjustBoxSize();
+    mLegend->update();
+    mLegend->endCommand();
+  }
 }
 
 void QgsComposerLegendWidget::on_mTitleLineEdit_textChanged( const QString& text )
