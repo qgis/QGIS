@@ -80,7 +80,8 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     enum Capabilities
     {
-      SymbolLevels = 1     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      SymbolLevels = 1,     // rendering with symbol levels (i.e. implements symbols(), symbolForFeature())
+      RotationField = 1 <<  1    // rotate symbols by attribute value
     };
 
     //! returns bitwise OR-ed capabilities of the renderer
@@ -108,6 +109,15 @@ class CORE_EXPORT QgsFeatureRendererV2
 
     //! set type and size of editing vertex markers for subsequent rendering
     void setVertexMarkerAppearance( int type, int size );
+
+    //! return rotation field name (or empty string if not set or not supported by renderer)
+    //! @note added in 1.9
+    virtual QString rotationField() const { return ""; }
+    //! sets rotation field of renderer (if supported by the renderer)
+    //! @note added in 1.9
+    virtual void setRotationField( QString fieldName ) { Q_UNUSED( fieldName ); }
+
+
 
   protected:
     QgsFeatureRendererV2( QString type );

@@ -18,7 +18,9 @@
 #include "qgsmapcanvas.h"
 #include "qgspointrotationitem.h"
 #include "qgsrenderer.h"
+#include "qgsrendererv2.h"
 #include "qgssymbol.h"
+#include "qgssymbolv2.h"
 #include "qgsvectorlayer.h"
 #include <QGraphicsPixmapItem>
 #include <QMessageBox>
@@ -222,7 +224,7 @@ void QgsMapToolRotatePointSymbols::canvasReleaseEvent( QMouseEvent *e )
   mCanvas->refresh();
 }
 
-int QgsMapToolRotatePointSymbols::layerRotationAttributes( const QgsVectorLayer* vl, QList<int>& attList )
+int QgsMapToolRotatePointSymbols::layerRotationAttributes( QgsVectorLayer* vl, QList<int>& attList )
 {
   attList.clear();
   if ( !vl )
@@ -230,28 +232,45 @@ int QgsMapToolRotatePointSymbols::layerRotationAttributes( const QgsVectorLayer*
     return 1;
   }
 
-  //get renderer
+  //old symbology
   const QgsRenderer* layerRenderer = vl->renderer();
-  if ( !layerRenderer )
+  if ( layerRenderer )
   {
-    return 2;
-  }
+    //get renderer symbols
+    const QList<QgsSymbol*> rendererSymbols = layerRenderer->symbols();
+    int currentRotationAttribute;
 
-  //get renderer symbols
-  const QList<QgsSymbol*> rendererSymbols = layerRenderer->symbols();
-  int currentRotationAttribute;
-
-  QList<QgsSymbol*>::const_iterator symbolIt = rendererSymbols.constBegin();
-  for ( ; symbolIt != rendererSymbols.constEnd(); ++symbolIt )
-  {
-    currentRotationAttribute = ( *symbolIt )->rotationClassificationField();
-    if ( currentRotationAttribute >= 0 )
+    QList<QgsSymbol*>::const_iterator symbolIt = rendererSymbols.constBegin();
+    for ( ; symbolIt != rendererSymbols.constEnd(); ++symbolIt )
     {
-      attList.push_back( currentRotationAttribute );
+      currentRotationAttribute = ( *symbolIt )->rotationClassificationField();
+      if ( currentRotationAttribute >= 0 )
+      {
+        attList.push_back( currentRotationAttribute );
+      }
     }
+    return 0;
   }
-  return 0;
+
+  //new symbology
+  const QgsFeatureRendererV2* symbologyNgRenderer = vl->rendererV2();
+  if ( symbologyNgRenderer )
+  {
+    //rotation field is supported for QgsSingleSymbolRendererV2, QgsCategorizedRendererV2, QgsUniqueCategorizedRendererV2
+    QString rotationFieldName = symbologyNgRenderer->rotationField();
+
+    if ( !rotationFieldName.isEmpty() )
+    {
+      attList.push_back( vl->fieldNameIndex( rotationFieldName ) );
+    }
+    return 0;
+  }
+
+  //no renderer
+  return 2;
 }
+
+
 
 double QgsMapToolRotatePointSymbols::calculateAzimut( const QPoint& mousePos )
 {
@@ -267,10 +286,20 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
     return;
   }
 
-  if ( mActiveLayer && mActiveLayer->renderer() )
+  //get reference to current render context
+  QgsMapRenderer* mapRenderer = mCanvas->mapRenderer();
+  if ( !mapRenderer )
   {
-    //get the image that is used for that symbol, but without point rotation
-    QImage pointImage;
+    return;
+  }
+
+  //get the image that is used for that symbol, but without point rotation
+  QImage pointImage;
+  QgsRenderer* r = 0;
+  QgsFeatureRendererV2* rv2 = 0;
+
+  if ( mActiveLayer && mActiveLayer->renderer() ) //old symbology
+  {
     //copy renderer
     QgsRenderer* r = mActiveLayer->renderer()->clone();
 
@@ -282,14 +311,6 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
       ( *it )->setRotationClassificationField( -1 );
     }
 
-
-    //get reference to current render context
-    QgsMapRenderer* mapRenderer = mCanvas->mapRenderer();
-    if ( !mapRenderer )
-    {
-      delete r;
-      return;
-    }
     QgsRenderContext* renderContext = mCanvas->mapRenderer()->rendererContext(); //todo: check if pointers are not 0
     if ( !renderContext )
     {
@@ -298,16 +319,32 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
     }
 
     r->renderFeature( *renderContext, f, &pointImage, false );
-    mRotationItem = new QgsPointRotationItem( mCanvas );
-    mRotationItem->setSymbol( pointImage );
-    delete r;
   }
+  else if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
+  {
+    rv2 = mActiveLayer->rendererV2()->clone();
+    rv2->setRotationField( "" );
+
+    QgsSymbolV2* symbolV2 = rv2->symbolForFeature( f );
+    if ( symbolV2 )
+    {
+      pointImage = symbolV2->bigSymbolPreviewImage();
+    }
+  }
+
+  mRotationItem = new QgsPointRotationItem( mCanvas );
+  mRotationItem->setSymbol( pointImage );
+  delete r;
+  delete rv2;
 }
 
 void QgsMapToolRotatePointSymbols::setPixmapItemRotation( double rotation )
 {
-  mRotationItem->setSymbolRotation( rotation );
-  mRotationItem->update();
+  if ( mRotationItem )
+  {
+    mRotationItem->setSymbolRotation( rotation );
+    mRotationItem->update();
+  }
 }
 
 int QgsMapToolRotatePointSymbols::roundTo15Degrees( double n )
