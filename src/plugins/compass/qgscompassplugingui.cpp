@@ -30,10 +30,6 @@ QgsCompassPluginGui::QgsCompassPluginGui( QWidget * parent, Qt::WFlags fl )
 {
   setupUi( this );
 
-  //TODO remove when https://sourceforge.net/p/necessitas/tickets/153/ is fixed
-  this->mCalibrationDisplay->hide();
-  this->mCalibrationLabel->hide();
-
   compass = new Compass();
 
   if ( ! compass->isActive() )
@@ -60,12 +56,26 @@ void QgsCompassPluginGui::handleVisibilityChanged(bool visible)
   }
 }
 
-void QgsCompassPluginGui::handleAzimuth(const QVariant &azimuth, const QVariant &calibrationLevel)
+void QgsCompassPluginGui::handleAzimuth(const QVariant &azimuth, const QVariant &calLevel)
 {
   this->mAzimutDisplay->setText( QString("%1").arg( azimuth.toInt() ) + QString::fromUtf8("°") );
-  //TODO uncomment when https://sourceforge.net/p/necessitas/tickets/153/ is fixed
-  //this->mCalibrationDisplay->setText( QString("%1").arg( calibrationLevel.toReal() * 100 ) + QString::fromUtf8("%") );
-  rotatePixmap( this->arrowPixmapLabel, QString(":/images/north_arrows/default.png"), -azimuth.toInt() );
+
+  //TODO check when https://sourceforge.net/p/necessitas/tickets/153/ is fixed
+  qreal calibrationLevel = calLevel.toReal() / 3;
+  if ( calibrationLevel == 1 )
+  {
+    this->mCalibrationLabel->setStyleSheet("Background-color:green");
+  }
+  else if ( calibrationLevel <= 1/3 )
+  {
+    this->mCalibrationLabel->setStyleSheet("Background-color:red");
+    this->mWarningLabel->setText( "<font color='red'><a href='http://www.youtube.com/watch?v=oNJJPeoG8lQ'>Compass calibration</a> needed</font>" );
+  }
+  else
+  {
+    this->mCalibrationLabel->setStyleSheet("Background-color:yellow");
+  }
+  rotatePixmap( this->mArrowPixmapLabel, QString(":/images/north_arrows/default.png"), -azimuth.toInt() );
 }
 
 //Copied from QgsDecorationNorthArrowDialog adapted to be portable

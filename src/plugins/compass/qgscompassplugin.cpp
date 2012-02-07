@@ -35,7 +35,7 @@
 static const QString sName = QObject::tr( "Internal Compass" );
 static const QString sDescription = QObject::tr( "Shows a QtSensors compass reading" );
 static const QString sCategory = QObject::tr( "Plugins" );
-static const QString sPluginVersion = QObject::tr( "Version 0.1" );
+static const QString sPluginVersion = QObject::tr( "Version 0.9" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/compass.svn";
 
@@ -178,13 +178,19 @@ void QgsCompassPlugin::about( )
   // sort by date of contribution
   QString text = QString( "<center><b>Internal Compass</b></center>"
                           "<center>%1</center>"
-                          "<p>Shows reading of an internal compass using QtSensors<br>"
+                          "<p>Shows reading of an internal compass using QtSensors<br/>"
                           "<b>Developer:</b>"
                           "<ol type=disc>"
                           "<li>Marco Bernasocchi"
                           "</ol>"
                           "<p><b>Homepage:</b><br>"
-                          "<a href=\"http://opengis.ch\">http://opengis.ch</a>" ).arg( sPluginVersion );
+                          "<a href=\"http://opengis.ch\">http://opengis.ch</a></p>"
+                          "<p><b>Compass calibration:</b><br/>"
+                          "To calibrate the compass slowly rotate the device three times around each axis or "
+                          "rotate it like a on a Mobius strip.<br/>"
+                          "This <a href='http://www.youtube.com/watch?v=oNJJPeoG8lQ'>Video</a> demonstrates the process "
+                          "(this can be done from within QGIS as well).</p>"
+                          ).arg( sPluginVersion );
 
   // create dynamicaly because on Mac this dialog is modeless
   QWidget *w = new QWidget;
