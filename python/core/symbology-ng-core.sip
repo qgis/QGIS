@@ -741,7 +741,7 @@ public:
     void setAlpha( qreal alpha );
 
     //! @note added in 1.5
-    int renderHints() const;
+    int renderHints();
     //! @note added in 1.5
     void setRenderHints( int hints );
 
