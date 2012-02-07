@@ -364,6 +364,10 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
        */
     int mSrid;
     /**
+      * auth id
+     */
+    QString mAuthId;
+    /**
       * proj4text
      */
     QString mProj4text;
