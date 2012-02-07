@@ -292,6 +292,11 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
   {
     return;
   }
+  QgsRenderContext* renderContext = mCanvas->mapRenderer()->rendererContext();
+  if ( !renderContext )
+  {
+    return;
+  }
 
   //get the image that is used for that symbol, but without point rotation
   QImage pointImage;
@@ -311,25 +316,20 @@ void QgsMapToolRotatePointSymbols::createPixmapItem( QgsFeature& f )
       ( *it )->setRotationClassificationField( -1 );
     }
 
-    QgsRenderContext* renderContext = mCanvas->mapRenderer()->rendererContext(); //todo: check if pointers are not 0
-    if ( !renderContext )
-    {
-      delete r;
-      return;
-    }
-
     r->renderFeature( *renderContext, f, &pointImage, false );
   }
   else if ( mActiveLayer && mActiveLayer->rendererV2() ) //symbology-ng
   {
     rv2 = mActiveLayer->rendererV2()->clone();
     rv2->setRotationField( "" );
+    rv2->startRender( *renderContext, mActiveLayer );
 
     QgsSymbolV2* symbolV2 = rv2->symbolForFeature( f );
     if ( symbolV2 )
     {
       pointImage = symbolV2->bigSymbolPreviewImage();
     }
+    rv2->stopRender( *renderContext );
   }
 
   mRotationItem = new QgsPointRotationItem( mCanvas );
