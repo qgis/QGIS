@@ -7993,7 +7993,7 @@ Kesalahan:%2</translation>
     <message>
         <location filename="../src/app/qgisappinterface.cpp" line="410"/>
         <source>Attributes changed</source>
-        <translation>Atribut telah dirubah</translation>
+        <translation>Atribut telah berubah</translation>
     </message>
 </context>
 <context>
@@ -8050,7 +8050,7 @@ Kesalahan:%2</translation>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="99"/>
         <source>Quantum GIS is licensed under the GNU General Public License</source>
-        <translation type="unfinished">Quantum GIS berlisensi GNU General Public License</translation>
+        <translation>Quantum GIS berlisensi GNU General Public License</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="58"/>
@@ -8058,7 +8058,7 @@ Kesalahan:%2</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:16px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:x-large; font-weight:600;&quot;&gt;&lt;span style=&quot; font-size:x-large;&quot;&gt;Quantum GIS (QGIS)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsabout.ui" line="112"/>
@@ -9277,7 +9277,7 @@ Kesalahan pada:%2</translation>
         <location filename="../src/gui/symbology-ng/qgscategorizedsymbolrendererv2widget.cpp" line="272"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation>Klasifikasi field telah dirubah dari &apos;%1&apos; ke &apos;%2&apos;.
+        <translation>Klasifikasi field telah berubah dari &apos;%1&apos; ke &apos;%2&apos;.
 Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</translation>
     </message>
     <message>
@@ -9338,7 +9338,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/gui/symbology-ng/qgscolorrampcombobox.cpp" line="40"/>
         <source>New color ramp...</source>
-        <translation type="unfinished"></translation>
+        <translation>Degradasi Warna baru...</translation>
     </message>
 </context>
 <context>
@@ -10046,7 +10046,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="44"/>
         <source>Label text changed</source>
-        <translation>Teks label telah dirubah</translation>
+        <translation>Teks label berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlabelwidget.cpp" line="64"/>
@@ -10187,7 +10187,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="99"/>
         <source>Legend title changed</source>
-        <translation>Judul legenda telah dirubah</translation>
+        <translation>Judul legenda berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="111"/>
@@ -10212,48 +10212,48 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="159"/>
         <source>Legend icon label space</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak legenda label Ikon</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="180"/>
         <source>Title font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf judul telah dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="202"/>
         <source>Legend group font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelompok hurup pada legenda berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="224"/>
         <source>Legend layer font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf legenda lapisan berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="246"/>
         <source>Legend item font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf legnda item berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="260"/>
         <source>Legend box space</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak box legenda</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="492"/>
         <source>Legend item edited</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda item telah diedit</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="525"/>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="555"/>
         <source>Legend updated</source>
-        <translation type="unfinished"></translation>
+        <translation>Legenda telah diperbarui</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerlegendwidget.cpp" line="544"/>
         <source>Legend group added</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelompok legenda telah ditambahkan</translation>
     </message>
 </context>
 <context>
@@ -10452,7 +10452,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="134"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="279"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Persegi panjang</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="47"/>
@@ -10505,33 +10505,33 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="56"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="379"/>
         <source>Boundary direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Arah batas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="85"/>
         <source>Change item width</source>
-        <translation type="unfinished"></translation>
+        <translation>Ubah lebar item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="105"/>
         <source>Change item height</source>
-        <translation type="unfinished"></translation>
+        <translation>Ubah tinggi item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="159"/>
         <source>Map scale changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala peta berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="171"/>
         <source>Map rotation changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotasi peta berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="212"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="412"/>
         <source>Map extent changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent peta berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="495"/>
@@ -10547,44 +10547,44 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="533"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="546"/>
         <source>Grid interval changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Interval grid berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="559"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="572"/>
         <source>Grid offset changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset grid berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="585"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="600"/>
         <source>Grid pen changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Grid pen berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="623"/>
         <source>Grid type changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis grid berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="635"/>
         <source>Grid cross width changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar persilangan grid berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="657"/>
         <source>Annotation font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf anotasi berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="671"/>
         <source>Annotation distance changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak annotasi berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="685"/>
         <source>Annotation position changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Posisi anotasi berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="706"/>
@@ -10606,7 +10606,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="129"/>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="275"/>
         <source>Render</source>
-        <translation type="unfinished">Render</translation>
+        <translation>Render</translation>
     </message>
 </context>
 <context>
@@ -10931,19 +10931,19 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="323"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="327"/>
         <source>Line Ticks Middle</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanda Centang Garis Tengah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="37"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="331"/>
         <source>Line Ticks Down</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanda Centang Garis Bawah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="38"/>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="335"/>
         <source>Line Ticks Up</source>
-        <translation type="unfinished"></translation>
+        <translation>Tanda Centang Garis Atas</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="39"/>
@@ -10960,57 +10960,57 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="127"/>
         <source>Scalebar map changed</source>
-        <translation>Skala balok peta telah berubah</translation>
+        <translation>Skala bar peta berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="175"/>
         <source>Scalebar line width</source>
-        <translation>Lebar garis skala balok</translation>
+        <translation>Lebar garis skala bar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="190"/>
         <source>Scalebar segment size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran segment skala bar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="203"/>
         <source>Scalebar segments left</source>
-        <translation type="unfinished"></translation>
+        <translation>Segmen kiri skala bar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="216"/>
         <source>Scalebar n segments</source>
-        <translation type="unfinished"></translation>
+        <translation>Skala bar n segmen</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="228"/>
         <source>Scalebar height changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tinggi skala bar berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="251"/>
         <source>Scalebar font changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf skala bar berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="273"/>
         <source>Scalebar color changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna skala bar berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="287"/>
         <source>Scalebar unit text</source>
-        <translation type="unfinished"></translation>
+        <translation>Satuan teks skala bar</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="300"/>
         <source>Scalebar map units per segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Satuan peta skala bar per segmen</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="313"/>
         <source>Scalebar style changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Style skala bar berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="355"/>
@@ -11020,7 +11020,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="368"/>
         <source>Scalebar box content space</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Jarak isi box skala bar</translation>
     </message>
 </context>
 <context>
@@ -11033,7 +11033,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="41"/>
         <source>Scale bar</source>
-        <translation>Skala kotak</translation>
+        <translation>Skala bar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="47"/>
@@ -11076,12 +11076,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="184"/>
         <source>Label space </source>
-        <translation>Jarak label</translation>
+        <translation>Jarak label </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="194"/>
         <source>Box space </source>
-        <translation>Jarak kotak</translation>
+        <translation>Jarak kotak </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposerscalebarwidgetbase.ui" line="104"/>
@@ -11114,28 +11114,28 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="29"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi umum</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="34"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="72"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="115"/>
         <source>Ellipse</source>
-        <translation type="unfinished"></translation>
+        <translation>Elips</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="35"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="76"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="119"/>
         <source>Rectangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Persegi panjang</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="36"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="80"/>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="123"/>
         <source>Triangle</source>
-        <translation type="unfinished"></translation>
+        <translation>Segi tiga</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="100"/>
@@ -11183,7 +11183,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="32"/>
@@ -11193,12 +11193,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="41"/>
         <source>Shape outline color...</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warna tepi shape...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="48"/>
         <source>Outline width </source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar garis tepi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="55"/>
@@ -11215,7 +11215,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Rotasi</translation>
     </message>
 </context>
 <context>
@@ -11223,34 +11223,34 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="33"/>
         <source>General options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi umum</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="62"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="310"/>
         <source>Map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Peta %1</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="104"/>
         <source>Table layer changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel lapisan berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="123"/>
         <source>Table attribute settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan atribut tabel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="151"/>
         <source>Table map changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel peta berubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="169"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="182"/>
         <source>Table maximum columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Maksimum kolom tabel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="198"/>
@@ -11258,17 +11258,17 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="220"/>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="222"/>
         <source>Select Font</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih huruf</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="204"/>
         <source>Table header font</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Hufuf header tabel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="226"/>
         <source>Table content font</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf isi tabel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="238"/>
@@ -11278,12 +11278,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="252"/>
         <source>Select grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih warna grid</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="260"/>
         <source>Table grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna grid tabel</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposertablewidget.cpp" line="279"/>
@@ -11301,47 +11301,47 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="32"/>
         <source>Table</source>
-        <translation type="unfinished">Tabel</translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="40"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="55"/>
         <source>Attributes...</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="75"/>
         <source>Show only visible features</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan hanya fitur yang visibel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="84"/>
         <source>Composer map</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyusun peta</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="101"/>
         <source>Maximum rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Baris maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="118"/>
         <source>Margin</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas tepi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="133"/>
         <source>Show grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="142"/>
@@ -11351,17 +11351,17 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="157"/>
         <source>Grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna Grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="180"/>
         <source>Header Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf Header...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="187"/>
         <source>Content Font...</source>
-        <translation type="unfinished"></translation>
+        <translation>Huruf Konten...</translation>
     </message>
 </context>
 <context>
@@ -11490,7 +11490,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="423"/>
         <source>Aligned items hcenter</source>
-        <translation type="unfinished">S</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="454"/>
@@ -11733,92 +11733,92 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="20"/>
         <source>Composition</source>
-        <translation type="unfinished"></translation>
+        <translation>Komposisi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="120"/>
         <source>Orientation</source>
-        <translation type="unfinished">Orientasi</translation>
+        <translation>Orientasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="153"/>
         <source> dpi</source>
-        <translation type="unfinished"></translation>
+        <translation> dpi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="156"/>
         <source>Quality </source>
-        <translation type="unfinished"></translation>
+        <translation>Kualitas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="166"/>
         <source>Width </source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="179"/>
         <source>Height </source>
-        <translation type="unfinished"></translation>
+        <translation>TInggi </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="208"/>
         <source>Spacing </source>
-        <translation type="unfinished"></translation>
+        <translation>Jarak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="221"/>
         <source>X offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset X</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="231"/>
         <source>Y offset </source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset Y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="238"/>
         <source>Pen width </source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar pena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="88"/>
         <source>Units</source>
-        <translation type="unfinished">unit-unit</translation>
+        <translation>Satuan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="44"/>
         <source>Paper and quality</source>
-        <translation type="unfinished"></translation>
+        <translation>Kertas dan kualitas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="56"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="245"/>
         <source>Grid color</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="271"/>
         <source>Grid style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="195"/>
         <source>Snapping</source>
-        <translation type="unfinished"></translation>
+        <translation>Penguncian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="201"/>
         <source>Snap to grid</source>
-        <translation type="unfinished"></translation>
+        <translation>Kunci ke grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscompositionwidgetbase.ui" line="146"/>
         <source>Print as raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Cetak sebagai raster</translation>
     </message>
 </context>
 <context>
@@ -11826,29 +11826,30 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <source>Save shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan shortcut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="76"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>XML file (*.xml);; All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip XML (*.xml);; Semua arsip (*)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="90"/>
         <source>Saving shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyimpan shortcut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="91"/>
         <source>Cannot write file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menulis arsip %1:
+%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="128"/>
         <source>Load shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat shortcut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="138"/>
@@ -11856,95 +11857,96 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="163"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="183"/>
         <source>Loading shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Memuat shortcut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="139"/>
         <source>Cannot read file %1:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membaca arsip %1:%2.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="153"/>
         <source>Parse error at line %1, column %2:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Penguraian gagal pada garis %1, kolum %2:
+%3</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="164"/>
         <source>The file is not an shortcuts exchange file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip bukan merupakan shortcut pertukaran arsip.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="184"/>
         <source>The file contains shortcuts created with different locale, so you can&apos;t use it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip berisikan shortcut yang dibuat pada sistem lokal yang berbeda, jadi anda tidak dapat menggunakannya.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="248"/>
         <source>None</source>
-        <translation type="unfinished">Tidak ada</translation>
+        <translation>Tidak ada</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="249"/>
         <source>Set default (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan standar (%1)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="342"/>
         <source>Input: </source>
-        <translation type="unfinished"></translation>
+        <translation>Input:</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="45"/>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="353"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="373"/>
         <source>Shortcut conflict</source>
-        <translation type="unfinished"></translation>
+        <translation>konflik shortcut</translation>
     </message>
     <message>
         <location filename="../src/app/qgsconfigureshortcutsdialog.cpp" line="374"/>
         <source>This shortcut is already assigned to action %1. Reassign?</source>
-        <translation type="unfinished"></translation>
+        <translation>Shortcut ini telah ditetapkan untuk tindakan %1. Tetapkan tindakan kembali?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="14"/>
         <source>Configure shortcuts</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfigurasi shortcut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="27"/>
         <source>Action</source>
-        <translation type="unfinished">Aksi</translation>
+        <translation>Aksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="32"/>
         <source>Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Shortcut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="58"/>
         <source>Set none</source>
-        <translation type="unfinished"></translation>
+        <translation>Set tidak ada</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="68"/>
         <source>Set default</source>
-        <translation type="unfinished"></translation>
+        <translation>Set Standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="82"/>
         <source>Load...</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsconfigureshortcutsdialog.ui" line="92"/>
         <source>Save...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan...</translation>
     </message>
 </context>
 <context>
@@ -11952,32 +11954,32 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="14"/>
         <source>Continuous color</source>
-        <translation type="unfinished">Warna berkelanjutan</translation>
+        <translation>Warna berkelanjutan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="91"/>
         <source>Maximum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai maksimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="117"/>
         <source>Outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar garis tepi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="65"/>
         <source>Minimum value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai minimum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="26"/>
         <source>Classification field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field klasifikasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscontinuouscolordialogbase.ui" line="130"/>
         <source>Draw polygon outline</source>
-        <translation type="unfinished"></translation>
+        <translation>Gambar garis tepi poligon</translation>
     </message>
 </context>
 <context>
@@ -11985,17 +11987,17 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="426"/>
         <source>The source spatial reference system (CRS) is not valid. </source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber sistem referensi spasial (CRS) tidak tepat. </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="434"/>
         <source>The destination spatial reference system (CRS) is not valid. </source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem referensi spasial (CRS) tujuan tidak tepat. </translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="465"/>
         <source>inverse transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Balikkan transformasi</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="472"/>
@@ -12008,13 +12010,16 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
 %2
 failed with error: %3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dari
+%2
+Gagal dengan kesalahan: %3
+</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="427"/>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="435"/>
         <source>The coordinates can not be reprojected. The CRS is: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat tidak dapat diproyeksikan. CRS adalah: %1</translation>
     </message>
 </context>
 <context>
@@ -12133,7 +12138,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="14"/>
         <source>Enter Credentials</source>
-        <translation type="unfinished">Maukan autorisasi</translation>
+        <translation>Masukan autorisasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscredentialdialog.ui" line="23"/>
@@ -12162,12 +12167,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="98"/>
         <source>Delete Projection Definition?</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus Definisi Proyeksi?</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="99"/>
         <source>Deleting a projection definition is not reversable. Do you want to delete it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Penghapusan definisi proyeksi tidak dapat dikembalikan lagi. Apakah anda ingin menghapusnya?</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="346"/>
@@ -12175,7 +12180,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="491"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="560"/>
         <source>%1 of %2</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dari %2</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="589"/>
@@ -12183,18 +12188,18 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="718"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="776"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Batalkan</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="594"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="778"/>
         <source>New</source>
-        <translation type="unfinished">Baru</translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="622"/>
         <source>* of %1</source>
-        <translation type="unfinished"></translation>
+        <translation>* dari %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="639"/>
@@ -12206,7 +12211,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="875"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="887"/>
         <source>QGIS Custom Projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyeksi Kustom QGIS</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="640"/>
@@ -12215,49 +12220,49 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="696"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="861"/>
         <source>This proj4 projection definition is not valid.</source>
-        <translation type="unfinished"></translation>
+        <translation>Definisi proyeksi proj4 ini tidak tepat.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="876"/>
         <source>Northing and Easthing must be in decimal form.</source>
-        <translation type="unfinished"></translation>
+        <translation>utara dan Timur harus dalam bentuk desimal.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="888"/>
         <source>Internal Error (source projection invalid?)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan internal (Proyeksi sumber tidak tepat?)</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="900"/>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="901"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="641"/>
         <source> Please give the projection a name before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation> Silahkan berikan nama proyeksi sebelum menekan tombol simpan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="648"/>
         <source> Please add the parameters before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tambahkan parameter sebelum menekan tombol simpan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="664"/>
         <source> Please add a proj= clause before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tambahkan proj=clause sebelum menekan tombol simpan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="680"/>
         <source>This proj4 ellipsoid definition is not valid. Please add a ellips= clause before pressing save.</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Definisi elipsoid proj4 tidak tepat. Silahkan tambahkan ellips= clause sebelum menekan tombol simpan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgscustomprojectiondialog.cpp" line="697"/>
         <source> Please correct before pressing save.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tolong perbaiki sebelum menekan tombol simpan.</translation>
     </message>
 </context>
 <context>
@@ -18471,12 +18476,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="813"/>
         <source>X Offset (pts)</source>
-        <translation type="unfinished">X ofset (pts)</translation>
+        <translation>X ofset (pts)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="832"/>
         <source>Y Offset (pts)</source>
-        <translation type="unfinished">Y ofset (pts)</translation>
+        <translation>Y ofset (pts)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="305"/>
@@ -18506,7 +18511,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="560"/>
         <source>&amp;Font family</source>
-        <translation type="unfinished">&amp;Famili huruf</translation>
+        <translation>&amp;Famili huruf</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="579"/>
@@ -18551,7 +18556,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="452"/>
         <source>Multiline labels?</source>
-        <translation type="unfinished">Label dengan beberapa garis?</translation>
+        <translation>Label dengan beberapa garis?</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabeldialogbase.ui" line="351"/>
@@ -18780,7 +18785,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="466"/>
         <source>Multiline labels</source>
-        <translation type="unfinished">Label multiline</translation>
+        <translation>Label multiline</translation>
     </message>
     <message>
         <location filename="../src/ui/qgslabelingguibase.ui" line="473"/>
@@ -19798,22 +19803,22 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
         <source>Delete part</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus bagian</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="101"/>
         <source>This isn&apos;t a multipart geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ini bukan merupakan geometri multipart.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="109"/>
         <source>Part of multipart feature deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Bagian dari fitur multipart telah dihapus</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptooldeletepart.cpp" line="116"/>
         <source>Couldn&apos;t remove the selected part.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa menghapus bagian yang dipilih.</translation>
     </message>
 </context>
 <context>
@@ -19821,7 +19826,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletering.cpp" line="114"/>
         <source>Ring deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Lingkaran dihapus</translation>
     </message>
 </context>
 <context>
@@ -19829,7 +19834,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptooldeletevertex.cpp" line="83"/>
         <source>Vertex deleted</source>
-        <translation type="unfinished"></translation>
+        <translation>Verteks dihapus</translation>
     </message>
 </context>
 <context>
@@ -19838,89 +19843,89 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="201"/>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="364"/>
         <source>(clicked coordinate)</source>
-        <translation type="unfinished"></translation>
+        <translation>(koordinat yang di klik)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="96"/>
         <source>No active layer</source>
-        <translation type="unfinished">Tidak ada lapisan aktif</translation>
+        <translation>Tidak ada lapisan aktif</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="97"/>
         <source>To identify features, you must choose an active layer by clicking on its name in the legend</source>
-        <translation type="unfinished"></translation>
+        <translation>Untuk mengidentifikasi fitur, anda harus memilih lapisan yang aktif dengan mengklik pada nama lapisan yang ada pada legenda</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="121"/>
         <source>Identifying on %1...</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengidentifikasi pada %1...</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="135"/>
         <source>Identifying done.</source>
-        <translation type="unfinished"></translation>
+        <translation>Identifikasi telah dilakukan.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="159"/>
         <source>No features at this position found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada fitur ditemukan pada lokasi ini.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="266"/>
         <source>Length</source>
-        <translation type="unfinished">Panjang</translation>
+        <translation>Panjang</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="272"/>
         <source>firstX</source>
         <comment>attributes get sorted; translation for lastX should be lexically larger than this one</comment>
-        <translation type="unfinished"></translation>
+        <translation>Xawal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="274"/>
         <source>firstY</source>
-        <translation type="unfinished"></translation>
+        <translation>Yawal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="276"/>
         <source>lastX</source>
         <comment>attributes get sorted; translation for firstX should be lexically smaller than this one</comment>
-        <translation type="unfinished"></translation>
+        <translation>Xakhir</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="278"/>
         <source>lastY</source>
-        <translation type="unfinished"></translation>
+        <translation>Yakhir</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="287"/>
         <source>Area</source>
-        <translation type="unfinished"></translation>
+        <translation>Luasan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="301"/>
         <source>feature id</source>
-        <translation type="unfinished"></translation>
+        <translation>id fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="301"/>
         <source>new feature</source>
-        <translation type="unfinished"></translation>
+        <translation>fitur baru</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="329"/>
         <source>WMS layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="349"/>
         <source>Feature info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolidentify.cpp" line="358"/>
         <source>Raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster</translation>
     </message>
 </context>
 <context>
@@ -19928,17 +19933,17 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="65"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lapisan tidak dapat diedit</translation>
+        <translation>Lapisan tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="66"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mengedit lapisan vektor. Gunakan &apos;Toggle mengedit&apos; untuk membuatnya dapat di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolmovefeature.cpp" line="157"/>
         <source>Feature moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur telah dipindahkan</translation>
     </message>
 </context>
 <context>
@@ -20214,32 +20219,32 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="495"/>
         <source>Check to allow MapServer to return data in GML format. Useful when used with WMS GetFeatureInfo operations.</source>
-        <translation type="unfinished"></translation>
+        <translation>Centang untuk menizinkan MapServer untuk mengembalikan data dalam format GML. Sangat berguna dengan menggunakan operasi WMS GetFeatureInfo.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="459"/>
         <source>Force</source>
-        <translation type="unfinished"></translation>
+        <translation>Paksa</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="15"/>
         <source>MapServer Export: Save project to MapFile</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksport MapServer: Simpan proyek ke MapFile</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="24"/>
         <source>Use current project</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan proyek saat ini</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="87"/>
         <source>LAYER information only</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi LAPISAN saja</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="142"/>
         <source>Rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Merender</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="214"/>
@@ -20247,7 +20252,10 @@ This may be a problem in your network connection or at the WMS server.</source>
 
 For example: 
 http://my.host.com/cgi-bin/mapserv.exe</source>
-        <translation type="unfinished"></translation>
+        <translation>URL ke aplikasi MapServer.
+
+Sebagai contoh: 
+http://my.host.com/cgi-bin/mapserv.exe</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="239"/>
@@ -20262,12 +20270,12 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="271"/>
         <source>Use templates</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan template</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="335"/>
         <source>The file name of the fonts file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama dari arsip dari lapisan huruf.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="354"/>
@@ -20277,12 +20285,12 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="367"/>
         <source>The file name of the symbols file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama arsip dari arrsip simbol.</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="450"/>
         <source>Layer/label options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi lapisan /label</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="469"/>
@@ -20302,7 +20310,7 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="485"/>
         <source>Partials</source>
-        <translation type="unfinished"></translation>
+        <translation>Parsial</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="498"/>
@@ -20312,12 +20320,12 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="230"/>
         <source>Paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="204"/>
         <source>MapServer url</source>
-        <translation type="unfinished"></translation>
+        <translation>url MapServer</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="405"/>
@@ -20337,27 +20345,27 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="70"/>
         <source>Name for the map file to be created from the QGIS project file</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama arsip peta yang akan dibuat untuk arsip proyek QGIS</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="84"/>
         <source>If checked, only the layer information will be processed</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang, hanya inpormasi lapisan yang akan diproses</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="281"/>
         <source>Path to the MapServer template file</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur untuk arsip template MapServer</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="116"/>
         <source>Prefix attached to map, scalebar and legend GIF filenames created using this MapFile</source>
-        <translation type="unfinished"></translation>
+        <translation>Awalan yang akan disisipkan pada peta, skala bar dan legenda nama arsif GIS dibuat dengan menggunakan MapFile ini</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="37"/>
         <source>Full path to the QGIS project file to export to MapServer map format</source>
-        <translation type="unfinished"></translation>
+        <translation>Jlaur lengkap ke proyek arsip QGIS ke format peta MapServer</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="47"/>
@@ -20365,36 +20373,36 @@ http://my.host.com/cgi-bin/mapserv.exe</source>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="308"/>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="325"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigasi...</translation>
     </message>
     <message>
         <location filename="../python/plugins/mapserver_export/qgsmapserverexportbase.ui" line="77"/>
         <source>Save As...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai...</translation>
     </message>
     <message>
         <source>meters</source>
-        <translation type="unfinished"></translation>
+        <translation>meter</translation>
     </message>
     <message>
         <source>dd</source>
-        <translation type="unfinished"></translation>
+        <translation>dd</translation>
     </message>
     <message>
         <source>feet</source>
-        <translation type="unfinished"></translation>
+        <translation>kaki</translation>
     </message>
     <message>
         <source>miles</source>
-        <translation type="unfinished"></translation>
+        <translation>mil</translation>
     </message>
     <message>
         <source>inches</source>
-        <translation type="unfinished"></translation>
+        <translation>inci</translation>
     </message>
     <message>
         <source>kilometers</source>
-        <translation type="unfinished"></translation>
+        <translation>kilometer</translation>
     </message>
 </context>
 <context>
