@@ -6164,9 +6164,10 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
       //start editing/stop editing
       if ( dprovider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
       {
-        mActionToggleEditing->setEnabled( !vlayer->isReadOnly() );
+        bool canChangeAttributes = dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues;
+        mActionToggleEditing->setEnabled( canChangeAttributes && !vlayer->isReadOnly() );
         mActionToggleEditing->setChecked( vlayer->isEditable() );
-        mActionSaveEdits->setEnabled( vlayer->isEditable() );
+        mActionSaveEdits->setEnabled( canChangeAttributes && vlayer->isEditable() );
       }
       else
       {

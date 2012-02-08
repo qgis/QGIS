@@ -2038,7 +2038,7 @@ and python executables.
 
 MacOS users usually need to set it to something like
 /Library/Frameworks/GDAL.framework/Versions/1.8/Programs</source>
-        <translation>Eine Liste von durch Doppelpunkte (Linux und MacOS) oder 
+        <translation type="obsolete">Eine Liste von durch Doppelpunkte (Linux und MacOS) oder 
 Semilokons (Windows) getrennten Pfaden zu sowohl den Programme 
 als auch den Pythonskripten.
 
@@ -2048,13 +2048,13 @@ MacOS-Benutzer brauchen normalerweise etwas wie
     <message>
         <source>A list of colon-separated (Linux and MacOS) or 
 semicolon-separated (Windows) paths to python modules.</source>
-        <translation>Liste von durch Doppelpunkte (Linux und MacOS) oder 
+        <translation type="obsolete">Liste von durch Doppelpunkte (Linux und MacOS) oder 
 Semikolons (Windows) getrennte Pfade zu den Pythonmodulen.</translation>
     </message>
     <message>
         <source>Useful to open local GDAL documentation instead of online help 
 when pressing on the tool dialog&apos;s Help button.</source>
-        <translation>Nützlich um die GDAL-Dokumentation statt der Onlinehilfe 
+        <translation type="obsolete">Nützlich um die GDAL-Dokumentation statt der Onlinehilfe 
 zu öffnen, wenn der Hilfeknopf des Werkzeugs angeklickt wird.</translation>
     </message>
     <message>
@@ -3432,6 +3432,155 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="193"/>
         <source>&amp;Globe</source>
         <translation>&amp;Globus</translation>
+    </message>
+</context>
+<context>
+    <name>Heatmap</name>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="75"/>
+        <source>Heatmap</source>
+        <translation>Heatmap</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="77"/>
+        <source>Creates a heatmap raster for the input point vector.</source>
+        <translation>Erzeugt ein Heatmap-Raster für einen Eingabepunktlayer.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="82"/>
+        <source>&amp;Heatmap</source>
+        <translation>&amp;Heatmap</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="133"/>
+        <source>GDAL driver error</source>
+        <translation>GDAL-Treiberfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="133"/>
+        <source>Cannot open the driver for the specified format</source>
+        <translation>Kann den Treiber für das angegebene Format nicht öffnen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="179"/>
+        <source>Raster update error</source>
+        <translation>Rasteraktualisierungsfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="179"/>
+        <source>Could not open the created raster for updating. The heatmap was not generated.</source>
+        <translation>Konnte die erzeugte Rasterdatei nicht zur Aktualierung öffnen.  Die Heatmap wurde nicht erzeugt.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="189"/>
+        <source>Point layer error</source>
+        <translation>Punktlayerfehler</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="189"/>
+        <source>Could not identify the vector data provider.</source>
+        <translation>Konnte den Vektordatenlieferanten nicht erkennen.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="209"/>
+        <source>Heatmap generation aborted</source>
+        <translation>Heatmap-Erzeugung abgebrochen</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="209"/>
+        <source>QGIS will now load the partially-computed raster.</source>
+        <translation>QGIS wird nun das teilweise berechnete Raster laden.</translation>
+    </message>
+</context>
+<context>
+    <name>HeatmapGui</name>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="97"/>
+        <source>Layer not found</source>
+        <translation>Layer nicht gefunden</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="97"/>
+        <source>Layer %1 not found.</source>
+        <translation>Layer %1 nicht gefunden.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="106"/>
+        <source>Invalid buffer value</source>
+        <translation>Ungültiger Pufferwert</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="106"/>
+        <source>Buffer distance cannot be zero. Please enter a valid value.</source>
+        <translation>Der Pufferabstand kann nicht Null sein. Bitte geben Sie einen gültigen Wert an.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="118"/>
+        <source>Invalid output filename</source>
+        <translation>Ungültiger Ausgabedateiname</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="118"/>
+        <source>Please enter a valid output file path and name.</source>
+        <translation>Bitte geben Sie einen gültigen Dateiennamen an.</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapgui.cpp" line="163"/>
+        <source>Save Heatmap as:</source>
+        <translation>Heatmap speichern als:</translation>
+    </message>
+</context>
+<context>
+    <name>HeatmapGuiBase</name>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="14"/>
+        <source>Heatmap Plugin</source>
+        <translation>Heatmap-Erweiterung</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="29"/>
+        <source>Input Point Vector</source>
+        <translation>Eingabepunktlayer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="52"/>
+        <source>Output Raster</source>
+        <translation>Ausgaberaster</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="78"/>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="107"/>
+        <source>Heatmap Point Attributes</source>
+        <translation>Heatmap-Punktattribute</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="119"/>
+        <source>Buffer Radius</source>
+        <translation>Pufferradius</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="132"/>
+        <source>Decay Ratio</source>
+        <translation>Verfallrate</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="145"/>
+        <source>10</source>
+        <translation>10</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="158"/>
+        <source>0.5</source>
+        <translation>0.5</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmapguibase.ui" line="172"/>
+        <source>Output Format</source>
+        <translation>Ausgabeformat</translation>
     </message>
 </context>
 <context>
@@ -5687,6 +5836,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
         <location filename="../src/plugins/globe/globe_plugin.cpp" line="66"/>
         <location filename="../src/plugins/gps_importer/qgsgpsplugin.cpp" line="53"/>
         <location filename="../src/plugins/grass/qgsgrassplugin.cpp" line="51"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="47"/>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="34"/>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="22"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="39"/>
@@ -6509,6 +6659,7 @@ Would you like to specify path (GISBASE) to your GRASS installation?</source>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefplugin.cpp" line="65"/>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="46"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="27"/>
         <location filename="../src/plugins/raster_terrain_analysis/qgsrasterterrainanalysisplugin.cpp" line="41"/>
         <location filename="../src/plugins/zonal_statistics/qgszonalstatisticsplugin.cpp" line="28"/>
@@ -7479,6 +7630,16 @@ Diese Meldung erscheint höchstwahrscheinlich, weil die Umgebungsvariable DISPLA
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="65"/>
         <source>no result buffer</source>
         <translation>Kein Ergebnispuffer</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="44"/>
+        <source>Heatmap</source>
+        <translation>Heatmap</translation>
+    </message>
+    <message>
+        <location filename="../src/plugins/heatmap/heatmap.cpp" line="45"/>
+        <source>Creates a Heatmap raster for the input point vector</source>
+        <translation>Erzeugt ein Heatmap-RAster für einen Eingabepunktlayer</translation>
     </message>
 </context>
 <context>
