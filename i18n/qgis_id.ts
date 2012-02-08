@@ -15429,22 +15429,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="244"/>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tidak dapat membuka vektor untuk di perbarui.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="699"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="699"/>
         <source>The table was created</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel telah dibuat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1382"/>
         <source>Tool not yet implemented.</source>
-        <translation type="unfinished"></translation>
+        <translation>Peralatan belum diimplementasikan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1410"/>
@@ -15459,7 +15459,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="407"/>
         <source>Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Latar belakang</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="408"/>
@@ -15469,97 +15469,97 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="409"/>
         <source>Dynamic</source>
-        <translation type="unfinished"></translation>
+        <translation>Dinamis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="410"/>
         <source>Point</source>
-        <translation type="unfinished">Titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="411"/>
         <source>Line</source>
-        <translation type="unfinished">Garis</translation>
+        <translation>Garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="412"/>
         <source>Boundary (no area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas (Tidak ada area)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="413"/>
         <source>Boundary (1 area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas (1 Area)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="414"/>
         <source>Boundary (2 areas)</source>
-        <translation type="unfinished"></translation>
+        <translation>Batas (2 Area)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="415"/>
         <source>Centroid (in area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sentroid (dalam area)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="416"/>
         <source>Centroid (outside area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sentroin (di luar area)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="417"/>
         <source>Centroid (duplicate in area)</source>
-        <translation type="unfinished"></translation>
+        <translation>Sentroid (duplikat dalam area)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="418"/>
         <source>Node (1 line)</source>
-        <translation type="unfinished"></translation>
+        <translation>Node (1 garis)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="419"/>
         <source>Node (2 lines)</source>
-        <translation type="unfinished"></translation>
+        <translation>Node (2 garis)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="548"/>
         <source>Next not used</source>
-        <translation type="unfinished"></translation>
+        <translation>Berikutnya tidak digunakan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="549"/>
         <source>Manual entry</source>
-        <translation type="unfinished"></translation>
+        <translation>Entri manual</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="550"/>
         <source>No category</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada kategory</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1404"/>
         <source>Cannot check orphan record: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memeriksa rekaman orphan: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1454"/>
         <source>Cannot describe table for field %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menjelaskan field tabel %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1885"/>
         <source>Left: %1   </source>
-        <translation type="unfinished"></translation>
+        <translation>Kiri: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1886"/>
         <source>Middle: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tengah: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1887"/>
         <source>Right: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kanan: %1</translation>
     </message>
 </context>
 <context>
@@ -15570,17 +15570,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="461"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="472"/>
         <source>Select line segment</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih segmen garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="457"/>
         <source>New vertex position</source>
-        <translation type="unfinished"></translation>
+        <translation>Posisi verteks baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="457"/>
         <source>Release</source>
-        <translation type="unfinished"></translation>
+        <translation>Rilis</translation>
     </message>
 </context>
 <context>
@@ -15588,7 +15588,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="871"/>
         <source>Select element</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih elemen</translation>
     </message>
 </context>
 <context>
@@ -15642,49 +15642,49 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="227"/>
         <source>Line width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="250"/>
         <source>Marker size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran penanda</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="107"/>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="335"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="295"/>
         <source>Disp</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="300"/>
         <source>Color</source>
-        <translation type="unfinished">Warna</translation>
+        <translation>Warna</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="305"/>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="388"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="310"/>
         <source>Index</source>
-        <translation type="unfinished">Indeks</translation>
+        <translation>Indeks</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="383"/>
         <source>Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasseditbase.ui" line="393"/>
         <source>Length</source>
-        <translation type="unfinished">Panjang</translation>
+        <translation>Panjang</translation>
     </message>
 </context>
 <context>
@@ -15694,17 +15694,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="752"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="759"/>
         <source>Select element</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih elemen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="748"/>
         <source>Delete selected / select next</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus yang dipilih / pilih selanjutnya</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="748"/>
         <source>Release selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Rilis yang dipilih</translation>
     </message>
 </context>
 <context>
@@ -15715,17 +15715,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="591"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="602"/>
         <source>Select vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih verteks</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="587"/>
         <source>Delete vertex</source>
-        <translation type="unfinished">Hapus verteks</translation>
+        <translation>Hapus verteks</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="587"/>
         <source>Release vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Rilis verteks</translation>
     </message>
 </context>
 <context>
@@ -15736,17 +15736,17 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="667"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="676"/>
         <source>Select element</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih elemen</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="663"/>
         <source>New location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="663"/>
         <source>Release selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Rilis yang dipilih</translation>
     </message>
 </context>
 <context>
@@ -15756,12 +15756,12 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="293"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="329"/>
         <source>Select vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih verteks</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="318"/>
         <source>Select new position</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih posisi</translation>
     </message>
 </context>
 <context>
@@ -15770,25 +15770,25 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="124"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="136"/>
         <source>New vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Verteks baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="231"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="235"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>New point</source>
-        <translation type="unfinished">Titik baru</translation>
+        <translation>Titik baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="235"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>Undo last point</source>
-        <translation type="unfinished"></translation>
+        <translation>Undo titik terakhir</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="239"/>
         <source>Close line</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutup garis</translation>
     </message>
 </context>
 <context>
@@ -15796,12 +15796,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="72"/>
         <source>New centroid</source>
-        <translation type="unfinished">Sentroid baru</translation>
+        <translation>Sentroid baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="74"/>
         <source>New point</source>
-        <translation type="unfinished">Titik baru</translation>
+        <translation>Titik baru</translation>
     </message>
 </context>
 <context>
@@ -15810,23 +15810,23 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="775"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="817"/>
         <source>Select position on line</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih posisi dalam garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="838"/>
         <source>Split the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Bagi/split garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="838"/>
         <source>Release the line</source>
-        <translation type="unfinished"></translation>
+        <translation>Rilis garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="842"/>
         <location filename="../src/plugins/grass/qgsgrassedittools.cpp" line="854"/>
         <source>Select point on line</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih titik pada garis</translation>
     </message>
 </context>
 <context>
@@ -15834,32 +15834,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="114"/>
         <source>Cancel</source>
-        <translation type="unfinished">Batal</translation>
+        <translation>Batal</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="143"/>
         <source>Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>Ok</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="148"/>
         <source>&lt;font color=&apos;red&apos;&gt;Enter a name!&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=&apos;red&apos;&gt;Masukan nama!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="159"/>
         <source>&lt;font color=&apos;red&apos;&gt;This is name of the source!&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=&apos;red&apos;&gt;Ini merupakan nama sumber!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="165"/>
         <source>&lt;font color=&apos;red&apos;&gt;Exists!&lt;/font&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;font color=&apos;red&apos;&gt;Sudah ada!&lt;/font&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassutils.cpp" line="166"/>
         <source>Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation>Timpa</translation>
     </message>
 </context>
 <context>
@@ -15867,294 +15867,294 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="77"/>
         <source>Mapcalc tools</source>
-        <translation type="unfinished"></translation>
+        <translation>Peralatan Mapcalc</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="80"/>
         <source>Add map</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="87"/>
         <source>Add constant value</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah nilai konstan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="94"/>
         <source>Add operator or function</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah operator atau fungsi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="101"/>
         <source>Add connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah koneksi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="108"/>
         <source>Select item</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih item</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="115"/>
         <source>Delete selected item</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus item yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="125"/>
         <source>Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Buka</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="130"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="136"/>
         <source>Save as</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan sebagai</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="144"/>
         <source>Addition</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="145"/>
         <source>Subtraction</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengurangan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="146"/>
         <source>Multiplication</source>
-        <translation type="unfinished"></translation>
+        <translation>Perkalian</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="147"/>
         <source>Division</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembagian</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="148"/>
         <source>Modulus</source>
-        <translation type="unfinished"></translation>
+        <translation>Modulus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="149"/>
         <source>Exponentiation</source>
-        <translation type="unfinished"></translation>
+        <translation>Eksponensial</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="152"/>
         <source>Equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Sama dengan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="153"/>
         <source>Not equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak sama dengan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="154"/>
         <source>Greater than</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebih besar dari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="155"/>
         <source>Greater than or equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebih besar dari atau sama dengan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="156"/>
         <source>Less than</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurang dari</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="157"/>
         <source>Less than or equal</source>
-        <translation type="unfinished"></translation>
+        <translation>Kurang dari atau sama dengan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="158"/>
         <source>And</source>
-        <translation type="unfinished"></translation>
+        <translation>Dan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="159"/>
         <source>Or</source>
-        <translation type="unfinished"></translation>
+        <translation>Atau</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="162"/>
         <source>Absolute value of x</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai absolut dari x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="163"/>
         <source>Inverse tangent of x (result is in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tangen invers dari x (Hasil dalam derajat)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="164"/>
         <source>Inverse tangent of y/x (result is in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tangen inverse dari y/x (hasil dalam derajat)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="165"/>
         <source>Current column of moving window (starts with 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom saat ini untuk jendela bergerak (dimulai dari 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="166"/>
         <source>Cosine of x (x is in degrees)</source>
-        <translation type="unfinished"></translation>
+        <translation>Cosinus dari x (x dalam derajat)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="167"/>
         <source>Convert x to double-precision floating point</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi a ke floating titik presisi-ganda </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="168"/>
         <source>Current east-west resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolusi tiur-barat saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="169"/>
         <source>Exponential function of x</source>
-        <translation type="unfinished"></translation>
+        <translation>Funsi exponensial dari x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="170"/>
         <source>x to the power y</source>
-        <translation type="unfinished"></translation>
+        <translation>x pangkat y</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="171"/>
         <source>Convert x to single-precision floating point</source>
-        <translation type="unfinished"></translation>
+        <translation>Convert x ke floating titik presisi-tunggal</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="172"/>
         <source>Decision: 1 if x not zero, 0 otherwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Keputusan: 1 jika x bukan nol, jika tidak 0</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="173"/>
         <source>Decision: a if x not zero, 0 otherwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Keputusan: a jika x bukan nol, jika tidak 0</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="174"/>
         <source>Decision: a if x not zero, b otherwise</source>
-        <translation type="unfinished"></translation>
+        <translation>Keputusan: a jika x bukan nol, tija tidak b</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="175"/>
         <source>Decision: a if x &gt; 0, b if x is zero, c if x &lt; 0</source>
-        <translation type="unfinished"></translation>
+        <translation>Keputusan: a jika x . 0, b jika x sama dengan nol, c jika x &lt; 0</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="176"/>
         <source>Convert x to integer [ truncates ]</source>
-        <translation type="unfinished"></translation>
+        <translation>konversi x ke bilangan bulat [ pemotongan ]</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="177"/>
         <source>Check if x = NULL</source>
-        <translation type="unfinished"></translation>
+        <translation>Periksa jika x = NULL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="178"/>
         <source>Natural log of x</source>
-        <translation type="unfinished"></translation>
+        <translation>Logaritma natural dari x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="179"/>
         <source>Log of x base b</source>
-        <translation type="unfinished"></translation>
+        <translation>Logaritma dari x dengan dasar b</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="180"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="181"/>
         <source>Largest value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai terbesar</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="182"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="183"/>
         <source>Median value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai rata-rata</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="184"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="185"/>
         <source>Smallest value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai terkecil</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="186"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="187"/>
         <source>Mode value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai modus</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="188"/>
         <source>1 if x is zero, 0 otherwise</source>
-        <translation type="unfinished"></translation>
+        <translation>1 jika x sama dengan nol, jika tidak 0</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="189"/>
         <source>Current north-south resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Resolusi utara-selatan saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="190"/>
         <source>NULL value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai NULL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="191"/>
         <source>Random value between a and b</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai acak antara a dan b</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="192"/>
         <source>Round x to nearest integer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembulatan x ke nilai bilangan bulat terdekat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="193"/>
         <source>Current row of moving window (Starts with 1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Baris saat ini dari jendela yang bergerak (Mulai dengan 1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="194"/>
         <source>Sine of x (x is in degrees)</source>
         <comment>sin(x)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Sinus x (x dalam derajat)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="195"/>
         <source>Square root of x</source>
         <comment>sqrt(x)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Akar kuadrat dari x</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="196"/>
         <source>Tangent of x (x is in degrees)</source>
         <comment>tan(x)</comment>
-        <translation type="unfinished"></translation>
+        <translation>Tangent x (x dalam derajat)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="197"/>
         <source>Current x-coordinate of moving window</source>
-        <translation type="unfinished"></translation>
+        <translation>koordinat x saat ini dari jendela yang bergerak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="198"/>
         <source>Current y-coordinate of moving window</source>
-        <translation type="unfinished"></translation>
+        <translation>koordinat y saat ini dari jendela yang bergerak</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="484"/>
@@ -16169,97 +16169,99 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1236"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1250"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="484"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="537"/>
         <source>Cannot get current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa mendapatkan region saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="768"/>
         <source>No GRASS raster maps currently in QGIS</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada peta raster saat ini di QGIS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1042"/>
         <source>Cannot create &apos;mapcalc&apos; directory in current mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa membuat direktori &apos;mapcalc&apos; pada mapset saat ini.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1052"/>
         <source>New mapcalc</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapcalc baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1053"/>
         <source>Enter new mapcalc name:</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan nama mapcalc baru:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1059"/>
         <source>Enter vector name</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan nama arsip vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1085"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1103"/>
         <source>Save mapcalc</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan mapcalc</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1085"/>
         <source>File name empty</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama arsip kosong</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1104"/>
         <source>Cannot open mapcalc file</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka arsip mapcalc</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="209"/>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1321"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Output</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="516"/>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa memeriksa region dari peta %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="572"/>
         <source>Cannot get region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa mendapatkan region dari peta %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1067"/>
         <source>The file already exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip sudah ada. Timpa?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1230"/>
         <source>The mapcalc schema (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Skema mapcalc (%1) tidak ditemukan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1236"/>
         <source>Cannot open mapcalc schema (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa membuka skema mapcalc (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1248"/>
         <source>Cannot read mapcalc schema (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa membaca skema mapcalc (%1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalc.cpp" line="1249"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+pada baris %2 kolom %3</translation>
     </message>
 </context>
 <context>
@@ -24305,7 +24307,7 @@ Result: %3 (%4)</source>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="802"/>
         <source>%1 at line %2 column %3</source>
-        <translation>%1 pada garis %2 kolom %3</translation>
+        <translation>%1 pada baris %2 kolom %3</translation>
     </message>
     <message>
         <location filename="../src/core/qgsproject.cpp" line="805"/>
@@ -24779,26 +24781,24 @@ Because of this the projection selector will not work...</source>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="35"/>
         <source>&amp;Test</source>
-        <translation type="unfinished"></translation>
+        <translation>Coba</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="39"/>
         <source>&amp;Clear</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus</translation>
     </message>
     <message>
         <location filename="../src/app/qgsquerybuilder.cpp" line="151"/>
         <source>Query Result</source>
-        <translation type="unfinished">Hasil Query</translation>
+        <translation>Hasil Kueri</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgsquerybuilder.cpp" line="152"/>
         <source>The where clause returned %n row(s).</source>
         <comment>returned test rows</comment>
         <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+            <numerusform></numerusform>
         </translation>
     </message>
     <message>
@@ -24839,17 +24839,17 @@ The data provider said:
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="22"/>
         <source>Query Builder</source>
-        <translation type="unfinished">Pembangun Query</translation>
+        <translation>Pembangun Queri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="36"/>
         <source>Datasource</source>
-        <translation type="unfinished"></translation>
+        <translation>SUmber Data</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="49"/>
         <source>Fields</source>
-        <translation type="unfinished">Field-field</translation>
+        <translation>Field</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="58"/>
@@ -24857,12 +24857,15 @@ The data provider said:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of fields in this vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Daftar field dalam arsip vektor&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="77"/>
         <source>Values</source>
-        <translation type="unfinished">Nilai-nilai</translation>
+        <translation>Nilai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="86"/>
@@ -24870,7 +24873,10 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;List of values for the current field.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Daftar nilai untuk field saat ini&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="105"/>
@@ -24878,12 +24884,15 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; of records in the vector file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Take a &lt;span style=&quot; font-weight:600;&quot;&gt;sample&lt;/span&gt; dari record dalam arsip vektor&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="111"/>
         <source>Sample</source>
-        <translation type="unfinished">Contoh</translation>
+        <translation>Contoh</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="118"/>
@@ -24891,92 +24900,95 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;all&lt;/span&gt; the record in the vector file (&lt;span style=&quot; font-style:italic;&quot;&gt;if the table is big, the operation can consume some time&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Retrieve &lt;span style=&quot; font-weight:600;&quot;&gt;semua&lt;/span&gt; record dalam arsip vektor (&lt;span style=&quot; font-style:italic;&quot;&gt;jika tabel besar, operasi membutuhkan waktu yang lebih lama&lt;/span&gt;)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="124"/>
         <source>All</source>
-        <translation type="unfinished">Semua</translation>
+        <translation>Semua</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="134"/>
         <source>Operators</source>
-        <translation type="unfinished">Operator-operator</translation>
+        <translation>Operator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="143"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="150"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="157"/>
         <source>NOT</source>
-        <translation type="unfinished"></translation>
+        <translation>NOT</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="164"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>OR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="171"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>AND</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="178"/>
         <source>%</source>
-        <translation type="unfinished"></translation>
+        <translation>%</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="185"/>
         <source>IN</source>
-        <translation type="unfinished"></translation>
+        <translation>IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="192"/>
         <source>NOT IN</source>
-        <translation type="unfinished"></translation>
+        <translation>NOT IN</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="199"/>
         <source>!=</source>
-        <translation type="unfinished"></translation>
+        <translation>!=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="206"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="213"/>
         <source>LIKE</source>
-        <translation type="unfinished"></translation>
+        <translation>LIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="220"/>
         <source>ILIKE</source>
-        <translation type="unfinished"></translation>
+        <translation>ILIKE</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="227"/>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="234"/>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsquerybuilderbase.ui" line="250"/>
         <source>SQL where clause</source>
-        <translation type="unfinished">Klausa SQL WHERE</translation>
+        <translation>Klausa SQL WHERE</translation>
     </message>
 </context>
 <context>
@@ -24984,68 +24996,68 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="832"/>
         <source> km</source>
-        <translation type="unfinished">km</translation>
+        <translation>km</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="837"/>
         <source> mm</source>
-        <translation type="unfinished"></translation>
+        <translation>mm</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="842"/>
         <source> cm</source>
-        <translation type="unfinished"></translation>
+        <translation> cm</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="846"/>
         <source> m</source>
-        <translation type="unfinished"></translation>
+        <translation> m</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="851"/>
         <source> miles</source>
-        <translation type="unfinished"></translation>
+        <translation> Mil</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="856"/>
         <source> mile</source>
-        <translation type="unfinished"></translation>
+        <translation> mil</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="861"/>
         <source> inches</source>
-        <translation type="unfinished"></translation>
+        <translation> inci</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="866"/>
         <source> foot</source>
-        <translation type="unfinished"></translation>
+        <translation> kaki</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="870"/>
         <source> feet</source>
-        <translation type="unfinished">kaki</translation>
+        <translation>kaki</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="875"/>
         <source> degree</source>
-        <translation type="unfinished"></translation>
+        <translation> derajat</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="877"/>
         <source> degrees</source>
-        <translation type="unfinished">derajad</translation>
+        <translation>derajat</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="880"/>
         <source> unknown</source>
-        <translation type="unfinished"></translation>
+        <translation> tidak diketahui</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsquickprint.cpp" line="659"/>
         <source>Please wait while your report is generated</source>
         <comment>COMMENTED OUT</comment>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menunggu sementara laporan dibuat</translation>
     </message>
 </context>
 <context>
@@ -25053,17 +25065,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="221"/>
         <source>Enter result file</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan arsip hasil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="262"/>
         <source>Expression valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspresi benar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrastercalcdialog.cpp" line="271"/>
         <source>Expression invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspresi tidak benar</translation>
     </message>
 </context>
 <context>
@@ -25071,187 +25083,187 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="14"/>
         <source>Raster calculator</source>
-        <translation type="unfinished"></translation>
+        <translation>Kalkulator raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="20"/>
         <source>Raster bands</source>
-        <translation type="unfinished"></translation>
+        <translation>Pita raster</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="32"/>
         <source>Result layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan hasil</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="38"/>
         <source>Output layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan output</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="63"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="70"/>
         <source>Current layer extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Extent lapisan saat ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="92"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>X min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="112"/>
         <source>XMax</source>
-        <translation type="unfinished"></translation>
+        <translation>X Maks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="132"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Min</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="152"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y Maks</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="172"/>
         <source>Columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="186"/>
         <source>Rows</source>
-        <translation type="unfinished">Baris</translation>
+        <translation>Baris</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="202"/>
         <source>Output format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format output</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="212"/>
         <source>Add result to project</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan hasil ke proyek</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="225"/>
         <source>Operators</source>
-        <translation type="unfinished">Operator-operator</translation>
+        <translation>Operator</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="231"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="238"/>
         <source>*</source>
-        <translation type="unfinished"></translation>
+        <translation>*</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="245"/>
         <source>sqrt</source>
-        <translation type="unfinished"></translation>
+        <translation>sqrt</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="252"/>
         <source>sin</source>
-        <translation type="unfinished"></translation>
+        <translation>sin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="259"/>
         <source>^</source>
-        <translation type="unfinished"></translation>
+        <translation>^</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="266"/>
         <source>acos</source>
-        <translation type="unfinished"></translation>
+        <translation>acos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="273"/>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation>(</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="280"/>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="287"/>
         <source>/</source>
-        <translation type="unfinished"></translation>
+        <translation>/</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="294"/>
         <source>cos</source>
-        <translation type="unfinished"></translation>
+        <translation>cos</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="301"/>
         <source>asin</source>
-        <translation type="unfinished"></translation>
+        <translation>asin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="308"/>
         <source>tan</source>
-        <translation type="unfinished"></translation>
+        <translation>tan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="315"/>
         <source>atan</source>
-        <translation type="unfinished"></translation>
+        <translation>atan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="322"/>
         <source>)</source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="329"/>
         <source>&lt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="336"/>
         <source>&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="343"/>
         <source>=</source>
-        <translation type="unfinished"></translation>
+        <translation>=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="350"/>
         <source>OR</source>
-        <translation type="unfinished"></translation>
+        <translation>OR</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="357"/>
         <source>AND</source>
-        <translation type="unfinished"></translation>
+        <translation>AND</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="364"/>
         <source>&lt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="371"/>
         <source>&gt;=</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;=</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrastercalcdialogbase.ui" line="381"/>
         <source>Raster calculator expression</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspresi kalkulator raster</translation>
     </message>
 </context>
 <context>
@@ -25259,17 +25271,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/qgsrasterdataprovider.cpp" line="162"/>
         <source>Identify</source>
-        <translation type="unfinished">Identifikasi</translation>
+        <translation>Identifikasi</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrasterdataprovider.cpp" line="167"/>
         <source>Build Pyramids</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun pyramid</translation>
     </message>
     <message>
         <location filename="../src/core/qgsrasterdataprovider.h" line="366"/>
         <source>Band</source>
-        <translation type="unfinished">Band</translation>
+        <translation>Pita</translation>
     </message>
 </context>
 <context>
@@ -25307,7 +25319,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1833"/>
         <source>Layer Extent (layer original source projection): </source>
-        <translation type="unfinished"></translation>
+        <translation>Extent lapisan (proyeksi sumber lapisan asal)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1859"/>
@@ -25373,7 +25385,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2334"/>
         <source>Specify CRS for layer %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan CRS untuk lapisan %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1776"/>
@@ -25451,37 +25463,37 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1826"/>
         <source>Layer Spatial Reference System: </source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem Referensi Spasial Lapisan: </translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1761"/>
         <source>No Data Value</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai tidak ada data</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1770"/>
         <source>NoDataValue not set</source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai Tidak Ada Data belum ditentukan</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="1843"/>
         <source>Project Spatial Reference System: </source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem referensi spasial proyek:</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="160"/>
         <source>QgsRasterLayer created</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan Raster Qgs telah dibuat</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="360"/>
         <source>Retrieving stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengambil statistik dari %1</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="366"/>
         <source>Calculating stats for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghitung statistik untuk %1</translation>
     </message>
 </context>
 <context>
@@ -25517,36 +25529,36 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="68"/>
         <source>Not Set</source>
-        <translation type="unfinished">Tidak Ditentukan</translation>
+        <translation>Belum ditentukan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="813"/>
         <source>Columns: </source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="814"/>
         <source>Rows: </source>
-        <translation type="unfinished"></translation>
+        <translation>Baris: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="819"/>
         <source>No-Data Value: </source>
-        <translation type="unfinished"></translation>
+        <translation>Nilai Tidak Ada Data: </translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="813"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="814"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="819"/>
         <source>n/a</source>
-        <translation type="unfinished"></translation>
+        <translation>n/a</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1554"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1845"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="2514"/>
         <source>Write access denied</source>
-        <translation type="unfinished">Akses tulis ditolak</translation>
+        <translation>Akses tulis ditolak</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1845"/>
@@ -25554,7 +25566,7 @@ p, li { white-space: pre-wrap; }
         <source>Write access denied. Adjust the file permissions and try again.
 
 </source>
-        <translation type="unfinished">Akses tulis ditolak. Atur permisi arsip dan coba lagi.
+        <translation>Akses tulis ditolak. Atur permisi arsip dan coba lagi.
 </translation>
     </message>
     <message>
@@ -25563,7 +25575,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1570"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1575"/>
         <source>Building pyramids failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuat pyramid.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1566"/>
@@ -26091,7 +26103,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="45"/>
         <source>Style</source>
-        <translation type="unfinished">Style</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="80"/>
@@ -26500,7 +26512,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1751"/>
         <source>Notes</source>
-        <translation type="unfinished">Catatan</translation>
+        <translation>Catatan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1815"/>
@@ -32988,7 +33000,7 @@ Kode kesalahan SQL Anywhere:%3</translation>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1031"/>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1105"/>
         <source>Node tool</source>
-        <translation type="unfinished">Peralatan node</translation>
+        <translation>Peralatan node</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="1032"/>
@@ -33045,17 +33057,17 @@ Kode kesalahan SQL Anywhere:%3</translation>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="161"/>
         <source>Undo/Redo</source>
-        <translation type="unfinished">Undo/Redo</translation>
+        <translation>Undo/Redo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="162"/>
         <source>Undo</source>
-        <translation type="unfinished">Undo</translation>
+        <translation>Undo</translation>
     </message>
     <message>
         <location filename="../src/app/qgsundowidget.cpp" line="163"/>
         <source>Redo</source>
-        <translation type="unfinished">Redo</translation>
+        <translation>Redo</translation>
     </message>
 </context>
 <context>
