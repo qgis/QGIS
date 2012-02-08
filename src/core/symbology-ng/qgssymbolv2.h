@@ -98,7 +98,7 @@ class CORE_EXPORT QgsSymbolV2
     //! @note added in 1.5
     void setRenderHints( int hints ) { mRenderHints = hints; }
     //! @note added in 1.5
-    int renderHints() { return mRenderHints; }
+    int renderHints() const { return mRenderHints; }
 
     QSet<QString> usedAttributes() const;
 

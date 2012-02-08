@@ -632,7 +632,7 @@ class QgsSymbolV2RenderContext
     void setSelected( bool selected );
 
     //! @note added in 1.5
-    int renderHints();
+    int renderHints() const;
     //! @note added in 1.5
     void setRenderHints( int hints );
 
