@@ -1,0 +1,26 @@
+<h1>Heatmap-Erweiterung</h1>
+<p>Die Heatmap-Erweiterung erzeugt ein Raster für eine Punktlayer. Die Heatmap wird auf Basis der Punktanzahl an einer gegebenen Position berechnet. Je höher die Anzahl der Punkte, desto höher wird der zugehörige Pixelwert im Raster sein.</p>
+
+<h2>Parameter</h2>
+
+<h3>Eingabepunktlayer</h3>
+<p>Die Eingabe ist jeweils ein Punktlayer. In die Liste werden automatisch alle derzeit in die Karte geladenen Punktlayer übernommen.  Klicken Sie auf den Pfeil neben der Liste und wählen Sie den gewünschten Layer.</p>
+
+<h3>Ausgaberaster</h3>
+<p>Der Dateiname für das Ausgaberaster kann durch Klick auf <label>...</label> neben dem Eingabefeld gewählt werden.<br/>
+<b>Hinweis:</b> Wenn nicht explizit angegeben, wird die Dateiendung abhängig vom gewählten Ausgabeformat automatisch ergänzt,</p>
+
+<h3>Ausgabeformat</h3>
+<p>Alle Formate deren Erzeugung GDAL unterstützt sind in der Liste verfügbar. Wählen Sie das gewünschte Ausgabeformat Ihrer Datei.<br/>
+<b>Hinweis:</b> Die Formate GeoTiff und ERDAS Imagine .img werden empfohlen. Einige Formate können die Applikation zum Absturz bringen. Bleiben Sie bitte bei den empfohlenen Formate bis die Absturzursache beseitig ist oder wählen Sie ein anderes Format, wenn Sie wissen, dass GDAL es voll unterstützt.</p>
+
+<h3>Heatmap Punktattribute</h3>
+<h4>Pufferradius</h4>
+<p>Der Pufferradius gibt die Anzahl der <b>Pixel oder Zellen</b> um einen Punkt an, in dem die Hitze(wirkung) des Punktes point spürbar ist. Kleine Werte ergeben ein klare Trennung zwischen den Punkten und größere Werte ergeben schön gemischte Hitzebereiche. Dies ist der räumliche Parameter des Hitzeregion eines Punkts.<br/>
+<b>Hinweise:</b> Der Wert ist immer ganzzahlig.</p>
+<h4>Verfallrate</h4>
+<p>Die Verfallrate gibt den Betrag des Hitze(einfluß) an, der die äußersten Pixel des Pufferradius erreicht. Es ist der direkte Wert des äußeren Bereichs.<br/>
+<b>Beispiel:</b> Wenn die Verfallrate auf 0 und der Radius auf 10 gestellt ist, wird das mittige Pixel den Wert 1, die Pixel in einer Entfernung von 10 Einheiten den Wert 0, ein Pixel in der Entfernung von 5 Einheiten den Wert 0.5 und so weiter haben. Hier ist wird die Entfernung nicht in Pixeln, sondern mit sqrt( xOffset^2 + yOffset^2 ) gerechnet, damit Sie immer kreisförmige Hitzeregion erhalten.</p>
+
+<h2>Weitere Einzelheiten</h2>
+<p>Sie können über aruntheguy at gmail dot com mit dem Autor Kontakt aufnehmen.</p>
