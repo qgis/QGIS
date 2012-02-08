@@ -37,13 +37,13 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
 
   // Adding point layers to the mInputVectorCombo
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
+  QMapIterator<QString, QgsMapLayer*> layers( mapLayers );
 
-  while( layers.hasNext() )
+  while ( layers.hasNext() )
   {
     layers.next();
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
-    if( ( vl ) && ( vl->geometryType() == QGis::Point ) )
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( layers.value() );
+    if (( vl ) && ( vl->geometryType() == QGis::Point ) )
     {
       mInputVectorCombo->addItem( vl->name(), QVariant( vl->id() ) );
     }
@@ -54,11 +54,11 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
   int myIndex = -1;
   GDALAllRegister();
   int nDrivers = GDALGetDriverCount();
-  for( int i = 0; i < nDrivers; i +=1 )
+  for ( int i = 0; i < nDrivers; i += 1 )
   {
     GDALDriver* nthDriver = GetGDALDriverManager()->GetDriver( i );
     char** driverMetadata = nthDriver->GetMetadata();
-    if( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
+    if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
     {
       ++myIndex;
       QString myLongName = nthDriver->GetMetadataItem( GDAL_DMD_LONGNAME );
@@ -72,7 +72,7 @@ HeatmapGui::HeatmapGui( QWidget* parent, Qt::WFlags fl )
       }
     }
   }
-  mFormatCombo->setCurrentIndex(myTiffIndex);
+  mFormatCombo->setCurrentIndex( myTiffIndex );
 
   //finally set right the ok button
   enableOrDisableOkButton();
@@ -97,16 +97,16 @@ void HeatmapGui::on_mButtonBox_accepted()
   int myLayerId = mInputVectorCombo->itemData( mInputVectorCombo->currentIndex() ).toInt();
 
   QMap<QString, QgsMapLayer*> mapLayers = QgsMapLayerRegistry::instance()->mapLayers();
-  QMapIterator<QString, QgsMapLayer*> layers(mapLayers);
-  
-  while( layers.hasNext() )
+  QMapIterator<QString, QgsMapLayer*> layers( mapLayers );
+
+  while ( layers.hasNext() )
   {
     layers.next();
-    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>(layers.value());
+    QgsVectorLayer* vl = qobject_cast<QgsVectorLayer *>( layers.value() );
     if ( vl )
     {
       dummyText = vl->id();
-      if( dummyText.toInt() == myLayerId )
+      if ( dummyText.toInt() == myLayerId )
       {
         inputLayer = vl;
       }
@@ -116,9 +116,9 @@ void HeatmapGui::on_mButtonBox_accepted()
   // The buffer distance
   dummyText = mBufferLineEdit->text();
   bufferDistance = dummyText.toInt();
-  if( bufferDistance == NULL )
+  if ( bufferDistance == NULL )
   {
-    QMessageBox::information( 0, tr("Invalid Buffer Value!"), tr("Buffer distance cannot be NULL, kindly enter a valid value.") );
+    QMessageBox::information( 0, tr( "Invalid Buffer Value!" ), tr( "Buffer distance cannot be NULL, kindly enter a valid value." ) );
     return;
   }
   // The decay ratio
@@ -128,9 +128,9 @@ void HeatmapGui::on_mButtonBox_accepted()
   // The output filename
   outputFileName = mOutputRasterLineEdit->text();
   QFileInfo myFileInfo( outputFileName );
-  if( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
+  if ( outputFileName.isEmpty() || !myFileInfo.dir().exists() )
   {
-    QMessageBox::information( 0, tr("Output filename is invalid!"), tr("Kindly enter a valid output file path and name.") );
+    QMessageBox::information( 0, tr( "Output filename is invalid!" ), tr( "Kindly enter a valid output file path and name." ) );
     return;
   }
 
@@ -139,16 +139,16 @@ void HeatmapGui::on_mButtonBox_accepted()
 
   // append the file format if the suffix is empty
   QString suffix = myFileInfo.suffix();
-  if( suffix.isEmpty() )
+  if ( suffix.isEmpty() )
   {
     QMap<QString, QString>::const_iterator it = mExtensionMap.find( outputFormat );
-    if( it != mExtensionMap.end() && it.key() == outputFormat )
+    if ( it != mExtensionMap.end() && it.key() == outputFormat )
     {
       // making sure that there is really a extension value available
       // Some drivers donot seem to have any extension at all
-      if( it.value() != NULL || it.value() != "" )
+      if ( it.value() != NULL || it.value() != "" )
       {
-        outputFileName.append(".");
+        outputFileName.append( "." );
         outputFileName.append( it.value() );
       }
     }
@@ -174,13 +174,13 @@ void HeatmapGui::on_mBrowseButton_clicked()
   QSettings s;
   QString lastDir = s.value( "/Heatmap/lastOutputDir", "" ).toString();
 
-  QString outputFilename = QFileDialog::getSaveFileName( 0, tr( "Save Heatmap as: "), lastDir );
-  if( !outputFilename.isEmpty() )
+  QString outputFilename = QFileDialog::getSaveFileName( 0, tr( "Save Heatmap as: " ), lastDir );
+  if ( !outputFilename.isEmpty() )
   {
     mOutputRasterLineEdit->setText( outputFilename );
     QFileInfo outputFileInfo( outputFilename );
     QDir outputDir = outputFileInfo.absoluteDir();
-    if( outputDir.exists() )
+    if ( outputDir.exists() )
     {
       s.setValue( "/Heatmap/lastOutputDir", outputFileInfo.absolutePath() );
     }
@@ -199,7 +199,7 @@ void HeatmapGui::enableOrDisableOkButton()
   bool enabled = true;
   QString filename = mOutputRasterLineEdit->text();
   QFileInfo theFileInfo( filename );
-  if( filename.isEmpty() || !theFileInfo.dir().exists() || ( mInputVectorCombo->count() == 0 ) )
+  if ( filename.isEmpty() || !theFileInfo.dir().exists() || ( mInputVectorCombo->count() == 0 ) )
   {
     enabled = false;
   }
