@@ -78,7 +78,7 @@ void Heatmap::initGui()
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addRasterToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToRasterMenu( tr( "&Heatmap" ), mQActionPointer );
 
 }
@@ -108,8 +108,8 @@ void Heatmap::run()
 void Heatmap::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginMenu( "&Heatmap", mQActionPointer );
-  mQGisIface->removeToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginRasterMenu( "&Heatmap", mQActionPointer );
+  mQGisIface->removeRasterToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
