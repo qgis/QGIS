@@ -108,7 +108,7 @@ void Heatmap::run()
 void Heatmap::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginRasterMenu( "&Heatmap", mQActionPointer );
+  mQGisIface->removePluginRasterMenu( tr( "&Heatmap" ), mQActionPointer );
   mQGisIface->removeRasterToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
