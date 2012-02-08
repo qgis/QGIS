@@ -1056,16 +1056,15 @@ bool QgsPostgresProvider::loadFields()
         fieldSize = -1;
         fieldPrec = 0;
       }
-      else if ( fieldTypeName.startsWith( "int" ) ||
-                fieldTypeName == "serial" )
+      else if ( fieldTypeName == "int2" || fieldTypeName == "int4" ||
+                fieldTypeName == "oid" || fieldTypeName == "serial" )
       {
         fieldType = QVariant::Int;
         fieldSize = -1;
         fieldPrec = 0;
       }
-      else if ( fieldTypeName == "real" ||
-                fieldTypeName == "double precision" ||
-                fieldTypeName.startsWith( "float" ) )
+      else if ( fieldTypeName == "real" || fieldTypeName == "double precision" ||
+                fieldTypeName == "float4" || fieldTypeName == "float8" )
       {
         fieldType = QVariant::Double;
         fieldSize = -1;

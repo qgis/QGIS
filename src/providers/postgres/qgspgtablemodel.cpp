@@ -91,16 +91,20 @@ void QgsPgTableModel::addTableEntry( QgsPostgresLayerProperty layerProperty )
   sridItem->setEditable( false );
 
   QString pkText, pkCol = "";
-  switch ( layerProperty.pkCols.size() )
+  if ( layerProperty.pkCols.size() == 0 )
   {
-    case 0:   pkText = ""; break;
-    case 1:   pkText = layerProperty.pkCols[0]; pkCol = pkText; break;
-    default:  pkText = tr( "Select..." ); break;
+    pkText = "";
+  }
+  else
+  {
+    pkCol = pkText = layerProperty.pkCols[0];
   }
 
   QStandardItem *pkItem = new QStandardItem( pkText );
-  if ( pkText == tr( "Select..." ) )
+  if ( layerProperty.pkCols.size() > 1 )
     pkItem->setFlags( pkItem->flags() | Qt::ItemIsEditable );
+  else
+    pkItem->setFlags( pkItem->flags() & ~Qt::ItemIsEditable );
 
   pkItem->setData( layerProperty.pkCols, Qt::UserRole + 1 );
   pkItem->setData( pkCol, Qt::UserRole + 2 );
@@ -313,11 +317,11 @@ bool QgsPgTableModel::setData( const QModelIndex &idx, const QVariant &value, in
 
     bool ok = geomType != QGis::UnknownGeometry;
 
-    if ( geomType != QGis::NoGeometry )
+    if ( ok && geomType != QGis::NoGeometry )
       idx.sibling( idx.row(), dbtmSrid ).data().toInt( &ok );
 
     QStringList pkCols = idx.sibling( idx.row(), dbtmPkCol ).data( Qt::UserRole + 1 ).toStringList();
-    if ( pkCols.size() > 0 )
+    if ( ok && pkCols.size() > 0 )
       ok = pkCols.contains( idx.sibling( idx.row(), dbtmPkCol ).data().toString() );
 
     for ( int i = 0; i < dbtmColumns; i++ )
