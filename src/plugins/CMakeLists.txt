@@ -37,3 +37,5 @@ IF (WITH_GLOBE)
 ENDIF (WITH_GLOBE)
 
 # headers installed in qgis_core target
+
+SUBDIRS (heatmap)
