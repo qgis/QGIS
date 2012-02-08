@@ -21917,7 +21917,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1540"/>
         <source>Locale to use instead</source>
-        <translation type="unfinished">Lokal untuk digunakan bukan</translation>
+        <translation>Gunakan sistem lokal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1563"/>
@@ -32118,17 +32118,17 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="34"/>
         <source>Export feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekspor fitur</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="38"/>
         <source>Select destination layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan tujuan</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/exportdlg.cpp" line="50"/>
         <source>New temporary layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan sementara baru</translation>
     </message>
 </context>
 <context>
@@ -32136,12 +32136,12 @@ Tried URL: %1</source>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="46"/>
         <source>Transportation layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan transportasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="48"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../src/plugins/roadgraph/linevectorlayerwidget.cpp" line="57"/>
