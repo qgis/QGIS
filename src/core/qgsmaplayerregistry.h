@@ -46,7 +46,7 @@ class CORE_EXPORT QgsMapLayerRegistry : public QObject
 
     ~QgsMapLayerRegistry();
 
-//! Retrieve a pointer to a loaded plugin by id
+//! Retrieve a pointer to a loaded layer by id
     QgsMapLayer * mapLayer( QString theLayerId );
 
 //! Retrieve the mapLayers collection (mainly intended for use by projectio)
