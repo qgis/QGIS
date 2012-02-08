@@ -20,7 +20,7 @@
 <b>Note:</b> The value is always a whole number.</p>
 <h4>Decay Ratio</h4>
 <p>The decay ratio defines amount of heat(influence) that should reach the outermost pixel in the Buffer Radius. It is the direct measure of the outer most value.<br/>
-<b>Example:</b> If Buffer Ratio is set as 0 and Radius as 10, then the centre pixel of a point will have value and the pixel away by a distance of 10 units will have the value 0, a pixel which is 5 units away will have a value of 0.5 and so on. Here distance is measure not by pixel count rather using sqrt( xOffset^2 + yOffset^2 ), so you always get a circular heat region.</p>
+<b>Example:</b> If Decay Ratio is set as 0 and Buffer Radius as 10, then the centre pixel of a point will have value and the pixel away by a distance of 10 units will have the value 0, a pixel which is 5 units away will have a value of 0.5 and so on. Here distance is measure not by pixel count rather using sqrt( xOffset^2 + yOffset^2 ), so you always get a circular heat region.</p>
 
 <h2>Further Details</h2>
 <p>Contact the author through aruntheguy at gmail dot com</p>
