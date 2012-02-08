@@ -74,7 +74,7 @@ void Heatmap::initGui()
   // Create the action for tool
   mQActionPointer = new QAction( QIcon( ":/heatmap/heatmap.png" ), tr( "Heatmap" ), this );
   // Set the what's this text
-  mQActionPointer->setWhatsThis( tr( "Creats a heatmap raster for the input point vector." ) );
+  mQActionPointer->setWhatsThis( tr( "Creates a heatmap raster for the input point vector." ) );
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
@@ -130,7 +130,7 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
   myDriver = GetGDALDriverManager()->GetDriverByName( theOutputFormat.toUtf8() );
   if ( myDriver == NULL )
   {
-    QMessageBox::information( 0, tr( "Error in GDAL Driver!" ), tr( "Cannot open the driver for the format specified" ) );
+    QMessageBox::information( 0, tr( "GDAL driver error" ), tr( "Cannot open the driver for the specified format" ) );
     return;
   }
 
@@ -159,9 +159,10 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
   poBand->SetNoDataValue( NO_DATA );
 
   float* line = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  std::fill_n( line, xSize, NO_DATA );
+  for ( int i = 0; i < xSize; i++ )
+    line[i] = NO_DATA;
   // Write the empty raster
-  for ( int i = 0; i < ySize ; i += 1 )
+  for ( int i = 0; i < ySize ; i++ )
   {
     poBand->RasterIO( GF_Write, 0, 0, xSize, 1, line, xSize, 1, GDT_Float32, 0, 0 );
   }
@@ -175,7 +176,7 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
   heatmapDS = ( GDALDataset * ) GDALOpen( theOutputFilename.toUtf8(), GA_Update );
   if ( !heatmapDS )
   {
-    QMessageBox::information( 0, tr( "Error in Updating Raster!" ), tr( "Couldnot open the created raster for updation. The Heatmap was not generated." ) );
+    QMessageBox::information( 0, tr( "Raster update error" ), tr( "Could not open the created raster for updating. The heatmap was not generated." ) );
     return;
   }
   poBand = heatmapDS->GetRasterBand( 1 );
@@ -185,7 +186,7 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
   QgsVectorDataProvider* myVectorProvider = theVectorLayer->dataProvider();
   if ( !myVectorProvider )
   {
-    QMessageBox::information( 0, tr( "Error in Point Layer!" ), tr( "Couldnot identify the vector data provider." ) );
+    QMessageBox::information( 0, tr( "Point layer error" ), tr( "Could not identify the vector data provider." ) );
     return;
   }
   QgsAttributeList dummyList;
@@ -201,11 +202,11 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
 
   while ( myVectorProvider->nextFeature( myFeature ) )
   {
-    counter += 1;
+    counter++;
     p.setValue( counter );
     if ( p.wasCanceled() )
     {
-      QMessageBox::information( 0, tr( "Heatmap Generation Aborted!" ), tr( "QGIS will now load the partially-computed raster." ) );
+      QMessageBox::information( 0, tr( "Heatmap generation aborted" ), tr( "QGIS will now load the partially-computed raster." ) );
       break;
     }
 
@@ -228,11 +229,11 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
     float *dataBuffer = ( float * ) CPLMalloc( sizeof( float ) * blockSize * blockSize );
     poBand->RasterIO( GF_Read, xPosition, yPosition, blockSize, blockSize, dataBuffer, blockSize, blockSize, GDT_Float32, 0, 0 );
 
-    for ( int xp = 0; xp <= theBuffer; xp += 1 )
+    for ( int xp = 0; xp <= theBuffer; xp++ )
     {
-      for ( int yp = 0; yp <= theBuffer; yp += 1 )
+      for ( int yp = 0; yp <= theBuffer; yp++ )
       {
-        float distance = sqrt( pow( xp, 2 ) + pow( yp, 2 ) );
+        float distance = sqrt( pow( xp, 2.0 ) + pow( yp, 2.0 ) );
         float pixelValue = 1 - (( 1 - theDecay ) * distance / theBuffer );
 
         // clearing anamolies along the axes
@@ -252,7 +253,7 @@ void Heatmap::createRaster( QgsVectorLayer* theVectorLayer, int theBuffer, float
           pos[1] = ( theBuffer + xp ) * blockSize + ( theBuffer - yp );
           pos[2] = ( theBuffer - xp ) * blockSize + ( theBuffer + yp );
           pos[3] = ( theBuffer - xp ) * blockSize + ( theBuffer - yp );
-          for ( int p = 0; p < 4; p += 1 )
+          for ( int p = 0; p < 4; p++ )
           {
             if ( dataBuffer[ pos[p] ] == NO_DATA )
             {
