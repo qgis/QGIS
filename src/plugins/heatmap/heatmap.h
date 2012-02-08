@@ -81,7 +81,7 @@ class Heatmap: public QObject, public QgisPlugin
     //! the worker slot to create heatmap
     /*
      * Signal: createRaster
-     * Params: 
+     * Params:
      *         QgsVectorLayer* -> Input point layer
      *         int             -> Buffer distance
      *         float           -> Decay ratio

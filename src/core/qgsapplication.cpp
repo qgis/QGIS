@@ -73,7 +73,7 @@ QgsApplication::QgsApplication( int & argc, char ** argv, bool GUIenabled, QStri
 }
 void QgsApplication::init( QString customConfigPath )
 {
-  if( customConfigPath.isEmpty() )
+  if ( customConfigPath.isEmpty() )
   {
     customConfigPath = QDir::homePath() + QString( "/.qgis/" );
   }

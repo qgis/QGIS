@@ -40,7 +40,7 @@ class HeatmapGui : public QDialog, private Ui::HeatmapGuiBase
   signals:
     /*
      * Signal: createRaster
-     * Params: 
+     * Params:
      *         QgsVectorLayer* -> Input point layer
      *         int             -> Buffer distance
      *         float           -> Decay ratio
