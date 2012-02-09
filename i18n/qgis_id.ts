@@ -34071,62 +34071,62 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="63"/>
         <source>Use the Previous button to display the previous photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan tombol Sebelumnya untuk menampilkan foto ketika lebih dari satu foto yang tersedia untuk ditampilkan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="66"/>
         <source>Previous</source>
-        <translation type="unfinished">Sebelum</translation>
+        <translation>Sebelumnya</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="82"/>
         <source>Use the Next button to display the next photo when more than one photo is available for display.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan tombol Berikutnya untuk menampilkan foto berikutnya ketika lebih dari satu foto yang tersedia untuk ditampilkan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="85"/>
         <source>Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Berikutnya</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="113"/>
         <source>All of the attribute information for the point associated with the photo being viewed is displayed here. If the file type being referenced in the displayed record is not an image but is of a file type defined in the “Configure External Applications” tab then when you double-click on the value of the field containing the path to the file the application to open the file will be launched to view or hear the contents of the file. If the file extension is recognized the attribute data will be displayed in green.</source>
-        <translation type="unfinished"></translation>
+        <translation>Semua informasi attribut untuk titik yang behubungan dengan foto yang dilihat ditampilkan disini. Jika tipe arsip yang direferensikan pada rekaman yang ditampilkan bukan gambar tetapi jenis arsip yang didefinisikan pada tab &quot;Pengaturan Aplikasi Eksternal&quot; maka ketika anda melakukan klik dua kali pada nilai field yang berisikan jalur ke arsip tersebut, aplikasi untuk membuka arsip tersebut akan diluncurkan untuk melihat atau mendengar isi dari arsip. Jika ekstensi arsip diketahui data atribut akan ditampilkan dengan warna hijau.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="117"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="131"/>
         <source>Image display area</source>
-        <translation type="unfinished"></translation>
+        <translation>Area untuk menampilkan gambar</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="134"/>
         <source>Display area for the image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Area tampilan untuk gambar.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="165"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="199"/>
         <source>Use the drop-down list to select the field containing a directory path to the image. This can be an absolute or relative path.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan daftar drop-down untuk memilih field yang berisikan jalur direktori ke gambar tersebut. Ini dapat berupa jalur absolut atau relatif.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="222"/>
         <source>If checked the path to the image will be defined appending the attribute in the field selected from the “Attribute Containing Path to Image” drop-down list to the “Base Path” defined below.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang jalur ke gambar akan menentukan penambahan atribut pada field yang dipilih dari daftar drop-down &quot;Atribut Berisikan Jalur ke Gambar&quot; ke &quot;Jalur Dasar&quot; yang ditentukan di bawah ini.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="248"/>
         <source>If checked, the relative path values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>jika dicentang, nilai jalur relatif akan disimpan untuk sesi berikutnya.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="267"/>
@@ -34136,109 +34136,109 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="723"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="787"/>
         <source>Reset to default</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset ke standar</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="273"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="395"/>
         <source>Resets the values on this line to the default setting.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset nilai dari garis ini ke pengaturan standarnya.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="347"/>
         <source>If checked an arrow pointing in the direction defined by the attribute in the field selected from the drop-down list to the right will be displayed in the QGIS window on top of the point for this image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang sebuah panah penunjuk arah yang ditentukan oleh atribut pada field yang dipilih dari daftar drop-down ke kanan akan ditampilkan di jendela QGIS pada bagian atas dari titik untuk gambar ini.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="324"/>
         <source>Use the drop-down list to select the field containing the compass bearing for the image. This bearing usually references the direction the camera was pointing when the image was acquired. </source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan daftar drop-down untuk memilih field yang berisikan penunjuk kompas untuk gambar. Penunjuk ini umumnya mereferensikan bahwa kamera telah diarahkan ketika gambar di ambil. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="373"/>
         <source>If checked, the Display Compass Bearing values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang, nilai Tampilan Kompas akan disimpan untuk sesi berikutnya.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="446"/>
         <source>A value to be added to the compass bearing. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Sebuah nilai untuk ditambahkan ke kompas. Ini mengijinkan anda untuk mengimbangi deklinasi (menyesuaikan arah yang dikumpulkan menggunakan arah utara magnetik ke arah utara yang sebenarnya). Deklinasi timur harus dimasukan dengan nilai positif dan deklinasi barat harus menggunakan nilai negatif. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="481"/>
         <source>Define the compass offset using a field from the vector layer attribute table.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan ofset kompas menggunakan field dari tabel atribut lapisan vektor.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="484"/>
         <source> From Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Dari Atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="506"/>
         <source>Use the drop-down list to select the field containing the compass bearing offset. This allows you to compensate for declination (adjust bearings collected using magnetic bearings to true north bearings). East declinations should be entered using positive values and west declinations should use negative values. </source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan daftar drop-down untuk memilih field yang berisikan ofset arah kompas. Ini akan mengijinkan anda untuk menyesuaikan deklinasi (menyesuaikan arah yang dikumpulkan menggunakan arah utara magnetik ke arah utara yang sebenarnya). Deklinasi timur harus dimasukan dengan nilai positif dan deklinasi barat harus menggunakan nilai negatif. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="427"/>
         <source>Define the compass offset manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan ofset kompas secara manual.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="430"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manual</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="542"/>
         <source>If checked, the compass offset values will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang, nilai ofset kompas akan disimpan untuk sesi berikutnya.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="564"/>
         <source>Resets the compass offset values to the default settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset nilai ofset kompas ke pengaturan standar.</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="593"/>
         <source>The base path or url from which images and documents can be “relative”</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur dasar atau url dari gambar dan dokumen bisa &quot;relatif&quot;</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="613"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="626"/>
         <source>Base Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur dasar</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="661"/>
         <source>Enters the default “Base Path” which is the path to the directory of the vector layer containing the image information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan &quot;Jalur Dasar&quot; standar yang mana merupakan jalur ke direktori dari lapisan vektor yang berisikan informasi gambar.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="755"/>
         <source>If checked, the same path rules that are defined for images will be used for non-image documents such as movies, text documents, and sound files. If not checked the path rules will only apply to images and other documents will ignore the Base Path parameter.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang, aturan jalur yang sama ditentukan untuk gambar yang akan digunakan untuk dokumen yang bukan gambar seperti film, dokumen teks, dan arsip suara. Jika tidak dicentang aturan jalur hanya akan berlaku untuk gambar dan dokumen lainnya akan mengabaikan parameter Jalur Dasar.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="629"/>
         <source>The Base Path onto which the relative path defined above will be appended.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur Dasar di atas yang mana merupakan jalur relatif yang ditentukan di atas akan ditambahkan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="171"/>
         <source>File path</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur arsip</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="177"/>
         <source>Attribute containing path to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut berisikan jalur ke arsip</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="225"/>
         <source>Path is relative</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur adalah relatif</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="254"/>
@@ -34248,7 +34248,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="710"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="774"/>
         <source>Remember this</source>
-        <translation type="unfinished"></translation>
+        <translation>Ingat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="276"/>
@@ -34258,115 +34258,116 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="729"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="793"/>
         <source>Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="296"/>
         <source>Compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Arah utara kompas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="302"/>
         <source>Attribute containing compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut berisikan arah utara kompas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="350"/>
         <source>Display compass bearing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan arah utara kompas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="418"/>
         <source>Compass offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset kompas</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="587"/>
         <source>Relative paths</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalur relatif</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="639"/>
         <source>If checked, the Base Path will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>jika dicentang, Jalur Dasar akan disimpan untuk sesi berikutnya.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="690"/>
         <source>If checked, the Base Path will append only the file name instead of the entire relative path (defined above) to create the full directory path to the file. </source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang, Jalur Dasar hanya akan menambahkan nama arsip bukan jalur relatif keseluruhannya (ditentukan di atas) untuk membuat jalur direktori penuh ke arsip. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="693"/>
         <source>Replace entire path/url stored in image path attribute with user defined
 Base Path (i.e. keep only filename from attribute)</source>
-        <translation type="unfinished"></translation>
+        <translation>Gantikan seluruh jalur/url yang tersimpan dalam atribut jalur gambar dengan yang ditentukan oleh pengguna
+Jalur Dasar (contoh. hanya simpan nama arsip dari atribut)</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="704"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="768"/>
         <source>If checked, the  current check-box setting will be saved for the next session.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika dicentang, kotak-centang saat ini akan disimpan untuk sesi berikutnya.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="726"/>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="790"/>
         <source>Clears the check-box on this line.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan kotak centang pada baris ini.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="758"/>
         <source>Apply Path to Image rules when loading docs in external applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Terapkan Jalur ke Gambar ketika memuat dokumen pada aplikasi eksternal</translation>
     </message>
     <message utf8="true">
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="823"/>
         <source>Clicking on Save will save the settings without closing the Options pane. Clicking on Restore Defaults will reset all of the fields to their default settings. It has the same effect as clicking all of the “Reset to default” buttons. </source>
-        <translation type="unfinished"></translation>
+        <translation>Klik Simpan akan menyimpan pengaturan tanpa menutup panel Opsi. Mengklik Kembalikan Standar akan mereset semua field ke pengaturan standarnya. Itu memiliki efek yang sama ketika mengklik tombol &quot;Reset ke standar&quot;.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="834"/>
         <source>Configure External Applications</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan Aplikasi Eksternal</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="855"/>
         <source>File extension and external application in which to load a document of that type</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekstensi arsip dan aplikasi eksternal yang mana akan memuat dokumen dari tipe tersebut</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="880"/>
         <source>A table containing file types that can be opened using eVis. Each file type needs a file extension and the path to an application that can open that type of file. This provides the capability of opening a broad range of files such as movies, sound recording, and text documents instead of only images. </source>
-        <translation type="unfinished"></translation>
+        <translation>Sebuah tabel yang berisikan jenis arsip yang dapat dibuka menggunakan eVis. Setiap tipe arsip membutuhkan ekstensi arsip dan jalur ke aplikasi yang dapat membuka jenis arsip tersebut. Ini menyediakan kapabilitas dari membuka arsip dengan jangkauan yang lebih luas seperti film, rekaman suara, dan dokumen teks bukan hanya gambar. </translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="884"/>
         <source>Extension</source>
-        <translation type="unfinished"></translation>
+        <translation>Ekstensi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="889"/>
         <source>Application</source>
-        <translation type="unfinished"></translation>
+        <translation>Aplikasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="899"/>
         <source>Add new file type</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan tipe arsip baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="902"/>
         <source>Add a new file type with a unique extension and the path for the application that can open the file.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan tipe arsip baru dengan ekstensi unik dan jalur untuk aplikasi tersebut sehingga dapat membuaka arsip.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="916"/>
         <source>Delete current row</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus baris ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/ui/evisgenericeventbrowserguibase.ui" line="919"/>
         <source>Delete the file type highlighted in the table and defined by a file extension and a path to an associated application.</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus jenis arsip yang di tandai pada tabel dan tentukan berdasarkan ekstensi arsip dan jalur untuk aplikasi yang berhubungan.</translation>
     </message>
 </context>
 <context>
