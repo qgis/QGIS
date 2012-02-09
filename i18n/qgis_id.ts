@@ -16896,144 +16896,144 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="52"/>
         <source>Example directory tree:</source>
-        <translation type="unfinished"></translation>
+        <translation>Contoh direktori tree:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="561"/>
         <source>Database Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan Basisdata</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="586"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2668"/>
         <source>Database:</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="607"/>
         <source>Select existing directory or create a new one:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih direktori yang sudah ada atau buat yang baru:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="639"/>
         <source>Location</source>
-        <translation type="unfinished">Lokasi</translation>
+        <translation>Lokasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="654"/>
         <source>Select location</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lokasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="671"/>
         <source>Create new location</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat lokasi baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1147"/>
         <source>Location Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi salah</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1669"/>
         <source>Projection Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyeksi salah</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1676"/>
         <source>Coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem koordinat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1188"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1688"/>
         <source>Projection</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyeksi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1695"/>
         <source>Not defined</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak didefinisikan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1798"/>
         <source>Set current QGIS extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan extent QGIS saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1827"/>
         <source>Set</source>
-        <translation type="unfinished"></translation>
+        <translation>Menentukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1839"/>
         <source>Region Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Region salah</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1870"/>
         <source>S</source>
-        <translation type="unfinished"></translation>
+        <translation>S</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1906"/>
         <source>W</source>
-        <translation type="unfinished">O</translation>
+        <translation>B</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1945"/>
         <source>E</source>
-        <translation type="unfinished"></translation>
+        <translation>T</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1981"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation>U</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2041"/>
         <source>New mapset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset baru:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2526"/>
         <source>Mapset Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset salah</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2567"/>
         <source>&lt;p align=&quot;center&quot;&gt;Existing masets&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p align=&quot;center&quot;&gt;Mapset yang sudah ada&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2687"/>
         <source>Location:</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2706"/>
         <source>Mapset:</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="13"/>
         <source>New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset Baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="17"/>
         <source>GRASS Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="39"/>
         <source>Tree</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="44"/>
         <source>Comment</source>
-        <translation type="unfinished"></translation>
+        <translation>Komentar</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="59"/>
@@ -17042,17 +17042,21 @@ at line %2 column %3</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;GRASS data are stored in tree directory structure. The GRASS database is the top-level directory in this tree structure.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Data GRASS disimpan dalam sttruktur direktori. Basisdata GRASS pada  pada level atas dari direktori pada pada strukturnya.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="596"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigasi...</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="633"/>
         <source>GRASS Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1163"/>
@@ -17061,12 +17065,16 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS location is a collection of maps for a particular territory or project.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Lokasi GRASS merupakan kumpulan peta dari wilayah tertentu atau proyek tertentu.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1716"/>
         <source>Default GRASS Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Region GRASS standar</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="1747"/>
@@ -17075,18 +17083,22 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS region defines a workspace for raster modules. The default region is valid for one location. It is possible to set a different region in each mapset. It is possible to change the default location region later.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Region GRASS merupakan ruangkerja untuk modul raster. Region standar cocok untuk satu lokasi. Itu memungkinkan untuk mengatur region yang berbeda pada setiap mapset. itu memungkinkan untuk merubah lokasi region standar kemudian &lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2033"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2587"/>
         <source>Mapset</source>
-        <translation type="unfinished">Himpunan peta</translation>
+        <translation>Mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2592"/>
         <source>Owner</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemilik</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2625"/>
@@ -17095,12 +17107,16 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;The GRASS mapset is a collection of maps used by one user. A user can read maps from all mapsets in the location but he can open for writing only his mapset (owned by user).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;Sans Serif&apos;; font-size:9pt;&quot;&gt;Mapset GRASS merupakan kumpulan peta yang digunakan oleh satu orang pengguna. Pengguna dapat membaca peta dari semua mapset pada lokasi tersebut tapi dia hanya dapat membuka dan menulis mapsetnya sendiri (yang dimiliki oleh pengguna).&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapsetbase.ui" line="2650"/>
         <source>Create New Mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat mapset baru</translation>
     </message>
 </context>
 <context>
@@ -29920,7 +29936,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="163"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="167"/>
         <source>Offset of the stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset dari pemberhentian</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="131"/>
@@ -29928,7 +29944,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="164"/>
         <location filename="../src/gui/symbology-ng/qgsvectorgradientcolorrampv2dialog.cpp" line="168"/>
         <source>Please enter offset in percents (%) of the new stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan masukan ofset dalam persen (%) dari pemberhentian yang baru</translation>
     </message>
 </context>
 <context>
@@ -29936,53 +29952,53 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="14"/>
         <source>Gradient color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Degradasi warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="32"/>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="65"/>
         <source>Change</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="22"/>
         <source>Color 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna 1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="55"/>
         <source>Color 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna 2</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="74"/>
         <source>Multiple stops</source>
-        <translation type="unfinished"></translation>
+        <translation>Banyak pemberhentian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="86"/>
         <source>Add stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan pemberhentian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="93"/>
         <source>Remove stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus pemberhentian</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="107"/>
         <source>Color</source>
-        <translation type="unfinished">Warna</translation>
+        <translation>Warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="112"/>
         <source>Offset</source>
-        <translation type="unfinished"></translation>
+        <translation>Ofset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorgradientcolorrampv2dialogbase.ui" line="123"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Pratinjau</translation>
     </message>
 </context>
 <context>
@@ -30020,12 +30036,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3111"/>
         <source>renderer failed to save</source>
-        <translation type="unfinished">Perender gagal menyimpan</translation>
+        <translation>Perender gagal menyimpan</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="3118"/>
         <source>no renderer</source>
-        <translation type="unfinished">Tidak ada perender</translation>
+        <translation>Tidak ada perender</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgsvectorlayer.cpp" line="3487"/>
@@ -30131,7 +30147,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectorlayer.cpp" line="2897"/>
         <source>Unknown renderer</source>
-        <translation type="unfinished">Perender tidak diketahui</translation>
+        <translation>Perender tidak diketahui</translation>
     </message>
 </context>
 <context>
@@ -30146,13 +30162,13 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="428"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="504"/>
         <source>Graduated Symbol</source>
-        <translation type="unfinished">Simbol Graduasi</translation>
+        <translation>Simbol Graduasi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="432"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="505"/>
         <source>Continuous Color</source>
-        <translation type="unfinished">Warna Berkelanjutan</translation>
+        <translation>Warna Berkelanjutan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="436"/>
@@ -30193,12 +30209,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="548"/>
         <source>Slider range</source>
-        <translation type="unfinished">Rentang slider</translation>
+        <translation>Rentang slider</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="549"/>
         <source>Dial range</source>
-        <translation type="unfinished">Rentang panggil</translation>
+        <translation>Rentang panggil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="550"/>
@@ -30213,7 +30229,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="554"/>
         <source>Checkbox</source>
-        <translation type="unfinished">Checkbox</translation>
+        <translation>Kotak centang</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="555"/>
@@ -30574,27 +30590,27 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="353"/>
         <source>General</source>
-        <translation type="unfinished">Umum</translation>
+        <translation>Umum</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="480"/>
         <source>Use scale dependent rendering</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan proses render yang bergantung pada skala</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="389"/>
         <source>Display name</source>
-        <translation type="unfinished">Perlihatkan nama</translation>
+        <translation>Perlihatkan nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="412"/>
         <source>Use this control to set which field is placed at the top level of the Identify Results dialog box.</source>
-        <translation type="unfinished">Gunakan kontrol ini untuk menentukan field mana yang ditempatkan pada level teratas dari kotak dialog Hasil-hasil Identifikasi.</translation>
+        <translation>Gunakan kontrol ini untuk menentukan field mana yang ditempatkan pada level teratas dari kotak dialog hasil Identifikasi.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="399"/>
         <source>Display field for the Identify Results dialog box</source>
-        <translation type="unfinished">Field layar dari kotak dialog Hasil-hasil Identifikasi</translation>
+        <translation>Field layar dari kotak dialog hasil Identifikasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="83"/>
@@ -30604,17 +30620,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="238"/>
         <source>Fields</source>
-        <translation type="unfinished">Field-field</translation>
+        <translation>Field</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="402"/>
         <source>This sets the display field for the Identify Results dialog box</source>
-        <translation type="unfinished">Ini menentukan field layar untuk kotak dialog Hasil-hasil Identifikasi</translation>
+        <translation>Ini mengatur tampilan field untuk hasil identifikasi kotak dialog</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="405"/>
         <source>Display field</source>
-        <translation type="unfinished">Field Layar</translation>
+        <translation>Tampilan field</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="419"/>
@@ -30624,12 +30640,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="431"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="470"/>
         <source>Init function</source>
-        <translation type="unfinished">Fungsi init</translation>
+        <translation>Fungsi init</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="515"/>
@@ -30709,7 +30725,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="872"/>
         <source>Pen color</source>
-        <translation type="unfinished">Warna pena</translation>
+        <translation>Warna pena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="1053"/>
@@ -30719,7 +30735,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="776"/>
         <source>Pen width</source>
-        <translation type="unfinished">Lebar pena</translation>
+        <translation>Lebar pena</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorlayerpropertiesbase.ui" line="863"/>
@@ -31005,46 +31021,46 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="14"/>
         <source>Random color ramp</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna acak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="22"/>
         <source>Hue</source>
-        <translation type="unfinished"></translation>
+        <translation>Hue</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="29"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="67"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="105"/>
         <source>from</source>
-        <translation type="unfinished"></translation>
+        <translation>dari</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="43"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="81"/>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="119"/>
         <source>to</source>
-        <translation type="unfinished"></translation>
+        <translation>ke</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="60"/>
         <source>Saturation</source>
-        <translation type="unfinished"></translation>
+        <translation>Saturasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="98"/>
         <source>Value</source>
-        <translation type="unfinished">Nilai</translation>
+        <translation>Nilai</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="140"/>
         <source>Classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsvectorrandomcolorrampv2dialogbase.ui" line="194"/>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Pratinjau</translation>
     </message>
 </context>
 <context>
@@ -31052,12 +31068,12 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="104"/>
         <source>Loading WFS data</source>
-        <translation type="unfinished"></translation>
+        <translation>Memuat data WFS</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsdata.cpp" line="104"/>
         <source>Abort</source>
-        <translation type="unfinished"></translation>
+        <translation>Batalkan</translation>
     </message>
 </context>
 <context>
@@ -31065,7 +31081,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfsplugin.cpp" line="53"/>
         <source>Add W&amp;FS layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah lapisan W&amp;FS...</translation>
     </message>
 </context>
 <context>
@@ -31073,17 +31089,17 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1768"/>
         <source>unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak diketahui</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="1774"/>
         <source>received %1 bytes from %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Diterima %1 byte dari %2</translation>
     </message>
     <message>
         <location filename="../src/providers/wfs/qgswfsprovider.cpp" line="2279"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan</translation>
     </message>
 </context>
 <context>
@@ -31091,57 +31107,57 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="278"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="269"/>
         <source>No Layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lapisan</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="269"/>
         <source>capabilities document contained no layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapabilitas dokumen tidak memiliki lapisan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="283"/>
         <source>Capabilities document is not valid</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapabilitas dokumen tidak tepat</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="288"/>
         <source>GetCapabilities Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal MemperolehKapabilitas</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="303"/>
         <source>Create a new WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat koneksi WFS baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="314"/>
         <source>Modify WFS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Modifikasi koneksi WFS</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="328"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi penghapusan</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="470"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat koneksi</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="471"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip XML (*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselect.cpp" line="326"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin ingin menghapus koneksi %1 dan semua pengaturan yang berhubungan dengannya?</translation>
     </message>
 </context>
 <context>
@@ -31149,82 +31165,82 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="113"/>
         <source>Title</source>
-        <translation type="unfinished">Judul</translation>
+        <translation>Judul</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="118"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="123"/>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstrak</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="169"/>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah...</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="131"/>
         <source>Coordinate reference system</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem koordinat referensi</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="20"/>
         <source>Server connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi server</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="41"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="61"/>
         <source>Delete</source>
-        <translation type="unfinished">Hapus</translation>
+        <translation>Hapus</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="51"/>
         <source>Edit</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="34"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Hubungkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="84"/>
         <source>Load connections from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat koneksi dari arsip</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="87"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Memuat</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="94"/>
         <source>Save connections to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan koneksi ke arsip</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="97"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="179"/>
         <source>Only request features overlapping the current view extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Hanya meminta fitur yang tumpang tindih dengan tampilan extent saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/wfs/qgswfssourceselectbase.ui" line="14"/>
         <source>Add WFS Layer from a Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah lapisan WFS dari server</translation>
     </message>
 </context>
 <context>
@@ -31232,28 +31248,28 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="31"/>
         <source>Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="50"/>
         <source>Add</source>
-        <translation type="unfinished">Tambah</translation>
+        <translation>Tambah</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="57"/>
         <source>Remove</source>
-        <translation type="unfinished">Buang</translation>
+        <translation>Buang</translation>
     </message>
     <message>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="68"/>
         <location filename="../src/plugins/diagram_overlay/qgswkndiagramfactorywidgetbase.ui" line="73"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -31261,154 +31277,153 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="60"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="222"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin ingin menghapus koneksi %1 dan semua pengaturan yang berhubungan dengannya?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="224"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi menghapus</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="393"/>
         <source>encoding %1 not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak mendukung pengkodean %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="399"/>
         <source>CRS %1 not supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak mendukung CRS %1.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="438"/>
         <source>WMS Password for %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Sandi untuk WMS %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="500"/>
         <source>WMS Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyedia WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="61"/>
         <source>Add selected layers to map</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah lapisan yang dipilih ke peta</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="242"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="243"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip XML (*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="501"/>
         <source>Could not open the WMS Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka penyedia WMS</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgswmssourceselect.cpp" line="886"/>
         <source>Coordinate Reference System (%n available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Sistem koordinat referensi (%n tidak tersedia)</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="874"/>
         <source>Select layer(s)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgswmssourceselect.cpp" line="786"/>
         <source>Options (%n coordinate reference systems available)</source>
         <comment>crs count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>Opsi (sistem koordinat referensi %n tersedia)</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="876"/>
         <source>Select layer(s) or a tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pilih lapisan atau tileset</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="881"/>
         <source>Select either layer(s) or a tileset</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Pilih salah satu lapisan atau tileset</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="893"/>
         <source>No common CRS for selected layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada CRS umum untuk lapisan yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="898"/>
         <source>No CRS selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada CRS yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="903"/>
         <source>No image encoding selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada pengkodean gambar yang dipilih</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/app/qgswmssourceselect.cpp" line="908"/>
         <source>%n Layer(s) selected</source>
         <comment>selected layer count</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
+        <translation>
+            <numerusform>%n lapisan yang dipilih</numerusform>
         </translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="914"/>
         <source>Tileset selected</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tileset dipilih</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1009"/>
         <source>Could not understand the response.  The %1 provider said:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mengerti respon yang diberikan. %1 penyedia mengatakan:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1062"/>
         <source>WMS proxies</source>
-        <translation type="unfinished"></translation>
+        <translation>Proxy WMS</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1062"/>
         <source>Several WMS servers have been added to the server list. Note that if you access the internet via a web proxy, you will need to set the proxy settings in the QGIS options dialog.</source>
-        <translation type="unfinished"></translation>
+        <translation>beberapa server WMS telah ditambahkan ke daftar server. Catatan jika anda mengakses internet menggunakan proxy, anda perlu untuk mengatur proxy pada dialog opsi QGIS.</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1138"/>
         <source>parse error at row %1, column %2: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Penguraian gagal pada baris %1, kolom %2: %3</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1143"/>
         <source>network error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan jaringan: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1166"/>
         <source>The %1 connection already exists. Do you want to overwrite it?</source>
-        <translation type="unfinished"></translation>
+        <translation>koneksi %1 telah ada. Apakah anda ingin menimpanya?</translation>
     </message>
     <message>
         <location filename="../src/app/qgswmssourceselect.cpp" line="1167"/>
         <source>Confirm Overwrite</source>
-        <translation type="unfinished"></translation>
+        <translation>Konfirmasi menimpa</translation>
     </message>
 </context>
 <context>
@@ -31416,179 +31431,179 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="14"/>
         <source>Add Layer(s) from a Server</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah Lapisan dari Server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="21"/>
         <source>Save connections to file</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan koneksi ke arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="75"/>
         <source>C&amp;onnect</source>
-        <translation type="unfinished"></translation>
+        <translation>Hubungkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="82"/>
         <source>&amp;New</source>
-        <translation type="unfinished"></translation>
+        <translation>Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="92"/>
         <source>Edit</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="102"/>
         <source>Delete</source>
-        <translation type="unfinished">Hapus</translation>
+        <translation>Hapus</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="122"/>
         <source>Adds a few example WMS servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah beberapa contoh server WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="128"/>
         <source>Add default servers</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah server standar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="148"/>
         <source>ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="153"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="158"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="384"/>
         <source>Title</source>
-        <translation type="unfinished">Judul</translation>
+        <translation>Judul</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="163"/>
         <source>Abstract</source>
-        <translation type="unfinished"></translation>
+        <translation>Abstrak</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="232"/>
         <source>Save</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="239"/>
         <source>Load connections from file</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat koneksi dari arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="242"/>
         <source>Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="250"/>
         <source>Layer Order</source>
-        <translation type="unfinished"></translation>
+        <translation>Susunan Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="287"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="292"/>
         <source>Style</source>
-        <translation type="unfinished"></translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="301"/>
         <source>Tilesets</source>
-        <translation type="unfinished"></translation>
+        <translation>Tileset</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="328"/>
         <source>Styles</source>
-        <translation type="unfinished">Gaya-gaya</translation>
+        <translation>Style</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="333"/>
         <source>Size</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="338"/>
         <source>Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="343"/>
         <source>CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="352"/>
         <source>Server Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Cari Server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="361"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Cari</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="394"/>
         <source>URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="389"/>
         <source>Description</source>
-        <translation type="unfinished">Deskripsi</translation>
+        <translation>Deskripsi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="402"/>
         <source>Add selected row to WMS list</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah baris yang dipilih ke daftar WMS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="183"/>
         <source>Image encoding</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengkodean gambar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="63"/>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="323"/>
         <source>Layers</source>
-        <translation type="unfinished">Lapisan-lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="190"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="196"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nama Lapisan</translation>
+        <translation>Nama Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="209"/>
         <source>Coordinate Reference System</source>
-        <translation type="unfinished"></translation>
+        <translation>Sistem koordinat referensi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="222"/>
         <source>Change ...</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah ...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgswmssourceselectbase.ui" line="46"/>
         <source>Ready</source>
-        <translation type="unfinished"></translation>
+        <translation>Siap</translation>
     </message>
 </context>
 <context>
