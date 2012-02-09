@@ -4163,7 +4163,7 @@ GEOS-Verarbeitungsfehler: Eine oder mehrere Objekte haben ungültige Geometrie.<
     </message>
     <message>
         <location filename="../src/ui/qgisapp.ui" line="1129"/>
-        <source>Add PostGIS Layer...</source>
+        <source>Add PostGIS layers...</source>
         <translation>PostGIS-Layer hinzufügen...</translation>
     </message>
     <message>
@@ -13637,8 +13637,8 @@ Fehler: %5</translation>
     <name>QgsDbSourceSelectBase</name>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="14"/>
-        <source>Add PostGIS Table(s)</source>
-        <translation>PostGIS-Tabelle(n) hinzufügen</translation>
+        <source>Add PostGIS layers</source>
+        <translation>PostGIS-Layer hinzufügen</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsdbsourceselectbase.ui" line="31"/>
