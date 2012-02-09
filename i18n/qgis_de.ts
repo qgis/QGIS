@@ -28663,7 +28663,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1388"/>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="1737"/>
         <source>Colormap</source>
-        <translation>Farbkarte</translation>
+        <translation>Farbabbildung</translation>
     </message>
     <message>
         <location filename="../src/app/qgsrasterlayerproperties.cpp" line="148"/>
@@ -29071,7 +29071,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1225"/>
         <source>Colormap</source>
-        <translation>Farbkarte</translation>
+        <translation>Farbabbildung</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsrasterlayerpropertiesbase.ui" line="1286"/>
