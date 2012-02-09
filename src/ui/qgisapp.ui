@@ -1126,7 +1126,7 @@
      <normaloff>:/images/themes/default/mActionAddLayer.png</normaloff>:/images/themes/default/mActionAddLayer.png</iconset>
    </property>
    <property name="text">
-    <string>Add PostGIS Layer...</string>
+    <string>Add PostGIS layers...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+D</string>
