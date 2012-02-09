@@ -58,6 +58,7 @@ SET(QGIS_APP_SRCS
   qgsmaptoolmovefeature.cpp
   qgsmaptoolmovelabel.cpp
   qgsmaptoolmovevertex.cpp
+  qgsmaptooloffsetcurve.cpp
   qgsmaptoolreshape.cpp
   qgsmaptoolrotatelabel.cpp
   qgsmaptoolrotatepointsymbols.cpp
