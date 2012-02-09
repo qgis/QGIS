@@ -856,7 +856,8 @@ void QgsLegend::addLayer( QgsMapLayer * layer )
   // first layer?
   if ( layers().count() == 1 )
   {
-    mMapCanvas->mapRenderer()->setDestinationCrs( layer->crs() );
+    if ( !mMapCanvas->mapRenderer()->hasCrsTransformEnabled() )
+      mMapCanvas->mapRenderer()->setDestinationCrs( layer->crs() );
     mMapCanvas->zoomToFullExtent();
     mMapCanvas->clearExtentHistory();
   }
