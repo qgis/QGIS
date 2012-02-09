@@ -1297,13 +1297,14 @@ const QgsRenderer* QgsVectorLayer::renderer() const
   return mRenderer;
 }
 
-void QgsVectorLayer::setRenderer( QgsRenderer * r )
+void QgsVectorLayer::setRenderer( QgsRenderer *r )
 {
   if ( !hasGeometryType() )
     return;
 
   if ( r != mRenderer )
   {
+    setUsingRendererV2( false );
     delete mRenderer;
     mRenderer = r;
   }
@@ -4634,13 +4635,18 @@ QgsFeatureRendererV2* QgsVectorLayer::rendererV2()
 {
   return mRendererV2;
 }
-void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2* r )
+
+void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 {
   if ( !hasGeometryType() )
     return;
 
-  delete mRendererV2;
-  mRendererV2 = r;
+  if ( r != mRendererV2 )
+  {
+    setUsingRendererV2( true );
+    delete mRendererV2;
+    mRendererV2 = r;
+  }
 }
 bool QgsVectorLayer::isUsingRendererV2()
 {
