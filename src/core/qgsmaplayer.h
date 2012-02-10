@@ -201,7 +201,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
     unsigned int getTransparency();
 
     /** Mutator for transparency level. Should be between 0 and 255 */
-    void setTransparency( unsigned int );
+    virtual void setTransparency( unsigned int );
 
     /**
      * If an operation returns 0 (e.g. draw()), this function
