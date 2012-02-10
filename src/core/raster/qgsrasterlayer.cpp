@@ -3151,7 +3151,8 @@ bool QgsRasterLayer::readSymbology( const QDomNode& layer_node, QString& errorMe
   {
     QgsColorRampShader* myColorRampShader = ( QgsColorRampShader* ) mRasterShader->rasterShaderFunction();
 
-    //TODO: Remove the customColorRampType check and following if() in v2.0, added for compatibility with older ( bugged ) project files
+    //TODO: Remove the customColorRampType check and following if() in v2.0,
+    //added for compatibility with older ( bugged ) project files
     QDomNode customColorRampTypeNode = customColorRampNode.namedItem( "customColorRampType" );
     QDomNode colorRampTypeNode = customColorRampNode.namedItem( "colorRampType" );
     QString myRampType = "";
@@ -3760,7 +3761,8 @@ QString QgsRasterLayer::generateBandName( int theBandNumber )
  */
 bool QgsRasterLayer::hasBand( QString const & theBandName )
 {
-  //TODO: This function is no longer really needed and about be removed -- it is only used to see if "Palette" exists which is not the correct way to see if a band is paletted or not
+  //TODO: This function is no longer really needed and about be removed
+  //-- it is only used to see if "Palette" exists which is not the correct way to see if a band is paletted or not
   QgsDebugMsg( "Looking for band : " + theBandName );
 
   for ( int i = 1; i <= mDataProvider->bandCount(); i++ )
@@ -3984,3 +3986,12 @@ bool QgsRasterLayer::readColorTable( int theBandNumber, QList<QgsColorRampShader
   return true;
 }
 
+
+void QgsRasterLayer::setTransparency( unsigned int theInt )
+{
+  mTransparencyLevel = theInt;
+  if ( mRenderer )
+  {
+    mRenderer->setOpacity( mTransparencyLevel / 255.0 );
+  }
+}
