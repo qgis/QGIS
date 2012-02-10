@@ -1293,7 +1293,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Warp an image into a new coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Warp gambar ke dalam sistem koordinat baru</translation>
     </message>
     <message>
         <source>Create raster from the scattered data</source>
@@ -2049,7 +2049,7 @@ Nonaktifkan opsi &apos;Gunakan interseksi extent&apos; untuk mendapatkan extent 
         <location filename="../python/plugins/GdalTools/tools/widgetTranslate.ui" line="26"/>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="26"/>
         <source>Batch mode (for processing whole directory)</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus batch (untuk mengolah direktori secara keseluruhan)</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetConvert.ui" line="35"/>
@@ -2087,7 +2087,7 @@ Nonaktifkan opsi &apos;Gunakan interseksi extent&apos; untuk mendapatkan extent 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="66"/>
         <source>Inverse distance to a power</source>
-        <translation type="unfinished">Jarak terbalik ke pangkat</translation>
+        <translation>Jarak terbalik ke dalam pangkat</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="71"/>
@@ -2211,12 +2211,12 @@ Nonaktifkan opsi &apos;Gunakan interseksi extent&apos; untuk mendapatkan extent 
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="63"/>
         <source>Suppress GCP printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekankan untuk pencetah GCP</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetInfo.ui" line="70"/>
         <source>Suppress metadata printing</source>
-        <translation type="unfinished"></translation>
+        <translation>Tekankan untuk mencetak metadata</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetMerge.ui" line="20"/>
@@ -2788,7 +2788,7 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="161"/>
         <source>&amp;Memory used for caching</source>
-        <translation type="unfinished">&amp;Memori yang digunakan untuk caching</translation>
+        <translation>&amp;Memori yang digunakan untuk menyimpan arsip proses sementara dalam komputer anda</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetGrid.ui" line="743"/>
@@ -2799,7 +2799,7 @@ Nilai &apos;abu-abu&apos; (dari GDAL 1.7.0) memungkikan untuk memperluas dataset
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetWarp.ui" line="260"/>
         <source>Use m&amp;ultithreaded warping implementation</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Gunakan implementasi m&amp;ultithreaded warping</translation>
     </message>
     <message>
         <location filename="../python/plugins/GdalTools/tools/widgetTileIndex.ui" line="14"/>
@@ -6142,7 +6142,7 @@ Only %1 of %2 features written.</source>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="26"/>
         <source>Displacement plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Pemindahan plugin</translation>
     </message>
     <message>
         <location filename="../src/plugins/point_displacement_renderer/qgsdisplacementplugin.cpp" line="27"/>
@@ -6480,7 +6480,7 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="225"/>
         <source>Invalid file descriptor (port was not opened correctly)</source>
-        <translation type="unfinished"></translation>
+        <translation>Pendeskripsi arsip tidak benar (Port tidak terbuka dengan benar)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="226"/>
@@ -6495,12 +6495,12 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="228"/>
         <source>Operation timed out (POSIX)</source>
-        <translation type="unfinished">Operasi kehabisan waktu</translation>
+        <translation>Operasi kehabisan waktu</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="229"/>
         <source>The file opened by the port is not a valid device</source>
-        <translation type="unfinished">TIdak ada arsip yang dibuka oleh port yang merupakan alat yang tidak tepat</translation>
+        <translation>TIdak ada arsip yang dibuka oleh port yang merupakan merupakan perangkat yang tidak tepat</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="230"/>
@@ -6510,47 +6510,47 @@ Anda akan melihat pesan ini karena tidak memiliki variabel DISPLAY.
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="231"/>
         <source>The port detected a framing error (usually caused by incorrect baud rate settings)</source>
-        <translation type="unfinished"></translation>
+        <translation>Port mendeteksi kesalahan framing (biasanya disebabkan oleh pengaturan laju transmisi data yang tidak tepat)</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="232"/>
         <source>There was an I/O error while communicating with the port</source>
-        <translation type="unfinished"></translation>
+        <translation>Terjadi kesalahan I/O ketika berkomunikasi dengan port</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="233"/>
         <source>Character buffer overrun</source>
-        <translation type="unfinished"></translation>
+        <translation>Karakter buffer yang terlalu banyak</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="234"/>
         <source>Receive buffer overflow</source>
-        <translation type="unfinished"></translation>
+        <translation>Menerima buffer yang melimpah</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="235"/>
         <source>The port detected a parity error in the received data</source>
-        <translation type="unfinished"></translation>
+        <translation>Port mendeteksi ketidaksamaan dalam menerima data</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="236"/>
         <source>Transmit buffer overflow</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengiriman buffer melimpah</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="237"/>
         <source>General read operation failure</source>
-        <translation type="unfinished"></translation>
+        <translation>Operasi pembacaan umum gagal</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="238"/>
         <source>General write operation failure</source>
-        <translation type="unfinished"></translation>
+        <translation>Operasi penulisan umum gagal</translation>
     </message>
     <message>
         <location filename="../src/core/gps/qextserialport/qextserialport.cpp" line="239"/>
         <source>Unknown error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan tidak diketahui: %1</translation>
     </message>
 </context>
 <context>
@@ -9980,12 +9980,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="100"/>
         <source>Item opacity changed</source>
-        <translation type="unfinished"></translation>
+        <translation>TIngkat kebeningn item dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="116"/>
         <source>Item outline width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar garis tepi item</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="130"/>
@@ -9995,7 +9995,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposeritemwidget.cpp" line="178"/>
         <source>Item position changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Posisi item dirubah</translation>
     </message>
 </context>
 <context>
@@ -10594,12 +10594,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="727"/>
         <source>Changed annotation direction</source>
-        <translation type="unfinished"></translation>
+        <translation>Perubahan arah anotasi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="755"/>
         <source>Changed annotation precision</source>
-        <translation type="unfinished"></translation>
+        <translation>Perubahan persisi anotasi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposermapwidget.cpp" line="44"/>
@@ -11015,12 +11015,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="355"/>
         <source>Scalebar label bar space</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposerscalebarwidget.cpp" line="368"/>
         <source>Scalebar box content space</source>
-        <translation type="unfinished">Jarak isi box skala bar</translation>
+        <translation>Jarak isi kotak skala bar</translation>
     </message>
 </context>
 <context>
@@ -11170,7 +11170,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="195"/>
         <source>Select fill color</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih warna pengisi</translation>
     </message>
     <message>
         <location filename="../src/app/composer/qgscomposershapewidget.cpp" line="201"/>
@@ -11188,12 +11188,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="32"/>
         <source>Shape</source>
-        <translation type="unfinished"></translation>
+        <translation>Bentuk </translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="41"/>
         <source>Shape outline color...</source>
-        <translation type="unfinished">Warna tepi shape...</translation>
+        <translation>Warna tepi dari shape...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="48"/>
@@ -11203,19 +11203,19 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="55"/>
         <source>Transparent fill</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna pengisi transparan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="62"/>
         <source>Shape fill Color...</source>
-        <translation type="unfinished"></translation>
+        <translation>Warna pengisi shape...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposershapewidgetbase.ui" line="69"/>
         <source>Rotation </source>
         <comment>Rotation</comment>
         <extracomment>Rotation</extracomment>
-        <translation>Rotasi</translation>
+        <translation>Rotasi </translation>
     </message>
 </context>
 <context>
@@ -11346,7 +11346,7 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="142"/>
         <source>Grid stroke width</source>
-        <translation type="unfinished"></translation>
+        <translation>Lebar goresan grid</translation>
     </message>
     <message>
         <location filename="../src/ui/qgscomposertablewidgetbase.ui" line="157"/>
@@ -11490,32 +11490,32 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="423"/>
         <source>Aligned items hcenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar horisontal tengahkan item</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="454"/>
         <source>Aligned items right</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar kanankan item</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="484"/>
         <source>Aligned items top</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar ataskan item</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="513"/>
         <source>Aligned items vcenter</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajar vertikal tengahkan item</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="542"/>
         <source>Aligned items bottom</source>
-        <translation type="unfinished"></translation>
+        <translation>Sejajarkan bawahkan item</translation>
     </message>
     <message>
         <location filename="../src/core/composer/qgscomposition.cpp" line="562"/>
         <source>Item z-order changed</source>
-        <translation type="unfinished"></translation>
+        <translation>Urutan -z item telah dirubah</translation>
     </message>
 </context>
 <context>
@@ -11997,12 +11997,12 @@ Apakah kelas yang sudah ada sebelumnya akan dihapus sebelum pengklasifikasian?</
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="465"/>
         <source>inverse transform</source>
-        <translation>Balikkan transformasi</translation>
+        <translation>Transformasi terbalik</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="472"/>
         <source>forward transform</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformasi ke depan</translation>
     </message>
     <message>
         <location filename="../src/core/qgscoordinatetransform.cpp" line="492"/>
@@ -13012,7 +13012,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="178"/>
         <source>Show all labels (i.e. including colliding labels)</source>
-        <translation type="unfinished">Tampilkan semua label (seperti termasuk label colliding)</translation>
+        <translation>Tampilkan semua label (seperti termasuk label yang bertabrakan/tumpang tindih)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsengineconfigdialog.ui" line="185"/>
@@ -13253,7 +13253,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsformannotationdialog.cpp" line="62"/>
         <source>Qt designer file</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip pendesain Qt</translation>
     </message>
 </context>
 <context>
@@ -14434,7 +14434,7 @@ Silahkan pilih kembali arsip yang tepat.</translation>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefdescriptiondialogbase.ui" line="14"/>
         <source>Description georeferencer</source>
-        <translation type="unfinished"></translation>
+        <translation>Deskripsi peng-georeferensi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgsgeorefdescriptiondialogbase.ui" line="46"/>
@@ -14443,7 +14443,7 @@ Silahkan pilih kembali arsip yang tepat.</translation>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -15429,7 +15429,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="244"/>
         <source>Cannot open vector for update.</source>
-        <translation type="unfinished">Tidak dapat membuka vektor untuk di perbarui.</translation>
+        <translation>Tidak dapat membuka vektor untuk di perbarui.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="699"/>
@@ -15449,12 +15449,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1410"/>
         <source>Orphan record was left in attribute table. &lt;br&gt;Delete the record?</source>
-        <translation type="unfinished"></translation>
+        <translation>Rekaman orpham tertinggal pada tabel atribut &lt;br&gt; Hapus rekaman data tersebut?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="1420"/>
         <source>Cannot delete orphan record: </source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menghapus rekaman data orphan: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="407"/>
@@ -15464,7 +15464,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="408"/>
         <source>Highlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorot</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassedit.cpp" line="409"/>
@@ -16269,12 +16269,12 @@ pada baris %2 kolom %3</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalcbase.ui" line="13"/>
         <source>MainWindow</source>
-        <translation type="unfinished"></translation>
+        <translation>Jendela Utama</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmapcalcbase.ui" line="22"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran</translation>
     </message>
 </context>
 <context>
@@ -16283,12 +16283,12 @@ pada baris %2 kolom %3</translation>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1230"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1496"/>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalankan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1467"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Berhenti</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="167"/>
@@ -16303,59 +16303,59 @@ pada baris %2 kolom %3</translation>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1391"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1462"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1261"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1288"/>
         <source>Cannot get input region</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memperoleh region input</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1277"/>
         <source>Use Input Region</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan region input</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1480"/>
         <source>&lt;B&gt;Successfully finished&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;berhasil diselesaikan&lt;B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1489"/>
         <source>&lt;B&gt;Finished with error&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Terselesaikan dengan kesalahan&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1494"/>
         <source>&lt;B&gt;Module crashed or killed&lt;/B&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;B&gt;Modul crash atau dimatikan&lt;/B&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="260"/>
         <source>Please ensure you have the GRASS documentation installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan untuk memastikan anda memiliki dokumentasi GRASS yang terinstall di komputer anda.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="153"/>
         <source>Module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Modul:%1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="167"/>
         <source>The module file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip modul (%1) tidak ditemukan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="172"/>
         <source>Cannot open module file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka arsip modul (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="180"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1035"/>
         <source>Cannot read module file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membaca arsip modul (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="181"/>
@@ -16363,52 +16363,54 @@ pada baris %2 kolom %3</translation>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+pada baris %2 kolom %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="214"/>
         <source>Module %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Modul %1 tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="259"/>
         <source>Cannot find man page %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan isi halaman %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1024"/>
         <source>Not available, description not found (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak tersedia, deskripsi tidak ditemukan (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1028"/>
         <source>Not available, cannot open description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak tersedia, tidak dapat membuka deskripsi (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1040"/>
         <source>Not available, incorrect description (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak tersedia, deskripsi tidak tepat (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1272"/>
         <source>Input %1 outside current region!</source>
-        <translation type="unfinished"></translation>
+        <translation>Input %1 berada di luar region ini!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1300"/>
         <source>Output %1 exists! Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>output %1 sudah ada! Timpa?</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1391"/>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan modul %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="1462"/>
         <source>Cannot start module: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memulai modul: %1</translation>
     </message>
 </context>
 <context>
@@ -16416,42 +16418,42 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="13"/>
         <source>GRASS Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Modul GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="20"/>
         <source>Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opsi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="25"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="47"/>
         <source>Manual</source>
-        <translation type="unfinished"></translation>
+        <translation>Manual</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="116"/>
         <source>Run</source>
-        <translation type="unfinished"></translation>
+        <translation>Jalankan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="159"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutup</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="139"/>
         <source>View output</source>
-        <translation type="unfinished"></translation>
+        <translation>Lihat output</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodulebase.ui" line="78"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Label Teks</translation>
     </message>
 </context>
 <context>
@@ -16459,17 +16461,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3015"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3028"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3028"/>
         <source>&apos;layer&apos; attribute in field tag with key= %1 is missing.</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;lapisan&apos; atribut dalam field yang ditandai dengan kode=%1 hilang.</translation>
     </message>
 </context>
 <context>
@@ -16477,17 +16479,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3205"/>
         <source>File</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3334"/>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; nilai yang hilang</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3341"/>
         <source>%1:&amp;nbsp;directory does not exist</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; direktori tidak ada</translation>
     </message>
 </context>
 <context>
@@ -16497,37 +16499,37 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2787"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2967"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2968"/>
         <source>PostGIS driver in OGR does not support schemas!&lt;br&gt;Only the table name will be used.&lt;br&gt;It can result in wrong input if more tables of the same name&lt;br&gt;are present in the database.</source>
-        <translation type="unfinished"></translation>
+        <translation>Driver PostGIS pada OGR tidak mendukung skema! &lt;br&gt;Hanya nama tabel yang akan digunakan.&lt;br&gt; Itu dapat menghasilkan input yang salah jika lebih banyak tabel dengan nama yang sama&lt;br&gt;ada dalam basisdata.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2772"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan opsi lapisan %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2752"/>
         <source>OGR/PostGIS/GDAL Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Input OGR/PostGIS/GDAL</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2787"/>
         <source>Cannot find whereoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan opsi where %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2833"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2995"/>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; tidak ada input</translation>
     </message>
 </context>
 <context>
@@ -16538,47 +16540,47 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2235"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2252"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2276"/>
         <source>Use region of this map</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan region dari peta ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2153"/>
         <source>Cannot find typeoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan opsi tipe %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2162"/>
         <source>Cannot find values for typeoption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan nilai untuk opsi tipe %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2235"/>
         <source>Cannot find layeroption %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan opsi lapisan %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2252"/>
         <source>GRASS element %1 not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Elemen GRASS %1 tidak didukung</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2345"/>
         <source>Select a layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2628"/>
         <source>%1:&amp;nbsp;no input</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; no input</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2129"/>
         <source>Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Input</translation>
     </message>
 </context>
 <context>
@@ -16586,7 +16588,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="2068"/>
         <source>%1:&amp;nbsp;missing value</source>
-        <translation type="unfinished"></translation>
+        <translation>%1:&amp;nbsp; nilai yang hilang</translation>
     </message>
 </context>
 <context>
@@ -16594,7 +16596,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="3101"/>
         <source>Selected categories</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih kategori</translation>
     </message>
 </context>
 <context>
@@ -16602,17 +16604,17 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="590"/>
         <source>Item with key %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Item dengan kunci %1 tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="551"/>
         <source>&lt;&lt; Hide advanced options</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;&lt; Hilangkan opsi lanjutan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="556"/>
         <source>Show advanced options &gt;&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan opsi lanjutan &gt;&gt;</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="324"/>
@@ -16626,60 +16628,60 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="907"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="944"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="852"/>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="907"/>
         <source>Cannot get current region</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan region saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="324"/>
         <source>Cannot find module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan modul %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="344"/>
         <source>Cannot start module %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memulai modul %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="345"/>
         <source>&lt;br&gt;command: %1 %2&lt;br&gt;%3&lt;br&gt;%4</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;printah: %1 %2 &lt;br&gt;%3&lt;br&gt;%4</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="357"/>
         <source>Cannot read module description (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membaca deskripsi modul (%1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="358"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 pada bariis %2 kolom %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="429"/>
         <source>Cannot find key %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menemukan kunci %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="606"/>
         <source>Item with id %1 not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Item dengan id %1 tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="884"/>
         <source>Cannot check region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memeriksa region pada peta %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassmodule.cpp" line="944"/>
         <source>Cannot set region of map %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mengatur region pada peta %1</translation>
     </message>
 </context>
 <context>
@@ -16687,55 +16689,55 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="118"/>
         <source>Database</source>
-        <translation type="unfinished">Basisdata</translation>
+        <translation>Basisdata</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="130"/>
         <source>Location 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="125"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="127"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="134"/>
         <source>User&apos;s mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset pengguna</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="123"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="132"/>
         <source>System mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset sistem</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="121"/>
         <source>Location 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="183"/>
         <source>Enter path to GRASS database</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan jalur ke basisdata GRASS</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="191"/>
         <source>The directory doesn&apos;t exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Direktori tidak ada!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="336"/>
         <source>Enter location name!</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan nama lokasi!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="343"/>
         <source>The location exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi telah ada sebelumnya!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="468"/>
         <source>Selected projection is not supported by GRASS!</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyeksi yang dipilih tidak didukung oleg GRASS!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="503"/>
@@ -16750,100 +16752,100 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1048"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1057"/>
         <source>Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="503"/>
         <source>Cannot create projection.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuat proyeksi.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="551"/>
         <source>Cannot reproject previously set region, default region set.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memproyeksikan kembali region yang proyeksinya telah ditentukan sebelumnya, reion standar telah ditentukan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="678"/>
         <source>North must be greater than south</source>
-        <translation type="unfinished"></translation>
+        <translation>Utara harus lebih besar dari selatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="683"/>
         <source>East must be greater than west</source>
-        <translation type="unfinished"></translation>
+        <translation>Utara harus lebih besar dari barat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="875"/>
         <source>Cannot reproject selected region.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memproyeksikan kembali region yang dipilih.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="960"/>
         <source>Cannot reproject region</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memproyeksikan kembali region</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1178"/>
         <source>Enter mapset name.</source>
-        <translation type="unfinished"></translation>
+        <translation>Masukan nama mapset.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1188"/>
         <source>The mapset already exists</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset telah ada</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1206"/>
         <source>Database: </source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata: </translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1217"/>
         <source>Location: </source>
-        <translation type="unfinished"></translation>
+        <translation>Lokasi:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1219"/>
         <source>Mapset: </source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset:</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1258"/>
         <source>Create location</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat lokasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1285"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1295"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1302"/>
         <source>Create mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat mapset</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1295"/>
         <source>Cannot open DEFAULT_WIND</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka DEFAULT_WIND</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1302"/>
         <source>Cannot open WIND</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka WIND</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1324"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1329"/>
         <source>New mapset</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1330"/>
         <source>New mapset successfully created and set as current working mapset.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset baru berhasil dibuat dan ditentukan sebagai mapset kerja saat ini.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1286"/>
         <source>Cannot create new mapset directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuat direktori mapset baru</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="838"/>
@@ -16851,44 +16853,45 @@ at line %2 column %3</source>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1049"/>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1058"/>
         <source>Cannot create QgsCoordinateReferenceSystem</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuat SistemReferensiKoordinatQgs</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="220"/>
         <source>No writable locations, the database is not writable!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada lokasi yang bisa ditulisi, basisdata tidak dapat ditulis!</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="727"/>
         <source>Regions file (%1) not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip region (%1) tidak ditemukan.</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="733"/>
         <source>Cannot open locations file (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka lokasi arsip (%1)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="743"/>
         <source>Cannot read locations file (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membaca lokasi arsip (%1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="744"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1 pada baris %2 kolom %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1259"/>
         <source>Cannot create new location: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuat lokasi baru: %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrassnewmapset.cpp" line="1325"/>
         <source>New mapset successfully created, but cannot be opened: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Mapset baru berhasil dibuat, tetapi tidak dapat dibuka: %1</translation>
     </message>
 </context>
 <context>
@@ -22469,12 +22472,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="57"/>
         <source>Add Oracle GeoRaster Layer...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah lapisan Oracle GeoRaster...</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsoracle_plugin.cpp" line="59"/>
         <source>Add a Oracle Spatial GeoRaster...</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah Oracle Spatial Georaster...</translation>
     </message>
 </context>
 <context>
@@ -23002,7 +23005,7 @@ geometry.</source>
     <name>QgsPluginInstaller</name>
     <message>
         <source>Couldn&apos;t parse output from the repository</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Tidak bisa menguraikan output dari repository</translation>
     </message>
     <message>
         <source>Couldn&apos;t open the local plugin directory</source>
@@ -29544,12 +29547,12 @@ Overwrite?</source>
     <message>
         <location filename="../src/app/qgstipgui.cpp" line="53"/>
         <source>&amp;Previous</source>
-        <translation type="unfinished"></translation>
+        <translation>Sebelumnya</translation>
     </message>
     <message>
         <location filename="../src/app/qgstipgui.cpp" line="57"/>
         <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Berikutnya</translation>
     </message>
 </context>
 <context>
@@ -34375,32 +34378,32 @@ Jalur Dasar (contoh. hanya simpan nama arsip dari atribut)</translation>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="51"/>
         <source>Zoom in</source>
-        <translation type="unfinished">Zom +</translation>
+        <translation>Perbesar</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="52"/>
         <source>Zoom in to see more detail.</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar untuk melihat lebih detil.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="53"/>
         <source>Zoom out</source>
-        <translation type="unfinished">Zom keluar</translation>
+        <translation>Perkecil</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="54"/>
         <source>Zoom out to see more area.</source>
-        <translation type="unfinished"></translation>
+        <translation>Perkecil untuk melihat lebih luas.</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="55"/>
         <source>Zoom to full extent</source>
-        <translation type="unfinished">Zom ke eksten penuh</translation>
+        <translation>Perbesar ke seluruh extent</translation>
     </message>
     <message>
         <location filename="../src/plugins/evis/eventbrowser/evisimagedisplaywidget.cpp" line="56"/>
         <source>Zoom to display the entire image.</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbesar untuk menampilkan seluruh gambar.</translation>
     </message>
 </context>
 <context>
@@ -34624,87 +34627,87 @@ Plugin akan dinonaktifkan.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="7"/>
         <source>(1-256)</source>
-        <translation type="unfinished"></translation>
+        <translation>(1-256)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="8"/>
         <source>(Optional) column to read labels</source>
-        <translation type="unfinished"></translation>
+        <translation>(psional) kolom untuk membaca label</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="9"/>
         <source>3D-Viewer (NVIZ)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilan-3D (NVIZ)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="10"/>
         <source>3d Visualization</source>
-        <translation type="unfinished"></translation>
+        <translation>Visualisasi 3D</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="11"/>
         <source>Add a value to the current category values</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan nilai ke nilai kategori saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="12"/>
         <source>Add elements to layer (ALL elements of the selected layer type!)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah elemen ka lapisan (semua elemen dari tipe lapisan yang dipilih!)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="13"/>
         <source>Add missing centroids to closed boundaries</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah sentroid yang hilang ke batar terdekat</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="14"/>
         <source>Add one or more columns to attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>tambahkan satu atau lebih kolom ke tabel atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="15"/>
         <source>Allocate network</source>
-        <translation type="unfinished"></translation>
+        <translation>Alokasi jaringan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="16"/>
         <source>Assign constant value to column</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetapkan nilai konstan ke kolom</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="17"/>
         <source>Assign new constant value to column only if the result of query is TRUE</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetapkan nilai konstan baru ke kolom hanya jika haril kueri BENAR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="18"/>
         <source>Assign new value as result of operation on columns to column in attribute table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetapkan nilai baru sebagai hasil dari operasi pada kolom di tabel atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="19"/>
         <source>Assign new value to column as result of operation on columns only if the result of query is TRUE</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetapkan nilai baru untuk kolom sebagai hasil dari operasi pada kolom hanya jika hasil kueri BENAR</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="20"/>
         <source>Attribute field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="21"/>
         <source>Attribute field (interpolated values)</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut field (nilai interpolasi)</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="22"/>
         <source>Attribute field to (over)write</source>
-        <translation type="unfinished"></translation>
+        <translation>Field atribut untuk ditimpa</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="23"/>
         <source>Attribute field to join</source>
-        <translation type="unfinished"></translation>
+        <translation>Field atribut untuk digabungkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
