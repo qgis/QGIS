@@ -2443,9 +2443,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     mDrawingStyle = MultiBandColor;  //sensible default
 
     // read standard deviations
-    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
+    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum &&
+         myQSettings.value( "/Raster/useStandardDeviation", false ).toBool() )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
     }
   }
   else                        //GrayOrUndefined
@@ -2466,9 +2467,10 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
     }
 
     // read standard deviations
-    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum )
+    if ( mContrastEnhancementAlgorithm == QgsContrastEnhancement::StretchToMinimumMaximum &&
+         myQSettings.value( "/Raster/useStandardDeviation", false ).toBool() )
     {
-      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toInt() );
+      setStandardDeviations( myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
     }
   }
   // Debug

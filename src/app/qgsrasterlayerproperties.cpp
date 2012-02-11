@@ -620,6 +620,8 @@ void QgsRasterLayerProperties::sync()
     }
   }
 
+  mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
+
   if ( mRasterLayer->dataProvider()->dataType( 1 ) != QgsRasterDataProvider::ARGBDataType )
   {
     if ( rbtnThreeBand->isChecked() )
@@ -763,8 +765,8 @@ void QgsRasterLayerProperties::sync()
     {
       labelDefaultContrastEnhancementAlgorithm->setText( tr( "No Stretch" ) );
     }
-    mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
-    sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
+    //mDefaultStandardDeviation = myQSettings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble();
+    //sboxThreeBandStdDev->setValue( mDefaultStandardDeviation );
   }
 
   QgsDebugMsg( "populate transparency tab" );
