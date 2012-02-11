@@ -64,6 +64,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   connect( spinFontSize, SIGNAL( valueChanged( const QString& ) ), this, SLOT( fontSizeChanged( const QString& ) ) );
 
+  connect( chkUseStandardDeviation, SIGNAL( stateChanged( int ) ), this, SLOT( toggleStandardDeviation( int ) ) );
+
   connect( this, SIGNAL( accepted() ), this, SLOT( saveOptions() ) );
 
   QStringList styles = QStyleFactory::keys();
@@ -327,6 +329,41 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
 
   cmbLegendDoubleClickAction->setCurrentIndex( settings.value( "/qgis/legendDoubleClickAction", 0 ).toInt() );
 
+  //
+  // Raster properties
+  //
+  spnRed->setValue( settings.value( "/Raster/defaultRedBand", 1 ).toInt() );
+  spnGreen->setValue( settings.value( "/Raster/defaultGreenBand", 2 ).toInt() );
+  spnBlue->setValue( settings.value( "/Raster/defaultBlueBand", 3 ).toInt() );
+
+  //add items to the color enhanceContrast combo box
+  cboxContrastEnhancementAlgorithm->addItem( tr( "No Stretch" ) );
+  cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch To MinMax" ) );
+  cboxContrastEnhancementAlgorithm->addItem( tr( "Stretch And Clip To MinMax" ) );
+  cboxContrastEnhancementAlgorithm->addItem( tr( "Clip To MinMax" ) );
+
+  QString contrastEnchacement = settings.value( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" ).toString();
+  if ( contrastEnchacement == "NoEnhancement" )
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "No Stretch" ) ) );
+  }
+  if ( contrastEnchacement == "StretchToMinimumMaximum" )
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch To MinMax" ) ) );
+  }
+  else if ( contrastEnchacement == "StretchAndClipToMinimumMaximum" )
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Stretch And Clip To MinMax" ) ) );
+  }
+  else if ( contrastEnchacement == "ClipToMinimumMaximum" )
+  {
+    cboxContrastEnhancementAlgorithm->setCurrentIndex( cboxContrastEnhancementAlgorithm->findText( tr( "Clip To MinMax" ) ) );
+  }
+
+  chkUseStandardDeviation->setChecked( settings.value( "/Raster/useStandardDeviation", false ).toBool() );
+  spnThreeBandStdDev->setValue( settings.value( "/Raster/defaultStandardDeviation", 2.0 ).toDouble() );
+  toggleStandardDeviation( chkUseStandardDeviation->checkState() );
+
   //set the color for selections
   int myRed = settings.value( "/qgis/default_selection_color_red", 255 ).toInt();
   int myGreen = settings.value( "/qgis/default_selection_color_green", 255 ).toInt();
@@ -559,6 +596,18 @@ void QgsOptions::fontSizeChanged( const QString &fontSize )
   QgisApp::instance()->setFontSize( fontSize.toInt() );
 }
 
+void QgsOptions::toggleStandardDeviation( int state )
+{
+  if ( Qt::Checked == state )
+  {
+    spnThreeBandStdDev->setEnabled( true );
+  }
+  else
+  {
+    spnThreeBandStdDev->setEnabled( false );
+  }
+}
+
 QString QgsOptions::theme()
 {
   // returns the current theme (as selected in the cmbTheme combo box)
@@ -687,6 +736,32 @@ void QgsOptions::saveOptions()
 
   settings.setValue( "/IconSize", cmbIconSize->currentText() );
   settings.setValue( "/fontPointSize", spinFontSize->value() );
+
+  // rasters settings
+  settings.setValue( "/Raster/defaultRedBand", spnRed->value() );
+  settings.setValue( "/Raster/defaultGreenBand", spnGreen->value() );
+  settings.setValue( "/Raster/defaultBlueBand", spnBlue->value() );
+
+  if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "No Stretch" ) )
+  {
+    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "NoEnhancement" );
+  }
+  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch To MinMax" ) )
+  {
+    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "StretchToMinimumMaximum" );
+  }
+  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Stretch And Clip To MinMax" ) )
+  {
+    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "StretchAndClipToMinimumMaximum" );
+  }
+  else if ( cboxContrastEnhancementAlgorithm->currentText() == tr( "Clip To MinMax" ) )
+  {
+    settings.setValue( "/Raster/defaultContrastEnhancementAlgorithm", "ClipToMinimumMaximum" );
+  }
+
+  settings.setValue( "/Raster/useStandardDeviation", chkUseStandardDeviation->isChecked() );
+  settings.setValue( "/Raster/defaultStandardDeviation", spnThreeBandStdDev->value() );
+
 
   settings.setValue( "/Map/updateThreshold", spinBoxUpdateThreshold->value() );
   //check behaviour so default projection when new layer is added with no

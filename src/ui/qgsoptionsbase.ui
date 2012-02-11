@@ -67,7 +67,7 @@
             <x>0</x>
             <y>0</y>
             <width>761</width>
-            <height>819</height>
+            <height>766</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -830,7 +830,7 @@
              </layout>
             </widget>
            </item>
-           <item row="3" column="0">
+           <item row="4" column="0">
             <widget class="QGroupBox" name="groupBox_2">
              <property name="title">
               <string>SVG paths</string>
@@ -872,6 +872,79 @@
               </item>
               <item row="1" column="0" colspan="4">
                <widget class="QListWidget" name="mListSVGPaths"/>
+              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QGroupBox" name="groupBox_14">
+             <property name="title">
+              <string>Rasters</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>RGB band selection</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>Red band</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4">
+               <widget class="QSpinBox" name="spnRed"/>
+              </item>
+              <item row="0" column="5">
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>Green band</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="6">
+               <widget class="QSpinBox" name="spnGreen"/>
+              </item>
+              <item row="0" column="7">
+               <widget class="QLabel" name="label_24">
+                <property name="text">
+                 <string>Blue band</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="8">
+               <widget class="QSpinBox" name="spnBlue"/>
+              </item>
+              <item row="1" column="0" colspan="3">
+               <widget class="QCheckBox" name="chkUseStandardDeviation">
+                <property name="text">
+                 <string>Use standard deviation</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0" colspan="2">
+               <widget class="QLabel" name="label_25">
+                <property name="text">
+                 <string>Contrast enchacement</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="6" colspan="3">
+               <widget class="QDoubleSpinBox" name="spnThreeBandStdDev">
+                <property name="maximum">
+                 <double>10.000000000000000</double>
+                </property>
+                <property name="singleStep">
+                 <double>0.100000000000000</double>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="6" colspan="3">
+               <widget class="QComboBox" name="cboxContrastEnhancementAlgorithm"/>
               </item>
              </layout>
             </widget>
@@ -1274,8 +1347,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>761</width>
-            <height>573</height>
+            <width>781</width>
+            <height>741</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">

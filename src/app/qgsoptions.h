@@ -63,6 +63,8 @@ class QgsOptions : public QDialog, private Ui::QgsOptionsBase
 
     void fontSizeChanged( const QString &fontSize );
 
+    void toggleStandardDeviation( int );
+
     /**
      * Return the desired state of newly added layers. If a layer
      * is to be drawn when added to the map, this function returns
