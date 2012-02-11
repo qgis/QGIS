@@ -97,24 +97,27 @@ QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
 
   int numLayerItems = rootItem->rowCount();
   QStandardItem* currentLayerItem = 0;
-  double currentYCoordinate = mBoxSpace;
-
-  //font metrics
 
   //draw title
   double currentItemMaxX = 0; //maximum x-coordinate for current item
+  double currentYCoordinate = 0;
   if ( painter )
   {
-    painter->setPen( QColor( 0, 0, 0 ) );
-    QStringList lines = splitStringForWrapping( mTitle );
-    for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
+    if ( !mTitle.isEmpty() )
     {
-      currentYCoordinate += fontAscentMillimeters( mTitleFont );
-      drawText( painter, mBoxSpace, currentYCoordinate, *titlePart, mTitleFont );
-      currentItemMaxX = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, *titlePart );
-      maxXCoord = qMax( maxXCoord, currentItemMaxX );
-      if ( titlePart != lines.end() )
-        currentYCoordinate += mlineSpacing;
+      currentYCoordinate = mBoxSpace;
+
+      painter->setPen( QColor( 0, 0, 0 ) );
+      QStringList lines = splitStringForWrapping( mTitle );
+      for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
+      {
+        currentYCoordinate += fontAscentMillimeters( mTitleFont );
+        drawText( painter, mBoxSpace, currentYCoordinate, *titlePart, mTitleFont );
+        currentItemMaxX = 2 * mBoxSpace + textWidthMillimeters( mTitleFont, *titlePart );
+        maxXCoord = qMax( maxXCoord, currentItemMaxX );
+        if ( titlePart != lines.end() )
+          currentYCoordinate += mlineSpacing;
+      }
     }
   }
 
