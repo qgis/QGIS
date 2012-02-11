@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>216</height>
+    <height>238</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -123,6 +123,13 @@
      </item>
      <item row="3" column="1">
       <widget class="GdalToolsInOutSelector" name="outSelector" native="true"/>
+     </item>
+     <item row="7" column="0" colspan="2">
+      <widget class="QCheckBox" name="allowProjDiffCheck">
+       <property name="text">
+        <string>Allow projection difference</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
