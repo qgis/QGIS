@@ -30,6 +30,7 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
           (self.srcNoDataSpin, SIGNAL("valueChanged(int)"), self.srcNoDataCheck, "1.7.0"),
           (self.inputDirCheck, SIGNAL("stateChanged(int)")),
           (self.separateCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
+          (self.allowProjDiffCheck, SIGNAL("stateChanged(int)"), None, "1.7.0"),
           (self.recurseCheck, SIGNAL("stateChanged(int)"), self.inputDirCheck)
         ]
       )
@@ -84,6 +85,8 @@ class GdalToolsDialog(QWidget, Ui_Widget, BasePluginWidget):
       if self.srcNoDataCheck.isChecked():
         arguments << "-srcnodata"
         arguments << str(self.srcNoDataSpin.value())
+      if self.allowProjDiffCheck.isChecked():
+        arguments << "-allow_projection_difference"
       arguments << self.getOutputFileName()
       if self.inputDirCheck.isChecked():
         arguments << Utils.getRasterFiles( self.getInputFileName(), self.recurseCheck.isChecked() )
