@@ -152,10 +152,10 @@
      <normaloff>../themes/default/mActionAddLegend.png</normaloff>../themes/default/mActionAddLegend.png</iconset>
    </property>
    <property name="text">
-    <string>Add Vector Legend</string>
+    <string>Add Legend</string>
    </property>
    <property name="toolTip">
-    <string>Add new vect legend</string>
+    <string>Add new legend</string>
    </property>
   </action>
   <action name="mActionSelectMoveItem">
