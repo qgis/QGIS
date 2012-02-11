@@ -459,9 +459,9 @@ void QgsLabelingGui::changeTextFont()
   bool ok;
 #if defined(Q_WS_MAC) && QT_VERSION >= 0x040500 && defined(QT_MAC_USE_COCOA)
   // Native Mac dialog works only for Qt Carbon
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), this, QString(), QFontDialog::DontUseNativeDialog );
+  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), 0, QString(), QFontDialog::DontUseNativeDialog );
 #else
-  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font(), this );
+  QFont font = QFontDialog::getFont( &ok, lblFontPreview->font() );
 #endif
   if ( ok )
   {
