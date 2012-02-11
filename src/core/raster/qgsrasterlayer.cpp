@@ -2837,7 +2837,7 @@ void QgsRasterLayer::setRedBandName( QString const & theBandName )
   mRedBandName = validateBandName( theBandName );
 }
 
-void QgsRasterLayer::setSubLayerVisibility( QString const & name, bool vis )
+void QgsRasterLayer::setSubLayerVisibility( QString name, bool vis )
 {
 
   if ( mDataProvider )

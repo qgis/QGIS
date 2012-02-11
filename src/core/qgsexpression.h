@@ -242,7 +242,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeList() {}
-        ~NodeList() { foreach( Node* n, mList ) delete n; }
+        virtual ~NodeList() { foreach( Node* n, mList ) delete n; }
         void append( Node* node ) { mList.append( node ); }
         int count() { return mList.count(); }
         QList<Node*> list() { return mList; }
@@ -314,7 +314,7 @@ class CORE_EXPORT QgsExpression
     {
       public:
         NodeInOperator( Node* node, NodeList* list, bool notin = false ) : mNode( node ), mList( list ), mNotIn( notin ) {}
-        ~NodeInOperator() { delete mNode; delete mList; }
+        virtual ~NodeInOperator() { delete mNode; delete mList; }
 
         Node* node() { return mNode; }
         bool isNotIn() { return mNotIn; }
@@ -341,7 +341,7 @@ class CORE_EXPORT QgsExpression
       public:
         NodeFunction( int fnIndex, NodeList* args ): mFnIndex( fnIndex ), mArgs( args ) {}
         //NodeFunction( QString name, NodeList* args ) : mName(name), mArgs(args) {}
-        ~NodeFunction() { delete mArgs; }
+        virtual ~NodeFunction() { delete mArgs; }
 
         int fnIndex() { return mFnIndex; }
         NodeList* args() { return mArgs; }

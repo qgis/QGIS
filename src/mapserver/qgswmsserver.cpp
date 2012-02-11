@@ -281,7 +281,7 @@ QImage* QgsWMSServer::getLegendGraphics()
 {
   if ( !mConfigParser || !mMapRenderer )
   {
-    return false;
+    return 0;
   }
 
   QStringList layersList, stylesList;

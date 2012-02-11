@@ -98,19 +98,16 @@ OsmHandler::~OsmHandler()
   sqlite3_finalize( mStmtInsertVersion );
 }
 
-
 bool OsmHandler::startDocument()
 {
   sqlite3_exec( mDatabase, "BEGIN;", 0, 0, 0 );
   return true;
 }
 
-
-QString OsmHandler::errorString()
+QString OsmHandler::errorString() const
 {
   return mError;
 }
-
 
 bool OsmHandler::startElement( const QString & pUri, const QString & pLocalName, const QString & pName, const QXmlAttributes & pAttrs )
 {

@@ -19,6 +19,8 @@ class CORE_EXPORT QgsSymbolLayerV2AbstractMetadata
     QgsSymbolLayerV2AbstractMetadata( QString name, QString visibleName, QgsSymbolV2::SymbolType type )
         : mName( name ), mVisibleName( visibleName ), mType( type ) {}
 
+    virtual ~QgsSymbolLayerV2AbstractMetadata() {}
+
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }
     QgsSymbolV2::SymbolType type() const { return mType; }

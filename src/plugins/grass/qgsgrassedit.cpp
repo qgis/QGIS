@@ -1437,7 +1437,7 @@ void QgsGrassEdit::checkOrphan( int field, int cat )
     return;
 
   // Delete record
-  error = mProvider->deleteAttributes( field, cat );
+  error = mProvider->deleteAttribute( field, cat );
   if ( !error->isEmpty() )
   {
     QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot delete orphan record: " )

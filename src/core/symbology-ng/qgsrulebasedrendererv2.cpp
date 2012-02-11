@@ -446,9 +446,13 @@ QgsRuleBasedRendererV2::Rule* QgsRuleBasedRendererV2::Rule::create( QDomElement&
   {
     Rule* childRule = create( childRuleElem, symbolMap );
     if ( childRule )
+    {
       rule->appendChild( childRule );
+    }
     else
+    {
       QgsDebugMsg( "failed to init a child rule!" );
+    }
     childRuleElem = childRuleElem.nextSiblingElement( "rule" );
   }
 

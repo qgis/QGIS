@@ -750,15 +750,13 @@ void QgsPostgresProvider::appendPkParams( QgsFeatureId featureId, QStringList &p
 
       for ( int i = 0; i < mPrimaryKeyAttrs.size(); i++ )
       {
-        int idx = mPrimaryKeyAttrs[i];
-
         if ( i < pkVals.size() )
         {
           params << pkVals[i].toString();
         }
         else
         {
-          QgsDebugMsg( QString( "FAILURE: Key value %1 for feature %2 not found." ).arg( idx ).arg( featureId ) );
+          QgsDebugMsg( QString( "FAILURE: Key value %1 for feature %2 not found." ).arg( mPrimaryKeyAttrs[i] ).arg( featureId ) );
           params << "NULL";
         }
       }

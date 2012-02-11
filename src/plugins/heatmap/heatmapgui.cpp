@@ -190,6 +190,7 @@ void HeatmapGui::on_cellYLineEdit_editingFinished()
 
 void HeatmapGui::on_radiusFieldUnitCombo_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   updateBBox();
   // DebugMsg to avoid index not used warning
   QgsDebugMsg( QString( "Unit index set to %1" ).arg( index ) );
@@ -197,12 +198,14 @@ void HeatmapGui::on_radiusFieldUnitCombo_currentIndexChanged( int index )
 
 void HeatmapGui::on_mRadiusUnitCombo_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   QgsDebugMsg( QString( "Unit index set to %1" ).arg( index ) );
   updateBBox();
 }
 
 void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   if ( advancedGroupBox->isChecked() )
   {
     populateFields();
@@ -213,6 +216,7 @@ void HeatmapGui::on_mInputVectorCombo_currentIndexChanged( int index )
 
 void HeatmapGui::on_radiusFieldCombo_currentIndexChanged( int index )
 {
+  Q_UNUSED( index );
   updateBBox();
   QgsDebugMsg( QString( "Radius Field index changed to %1" ).arg( index ) );
 }

@@ -299,6 +299,7 @@ bool QgsCoordinateReferenceSystem::axisInverted() const
   {
     OGRAxisOrientation orientation;
     const char *axis0 = OSRGetAxis( mCRS, mGeoFlag ? "GEOGCS" : "PROJCS", 0, &orientation );
+    Q_UNUSED( axis0 );
     mAxisInverted = mGeoFlag
                     ? ( orientation == OAO_East || orientation == OAO_West || orientation == OAO_Other )
                     : ( orientation == OAO_North || orientation == OAO_South );

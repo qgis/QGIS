@@ -2279,7 +2279,7 @@ QString *QgsGrassProvider::insertAttributes( int field, int cat )
   return executeSql( field, query );
 }
 
-QString *QgsGrassProvider::deleteAttributes( int field, int cat )
+QString *QgsGrassProvider::deleteAttribute( int field, int cat )
 {
   QgsDebugMsg( QString( "field = %1 cat = %2" ).arg( field ).arg( cat ) );
 

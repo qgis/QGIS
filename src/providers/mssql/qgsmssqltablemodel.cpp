@@ -310,8 +310,10 @@ QIcon QgsMssqlTableModel::iconForWkbType( QGis::WkbType type )
     case QGis::WKBNoGeometry:
       return QIcon( QgsDataItem::getThemePixmap( "/mIconTableLayer.png" ) );
     case QGis::WKBUnknown:
-      return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
+      break;
   }
+
+  return QIcon( QgsDataItem::getThemePixmap( "/mIconLayer.png" ) );
 }
 
 bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value, int role )

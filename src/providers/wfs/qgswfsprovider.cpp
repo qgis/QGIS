@@ -49,7 +49,7 @@ static const QString GML_NAMESPACE = "http://www.opengis.net/gml";
 QgsWFSProvider::QgsWFSProvider( const QString& uri )
     : QgsVectorDataProvider( uri ),
     mNetworkRequestFinished( true ),
-    mEncoding( QgsWFSProvider::GET ),
+    mRequestEncoding( QgsWFSProvider::GET ),
     mUseIntersect( false ),
     mWKBType( QGis::WKBUnknown ),
     mSourceCRS( 0 ),
@@ -69,11 +69,11 @@ QgsWFSProvider::QgsWFSProvider( const QString& uri )
   //Local url or HTTP?  [WBC 111221] refactored from getFeature()
   if ( uri.startsWith( "http" ) )
   {
-    mEncoding = QgsWFSProvider::GET;
+    mRequestEncoding = QgsWFSProvider::GET;
   }
   else
   {
-    mEncoding = QgsWFSProvider::FILE;
+    mRequestEncoding = QgsWFSProvider::FILE;
   }
 
   //create mSourceCRS from url if possible [WBC 111221] refactored from GetFeatureGET()
@@ -346,7 +346,7 @@ void QgsWFSProvider::select( QgsAttributeList fetchAttributes,
 
 int QgsWFSProvider::getFeature( const QString& uri )
 {
-  if ( mEncoding == QgsWFSProvider::GET )
+  if ( mRequestEncoding == QgsWFSProvider::GET )
   {
     return getFeatureGET( uri, mGeometryAttribute );
   }
@@ -721,7 +721,7 @@ int QgsWFSProvider::describeFeatureType( const QString& uri, QString& geometryAt
 {
   fields.clear();
   //Local url or HTTP?  WBC111221 refactored here from getFeature()
-  switch ( mEncoding )
+  switch ( mRequestEncoding )
   {
     case QgsWFSProvider::GET:
     {
@@ -2382,6 +2382,7 @@ bool QgsWFSProvider::initGetRenderedOnly( const QgsRectangle rect )
 
 QGis::WkbType QgsWFSProvider::geomTypeFromPropertyType( QString attName, QString propType )
 {
+  Q_UNUSED( attName );
   const QStringList geomTypes = ( QStringList()
                                   //all GML v.2.1.3 _geometryProperty group members, except MultiGeometryPropertyType
                                   //sequence must exactly match enum Qgis::WkbType

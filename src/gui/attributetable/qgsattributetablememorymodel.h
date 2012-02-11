@@ -59,8 +59,9 @@ class QgsAttributeTableMemoryModel : public QgsAttributeTableModel
     /**
      * Launched when a feature has been deleted
      * @param fid feature id
+     * @param inOperation guard insertion with beginInsertRows() / endInsertRows()
      */
-    virtual void featureAdded( QgsFeatureId fid );
+    virtual void featureAdded( QgsFeatureId fid, bool inOperation = true );
     /**
      * Launched when layer has been deleted
      */

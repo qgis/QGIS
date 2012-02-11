@@ -754,7 +754,9 @@ bool QgsRuleBasedRendererV2Model::removeRows( int row, int count, const QModelIn
       //parentRule->takeChildAt( row );
     }
     else
+    {
       QgsDebugMsg( "trying to remove invalid index - this should not happen!" );
+    }
   }
 
   endRemoveRows();

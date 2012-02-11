@@ -168,7 +168,7 @@ public:
 
        @returns true if successful
     */
-    bool writeXML(QDomNode & layer_node, QDomDocument & document) const;
+    bool writeXML(QDomNode & layer_node, QDomDocument & document);
 
     /** Set a custom property for layer. Properties are stored in a map and saved in project file.
      *  @note Added in v1.4 */

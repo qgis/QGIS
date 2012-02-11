@@ -148,7 +148,7 @@ class ANALYSIS_EXPORT QgsGeometryAnalyzer
                                bool forceSingleType = false );
     /**Create geometry offset relative to line geometry.
         @param geom the geometry to modify
-        @param the line geometry to wich the feature is referenced
+        @param lineGeom the line geometry to wich the feature is referenced
         @param offset the offset value in layer unit. Negativ value means offset towards left, positive value is offset to the right side*/
     void createOffsetGeometry( QgsGeometry* geom, QgsGeometry* lineGeom, double offset );
     QgsPoint createPointOffset( double x, double y, double dist, QgsGeometry* lineGeom ) const;

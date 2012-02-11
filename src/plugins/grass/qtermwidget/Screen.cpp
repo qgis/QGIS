@@ -566,6 +566,7 @@ void Screen::copyFromScreen( Character* dest , int startLine , int count ) const
 
 void Screen::getImage( Character* dest, int size, int startLine, int endLine ) const
 {
+  Q_UNUSED( size );
   Q_ASSERT( startLine >= 0 );
   Q_ASSERT( endLine >= startLine && endLine < hist->getLines() + lines );
 
