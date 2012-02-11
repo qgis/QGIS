@@ -218,9 +218,7 @@ void QgsLegend::setLayersVisible( bool visible )
   }
 
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  mMapCanvas->freeze();
 
   for ( QTreeWidgetItem* theItem = firstItem(); theItem; theItem = nextItem( theItem ) )
   {
@@ -233,8 +231,7 @@ void QgsLegend::setLayersVisible( bool visible )
   }
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  mMapCanvas->freeze( false );
 
   QgsProject::instance()->dirty( true );
 }
@@ -1034,9 +1031,7 @@ void QgsLegend::legendGroupRemove()
   }
 
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  mMapCanvas->freeze();
 
   QgsLegendGroup* lg = dynamic_cast<QgsLegendGroup *>( currentItem() );
   if ( lg )
@@ -1045,8 +1040,7 @@ void QgsLegend::legendGroupRemove()
   }
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  mMapCanvas->freeze( false );
 }
 
 void QgsLegend::legendGroupSetCRS()
@@ -1961,15 +1955,12 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
     ll->layer()->setLayerName( ll->text( 0 ) );
   }
 
-  bool renderFlagState = false;
   bool changing = mChanging;
   mChanging = true;
 
   if ( !changing )
   {
-    renderFlagState = mMapCanvas->renderFlag();
-    if ( renderFlagState )
-      mMapCanvas->setRenderFlag( false );
+    mMapCanvas->freeze();
 
     if ( item->isSelected() )
     {
@@ -2018,13 +2009,12 @@ void QgsLegend::handleItemChange( QTreeWidgetItem* item, int column )
 
   if ( !changing )
   {
-    // update layer set
-    updateMapCanvasLayerSet();
-
     // If it was on, turn it back on, otherwise leave it
     // off, as turning it on causes a refresh.
-    if ( renderFlagState )
-      mMapCanvas->setRenderFlag( true );
+    mMapCanvas->freeze( false );
+
+    // update layer set
+    updateMapCanvasLayerSet();
   }
 
   mChanging = changing;
@@ -2302,9 +2292,7 @@ void QgsLegend::refreshCheckStates()
 void QgsLegend::removeSelectedLayers()
 {
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  mMapCanvas->freeze();
 
   foreach( QTreeWidgetItem * item, selectedItems() )
   {
@@ -2324,16 +2312,13 @@ void QgsLegend::removeSelectedLayers()
   }
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  mMapCanvas->freeze( false );
 }
 
 void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs )
 {
   // Turn off rendering to improve speed.
-  bool renderFlagState = mMapCanvas->renderFlag();
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( false );
+  mMapCanvas->freeze();
 
   foreach( QTreeWidgetItem * item, selectedItems() )
   {
@@ -2353,8 +2338,7 @@ void QgsLegend::setCRSForSelectedLayers( const QgsCoordinateReferenceSystem &crs
   }
 
   // Turn on rendering (if it was on previously)
-  if ( renderFlagState )
-    mMapCanvas->setRenderFlag( true );
+  mMapCanvas->freeze( false );
 }
 
 bool QgsLegend::parentGroupEmbedded( QTreeWidgetItem* item ) const

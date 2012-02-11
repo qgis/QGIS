@@ -272,41 +272,40 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
   bool layerSetChanged = layerSetOld != layerSet;
 
   // update only if needed
-  if ( layerSetChanged )
+  if ( !layerSetChanged )
+    return;
+
+  QgsDebugMsg( "Layer changed to: " + layerSet.join( ", " ) );
+
+  for ( i = 0; i < layerCount(); i++ )
   {
-    QgsDebugMsg( "Layer changed to: " + layerSet.join( ", " ) );
-
-    for ( i = 0; i < layerCount(); i++ )
+    // Add check if vector layer when disconnecting from selectionChanged slot
+    // Ticket #811 - racicot
+    QgsMapLayer *currentLayer = layer( i );
+    disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+    disconnect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
+    QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
+    if ( isVectLyr )
     {
-      // Add check if vector layer when disconnecting from selectionChanged slot
-      // Ticket #811 - racicot
-      QgsMapLayer *currentLayer = layer( i );
-      disconnect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      disconnect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
-      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-      if ( isVectLyr )
-      {
-        disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
-      }
-    }
-
-    mMapRenderer->setLayerSet( layerSet );
-
-    for ( i = 0; i < layerCount(); i++ )
-    {
-      // Add check if vector layer when connecting to selectionChanged slot
-      // Ticket #811 - racicot
-      QgsMapLayer *currentLayer = layer( i );
-      connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
-      connect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
-      QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
-      if ( isVectLyr )
-      {
-        connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
-      }
+      disconnect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
     }
   }
 
+  mMapRenderer->setLayerSet( layerSet );
+
+  for ( i = 0; i < layerCount(); i++ )
+  {
+    // Add check if vector layer when connecting to selectionChanged slot
+    // Ticket #811 - racicot
+    QgsMapLayer *currentLayer = layer( i );
+    connect( currentLayer, SIGNAL( repaintRequested() ), this, SLOT( refresh() ) );
+    connect( currentLayer, SIGNAL( screenUpdateRequested() ), this, SLOT( updateMap() ) );
+    QgsVectorLayer *isVectLyr = qobject_cast<QgsVectorLayer *>( currentLayer );
+    if ( isVectLyr )
+    {
+      connect( currentLayer, SIGNAL( selectionChanged() ), this, SLOT( selectionChangedSlot() ) );
+    }
+  }
 
   if ( mMapOverview )
   {
@@ -323,13 +322,10 @@ void QgsMapCanvas::setLayerSet( QList<QgsMapCanvasLayer> &layers )
     updateOverview();
   }
 
-  if ( layerSetChanged )
-  {
-    QgsDebugMsg( "Layers have changed, refreshing" );
-    emit layersChanged();
+  QgsDebugMsg( "Layers have changed, refreshing" );
+  emit layersChanged();
 
-    refresh();
-  }
+  refresh();
 
 } // setLayerSet
 
