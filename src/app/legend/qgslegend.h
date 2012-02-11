@@ -227,7 +227,7 @@ class QgsLegend : public QTreeWidget
      * the legend, and in the map.
      * @return void
      */
-    void selectAll( bool select );
+    void setLayersVisible( bool visible );
 
     /*!
      * Slot called when user wishes to add a new empty layer group to the legend.

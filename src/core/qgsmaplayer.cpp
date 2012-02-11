@@ -480,12 +480,12 @@ float QgsMapLayer::maximumScale()
 }
 
 
-QStringList QgsMapLayer::subLayers()
+QStringList QgsMapLayer::subLayers() const
 {
   return QStringList();  // Empty
 }
 
-void QgsMapLayer::setLayerOrder( QStringList layers )
+void QgsMapLayer::setLayerOrder( const QStringList &layers )
 {
   Q_UNUSED( layers );
   // NOOP

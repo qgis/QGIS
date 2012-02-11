@@ -422,12 +422,12 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * (in order from bottom to top)
      * \note   layers must have been previously added.
      */
-    void setLayerOrder( QStringList const & layers );
+    virtual void setLayerOrder( QStringList const & layers );
 
     /**
      * Set the visibility of the given sublayer name
      */
-    void setSubLayerVisibility( QString const & name, bool vis );
+    virtual void setSubLayerVisibility( const QString &name, bool vis );
 
     /**
      * Get the image encoding (as a MIME type) used in the transfer from the WMS server

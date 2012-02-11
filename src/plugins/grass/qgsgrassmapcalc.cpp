@@ -1542,7 +1542,7 @@ QgsGrassMapcalcObject::~QgsGrassMapcalcObject()
   QgsDebugMsg( "exited." );
 }
 
-int QgsGrassMapcalcObject::type()
+int QgsGrassMapcalcObject::type() const
 {
   return mType;
 }

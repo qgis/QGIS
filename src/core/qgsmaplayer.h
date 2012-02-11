@@ -132,17 +132,16 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * Returns the sublayers of this layer
      * (Useful for providers that manage their own layers, such as WMS)
      */
-    virtual QStringList subLayers();
+    virtual QStringList subLayers() const;
 
     /**
      * Reorders the *previously selected* sublayers of this layer from bottom to top
      * (Useful for providers that manage their own layers, such as WMS)
      */
-    virtual void setLayerOrder( QStringList layers );
+    virtual void setLayerOrder( const QStringList &layers );
 
     /** Set the visibility of the given sublayer name */
     virtual void setSubLayerVisibility( QString name, bool vis );
-
 
     /** True if the layer can be edited */
     virtual bool isEditable() const;

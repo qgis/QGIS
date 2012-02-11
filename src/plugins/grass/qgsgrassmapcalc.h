@@ -363,7 +363,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
                        QgsGrassMapcalcConnector *connector = 0, int end = 0 );
 
     // Object type
-    int type();
+    virtual int type() const;
 
     // Value
     QString value() { return mValue; }

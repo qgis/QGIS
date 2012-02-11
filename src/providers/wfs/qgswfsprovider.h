@@ -101,8 +101,8 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /* new functions */
 
     /**Sets the encoding type in which the provider makes requests and interprets
-     results. Posibilities are GET, POST, SOAP*/
-    void setEncoding( QgsWFSProvider::REQUEST_ENCODING e ) {mEncoding = e;}
+     results. Possibilities are GET, POST, SOAP*/
+    void setRequestEncoding( QgsWFSProvider::REQUEST_ENCODING e ) {mRequestEncoding = e;}
 
     /**Makes a GetFeatures, receives the features from the wfs server (as GML), converts them to QgsFeature and
        stores them in a vector*/
@@ -166,7 +166,7 @@ class QgsWFSProvider: public QgsVectorDataProvider
     /**Name of geometry attribute*/
     QString mGeometryAttribute;
     /**The encoding used for request/response. Can be GET, POST or SOAP*/
-    REQUEST_ENCODING mEncoding;
+    REQUEST_ENCODING mRequestEncoding;
     /**Bounding box for the layer*/
     QgsRectangle mExtent;
     /**Spatial filter for the layer*/

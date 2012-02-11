@@ -83,7 +83,7 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCall
       return 0;
     }
 
-    QImage* qImage = createImage( target_width, target_height );
+    QImage* qImage = createQImage( target_width, target_height );
     if ( !qImage )
     {
       return 0;
@@ -121,7 +121,7 @@ osg::Image* QgsOsgEarthTileSource::createImage( const TileKey& key, ProgressCall
   return image.release();
 }
 
-QImage* QgsOsgEarthTileSource::createImage( int width, int height ) const
+QImage* QgsOsgEarthTileSource::createQImage( int width, int height ) const
 {
   if ( width < 0 || height < 0 )
   {

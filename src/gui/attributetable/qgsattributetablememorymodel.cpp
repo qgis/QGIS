@@ -115,10 +115,11 @@ void QgsAttributeTableMemoryModel::featureDeleted( QgsFeatureId fid )
   QgsAttributeTableModel::featureDeleted( fid );
 }
 
-void QgsAttributeTableMemoryModel::featureAdded( QgsFeatureId fid )
+void QgsAttributeTableMemoryModel::featureAdded( QgsFeatureId fid, bool inOperation )
 {
   QgsDebugMsg( "entered." );
   Q_UNUSED( fid );
+  Q_UNUSED( inOperation );
   loadLayer();
 }
 

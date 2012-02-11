@@ -3219,7 +3219,7 @@ void QgisApp::hideAllLayers()
 {
   QgsDebugMsg( "hiding all layers!" );
 
-  legend()->selectAll( false );
+  legend()->setLayersVisible( false );
 }
 
 
@@ -3228,7 +3228,7 @@ void QgisApp::showAllLayers()
 {
   QgsDebugMsg( "Showing all layers!" );
 
-  legend()->selectAll( true );
+  legend()->setLayersVisible( true );
 }
 
 

@@ -84,7 +84,7 @@ class OsmHandler: public QXmlDefaultHandler
      * Returns information on error that occures while parsing.
      * @return info on error that occures while parsing
      */
-    QString errorString();
+    QString errorString() const;
 
   public:
     int mPointCnt;

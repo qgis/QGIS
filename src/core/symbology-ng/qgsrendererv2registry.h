@@ -22,6 +22,7 @@ class CORE_EXPORT QgsRendererV2AbstractMetadata
   public:
     QgsRendererV2AbstractMetadata( QString name, QString visibleName, QIcon icon = QIcon() )
         : mName( name ), mVisibleName( visibleName ), mIcon( icon ) {}
+    virtual ~QgsRendererV2AbstractMetadata() {}
 
     QString name() const { return mName; }
     QString visibleName() const { return mVisibleName; }

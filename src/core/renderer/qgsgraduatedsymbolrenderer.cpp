@@ -346,7 +346,7 @@ bool QgsGraduatedSymbolRenderer::writeXML( QDomNode & layer_node, QDomDocument &
   QString modeValue = "";
   if ( mMode == QgsGraduatedSymbolRenderer::Empty )
   {
-    modeValue == "Empty";
+    modeValue = "Empty";
   }
   else if ( QgsGraduatedSymbolRenderer::Quantile )
   {

@@ -210,7 +210,7 @@ void QgsLegend::removeAll()
   mDropTarget = 0;
 }
 
-void QgsLegend::selectAll( bool select )
+void QgsLegend::setLayersVisible( bool visible )
 {
   if ( !mMapCanvas || mMapCanvas->isDrawing() )
   {
@@ -227,7 +227,7 @@ void QgsLegend::selectAll( bool select )
     QgsLegendItem* litem = dynamic_cast<QgsLegendItem *>( theItem );
     if ( litem && litem->type() == QgsLegendItem::LEGEND_LAYER )
     {
-      theItem->setCheckState( 0, select ? Qt::Checked : Qt::Unchecked );
+      theItem->setCheckState( 0, visible ? Qt::Checked : Qt::Unchecked );
       handleItemChange( theItem, 0 );
     }
   }

@@ -429,7 +429,7 @@ class GRASS_EXPORT QgsGrassProvider : public QgsVectorDataProvider
      *   @param cat
      *   @return empty string or error message
      */
-    QString *deleteAttributes( int field, int cat );
+    QString *deleteAttribute( int field, int cat );
 
     /** Check if a database row exists and it is orphan (no more lines with
      *  that category)
