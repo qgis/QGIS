@@ -1,0 +1,79 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_tools
+module name :	Reclassify Grid Values
+author      :	Copyrights (c) 2005 by Volker Wichmann
+_____________________________________________
+go...
+Usage: 15 -INPUT <str> -RESULT <str> [-METHOD <str>] [-OLD <str>] [-NEW <str>] [-SOPERATOR <str>] [-MIN <str>] [-MAX <str>] [-RNEW <str>] [-ROPERATOR <str>] [-RETAB <str>] [-TOPERATOR <str>] [-RETAB_2 <str>] [-F_MIN <str>] [-F_MAX <str>] [-F_CODE <str>] [-NODATAOPT] [-NODATA <str>] [-OTHEROPT] [-OTHERS <str>]
+  -INPUT:<str>    	Grid
+	Grid (input)
+  -RESULT:<str>   	Reclassified Grid
+	Grid (output)
+  -METHOD:<str>   	Method
+	Choice
+	Available Choices:
+	[0] single
+	[1] range
+	[2] simple table
+	[3] user supplied table
+  -OLD:<str>      	old value
+	Floating point
+  -NEW:<str>      	new value
+	Floating point
+  -SOPERATOR:<str>	operator
+	Choice
+	Available Choices:
+	[0] =
+	[1] <
+	[2] <=
+	[3] >=
+	[4] >
+  -MIN:<str>      	minimum value
+	Floating point
+  -MAX:<str>      	maximum value
+	Floating point
+  -RNEW:<str>     	new value
+	Floating point
+  -ROPERATOR:<str>	operator
+	Choice
+	Available Choices:
+	[0] <=
+	[1] <
+  -RETAB:<str>    	Lookup Table
+	Static table
+	3 Fields:
+	- 1. [8 byte floating point number] minimum
+	- 2. [8 byte floating point number] maximum
+	- 3. [8 byte floating point number] new
+	
+  -TOPERATOR:<str>	operator
+	Choice
+	Available Choices:
+	[0] min <= value < max
+	[1] min <= value <= max
+	[2] min < value <= max
+	[3] min < value < max
+  -RETAB_2:<str>  	Lookup Table
+	Table (optional input)
+  -F_MIN:<str>    	minimum value
+	Table field
+  -F_MAX:<str>    	maximum value
+	Table field
+  -F_CODE:<str>   	new value
+	Table field
+  -NODATAOPT      	no data values
+	Boolean
+  -NODATA:<str>   	no data values >> value
+	Floating point
+  -OTHEROPT       	other values
+	Boolean
+  -OTHERS:<str>   	other values >> value
+	Floating point

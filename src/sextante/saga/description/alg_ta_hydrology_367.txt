@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+
+executable modules:
+ 0	- Catchment Area (Parallel)
+ 1	- Catchment Area (Recursive)
+ 2	- Catchment Area (Flow Tracing)
+ 4	- Upslope Area
+ 6	- Flow Path Length
+ 7	- Slope Length
+ 10	- Cell Balance
+ 13	- Edge Contamination
+ 15	- SAGA Wetness Index
+ 16	- Lake Flood
+ 18	- Flow Accumulation, Mass-Flux Method
+ 19	- Flow Width and Specific Catchment Area
+ 20	- Topographic Wetness Index (TWI)
+ 21	- Stream Power Index
+ 22	- LS Factor
+
+type -h or --help for further information
+
+error: module not found [14]
+
+error: module

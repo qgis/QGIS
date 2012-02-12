@@ -2,13 +2,10 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterTableField(Parameter):
 
-    pass
-#===============================================================================
-#    @property
-#    def parent(self):
-#        return self._parent
-#
-#    @parent.setter
-#    def parent(self, parent):
-#        self._parent = parent
-#===============================================================================
+    def __init__(self, name, description, parent):
+        self.name = name
+        self.description = description
+        self.parent = parent
+
+    def __str__(self):
+        return "\"" + str(self.value) + "\""

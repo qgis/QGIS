@@ -26,6 +26,7 @@ import time
 from sextante.saga.SagaGroupNameDecorator import SagaGroupNameDecorator
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.SextanteLog import SextanteLog
 
 class SagaAlgorithm(GeoAlgorithm):
 
@@ -64,60 +65,42 @@ class SagaAlgorithm(GeoAlgorithm):
                         output = OutputDataObject()
                         output.name = paramName
                         output.description = paramDescription
+                        self.putOutput(output)
                     else:
                         raise UnwrappableSagaAlgorithmException()
-                if "table" in line:
+                elif "table" in line:
                     #print(line)
                     if "input" in line:
-                        param = ParameterTable()
-                        param.name = paramName
-                        param.description = paramDescription
-                        param.optional = ("optional" in line)
+                        param = ParameterTable(paramName, paramDescription, ("optional" in line))
                         lastParentParameterName = paramName;
                         self.putParameter(param)
                     elif "static" in line:
                         print (self.name)
-                        #line = lines.readline()
                         line = lines.readline().strip("\n").strip()
                         numCols = int(line.split(" ")[0])
                         colNames = [];
                         for i in range(numCols):
                             line = lines.readline().strip("\n").strip()
                             colNames.append(line.split("]")[1])
-                        param = ParameterFixedTable()
-                        param.name = paramName
-                        param.description = paramDescription
-                        param.cols = colNames
-                        param.numRows = 3
-                        param.fixedNumOfRows = False
+                        param = ParameterFixedTable(paramName, paramDescription, colNames, 3, False)
                         self.putParameter(param)
-                        self.ok = True
                     elif "field" in line:
                         if lastParentParameterName == None:
                             raise UnwrappableSagaAlgorithmException();
-                        param = ParameterTableField()
-                        param.name = paramName
-                        param.description = paramDescription
-                        param.parent = lastParentParameterName
+                        param = ParameterTableField(paramName, paramDescription, lastParentParameterName)
                         self.putParameter(param)
                     else:
                         output = OutputTable()
                         output.name = paramName
                         output.description = paramDescription
+                        self.putOutput(output)
                 elif "grid" in line:
                     if "input" in line:
                         if "list" in line:
-                            param = ParameterMultipleInput()
-                            param.name = paramName
-                            param.description = paramDescription
-                            param.optional = ("optional" in line)
-                            param.datatype=ParameterMultipleInput.TYPE_RASTER
+                            param = ParameterMultipleInput(paramName, paramDescription, ParameterMultipleInput.TYPE_RASTER,("optional" in line))
                             self.putParameter(param)
                         else:
-                            param = ParameterRaster()
-                            param.name = paramName
-                            param.description = paramDescription
-                            param.optional = ("optional" in line)
+                            param = ParameterRaster(paramName, paramDescription,("optional" in line))
                             self.putParameter(param)
                     else:
                         output = OutputRaster()
@@ -127,18 +110,10 @@ class SagaAlgorithm(GeoAlgorithm):
                 elif "shapes" in line:
                     if "input" in line:
                         if "list" in line:
-                            param = ParameterMultipleInput()
-                            param.name = paramName
-                            param.description = paramDescription
-                            param.optional = ("optional" in line)
-                            param.datatype=ParameterMultipleInput.TYPE_VECTOR_ANY
+                            param = ParameterMultipleInput(paramName, paramDescription, ParameterMultipleInput.TYPE_VECTOR_ANY,("optional" in line))
                             self.putParameter(param)
                         else:
-                            param = ParameterVector()
-                            param.name = paramName
-                            param.description = paramDescription
-                            param.optional = ("optional" in line)
-                            param.shapetype = ParameterVector.VECTOR_TYPE_ANY
+                            param = ParameterVector(paramName, paramDescription,ParameterVector.VECTOR_TYPE_ANY,("optional" in line))
                             lastParentParameterName = paramName;
                             self.putParameter(param)
                     else:
@@ -146,25 +121,17 @@ class SagaAlgorithm(GeoAlgorithm):
                         output.name = paramName
                         output.description = paramDescription
                         self.putOutput(output)
-                elif "floating" in line or "integer" in line:
-                    param = ParameterNumber()
-                    param.name = paramName
-                    param.description = paramDescription
+                elif "floating" in line or "integer" in line or "degree" in line:
+                    param = ParameterNumber(paramName, paramDescription,)
                     self.putParameter(param)
                 elif "boolean" in line:
-                    param = ParameterBoolean()
-                    param.name = paramName
-                    param.description = paramDescription
+                    param = ParameterBoolean(paramName,paramDescription)
                     self.putParameter(param)
                 elif "text" in line:
-                    param = ParameterString()
-                    param.name = paramName
-                    param.description = paramDescription
+                    param = ParameterString(paramName, paramDescription)
                     self.putParameter(param)
                 elif "range" in line:
-                    param = ParameterRange()
-                    param.name = paramName
-                    param.description = paramDescription
+                    param = ParameterRange(paramName, paramDescription)
                     self.putParameter(param)
                 elif "choice" in line:
                     line = lines.readline()
@@ -173,10 +140,7 @@ class SagaAlgorithm(GeoAlgorithm):
                     while line != "" and not (line.startswith("-")):
                         options.append(line);
                         line = lines.readline().strip("\n").strip()
-                    param = ParameterSelection()
-                    param.name = paramName
-                    param.description = paramDescription
-                    param.options = options
+                    param = ParameterSelection(paramName, paramDescription, options)
                     self.putParameter(param)
                     if line == "":
                         break
@@ -303,7 +267,12 @@ class SagaAlgorithm(GeoAlgorithm):
       #4 Run SAGA
 
         SagaUtils.createSagaBatchJobFileFromSagaCommands(commands)
-        SagaUtils.executeSaga(self, progress);
+        loglines = []
+        loglines.append("SAGA execution commands")
+        for line in commands:
+            loglines.append(line)
+        SextanteLog.addToLog(SextanteLog.LOG_INFO, loglines)
+        SagaUtils.executeSaga(progress);
 
 
     def exportRasterLayer(self,layer):

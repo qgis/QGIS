@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_points
+module name :	Variogram Surface
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 2 -POINTS <str> [-FIELD <str>] [-COUNT <str>] [-VARIANCE <str>] [-COVARIANCE <str>] [-DISTCOUNT <num>] [-NSKIP <num>]
+  -POINTS:<str>    	Points
+	Shapes (input)
+  -FIELD:<str>     	Attribute
+	Table field
+  -COUNT:<str>     	Number of Pairs
+	Data Object (optional output)
+  -VARIANCE:<str>  	Variogram Surface
+	Data Object (optional output)
+  -COVARIANCE:<str>	Covariance Surface
+	Data Object (optional output)
+  -DISTCOUNT:<num> 	Number of Distance Classes
+	Integer
+	Minimum: 1.000000
+  -NSKIP:<num>     	Skip Number
+	Integer
+	Minimum: 1.000000

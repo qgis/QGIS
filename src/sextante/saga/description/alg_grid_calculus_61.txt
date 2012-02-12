@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_calculus
+module name :	Grid Volume
+author      :	(c) 2005 by O.Conrad
+_____________________________________________
+go...
+Usage: 2 -GRID <str> [-METHOD <str>] [-LEVEL <str>]
+  -GRID:<str>  	Grid
+	Grid (input)
+  -METHOD:<str>	Method
+	Choice
+	Available Choices:
+	[0] Count Only Above Base Level
+	[1] Count Only Below Base Level
+	[2] Subtract Volumes Below Base Level
+	[3] Add Volumes Below Base Level
+  -LEVEL:<str> 	Base Level
+	Floating point

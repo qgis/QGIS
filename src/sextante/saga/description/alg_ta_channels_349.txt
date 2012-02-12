@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_channels
+module name :	Overland Flow Distance to Channel Network
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 4 -ELEVATION <str> -CHANNELS <str> -DISTANCE <str> -DISTVERT <str> -DISTHORZ <str> [-METHOD <str>]
+  -ELEVATION:<str>	Elevation
+	Grid (input)
+  -CHANNELS:<str> 	Channel Network
+	Grid (input)
+  -DISTANCE:<str> 	Overland Flow Distance
+	Grid (output)
+  -DISTVERT:<str> 	Vertical Overland Flow Distance
+	Grid (output)
+  -DISTHORZ:<str> 	Horizontal Overland Flow Distance
+	Grid (output)
+  -METHOD:<str>   	Flow Algorithm
+	Choice
+	Available Choices:
+	[0] D8
+	[1] MFD

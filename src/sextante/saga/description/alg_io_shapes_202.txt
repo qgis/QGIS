@@ -1,0 +1,39 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_shapes
+module name :	Import Point Cloud from Text File
+author      :	V. Wichmann, LASERDATA GmbH (c) 2009
+_____________________________________________
+go...
+Usage: 16 [-POINTS <str>] [-FILE <str>] [-XFIELD <num>] [-YFIELD <num>] [-ZFIELD <num>] [-ATTRIBS <num>] [-SKIP_HEADER] [-FIELDSEP <str>]
+  -POINTS:<str>  	Point Cloud
+	Data Object (optional output)
+  -FILE:<str>    	Text File
+	File path
+  -XFIELD:<num>  	X is Column ...
+	Integer
+	Minimum: 1.000000
+  -YFIELD:<num>  	Y is Column ...
+	Integer
+	Minimum: 1.000000
+  -ZFIELD:<num>  	Z is Column ...
+	Integer
+	Minimum: 1.000000
+  -ATTRIBS:<num> 	Number of Attributes
+	Integer
+	Minimum: 0.000000
+  -SKIP_HEADER   	Skip first line
+	Boolean
+  -FIELDSEP:<str>	Field Separator
+	Choice
+	Available Choices:
+	[0] tabulator
+	[1] space
+	[2] comma

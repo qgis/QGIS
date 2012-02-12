@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_shapes
+module name :	Import Shapes from XYZ
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 3 -SHAPES <str> [-X_FIELD <num>] [-Y_FIELD <num>] [-FILENAME <str>]
+  -SHAPES:<str>  	Points
+	Shapes (output)
+  -X_FIELD:<num> 	X Column
+	Integer
+	Minimum: 1.000000
+  -Y_FIELD:<num> 	Y Column
+	Integer
+	Minimum: 1.000000
+  -FILENAME:<str>	File
+	File path

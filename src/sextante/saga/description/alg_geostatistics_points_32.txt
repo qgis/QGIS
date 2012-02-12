@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_points
+module name :	Variogram
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 0 -POINTS <str> [-FIELD <str>] -RESULT <str> [-DISTCOUNT <num>] [-DISTMAX <str>] [-NSKIP <num>]
+  -POINTS:<str>   	Points
+	Shapes (input)
+  -FIELD:<str>    	Attribute
+	Table field
+  -RESULT:<str>   	Sample Variogram
+	Table (output)
+  -DISTCOUNT:<num>	Initial Number of Distance Classes
+	Integer
+	Minimum: 1.000000
+  -DISTMAX:<str>  	Maximum Distance
+	Floating point
+	Minimum: 0.000000
+  -NSKIP:<num>    	Skip Number
+	Integer
+	Minimum: 1.000000

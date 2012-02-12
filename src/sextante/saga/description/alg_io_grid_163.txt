@@ -1,0 +1,33 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_grid
+module name :	Import Grid from XYZ
+author      :	O. Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 6 [-GRID <str>] [-COUNT <str>] [-FILENAME <str>] [-CAPTION] [-CELLSIZE <str>] [-SEPARATOR <str>]
+  -GRID:<str>     	Grid
+	Data Object (optional output)
+  -COUNT:<str>    	Count
+	Data Object (optional output)
+  -FILENAME:<str> 	File Name
+	File path
+  -CAPTION        	Has Field Names
+	Boolean
+  -CELLSIZE:<str> 	Target Cellsize
+	Floating point
+	Minimum: 0.000000
+  -SEPARATOR:<str>	Separator
+	Choice
+	Available Choices:
+	[0] space
+	[1] tabulator
+	[2] ,
+	[3] ;

@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_hydrology
+module name :	Flow Path Length
+author      :	(c) 2005 by O.Conrad
+_____________________________________________
+go...
+Usage: 6 -ELEVATION <str> [-SEED <str>] -LENGTH <str> [-SEEDS_ONLY] [-METHOD <str>] [-CONVERGENCE <str>]
+  -ELEVATION:<str>  	Elevation
+	Grid (input)
+  -SEED:<str>       	Seeds
+	Grid (optional input)
+  -LENGTH:<str>     	Flow Path Length
+	Grid (output)
+  -SEEDS_ONLY       	Seeds Only
+	Boolean
+  -METHOD:<str>     	Flow Routing Algorithm
+	Choice
+	Available Choices:
+	[0] Deterministic 8 (D8)
+	[1] Multiple Flow Direction (FD8)
+  -CONVERGENCE:<str>	Convergence (FD8)
+	Floating point
+	Minimum: 0.000000

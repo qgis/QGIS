@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_polygons
+module name :	Polygon Dissolve
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 5 -POLYGONS <str> [-FIELD_1 <str>] [-FIELD_2 <str>] [-FIELD_3 <str>] -DISSOLVED <str> [-ALL <str>]
+  -POLYGONS:<str> 	Polygons
+	Shapes (input)
+  -FIELD_1:<str>  	1. Attribute
+	Table field
+  -FIELD_2:<str>  	2. Attribute
+	Table field
+  -FIELD_3:<str>  	3. Attribute
+	Table field
+  -DISSOLVED:<str>	Dissolved Polygons
+	Shapes (output)
+  -ALL:<str>      	Dissolve...
+	Choice
+	Available Choices:
+	[0] polygons with same attribute value
+	[1] all polygons

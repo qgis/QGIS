@@ -1,0 +1,47 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_grid
+module name :	Import Grid from Table
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 12 [-GRID <str>] [-FILE_DATA <str>] [-DXY <str>] [-XMIN <str>] [-YMIN <str>] [-UNIT <str>] [-ZFACTOR <str>] [-NODATA <str>] [-DATA_TYPE <str>] [-TOPDOWN <str>]
+  -GRID:<str>     	Grid
+	Data Object (optional output)
+  -FILE_DATA:<str>	Table
+	File path
+  -DXY:<str>      	Cell Size
+	Floating point
+  -XMIN:<str>     	Left Border (X)
+	Floating point
+  -YMIN:<str>     	Lower Border (Y)
+	Floating point
+  -UNIT:<str>     	Unit Name
+	Text
+  -ZFACTOR:<str>  	Z Multiplier
+	Floating point
+  -NODATA:<str>   	No Data Value
+	Floating point
+  -DATA_TYPE:<str>	Data Type
+	Choice
+	Available Choices:
+	[0] 1 Byte Integer (unsigned)
+	[1] 1 Byte Integer (signed)
+	[2] 2 Byte Integer (unsigned)
+	[3] 2 Byte Integer (signed)
+	[4] 4 Byte Integer (unsigned)
+	[5] 4 Byte Integer (signed)
+	[6] 4 Byte Floating Point
+	[7] 8 Byte Floating Point
+  -TOPDOWN:<str>  	Line Order
+	Choice
+	Available Choices:
+	[0] Bottom to Top
+	[1] Top to Bottom

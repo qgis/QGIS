@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	docs_pdf
+module name :	Shapes Summary Report
+author      :	
+_____________________________________________
+go...
+Usage: 1 -SHAPES <str> [-FIELD <str>] -TABLE <str> [-PDF] [-OUTPUTPATH <str>]
+  -SHAPES:<str>    	Shapes
+	Shapes (input)
+  -FIELD:<str>     	Field
+	Table field
+  -TABLE:<str>     	Summary Table
+	Table (output)
+  -PDF             	Create PDF Docs
+	Boolean
+  -OUTPUTPATH:<str>	Folder
+	File path

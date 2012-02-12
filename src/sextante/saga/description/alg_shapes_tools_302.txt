@@ -1,0 +1,51 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_tools
+module name :	Create New Shapes Layer
+author      :	O. Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 0 [-SHAPES <str>] [-NAME <str>] [-TYPE <str>] [-NFIELDS <num>] [-FIELDS_NAME000 <str>] [-FIELDS_TYPE000 <str>] [-FIELDS_NAME001 <str>] [-FIELDS_TYPE001 <str>]
+  -SHAPES:<str>        	Shapes
+	Data Object (optional output)
+  -NAME:<str>          	Name
+	Text
+  -TYPE:<str>          	Shape Type
+	Choice
+	Available Choices:
+	[0] Point
+	[1] Multipoint
+	[2] Lines
+	[3] Polygon
+  -NFIELDS:<num>       	Number of Attributes
+	Integer
+	Minimum: 1.000000
+  -FIELDS_NAME000:<str>	Name
+	Text
+  -FIELDS_TYPE000:<str>	Type
+	Choice
+	Available Choices:
+	[0] text
+	[1] 1 byte integer
+	[2] 2 byte integer
+	[3] 4 byte integer
+	[4] 4 byte floating point
+	[5] 8 byte floating point
+  -FIELDS_NAME001:<str>	Name
+	Text
+  -FIELDS_TYPE001:<str>	Type
+	Choice
+	Available Choices:
+	[0] text
+	[1] 1 byte integer
+	[2] 2 byte integer
+	[3] 4 byte integer
+	[4] 4 byte floating point
+	[5] 8 byte floating point

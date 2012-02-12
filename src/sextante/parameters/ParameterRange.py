@@ -2,6 +2,11 @@ from sextante.parameters.Parameter import Parameter
 
 class ParameterRange(Parameter):
 
+    def __init__(self, name, description, default="0,1"):
+        self.name = name
+        self.description = description
+        self.default = default
+
     def setValue(self, text):
         tokens = text.split(",")
         if len(tokens)!= 2:

@@ -6,8 +6,8 @@ from sextante.gui.ParametersDialog import ParametersDialog
 import copy
 from sextante.core.QGisLayers import QGisLayers
 from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
-from sextante.gui.ProgressDialog import ProgressDialog
 from sextante.core.SextanteUtils import SextanteUtils
+from sextante.gui.BatchProcessingDialog import BatchProcessingDialog
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -19,23 +19,18 @@ class SextanteToolbox(QtGui.QDockWidget):
     def __init__(self, iface):
         QtGui.QDialog.__init__(self)
         self.iface=iface
-        #      self.setModal(True)
-        self.ui = Ui_SextanteToolbox()
-        self.ui.setupUi(self)
-
-class Ui_SextanteToolbox(object):
+        self.setupUi()
 
     def updateTree(self):
         Sextante.updateProviders()
         Sextante.loadAlgorithms()
         self.fillTree()
 
-    def setupUi(self, SextanteToolbox):
-        self.toolbox = SextanteToolbox
-        SextanteToolbox.setFloating(False)
-        SextanteToolbox.setObjectName(_fromUtf8("SextanteToolbox"))
-        SextanteToolbox.resize(400, 500)
-        SextanteToolbox.setWindowTitle("SEXTANTE Toolbox")
+    def setupUi(self):
+        self.setFloating(False)
+        self.setObjectName(_fromUtf8("SextanteToolbox"))
+        self.resize(400, 500)
+        self.setWindowTitle("SEXTANTE Toolbox")
         self.contents = QtGui.QWidget()
         self.contents.setObjectName(_fromUtf8("contents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.contents)
@@ -46,19 +41,18 @@ class Ui_SextanteToolbox(object):
         self.searchBox.setObjectName(_fromUtf8("searchBox"))
         self.searchBox.textChanged.connect(self.fillTree)
         self.verticalLayout.addWidget(self.searchBox)
-
         self.algorithmTree = QtGui.QTreeWidget(self.contents)
         self.algorithmTree.setHeaderHidden(True)
         self.algorithmTree.setObjectName(_fromUtf8("algorithmTree"))
         self.algorithmTree.setContextMenuPolicy(Qt.CustomContextMenu)
         self.fillTree()
-        self.toolbox.connect(self.algorithmTree,SIGNAL('customContextMenuRequested(QPoint)'),
+        self.connect(self.algorithmTree,SIGNAL('customContextMenuRequested(QPoint)'),
                      self.showPopupMenu)
         self.verticalLayout.addWidget(self.algorithmTree)
         self.algorithmTree.doubleClicked.connect(self.executeAlgorithm)
-        self.toolbox.setWidget(self.contents)
-        self.toolbox.iface.addDockWidget(Qt.RightDockWidgetArea, self.toolbox)
-        QtCore.QMetaObject.connectSlotsByName(SextanteToolbox)
+        self.setWidget(self.contents)
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self)
+        QtCore.QMetaObject.connectSlotsByName(self)
 
     def showPopupMenu(self,point):
         item = self.algorithmTree.itemAt(point)
@@ -83,7 +77,13 @@ class Ui_SextanteToolbox(object):
 
 
     def executeAlgorithmAsBatchProcess(self):
-        pass
+        item = self.algorithmTree.currentItem()
+        if isinstance(item, TreeAlgorithmItem):
+            alg = Sextante.getAlgorithm(item.alg.commandLineName())
+            dlg = BatchProcessingDialog(alg)
+            dlg.exec_()
+
+
 
     def executeAlgorithm(self):
         item = self.algorithmTree.currentItem()
@@ -92,18 +92,8 @@ class Ui_SextanteToolbox(object):
             alg = copy.deepcopy(alg)
             dlg = ParametersDialog(alg)
             dlg.exec_()
-            if dlg.alg != None:
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                SextanteUtils.addToLog(SextanteUtils.LOG_ALGORITHM, alg.getAsCommand())
-                AlgorithmExecutor.runalg(alg, SilentProgress())
-                QGisLayers.loadFromAlg(alg)
-                QApplication.restoreOverrideCursor()
-                #TODO:See how to use progress dialog and threads
-                #===============================================================
-                # progdlg = ProgressDialog(alg)
-                # progdlg.setVisible(True)
-                # progdlg.runalg()
-                #===============================================================
+            #if dlg.alg != None:
+
         if isinstance(item, TreeActionItem):
             action = item.action
             action.setData(self)
@@ -140,17 +130,19 @@ class Ui_SextanteToolbox(object):
                     algItem = TreeActionItem(action)
                     groupItem.addChild(algItem)
 
-            providerItem = QtGui.QTreeWidgetItem()
-            providerItem.setText(0,providerName)
+            if len(groups)>0:
+                providerItem = QtGui.QTreeWidgetItem()
+                providerItem.setText(0,providerName)
 
-            for groupItem in groups.values():
-                providerItem.addChild(groupItem)
-            self.algorithmTree.addTopLevelItem(providerItem)
-            providerItem.setExpanded(True)
-            for groupItem in groups.values():
-                if text != "":
-                    groupItem.setExpanded(True)
-            self.algorithmTree.sortItems(0, Qt.AscendingOrder)
+                for groupItem in groups.values():
+                    providerItem.addChild(groupItem)
+                self.algorithmTree.addTopLevelItem(providerItem)
+                providerItem.setExpanded(True)
+                for groupItem in groups.values():
+                    if text != "":
+                        groupItem.setExpanded(True)
+
+        self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
 
 class TreeAlgorithmItem(QtGui.QTreeWidgetItem):

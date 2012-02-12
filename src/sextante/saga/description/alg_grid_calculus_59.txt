@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_calculus
+module name :	Grid Normalisation
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 0 -INPUT <str> -OUTPUT <str> [-RANGE_MIN <str>] [-RANGE_MAX <str>]
+  -INPUT:<str>    	Grid
+	Grid (input)
+  -OUTPUT:<str>   	Normalised Grid
+	Grid (output)
+  -RANGE_MIN:<str>	Target Range
+	Value range
+  -RANGE_MAX:<str>	Target Range
+	Value range

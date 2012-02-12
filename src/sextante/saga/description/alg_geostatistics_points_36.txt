@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_points
+module name :	Spatial Point Pattern Analysis
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 4 -POINTS <str> -CENTRE <str> -STDDIST <str> [-STEP <str>] -BBOX <str>
+  -POINTS:<str> 	Points
+	Shapes (input)
+  -CENTRE:<str> 	Mean Centre
+	Shapes (output)
+  -STDDIST:<str>	Standard Distance
+	Shapes (output)
+  -STEP:<str>   	Vertex Distance [Degree]
+	Floating point
+	Value Range: 0.100000 - 20.000000
+  -BBOX:<str>   	Bounding Box
+	Shapes (output)

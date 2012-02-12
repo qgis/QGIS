@@ -1,0 +1,70 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_gridding
+module name :	Inverse Distance Weighted
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 1 -SHAPES <str> [-FIELD <str>] [-TARGET <str>] [-WEIGHTING <str>] [-POWER <str>] [-BANDWIDTH <str>] [-RANGE <str>] [-RADIUS <str>] [-MODE <str>] [-POINTS <str>] [-NPOINTS <num>] [-USER_XMIN <str>] [-USER_XMAX <str>] [-USER_YMIN <str>] [-USER_YMAX <str>] [-USER_SIZE <str>] [-USER_GRID <str>] [-GRID_GRID <str>]
+  -SHAPES:<str>   	Points
+	Shapes (input)
+  -FIELD:<str>    	Attribute
+	Table field
+  -TARGET:<str>   	Target Grid
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+  -WEIGHTING:<str>	Distance Weighting
+	Choice
+	Available Choices:
+	[0] inverse distance to a power
+	[1] linearly decreasing within search radius
+	[2] exponential weighting scheme
+	[3] gaussian weighting scheme
+  -POWER:<str>    	Inverse Distance Power
+	Floating point
+  -BANDWIDTH:<str>	Exponential and Gaussian Weighting Bandwidth
+	Floating point
+	Minimum: 0.000000
+  -RANGE:<str>    	Search Range
+	Choice
+	Available Choices:
+	[0] search radius (local)
+	[1] no search radius (global)
+  -RADIUS:<str>   	Search Radius
+	Floating point
+  -MODE:<str>     	Search Mode
+	Choice
+	Available Choices:
+	[0] all directions
+	[1] quadrants
+  -POINTS:<str>   	Number of Points
+	Choice
+	Available Choices:
+	[0] maximum number of points
+	[1] all points
+  -NPOINTS:<num>  	Maximum Number of Points
+	Integer
+  -USER_XMIN:<str>	Left
+	Floating point
+  -USER_XMAX:<str>	Right
+	Floating point
+  -USER_YMIN:<str>	Bottom
+	Floating point
+  -USER_YMAX:<str>	Top
+	Floating point
+  -USER_SIZE:<str>	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -USER_GRID:<str>	Grid
+	Data Object (optional output)
+  -GRID_GRID:<str>	Grid
+	Grid (output)

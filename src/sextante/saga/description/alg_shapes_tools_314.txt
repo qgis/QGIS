@@ -1,0 +1,36 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_tools
+module name :	Create graticule
+author      :	
+_____________________________________________
+go...
+Usage: 12 -LINES <str> [-LIMIT_SHAPES <str>] [-X_EXTENT_MIN <str>] [-X_EXTENT_MAX <str>] [-Y_EXTENT_MIN <str>] [-Y_EXTENT_MAX <str>] [-DISTX <str>] [-DISTY <str>] [-TYPE <str>]
+  -LINES:<str>       	Graticule
+	Shapes (output)
+  -LIMIT_SHAPES:<str>	Boundaries
+	Shapes (optional input)
+  -X_EXTENT_MIN:<str>	Width
+	Value range
+  -X_EXTENT_MAX:<str>	Width
+	Value range
+  -Y_EXTENT_MIN:<str>	Height
+	Value range
+  -Y_EXTENT_MAX:<str>	Height
+	Value range
+  -DISTX:<str>       	Distance X
+	Floating point
+  -DISTY:<str>       	Distance Y
+	Floating point
+  -TYPE:<str>        	Graticule type
+	Choice
+	Available Choices:
+	[0] Lines
+	[1] Rectangles

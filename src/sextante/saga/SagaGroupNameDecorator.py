@@ -19,6 +19,7 @@ class SagaGroupNameDecorator():
     groups["imagery_segmentation"]= "Imagery - Segmentation"
     groups["imagery_classification"]= "Imagery - Classification"
     groups["imagery_rga"]= "Imagery - RGA"
+    groups["imagery_tools"] = "Imagery - Tools"
     groups["io_esri_e00"]= "I/O"
     groups["io_gdal"]= "I/O"
     groups["io_gps"]= "I/O"
@@ -61,4 +62,7 @@ class SagaGroupNameDecorator():
 
     @staticmethod
     def getDecoratedName(groupName):
-        return SagaGroupNameDecorator.groups[groupName]
+        if groupName in SagaGroupNameDecorator.groups.keys():
+            return SagaGroupNameDecorator.groups[groupName]
+        else:
+            return groupName

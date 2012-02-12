@@ -1,0 +1,35 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_odbc
+module name :	PostGIS Shapes Export
+author      :	O.Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 12 [-ODBC_DSN <str>] [-ODBC_USR <str>] [-ODBC_PWD <str>] -SHAPES <str> [-NAME <str>] [-SRID <str>] [-EXISTS <str>]
+  -ODBC_DSN:<str>	DSN
+	Text
+  -ODBC_USR:<str>	User
+	Text
+  -ODBC_PWD:<str>	Password
+	Text
+  -SHAPES:<str>  	Shapes
+	Shapes (input)
+  -NAME:<str>    	Table Name
+	Text
+  -SRID:<str>    	Spatial Reference
+	Choice
+	Available Choices:
+	[0] --- not available ---
+  -EXISTS:<str>  	If table exists...
+	Choice
+	Available Choices:
+	[0] abort export
+	[1] replace existing table
+	[2] append records, if table structure allows

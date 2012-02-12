@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+
+executable modules:
+ 0	- Add Grid Values to Points
+ 1	- Add Grid Values to Shapes
+ 2	- Grid Statistics for Polygons
+ 3	- Grid Values to Shapes
+ 4	- Grid Values to Points (randomly)
+ 5	- Contour Lines from Grid
+ 6	- Vectorising Grid Classes
+ 7	- Clip Grid with Polygon
+ 9	- Local Minima and Maxima
+ 10	- Grid System Extent
+ 15	- Gradient Vectors from Surface
+ 16	- Gradient Vectors from Direction and Length
+ 17	- Gradient Vectors from Directional Components
+
+type -h or --help for further information
+
+error: module not found [12]
+
+error: module

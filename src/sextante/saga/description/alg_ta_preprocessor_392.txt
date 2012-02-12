@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_preprocessor
+module name :	Sink Removal
+author      :	O. Conrad (c) 2001
+_____________________________________________
+go...
+Usage: 2 -DEM <str> [-SINKROUTE <str>] [-DEM_PREPROC <str>] [-METHOD <str>] [-THRESHOLD] [-THRSHEIGHT <str>]
+  -DEM:<str>        	DEM
+	Grid (input)
+  -SINKROUTE:<str>  	Sink Route
+	Grid (optional input)
+  -DEM_PREPROC:<str>	Preprocessed DEM
+	Grid (optional output)
+  -METHOD:<str>     	Method
+	Choice
+	Available Choices:
+	[0] Deepen Drainage Routes
+	[1] Fill Sinks
+  -THRESHOLD        	Threshold
+	Boolean
+  -THRSHEIGHT:<str> 	Threshold Height
+	Floating point

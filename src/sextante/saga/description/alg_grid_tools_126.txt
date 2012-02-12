@@ -1,0 +1,59 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_tools
+module name :	Create Grid System
+author      :	Copyrights (c) 2007 by Volker Wichmann
+_____________________________________________
+go...
+Usage: 23 [-GRID <str>] [-M_EXTENT <str>] [-XMIN <str>] [-YMIN <str>] [-XMAX <str>] [-YMAX <str>] [-NX <num>] [-NY <num>] [-CELLSIZE <str>] [-ADJUST <str>] [-USEOFF] [-XOFFSET <str>] [-YOFFSET <str>] [-INIT <str>] [-SHAPESLIST <str>] [-GRIDLIST <str>]
+  -GRID:<str>      	Dummy Grid
+	Data Object (optional output)
+  -M_EXTENT:<str>  	Set extent by
+	Choice
+	Available Choices:
+	[0] xMin, yMin, NX, NY
+	[1] xMin, yMin, xMax, yMax
+	[2] Shape(s)
+	[3] Grid(s)
+  -XMIN:<str>      	xMin
+	Floating point
+  -YMIN:<str>      	yMin
+	Floating point
+  -XMAX:<str>      	xMax
+	Floating point
+  -YMAX:<str>      	yMax
+	Floating point
+  -NX:<num>        	NX
+	Integer
+	Minimum: 1.000000
+  -NY:<num>        	NY
+	Integer
+	Minimum: 1.000000
+  -CELLSIZE:<str>  	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -ADJUST:<str>    	Adjust
+	Choice
+	Available Choices:
+	[0] Extent to CellSize
+	[1] CellSize to W-E Extent
+	[2] CellSize to S-N Extent
+  -USEOFF          	Use Offset
+	Boolean
+  -XOFFSET:<str>   	X offset
+	Floating point
+  -YOFFSET:<str>   	Y offset
+	Floating point
+  -INIT:<str>      	Initialization Value
+	Floating point
+  -SHAPESLIST:<str>	Shape(s)
+	Shapes list (optional input)
+  -GRIDLIST:<str>  	Grid(s)
+	Grid list (optional input)

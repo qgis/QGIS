@@ -1,0 +1,24 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_morphometry
+module name :	Curvature Classification
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 4 -CPLAN <str> -CPROF <str> [-THRESHOLD <str>] -CLASS <str>
+  -CPLAN:<str>    	Plan Curvature
+	Grid (input)
+  -CPROF:<str>    	Profile Curvature
+	Grid (input)
+  -THRESHOLD:<str>	Threshold for plane
+	Floating point
+	Minimum: 0.000000
+  -CLASS:<str>    	Curvature Classification
+	Grid (output)

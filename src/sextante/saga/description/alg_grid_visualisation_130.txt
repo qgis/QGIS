@@ -1,0 +1,101 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_visualisation
+module name :	RGB Composite
+author      :	(c) 2002 by O.Conrad
+_____________________________________________
+go...
+Usage: 3 -GRID_R <str> [-R_METHOD <str>] [-R_RANGE_MIN <str>] [-R_RANGE_MAX <str>] [-R_PERCTL_MIN <str>] [-R_PERCTL_MAX <str>] [-R_PERCENT <str>] -GRID_G <str> [-G_METHOD <str>] [-G_RANGE_MIN <str>] [-G_RANGE_MAX <str>] [-G_PERCTL_MIN <str>] [-G_PERCTL_MAX <str>] [-G_PERCENT <str>] -GRID_B <str> [-B_METHOD <str>] [-B_RANGE_MIN <str>] [-B_RANGE_MAX <str>] [-B_PERCTL_MIN <str>] [-B_PERCTL_MAX <str>] [-B_PERCENT <str>] [-GRID_A <str>] [-A_METHOD <str>] [-A_RANGE_MIN <str>] [-A_RANGE_MAX <str>] [-A_PERCTL_MIN <str>] [-A_PERCTL_MAX <str>] [-A_PERCENT <str>] -GRID_RGB <str>
+  -GRID_R:<str>      	Red
+	Grid (input)
+  -R_METHOD:<str>    	Value Preparation
+	Choice
+	Available Choices:
+	[0] 0 - 255
+	[1] Rescale to 0 - 255
+	[2] User defined rescale
+	[3] Percentiles
+	[4] Percentage of standard deviation
+  -R_RANGE_MIN:<str> 	Rescale Range
+	Value range
+  -R_RANGE_MAX:<str> 	Rescale Range
+	Value range
+  -R_PERCTL_MIN:<str>	Percentiles
+	Value range
+  -R_PERCTL_MAX:<str>	Percentiles
+	Value range
+  -R_PERCENT:<str>   	Percentage of standard deviation
+	Floating point
+	Minimum: 0.000000
+  -GRID_G:<str>      	Green
+	Grid (input)
+  -G_METHOD:<str>    	Value Preparation
+	Choice
+	Available Choices:
+	[0] 0 - 255
+	[1] Rescale to 0 - 255
+	[2] User defined rescale
+	[3] Percentiles
+	[4] Percentage of standard deviation
+  -G_RANGE_MIN:<str> 	Rescale Range
+	Value range
+  -G_RANGE_MAX:<str> 	Rescale Range
+	Value range
+  -G_PERCTL_MIN:<str>	Percentiles
+	Value range
+  -G_PERCTL_MAX:<str>	Percentiles
+	Value range
+  -G_PERCENT:<str>   	Percentage of standard deviation
+	Floating point
+	Minimum: 0.000000
+  -GRID_B:<str>      	Blue
+	Grid (input)
+  -B_METHOD:<str>    	Value Preparation
+	Choice
+	Available Choices:
+	[0] 0 - 255
+	[1] Rescale to 0 - 255
+	[2] User defined rescale
+	[3] Percentiles
+	[4] Percentage of standard deviation
+  -B_RANGE_MIN:<str> 	Rescale Range
+	Value range
+  -B_RANGE_MAX:<str> 	Rescale Range
+	Value range
+  -B_PERCTL_MIN:<str>	Percentiles
+	Value range
+  -B_PERCTL_MAX:<str>	Percentiles
+	Value range
+  -B_PERCENT:<str>   	Percentage of standard deviation
+	Floating point
+	Minimum: 0.000000
+  -GRID_A:<str>      	Transparency
+	Grid (optional input)
+  -A_METHOD:<str>    	Value Preparation
+	Choice
+	Available Choices:
+	[0] 0 - 255
+	[1] Rescale to 0 - 255
+	[2] User defined rescale
+	[3] Percentiles
+	[4] Percentage of standard deviation
+  -A_RANGE_MIN:<str> 	Rescale Range
+	Value range
+  -A_RANGE_MAX:<str> 	Rescale Range
+	Value range
+  -A_PERCTL_MIN:<str>	Percentiles
+	Value range
+  -A_PERCTL_MAX:<str>	Percentiles
+	Value range
+  -A_PERCENT:<str>   	Percentage of standard deviation
+	Floating point
+	Minimum: 0.000000
+  -GRID_RGB:<str>    	Composite
+	Grid (output)

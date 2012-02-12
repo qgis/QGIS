@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	table_calculus
+module name :	Table calculator
+author      :	Victor Olaya
+_____________________________________________
+go...
+Usage: 1 -TABLE <str> -RESULT <str> [-FORMULA <str>] [-NAME <str>]
+  -TABLE:<str>  	Table
+	Table (input)
+  -RESULT:<str> 	Result
+	Table (output)
+  -FORMULA:<str>	Formula
+	Text
+  -NAME:<str>   	Field Name
+	Text

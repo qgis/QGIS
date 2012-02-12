@@ -1,13 +1,34 @@
 from PyQt4 import QtCore
 from PyQt4.QtGui import *
 import time
-from sextante.core.SextanteUtils import SextanteUtils
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 
 class AlgorithmExecutor:
 
     @staticmethod
     def runalg(alg, progress):
-        alg.execute(progress)
+        try:
+            alg.execute(progress)
+        except GeoAlgorithmExecutionException, e :
+            QMessageBox.critical(self, "Error",e.msg)
+        finally:
+            progress.setFinished()
+
+
+    @staticmethod
+    def runbatch(algs, progress):
+        try:
+            for alg in algs:
+                progress.addText(alg.getAsCommand())
+                AlgorithmExecutor.runalg(alg, SilentProgress())
+                progress.addText("Execution OK!")
+        except GeoAlgorithmExecutionException, e :
+            QMessageBox.critical(self, "Error",e.msg)
+            progress.addText("Execution Failed")
+        finally:
+            progress.setFinished()
+
+
         #=======================================================================
         # th = RunAlgorithmThread(alg, progress)
         # th.start()
@@ -34,4 +55,7 @@ class SilentProgress():
         pass
 
     def setPercentage(self, i):
+        pass
+
+    def setFinished(self):
         pass

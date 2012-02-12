@@ -1,0 +1,58 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_gdal
+module name :	OGR: Export Vector Data
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 4 -SHAPES <str> [-FILE <str>] [-FORMAT <str>]
+  -SHAPES:<str>	Shapes
+	Shapes (input)
+  -FILE:<str>  	File
+	File path
+  -FORMAT:<str>	Format
+	Choice
+	Available Choices:
+	[0] ESRI Shapefile
+	[1] MapInfo File
+	[2] UK .NTF
+	[3] SDTS
+	[4] TIGER
+	[5] S57
+	[6] DGN
+	[7] VRT
+	[8] REC
+	[9] Memory
+	[10] BNA
+	[11] CSV
+	[12] GML
+	[13] GPX
+	[14] KML
+	[15] GeoJSON
+	[16] GMT
+	[17] ODBC
+	[18] PGeo
+	[19] MSSQLSpatial
+	[20] PCIDSK
+	[21] XPlane
+	[22] AVCBin
+	[23] AVCE00
+	[24] DXF
+	[25] Geoconcept
+	[26] GeoRSS
+	[27] GPSTrackMaker
+	[28] VFK
+	[29] PGDump
+	[30] GPSBabel
+	[31] SUA
+	[32] OpenAir
+	[33] PDS
+	[34] HTF
+	[35] AeronavFAA

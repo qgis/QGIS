@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_points
+module name :	Count Points in Polygons
+author      :	Victor Olaya (c) 2004
+_____________________________________________
+go...
+Usage: 1 -POINTS <str> -POLYGONS <str>
+  -POINTS:<str>  	Points
+	Shapes (input)
+  -POLYGONS:<str>	Polygons
+	Shapes (input)

@@ -1,0 +1,82 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	pj_geotrans
+module name :	GeoTrans (Grid)
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 1 [-DATA_ELLIPSOID <str>] [-DATA_DATUM_7 <str>] [-DATA_DATUM_3 <str>] [-DATA_GEOID <str>] [-OUT_GRID <str>] [-OUT_X <str>] [-OUT_Y <str>] [-OUT_SHAPES <str>] -SOURCE <str> [-CREATE_XY] [-INTERPOLATION <str>] [-TARGET_TYPE <str>] [-PROJECTION_SOURCE_DATUM <str>] [-PROJECTION_TARGET_DATUM <str>] [-PROJECTION_SOURCE_PROJECTION <str>] [-PROJECTION_TARGET_PROJECTION <str>] [-GET_USER_XMIN <str>] [-GET_USER_XMAX <str>] [-GET_USER_YMIN <str>] [-GET_USER_YMAX <str>] [-GET_USER_SIZE <str>] [-GET_USER_GRID <str>] [-GET_GRID_GRID <str>] [-GET_SHAPES_SHAPES <str>]
+  -DATA_ELLIPSOID:<str>              	Ellipsoids
+	File path
+  -DATA_DATUM_7:<str>                	Datums (7 Parameters)
+	File path
+  -DATA_DATUM_3:<str>                	Datums (3 Parameters)
+	File path
+  -DATA_GEOID:<str>                  	Geoid
+	File path
+  -OUT_GRID:<str>                    	Grid
+	Data Object (optional output)
+  -OUT_X:<str>                       	X Coordinates
+	Data Object (optional output)
+  -OUT_Y:<str>                       	Y Coordinates
+	Data Object (optional output)
+  -OUT_SHAPES:<str>                  	Shapes
+	Data Object (optional output)
+  -SOURCE:<str>                      	Source
+	Grid (input)
+  -CREATE_XY                         	Create X/Y Grids
+	Boolean
+  -INTERPOLATION:<str>               	Grid Interpolation
+	Choice
+	Available Choices:
+	[0] Nearest Neigbhor
+	[1] Bilinear Interpolation
+	[2] Inverse Distance Interpolation
+	[3] Bicubic Spline Interpolation
+	[4] B-Spline Interpolation
+  -TARGET_TYPE:<str>                 	Target
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+	[2] shapes
+  -PROJECTION_SOURCE_DATUM:<str>     	Source Datum
+	Choice
+	Available Choices:
+	[0] 
+  -PROJECTION_TARGET_DATUM:<str>     	Target Datum
+	Choice
+	Available Choices:
+	[0] 
+  -PROJECTION_SOURCE_PROJECTION:<str>	Source Projection
+	Choice
+	Available Choices:
+	[0] 
+  -PROJECTION_TARGET_PROJECTION:<str>	Target Projection
+	Choice
+	Available Choices:
+	[0] 
+  -GET_USER_XMIN:<str>               	Left
+	Floating point
+  -GET_USER_XMAX:<str>               	Right
+	Floating point
+  -GET_USER_YMIN:<str>               	Bottom
+	Floating point
+  -GET_USER_YMAX:<str>               	Top
+	Floating point
+  -GET_USER_SIZE:<str>               	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -GET_USER_GRID:<str>               	Grid
+	Data Object (optional output)
+  -GET_GRID_GRID:<str>               	Grid
+	Grid (output)
+  -GET_SHAPES_SHAPES:<str>           	Shapes
+	Shapes (output)

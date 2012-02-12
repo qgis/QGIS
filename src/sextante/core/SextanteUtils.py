@@ -3,15 +3,10 @@ import time
 from sextante.outputs.OutputTable import OutputTable
 from sextante.outputs.OutputVector import OutputVector
 from sextante.outputs.OutputRaster import OutputRaster
-import datetime
 
 class SextanteUtils:
 
     NUM_EXPORTED = 1
-    LOG_ERROR = "ERROR"
-    LOG_INFO = "INFO"
-    LOG_WARNING = "WARNING"
-    LOG_ALGORITHM = "ALGORITHM"
 
     @staticmethod
     def userFolder():
@@ -19,11 +14,6 @@ class SextanteUtils:
         mkdir(userfolder)
 
         return userfolder
-
-    @staticmethod
-    def softwareFolder():
-        path = os.path.join(os.path.dirname(__file__),"..","soft")
-        return path
 
     @staticmethod
     def isWindows():
@@ -52,63 +42,6 @@ class SextanteUtils:
         out.channel = filename
         SextanteUtils.NUM_EXPORTED += 1
 
-
-    @staticmethod
-    def logFilename():
-        batchfile = SextanteUtils.userFolder() + os.sep + "sextante_qgis.log"
-        return batchfile
-
-
-    @staticmethod
-    def addToLog(msgtype, msg):
-
-        if isinstance(msg, list):
-            text=""
-            for i in range(0, len(msg)):
-                text+=msg[i] + "|"
-            text = text[:-1]
-        else:
-            text = str(msg)
-        line = msgtype + "|" +str(datetime.datetime.now()) + "|" + text + "\n"
-        logfile = open(SextanteUtils.logFilename(), "a")
-        logfile.write(line)
-        logfile.close()
-
-    @staticmethod
-    def getLogEntries():
-        entries={}
-        errors=[]
-        algorithms=[]
-        warnings=[]
-        info=[]
-        lines = open(SextanteUtils.logFilename())
-        line = lines.readline()
-        while line != "":
-            line = line.strip("\n").strip()
-            tokens = line.split("|")
-            text=""
-            for i in range(2, len(tokens)):
-                text+=tokens[i] + "|"
-            if line.startswith(SextanteUtils.LOG_ERROR):
-                errors.append(LogEntry(tokens[1], text))
-            elif line.startswith(SextanteUtils.LOG_ALGORITHM):
-                algorithms.append(LogEntry(tokens[1], tokens[2]))
-            elif line.startswith(SextanteUtils.LOG_WARNING):
-                warnings.append(LogEntry(tokens[1], text))
-            elif line.startswith(SextanteUtils.LOG_INFO):
-                info.append(LogEntry(tokens[1], text))
-            line = lines.readline()
-        lines.close()
-        entries[SextanteUtils.LOG_ERROR] = errors
-        entries[SextanteUtils.LOG_ALGORITHM] = algorithms
-        entries[SextanteUtils.LOG_INFO] = info
-        entries[SextanteUtils.LOG_WARNING] = warnings
-        return entries
-
-class LogEntry():
-    def __init__(self, date, text):
-        self.date = date
-        self.text = text
 
 def mkdir(newdir):
     if os.path.isdir(newdir):

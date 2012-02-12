@@ -1,0 +1,98 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_kriging
+module name :	Ordinary Kriging
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 5 [-GRID <str>] [-VARIANCE <str>] -SHAPES <str> [-FIELD <str>] [-BVARIANCE] [-TARGET <str>] [-MODEL <str>] [-BLOCK] [-DBLOCK <str>] [-BLOG] [-NUGGET <str>] [-SILL <str>] [-RANGE <str>] [-LIN_B <str>] [-EXP_B <str>] [-POW_A <str>] [-POW_B <str>] [-MAXRADIUS <str>] [-NPOINTS_MIN <str>] [-NPOINTS_MAX <str>] [-USER_CELL_SIZE <str>] [-USER_FIT_EXTENT] [-USER_X_EXTENT_MIN <str>] [-USER_X_EXTENT_MAX <str>] [-USER_Y_EXTENT_MIN <str>] [-USER_Y_EXTENT_MAX <str>] [-SYSTEM_SYSTEM_NX <num>] [-SYSTEM_SYSTEM_NY <num>] [-SYSTEM_SYSTEM_X <str>] [-SYSTEM_SYSTEM_Y <str>] [-SYSTEM_SYSTEM_D <str>] [-GRID_GRID <str>] [-GRID_VARIANCE <str>]
+  -GRID:<str>             	Grid
+	Data Object (optional output)
+  -VARIANCE:<str>         	Variance
+	Data Object (optional output)
+  -SHAPES:<str>           	Points
+	Shapes (input)
+  -FIELD:<str>            	Attribute
+	Table field
+  -BVARIANCE              	Create Variance Grid
+	Boolean
+  -TARGET:<str>           	Target Grid
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid system
+	[2] grid
+  -MODEL:<str>            	Variogram Model
+	Choice
+	Available Choices:
+	[0] Spherical Model
+	[1] Exponential Model
+	[2] Gaussian Model
+	[3] Linear Regression
+	[4] Exponential Regression
+	[5] Power Function Regression
+  -BLOCK                  	Block Kriging
+	Boolean
+  -DBLOCK:<str>           	Block Size
+	Floating point
+	Minimum: 0.000000
+  -BLOG                   	Logarithmic Transformation
+	Boolean
+  -NUGGET:<str>           	Nugget
+	Floating point
+	Minimum: 0.000000
+  -SILL:<str>             	Sill
+	Floating point
+	Minimum: 0.000000
+  -RANGE:<str>            	Range
+	Floating point
+	Minimum: 0.000000
+  -LIN_B:<str>            	Linear Regression
+	Floating point
+  -EXP_B:<str>            	Exponential Regression
+	Floating point
+  -POW_A:<str>            	Power Function - A
+	Floating point
+  -POW_B:<str>            	Power Function - B
+	Floating point
+  -MAXRADIUS:<str>        	Maximum Search Radius (map units)
+	Floating point
+	Minimum: 0.000000
+  -NPOINTS_MIN:<str>      	Min./Max. Number of m_Points
+	Value range
+  -NPOINTS_MAX:<str>      	Min./Max. Number of m_Points
+	Value range
+  -USER_CELL_SIZE:<str>   	Grid Size
+	Floating point
+	Minimum: 0.000000
+  -USER_FIT_EXTENT        	Fit Extent
+	Boolean
+  -USER_X_EXTENT_MIN:<str>	X-Extent
+	Value range
+  -USER_X_EXTENT_MAX:<str>	X-Extent
+	Value range
+  -USER_Y_EXTENT_MIN:<str>	Y-Extent
+	Value range
+  -USER_Y_EXTENT_MAX:<str>	Y-Extent
+	Value range
+  -SYSTEM_SYSTEM_NX:<num> 	Grid System
+	Grid system
+  -SYSTEM_SYSTEM_NY:<num> 	Grid System
+	Grid system
+  -SYSTEM_SYSTEM_X:<str>  	Grid System
+	Grid system
+  -SYSTEM_SYSTEM_Y:<str>  	Grid System
+	Grid system
+  -SYSTEM_SYSTEM_D:<str>  	Grid System
+	Grid system
+  -GRID_GRID:<str>        	Grid
+	Grid (input)
+  -GRID_VARIANCE:<str>    	Variance
+	Grid (optional input)

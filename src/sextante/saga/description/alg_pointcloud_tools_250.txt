@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	pointcloud_tools
+module name :	Drop Point Cloud Attribute
+author      :	Volker Wichmann (c) 2010, LASERDATA GmbH
+_____________________________________________
+go...
+Usage: 7 -INPUT <str> [-ATTRIB <str>] [-OUTPUT <str>]
+  -INPUT:<str> 	Input
+	Point Cloud (input)
+  -ATTRIB:<str>	Attribute to drop
+	Table field
+  -OUTPUT:<str>	Output
+	Point Cloud (optional output)

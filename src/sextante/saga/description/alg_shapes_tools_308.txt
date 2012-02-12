@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_tools
+module name :	Copy Selection to New Shapes Layer
+author      :	Victor Olaya (c) 2004
+_____________________________________________
+go...
+Usage: 6 -INPUT <str> -OUTPUT <str>
+  -INPUT:<str> 	Input
+	Shapes (input)
+  -OUTPUT:<str>	Output
+	Shapes (output)

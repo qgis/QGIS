@@ -1,0 +1,19 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_gdal
+module name :	GDAL: Export Raster to GeoTIFF
+author      :	O.Conrad (c) 2007
+_____________________________________________
+go...
+Usage: 2 -GRIDS <str> [-FILE <str>]
+  -GRIDS:<str>	Grid(s)
+	Grid list (input)
+  -FILE:<str> 	File
+	File path

@@ -15,17 +15,6 @@ class ProgressDialog(QtGui.QDialog):
         self.ui.setupUi(self)
         self.isCanceled = False
 
-    def runalg(self):
-        try:
-            AlgorithmExecutor.runalg(self.alg, self)
-            if self.load and not self.isCanceled:
-                QGisLayers.loadFromAlg(self.alg)
-            self.ui.cancelButton.setText("OK")
-            #self.close()
-        except GeoAlgorithmExecutionException, e :
-            QMessageBox.critical(self, "Error",e.msg)
-            self.ui.cancelButton.setText("OK")
-
     def setPercentage(self, percent):
         self.ui.progress.setValue(percent)
 
@@ -34,6 +23,9 @@ class ProgressDialog(QtGui.QDialog):
         text = oldtext + text
         self.ui.text.setText(text)
         return not self.isCanceled
+
+    def setFinished(self):
+        self.ui.cancelButton.setText("OK")
 
 class Ui_ProgressDialog(object):
     def setupUi(self, dialog):

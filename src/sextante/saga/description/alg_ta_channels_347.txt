@@ -1,0 +1,33 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_channels
+module name :	Watershed Basins (Extended)
+author      :	V.Olaya (c) 2004, O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 2 -DEM <str> -CHANNELS <str> -BASINS <str> -SUBBASINS <str> -V_BASINS <str> -V_SUBBASINS <str> -HEADS <str> -MOUTHS <str> [-DISTANCE]
+  -DEM:<str>        	DEM
+	Grid (input)
+  -CHANNELS:<str>   	Drainage Network
+	Grid (input)
+  -BASINS:<str>     	Basins
+	Grid (output)
+  -SUBBASINS:<str>  	Subbasins
+	Grid (output)
+  -V_BASINS:<str>   	Basins
+	Shapes (output)
+  -V_SUBBASINS:<str>	Subbasins
+	Shapes (output)
+  -HEADS:<str>      	River Heads
+	Shapes (output)
+  -MOUTHS:<str>     	River Mouths
+	Shapes (output)
+  -DISTANCE         	Flow Distances
+	Boolean

@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_calculus
+module name :	Geometric Figures
+author      :	(c) 2001 by O.Conrad
+_____________________________________________
+go...
+Usage: 5 [-RESULT <str>] [-CELL_COUNT <num>] [-CELL_SIZE <str>] [-FIGURE <str>] [-PLANE <str>]
+  -RESULT:<str>    	Result
+	Grid list (optional output)
+  -CELL_COUNT:<num>	Cell Count
+	Integer
+	Minimum: 2.000000
+  -CELL_SIZE:<str> 	Cell Size
+	Floating point
+	Minimum: 0.000000
+  -FIGURE:<str>    	Figure
+	Choice
+	Available Choices:
+	[0] Cone (up)
+	[1] Cone (down)
+	[2] Plane
+  -PLANE:<str>     	Direction of Plane [Degree]
+	Floating point

@@ -1,0 +1,49 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	imagery_segmentation
+module name :	Simple Region Growing
+author      :	B. Bechtel, O. Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 3 -SEEDS <str> -FEATURES <str> -SEGMENTS <str> -SIMILARITY <str> -TABLE <str> [-METHOD <str>] [-NEIGHBOUR <str>] [-SIG_1 <str>] [-SIG_2 <str>] [-THRESHOLD <str>] [-REFRESH] [-LEAFSIZE <num>]
+  -SEEDS:<str>     	Seeds
+	Grid (input)
+  -FEATURES:<str>  	Features
+	Grid list (input)
+  -SEGMENTS:<str>  	Segments
+	Grid (output)
+  -SIMILARITY:<str>	Similarity
+	Grid (output)
+  -TABLE:<str>     	Seeds
+	Table (output)
+  -METHOD:<str>    	Method
+	Choice
+	Available Choices:
+	[0] feature space and position
+	[1] feature space
+  -NEIGHBOUR:<str> 	Neighbourhood
+	Choice
+	Available Choices:
+	[0] 4 (von Neumann)
+	[1] 8 (Moore)
+  -SIG_1:<str>     	Variance in Feature Space
+	Floating point
+	Minimum: 0.000000
+  -SIG_2:<str>     	Variance in Position Space
+	Floating point
+	Minimum: 0.000000
+  -THRESHOLD:<str> 	Threshold - Similarity
+	Floating point
+	Minimum: 0.000000
+  -REFRESH         	Refresh
+	Boolean
+  -LEAFSIZE:<num>  	Leaf Size (for Speed Optimisation)
+	Integer
+	Minimum: 2.000000

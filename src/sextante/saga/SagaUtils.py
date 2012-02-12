@@ -1,7 +1,11 @@
 import os
 from sextante.core.SextanteUtils import SextanteUtils
 import subprocess
+from sextante.core.SextanteConfig import SextanteConfig
 class SagaUtils:
+
+    SAGA_FOLDER = "SAGA_FOLDER"
+    ACTIVATE_SAGA = "ACTIVATE_SAGA"
 
     @staticmethod
     def sagaBatchJobFilename():
@@ -17,11 +21,15 @@ class SagaUtils:
 
     @staticmethod
     def sagaPath():
-        return SextanteUtils.softwareFolder() + os.sep + "saga"
+        folder = SextanteConfig.getSetting(SagaUtils.SAGA_FOLDER)
+        if folder == None:
+            folder =""
+
+        return folder #SextanteUtils.softwareFolder() + os.sep + "saga"
 
     @staticmethod
     def sagaDescriptionPath():
-        return SagaUtils.sagaPath() + os.sep + "description"
+        return os.path.join(os.path.dirname(__file__),"description")
 
     @staticmethod
     def createSagaBatchJobFileFromSagaCommands(commands):
@@ -44,34 +52,20 @@ class SagaUtils:
         fout.close()
 
     @staticmethod
-    def executeSaga(alg, progress):
+    def executeSaga(progress):
         if SextanteUtils.isWindows():
             command = ["cmd.exe", "/C ", SagaUtils.sagaBatchJobFilename()]
         else:
             #TODO linux
             pass
 
-        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT).stdout
-        loglines=[]
-        loglines.append("SAGA Execution log message")
-        while 1:
-            line = proc.readline()
-            if not line:
-                break
+        proc = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE,stderr=subprocess.STDOUT, universal_newlines=True).stdout
+        for line in iter(proc.readline, ""):
             if "%" in line:
-                pass
+                s = "".join([x for x in line if x.isdigit()])
+                progress.setPercentage(int(s))
             else:
-               loglines.append(line[0:-2])
-               progress.addText(line)
-        SextanteUtils.addToLog(SextanteUtils.LOG_INFO, loglines)
-           #====================================================================
-           # try:
-           #    n = int(line.replace("%","").replace("\n","").replace(" ",""))
-           #    progress.addText(str(n))
-           # except:
-           #    progress.addText(line.replace("%","").replace("\n","").replace(" ",""))
-           #====================================================================
-
+                loglines.append(line)
 
 
 

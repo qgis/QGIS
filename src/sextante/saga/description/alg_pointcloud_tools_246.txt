@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	pointcloud_tools
+module name :	Point Cloud from Shapes
+author      :	O.Conrad (c) 2009
+_____________________________________________
+go...
+Usage: 3 -SHAPES <str> [-ZFIELD <str>] -POINTS <str> [-OUTPUT <str>]
+  -SHAPES:<str>	Shapes
+	Shapes (input)
+  -ZFIELD:<str>	Z Value
+	Table field
+  -POINTS:<str>	Points
+	Point Cloud (output)
+  -OUTPUT:<str>	Output
+	Choice
+	Available Choices:
+	[0] only z
+	[1] all attributes

@@ -1,0 +1,27 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_points
+module name :	Variogram Cloud
+author      :	O.Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 1 -POINTS <str> [-FIELD <str>] -RESULT <str> [-DISTMAX <str>] [-NSKIP <num>]
+  -POINTS:<str> 	Points
+	Shapes (input)
+  -FIELD:<str>  	Attribute
+	Table field
+  -RESULT:<str> 	Variogram Cloud
+	Table (output)
+  -DISTMAX:<str>	Maximum Distance
+	Floating point
+	Minimum: 0.000000
+  -NSKIP:<num>  	Skip Number
+	Integer
+	Minimum: 1.000000

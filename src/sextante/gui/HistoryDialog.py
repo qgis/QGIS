@@ -16,7 +16,14 @@ class HistoryDialog(QtGui.QDialog):
         self.tree.setGeometry(QtCore.QRect(5, 5, 640, 245))
         self.tree.setHeaderHidden(True)
         self.tree.doubleClicked.connect(self.executeAlgorithm)
-        QObject.connect(self.tree, QtCore.SIGNAL("clicked()"), self.changeText)
+        QObject.connect(self.tree, QtCore.SIGNAL("itemClicked(QTreeWidgetItem*, int)"), self.changeText)
+        self.groupIcon = QtGui.QIcon()
+        self.groupIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_DirClosedIcon),
+                QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.groupIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_DirOpenIcon),
+                QtGui.QIcon.Normal, QtGui.QIcon.On)
+        self.keyIcon = QtGui.QIcon()
+        self.keyIcon.addPixmap(self.style().standardPixmap(QtGui.QStyle.SP_FileIcon))
         self.fillTree()
         self.text = QtGui.QTextEdit(self)
         self.text.setGeometry(QtCore.QRect(5, 260, 640, 245))
@@ -30,8 +37,10 @@ class HistoryDialog(QtGui.QDialog):
         for category in elements.keys():
             groupItem = QtGui.QTreeWidgetItem()
             groupItem.setText(0,category)
+            groupItem.setIcon(0, self.groupIcon)
             for entry in elements[category]:
                 item = TreeLogEntryItem(entry, category==SextanteUtils.LOG_ALGORITHM)
+                item.setIcon(0, self.keyIcon)
                 groupItem.addChild(item)
             self.tree.addTopLevelItem(groupItem)
 
@@ -48,7 +57,7 @@ class HistoryDialog(QtGui.QDialog):
     def changeText(self):
         item = self.tree.currentItem()
         if isinstance(item, TreeLogEntryItem):
-                self.text.setText(item.entry.msg)
+                self.text.setText(item.entry.text.replace("|","\n"))
 
 
 class TreeLogEntryItem(QtGui.QTreeWidgetItem):
@@ -56,4 +65,4 @@ class TreeLogEntryItem(QtGui.QTreeWidgetItem):
         QTreeWidgetItem.__init__(self)
         self.entry = entry
         self.isAlg = isAlg
-        self.setText(0, "[" + entry.date + "]" + entry.text)#.split("\n")[0])
+        self.setText(0, "[" + entry.date + "] " + entry.text.split("|")[0])

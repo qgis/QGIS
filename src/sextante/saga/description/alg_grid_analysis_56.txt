@@ -1,0 +1,21 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_analysis
+module name :	Aggregation Index
+author      :	
+_____________________________________________
+go...
+Usage: 12 -INPUT <str> [-MAXNUMCLASS <num>] -RESULT <str>
+  -INPUT:<str>      	Input Grid
+	Grid (input)
+  -MAXNUMCLASS:<num>	Max. Number of Classes
+	Integer
+  -RESULT:<str>     	Result
+	Table (output)

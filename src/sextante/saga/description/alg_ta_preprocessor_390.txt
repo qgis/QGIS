@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_preprocessor
+module name :	Flat Detection
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 0 -DEM <str> [-NOFLATS <str>] [-FLATS <str>] [-FLAT_OUTPUT <str>]
+  -DEM:<str>        	DEM
+	Grid (input)
+  -NOFLATS:<str>    	No Flats
+	Grid (optional output)
+  -FLATS:<str>      	Flat Areas
+	Grid (optional output)
+  -FLAT_OUTPUT:<str>	Flat Area Values
+	Choice
+	Available Choices:
+	[0] elevation
+	[1] enumeration

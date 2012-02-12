@@ -1,0 +1,38 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	tin_tools
+module name :	Grid to TIN (Surface Specific Points)
+author      :	(c) 2004 by O.Conrad
+_____________________________________________
+go...
+Usage: 1 -GRID <str> [-VALUES <str>] -TIN <str> [-METHOD <str>] [-HIGH <num>] [-FLOW_MIN <str>] [-FLOW_MAX <str>] [-PEUCKER <str>]
+  -GRID:<str>    	Grid
+	Grid (input)
+  -VALUES:<str>  	Values
+	Grid list (optional input)
+  -TIN:<str>     	TIN
+	TIN (output)
+  -METHOD:<str>  	Method
+	Choice
+	Available Choices:
+	[0] Mark Highest Neighbour
+	[1] Opposite Neighbours
+	[2] Flow Direction
+	[3] Flow Direction (up and down)
+	[4] Peucker & Douglas
+  -HIGH:<num>    	Mark Highest Neighbour
+	Integer
+	Value Range: 1.000000 - 4.000000
+  -FLOW_MIN:<str>	Flow Direction
+	Value range
+  -FLOW_MAX:<str>	Flow Direction
+	Value range
+  -PEUCKER:<str> 	Peucker & Douglas
+	Floating point

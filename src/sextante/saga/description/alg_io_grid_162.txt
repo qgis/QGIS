@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_grid
+module name :	Export Grid to XYZ
+author      :	O. Conrad (c) 2003
+_____________________________________________
+go...
+Usage: 5 -GRIDS <str> [-FILENAME <str>] [-CAPTION] [-EX_NODATA]
+  -GRIDS:<str>   	Grids
+	Grid list (input)
+  -FILENAME:<str>	File Name
+	File path
+  -CAPTION       	Write Field Names
+	Boolean
+  -EX_NODATA     	Exclude NoData Cells
+	Boolean

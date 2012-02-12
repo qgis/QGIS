@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_channels
+module name :	D8 Flow Analysis
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 5 -DEM <str> -DIRECTION <str> -CONNECTION <str> -NETWORK <str> [-MINCON <num>]
+  -DEM:<str>       	DEM
+	Grid (input)
+  -DIRECTION:<str> 	Flow Direction
+	Grid (output)
+  -CONNECTION:<str>	Flow Connectivity
+	Grid (output)
+  -NETWORK:<str>   	Flow Network
+	Shapes (output)
+  -MINCON:<num>    	Minimum Connectivity
+	Integer
+	Value Range: 0.000000 - 8.000000

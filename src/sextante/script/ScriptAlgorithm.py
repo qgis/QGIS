@@ -13,8 +13,7 @@ from sextante.parameters.ParameterBoolean import ParameterBoolean
 from sextante.script.ScriptUtils import ScriptUtils
 import os
 from sextante.core.SextanteUtils import SextanteUtils
-from sextante.parameters.ParameterDataObject import ParameterDataObject
-from sextante.parameters.ParameterRange import ParameterRange
+from sextante.parameters.ParameterSelection import ParameterSelection
 
 class ScriptAlgorithm(GeoAlgorithm):
 
@@ -23,6 +22,7 @@ class ScriptAlgorithm(GeoAlgorithm):
         self.descriptionFile = descriptionfile
         self.defineCharacteristicsFromFile()
         self.providerName = "script:"
+
 
     def defineCharacteristicsFromFile(self):
         self.script=""
@@ -34,7 +34,6 @@ class ScriptAlgorithm(GeoAlgorithm):
         while line != "":
             if line.startswith("##"):
                 self.processParameterLine(line.strip("\n"))
-
             self.script += line
             line = lines.readline()
         lines.close()
@@ -47,29 +46,28 @@ class ScriptAlgorithm(GeoAlgorithm):
         line = line.replace("#", "");
         tokens = line.split("=");
         if tokens[1].lower() == "raster":
-            param = ParameterRaster()
-            param.optional = False
+            param = ParameterRaster(tokens[0], tokens[0], False)
         elif tokens[1].lower() == "vector":
-            param = ParameterRaster()
-            param.optional = False
-            param.shapetype = ParameterVector.VECTOR_TYPE_ANY
+            param = ParameterVector(tokens[0], tokens[0],ParameterVector.VECTOR_TYPE_ANY)
         elif tokens[1].lower() == "table":
-            param = ParameterTable()
-            param.optional = False
+            param = ParameterTable(tokens[0], tokens[0], False)
         elif tokens[1].lower() == "multiple raster":
-            param = ParameterMultipleInput();
-            param.datatype=ParameterMultipleInput.TYPE_RASTER
+            param = ParameterMultipleInput(tokens[0], tokens[0], ParameterMultipleInput.TYPE_RASTER)
             param.optional = False
         elif tokens[1].lower() == "multiple vector":
-            param = ParameterMultipleInput();
-            param.datatype=ParameterMultipleInput.TYPE_VECTOR_ANY
+            param = ParameterMultipleInput(tokens[0], tokens[0], ParameterMultipleInput.TYPE_VECTOR_ANY)
             param.optional = False
+        elif tokens[1].lower().startswith("selection"):
+            options = tokens[1][len("selection"):].split(";")
+            param = ParameterSelection(tokens[0],  tokens[0], options);
         elif tokens[1].lower() == "boolean":
-            param = ParameterBoolean()
+            param = ParameterBoolean(tokens[0],  tokens[0])
         elif tokens[1].lower() == "number":
-            param = ParameterNumber()
+            default = tokens[1][len("number")+1:]
+            param = ParameterNumber(tokens[0],  tokens[0], default)
         elif tokens[1].lower() == "string":
-            param = ParameterString()
+            default = tokens[1][len("string")+1:]
+            param = ParameterString(tokens[0],  tokens[0], default)
         elif tokens[1].lower() == "output raster":
             out = OutputRaster()
         elif tokens[1].lower() == "output vector":
@@ -78,8 +76,6 @@ class ScriptAlgorithm(GeoAlgorithm):
             out = OutputTable()
 
         if param != None:
-            param.name = tokens[0]
-            param.description = tokens[0]
             self.putParameter(param)
         elif out != None:
             out.name = tokens[0]

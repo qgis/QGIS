@@ -1,0 +1,27 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_analysis
+module name :	Accumulated Cost (Anisotropic)
+author      :	Copyrights (c) 2004 by Victor Olaya
+_____________________________________________
+go...
+Usage: 1 -COST <str> -DIRECTION <str> -POINTS <str> -ACCCOST <str> [-K <str>] [-THRESHOLD <str>]
+  -COST:<str>     	Cost Grid
+	Grid (input)
+  -DIRECTION:<str>	Direction of max cost
+	Grid (input)
+  -POINTS:<str>   	Destination Points
+	Grid (input)
+  -ACCCOST:<str>  	Accumulated Cost
+	Grid (output)
+  -K:<str>        	k factor
+	Floating point
+  -THRESHOLD:<str>	Threshold for different route
+	Floating point

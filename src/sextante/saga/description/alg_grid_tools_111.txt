@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_tools
+module name :	Grid Buffer
+author      :	Copyrights (c) 2004 by Victor Olaya
+_____________________________________________
+go...
+Usage: 8 -FEATURES <str> -BUFFER <str> [-DIST <str>] [-BUFFERTYPE <str>]
+  -FEATURES:<str>  	Features Grid
+	Grid (input)
+  -BUFFER:<str>    	Buffer Grid
+	Grid (output)
+  -DIST:<str>      	Distance
+	Floating point
+  -BUFFERTYPE:<str>	Buffer Distance
+	Choice
+	Available Choices:
+	[0] Fixed
+	[1] Cell value

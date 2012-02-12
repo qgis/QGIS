@@ -1,0 +1,26 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_preprocessor
+module name :	Fill Sinks (Wang & Liu)
+author      :	Copyrights (c) 2007 by Volker Wichmann
+_____________________________________________
+go...
+Usage: 4 -ELEV <str> -FILLED <str> -FDIR <str> -WSHED <str> [-MINSLOPE <str>]
+  -ELEV:<str>    	DEM
+	Grid (input)
+  -FILLED:<str>  	Filled DEM
+	Grid (output)
+  -FDIR:<str>    	Flow Directions
+	Grid (output)
+  -WSHED:<str>   	Watershed Basins
+	Grid (output)
+  -MINSLOPE:<str>	Minimum Slope [Degree]
+	Floating point
+	Minimum: 0.000000

@@ -9,23 +9,26 @@ from sextante.gui.AlgorithmExecutor import AlgorithmExecutor, SilentProgress
 from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
 from sextante.core.SextanteUtils import SextanteUtils
 from sextante.mmqgis.MMQGISAlgorithmProvider import MMQGISAlgorithmProvider
+from sextante.core.SextanteConfig import SextanteConfig
+from sextante.core.SextanteLog import SextanteLog
 
 class Sextante:
 
-    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider(),MMQGISAlgorithmProvider()]
+    providers = [SagaAlgorithmProvider(), ScriptAlgorithmProvider()]#,MMQGISAlgorithmProvider()]
     algs = {}
     actions = {}
     contextMenuActions = []
 
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def initialize():
+        SextanteLog.startLogging()
+        SextanteConfig.initialize()
+        SextanteConfig.loadSettings()
         Sextante.loadAlgorithms()
         Sextante.loadActions()
         Sextante.loadContextMenuActions()
+        SextanteConfig.loadSettings()
 
 
     @staticmethod
@@ -36,6 +39,7 @@ class Sextante:
 
     @staticmethod
     def loadAlgorithms():
+        Sextante.updateProviders()
         for provider in Sextante.providers:
             providerAlgs = provider.algs
             algs = {}
@@ -115,7 +119,7 @@ class Sextante:
                 return
             i = i +1
 
-        SextanteUtils.addToLog(SextanteUtils.LOG_ALGORITHM, alg.getAsCommand())
+        SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, alg.getAsCommand())
 
         try:
             QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -123,7 +127,7 @@ class Sextante:
             QApplication.restoreOverrideCursor()
             return alg.getOuputsChannelsAsMap()
         except GeoAlgorithmExecutionException, e:
-            print "*****Error executing algoritm*****"
+            print "*****Error executing algorithm*****"
             print e.msg
 
     @staticmethod

@@ -1,0 +1,44 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	sim_cellular_automata
+module name :	Wa-Tor
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 1 [-GRID <str>] [-NX <num>] [-NY <num>] [-RESULT <str>] [-REFRESH] [-INIT_FISH <str>] [-INIT_SHARK <str>] -TABLE <str> [-FISH_BIRTH <num>] [-SHARK_BIRTH <num>] [-SHARK_STARVE <num>]
+  -GRID:<str>        	Grid
+	Data Object (optional output)
+  -NX:<num>          	Width (Cells)
+	Integer
+	Minimum: 1.000000
+  -NY:<num>          	Height (Cells)
+	Integer
+	Minimum: 1.000000
+  -RESULT:<str>      	Wa-Tor
+	Grid (optional output)
+  -REFRESH           	Refresh
+	Boolean
+  -INIT_FISH:<str>   	Initial Number of Fishes [%]
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -INIT_SHARK:<str>  	Initial Number of Sharks [%]
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -TABLE:<str>       	Cycles
+	Table (output)
+  -FISH_BIRTH:<num>  	Birth Rate of Fishes
+	Integer
+	Minimum: 0.000000
+  -SHARK_BIRTH:<num> 	Birth Rate of Sharks
+	Integer
+	Minimum: 0.000000
+  -SHARK_STARVE:<num>	Max. Starvation Time for Sharks
+	Integer
+	Minimum: 0.000000

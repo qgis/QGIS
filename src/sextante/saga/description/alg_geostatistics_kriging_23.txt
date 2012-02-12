@@ -1,0 +1,77 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_kriging
+module name :	Ordinary Kriging (VF)
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 0 -POINTS <str> [-ZFIELD <str>] [-TARGET <str>] [-TQUALITY <str>] [-DISTMAX <str>] [-DISTCOUNT <num>] [-NSKIP <num>] [-BLOCK] [-DBLOCK <str>] [-MAXRADIUS <str>] [-NPOINTS_MIN <str>] [-NPOINTS_MAX <str>] [-MODE <str>] [-FORMULA_STRING <str>] [-USER_BVARIANCE] [-USER_XMIN <str>] [-USER_XMAX <str>] [-USER_YMIN <str>] [-USER_YMAX <str>] [-USER_SIZE <str>] [-USER_GRID <str>] [-USER_VARIANCE <str>] [-GRID_GRID <str>] [-GRID_VARIANCE <str>]
+  -POINTS:<str>        	Points
+	Shapes (input)
+  -ZFIELD:<str>        	Attribute
+	Table field
+  -TARGET:<str>        	Target Grid
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+  -TQUALITY:<str>      	Type of Quality Measure
+	Choice
+	Available Choices:
+	[0] standard deviation
+	[1] variance
+  -DISTMAX:<str>       	Maximum Distance
+	Floating point
+  -DISTCOUNT:<num>     	Initial Number of Distance Classes
+	Integer
+	Minimum: 1.000000
+  -NSKIP:<num>         	Skip Number
+	Integer
+	Minimum: 1.000000
+  -BLOCK               	Block Kriging
+	Boolean
+  -DBLOCK:<str>        	Block Size
+	Floating point
+	Minimum: 0.000000
+  -MAXRADIUS:<str>     	Maximum Search Radius (map units)
+	Floating point
+	Minimum: 0.000000
+  -NPOINTS_MIN:<str>   	Min./Max. Number of m_Points
+	Value range
+  -NPOINTS_MAX:<str>   	Min./Max. Number of m_Points
+	Value range
+  -MODE:<str>          	Search Mode
+	Choice
+	Available Choices:
+	[0] all directions
+	[1] quadrants
+  -FORMULA_STRING:<str>	Formula String
+	Text
+  -USER_BVARIANCE      	Create Quality Grid
+	Boolean
+  -USER_XMIN:<str>     	Left
+	Floating point
+  -USER_XMAX:<str>     	Right
+	Floating point
+  -USER_YMIN:<str>     	Bottom
+	Floating point
+  -USER_YMAX:<str>     	Top
+	Floating point
+  -USER_SIZE:<str>     	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -USER_GRID:<str>     	Grid
+	Data Object (optional output)
+  -USER_VARIANCE:<str> 	Quality Measure
+	Data Object (optional output)
+  -GRID_GRID:<str>     	Grid
+	Grid (output)
+  -GRID_VARIANCE:<str> 	Quality Measure
+	Grid (optional output)

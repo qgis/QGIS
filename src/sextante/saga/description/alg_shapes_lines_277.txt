@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_lines
+module name :	Line Dissolve
+author      :	O.Conrad (c) 2011
+_____________________________________________
+go...
+Usage: 5 -LINES <str> [-FIELD_1 <str>] [-FIELD_2 <str>] [-FIELD_3 <str>] -DISSOLVED <str> [-ALL <str>]
+  -LINES:<str>    	Lines
+	Shapes (input)
+  -FIELD_1:<str>  	1. Attribute
+	Table field
+  -FIELD_2:<str>  	2. Attribute
+	Table field
+  -FIELD_3:<str>  	3. Attribute
+	Table field
+  -DISSOLVED:<str>	Dissolved Lines
+	Shapes (output)
+  -ALL:<str>      	Dissolve...
+	Choice
+	Available Choices:
+	[0] lines with same attribute value(s)
+	[1] all lines

@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_points
+module name :	Clip Points with Polygons
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 8 -POINTS <str> -POLYGONS <str> [-FIELD <str>] -CLIPS <str> [-METHOD <str>]
+  -POINTS:<str>  	Points
+	Shapes (input)
+  -POLYGONS:<str>	Polygons
+	Shapes (input)
+  -FIELD:<str>   	Add Attribute to Clipped Points
+	Table field
+  -CLIPS:<str>   	Clipped Points
+	Shapes list (output)
+  -METHOD:<str>  	Clipping Options
+	Choice
+	Available Choices:
+	[0] one layer for all points
+	[1] separate layer for each polygon

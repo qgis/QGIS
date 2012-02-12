@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_points
+module name :	Separate points by direction
+author      :	O. Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 9 -OUTPUT <str> -POINTS <str> [-DIRECTIONS <str>] [-TOLERANCE <str>]
+  -OUTPUT:<str>    	Ouput
+	Shapes list (output)
+  -POINTS:<str>    	Points
+	Shapes (input)
+  -DIRECTIONS:<str>	Number of Directions
+	Floating point
+	Minimum: 2.000000
+  -TOLERANCE:<str> 	Tolerance (Degree)
+	Floating point
+	Minimum: 0.000000

@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_grid_image
+module name :	Import Image (bmp, jpg, png, tif, gif, pnm, xpm)
+author      :	(c) 2005 by O.Conrad
+_____________________________________________
+go...
+Usage: 1 [-OUT_GRID <str>] [-OUT_RED <str>] [-OUT_GREEN <str>] [-OUT_BLUE <str>] [-FILE <str>] [-METHOD <str>]
+  -OUT_GRID:<str> 	Image
+	Data Object (optional output)
+  -OUT_RED:<str>  	Image (Red Channel)
+	Data Object (optional output)
+  -OUT_GREEN:<str>	Image (Green Channel)
+	Data Object (optional output)
+  -OUT_BLUE:<str> 	Image (Blue Channel)
+	Data Object (optional output)
+  -FILE:<str>     	Image File
+	File path
+  -METHOD:<str>   	Options
+	Choice
+	Available Choices:
+	[0] Standard
+	[1] Split Channels
+	[2] Enforce True Color

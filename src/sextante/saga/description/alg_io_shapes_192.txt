@@ -1,0 +1,27 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_shapes
+module name :	Import Surfer Blanking Files
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 6 -SHAPES <str> [-TABLE <str>] [-FILE <str>] [-TYPE <str>]
+  -SHAPES:<str>	Shapes
+	Shapes (output)
+  -TABLE:<str> 	Look up table (Points)
+	Table (optional output)
+  -FILE:<str>  	File
+	File path
+  -TYPE:<str>  	Shape Type
+	Choice
+	Available Choices:
+	[0] points
+	[1] lines
+	[2] polygons

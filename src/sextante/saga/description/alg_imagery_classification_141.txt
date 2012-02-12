@@ -1,0 +1,47 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	imagery_classification
+module name :	Change Detection
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 2 -INITIAL <str> [-INI_LUT <str>] [-INI_LUT_MIN <str>] [-INI_LUT_MAX <str>] [-INI_LUT_NAM <str>] -FINAL <str> [-FIN_LUT <str>] [-FIN_LUT_MIN <str>] [-FIN_LUT_MAX <str>] [-FIN_LUT_NAM <str>] -CHANGE <str> [-NOCHANGE] -CHANGES <str> [-OUTPUT <str>]
+  -INITIAL:<str>    	Initial State
+	Grid (input)
+  -INI_LUT:<str>    	Look-up Table
+	Table (optional input)
+  -INI_LUT_MIN:<str>	Value
+	Table field
+  -INI_LUT_MAX:<str>	Value (Maximum)
+	Table field
+  -INI_LUT_NAM:<str>	Name
+	Table field
+  -FINAL:<str>      	Final State
+	Grid (input)
+  -FIN_LUT:<str>    	Look-up Table
+	Table (optional input)
+  -FIN_LUT_MIN:<str>	Value
+	Table field
+  -FIN_LUT_MAX:<str>	Value (Maximum)
+	Table field
+  -FIN_LUT_NAM:<str>	Name
+	Table field
+  -CHANGE:<str>     	Changes
+	Grid (output)
+  -NOCHANGE         	Report Unchanged Classes
+	Boolean
+  -CHANGES:<str>    	Changes
+	Table (output)
+  -OUTPUT:<str>     	Output as...
+	Choice
+	Available Choices:
+	[0] cells
+	[1] percent
+	[2] area

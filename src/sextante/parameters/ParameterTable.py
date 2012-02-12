@@ -4,6 +4,11 @@ from qgis.core import *
 
 class ParameterTable(ParameterDataObject):
 
+    def __init__(self, name, description, optional=False):
+        self.name = name
+        self.description = description
+        self.optional = optional
+
     def setValue(self, obj):
         if isinstance(obj, QgsVectorLayer):
             self.value = str(obj.dataProvider().dataSourceUri())

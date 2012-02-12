@@ -9,6 +9,12 @@ class ParameterVector(ParameterDataObject):
     VECTOR_TYPE_POLYGON = 2
     VECTOR_TYPE_ANY = 3
 
+    def __init__(self, name, description, shapetype, optional=False):
+        self.name = name
+        self.description = description
+        self.optional = optional
+        self.shapetype = shapetype
+
     def setValue(self, obj):
         if isinstance(obj, QgsVectorLayer):
             self.value = str(obj.dataProvider().dataSourceUri())

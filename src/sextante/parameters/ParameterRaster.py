@@ -4,6 +4,11 @@ from qgis.core import *
 
 class ParameterRaster(ParameterDataObject):
 
+    def __init__(self, name, description, optional=False):
+        self.name = name
+        self.description = description
+        self.optional = optional
+
     def setValue(self, obj):
         if isinstance(obj, QgsRasterLayer):
             self.value = str(obj.dataProvider().dataSourceUri())

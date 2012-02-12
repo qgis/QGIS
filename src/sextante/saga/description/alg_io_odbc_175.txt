@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_odbc
+module name :	ODBC Commit/Rollback Transaction
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 2 [-ODBC_DSN <str>] [-ODBC_USR <str>] [-ODBC_PWD <str>] [-SERVERS <str>] [-TRANSACT <str>]
+  -ODBC_DSN:<str>	DSN
+	Text
+  -ODBC_USR:<str>	User
+	Text
+  -ODBC_PWD:<str>	Password
+	Text
+  -SERVERS:<str> 	Server
+	Choice
+	Available Choices:
+	[0] [not set]
+  -TRANSACT:<str>	Transactions
+	Choice
+	Available Choices:
+	[0] rollback
+	[1] commit

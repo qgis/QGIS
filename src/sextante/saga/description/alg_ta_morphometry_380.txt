@@ -1,0 +1,41 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_morphometry
+module name :	Multiresolution Index of Valley Bottom Flatness (MRVBF)
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 8 -DEM <str> -MRVBF <str> -MRRTF <str> [-T_SLOPE <str>] [-T_PCTL_V <str>] [-T_PCTL_R <str>] [-P_SLOPE <str>] [-P_PCTL <str>] [-UPDATE] [-CLASSIFY] [-MAX_RES <str>]
+  -DEM:<str>     	Elevation
+	Grid (input)
+  -MRVBF:<str>   	MRVBF
+	Grid (output)
+  -MRRTF:<str>   	MRRTF
+	Grid (output)
+  -T_SLOPE:<str> 	Initial Threshold for Slope
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -T_PCTL_V:<str>	Threshold for Elevation Percentile (Lowness)
+	Floating point
+	Value Range: 0.000000 - 1.000000
+  -T_PCTL_R:<str>	Threshold for Elevation Percentile (Upness)
+	Floating point
+	Value Range: 0.000000 - 1.000000
+  -P_SLOPE:<str> 	Shape Parameter for Slope
+	Floating point
+  -P_PCTL:<str>  	Shape Parameter for Elevation Percentile
+	Floating point
+  -UPDATE        	Update Views
+	Boolean
+  -CLASSIFY      	Classify
+	Boolean
+  -MAX_RES:<str> 	Maximum Resolution (Percentage)
+	Floating point
+	Value Range: 0.000000 - 100.000000

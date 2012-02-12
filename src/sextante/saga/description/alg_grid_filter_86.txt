@@ -1,0 +1,29 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_filter
+module name :	DTM Filter (slope-based)
+author      :	Volker Wichmann (c) 2010, LASERDATA GmbH
+_____________________________________________
+go...
+Usage: 7 -INPUT <str> [-RADIUS <num>] [-TERRAINSLOPE <str>] [-STDDEV] -GROUND <str> -NONGROUND <str>
+  -INPUT:<str>       	Grid to filter
+	Grid (input)
+  -RADIUS:<num>      	Search Radius
+	Integer
+	Minimum: 1.000000
+  -TERRAINSLOPE:<str>	Approx. Terrain Slope
+	Floating point
+	Minimum: 0.000000
+  -STDDEV            	Use Confidence Interval
+	Boolean
+  -GROUND:<str>      	Bare Earth
+	Grid (output)
+  -NONGROUND:<str>   	Removed Objects
+	Grid (output)

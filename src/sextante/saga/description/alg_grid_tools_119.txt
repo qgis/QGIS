@@ -1,0 +1,40 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+
+executable modules:
+ 0	- Resampling
+ 1	- Aggregate
+ 3	- Merging
+ 4	- Create Constant Grid
+ 5	- Patching
+ 6	- Close One Cell Gaps
+ 7	- Close Gaps
+ 8	- Grid Buffer
+ 9	- Threshold Buffer
+ 10	- Grid Proximity Buffer
+ 11	- Convert Data Storage Type
+ 12	- Change Grid Values
+ 15	- Reclassify Grid Values
+ 17	- Crop to Data
+ 18	- Invert Data/No-Data
+ 19	- Grid Orientation
+ 20	- Combine Grids
+ 21	- Sort Grid
+ 22	- Grids from classified grid and table
+ 23	- Create Grid System
+ 24	- Grid Masking
+ 25	- Close Gaps with Spline
+ 26	- Proximity Grid
+ 27	- Tiling
+
+type -h or --help for further information
+
+error: cannot execute interactive module [16]
+
+error: module

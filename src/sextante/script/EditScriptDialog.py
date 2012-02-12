@@ -49,4 +49,4 @@ class EditScriptDialog(QtGui.QDialog):
 
     def cancel(self):
         self.update = False
-        self.dialog.close()
+        self.close()

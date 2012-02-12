@@ -1,0 +1,30 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_morphometry
+module name :	Mass Balance Index
+author      :	(c) 2008 by O.Conrad
+_____________________________________________
+go...
+Usage: 10 -DEM <str> [-HREL <str>] -MBI <str> [-TSLOPE <str>] [-TCURVE <str>] [-THREL <str>]
+  -DEM:<str>   	Elevation
+	Grid (input)
+  -HREL:<str>  	Vertical Distance to Channel Network
+	Grid (optional input)
+  -MBI:<str>   	Mass Balance Index
+	Grid (output)
+  -TSLOPE:<str>	T Slope
+	Floating point
+	Minimum: 0.000000
+  -TCURVE:<str>	T Curvature
+	Floating point
+	Minimum: 0.000000
+  -THREL:<str> 	T Vertical Distance to Channel Network
+	Floating point
+	Minimum: 0.000000

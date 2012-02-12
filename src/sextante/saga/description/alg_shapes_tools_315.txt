@@ -1,0 +1,62 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	shapes_tools
+module name :	Cut Shapes Layer
+author      :	O. Conrad (c) 2006
+_____________________________________________
+go...
+Usage: 13 -SHAPES <str> -CUT <str> [-EXTENT <str>] [-METHOD <str>] [-TARGET <str>] [-CUT_AX <str>] [-CUT_BX <str>] [-CUT_AY <str>] [-CUT_BY <str>] [-CUT_DX <str>] [-CUT_DY <str>] [-GRID_GRID_NX <num>] [-GRID_GRID_NY <num>] [-GRID_GRID_X <str>] [-GRID_GRID_Y <str>] [-GRID_GRID_D <str>] [-SHAPES_SHAPES <str>] [-POLYGONS_POLYGONS <str>]
+  -SHAPES:<str>           	Shapes
+	Shapes list (input)
+  -CUT:<str>              	Cut
+	Shapes list (output)
+  -EXTENT:<str>           	Extent
+	Shapes (optional output)
+  -METHOD:<str>           	Method
+	Choice
+	Available Choices:
+	[0] completely contained
+	[1] intersects
+	[2] center
+  -TARGET:<str>           	Extent
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid project
+	[2] shapes layer extent
+	[3] polygons
+  -CUT_AX:<str>           	Left
+	Floating point
+  -CUT_BX:<str>           	Right
+	Floating point
+  -CUT_AY:<str>           	Bottom
+	Floating point
+  -CUT_BY:<str>           	Top
+	Floating point
+  -CUT_DX:<str>           	Horizontal Range
+	Floating point
+	Minimum: 0.000000
+  -CUT_DY:<str>           	Vertical Range
+	Floating point
+	Minimum: 0.000000
+  -GRID_GRID_NX:<num>     	Grid Project
+	Grid system
+  -GRID_GRID_NY:<num>     	Grid Project
+	Grid system
+  -GRID_GRID_X:<str>      	Grid Project
+	Grid system
+  -GRID_GRID_Y:<str>      	Grid Project
+	Grid system
+  -GRID_GRID_D:<str>      	Grid Project
+	Grid system
+  -SHAPES_SHAPES:<str>    	Shapes
+	Shapes (input)
+  -POLYGONS_POLYGONS:<str>	Polygons
+	Shapes (input)

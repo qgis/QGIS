@@ -1,0 +1,52 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	imagery_classification
+module name :	Supervised Classification
+author      :	O.Conrad (c) 2005
+_____________________________________________
+go...
+Usage: 0 -GRIDS <str> -ROI <str> [-ROI_ID <str>] -CLASS_INFO <str> -CLASSES <str> [-QUALITY <str>] [-METHOD <str>] [-NORMALISE] [-THRESHOLD_DIST <str>] [-THRESHOLD_PROB <str>] [-RELATIVE_PROB <str>] [-THRESHOLD_ANGLE <str>]
+  -GRIDS:<str>          	Grids
+	Grid list (input)
+  -ROI:<str>            	Training Areas
+	Shapes (input)
+  -ROI_ID:<str>         	Class Identifier
+	Table field
+  -CLASS_INFO:<str>     	Class Information
+	Table (output)
+  -CLASSES:<str>        	Classification
+	Grid (output)
+  -QUALITY:<str>        	Quality
+	Grid (optional output)
+  -METHOD:<str>         	Method
+	Choice
+	Available Choices:
+	[0] parallelepiped
+	[1] minimum distance
+	[2] mahalanobis distance
+	[3] maximum likelihood
+	[4] spectral angle mapping
+	[5] binary encoding
+  -NORMALISE            	Normalise
+	Boolean
+  -THRESHOLD_DIST:<str> 	Distance Threshold
+	Floating point
+	Minimum: 0.000000
+  -THRESHOLD_PROB:<str> 	Probability Threshold (Percent)
+	Floating point
+	Value Range: 0.000000 - 100.000000
+  -RELATIVE_PROB:<str>  	Probability Reference
+	Choice
+	Available Choices:
+	[0] absolute
+	[1] relative
+  -THRESHOLD_ANGLE:<str>	Spectral Angle Threshold (Degree)
+	Floating point
+	Value Range: 0.000000 - 90.000000

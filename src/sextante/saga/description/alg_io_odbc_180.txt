@@ -1,0 +1,25 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_odbc
+module name :	Table Deletion
+author      :	O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 7 [-ODBC_DSN <str>] [-ODBC_USR <str>] [-ODBC_PWD <str>] [-TABLES <str>]
+  -ODBC_DSN:<str>	DSN
+	Text
+  -ODBC_USR:<str>	User
+	Text
+  -ODBC_PWD:<str>	Password
+	Text
+  -TABLES:<str>  	Tables
+	Choice
+	Available Choices:
+	[0] --- no table available ---

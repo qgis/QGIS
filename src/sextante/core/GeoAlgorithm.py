@@ -16,6 +16,15 @@ class GeoAlgorithm:
         self.providerName = ""
         self.crs = None
 
+    #methods to overwrite when creating a custom geoalgorithm
+    #=========================================================
+    def processAlgorithm(self):
+        pass
+
+    def defineCharacteristics(self):
+        pass
+    #=========================================================
+
     def execute(self, progress):
         self.setOutputCRSFromInputLayers()
         self.processAlgorithm(progress)
@@ -33,12 +42,6 @@ class GeoAlgorithm:
                     self.crs = layer.crs()
                     return
 
-
-    def defineCharacteristics(self):
-        pass
-
-    def processAlgorithm(self):
-        pass
 
     def putOutput(self, output):
         #TODO: check that name does not exist

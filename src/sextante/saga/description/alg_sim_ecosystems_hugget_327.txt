@@ -1,0 +1,33 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	sim_ecosystems_hugget
+module name :	03: Spatially Distributed Simulation of Soil Nitrogen Dynamics
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 2 -DEM <str> -NSTORE <str> [-TIME_SPAN <str>] [-TIME_STEP <str>] [-UPDATE] [-NINIT <str>] [-NRAIN <str>]
+  -DEM:<str>      	Elevation
+	Grid (input)
+  -NSTORE:<str>   	Soil Nitrogen
+	Grid (output)
+  -TIME_SPAN:<str>	Time Span [a]
+	Floating point
+	Minimum: 0.000000
+  -TIME_STEP:<str>	Time Interval [a]
+	Floating point
+	Minimum: 0.000000
+  -UPDATE         	Update View
+	Boolean
+  -NINIT:<str>    	Initial Nitrogen Content [kg/ha]
+	Floating point
+	Minimum: 0.000000
+  -NRAIN:<str>    	Nitrogen in Rainfall [kg/ha/a]
+	Floating point
+	Minimum: 0.000000

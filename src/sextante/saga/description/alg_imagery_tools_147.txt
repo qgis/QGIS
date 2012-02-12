@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	imagery_tools
+module name :	Vegetation Index[distance based]
+author      :	Copyrights (c) 2004 by Victor Olaya
+_____________________________________________
+go...
+Usage: 0 -NIR <str> -RED <str> [-SLOPE <str>] [-INTERCEPT <str>] -PVI <str> [-PVI1 <str>] [-PVI2 <str>] [-PVI3 <str>]
+  -NIR:<str>      	Near Infrared Band
+	Grid (input)
+  -RED:<str>      	Red Band
+	Grid (input)
+  -SLOPE:<str>    	Slope of the soil line
+	Floating point
+  -INTERCEPT:<str>	Intercept of the soil line
+	Floating point
+  -PVI:<str>      	PVI (Richardson and Wiegand)
+	Grid (output)
+  -PVI1:<str>     	PVI (Perry & Lautenschlager)
+	Grid (optional output)
+  -PVI2:<str>     	PVI (Walther & Shabaani)
+	Grid (optional output)
+  -PVI3:<str>     	PVI (Qi, et al) 
+	Grid (optional output)

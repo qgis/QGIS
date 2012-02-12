@@ -1,0 +1,28 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	geostatistics_grid
+module name :	Principle Components Analysis
+author      :	O.Conrad (c) 2010
+_____________________________________________
+go...
+Usage: 8 -GRIDS <str> -PCA <str> [-METHOD <str>] [-NFIRST <num>]
+  -GRIDS:<str> 	Grids
+	Grid list (input)
+  -PCA:<str>   	Principle Components
+	Grid list (output)
+  -METHOD:<str>	Method
+	Choice
+	Available Choices:
+	[0] correlation matrix
+	[1] variance-covariance matrix
+	[2] sums-of-squares-and-cross-products matrix
+  -NFIRST:<num>	Number of Components
+	Integer
+	Minimum: 0.000000

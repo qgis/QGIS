@@ -14,6 +14,11 @@ from sextante.parameters.ParameterNumber import ParameterNumber
 from sextante.parameters.ParameterRange import ParameterRange
 from sextante.parameters.ParameterTableField import ParameterTableField
 from sextante.parameters.ParameterTable import ParameterTable
+from sextante.gui.OutputSelectionPanel import OutputSelectionPanel
+from sextante.core.SextanteUtils import SextanteUtils
+from sextante.gui.AlgorithmExecutor import AlgorithmExecutor
+from sextante.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
+from sextante.core.SextanteLog import SextanteLog
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -30,23 +35,21 @@ class ParametersDialog(QtGui.QDialog):
 
 class Ui_ParametersDialog(object):
 
-    SAVE_TO_TEMP_FILE = "[Save to temporary file]"
     NOT_SELECTED = "[Not selected]"
 
     def setupUi(self, dialog, alg):
         self.alg = alg
         self.dialog = dialog
+
         self.valueItems = {}
         self.dependentItems = {}
         dialog.setObjectName(_fromUtf8("Parameters"))
         dialog.resize(650, 450)
-        self.buttonBox = QtGui.QDialogButtonBox(dialog)
-        self.buttonBox.setGeometry(QtCore.QRect(110, 400, 441, 32))
+        self.buttonBox = QtGui.QDialogButtonBox()
         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
         self.buttonBox.setStandardButtons(QtGui.QDialogButtonBox.Cancel|QtGui.QDialogButtonBox.Ok)
         self.buttonBox.setObjectName(_fromUtf8("buttonBox"))
-        self.tableWidget = QtGui.QTableWidget(dialog)
-        self.tableWidget.setGeometry(QtCore.QRect(5, 5, 640, 350))
+        self.tableWidget = QtGui.QTableWidget()
         self.tableWidget.setSelectionMode(QtGui.QAbstractItemView.NoSelection)
         self.tableWidget.setColumnCount(2)
         self.tableWidget.setColumnWidth(0,300)
@@ -55,15 +58,26 @@ class Ui_ParametersDialog(object):
         self.tableWidget.setHorizontalHeaderItem(1, QtGui.QTableWidgetItem("Value"))
         self.tableWidget.setObjectName(_fromUtf8("tableWidget"))
         self.tableWidget.verticalHeader().setVisible(False)
+        self.tableWidget.horizontalHeader().setResizeMode(QtGui.QHeaderView.Stretch)
         self.setTableContent()
         dialog.setWindowTitle(self.alg.name)
+        self.progress = QtGui.QProgressBar()
+        self.progress.setMinimum(0)
+        self.progress.setMaximum(100)
+        self.verticalLayout = QtGui.QVBoxLayout(dialog)
+        self.verticalLayout.setSpacing(2)
+        self.verticalLayout.setMargin(0)
+        self.verticalLayout.setObjectName("hLayout")
+        self.verticalLayout.addWidget(self.tableWidget)
+        self.verticalLayout.addWidget(self.progress)
+        self.verticalLayout.addWidget(self.buttonBox)
+        dialog.setLayout(self.verticalLayout)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("accepted()")), self.accept)
         QtCore.QObject.connect(self.buttonBox, QtCore.SIGNAL(_fromUtf8("rejected()")), self.reject)
         QtCore.QMetaObject.connectSlotsByName(dialog)
 
 
     def getWidgetFromParameter(self, param):
-
         if isinstance(param, ParameterRaster):
             item = QtGui.QComboBox()
             layers = QGisLayers.getRasterLayers()
@@ -122,11 +136,7 @@ class Ui_ParametersDialog(object):
             item = MultipleInputPanel(opts)
         else:
             item = QtGui.QLineEdit()
-            if isinstance(param, ParameterNumber):
-                item.setText("0")
-            elif isinstance(param, ParameterRange):
-                item.setText("0,1")
-
+            item.setText(str(param.default))
 
         return item
 
@@ -146,7 +156,6 @@ class Ui_ParametersDialog(object):
 
     def getFields(self, layer):
         return layer.dataProvider().fields()
-
 
 
     def setTableContent(self):
@@ -171,8 +180,7 @@ class Ui_ParametersDialog(object):
             item = QtGui.QTableWidgetItem(output.description + "<" + output.__module__.split(".")[-1] + ">")
             item.setFlags(QtCore.Qt.ItemIsEnabled)
             self.tableWidget.setItem(i,0, item)
-            item = QtGui.QLineEdit()
-            item.setText(self.SAVE_TO_TEMP_FILE)
+            item = OutputSelectionPanel()
             self.valueItems[output.name] = item
             self.tableWidget.setCellWidget(i,1, item)
             self.tableWidget.setRowHeight(i,22)
@@ -187,28 +195,26 @@ class Ui_ParametersDialog(object):
                 return False
 
         for output in outputs:
-            filename = str(self.valueItems[output.name].text())
-            if filename.strip == "" or filename == self.SAVE_TO_TEMP_FILE:
-                output.channel = None
-            else:
-                output.channel = filename
+            output.channel = self.valueItems[output.name].getChannel()
 
         return True
 
     def setParamValue(self, param, widget):
 
         if isinstance(param, ParameterRaster):
-            param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
+            return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterVector):
-            param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
+            return param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterTable):
-            param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
+            return  param.setValue(widget.itemData(widget.currentIndex()).toPyObject())
         elif isinstance(param, ParameterBoolean):
-            param.setValue(widget.currentIndex() == 0)
+            return param.setValue(widget.currentIndex() == 0)
         elif isinstance(param, ParameterSelection):
-            param.setValue(widget.currentIndex())
+            return param.setValue(widget.currentIndex())
         elif isinstance(param, ParameterFixedTable):
-            param.setValue(widget.table)
+            return param.setValue(widget.table)
+        if isinstance(param, ParameterTableField):
+            return param.setValue(widget.currentText())
         elif isinstance(param, ParameterMultipleInput):
             if param.datatype == ParameterMultipleInput.TYPE_VECTOR_ANY:
                 options = QGisLayers.getVectorLayers()
@@ -217,22 +223,38 @@ class Ui_ParametersDialog(object):
             value = []
             for index in widget.selectedoptions:
                 value.append(options[index])
-            param.setValue(value)
+            return param.setValue(value)
         else:
             return param.setValue(widget.text())
 
-        return True
 
     def accept(self):
-        if self.setParamValues():
-            self.dialog.alg = self.alg
+        try:
+            if self.setParamValues():
+                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+                SextanteLog.addToLog(SextanteLog.LOG_ALGORITHM, self.alg.getAsCommand())
+                AlgorithmExecutor.runalg(self.alg, self)
+                QGisLayers.loadFromAlg(self.alg)
+                QApplication.restoreOverrideCursor()
+                self.dialog.alg = self.alg
+            else:
+                QMessageBox.critical(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
+        except GeoAlgorithmExecutionException, e :
+            QApplication.restoreOverrideCursor()
+            QMessageBox.critical(self, "Error",e.msg)
+        finally:
             self.dialog.close()
-        else:
-            QMessageBox.warning(self.dialog, "Unable to execute algorithm", "Wrong or missing parameter values")
+
 
     def reject(self):
         self.dialog.alg = None
         self.dialog.close()
+
+    def setPercentage(self, i):
+        self.progress.setValue(i)
+
+    def setFinished(self):
+        pass
 
 
 

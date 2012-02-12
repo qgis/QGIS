@@ -1,0 +1,22 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	ta_morphometry
+module name :	Diurnal Anisotropic Heating
+author      :	J.Boehner, O.Conrad (c) 2008
+_____________________________________________
+go...
+Usage: 12 -DEM <str> -DAH <str> [-ALPHA_MAX <str>]
+  -DEM:<str>      	Elevation
+	Grid (input)
+  -DAH:<str>      	Diurnal Anisotropic Heating
+	Grid (output)
+  -ALPHA_MAX:<str>	Alpha Max (Degree)
+	Floating point
+	Value Range: 0.000000 - 360.000000

@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_tools
+module name :	Grids from classified grid and table
+author      :	
+_____________________________________________
+go...
+Usage: 22 -TABLE <str> [-ID_FIELD <str>] -CLASSES <str> [-GRIDS <str>]
+  -TABLE:<str>   	Table
+	Table (input)
+  -ID_FIELD:<str>	Attribute
+	Table field
+  -CLASSES:<str> 	Classes
+	Grid (input)
+  -GRIDS:<str>   	Grids
+	Grid list (optional output)

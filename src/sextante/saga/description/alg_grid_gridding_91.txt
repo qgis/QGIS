@@ -1,0 +1,39 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	grid_gridding
+module name :	Nearest Neighbour
+author      :	(c) 2003 by O.Conrad
+_____________________________________________
+go...
+Usage: 2 -SHAPES <str> [-FIELD <str>] [-TARGET <str>] [-USER_XMIN <str>] [-USER_XMAX <str>] [-USER_YMIN <str>] [-USER_YMAX <str>] [-USER_SIZE <str>] [-USER_GRID <str>] [-GRID_GRID <str>]
+  -SHAPES:<str>   	Points
+	Shapes (input)
+  -FIELD:<str>    	Attribute
+	Table field
+  -TARGET:<str>   	Target Grid
+	Choice
+	Available Choices:
+	[0] user defined
+	[1] grid
+  -USER_XMIN:<str>	Left
+	Floating point
+  -USER_XMAX:<str>	Right
+	Floating point
+  -USER_YMIN:<str>	Bottom
+	Floating point
+  -USER_YMAX:<str>	Top
+	Floating point
+  -USER_SIZE:<str>	Cellsize
+	Floating point
+	Minimum: 0.000000
+  -USER_GRID:<str>	Grid
+	Data Object (optional output)
+  -GRID_GRID:<str>	Grid
+	Grid (output)

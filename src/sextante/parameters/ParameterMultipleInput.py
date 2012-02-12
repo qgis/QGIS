@@ -12,6 +12,12 @@ class ParameterMultipleInput(ParameterDataObject):
     TYPE_RASTER = 4
     TYPE_TABLE = 5
 
+    def __init__(self, name, description, datatype, optional = False):
+        self.name = name
+        self.description = description
+        self.datatype = datatype
+        self.optional = optional
+
     def setValue(self, obj):
         if obj == None:
             if self.optional:

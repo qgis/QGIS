@@ -1,0 +1,31 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	imagery_tools
+module name :	Vegetation Index[slope based]
+author      :	Copyrights (c) 2004 by Victor Olaya
+_____________________________________________
+go...
+Usage: 1 -NIR <str> -RED <str> -NDVI <str> [-RATIO <str>] [-TVI <str>] [-CTVI <str>] [-TTVI <str>] [-NRATIO <str>]
+  -NIR:<str>   	Near Infrared Band
+	Grid (input)
+  -RED:<str>   	Red Band
+	Grid (input)
+  -NDVI:<str>  	Normalized Difference Vegetation Index
+	Grid (output)
+  -RATIO:<str> 	Ratio Vegetation Index
+	Grid (optional output)
+  -TVI:<str>   	Transformed Vegetation Index
+	Grid (optional output)
+  -CTVI:<str>  	Corrected Transformed Vegetation Index
+	Grid (optional output)
+  -TTVI:<str>  	Thiam's Transformed Vegetation Index
+	Grid (optional output)
+  -NRATIO:<str>	Normalized Ratio Vegetation Index
+	Grid (optional output)

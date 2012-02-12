@@ -1,0 +1,23 @@
+_____________________________________________
+  #####   ##   #####    ##
+ ###     ###  ##       ###
+  ###   # ## ##  #### # ##
+   ### ##### ##    # #####
+##### #   ##  ##### #   ##
+_____________________________________________
+
+library path:	D:\projects\sextante\workspaces\gvsig_1_11\_fwAndami\gvSIG\extensiones\es.unex.sextante\saga\modules
+library name:	io_shapes
+module name :	Export Atlas Boundary File
+author      :	(c) 2006 by O.Conrad
+_____________________________________________
+go...
+Usage: 7 -SHAPES <str> [-PNAME <str>] [-SNAME <str>] [-FILE <str>]
+  -SHAPES:<str>	Shapes
+	Shapes (input)
+  -PNAME:<str> 	Primary Name
+	Table field
+  -SNAME:<str> 	Secondary Name
+	Table field
+  -FILE:<str>  	File
+	File path
