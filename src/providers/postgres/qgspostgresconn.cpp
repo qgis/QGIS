@@ -726,13 +726,13 @@ PGresult *QgsPostgresConn::PQexec( QString query, bool logError )
     {
       if ( logError )
       {
-        QgsMessageLog::logMessage( tr( "Errornous query: %1 returned %2 [%3]" )
+        QgsMessageLog::logMessage( tr( "Erroneous query: %1 returned %2 [%3]" )
                                    .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ),
                                    tr( "PostGIS" ) );
       }
       else
       {
-        QgsDebugMsg( QString( "Not logged errornous query: %1 returned %2 [%3]" )
+        QgsDebugMsg( QString( "Not logged erroneous query: %1 returned %2 [%3]" )
                      .arg( query ).arg( errorStatus ).arg( PQresultErrorMessage( res ) ) );
       }
     }
