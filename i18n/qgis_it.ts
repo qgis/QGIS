@@ -27987,7 +27987,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="577"/>
         <source>GDAL Drivers</source>
-        <translation type="unfinished"></translation>
+        <translation>Drivger GDAL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="593"/>
@@ -28759,7 +28759,8 @@ Le funzioni di geoprocessing sono utilizzabili solo per i layer PostgreSQL/PostG
         <source>Connection failed - Check settings and try again.
 
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Connessione non riuscita - Controlla i parametri e riprova.
+</translation>
     </message>
     <message>
         <source>Connection failed - Check settings and try again.
@@ -29230,12 +29231,12 @@ geometry.</source>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="111"/>
         <source>Disable &apos;Fast Access to Features at ID&apos; capability to force keeping the attribute table in memory (e.g. in case of expensive views).</source>
-        <translation type="unfinished"></translation>
+        <translation>Disabilita &apos;Accesso veloce agli elementi tramite ID&apos; per forzare la custodia in memoria della tabella degli attributi (p.es. in caso di viste molto pesanti).</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspgtablemodel.cpp" line="248"/>
         <source>Enter...</source>
-        <translation type="unfinished"></translation>
+        <translation>Entra...</translation>
     </message>
 </context>
 <context>
@@ -30331,17 +30332,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="213"/>
         <source>undefined return value from encoding setting</source>
-        <translation type="unfinished"></translation>
+        <translation>valore non definito nelle impostazioni di codifica</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="223"/>
         <source>Your database has no working PostGIS support.</source>
-        <translation type="unfinished"></translation>
+        <translation>Il vostro database non è abilitato geograficamente (PostGIS).</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="240"/>
         <source>Your PostGIS installation has no GEOS support. Feature selection and identification will not work properly. Please install PostGIS with GEOS support (http://geos.refractions.net)</source>
-        <translation type="unfinished"></translation>
+        <translation>La vostra installazione di PostGIS non ha il supporto per GEOS. La selezione e identificazione delle geometrie non funzionerà correttamente; installa PostGIS con il supporto per GEOS (http://geos.refractions.net)</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="292"/>
@@ -30349,7 +30350,10 @@ p, li { white-space: pre-wrap; }
 result:%2
 error:%3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>SQL:%1
+risultato:%2
+errori:%3
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="390"/>
@@ -30361,56 +30365,62 @@ error:%3
         <source>Database connection was successful, but the accessible tables could not be determined. The error message from the database was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>La connessione al database ha avuto successo, ma non si sono trovate tabelle accessibili. Il messaggio d&apos;errore dal database è:
+%1
+</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="506"/>
         <source>Database connection was successful, but the accessible tables could not be determined.
 The error message from the database was:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>La connessione al database ha avuto successo, ma non si sono trovate tabelle accessibili.
+Il messaggio d&apos;errore dal database è:
+%1</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="539"/>
         <source>Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>La connessione al database ha avuto successo, ma non si sono trovate tabelle accessibili.  Verificare di avere i privilegi di SELECT sulle tabelle contenenti geometrie PostGIS.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="550"/>
         <source>Unable to get list of spatially enabled tables from the database</source>
-        <translation type="unfinished"></translation>
+        <translation>Impossibile ottenere dal database l&apos;elenco delle tabelle con dati spaziali</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="594"/>
-        <source>Retrieval of postgis version failed</source>
-        <translation type="unfinished"></translation>
+        <source>Retrieval of PostGIS version failed</source>
+        <translation>Errore nel recupero della versione di PostGIS</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="608"/>
-        <source>Could not parse postgis version string &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <source>Could not parse PostGIS version string &apos;%1&apos;</source>
+        <translation>Impossibile analizzare la stringa della versione di PostGIS &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="712"/>
-        <source>Errornous query: %1 returned %2 [%3]</source>
-        <translation type="unfinished"></translation>
+        <source>Erroneous query: %1 returned %2 [%3]</source>
+        <translation>Interrogazione errata: %1 ha restituito %2 [%3]</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="725"/>
         <source>Query failed: %1
 Error: no result buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrogazione fallita: %1
+Errore: nessun buffer di risultati</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="729"/>
         <source>Not logged query failed: %1
 Error: no result buffer</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrogazione non connessa fallita: %1
+Errore: nessun buffer di risultati</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="768"/>
         <source>Query: %1 returned %2 [%3]</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrogazione: %1 ha restituito %2 [%3]</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="776"/>
@@ -30424,27 +30434,27 @@ Result: %3 (%4)</translation>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="788"/>
         <source>resetting bad connection.</source>
-        <translation type="unfinished"></translation>
+        <translation>reimposto una connessione corrotta.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="794"/>
         <source>retry after reset succeeded.</source>
-        <translation type="unfinished"></translation>
+        <translation>nuovo tentativo riuscito dopo reimpostazione.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="799"/>
         <source>retry after reset failed again.</source>
-        <translation type="unfinished"></translation>
+        <translation>nuovo tentativo non riuscito dopo reimpostazione.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="805"/>
         <source>connection still bad after reset.</source>
-        <translation type="unfinished"></translation>
+        <translation>connessione ancora corrotta dopo reimpostazione.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="810"/>
         <source>bad connection, not retrying.</source>
-        <translation type="unfinished"></translation>
+        <translation>connessione corrotta, nessun nuovo tentativo.</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="1213"/>
