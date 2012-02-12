@@ -26654,7 +26654,7 @@ Fehler:%3
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresconn.cpp" line="729"/>
-        <source>Errornous query: %1 returned %2 [%3]</source>
+        <source>Erroneous query: %1 returned %2 [%3]</source>
         <translation>Fehlerhafte Abfrage: %1 ergab %2 [%3]</translation>
     </message>
     <message>
