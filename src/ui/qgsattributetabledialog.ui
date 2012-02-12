@@ -232,7 +232,7 @@
      <item>
       <widget class="QToolButton" name="mPanMapToSelectedRowsButton">
        <property name="toolTip">
-        <string>Zoom map to the selected rows (Ctrl+J)</string>
+        <string>Pan map to the selected rows (Ctrl+P)</string>
        </property>
        <property name="whatsThis">
         <string/>
@@ -251,7 +251,7 @@
         </size>
        </property>
        <property name="shortcut">
-        <string>Ctrl+J</string>
+        <string>Ctrl+P</string>
        </property>
       </widget>
      </item>
