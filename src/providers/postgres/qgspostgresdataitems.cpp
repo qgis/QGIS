@@ -1,6 +1,6 @@
 #include "qgspostgresdataitems.h"
 
-#include "qgspgsourceselect.h"
+#include "qgspostgresconn.h"
 #include "qgspgnewconnection.h"
 #include "qgscolumntypethread.h"
 #include "qgslogger.h"
@@ -143,7 +143,7 @@ void QgsPGConnectionItem::editConnection()
 
 void QgsPGConnectionItem::deleteConnection()
 {
-  QgsPgSourceSelect::deleteConnection( mName );
+  QgsPostgresConn::deleteConnection( mName );
   // the parent should be updated
   mParent->refresh();
 }

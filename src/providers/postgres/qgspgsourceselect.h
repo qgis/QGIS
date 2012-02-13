@@ -60,10 +60,6 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     Q_OBJECT
 
   public:
-
-    //! static function to delete a connection
-    static void deleteConnection( QString key );
-
     //! Constructor
     QgsPgSourceSelect( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
     //! Destructor
