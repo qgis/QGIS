@@ -631,9 +631,17 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     {
       theMenu.addAction( tr( "Re&name" ), this, SLOT( openEditor() ) );
     }
+    //
+    // Option to group layers, if the selection is more than one
+    //
+    if( selectedLayers().length() > 1 )
+    {
+      theMenu.addAction( tr( "&Group selected" ), this, SLOT( groupSelectedLayers() ) );
+    }
+    // ends here
   }
 
-  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add group" ), this, SLOT( addGroupToCurrentItem() ) );
+  theMenu.addAction( QgisApp::getThemeIcon( "/folder_new.png" ), tr( "&Add new group" ), this, SLOT( addGroupToCurrentItem() ) );
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionExpandTree.png" ), tr( "&Expand all" ), this, SLOT( expandAll() ) );
   theMenu.addAction( QgisApp::getThemeIcon( "/mActionCollapseTree.png" ), tr( "&Collapse all" ), this, SLOT( collapseAll() ) );
 
@@ -2417,3 +2425,24 @@ void QgsLegend::toggleDrawingOrderUpdate()
 {
   setUpdateDrawingOrder( !mUpdateDrawingOrder );
 }
+
+void QgsLegend::groupSelectedLayers()
+{
+  //avoid multiple refreshes of map canvas because of itemChanged signal
+  blockSignals( true );
+
+  QgsLegendGroup *group;
+
+  group = new QgsLegendGroup( this, tr( "group" ) );
+
+  foreach( QTreeWidgetItem * item, selectedItems() )
+  {
+    insertItem( item, group );
+    continue;
+  }
+  editItem( group, 0 );
+
+  blockSignals( false );
+
+}
+
