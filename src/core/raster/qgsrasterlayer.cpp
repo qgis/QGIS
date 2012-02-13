@@ -2201,7 +2201,7 @@ QgsRasterDataProvider* QgsRasterLayer::loadProvider( QString theProviderKey, QSt
 
   if ( !myDataProvider )
   {
-    QgsMessageLog::logMessage( tr( "Cannot to instantiate the data provider" ), tr( "Raster" ) );
+    QgsMessageLog::logMessage( tr( "Cannot instantiate the data provider" ), tr( "Raster" ) );
     return NULL;
   }
   QgsDebugMsg( "Data driver created" );
@@ -2261,7 +2261,7 @@ void QgsRasterLayer::setDataProvider( QString const & provider,
   {
     if ( provider != "gdal" || !layers.isEmpty() || !styles.isEmpty() || !format.isNull() || !theCrs.isNull() )
     {
-      QgsMessageLog::logMessage( tr( "Data provider is invalid (layers %1, styles %2, formats: %3)" )
+      QgsMessageLog::logMessage( tr( "Data provider is invalid (layers: %1, styles: %2, formats: %3)" )
                                  .arg( layers.join( ", " ) )
                                  .arg( styles.join( ", " ) )
                                  .arg( format ),
