@@ -13,6 +13,7 @@ usr/lib/qgis/plugins/libspatialqueryplugin.so
 usr/lib/qgis/plugins/libofflineeditingplugin.so
 usr/lib/qgis/plugins/libroadgraphplugin.so
 usr/lib/qgis/plugins/libzonalstatisticsplugin.so
+usr/lib/qgis/plugins/libheatmapplugin.so
 usr/lib/qgis/qgis_help
 usr/share/pixmaps/qgis-icon.xpm
 usr/share/pixmaps/qgis-mime-icon.png
