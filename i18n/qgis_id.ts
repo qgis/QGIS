@@ -1019,12 +1019,12 @@ yang mana telah dikurangi menjadi %2 vertek setelah penyederhanaan</translation>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="41"/>
         <source>Update extents from layer</source>
-        <translation type="unfinished">Perbarui luasan dari lapisan</translation>
+        <translation type="unfinished">Perbarui extent dari lapisan</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="54"/>
         <source>Update extents from canvas</source>
-        <translation type="unfinished">Perbarui luasan dari kanvas</translation>
+        <translation type="unfinished">Perbarui extent dari kanvas</translation>
     </message>
     <message>
         <location filename="../python/plugins/fTools/tools/frmVectorGrid.ui" line="172"/>
@@ -17670,24 +17670,26 @@ atau dengan merubah nilai berikut ini</translation>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="210"/>
         <source>Cannot open config file (%1).</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka konfigurasi arsip (%1).</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="219"/>
         <source>Cannot read config file (%1):</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membaca konfigurasi arsip (%1):</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="220"/>
         <source>
 %1
 at line %2 column %3</source>
-        <translation type="unfinished"></translation>
+        <translation>
+%1
+pada baris %2 kolom %3</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/qgsgrasstools.cpp" line="147"/>
         <source>Cannot start command shell (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat memulai shell perintah (%1)</translation>
     </message>
 </context>
 <context>
@@ -17840,38 +17842,39 @@ at line %2 column %3</source>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="196"/>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="221"/>
         <source>Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="222"/>
         <source>The QGIS help database is not installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata bantuan QGIS tidak terinstall</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="163"/>
         <source>Quantum GIS Help</source>
-        <translation type="unfinished"></translation>
+        <translation>Bantuan Quantum GIS</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="139"/>
         <source>This help file is not available in your language %1. If you would like to translate it, please contact the QGIS  development team.</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip bantuan ini tidak tersedia dalam bahasa anda %1. Jika anda ingin menterjemahkannya, silahkan menghubungu tim pembuat QGIS.</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="144"/>
         <source>This help file does not exist for your language:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt;If you would like to create it, contact the QGIS development team</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip bantuan ini tidak tersedia dalam bahasa anda:&lt;p&gt;&lt;b&gt;%1&lt;/b&gt;&lt;p&gt; jika anda ingin membuatnya, silahkan menghubungi tim pembuat QGIS</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="191"/>
         <source>Quantum GIS Help - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Bantuan Quantum GIS - %1</translation>
     </message>
     <message>
         <location filename="../src/helpviewer/qgshelpviewer.cpp" line="197"/>
         <source>Failed to get the help text from the database:
   %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal mendapatkan teks bantuan dari basisdata:
+  %1</translation>
     </message>
 </context>
 <context>
@@ -17925,7 +17928,7 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/helpviewer/qgshelpviewerbase.ui" line="29"/>
         <source>about:blank</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentang:kosong</translation>
     </message>
 </context>
 <context>
@@ -17933,72 +17936,71 @@ at line %2 column %3</source>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="274"/>
         <source>WMS Server responded unexpectedly with HTTP Status Code %1 (%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Server WMS merespon tidak seperti yang diharapkan dengan kode status HTTP %1 (%2)</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="353"/>
         <source>HTTP response completed, however there was an error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Respon HTTP komplit, namun terjadi kesalahan : %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="402"/>
         <source>HTTP transaction completed, however there was an error: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Transaksi HTTP komplit, namun terjadi kesalahan: %1</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="316"/>
         <source>Received %1 of %2 bytes</source>
-        <translation type="unfinished"></translation>
+        <translation>Menerima %1 dari %2 byte</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="320"/>
         <source>Received %1 bytes (total unknown)</source>
-        <translation type="unfinished"></translation>
+        <translation>Menerima %1 byte (keseluruhan tidak diketahui)</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="429"/>
         <source>Not connected</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak terhubung</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="435"/>
         <source>Looking up &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Mencari &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="441"/>
         <source>Connecting to &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Menghubungkan &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="447"/>
         <source>Sending request &apos;%1&apos;</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengirim permintaan &apos;%1&apos;</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="453"/>
         <source>Receiving reply</source>
-        <translation type="unfinished"></translation>
+        <translation>Menerima balasan</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="459"/>
         <source>Response is complete</source>
-        <translation type="unfinished"></translation>
+        <translation>Respon komplit</translation>
     </message>
     <message>
         <location filename="../src/core/qgshttptransaction.cpp" line="465"/>
         <source>Closing down connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Menutup koneksi</translation>
     </message>
     <message numerus="yes">
         <location filename="../src/core/qgshttptransaction.cpp" line="475"/>
         <source>Network timed out after %n second(s) of inactivity.
 This may be a problem in your network connection or at the WMS server.</source>
         <comment>inactivity timeout</comment>
-        <translation type="unfinished">
-            <numerusform>
-        
-        </numerusform>
+        <translation>
+            <numerusform>Jaringan kehabisan waktu setelah %n detik tidak aktif.
+Ini mungkin masalah dalam koneksi jaringan anda atau pada server WMS.</numerusform>
         </translation>
     </message>
 </context>
@@ -18007,12 +18009,12 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsidwinterpolatordialogbase.ui" line="28"/>
         <source>Distance coefficient P</source>
-        <translation type="unfinished"></translation>
+        <translation>Koefisien jarak P</translation>
     </message>
 </context>
 <context>
@@ -18035,21 +18037,21 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="221"/>
         <source>(Actions)</source>
-        <translation type="unfinished">(Aksi)</translation>
+        <translation>(Aksi)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="227"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="332"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="435"/>
         <source>Edit feature form</source>
-        <translation type="unfinished"></translation>
+        <translation>Edit bentuk fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="227"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="332"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="435"/>
         <source>View feature form</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan bentuk fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="437"/>
@@ -18064,48 +18066,48 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="439"/>
         <source>Copy feature attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Salin atribut fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="448"/>
         <source>Expand all</source>
-        <translation type="unfinished"></translation>
+        <translation>Kembangkan semuanya</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="449"/>
         <source>Collapse all</source>
-        <translation type="unfinished"></translation>
+        <translation>Kempiskan semuanya</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="880"/>
         <source>Attribute changes</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut dirubah</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="209"/>
         <location filename="../src/app/qgsidentifyresults.cpp" line="291"/>
         <source>(Derived)</source>
-        <translation type="unfinished"></translation>
+        <translation>(berasal)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="443"/>
         <source>Clear results</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan hasil</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="444"/>
         <source>Clear highlights</source>
-        <translation type="unfinished"></translation>
+        <translation>Hilangkan yang disorot</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="445"/>
         <source>Highlight all</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorot semuanya</translation>
     </message>
     <message>
         <location filename="../src/app/qgsidentifyresults.cpp" line="446"/>
         <source>Highlight layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Sorot lapisan</translation>
     </message>
 </context>
 <context>
@@ -18121,7 +18123,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/plugins/georeferencer/qgsimagewarper.cpp" line="226"/>
         <source>Progress indication</source>
-        <translation type="unfinished"></translation>
+        <translation>Indikasi kemajuan</translation>
     </message>
 </context>
 <context>
@@ -18130,55 +18132,55 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="57"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="357"/>
         <source>Triangular interpolation (TIN)</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolasi Triangular (TIN)</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="58"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="353"/>
         <source>Inverse Distance Weighting (IDW)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inverse Distance Weighting (IDW)</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="106"/>
         <source>No input data for interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada data input untuk interpolasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="106"/>
         <source>Please add one or more input layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan menambahkan satu atau lebih lapisan</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="115"/>
         <source>Output file name invalid</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama arsip keluaran tidak tepat</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="115"/>
         <source>Please enter a valid output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan masukan nama arsip keluaran yang benar</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="165"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="275"/>
         <source>Break lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Putuskan gairs</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="169"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="274"/>
         <source>Structure lines</source>
-        <translation type="unfinished"></translation>
+        <translation>Struktur garis</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="273"/>
         <source>Points</source>
-        <translation type="unfinished">Titik-titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialog.cpp" line="303"/>
         <source>Save interpolated raster as...</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan hasil interpolasi raster sebagai...</translation>
     </message>
 </context>
 <context>
@@ -18187,117 +18189,117 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="146"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="307"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="20"/>
         <source>Interpolation plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin interpolasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="32"/>
         <source>Input</source>
-        <translation type="unfinished"></translation>
+        <translation>Input</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="38"/>
         <source>Vector layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="58"/>
         <source>Interpolation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut interpolasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="78"/>
         <source>Use z-Coordinate for interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan koordinat-z untuk interpolasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="85"/>
         <source>Add</source>
-        <translation type="unfinished">Tambah</translation>
+        <translation>Tambah</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="92"/>
         <source>Remove</source>
-        <translation type="unfinished">Buang</translation>
+        <translation>Buang</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="100"/>
         <source>Vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="105"/>
         <source>Attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="110"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="127"/>
         <source>Output</source>
-        <translation type="unfinished"></translation>
+        <translation>Keluaran</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="133"/>
         <source>Interpolation method</source>
-        <translation type="unfinished"></translation>
+        <translation>Metode interpolasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="157"/>
         <source>Number of columns</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah kolom</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="174"/>
         <source>Number of rows</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah baris</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="191"/>
         <source>Cellsize X</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran sel X</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="211"/>
         <source>Cellsize Y</source>
-        <translation type="unfinished"></translation>
+        <translation>Ukuran sel Y</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="233"/>
         <source>X min</source>
-        <translation type="unfinished"></translation>
+        <translation>X min</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="246"/>
         <source>X max</source>
-        <translation type="unfinished"></translation>
+        <translation>X maks</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="259"/>
         <source>Y min</source>
-        <translation type="unfinished"></translation>
+        <translation>Y min</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="272"/>
         <source>Y max</source>
-        <translation type="unfinished"></translation>
+        <translation>Y maks</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="285"/>
         <source>Set to current extent</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur ke extent saat ini</translation>
     </message>
     <message>
         <location filename="../src/plugins/interpolation/qgsinterpolationdialogbase.ui" line="294"/>
         <source>Output file </source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip keluaran</translation>
     </message>
 </context>
 <context>
@@ -18307,7 +18309,7 @@ This may be a problem in your network connection or at the WMS server.</source>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="48"/>
         <location filename="../src/plugins/interpolation/qgsinterpolationplugin.cpp" line="56"/>
         <source>&amp;Interpolation</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Interpolasi</translation>
     </message>
 </context>
 <context>
@@ -18315,47 +18317,47 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="14"/>
         <source>Set item position</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur posisi item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="20"/>
         <source>Item reference point</source>
-        <translation type="unfinished"></translation>
+        <translation>Titik referensi item</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="92"/>
         <source>Coordinates</source>
-        <translation type="unfinished"></translation>
+        <translation>Koordinat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="98"/>
         <source>x</source>
-        <translation type="unfinished"></translation>
+        <translation>x</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="108"/>
         <source>y</source>
-        <translation type="unfinished"></translation>
+        <translation>y</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="118"/>
         <source>Width</source>
-        <translation type="unfinished">Lebar</translation>
+        <translation>Lebar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="128"/>
         <source>Height</source>
-        <translation type="unfinished">Tinggi</translation>
+        <translation>Tinggi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="156"/>
         <source>Set Position</source>
-        <translation type="unfinished"></translation>
+        <translation>Atur posisi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsitempositiondialogbase.ui" line="163"/>
         <source>Close</source>
-        <translation type="unfinished"></translation>
+        <translation>Tutup</translation>
     </message>
 </context>
 <context>
@@ -19987,7 +19989,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolmovelabel.cpp" line="152"/>
         <source>Label moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Label dipindahkan</translation>
     </message>
 </context>
 <context>
@@ -19995,7 +19997,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolmovevertex.cpp" line="167"/>
         <source>Vertex moved</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertek dipindahkan</translation>
     </message>
 </context>
 <context>
@@ -20003,18 +20005,19 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="459"/>
         <source>Node tool</source>
-        <translation type="unfinished"></translation>
+        <translation>Peralatan node</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="460"/>
         <source>Feature was deleted on background.
 </source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Fitur telah dihapus di belakang layar.
+</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolnodetool.cpp" line="814"/>
         <source>Inserted vertex</source>
-        <translation type="unfinished"></translation>
+        <translation>Vertek yang disisipkan</translation>
     </message>
 </context>
 <context>
@@ -20022,37 +20025,37 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="42"/>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bukan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="43"/>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan saat ini bukan merupakan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="49"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lapisan tidak dapat diedit</translation>
+        <translation>Lapisan tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa mengedit lapisan vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished"></translation>
+        <translation>Transformasi koordinat gagal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa mentransformasi titik pada lapisan sistem koordinat</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolreshape.cpp" line="95"/>
         <source>Reshape</source>
-        <translation type="unfinished"></translation>
+        <translation>Membentuk kembali</translation>
     </message>
 </context>
 <context>
@@ -20060,7 +20063,7 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatelabel.cpp" line="160"/>
         <source>Label rotated</source>
-        <translation type="unfinished"></translation>
+        <translation>Label dirotasikan</translation>
     </message>
 </context>
 <context>
@@ -20068,27 +20071,27 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada fitur titik</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="92"/>
         <source>No point feature was detected at the clicked position. Please click closer to the feature or enhance the search tolerance under Settings-&gt;Options-&gt;Digitizing-&gt;Serch radius for vertex edits</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada fitur titik yang terdeteksi pada lokasi yang di klik. Silakan untuk meng-klik lebih dekat atau tingkatkan toleransi pencarian pada Pengaturan&gt;Opsi-&gt;Radius pencarian untuk mengedit verteks</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>No rotation Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada atribut rotasi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="106"/>
         <source>The active point layer does not have a rotation attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan titik yang aktif tidak memiliki atribut rotasi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolrotatepointsymbols.cpp" line="185"/>
         <source>Rotate symbol</source>
-        <translation type="unfinished"></translation>
+        <translation>Rotasikan simbol</translation>
     </message>
 </context>
 <context>
@@ -20103,23 +20106,23 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="115"/>
         <source>Geometry simplified</source>
-        <translation type="unfinished"></translation>
+        <translation>Penyederhanaan geometri</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="285"/>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="302"/>
         <source>Unsupported operation</source>
-        <translation type="unfinished"></translation>
+        <translation>Operasi tidak didukung</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="285"/>
         <source>Multipart features are not supported for simplification.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak mendukung penyederhanaan fitur multipart.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsimplify.cpp" line="302"/>
         <source>This feature cannot be simplified. Check if feature has enough vertices to be simplified.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur ini tidak dapat disederhanakan. Periksa jika fitur memiliki verteks yang cukup untuk disederhanakan.</translation>
     </message>
 </context>
 <context>
@@ -20127,63 +20130,63 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
         <source>Split error</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembagian gagal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="92"/>
         <source>An error occured during feature splitting</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan muncul ketika membagi fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
         <source>No feature split done</source>
-        <translation type="unfinished"></translation>
+        <translation>Pembagian fitur tidak diselesaikan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="50"/>
         <source>Cannot edit the vector layer. Use &apos;Toggle Editing&apos; to make it editable.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa mengedit lapisan vektor. Gunakan &apos;Toggle Mengedit&apos; untuk membuatnya bisa di edit.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="78"/>
         <source>Features split</source>
-        <translation type="unfinished"></translation>
+        <translation>Bagi fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="83"/>
         <source>If there are selected features, the split tool only applies to the selected ones. If you like to split all features under the split line, clear the selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Jika ada fitur yang dipilih, peralatan pembagi hanya akan berlaku untuk fitur yang dipilih. Jika anda ingin membagi semua fitur pada garis pembagi, hilangkan pemilihan fitur</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="42"/>
         <source>Not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Bukan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="43"/>
         <source>The current layer is not a vector layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan ini bukan lapisan vektor</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="49"/>
         <source>Layer not editable</source>
-        <translation type="unfinished">Lapisan tidak dapat diedit</translation>
+        <translation>Lapisan tidak dapat diedit</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="65"/>
         <source>Coordinate transform error</source>
-        <translation type="unfinished"></translation>
+        <translation>Kesalahan dalam transformasi koordinat</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="66"/>
         <source>Cannot transform the point to the layers coordinate system</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mentransformasi titik ke sistem koordinat lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolsplitfeatures.cpp" line="87"/>
         <source>Cut edges detected. Make sure the line splits features into multiple parts.</source>
-        <translation type="unfinished"></translation>
+        <translation>terdeteksi pemotongan tepi. Pastikan fitur garis pembagi ke dalam beberapa bagian.</translation>
     </message>
 </context>
 <context>
@@ -20191,22 +20194,22 @@ This may be a problem in your network connection or at the WMS server.</source>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="51"/>
         <source>Snap tolerance</source>
-        <translation type="unfinished"></translation>
+        <translation>Toleransi penguncian</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="52"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak perlu menampilkan pesan ini lagi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="56"/>
         <source>Could not snap segment.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat pengunci segmen.</translation>
     </message>
     <message>
         <location filename="../src/app/qgsmaptoolvertexedit.cpp" line="58"/>
         <source>Have you set the tolerance in Settings &gt; Project Properties &gt; General?</source>
-        <translation type="unfinished"></translation>
+        <translation>Sudahkah anda mengatur toleransi pada Pengaturan &gt; Properti Proyek &gt; Umum?</translation>
     </message>
 </context>
 <context>
@@ -20642,37 +20645,37 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="117"/>
         <source>HTTP address of the Web Map Server</source>
-        <translation type="unfinished">Alamat HTTP dari </translation>
+        <translation>Alamat HTTP dari website Map Server</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="134"/>
         <source>Ignore GetFeatureInfo URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaikan URl GetFeatureInfo yang dilaporkan dalam kapabilitas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="141"/>
         <source>Ignore GetMap URI reported in capabilities</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaikan URl GetMap yang dilaporkan dalam kapabilitas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="14"/>
         <source>Create a new WMS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat koneksi WMS baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="33"/>
         <source>Connection details</source>
-        <translation type="unfinished"></translation>
+        <translation>Detil koneksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="75"/>
         <source>&amp;User name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama pengguna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewhttpconnectionbase.ui" line="65"/>
         <source>Password</source>
-        <translation type="unfinished">Password</translation>
+        <translation>Sandi</translation>
     </message>
 </context>
 <context>
@@ -20681,7 +20684,7 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="94"/>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="98"/>
         <source>Test connection</source>
-        <translation type="unfinished">Coba koneksi</translation>
+        <translation>Coba koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="94"/>
@@ -20689,22 +20692,25 @@ http://my.host.com/cgi-bin/mapserv.exe</translation>
 
 Extended error information:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi gagal - Periksa pengaturan dan coba lagi.
+
+Informasi kesalahan yang diperpanjang:
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="98"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi ke %1 berhasil</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="114"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsnewogrconnection.cpp" line="115"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah koneksi %1 yang sudah ada akan ditimpa?</translation>
     </message>
 </context>
 <context>
@@ -20712,22 +20718,22 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="20"/>
         <source>Create a New OGR Database connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat koneksi Basisdata OGR Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Informasi Koneksi</translation>
+        <translation>Informasi Koneksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="58"/>
         <source>Save Password</source>
-        <translation type="unfinished">Simpan Password</translation>
+        <translation>Simpan Sandi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="65"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Coba hubungkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="90"/>
@@ -20736,42 +20742,42 @@ Extended error information:
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:8pt;&quot;&gt;Type&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="104"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="114"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="124"/>
         <source>Database</source>
-        <translation type="unfinished">Basisdata</translation>
+        <translation>Basisdata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="134"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="144"/>
         <source>Username</source>
-        <translation type="unfinished">Nama-pengguna</translation>
+        <translation>Nama-pengguna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="154"/>
         <source>Password</source>
-        <translation type="unfinished">Password</translation>
+        <translation>Sandi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewogrconnectionbase.ui" line="177"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Nama koneksi baru</translation>
+        <translation>Nama koneksi baru</translation>
     </message>
 </context>
 <context>
@@ -20779,33 +20785,33 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="46"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>Data teks</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="47"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah keseluruhan</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="48"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilangan desimal</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="97"/>
         <source>New SpatiaLite Database File</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip Basisdata SpatiaLite baru</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="99"/>
         <source>SpatiaLite (*.sqlite *.db )</source>
-        <translation type="unfinished"></translation>
+        <translation>SpatiaLite (*.sqlite *.db )</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="226"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menginisiasi SpatialMetadata:</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="228"/>
@@ -20814,76 +20820,80 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="301"/>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="367"/>
         <source>SpatiaLite Database</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="264"/>
         <source>Could not create a new database
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuat basisdata baru
+</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="275"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mengaktifkan kendala FOREIGN_KEY</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="298"/>
         <source>@</source>
-        <translation type="unfinished"></translation>
+        <translation>@</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="301"/>
         <source>Registered new database!</source>
-        <translation type="unfinished"></translation>
+        <translation>Basisdata baru teregister!</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="368"/>
         <source>Unable to open the database: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>TIdak dapat membuka basisdata: %1</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="377"/>
         <source>Error Creating SpatiaLite Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal Membuat Tabel SpatiaLite</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="378"/>
         <source>Failed to create the SpatiaLite table %1. The database returned:
 %2</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuat tabel SpatiaLite %1. Basisdata mengembalikan:
+%2</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="388"/>
         <source>Error Creating Geometry Column</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuat kolom geometri</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="389"/>
         <source>Failed to create the geometry column. The database returned:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuat kolom geometri. Basisdata mengembalikan:
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="399"/>
         <source>Error Creating Spatial Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal Membuat Indeks Spasial</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="400"/>
         <source>Failed to create the spatial index. The database returned:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuat indeks spasial. Basisdata mengembalikan:
+%1</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="417"/>
         <source>Invalid Layer</source>
-        <translation type="unfinished">Lapisan tidak valid</translation>
+        <translation>Lapisan tidak benar</translation>
     </message>
     <message>
         <location filename="../src/app/spatialite/qgsnewspatialitelayerdialog.cpp" line="417"/>
         <source>%1 is an invalid layer and cannot be loaded.</source>
-        <translation type="unfinished">%1 adalah lapisan tidak valid dan tidak dapat dimuat.</translation>
+        <translation>%1 merupakan lapisan yang tidak benar dan tidak dapat dimuat.</translation>
     </message>
 </context>
 <context>
@@ -20891,152 +20901,152 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="32"/>
         <source>New Spatialite Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan SpatiaLite Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="46"/>
         <source>Database</source>
-        <translation type="unfinished">Basisdata</translation>
+        <translation>Basisdata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="69"/>
         <source>Create a new Spatialite database</source>
-        <translation type="unfinished"></translation>
+        <translation>Membuat basisdata SpatiaLite baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="72"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="83"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nama Lapisan</translation>
+        <translation>Nama Lapisan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="99"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="126"/>
         <source>Name for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama untuk lapisan yang baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="110"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom geometri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="129"/>
         <source>geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometri</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="144"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="283"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="372"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="150"/>
         <source>Point</source>
-        <translation type="unfinished">Titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="157"/>
         <source>Line</source>
-        <translation type="unfinished">Garis</translation>
+        <translation>Garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="164"/>
         <source>Polygon</source>
-        <translation type="unfinished">Poligon</translation>
+        <translation>Poligon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="171"/>
         <source>MultiPoint</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiPoint</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="178"/>
         <source>Multiline</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiLine</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="185"/>
         <source>Multipolygon</source>
-        <translation type="unfinished"></translation>
+        <translation>MultiPoligon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="197"/>
         <source>EPSG SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>EPSG SRID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="207"/>
         <source>Spatial Reference Id</source>
-        <translation type="unfinished"></translation>
+        <translation>Id Referensi Spasial</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="223"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="226"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="229"/>
         <source>Find SRID</source>
-        <translation type="unfinished"></translation>
+        <translation>Cari SRID</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="238"/>
         <source>Add an integer id field as the primary key for the new layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah field id bilangan bulat sebagai primary key untuk lapisan baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="241"/>
         <source>Create an autoincrementing primary key</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat primary key yang nilainya otomatis bertambah</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="248"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="260"/>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="367"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="270"/>
         <source>An attribute name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama atribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="306"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Daftar atribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="331"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan atribut pada daftar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="337"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan ke daftar atribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="399"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus atribut yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewspatialitelayerdialogbase.ui" line="402"/>
         <source>Remove selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus atribut yang dipilih</translation>
     </message>
 </context>
 <context>
@@ -21044,22 +21054,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="34"/>
         <source>Text data</source>
-        <translation type="unfinished"></translation>
+        <translation>Data teks</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="35"/>
         <source>Whole number</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah keseluruhan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="36"/>
         <source>Decimal number</source>
-        <translation type="unfinished"></translation>
+        <translation>Bilangan desimal</translation>
     </message>
     <message>
         <location filename="../src/app/qgsnewvectorlayerdialog.cpp" line="42"/>
         <source>ESRI Shapefile</source>
-        <translation type="unfinished"></translation>
+        <translation>Shapefile ESRI</translation>
     </message>
 </context>
 <context>
@@ -21067,98 +21077,98 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="14"/>
         <source>New Vector Layer</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan Vektor Baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="26"/>
         <source>File format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format arsip</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="43"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="92"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="161"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="49"/>
         <source>Point</source>
-        <translation type="unfinished">Titik</translation>
+        <translation>Titik</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="56"/>
         <source>Line</source>
-        <translation type="unfinished">Garis</translation>
+        <translation>Garis</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="63"/>
         <source>Polygon</source>
-        <translation type="unfinished">Poligon</translation>
+        <translation>Poligon</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="73"/>
         <source>New attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Atribut baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="79"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="156"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="105"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="166"/>
         <source>Width</source>
-        <translation type="unfinished">Lebar</translation>
+        <translation>Lebar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="118"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="171"/>
         <source>Precision</source>
-        <translation type="unfinished">Presisi</translation>
+        <translation>Presisi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="201"/>
         <source>Remove selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus atribut yang dipilih</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="234"/>
         <source>Add attribute to list</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan atribut pada daftar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="240"/>
         <source>Add to attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan ke daftar atribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="267"/>
         <source>CRS ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="284"/>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="287"/>
         <source>Specify the coordinate reference system of the layer&apos;s geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan sistem koordinat referensi dari geometri lapisan.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="290"/>
         <source>Specify CRS</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan CRS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="134"/>
         <source>Attributes list</source>
-        <translation type="unfinished"></translation>
+        <translation>Daftar atribut</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsnewvectorlayerdialogbase.ui" line="198"/>
         <source>Delete selected attribute</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus atribut yang dipilih</translation>
     </message>
 </context>
 <context>
@@ -21166,43 +21176,43 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="82"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">Kiri Bawah</translation>
+        <translation>Kiri Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="83"/>
         <source>Top Right</source>
-        <translation type="unfinished">Kanan Atas</translation>
+        <translation>Kanan Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="83"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">Kanan Bawah</translation>
+        <translation>Kanan Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="82"/>
         <source>Top Left</source>
-        <translation type="unfinished">Kiri Atas</translation>
+        <translation>Kiri Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="96"/>
         <source>&amp;North Arrow</source>
-        <translation type="unfinished"></translation>
+        <translation>Arah Utara</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="98"/>
         <source>Creates a north arrow that is displayed on the map canvas</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat arah utara yang ditampilkan pada kanvas peta</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="107"/>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="259"/>
         <source>&amp;Decorations</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dekorasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/plugin.cpp" line="250"/>
         <source>North arrow pixmap not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Arah utara pixmap tidak ditemukan</translation>
     </message>
 </context>
 <context>
@@ -21210,7 +21220,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/plugingui.cpp" line="150"/>
         <source>Pixmap not found</source>
-        <translation type="unfinished"></translation>
+        <translation>Pixmap tidak ditemukan</translation>
     </message>
 </context>
 <context>
@@ -21218,57 +21228,57 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="14"/>
         <source>North Arrow Plugin</source>
-        <translation type="unfinished">Plugin Panah Utara</translation>
+        <translation>Plugin Arah Utara</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="52"/>
         <source>Angle</source>
-        <translation type="unfinished">Sudut</translation>
+        <translation>Sudut</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="94"/>
         <source>Placement</source>
-        <translation type="unfinished">Penempatan</translation>
+        <translation>Penempatan</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="147"/>
         <source>Set direction automatically</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan arah secara otomatis</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="131"/>
         <source>Enable North Arrow</source>
-        <translation type="unfinished">Aktifkan Panah Utara</translation>
+        <translation>Aktifkan Arah Utara</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="108"/>
         <source>Top Left</source>
-        <translation type="unfinished">Kiri Atas</translation>
+        <translation>Kiri Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="113"/>
         <source>Top Right</source>
-        <translation type="unfinished">Kanan Atas</translation>
+        <translation>Kanan Atas</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="118"/>
         <source>Bottom Left</source>
-        <translation type="unfinished">Kiri Bawah</translation>
+        <translation>Kiri Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="123"/>
         <source>Bottom Right</source>
-        <translation type="unfinished">Kanan Bawah</translation>
+        <translation>Kanan Bawah</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="104"/>
         <source>Placement on screen</source>
-        <translation type="unfinished">Penempatan pada layar</translation>
+        <translation>Penempatan pada layar</translation>
     </message>
     <message>
         <location filename="../src/plugins/north_arrow/pluginguibase.ui" line="35"/>
         <source>Preview of north arrow</source>
-        <translation type="unfinished">Visualisasi panah utara</translation>
+        <translation>Pratinjau arah utara</translation>
     </message>
 </context>
 <context>
@@ -29562,7 +29572,7 @@ Overwrite?</source>
     <message>
         <location filename="../src/ui/qgstipguibase.ui" line="14"/>
         <source>QGIS Tips!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tips QGIS!</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstipguibase.ui" line="26"/>
@@ -29571,12 +29581,16 @@ Overwrite?</source>
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;A nice tip goes here...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Lucida Grande&apos;; font-size:13pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;Ubuntu&apos;; font-size:10pt;&quot;&gt;Tips yang baik ada disini...&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgstipguibase.ui" line="40"/>
         <source>I&apos;ve had enough tips, don&apos;t show this on start up any more!</source>
-        <translation type="unfinished"></translation>
+        <translation>Saya telah memiliki cukup tips, tidak perlu untuk memperlihatkan ini lagi!</translation>
     </message>
 </context>
 <context>
@@ -29584,42 +29598,42 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="14"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="20"/>
         <source>Select transformation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih jenis transformasi:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="28"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linier</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="33"/>
         <source>Polynomial 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Polinominal 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="38"/>
         <source>Polynomial 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Polinominal 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="43"/>
         <source>Polynomial 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Polinominal 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="48"/>
         <source>Thin plate spline (TPS)</source>
-        <translation type="unfinished"></translation>
+        <translation>Thin plate spiline (TPS)</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformtypedialogbase.ui" line="56"/>
         <source>Generate ESRI world file (.tfw)</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat arsip world ESRI (.tfw)</translation>
     </message>
 </context>
 <context>
@@ -29629,127 +29643,127 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="37"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="295"/>
         <source>Linear</source>
-        <translation type="unfinished"></translation>
+        <translation>Linier</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="38"/>
         <source>Helmert</source>
-        <translation type="unfinished"></translation>
+        <translation>Herlmert</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="43"/>
         <source>Projective</source>
-        <translation type="unfinished"></translation>
+        <translation>Proyektif</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="39"/>
         <source>Polynomial 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Polinomial 1</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="40"/>
         <source>Polynomial 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Polinomial 2</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="41"/>
         <source>Polynomial 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Polinomial 3</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="42"/>
         <source>Thin Plate Spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Thin Plate Spiline</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="162"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="168"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="182"/>
         <source>Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Informasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="162"/>
         <source>Please set output name</source>
-        <translation type="unfinished"></translation>
+        <translation>Silahkan tentukan nama output</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="168"/>
         <source>%1 requires at least %2 GCPs. Please define more</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 membutuhkan paling tidak %2 GCP. Silahkan menentukan lebih banyak lagi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="182"/>
         <source>Invalid output file name</source>
-        <translation type="unfinished"></translation>
+        <translation>Nama arsip output tidak benar</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="209"/>
         <source>Save raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="253"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="268"/>
         <source>Select save PDF file</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih simpan arsip PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="253"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="268"/>
         <source>PDF Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format PDF</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialog.cpp" line="333"/>
         <source>_modified</source>
         <comment>Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name</comment>
-        <translation type="unfinished"></translation>
+        <translation>_modifikasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="14"/>
         <source>Transformation settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Pengaturan transformasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="22"/>
         <source>Transformation type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Jenis transformasi:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="39"/>
         <source>Resampling method:</source>
-        <translation type="unfinished"></translation>
+        <translation>Metode resampel:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="53"/>
         <source>Nearest neighbour</source>
-        <translation type="unfinished"></translation>
+        <translation>Tetangga terdekat</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="63"/>
         <source>Cubic</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubik</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="68"/>
         <source>Cubic Spline</source>
-        <translation type="unfinished"></translation>
+        <translation>Kubik Spline</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="73"/>
         <source>Lanczos</source>
-        <translation type="unfinished"></translation>
+        <translation>Lanczos</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="81"/>
         <source>Compression:</source>
-        <translation type="unfinished"></translation>
+        <translation>Kompresi:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="101"/>
         <source>Output raster:</source>
-        <translation type="unfinished"></translation>
+        <translation>Raster output:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="113"/>
@@ -29757,52 +29771,52 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="155"/>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="239"/>
         <source>...</source>
-        <translation type="unfinished">...</translation>
+        <translation>...</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="122"/>
         <source>Target SRS:</source>
-        <translation type="unfinished"></translation>
+        <translation>SRS target:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="143"/>
         <source>Generate pdf report:</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat laporan PDF:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="164"/>
         <source>Set Target Resolution</source>
-        <translation type="unfinished"></translation>
+        <translation>Tentukan resolusi target</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="171"/>
         <source>Horizontal</source>
-        <translation type="unfinished">Horizontal</translation>
+        <translation>Horizontal</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="191"/>
         <source>Vertical</source>
-        <translation type="unfinished">Vertikal</translation>
+        <translation>Vertikal</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="220"/>
         <source>Create world file</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat arsip world</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="227"/>
         <source>Generate pdf map:</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat peta PDF:</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="250"/>
         <source>Use 0 for transparency when needed</source>
-        <translation type="unfinished"></translation>
+        <translation>jika dibutuhkan, gunakan 0 untuk transparasi</translation>
     </message>
     <message>
         <location filename="../src/plugins/georeferencer/qgstransformsettingsdialogbase.ui" line="260"/>
         <source>Load in QGIS when done</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat dalam QGIS ketika selesai</translation>
     </message>
 </context>
 <context>
@@ -29810,18 +29824,19 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="214"/>
         <source>default</source>
-        <translation type="unfinished"></translation>
+        <translation>Standar</translation>
     </message>
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="285"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi Hapus</translation>
     </message>
     <message>
         <location filename="../src/app/qgsuniquevaluedialog.cpp" line="286"/>
         <source>The classification field was changed from &apos;%1&apos; to &apos;%2&apos;.
 Should the existing classes be deleted before classification?</source>
-        <translation type="unfinished"></translation>
+        <translation>Field klasifikasi telah berubah dari &apos;%1&apos; ke &apos;%2&apos;.
+Apakah kelas yang telah ada sebelumnya akan di hapus sebelum klasifikasi?</translation>
     </message>
 </context>
 <context>
@@ -29829,42 +29844,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="20"/>
         <source>Form1</source>
-        <translation type="unfinished"></translation>
+        <translation>Blanko 1</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="94"/>
         <source>Classify</source>
-        <translation type="unfinished"></translation>
+        <translation>Kelaskan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="50"/>
         <source>Classification field</source>
-        <translation type="unfinished"></translation>
+        <translation>Field pengkelasan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="101"/>
         <source>Add class</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah kelas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="108"/>
         <source>Delete classes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus kelas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="115"/>
         <source>Randomize Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengacak warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="122"/>
         <source>Reset Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Reset warna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsuniquevaluedialogbase.ui" line="156"/>
         <source>Restrict changes to common properties</source>
-        <translation type="unfinished"></translation>
+        <translation>Batasi perubahan ke properti umum</translation>
     </message>
 </context>
 <context>
@@ -29895,42 +29910,42 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="175"/>
         <source>Add Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah fitur</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="181"/>
         <source>Delete Features</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus fitur</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="187"/>
         <source>Change Attribute Values</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah nilai atribut</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="193"/>
         <source>Add Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah atribut</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="199"/>
         <source>Delete Attributes</source>
-        <translation type="unfinished"></translation>
+        <translation>Hapus atribut</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="206"/>
         <source>Create Spatial Index</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat indeks spasial</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="212"/>
         <source>Fast Access to Features at ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Akses cepat ke fitur pada ID</translation>
     </message>
     <message>
         <location filename="../src/core/qgsvectordataprovider.cpp" line="218"/>
         <source>Change Geometries</source>
-        <translation type="unfinished"></translation>
+        <translation>Rubah geometri</translation>
     </message>
 </context>
 <context>
@@ -30258,7 +30273,7 @@ Should the existing classes be deleted before classification?</source>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1592"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1722"/>
         <source>Pie chart</source>
-        <translation type="unfinished">Grafik pie</translation>
+        <translation>Grafik pie</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="718"/>
@@ -30321,13 +30336,13 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1531"/>
         <source>Pen color</source>
-        <translation type="unfinished">Warna pena</translation>
+        <translation>Warna pena</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1552"/>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1623"/>
         <source>MM</source>
-        <translation type="unfinished">MM</translation>
+        <translation>MM</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="1565"/>
@@ -30516,7 +30531,7 @@ Should the existing classes be deleted before classification?</source>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="551"/>
         <source>Enumeration</source>
-        <translation type="unfinished"></translation>
+        <translation>Enumerasi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsvectorlayerproperties.cpp" line="552"/>
@@ -34574,7 +34589,7 @@ Plugin akan dinonaktifkan.</translation>
     </message>
     <message>
         <source>Lines to polygons</source>
-        <translation type="unfinished"></translation>
+        <translation>Gris ke poligon</translation>
     </message>
     <message>
         <source>&amp;Data Management Tools</source>
@@ -34714,17 +34729,17 @@ Plugin akan dinonaktifkan.</translation>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="24"/>
         <source>Auto-balancing of colors for LANDSAT-TM raster</source>
-        <translation type="unfinished"></translation>
+        <translation>Menyeimbangkan warna otomatis untuk raster LANDSAT-TM</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="25"/>
         <source>Bicubic or bilinear spline interpolation with Tykhonov regularization</source>
-        <translation type="unfinished"></translation>
+        <translation>Interpolasi Bicubic atau bilinear spiline dengan regularisasi Tykhonov</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="26"/>
         <source>Bilinear interpolation utility for raster maps</source>
-        <translation type="unfinished"></translation>
+        <translation>Utilitas interpolasi bilinear untuk peta raster</translation>
     </message>
     <message>
         <location filename="../src/plugins/grass/grasslabels-i18n.cpp" line="27"/>
