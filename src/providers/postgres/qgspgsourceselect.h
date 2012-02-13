@@ -103,9 +103,9 @@ class QgsPgSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     void on_mSearchTableEdit_textChanged( const QString & text );
     void on_mSearchColumnComboBox_currentIndexChanged( const QString & text );
     void on_mSearchModeComboBox_currentIndexChanged( const QString & text );
+    void on_cmbConnections_currentIndexChanged( const QString &text );
     void setSql( const QModelIndex& index );
     //! Store the selected database
-    void on_cmbConnections_activated( int );
     void setLayerType( QgsPostgresLayerProperty layerProperty );
     void on_mTablesTreeView_clicked( const QModelIndex &index );
     void on_mTablesTreeView_doubleClicked( const QModelIndex &index );

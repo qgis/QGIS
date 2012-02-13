@@ -1365,10 +1365,6 @@ QgsDataSourceURI QgsPostgresConn::connUri( QString theConnName )
   }
   QString database = settings.value( key + "/database" ).toString();
 
-  //bool publicSchemaOnly = settings.value( key + "/publicOnly", false ).toBool();
-  //bool geometryColumnsOnly = settings.value( key + "/geometrycolumnsOnly", false ).toBool();
-  //bool allowGeometrylessTables = settings.value( key + "/allowGeometrylessTables", false ).toBool();
-
   bool useEstimatedMetadata = settings.value( key + "/estimatedMetadata", false ).toBool();
   int sslmode = settings.value( key + "/sslmode", QgsDataSourceURI::SSLprefer ).toInt();
 
@@ -1407,4 +1403,45 @@ QgsDataSourceURI QgsPostgresConn::connUri( QString theConnName )
   uri.setUseEstimatedMetadata( useEstimatedMetadata );
 
   return uri;
+}
+
+bool QgsPostgresConn::publicSchemaOnly( QString theConnName )
+{
+  QSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/publicOnly", false ).toBool();
+}
+
+bool QgsPostgresConn::geometryColumnsOnly( QString theConnName )
+{
+  QSettings settings;
+
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/geometrycolumnsOnly", false ).toBool();
+}
+
+bool QgsPostgresConn::allowGeometrylessTables( QString theConnName )
+{
+  QSettings settings;
+  return settings.value( "/PostgreSQL/connections/" + theConnName + "/allowGeometrylessTables", false ).toBool();
+}
+
+void QgsPostgresConn::deleteConnection( QString theConnName )
+{
+  QSettings settings;
+
+  QString key = "/PostgreSQL/connections/" + theConnName;
+  settings.remove( key + "/service" );
+  settings.remove( key + "/host" );
+  settings.remove( key + "/port" );
+  settings.remove( key + "/database" );
+  settings.remove( key + "/username" );
+  settings.remove( key + "/password" );
+  settings.remove( key + "/sslmode" );
+  settings.remove( key + "/publicOnly" );
+  settings.remove( key + "/geometryColumnsOnly" );
+  settings.remove( key + "/allowGeometrylessTables" );
+  settings.remove( key + "/estimatedMetadata" );
+  settings.remove( key + "/saveUsername" );
+  settings.remove( key + "/savePassword" );
+  settings.remove( key + "/save" );
+  settings.remove( key );
 }
