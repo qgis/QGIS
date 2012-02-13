@@ -181,6 +181,10 @@ class QgsPostgresConn : public QObject
     static QString selectedConnection();
     static void setSelectedConnection( QString theConnName );
     static QgsDataSourceURI connUri( QString theConnName );
+    static bool publicSchemaOnly( QString theConnName );
+    static bool geometryColumnsOnly( QString theConnName );
+    static bool allowGeometrylessTables( QString theConnName );
+    static void deleteConnection( QString theConnName );
 
   private:
     QgsPostgresConn( QString conninfo, bool readOnly );

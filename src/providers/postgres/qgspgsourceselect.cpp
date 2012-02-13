@@ -192,8 +192,6 @@ QgsPgSourceSelect::QgsPgSourceSelect( QWidget *parent, Qt::WFlags fl, bool manag
   mSearchModeComboBox->setVisible( false );
   mSearchModeLabel->setVisible( false );
   mSearchTableEdit->setVisible( false );
-
-  cbxAllowGeometrylessTables->setDisabled( true );
 }
 /** Autoconnected SLOTS **/
 // Slot for adding a new connection
@@ -215,31 +213,10 @@ void QgsPgSourceSelect::on_btnDelete_clicked()
   if ( QMessageBox::Ok != QMessageBox::information( this, tr( "Confirm Delete" ), msg, QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
 
-  QgsPgSourceSelect::deleteConnection( cmbConnections->currentText() );
+  QgsPostgresConn::deleteConnection( cmbConnections->currentText() );
 
   populateConnectionList();
   emit connectionsChanged();
-}
-
-void QgsPgSourceSelect::deleteConnection( QString name )
-{
-  QString key = "/Postgresql/connections/" + name;
-  QSettings settings;
-  settings.remove( key + "/service" );
-  settings.remove( key + "/host" );
-  settings.remove( key + "/port" );
-  settings.remove( key + "/database" );
-  settings.remove( key + "/username" );
-  settings.remove( key + "/password" );
-  settings.remove( key + "/sslmode" );
-  settings.remove( key + "/publicOnly" );
-  settings.remove( key + "/geometryColumnsOnly" );
-  settings.remove( key + "/allowGeometrylessTables" );
-  settings.remove( key + "/estimatedMetadata" );
-  settings.remove( key + "/saveUsername" );
-  settings.remove( key + "/savePassword" );
-  settings.remove( key + "/save" );
-  settings.remove( key );
 }
 
 void QgsPgSourceSelect::on_btnSave_clicked()
@@ -277,14 +254,13 @@ void QgsPgSourceSelect::on_btnEdit_clicked()
 /** End Autoconnected SLOTS **/
 
 // Remember which database is selected
-void QgsPgSourceSelect::on_cmbConnections_activated( int )
+void QgsPgSourceSelect::on_cmbConnections_currentIndexChanged( const QString & text )
 {
   // Remember which database was selected.
-  QgsPostgresConn::setSelectedConnection( cmbConnections->currentText() );
+  QgsPostgresConn::setSelectedConnection( text );
 
   cbxAllowGeometrylessTables->blockSignals( true );
-  QSettings settings;
-  cbxAllowGeometrylessTables->setChecked( settings.value( "/PostgreSQL/connections/" + cmbConnections->currentText() + "/allowGeometrylessTables", false ).toBool() );
+  cbxAllowGeometrylessTables->setChecked( QgsPostgresConn::allowGeometrylessTables( text ) );
   cbxAllowGeometrylessTables->blockSignals( false );
 }
 
@@ -466,11 +442,8 @@ void QgsPgSourceSelect::on_btnConnect_clicked()
   {
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    QSettings settings;
-    QString key = "/PostgreSQL/connections/" + cmbConnections->currentText();
-
-    bool searchPublicOnly = settings.value( key + "/publicOnly" ).toBool();
-    bool searchGeometryColumnsOnly = settings.value( key + "/geometryColumnsOnly" ).toBool();
+    bool searchPublicOnly = QgsPostgresConn::publicSchemaOnly( cmbConnections->currentText() );
+    bool searchGeometryColumnsOnly = QgsPostgresConn::geometryColumnsOnly( cmbConnections->currentText() );
     bool allowGeometrylessTables = cbxAllowGeometrylessTables->isChecked();
 
     QVector<QgsPostgresLayerProperty> layers;
