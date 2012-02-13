@@ -23300,77 +23300,80 @@ Berikut ini pesan kesalahannya:</translation>
     <message>
         <source>The plugin seems to have been installed but I don&apos;t know where. Probably the plugin package contained a wrong named directory.
 Please search the list of installed plugins. I&apos;m nearly sure you&apos;ll find the plugin there, but I just can&apos;t determine which of them it is. It also means that I won&apos;t be able to determine if this plugin is installed and inform you about available updates. However the plugin may work. Please contact the plugin author and submit this issue.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin ini sepertinya telah terinstall tapi saya tidak tau dimana. Mungkin paket plugin berisikan nama direktori yang salah.
+Silahkan mencari daftar plugin yang terinstall. Saya hampir yakin anda akan menemukannya disana, hanya saja tidak dapat menentukan yang mana diantaranya. Itu juga berarti bahwa saya tidak dapat menentukan jika plugin ini telah terinstall dan memberitahu anda mengenai status perbaruan. Namun plugin mungkin bekerja. Silahkan menghubungi pemilik plugin dan sampaikan masalah ini.</translation>
     </message>
     <message>
         <source>Plugin installed successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Berhasil menginstall plugin</translation>
     </message>
     <message>
         <source>Python plugin installed.
 Now you need to enable it in Plugin Manager.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin Python terinstall.
+Sekarang anda butuh unutk mengaktifkannya pada Pengaturan Plugin.</translation>
     </message>
     <message>
         <source>Plugin reinstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Berhasil menginstall kembali plugin</translation>
     </message>
     <message>
         <source>Python plugin reinstalled.
 You need to restart Quantum GIS in order to reload it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin pyton telah diinstall kembali.
+Anda perlu untuk menyalakan kembali Quantum GIS untuk memuatnya kembali.</translation>
     </message>
     <message>
         <source>The plugin is designed for a newer version of Quantum GIS. The minimum required version is:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin didesain untuk versi yang lebih baru dari Quantum GIS. Versi minimum yang dibutuhkan adalah:</translation>
     </message>
     <message>
         <source>The plugin depends on some components missing on your system. You need to install the following Python module in order to enable it:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin tergantung pada beberapa komponen yang hilang pada sistem anda. Anda perlu menginstall modul Pyton berikut untuk mengaktifkannya:</translation>
     </message>
     <message>
         <source>The plugin is broken. Python said:</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin rusak. Python berkata:</translation>
     </message>
     <message>
         <source>Plugin uninstall failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuang plugin</translation>
     </message>
     <message>
         <source>Are you sure you want to uninstall the following plugin?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin untuk membuang plugin berikut?</translation>
     </message>
     <message>
         <source>Warning: this plugin isn&apos;t available in any accessible repository!</source>
-        <translation type="unfinished"></translation>
+        <translation>Peringatan: plugin ini tidak tersedia pada repositori manapun yang dapat diakses!</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Plugin Installer will now close and revert to its primary version. You can find it in the Plugins menu and continue operation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Perbaruan Installer plugin telah di buang. Installer plugin akat ditutup sekarang dan kembali ke versi utamanya. Anda dapat menemukannya pada menu Plugins dan melanjutkan operasi.</translation>
     </message>
     <message>
         <source>Plugin Installer update uninstalled. Please restart QGIS in order to load its primary version.</source>
-        <translation type="unfinished"></translation>
+        <translation>Installer Plugin telah di perbarui. Silahkan menyalakan kembali QGIS untuk memuat versi utamanya.</translation>
     </message>
     <message>
         <source>Plugin uninstalled successfully</source>
-        <translation type="unfinished"></translation>
+        <translation>Berhasil membuang plugin</translation>
     </message>
     <message>
         <source>Python plugin uninstalled. Note that you may need to restart Quantum GIS in order to remove it completely.</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin Python telah dibuang. Perhatian anda mungkin perlu menyalakan kembali Quantum GIS untuk membuang semuanya.</translation>
     </message>
     <message>
         <source>You are about to add several plugin repositories that are neither authorized nor supported by the Quantum GIS team. Plugin authors generally make efforts to ensure that their work is useful and safe, however, we can assume no responsibility for them.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda akan menambahkan beberapa repositori plugin yang tidak resmi ataupun didukung oleh tim Quantum GIS. Pencipta plugin umumnya berusaha untuk memastikan pekerjaan mereka berguna dan aman, namun, kami tidak bertanggung jawab untuk mereka.</translation>
     </message>
     <message>
         <source>Unable to add another repository with the same URL!</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat untuk menambah repositori lain dengan URl yang sama!</translation>
     </message>
     <message>
         <source>Are you sure you want to remove the following repository?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin akan menghapus repositori berikut?</translation>
     </message>
 </context>
 <context>
@@ -23411,12 +23414,12 @@ You need to restart Quantum GIS in order to reload it.</source>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="153"/>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="159"/>
         <source>Display only plugins from given repository</source>
-        <translation type="unfinished">Hanya tampilkan plugin yang diberikan oleh repository</translation>
+        <translation>Hanya tampilkan plugin yang diberikan oleh repositori</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="163"/>
         <source>all repositories</source>
-        <translation type="unfinished">Semua repository</translation>
+        <translation>Semua repositori</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="180"/>
@@ -23449,17 +23452,17 @@ You need to restart Quantum GIS in order to reload it.</source>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="228"/>
         <source>Author</source>
-        <translation type="unfinished"></translation>
+        <translation>Penulis</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="233"/>
         <source>Repository</source>
-        <translation type="unfinished"></translation>
+        <translation>Repositori</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="243"/>
         <source>Upgrade all</source>
-        <translation type="unfinished"></translation>
+        <translation>Tingkatkan semuanya</translation>
     </message>
     <message>
         <location filename="../python/plugins/plugin_installer/qgsplugininstallerbase.ui" line="275"/>
