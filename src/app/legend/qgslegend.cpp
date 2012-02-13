@@ -2431,14 +2431,25 @@ void QgsLegend::groupSelectedLayers()
   //avoid multiple refreshes of map canvas because of itemChanged signal
   blockSignals( true );
 
+  QTreeWidgetItem * parent;
+  foreach( QTreeWidgetItem* item, selectedItems() )
+  {
+    parent = item->parent();
+  }
   QgsLegendGroup *group;
 
-  group = new QgsLegendGroup( this, tr( "group" ) );
+  if( parent )
+  {
+    group = new QgsLegendGroup( parent, tr( "sub-group" ) );
+  }
+  else
+  {
+    group = new QgsLegendGroup( this, tr( "group" ) );
+  }
 
   foreach( QTreeWidgetItem * item, selectedItems() )
   {
     insertItem( item, group );
-    continue;
   }
   editItem( group, 0 );
 
