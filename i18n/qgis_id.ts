@@ -21286,22 +21286,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Layer ID</source>
-        <translation type="unfinished"></translation>
+        <translation>ID lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Layer name</source>
-        <translation type="unfinished">Nama Lapisan</translation>
+        <translation>Nama Lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Nb of features</source>
-        <translation type="unfinished"></translation>
+        <translation>Jumlah fitur</translation>
     </message>
     <message>
         <location filename="../src/app/ogr/qgsogrsublayersdialog.cpp" line="26"/>
         <source>Geometry type</source>
-        <translation type="unfinished">Tipe geometri</translation>
+        <translation>Tipe geometri</translation>
     </message>
 </context>
 <context>
@@ -21309,12 +21309,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="14"/>
         <source>Select layers to load</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan untuk dimuat</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsogrsublayersdialogbase.ui" line="43"/>
         <source>1</source>
-        <translation type="unfinished"></translation>
+        <translation>1</translation>
     </message>
 </context>
 <context>
@@ -21322,7 +21322,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/providers/osm/osmprovider.cpp" line="413"/>
         <source>Open Street Map format</source>
-        <translation type="unfinished"></translation>
+        <translation>Format Open Street Map</translation>
     </message>
 </context>
 <context>
@@ -21330,80 +21330,82 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="81"/>
         <source>Could not open the spatialite database</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka basisdata spatialite</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="287"/>
         <source>Unable to initialize SpatialMetadata:
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat menginisialisasi SpatialMetadata:
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="322"/>
         <source>Could not create a new database
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuat basisdata baru
+</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="332"/>
         <source>Unable to activate FOREIGN_KEY constraints</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mengaktifkan kendala FOREIGN_KEY</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="422"/>
         <source>Unknown data type %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Tipe data %1 tidak diketahui</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="453"/>
         <source>QGIS wkbType %1 not supported</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak mendukung QGIS wkbType %1</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="516"/>
         <source>%v / %m features copied</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur %v / %m disalin</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="541"/>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="714"/>
         <source>%v / %m features processed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur %v / %m diproses</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="590"/>
         <source>%v / %m fields added</source>
-        <translation type="unfinished"></translation>
+        <translation>Field %v / %m ditambahkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="628"/>
         <source>%v / %m features added</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur %v /%m ditambahkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="657"/>
         <source>%v / %m features removed</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur %v / %m dihapus</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="674"/>
         <source>%v / %m feature updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Fitur %v / %m diperbarui</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="693"/>
         <source>%v / %m feature geometry updates</source>
-        <translation type="unfinished"></translation>
+        <translation>Geometri fitur %v / %m diperbarui</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="785"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin pengeditan offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing.cpp" line="797"/>
         <source>Could not open the spatialite logging database</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat membuka logging basisdata spatialite</translation>
     </message>
 </context>
 <context>
@@ -21411,28 +21413,28 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="54"/>
         <source>Convert to offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Konversi ke proyek offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="56"/>
         <source>Create offline copies of selected layers and save as offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat salinan offline dari lapisan yang dipilih dan simpan sebagai proyek offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="61"/>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="68"/>
         <source>&amp;Offline Editing</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengedit &amp;Offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="64"/>
         <source>Synchronize</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinkronkan</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin.cpp" line="65"/>
         <source>Synchronize offline project with remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Sinkronkan proyek offline dengan lapisan yang jauh (online)</translation>
     </message>
 </context>
 <context>
@@ -21440,27 +21442,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="99"/>
         <source>Select target database for offline data</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih basisdata target untuk data offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="101"/>
         <source>SpatiaLite DB(*.sqlite);;All files(*.*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Spatialite DB (*.sqlite);;Semua arsip (*.*)</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="122"/>
         <source>Offline Editing Plugin</source>
-        <translation type="unfinished"></translation>
+        <translation>Plugin pengeditan offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="123"/>
         <source>Converting to offline project.</source>
-        <translation type="unfinished"></translation>
+        <translation>Mengkonversi ke proyek offline.</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_gui.cpp" line="124"/>
         <source>Offline database file &apos;%1&apos; exists. Overwrite?</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip basisdata offline &apos;%1&apos; telah ada sebelumnya. Timpa?</translation>
     </message>
 </context>
 <context>
@@ -21468,27 +21470,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="14"/>
         <source>Create offline project</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat proyek offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="27"/>
         <source>Offline data</source>
-        <translation type="unfinished"></translation>
+        <translation>Data offline</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="41"/>
         <source>Browse...</source>
-        <translation type="unfinished"></translation>
+        <translation>Navigasi...</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="52"/>
         <source>Select remote layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Pilih lapisan yang diremot</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_plugin_guibase.ui" line="70"/>
         <source>Show only editable layers</source>
-        <translation type="unfinished"></translation>
+        <translation>Tampilkan hanya lapisan yang dapat di edit</translation>
     </message>
 </context>
 <context>
@@ -21496,7 +21498,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog.cpp" line="38"/>
         <source>Layer %1 of %2..</source>
-        <translation type="unfinished"></translation>
+        <translation>Lapisan %1 dari %2..</translation>
     </message>
 </context>
 <context>
@@ -21504,12 +21506,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog_base.ui" line="17"/>
         <source>Dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>Dialog</translation>
     </message>
     <message>
         <location filename="../src/plugins/offline_editing/offline_editing_progress_dialog_base.ui" line="23"/>
         <source>TextLabel</source>
-        <translation type="unfinished"></translation>
+        <translation>Label Teks</translation>
     </message>
 </context>
 <context>
@@ -21749,7 +21751,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="328"/>
         <source>Detected active locale on your system: %1</source>
-        <translation type="unfinished">Lokal aktif terdeteksi pada sistem anda: %1</translation>
+        <translation>Lokal aktif terdeteksi pada sistem anda: %1</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="66"/>
@@ -21759,12 +21761,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="67"/>
         <source>Top down, stop at first</source>
-        <translation type="unfinished">Dari atas ke bawah, berhenti pada bagian pertama</translation>
+        <translation>Dari atas ke bawah, berhenti pada bagian pertama</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="68"/>
         <source>Top down</source>
-        <translation type="unfinished">Dari atas ke bawah</translation>
+        <translation>Dari atas ke bawah</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="171"/>
@@ -21835,7 +21837,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="406"/>
         <source>Chain (fast)</source>
-        <translation type="unfinished">Rantai (cepat)</translation>
+        <translation>Rantai (cepat)</translation>
     </message>
     <message>
         <location filename="../src/app/qgsoptions.cpp" line="407"/>
@@ -21873,7 +21875,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="569"/>
         <source>Make lines appear less jagged at the expense of some drawing performance</source>
-        <translation type="unfinished">Bual garis tampak sedikit bergerigi, akan mengorbankan beberapa performa gambar</translation>
+        <translation>Bual garis tampak sedikit bergerigi, akan mengorbankan beberapa performa gambar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="516"/>
@@ -21888,7 +21890,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="576"/>
         <source>Fix problems with incorrectly filled polygons</source>
-        <translation type="unfinished">Menyelesaikan permasalahan dengan poligon yang diisi secara tidak benar</translation>
+        <translation>Menyelesaikan permasalahan dengan poligon yang diisi secara tidak benar</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="704"/>
@@ -21938,7 +21940,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1461"/>
         <source>Use default CRS displa&amp;yed below</source>
-        <translation type="unfinished">Gunakan CRS standar yang ditampilkan di bawah ini</translation>
+        <translation>Gunakan CRS standar yang ditampilkan di bawah ini</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1510"/>
@@ -21963,7 +21965,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1033"/>
         <source>Rubberband</source>
-        <translation type="unfinished">Rubberband</translation>
+        <translation>Rubberband</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1046"/>
@@ -22008,7 +22010,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="94"/>
         <source>Default Map Appearance (overridden by project properties)</source>
-        <translation type="unfinished">Tampilan Peta Standar (ditimpa dengan properti proyek)</translation>
+        <translation>Tampilan Peta Standar (ditimpa dengan properti proyek)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="100"/>
@@ -22033,7 +22035,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="256"/>
         <source>Double click action in legend</source>
-        <translation type="unfinished">Aksi klik ganda pada legenda</translation>
+        <translation>Aksi klik ganda pada legenda</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="277"/>
@@ -22063,27 +22065,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="320"/>
         <source>Show tips at start up</source>
-        <translation type="unfinished">Perlihatkan tips ketika menyalakan QGIS</translation>
+        <translation>Perlihatkan tips ketika menyalakan QGIS</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="327"/>
         <source>Open identify results in a dock window (QGIS restart required)</source>
-        <translation type="unfinished">Buka hasil identifikasi pada galangan jendela (diharuskan untuk menyalakan kembali QGIS)</translation>
+        <translation>Buka hasil identifikasi pada galangan jendela (diharuskan untuk menyalakan kembali QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="334"/>
         <source>Open snapping options  in a dock window (QGIS restart required)</source>
-        <translation type="unfinished">Buka opsi penguncian pada galangan jendela (diharuskan untuk menyalakan kembali QGIS)</translation>
+        <translation>Buka opsi penguncian pada galangan jendela (diharuskan untuk menyalakan kembali QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="341"/>
         <source>Open attribute table in a dock window (QGIS restart required)</source>
-        <translation type="unfinished">Buka tabel atribut pada galangan jendela (diharuskan untuk menyalakan kembali QGIS)</translation>
+        <translation>Buka tabel atribut pada galangan jendela terpisah (diharuskan untuk menyalakan kembali QGIS)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="348"/>
         <source>Add PostGIS layers with double click and select in extended mode</source>
-        <translation type="unfinished">Tambahkan lapisan PostGIS dengan mengklik dua kali dan memilih modus extended</translation>
+        <translation>Tambahkan lapisan PostGIS dengan mengklik dua kali dan memilih modus yang diperluas</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="355"/>
@@ -22098,27 +22100,27 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="406"/>
         <source>Representation for NULL values</source>
-        <translation type="unfinished">Perwakilan untuk nulai NULL</translation>
+        <translation>representasi untuk nulai NULL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="431"/>
         <source>Plugin paths</source>
-        <translation type="unfinished">Jalur (path) plugin</translation>
+        <translation>Jalur plugin</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="437"/>
         <source>Path(s) to search for additional C++ plugins libraries</source>
-        <translation type="unfinished">Jalur (path) untuk mencari untuk librari plugin tambahan C++</translation>
+        <translation>Jalur untuk mencari untuk librari plugin C++ tambahan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="489"/>
         <source>Rendering</source>
-        <translation type="unfinished">Merender</translation>
+        <translation>Merender</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="510"/>
         <source>Rendering behavior</source>
-        <translation type="unfinished">Perilaku merender</translation>
+        <translation>Perilaku merender</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="523"/>
@@ -22138,12 +22140,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="560"/>
         <source>Rendering quality</source>
-        <translation type="unfinished">Kualitas merender</translation>
+        <translation>Kualitas merender</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="602"/>
         <source>SVG paths</source>
-        <translation type="unfinished">Jalur (path) SVG</translation>
+        <translation>Jalur SVG</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="608"/>
@@ -22173,7 +22175,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="838"/>
         <source>Decimal places</source>
-        <translation type="unfinished">Tempat desimal</translation>
+        <translation>Jumlah desimal</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="848"/>
@@ -22188,7 +22190,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="905"/>
         <source>Mouse wheel action</source>
-        <translation type="unfinished">Aksi mouse dan wheel</translation>
+        <translation>Aksi putaran tombol mouse</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="937"/>
@@ -22319,7 +22321,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="592"/>
         <source>Use new generation symbology for rendering</source>
-        <translation type="unfinished">Gunakan simbologi generasi baru untuk merender</translation>
+        <translation>Gunakan simbologi generasi baru untuk merender</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="687"/>
@@ -22389,12 +22391,12 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1634"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1644"/>
         <source>Port</source>
-        <translation type="unfinished">Port</translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1654"/>
@@ -22476,7 +22478,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/ui/qgsoptionsbase.ui" line="1148"/>
         <location filename="../src/ui/qgsoptionsbase.ui" line="1162"/>
         <source>pixels</source>
-        <translation type="unfinished">Piksel</translation>
+        <translation>Piksel</translation>
     </message>
 </context>
 <context>
@@ -22497,32 +22499,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="123"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin ingin menghapus koneksi %1 dan semua pengaturan yang berhubungan?</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="126"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi Hapus</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="161"/>
         <source>Password for %1/&lt;password&gt;@%2</source>
-        <translation type="unfinished"></translation>
+        <translation>Sandi untuk %1/&lt;password&gt;@%2</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="162"/>
         <source>Please enter your password:</source>
-        <translation type="unfinished">Silahkan memasukkan password Anda:</translation>
+        <translation>Silahkan memasukkan sandi Anda:</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="202"/>
         <source>Open failed</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membuka</translation>
     </message>
     <message>
         <location filename="../src/plugins/oracle_raster/qgsselectgeoraster_ui.cpp" line="203"/>
         <source>The connection to %1 failed. Please verify your connection parameters. Make sure you have the GDAL GeoRaster plugin installed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi ke %1 gagal. Silahkan periksa parameter koneksi anda. Pastikan anda memiliki plugin GDAL GeoRaster terinstall.</translation>
     </message>
 </context>
 <context>
@@ -22530,7 +22532,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/qgspastetransformations.cpp" line="37"/>
         <source>&amp;Add New Transfer</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambahkan Transfer Baru</translation>
     </message>
 </context>
 <context>
@@ -22538,22 +22540,22 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/ui/qgspastetransformationsbase.ui" line="17"/>
         <source>Paste Transformations</source>
-        <translation type="unfinished"></translation>
+        <translation>Tempel transformasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspastetransformationsbase.ui" line="38"/>
         <source>&lt;b&gt;Note: This function is not useful yet!&lt;/b&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;Catatan: Fungsi ini belum berfungsi!&lt;/b&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspastetransformationsbase.ui" line="59"/>
         <source>Source</source>
-        <translation type="unfinished"></translation>
+        <translation>Sumber</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspastetransformationsbase.ui" line="78"/>
         <source>Destination</source>
-        <translation type="unfinished"></translation>
+        <translation>Tujuan</translation>
     </message>
 </context>
 <context>
@@ -22561,17 +22563,17 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="93"/>
         <source>Square</source>
-        <translation type="unfinished"></translation>
+        <translation>Persegi</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="94"/>
         <source>Flat</source>
-        <translation type="unfinished"></translation>
+        <translation>Datar</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="95"/>
         <source>Round</source>
-        <translation type="unfinished"></translation>
+        <translation>Bulat</translation>
     </message>
 </context>
 <context>
@@ -22579,7 +22581,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="69"/>
         <source>Bevel</source>
-        <translation type="unfinished"></translation>
+        <translation>Miring</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="70"/>
@@ -22589,7 +22591,7 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="71"/>
         <source>Round</source>
-        <translation type="unfinished"></translation>
+        <translation>Bulat</translation>
     </message>
 </context>
 <context>
@@ -22597,32 +22599,32 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="16"/>
         <source>Solid Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis padat</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="18"/>
         <source>Dash Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis putus-putus</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="19"/>
         <source>Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis titik-titik</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="20"/>
         <source>Dash Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis dengan garis datar dan titik</translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="21"/>
         <source>Dash Dot Dot Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Garis dengan garis datar titik titik </translation>
     </message>
     <message>
         <location filename="../src/gui/symbology-ng/qgspenstylecombobox.cpp" line="17"/>
         <source>No Pen</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada pena</translation>
     </message>
 </context>
 <context>
@@ -22641,43 +22643,43 @@ p, li { white-space: pre-wrap; }
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="39"/>
         <source>disable</source>
-        <translation type="unfinished"></translation>
+        <translation>matikan</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="40"/>
         <source>allow</source>
-        <translation type="unfinished"></translation>
+        <translation>izinkan</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="41"/>
         <source>prefer</source>
-        <translation type="unfinished"></translation>
+        <translation>yang disukai</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="42"/>
         <source>require</source>
-        <translation type="unfinished"></translation>
+        <translation>Membutuhkan</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="109"/>
         <source>Save connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="110"/>
         <source>Should the existing connection %1 be overwritten?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah koneksi %1 yang sudah ada akan di timpa?</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="226"/>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="232"/>
         <source>Test connection</source>
-        <translation type="unfinished">Coba koneksi</translation>
+        <translation>Coba koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="227"/>
         <source>Connection to %1 was successful</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi ke %1 berhasil</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgnewconnection.cpp" line="233"/>
@@ -22685,7 +22687,10 @@ p, li { white-space: pre-wrap; }
 
 Extended error information:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi gagal - Periksa pengaturan dan coba lagi.
+
+Informasi kesalahan yang diperpanjang:
+%1</translation>
     </message>
 </context>
 <context>
@@ -22693,47 +22698,47 @@ Extended error information:
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="20"/>
         <source>Create a New PostGIS connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Buat koneksi PostGIS baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="38"/>
         <source>Connection Information</source>
-        <translation type="unfinished">Informasi Koneksi</translation>
+        <translation>Informasi Koneksi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="66"/>
         <source>Name</source>
-        <translation type="unfinished">Nama</translation>
+        <translation>Nama</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="86"/>
         <source>Host</source>
-        <translation type="unfinished">Host</translation>
+        <translation>Host</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="106"/>
         <source>Database</source>
-        <translation type="unfinished">Basisdata</translation>
+        <translation>Basisdata</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="96"/>
         <source>Port</source>
-        <translation type="unfinished"></translation>
+        <translation>Port</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="126"/>
         <source>Username</source>
-        <translation type="unfinished">Nama-pengguna</translation>
+        <translation>Nama-pengguna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="136"/>
         <source>Password</source>
-        <translation type="unfinished">Password</translation>
+        <translation>Sandi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="250"/>
         <source>Use estimated table statistics for the layer metadata.</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan perkiraan tabel statistik untuk metadata lapisan.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="253"/>
@@ -22746,82 +22751,90 @@ Extended error information:
 &lt;p&gt;3) If the table geometry type is unknown and is not exclusively taken from the geometry_columns table, then it is determined from the first 100 non-null geometry rows in the table.&lt;/p&gt;
 &lt;/body&gt;
 &lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;Ketika lapisan mengatur beberapa metadata dibutuhkan untuk tabel PostGIS. Ini termasuk informasi seperti jumlah baris pada tabel, tipe geometri dan extent spasial dari data dalam kolom geometri. Jika tabel berisikan baris dalam jumlah yang banyak, penentuan metadatanya akan memakan waktu.&lt;/p&gt;
+&lt;p&gt; Dengan mengaktifkan opsi ini, berikut beberapa operasi tabel metadata cepat telah dilakukan:&lt;/p&gt;
+&lt;p&gt;1) Perhitungan baris ditentukan dari statistik tabel yang diperoleh dari fungsi analisis tabel PostgreSQL yang berjalan.&lt;/p&gt;
+&lt;p&gt;2) Extent tabel selalu ditentukan dengan fungsi estimasi extent PostGIS jika filter lapisan diterapkan.&lt;/p&gt;
+&lt;p&gt;3) Jika tipe geometri tabel tidak diketahui dan tidak secara khusus diambil dari tabel geometri_kolom, maka itu ditentukan dari baris 100 pertama yang bukan memiliki nilai geometri NULL.&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="264"/>
         <source>Use estimated table metadata</source>
-        <translation type="unfinished"></translation>
+        <translation>Gunakan tabel metadata estimasi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="116"/>
         <source>SSL mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Modus SSL</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="156"/>
         <source>Name of the new connection</source>
-        <translation type="unfinished">Nama koneksi baru</translation>
+        <translation>Nama koneksi baru</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="169"/>
         <source>5432</source>
-        <translation type="unfinished"></translation>
+        <translation>5432</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="227"/>
         <source>Save Username</source>
-        <translation type="unfinished"></translation>
+        <translation>Simpan Nama Pengguna</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="241"/>
         <source>Save Password</source>
-        <translation type="unfinished">Simpan Password</translation>
+        <translation>Simpan Sandi</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="234"/>
         <source>&amp;Test Connect</source>
-        <translation type="unfinished"></translation>
+        <translation>Coba hubungkan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="76"/>
         <source>Service</source>
-        <translation type="unfinished"></translation>
+        <translation>Layanan</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="196"/>
         <source>Restrict the displayed tables to those that are in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation>Batasi tampilan tabel untuk yang berada pada geometri_kolom tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="199"/>
         <source>Restricts the displayed tables to those that are in the geometry_columns table. This can speed up the initial display of spatial tables.</source>
-        <translation type="unfinished"></translation>
+        <translation>Batasi tampilan tabel untuk yang berada dalan kolom_geometri tabel. Ini dapat mempercepat tampilan inisial dari tabel spasial.</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="202"/>
         <source>Only look in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation>Hanya cari pada kolom geometri tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="209"/>
         <source>Restrict the search to the public schema for spatial tables not in the geometry_columns table</source>
-        <translation type="unfinished"></translation>
+        <translation>Batasi pencarian ke skema publik untuk tabel spasial yang tidak dalam kolom geometri tabel</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="212"/>
         <source>When searching for spatial tables that are not in the geometry_columns tables, restrict the search to tables that are in the public schema (for some databases this can save lots of time)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ketika mencari untuk tabel spasial yang tidak berada dalam kolom geometri tabel, batasi pencarian pada tabel yang berada pada skema publik (untuk beberapa basisdata ini dapat menghebat banyak waktu)</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="215"/>
         <source>Only look in the &apos;public&apos; schema</source>
-        <translation type="unfinished"></translation>
+        <translation>Cari hanya dalam skema &apos;publik&apos;</translation>
     </message>
     <message>
         <location filename="../src/ui/qgspgnewconnectionbase.ui" line="271"/>
         <source>Also list tables with no geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Juga daftar tabel yang tidak memiliki geometri</translation>
     </message>
 </context>
 <context>
@@ -22829,106 +22842,106 @@ Extended error information:
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="54"/>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>Tambah</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="58"/>
         <source>&amp;Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bangun kueri</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="59"/>
         <source>Build query</source>
-        <translation type="unfinished"></translation>
+        <translation>Bangun kueri</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="166"/>
         <source>Load connections</source>
-        <translation type="unfinished"></translation>
+        <translation>Muat koneksi</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="67"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="232"/>
         <source>Wildcard</source>
-        <translation type="unfinished"></translation>
+        <translation>Wildcard</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="68"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="236"/>
         <source>RegExp</source>
-        <translation type="unfinished"></translation>
+        <translation>RegExp</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="70"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="244"/>
         <source>All</source>
-        <translation type="unfinished">Semua</translation>
+        <translation>Semua</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="71"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="248"/>
         <source>Schema</source>
-        <translation type="unfinished">Skema</translation>
+        <translation>Skema</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="72"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="252"/>
         <source>Table</source>
-        <translation type="unfinished">Tabel</translation>
+        <translation>Tabel</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="73"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="256"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="74"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="260"/>
         <source>Geometry column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom geometri</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="75"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="264"/>
         <source>Primary key column</source>
-        <translation type="unfinished"></translation>
+        <translation>Kolom primary key</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="76"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="268"/>
         <source>Sql</source>
-        <translation type="unfinished"></translation>
+        <translation>Sql</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="134"/>
         <source>Are you sure you want to remove the %1 connection and all associated settings?</source>
-        <translation type="unfinished"></translation>
+        <translation>Apakah anda yakin akan menghapus koneksi %1 dan semua pengaturan yang berhubungan?</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="136"/>
         <source>Confirm Delete</source>
-        <translation type="unfinished">Konfirmasi Hapus</translation>
+        <translation>Konfirmasi Hapus</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="167"/>
         <source>XML files (*.xml *XML)</source>
-        <translation type="unfinished"></translation>
+        <translation>Arsip XML (*.xml *XML)</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="411"/>
         <source>Select Table</source>
-        <translation type="unfinished">Pilih Tabel</translation>
+        <translation>Pilih Tabel</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="411"/>
         <source>You must select a table in order to add a layer.</source>
-        <translation type="unfinished"></translation>
+        <translation>Anda harus memilih sebuah tabel untuk menambah lapisan.</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="544"/>
         <source>Connection failed</source>
-        <translation type="unfinished">Koneksi gagal</translation>
+        <translation>Koneksi gagal</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="545"/>
@@ -22938,19 +22951,24 @@ Check your username and password and try again.
 
 The database said:
 %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi ke %1 pada %2 gagal. Mungkin salah satunya karena basisdatanya mati atau pengaturan anda tidak tepat.
+
+Periksa nama pengguna dan sandi anda kemudian coba lagi.
+
+Basisdata mengatakan:
+%3</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="745"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="805"/>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="867"/>
         <source>Accessible tables could not be determined</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabel yang diakses tidak dapat ditentukan</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="746"/>
         <source>Database connection was successful, but the accessible tables could not be determined.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi basisdata berhasil, tetapi akses tabel tidak dapat ditentukan.</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="806"/>
@@ -22960,22 +22978,26 @@ The database said:
 The error message from the database was:
 %1
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi basisdata berhasil, tapu akses tabel tidak dapat ditentukan.
+
+Pesan kesalahan dari basisdata adalah:
+%1
+</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="832"/>
         <source>Waiting</source>
-        <translation type="unfinished"></translation>
+        <translation>Menunggu</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="884"/>
         <source>No geometry</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak ada geometri</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="896"/>
         <source>No accessible tables found</source>
-        <translation type="unfinished"></translation>
+        <translation>Akses tabel tidak ditemukan</translation>
     </message>
     <message>
         <location filename="../src/app/postgres/qgspgsourceselect.cpp" line="897"/>
@@ -22983,7 +23005,10 @@ The error message from the database was:
 
 Please verify that you have SELECT privilege on a table carrying PostGIS
 geometry.</source>
-        <translation type="unfinished"></translation>
+        <translation>Koneksi basisdata berhasil, tetapi akses tabel tidak dinemukan.
+
+Silahkan bahwa anda telah MEMILIH hak khusus pada tabel pembawa PostGIS
+Geometri.</translation>
     </message>
 </context>
 <context>
