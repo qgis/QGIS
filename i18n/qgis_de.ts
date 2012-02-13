@@ -28155,13 +28155,13 @@ p, li { white-space: pre-wrap; }
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2204"/>
-        <source>Cannot to instantiate the data provider</source>
+        <source>Cannot instantiate the data provider</source>
         <translation>Konnte Datenlieferanten nicht erzeugen</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="2264"/>
-        <source>Data provider is invalid (layers %1, styles %2, formats: %3)</source>
-        <translation>Datenlieferant ist ungültig (Layer %1, Stile %2, Formate %3)</translation>
+        <source>Data provider is invalid (layers: %1, styles: %2, formats: %3)</source>
+        <translation>Datenlieferant ist ungültig (Layer: %1, Stile: %2, Formate: %3)</translation>
     </message>
     <message>
         <location filename="../src/core/raster/qgsrasterlayer.cpp" line="3637"/>
