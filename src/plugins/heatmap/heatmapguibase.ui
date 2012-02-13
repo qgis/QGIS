@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>260</height>
+    <width>428</width>
+    <height>254</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,172 +16,95 @@
   <property name="locale">
    <locale language="English" country="UnitedStates"/>
   </property>
-  <widget class="QLabel" name="mInputLabel">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>20</y>
-     <width>110</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Input Point Vector</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="mInputVectorCombo">
-   <property name="geometry">
-    <rect>
-     <x>125</x>
-     <y>20</y>
-     <width>260</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="mOutputLabel">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>65</y>
-     <width>110</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Output Raster</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="mOutputRasterLineEdit">
-   <property name="geometry">
-    <rect>
-     <x>125</x>
-     <y>60</y>
-     <width>230</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="mBrowseButton">
-   <property name="geometry">
-    <rect>
-     <x>355</x>
-     <y>60</y>
-     <width>30</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <property name="focusPolicy">
-    <enum>Qt::ClickFocus</enum>
-   </property>
-   <property name="text">
-    <string>...</string>
-   </property>
-   <property name="autoDefault">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QDialogButtonBox" name="mButtonBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>225</y>
-     <width>375</width>
-     <height>30</height>
-    </rect>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-   </property>
-  </widget>
-  <widget class="QGroupBox" name="mPointAttributeBox">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>140</y>
-     <width>370</width>
-     <height>80</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Heatmap Point Attributes</string>
-   </property>
-   <widget class="QLabel" name="mBufferLabel">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>27</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Buffer Radius</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="mDecayLabel">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>56</y>
-      <width>101</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Decay Ratio</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="mBufferLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>20</y>
-      <width>113</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>10</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="mDecayLineEdit">
-    <property name="geometry">
-     <rect>
-      <x>110</x>
-      <y>50</y>
-      <width>113</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>0.5</string>
-    </property>
-   </widget>
-  </widget>
-  <widget class="QLabel" name="mFormatLabel">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>105</y>
-     <width>110</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Output Format</string>
-   </property>
-  </widget>
-  <widget class="QComboBox" name="mFormatCombo">
-   <property name="geometry">
-    <rect>
-     <x>125</x>
-     <y>100</y>
-     <width>260</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QLabel" name="mInputLabel">
+     <property name="text">
+      <string>Input Point Vector</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QComboBox" name="mInputVectorCombo"/>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="mOutputLabel">
+     <property name="text">
+      <string>Output Raster</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLineEdit" name="mOutputRasterLineEdit"/>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="mFormatLabel">
+     <property name="text">
+      <string>Output Format</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="mFormatCombo"/>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QGroupBox" name="mPointAttributeBox">
+     <property name="title">
+      <string>Heatmap Point Attributes</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="mBufferLabel">
+        <property name="text">
+         <string>Buffer Radius</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="mBufferLineEdit">
+        <property name="text">
+         <string>10</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="mDecayLabel">
+        <property name="text">
+         <string>Decay Ratio</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="mDecayLineEdit">
+        <property name="text">
+         <string>0.5</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="mButtonBox">
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="mBrowseButton">
+     <property name="focusPolicy">
+      <enum>Qt::ClickFocus</enum>
+     </property>
+     <property name="text">
+      <string>...</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
  </widget>
  <resources/>
  <connections>
