@@ -2,8 +2,9 @@ qgis (1.9.90) UNRELEASED; urgency=low
 
   * new development version 1.9.90 after branch of 1.8.0
   * include function help in package
+  * include heatmap plugin
 
- -- Jürgen E. Fischer <jef@norbit.de>  Sat, 26 Nov 2011 23:43:48 +0100
+ -- Jürgen E. Fischer <jef@norbit.de>  Mon, 13 Feb 2012 17:38:05 +0100
 
 qgis (1.8.0) UNRELEASED; urgency=low
 
