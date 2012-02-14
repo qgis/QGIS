@@ -1462,20 +1462,22 @@ bool QgsPostgresProvider::determinePrimaryKey()
       {
         QString name = res.PQgetvalue( i, 0 );
 
-        int idx = mAttributeFields.key( name, -1 );
+        QgsFieldMap::const_iterator it = mAttributeFields.begin();
+        while ( it != mAttributeFields.end() && it->name() != name )
+          it++;
 
-        if ( idx < 0 )
+        if ( it == mAttributeFields.end() )
         {
           QgsDebugMsg( "Skipping " + name );
           continue;
         }
 
         if ( isInt &&
-             mAttributeFields[idx].type() != QVariant::Int &&
-             mAttributeFields[idx].type() != QVariant::LongLong )
+             it->type() != QVariant::Int &&
+             it->type() != QVariant::LongLong )
           isInt = false;
 
-        mPrimaryKeyAttrs << idx;
+        mPrimaryKeyAttrs << it.key();
       }
 
       mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
