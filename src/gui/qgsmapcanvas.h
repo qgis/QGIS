@@ -301,6 +301,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
+  private slots:
+    //! called when current maptool is destroyed
+    void mapToolDestroyed();
+
   signals:
     /** Let the owner know how far we are with render operations */
     void setProgress( int, int );
