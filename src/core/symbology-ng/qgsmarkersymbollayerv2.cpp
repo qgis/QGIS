@@ -561,10 +561,12 @@ void QgsSvgMarkerSymbolLayerV2::renderPoint( const QPointF& point, QgsSymbolV2Re
     return;
   }
 
-  if ( mAngle != 0 )
+  bool rotated = !doubleNear( mAngle, 0 );
+  bool drawOnScreen = doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 );
+  if ( rotated )
     p->rotate( mAngle );
 
-  if ( doubleNear( context.renderContext().rasterScaleFactor(), 1.0, 0.1 ) )
+  if ( drawOnScreen && !rotated )
   {
     const QImage& img = QgsSvgCache::instance()->svgAsImage( mPath, size, mFillColor, mOutlineColor, mOutlineWidth,
                         context.renderContext().scaleFactor(), context.renderContext().rasterScaleFactor() );
