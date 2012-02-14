@@ -2449,7 +2449,11 @@ void QgsLegend::groupSelectedLayers()
 
   foreach( QTreeWidgetItem * item, selectedItems() )
   {
-    insertItem( item, group );
+    QgsLegendLayer* layer = dynamic_cast<QgsLegendLayer *>( item );
+    if ( layer )
+    {
+      insertItem( item, group );
+    }
   }
   editItem( group, 0 );
 
