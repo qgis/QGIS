@@ -1096,9 +1096,22 @@ bool QgsPostgresProvider::loadFields()
           }
         }
       }
+      else if ( fieldTypeName == "varchar" )
+      {
+        fieldType = QVariant::String;
+
+        QRegExp re( "character varying\\((\\d+)\\)" );
+        if ( re.exactMatch( formattedFieldType ) )
+        {
+          fieldSize = re.cap( 1 ).toInt();
+        }
+        else
+        {
+          fieldSize = -1;
+        }
+      }
       else if ( fieldTypeName == "text" ||
                 fieldTypeName == "bpchar" ||
-                fieldTypeName == "varchar" ||
                 fieldTypeName == "bool" ||
                 fieldTypeName == "geometry" ||
                 fieldTypeName == "money" ||
@@ -1449,20 +1462,20 @@ bool QgsPostgresProvider::determinePrimaryKey()
       {
         QString name = res.PQgetvalue( i, 0 );
 
-        int j;
-        for ( j = 0; j < mAttributeFields.size() && mAttributeFields[j].name() != name; j++ )
-          ;
+        int idx = mAttributeFields.key( name, -1 );
 
-        if ( j == mAttributeFields.size() )
+        if ( idx < 0 )
         {
           QgsDebugMsg( "Skipping " + name );
           continue;
         }
 
-        if ( isInt && mAttributeFields[j].type() != QVariant::Int && mAttributeFields[j].type() != QVariant::LongLong )
+        if ( isInt &&
+             mAttributeFields[idx].type() != QVariant::Int &&
+             mAttributeFields[idx].type() != QVariant::LongLong )
           isInt = false;
 
-        mPrimaryKeyAttrs << j;
+        mPrimaryKeyAttrs << idx;
       }
 
       mPrimaryKeyType = ( mPrimaryKeyAttrs.size() == 1 && isInt ) ? pktInt : pktFidMap;
