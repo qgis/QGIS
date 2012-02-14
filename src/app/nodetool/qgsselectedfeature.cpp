@@ -221,7 +221,7 @@ void QgsSelectedFeature::addError( QgsGeometry::Error e )
 void QgsSelectedFeature::validationFinished()
 {
   QStatusBar *sb = QgisApp::instance()->statusBar();
-  sb->showMessage( tr( "Validation finished (%n error(s) gefunden).", "number of geometry errors", mGeomErrorMarkers.size() ) );
+  sb->showMessage( tr( "Validation finished (%n error(s) found).", "number of geometry errors", mGeomErrorMarkers.size() ) );
 }
 
 void QgsSelectedFeature::deleteSelectedVertexes()
