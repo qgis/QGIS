@@ -313,6 +313,10 @@ class QgsLegend : public QTreeWidget
     /** Update drawing order */
     void unsetUpdateDrawingOrder( bool dontUpdateDrawingOrder ) { setUpdateDrawingOrder( !dontUpdateDrawingOrder ); }
 
+    // Teco's work
+    /** Create a new group for the selected items **/
+    void groupSelectedLayers();
+
   protected:
 
     /*!Event handler for mouse movements.
