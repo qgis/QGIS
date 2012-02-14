@@ -945,7 +945,7 @@ bool QgsGeometryAnalyzer::eventLayer( QgsVectorLayer* lineLayer, QgsVectorLayer*
   }
 
   //iterate over eventLayer and write new features to output file or layer
-  eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), true, false );
+  eventLayer->select( eventLayer->pendingAllAttributesList(), QgsRectangle(), false, false );
   QgsGeometry* lrsGeom = 0;
   QgsFeature lineFeature;
   double measure1, measure2;
