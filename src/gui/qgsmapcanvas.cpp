@@ -1170,7 +1170,10 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
     return;
 
   if ( mMapTool )
+  {
+    disconnect( mMapTool, SIGNAL( destroyed() ), this, SLOT( mapToolDestroyed() ) );
     mMapTool->deactivate();
+  }
 
   if ( tool->isTransient() && mMapTool && !mMapTool->isTransient() )
   {
@@ -1187,7 +1190,10 @@ void QgsMapCanvas::setMapTool( QgsMapTool* tool )
   // set new map tool and activate it
   mMapTool = tool;
   if ( mMapTool )
+  {
+    connect( mMapTool, SIGNAL( destroyed() ), this, SLOT( mapToolDestroyed() ) );
     mMapTool->activate();
+  }
 
   emit mapToolSet( mMapTool );
 } // setMapTool
@@ -1547,4 +1553,10 @@ void QgsMapCanvas::crsTransformEnabled( bool enabled )
   }
   else
     disconnect( mMapRenderer, SIGNAL( destinationSrsChanged() ), this, SLOT( refresh() ) );
+}
+
+void QgsMapCanvas::mapToolDestroyed()
+{
+  QgsDebugMsg( "maptool destroyed" );
+  mMapTool = 0;
 }
