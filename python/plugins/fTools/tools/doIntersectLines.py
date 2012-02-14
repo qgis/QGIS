@@ -51,8 +51,12 @@ class Dialog(QDialog, Ui_Dialog):
 
     def populateLayers( self ):
         layers = ftools_utils.getLayerNames([QGis.Line])
+        QObject.disconnect(self.inLine1, SIGNAL("currentIndexChanged(QString)"), self.update1)
+        QObject.disconnect(self.inLine2, SIGNAL("currentIndexChanged(QString)"), self.update2)
         self.inLine1.clear()
         self.inLine2.clear()
+        QObject.connect(self.inLine1, SIGNAL("currentIndexChanged(QString)"), self.update1)
+        QObject.connect(self.inLine2, SIGNAL("currentIndexChanged(QString)"), self.update2)
         self.inLine1.addItems(layers)
         self.inLine2.addItems(layers)
 
