@@ -410,9 +410,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     cacheReply = 0;
   }
 
-  // Bounding box in WMS format
-  QString bbox;
-
   //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
   bool changeXY = false;
   if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
@@ -431,6 +428,13 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
   {
     crsKey = "CRS";
   }
+
+  // Bounding box in WMS format (Warning: does not work with scientific notation)
+  QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                 .arg( viewExtent.xMinimum(), 0, 'f' )
+                 .arg( viewExtent.yMinimum(), 0, 'f' )
+                 .arg( viewExtent.xMaximum(), 0, 'f' )
+                 .arg( viewExtent.yMaximum(), 0, 'f' );
 
   cachedImage = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   cachedImage->fill( 0 );
@@ -471,13 +475,6 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
 
     QgsDebugMsg( "Visible layer list of " + layers + " and style list of " + styles );
 
-    // Warning: does not work with scientific notation
-    bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
-           .arg( viewExtent.xMinimum(), 0, 'f' )
-           .arg( viewExtent.yMinimum(), 0, 'f' )
-           .arg( viewExtent.xMaximum(), 0, 'f' )
-           .arg( viewExtent.yMaximum(), 0, 'f' );
-
     QUrl url( mIgnoreGetMapUrl ? mBaseUrl : getMapUrl() );
     setQueryItem( url, "SERVICE", "WMS" );
     setQueryItem( url, "VERSION", mCapabilities.version );
@@ -505,24 +502,8 @@ QImage *QgsWmsProvider::draw( QgsRectangle  const &viewExtent, int pixelWidth, i
     QgsDebugMsg( QString( "getmap: %1" ).arg( url.toString() ) );
 
     // cache some details for if the user wants to do an identifyAsHtml() later
-    QUrl fiUrl( mIgnoreGetFeatureInfoUrl ? mBaseUrl : getFeatureInfoUrl() );
-    setQueryItem( fiUrl, "SERVICE", "WMS" );
-    setQueryItem( fiUrl, "VERSION", mCapabilities.version );
-    setQueryItem( fiUrl, "REQUEST", "GetFeatureInfo" );
-    setQueryItem( fiUrl, "BBOX", bbox );
-    setQueryItem( fiUrl, crsKey, imageCrs );
-    setQueryItem( fiUrl, "WIDTH", QString::number( pixelWidth ) );
-    setQueryItem( fiUrl, "HEIGHT", QString::number( pixelHeight ) );
-    setQueryItem( fiUrl, "LAYERS", layers );
-    setQueryItem( fiUrl, "STYLES", styles );
-    setQueryItem( fiUrl, "FORMAT", imageMimeType );
 
-    if ( !imageMimeType.contains( "jpeg", Qt::CaseInsensitive ) && !imageMimeType.contains( "jpg", Qt::CaseInsensitive ) )
-    {
-      setQueryItem( fiUrl, "TRANSPARENT", "true" );
-    }
-
-    mGetFeatureInfoUrlBase = fiUrl.toString();
+    mGetFeatureInfoUrlBase = mIgnoreGetFeatureInfoUrl ? mBaseUrl : getFeatureInfoUrl();
 
     QNetworkRequest request( url );
     setAuthorization( request );
@@ -2916,31 +2897,67 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
   QStringList queryableLayers = QStringList();
   QString text = "";
 
+  //according to the WMS spec for 1.3, the order of x - and y - coordinates is inverted for geographical CRS
+  bool changeXY = false;
+  if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
+  {
+    //create CRS from string
+    QgsCoordinateReferenceSystem theSrs;
+    if ( theSrs.createFromOgcWmsCrs( imageCrs ) && theSrs.geographicFlag() )
+    {
+      changeXY = true;
+    }
+  }
+
+  // compose the URL query string for the WMS server.
+  QString crsKey = "SRS"; //SRS in 1.1.1 and CRS in 1.3.0
+  if ( mCapabilities.version == "1.3.0" || mCapabilities.version == "1.3" )
+  {
+    crsKey = "CRS";
+  }
+
+  // Compose request to WMS server
+  QString bbox = QString( changeXY ? "%2,%1,%4,%3" : "%1,%2,%3,%4" )
+                 .arg( cachedViewExtent.xMinimum(), 0, 'f' )
+                 .arg( cachedViewExtent.yMinimum(), 0, 'f' )
+                 .arg( cachedViewExtent.xMaximum(), 0, 'f' )
+                 .arg( cachedViewExtent.yMaximum(), 0, 'f' );
+
   // Test for which layers are suitable for querying with
-  for ( QStringList::const_iterator it  = activeSubLayers.begin();
-        it != activeSubLayers.end();
-        ++it )
+  for ( QStringList::const_iterator
+        layers  = activeSubLayers.begin(),
+        styles = activeSubStyles.begin();
+        layers != activeSubLayers.end();
+        ++layers, ++styles )
   {
     // Is sublayer visible?
-    if ( activeSubLayerVisibility.find( *it ).value() )
+    if ( activeSubLayerVisibility.find( *layers ).value() )
     {
       // Is sublayer queryable?
-      if ( mQueryableForLayer.find( *it ).value() )
+      if ( mQueryableForLayer.find( *layers ).value() )
       {
-        QgsDebugMsg( "Layer '" + *it + "' is queryable." );
-        // Compose request to WMS server
+        QgsDebugMsg( "Layer '" + *layers + "' is queryable." );
 
-        QString requestUrl = mGetFeatureInfoUrlBase;
-
-        //! \todo Need to tie this into the options provided by GetCapabilities
-        requestUrl += QString( "&QUERY_LAYERS=%1" ).arg( *it );
-        requestUrl += QString( "&INFO_FORMAT=%1&X=%2&Y=%3" )
-                      .arg( format ).arg( point.x() ).arg( point.y() );
+        QUrl requestUrl( mGetFeatureInfoUrlBase );
+        setQueryItem( requestUrl, "SERVICE", "WMS" );
+        setQueryItem( requestUrl, "VERSION", mCapabilities.version );
+        setQueryItem( requestUrl, "REQUEST", "GetFeatureInfo" );
+        setQueryItem( requestUrl, "BBOX", bbox );
+        setQueryItem( requestUrl, crsKey, imageCrs );
+        setQueryItem( requestUrl, "WIDTH", QString::number( cachedViewWidth ) );
+        setQueryItem( requestUrl, "HEIGHT", QString::number( cachedViewHeight ) );
+        setQueryItem( requestUrl, "LAYERS", *layers );
+        setQueryItem( requestUrl, "STYLES", *styles );
+        setQueryItem( requestUrl, "FORMAT", imageMimeType );
+        setQueryItem( requestUrl, "QUERY_LAYERS", *layers );
+        setQueryItem( requestUrl, "INFO_FORMAT", format );
+        setQueryItem( requestUrl, "X", QString::number( point.x() ) );
+        setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
 
         // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
         //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
 
-        QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl ) );
+        QgsDebugMsg( QString( "getfeatureinfo: %1" ).arg( requestUrl.toString() ) );
         QNetworkRequest request( requestUrl );
         setAuthorization( request );
         mIdentifyReply = QgsNetworkAccessManager::instance()->get( request );
@@ -3029,7 +3046,7 @@ void QgsWmsProvider::identifyReplyFinished()
     {
       QVariant phrase = mIdentifyReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
       mErrorFormat = "text/plain";
-      mError = tr( "Map request error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
+      mError = tr( "Map getfeatureinfo error %1: %2" ).arg( status.toInt() ).arg( phrase.toString() );
       emit statusChanged( mError );
 
       mIdentifyResult = "";
@@ -3039,7 +3056,8 @@ void QgsWmsProvider::identifyReplyFinished()
   }
   else
   {
-    mIdentifyResult = "";
+    mIdentifyResult = tr( "ERROR: GetFeatureInfo failed" );
+    QgsMessageLog::logMessage( tr( "Map getfeatureinfo error: %1 [%2]" ).arg( mIdentifyReply->errorString() ).arg( mIdentifyReply->url().toString() ), tr( "WMS" ) );
   }
 
   mIdentifyReply->deleteLater();

@@ -631,7 +631,7 @@ void QgsLegend::handleRightClickEvent( QTreeWidgetItem* item, const QPoint& posi
     //
     // Option to group layers, if the selection is more than one
     //
-    if( selectedLayers().length() > 1 )
+    if ( selectedLayers().length() > 1 )
     {
       theMenu.addAction( tr( "&Group selected" ), this, SLOT( groupSelectedLayers() ) );
     }
@@ -2422,7 +2422,7 @@ void QgsLegend::groupSelectedLayers()
   }
   QgsLegendGroup *group;
 
-  if( parent )
+  if ( parent )
   {
     group = new QgsLegendGroup( parent, tr( "sub-group" ) );
   }

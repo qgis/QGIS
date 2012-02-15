@@ -40,7 +40,7 @@
 #include <QDockWidget>
 #include <QMenuBar>
 #include <QPushButton>
-#include <QTextBrowser>
+#include <QWebView>
 
 #include "qgslogger.h"
 
@@ -80,10 +80,10 @@ class QgsIdentifyResultsDock : public QDockWidget
 //     name value
 
 QgsIdentifyResults::QgsIdentifyResults( QgsMapCanvas *canvas, QWidget *parent, Qt::WFlags f )
-    : QDialog( parent, f ),
-    mActionPopup( 0 ),
-    mCanvas( canvas ),
-    mDock( NULL )
+    : QDialog( parent, f )
+    , mActionPopup( 0 )
+    , mCanvas( canvas )
+    , mDock( NULL )
 {
   setupUi( this );
   QSettings mySettings;
@@ -275,9 +275,9 @@ void QgsIdentifyResults::addFeature( QgsRasterLayer *layer,
     QTreeWidgetItem *attrItem = new QTreeWidgetItem( QStringList() << attributes.begin().key() << "" );
     featItem->addChild( attrItem );
 
-    QTextBrowser *tb = new QTextBrowser( attrItem->treeWidget() );
-    tb->setHtml( attributes.begin().value() );
-    attrItem->treeWidget()->setItemWidget( attrItem, 1, tb );
+    QWebView *wv = new QWebView( attrItem->treeWidget() );
+    wv->setHtml( attributes.begin().value() );
+    attrItem->treeWidget()->setItemWidget( attrItem, 1, wv );
   }
   else
   {
