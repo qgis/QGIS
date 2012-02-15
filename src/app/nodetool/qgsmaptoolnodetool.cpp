@@ -397,17 +397,39 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
             break;
           }
         }
+
         if ( !mSelectAnother )
         {
           mMoving = true;
           QgsPoint point = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
           mClosestVertex = closestVertex( toLayerCoordinates( vlayer, point ) );
-          if ( !mSelectedFeature->isSelected( snapResult.beforeVertexNr ) ||
-               !mSelectedFeature->isSelected( snapResult.afterVertexNr ) )
+
+          if ( mIsPoint )
           {
-            mSelectedFeature->deselectAllVertexes();
-            mSelectedFeature->selectVertex( snapResult.afterVertexNr );
-            mSelectedFeature->selectVertex( snapResult.beforeVertexNr );
+            if ( !mCtrl )
+            {
+              mSelectedFeature->deselectAllVertexes();
+              mSelectedFeature->selectVertex( snapResult.snappedVertexNr );
+            }
+            else
+            {
+              mSelectedFeature->invertVertexSelection( snapResult.snappedVertexNr );
+            }
+          }
+          else if ( !mSelectedFeature->isSelected( snapResult.beforeVertexNr ) ||
+                    !mSelectedFeature->isSelected( snapResult.afterVertexNr ) )
+          {
+            if ( !mCtrl )
+            {
+              mSelectedFeature->deselectAllVertexes();
+              mSelectedFeature->selectVertex( snapResult.afterVertexNr );
+              mSelectedFeature->selectVertex( snapResult.beforeVertexNr );
+            }
+            else
+            {
+              mSelectedFeature->invertVertexSelection( snapResult.afterVertexNr );
+              mSelectedFeature->invertVertexSelection( snapResult.beforeVertexNr );
+            }
           }
         }
       }
@@ -428,7 +450,7 @@ void QgsMapToolNodeTool::canvasPressEvent( QMouseEvent * e )
         {
           mSelectedFeature->invertVertexSelection( atVertex );
         }
-        else if ( !mSelectedFeature->isSelected( atVertex ) )
+        else
         {
           mSelectedFeature->deselectAllVertexes();
           mSelectedFeature->selectVertex( atVertex );
@@ -466,8 +488,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
   mClicked = false;
   mSelectionRectangle = false;
   QgsPoint coords = toMapCoordinates( e->pos() );
-  // QgsPoint coords = mCanvas->getCoordinateTransform()->toMapPoint( e->pos().x(), e->pos().y() );
-  // QgsPoint firstCoords = toMapCoordinates( *mLastCoordinates );
+
   QgsPoint firstCoords = mCanvas->getCoordinateTransform()->toMapPoint( mLastCoordinates->x(), mLastCoordinates->y() );
   if ( mRubberBand )
   {
@@ -475,6 +496,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
     delete mRubberBand;
     mRubberBand = 0;
   }
+
   if ( mLastCoordinates->x() == e->pos().x() && mLastCoordinates->y() == e->pos().y() )
   {
     if ( mSelectAnother )
@@ -492,8 +514,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
     QgsPoint layerFirstCoords = toLayerCoordinates( vlayer, firstCoords );
 
     // got correct coordinates
-    double topX;
-    double bottomX;
+    double topX, bottomX;
     if ( layerCoords.x() > layerFirstCoords.x() )
     {
       topX = layerFirstCoords.x();
@@ -504,8 +525,8 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       topX = layerCoords.x();
       bottomX = layerFirstCoords.x();
     }
-    double leftY;
-    double rightY;
+
+    double leftY, rightY;
     if ( layerCoords.y() > layerFirstCoords.y() )
     {
       leftY = layerFirstCoords.y();
@@ -516,6 +537,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       leftY = layerCoords.y();
       rightY = layerFirstCoords.y();
     }
+
     if ( mMoving )
     {
       mMoving = false;
@@ -537,6 +559,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       }
       QgsPoint layerCoords = toLayerCoordinates( vlayer, coords );
       QgsPoint layerFirstCoords = toLayerCoordinates( vlayer, firstCoords );
+
       double changeX = layerCoords.x() - layerFirstCoords.x();
       double changeY = layerCoords.y() - layerFirstCoords.y();
       mSelectedFeature->beginGeometryChange();
@@ -563,6 +586,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
       }
     }
   }
+
   mMoving = false;
 
   removeRubberBands();
@@ -689,10 +713,8 @@ void QgsMapToolNodeTool::keyReleaseEvent( QKeyEvent* e )
 
   if ( mSelectedFeature && e->key() == Qt::Key_Delete )
   {
-    mSelectedFeature->beginGeometryChange();
     mSelectedFeature->deleteSelectedVertexes();
     mCanvas->refresh();
-    mSelectedFeature->endGeometryChange();
   }
 }
 

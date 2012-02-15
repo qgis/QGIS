@@ -14,8 +14,7 @@
  ***************************************************************************/
 
 #include "nodetool/qgsvertexentry.h"
-
-#include <qgsmaprenderer.h>
+#include "qgsmaprenderer.h"
 
 QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, QgsPoint p, int originalIndex, QString tooltip, QgsVertexMarker::IconType type, int penWidth )
     : mSelected( false )
