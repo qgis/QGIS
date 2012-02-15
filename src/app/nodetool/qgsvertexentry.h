@@ -54,9 +54,11 @@ class QgsVertexEntry
 
     void setCenter( QgsPoint p );
     void moveCenter( double x, double y );
+
     void setEqual( int index ) { mEquals = index; }
     void setSelected( bool selected = true );
     void setInRubberBand( bool inRubberBand = true ) { mInRubberBand = inRubberBand; }
+
     int rubberBandNr() const { return mRubberBandNr; }
     int rubberBandIndex() { return mRubberBandIndex; }
 

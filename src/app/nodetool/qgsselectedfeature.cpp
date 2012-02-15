@@ -61,14 +61,14 @@ QgsSelectedFeature::~QgsSelectedFeature()
 
 void QgsSelectedFeature::currentLayerChanged( QgsMapLayer *layer )
 {
-  QgsDebugMsg( "Entering. " );
+  QgsDebugMsg( "Entering." );
   if ( layer == mVlayer )
     deleteLater();
 }
 
 void QgsSelectedFeature::updateGeometry( QgsGeometry *geom )
 {
-  QgsDebugMsg( "Entering. " );
+  QgsDebugMsg( "Entering." );
 
   delete mGeometry;
 
@@ -100,6 +100,7 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
 
   delete mRubberBand;
   mRubberBand = 0;
+
   delete mGeometry;
   mGeometry = 0;
 
@@ -109,12 +110,12 @@ void QgsSelectedFeature::setSelectedFeature( QgsFeatureId featureId, QgsVectorLa
   // feature was deleted
   connect( mVlayer, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( featureDeleted( QgsFeatureId ) ) );
 
-  // geometry was changed
-  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
-
   // projection or extents changed
   connect( canvas->mapRenderer(), SIGNAL( destinationSrsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
   connect( canvas, SIGNAL( extentsChanged() ), this, SLOT( updateVertexMarkersPosition() ) );
+
+  // geometry was changed
+  connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
 
   replaceVertexMap();
 }
@@ -124,7 +125,6 @@ void QgsSelectedFeature::beginGeometryChange()
   Q_ASSERT( !mChangingGeometry );
   mChangingGeometry = true;
 
-  // geometry was changed
   disconnect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
 }
 
@@ -133,7 +133,6 @@ void QgsSelectedFeature::endGeometryChange()
   Q_ASSERT( mChangingGeometry );
   mChangingGeometry = false;
 
-  // geometry was changed
   connect( mVlayer, SIGNAL( geometryChanged( QgsFeatureId, QgsGeometry & ) ), this, SLOT( geometryChanged( QgsFeatureId, QgsGeometry & ) ) );
 }
 
@@ -151,10 +150,12 @@ void QgsSelectedFeature::featureDeleted( QgsFeatureId fid )
 void QgsSelectedFeature::geometryChanged( QgsFeatureId fid, QgsGeometry &geom )
 {
   QgsDebugMsg( "Entering." );
+
   if ( !mVlayer || fid != mFeatureId )
     return;
 
   updateGeometry( &geom );
+
   replaceVertexMap();
 }
 
@@ -228,7 +229,9 @@ void QgsSelectedFeature::deleteSelectedVertexes()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
   QMultiMap<double, QgsSnappingResult> currentResultList;
+
   mVlayer->beginEditCommand( QObject::tr( "Deleted vertices" ) );
+
   int count = 0;
   for ( int i = mVertexMap.size() - 1; i > -1; i-- )
   {
@@ -246,12 +249,14 @@ void QgsSelectedFeature::deleteSelectedVertexes()
         currentResultList.clear();
         mVlayer->snapWithContext( mVertexMap[i]->point(), ZERO_TOLERANCE, currentResultList, QgsSnapper::SnapToVertex );
       }
+
       if ( !mVlayer->deleteVertex( mFeatureId, i ) )
       {
         count = 0;
-        qDebug( "Setting count 0 and calling break;" );
+        QgsDebugMsg( QString( "Deleting vertex %1 failed - resetting" ).arg( i ) );
         break;
-      };
+      }
+
       count++;
 
       if ( topologicalEditing )
@@ -309,7 +314,6 @@ void QgsSelectedFeature::moveSelectedVertexes( double changeX, double changeY )
             mVlayer->moveVertex( mVertexMap[i]->point().x(), mVertexMap[i]->point().y(),
                                  resultIt.value().snappedAtGeometry, resultIt.value().snappedVertexNr );
         }
-
       }
 
       QgsVertexEntry *entry = mVertexMap[i];
@@ -332,9 +336,6 @@ void QgsSelectedFeature::replaceVertexMap()
 {
   // delete old map
   deleteVertexMap();
-
-  delete mGeometry;
-  mGeometry = 0;
 
   // create new map
   createVertexMap();
