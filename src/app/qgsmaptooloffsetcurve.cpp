@@ -14,11 +14,12 @@
  ***************************************************************************/
 
 #include "qgsmaptooloffsetcurve.h"
+#include "qgsmapcanvas.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
 
-QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ), mGeometry( 0 )
+QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ), mOriginalGeometry( 0 ), mGeometryModified( false )
 {
 }
 
@@ -30,6 +31,7 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
 {
   deleteRubberBandAndGeometry();
+  mGeometryModified = false;
 
   //get selected features or snap to nearest feature if no selection
   QgsVectorLayer* layer = currentVectorLayer();
@@ -38,31 +40,61 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
     return;
   }
 
-  //selection or take closest feature
-  //QgsPoint layerCoords = toLayerCoordinates( layer, e->pos() );
-
-  //optionally merge the features together
-
-  //create rubberband from feature(s)
-
-  //for now, just take the first selected feature
   QgsFeatureList selectedFeatures = layer->selectedFeatures();
   if ( selectedFeatures.size() > 0 )
   {
-    mGeometry = selectedFeatures[0].geometryAndOwnership();
+    //take the first selected feature
+    mOriginalGeometry = selectedFeatures[0].geometryAndOwnership();
     mRubberBand = createRubberBand();
-    mRubberBand->setToGeometry( mGeometry, layer );
+    mRubberBand->setToGeometry( mOriginalGeometry, layer );
+    mModifiedFeature = selectedFeatures[0].id();
+  }
+  else //do a snap to the closest feature
+  {
+    QList<QgsSnappingResult> snapResults;
+    QgsMapCanvasSnapper snapper( mCanvas );
+    snapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment );
+    if ( snapResults.size() > 0 )
+    {
+      QgsFeature fet;
+      if ( layer->featureAtId( snapResults.at( 0 ).snappedAtGeometry, fet ) )
+      {
+        mOriginalGeometry = fet.geometryAndOwnership();
+        mRubberBand = createRubberBand();
+        mRubberBand->setToGeometry( mOriginalGeometry, layer );
+        mModifiedFeature = fet.id();
+      }
+    }
   }
 }
 
 void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
 {
-  deleteRubberBandAndGeometry();
+  QgsVectorLayer* vlayer = currentVectorLayer();
+  if ( !vlayer || !mGeometryModified )
+  {
+    deleteRubberBandAndGeometry();
+    return;
+  }
+
+  vlayer->beginEditCommand( tr( "Offset curve" ) );
+  if ( vlayer->changeGeometry( mModifiedFeature, &mModifiedGeometry ) )
+  {
+    vlayer->endEditCommand();
+  }
+  else
+  {
+    vlayer->destroyEditCommand();
+  }
+
+  delete mRubberBand;
+  mRubberBand = 0;
+  mCanvas->refresh();
 }
 
 void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
 {
-  if ( !mGeometry || !mRubberBand )
+  if ( !mOriginalGeometry || !mRubberBand )
   {
     return;
   }
@@ -73,25 +105,26 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
     return;
   }
 
+  mGeometryModified = true;
+
   //get offset from current position rectangular to feature
   QgsPoint layerCoords = toLayerCoordinates( layer, e->pos() );
   QgsPoint minDistPoint;
   int beforeVertex;
-  double offset = sqrt( mGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex ) );
+  double leftOf;
+  double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
   qWarning( QString::number( offset ).toLocal8Bit().data() );
 
   //create offset geometry using geos
-  QgsGeometry geomCopy( *mGeometry );
+  QgsGeometry geomCopy( *mOriginalGeometry );
   GEOSGeometry* geosGeom = geomCopy.asGeos();
   if ( geosGeom )
   {
-    //GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, offset, 8, 1, 1 );
-    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, 8, 1, 1, 0 );
+    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, 8, 1, 1, ( leftOf < 0 ) ? 1 : 0 );
     if ( offsetGeom )
     {
-      QgsGeometry rubberBandGeometry;
-      rubberBandGeometry.fromGeos( offsetGeom );
-      mRubberBand->setToGeometry( &rubberBandGeometry, layer );
+      mModifiedGeometry.fromGeos( offsetGeom );
+      mRubberBand->setToGeometry( &mModifiedGeometry, layer );
     }
   }
 }
@@ -100,6 +133,6 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
 {
   delete mRubberBand;
   mRubberBand = 0;
-  delete mGeometry;
-  mGeometry = 0;
+  delete mOriginalGeometry;
+  mOriginalGeometry = 0;
 }

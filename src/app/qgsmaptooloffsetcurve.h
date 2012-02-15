@@ -17,7 +17,7 @@
 #define QGSMAPTOOLOFFSETCURVE_H
 
 #include "qgsmaptooledit.h"
-class QgsGeometry;
+#include "qgsgeometry.h"
 
 class QgsMapToolOffsetCurve: public QgsMapToolEdit
 {
@@ -34,7 +34,13 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     /**Rubberband that shows the position of the offset curve*/
     QgsRubberBand* mRubberBand;
     /**Geometry to manipulate*/
-    QgsGeometry* mGeometry;
+    QgsGeometry* mOriginalGeometry;
+    /**Geometry after manipulation*/
+    QgsGeometry mModifiedGeometry;
+    /**ID of manipulated feature*/
+    QgsFeatureId mModifiedFeature;
+    /**Internal flag to distinguish move from click*/
+    bool mGeometryModified;
 
     void deleteRubberBandAndGeometry();
 };
