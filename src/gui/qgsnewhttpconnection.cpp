@@ -29,6 +29,13 @@ QgsNewHttpConnection::QgsNewHttpConnection(
 {
   setupUi( this );
 
+  // It would be obviously much better to use mBaseKey also for credentials,
+  // but for some strange reason a different hardcoded key was used instead.
+  // WFS and WMS credentials were mixed with the same key WMS.
+  // Only WMS and WFS providers are using QgsNewHttpConnection at this moment
+  // using connection-wms and connection-wfs -> parse credential key fro it.
+  mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
+
   if ( !connName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
@@ -37,7 +44,7 @@ QgsNewHttpConnection::QgsNewHttpConnection(
     QSettings settings;
 
     QString key = mBaseKey + connName;
-    QString credentialsKey = "/Qgis/WMS/" + connName;
+    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + connName;
     txtName->setText( connName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
@@ -72,7 +79,7 @@ void QgsNewHttpConnection::accept()
 {
   QSettings settings;
   QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "/Qgis/WMS/" + txtName->text();
+  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + txtName->text();
 
   // warn if entry was renamed to an existing connection
   if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
@@ -89,7 +96,7 @@ void QgsNewHttpConnection::accept()
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "/Qgis/WMS/" + mOriginalConnName );
+    settings.remove( "/Qgis/" + mCredentialsBaseKey + "/" + mOriginalConnName );
   }
 
   QUrl url( txtUrl->text().trimmed() );

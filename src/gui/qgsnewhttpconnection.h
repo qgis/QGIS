@@ -42,6 +42,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
 
   private:
     QString mBaseKey;
+    QString mCredentialsBaseKey;
     QString mOriginalConnName; //store initial name to delete entry in case of rename
 };
 

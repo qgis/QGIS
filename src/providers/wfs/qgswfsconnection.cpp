@@ -252,4 +252,5 @@ void QgsWFSConnection::deleteConnection( QString name )
 {
   QSettings settings;
   settings.remove( "/Qgis/connections-wfs/" + name );
+  settings.remove( "/Qgis/WFS/" + name );
 }
