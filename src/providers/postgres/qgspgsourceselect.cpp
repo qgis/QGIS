@@ -371,14 +371,10 @@ QgsPgSourceSelect::~QgsPgSourceSelect()
 
 void QgsPgSourceSelect::populateConnectionList()
 {
-  QStringList keys = QgsPostgresConn::connectionList();
-  QStringList::Iterator it = keys.begin();
+  cmbConnections->blockSignals( true );
   cmbConnections->clear();
-  while ( it != keys.end() )
-  {
-    cmbConnections->addItem( *it );
-    ++it;
-  }
+  cmbConnections->addItems( QgsPostgresConn::connectionList() );
+  cmbConnections->blockSignals( false );
 
   setConnectionListPosition();
 
@@ -606,6 +602,7 @@ void QgsPgSourceSelect::setConnectionListPosition()
 {
   // If possible, set the item currently displayed database
   QString toSelect = QgsPostgresConn::selectedConnection();
+
   cmbConnections->setCurrentIndex( cmbConnections->findText( toSelect ) );
 
   if ( cmbConnections->currentIndex() < 0 )
