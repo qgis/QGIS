@@ -58,6 +58,7 @@ QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent
     mButton->setIcon( icon( "/mIconWarn.png" ) );
     mButton->setToolTip( tr( "No messages." ) );
     mButton->setCheckable( true );
+    mButton->hide();
     connect( mButton, SIGNAL( toggled( bool ) ), this, SLOT( buttonToggled( bool ) ) );
     statusBar->addPermanentWidget( mButton, 0 );
   }
@@ -82,6 +83,7 @@ void QgsMessageLogViewer::showEvent( QShowEvent * )
   if ( mButton )
   {
     mButton->setChecked( true );
+    mButton->hide();
   }
 }
 
@@ -102,8 +104,9 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, int level )
 {
   mButton->setToolTip( tr( "%1 message(s) logged." ).arg( mCount++ ) );
 
-  if ( mButton && !isVisible() )
+  if ( !isVisible() )
   {
+    mButton->show();
     QToolTip::showText( mButton->mapToGlobal( QPoint( 0, 0 ) ), mButton->toolTip() );
   }
 
