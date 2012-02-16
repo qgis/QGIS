@@ -24085,7 +24085,7 @@ p, li { white-space: pre-wrap; }
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="990"/>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1047"/>
         <source>Unable to access relation</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat untuk mengakses relasi</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="991"/>
@@ -24093,7 +24093,10 @@ p, li { white-space: pre-wrap; }
 The error message from the database was:
 %2.
 SQL: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak dapat mengakses relasi %1.
+Pesan kesalahan dari basisdata:
+%2.
+SQL: %3</translation>
     </message>
     <message>
         <location filename="../src/providers/postgres/qgspostgresprovider.cpp" line="1048"/>
@@ -24410,18 +24413,19 @@ Result: %3 (%4)</source>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="29"/>
         <source>Ignore</source>
-        <translation type="unfinished"></translation>
+        <translation>Abaikan</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="35"/>
         <source>QGIS Project Read Error</source>
-        <translation type="unfinished"></translation>
+        <translation>Gagal membaca proyek QGIS</translation>
     </message>
     <message>
         <location filename="../src/gui/qgsprojectbadlayerguihandler.cpp" line="36"/>
         <source>Unable to open one or more project layers.
 Choose ignore to continue loading without the missing layers. Choose cancel to return to your pre-project load state. Choose OK to try to find the missing layers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Tidak bisa membuka satu atau lebih lapisan proyek.
+Pilih abaikan untuk melanjutkan memuat tanpa lapisan yang hilang. Pilih batal untuk kembali ke kondisi sebelum anda memuat proyek tersebut. Pilih OK untuk mencoba menemukan lapisan yang hilang.</translation>
     </message>
 </context>
 <context>
@@ -24429,17 +24433,17 @@ Choose ignore to continue loading without the missing layers. Choose cancel to r
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="118"/>
         <source>Layer</source>
-        <translation type="unfinished">Lapisan</translation>
+        <translation>Lapisan</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="119"/>
         <source>Type</source>
-        <translation type="unfinished">Tipe</translation>
+        <translation>Tipe</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="120"/>
         <source>Identifiable</source>
-        <translation type="unfinished"></translation>
+        <translation>Dapat diidentifikasi</translation>
     </message>
     <message>
         <location filename="../src/app/qgsprojectproperties.cpp" line="140"/>
