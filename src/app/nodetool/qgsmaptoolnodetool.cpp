@@ -44,6 +44,19 @@ QgsMapToolNodeTool::~QgsMapToolNodeTool()
   removeRubberBands();
 }
 
+QgsSelectedFeature* QgsMapToolNodeTool::selectedFeature()
+{
+  return mSelectedFeature;
+}
+
+QgsFeatureId QgsMapToolNodeTool::featureId()
+{
+  if ( mSelectedFeature != NULL ) {
+    return mSelectedFeature->featureId();
+  }
+  return NULL;
+}
+
 void QgsMapToolNodeTool::createMovingRubberBands()
 {
   int topologicalEditing = QgsProject::instance()->readNumEntry( "Digitizing", "/TopologicalEditing", 0 );
@@ -594,6 +607,7 @@ void QgsMapToolNodeTool::canvasReleaseEvent( QMouseEvent * e )
   mRecentSnappingResults.clear();
   mExcludePoint.clear();
 }
+
 
 void QgsMapToolNodeTool::deactivate()
 {
