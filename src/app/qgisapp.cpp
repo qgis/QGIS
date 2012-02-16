@@ -625,7 +625,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, QWidget * parent, 
   // request notification of FileOpen events (double clicking a file icon in Mac OS X Finder)
   QgsApplication::setFileOpenEventReceiver( this );
 
-#ifndef ANDROID2
+#ifdef ANDROID
   //add reacting to long click in android
   grabGesture(Qt::TapAndHoldGesture);
 #endif
@@ -739,7 +739,7 @@ bool QgisApp::event( QEvent * event )
     openFile( foe->file() );
     done = true;
   }
-#ifndef ANDROID2
+#ifdef ANDROID
   else if (event->type() == QEvent::Gesture )
   {
     done = gestureEvent(static_cast<QGestureEvent*>(event));
@@ -7277,7 +7277,7 @@ QMenu* QgisApp::createPopupMenu()
   return menu;
 }
 
-#ifndef ANDROID2
+#ifdef ANDROID
 bool QgisApp::gestureEvent(QGestureEvent *event)
 {
   if (QGesture *tapAndHold = event->gesture(Qt::TapAndHoldGesture))
@@ -7291,12 +7291,12 @@ void QgisApp::tapAndHoldTriggered(QTapAndHoldGesture *gesture)
 {
   if (gesture->state() == Qt::GestureFinished) {
     QPoint pos = gesture->position().toPoint();
+    QWidget * receiver = QApplication::widgetAt( pos );
     qDebug() << "tapAndHoldTriggered: LONG CLICK gesture happened at " << pos;
-    QWidget * receiver = QApplication::widgetAt( this->mapToGlobal(pos) );
     qDebug() << "widget under point of click: " << receiver;
 
-    QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonPress, pos, Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
-    QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonRelease, pos, Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
+    QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonPress, receiver->mapFromGlobal( pos ), Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
+    QApplication::postEvent( receiver, new QMouseEvent( QEvent::MouseButtonRelease, receiver->mapFromGlobal( pos ), Qt::RightButton, Qt::RightButton, Qt::NoModifier ) );
   }
 }
 #endif
