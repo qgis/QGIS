@@ -6,6 +6,9 @@
 #include <qgsmaptoolzoom.h>
 #include <qgsmaptoolpan.h>
 #include <qgsmaptoolemitpoint.h>
+#include <qgsmaptooledit.h>
+#include <qgsmaptoolvertexedit.h>
+#include <qgsmaptoolnodetool.h>
 %End
 
 class QgsMapTool : QObject
@@ -21,6 +24,12 @@ class QgsMapTool : QObject
     sipClass = sipClass_QgsMapToolPan;
   else if (dynamic_cast<QgsMapToolEmitPoint*>(sipCpp) != NULL)
     sipClass = sipClass_QgsMapToolEmitPoint;
+  else if (dynamic_cast<QgsMapToolEdit*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsMapToolEdit;
+  else if (dynamic_cast<QgsMapToolVertexEdit*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsMapToolVertexEdit;
+  else if (dynamic_cast<QgsMapToolNodeTool*>(sipCpp) != NULL)
+    sipClass = sipClass_QgsMapToolNodeTool;
   else
     sipClass = NULL;
 %End

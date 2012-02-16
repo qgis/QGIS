@@ -67,6 +67,8 @@ ADD_SIP_PYTHON_MODULE(qgis.core core/core.sip qgis_core)
 # additional gui includes
 INCLUDE_DIRECTORIES(
     ../src/gui
+    ../src/app
+    ../src/app/nodetool/
     ../src/gui/symbology-ng
     ../src/plugins
     ${CMAKE_BINARY_DIR}/src/gui
