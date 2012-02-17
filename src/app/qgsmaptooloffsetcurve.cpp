@@ -15,6 +15,7 @@
 
 #include "qgsmaptooloffsetcurve.h"
 #include "qgsmapcanvas.h"
+#include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
@@ -40,26 +41,21 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
     return;
   }
 
-  QgsFeatureList selectedFeatures = layer->selectedFeatures();
-  if ( selectedFeatures.size() > 0 )
+  QList<QgsSnappingResult> snapResults;
+  QgsMapCanvasSnapper snapper( mCanvas );
+  snapper.snapToBackgroundLayers( e->pos(), snapResults );
+  if ( snapResults.size() > 0 )
   {
-    //take the first selected feature
-    mOriginalGeometry = selectedFeatures[0].geometryAndOwnership();
-    mRubberBand = createRubberBand();
-    mRubberBand->setToGeometry( mOriginalGeometry, layer );
-    mModifiedFeature = selectedFeatures[0].id();
-  }
-  else //do a snap to the closest feature
-  {
-    QList<QgsSnappingResult> snapResults;
-    QgsMapCanvasSnapper snapper( mCanvas );
-    snapper.snapToCurrentLayer( e->pos(), snapResults, QgsSnapper::SnapToSegment );
-    if ( snapResults.size() > 0 )
+    QgsFeature fet;
+    const QgsSnappingResult& snapResult = snapResults.at( 0 );
+    if ( snapResult.layer )
     {
-      QgsFeature fet;
-      if ( layer->featureAtId( snapResults.at( 0 ).snappedAtGeometry, fet ) )
+      mSourceLayerId = snapResult.layer->id();
+
+      QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
+      if ( vl && vl->featureAtId( snapResult.snappedAtGeometry, fet ) )
       {
-        mOriginalGeometry = fet.geometryAndOwnership();
+        mOriginalGeometry = createOriginGeometry( vl, snapResult, fet );
         mRubberBand = createRubberBand();
         mRubberBand->setToGeometry( mOriginalGeometry, layer );
         mModifiedFeature = fet.id();
@@ -78,7 +74,20 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
   }
 
   vlayer->beginEditCommand( tr( "Offset curve" ) );
-  if ( vlayer->changeGeometry( mModifiedFeature, &mModifiedGeometry ) )
+
+  bool editOk;
+  if ( mSourceLayerId == vlayer->id() )
+  {
+    editOk = vlayer->changeGeometry( mModifiedFeature, &mModifiedGeometry );
+  }
+  else
+  {
+    QgsFeature f;
+    f.setGeometry( mModifiedGeometry );
+    editOk = vlayer->addFeature( f );
+  }
+
+  if ( editOk )
   {
     vlayer->endEditCommand();
   }
@@ -113,7 +122,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   int beforeVertex;
   double leftOf;
   double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-  qWarning( QString::number( offset ).toLocal8Bit().data() );
+  //qWarning( QString::number( offset ).toLocal8Bit().data() );
 
   //create offset geometry using geos
   QgsGeometry geomCopy( *mOriginalGeometry );
@@ -125,6 +134,50 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
     {
       mModifiedGeometry.fromGeos( offsetGeom );
       mRubberBand->setToGeometry( &mModifiedGeometry, layer );
+    }
+  }
+}
+
+QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature )
+{
+  if ( !vl )
+  {
+    return 0;
+  }
+
+  if ( vl == currentVectorLayer() )
+  {
+    //don't consider selected geometries, only the snap result
+    return snappedFeature.geometryAndOwnership();
+  }
+  else
+  {
+    //for background layers, try to merge selected entries together if snapped feature is contained in selection
+    const QgsFeatureIds& selection = vl->selectedFeaturesIds();
+    if ( selection.size() < 1 || !selection.contains( sr.snappedAtGeometry ) )
+    {
+      return snappedFeature.geometryAndOwnership();
+    }
+    else
+    {
+      //merge together if several features
+      QgsFeatureList selectedFeatures = vl->selectedFeatures();
+      QgsFeatureList::iterator selIt = selectedFeatures.begin();
+      QgsGeometry* geom = selIt->geometryAndOwnership();
+      ++selIt;
+      for ( ; selIt != selectedFeatures.end(); ++selIt )
+      {
+        geom = geom->combine( selIt->geometry() );
+      }
+
+      //if multitype, return only the snaped to geometry
+      if ( geom->isMultipart() )
+      {
+        delete geom;
+        return snappedFeature.geometryAndOwnership();
+      }
+
+      return geom;
     }
   }
 }

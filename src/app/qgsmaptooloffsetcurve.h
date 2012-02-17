@@ -18,6 +18,7 @@
 
 #include "qgsmaptooledit.h"
 #include "qgsgeometry.h"
+#include "qgssnapper.h"
 
 class QgsMapToolOffsetCurve: public QgsMapToolEdit
 {
@@ -39,10 +40,14 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsGeometry mModifiedGeometry;
     /**ID of manipulated feature*/
     QgsFeatureId mModifiedFeature;
+    /**Layer ID of source layer*/
+    QString mSourceLayerId;
     /**Internal flag to distinguish move from click*/
     bool mGeometryModified;
 
+
     void deleteRubberBandAndGeometry();
+    QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature );
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H
