@@ -242,6 +242,11 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           return; //unknown wkbtype
         }
 
+        if ( !g )
+        {
+          stopCapturing();
+          return; // invalid geometry; one possibility is from duplicate points
+        }
         f->setGeometry( g );
 
         int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
