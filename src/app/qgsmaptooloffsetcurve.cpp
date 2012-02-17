@@ -20,7 +20,7 @@
 #include "qgsvectorlayer.h"
 #include <QMouseEvent>
 
-QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ), mOriginalGeometry( 0 ), mGeometryModified( false )
+QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ), mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 )
 {
 }
 
@@ -180,6 +180,21 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       return geom;
     }
   }
+}
+
+QGraphicsProxyWidget* QgsMapToolOffsetCurve::createDistanceItem()
+{
+  if ( !mCanvas )
+  {
+    return 0;
+  }
+
+  QGraphicsProxyWidget* pw = new QGraphicsProxyWidget();
+  //Embed double spin box
+  QDoubleSpinBox* sb = new QDoubleSpinBox();
+  pw->setWidget( sb );
+
+  return pw;
 }
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
