@@ -29,6 +29,7 @@ class QgsMapLayer;
 class QgsMapCanvas;
 class QgsRasterLayer;
 class QgsMapToolEmitPoint;
+class QgsRasterRendererWidget;
 
 /**Property sheet for a raster map layer
   *@author Tim Sutton
@@ -99,6 +100,7 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
     void userDefinedMinMax_textEdited( QString );
 
   private slots:
+    void on_mRenderTypeComboBox_currentIndexChanged( int index );
     /** This slow handles necessary interface modifications (i.e. loading min max values) */
     void on_cboBlue_currentIndexChanged( const QString& );
     /** This slow handles necessary interface modifications (i.e. loading min max values) */
@@ -185,6 +187,8 @@ class QgsRasterLayerProperties : public QDialog, private Ui::QgsRasterLayerPrope
         included or not
      */
     //bool mRasterLayerIsInternal;
+
+    QgsRasterRendererWidget* mRendererWidget;
 
     /** \brief Clear current color map table and population with values from new list */
     void populateColorMapTable( const QList<QgsColorRampShader::ColorRampItem>& );

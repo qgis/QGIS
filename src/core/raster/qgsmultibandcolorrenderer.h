@@ -21,6 +21,7 @@
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
+class QDomElement;
 
 /**Renderer for multiband images with the color components*/
 class QgsMultiBandColorRenderer: public QgsRasterRenderer
@@ -31,7 +32,16 @@ class QgsMultiBandColorRenderer: public QgsRasterRenderer
                                QgsContrastEnhancement* blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
 
+    static QgsRasterRenderer* create( const QDomElement& elem );
+
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+
+    int redBand() const { return mRedBand; }
+    void setRedBand( int band ) { mRedBand = band; }
+    int greenBand() const { return mGreenBand; }
+    void setGreenBand( int band ) { mGreenBand = band; }
+    int blueBand() const { return mBlueBand; }
+    void setBlueBand( int band ) { mBlueBand = band; }
 
     const QgsContrastEnhancement* redContrastEnhancement() const { return mRedContrastEnhancement; }
     void setRedContrastEnhancement( QgsContrastEnhancement* ce ) { mRedContrastEnhancement = ce; }

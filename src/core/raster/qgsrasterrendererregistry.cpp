@@ -16,12 +16,14 @@
  ***************************************************************************/
 
 #include "qgsrasterrendererregistry.h"
+#include "qgsmultibandcolorrenderer.h"
+#include "qgspalettedrasterrenderer.h"
 
 QgsRasterRendererRegistry* QgsRasterRendererRegistry::mInstance = 0;
 
 QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
 {
-  if( !mInstance )
+  if ( !mInstance )
   {
     mInstance = new QgsRasterRendererRegistry();
   }
@@ -30,6 +32,21 @@ QgsRasterRendererRegistry* QgsRasterRendererRegistry::instance()
 
 QgsRasterRendererRegistry::QgsRasterRendererRegistry()
 {
+  //add entry for palleted renderer
+  QgsRasterRendererRegistryEntry palettedEntry;
+  palettedEntry.name = "paletted";
+  palettedEntry.visibleName = QObject::tr( "Paletted" );
+  palettedEntry.rendererCreateFunction = QgsPalettedRasterRenderer::create;
+  //widget function will be assigned later in raster properties dialog with QgsRasterRendererRegistry::insertWidgetFunction
+  palettedEntry.widgetCreateFunction = 0;
+  insert( palettedEntry );
+
+  QgsRasterRendererRegistryEntry multiBandColorEntry;
+  multiBandColorEntry.name = "multibandcolor";
+  multiBandColorEntry.visibleName = QObject::tr( "Multiband color" );
+  palettedEntry.rendererCreateFunction = QgsMultiBandColorRenderer::create;
+  multiBandColorEntry.widgetCreateFunction = 0;
+  insert( multiBandColorEntry );
 }
 
 QgsRasterRendererRegistry::~QgsRasterRendererRegistry()
@@ -41,15 +58,42 @@ void QgsRasterRendererRegistry::insert( QgsRasterRendererRegistryEntry entry )
   mEntries.insert( entry.name, entry );
 }
 
+void QgsRasterRendererRegistry::insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func )
+{
+  if ( !mEntries.contains( rendererName ) )
+  {
+    return;
+  }
+
+  mEntries[rendererName].widgetCreateFunction = func;
+}
+
 bool QgsRasterRendererRegistry::rendererData( const QString& rendererName, QgsRasterRendererRegistryEntry& data ) const
 {
   QHash< QString, QgsRasterRendererRegistryEntry >::const_iterator it = mEntries.find( rendererName );
-  if( it == mEntries.constEnd() )
+  if ( it == mEntries.constEnd() )
   {
     return false;
   }
   data = it.value();
   return true;
+}
+
+QStringList QgsRasterRendererRegistry::renderersList() const
+{
+  return QStringList( mEntries.keys() );
+}
+
+QList< QgsRasterRendererRegistryEntry > QgsRasterRendererRegistry::entries() const
+{
+  QList< QgsRasterRendererRegistryEntry > result;
+
+  QHash< QString, QgsRasterRendererRegistryEntry >::const_iterator it = mEntries.constBegin();
+  for ( ; it != mEntries.constEnd(); ++it )
+  {
+    result.push_back( it.value() );
+  }
+  return result;
 }
 
 

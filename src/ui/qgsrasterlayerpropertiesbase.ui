@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>691</width>
-    <height>617</height>
+    <width>706</width>
+    <height>663</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -36,6 +36,113 @@
        <height>22</height>
       </size>
      </property>
+     <widget class="QWidget" name="tab">
+      <attribute name="title">
+       <string comment="mRendererTab">Style</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_10">
+       <item row="0" column="0">
+        <widget class="QGroupBox" name="mResamplingGroupBox_2">
+         <property name="title">
+          <string>Resampling</string>
+         </property>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <widget class="QLabel" name="mZoomedInResamplingLabel">
+            <property name="text">
+             <string>Zoomed in</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLabel" name="mZoomedOutResamplingLabel">
+            <property name="text">
+             <string>Zoomed out</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QLabel" name="mMaximumOversamplingLabel">
+            <property name="text">
+             <string>Maximum oversampling</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
+          </item>
+          <item row="1" column="1">
+           <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
+          </item>
+          <item row="1" column="2">
+           <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QLabel" name="mRenderTypeLabel">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>32767</width>
+             <height>22</height>
+            </size>
+           </property>
+           <property name="text">
+            <string>Render type</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QComboBox" name="mRenderTypeComboBox">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>26</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>32767</width>
+             <height>22</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>318</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </item>
+       <item row="2" column="0">
+        <widget class="QStackedWidget" name="mRendererStackedWidget"/>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tabPageSymbology">
       <attribute name="icon">
        <iconset resource="../../images/images.qrc">
@@ -757,30 +864,30 @@
          </property>
          <layout class="QGridLayout" name="gridLayout_7">
           <item row="1" column="0">
-           <widget class="QComboBox" name="mZoomedInResamplingComboBox"/>
+           <widget class="QComboBox" name="mZoomedInResamplingComboBox_3"/>
           </item>
           <item row="0" column="0">
-           <widget class="QLabel" name="mZoomedInResamplingLabel">
+           <widget class="QLabel" name="mZoomedInResamplingLabel_3">
             <property name="text">
              <string>Zoomed in</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
-           <widget class="QLabel" name="mZoomedOutResamplingLabel">
+           <widget class="QLabel" name="mZoomedOutResamplingLabel_3">
             <property name="text">
              <string>Zoomed out</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0">
-           <widget class="QComboBox" name="mZoomedOutResamplingComboBox"/>
+           <widget class="QComboBox" name="mZoomedOutResamplingComboBox_3"/>
           </item>
           <item row="5" column="0">
-           <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox"/>
+           <widget class="QDoubleSpinBox" name="mMaximumOversamplingSpinBox_3"/>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="mMaximumOversamplingLabel">
+           <widget class="QLabel" name="mMaximumOversamplingLabel_3">
             <property name="text">
              <string>Maximum oversampling</string>
             </property>
@@ -1845,6 +1952,8 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans'; font-size:10pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;/p&gt;
@@ -1961,6 +2070,30 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
    </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="pbnSaveStyleAs">
+     <property name="text">
+      <string>Save Style ...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QPushButton" name="pbnLoadStyle">
+     <property name="text">
+      <string>Load Style ...</string>
+     </property>
+    </widget>
+   </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="pbnLoadDefaultStyle">
      <property name="text">
@@ -1972,30 +2105,6 @@ p, li { white-space: pre-wrap; }
     <widget class="QPushButton" name="pbnSaveDefaultStyle">
      <property name="text">
       <string>Save As Default</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QPushButton" name="pbnLoadStyle">
-     <property name="text">
-      <string>Load Style ...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="3">
-    <widget class="QPushButton" name="pbnSaveStyleAs">
-     <property name="text">
-      <string>Save Style ...</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="4">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
     </widget>
    </item>

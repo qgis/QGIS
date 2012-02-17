@@ -39,6 +39,10 @@
 #include "qgsrastertransparency.h"
 #include "qgsmaptoolemitpoint.h"
 
+#include "qgsrasterrendererregistry.h"
+#include "qgsmultibandcolorrendererwidget.h"
+#include "qgspalettedrendererwidget.h"
+
 #include <QTableWidgetItem>
 #include <QHeaderView>
 
@@ -67,7 +71,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     : QDialog( parent, fl ),
     // Constant that signals property not used.
     TRSTRING_NOT_SET( tr( "Not Set" ) ),
-    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) )
+    mRasterLayer( qobject_cast<QgsRasterLayer *>( lyr ) ), mRendererWidget( 0 )
 {
   ignoreSpinBoxEvent = false; //Short circuit signal loop between min max field and stdDev spin box
   mGrayMinimumMaximumEstimated = true;
@@ -329,6 +333,19 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
     }
     mMaximumOversamplingSpinBox->setValue( renderer->maxOversampling() );
   }
+
+  //insert renderer widgets into registry
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "paletted", QgsPalettedRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "multibandcolor", QgsMultiBandColorRendererWidget::create );
+
+  //fill available renderers into combo box
+  QList< QgsRasterRendererRegistryEntry > rendererEntries = QgsRasterRendererRegistry::instance()->entries();
+  QList< QgsRasterRendererRegistryEntry >::const_iterator rendererIt = rendererEntries.constBegin();
+  for ( ; rendererIt != rendererEntries.constEnd(); ++rendererIt )
+  {
+    mRenderTypeComboBox->addItem( rendererIt->visibleName, rendererIt->name );
+  }
+  on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
 } // QgsRasterLayerProperties ctor
 
 
@@ -1397,6 +1414,11 @@ void QgsRasterLayerProperties::apply()
   pixmapLegend->setScaledContents( true );
   pixmapLegend->repaint();
 
+  //set renderer from widget
+  QgsRasterRendererWidget* rendererWidget = dynamic_cast<QgsRasterRendererWidget*>( mRendererStackedWidget->currentWidget() );
+  mRasterLayer->setRenderer( rendererWidget->renderer() );
+
+#if 0
   //set the appropriate render style
   if ( rbtnSingleBand->isChecked() )
   {
@@ -1489,6 +1511,7 @@ void QgsRasterLayerProperties::apply()
     }
   }
   //set render style finished
+#endif //0
 
 
   //resampling
@@ -1713,6 +1736,29 @@ void QgsRasterLayerProperties::on_buttonBuildPyramids_clicked()
   QString myStyle = QgsApplication::reportStyleSheet();
   txtbMetadata->setHtml( mRasterLayer->metadata() );
   txtbMetadata->document()->setDefaultStyleSheet( myStyle );
+}
+
+void QgsRasterLayerProperties::on_mRenderTypeComboBox_currentIndexChanged( int index )
+{
+  delete mRendererWidget;
+  mRendererWidget = 0;
+
+  if ( index < 0 )
+  {
+    return;
+  }
+
+  QString rendererName = mRenderTypeComboBox->itemData( index ).toString();
+
+  QgsRasterRendererRegistryEntry rendererEntry;
+  if ( QgsRasterRendererRegistry::instance()->rendererData( rendererName, rendererEntry ) )
+  {
+    if ( rendererEntry.widgetCreateFunction )
+    {
+      mRendererWidget = ( *rendererEntry.widgetCreateFunction )( mRasterLayer );
+      mRendererStackedWidget->addWidget( mRendererWidget );
+    }
+  }
 }
 
 void QgsRasterLayerProperties::on_cboBlue_currentIndexChanged( const QString& theText )

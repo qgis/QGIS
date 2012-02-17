@@ -32,6 +32,25 @@ QgsPalettedRasterRenderer::~QgsPalettedRasterRenderer()
   delete[] mColors;
 }
 
+QgsRasterRenderer* QgsPalettedRasterRenderer::create( const QDomElement& elem )
+{
+  return 0;
+}
+
+QColor* QgsPalettedRasterRenderer::colors() const
+{
+  if ( mNColors < 1 )
+  {
+    return 0;
+  }
+  QColor* colorArray = new QColor[ mNColors ];
+  for ( int i = 0; i < mNColors; ++i )
+  {
+    colorArray[i] = mColors[i];
+  }
+  return colorArray;
+}
+
 void QgsPalettedRasterRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
   if ( !p || !mProvider || !viewPort || !theQgsMapToPixel )

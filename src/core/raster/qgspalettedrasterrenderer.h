@@ -21,6 +21,7 @@
 #include "qgsrasterrenderer.h"
 
 class QColor;
+class QDomElement;
 
 class QgsPalettedRasterRenderer: public QgsRasterRenderer
 {
@@ -28,7 +29,14 @@ class QgsPalettedRasterRenderer: public QgsRasterRenderer
     /**Renderer owns color array*/
     QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber, QColor* colorArray, int nColors );
     ~QgsPalettedRasterRenderer();
+    static QgsRasterRenderer* create( const QDomElement& elem );
+
     void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+
+    /**Returns number of colors*/
+    int nColors() const { return mNColors; }
+    /**Returns copy of color array (caller takes ownership)*/
+    QColor* colors() const;
 
   private:
     int mBandNumber;

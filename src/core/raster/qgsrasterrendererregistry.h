@@ -21,16 +21,21 @@
 #include <QHash>
 #include <QString>
 
+class QDomElement;
 class QgsRasterDataProvider;
+class QgsRasterLayer;
 class QgsRasterRenderer;
+class QgsRasterRendererWidget;
 
-typedef QgsRasterRenderer*(*QgsRasterRendererCreateFunc)(const QDomElement&);
+typedef QgsRasterRenderer*( *QgsRasterRendererCreateFunc )( const QDomElement& );
+typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRasterLayer* );
 
 struct QgsRasterRendererRegistryEntry
 {
   QString name;
+  QString visibleName; //visible (and translatable) name
   QgsRasterRendererCreateFunc rendererCreateFunction; //pointer to create function
-  //pointer to create function for renderer widget
+  QgsRasterRendererWidgetCreateFunc widgetCreateFunction; //pointer to create function for renderer widget
 };
 
 class QgsRasterRendererRegistry
@@ -40,7 +45,10 @@ class QgsRasterRendererRegistry
     ~QgsRasterRendererRegistry();
 
     void insert( QgsRasterRendererRegistryEntry entry );
+    void insertWidgetFunction( const QString& rendererName, QgsRasterRendererWidgetCreateFunc func );
     bool rendererData( const QString& rendererName, QgsRasterRendererRegistryEntry& data ) const;
+    QStringList renderersList() const;
+    QList< QgsRasterRendererRegistryEntry > entries() const;
 
   protected:
     QgsRasterRendererRegistry();

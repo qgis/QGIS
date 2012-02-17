@@ -388,7 +388,7 @@ INCLUDE_DIRECTORIES(
   ../core
   ../core/gps ../core/gps/qextserialport
   ../core/composer ../core/raster ../core/renderer ../core/symbology ../core/symbology-ng
-  ../gui ../gui/symbology-ng ../gui/attributetable
+  ../gui ../gui/symbology-ng ../gui/attributetable ../gui/raster
   ../plugins
   ../python
   gps

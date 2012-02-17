@@ -35,6 +35,11 @@ QgsMultiBandColorRenderer::~QgsMultiBandColorRenderer()
 {
 }
 
+QgsRasterRenderer* QgsMultiBandColorRenderer::create( const QDomElement& elem )
+{
+  return 0;
+}
+
 void QgsMultiBandColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )
 {
   if ( !p || !mProvider || !viewPort || !theQgsMapToPixel )
