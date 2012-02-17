@@ -226,7 +226,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
       else // polygon
       {
-        QgsGeometry *g;
         if ( layerWKBType == QGis::WKBPolygon ||  layerWKBType == QGis::WKBPolygon25D )
         {
           g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
