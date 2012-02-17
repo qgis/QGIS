@@ -20,6 +20,8 @@
 #include "qgsgeometry.h"
 #include "qgssnapper.h"
 
+class QGraphicsProxyWidget;
+
 class QgsMapToolOffsetCurve: public QgsMapToolEdit
 {
   public:
@@ -44,10 +46,13 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QString mSourceLayerId;
     /**Internal flag to distinguish move from click*/
     bool mGeometryModified;
+    /**Shows current distance value and allows numerical editing*/
+    QGraphicsProxyWidget* mDistanceItem;
 
 
     void deleteRubberBandAndGeometry();
     QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature );
+    QGraphicsProxyWidget* createDistanceItem();
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H
