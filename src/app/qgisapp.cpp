@@ -177,7 +177,7 @@
 #include "ogr/qgsopenvectorlayerdialog.h"
 #include "ogr/qgsvectorlayersaveasdialog.h"
 //
-// Gdal/Ogr includes
+// GDAL/OGR includes
 //
 #include <ogr_api.h>
 
@@ -2135,7 +2135,6 @@ void QgisApp::addVectorLayer()
 
 bool QgisApp::addVectorLayers( QStringList const & theLayerQStringList, const QString& enc, const QString dataSourceType )
 {
-
   foreach( QString src, theLayerQStringList )
   {
     src = src.trimmed();
@@ -2270,11 +2269,27 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
   }
 }
 
+bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
+{
+  // return false if layer is empty or raster has no sublayers
+  if ( !layer || layer->subLayers().size() < 1 )
+    return false;
+
+  QSettings settings;
+  int promptLayers = settings.value( "/qgis/promptForRasterSublayers", "if_need" ).toInt();
+  // 0 = always -> always ask (if there are existing sublayers)
+  // 1 = if needed -> ask if layer has no bands, but has sublayers
+  // 2 = never
+
+  return promptLayers == 0 || ( promptLayers == 1 && layer->bandCount() == 0 );
+}
+
+
 // This method is the method that does the real job. If the layer given in
 // parameter is NULL, then the method tries to act on the activeLayer.
 void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 {
-  if ( layer == NULL )
+  if ( !layer )
   {
     layer = qobject_cast<QgsVectorLayer *>( activeLayer() );
     if ( !layer || layer->dataProvider()->name() != "ogr" )
@@ -6472,7 +6487,24 @@ QgsRasterLayer* QgisApp::addRasterLayer( QString const & rasterFile, QString con
   QgsRasterLayer *layer =
     new QgsRasterLayer( rasterFile, baseName ); // fi.completeBaseName());
 
-  if ( !addRasterLayer( layer ) )
+  bool ok = false;
+
+  if ( shouldAskUserForGDALSublayers( layer ) )
+  {
+    askUserForGDALSublayers( layer );
+    ok = true;
+
+    // The first layer loaded is not useful in that case. The user can select it in
+    // the list if he wants to load it.
+    delete layer;
+    layer = 0;
+  }
+  else
+  {
+    ok = addRasterLayer( layer );
+  }
+
+  if ( !ok )
   {
     mMapCanvas->freeze( false );
     QApplication::restoreOverrideCursor();
@@ -6556,7 +6588,15 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 
   QgsDebugMsg( "Constructed new layer." );
 
-  if ( layer && layer->isValid() )
+  if ( layer && shouldAskUserForGDALSublayers( layer ) )
+  {
+    askUserForGDALSublayers( layer );
+
+    // The first layer loaded is not useful in that case. The user can select it in
+    // the list if he wants to load it.
+    delete layer;
+  }
+  else if ( layer && layer->isValid() )
   {
     addRasterLayer( layer );
 
@@ -6580,7 +6620,6 @@ QgsRasterLayer* QgisApp::addRasterLayer(
 //  QApplication::restoreOverrideCursor();
 
 } // QgisApp::addRasterLayer
-
 
 
 //create a raster layer object and delegate to addRasterLayer(QgsRasterLayer *)
@@ -6627,9 +6666,8 @@ bool QgisApp::addRasterLayers( QStringList const &theFileNameQStringList, bool g
 
       // create the layer
       QgsRasterLayer *layer = new QgsRasterLayer( *myIterator, myBaseNameQString );
-      QStringList sublayers = layer->subLayers();
 
-      if ( sublayers.size() > 0 )
+      if ( shouldAskUserForGDALSublayers( layer ) )
       {
         askUserForGDALSublayers( layer );
 

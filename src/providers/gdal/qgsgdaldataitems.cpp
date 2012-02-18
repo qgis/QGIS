@@ -101,6 +101,8 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     if ( !hDS )
       return 0;
 
+    QStringList sublayers = QgsGdalProvider::subLayers( hDS );
+
     GDALClose( hDS );
 
     QgsDebugMsg( "GdalDataset opened " + thePath );
@@ -109,8 +111,28 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
     QString uri = thePath;
 
     QgsLayerItem * item = new QgsGdalLayerItem( parentItem, name, thePath, uri );
+
+    QgsDataItem * childItem = NULL;
+    GDALDatasetH hChildDS = NULL;
+
+    if ( item && sublayers.count() > 1 )
+    {
+      QgsDebugMsg( QString( "dataItem() got %1 sublayers" ).arg( sublayers.count() ) );
+      for ( int i = 0; i < sublayers.count(); i++ )
+      {
+        hChildDS = GDALOpen( TO8F( sublayers[i] ), GA_ReadOnly );
+        if ( hChildDS )
+        {
+          GDALClose( hChildDS );
+          QgsDebugMsg( QString( "add child #%1 - %2" ).arg( i ).arg( sublayers[i] ) );
+          childItem = new QgsGdalLayerItem( item, sublayers[i], thePath + "/" + sublayers[i], sublayers[i] );
+          if ( childItem )
+            item->addChildItem( childItem );
+        }
+      }
+    }
+
     return item;
   }
   return 0;
 }
-

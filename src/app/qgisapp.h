@@ -877,6 +877,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
   private:
     /** This method will open a dialog so the user can select the sublayers to load
     */
+    bool shouldAskUserForGDALSublayers( QgsRasterLayer *layer );
     void askUserForOGRSublayers( QgsVectorLayer *layer );
     void askUserForGDALSublayers( QgsRasterLayer *layer );
     /** Add a raster layer to the map (passed in as a ptr).
