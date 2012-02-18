@@ -244,6 +244,7 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
         if ( !g )
         {
           stopCapturing();
+          delete f;
           return; // invalid geometry; one possibility is from duplicate points
         }
         f->setGeometry( g );
