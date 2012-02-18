@@ -349,7 +349,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
     {
       PQexecNR( "COMMIT" );
-      return false;
+
+      if ( i == 0 )
+        return false;
+
+      continue;
     }
     else
     {
