@@ -91,6 +91,7 @@ class QgsMapToolCapture : public QgsMapToolEdit
     QList<QgsPoint>::iterator begin() { return mCaptureList.begin(); }
     QList<QgsPoint>::iterator end() { return mCaptureList.end(); }
     const QList<QgsPoint> &points() { return mCaptureList; }
+    void setPoints( const QList<QgsPoint>& pointList ) { mCaptureList = pointList; }
     void closePolygon();
 
   private:
