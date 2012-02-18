@@ -299,11 +299,11 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
 {
   int nColumns = 0;
   int nGTables = 0;
-
   QgsPostgresResult result;
   QgsPostgresLayerProperty layerProperty;
 
   QgsDebugMsg( "Entering." );
+
   mLayersSupported.clear();
 
   for ( int i = 0; i < 2; i++ )
@@ -349,6 +349,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     if ( result.PQresultStatus() != PGRES_TUPLES_OK )
     {
       PQexecNR( "COMMIT" );
+      return false;
     }
     else
     {
@@ -388,7 +389,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
   if ( nColumns == 0 )
   {
     QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined." ), tr( "PostGIS" ) );
-    nColumns = -1;
   }
 
   //search for geometry columns in tables that are not in the geometry_columns metatable
@@ -427,10 +427,6 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
         sql += " AND (pg_namespace.nspname,pg_class.relname) NOT IN (SELECT f_table_schema,f_table_name FROM geography_columns)";
       }
     }
-    else
-    {
-      nColumns = 0;
-    }
 
     sql += " AND pg_class.relkind IN ('v','r')"; // only from views and relations (tables)
 
@@ -443,38 +439,36 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined. The error message from the database was:\n%1\n" )
                                  .arg( result.PQresultErrorMessage() ),
                                  tr( "PostGIS" ) );
-      if ( nColumns == 0 )
-        nColumns = -1;
+      PQexecNR( "COMMIT" );
+      return false;
     }
-    else if ( result.PQntuples() > 0 )
+
+    for ( int i = 0; i < result.PQntuples(); i++ )
     {
-      for ( int i = 0; i < result.PQntuples(); i++ )
-      {
-        // Have the column name, schema name and the table name. The concept of a
-        // catalog doesn't exist in postgresql so we ignore that, but we
-        // do need to get the geometry type.
+      // Have the column name, schema name and the table name. The concept of a
+      // catalog doesn't exist in postgresql so we ignore that, but we
+      // do need to get the geometry type.
 
-        // Make the assumption that the geometry type for the first
-        // row is the same as for all other rows.
+      // Make the assumption that the geometry type for the first
+      // row is the same as for all other rows.
 
-        QString table   = result.PQgetvalue( i, 0 ); // relname
-        QString schema  = result.PQgetvalue( i, 1 ); // nspname
-        QString column  = result.PQgetvalue( i, 2 ); // attname
-        QString relkind = result.PQgetvalue( i, 3 ); // relation kind
+      QString table   = result.PQgetvalue( i, 0 ); // relname
+      QString schema  = result.PQgetvalue( i, 1 ); // nspname
+      QString column  = result.PQgetvalue( i, 2 ); // attname
+      QString relkind = result.PQgetvalue( i, 3 ); // relation kind
 
-        QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
+      QgsDebugMsg( QString( "%1.%2.%3: %4" ).arg( schema ).arg( table ).arg( column ).arg( relkind ) );
 
-        layerProperty.type = QString::null;
-        layerProperty.schemaName = schema;
-        layerProperty.tableName = table;
-        layerProperty.geometryColName = column;
-        layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
-        layerProperty.sql = "";
-        layerProperty.isGeography = false; // TODO might be geography after all
+      layerProperty.type = QString::null;
+      layerProperty.schemaName = schema;
+      layerProperty.tableName = table;
+      layerProperty.geometryColName = column;
+      layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+      layerProperty.sql = "";
+      layerProperty.isGeography = false; // TODO might be geography after all
 
-        mLayersSupported << layerProperty;
-        nColumns++;
-      }
+      mLayersSupported << layerProperty;
+      nColumns++;
     }
   }
 
@@ -506,31 +500,28 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
       QgsMessageLog::logMessage( tr( "Database connection was successful, but the accessible tables could not be determined.\nThe error message from the database was:\n%1" )
                                  .arg( result.PQresultErrorMessage() ),
                                  tr( "PostGIS" ) );
-      if ( nColumns == 0 )
-        nColumns = -1;
+      return -1;
     }
-    else if ( result.PQntuples() > 0 )
+
+    for ( int i = 0; i < result.PQntuples(); i++ )
     {
-      for ( int i = 0; i < result.PQntuples(); i++ )
-      {
-        QString table   = result.PQgetvalue( i, 0 ); // relname
-        QString schema  = result.PQgetvalue( i, 1 ); // nspname
-        QString relkind = result.PQgetvalue( i, 2 ); // relation kind
+      QString table   = result.PQgetvalue( i, 0 ); // relname
+      QString schema  = result.PQgetvalue( i, 1 ); // nspname
+      QString relkind = result.PQgetvalue( i, 2 ); // relation kind
 
-        QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
+      QgsDebugMsg( QString( "%1.%2: %3" ).arg( schema ).arg( table ).arg( relkind ) );
 
-        layerProperty.type = QString::null;
-        layerProperty.schemaName = schema;
-        layerProperty.tableName = table;
-        layerProperty.geometryColName = QString::null;
-        layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
-        layerProperty.srid = "";
-        layerProperty.sql = "";
-        layerProperty.isGeography = false;
+      layerProperty.type = QString::null;
+      layerProperty.schemaName = schema;
+      layerProperty.tableName = table;
+      layerProperty.geometryColName = QString::null;
+      layerProperty.pkCols = relkind == "v" ? pkCandidates( schema, table ) : QStringList();
+      layerProperty.srid = "";
+      layerProperty.sql = "";
+      layerProperty.isGeography = false;
 
-        mLayersSupported << layerProperty;
-        nColumns++;
-      }
+      mLayersSupported << layerProperty;
+      nColumns++;
     }
   }
 
@@ -539,7 +530,7 @@ bool QgsPostgresConn::getTableInfo( bool searchGeometryColumnsOnly, bool searchP
     QgsMessageLog::logMessage( tr( "Database connection was successful, but no accessible tables were found.  Please verify that you have SELECT privilege on a table carrying PostGIS geometry." ), tr( "PostGIS" ) );
   }
 
-  return nColumns > 0;
+  return true;
 }
 
 bool QgsPostgresConn::supportedLayers( QVector<QgsPostgresLayerProperty> &layers, bool searchGeometryColumnsOnly, bool searchPublicOnly, bool allowGeometrylessTables )
