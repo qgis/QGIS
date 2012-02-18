@@ -28,9 +28,18 @@ QVector<QgsDataItem*> QgsPGConnectionItem::createChildren()
     return children;
 
   QVector<QgsPostgresLayerProperty> layerProperties;
-  if ( !mConn->supportedLayers( layerProperties, false, true, false ) )
+  if ( !mConn->supportedLayers( layerProperties,
+                                QgsPostgresConn::geometryColumnsOnly( mName ),
+                                QgsPostgresConn::publicSchemaOnly( mName ),
+                                QgsPostgresConn::allowGeometrylessTables( mName ) ) )
   {
     children.append( new QgsErrorItem( this, tr( "Failed to retrieve layers" ), mPath + "/error" ) );
+    return children;
+  }
+
+  if ( layerProperties.isEmpty() )
+  {
+    children.append( new QgsErrorItem( this, tr( "No layers found." ), mPath + "/error" ) );
     return children;
   }
 
