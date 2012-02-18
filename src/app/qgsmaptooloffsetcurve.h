@@ -20,10 +20,12 @@
 #include "qgsgeometry.h"
 #include "qgssnapper.h"
 
+class QDoubleSpinBox;
 class QGraphicsProxyWidget;
 
 class QgsMapToolOffsetCurve: public QgsMapToolEdit
 {
+    Q_OBJECT
   public:
     QgsMapToolOffsetCurve( QgsMapCanvas* canvas );
     ~QgsMapToolOffsetCurve();
@@ -31,6 +33,10 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     void canvasPressEvent( QMouseEvent * e );
     void canvasReleaseEvent( QMouseEvent * e );
     void canvasMoveEvent( QMouseEvent * e );
+
+  private slots:
+    /**Places curve offset to value entered in the spin box*/
+    void placeOffsetCurveToValue();
 
   private:
 
@@ -46,13 +52,17 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QString mSourceLayerId;
     /**Internal flag to distinguish move from click*/
     bool mGeometryModified;
-    /**Shows current distance value and allows numerical editing*/
+    /**Embedded item widget for distance spinbox*/
     QGraphicsProxyWidget* mDistanceItem;
+    /**Shows current distance value and allows numerical editing*/
+    QDoubleSpinBox* mDistanceSpinBox;
 
 
     void deleteRubberBandAndGeometry();
     QgsGeometry* createOriginGeometry( QgsVectorLayer* vl, const QgsSnappingResult& sr, QgsFeature& snappedFeature );
-    QGraphicsProxyWidget* createDistanceItem();
+    void createDistanceItem();
+    void deleteDistanceItem();
+    void setOffsetForRubberBand( double offset, bool leftSide );
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H

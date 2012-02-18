@@ -88,7 +88,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget * parent, const char *name )
   if ( viewport() )
   {
 #ifndef ANDROID
-    viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
+    //viewport()->setAttribute( Qt::WA_PaintOnScreen, true );
 #endif //ANDROID
   }
 

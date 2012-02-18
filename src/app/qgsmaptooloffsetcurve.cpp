@@ -18,15 +18,19 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include <QDoubleSpinBox>
+#include <QGraphicsProxyWidget>
 #include <QMouseEvent>
 
-QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ), mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 )
+QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ),
+    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 )
 {
 }
 
 QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 {
   deleteRubberBandAndGeometry();
+  deleteDistanceItem();
 }
 
 void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
@@ -57,8 +61,12 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
       {
         mOriginalGeometry = createOriginGeometry( vl, snapResult, fet );
         mRubberBand = createRubberBand();
-        mRubberBand->setToGeometry( mOriginalGeometry, layer );
+        if ( mRubberBand )
+        {
+          mRubberBand->setToGeometry( mOriginalGeometry, layer );
+        }
         mModifiedFeature = fet.id();
+        createDistanceItem();
       }
     }
   }
@@ -66,6 +74,7 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
 
 void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
 {
+  Q_UNUSED( e );
   QgsVectorLayer* vlayer = currentVectorLayer();
   if ( !vlayer || !mGeometryModified )
   {
@@ -96,9 +105,26 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
     vlayer->destroyEditCommand();
   }
 
-  delete mRubberBand;
-  mRubberBand = 0;
+  deleteRubberBandAndGeometry();
+  deleteDistanceItem();
   mCanvas->refresh();
+}
+
+void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
+{
+  if ( mOriginalGeometry && mRubberBand && mRubberBand->numberOfVertices() > 0 )
+  {
+    //is rubber band left or right of original geometry
+    double leftOf = 0;
+    const QgsPoint* firstPoint = mRubberBand->getPoint( 0 );
+    if ( firstPoint )
+    {
+      QgsPoint minDistPoint;
+      int beforeVertex;
+      mOriginalGeometry->closestSegmentWithContext( *firstPoint, minDistPoint, beforeVertex, &leftOf );
+    }
+    setOffsetForRubberBand( mDistanceSpinBox->value(), leftOf < 0 );
+  }
 }
 
 void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
@@ -114,6 +140,12 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
     return;
   }
 
+  if ( mDistanceItem )
+  {
+    mDistanceItem->show();
+    mDistanceItem->setPos( e->posF() + QPointF( 10, 10 ) );
+  }
+
   mGeometryModified = true;
 
   //get offset from current position rectangular to feature
@@ -122,19 +154,13 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
   int beforeVertex;
   double leftOf;
   double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
-  //qWarning( QString::number( offset ).toLocal8Bit().data() );
 
   //create offset geometry using geos
-  QgsGeometry geomCopy( *mOriginalGeometry );
-  GEOSGeometry* geosGeom = geomCopy.asGeos();
-  if ( geosGeom )
+  setOffsetForRubberBand( offset, leftOf < 0 );
+
+  if ( mDistanceSpinBox )
   {
-    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, 8, 1, 1, ( leftOf < 0 ) ? 1 : 0 );
-    if ( offsetGeom )
-    {
-      mModifiedGeometry.fromGeos( offsetGeom );
-      mRubberBand->setToGeometry( &mModifiedGeometry, layer );
-    }
+    mDistanceSpinBox->setValue( offset );
   }
 }
 
@@ -182,19 +208,35 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
   }
 }
 
-QGraphicsProxyWidget* QgsMapToolOffsetCurve::createDistanceItem()
+void QgsMapToolOffsetCurve::createDistanceItem()
 {
   if ( !mCanvas )
   {
-    return 0;
+    return;
   }
 
-  QGraphicsProxyWidget* pw = new QGraphicsProxyWidget();
-  //Embed double spin box
-  QDoubleSpinBox* sb = new QDoubleSpinBox();
-  pw->setWidget( sb );
+  deleteDistanceItem();
 
-  return pw;
+  mDistanceItem = new QGraphicsProxyWidget();
+  mDistanceSpinBox = new QDoubleSpinBox();
+  mDistanceSpinBox->setMaximum( 99999999 );
+  mDistanceSpinBox->setDecimals( 2 );
+  mDistanceItem->setWidget( mDistanceSpinBox );
+  mCanvas->scene()->addItem( mDistanceItem );
+  mDistanceSpinBox->grabKeyboard();
+  mDistanceItem->hide();
+  QObject::connect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( placeOffsetCurveToValue() ) );
+}
+
+void QgsMapToolOffsetCurve::deleteDistanceItem()
+{
+  if ( mDistanceSpinBox )
+  {
+    mDistanceSpinBox->releaseKeyboard();
+  }
+  delete mDistanceItem;
+  mDistanceItem = 0;
+  mDistanceSpinBox = 0;
 }
 
 void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
@@ -203,4 +245,31 @@ void QgsMapToolOffsetCurve::deleteRubberBandAndGeometry()
   mRubberBand = 0;
   delete mOriginalGeometry;
   mOriginalGeometry = 0;
+}
+
+void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide )
+{
+  if ( !mRubberBand || !mOriginalGeometry )
+  {
+    return;
+  }
+
+  QgsVectorLayer* sourceLayer = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
+  if ( !sourceLayer )
+  {
+    return;
+  }
+
+
+  QgsGeometry geomCopy( *mOriginalGeometry );
+  GEOSGeometry* geosGeom = geomCopy.asGeos();
+  if ( geosGeom )
+  {
+    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, 8, 1, 1, leftSide ? 1 : 0 );
+    if ( offsetGeom )
+    {
+      mModifiedGeometry.fromGeos( offsetGeom );
+      mRubberBand->setToGeometry( &mModifiedGeometry, sourceLayer );
+    }
+  }
 }
