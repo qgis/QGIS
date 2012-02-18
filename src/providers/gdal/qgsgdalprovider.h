@@ -232,6 +232,8 @@ class QgsGdalProvider : public QgsRasterDataProvider
 
     /** \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS */
     QStringList subLayers() const;
+    static QStringList subLayers( GDALDatasetH dataset );
+
     /** \brief If the provider supports it, return band stats for the
         given band.
         @note added in QGIS 1.7

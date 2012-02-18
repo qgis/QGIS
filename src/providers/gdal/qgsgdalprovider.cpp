@@ -172,15 +172,29 @@ QgsGdalProvider::QgsGdalProvider( QString const & uri )
   GDALRasterBandH myGDALBand = GDALGetRasterBand( mGdalDataset, 1 ); //just use the first band
   if ( myGDALBand == NULL )
   {
-    QMessageBox::warning( 0, QObject::tr( "Warning" ),
-                          QObject::tr( "Cannot get GDAL raster band: %1" ).arg( QString::fromUtf8( CPLGetLastErrorMsg() ) ) );
+    QString msg = QString::fromUtf8( CPLGetLastErrorMsg() );
+    QStringList layers = subLayers();
 
-    GDALDereferenceDataset( mGdalBaseDataset );
-    mGdalBaseDataset = NULL;
+    // if there are no subdatasets, then close the dataset
+    if ( layers.size() == 0 )
+    {
+      QMessageBox::warning( 0, QObject::tr( "Warning" ),
+                            QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) );
 
-    GDALClose( mGdalDataset );
-    mGdalDataset = NULL;
-    return;
+      GDALDereferenceDataset( mGdalBaseDataset );
+      mGdalBaseDataset = NULL;
+
+      GDALClose( mGdalDataset );
+      mGdalDataset = NULL;
+      return;
+    }
+    // if there are subdatasets, leave the dataset open for subsequent queries
+    else
+    {
+      QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
+                   QString( " but dataset has %1 subdatasets" ).arg( layers.size() ) );
+      return;
+    }
   }
 
   mHasPyramids = GDALGetOverviewCount( myGDALBand ) > 0;
@@ -500,7 +514,7 @@ void QgsGdalProvider::readBlock( int theBandNo, int xBlock, int yBlock, void *bl
   GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, theBandNo );
   //GDALReadBlock( myGdalBand, xBlock, yBlock, block );
 
-  /* We have to read with correct data type consistent with other readBlock functions */
+  // We have to read with correct data type consistent with other readBlock functions
   int xOff = xBlock * mXBlockSize;
   int yOff = yBlock * mYBlockSize;
   GDALRasterIO( myGdalBand, GF_Read, xOff, yOff, mXBlockSize, mYBlockSize, block, mXBlockSize, mYBlockSize, ( GDALDataType ) mGdalDataType[theBandNo-1], 0, 0 );
@@ -743,12 +757,12 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
   //GDALSetProjection( myGdalMemDataset, theDestCRS.toWkt().toAscii().constData() );
 
   double myMemGeoTransform[6];
-  myMemGeoTransform[0] = theExtent.xMinimum(); /* top left x */
-  myMemGeoTransform[1] = theExtent.width() / thePixelWidth; /* w-e pixel resolution */
-  myMemGeoTransform[2] = 0; /* rotation, 0 if image is "north up" */
-  myMemGeoTransform[3] = theExtent.yMaximum(); /* top left y */
-  myMemGeoTransform[4] = 0; /* rotation, 0 if image is "north up" */
-  myMemGeoTransform[5] = -1. *  theExtent.height() / thePixelHeight; /* n-s pixel resolution */
+  myMemGeoTransform[0] = theExtent.xMinimum(); // top left x
+  myMemGeoTransform[1] = theExtent.width() / thePixelWidth; // w-e pixel resolution
+  myMemGeoTransform[2] = 0; // rotation, 0 if image is "north up"
+  myMemGeoTransform[3] = theExtent.yMaximum(); // top left y
+  myMemGeoTransform[4] = 0; // rotation, 0 if image is "north up"
+  myMemGeoTransform[5] = -1. *  theExtent.height() / thePixelHeight; // n-s pixel resolution
 
   double myGeoTransform[6];
   GDALGetGeoTransform( mGdalDataset, myGeoTransform );
@@ -792,14 +806,14 @@ void QgsGdalProvider::readBlock( int theBandNo, QgsRectangle  const & theExtent,
       NULL,
       FALSE, 0.0, 1
     );
-  /*
+#if 0
   myWarpOptions->pTransformerArg =
     GDALCreateGenImgProjTransformer2(
       mGdalDataset,
       myGdalMemDataset,
       NULL
     );
-  */
+#endif
   if ( !myWarpOptions->pTransformerArg )
   {
     QMessageBox::warning( 0, QObject::tr( "Warning" ),
@@ -1036,7 +1050,7 @@ bool QgsGdalProvider::identify( const QgsPoint& thePoint, QMap<QString, QString>
     double x = thePoint.x();
     double y = thePoint.y();
 
-    /* Calculate the row / column where the point falls */
+    // Calculate the row / column where the point falls
     double xres = ( mExtent.xMaximum() - mExtent.xMinimum() ) / mWidth;
     double yres = ( mExtent.yMaximum() - mExtent.yMinimum() ) / mHeight;
 
@@ -1228,17 +1242,23 @@ QString QgsGdalProvider::description() const
 }
 
 // This is used also by global isValidRasterFileName
-QStringList subLayers_( GDALDatasetH dataset )
+QStringList QgsGdalProvider::subLayers( GDALDatasetH dataset )
 {
   QStringList subLayers;
 
+  if ( !dataset )
+  {
+    QgsDebugMsg( "dataset is NULL" );
+    return subLayers;
+  }
+
   char **metadata = GDALGetMetadata( dataset, "SUBDATASETS" );
+
   if ( metadata )
   {
     for ( int i = 0; metadata[i] != NULL; i++ )
     {
       QString layer = QString::fromUtf8( metadata[i] );
-
       int pos = layer.indexOf( "_NAME=" );
       if ( pos >= 0 )
       {
@@ -1271,18 +1291,18 @@ void QgsGdalProvider::populateHistogram( int theBandNo,   QgsRasterBandStats & t
     theBandStats.isHistogramOutOfRange = theIgnoreOutOfRangeFlag;
     int *myHistogramArray = new int[theBinCount];
 
-    /*
-     *  CPLErr GDALRasterBand::GetHistogram (
-     *          double       dfMin,
-     *          double      dfMax,
-     *          int     nBuckets,
-     *          int *   panHistogram,
-     *          int     bIncludeOutOfRange,
-     *          int     bApproxOK,
-     *          GDALProgressFunc    pfnProgress,
-     *          void *      pProgressData
-     *          )
-     */
+#if 0
+    CPLErr GDALRasterBand::GetHistogram(
+      double       dfMin,
+      double      dfMax,
+      int     nBuckets,
+      int *   panHistogram,
+      int     bIncludeOutOfRange,
+      int     bApproxOK,
+      GDALProgressFunc    pfnProgress,
+      void *      pProgressData
+    )
+#endif
 
     QgsGdalProgress myProg;
     myProg.type = ProgressHistogram;
@@ -1567,7 +1587,7 @@ QList<QgsRasterPyramid> QgsGdalProvider::buildPyramidList()
 
 QStringList QgsGdalProvider::subLayers() const
 {
-  return subLayers_( mGdalDataset );
+  return subLayers( mGdalDataset );
 }
 
 void QgsGdalProvider::emitProgress( int theType, double theProgress, QString theMessage )
@@ -1813,7 +1833,7 @@ QGISEXTERN bool isValidRasterFileName( QString const & theFileNameQString, QStri
   }
   else if ( GDALGetRasterCount( myDataset ) == 0 )
   {
-    QStringList layers = subLayers_( myDataset );
+    QStringList layers = QgsGdalProvider::subLayers( myDataset );
     if ( layers.size() == 0 )
     {
       GDALClose( myDataset );

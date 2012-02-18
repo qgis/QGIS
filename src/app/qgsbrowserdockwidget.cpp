@@ -129,7 +129,7 @@ void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
   QgsMapLayer* layer = NULL;
   if ( type == QgsMapLayer::VectorLayer )
   {
-    layer = new QgsVectorLayer( uri, layerItem->name(), providerKey );
+    layer = QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
   }
   if ( type == QgsMapLayer::RasterLayer )
   {
@@ -159,18 +159,8 @@ void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
     QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
     QgsDebugMsg( "layers = " + layers.join( " " ) );
 
-    layer = new QgsRasterLayer( 0, rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
+    layer = QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
   }
-
-  if ( !layer || !layer->isValid() )
-  {
-    qDebug( "No layer" );
-    delete layer;
-    return;
-  }
-
-  // add layer to the application
-  QgsMapLayerRegistry::instance()->addMapLayer( layer );
 }
 
 void QgsBrowserDockWidget::showContextMenu( const QPoint & pt )
