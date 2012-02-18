@@ -226,7 +226,6 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
       }
       else // polygon
       {
-        QgsGeometry *g;
         if ( layerWKBType == QGis::WKBPolygon ||  layerWKBType == QGis::WKBPolygon25D )
         {
           g = QgsGeometry::fromPolygon( QgsPolygon() << points().toVector() );
@@ -242,6 +241,11 @@ void QgsMapToolAddFeature::canvasReleaseEvent( QMouseEvent * e )
           return; //unknown wkbtype
         }
 
+        if ( !g )
+        {
+          stopCapturing();
+          return; // invalid geometry; one possibility is from duplicate points
+        }
         f->setGeometry( g );
 
         int avoidIntersectionsReturn = f->geometry()->avoidIntersections();
