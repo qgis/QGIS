@@ -38,6 +38,78 @@ Change history for the QGIS Project
 Last Updated: %%date(%A %B %d, %Y)
 Last Change : %%mtime(%A %B %d, %Y)
 
+= Whats new in Version 1.7.4 'Wroclaw'? =
+
+This is a bugfix release over version 1.7.3 and the following changes were made.
+
+- Fix #5010 Line intersection non fatal error
+- Fix #2992 Use native Separators in Filename-edit-widget
+- Fix #4633 'Save as...DXF' does not add file extension
+- Fix #4412 Ftools: Input layers are not presented in alphabetical order
+- Fix #4326 Use project title as default filename in Save and Save as dialogs
+- Fix #4623 GPS plugin: 'Save as...' does not add file extension
+- Fix #4652 Remove "unsynced" EPSG CRS that are not listed in GDAL
+- Fix #4625 Enable wait cursor when WMS search is ongoing
+- Fix #3845 Add support for modulo operator (%) in rule based rendering
+- Fix #4193 GRASS Rasters are not drawn with user-defined style
+- Fix #4557 Fix crash when project is not yet saved
+- Fix #4315 'Stretch Histogram to full dataset' toolbar button does not work with GRASS rasters
+- Fix #4632 More precise composer map rotation
+- Fix #4664 Fix label orientation with line dependent position
+- Fix #2435 Fix Query builder from layer properties when layer name in cyrrilic
+- Fix #4684 Skip attribute values with invalid variant type
+- Fix #4549 Update QgsGenericProjectionSelector bindings
+- Fix #4129 GDAL provider: add statusChanged signal and fix debugging output
+- Fix #4379 If set 'prompt for CRS', CRS is asked when creating new shapefile layer
+- Fix #4694 Hourglass not shown when classifying
+- Fix #4478 Actions using %% do not work from identify results
+- Fix #4646 Editing of table of attributes goes Wild
+- Fix #3963 Crash when applying a graduated vector style
+- Fix #3185,#4689 Gps Tools: Allow user to add new ports
+- Fix #4402 QGIS crashes displaying overview if diagrams are used
+- Fix #4371 Identify tool does not work with reprojected WMS layers
+- Fix #4305 Query builder: added ' ' around numeric fields (wrong)
+- Fix #4217 Allow up to 5 decimal places for width/size Scale Field
+- Fix #4452 Support for cyrillic symbols in raster metadata
+- Fix #4558 Enhancements in OGR Provider
+- Fix #3201 Show warning when user tried to create field 'shape' in shapefile
+- Fix #4736 Do not create the .gislock file under Windows (as native GRASS now does)
+- Fix #4523,#4737,#4738 Several Nodetool fixes
+- Fix #4690 Crash when adding field to a shape file's attribute table
+- Fix #2709 There is no default value of Categorized symbol in new symbology
+- Fix #4693 Always save last used directory in Raster terrain analysis plugin
+- Fix #4567 Fix Union tool to produce correct attribute table
+- Fix #1209 Save last used directory and last used filter in GPSTools plugin
+- Fix #206 (partial) Remember dialog size and position and restore them
+- Fix #4138 Display real band number for multiband rasters when single band gray drawing style used
+- Fix #4178 Display plugins from additional paths in Plugin Manager
+- Fix #3763 Use native file dialogs wherever possible
+- Fix #3189 Increase scale range
+- Fix #4843 Fix highlighting for identify tool when OTF enabled
+- Fix #4635 Attribute table edit button: only changes to columns are refreshed when Discarding changes
+- Fix #4109 Save-as to 'original CRS' incorrectly reprojects if OTF reprojection is disabled
+- Fix #5010 Fix Intersect lines tool
+- Fix #4465 Make the GRASS plugin working with GRASS 6.4.2RC2
+- Fix #4668 Make r.sunmask.position and r.sunmask.datetime work
+- Fix #4965 Enable toggle editing button depending on layer type
+- minor UI fix in New SpatiaLite Layer dialog
+- Merge shapefile to one crash when used layers mode
+- Reload default color table
+- Fix for attribute shift in form when invoked from table
+- Postgres provider: remove ctid limitation to 32bit
+- Add extension to new SpatiaLite database if user ommits it
+- Disable rendering while legend group is removed
+- Query builder: support null values in values lists
+- Avoid useless canvas redraw when user interacts with scale selector
+- Clear collected plugins path before collecting svg path
+- Case insensitive search for CRS in WMS provider
+- New icons for RGB to PCT and PCT to RGB tools
+- New gis theme icon for Merge shapefiles tool
+- Several other small fixes
+- Improved and updated Translation
+
+
+
 = Whats new in Version 1.7.3 'Wroclaw'? =
 
 This is a bugfix release over version 1.7.2 and the following changes were made.
