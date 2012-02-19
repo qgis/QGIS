@@ -2363,8 +2363,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
 
   QHBoxLayout *l = new QHBoxLayout( this );
   mLayerComboBox = new QComboBox();
-  mLayerComboBox->setSizePolicy( QSizePolicy::Expanding,
-                                 QSizePolicy:: Preferred );
+  mLayerComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   l->addWidget( mLayerComboBox );
 
   QString region = qdesc.attribute( "region" );
@@ -2917,11 +2916,22 @@ QgsGrassModuleGdalInput::QgsGrassModuleGdalInput(
     }
   }
 
-  QHBoxLayout *l = new QHBoxLayout( this );
+  QVBoxLayout *l = new QVBoxLayout( this );
   mLayerComboBox = new QComboBox();
-  mLayerComboBox->setSizePolicy( QSizePolicy::Expanding,
-                                 QSizePolicy:: Preferred );
+  mLayerComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   l->addWidget( mLayerComboBox );
+
+  QLabel *lbl = new QLabel( tr( "Password" ) );
+  l->addWidget( lbl );
+
+  mLayerPassword = new QLineEdit();
+  mLayerPassword->setEchoMode( QLineEdit::Password );
+  mLayerPassword->setEnabled( false );
+  l->addWidget( mLayerPassword );
+
+  lbl->setBuddy( mLayerPassword );
+
+  connect( mLayerComboBox, SIGNAL( activated( int ) ), this, SLOT( changed( int ) ) );
 
   // Of course, activated(int) is not enough, but there is no signal
   // BEFORE the cobo is opened
@@ -3069,8 +3079,16 @@ QStringList QgsGrassModuleGdalInput::options()
 
   if ( current >= 0 && current < mUri.size() )
   {
-    opt.append( mUri[current] );
+    QString uri = mUri[current];
+
+    if ( uri.startsWith( "PG:" ) && uri.contains( "password=" ) && !mLayerPassword->text().isEmpty() )
+    {
+      uri += " password=" + mLayerPassword->text();
+    }
+
+    opt.append( uri );
   }
+
   list.push_back( opt );
 
   if ( !mOgrLayerOption.isEmpty() && mOgrLayers[current].size() > 0 )
@@ -3122,6 +3140,11 @@ QString QgsGrassModuleGdalInput::ready()
     error.append( tr( "%1:&nbsp;no input" ).arg( title() ) );
   }
   return error;
+}
+
+void QgsGrassModuleGdalInput::changed( int i )
+{
+  mLayerPassword->setEnabled( i < mUri.size() && mUri[i].startsWith( "PG:" ) && !mUri[i].contains( "password=" ) );
 }
 
 QgsGrassModuleGdalInput::~QgsGrassModuleGdalInput()
