@@ -43,7 +43,6 @@
 
 static const QString sName = QObject::tr( "Heatmap" );
 static const QString sDescription = QObject::tr( "Creates a Heatmap raster for the input point vector" );
-static const QString sCategory = QObject::tr( "Raster" );
 static const QString sPluginVersion = QObject::tr( "Version 0.1" );
 static const QgisPlugin::PLUGINTYPE sPluginType = QgisPlugin::UI;
 static const QString sPluginIcon = ":/heatmap/heatmap.png";
@@ -54,7 +53,7 @@ static const QString sPluginIcon = ":/heatmap/heatmap.png";
  * @param theQGisInterface - Pointer to the QGIS interface object
  */
 Heatmap::Heatmap( QgisInterface * theQgisInterface ):
-    QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType ),
+    QgisPlugin( sName, sDescription, sPluginVersion, sPluginType ),
     mQGisIface( theQgisInterface )
 {
 }
@@ -78,8 +77,8 @@ void Heatmap::initGui()
   // Connect the action to the run
   connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
   // Add the icon to the toolbar
-  mQGisIface->addRasterToolBarIcon( mQActionPointer );
-  mQGisIface->addPluginToRasterMenu( tr( "&Heatmap" ), mQActionPointer );
+  mQGisIface->addToolBarIcon( mQActionPointer );
+  mQGisIface->addPluginToMenu( tr( "&Heatmap" ), mQActionPointer );
 
 }
 //method defined in interface
@@ -108,8 +107,8 @@ void Heatmap::run()
 void Heatmap::unload()
 {
   // remove the GUI
-  mQGisIface->removePluginRasterMenu( tr( "&Heatmap" ), mQActionPointer );
-  mQGisIface->removeRasterToolBarIcon( mQActionPointer );
+  mQGisIface->removePluginMenu( tr( "&Heatmap" ), mQActionPointer );
+  mQGisIface->removeToolBarIcon( mQActionPointer );
   delete mQActionPointer;
 }
 
@@ -308,12 +307,6 @@ QGISEXTERN QString name()
 QGISEXTERN QString description()
 {
   return sDescription;
-}
-
-// Return the category
-QGISEXTERN QString category()
-{
-  return sCategory;
 }
 
 // Return the type (either UI or MapLayer plugin)
