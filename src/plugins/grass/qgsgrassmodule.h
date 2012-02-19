@@ -621,7 +621,7 @@ class QgsGrassModuleInput: public QgsGrassModuleGroupBoxItem
     void changed( int );
 
   signals:
-    // emited when value changed/selected
+    // emitted when value changed/selected
     void valueChanged();
 
   private:
@@ -708,6 +708,8 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
     //! Fill combobox with currently available maps in QGIS canvas
     void updateQgisLayers();
 
+    void changed( int );
+
   private:
     //! Input type
     int mType;
@@ -720,6 +722,9 @@ class QgsGrassModuleGdalInput: public QgsGrassModuleGroupBoxItem
 
     //! Combobox for QGIS layers
     QComboBox *mLayerComboBox;
+
+    //! Lineedit for postgres password
+    QLineEdit *mLayerPassword;
 
     //! Vector of URI in the combobox
     QStringList mUri;
