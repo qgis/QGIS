@@ -199,9 +199,6 @@ if errorlevel 1 goto error
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
-	--exclude apps/%PACKAGENAME%/themes/classic/grass ^
-	--exclude apps/%PACKAGENAME%/themes/default/grass ^
-	--exclude apps/%PACKAGENAME%/themes/gis/grass ^
 	"apps/%PACKAGENAME%/bin/qgis.exe" ^
 	"apps/%PACKAGENAME%/bin/qgis.reg.tmpl" ^
 	"apps/%PACKAGENAME%/i18n/" ^
@@ -230,7 +227,6 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	"apps/%PACKAGENAME%/python/" ^
 	"apps/%PACKAGENAME%/resources/context_help/" ^
 	"apps/%PACKAGENAME%/resources/qgis_help.db" ^
-	"apps/%PACKAGENAME%/themes/" ^
 	"bin/%PACKAGENAME%.bat.tmpl" ^
 	"etc/postinstall/%PACKAGENAME%.bat" ^
 	"etc/preremove/%PACKAGENAME%.bat" ^
@@ -240,9 +236,6 @@ if errorlevel 1 goto error
 tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-plugin-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
 	--exclude "*.pyc" ^
-	"apps/%PACKAGENAME%/themes/classic/grass" ^
-	"apps/%PACKAGENAME%/themes/default/grass" ^
-	"apps/%PACKAGENAME%/themes/gis/grass" ^
 	"apps/%PACKAGENAME%/grass" ^
 	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^

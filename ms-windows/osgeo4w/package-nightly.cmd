@@ -155,20 +155,6 @@ tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 ^
 	etc/preremove/%PACKAGENAME%.bat ^
 	>>%LOG% 2>&1
 if errorlevel 1 goto error
-
-REM tar -C %OSGEO4W_ROOT% -cjf %PACKAGENAME%-grass-%VERSION%-%PACKAGE%.tar.bz2 ^
-REM 	--exclude-from exclude ^
-REM 	"apps/%PACKAGENAME%/themes/classic/grass" ^
-REM 	"apps/%PACKAGENAME%/themes/default/grass" ^
-REM 	"apps/%PACKAGENAME%/themes/gis/grass" ^
-REM 	"apps/%PACKAGENAME%/grass" ^
-REM 	"apps/%PACKAGENAME%/bin/qgisgrass.dll" ^
-REM 	"apps/%PACKAGENAME%/plugins/grassrasterprovider.dll" ^
-REM 	"apps/%PACKAGENAME%/plugins/grassplugin.dll" ^
-REM 	"apps/%PACKAGENAME%/plugins/grassprovider.dll" ^
-REM 	>>%LOG% 2>&1
-REM if errorlevel 1 goto error
-
 goto end
 
 :error
