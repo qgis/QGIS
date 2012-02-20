@@ -151,10 +151,30 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
 
   //get offset from current position rectangular to feature
   QgsPoint layerCoords = toLayerCoordinates( layer, e->pos() );
+
+  //snap cursor to background layers
+  QList<QgsSnappingResult> results;
+  QList<QgsPoint> snapExcludePoints;
+  if ( mSnapper.snapToBackgroundLayers( e->pos(), results ) == 0 )
+  {
+    if ( results.size() > 0 )
+    {
+      QgsSnappingResult snap = results.at( 0 );
+      if ( snap.layer && snap.layer->id() != mSourceLayerId && snap.snappedAtGeometry != mModifiedFeature )
+      {
+        layerCoords = results.at( 0 ).snappedVertex;
+      }
+    }
+  }
+
   QgsPoint minDistPoint;
   int beforeVertex;
   double leftOf;
   double offset = sqrt( mOriginalGeometry->closestSegmentWithContext( layerCoords, minDistPoint, beforeVertex, &leftOf ) );
+  if ( !offset > 0 )
+  {
+    return;
+  }
 
   //create offset geometry using geos
   setOffsetForRubberBand( offset, leftOf < 0 );
@@ -239,7 +259,7 @@ void QgsMapToolOffsetCurve::createDistanceItem()
   mDistanceItem = 0;
   QgisApp::instance()->statusBar()->addWidget( mDistanceSpinBox );
 #endif
-  mDistanceSpinBox->grabKeyboard();
+  //mDistanceSpinBox->grabKeyboard();
   mDistanceSpinBox->setFocus( Qt::TabFocusReason );
 
   QObject::connect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( placeOffsetCurveToValue() ) );
