@@ -26,7 +26,7 @@ QgsMultiBandColorRenderer::QgsMultiBandColorRenderer( QgsRasterDataProvider* pro
     QgsContrastEnhancement* redEnhancement,
     QgsContrastEnhancement* greenEnhancement,
     QgsContrastEnhancement* blueEnhancement ):
-    QgsRasterRenderer( provider ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ),
+    QgsRasterRenderer( provider, "multibandcolor" ), mRedBand( redBand ), mGreenBand( greenBand ), mBlueBand( blueBand ),
     mRedContrastEnhancement( redEnhancement ), mGreenContrastEnhancement( greenEnhancement ), mBlueContrastEnhancement( blueEnhancement )
 {
 }

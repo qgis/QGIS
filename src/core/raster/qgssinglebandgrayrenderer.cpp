@@ -21,12 +21,17 @@
 #include <QImage>
 
 QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterDataProvider* provider, int grayBand ):
-    QgsRasterRenderer( provider ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
+    QgsRasterRenderer( provider, "singlebandgray" ), mGrayBand( grayBand ), mContrastEnhancement( 0 )
 {
 }
 
 QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
 {
+}
+
+QgsRasterRenderer* QgsSingleBandGrayRenderer::create( const QDomElement& elem )
+{
+  return 0;
 }
 
 void QgsSingleBandGrayRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )

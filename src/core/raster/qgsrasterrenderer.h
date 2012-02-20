@@ -43,8 +43,10 @@ class QgsRasterRenderer
       QgsRasterProjector* prj; //raster projector (or 0 if no reprojection is done)
     };
 
-    QgsRasterRenderer( QgsRasterDataProvider* provider );
+    QgsRasterRenderer( QgsRasterDataProvider* provider, const QString& type );
     virtual ~QgsRasterRenderer();
+
+    virtual QString type() const { return mType; }
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel ) = 0;
 
     bool usesTransparency( QgsCoordinateReferenceSystem& srcSRS, QgsCoordinateReferenceSystem& dstSRS ) const;
@@ -97,6 +99,7 @@ class QgsRasterRenderer
 
 
     QgsRasterDataProvider* mProvider;
+    QString mType;
     /**Resampler used if screen resolution is higher than raster resolution (zoomed in). 0 means no resampling (nearest neighbour)*/
     QgsRasterResampler* mZoomedInResampler;
     /**Resampler used if raster resolution is higher than raster resolution (zoomed out). 0 mean no resampling (nearest neighbour)*/

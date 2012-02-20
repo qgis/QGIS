@@ -20,6 +20,7 @@
 
 #include "qgsrasterrenderer.h"
 
+class QDomElement;
 class QgsRasterShader;
 
 class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
@@ -27,6 +28,8 @@ class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
   public:
     QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
+
+    static QgsRasterRenderer* create( const QDomElement& elem );
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

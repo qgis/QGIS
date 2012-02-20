@@ -22,12 +22,17 @@
 #include <QImage>
 
 QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader ):
-    QgsRasterRenderer( provider ), mShader( shader ), mBand( band )
+    QgsRasterRenderer( provider, "singlebandpseudocolor" ), mShader( shader ), mBand( band )
 {
 }
 
 QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
 {
+}
+
+QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem )
+{
+  return 0;
 }
 
 void QgsSingleBandPseudoColorRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )

@@ -23,7 +23,7 @@
 
 QgsPalettedRasterRenderer::QgsPalettedRasterRenderer( QgsRasterDataProvider* provider, int bandNumber,
     QColor* colorArray, int nColors ):
-    QgsRasterRenderer( provider ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
+    QgsRasterRenderer( provider, "paletted" ), mBandNumber( bandNumber ), mColors( colorArray ), mNColors( nColors )
 {
 }
 

@@ -345,6 +345,15 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   {
     mRenderTypeComboBox->addItem( rendererIt->visibleName, rendererIt->name );
   }
+
+  if ( renderer )
+  {
+    int widgetIndex = mRenderTypeComboBox->findData( renderer->type() );
+    if ( widgetIndex != -1 )
+    {
+      mRenderTypeComboBox->setCurrentIndex( widgetIndex );
+    }
+  }
   on_mRenderTypeComboBox_currentIndexChanged( mRenderTypeComboBox->currentIndex() );
 } // QgsRasterLayerProperties ctor
 

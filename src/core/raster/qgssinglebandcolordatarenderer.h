@@ -20,11 +20,15 @@
 
 #include "qgsrasterrenderer.h"
 
+class QDomElement;
+
 class QgsSingleBandColorDataRenderer: public QgsRasterRenderer
 {
   public:
     QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band );
     ~QgsSingleBandColorDataRenderer();
+
+    static QgsRasterRenderer* create( const QDomElement& elem );
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
 

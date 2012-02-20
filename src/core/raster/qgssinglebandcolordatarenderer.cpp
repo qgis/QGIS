@@ -20,13 +20,18 @@
 #include <QImage>
 
 QgsSingleBandColorDataRenderer::QgsSingleBandColorDataRenderer( QgsRasterDataProvider* provider, int band ):
-    QgsRasterRenderer( provider ), mBand( band )
+    QgsRasterRenderer( provider, "singlebandcolordata" ), mBand( band )
 {
 
 }
 
 QgsSingleBandColorDataRenderer::~QgsSingleBandColorDataRenderer()
 {
+}
+
+QgsRasterRenderer* QgsSingleBandColorDataRenderer::create( const QDomElement& elem )
+{
+  return 0;
 }
 
 void QgsSingleBandColorDataRenderer::draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel )

@@ -24,8 +24,9 @@
 #include <QImage>
 #include <QPainter>
 
-QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider ): mProvider( provider ), mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ),
-    mOpacity( 1.0 ), mRasterTransparency( 0 ), mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
+QgsRasterRenderer::QgsRasterRenderer( QgsRasterDataProvider* provider, const QString& type ): mProvider( provider ),
+    mType( type ), mZoomedInResampler( 0 ), mZoomedOutResampler( 0 ), mOpacity( 1.0 ), mRasterTransparency( 0 ),
+    mAlphaBand( -1 ), mInvertColor( false ), mMaxOversampling( 2.0 )
 {
 }
 
