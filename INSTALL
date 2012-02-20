@@ -1221,7 +1221,7 @@ Download William Kyngesburye's excellent GDAL Complete package that includes
 PROJ, GEOS, GDAL, SQLite3, Spatialite, and image libraries, as frameworks.
 There is also a GSL framework.
 
-http://www.kyngchaos.com/wiki/software/frameworks
+http://www.kyngchaos.com/software/frameworks
 
 Once downloaded, open and install the frameworks.
 
@@ -1230,11 +1230,11 @@ support).  QGIS just needs the libpq client library, so unless you want to
 setup the full Postgres + PostGIS server, all you need is the client-only
 package.  It's available here:
 
-http://www.kyngchaos.com/wiki/software/postgres 
+http://www.kyngchaos.com/software/postgres 
 
 Also available is a GRASS application:
 
-http://www.kyngchaos.com/wiki/software/grass
+http://www.kyngchaos.com/software/grass
 
 
     5.2.1. Additional Dependencies: General compatibility note
