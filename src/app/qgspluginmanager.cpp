@@ -250,7 +250,10 @@ void QgsPluginManager::getPluginDescriptions()
   QString myPaths = settings.value( "plugins/searchPathsForPlugins", "" ).toString();
   if ( !myPaths.isEmpty() )
   {
-    myPathList.append( myPaths.split( "|" ) );
+    foreach( QString path, myPaths.split( "|" ) )
+    {
+      myPathList.append( path );
+    }
   }
 
   for ( int j = 0; j < myPathList.size(); ++j )
