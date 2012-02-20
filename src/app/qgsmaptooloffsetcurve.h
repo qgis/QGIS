@@ -63,6 +63,8 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     void createDistanceItem();
     void deleteDistanceItem();
     void setOffsetForRubberBand( double offset, bool leftSide );
+    /**Creates a linestring from the polygon ring containing the snapped vertex. Caller takes ownership of the created object*/
+    QgsGeometry* linestringFromPolygon( QgsGeometry* featureGeom, int vertex );
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H

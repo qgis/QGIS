@@ -21,6 +21,7 @@
 #include <QDoubleSpinBox>
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
+#include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ),
     mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 )
@@ -176,8 +177,16 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     //don't consider selected geometries, only the snap result
     return snappedFeature.geometryAndOwnership();
   }
-  else
+  else //snapped to a background layer
   {
+    //if source layer is polygon / multipolygon, create a linestring from the snapped ring
+    if ( vl->geometryType() == QGis::Polygon )
+    {
+      //make linestring from polygon ring and return this geometry
+      return linestringFromPolygon( snappedFeature.geometry(), sr.snappedVertexNr );
+    }
+
+
     //for background layers, try to merge selected entries together if snapped feature is contained in selection
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
     if ( selection.size() < 1 || !selection.contains( sr.snappedAtGeometry ) )
@@ -217,14 +226,22 @@ void QgsMapToolOffsetCurve::createDistanceItem()
 
   deleteDistanceItem();
 
-  mDistanceItem = new QGraphicsProxyWidget();
   mDistanceSpinBox = new QDoubleSpinBox();
   mDistanceSpinBox->setMaximum( 99999999 );
   mDistanceSpinBox->setDecimals( 2 );
+  mDistanceSpinBox->setPrefix( tr( "Offset: " ) );
+#ifndef Q_WS_X11
+  mDistanceItem = new QGraphicsProxyWidget();
   mDistanceItem->setWidget( mDistanceSpinBox );
   mCanvas->scene()->addItem( mDistanceItem );
-  mDistanceSpinBox->grabKeyboard();
   mDistanceItem->hide();
+#else
+  mDistanceItem = 0;
+  QgisApp::instance()->statusBar()->addWidget( mDistanceSpinBox );
+#endif
+  mDistanceSpinBox->grabKeyboard();
+  mDistanceSpinBox->setFocus( Qt::TabFocusReason );
+
   QObject::connect( mDistanceSpinBox, SIGNAL( editingFinished() ), this, SLOT( placeOffsetCurveToValue() ) );
 }
 
@@ -236,6 +253,10 @@ void QgsMapToolOffsetCurve::deleteDistanceItem()
   }
   delete mDistanceItem;
   mDistanceItem = 0;
+#ifdef Q_WS_X11
+  QgisApp::instance()->statusBar()->removeWidget( mDistanceSpinBox );
+  delete mDistanceSpinBox;
+#endif
   mDistanceSpinBox = 0;
 }
 
@@ -272,4 +293,48 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
       mRubberBand->setToGeometry( &mModifiedGeometry, sourceLayer );
     }
   }
+}
+
+QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( QgsGeometry* featureGeom, int vertex )
+{
+  if ( !featureGeom )
+  {
+    return 0;
+  }
+
+  QGis::WkbType geomType = featureGeom->wkbType();
+  int currentVertex = 0;
+  QgsMultiPolygon multiPoly;
+
+  if ( geomType == QGis::WKBPolygon || geomType == QGis::WKBPolygon25D )
+  {
+    QgsPolygon polygon = featureGeom->asPolygon();
+    multiPoly.append( polygon );
+  }
+  else if ( geomType == QGis::WKBMultiPolygon || geomType == QGis::WKBMultiPolygon25D )
+  {
+    //iterate all polygons / rings
+    QgsMultiPolygon multiPoly = featureGeom->asMultiPolygon();
+  }
+  else
+  {
+    return 0;
+  }
+
+  QgsMultiPolygon::const_iterator multiPolyIt = multiPoly.constBegin();
+  for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
+  {
+    QgsPolygon::const_iterator polyIt = multiPolyIt->constBegin();
+    for ( ; polyIt != multiPolyIt->constEnd(); ++polyIt )
+    {
+      currentVertex += polyIt->size();
+      if ( vertex < currentVertex )
+      {
+        //found, return ring
+        return QgsGeometry::fromPolyline( *polyIt );
+      }
+    }
+  }
+
+  return 0;
 }
