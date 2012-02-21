@@ -3512,16 +3512,21 @@ void QgisApp::layerProperties()
   showLayerProperties( activeLayer() );
 }
 
-void QgisApp::deleteSelected( QgsMapLayer *layer )
+void QgisApp::deleteSelected( QgsMapLayer *layer, QWidget* parent )
 {
   if ( !layer )
   {
     layer = mMapLegend->currentLayer();
   }
 
+  if ( !parent )
+  {
+    parent = this;
+  }
+
   if ( !layer )
   {
-    QMessageBox::information( this,
+    QMessageBox::information( parent,
                               tr( "No Layer Selected" ),
                               tr( "To delete features, you must select a vector layer in the legend" ) );
     return;
@@ -3530,7 +3535,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer )
   QgsVectorLayer* vlayer = qobject_cast<QgsVectorLayer *>( layer );
   if ( !vlayer )
   {
-    QMessageBox::information( this,
+    QMessageBox::information( parent,
                               tr( "No Vector Layer Selected" ),
                               tr( "Deleting features only works on vector layers" ) );
     return;
@@ -3538,21 +3543,21 @@ void QgisApp::deleteSelected( QgsMapLayer *layer )
 
   if ( !( vlayer->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteFeatures ) )
   {
-    QMessageBox::information( this, tr( "Provider does not support deletion" ),
+    QMessageBox::information( parent, tr( "Provider does not support deletion" ),
                               tr( "Data provider does not support deleting features" ) );
     return;
   }
 
   if ( !vlayer->isEditable() )
   {
-    QMessageBox::information( this, tr( "Layer not editable" ),
+    QMessageBox::information( parent, tr( "Layer not editable" ),
                               tr( "The current layer is not editable. Choose 'Start editing' in the digitizing toolbar." ) );
     return;
   }
 
   //display a warning
   int numberOfDeletedFeatures = vlayer->selectedFeaturesIds().size();
-  if ( QMessageBox::warning( this, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
+  if ( QMessageBox::warning( parent, tr( "Delete features" ), tr( "Delete %n feature(s)?", "number of features to delete", numberOfDeletedFeatures ), QMessageBox::Ok, QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
     return;
   }
@@ -3560,7 +3565,7 @@ void QgisApp::deleteSelected( QgsMapLayer *layer )
   vlayer->beginEditCommand( tr( "Features deleted" ) );
   if ( !vlayer->deleteSelectedFeatures() )
   {
-    QMessageBox::information( this, tr( "Problem deleting features" ),
+    QMessageBox::information( parent, tr( "Problem deleting features" ),
                               tr( "A problem occured during deletion of features" ) );
   }
 

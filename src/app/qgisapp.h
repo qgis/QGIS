@@ -418,7 +418,7 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     void loadOGRSublayers( QString layertype, QString uri, QStringList list );
 
     /**Deletes the selected attributes for the currently selected vector layer*/
-    void deleteSelected( QgsMapLayer *layer = 0 );
+    void deleteSelected( QgsMapLayer *layer = 0, QWidget* parent = 0 );
 
     //! project was written
     void writeProject( QDomDocument & );

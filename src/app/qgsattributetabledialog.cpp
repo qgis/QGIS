@@ -246,7 +246,7 @@ void QgsAttributeTableDialog::on_mRemoveSelectionButton_clicked()
 
 void QgsAttributeTableDialog::on_mDeleteSelectedButton_clicked()
 {
-  QgisApp::instance()->deleteSelected( mLayer );
+  QgisApp::instance()->deleteSelected( mLayer, this );
 }
 
 void QgsAttributeTableDialog::on_cbxShowSelectedOnly_toggled( bool theFlag )
