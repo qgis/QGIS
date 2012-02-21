@@ -339,7 +339,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chbAskToSaveProjectChanges->setChecked( settings.value( "qgis/askToSaveProjectChanges", QVariant( true ) ).toBool() );
   chbWarnOldProjectVersion->setChecked( settings.value( "/qgis/warnOldProjectVersion", QVariant( true ) ).toBool() );
 
-  cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 0 ).toInt() );
+  cmbWheelAction->setCurrentIndex( settings.value( "/qgis/wheel_action", 2 ).toInt() );
   spinZoomFactor->setValue( settings.value( "/qgis/zoom_factor", 2 ).toDouble() );
 
   //
