@@ -20,6 +20,7 @@
 #include "qgsgeometry.h"
 #include "qgssnapper.h"
 
+class QgsVertexMarker;
 class QDoubleSpinBox;
 class QGraphicsProxyWidget;
 
@@ -56,6 +57,8 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QGraphicsProxyWidget* mDistanceItem;
     /**Shows current distance value and allows numerical editing*/
     QDoubleSpinBox* mDistanceSpinBox;
+    /**Marker to show the cursor was snapped to another location*/
+    QgsVertexMarker* mSnapVertexMarker;
 
 
     void deleteRubberBandAndGeometry();

@@ -18,13 +18,14 @@
 #include "qgsmaplayerregistry.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
+#include "qgsvertexmarker.h"
 #include <QDoubleSpinBox>
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
 #include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ),
-    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 )
+    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 ), mSnapVertexMarker( 0 )
 {
 }
 
@@ -32,6 +33,7 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
 {
   deleteRubberBandAndGeometry();
   deleteDistanceItem();
+  delete mSnapVertexMarker;
 }
 
 void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
@@ -111,6 +113,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
 
   deleteRubberBandAndGeometry();
   deleteDistanceItem();
+  delete mSnapVertexMarker; mSnapVertexMarker = 0;
   mCanvas->refresh();
 }
 
@@ -133,6 +136,9 @@ void QgsMapToolOffsetCurve::placeOffsetCurveToValue()
 
 void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
 {
+  delete mSnapVertexMarker;
+  mSnapVertexMarker = 0;
+
   if ( !mOriginalGeometry || !mRubberBand )
   {
     return;
@@ -166,8 +172,12 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
       if ( snap.layer && snap.layer->id() != mSourceLayerId && snap.snappedAtGeometry != mModifiedFeature )
       {
         layerCoords = results.at( 0 ).snappedVertex;
+        mSnapVertexMarker = new QgsVertexMarker( mCanvas );
+        mSnapVertexMarker->setIconType( QgsVertexMarker::ICON_CROSS );
+        mSnapVertexMarker->setColor( Qt::green );
+        mSnapVertexMarker->setPenWidth( 1 );
+        mSnapVertexMarker->setCenter( layerCoords );
       }
-      //todo: add vertex marker item
     }
   }
 
