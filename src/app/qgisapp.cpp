@@ -2258,9 +2258,11 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 
   if ( chooseSublayersDialog.exec() )
   {
-    foreach( QString layer, chooseSublayersDialog.getSelection() )
+    foreach( QString path, chooseSublayersDialog.getSelection() )
     {
-      QgsRasterLayer *rlayer = new QgsRasterLayer( layer, layer );
+      QString name = path;
+      name.replace( layer->source(), QFileInfo( layer->source() ).completeBaseName() );
+      QgsRasterLayer *rlayer = new QgsRasterLayer( path, name );
       if ( rlayer && rlayer->isValid() )
       {
         addRasterLayer( rlayer );
@@ -2272,11 +2274,11 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
 bool QgisApp::shouldAskUserForGDALSublayers( QgsRasterLayer *layer )
 {
   // return false if layer is empty or raster has no sublayers
-  if ( !layer || layer->subLayers().size() < 1 )
+  if ( !layer || layer->providerType() != "gdal" || layer->subLayers().size() < 1 )
     return false;
 
   QSettings settings;
-  int promptLayers = settings.value( "/qgis/promptForRasterSublayers", "if_need" ).toInt();
+  int promptLayers = settings.value( "/qgis/promptForRasterSublayers", 1 ).toInt();
   // 0 = always -> always ask (if there are existing sublayers)
   // 1 = if needed -> ask if layer has no bands, but has sublayers
   // 2 = never
