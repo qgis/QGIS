@@ -126,10 +126,9 @@ void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
   QString providerKey = layerItem->providerKey();
 
   QgsDebugMsg( providerKey + " : " + uri );
-  QgsMapLayer* layer = NULL;
   if ( type == QgsMapLayer::VectorLayer )
   {
-    layer = QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
+    QgisApp::instance()->addVectorLayer( uri, layerItem->name(), providerKey );
   }
   if ( type == QgsMapLayer::RasterLayer )
   {
@@ -159,7 +158,7 @@ void QgsBrowserDockWidget::itemClicked( const QModelIndex& index )
     QgsDebugMsg( "rasterLayerPath = " + rasterLayerPath );
     QgsDebugMsg( "layers = " + layers.join( " " ) );
 
-    layer = QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
+    QgisApp::instance()->addRasterLayer( rasterLayerPath, layerItem->name(), providerKey, layers, styles, format, crs );
   }
 }
 
@@ -248,7 +247,9 @@ void QgsBrowserDockWidget::removeFavourite()
 
 void QgsBrowserDockWidget::refresh()
 {
+  QApplication::setOverrideCursor( Qt::WaitCursor );
   refreshModel( QModelIndex() );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsBrowserDockWidget::refreshModel( const QModelIndex& index )

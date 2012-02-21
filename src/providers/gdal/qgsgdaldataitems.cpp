@@ -125,7 +125,11 @@ QGISEXTERN QgsDataItem * dataItem( QString thePath, QgsDataItem* parentItem )
         {
           GDALClose( hChildDS );
           QgsDebugMsg( QString( "add child #%1 - %2" ).arg( i ).arg( sublayers[i] ) );
-          childItem = new QgsGdalLayerItem( item, sublayers[i], thePath + "/" + sublayers[i], sublayers[i] );
+
+          QString name = sublayers[i];
+          name.replace( thePath, QFileInfo( thePath ).completeBaseName() );
+
+          childItem = new QgsGdalLayerItem( item, name, thePath + "/" + name, sublayers[i] );
           if ( childItem )
             item->addChildItem( childItem );
         }
