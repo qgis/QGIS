@@ -66,8 +66,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>779</width>
-            <height>791</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -684,8 +684,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>604</width>
-            <height>494</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_8">
@@ -858,8 +858,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>483</width>
-            <height>478</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_4">
@@ -1144,8 +1144,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>257</width>
-            <height>93</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -1219,8 +1219,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>569</width>
-            <height>510</height>
+            <width>795</width>
+            <height>764</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_13">
@@ -1487,8 +1487,8 @@
              <property name="title">
               <string>Other settings</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_26">
-              <item row="0" column="0" colspan="2">
+             <layout class="QGridLayout" name="gridLayout_12">
+              <item row="0" column="0">
                <widget class="QCheckBox" name="chkDisableAttributeValuesDlg">
                 <property name="text">
                  <string>Suppress attributes pop-up windows after each created feature</string>
@@ -1498,7 +1498,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0" colspan="2">
+              <item row="1" column="0">
                <widget class="QCheckBox" name="chkReuseLastValues">
                 <property name="text">
                  <string>Reuse last entered attribute values</string>
@@ -1508,9 +1508,6 @@
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="mValidateGeometries"/>
-              </item>
               <item row="2" column="0">
                <widget class="QLabel" name="label_19">
                 <property name="text">
@@ -1518,10 +1515,43 @@
                 </property>
                </widget>
               </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="mValidateGeometries"/>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_21">
+                <property name="text">
+                 <string>Join style for curve offset</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QComboBox" name="mOffsetJoinStyleComboBox"/>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_22">
+                <property name="text">
+                 <string>Quadrantsegments for curve offset</string>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="1">
+               <widget class="QSpinBox" name="mOffsetQuadSegSpinBox"/>
+              </item>
+              <item row="5" column="0">
+               <widget class="QLabel" name="label_23">
+                <property name="text">
+                 <string>Miter limit for curve offset</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
+               <widget class="QDoubleSpinBox" name="mCurveOffsetMiterLimitComboBox"/>
+              </item>
              </layout>
             </widget>
            </item>
-           <item row="5" column="0">
+           <item row="4" column="0">
             <spacer>
              <property name="orientation">
               <enum>Qt::Vertical</enum>
@@ -1565,8 +1595,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>412</width>
-            <height>411</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_15">
@@ -1739,8 +1769,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>523</width>
-            <height>560</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_17">
@@ -1836,8 +1866,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>321</width>
-            <height>541</height>
+            <width>809</width>
+            <height>778</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_20">

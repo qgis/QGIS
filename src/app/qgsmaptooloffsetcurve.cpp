@@ -310,7 +310,11 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
   GEOSGeometry* geosGeom = geomCopy.asGeos();
   if ( geosGeom )
   {
-    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, 8, 1, 1, leftSide ? 1 : 0 );
+    QSettings s;
+    int joinStyle = s.value( "/qgis/digitizing/offset_join_style", 0 ).toInt();
+    int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
+    double mitreLimit = s.value( "/qgis/digitizine/offset_miter_limit", 5.0 ).toDouble();
+    GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, quadSegments, joinStyle, mitreLimit, leftSide ? 1 : 0 );
     if ( offsetGeom )
     {
       mModifiedGeometry.fromGeos( offsetGeom );
