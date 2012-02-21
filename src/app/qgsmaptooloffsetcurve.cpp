@@ -167,6 +167,7 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QMouseEvent * e )
       {
         layerCoords = results.at( 0 ).snappedVertex;
       }
+      //todo: add vertex marker item
     }
   }
 

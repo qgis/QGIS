@@ -6119,6 +6119,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
     mActionDeleteRing->setEnabled( false );
     mActionDeletePart->setEnabled( false );
     mActionReshapeFeatures->setEnabled( false );
+    mActionOffsetCurve->setEnabled( false );
     mActionSplitFeatures->setEnabled( false );
     mActionMergeFeatures->setEnabled( false );
     mActionMergeFeatureAttributes->setEnabled( false );
@@ -6230,7 +6231,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
         mActionAddPart->setEnabled( true );
         mActionDeletePart->setEnabled( true );
         mActionMoveFeature->setEnabled( true );
-        mActionOffsetCurve->setEnabled( true );
         mActionNodeTool->setEnabled( true );
       }
       else
@@ -6271,6 +6271,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer* layer )
           mActionReshapeFeatures->setEnabled( true );
           mActionSplitFeatures->setEnabled( true );
           mActionSimplifyFeature->setEnabled( true );
+          mActionOffsetCurve->setEnabled( dprovider->capabilities() & QgsVectorDataProvider::ChangeAttributeValues );
         }
         else
         {
