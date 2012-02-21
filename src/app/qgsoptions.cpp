@@ -427,6 +427,14 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WFlags fl ) :
   chkDisableAttributeValuesDlg->setChecked( settings.value( "/qgis/digitizing/disable_enter_attribute_values_dialog", false ).toBool() );
   mValidateGeometries->setCurrentIndex( settings.value( "/qgis/digitizing/validate_geometries", 1 ).toInt() );
 
+  mOffsetJoinStyleComboBox->addItem( tr( "Round" ), 0 );
+  mOffsetJoinStyleComboBox->addItem( tr( "Mitre" ), 1 );
+  mOffsetJoinStyleComboBox->addItem( tr( "Bevel" ), 2 );
+  mOffsetJoinStyleComboBox->setCurrentIndex( settings.value( "/qgis/digitizing/offset_join_style", 0 ).toInt() );
+  mOffsetQuadSegSpinBox->setValue( settings.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt() );
+  mCurveOffsetMiterLimitComboBox->setValue( settings.value( "/qgis/digitizine/offset_miter_limit", 5.0 ).toDouble() );
+
+
 #ifdef Q_WS_MAC //MH: disable incremental update on Mac for now to avoid problems with resizing
   groupBox_5->setEnabled( false );
 #endif //Q_WS_MAC
@@ -780,6 +788,10 @@ void QgsOptions::saveOptions()
   settings.setValue( "/qgis/digitizing/reuseLastValues", chkReuseLastValues->isChecked() );
   settings.setValue( "/qgis/digitizing/disable_enter_attribute_values_dialog", chkDisableAttributeValuesDlg->isChecked() );
   settings.setValue( "/qgis/digitizing/validate_geometries", mValidateGeometries->currentIndex() );
+
+  settings.setValue( "/qgis/digitizing/offset_join_style", mOffsetJoinStyleComboBox->itemData( mOffsetJoinStyleComboBox->currentIndex() ).toInt() );
+  settings.setValue( "/qgis/digitizing/offset_quad_seg", mOffsetQuadSegSpinBox->value() );
+  settings.setValue( "/qgis/digitizine/offset_miter_limit", mCurveOffsetMiterLimitComboBox->value() );
 
   //
   // Locale settings
