@@ -41,14 +41,17 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
 
   //get selected features or snap to nearest feature if no selection
   QgsVectorLayer* layer = currentVectorLayer();
-  if ( !layer )
+  if ( !mCanvas || !layer )
   {
     return;
   }
 
+
+  QgsMapRenderer* renderer = mCanvas->mapRenderer();
+  QgsSnapper snapper( renderer );
+  configureSnapper( snapper );
   QList<QgsSnappingResult> snapResults;
-  QgsMapCanvasSnapper snapper( mCanvas );
-  snapper.snapToBackgroundLayers( e->pos(), snapResults );
+  snapper.snapPoint( e->pos(), snapResults );
   if ( snapResults.size() > 0 )
   {
     QgsFeature fet;
@@ -357,4 +360,31 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( QgsGeometry* featureG
   }
 
   return 0;
+}
+
+void QgsMapToolOffsetCurve::configureSnapper( QgsSnapper& s )
+{
+  //use default vertex snap tolerance to all visible layers, but always to vertex and segment
+  QList<QgsSnapper::SnapLayer> snapLayers;
+  if ( mCanvas )
+  {
+    QList<QgsMapLayer*> layerList = mCanvas->layers();
+    QList<QgsMapLayer*>::const_iterator layerIt = layerList.constBegin();
+    for ( ; layerIt != layerList.constEnd(); ++layerIt )
+    {
+      QgsVectorLayer* vl = qobject_cast<QgsVectorLayer*>( *layerIt );
+      if ( vl )
+      {
+        QgsSnapper::SnapLayer sl;
+        sl.mLayer = vl;
+        QSettings settings;
+        sl.mTolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
+        sl.mUnitType = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
+        sl.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
+        snapLayers.push_back( sl );
+      }
+    }
+  }
+  s.setSnapLayers( snapLayers );
+  s.setSnapMode( QgsSnapper::SnapWithOneResult );
 }
