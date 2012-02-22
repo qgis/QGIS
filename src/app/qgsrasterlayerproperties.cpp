@@ -42,6 +42,7 @@
 #include "qgsrasterrendererregistry.h"
 #include "qgsmultibandcolorrendererwidget.h"
 #include "qgspalettedrendererwidget.h"
+#include "qgssinglebandpseudocolorrendererwidget.h"
 
 #include <QTableWidgetItem>
 #include <QHeaderView>
@@ -337,6 +338,7 @@ QgsRasterLayerProperties::QgsRasterLayerProperties( QgsMapLayer* lyr, QgsMapCanv
   //insert renderer widgets into registry
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "paletted", QgsPalettedRendererWidget::create );
   QgsRasterRendererRegistry::instance()->insertWidgetFunction( "multibandcolor", QgsMultiBandColorRendererWidget::create );
+  QgsRasterRendererRegistry::instance()->insertWidgetFunction( "singlebandpseudocolor", QgsSingleBandPseudoColorRendererWidget::create );
 
   //fill available renderers into combo box
   QList< QgsRasterRendererRegistryEntry > rendererEntries = QgsRasterRendererRegistry::instance()->entries();

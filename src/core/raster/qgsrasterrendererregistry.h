@@ -32,6 +32,9 @@ typedef QgsRasterRendererWidget*( *QgsRasterRendererWidgetCreateFunc )( QgsRaste
 
 struct QgsRasterRendererRegistryEntry
 {
+  QgsRasterRendererRegistryEntry( const QString& theName, const QString& theVisibleName, QgsRasterRendererCreateFunc rendererFunction,
+                                  QgsRasterRendererWidgetCreateFunc widgetFunction );
+  QgsRasterRendererRegistryEntry();
   QString name;
   QString visibleName; //visible (and translatable) name
   QgsRasterRendererCreateFunc rendererCreateFunction; //pointer to create function

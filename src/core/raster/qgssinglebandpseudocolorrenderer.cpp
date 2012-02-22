@@ -28,6 +28,13 @@ QgsSingleBandPseudoColorRenderer::QgsSingleBandPseudoColorRenderer( QgsRasterDat
 
 QgsSingleBandPseudoColorRenderer::~QgsSingleBandPseudoColorRenderer()
 {
+  delete mShader;
+}
+
+void QgsSingleBandPseudoColorRenderer::setShader( QgsRasterShader* shader )
+{
+  delete mShader;
+  mShader = shader;
 }
 
 QgsRasterRenderer* QgsSingleBandPseudoColorRenderer::create( const QDomElement& elem )

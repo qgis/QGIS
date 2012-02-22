@@ -26,12 +26,17 @@ class QgsRasterShader;
 class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 {
   public:
+    /**Note: takes ownership of QgsRasterShader*/
     QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader );
     ~QgsSingleBandPseudoColorRenderer();
 
     static QgsRasterRenderer* create( const QDomElement& elem );
 
     virtual void draw( QPainter* p, QgsRasterViewPort* viewPort, const QgsMapToPixel* theQgsMapToPixel );
+
+    /**Takes ownership of the shader*/
+    void setShader( QgsRasterShader* shader );
+    const QgsRasterShader* shader;
 
   private:
     QgsRasterShader* mShader;
