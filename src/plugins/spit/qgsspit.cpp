@@ -476,7 +476,7 @@ void QgsSpit::dbConnect()
       }
     }
 
-    QString schemaSql = "select nspname from pg_namespace where has_schema_privilege(nspname, 'CREATE')";
+    QString schemaSql = "select nspname from pg_namespace where has_schema_privilege(nspname, 'CREATE') order by nspname";
     PGresult *schemas = PQexec( conn, schemaSql.toUtf8() );
     // get the schema names
     if ( PQresultStatus( schemas ) == PGRES_TUPLES_OK )
