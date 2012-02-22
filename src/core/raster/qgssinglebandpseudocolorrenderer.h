@@ -36,7 +36,7 @@ class QgsSingleBandPseudoColorRenderer: public QgsRasterRenderer
 
     /**Takes ownership of the shader*/
     void setShader( QgsRasterShader* shader );
-    const QgsRasterShader* shader;
+    QgsRasterShader* shader() { return mShader; }
 
   private:
     QgsRasterShader* mShader;
