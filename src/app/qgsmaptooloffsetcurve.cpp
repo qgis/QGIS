@@ -25,7 +25,7 @@
 #include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ),
-    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 ), mSnapVertexMarker( 0 )
+    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 ), mSnapVertexMarker( 0 ), mForceCopy( false )
 {
 }
 
@@ -36,10 +36,11 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
   delete mSnapVertexMarker;
 }
 
-void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
+void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent* e )
 {
   deleteRubberBandAndGeometry();
   mGeometryModified = false;
+  mForceCopy = false;
 
   //get selected features or snap to nearest feature if no selection
   QgsVectorLayer* layer = currentVectorLayer();
@@ -65,6 +66,7 @@ void QgsMapToolOffsetCurve::canvasPressEvent( QMouseEvent * e )
       QgsVectorLayer* vl = dynamic_cast<QgsVectorLayer*>( QgsMapLayerRegistry::instance()->mapLayer( mSourceLayerId ) );
       if ( vl && vl->featureAtId( snapResult.snappedAtGeometry, fet ) )
       {
+        mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         mOriginalGeometry = createOriginGeometry( vl, snapResult, fet );
         mRubberBand = createRubberBand();
         if ( mRubberBand )
@@ -91,7 +93,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
   vlayer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
-  if ( mSourceLayerId == vlayer->id() )
+  if ( mSourceLayerId == vlayer->id() && !mForceCopy )
   {
     editOk = vlayer->changeGeometry( mModifiedFeature, &mModifiedGeometry );
   }
@@ -114,6 +116,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
   deleteRubberBandAndGeometry();
   deleteDistanceItem();
   delete mSnapVertexMarker; mSnapVertexMarker = 0;
+  mForceCopy = false;
   mCanvas->refresh();
 }
 
@@ -206,7 +209,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     return 0;
   }
 
-  if ( vl == currentVectorLayer() )
+  if ( vl == currentVectorLayer() && !mForceCopy )
   {
     //don't consider selected geometries, only the snap result
     return snappedFeature.geometryAndOwnership();

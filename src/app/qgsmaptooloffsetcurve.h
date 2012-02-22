@@ -59,6 +59,8 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QDoubleSpinBox* mDistanceSpinBox;
     /**Marker to show the cursor was snapped to another location*/
     QgsVertexMarker* mSnapVertexMarker;
+    /**Forces geometry copy (no modification of geometry in current layer)*/
+    bool mForceCopy;
 
 
     void deleteRubberBandAndGeometry();
