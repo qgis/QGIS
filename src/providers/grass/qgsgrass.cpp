@@ -465,7 +465,6 @@ QString GRASS_EXPORT QgsGrass::openMapset( QString gisdbase, QString location, Q
   QProcess *process = new QProcess();
   QString lockProgram( gisBase + "/etc/lock" );
 
-  int pid = getpid();
   QgsDebugMsg( QString( "pid = %1" ).arg( pid ) );
 
   process->start( lockProgram, QStringList() << lock << QString::number( pid ) );
