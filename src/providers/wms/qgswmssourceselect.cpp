@@ -71,6 +71,7 @@ QgsWMSSourceSelect::QgsWMSSourceSelect( QWidget * parent, Qt::WFlags fl, bool ma
 
   mTileWidth->setValidator( new QIntValidator( 0, 9999, this ) );
   mTileHeight->setValidator( new QIntValidator( 0, 9999, this ) );
+  mFeatureCount->setValidator( new QIntValidator( 0, 9999, this ) );
 
   mImageFormatGroup = new QButtonGroup;
 
@@ -470,6 +471,13 @@ void QgsWMSSourceSelect::addClicked()
                .arg( item->data( Qt::UserRole + 6 ).toStringList().join( ";" ) );
   }
 
+  if ( mFeatureCount->text().toInt() > 0 )
+  {
+    if( !connArgs.isEmpty() )
+      connArgs += ",";
+    connArgs += QString( "featureCount=%1" ).arg( mFeatureCount->text().toInt() );
+  }
+
   if ( !connArgs.isEmpty() )
   {
     if ( connInfo.startsWith( "username=" ) || connInfo.startsWith( "ignoreUrl=" ) )
@@ -483,10 +491,6 @@ void QgsWMSSourceSelect::addClicked()
   }
   QgsDebugMsg( "crs = " + crs );
 
-  // TODO: do it without QgisApp
-  //QgisApp::instance()->addRasterLayer( connInfo,
-  //                                     leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
-  //                                     "wms", layers, styles, format, crs );
   emit addRasterLayer( connInfo,
                        leLayerName->text().isEmpty() ? layers.join( "/" ) : leLayerName->text(),
                        "wms", layers, styles, format, crs );
