@@ -87,10 +87,29 @@ IF (ANDROID)
 ELSE (ANDROID)
     SET (DEFAULT_WITH_QTMOBILITY FALSE)
 ENDIF (ANDROID)
-SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines QtMobility related code should be build (for example internal GPS)")
+SET (WITH_QTMOBILITY ${DEFAULT_WITH_QTMOBILITY} CACHE BOOL "Determines if QtMobility related code should be build (for example internal GPS)")
 IF (WITH_QTMOBILITY)
     FIND_PACKAGE(QtMobility 1.1.0)
 ENDIF (WITH_QTMOBILITY)
+
+IF (ANDROID)
+    SET (DEFAULT_WITH_TOUCH TRUE)
+ELSE (ANDROID)
+    SET (DEFAULT_WITH_TOUCH FALSE)
+ENDIF (ANDROID)
+#Add a touch mode if Qt has Qt Gestures (starting from 4.6)
+IF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+    SET (WITH_TOUCH ${DEFAULT_WITH_TOUCH} CACHE BOOL "Determines if touch interface related code should be build")
+ELSE ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+    SET (WITH_TOUCH FALSE)
+ENDIF ( (QT_VERSION_MAJOR EQUAL 4 AND QT_VERSION_MINOR GREATER 5) OR QT_VERSION_MAJOR GREATER 4 )
+IF (WITH_TOUCH)
+    ADD_DEFINITIONS(-DHAVE_TOUCH)
+    MESSAGE (STATUS "Touch support enabled")
+ELSE (WITH_TOUCH)
+    MESSAGE (STATUS "Touch support disabled")
+ENDIF (WITH_TOUCH)
+
 
 SET (WITH_GLOBE FALSE CACHE BOOL "Determines whether Globe plugin should be built")
 IF (WITH_GLOBE)
@@ -472,9 +491,7 @@ LINK_DIRECTORIES(${CMAKE_BINARY_DIR}/src/core ${CMAKE_BINARY_DIR}/src/gui)
 
 #############################################################
 # create qgsversion.h
-
 FIND_FILE(GIT_MARKER index PATHS ${CMAKE_SOURCE_DIR}/.git)
-
 IF (GIT_MARKER)
   FIND_PROGRAM(GIT git PATHS c:/cygwin/bin)
   IF(GIT)
