@@ -1,6 +1,6 @@
 [Desktop Entry]
 Type=Application
-Name=Quantum GIS Desktop
+Name=Quantum GIS Browser
 Version=1.0
 GenericName=Geographic Information System
 GenericName[ar]=نظام المعلومات الجغرافي
@@ -48,9 +48,8 @@ GenericName[tr]=Coğrafi bilgi sistemi
 GenericName[uk]=Геоінформаційна система
 GenericName[uz]=Geografik axborot tizimi
 Icon=qgis-icon
-TryExec=/usr/bin/qgis
-Exec=/usr/bin/qgis %F
+TryExec=/usr/bin/qbrowser
+Exec=/usr/bin/qbrowser %F
 Terminal=false
 StartupNotify=false
 Categories=Qt;Education;Science;Geography;
-MimeType=application/x-qgis-project;image/tiff;image/jpeg;image/jp2;application/x-raster-aig;application/x-raster-ecw;application/x-raster-mrsid;application/x-mapinfo-mif;application/x-esri-shape;
