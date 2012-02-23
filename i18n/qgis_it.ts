@@ -1806,7 +1806,7 @@ Il plugin non sarà installato.</translation>
     </message>
     <message>
         <source>Miscellaneous</source>
-        <translation>MIscellanea</translation>
+        <translation>Miscellanea</translation>
     </message>
     <message>
         <source>GdalTools settings</source>
@@ -12920,7 +12920,6 @@ Database:%2</source>
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
         <translation type="unfinished">
-            <numerusform></numerusform>
             <numerusform></numerusform>
         </translation>
     </message>
