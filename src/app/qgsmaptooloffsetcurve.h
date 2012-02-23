@@ -61,6 +61,7 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsVertexMarker* mSnapVertexMarker;
     /**Forces geometry copy (no modification of geometry in current layer)*/
     bool mForceCopy;
+    bool mMultiPartGeometry;
 
 
     void deleteRubberBandAndGeometry();
@@ -72,6 +73,10 @@ class QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsGeometry* linestringFromPolygon( QgsGeometry* featureGeom, int vertex );
     /**Sets snapping with default vertex search tolerance to all layers (to vertex and segment)*/
     void configureSnapper( QgsSnapper& s );
+    /**Returns a single line from a multiline (or does nothing if geometry is already a single line). Deletes the input geometry*/
+    QgsGeometry* convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti );
+    /**Converts offset line back to a multiline if necessary*/
+    QgsGeometry* convertToMultiLine( QgsGeometry* geom );
 };
 
 #endif // QGSMAPTOOLOFFSETCURVE_H

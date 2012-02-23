@@ -25,7 +25,7 @@
 #include "qgisapp.h"
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas* canvas ): QgsMapToolEdit( canvas ), mRubberBand( 0 ),
-    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 ), mSnapVertexMarker( 0 ), mForceCopy( false )
+    mOriginalGeometry( 0 ), mGeometryModified( false ), mDistanceItem( 0 ), mDistanceSpinBox( 0 ), mSnapVertexMarker( 0 ), mForceCopy( false ), mMultiPartGeometry( false )
 {
 }
 
@@ -88,6 +88,11 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
   {
     deleteRubberBandAndGeometry();
     return;
+  }
+
+  if ( mMultiPartGeometry )
+  {
+    mModifiedGeometry.convertToMultiType();
   }
 
   vlayer->beginEditCommand( tr( "Offset curve" ) );
@@ -218,11 +223,14 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
   {
     return 0;
   }
+  mMultiPartGeometry = false;
+  //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
+  int partVertexNr = ( sr.snappedVertexNr == -1 ? sr.beforeVertexNr : sr.snappedVertexNr );
 
   if ( vl == currentVectorLayer() && !mForceCopy )
   {
     //don't consider selected geometries, only the snap result
-    return snappedFeature.geometryAndOwnership();
+    return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
   }
   else //snapped to a background layer
   {
@@ -230,7 +238,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     if ( vl->geometryType() == QGis::Polygon )
     {
       //make linestring from polygon ring and return this geometry
-      return linestringFromPolygon( snappedFeature.geometry(), sr.snappedVertexNr );
+      return linestringFromPolygon( snappedFeature.geometry(), partVertexNr );
     }
 
 
@@ -238,7 +246,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
     const QgsFeatureIds& selection = vl->selectedFeaturesIds();
     if ( selection.size() < 1 || !selection.contains( sr.snappedAtGeometry ) )
     {
-      return snappedFeature.geometryAndOwnership();
+      return convertToSingleLine( snappedFeature.geometryAndOwnership(), partVertexNr, mMultiPartGeometry );
     }
     else
     {
@@ -256,7 +264,7 @@ QgsGeometry* QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer* vl, co
       if ( geom->isMultipart() )
       {
         delete geom;
-        return snappedFeature.geometryAndOwnership();
+        return convertToSingleLine( snappedFeature.geometryAndOwnership(), sr.snappedVertexNr, mMultiPartGeometry );
       }
 
       return geom;
@@ -415,4 +423,44 @@ void QgsMapToolOffsetCurve::configureSnapper( QgsSnapper& s )
   }
   s.setSnapLayers( snapLayers );
   s.setSnapMode( QgsSnapper::SnapWithOneResult );
+}
+
+QgsGeometry* QgsMapToolOffsetCurve::convertToSingleLine( QgsGeometry* geom, int vertex, bool& isMulti )
+{
+  if ( !geom )
+  {
+    return 0;
+  }
+
+  isMulti = false;
+  QGis::WkbType geomType = geom->wkbType();
+  if ( geomType == QGis::WKBLineString || geomType == QGis::WKBLineString25D )
+  {
+    return geom;
+  }
+  else if ( geomType == QGis::WKBMultiLineString || geomType == QGis::WKBMultiLineString25D )
+  {
+    //search vertex
+    isMulti = true;
+    int currentVertex = 0;
+    QgsMultiPolyline multiLine = geom->asMultiPolyline();
+    QgsMultiPolyline::const_iterator it = multiLine.constBegin();
+    for ( ; it != multiLine.constEnd(); ++it )
+    {
+      currentVertex += it->size();
+      if ( vertex < currentVertex )
+      {
+        QgsGeometry* g = QgsGeometry::fromPolyline( *it );
+        delete geom;
+        return g;
+      }
+    }
+  }
+  delete geom;
+  return 0;
+}
+
+QgsGeometry* QgsMapToolOffsetCurve::convertToMultiLine( QgsGeometry* geom )
+{
+  return 0;
 }
