@@ -21,6 +21,8 @@
 
 #include <qgis.h>
 
+#define ABISYM(x)  x ## VERSION_INT
+
 /** \ingroup core
  * Extends QApplication to provide access to QGIS specific resources such
  * as theme paths, database paths etc.
@@ -202,16 +204,16 @@ class CORE_EXPORT QgsApplication: public QApplication
     static QString relativePathToAbsolutePath( QString rpath, QString targetPath );
 
   private:
-    static QObject* mFileOpenEventReceiver;
-    static QStringList mFileOpenEventList;
+    static QObject* ABISYM( mFileOpenEventReceiver );
+    static QStringList ABISYM( mFileOpenEventList );
 
-    static QString mPrefixPath;
-    static QString mPluginPath;
-    static QString mPkgDataPath;
-    static QString mThemeName;
-    static QStringList mDefaultSvgPaths;
+    static QString ABISYM( mPrefixPath );
+    static QString ABISYM( mPluginPath );
+    static QString ABISYM( mPkgDataPath );
+    static QString ABISYM( mThemeName );
+    static QStringList ABISYM( mDefaultSvgPaths );
 
-    static QString mConfigPath;
+    static QString ABISYM( mConfigPath );
 };
 
 #endif
