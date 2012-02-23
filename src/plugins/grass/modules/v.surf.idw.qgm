@@ -5,5 +5,6 @@
 	<option key="input" layeroption="layer" typemask="point,line" id="input" />
 	<field key="column" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
 	<option key="npoints" />
+	<option key="power" />
 	<option key="output" />
 </qgisgrassmodule>
