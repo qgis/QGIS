@@ -18,6 +18,11 @@
 #include "qgssinglebandpseudocolorrendererwidget.h"
 #include "qgssinglebandpseudocolorrenderer.h"
 #include "qgsrasterlayer.h"
+#include <QColorDialog>
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QSettings>
+#include <QTextStream>
 
 QgsSingleBandPseudoColorRendererWidget::QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer ):
     QgsRasterRendererWidget( layer )
@@ -197,5 +202,210 @@ void QgsSingleBandPseudoColorRendererWidget::on_mClassifyButton_clicked()
     newItem->setBackground( 1, QBrush( *color_it ) );
     newItem->setText( 2, QString::number( *value_it, 'f' ) );
     newItem->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems )
+{
+  mColormapTreeWidget->clear();
+  QList<QgsColorRampShader::ColorRampItem>::const_iterator it = colorRampItems.constBegin();
+  for ( ; it != colorRampItems.constEnd(); ++it )
+  {
+    QTreeWidgetItem* newItem = new QTreeWidgetItem( mColormapTreeWidget );
+    newItem->setText( 0, QString::number( it->value, 'f' ) );
+    newItem->setBackground( 1, QBrush( it->color ) );
+    newItem->setText( 2, it->label );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromBandButton_clicked()
+{
+  if ( !mRasterLayer )
+  {
+    return;
+  }
+
+  QList<QgsColorRampShader::ColorRampItem> colorRampList;
+  int bandIndex = mBandComboBox->itemData( mBandComboBox->currentIndex() ).toInt();
+
+  if ( mRasterLayer->readColorTable( bandIndex, &colorRampList ) )
+  {
+    populateColormapTreeWidget( colorRampList );
+    mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
+  }
+  else
+  {
+    QMessageBox::warning( this, tr( "Load Color Map" ), tr( "The color map for band %1 failed to load" ).arg( bandIndex ) );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mLoadFromFileButton_clicked()
+{
+  int lineCounter = 0;
+  bool importError = false;
+  QString badLines;
+  QSettings settings;
+  QString lastDir = settings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString fileName = QFileDialog::getOpenFileName( this, tr( "Open file" ), lastDir, tr( "Textfile (*.txt)" ) );
+  QFile inputFile( fileName );
+  if ( inputFile.open( QFile::ReadOnly ) )
+  {
+    //clear the current tree
+    mColormapTreeWidget->clear();
+
+    QTextStream inputStream( &inputFile );
+    QString inputLine;
+    QStringList inputStringComponents;
+    QList<QgsColorRampShader::ColorRampItem> colorRampItems;
+
+    //read through the input looking for valid data
+    while ( !inputStream.atEnd() )
+    {
+      lineCounter++;
+      inputLine = inputStream.readLine();
+      if ( !inputLine.isEmpty() )
+      {
+        if ( !inputLine.simplified().startsWith( "#" ) )
+        {
+          if ( inputLine.contains( "INTERPOLATION", Qt::CaseInsensitive ) )
+          {
+            inputStringComponents = inputLine.split( ":" );
+            if ( inputStringComponents.size() == 2 )
+            {
+              if ( inputStringComponents[1].trimmed().toUpper().compare( "INTERPOLATED", Qt::CaseInsensitive ) == 0 )
+              {
+                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Linear" ) ) );
+              }
+              else if ( inputStringComponents[1].trimmed().toUpper().compare( "DISCRETE", Qt::CaseInsensitive ) == 0 )
+              {
+                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Discrete" ) ) );
+              }
+              else
+              {
+                mColorInterpolationComboBox->setCurrentIndex( mColorInterpolationComboBox->findText( tr( "Exact" ) ) );
+              }
+            }
+            else
+            {
+              importError = true;
+              badLines = badLines + QString::number( lineCounter ) + ":\t[" + inputLine + "]\n";
+            }
+          }
+          else
+          {
+            inputStringComponents = inputLine.split( "," );
+            if ( inputStringComponents.size() == 6 )
+            {
+              QgsColorRampShader::ColorRampItem currentItem( inputStringComponents[0].toDouble(),
+                  QColor::fromRgb( inputStringComponents[1].toInt(), inputStringComponents[2].toInt(),
+                                   inputStringComponents[3].toInt(), inputStringComponents[4].toInt() ),
+                  inputStringComponents[5] );
+              colorRampItems.push_back( currentItem );
+            }
+            else
+            {
+              importError = true;
+              badLines = badLines + QString::number( lineCounter ) + ":\t[" + inputLine + "]\n";
+            }
+          }
+        }
+      }
+      lineCounter++;
+    }
+    populateColormapTreeWidget( colorRampItems );
+
+    if ( importError )
+    {
+      QMessageBox::warning( this, tr( "Import Error" ), tr( "The following lines contained errors\n\n" ) + badLines );
+    }
+  }
+  else if ( !fileName.isEmpty() )
+  {
+    QMessageBox::warning( this, tr( "Read access denied" ), tr( "Read access denied. Adjust the file permissions and try again.\n\n" ) );
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mExportToFileButton_clicked()
+{
+  QSettings settings;
+  QString lastDir = settings.value( "lastRasterFileFilterDir", "" ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Save file" ), lastDir, tr( "Textfile (*.txt)" ) );
+  if ( !fileName.isEmpty() )
+  {
+    if ( !fileName.endsWith( ".txt", Qt::CaseInsensitive ) )
+    {
+      fileName = fileName + ".txt";
+    }
+
+    QFile outputFile( fileName );
+    if ( outputFile.open( QFile::WriteOnly ) )
+    {
+      QTextStream outputStream( &outputFile );
+      outputStream << "# " << tr( "QGIS Generated Color Map Export File" ) << "\n";
+      outputStream << "INTERPOLATION:";
+      if ( mColorInterpolationComboBox->currentText() == tr( "Linear" ) )
+      {
+        outputStream << "INTERPOLATED\n";
+      }
+      else if ( mColorInterpolationComboBox->currentText() == tr( "Discrete" ) )
+      {
+        outputStream << "DISCRETE\n";
+      }
+      else
+      {
+        outputStream << "EXACT\n";
+      }
+
+      int topLevelItemCount = mColormapTreeWidget->topLevelItemCount();
+      QTreeWidgetItem* currentItem;
+      QColor color;
+      for ( int i = 0; i < topLevelItemCount; ++i )
+      {
+        currentItem = mColormapTreeWidget->topLevelItem( i );
+        if ( !currentItem )
+        {
+          continue;
+        }
+        color = currentItem->background( 1 ).color();
+        outputStream << currentItem->text( 0 ).toDouble() << ",";
+        outputStream << color.red() << "," << color.green() << "," << color.blue() << "," << color.alpha() << ",";
+        if ( currentItem->text( 2 ) == "" )
+        {
+          outputStream << "Color entry " << i + 1 << "\n";
+        }
+        else
+        {
+          outputStream << currentItem->text( 2 ) << "\n";
+        }
+      }
+      outputStream.flush();
+      outputFile.close();
+    }
+    else
+    {
+      QMessageBox::warning( this, tr( "Write access denied" ), tr( "Write access denied. Adjust the file permissions and try again.\n\n" ) );
+    }
+  }
+}
+
+void QgsSingleBandPseudoColorRendererWidget::on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column )
+{
+  if ( !item )
+  {
+    return;
+  }
+
+  if ( column == 1 ) //change item color
+  {
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
+    QColor newColor = QColorDialog::getColor( item->background( column ).color() );
+    if ( newColor.isValid() )
+    {
+      item->setBackground( 1, QBrush( newColor ) );
+    }
+  }
+  else
+  {
+    item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable );
   }
 }

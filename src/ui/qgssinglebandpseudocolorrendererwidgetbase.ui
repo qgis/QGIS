@@ -83,8 +83,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionNewAttribute.png</normaloff>../../images/themes/default/mActionNewAttribute.png</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionNewAttribute.png</normaloff>:/images/themes/default/mActionNewAttribute.png</iconset>
        </property>
       </widget>
      </item>
@@ -97,8 +97,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionFolder.png</normaloff>../../images/themes/default/mActionFolder.png</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFileOpen.png</normaloff>:/images/themes/default/mActionFileOpen.png</iconset>
        </property>
       </widget>
      </item>
@@ -111,8 +111,8 @@
         <string>...</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>../../images/themes/default/mActionFileSave.png</normaloff>../../images/themes/default/mActionFileSave.png</iconset>
+        <iconset resource="../../images/images.qrc">
+         <normaloff>:/images/themes/default/mActionFileSaveAs.png</normaloff>:/images/themes/default/mActionFileSaveAs.png</iconset>
        </property>
       </widget>
      </item>
@@ -185,6 +185,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections/>
 </ui>

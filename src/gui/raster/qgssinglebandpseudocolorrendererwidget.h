@@ -19,6 +19,7 @@
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgscolorrampshader.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
 
 class QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
@@ -32,8 +33,15 @@ class QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
     static QgsRasterRendererWidget* create( QgsRasterLayer* layer ) { return new QgsSingleBandPseudoColorRendererWidget( layer ); }
     QgsRasterRenderer* renderer();
 
+  private:
+    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
+
   private slots:
     void on_mClassifyButton_clicked();
+    void on_mLoadFromBandButton_clicked();
+    void on_mLoadFromFileButton_clicked();
+    void on_mExportToFileButton_clicked();
+    void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
 };
 
 #endif // QGSSINGLEBANDCOLORRENDERERWIDGET_H
