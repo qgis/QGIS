@@ -91,6 +91,7 @@ QgsWmsProvider::QgsWmsProvider( QString const &uri )
     , mErrors( 0 )
     , mUserName( QString::null )
     , mPassword( QString::null )
+    , mFeatureCount( 0 )
 {
   // URL may contain username/password information for a WMS
   // requiring authentication. In this case the URL is prefixed
@@ -161,6 +162,10 @@ void QgsWmsProvider::parseUri( QString uri )
           mResolutions << r.toDouble();
         }
         qSort( mResolutions );
+      }
+      else if ( item.startsWith( "featureCount=" ) )
+      {
+        mFeatureCount = item.mid( 13 ).toInt();
       }
       else if ( item.startsWith( "url=" ) )
       {
@@ -2953,6 +2958,11 @@ QStringList QgsWmsProvider::identifyAs( const QgsPoint& point, QString format )
         setQueryItem( requestUrl, "INFO_FORMAT", format );
         setQueryItem( requestUrl, "X", QString::number( point.x() ) );
         setQueryItem( requestUrl, "Y", QString::number( point.y() ) );
+
+        if( mFeatureCount > 0 )
+        {
+          setQueryItem( requestUrl, "FEATURE_COUNT", QString::number( mFeatureCount ) );
+        }
 
         // X,Y in WMS 1.1.1; I,J in WMS 1.3.0
         //   requestUrl += QString( "&I=%1&J=%2" ).arg( point.x() ).arg( point.y() );
