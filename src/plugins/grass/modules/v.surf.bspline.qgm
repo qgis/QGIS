@@ -4,6 +4,11 @@
 <qgisgrassmodule label="Bicubic or bilinear spline interpolation with Tykhonov regularization" module="v.surf.bspline">
 	<option key="input"/>
 	<option key="sparse" />
+        <option key="sie" advanced="yes"/>
+        <option key="sin" advanced="yes"/>
+        <option key="method" advanced="yes"/>
+        <option key="lambda_i" advanced="yes"/>
+        <option key="output" advanced="yes"/>
 	<option key="raster" />
 	<flag key="c" />
 </qgisgrassmodule>
