@@ -21,6 +21,7 @@
 #include "qgsvertexmarker.h"
 #include <QDoubleSpinBox>
 #include <QGraphicsProxyWidget>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include "qgisapp.h"
 
@@ -84,9 +85,16 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QMouseEvent * e )
 {
   Q_UNUSED( e );
   QgsVectorLayer* vlayer = currentVectorLayer();
-  if ( !vlayer || !mGeometryModified )
+  if ( !vlayer )
   {
     deleteRubberBandAndGeometry();
+    return;
+  }
+
+  if ( !mGeometryModified )
+  {
+    deleteRubberBandAndGeometry();
+    vlayer->destroyEditCommand();
     return;
   }
 
@@ -346,6 +354,21 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset, bool leftSide
     int quadSegments = s.value( "/qgis/digitizing/offset_quad_seg", 8 ).toInt();
     double mitreLimit = s.value( "/qgis/digitizine/offset_miter_limit", 5.0 ).toDouble();
     GEOSGeometry* offsetGeom = GEOSSingleSidedBuffer( geosGeom, offset, quadSegments, joinStyle, mitreLimit, leftSide ? 1 : 0 );
+    if ( !offsetGeom )
+    {
+      deleteRubberBandAndGeometry();
+      deleteDistanceItem();
+      delete mSnapVertexMarker; mSnapVertexMarker = 0;
+      mForceCopy = false;
+      mGeometryModified = false;
+      deleteDistanceItem();
+      QMessageBox::critical( 0, tr( "Geometry error" ), tr( "Creating offset geometry failed" ) );
+      return;
+    }
+
+    //GEOS >= 3.3
+    //GEOSGeometry* offsetGeom = GEOSOffsetCurve( geosGeom, (leftSide > 0) ? offset : -offset, quadSegments, joinStyle, mitreLimit );
+
     if ( offsetGeom )
     {
       mModifiedGeometry.fromGeos( offsetGeom );
@@ -415,7 +438,7 @@ void QgsMapToolOffsetCurve::configureSnapper( QgsSnapper& s )
         sl.mLayer = vl;
         QSettings settings;
         sl.mTolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
-        sl.mUnitType = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/default_snapping_tolerance_unit", 0 ).toInt();
+        sl.mUnitType = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
         sl.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
         snapLayers.push_back( sl );
       }
