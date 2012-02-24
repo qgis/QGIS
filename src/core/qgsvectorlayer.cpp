@@ -1301,7 +1301,8 @@ void QgsVectorLayer::setRenderer( QgsRenderer *r )
 
   if ( r != mRenderer )
   {
-    setUsingRendererV2( false );
+    if ( r )
+      setUsingRendererV2( false );
     delete mRenderer;
     mRenderer = r;
   }
@@ -4604,7 +4605,8 @@ void QgsVectorLayer::setRendererV2( QgsFeatureRendererV2 *r )
 
   if ( r != mRendererV2 )
   {
-    setUsingRendererV2( true );
+    if ( r )
+      setUsingRendererV2( true );
     delete mRendererV2;
     mRendererV2 = r;
   }
