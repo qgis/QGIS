@@ -205,8 +205,8 @@
 				<grass name="r.cost.vect"/>
 				<grass name="r.drain"/>
 				<grass name="r.shaded.relief"/>
-				<grass name="r.slope.aspect.slope"/>
-				<grass name="r.slope.aspect.aspect"/>
+				<grass name="r.slope"/>
+				<grass name="r.aspect"/>
 				<grass name="r.param.scale"/>
 				<grass name="r.texture"/>
 				<grass name="r.texture.bis"/>
