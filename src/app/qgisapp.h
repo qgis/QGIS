@@ -83,6 +83,11 @@ class QgsScaleComboBox;
 #include <QPointer>
 #include <QSslError>
 
+#ifdef ANDROID
+#include <QGestureEvent>
+#include <QTapAndHoldGesture>
+#endif
+
 #include "qgsconfig.h"
 #include "qgsfeature.h"
 #include "qgspoint.h"
@@ -1154,6 +1159,11 @@ class QgisApp : public QMainWindow, private Ui::MainWindow
     bool cmpByText( QAction* a, QAction* b );
 
     QString mOldScale;
+
+#ifdef ANDROID
+    bool gestureEvent(QGestureEvent *event);
+    void tapAndHoldTriggered(QTapAndHoldGesture *gesture);
+#endif
 };
 
 #ifdef ANDROID
