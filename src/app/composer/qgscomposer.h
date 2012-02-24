@@ -321,7 +321,7 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QUndoView* mUndoView;
 
     //! We load composer map content from project xml only on demand. Therefore we need to store the real preview mode type
-    QMap< QgsComposerMap*, QgsComposerMap::PreviewMode > mMapsToRestore;
+    QMap< QgsComposerMap*, int > mMapsToRestore;
 
     QDockWidget* mItemDock;
     QDockWidget* mUndoDock;

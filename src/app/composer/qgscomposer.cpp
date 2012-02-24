@@ -1126,10 +1126,10 @@ void QgsComposer::showEvent( QShowEvent* event )
   if ( event->spontaneous() ) //event from the window system
   {
     //go through maps and restore original preview modes (show on demand after loading from project file)
-    QMap< QgsComposerMap*, QgsComposerMap::PreviewMode >::iterator mapIt = mMapsToRestore.begin();
+    QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
     for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
     {
-      mapIt.key()->setPreviewMode( mapIt.value() );
+      mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
       mapIt.key()->cache();
       mapIt.key()->update();
     }
@@ -1186,10 +1186,10 @@ void QgsComposer::writeXML( QDomNode& parentNode, QDomDocument& doc )
   composerElem.setAttribute( "title", mTitle );
 
   //change preview mode of minimised / hidden maps before saving XML (show contents only on demand)
-  QMap< QgsComposerMap*, QgsComposerMap::PreviewMode >::iterator mapIt = mMapsToRestore.begin();
+  QMap< QgsComposerMap*, int >::iterator mapIt = mMapsToRestore.begin();
   for ( ; mapIt != mMapsToRestore.end(); ++mapIt )
   {
-    mapIt.key()->setPreviewMode( mapIt.value() );
+    mapIt.key()->setPreviewMode(( QgsComposerMap::PreviewMode )( mapIt.value() ) );
   }
   mMapsToRestore.clear();
 
@@ -1281,7 +1281,7 @@ void QgsComposer::readXML( const QDomElement& composerElem, const QDomDocument& 
   //read and restore all the items
   if ( mComposition )
   {
-    mComposition->addItemsFromXML( composerElem, doc );
+    mComposition->addItemsFromXML( composerElem, doc, &mMapsToRestore );
   }
 
   mComposition->sortZList();

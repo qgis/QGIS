@@ -16,7 +16,6 @@
 
 #include "qgscomposition.h"
 #include "qgscomposeritem.h"
-#include "qgscomposermap.h"
 #include "qgspaperitem.h"
 #include "qgscomposerarrow.h"
 #include "qgscomposerlabel.h"
@@ -261,7 +260,8 @@ bool QgsComposition::readXML( const QDomElement& compositionElem, const QDomDocu
   return true;
 }
 
-void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, bool addUndoCommands, QPointF* pos )
+void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocument& doc, QMap< QgsComposerMap*, int >* mapsToRestore,
+                                      bool addUndoCommands, QPointF* pos )
 {
   QDomNodeList composerLabelList = elem.elementsByTagName( "ComposerLabel" );
   for ( int i = 0; i < composerLabelList.size(); ++i )
@@ -286,11 +286,19 @@ void QgsComposition::addItemsFromXML( const QDomElement& elem, const QDomDocumen
     QDomElement currentComposerMapElem = composerMapList.at( i ).toElement();
     QgsComposerMap* newMap = new QgsComposerMap( this );
     newMap->readXML( currentComposerMapElem, doc );
+
+    if ( mapsToRestore )
+    {
+      mapsToRestore->insert( newMap, ( int )( newMap->previewMode() ) );
+      newMap->setPreviewMode( QgsComposerMap::Rectangle );
+    }
+    addComposerMap( newMap, false );
+
     if ( pos )
     {
       newMap->setItemPosition( pos->x(), pos->y() );
     }
-    addComposerMap( newMap );
+
     if ( addUndoCommands )
     {
       pushAddRemoveCommand( newMap, tr( "Map added" ) );
@@ -1000,12 +1008,20 @@ void QgsComposition::addComposerLabel( QgsComposerLabel* label )
   emit selectedItemChanged( label );
 }
 
-void QgsComposition::addComposerMap( QgsComposerMap* map )
+void QgsComposition::addComposerMap( QgsComposerMap* map, bool setDefaultPreviewStyle )
 {
   addItem( map );
-  //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
-  map->setPreviewMode( QgsComposerMap::Cache );
-  map->cache();
+  if ( setDefaultPreviewStyle )
+  {
+    //set default preview mode to cache. Must be done here between adding composer map to scene and emiting signal
+    map->setPreviewMode( QgsComposerMap::Cache );
+  }
+
+  if ( map->previewMode() != QgsComposerMap::Rectangle )
+  {
+    map->cache();
+  }
+
   emit composerMapAdded( map );
   clearSelection();
   map->setSelected( true );
