@@ -423,7 +423,7 @@ QgsGeometry* QgsMapToolOffsetCurve::linestringFromPolygon( QgsGeometry* featureG
 
 void QgsMapToolOffsetCurve::configureSnapper( QgsSnapper& s )
 {
-  //use default vertex snap tolerance to all visible layers, but always to vertex and segment
+  //use default vertex snap tolerance to all visible layers, but always to segment
   QList<QgsSnapper::SnapLayer> snapLayers;
   if ( mCanvas )
   {
@@ -439,7 +439,7 @@ void QgsMapToolOffsetCurve::configureSnapper( QgsSnapper& s )
         QSettings settings;
         sl.mTolerance = settings.value( "/qgis/digitizing/search_radius_vertex_edit", 10 ).toDouble();
         sl.mUnitType = ( QgsTolerance::UnitType ) settings.value( "/qgis/digitizing/search_radius_vertex_edit_unit", QgsTolerance::Pixels ).toInt();
-        sl.mSnapTo = QgsSnapper::SnapToVertexAndSegment;
+        sl.mSnapTo = QgsSnapper::SnapToSegment;
         snapLayers.push_back( sl );
       }
     }
