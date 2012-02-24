@@ -19,6 +19,7 @@
 #define QGSCONFIGPARSER_H
 
 #include "qgsmaprenderer.h"
+#include <QColor>
 #include <QDomDocument>
 #include <QFont>
 #include <QList>
@@ -113,6 +114,9 @@ class QgsConfigParser
     /**Appends service metadata to the capabilities document*/
     virtual void serviceCapabilities( QDomElement& parentElement, QDomDocument& doc ) const;
 
+    QColor selectionColor() const { return mSelectionColor; }
+    void setSelectionColor( const QColor& c ) { mSelectionColor = c; }
+
   protected:
     /**Parser to forward not resolved requests (e.g. SLD parser based on user request might have a fallback parser with admin configuration)*/
     QgsConfigParser* mFallbackParser;
@@ -149,6 +153,8 @@ class QgsConfigParser
     double mLegendIconLabelSpace;
     double mLegendSymbolWidth;
     double mLegendSymbolHeight;
+
+    QColor mSelectionColor;
 
     /**Transforms layer extent to epsg 4326 and appends ExGeographicBoundingBox and BoundingBox elements to the layer element*/
     void appendLayerBoundingBoxes( QDomElement& layerElem, QDomDocument& doc, const QgsRectangle& layerExtent, const QgsCoordinateReferenceSystem& layerCRS ) const;

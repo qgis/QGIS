@@ -154,14 +154,14 @@ class QgsProjectParser: public QgsConfigParser
     /**Converts a (possibly relative) path to absolute*/
     QString convertToAbsolutePath( const QString& file ) const;
 
-    /**Sets global selection color from the project or yellow if not defined in project*/
-    void setSelectionColor();
-
     /**Returns mapcanvas output CRS from project file*/
     const QgsCoordinateReferenceSystem& projectCRS() const;
 
     /**Returns bbox of layer in project CRS (or empty rectangle in case of error)*/
     QgsRectangle layerBoundingBoxInProjectCRS( const QDomElement& layerElem ) const;
+
+    /**Reads selection color from project and sets it to QgsConfigParser::mSelectionColor*/
+    void setSelectionColor();
 };
 
 #endif // QGSPROJECTPARSER_H

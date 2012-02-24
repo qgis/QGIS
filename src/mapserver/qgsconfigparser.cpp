@@ -33,6 +33,7 @@ QgsConfigParser::QgsConfigParser()
     , mOutputUnits( QgsMapRenderer::Millimeters )
 {
   setDefaultLegendSettings();
+  mSelectionColor = QColor( 255, 255, 0 ); //yellow opaque is default selection color
 }
 
 QgsConfigParser::~QgsConfigParser()
