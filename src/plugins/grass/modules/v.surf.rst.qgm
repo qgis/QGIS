@@ -7,8 +7,22 @@
 	<option key="tension" />
 	<!--option key="smooth" /-->
 	<option key="elev" />
-	<option key="dmax" answer="5" hidden="yes" />
-	<option key="dmin" answer="2" hidden="yes" />
-	<!--option key="segmax" answer="1000" hidden="yes" /-->
-	<!--option key="npmin" answer="5000" hidden="yes" /-->
+	<option key="dmin" advanced="yes" />
+	<option key="dmax" advanced="yes" />
+        <option key="where" advanced="yes" />
+	<option key="slope" advanced="yes" />
+        <option key="aspect" advanced="yes" />
+        <option key="pcurv" advanced="yes" />
+        <option key="tcurv" advanced="yes" />
+        <option key="mcurv" advanced="yes" />
+        <option key="devi" advanced="yes" />
+        <option key="cvdev" advanced="yes" />
+        <option key="treefile" advanced="yes" />
+        <option key="overfile" advanced="yes" />
+        <option key="scolumn" advanced="yes" />
+	<option key="segmax" hidden="yes" />
+	<option key="npmin" hidden="yes" />
+        <option key="zmult" hidden="yes" />
+        <option key="theta" hidden="yes" />
+        <option key="scalex" hidden="yes" />
 </qgisgrassmodule>
