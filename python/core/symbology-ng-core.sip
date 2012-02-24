@@ -624,7 +624,9 @@ class QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit outputUnit() const;
     void setOutputUnit( QgsSymbolV2::OutputUnit u );
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const;
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha );
 
     bool selected() const;

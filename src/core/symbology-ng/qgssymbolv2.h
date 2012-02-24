@@ -92,7 +92,9 @@ class CORE_EXPORT QgsSymbolV2
     OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( OutputUnit u ) { mOutputUnit = u; }
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
     //! @note added in 1.5
@@ -137,7 +139,9 @@ class CORE_EXPORT QgsSymbolV2RenderContext
     QgsSymbolV2::OutputUnit outputUnit() const { return mOutputUnit; }
     void setOutputUnit( QgsSymbolV2::OutputUnit u ) { mOutputUnit = u; }
 
+    //! Get alpha transparency 1 for opaque, 0 for invisible
     qreal alpha() const { return mAlpha; }
+    //! Set alpha transparency 1 for opaque, 0 for invisible
     void setAlpha( qreal alpha ) { mAlpha = alpha; }
 
     bool selected() const { return mSelected; }
