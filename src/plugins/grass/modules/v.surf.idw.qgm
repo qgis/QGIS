@@ -4,7 +4,7 @@
 <qgisgrassmodule label="Inverse distance squared weighting raster interpolation based on vector points" module="v.surf.idw">
 	<option key="input" layeroption="layer" typemask="point,line" id="input" />
 	<field key="column" layer="input" type="integer,double" label="Attribute field (interpolated values)" />
-	<option key="npoints" />
-	<option key="power" />
+	<option key="npoints" advanced="yes" />
+	<option key="power" advanced="yes" />
 	<option key="output" />
 </qgisgrassmodule>
