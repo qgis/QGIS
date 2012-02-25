@@ -114,6 +114,14 @@ class CORE_EXPORT QgsGraduatedSymbolRendererV2 : public QgsFeatureRendererV2
     QgsVectorColorRampV2* sourceColorRamp();
     void setSourceColorRamp( QgsVectorColorRampV2* ramp );
 
+    /** Update the color ramp used. Also updates all symbols colors.
+      * Doesn't alter current breaks.
+      */
+    void updateColorRamp( QgsVectorColorRampV2* ramp );
+
+    /** Update the all symbols but leave breaks and colors. */
+    void updateSymbols( QgsSymbolV2* sym );
+
     //! @note added in 1.6
     void setRotationField( QString fieldName ) { mRotationField = fieldName; }
     //! @note added in 1.6
